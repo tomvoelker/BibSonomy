@@ -1183,20 +1183,11 @@ function makeParagraph() {
 }
 
 function makeText() {
-	var button = document.getElementById("makeP");
-	var pText = document.getElementById("pText");
-	var div = document.getElementById("note");
+	$("#privnote").css("display", "inline");
 
-	var tNode = document.getElementById("privnote");
-	tNode.style.display = "inline";
-	
-	var newButton = document.createElement("input");
-	newButton.setAttribute("type","submit");
-	newButton.setAttribute("value","update");
-	
-	div.removeChild(pText);
-	div.removeChild(button);	
-	div.appendChild(newButton);	
+	$("#note").append("<input type='submit' value='update'/>");	
+	$("#makeP").remove();
+	$("#pText").remove;
 }
 
 function unicodeCollation(ersterWert, zweiterWert){
@@ -1234,24 +1225,6 @@ function unicodeCollation(ersterWert, zweiterWert){
  * AJAX functions
  * ********************************************************/
 
-
-
-    function ajaxInit(){
-    	var req;
-      	try{
-        	if(window.XMLHttpRequest){
-          		req = new XMLHttpRequest();
-        	}else if(window.ActiveXObject){
-          		req = new ActiveXObject("Microsoft.XMLHTTP");
-        	}
-        	if( req.overrideMimeType ) {
-            	req.overrideMimeType("text/xml");
-	        }        	
-     	} catch(e){
-     	   	return false;
-     	}
-     	return req;
-    }
 
     // this shows or hides a relation by clicking the arrow in the tag cloud
     function showOrHideConcept(evt, action){
@@ -1333,14 +1306,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 				rel_item.appendChild(document.createTextNode(" "));
 
 				// attach function to onlick event
-				if (linkupperx.attachEvent) {
-					linkupperx.attachEvent("onclick", hideConcept);
-				} else if (linkupperx.addEventListener) {
-					linkupperx.addEventListener("click", hideConcept , true);
-				} else {
-					linkupperx.onclick = hideConcept;
-				}
-
+				$(linkupperx).click(hideconcept); // FIXME: check if works
 
 				// add link for upper tag
 				var linkupper = document.createElement("a");
@@ -1364,6 +1330,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 				lowerul.setAttributeNode(lowerulid);
 
 				// iterate over lower tags
+				// FIXME: implement using jQuery.each()
 				for(y=0; y<lowers.length; y++) {
 					var lower = lowers[y].firstChild.nodeValue;
 
@@ -1394,35 +1361,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 			}
 		}
 
-		// set arrows of supertags in tag cloud depending on if supertag is shown or not
-		var ultag = document.getElementById("tagbox");
-		var taglis = ultag.getElementsByTagName("li");
-
-		for(x=0; x<taglis.length; x++){
-			var links = taglis[x].getElementsByTagName("a");
-
-			if(links.length == 3){
-				var tagname = links[2].firstChild.nodeValue;
-				var addArrow = true;
-
-				for(y=0; y<conceptnames.length; y++){
-					if(tagname == conceptnames[y]){
-						addArrow=false;
-					}
-				}
-				if(addArrow){
-					links[0].style.display = "none";
-					links[1].style.display = "inline";
-				}else{
-					links[0].style.display = "inline";
-					links[1].style.display = "none";
-				}
-				if(x == 0){alert("done");}
-			}
-		}
-
 		delete conceptnames;
-
 	} 
 
 
@@ -1624,13 +1563,9 @@ function editTags(obj, ckey) {
 	var details = document.createElement("a");
 	details.setAttribute('href', link);
 	
-	if(type == "bibtex") {
-		details.appendChild(document.createTextNode(getString("bibtex.actions.details")));
-		details.title=getString("bibtex.actions.details.title");
-	} else {
-		details.appendChild(document.createTextNode(getString("bookmark.actions.details")));
-		details.title=getString("bookmark.actions.details.title");
-	}
+	details.appendChild(document.createTextNode(getString(type + ".actions.details")));
+	details.title = getString(type + ".actions.details.title");
+
 	// append all the created elements
 	form.appendChild(input);
 	form.appendChild(hidden);
@@ -1650,6 +1585,14 @@ String.prototype.startsWith = function(s) {
 	return this.indexOf(s) == 0; 
 };
 
+
+/**
+ * Provides localized messages for JavaScript functions. 
+ * 
+ * Always use this method to get your messages! If you add a new message,
+ * call generate_localized_strings.pl afterwards.
+ * 
+ */
 function getString( key ) {
   if ( typeof LocalizedStrings == "undefined" ) return "???"+key+"???"; 
   var s = LocalizedStrings[key];
@@ -1702,7 +1645,7 @@ function toggleTag(target, tagname) {
 }
 
 //add/remove tagname to/from target field 
-function copytag(target, tagname){
+function copytag(target, tagname) {
 	var targetNode = document.getElementById(target);
 	if( targetNode ){
 		toggleTag(targetNode, tagname);
@@ -1712,6 +1655,7 @@ function copytag(target, tagname){
 /** FUNCTIONS USED IN THE POSTING VIEWS **/
 
 // hide and show the tagsets in the relevant for field
+// FIXME: use jQuery.each()
 function showTagSets(select) {
     for (var i = 0; i < select.options.length; i++) {
       var op = select.options[i];
@@ -1726,30 +1670,30 @@ function showTagSets(select) {
     }
 }
 
-//functions checks if a group in the relevant for field is selected and adds its name to the hidden field 
-//systemtags 
-function addSystemTags(){
+/*
+ * check if a group in the relevant for field is selected and 
+ * adds its name to the hidden field "systemtags"
+ */
+function addSystemTags() {
 	var counter = 0;
 	clear_tags();
-	var tags = document.getElementById("inpf").value;
-	while(document.getElementById("relgroup"+counter) != null){
-		if(document.getElementById("relgroup"+counter).selected == true){
-			var value = document.getElementById("relgroup"+counter).value;
+	var tags = $("#inpf").val();
+	var relGroup;
+	var systemtags;
+	while (relGroup = $("#relgroup"+counter)) {
+		if (relGroup.attr('selected') == true) { // FIXME: does this work?
+			var value = relGroup.val();
 			// only write the systemtag if it doesn't exist in the tagfield
-			if(tags.match(":"+value) == null){
-				if(systemtags == null){
-					systemtags = "sys:relevantFor:"+value;
-				}else{
-					systemtags +=" "+"sys:relevantFor:"+value;
-				}
+			if (tags.match(":" + value) == null) {
+				systemtags += " " + "sys:relevantFor:" + value;
 			}
 		}
 		counter++;
 	}
-	//if a systemtag was build, add it to the tag field
-	if(systemtags != null){
-		//add systemtags to the tag field
-		copytag("inpf",systemtags);
+	// if a systemtag was build, add it to the tag field
+	if (systemtags != null) {
+		// add systemtags to the tag field
+		copytag("inpf", systemtags);
 	}
 	
 }
@@ -1838,10 +1782,9 @@ function prepareErrorBoxes(className) {
 						    $(this).fadeOut('slow');
 					  });
 				
-				    if(typeof $(this).children(':first') != undefined 
-				    	&& $(this).children(':first').attr('id') != undefined
-				    		&& $(this).children(':first').attr('id').length > 0) {
-				        var id = ("#"+($(this).children(':first').attr('id')).substr(0, ($(this).children(':first').attr('id')).length-".errors".length)).replace(/\./g, "\\.");
+				    var first = $(this).children(':first');
+					if (typeof first != undefined && first.attr('id')) {
+				        var id = ("#"+(first.attr('id')).substr(0, (first.attr('id')).length-".errors".length)).replace(/\./g, "\\.");
 				        var copy = $(this);
 				        var callback = function () {copy.fadeOut('slow');};
 				        $(id).keyup(callback).change(callback);
@@ -1854,26 +1797,6 @@ function prepareErrorBoxes(className) {
 	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});  
 }
 
-/**
- * look for a match comparing the element's classes with the given class name
- * 
- * @param el
- *            the element to match the class with
- * @param value
- *            the class we're looking for
- * @return true if a match is given, false otherwise
- */
-function cmpClass(el, value) {
-	for
-	(i = 0, partials = el.className.split(" "); 
-	parseInt(partials.length) > i; 
-	i++) {
-		if(value == partials[i]) {
-			return true;
-		}
-	}
-	return false;
-}
 
 /**
  * toggles the visibility of the content element encapsulated within the fieldset 
@@ -1883,29 +1806,11 @@ function cmpClass(el, value) {
  * @return 
  */
 function toggleFieldsetVisibility(el) {
-	var content = null;
-	var icon_url = null;
-	var className = null;
-	if((content = getNextByClass(el.parentNode, "")) == null) {
-		return;
-	}
-	
-	if(cmpClass(el.parentNode.parentNode, 'fsHidden')) {
-		$(content).hide();
-		$(el.parentNode.parentNode).removeClass('fsHidden').addClass('fsVisible');
-		icon_url = "/resources/image/icon_collapse.png";
-	} else {
-		icon_url = "/resources/image/icon_expand.png";
-		className = "fsHidden";		
-	}
-	
-	$(content).css('visibility', 'hidden').slideToggle(200, function() {
-			el.src = icon_url;
-			if(className)
-				$(el.parentNode.parentNode).removeClass('fsVisible').addClass(className);
-			$(this).css('visibility', 'visible');
-		});
-}
+	/*
+	 * FIXME: check if the jQuery expression for varriable "content" is equivalent to
+	content = getNextByClass(el.parentNode, "");
+
+with
 
 function getNextByClass(match_el, className) {
 	while(match_el != null) {
@@ -1917,6 +1822,37 @@ function getNextByClass(match_el, className) {
 		match_el = match_el.nextSibling;
 	}
 	return null;
+}
+
+FIXME: calling cmpClass() with an empty className ("") should always return FALSE - if (content == null) was always true?
+	 */
+	
+	var elp = $(el).parent();
+	var content = elp.next("div");
+	if (content == null) {
+		return;
+	}
+	
+	var elpp = elp.parent();
+	var icon;
+	var className = null;
+	
+	if (elpp.hasClass("fsHidden")) {
+		$(content).hide();
+		elpp.removeClass('fsHidden').addClass('fsVisible');
+		icon = "collapse";
+	} else {
+		icon = "expand";
+		className = "fsHidden";		
+	}
+	
+	$(content).css('visibility', 'hidden').slideToggle(200, function() {
+		el.src = "/resources/image/icon_" + icon + ".png";
+		if (className) {
+			elpp.removeClass('fsVisible').addClass(className);
+		}	
+		$(this).css('visibility', 'visible');
+	});
 }
 
 /**
@@ -2042,24 +1978,22 @@ function setSearchInputLabel(scope) {
 	var search = $('input[name=search]');
 	if(!overwriteLabel(search))return;
   		
-    if (scope.value == "tag") {
-    	search.val(getString("navi.tag.hint"));
-    } else if (scope.value == "user") {
-    	search.val(getString("navi.user.hint"));
-    } else if (scope.value == "group") {
-    	search.val(getString("navi.group.hint"));
-    } else if (scope.value == "author") {
-    	search.val(getString("navi.author.hint"));
-    } else if (scope.value == "concept/tag") {
-    	search.val(getString("navi.concept.hint"));
-    } else if (scope.value == "bibtexkey") {
-    	search.val(getString("navi.bibtexkey.hint"));
-    } else if (scope.value.indexOf("user") != -1 || scope.value == "search") {
-    	search.val(getString("navi.search.hint"));
+    var value = scope.value;
+    var messageKey = "";
+	if (value == "tag" || value == "user" || value == "group" || value == "author" || value == "bibtexkey") {
+    	messageKey = value;
+    } else if (value == "concept/tag") {
+    	messageKey = "concept";
+    } else if (value.indexOf("user") != -1 || value == "search") {
+    	messageKey = "search";
     }
+	if (messageKey != "") {
+		search.val(getString("navi." + messageKey + ".hint"));
+	}
     
-    if(!search.hasClass('descriptiveLabel'))
+    if (!search.hasClass('descriptiveLabel')) {
     	search.addClass('descriptiveLabel');
+    }
     return search;
 }
 
@@ -2118,6 +2052,11 @@ function createParameters(title) {
 	return title;
 }
 
+/*
+ * shows a preview image for links having the class 'preview'
+ * 
+ * the URL to the images is generated by appending "?preview=LARGE" to the URL from the link
+ */
 this.imagePreview = function(){	
 	var xOff = 400;
 	var yOff = 0;
@@ -2125,6 +2064,9 @@ this.imagePreview = function(){
 		this.t = this.title;
 		this.title = "";	
 		var c = (this.t != "") ? "<br/>" + this.t : "";
+		/*
+		 * build preview image URL by appending "?preview=LARGE"
+		 */
 		$("body").append("<p id='preview'><img src='"+ this.href +"?preview=LARGE'/>"+ c +"</p>");         
 		$("#preview").css("top",(e.pageY - yOff) + "px").css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px").fadeIn("fast");      
 	}, function(){
