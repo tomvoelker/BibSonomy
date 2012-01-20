@@ -29,16 +29,15 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 
-import net.oauth.OAuthAccessor;
-
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
+import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.worker.HttpWorker;
+import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
@@ -55,7 +54,7 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 	 * @param username
 	 * @param apiKey
 	 */
-	public PostWorker(final String username, final String apiKey, OAuthAccessor accessor) {
+	public PostWorker(final String username, final String apiKey, final AuthenticationAccessor accessor) {
 		super(username, apiKey, accessor);
 	}
 	
