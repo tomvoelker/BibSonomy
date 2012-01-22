@@ -180,13 +180,25 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		if (present(goldStandard)) {
 			firstResource = goldStandard.getResource();
 		} else {
-			final List<Post<R>> resourceList = command.getListCommand(this.getResourceClass()).getList();
+			List<Post<R>> resourceList = command.getListCommand(this.getResourceClass()).getList();
 			if (!present(resourceList)) {
+
 				/*
-				 * We throw a ResourceNotFoundException such that we don't get empty
-				 * resource pages.
+				 * No public posts were found => fetch private, group-visible and friend's posts
 				 */
-				throw new ResourceNotFoundException(shortHash);
+				if (GroupingEntity.ALL.equals(groupingEntity)) {
+					this.setList(command, this.getResourceClass(), GroupingEntity.USER, null, null, longHash, null, null, null, entriesPerPage);
+					resourceList = command.getListCommand(this.getResourceClass()).getList();
+					command.setPublicPost(false);
+				}
+				// We use the previously fetched counts as they seem to count all posts including the private ones
+				if (!present(resourceList)) {
+					/*
+					 * We throw a ResourceNotFoundException such that we don't get empty
+					 * resource pages.
+					 */
+					throw new ResourceNotFoundException(shortHash);
+				}
 			}
 			firstResource = resourceList.get(0).getResource();			
 		}
@@ -195,6 +207,7 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		return this.handleFormat(command, format, longHash, requUser, groupingEntity, goldHash, goldStandard, firstResource);
 	}
 
+	
 	protected View handleFormat(final ResourcePageCommand<R> command, final String format, final String longHash, final String requUser, final GroupingEntity groupingEntity, final String goldHash, final Post<R> goldStandard, final R firstResource) {
 		if ("html".equals(format)) {
 			/*
