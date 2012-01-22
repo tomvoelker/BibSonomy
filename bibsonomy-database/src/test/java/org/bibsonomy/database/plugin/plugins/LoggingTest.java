@@ -167,7 +167,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		final BibTexParam param = ParamUtils.getDefaultBibTexParam();
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTER_HASH);
-		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(HASH, HashID.INTER_HASH, PUBLIC_GROUP_ID, 50, 0, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(null, HASH, HashID.INTER_HASH, PUBLIC_GROUP_ID, null, 50, 0, this.dbSession).get(0);
 
 		Integer currentContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
 		// +1 for the future contentId
@@ -194,7 +194,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		param.setRequestedContentId(contentId);
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTRA_HASH);
-		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(HASH, HashID.INTER_HASH, PUBLIC_GROUP_ID, 50, 0, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(null, HASH, HashID.INTER_HASH, PUBLIC_GROUP_ID, null, 50, 0, this.dbSession).get(0);
 
 		int result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(0, result);
@@ -213,7 +213,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		final String HASH = "0008bae834cc2af4a63fead1fd04b3e1";
 		final BookmarkParam param = ParamUtils.getDefaultBookmarkParam();
 		param.setHash(HASH);
-		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
+		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(null, HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession).get(0);
 
 		Integer currentContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
 		param.setNewContentId(currentContentId + 1); // +1, next content_id
@@ -236,7 +236,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		final String HASH = "00319006d9b0105704533e49661ffab6";
 		// ContentId of the Bookmark with the Hash above
 		final int contentId = 716849;
-		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
+		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(null, HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession).get(0);
 
 		final BookmarkParam param = ParamUtils.getDefaultBookmarkParam();
 		param.setRequestedContentId(contentId);
@@ -272,7 +272,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		param.setSimHash(HashID.INTRA_HASH);
 		final TagParam tagparam = ParamUtils.getDefaultTagParam();
 		tagparam.setRequestedContentId(contentId);
-		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 50, 0, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(null, HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 50, 0, this.dbSession).get(0);
 
 		Integer res_original = testDb.countTasIds(tagparam);
 		Integer result = testDb.countRequestedContentIdFromBibTex(param);
