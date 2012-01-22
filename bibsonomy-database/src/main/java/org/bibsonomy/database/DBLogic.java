@@ -2616,9 +2616,15 @@ public class DBLogic implements LogicInterface {
 				log.debug("no gold standard found for interHash " + interHash + ". Creating new gold standard");
 				final String hash = HashID.INTER_HASH.getId() + interHash;
 				// FIXME: these lists maybe also contain private posts of the logged in user!
-				final List<Post<Bookmark>> bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
-				final List<Post<BibTex>> publicationPosts = this.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
-
+				List<Post<Bookmark>> bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+				List<Post<BibTex>> publicationPosts = this.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+				if (!present(bookmarkPosts) && !present(publicationPosts)) {
+					// try finding all visible Posts for the loginUser
+					bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.USER, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+					if (!present(bookmarkPosts)) {
+						publicationPosts = this.getPosts(BibTex.class, GroupingEntity.USER, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
+					}
+				}
 				/*
 				 * create gold standard
 				 */
