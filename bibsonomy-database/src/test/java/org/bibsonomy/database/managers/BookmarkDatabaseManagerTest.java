@@ -211,16 +211,16 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	@Override
 	public void testGetPostsByHash() {
 		String requBookmark = "b7aa3a91885e432c6c95bec0145c3968";
-		List<Post<Bookmark>> post = bookmarkDb.getPostsByHash(requBookmark, HashID.INTRA_HASH, FRIENDS_GROUP_ID, 10, 0, this.dbSession);
+		List<Post<Bookmark>> post = bookmarkDb.getPostsByHash(null, requBookmark, HashID.INTRA_HASH, FRIENDS_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 		
 		// this should test which bookmark will be received (there are two in equal hashes in the test database one with public group one with friend group) 
 		requBookmark = "85ab919107e4cc79b345e996b3c0b097";
-		post = bookmarkDb.getPostsByHash(requBookmark, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
+		post = bookmarkDb.getPostsByHash(null, requBookmark, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 		
 		requBookmark = "85ab919107e4cc79b345e996b3c0b097";
-		post = bookmarkDb.getPostsByHash(requBookmark, HashID.INTRA_HASH, FRIENDS_GROUP_ID, 10, 0, this.dbSession);
+		post = bookmarkDb.getPostsByHash(null, requBookmark, HashID.INTRA_HASH, FRIENDS_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 	}
 
@@ -506,7 +506,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	@Test
 	public void testUpdatePostMockTest() {
 		final String hash = "7eda282d1d604c702597600a06f8a6b0";
-		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
+		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(null, hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession).get(0);
 		bookmarkDb.updatePost(someBookmarkPost, hash, null, this.dbSession, new User("testuser2"));
 		assertTrue(this.pluginMock.isOnBookmarkUpdate());
 	}
@@ -528,7 +528,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	@Override
 	public void testDeletePost() {
 		final String intraHash = "108eca7b644e2c5e09853619bc416ed0";
-		final List<Post<Bookmark>> post = bookmarkDb.getPostsByHash(intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
+		final List<Post<Bookmark>> post = bookmarkDb.getPostsByHash(null, intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 		
 		final boolean delete = bookmarkDb.deletePost(TESTUSER2_NAME, intraHash, this.dbSession);
@@ -538,7 +538,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		final boolean delete2 = bookmarkDb.deletePost(TESTUSER1_NAME, intraHash, this.dbSession);
 		assertTrue(delete2);
 
-		final List<Post<Bookmark>> post2 = bookmarkDb.getPostsByHash(intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
+		final List<Post<Bookmark>> post2 = bookmarkDb.getPostsByHash(null, intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(0, post2.size());
 		
 		// recreate the deleted post

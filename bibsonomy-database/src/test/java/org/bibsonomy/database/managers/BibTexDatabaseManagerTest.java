@@ -83,7 +83,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final String hash1 = "097248439469d8f5a1e7fad6b02cbfcd";
 		final String hash2 = "b77ddd8087ad8856d77c740c8dc2864a";
 		// get post with SIM_HASH0 = hash0
-		final List<Post<BibTex>> posts = publicationDb.getPostsByHash(hash0, HashID.SIM_HASH0, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
+		final List<Post<BibTex>> posts = publicationDb.getPostsByHash(null, hash0, HashID.SIM_HASH0, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		assertEquals(1, posts.get(0).getGroups().size());
@@ -650,7 +650,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		// this.bibtexParam.setGroupType(GroupID.PRIVATE); 
 		this.postDuplicate(hash);
 
-		final Post<BibTex> post = publicationDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
+		final Post<BibTex> post = publicationDb.getPostsByHash(null, hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession).get(0);
 		assertNotNull(post);
 
 		extras = bibTexExtraDb.getURL(hash, loginUserName, this.dbSession);
@@ -776,9 +776,9 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		printMethod("storePostDuplicate");
 		for (final String intraHash : new String[] {"b77ddd8087ad8856d77c740c8dc2864a"}) {
 
-			final Post<BibTex> originalPost = publicationDb.getPostsByHash(intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
+			final Post<BibTex> originalPost = publicationDb.getPostsByHash(null, intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession).get(0);
 			this.postDuplicate(intraHash);
-			final Post<BibTex> newPost = publicationDb.getPostsByHash(intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
+			final Post<BibTex> newPost = publicationDb.getPostsByHash(null, intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession).get(0);
 			assertNotSame(originalPost.getContentId(), newPost.getContentId());
 			assertEquals(originalPost.getDate().toString(), newPost.getDate().toString());
 			assertEquals(originalPost.getDescription(), newPost.getDescription());
@@ -797,7 +797,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	}
 
 	private void postDuplicate(final String hash) {
-		final List<Post<BibTex>> someBibTexPost = publicationDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
+		final List<Post<BibTex>> someBibTexPost = publicationDb.getPostsByHash(null, hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(1, someBibTexPost.size());
 		// someBibTexPost.getGroups().clear();
 		final Post<BibTex> publication = someBibTexPost.get(0);
@@ -805,7 +805,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		publicationDb.updatePost(publication, hash, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
 		
 		// check if resource counter is updated correctly
-		final List<Post<BibTex>> afterUpdate = publicationDb.getPostsByHash(hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession);
+		final List<Post<BibTex>> afterUpdate = publicationDb.getPostsByHash(null, hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(count, afterUpdate.get(0).getResource().getCount());
 	}
 

@@ -10,6 +10,7 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowed
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashVisibleForLoginUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNames;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation;
@@ -36,6 +37,7 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForUser;
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByHash;
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByHashForUser;
+	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByHashVisibleForLoginUser;
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByTagNames;
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByTagNamesAndUser;
 	private final ListChainElement<Post<Bookmark>, BookmarkParam> getBookmarksForGroup;
@@ -59,10 +61,11 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 	 * Constructs the chain
 	 */
 	public BookmarkChain() {
-	    	this.getBookmarksWithDiscussions = new GetResourcesWithDiscussions<Bookmark, BookmarkParam>();
+    	this.getBookmarksWithDiscussions = new GetResourcesWithDiscussions<Bookmark, BookmarkParam>();
 		this.getBookmarksForUser = new GetResourcesForUser<Bookmark, BookmarkParam>();
 		this.getBookmarksByHash = new GetResourcesByHash<Bookmark, BookmarkParam>();
 		this.getBookmarksByHashForUser = new GetResourcesByHashForUser<Bookmark, BookmarkParam>();
+		this.getBookmarksByHashVisibleForLoginUser = new GetResourcesByHashVisibleForLoginUser<Bookmark, BookmarkParam>();		
 		this.getBookmarksByTagNames = new GetResourcesByTagNames<Bookmark, BookmarkParam>();
 		this.getBookmarksByTagNamesAndUser = new GetResourcesByTagNamesAndUser<Bookmark, BookmarkParam>();
 		this.getBookmarksForGroup = new GetResourcesForGroup<Bookmark, BookmarkParam>();
@@ -86,7 +89,8 @@ public class BookmarkChain implements FirstListChainElement<Post<Bookmark>, Book
 		this.getBookmarksForPopular.setNext(this.getBookmarksForUser);
 		this.getBookmarksForUser.setNext(this.getBookmarksByTagNames);
 		this.getBookmarksByTagNames.setNext(this.getBookmarksByHashForUser);
-		this.getBookmarksByHashForUser.setNext(this.getBookmarksByHash);
+		this.getBookmarksByHashForUser.setNext(this.getBookmarksByHashVisibleForLoginUser);
+		this.getBookmarksByHashVisibleForLoginUser.setNext(this.getBookmarksByHash);
 		this.getBookmarksByHash.setNext(this.getBookmarksByTagNamesAndUser);
 		this.getBookmarksByTagNamesAndUser.setNext(this.getBookmarksForGroup);
 		this.getBookmarksForGroup.setNext(this.getBookmarksForGroupAndTag);

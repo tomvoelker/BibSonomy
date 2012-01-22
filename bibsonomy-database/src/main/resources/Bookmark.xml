@@ -265,6 +265,31 @@
 		ORDER BY b.date DESC,b.content_id DESC
 	</select>
 
+
+  <select id="getBookmarkByHashVisibleForLoginUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, b.content_id, t.tag_name, title, description, b.user_name, b.date, 
+		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, t.change_date, <include refid="reviewRatingsRows" />
+		FROM ((SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id, t1.group, t1.change_date
+		      FROM bookmark t1 
+		      WHERE book_url_hash = #hash#
+		        AND (t1.user_name=#userName# 
+		        	 OR <include refid="inGroupsUnchecked"/>
+		        	)
+		      ) UNION (
+		        SELECT book_url_hash, book_description AS title, book_extended AS description, b.user_name, date, content_id, b.group, b.change_date
+		      	FROM bookmark b, friends f
+		        WHERE book_url_hash = #hash#
+		          AND b.group = #groupTypeFriends# 
+		          AND <include refid="matchTrustersResource"/>   
+		      )
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b
+		LEFT OUTER JOIN tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, urls u, groupids g
+		WHERE b.book_url_hash = u.book_url_hash
+			AND b.group = g.group
+		ORDER BY b.date DESC,b.content_id DESC
+	</select>
+	
 	<!-- since for bookmarks intrahash = interhash, we ignore the param #simHash# -->
 	<select id="getBookmarkByHashCount" resultClass="int" parameterClass="bookmarkParam">
 		SELECT book_url_ctr FROM urls WHERE book_url_hash = #hash#

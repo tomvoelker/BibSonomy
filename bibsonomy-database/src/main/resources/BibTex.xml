@@ -300,7 +300,7 @@
 		  ORDER BY b.date DESC, b.content_id DESC 
 	</select>
 
-
+	<!--  Why is this so different form getBookmarkByHash? no restrictToGroups -->
 	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, b.`group`, g.group_name, <include refid="reviewRatingsRows" />
 		  FROM (
@@ -318,9 +318,35 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
-	<select id="getBibTexByHashCount" resultClass="int" parameterClass="bibtexParam">
+ 	<select id="getBibTexByHashCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT ctr FROM bibhash WHERE hash = #hash# AND type = #simHash#
 	</select>
+
+	<select id="getBibTexByHashVisibleForLoginUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, b.`group`, g.group_name, <include refid="reviewRatingsRows" />
+		  FROM ((SELECT t1.*  
+			FROM bibtex t1 
+			WHERE simhash$simHash$ = #hash# 
+			  AND (t1.user_name=#userName#
+			  	   OR <include refid="inGroupsUnchecked"/>
+			  	  )
+		    ) UNION (
+			SELECT b.*
+			FROM bibtex b, friends f
+  		    WHERE simhash$simHash$ = #hash#
+  		      AND b.group = #groupTypeFriends# 
+		      AND <include refid="matchTrustersResource"/>
+	        )
+		    ORDER BY date DESC 
+		    LIMIT #limit# OFFSET #offset#
+		  ) AS b
+		  LEFT JOIN tas t USING (content_id)
+		  <include refid="reviewRatingsJoinPublication" />
+		  JOIN bibhash h ON <include refid="bibtexSimHash"/>
+		  JOIN groupids g ON b.group = g.group
+		ORDER BY b.date DESC, b.content_id DESC
+	</select>
+
 
 	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, <include refid="reviewRatingsRows" />

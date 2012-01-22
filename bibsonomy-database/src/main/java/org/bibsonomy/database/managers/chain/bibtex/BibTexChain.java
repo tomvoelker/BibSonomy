@@ -13,6 +13,7 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowed
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashVisibleForLoginUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNames;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation;
@@ -39,6 +40,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsWithDiscussions;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByHash;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByHashForUser;
+	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByHashVisibleForLoginUser;	
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByKey;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByTagNames;
 	private final ListChainElement<Post<BibTex>, BibTexParam> getPublicationsByTagNamesAndUser;
@@ -68,6 +70,7 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 		this.getPublicationsWithDiscussions = new GetResourcesWithDiscussions<BibTex, BibTexParam>();
 		this.getPublicationsByHash = new GetResourcesByHash<BibTex, BibTexParam>();
 		this.getPublicationsByHashForUser = new GetResourcesByHashForUser<BibTex, BibTexParam>();
+		this.getPublicationsByHashVisibleForLoginUser = new GetResourcesByHashVisibleForLoginUser<BibTex, BibTexParam>();
 		this.getPublicationsByTagNames = new GetResourcesByTagNames<BibTex, BibTexParam>();
 		this.getPublicationsByTagNamesAndUser = new GetResourcesByTagNamesAndUser<BibTex, BibTexParam>();
 		this.getPublicationsForGroup = new GetResourcesForGroup<BibTex, BibTexParam>();
@@ -98,7 +101,8 @@ public class BibTexChain implements FirstListChainElement<Post<BibTex>, BibTexPa
 		this.getPublicationsForUser.setNext(this.getPublicationsByTagNames);
 		this.getPublicationsByTagNames.setNext(this.getPublicationsByHashForUser);
 		this.getPublicationsByHashForUser.setNext(this.getPublicationsByHash);
-		this.getPublicationsByHash.setNext(this.getPublicationsByTagNamesAndUser);
+		this.getPublicationsByHash.setNext(this.getPublicationsByHashVisibleForLoginUser);
+		this.getPublicationsByHashVisibleForLoginUser.setNext(this.getPublicationsByTagNamesAndUser);
 		this.getPublicationsByTagNamesAndUser.setNext(this.getPublicationsForGroup);
 		this.getPublicationsForGroup.setNext(this.getPublicationsForGroupAndTag);
 		this.getPublicationsForGroupAndTag.setNext(this.getPublicationsViewable);

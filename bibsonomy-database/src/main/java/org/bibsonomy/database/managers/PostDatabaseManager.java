@@ -518,22 +518,29 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * Prepares a query which retrieves all posts which are represented by
 	 * the given hash.
-	 * 
+	 * @param loginUserName If the loginUser is present: retrieve all posts to the hash that are visible to the loginUser. Otherwise: only public posts!
 	 * @param requResource
 	 * @param simHash
 	 * @param groupId
+	 * @param groups TODO
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsByHash(final String requResource, final HashID simHash, final int groupId, final int limit, final int offset, final DBSession session) {
+	public List<Post<R>> getPostsByHash(String loginUserName, final String requResource, final HashID simHash, final int groupId, Collection<Integer> groups, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setHash(requResource);
 		param.setSimHash(simHash);
 		param.setGroupId(groupId);
-
-		return this.postList("get" + this.resourceClassName + "ByHash", param, session);
+		param.setUserName(loginUserName);
+		if (present(loginUserName)) {
+			param.setGroups(groups);
+			List<Post<R>> list = this.postList("get" + this.resourceClassName + "ByHashVisibleForLoginUser", param, session);
+			return list;
+		} else {
+			return this.postList("get" + this.resourceClassName + "ByHash", param, session);
+		}
 	}
 
 	/**
@@ -836,8 +843,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(simHash);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
-
-		return this.getPostsForUser(param, session);
+		
+		List<Post<R>> list = this.getPostsForUser(param, session);
+		 return list;
 	}
 
 	/**

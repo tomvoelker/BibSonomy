@@ -154,7 +154,7 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 			bookmarkDb.getPostsPopular(param.getDays(), param.getLimit(), param.getOffset(), HashID.getSimHash(param.getSimHash()), this.dbSession);
 			break;
 		case getBookmarkByHash:
-			bookmarkDb.getPostsByHash(param.getHash(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getLimit(), param.getOffset(), this.dbSession);
+			bookmarkDb.getPostsByHash(null, param.getHash(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), null, param.getLimit(), param.getOffset(), this.dbSession);
 			break;
 		case getBookmarkByHashCount:
 			bookmarkDb.getPostsByHashCount(param.getHash(), HashID.getSimHash(param.getSimHash()), this.dbSession);

@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import java.util.Collection;
 import java.util.Collections;
 
 import org.bibsonomy.database.common.params.beans.TagIndex;
@@ -113,7 +114,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	public abstract void testGetPostsForHomepage();
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByHash(java.lang.String, org.bibsonomy.common.enums.HashID, int, int, int, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByHash(String, java.lang.String, org.bibsonomy.common.enums.HashID, int, Collection, int, int, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
 	public abstract void testGetPostsByHash();
