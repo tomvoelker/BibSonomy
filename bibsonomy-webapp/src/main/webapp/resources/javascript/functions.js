@@ -1,6 +1,5 @@
 var activeField = null;
 var tagbox      = null; // used in style.js!
-var tags_toggle = 0;
 var ckey        = null;
 var currUser    = null;
 var requUser	= null;
@@ -56,7 +55,6 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	if (!pathname.startsWith("/postPublication") && !pathname.startsWith("/postBookmark")){
 		init_sidebar();
 	}
-	add_tags_toggle();
 }
 
 function stopEvt () {
@@ -262,111 +260,70 @@ function setActiveInputField(id) {
 	$("#suggested").empty();
 }
 
-/*
- * functions for copytag handling
+
+/**
+ * Called on /edit_tags to make the tags from the sidebar clickable such that
+ * on a click they are added to the active input field.  
+ *
+ * FIXME: click handler not bound :-(
+ * 
+ * @return
  */
-function toggle(event) {
-	clear_tags(); // remove getString("navi.tag.hint") 
-
-	toggleTag(
-			document.getElementById(activeField ? activeField : "inpf"), 
-			xget_event(event).childNodes[0].nodeValue
-	);
-}
-
-function add_toggle() {
-	tags_toggle = 1;
-}
-
 function add_tags_toggle() {
-	if (tags_toggle == 1) {
-		$("#tagbox li a:first").each(function() {
-			$(this).click(toggle)
-			.attr("text", $(this).attr("href"))
-			.attr("href", "") // FIXME: how to remove an attribute?
-			.css("cursor", "pointer");
-		});
-		/*
-	  var links = tagbox.getElementsByTagName("li");
-    for (x=0; x<links.length; x++) {
-         var aNode = links[x].getElementsByTagName("a")[0];
-         aNode.onclick=toggle;
-         aNode.setAttribute('text', aNode.getAttribute("href"));
-         aNode.removeAttribute("href");
-         aNode.style.cursor = "pointer";
-    }*/
+	$("#tagbox li a").each(function() {
+		$(this).click(function() {
+//			alert("t");
+//			var v = xget_event(event).childNodes[0].nodeValue;
+//			var v = this.childNodes[0].nodeValue;
+//			alert("toggle " + v);
+			
+			clear_tags(); // remove getString("navi.tag.hint") 
+//
+//			toggleTag(
+//					document.getElementById(activeField ? activeField : "inpf"), 
+//					v
+//			);
+		})
+		.removeAttr("href")
+		.css("cursor", "pointer");
+	});
 
-		// FIXME: does equivalent work?
-		$("#copytag li").click(toggle);
-		/*
-    var ul = document.getElementById("copytag");
-    if (ul!=null) {
-	    var links = ul.getElementsByTagName("li");
-    	for (x=0; x<links.length; x++) {
-    	     links[x].onclick=toggle;
-	    }
-	 }
-		 */
-	}
 }
 
-/* ********************************** *
-       clickable relations for edit_tags
- * ********************************** */
+/**
+ * 
+ * clickable relations for edit_tags
+ * 
+ * @return
+ */
 function add_toggle_relations() {
 	/*
 	 * add toggler for supertags
 	 */
-	$("#relations > li a:first").each(function() {
+	$("#relations > li > a").each(function() {
 		$(this).click(function() {
-			// FIXME: does "this" exist here?
 			var value = this.childNodes[0].nodeValue;
 			$("#delete_up").val(value);
 			$("#insert_up").val(value);
 		})
 		.css("cursor", "pointer")
 		.attr("title", "add as supertag") // FIXME: I18N
-		.attr("href", ""); // FIXME: how to remove attribute?
+		.removeAttr("href");
 	});
 	/*
 	 * add toggler for subtags
 	 */
-	$("#relations > li ul:first li a:first").each(function() {
+	$("#relations > li ul li a").each(function() {
 		$(this).click(function() {
-			var delete_lo = $("delete_lo");
-			// FIXME: does "this" exist here? How to access clicked element?
+			var delete_lo = $("#delete_lo");
 			delete_lo.val(addIfNotContained(delete_lo.val(), this.childNodes[0].nodeValue.replace(/ /, "")));
 			delete_lo.focus();
 		})
 		.css("cursor", "pointer")
 		.attr("title", "add as subtag") // FIXME: I18N
-		.attr("href", ""); // FIXME: how to remove attribute?
+		.removeAttr("href");
 	});
-	/* old code
-    	var relation_list  = document.getElementById("relations");
-	    var relation_items = relation_list.childNodes;
-	    // iterate over supertags
-    	for (x=0; x<relation_items.length; x++) {
-        	var node = relation_items[x];
-        	if (node.nodeName == "LI") {
-             	// supertag found
-        	 	var aNode = node.getElementsByTagName("a")[0];
-		        aNode.onclick = add_supertag_to_input;
-    		    aNode.removeAttribute("href");
-        	 	aNode.style.cursor = "pointer";
-        	 	aNode.setAttribute("title", "add as supertag");
-        	 	// iterate over subtags
-        	    var sub_items = node.getElementsByTagName("ul")[0].getElementsByTagName("li");
-                for (y=0;y<sub_items.length; y++) {
-	        		var bNode = sub_items[y].getElementsByTagName("a")[0];
-		        	bNode.onclick = add_subtag_to_input;
-    		    	bNode.removeAttribute("href");
-        			bNode.style.cursor = "pointer";
-	        		bNode.setAttribute("title", "add as subtag");
-        	 	}
-        	}
-	    }
-	 */
+
 }
 
 
@@ -673,8 +630,10 @@ function stringCompare(a, b) {
 		return 1;
 }	
 
-/*
+/**
  * Hier werden die Tags aus der Tagwolke, Copytags und Recommendations in Listen gepackt
+ * 
+ * @return
  */
 function setOps() {
 
@@ -1506,7 +1465,7 @@ function getString( key ) {
  * 
  */
 function addIfNotContained(tagString, tag) {
-	var tags = tagString.value.split(" ");
+	var tags = tagString.split(" ");
 
 	if (tags[0] == "") {
 		tags.splice(0,1);
@@ -1543,7 +1502,7 @@ function toggleTag(eingabe, tagname) {
 	}
 
 	eingabe.focus();
-	eingabe.value = addIfNotContained(eingabe, tagname.replace(/^\s+|\s+$/g, '').replace(/ /g,"_"));
+	eingabe.value = addIfNotContained(eingabe.value, tagname.replace(/^\s+|\s+$/g, '').replace(/ /g,"_"));
 }
 
 //add/remove tagname to/from target field 
