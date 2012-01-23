@@ -667,5 +667,16 @@
 		<baseFileName>Chicago.biblio</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>					
+	</layout>
+	<layout name="din1505-2">
+		<displayName>DIN 1505-2</displayName>
+		<description xml:lang="en">HTML output format according to the German Institute for Standardization (DIN).</description>
+		<description xml:lang="de">
+			HTML Ausgabeformat gemäß dem Deutschen Institut für Normung.
+		</description>
+		<directory>DIN1505-2</directory>
+		<baseFileName>din1505-2</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 </layouts>
