@@ -1342,9 +1342,6 @@ function editTags(obj, ckey) {
 	}
 }
 
-String.prototype.startsWith = function(s) { 
-	return this.indexOf(s) == 0; 
-};
 
 
 /**
@@ -1401,7 +1398,7 @@ function addIfNotContained(tagString, tag) {
 	return neuetags.join(" ");
 }
 
-//the old tag toggler: add or remove tagname tagn to/from input field target 
+ 
 function toggleTag(eingabe, tagname) {
 	clear_tags(); // remove getString("navi.tag.hint") 
 
@@ -1424,56 +1421,6 @@ function copytag(target, tagname) {
 	}
 }
 
-/** FUNCTIONS USED IN THE POSTING VIEWS **/
-
-//hide and show the tagsets in the relevant for field
-//FIXME: use jQuery.each()
-function showTagSets(select) {
-	$(select).children("option").each(function() {
-		$("#field_" + $(this).val()).css("display", $(this).selected ? '' : 'none'); // FIXME: how to check for selected forms options? (see also next method)
-	});
-	/*
-	for (var i = 0; i < select.options.length; i++) {
-		var op = select.options[i];
-		var field = document.getElementById("field_" + op.value);
-		if (field != null) {
-			if (op.selected) {
-				field.style.display = '';
-			} else {
-				field.style.display = 'none';
-			}
-		}   
-	}
-	 */
-}
-
-/*
- * check if a group in the relevant for field is selected and 
- * add its name as system tag
- */
-function addSystemTags() {
-	clear_tags();
-	var tags = $("#inpf").val();
-	var relGroup;
-	var systemtags = "";
-	var counter = 0;
-	while (relGroup = $("#relgroup" + counter)) {
-		if (relGroup.attr('selected') == true) { // FIXME: does this work?
-			var value = relGroup.val();
-			// only add the system tag if it does not yet exist in the tag field
-			if (tags.match(":" + value) == null) {
-				systemtags += " " + "sys:relevantFor:" + value;
-			}
-		}
-		counter++;
-	}
-	// if a systemtag was build, add it to the tag field
-	if (systemtags != null) {
-		// add systemtags to the tag field
-		copytag("inpf", systemtags);
-	}
-
-}
 
 //copy a value from a option field to the target
 function copyOptionTags(target, event){
@@ -1842,6 +1789,12 @@ this.imagePreview = function(){
 		$("#preview").css("top",(e.pageY - yOff) + "px").css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px");
 	});		     	      
 };
+
+
+String.prototype.startsWith = function(s) { 
+	return this.indexOf(s) == 0; 
+};
+
 /**
  * starts the preview rendering function
  */
