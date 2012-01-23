@@ -1085,18 +1085,13 @@ function updateRelations (evt, action, concept) {
  * updates the list of relations
  */
 function ajax_updateRelations(data) {
-
 	// remove all relations from list
-	$("#relations").empty(); // FIXME: or clear()?
+	$("#relations").empty();
 
 	// parse XML input
-	var xml = data.documentElement; // FIXME: doesn't work that way with jQuery
+	var xml = data.documentElement; 
 
 	if (xml) {
-		var conceptnames = new Array();					
-
-		var currUser = xml.getAttribute("user");
-
 		// get all relations
 		var requestrelations = xml.getElementsByTagName("relation");
 
@@ -1106,80 +1101,34 @@ function ajax_updateRelations(data) {
 			var rel = requestrelations[x];		    
 			// the upper tag of the relation
 			var upper = rel.getElementsByTagName("upper")[0].firstChild.nodeValue;
-			// new list item for this supertag
-			var rel_item = document.createElement("li");
-			rel_item.className = "box_upperconcept";
-			// store upper tag in array
-			conceptnames.push(upper);
 
-			// add the symbol to hide the relation
-			var linkupperx = document.createElement("a");
-			var linkupperxhref = document.createAttribute("href");
-			linkupperxhref.nodeValue = "/ajax/pickUnpickConcept?action=hide&tag=" + upper + "&ckey=" + ckey;
-			linkupperx.setAttributeNode(linkupperxhref);
-			// changed from 215 (&times;) to 8595 (&darr;)
-			var linkupperxtext = document.createTextNode(String.fromCharCode(8595));
-			linkupperx.appendChild(linkupperxtext);
-			rel_item.appendChild(linkupperx);
-			rel_item.appendChild(document.createTextNode(" "));
+			// new list item for this super tag
+			var rel_item = $(
+					"<li class='box_upperconcept'>" + 
+					"<a onclick='hideConcept(event)' href='/ajax/pickUnpickConcept?action=hide&tag=" + encodeURIComponent(upper) + "&ckey=" + ckey + "'>" + String.fromCharCode(8595) + "</a> " +
+					"<a href='/concept/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(upper) + "'>" + upper + "</a>" +
+					" " + String.fromCharCode(8592) + " " +
+					"</li>"
+			);
 
-			// attach function to onlick event // FIXME: check if works
-			$(linkupperx).click(hideConcept); 
-
-			// add link for upper tag
-			var linkupper = document.createElement("a");
-			var linkupperhref = document.createAttribute("href");
-			linkupperhref.nodeValue = "/concept/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(upper);
-			linkupper.setAttributeNode(linkupperhref);
-			var linkuppertext = document.createTextNode(upper);
-			linkupper.appendChild(linkuppertext);
-			rel_item.appendChild(linkupper);
-
-			// add arrow
-			rel_item.appendChild(document.createTextNode(" " + String.fromCharCode(8592) + " "));
-
-
-			// add lower tags
-			var lowers = rel.getElementsByTagName("lower");
-			var lowerul = document.createElement("ul");
-			lowerul.className = "box_lowerconcept_elements";
-			var lowerulid = document.createAttribute("id");
-			lowerulid.nodeValue = upper;
-			lowerul.setAttributeNode(lowerulid);
+			// add subtags
+			var lowerul = $("<ul id='" + upper + "' class='box_lowerconcept_elements'></ul>");
 
 			// iterate over lower tags
-			// FIXME: implement using jQuery.each()
-			for(y=0; y<lowers.length; y++) {
+			var lowers = rel.getElementsByTagName("lower");
+			for (y = 0; y < lowers.length; y++) {
 				var lower = lowers[y].firstChild.nodeValue;
-
-				// create new list item for lower tag
-				var lowerli = document.createElement("li");
-				lowerli.className = "box_lowerconcept";
-
-				// add link
-				var lowerlink = document.createElement("a");
-				var lowerlinkhref = document.createAttribute("href");
-				lowerlinkhref.nodeValue = "/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(lower);
-				lowerlink.setAttributeNode(lowerlinkhref);
-				var lowerlinktext = document.createTextNode(lower + " ");
-				lowerlink.appendChild(lowerlinktext);
-				lowerli.appendChild(lowerlink);
-
 				// add item
-				lowerul.appendChild(lowerli);
+				lowerul.append("<li class='box_lowerconcept'><a href'/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(lower) + "'>" + lower + "</a> </li>");
 			}
 
 			// append list of lower tags to supertag item
-			rel_item.appendChild(lowerul);
+			rel_item.append(lowerul);
 
 			// insert relations_list for this supertag
 			$("#relations").append(rel_item);
-
-
 		}
-		delete conceptnames;
 	}
-
 } 
 
 
