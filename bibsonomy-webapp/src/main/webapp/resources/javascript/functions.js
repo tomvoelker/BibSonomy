@@ -1,6 +1,5 @@
 var activeField = null;
-var sidebar     = null;
-var tagbox      = null;
+var tagbox      = null; // used in style.js!
 var tags_toggle = 0;
 var ckey        = null;
 var currUser    = null;
@@ -8,47 +7,56 @@ var requUser	= null;
 var projectName = null;
 var pwd_id_postfix = "_form_copy";
 
+/*
+ * functions for cursor position
+ */
 var getPos = null;
 var setPos = null;
+var getSetPos = 0;
+
 
 function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, lckey, lprojectName) {
-  var t = 0;
-  setPos = function(p) {
-	  if(p == null)
-		  return t;
-	  return (t = p);
-  };
-  getPos = function() {
-	  return setPos(null);
-  };
-  add_hints();
-  
-  // add a callback to every input that has the descriptiveLabel class 
-  // so that hints get removed after focussing the input form
-  $('.descriptiveLabel').each(function(){$(this).descrInputLabel({});});
-  
-  sidebar = document.getElementById("sidebar");
-  tagbox  = document.getElementById("tagbox");
-  ckey = lckey;
-  currUser = lcurrUser;
-  
-  if(lrequUser != "") {
-  	requUser = lrequUser;
-  }
-  
-  projectName = lprojectName;
+	/*
+	 * assign functions for cursor position
+	 */
+	setPos = function(p) {
+		if (p == null)
+			return getSetPos;
+		return (getSetPos = p);
+	};
+	getPos = function() {
+		return setPos(null);
+	};
 
-  if (tagbox) {
-    init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
-  }
-  
-  //FIXME: use some other condition, that does not depend on a location's name
-  if (!location.pathname.startsWith("/postPublication") && !location.pathname.startsWith("/postBookmark")){
-	  if (sidebar) {  
-	    init_sidebar();
-	  }
-  }
-  add_tags_toggle();
+	/*
+	 * adds hints for text input fields
+	 */
+	add_hints();
+
+	// add a callback to every input that has the descriptiveLabel class 
+	// so that hints get removed after focussing the input form
+	$('.descriptiveLabel').each(function(){$(this).descrInputLabel({});});
+
+	tagbox  = document.getElementById("tagbox");
+	ckey = lckey;
+	currUser = lcurrUser;
+
+	if(lrequUser != "") {
+		requUser = lrequUser;
+	}
+
+	projectName = lprojectName;
+
+	if (tagbox) {
+		init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
+	}
+
+	//FIXME: use some other condition, that does not depend on a location's name
+	var pathname = location.pathname;
+	if (!pathname.startsWith("/postPublication") && !pathname.startsWith("/postBookmark")){
+		init_sidebar();
+	}
+	add_tags_toggle();
 }
 
 function stopEvt () {
@@ -56,27 +64,17 @@ function stopEvt () {
 }
 
 function init_sidebar() {
-  var childs = sidebar.childNodes;
-  for (var i=0; i < childs.length; i++) {
-    var elem = childs[i];
-    
-    if (elem.nodeName.toUpperCase() == "LI") {
-      for (var j=0; j < elem.childNodes.length; j++) {
-         var elem2 = elem.childNodes[j];
-         if (elem2.className == "sidebar_h" ) {
-            elem2.insertBefore(getToggler(), elem2.firstChild);
-         }      
-      }
-    }
-  }
+	$("#sidebar li .sidebar_h").each(function(index){
+		$(this).before(getToggler()); // FIXME: elem2 = this
+		// elem2.insertBefore(getToggler(), elem2.firstChild);
+	});
 }
 
 function getToggler() {
-  var toggle = document.createElement("span");
-//  var text = document.createTextNode("-");//String.fromCharCode(9830));
   var text = document.createElement("img");
   text.src = "/resources/image/icon_collapse.png";
   text.border = 0;
+  var toggle = document.createElement("span");
   toggle.appendChild(text);
   toggle.className = "toggler";
   toggle.onclick = hideNextList; 
@@ -219,22 +217,18 @@ function add_hints() {
  * @return true if element's valid
  */
 function validElement(el, tagName) {
-	return (el != null && (!tagName || 
-			el.tagName.toUpperCase() == tagName.toUpperCase()));
+	return (el != null && (!tagName || el.tagName.toUpperCase() == tagName.toUpperCase()));
 }
 
-/* if value equals hint clear value when submit button gets pressed */
-function clear_tags () {
-  var tag = document.getElementById("inpf");
-  if (tag.value == getString("navi.tag.hint")) {tag.value='';}
-}
 
-/* sets the focus to the element with the given id */
-function focus(id) {
-  var el = document.getElementById(id);
-  if (el) {
-    el.focus();
-  }
+/**
+ * Clears #inpf if it's value is equal to the tag hint.
+ * 
+ * @return
+ */
+function clear_tags() {
+  var tag = $("#inpf");
+  if (tag.val() == getString("navi.tag.hint")) {tag.val('');}
 }
 
 /*
@@ -267,8 +261,9 @@ function setActiveInputField(id) {
 	
 	activeField = id;
 	
+	// FIXME: dafür gibt's IIRC jQuery.empty() oder clear() für?
 	var sg = document.getElementById("suggested");
-	if(sg){
+	if (sg) {
 		while(sg.hasChildNodes())
 			sg.removeChild(sg.firstChild);
 	}
@@ -279,17 +274,11 @@ function setActiveInputField(id) {
  */
 function toggle(event) {
 	clear_tags(); // remove getString("navi.tag.hint") 
-
-	var tagn = xget_event(event);
-    var tag = tagn.childNodes[0].nodeValue;
-		
-	if(activeField) {
-		var eingabe = document.getElementById(activeField);
-	} else {
-		var eingabe = document.getElementById('inpf');
-	}
-
-	toggleTag(eingabe, tag);
+    
+	toggleTag(
+			document.getElementById(activeField ? activeField : "inpf"), 
+			xget_event(event).childNodes[0].nodeValue
+	);
 }
       
 function add_toggle() {
@@ -298,22 +287,33 @@ function add_toggle() {
 
 function add_tags_toggle() {
   if (tags_toggle == 1) {
-    var links = tagbox.getElementsByTagName("li");
+	  $("#tagbox li a:first").each(function() {
+		  $(this).click(toggle)
+		  .attr("text", $(this).attr("href"))
+		  .attr("href", "") // FIXME: how to remove an attribute?
+		  .css("cursor", "pointer");
+	  });
+/*
+	  var links = tagbox.getElementsByTagName("li");
     for (x=0; x<links.length; x++) {
          var aNode = links[x].getElementsByTagName("a")[0];
          aNode.onclick=toggle;
-         aNode.setAttribute('text',aNode.getAttribute("href"));
+         aNode.setAttribute('text', aNode.getAttribute("href"));
          aNode.removeAttribute("href");
          aNode.style.cursor = "pointer";
-    }
+    }*/
+    
+    // FIXME: does equivalent work?
+    $("#copytag li").click(toggle);
+    /*
     var ul = document.getElementById("copytag");
     if (ul!=null) {
 	    var links = ul.getElementsByTagName("li");
     	for (x=0; x<links.length; x++) {
-	         var aNode = links[x];
-    	     aNode.onclick=toggle;
+    	     links[x].onclick=toggle;
 	    }
 	 }
+	 */
   }
 }
 
@@ -321,14 +321,41 @@ function add_tags_toggle() {
        clickable relations for edit_tags
      * ********************************** */
     function add_toggle_relations() {
-	    var relation_list  = document.getElementById("relations");
+    	/*
+    	 * add toggler for supertags
+    	 */
+    	$("#relations > li a:first").each(function() {
+    		$(this).click(function() {
+    				// FIXME: does "this" exist here?
+    			   	var value = this.childNodes[0].nodeValue;
+    			   	$("#delete_up").val(value);
+    			   	$("#insert_up").val(value);
+    		})
+    		.css("cursor", "pointer")
+    		.attr("title", "add as supertag") // FIXME: I18N
+    		.attr("href", ""); // FIXME: how to remove attribute?
+    	});
+    	/*
+    	 * add toggler for subtags
+    	 */
+    	$("#relations > li ul:first li a:first").each(function() {
+    		$(this).click(function() {
+    			var delete_lo = $("delete_lo");
+    			// FIXME: does "this" exist here? How to access clicked element?
+    			delete_lo.val(addIfNotContained(delete_lo.val(), this.childNodes[0].nodeValue.replace(/ /, "")));
+    			delete_lo.focus();
+    		})
+    		.css("cursor", "pointer")
+    		.attr("title", "add as subtag") // FIXME: I18N
+    		.attr("href", ""); // FIXME: how to remove attribute?
+    	});
+    	/* old code
+    	var relation_list  = document.getElementById("relations");
 	    var relation_items = relation_list.childNodes;
-	    var counter = 0;
 	    // iterate over supertags
     	for (x=0; x<relation_items.length; x++) {
         	var node = relation_items[x];
         	if (node.nodeName == "LI") {
-        	    counter++;
              	// supertag found
         	 	var aNode = node.getElementsByTagName("a")[0];
 		        aNode.onclick = add_supertag_to_input;
@@ -336,8 +363,7 @@ function add_tags_toggle() {
         	 	aNode.style.cursor = "pointer";
         	 	aNode.setAttribute("title", "add as supertag");
         	 	// iterate over subtags
-        	 	var sub_list = relation_items[x].getElementsByTagName("ul")[0];
-        	    var sub_items = sub_list.getElementsByTagName("li");
+        	    var sub_items = node.getElementsByTagName("ul")[0].getElementsByTagName("li");
                 for (y=0;y<sub_items.length; y++) {
 	        		var bNode = sub_items[y].getElementsByTagName("a")[0];
 		        	bNode.onclick = add_subtag_to_input;
@@ -347,89 +373,33 @@ function add_tags_toggle() {
         	 	}
         	}
 	    }
+    	*/
 	}
-	
-	function add_supertag_to_input(event) {
-	   var node  = xget_event(event);
-	   var value = node.childNodes[0].nodeValue;
-	   document.getElementById("delete_up").value = value;
-  	   document.getElementById("insert_up").value = value;
-	}
-	
-	function add_subtag_to_input(event) {
-	  	var node = xget_event(event);
-	  	var value = node.childNodes[0].nodeValue;
-	  	var delete_lo = document.getElementById("delete_lo");
-		
-		// -----------   new -------------------------------------------------
-        value = value.replace(/ /,"");
-		
-        var subtags = delete_lo.value.split(" ");
-
-        if (subtags[0] == "") {
-          subtags.splice(0,1);
-        }
-
-        var drin = 0;
-        var neuetags = new Array();
-
-        for (var i = 0; i < subtags.length; i++) {
-			eintag = subtags[i];
-            if (eintag == value) {
-				drin = 1;
-            } else {
-				neuetags.push(eintag);
-            }
-        } 
-
-        if (!drin) {
-            neuetags.push(value);
-        }
-         
-        var neueeingabe = neuetags.join(" ");
-        delete_lo.value = neueeingabe;
-        delete_lo.focus();
-	}
-	
-	
-	
-
-function set_cookie(name, value) {
-  var now = new Date();
-  var out = new Date(now.getTime() + (1000 * 60 * 60 * 24 * 365));
-  document.cookie = name + "=" + value + "; expires=" + out.toGMTString() + ";";
-}
 
 
 /* returns the node of an event */
 function xget_event (event) {
-  if (!event) event = window.event;
-  if (event.srcElement) {
-    // Internet Explorer1
-	return event.srcElement;
-  } else if (event.target) {
-	// Netscape and Firefox
-	return event.target;
-  }
+	if (!event) event = window.event;
+	if (event.srcElement) {
+		// Internet Explorer
+		return event.srcElement;
+	} else if (event.target) {
+		// Netscape and Firefox
+		return event.target;
+	}
 }
-
- function checkBrowser() {
-  var str_browser = "";
-
+/*
+ * FIXME: still necessary?
+ */
+function checkBrowser() {
 	if (navigator.appName.indexOf("Opera") != -1)	{
-    str_browser = "opera";
-	}
-	else if (navigator.appName.indexOf("Explorer") != -1)	{
-    str_browser = "ie";
-	}
-	else if (navigator.appName.indexOf("Netscape") != -1)	{
-    str_browser = "ns";
-	}
-	else {
-    str_browser = "undefined";
-	}
-
-	return str_browser;
+		return "opera";
+	} else if (navigator.appName.indexOf("Explorer") != -1)	{
+		return "ie";
+	} else if (navigator.appName.indexOf("Netscape") != -1)	{
+		return "ns";
+	} 
+	return "undefined";
 } 
 
     var maxTagFreq = 0;                    // maximal tag frequency in tag cloud
@@ -451,7 +421,7 @@ function xget_event (event) {
 	}
 	
 	function disableHandler() {
-		if(checkBrowser() == "ie" || checkBrowser() == "opera") {
+		if (checkBrowser() == "ie" || checkBrowser() == "opera") {
 			document.onkeydown = document.onkeypress = document.onkeyup;
 		} else {
 			document.onkeydown = document.onkeypress = document.onkeyup = disHandler;
@@ -466,8 +436,7 @@ function xget_event (event) {
 	function disHandler(event) {	}
 	
 	function handler(event) {
-	var inputValue = activeField ? document.getElementById(activeField).value 
-															 : document.getElementById("inpf").value;
+	var inputValue = document.getElementById(activeField ? activeField : "inpf").value;
 
 		var e = (event || window.event || event.shiftkey);
 
@@ -604,13 +573,8 @@ function xget_event (event) {
 		}
 	}
 
-	function switchField(source,target) {
-		if(activeTag != "") {
-			document.getElementById(source).focus();
-		}
-		else if(activeTag == "") {
-			document.getElementById(target).focus();
-		}
+	function switchField(source, target) {
+		document.getElementById(activeTag == "" ? target  : source).focus();
 	}
 	
 	function deleteCache() {
@@ -708,9 +672,9 @@ function xget_event (event) {
 	 * @return -1 if a < label, 0 if a=b, 1 if a>b
 	 */
 	function stringCompare(a, b) {
-		if( a.toLowerCase()<b.toLowerCase() )
+		if (a.toLowerCase() < b.toLowerCase())
 			return -1;
-		else if( a.toLowerCase()==b.toLowerCase() )
+		else if (a.toLowerCase() == b.toLowerCase())
 			return 0;
 		else
 			return 1;
@@ -720,31 +684,21 @@ function xget_event (event) {
 	 * Hier werden die Tags aus der Tagwolke, Copytags und Recommendations in Listen gepackt
 	 */
 	function setOps() {
-		var ul = document.getElementById("tagbox");
-		var rows = new Array();
-		rows = ul.getElementsByTagName("li");
-		for(var i = 0; i < rows.length; ++i) {
-			if(rows[i].getElementsByTagName("a").length < 2) {
-				var tmp = rows[i].getElementsByTagName("a")[0];
-				var tmpData = tmp.firstChild.data.trim();
-				listElements[tmpData] = i;
-				nodeList[tmpData] = tmp;
-				//list[i] = tmpData;	wegen recommending pfeilen
-				list.push(tmpData);
-            } else {
-                var tmp = rows[i].getElementsByTagName("a")[2];
-                var tmpData = tmp.firstChild.data.trim();
-                listElements[tmpData.trim()] = i;
-                nodeList[tmpData] = tmp;
-                list.push(tmpData);
-            }
 		
+		var rows = document.getElementById("tagbox").getElementsByTagName("li");
+		for (var i = 0; i < rows.length; ++i) {
+			var a = rows[i].getElementsByTagName("a");
+			var tmp = a[a.length < 2 ? 0 : 2];
+			var tmpData = tmp.firstChild.data.trim();
+			listElements[tmpData] = i;
+			nodeList[tmpData] = tmp;
+			list.push(tmpData);
 		}
 
-		if(document.getElementById("recommendtag")) {
-			var recomm = document.getElementById("recommendtag");
-			var recommRows = recomm.getElementsByTagName("li");
-			for(var i = 0; i < recommRows.length; ++i) {
+		var recommendedTag = document.getElementById("recommendtag");
+		if (recommendedTag) {
+			var recommRows = recommendedTag.getElementsByTagName("li");
+			for (var i = 0; i < recommRows.length; ++i) {
 				var tmp = recommRows[i].getElementsByTagName("a")[0];
 				var tmpData = tmp.firstChild.data;
 				listElements[tmpData] = rows.length + i;
@@ -754,10 +708,10 @@ function xget_event (event) {
 		}
 		
 		
-		if(document.getElementById("copytag")) {
-			copyTag = document.getElementById("copytag");
-			copyRows = copyTag.getElementsByTagName("li");
-			for(var i = 0; i < copyRows.length; ++i) {
+		var copyTag = document.getElementById("copytag");
+		if (copyTag) {
+			var copyRows = copyTag.getElementsByTagName("li");
+			for (var i = 0; i < copyRows.length; ++i) {
 				copyListElements[copyRows[i].firstChild.data] = i;
 				copyList[copyRows[i].firstChild.data] = copyRows[i];
 			}
@@ -767,15 +721,15 @@ function xget_event (event) {
 	}
 	
 	/*
-	 * Gibt eine Liste aus Tags zur?ck. Bei Relationen werden die Tags gesplittet.
+	 * Gibt eine Liste aus Tags zurück. Bei Relationen werden die Tags gesplittet.
 	 */
 	
 	function getTags(s) {
 		var tmpInput = s.split(" ");
 	 	var input = new Array();
 		
-		if(s.match(/->/) || s.match(/<-/)) {
-			for(i in tmpInput) {
+		if (s.match(/->/) || s.match(/<-/)) {
+			for (i in tmpInput) {
 				if(tmpInput[i].match(/->/)) {
 					var parts = tmpInput[i].split("->");
 					input.push(parts[0]);
@@ -801,23 +755,15 @@ function xget_event (event) {
 	 */
 	
 	function getActiveTag(backspace) {
-		var tmpInput = activeField ? document.getElementById(activeField).value.toLowerCase().split(" ") 
-								: document.getElementById("inpf").value.toLowerCase().split(" ");
+		var input = getTags(document.getElementById(activeField ? activeField : "inpf").value.toLowerCase());
 
-		var inputValue = activeField ? document.getElementById(activeField).value 
-	 								 : document.getElementById("inpf").value;
-
-	 	var input = new Array();
-	 	input = getTags(inputValue);
-
-		for(var n in input) {
-			if(typeof savTag != "undefined") {
-				if(input[n] > savTag[n] && !backspace) {
+		for (var n in input) {
+			if (typeof savTag != "undefined") {
+				if (input[n] > savTag[n] && !backspace) {
 					activeTag = input[n];
 					break;
 				} else if(input[n] < savTag[n] && backspace && input[n] > "") {
 					activeTag = input[n];
-					
 					break;
 				} else {
 					activeTag = "";
@@ -850,8 +796,7 @@ function xget_event (event) {
 		/*
 		 * if the following lines are activated, it's allowed to post duplicates in relations
 		 */
-		var tags = activeField ? document.getElementById(activeField).value.toLowerCase().split(" ")
-												   : document.getElementById("inpf").value.toLowerCase().split(" ");
+		var tags = document.getElementById(activeField ? activeField : "inpf").value.toLowerCase().split(" ");
 							   
 		/*
 		 * if the following lines are activated, it's not allowed to post duplicates in relations.
@@ -993,16 +938,16 @@ function xget_event (event) {
 	}
 
 	function clearSuggestion() {
-
-		var sg = document.getElementById("suggested");
-		
-		if(document.getElementById("copytag")) {
-			for(var i = 0; i < copyRows.length; ++i) {
+		if ($("#copytag")) {
+			for (var i = 0; i < copyRows.length; ++i) {
 				copyRows[i].style.color = "";
 				copyRows[i].style.backgroundColor = "";
 			}
 		}
+
 		
+		// FIXME: jQuery .clear() oder .empty()?!
+		var sg = document.getElementById("suggested");
 		while(sg.hasChildNodes())
 			sg.removeChild(sg.firstChild);
 	}
@@ -1011,15 +956,14 @@ function xget_event (event) {
 	function getRelations(input) {
 		var relList = new Array();
 		
-		for(i in input) {
-			if(input[i].match(/->/)) {
+		for (var i in input) {
+			if (input[i].match(/->/)) {
 				relList.push(1);
 				relList.push(1);
-			} else if(input[i].match(/<-/)) {
+			} else if (input[i].match(/<-/)) {
 				relList.push(2);
 				relList.push(2);
-			}
-			else
+			} else
 				relList.push(0);
 		}
 		
@@ -1031,12 +975,12 @@ function xget_event (event) {
 	 *	mouseclick -> parameter value (tag)
 	 */
 	function completeTag(tag) {
-   		var inpf = activeField ? document.getElementById(activeField)
-							   : document.getElementById("inpf");		
-
-		var tags = getTags(inpf.value);
-		var val_tags = getTags(inpf.value.toLowerCase());
-		var relList = getRelations(inpf.value.split(" "));
+   		var inpf = document.getElementById(activeField ? activeField : "inpf");
+   		var inpfValue = inpf.value;
+   		
+		var tags = getTags(inpfValue);
+		var val_tags = getTags(inpfValue.toLowerCase());
+		var relList = getRelations(inpfValue.split(" "));
 		var tmpTag = "";
 		var mergedList = new Array();
 		var counter = 0;
@@ -1065,18 +1009,18 @@ function xget_event (event) {
 						// FIXME: relations not tested!
 						var target = lookupRecommendedTag(tag);
 						// send clicklog-event
-						if( target!=null )
+						if (target != null)
 							simulateClick(target);
 					}
 					if(!sortedCollection[getPos()]) {
 						reset = false;
 						break;
+						for(var i = 0; i < tags.length; i++) {
 					}
 				}
 			}
 		}
 		if(reset) {
-			for(var i = 0; i < tags.length; i++) {
 				relation = false;
 
 				if(relList[i] == 1) {
@@ -1109,30 +1053,27 @@ function xget_event (event) {
 	}
 	
 /**
- * returns link from tagfield if given tagname was recommended
+ * @returns The link from the tag field, if the given tag name was recommended.
  */
 function lookupRecommendedTag(tag) {
-	var tagField = document.getElementById("tagField");
-	var links = tagField.getElementsByTagName("a");
 	var tag_name = tag.replace(/^\s+|\s+$/g, '');
-	var retVal = null;
 	
+	var links = $("#tagField a"); // FIXME: klappt der Loop?
 	for (var i = 0; i < links.length; i++) {
-		var text = links[i].firstChild.nodeValue.replace(/^\s+|\s+$/g, '');
-		if( tag_name==text ) {
-			retVal = links[i];
-			break;
+		// FIXME: wie lautet das jQuery-Äquivalent zu firstChild?
+		if (tag_name == links[i].firstChild.nodeValue.replace(/^\s+|\s+$/g, '')) {
+			return links[i];
 		}
 	}
-	return retVal;
+	return null;
 }
 
 function simulateClick(target) {
 	var evt;
 	var el = target;
-	if (document.createEvent){
+	if (document.createEvent) {
 		evt = document.createEvent("MouseEvents");
-		if (evt.initMouseEvent){
+		if (evt.initMouseEvent) {
 			evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 		} else {
 			evt = false;
@@ -1141,44 +1082,36 @@ function simulateClick(target) {
 	(evt)? el.dispatchEvent(evt):(el.click && el.click());
 } 
 
+/*
+ * FIXME: wofür werden setButton(), makeParagraph() und makeText() benötigt?
+ * Für die Private Note? 
+ */
 function setButton() {
-	var tNode = document.getElementById("privnote");
 	
-	if(tNode.firstChild) {
-		var div = document.getElementById("note");
-		var button = document.getElementById("makeP");
-
-		div.removeChild(button);
-
-		var newButton = document.createElement("input");
-		newButton.setAttribute("id","makeP");
-		newButton.setAttribute("type","button");
-		newButton.setAttribute("value","update");
-		newButton.setAttribute("onClick","makeParagraph()");
-		div.appendChild(newButton);
+	if (document.getElementById("privnote").firstChild) {
+		$("#makeP").remove();
+		$("#note").append("<input type='button' id='makeP' value='update' onclick='makeParagraph()'/>");
 	}
 }
-
+// FIXME: refactor
 function makeParagraph() {
-	var button = document.getElementById("makeP");
 	var tNode = document.getElementById("privnote");
-	var div = document.getElementById("note");
-	var newParagraph = document.createElement("p");
 	var note = "";
-	
-	if(tNode.firstChild)
+	if (tNode.firstChild) {
 		note = tNode.firstChild.data;
-		
-	var textNode = document.createTextNode(note);
-	newParagraph.setAttribute("id","pText");
-	newParagraph.appendChild(textNode);
+	}
 	
-	if(note != "") {
+	if (note != "") {
 		tNode.style.display = "none";
-		div.appendChild(newParagraph);
+
+		var div = $("#note");
+		div.append("<p id='pText'>" + note + "</p>");
+
+		// FIXME: da wird ein bestehendes Element umgehängt? Geht das?
+		var button = document.getElementById("makeP");
 		button.setAttribute("onClick","makeText()");
 		button.setAttribute("value","edit");
-		div.appendChild(button);
+		div.append(button);
 	}
 }
 
@@ -1187,7 +1120,7 @@ function makeText() {
 
 	$("#note").append("<input type='submit' value='update'/>");	
 	$("#makeP").remove();
-	$("#pText").remove;
+	$("#pText").remove();
 }
 
 function unicodeCollation(ersterWert, zweiterWert){
@@ -1225,25 +1158,6 @@ function unicodeCollation(ersterWert, zweiterWert){
  * AJAX functions
  * ********************************************************/
 
-
-    // this shows or hides a relation by clicking the arrow in the tag cloud
-    function showOrHideConcept(evt, action){
-    	// get concept name
-	    var link = xget_event(evt);
-		var concept = link.parentNode.getElementsByTagName("a")[2].firstChild.nodeValue;
-		// update relation list
-		updateRelations(evt, action, concept);
-	}
-	
-	// removes a relation from the list of shown relations
-    function hideConcept(evt){
-    	// get concept name
-	    var link = xget_event(evt);
-	    var concept = link.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
-	    // update relations list, hide concept
-	    updateRelations(evt, "hide", concept);
-    } 
-    
     // updates the relations in AJAX style TODO: simplify using jQuery
 	function updateRelations (evt, action, concept) {
 		$.ajax({
@@ -1255,32 +1169,24 @@ function unicodeCollation(ersterWert, zweiterWert){
     } 
 
 
-	//	updates the relations list 
+	/*
+	 * updates the list of relations
+	 */
 	function ajax_updateRelations(data) {
 
-		// get surrounding <ul>
-		var relations_list = document.getElementById("relations");
-		var relations  = new Array();
-
-		// remove relations from list
-		for(x=0; x<relations_list.childNodes.length; x++){
-			if(relations_list.childNodes[x].nodeName == "LI")
-				relations.push(relations_list.childNodes[x]);
-		}
-		for(x=0; x<relations.length; x++){
-			relations_list.removeChild(relations[x]);
-		}
-
+		// remove all relations from list
+		$("#relations").empty(); // FIXME: or clear()?
+		
 		// parse XML input
 		var xml = data.documentElement; // FIXME: doesn't work that way with jQuery
-		var conceptnames = new Array();					
 
-		if(xml) {
+		if (xml) {
+			var conceptnames = new Array();					
+
 			var currUser = xml.getAttribute("user");
 
 			// get all relations
 			var requestrelations = xml.getElementsByTagName("relation");
-
 
 			// iterate over the relations
 			for(x=0; x<requestrelations.length; x++){       		    
@@ -1305,8 +1211,13 @@ function unicodeCollation(ersterWert, zweiterWert){
 				rel_item.appendChild(linkupperx);
 				rel_item.appendChild(document.createTextNode(" "));
 
-				// attach function to onlick event
-				$(linkupperx).click(hideconcept); // FIXME: check if works
+				// attach function to onlick event // FIXME: check if works
+				$(linkupperx).click(function() {
+				    // get concept name // FIXME: does "this" in this context work?
+					var concept = this.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
+					// update relations list, hide concept
+					updateRelations(evt, "hide", concept);
+				}); 
 
 				// add link for upper tag
 				var linkupper = document.createElement("a");
@@ -1355,13 +1266,13 @@ function unicodeCollation(ersterWert, zweiterWert){
 				rel_item.appendChild(lowerul);
 
 				// insert relations_list for this supertag
-				relations_list.appendChild(rel_item);
+				$("#relations").append(rel_item);
 
 
 			}
+			delete conceptnames;
 		}
 
-		delete conceptnames;
 	} 
 
 
@@ -1401,11 +1312,10 @@ function unicodeCollation(ersterWert, zweiterWert){
     
     // this picks or unpicks a publication
     function pickUnpickPublication(evt){
-    	// get parameters from URL
-	    var action = xget_event(evt).getAttribute("href").replace(/^.*?\?/, "");
-		
-		// pick/unpick publication
-		updateCollector(action);
+		/*
+		 * pick/unpick publication
+		 */
+		updateCollector(xget_event(evt).getAttribute("href").replace(/^.*?\?/, ""));
 		
 		/*
 		 * decide which page will be processed
@@ -1413,9 +1323,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 		 * -> on other we have to change the pick <-> unpick link (not yet implemented)
 		 */
 		if (location.pathname.startsWith("/basket")) {
-			var li = evt.currentTarget.parentNode.parentNode.parentNode;
-			var parent = li.parentNode;
-			parent.removeChild(li);
+			$(evt.currentTarget.parentNode.parentNode.parentNode).remove(); // XXX: !NEW_LAYOUT! depends on DOM tree
 		
 			document.getElementById("ttlctr").childNodes[0].nodeValue = "(" + document.getElementById("pickctr").childNodes[0].nodeValue + ")";
 		}
@@ -1467,8 +1375,6 @@ function sendEditTags(obj, type, ckey, link) {
 		global :"false",
 		success : function(data) {
 			var parent = obj.parentNode;
-			var nodeText = getString("post.meta.edit");
-			
 			$(obj).parent().children(".help").remove();
 			
 			if (data.trim().length > 0) {
@@ -1495,7 +1401,7 @@ function sendEditTags(obj, type, ckey, link) {
 			edit.setAttribute("tags", tags.trim());
 			edit.setAttribute("href", link);
 			edit.setAttribute("name", hash);
-			edit.appendChild(document.createTextNode(nodeText));
+			edit.appendChild(document.createTextNode(getString("post.meta.edit")));
 			
 			parent.insertBefore(edit, parent.childNodes[targetChild]);
 			parent = parent.parentNode.previousSibling.childNodes[1];
@@ -1570,9 +1476,8 @@ function editTags(obj, ckey) {
 	form.appendChild(input);
 	form.appendChild(hidden);
 	
-	if(type == "bibtex") {
-		var pipe = document.createTextNode(" | ");
-		parent.insertBefore(pipe, parent.childNodes[targetChild]);
+	if (type == "bibtex") {
+		parent.insertBefore(document.createTextNode(" | "), parent.childNodes[targetChild]);
 		parent.insertBefore(details, parent.childNodes[targetChild]);
 		parent.insertBefore(form, parent.childNodes[targetChild]);
 	} else {
@@ -1605,12 +1510,17 @@ function getString( key ) {
 //new functions for adding tags from tag-cloud to a field
 //----------------------------------------------------------------------------
 
-//the old tag toggler: add or remove tagname tagn to/from input field target 
-function toggleTag(target, tagname) {
-	clear_tags(); // remove getString("navi.tag.hint") 
-	var tag     = tagname.replace(/^\s+|\s+$/g, '').replace(/ /g,"_");
-	var eingabe = target;
-	var tags    = eingabe.value.split(" ");
+/**
+ * Given the string of tags tagString, checks if tag is contained. 
+ * If not, the tag is added to the string
+ * 
+ * @param tagString
+ * @param tag
+ * @return
+ * 
+ */
+function addIfNotContained(tagString, tag) {
+	var tags = tagString.value.split(" ");
 
 	if (tags[0] == "") {
 		tags.splice(0,1);
@@ -1620,11 +1530,11 @@ function toggleTag(target, tagname) {
 	var neuetags = new Array();
 
 	for (var i = 0; i < tags.length; i++) {
-		eintag = tags[i];
-		if (eintag == tag) {
+		var eintrag = tags[i];
+		if (eintrag == tag) {
 			drin = 1;
 		} else {
-			neuetags.push(eintag);
+			neuetags.push(eintrag);
 		}
 	}
 
@@ -1632,22 +1542,28 @@ function toggleTag(target, tagname) {
 		neuetags.push(tag);
 	}
 
-	var neueeingabe = neuetags.join(" ");
+	return neuetags.join(" ");
+}
 
+//the old tag toggler: add or remove tagname tagn to/from input field target 
+function toggleTag(eingabe, tagname) {
+	clear_tags(); // remove getString("navi.tag.hint") 
+	
 	activeTag = "";
-	if(sortedCollection) {
+	
+	if (sortedCollection) {
 		sortedCollection[0] = "";
 		clearSuggestion();
 	}
 
 	eingabe.focus();
-	eingabe.value = neueeingabe;
+	eingabe.value = addIfNotContained(eingabe, tagname.replace(/^\s+|\s+$/g, '').replace(/ /g,"_"));
 }
 
-//add/remove tagname to/from target field 
+// add/remove tagname to/from target field 
 function copytag(target, tagname) {
 	var targetNode = document.getElementById(target);
-	if( targetNode ){
+	if (targetNode) {
 		toggleTag(targetNode, tagname);
 	}
 }
@@ -1657,33 +1573,38 @@ function copytag(target, tagname) {
 // hide and show the tagsets in the relevant for field
 // FIXME: use jQuery.each()
 function showTagSets(select) {
-    for (var i = 0; i < select.options.length; i++) {
-      var op = select.options[i];
-      var field = document.getElementById("field_" + op.value);
-      if (field != null) {
-        if (op.selected) {
-          field.style.display = '';
-        } else {
-          field.style.display = 'none';
-        }
-      }   
-    }
+	$(select).children("option").each(function() {
+		$("#field_" + $(this).val()).css("display", $(this).selected ? '' : 'none'); // FIXME: how to check for selected forms options? (see also next method)
+	});
+	/*
+	for (var i = 0; i < select.options.length; i++) {
+		var op = select.options[i];
+		var field = document.getElementById("field_" + op.value);
+		if (field != null) {
+			if (op.selected) {
+				field.style.display = '';
+			} else {
+				field.style.display = 'none';
+			}
+		}   
+	}
+	*/
 }
 
 /*
  * check if a group in the relevant for field is selected and 
- * adds its name to the hidden field "systemtags"
+ * add its name as system tag
  */
 function addSystemTags() {
-	var counter = 0;
 	clear_tags();
 	var tags = $("#inpf").val();
 	var relGroup;
-	var systemtags;
-	while (relGroup = $("#relgroup"+counter)) {
+	var systemtags = "";
+	var counter = 0;
+	while (relGroup = $("#relgroup" + counter)) {
 		if (relGroup.attr('selected') == true) { // FIXME: does this work?
 			var value = relGroup.val();
-			// only write the systemtag if it doesn't exist in the tagfield
+			// only add the system tag if it does not yet exist in the tag field
 			if (tags.match(":" + value) == null) {
 				systemtags += " " + "sys:relevantFor:" + value;
 			}
@@ -1698,16 +1619,9 @@ function addSystemTags() {
 	
 }
 
-//get the value of a node by a windowevent
-function getNodeValueByEvent(event){
-	node = xget_event(event);
-	return node.getAttributeNode("value").value;
-}
-
-//copy a value from a option field to the target
+// copy a value from a option field to the target
 function copyOptionTags(target, event){
-	var value = getNodeValueByEvent(event);
-	copytag(target, value);
+	copytag(target, xget_event(event).getAttributeNode("value").value);
 }
 
 //trim
@@ -1771,28 +1685,25 @@ function switchLogin() {
 }
 
 function prepareErrorBoxes(className) {
-	var el_name = "."+className;
-	$(el_name).each(
-	          function (){
-					if(parseInt($(this).html().length) == 0) {
-						  return true;
-					  }
-					  
-					  $(this).mouseover(function() {
-						    $(this).fadeOut('slow');
-					  });
-				
-				    var first = $(this).children(':first');
-					if (typeof first != undefined && first.attr('id')) {
-				        var id = ("#"+(first.attr('id')).substr(0, (first.attr('id')).length-".errors".length)).replace(/\./g, "\\.");
-				        var copy = $(this);
-				        var callback = function () {copy.fadeOut('slow');};
-				        $(id).keyup(callback).change(callback);
-				      }
-				     if(!$(this).hasClass('initiallyHidden'))
-				    	 $(this).fadeIn("slow");    
-	       	  }
-	);
+	$("." + className).each(function () {
+		if (parseInt($(this).html().length) == 0) {
+			return true;
+		}
+
+		$(this).mouseover(function() {
+			$(this).fadeOut('slow');
+		});
+
+		var first = $(this).children(':first');
+		if (typeof first != undefined && first.attr('id')) {
+			var id = ("#"+(first.attr('id')).substr(0, (first.attr('id')).length-".errors".length)).replace(/\./g, "\\.");
+			var copy = $(this);
+			var callback = function () {copy.fadeOut('slow');};
+			$(id).keyup(callback).change(callback);
+		}
+		if(!$(this).hasClass('initiallyHidden'))
+			$(this).fadeIn("slow");    
+	});
 	// this is a workaround because the tags input element's id is not 'tags.so-and-so' but 'inpf'
 	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});  
 }
@@ -1944,7 +1855,7 @@ $(document).ready(function() {
 				function () {
 					var self = this;
 					var parentForm = getParentForm(self);
-					var inputValue = ((typeof options.valueCallback == 'function')?options.valueCallback:self.value);
+					var inputValue = ((typeof options.valueCallback == 'function') ? options.valueCallback : self.value);
 
        				$(self).bind("focus", function() {
 						if($(self).hasClass( 'descriptiveLabel' )){self.value='';$(self).removeClass( 'descriptiveLabel' );}
@@ -1961,22 +1872,20 @@ $(document).ready(function() {
 })(jQuery);
 
 function overwriteLabel(el) {
-	value = el.val();
-	if ((!value.length 
+	var value = el.val();
+	return ((!value.length 
 			|| value == getString("navi.author.hint") 
 			|| value == getString("navi.tag.hint") 
 			|| value == getString("navi.user.hint") 
 			|| value == getString("navi.group.hint") 
 			|| value == getString("navi.concept.hint") 
   			|| value == getString("navi.bibtexkey.hint")) 
-  			|| (el != null && value == getString("navi.search.hint")))
-	  	return true;
-  	return false;
+  			|| (el != null && value == getString("navi.search.hint")));
 }
 
 function setSearchInputLabel(scope) {
 	var search = $('input[name=search]');
-	if(!overwriteLabel(search))return;
+	if (!overwriteLabel(search)) return;
   		
     var value = scope.value;
     var messageKey = "";
@@ -1991,15 +1900,14 @@ function setSearchInputLabel(scope) {
 		search.val(getString("navi." + messageKey + ".hint"));
 	}
     
-    if (!search.hasClass('descriptiveLabel')) {
-    	search.addClass('descriptiveLabel');
-    }
+	search.addClass('descriptiveLabel');
+    
     return search;
 }
 
 function getParentForm(el) {
-	el = ($(el).parent())[0];
-	return ((validElement(el, 'form'))?el:getParentForm(el)); 
+	el = $(el).parent()[0];
+	return (validElement(el, 'form') ? el : getParentForm(el)); 
 }
 
 function appendToToolbar() {
@@ -2028,28 +1936,29 @@ function appendToToolbar() {
  */
 function concatArray(data, max_len, delim) {
 	var retVal = "";
-	var entry;
-	if(delim == null) {
+	if (delim == null) {
 		delim = "\n";
 	}
-	for(entry in data) {
-		retVal += data[entry] + ((entry < data.length-1)?delim:"");
+	for (var entry in data) {
+		retVal += data[entry] + ((entry < data.length-1) ? delim : "");
 	}
-	return ((max_len != null) && (retVal.length > max_len))?retVal.substr(0, max_len)+"...":retVal;
+	return ((max_len != null) && (retVal.length > max_len)) ? retVal.substr(0, max_len) + "..." : retVal;
 }
 
+/**
+ * Creates the URL parameters for a title search query using the system tag "sys:title"
+ * 
+ * @param title
+ * @return
+ */
 function createParameters(title) {
-	if(title[title.length-1] == " ") {
-		title = title.substr(0, title.length-1);
-	}
-	var partials = title.split(" ");
-	title = "";
-
-	for(i = 0; i < parseInt(partials.length); i++) {
-		title += "sys:title:"+encodeURIComponent(partials[i])+((i+1 < parseInt(partials.length))?"+":"*"); 
+	var parts = title.trim().split(" ");
+	var result = "";
+	for (i = 0; i < parts.length; i++) {
+		result += "sys:title:" + encodeURIComponent(parts[i]) + ((i+1 < parts.length) ? "+" : "*"); 
 	}
 
-	return title;
+	return result;
 }
 
 /*
