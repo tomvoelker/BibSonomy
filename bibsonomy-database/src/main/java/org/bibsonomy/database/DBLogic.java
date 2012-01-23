@@ -2603,6 +2603,9 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = this.openSession();
 		session.beginTransaction();
+		/*
+		 * TODO: Only checking should be done, GoldstandardCreation is the job of the calling Controller
+		 */
 		try {
 			/* 
 			 * first check if gold standard post exists in db
@@ -2618,13 +2621,6 @@ public class DBLogic implements LogicInterface {
 				// FIXME: these lists maybe also contain private posts of the logged in user!
 				List<Post<Bookmark>> bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
 				List<Post<BibTex>> publicationPosts = this.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
-				if (!present(bookmarkPosts) && !present(publicationPosts)) {
-					// try finding all visible Posts for the loginUser
-					bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.USER, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
-					if (!present(bookmarkPosts)) {
-						publicationPosts = this.getPosts(BibTex.class, GroupingEntity.USER, null, Collections.<String>emptyList(), hash, null, null, 0, 1, null);
-					}
-				}
 				/*
 				 * create gold standard
 				 */
