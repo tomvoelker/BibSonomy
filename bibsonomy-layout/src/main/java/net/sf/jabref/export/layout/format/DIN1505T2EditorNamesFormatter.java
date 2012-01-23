@@ -14,12 +14,12 @@ import net.sf.jabref.export.layout.LayoutFormatter;
 public class DIN1505T2EditorNamesFormatter implements LayoutFormatter {
 	
 	public static void main(String[] args) {
-		System.out.println(new DIN1505T2EditorNamesFormatter().format(new DIN1505T2PersonNamesFormatter().format("Barendregt, Wolmet ; Bekker, Mathilde M. ; Speerstra, Mathilde")));
+		System.out.println(new DIN1505T2EditorNamesFormatter().format(new DIN1505T2PersonNamesFormatter().format("Bärendrégt, Wolmet ; Bekker, Mathilde M. ; Speer-stra, Mathilde")));
 	}
 
 	@Override
 	public String format(String arg0) {
-		Matcher m = Pattern.compile("((\\A|\\s)<span style=\"font-variant: small-caps\">[\\w-]+</span>.*?)(\\s;|\\z)").matcher(arg0);
+		Matcher m = Pattern.compile("((\\A|\\s)<span style=\"font-variant: small-caps\">.+?</span>.*?)(\\s;|\\z)").matcher(arg0);
 		while (m.find()) {
 			arg0 = arg0.replace(m.group(), m.group(1) + " (Bearb.)" + m.group(3));
 		}
