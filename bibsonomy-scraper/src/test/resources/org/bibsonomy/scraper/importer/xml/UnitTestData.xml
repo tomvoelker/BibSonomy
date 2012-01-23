@@ -1279,4 +1279,23 @@
 		<BibFile>JAPScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jap.JAPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_212">
+		<TestDescription>URL test for http://pats.atsjournals.org/</TestDescription>
+		<URL>http://pats.atsjournals.org/content/8/6/453.abstract</URL>
+		<BibFile>ATSScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ats.ATSScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_213">
+		<TestDescription>URL test for http://ajrccm.atsjournals.org/</TestDescription>
+		<URL>http://ajrccm.atsjournals.org/content/185/2/152.abstract</URL>
+		<BibFile>ATSScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ats.ATSScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_214">
+		<TestDescription>URL test for http://ajrcmb.atsjournals.org/</TestDescription>
+		<URL>http://ajrcmb.atsjournals.org/content/46/1/23.abstract</URL>
+		<BibFile>ATSScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ats.ATSScraper</Scraper>
+	</URLTest>
+	
 </test:Tests>
