@@ -223,10 +223,15 @@
 	 		</ul>
 
 			<script type="text/javascript">
-				add_toggle();
-	  			disableHandler();
-	  			add_toggle_relations();
-	  			setOps();
+            <![CDATA[
+                     // vanishing error boxes
+                     $(document).ready( function(){
+                    	add_tags_toggle();
+        	  			disableHandler();
+        	  			add_toggle_relations();
+        	  			setOps();
+                     });
+                  ]]> 			
 	 		</script>
 
 		</jsp:attribute>
