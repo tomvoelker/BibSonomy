@@ -250,6 +250,7 @@
 	</select>	
 
 
+	<!--  The query for logged-out users. We use getBookmarkByHashVisibleForLoginUser if the user is logged in -->
 	<select id="getBookmarkByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, b.content_id, t.tag_name, title, description, b.user_name, b.date, 
 		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, t.change_date, <include refid="reviewRatingsRows" />
@@ -266,7 +267,8 @@
 	</select>
 
 
-  <select id="getBookmarkByHashVisibleForLoginUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+  	<!--  The query for logged-in users. We use getBookmarkByHash if the user is logged out -->
+  	<select id="getBookmarkByHashVisibleForLoginUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, b.content_id, t.tag_name, title, description, b.user_name, b.date, 
 		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, t.change_date, <include refid="reviewRatingsRows" />
 		FROM ((SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id, t1.group, t1.change_date
