@@ -266,6 +266,8 @@ function setActiveInputField(id) {
  * on a click they are added to the active input field.  
  *
  * FIXME: click handler not bound :-(
+ * observation during debugging: tags are sorted AFTER this method - so maybe 
+ * it gets broken there? 
  * 
  * @return
  */
@@ -276,12 +278,12 @@ function add_tags_toggle() {
 //			var v = xget_event(event).childNodes[0].nodeValue;
 //			var v = this.childNodes[0].nodeValue;
 //			alert("toggle " + v);
-			
+
 			clear_tags(); // remove getString("navi.tag.hint") 
-//
+
 //			toggleTag(
-//					document.getElementById(activeField ? activeField : "inpf"), 
-//					v
+//			document.getElementById(activeField ? activeField : "inpf"), 
+//			v
 //			);
 		})
 		.removeAttr("href")
@@ -707,7 +709,7 @@ function getTags(s) {
  */
 
 function getActiveTag(backspace) {
-	var input = getTags(document.getElementById(activeField ? activeField : "inpf").value.toLowerCase());
+	var input = getTags(document.getElementById(activeField ? activeField : "inpf").value);
 
 	for (var n in input) {
 		if (typeof savTag != "undefined") {
@@ -960,12 +962,12 @@ function completeTag(tag) {
 				if(!sortedCollection[getPos()]) {
 					reset = false;
 					break;
-					for(var i = 0; i < tags.length; i++) {
-					}
 				}
 			}
 		}
-		if(reset) {
+	}
+	if(reset) {
+		for(var i = 0; i < tags.length; i++) {
 			relation = false;
 
 			if(relList[i] == 1) {
@@ -1001,12 +1003,11 @@ function completeTag(tag) {
  * @returns The link from the tag field, if the given tag name was recommended.
  */
 function lookupRecommendedTag(tag) {
-	var tag_name = tag.replace(/^\s+|\s+$/g, '');
+	var tagName = tag.replace(/^\s+|\s+$/g, '');
 
-	var links = $("#tagField a"); // FIXME: klappt der Loop?
+	var links = $("#tagField a").get();
 	for (var i = 0; i < links.length; i++) {
-		// FIXME: wie lautet das jQuery-Äquivalent zu firstChild?
-		if (tag_name == links[i].firstChild.nodeValue.replace(/^\s+|\s+$/g, '')) {
+		if (tagName == links[i].firstChild.nodeValue.replace(/^\s+|\s+$/g, '')) {
 			return links[i];
 		}
 	}
@@ -1015,7 +1016,6 @@ function lookupRecommendedTag(tag) {
 
 function simulateClick(target) {
 	var evt;
-	var el = target;
 	if (document.createEvent) {
 		evt = document.createEvent("MouseEvents");
 		if (evt.initMouseEvent) {
@@ -1024,49 +1024,8 @@ function simulateClick(target) {
 			evt = false;
 		}
 	}
-	(evt)? el.dispatchEvent(evt):(el.click && el.click());
+	(evt)? target.dispatchEvent(evt):(target.click && target.click());
 } 
-
-/*
- * FIXME: wofür werden setButton(), makeParagraph() und makeText() benötigt?
- * Für die Private Note? 
- */
-function setButton() {
-
-	if (document.getElementById("privnote").firstChild) {
-		$("#makeP").remove();
-		$("#note").append("<input type='button' id='makeP' value='update' onclick='makeParagraph()'/>");
-	}
-}
-//FIXME: refactor
-function makeParagraph() {
-	var tNode = document.getElementById("privnote");
-	var note = "";
-	if (tNode.firstChild) {
-		note = tNode.firstChild.data;
-	}
-
-	if (note != "") {
-		tNode.style.display = "none";
-
-		var div = $("#note");
-		div.append("<p id='pText'>" + note + "</p>");
-
-		// FIXME: da wird ein bestehendes Element umgehängt? Geht das?
-		var button = document.getElementById("makeP");
-		button.setAttribute("onClick","makeText()");
-		button.setAttribute("value","edit");
-		div.append(button);
-	}
-}
-
-function makeText() {
-	$("#privnote").css("display", "inline");
-
-	$("#note").append("<input type='submit' value='update'/>");	
-	$("#makeP").remove();
-	$("#pText").remove();
-}
 
 function unicodeCollation(ersterWert, zweiterWert){
 	var result;
@@ -1095,15 +1054,23 @@ function unicodeCollation(ersterWert, zweiterWert){
 	return result;
 }
 
+// removes a relation from the list of shown relations
+function hideConcept(evt) {
+    var link = xget_event(evt);
+	// get concept name
+    var concept = link.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
+    // update relations list, hide concept
+    updateRelations(evt, "hide", concept);
+} 
 
-
-
-
-/* ********************************************************
- * AJAX functions
- * ********************************************************/
-
-// updates the relations in AJAX style TODO: simplify using jQuery
+/**
+ * updates the user's relations in the sidebar
+ * 
+ * @param evt
+ * @param action
+ * @param concept
+ * @return
+ */
 function updateRelations (evt, action, concept) {
 	$.ajax({
 		url : "/ajax/pickUnpickConcept?action=" + action + "&tag=" + encodeURIComponent(concept) + "&ckey=" + ckey,
@@ -1157,12 +1124,7 @@ function ajax_updateRelations(data) {
 			rel_item.appendChild(document.createTextNode(" "));
 
 			// attach function to onlick event // FIXME: check if works
-			$(linkupperx).click(function() {
-				// get concept name // FIXME: does "this" in this context work?
-				var concept = this.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
-				// update relations list, hide concept
-				updateRelations(evt, "hide", concept);
-			}); 
+			$(linkupperx).click(hideConcept); 
 
 			// add link for upper tag
 			var linkupper = document.createElement("a");
@@ -1255,7 +1217,7 @@ function breakEvent(evt) {
 	}
 }
 
-// this picks or unpicks a publication
+//this picks or unpicks a publication
 function pickUnpickPublication(evt){
 	/*
 	 * pick/unpick publication
@@ -1278,7 +1240,7 @@ function pickUnpickPublication(evt){
 
 
 
-// picks/unpicks publications in AJAX style
+//picks/unpicks publications in AJAX style
 function updateCollector (param) {
 	$.ajax({
 		type: 'POST',
