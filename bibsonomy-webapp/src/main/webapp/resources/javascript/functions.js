@@ -251,20 +251,15 @@ function toggle_required_author_editor () {
 	}
 }
 
-/*
- * Setting the current input Field
- * and clears the suggestions
+/**
+ * Sets the current input field to the given id and clears the suggestions.
+ * 
+ * @param id
+ * @return
  */
 function setActiveInputField(id) {
-
 	activeField = id;
-
-	// FIXME: dafür gibt's IIRC jQuery.empty() oder clear() für?
-	var sg = document.getElementById("suggested");
-	if (sg) {
-		while(sg.hasChildNodes())
-			sg.removeChild(sg.firstChild);
-	}
+	$("#suggested").empty();
 }
 
 /*
@@ -936,18 +931,11 @@ function addToggleChild(sortedCollection) {
 }
 
 function clearSuggestion() {
-	if ($("#copytag")) {
-		for (var i = 0; i < copyRows.length; ++i) {
-			copyRows[i].style.color = "";
-			copyRows[i].style.backgroundColor = "";
-		}
-	}
+	// remove selection
+	$("#copytag a").css("color", "").css("backgroundColor", "");
 
-
-	// FIXME: jQuery .clear() oder .empty()?!
-	var sg = document.getElementById("suggested");
-	while(sg.hasChildNodes())
-		sg.removeChild(sg.firstChild);
+	// remove all child nodes
+	$("#suggested").empty();
 }
 
 
