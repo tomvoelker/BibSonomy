@@ -1297,5 +1297,11 @@
 		<BibFile>ATSScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ats.ATSScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_215">
+		<TestDescription>URL test for http://www.nejm.org/</TestDescription>
+		<URL>http://www.nejm.org/doi/full/10.1056/NEJMra1100109</URL>
+		<BibFile>NEJMScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nejm.NEJMScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
