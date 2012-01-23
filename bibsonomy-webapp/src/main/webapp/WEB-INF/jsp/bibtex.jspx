@@ -15,7 +15,24 @@
 	
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandard}" />
 	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
-			
+
+
+	<c:set var="public" value="${false}"/>
+	<c:choose>
+		<c:when test="${goldstandardPresent }">
+			<c:set var="public" value="${true }"/>
+		</c:when>
+		<c:otherwise>
+			<c:forEach var="group" items="${command.bibtex.list[0].groups}">
+				<c:if test="${group.name eq 'public'}">
+					<c:set var="public" value="${true}"/>
+				</c:if>
+			</c:forEach>
+		</c:otherwise>
+	</c:choose>
+	
+    <input id="publicInput" name="publicInput" value="${public}" type="hidden" />
+
 	<c:if test="${goldstandardPresent}">
 		<c:set var="publication" value="${command.goldStandard.resource}" />
 	</c:if>
