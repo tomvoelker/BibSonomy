@@ -34,6 +34,10 @@ var FRIENDS_GROUP_NAME = 'friends';
 
 var DISCUSSIONITEM_DATA_KEY = 'discussionItemHash';
 
+var PUBLIC_POST_SELECTOR = 'input#publicInput';
+
+var pub = true;
+
 $(function() {	
 	// remove all create review links if user already reviewed resource
 	if ($(REVIEW_OWN_SELECTOR).length > 0) {
@@ -53,7 +57,27 @@ $(function() {
 	$.each($('.abstractGroupingGroup'), function(index, box) {
 		toggleGroupBox(box);
 	});
+	var publicValue = $(PUBLIC_POST_SELECTOR).val();
+	// if there is a publicPost item use it to determine warnings
+	if ((publicValue != undefined) && (publicValue=='false')) {
+		pub = false;
+	}
+	if (!pub) {
+		alert(getString('post.resource.discusssion.warning.goldstandard'));
+	}
+
 });
+
+function hasGoldstandardCreationPermission() {
+	if (!pub) {
+		// we need to ask whether or not a goldstandard is to be created.
+		if (!confirm(getString('post.resource.discusssion.warning.goldstandard.continue'))) {
+			return false;
+		}
+	}
+	return true;
+}
+
 
 function updateDiscussionToggleLink() {
 	var visible = $(DISCUSSION_SELECTOR).is(':visible');

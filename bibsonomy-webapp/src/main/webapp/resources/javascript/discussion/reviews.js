@@ -198,7 +198,11 @@ function createReview() {
 		reviewForm.submit(createReview);
 		return false;
 	}
-	
+	if (!hasGoldstandardCreationPermission()) {
+		// what does that do?
+		reviewForm.submit(createReview);
+		return false;
+	}
 	var spinner = reviewForm.find('.spinner');
 	spinner.show('slow');
 	

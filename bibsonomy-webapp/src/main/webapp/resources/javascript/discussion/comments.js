@@ -114,6 +114,12 @@ function showEditCommentForm() {
 function createComment() {
 	var commentForm = $(this);
 	commentForm.unbind('submit');
+
+	if (!hasGoldstandardCreationPermission()) {
+		// what does that do?
+		commentForm.submit(createComment);
+		return false;
+	}
 	
 	var parentDiv = commentForm.parent('#' + REPLY_FORM_ID);
 	var spinner = commentForm.find('.spinner');
