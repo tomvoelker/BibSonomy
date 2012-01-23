@@ -80,7 +80,7 @@
                 	<!-- SHOW A CONFIRM WINDOW -->
                 	<c:when test="${command.context.loginUser.settings.confirmDelete}">
                     	<a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
-                    		onclick="javascript: return confirmDelete(event);">
+                    		onclick="javascript: return confirmDelete();">
                          		<fmt:message key="bibtex.actions.delete"/>
                       	</a>
                 	</c:when>
@@ -124,7 +124,7 @@
 			   	<!-- SHOW A CONFIRM WINDOW -->
 			   	<c:when test="${command.context.loginUser.settings.confirmDelete}">
 			   		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-			   			onclick="javascript: return confirmDelete(event);">
+			   			onclick="javascript: return confirmDelete();">
 			   			<fmt:message key="bibtex.actions.removeMessage"/>
 			   		</a>
 			   	</c:when>
