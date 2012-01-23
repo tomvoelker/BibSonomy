@@ -14,7 +14,7 @@ import net.sf.jabref.export.layout.LayoutFormatter;
 public class DIN1505T2EditorNamesFormatter implements LayoutFormatter {
 	
 	public static void main(String[] args) {
-		System.out.println(new DIN1505T2EditorNamesFormatter().format(new DIN1505T2PersonNamesFormatter().format("Bärendrégt, Wolmet ; Bekker, Mathilde M. ; Speer-stra, Mathilde")));
+		System.out.println(new DIN1505T2EditorNamesFormatter().format(new DIN1505T2PersonNamesFormatter().format("Brendrgt, Wolmet ; Bekker, Mathilde M. ; Speer-stra, Mathilde")));
 	}
 
 	@Override

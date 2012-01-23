@@ -8,7 +8,7 @@ import net.sf.jabref.export.layout.LayoutFormatter;
 public class DIN1505T2PersonNamesFormatter implements LayoutFormatter {
 	
 	public static void main(String[] args) {
-		System.out.println(new DIN1505T2PersonNamesFormatter().format("Bärendregt, Wolmet ; Bek-kerß, Mathilde M. ; Spéerstra, Mathilde"));
+		System.out.println(new DIN1505T2PersonNamesFormatter().format("Brendregt, Wolmet ; Bek-ker, Mathilde M. ; Sperstra, Mathilde"));
 	}
 
 	@Override
