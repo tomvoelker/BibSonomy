@@ -40,7 +40,7 @@
 		        <c:choose>
 					 SHOW A CONFIRM WINDOW 
 		           	<c:when test="${command.context.loginUser.settings.confirmDelete}">
-		              	 <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" onclick="javascript: return confirmDelete(event);">
+		              	 <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" onclick="javascript: return confirmDelete();">
 		               		<fmt:message key="post.actions.delete"/>
 		                 </a>
 		           	</c:when>
