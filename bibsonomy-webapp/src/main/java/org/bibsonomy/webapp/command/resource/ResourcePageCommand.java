@@ -15,27 +15,6 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;
 	
-	
-	/**
-	 * A variable to state whether or not the posts are public or not.
-	 * In case of private, or otherwise visibility restricted posts we ask for confirmation before we create a goldstandard. For public posts we dont.
-	 */
-	private boolean publicPost = true;
-	
-	/**
-	 * @return whether the posts displayed are public or not
-	 */
-	public boolean isPublicPost() {
-		return this.publicPost;
-	}
-	
-	/**
-	 * @param publicPost
-	 */
-	public void setPublicPost(final boolean publicPost) {
-		this.publicPost = publicPost;
-	}
-
 	private List<DiscussionItem> discussionItems;
 	private Post<R> goldStandard;
 

@@ -5,9 +5,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collections;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
@@ -25,23 +27,23 @@ import org.bibsonomy.webapp.view.Views;
 public abstract class AbstractResourcePageController<R extends Resource> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {
 	private static final String GOLD_STANDARD_USER_NAME = "";
 	private static final int TAG_LIMIT = 1000;
-	
+
 	@Override
 	public ResourcePageCommand<R> instantiateCommand() {
 		return new ResourcePageCommand<R>();
 	}
-	
+
 	@Override
 	public final View workOn(final ResourcePageCommand<R> command) {
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
-		
+
 		/*
 		 * This hash has 33 characters and contains at the first position the
 		 * type of the hash (see SimHash class).
 		 */
 		final String longHash = command.getRequestedHash();
-		
+
 		/*
 		 * if no hash given -> error
 		 */
@@ -54,15 +56,15 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		 */
 		final String requUser = command.getRequestedUser();
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
-		
+
 		return this.workOnResource(command, format, longHash, requUser, groupingEntity);
 	}
-	
+
 	protected String shortHash(final String longHash) {
 		if (!present(longHash) || longHash.length() != 33) {
 			return longHash;
 		}
-		
+
 		return longHash.substring(1);
 	}
 
@@ -73,7 +75,7 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		 */
 		command.setResourcetype(Collections.<Class<? extends Resource>>singleton(this.getResourceClass()));
 		this.handleTagsOnly(command, groupingEntity, requUser, null, null, longHash, TAG_LIMIT, null);
-		
+
 		/*
 		 * The hash without the type of hash identifier at the first position.
 		 * 32 characters long.
@@ -90,7 +92,7 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		 * inter hash.
 		 */
 		String goldHash = shortHash; 
-		
+
 		/*
 		 * retrieve and set the requested resource(s)
 		 * 
@@ -149,12 +151,12 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 			 */
 			command.getListCommand(this.getResourceClass()).setList(Collections.singletonList(post));
 		}
-		
+
 		/*
 		 * post process and sort list (e.g., insert open URL)
 		 */
 		this.postProcessAndSortList(command, this.getResourceClass());
-		
+
 		/*
 		 * We always get the gold standard post from the database - even for
 		 * user's posts - to show a link to it in the sidebar 
@@ -165,14 +167,14 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 			 * get the gold standard
 			 */
 			goldStandard = (Post<R>) this.logic.getPostDetails(goldHash, GOLD_STANDARD_USER_NAME);
-			
+
 			command.setGoldStandard(goldStandard);
 		} catch (final ResourceNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore
 		}
-		
+
 		R firstResource = null;
 		/*
 		 * if gold standard not present and list is empty, send a 404 error.
@@ -182,32 +184,25 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		} else {
 			List<Post<R>> resourceList = command.getListCommand(this.getResourceClass()).getList();
 			if (!present(resourceList)) {
-
 				/*
-				 * No public posts were found => fetch private, group-visible and friend's posts
+				 * We throw a ResourceNotFoundException such that we don't get empty
+				 * resource pages.
 				 */
-				if (GroupingEntity.ALL.equals(groupingEntity)) {
-					this.setList(command, this.getResourceClass(), GroupingEntity.USER, null, null, longHash, null, null, null, entriesPerPage);
-					resourceList = command.getListCommand(this.getResourceClass()).getList();
-					command.setPublicPost(false);
-				}
-				// We use the previously fetched counts as they seem to count all posts including the private ones
-				if (!present(resourceList)) {
-					/*
-					 * We throw a ResourceNotFoundException such that we don't get empty
-					 * resource pages.
-					 */
-					throw new ResourceNotFoundException(shortHash);
+				throw new ResourceNotFoundException(shortHash);
+			}
+			firstResource = resourceList.get(0).getResource();
+			for (Group group: resourceList.get(0).getGroups()) {
+				if (GroupID.PUBLIC.getId()==group.getGroupId()) {
+					System.out.println("equals public");
 				}
 			}
-			firstResource = resourceList.get(0).getResource();			
 		}
-		
+
 		this.endTiming();		
 		return this.handleFormat(command, format, longHash, requUser, groupingEntity, goldHash, goldStandard, firstResource);
 	}
 
-	
+
 	protected View handleFormat(final ResourcePageCommand<R> command, final String format, final String longHash, final String requUser, final GroupingEntity groupingEntity, final String goldHash, final Post<R> goldStandard, final R firstResource) {
 		if ("html".equals(format)) {
 			/*
@@ -223,7 +218,7 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}
 			}
-			
+
 			/*
 			 * the gold standard contains the discussion by default
 			 * if not present we have to retrieve the items here
@@ -263,6 +258,6 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 	protected abstract View getResourcePage();
 
 	protected abstract View getDetailsView();
-	
+
 	protected abstract Class<R> getResourceClass();
 }
