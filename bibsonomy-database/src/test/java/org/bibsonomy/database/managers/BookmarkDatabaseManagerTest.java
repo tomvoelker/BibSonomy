@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -210,18 +211,67 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Override
 	public void testGetPostsByHash() {
-		String requBookmark = "b7aa3a91885e432c6c95bec0145c3968";
-		List<Post<Bookmark>> post = bookmarkDb.getPostsByHash(null, requBookmark, HashID.INTRA_HASH, FRIENDS_GROUP_ID, null, 10, 0, this.dbSession);
-		assertEquals(1, post.size());
+		final String hash1 = "b7aa3a91885e432c6c95bec0145c3968"; // content id 4, users 1, 2 and 3 see it (friends)
+		final String hash2 = "6f372faea7ff92eedf52f597090a6291"; // content id 1, users 1 and 2 see it (groups)
+		final String hash3 = "85ab919107e4cc79b345e996b3c0b097"; // public and friends of user 4 => only user4 sees both
 		
-		// this should test which bookmark will be received (there are two in equal hashes in the test database one with public group one with friend group) 
-		requBookmark = "85ab919107e4cc79b345e996b3c0b097";
-		post = bookmarkDb.getPostsByHash(null, requBookmark, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
-		assertEquals(1, post.size());
+		/*
+		 * Logged out user
+		 */
+		List<Post<Bookmark>> posts = bookmarkDb.getPostsByHash(null, hash3, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
 		
-		requBookmark = "85ab919107e4cc79b345e996b3c0b097";
-		post = bookmarkDb.getPostsByHash(null, requBookmark, HashID.INTRA_HASH, FRIENDS_GROUP_ID, null, 10, 0, this.dbSession);
-		assertEquals(1, post.size());
+		posts = bookmarkDb.getPostsByHash(null, hash1, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
+		assertEquals(0, posts.size());
+		
+		/*
+		 * Logged in user
+		 */
+		Collection<Integer> groupsPublic = new ArrayList<Integer>();
+		groupsPublic.add(PUBLIC_GROUP_ID); // everybody has public group
+		Collection<Integer> groups1 = new ArrayList<Integer>();
+		groups1.add(PUBLIC_GROUP_ID); // everybody has public group
+		groups1.add(3);
+		groups1.add(4);
+		groups1.add(5);
+		Collection<Integer> groups2 = new ArrayList<Integer>();
+		groups2.add(PUBLIC_GROUP_ID); // everybody has public group
+		groups2.add(3);
+		
+		posts = bookmarkDb.getPostsByHash("testuser1", hash1, HashID.INTRA_HASH, INVALID_GROUP_ID, groups1, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		posts = bookmarkDb.getPostsByHash("testuser3", hash1, HashID.INTRA_HASH, INVALID_GROUP_ID, groupsPublic, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		posts = bookmarkDb.getPostsByHash("testuser4", hash1, HashID.INTRA_HASH, INVALID_GROUP_ID, groupsPublic, 10, 0, this.dbSession);
+		assertEquals(0, posts.size());
+
+		posts = bookmarkDb.getPostsByHash("testuser1", hash2, HashID.INTRA_HASH, INVALID_GROUP_ID, groups1, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		posts = bookmarkDb.getPostsByHash("testuser2", hash1, HashID.INTRA_HASH, INVALID_GROUP_ID, groups2, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		posts = bookmarkDb.getPostsByHash("testuser4", hash1, HashID.INTRA_HASH, INVALID_GROUP_ID, groupsPublic, 10, 0, this.dbSession);
+		assertEquals(0, posts.size());
+
+		posts = bookmarkDb.getPostsByHash("testuser1", hash3, HashID.INTRA_HASH, INVALID_GROUP_ID, groups1, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		posts = bookmarkDb.getPostsByHash("testuser4", hash3, HashID.INTRA_HASH, INVALID_GROUP_ID, groupsPublic, 10, 0, this.dbSession);
+		assertEquals(2, posts.size());
+
+		
+		
+		/*
+		 * We do not use such queries currently
+		 */
+		posts = bookmarkDb.getPostsByHash(null, hash3, HashID.INTRA_HASH, FRIENDS_GROUP_ID, null, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+
+	
+	
+		// this should test which bookmarks will be received (there are two in equal hashes in the test database one with public group one with friend group) 
+		posts = bookmarkDb.getPostsByHash(null, hash1, HashID.INTRA_HASH, FRIENDS_GROUP_ID, null, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		
+
 	}
 
 	/**

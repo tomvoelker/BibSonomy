@@ -10,6 +10,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -35,8 +36,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -79,19 +80,92 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Override
 	public void testGetPostsByHash() {
 		printMethod("testGetPostsByHash");
-		final String hash0 = "9abf98937435f05aec3d58b214a2ac58";
-		final String hash1 = "097248439469d8f5a1e7fad6b02cbfcd";
-		final String hash2 = "b77ddd8087ad8856d77c740c8dc2864a";
-		// get post with SIM_HASH0 = hash0
-		final List<Post<BibTex>> posts = publicationDb.getPostsByHash(null, hash0, HashID.SIM_HASH0, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
+		// public post of testuser1
+		final String hash1_0 = "9abf98937435f05aec3d58b214a2ac58";
+		final String hash1_1 = "097248439469d8f5a1e7fad6b02cbfcd";
+		final String hash1_2 = "b77ddd8087ad8856d77c740c8dc2864a";
+		// private post of testuser2
+		final String hash2_0 = "8711751127efb070ee910a5d145a168b";
+		// group visible for group 3 of testuser1
+		final String hash3_0 = "92e8d9c7588eced69419b911b31580ee";
+		// friends of testuser 2 and pub of testuser3
+		final String hash4_0 = "36a19ee7b7923b062a99a6065fe07792";
+		final String hash4_1 = "e2fb0763068b21639c3e36101f64aefe";
+		final String hash4_2 = "b71d5283dc7f4f59f306810e73e9bc9a"; //friends of testuser2, older
+		final String hash4_3 = "891518b4900cd1832d77a0c8ae20dd14"; //public, new
+		/*
+		 * Tests for logged out user
+		 */
+		// get post with SIM_HASH0 = hash1_0
+		List<Post<BibTex>> posts = publicationDb.getPostsByHash(null, hash1_0, HashID.SIM_HASH0, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		assertEquals(1, posts.get(0).getGroups().size());
 		
 		// check inter- and intra hash
-		assertEquals(hash1, posts.get(0).getResource().getInterHash()); 
-		assertEquals(hash2, posts.get(0).getResource().getIntraHash());
-	}
+		assertEquals(hash1_1, posts.get(0).getResource().getInterHash()); 
+		assertEquals(hash1_2, posts.get(0).getResource().getIntraHash());
+		
+		//get post with SIM_HASH0 = hash2_0
+		posts = publicationDb.getPostsByHash(null, hash2_0, HashID.SIM_HASH0, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
+		assertEquals(0, posts.size());
+
+		//get post with SIM_HASH0 = hash3_0
+		posts = publicationDb.getPostsByHash(null, hash3_0, HashID.SIM_HASH0, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
+		assertEquals(0, posts.size());
+		
+		//get post with SIM_HASH0 = hash4_0
+		posts = publicationDb.getPostsByHash(null, hash4_0, HashID.SIM_HASH0, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		
+		/*
+		 * Tests for logged in user
+		 */
+		Collection<Integer> groupsPublic = new ArrayList<Integer>();
+		groupsPublic.add(PUBLIC_GROUP_ID); // everybody has public group
+		Collection<Integer> groups1 = new ArrayList<Integer>();
+		groups1.add(PUBLIC_GROUP_ID); // everybody has public group
+		groups1.add(3);
+		groups1.add(4);
+		groups1.add(5);
+		Collection<Integer> groups2 = new ArrayList<Integer>();
+		groups2.add(PUBLIC_GROUP_ID); // everybody has public group
+		groups2.add(3);
+		
+		//get post with SIM_HASH0 = hash4_0 for testuser1: sees post of friend and public
+		posts = publicationDb.getPostsByHash("testuser1", hash4_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groups1, 10, 0, this.dbSession);
+		assertEquals(2, posts.size());
+		assertEquals(hash4_1, posts.get(0).getResource().getInterHash()); 
+		assertEquals(hash4_3, posts.get(0).getResource().getIntraHash()); // first the younger post
+		assertEquals(hash4_1, posts.get(1).getResource().getInterHash()); 
+		assertEquals(hash4_2, posts.get(1).getResource().getIntraHash()); // first the younger post
+		
+		//get post with SIM_HASH0 = hash4_0 for testuser2: sees own and public
+		posts = publicationDb.getPostsByHash("testuser2", hash4_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groups2, 10, 0, this.dbSession);
+		assertEquals(2, posts.size());
+		
+		//get post with SIM_HASH0 = hash4_0 for testuser3: has no groups, not friend of testuser2 => sees public post
+		posts = publicationDb.getPostsByHash("testuser3", hash4_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groupsPublic, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+
+		//get post with SIM_HASH0 = hash3_0 for testuser2: is in group => sees post
+		posts = publicationDb.getPostsByHash("testuser2", hash3_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groups2, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+
+		//get post with SIM_HASH0 = hash3_0 for testuser3: is not in group => sees nothing
+		posts = publicationDb.getPostsByHash("testuser3", hash3_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groupsPublic, 10, 0, this.dbSession);
+		assertEquals(0, posts.size());
+		
+		//get post with SIM_HASH0 = hash2_0 for testuser1: sees nothing
+		posts = publicationDb.getPostsByHash("testuser1", hash2_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groups1, 10, 0, this.dbSession);
+		assertEquals(0, posts.size());
+
+		//get post with SIM_HASH0 = hash2_0 for testuser2: sees own post
+		posts = publicationDb.getPostsByHash("testuser2", hash2_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groups2, 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+
+		
+		}
 	
 	@Override
 	public void testGetPostsFromInbox() {
