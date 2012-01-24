@@ -72,6 +72,9 @@ function reloadRecommendation() {
 
 
 /**
+ * Activates/shows the tag set corresponding to the group the user clicked on 
+ * (in the "relevant:for" field). 
+ * 
  * @param select
  * @return
  */
@@ -79,38 +82,6 @@ function showTagSets(select) {
 	$(select).children("option").each(function() {
 		$("#field_" + $(this).val()).css("display", $(this).get(0).selected ? '' : 'none');
 	});
-}
-
-/*
- * check if a group in the relevant for field is selected and 
- * add its name as system tag
- * 
- * FIXME: this method is not used (also on current BibSonomy!), which is bad.
- * Therefore, the "sys:relevantFor:group" tag is currently not added when clicking on a group! 
- * 
- */
-function addSystemTags() {
-	clear_tags();
-	var tags = $("#inpf").val();
-	var relGroup;
-	var systemtags = "";
-	var counter = 0;
-	while (relGroup = $("#relgroup" + counter)) {
-		if (relGroup.attr('selected') == true) { // FIXME: does this work?
-			var value = relGroup.val();
-			// only add the system tag if it does not yet exist in the tag field
-			if (tags.match(":" + value) == null) {
-				systemtags += " " + "sys:relevantFor:" + value;
-			}
-		}
-		counter++;
-	}
-	// if a systemtag was build, add it to the tag field
-	if (systemtags != null) {
-		// add systemtags to the tag field
-		copytag("inpf", systemtags);
-	}
-
 }
 
 
