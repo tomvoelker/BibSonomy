@@ -8,6 +8,7 @@
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="anonymous" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="ownDiscussionItem" type="java.lang.Boolean" required="true"/>
 
 	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
 
@@ -26,7 +27,14 @@
 				<span class="${class}er"  itemprop="${authorCreator}" itemscope="itemscope" itemtype="http://schema.org/Person">				
 					<c:choose>
 						<c:when test="${anonymous}">
-							<span itemprop="name"><fmt:message key="post.resource.discussionItem.anonymous" /></span>
+							<c:choose>
+								<c:when test="${ownDiscussionItem}">
+									<span><fmt:message key="post.resource.discussionItem.anonymous"/><c:out value=" ("/><a href="/user/${fn:escapeXml(discussionItem.user.name)}"><fmt:message key="post.resource.discussionItem.you"/></a><c:out value=")"/></span>
+								</c:when>
+								<c:otherwise>
+									<span><fmt:message key="post.resource.discussionItem.anonymous" /></span>
+								</c:otherwise>
+							</c:choose>
 						</c:when>
 						<c:otherwise>
 							<a href="/user/${fn:escapeXml(discussionItem.user.name)}" itemprop="name"><c:out value="${discussionItem.user.name}" /></a>
@@ -38,7 +46,14 @@
 				<span class="${class}er">				
 					<c:choose>
 						<c:when test="${anonymous}">
-							<span><fmt:message key="post.resource.discussionItem.anonymous" /></span>
+							<c:choose>
+								<c:when test="${ownDiscussionItem}">
+									<span><fmt:message key="post.resource.discussionItem.anonymous"/><c:out value=" ("/><a href="/user/${fn:escapeXml(discussionItem.user.name)}"><fmt:message key="post.resource.discussionItem.you"/></a><c:out value=")"/></span>
+								</c:when>
+								<c:otherwise>
+									<span><fmt:message key="post.resource.discussionItem.anonymous" /></span>
+								</c:otherwise>
+							</c:choose>
 						</c:when>
 						<c:otherwise>
 							<a href="/user/${fn:escapeXml(discussionItem.user.name)}"><c:out value="${discussionItem.user.name}" /></a>
