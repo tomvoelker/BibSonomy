@@ -1441,7 +1441,8 @@ function prepareErrorBoxes(className) {
 
 		var first = $(this).children(':first');
 		if (typeof first != undefined && first.attr('id')) {
-			var id = ("#"+(first.attr('id')).substr(0, (first.attr('id')).length-".errors".length)).replace(/\./g, "\\.");
+			var firstId = first.attr('id');
+			var id = ("#" + firstId.substr(0, firstId.length - ".errors".length)).replace(/\./g, "\\.");
 			var copy = $(this);
 			var callback = function () {copy.fadeOut('slow');};
 			$(id).keyup(callback).change(callback);
@@ -1462,27 +1463,6 @@ function prepareErrorBoxes(className) {
  * @return 
  */
 function toggleFieldsetVisibility(el) {
-	/*
-	 * FIXME: check if the jQuery expression for varriable "content" is equivalent to
-	content = getNextByClass(el.parentNode, "");
-
-with
-
-function getNextByClass(match_el, className) {
-	while(match_el != null) {
-		if(match_el.tagName == 'DIV'){
-			if(cmpClass(match_el, className)) {
-				return match_el;
-			}
-		}
-		match_el = match_el.nextSibling;
-	}
-	return null;
-}
-
-FIXME: calling cmpClass() with an empty className ("") should always return FALSE - if (content == null) was always true?
-	 */
-
 	var elp = $(el).parent();
 	var content = elp.next("div");
 	if (content == null) {
@@ -1529,54 +1509,31 @@ $(document).ready(function() {
 			 * add export options form if not already there
 			 */
 			if (!next.hasClass("exportoptions")) {
-				var form = document.createElement("form");
-				form.setAttribute("class", "exportoptions");
-				form.setAttribute("action", elm.getAttribute("href"));
-				form.setAttribute("method", "get");
-				form.style.display = "none";
-
-				var generatedBibtexKeys = document.createElement("input");
-				generatedBibtexKeys.setAttribute("type", "checkbox");
-				generatedBibtexKeys.setAttribute("name", "generatedBibtexKeys");
-				form.appendChild(generatedBibtexKeys);
-				form.appendChild(document.createTextNode(getString("post.resource.generateBibtexKey.export")));
-				form.appendChild(document.createElement("br"));
-
-				var firstLastNames = document.createElement("input");
-				firstLastNames.setAttribute("type", "checkbox");
-				firstLastNames.setAttribute("name", "firstLastNames");
-				form.appendChild(firstLastNames);
-				form.appendChild(document.createTextNode(getString("post.resource.personnames.export")));
-				form.appendChild(document.createElement("br"));
-
-				// different number of posts
-				form.appendChild(document.createTextNode(getString("posts") + ": "));
+				// create form
+				next = $(
+						"<form class='exportoptions' method='get' action='" + $(elm).attr("href") + "' style='display:none'>" +
+						"<input type='checkbox' name='generatedBibtexKeys'/>" + getString("post.resource.generateBibtexKey.export") + "<br/>" +
+						"<input type='checkbox' name='firstLastNames'/>" + getString("post.resource.personnames.export") + "<br/>" +
+						getString("posts") + ": " +
+						"</form>"
+				);
+				
+				// number of posts to be exported
 				var items = new Array(5, 10, 20, 50, 100, 1000);
 				for (var i = 0; i < items.length; i++) {
-					var item = document.createElement("input");
-					item.setAttribute("type", "radio");
-					item.setAttribute("name", "items");
-					item.setAttribute("value", items[i]);
-					form.appendChild(item);
-					form.appendChild(document.createTextNode(items[i] + " "));
+					next.append("<input type='radio' name='items' value='" + items[i] + "'/>" + items[i] + " ");
 				}
 
-				form.appendChild(document.createElement("br"));
-
-				var submit = document.createElement("input");
-				submit.setAttribute("type", "submit");
-				submit.setAttribute("value", getString("export.bibtex.title"));
-				form.appendChild(submit);
+				// submit button
+				next.append("<br/><input type='submit' value='" + getString("export.bibtex.title") + "'/>");
 
 				// insert form after export link
-				$(elm).after(form);
+				$(elm).after(next);
 
 				// close export box by leaving it
-				$(form).mouseleave(function() {
-					$(this).hide("fade", {}, 1000);
+				next.mouseleave(function() {
+					$(this).hide("fade", {}, 500);
 				});
-
-				next = $(form);
 			}
 
 			next.show("fade", {}, 500);
