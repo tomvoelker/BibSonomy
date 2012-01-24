@@ -139,6 +139,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * this field contains the username of the user, who should be added to the group.
 	 */
 	private String addUserToGroup;
+	
+	/**
+	 * login credentials for importing bookmarks
+	 * from delicious
+	 */
+	private String importUsername;
+	private String importPassword;
 
 	/**
 	 * Constructor.
@@ -584,5 +591,21 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setNewSyncServer(SyncService newSyncServer) {
 		this.newSyncServer = newSyncServer;
+	}
+
+	public String getImportUsername() {
+		return this.importUsername;
+	}
+
+	public void setImportUsername(String importUsername) {
+		this.importUsername = importUsername;
+	}
+
+	public String getImportPassword() {
+		return this.importPassword;
+	}
+
+	public void setImportPassword(String importPassword) {
+		this.importPassword = importPassword;
 	}
 }

@@ -112,12 +112,12 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				 */
 				if ("posts".equals(importData)) {
 					final RemoteServiceBookmarkImporter importer = importerFactory.getBookmarkImporter();
-					importer.setCredentials(command.getUserName(), command.getPassWord());
+					importer.setCredentials(command.getImportUsername(), command.getImportPassword());
 					posts = importer.getPosts();
 				} 
 				if ("bundles".equals(importData)) {
 					final RelationImporter relationImporter = importerFactory.getRelationImporter();
-					relationImporter.setCredentials(command.getUserName(), command.getPassWord());
+					relationImporter.setCredentials(command.getImportUsername(), command.getImportPassword());
 					relations = relationImporter.getRelations();
 				} 
 
