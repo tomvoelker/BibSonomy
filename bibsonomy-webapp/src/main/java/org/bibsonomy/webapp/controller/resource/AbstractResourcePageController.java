@@ -5,11 +5,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collections;
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
@@ -25,6 +23,7 @@ import org.bibsonomy.webapp.view.Views;
  * @param <R> the resource of the controller
  */
 public abstract class AbstractResourcePageController<R extends Resource> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {
+	
 	private static final String GOLD_STANDARD_USER_NAME = "";
 	private static final int TAG_LIMIT = 1000;
 
@@ -191,11 +190,6 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 				throw new ResourceNotFoundException(shortHash);
 			}
 			firstResource = resourceList.get(0).getResource();
-			for (Group group: resourceList.get(0).getGroups()) {
-				if (GroupID.PUBLIC.getId()==group.getGroupId()) {
-					System.out.println("equals public");
-				}
-			}
 		}
 
 		this.endTiming();		
