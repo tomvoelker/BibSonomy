@@ -7,6 +7,7 @@ import java.util.Collections;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -113,6 +114,15 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 				// TODO: what exceptions can be thrown?!
 			}
 		}
+		/*
+		 * we have to re-fetch the group details (especially members) here
+		 */
+		groupToUpdate.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupToUpdate.getName(), null, null, null, null, null, 0, 1000));
+		command.setGroup(groupToUpdate);
+		/*
+		 * choose correct tab and return
+		 */
+		command.setSelTab(SettingsViewCommand.GROUP_IDX);
 		return Views.SETTINGSPAGE;
 	}
 
