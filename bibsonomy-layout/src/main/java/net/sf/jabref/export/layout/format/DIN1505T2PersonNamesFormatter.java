@@ -7,14 +7,12 @@ import net.sf.jabref.export.layout.LayoutFormatter;
 
 public class DIN1505T2PersonNamesFormatter implements LayoutFormatter {
 	
-	public static void main(String[] args) {
-		System.out.println(new DIN1505T2PersonNamesFormatter().format("Brendregt, Wolmet ; Bek-ker, Mathilde M. ; Sperstra, Mathilde"));
-	}
+	public static final Pattern PERSON_NAMES_PATTERN = Pattern.compile("(\\A|;\\s)(.+?)(,|\\z)");
 
 	@Override
 	public String format(String arg0) {
 		arg0 = arg0.trim();
-		Matcher m = Pattern.compile("(\\A|;\\s)(.+?)(,|\\z)").matcher(arg0);
+		Matcher m = PERSON_NAMES_PATTERN.matcher(arg0);
 		while (m.find()) {
 			arg0 = arg0.replaceFirst(m.group(), m.group(1) + "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>" + m.group(3));
 		}
