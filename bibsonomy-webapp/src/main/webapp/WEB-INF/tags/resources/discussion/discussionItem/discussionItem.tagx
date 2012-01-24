@@ -13,7 +13,8 @@
 	<c:set var="discussionItemUserName" value="${discussionItem.user.name}" />
 	
 	<c:set var="ownDiscussionItem" value="${loginUser.name eq discussionItemUserName}" />
-	<c:set var="anonymous" value="${discussionItem.anonymous and not ownDiscussionItem}" />
+<!-- 	<c:set var="anonymous" value="${discussionItem.anonymous and not ownDiscussionItem}" /> -->
+	<c:set var="anonymous" value="${discussionItem.anonymous}" />
 	
 	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
 
@@ -38,12 +39,12 @@
 			</c:if>
 
 			<div class="${class} details"  itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
-				<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
+				<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
 			</div>
 		</c:when>
 		<c:otherwise>
 			<div class="${class} details">
-				<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
+				<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
 			</div>
 		</c:otherwise>
 	</c:choose>	
