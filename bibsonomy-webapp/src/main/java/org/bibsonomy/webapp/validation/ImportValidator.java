@@ -27,11 +27,11 @@ public class ImportValidator implements Validator<ImportCommand>{
 		
 		/** look into the for each importType required fields **/
 		if("delicious".equals(command.getImportType())) {
-			if(command.getUserName().length() == 0){
-				errors.rejectValue("userName", "error.field.required");
+			if(command.getImportUsername().length() == 0){
+				errors.rejectValue("importUsername", "error.field.required");
 			}
-			if(command.getPassWord().length() == 0){
-				errors.rejectValue("passWord", "error.field.required");
+			if(command.getImportPassword().length() == 0){
+				errors.rejectValue("importPassword", "error.field.required");
 			}
 		} else if("firefox".equals(command.getImportType())) {
 			if(command.getFile() == null || command.getFile().getSize() == 0){

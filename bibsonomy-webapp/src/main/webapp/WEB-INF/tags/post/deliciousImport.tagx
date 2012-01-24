@@ -19,17 +19,17 @@
 	 		<fieldset class="fsInner" >
 
   				<div class="fsRow">
-						<form:label path="userName" cssClass="fsLabel"><fmt:message key="navi.username"/></form:label>
+						<form:label path="importUsername" cssClass="fsLabel"><fmt:message key="navi.username"/></form:label>
 	    			    <buttons:help message="settings.username.help.delicious"/>
-						<form:input path="userName" cssClass="fsInput fsSmall" />
-                    <div class="dissError"><form:errors path="userName" /></div>
+						<form:input path="importUsername" cssClass="fsInput fsSmall" />
+                    <div class="dissError"><form:errors path="importUsername" /></div>
 				</div>  		
 
   				<div class="fsRow">
-					<form:label path="passWord" cssClass="fsLabel"><fmt:message key="navi.password"/></form:label>
+					<form:label path="importPassword" cssClass="fsLabel"><fmt:message key="navi.password"/></form:label>
     			    <buttons:help message="settings.password.help.delicious"/>
-    				<form:password path="passWord" cssClass="fsInput fsSmall"/>
-                    <div class="dissError"><form:errors path="passWord" /></div>
+    				<form:password path="importPassword" cssClass="fsInput fsSmall"/>
+                    <div class="dissError"><form:errors path="importPassword" /></div>
 				</div>
 	
   				<div class="fsRow">

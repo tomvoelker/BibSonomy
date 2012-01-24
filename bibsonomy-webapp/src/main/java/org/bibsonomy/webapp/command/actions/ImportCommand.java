@@ -20,10 +20,12 @@ public class ImportCommand extends BaseCommand {
 	// TODO: introduce enum
 	private String importType;
 	
-	/** in case of an import from a remote service 
-	 *  userName and passWord are required **/
-	private String userName;
-	private String passWord;
+	/** 
+	 * login credentials for service from which
+	 * bookmarks are imported 
+	 **/
+	private String importUsername;
+	private String importPassword;
 	
 	/** the group: private or public **/
 	private String group;
@@ -76,29 +78,29 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @return the userName, required for importing resources form a remote service
 	 */
-	public String getUserName() {
-		return this.userName;
+	public String getImportUsername() {
+		return this.importUsername;
 	}
 	
 	/**
 	 * @param userName
 	 */
-	public void setUserName(final String userName) {
-		this.userName = userName;
+	public void setImportUsername(final String userName) {
+		this.importUsername = userName;
 	}
 	
 	/**
 	 * @return the user's password
 	 */
-	public String getPassWord() {
-		return this.passWord;
+	public String getImportPassword() {
+		return this.importPassword;
 	}
 	
 	/**
 	 * @param passWord
 	 */
-	public void setPassWord(final String passWord) {
-		this.passWord = passWord;
+	public void setImportPassword(final String passWord) {
+		this.importPassword = passWord;
 	}
 	
 	/**
