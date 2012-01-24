@@ -1029,31 +1029,39 @@ function simulateClick(target) {
 	(evt)? target.dispatchEvent(evt):(target.click && target.click());
 } 
 
-function unicodeCollation(ersterWert, zweiterWert){
-	var result;
-	if(isNaN(ersterWert) == false && isNaN(zweiterWert) == false){
-		result = ersterWert - zweiterWert;// vergleich von 2 Zahlen
-	}else if(isNaN(ersterWert) == false && isNaN(zweiterWert) == true){
-		result = -1;// vergleich erster Wert ist eine Zahl und zweiter Wert ist ein String
-	}else if(isNaN(zweiterWert) == false && isNaN(ersterWert) == true){
-		result = 1;// vergleich zweiter Wert ist eine Zahl und erster Wert ist ein String
-	}else if(ersterWert.toLowerCase() < zweiterWert.toLowerCase()){
-		result = -1;// vergleich zweier Strings
-	}else if(zweiterWert.toLowerCase() < ersterWert.toLowerCase()){
-		result = 1;// vergleich zweier Strings
-	}else if(zweiterWert.toLowerCase() == ersterWert.toLowerCase()){
-		// vergleiche zwei gleiche Strings(im toLower Fall)
-		if(ersterWert < zweiterWert){
-			result = -1;
-		}else if(zweiterWert < ersterWert){
-			result = 1;
-		}else{
-			result = 0;
-		}
-	}else{
-		result = 0;
+/**
+ * Sorts two values
+ * 
+ * @param ersterWert
+ * @param zweiterWert
+ * @return
+ */
+function unicodeCollation(ersterWert, zweiterWert) {
+	if (!isNaN(ersterWert) && !isNaN(zweiterWert)) { // vergleich von 2 Zahlen
+		return ersterWert - zweiterWert;
 	}
-	return result;
+	if (!isNaN(ersterWert) && isNaN(zweiterWert)) { // vergleich erster Wert ist eine Zahl und zweiter Wert ist ein String
+		return -1;
+	}
+	if (!isNaN(zweiterWert) && isNaN(ersterWert)) { // vergleich zweiter Wert ist eine Zahl und erster Wert ist ein String
+		return 1;
+	}
+	if (ersterWert.toLowerCase() < zweiterWert.toLowerCase()) { // vergleich zweier Strings
+		return -1;
+	} 
+	if (zweiterWert.toLowerCase() < ersterWert.toLowerCase()) { // vergleich zweier Strings
+		return 1;
+	}
+	if (zweiterWert.toLowerCase() == ersterWert.toLowerCase()) { // vergleiche zwei gleiche Strings(im toLower Fall)
+		if (ersterWert < zweiterWert) {
+			return -1;
+		} 
+		if (zweiterWert < ersterWert) {
+			return 1;
+		} 
+		return 0;
+	}
+	return 0;
 }
 
 // removes a relation from the list of shown relations
