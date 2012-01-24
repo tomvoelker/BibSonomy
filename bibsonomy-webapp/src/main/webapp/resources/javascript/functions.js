@@ -1546,7 +1546,7 @@ $(document).ready(function() {
 
 
 /**
- * 	removes the light-grey label - if present - after focussing the input
+ * 	removes the light-grey label - if present - after focusing the input
  * 	(before allowing a form to submit we also check if the value equals the hint
  * 	or an empty string on every input field with a 'label') 
  **/
@@ -1555,16 +1555,19 @@ $(document).ready(function() {
 	$.fn.descrInputLabel = function(options) {
 		$(this).each(
 				function () {
-					var self = this;
-					var parentForm = getParentForm(self);
-					var inputValue = ((typeof options.valueCallback == 'function') ? options.valueCallback : self.value);
+					var self = $(this);
+					var inputValue = ((typeof options.valueCallback == 'function') ? options.valueCallback : self.val());
 
-					$(self).bind("focus", function() {
-						if($(self).hasClass( 'descriptiveLabel' )){self.value='';$(self).removeClass( 'descriptiveLabel' );}
+					self.bind("focus", function() {
+						if (self.hasClass('descriptiveLabel')) {
+							self.val('') ;
+							self.removeClass('descriptiveLabel');
+						}
 					});
-					$(parentForm).submit(function() {
-						if($(self).hasClass( 'descriptiveLabel' ) || self.value=='') {
-							$(self).val('').removeClass( 'descriptiveLabel' ).trigger('focus');
+					
+					self.parents("form").submit(function() {
+						if (self.hasClass('descriptiveLabel') || self.val() == '') {
+							self.val('').removeClass( 'descriptiveLabel' ).trigger('focus');
 							return false;
 						}
 					});
@@ -1607,10 +1610,6 @@ function setSearchInputLabel(scope) {
 	return search;
 }
 
-function getParentForm(el) {
-	el = $(el).parent()[0];
-	return (validElement(el, 'form') ? el : getParentForm(el)); 
-}
 
 function appendToToolbar() {
 	var appendA = function(id, title) {return $('<a></a>').attr('id',id).html(title);};
