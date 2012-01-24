@@ -1327,8 +1327,17 @@ function editTags(obj, ckey) {
 	var details = document.createElement("a");
 	details.setAttribute('href', link);
 
-	details.appendChild(document.createTextNode(getString(type + ".actions.details")));
-	details.title = getString(type + ".actions.details.title");
+	/*
+	 * NOTE: don't refactor, otherwise localization (I18N) get's broken, because
+	 * generate_localized_strings.pl does not find the keys for the messages 
+	 */
+	if (type == "bibtex") {
+		details.appendChild(document.createTextNode(getString("bibtex.actions.details")));
+		details.title=getString("bibtex.actions.details.title");
+	} else {
+		details.appendChild(document.createTextNode(getString("bookmark.actions.details")));
+		details.title=getString("bookmark.actions.details.title");
+	}
 
 	// append all the created elements
 	form.appendChild(input);
