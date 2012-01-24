@@ -319,7 +319,7 @@
 	</select>
 
 
-	<!--  The query for logged-in users. We use getBibTexByHash if the user is logged ind -->
+	<!--  The query for logged-in users. We use getBibTexByHash if the user is logged out -->
 	<select id="getBibTexByHashVisibleForLoginUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, b.`group`, g.group_name, <include refid="reviewRatingsRows" />
 		  FROM ((SELECT t1.*  
