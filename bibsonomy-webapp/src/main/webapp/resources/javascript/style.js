@@ -24,11 +24,9 @@ function init_tagbox(show, sort, minfreq, requUser) {
 	if (typeof tagbox_minfreq_style != "undefined") {
 		if (tagbox_minfreq_style == "user") {
 			showUserMinfreq(minfreq, requUser);
-		}
-		else if (tagbox_minfreq_style == "default") {
+		} else if (tagbox_minfreq_style == "default") {
 			showMinfreq();  
-		}
-		else if (tagbox_minfreq_style == "none"){
+		} else if (tagbox_minfreq_style == "none"){
 			// do nothing
 		}
 	}
@@ -48,7 +46,7 @@ function changeTagBox(mode) {
 	if (mode == "list" || mode == "cloud"){
 		tagbox.className = "tag" + mode;
 		style_list.replaceChild(getStyleItem(mode, style_show), style_list.childNodes[1]);
-	} else if(mode == "alph" || mode == "freq") {
+	} else if (mode == "alph" || mode == "freq") {
 		style_list.replaceChild(getStyleItem(mode, style_sort), style_list.childNodes[0]);
 		mode == "alph" ? setTagBoxAlph() : setTagBoxFreq();
 	}
@@ -154,54 +152,39 @@ function showMinfreq() {
 
 
 
-function setTagBoxAlph(){
-	collection_tagname = new Array();
-	collection_li = new Object();
+/**
+ * Sorts the tag cloud in the sidebar alphabetically.
+ * 
+ * Don't try to use jQuery for this, it slows down the code (by a factor of approx. 2).
+ * 
+ * @return
+ */
+function setTagBoxAlph() {
+	var collection_tagname = new Array(); // array of tagnames
+	var collection_li = new Object(); // map tagname -> li
 
 	/* store tagbox */
-	var ultag = document.getElementById("tagbox");
-	var litags = ultag.getElementsByTagName("li");
-	for(x=0; x<litags.length; x++){
-		var tags = litags[x].getElementsByTagName("a");
-		if(tags.length==1){
-			var tagname = tags[0].firstChild.nodeValue;
-			collection_tagname.push(tagname);
-			collection_li[tagname] = litags[x].cloneNode(true);
-		}else if(tags.length>=2){
-			var tagname = tags[2].firstChild.nodeValue;
-			collection_tagname.push(tagname);
-			collection_li[tagname] = litags[x].cloneNode(true);
-		}
+	var tagbox = document.getElementById("tagbox");
+	var litags = tagbox.getElementsByTagName("li");
+	for (x = 0; x < litags.length; x++){
+		var tagname = litags[x].getElementsByTagName("a")[0].firstChild.nodeValue;
+		collection_tagname.push(tagname);
+		collection_li[tagname] = litags[x];//.cloneNode(true); // does new code work in all browsers?
 	}
 
-	/* remove old tagbox */
-	var litagslength = litags.length;
-	for (x=0; x<litags.length; x++) {
-		var taglinks = litags[x].getElementsByTagName("a");
-		var taglinkslength = taglinks.length;
-		for(y=0; y<taglinkslength; y++){
-			litags[x].removeChild(taglinks[0]);
-		}
-	}
-	for (x=0; x<litagslength; x++) {
-		ultag.removeChild(litags[0]);
-	}
+	/* sort tags */
+	collection_tagname.sort(unicodeCollation);
 
 	/* build new tagbox */
-	var space = document.createTextNode(" ");
-	collection_tagname.sort(unicodeCollation);
-	for(x=0; x<collection_tagname.length; x++){
-		/* build new li */
-		var tagname = collection_tagname[x];
-		var newli = collection_li[tagname];
-		newli.appendChild(space.cloneNode(true));
-		ultag.appendChild(newli);
+	for (x = 0; x < collection_tagname.length; x++) {
+		var newli = collection_li[collection_tagname[x]];
+		newli.appendChild(document.createTextNode(" "));
+		tagbox.appendChild(newli);
 	}
 
-	/* aufr?umen */
+	/* clean box */
 	delete collection_tagname;
 	delete collection_li;
-
 }
 
 function setTagBoxFreq(){
