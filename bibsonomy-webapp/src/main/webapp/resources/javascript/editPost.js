@@ -85,6 +85,19 @@ function showTagSets(select) {
 }
 
 
+
+/**
+ * copy a value from an "option" form field to the input field with the target id.
+ * 
+ * @param target
+ * @param event
+ * @return
+ */
+function copyOptionTags(target, event){
+	copytag(target, xget_event(event).getAttributeNode("value").value);
+}
+
+
 /**
  * adds a send-tag handler to the parameter tagbox
  * providing auto-complete functionality by suggesting friends

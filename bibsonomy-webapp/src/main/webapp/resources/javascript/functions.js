@@ -1546,7 +1546,7 @@ $(document).ready(function() {
 
 
 /**
- * 	removes the light-grey label - if present - after focusing the input
+ * 	removes the light-grey label of input form fields - if present - after focusing the input
  * 	(before allowing a form to submit we also check if the value equals the hint
  * 	or an empty string on every input field with a 'label') 
  **/
@@ -1578,14 +1578,14 @@ $(document).ready(function() {
 
 function overwriteLabel(el) {
 	var value = el.val();
-	return ((!value.length 
+	return (!value.length 
 			|| value == getString("navi.author.hint") 
 			|| value == getString("navi.tag.hint") 
 			|| value == getString("navi.user.hint") 
 			|| value == getString("navi.group.hint") 
 			|| value == getString("navi.concept.hint") 
 			|| value == getString("navi.bibtexkey.hint")) 
-			|| (el != null && value == getString("navi.search.hint")));
+			|| (el != null && value == getString("navi.search.hint"));
 }
 
 function setSearchInputLabel(scope) {
@@ -1612,14 +1612,12 @@ function setSearchInputLabel(scope) {
 
 
 function appendToToolbar() {
-	var appendA = function(id, title) {return $('<a></a>').attr('id',id).html(title);};
-	$("#toolbar")
-	.append(
-			$('<div></div>')
-			.attr('id', 'post-toggle')
-			.append((appendA("post-method-isbn", getString("post_bibtex.doi_isbn.isbn"))).addClass('active'))
-			.append(appendA("post-method-manual", getString("post_bibtex.manual.title")))
-			.append($("<div></div>").css({'clear':'both','height':'0'}).html('&nbsp;'))
+	$("#toolbar").append(
+			'<div id="post-toggle">' +
+			'<a id="post-method-isbn" class="active">' + getString("post_bibtex.doi_isbn.isbn") + '</a>' +
+			'<a id="post-method-manual">' + getString("post_bibtex.manual.title") + '</a>' +
+			'<div style="clear:both; height:0;">&nbsp;</div>' + 
+			'</div>'
 	);
 }
 
