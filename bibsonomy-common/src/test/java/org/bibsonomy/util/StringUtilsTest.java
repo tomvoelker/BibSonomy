@@ -259,4 +259,15 @@ public class StringUtilsTest {
 		}
 	}
 	
+	
+	/** test foldToASCII  */
+	@Test
+	public void testFoldToASCII() {
+		final String test1    = "ẴǡḅḉƉƎⓕᵷḩᵻĵⱪĿɱṉỚꝐ⒬ⱤⓈŢɄⱴẄₓʎᶎ0123456789";
+		final String expected = "AabcDEfghIjkLmnOP(q)RSTUvWxyz0123456789";
+		assertEquals(expected, StringUtils.foldToASCII(test1));
+		assertEquals(expected, StringUtils.foldToASCII(expected));
+	}
+	
+	
 }
