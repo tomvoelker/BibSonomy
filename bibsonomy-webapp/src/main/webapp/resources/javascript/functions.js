@@ -227,9 +227,11 @@ function clear_tags() {
 	if (tag.val() == getString("navi.tag.hint")) {tag.val('');}
 }
 
-/*
- * functions to toggle background color for required bibtex fields
- */ 
+/**
+ * toggle background color for required publication fields
+ * 
+ * @return
+ */
 function toggle_required_author_editor () {
 	if (document.post_bibtex.author.value.search(/^\s*$/) == -1) {
 		/* author field not empty */
@@ -250,7 +252,7 @@ function toggle_required_author_editor () {
 }
 
 /**
- * Sets the current input field to the given id and clears the suggestions.
+ * Set the current input field to the given id and clear the suggestions.
  * 
  * @param id
  * @return
@@ -546,7 +548,7 @@ function deleteCache() {
  */
 function populateSuggestionsFromJSON(json) {
 	// if there's no data we don't need to proceed
-	if(parseInt(json.items.length) == 0)
+	if (json.items.length == 0)
 		return;
 	var tagCloud = json.items;
 
@@ -1399,7 +1401,7 @@ function addIfNotContained(tagString, tag) {
 }
 
  
-function toggleTag(eingabe, tagname) {
+function toggleTag(target, tagname) {
 	clear_tags(); // remove getString("navi.tag.hint") 
 
 	activeTag = "";
@@ -1409,11 +1411,17 @@ function toggleTag(eingabe, tagname) {
 		clearSuggestion();
 	}
 
-	eingabe.focus();
-	eingabe.value = addIfNotContained(eingabe.value, tagname.replace(/^\s+|\s+$/g, '').replace(/ /g,"_"));
+	target.focus();
+	target.value = addIfNotContained(target.value, tagname.replace(/^\s+|\s+$/g, '').replace(/ /g,"_"));
 }
 
-//add/remove tagname to/from target field 
+/**
+ * add or remove tag to/from target field
+ * 
+ * @param target
+ * @param tagname
+ * @return
+ */
 function copytag(target, tagname) {
 	var targetNode = document.getElementById(target);
 	if (targetNode) {
@@ -1421,75 +1429,9 @@ function copytag(target, tagname) {
 	}
 }
 
-
-//copy a value from a option field to the target
-function copyOptionTags(target, event){
-	copytag(target, xget_event(event).getAttributeNode("value").value);
-}
-
-//trim
-String.prototype.trim = function () {
-	return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
-};
-
-/** switch between db, ldap, and openid login form */
-/* @param methodsList
- * @param id (optional)
- * @param prefix (optional)
- */ 
-function switchLogin() {
-	var methodsList = "db,openid";
-	var id = null;
-	var prefix="login";
-
-	switch (arguments.length) {
-	case 3:
-		if (arguments[2]!="") prefix = arguments[2];
-	case 2:
-		id = arguments[1];
-	case 1: 
-		if (arguments[0]!="") methodsList = arguments[0]; 
-	}
-
-	// id E {standard, ldap, openid}
-	methods = methodsList.split(",");
-	if (!id) id = methods[0];
-	// if method changes from outside select-element
-	// hole alle options
-	var elSel = document.getElementById(prefix.concat("MethodSelect"));
-
-	// if select element exists
-	if (elSel) {
-		// iterate over all options
-		for (i = 0; i<elSel.length; i++) {
-			// if value of option is equal to id select option, otherwise deselect it
-			if (elSel.options[i].value == id) {
-				elSel.options[i].selected = true;
-			}
-			else
-			{
-				elSel.options[i].selected = false;
-			}
-
-		}					
-	}
-	for (i = 0; i<methods.length; i++) {
-		elementId = prefix.concat(methods[i]);
-
-		if (id == methods[i]) {
-			document.getElementById(elementId).style.display = "block";
-			var elMethod = document.getElementById(prefix.concat("Method").concat(id)); // loginMethoddb, loginMethodldap,...
-			if (elMethod)  { elMethod.value = id; }
-		} else {
-			document.getElementById(elementId).style.display = "none";
-		}
-	}
-
-}
-
 function prepareErrorBoxes(className) {
 	$("." + className).each(function () {
-		if (parseInt($(this).html().length) == 0) {
+		if ($(this).html().length == 0) {
 			return true;
 		}
 
@@ -1791,8 +1733,17 @@ this.imagePreview = function(){
 };
 
 
+/*
+ * overloaded/added methods of the String class
+ * 
+ * XXX: Do we really need this? Seems dangerous.
+ */
 String.prototype.startsWith = function(s) { 
 	return this.indexOf(s) == 0; 
+};
+
+String.prototype.trim = function () {
+	return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
 };
 
 /**
