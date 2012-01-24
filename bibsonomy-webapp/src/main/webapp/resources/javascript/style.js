@@ -166,7 +166,7 @@ function setTagBoxAlph() {
 	/* store tagbox */
 	var tagbox = document.getElementById("tagbox");
 	var litags = tagbox.getElementsByTagName("li");
-	for (x = 0; x < litags.length; x++){
+	for (var x = 0; x < litags.length; x++){
 		var tagname = litags[x].getElementsByTagName("a")[0].firstChild.nodeValue;
 		collection_tagname.push(tagname);
 		collection_li[tagname] = litags[x];//.cloneNode(true); // does new code work in all browsers?
@@ -176,7 +176,7 @@ function setTagBoxAlph() {
 	collection_tagname.sort(unicodeCollation);
 
 	/* build new tagbox */
-	for (x = 0; x < collection_tagname.length; x++) {
+	for (var x = 0; x < collection_tagname.length; x++) {
 		var newli = collection_li[collection_tagname[x]];
 		newli.appendChild(document.createTextNode(" "));
 		tagbox.appendChild(newli);
@@ -187,130 +187,105 @@ function setTagBoxAlph() {
 	delete collection_li;
 }
 
-function setTagBoxFreq(){
-	collection_tagname = new Array();
-	collection_li = new Object();
-	collection_tagposts = new Object();
-	collection_numberofposts = new Array();
+/**
+ * Sorts the tag cloud in the sidebar by frequency.
+ * 
+ * Don't try to use jQuery for this, it slows down the code (by a factor of approx. 2).
+ * 
+ * @return
+ */
+function setTagBoxFreq() {
+	var collection_tagname = new Array();
+	var collection_li = new Object();
+	var collection_tagposts = new Object();
+	var collection_numberofposts = new Array();
 
 	/* store tagbox */
-	var ultag = document.getElementById("tagbox");
-	var litags = ultag.getElementsByTagName("li");
-	for(x=0; x<litags.length; x++){
+	var tagbox = document.getElementById("tagbox");
+	var litags = tagbox.getElementsByTagName("li");
+	for (var x = 0; x < litags.length; x++) {
 		var tags = litags[x].getElementsByTagName("a");		
-		if(tags.length==1){
-			var tagname = tags[0].firstChild.nodeValue;
-			collection_tagname.push(tagname);
-			collection_li[tagname] = litags[x].cloneNode(true);
-			var title = tags[0].getAttribute("title");
-			var titleParts = title.split(" ");
-			var numberofpost = parseInt(titleParts[0]);
-			// var numberofpost = title.substring(0, title.length-6);
-			collection_tagposts[tagname] = numberofpost;
-			var newnumberofposts = true;
-			for(y=0; y<collection_numberofposts.length; y++){
-				if(collection_numberofposts[y] == numberofpost){
-					newnumberofposts = false;
-				}					
-			}
-			if(newnumberofposts){
-				collection_numberofposts.push(numberofpost);
-			}
-		}else if(tags.length>=2){			
-			var tagname = tags[2].firstChild.nodeValue;			
-			collection_tagname.push(tagname);
-			collection_li[tagname] = litags[x].cloneNode(true);
-			var title = tags[2].getAttribute("title");
-			var titleParts = title.split(" ");
-			var numberofpost = parseInt(titleParts[0]);			
-			// var numberofpost = title.substring(0, title.length-6);
-			collection_tagposts[tagname] = numberofpost;
-			var newnumberofposts = true;
-			for(y=0; y<collection_numberofposts.length; y++){
-				if(collection_numberofposts[y] == numberofpost){
-					newnumberofposts = false;
-				}					
-			}
-			if(newnumberofposts){
-				collection_numberofposts.push(numberofpost);
-			}
-		}	
-	}
-	/* remove old tagbox */
-	var litagslength = litags.length;
-	for (x=0; x<litags.length; x++) {
-		var taglinks = litags[x].getElementsByTagName("a");
-		var taglinkslength = taglinks.length;
-		for(y=0; y<taglinkslength; y++){
-			litags[x].removeChild(taglinks[0]);
+		var tagname = tags[0].firstChild.nodeValue;
+		collection_tagname.push(tagname);
+		collection_li[tagname] = litags[x];//.cloneNode(true); //NOTE: does new code work in all browsers?
+		
+		// extract post count
+		var numberofpost = parseInt(tags[0].getAttribute("title").split(" ")[0]);
+		collection_tagposts[tagname] = numberofpost;
+		var newnumberofposts = true;
+		for (y = 0; y < collection_numberofposts.length; y++) {
+			if (collection_numberofposts[y] == numberofpost) {
+				newnumberofposts = false;
+			}					
+		}
+		// remember post count
+		if (newnumberofposts) {
+			collection_numberofposts.push(numberofpost);
 		}
 	}
-	for (x=0; x<litagslength; x++) {
-		ultag.removeChild(litags[0]);
-	}
 
+	/* sort by number of posts (descending) */ 
+	collection_numberofposts.sort(unicodeCollation).reverse();
+	
 	/* build new tagbox */
-	collection_numberofposts.sort(unicodeCollation);
-	collection_numberofposts.reverse();//von gro? nach klein
-	for(x=0; x<collection_numberofposts.length; x++){
+	for (var x = 0; x < collection_numberofposts.length; x++){
 		var tags = new Array();
-		for(y=0; y<collection_tagname.length; y++){
+		for (var y = 0; y < collection_tagname.length; y++){
 			var tagname = collection_tagname[y];
-			if(collection_tagposts[tagname] == collection_numberofposts[x]){
+			if (collection_tagposts[tagname] == collection_numberofposts[x]) {
 				tags.push(tagname);
 			}
 		}
+		// sort tags with the same number of posts alphabetically
 		tags.sort(unicodeCollation);
-		var space = document.createTextNode(" ");
-		for(y=0; y<tags.length; y++){
-			/* build new li */
-			var tagname = tags[y];
-			var newli = collection_li[tagname];
-			newli.appendChild(space.cloneNode(true));
-			ultag.appendChild(newli);
+		for(var y = 0; y < tags.length; y++) {
+			var newli = collection_li[tags[y]];
+			newli.appendChild(document.createTextNode(" "));
+			tagbox.appendChild(newli);
 		}
 		delete tags;
 	}
 
-	/* aufr?umen */	
+	/* clean up */	
 	delete collection_tagname;
 	delete collection_li;
 	delete collection_tagposts;
 	delete collection_numberofposts;
+	
 }
 
-// FIXME: check, if method still works
-// FIXME: removed ckey from request, should not be necessary any longer - check!
+//FIXME: check, if method still works
+//FIXME: removed ckey from request, should not be necessary any longer - check!
 function sendMinfreqRequ(minfreq, currUser) {
 	if (minfreq == null) minfreq = 1;
 	userMinFreq = minfreq;
 
 	$.ajax({
-			url : "?tagcloud.minFreq=" + minfreq + "&tagstype=default&format=tagcloud",
-			success : function (data) {
-				/*
-				 * replace the tags
-				 * XXX: depends on DOM tree !NEW_LAYOUT!
-				 */
-				// ensure that we look in the correct list (the tagCloud / list)
-				var start = data.indexOf("<li class=\"tag");
-				var end = data.indexOf("</ul>", start);
-		
-				tagbox.innerHTML = data.slice(start, end); // FIXME: use jQuery to insert
-				
-				var sListStartTag = "<span>";
-				start = data.indexOf(sListStartTag) + sListStartTag.length;
-				end = data.indexOf("</span>", start);
-		
-				// re-order tags
-				if (data.slice(start, end) == "ALPHA") {
-					setTagBoxAlph();
-				} else{
-					setTagBoxFreq();
-				}
-			},
-			dataType : "text"
-		});
+		url : "?tagcloud.minFreq=" + minfreq + "&tagstype=default&format=tagcloud",
+		dataType : "text",
+		success : function (data) {
+			/*
+			 * replace the tags
+			 * XXX: depends on DOM tree !NEW_LAYOUT!
+			 */
+			// ensure that we look in the correct list (the tagCloud / list)
+			var start = data.indexOf("<li class=\"tag");
+			var end = data.indexOf("</ul>", start);
+	
+			tagbox.innerHTML = data.slice(start, end); // FIXME: use jQuery to insert
+	
+			var sListStartTag = "<span>";
+			start = data.indexOf(sListStartTag) + sListStartTag.length;
+			end = data.indexOf("</span>", start);
+	
+			// re-order tags
+			if (data.slice(start, end) == "ALPHA") {
+				setTagBoxAlph();
+			} else{
+				setTagBoxFreq();
+			}
+		}
+	});
 }
 
 function minUsertags(minfreq) {
@@ -320,7 +295,16 @@ function minUsertags(minfreq) {
 
 var gOptions = new Array();
 
-//switches page default path to full navigation path
+
+/**
+ * 
+ * switches page default path to full navigation path
+ * 
+ * XXX: !NEW_LAYOUT! das dürfte komplett neugeschrieben werden müssen. :-(
+ * 
+ * @param target
+ * @return
+ */
 function naviSwitchSpecial(target) {
 
 	var username = null;
@@ -457,7 +441,7 @@ function naviSwitchSpecial(target) {
 		var iV = document.getElementById("inpf").value;
 		iN.value = iV;
 	}
-	
+
 	fN.appendChild(iN);
 	headlineNode.appendChild(fN);
 	headlineNode.appendChild(document.createTextNode(" "));
@@ -467,10 +451,10 @@ function naviSwitchSpecial(target) {
 	// display new path element
 	bar.replaceChild(headlineNode, document.getElementById("heading"));
 	headlineNode.id="heading";
-	 
+
 	$(iN).descrInputLabel({});
 	$(sN).bind('change', function(){setSearchInputLabel(this);}).trigger('change');
-	
+
 	// set focus to the input field
 	iN.focus();
 
