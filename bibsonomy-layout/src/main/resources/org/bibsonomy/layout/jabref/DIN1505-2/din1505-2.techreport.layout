@@ -1,3 +1,4 @@
+<div style="margin-bottom:1em">
 \format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}
 ; <span style="font-variant: small-caps">\institution</span> (Hrsg.):
 <i>\title</i>\begin{number}.
@@ -5,3 +6,4 @@
 \address\end{address},
 \year\begin{note}. -
 \note\end{note}
+</div>

@@ -1,3 +1,4 @@
+<div style="margin-bottom:1em">
 \format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\begin{editor}
 ; \format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
 \title\begin{volume}.
@@ -11,3 +12,4 @@ In: <i>\booktitle</i>\begin{address}.
 \note\end{note}\begin{isbn}. - ISBN
 \isbn\end{isbn}\begin{pages},
 S. \pages\end{pages}
+</div>
