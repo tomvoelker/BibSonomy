@@ -200,9 +200,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns true if the user is in the group otherwise false.
 	 */
 	private boolean isUserInGroup(final String username, final String groupname, final DBSession session) {
-		if ( username != null && username.equalsIgnoreCase(groupname) ) {
-			return true;
-		} 
 		final List<Group> userGroups = this.getGroupsForUser(username, session);
 		for (final Group group : userGroups) {
 			if (groupname.equals(group.getName())) return true;
