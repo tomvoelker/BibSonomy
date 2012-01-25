@@ -46,9 +46,12 @@ public class LogicInterfaceHelper {
 	 * @param end
 	 * @return - the filled parameter object
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final Order order, final int start, final int end) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, final Order order, int start, final int end) {
 		final T param = getParam(type);
-
+		
+		if (start < 0) {
+			start = 0;
+		}
 		param.setOrder(order);
 		param.setOffset(start);
 		if (end - start < 0) {
