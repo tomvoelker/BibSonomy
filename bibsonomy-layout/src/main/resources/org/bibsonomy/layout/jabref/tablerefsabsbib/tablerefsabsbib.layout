@@ -1,6 +1,6 @@
 <tr id="\format{\bibtexkey}" class="entry">
 	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars]{\author}</td>
-	<td>\format[HTMLChars]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
+	<td>\format[Replace(\n, ),HTMLChars]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
 	<td>\year</td>
 	<td>\format[HTMLChars]{\journal}\format[HTMLChars]{\booktitle}\begin{school}<i>School</i>: \format[HTMLChars]{\school}\end{school} &nbsp;</td>
 	<td>\format[ToLowerCase]{\bibtextype}</td>
