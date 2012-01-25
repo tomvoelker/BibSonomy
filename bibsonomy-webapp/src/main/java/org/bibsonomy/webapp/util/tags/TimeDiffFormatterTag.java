@@ -5,16 +5,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.JspTagException;
 
 import org.springframework.context.MessageSource;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 /**
  * A JSP tag that prints the formatted time difference between two dates.
@@ -22,41 +17,38 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author rja
  * @version $Id$
  */
-public class TimeDiffFormatterTag extends TagSupport {
+public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	private static final long serialVersionUID = 8006189027834637063L;
 	
-	// TODO: move
-	private static final String SERVLET_CONTEXT_PATH = "org.springframework.web.servlet.FrameworkServlet.CONTEXT.bibsonomy2";
-
 	private Date startDate;
 	private Date endDate;
-	private Locale locale;
 
+	
 	@Override
-	public int doStartTag() throws JspException {
+	protected int doStartTagInternal() throws Exception {
 		try {
-			this.pageContext.getOut().print(getDateDiff(this.startDate, present(this.endDate) ? this.endDate : new Date(), this.locale));
+			this.pageContext.getOut().print(formatTimeDiff(this.startDate, present(this.endDate) ? this.endDate : new Date(), getLocale(), getMessageSource()));
 		} catch (final IOException ex) {
-			throw new JspException("Error: IOException while writing to client" + ex.getMessage());
+			throw new JspTagException("Error: IOException while writing to client" + ex.getMessage());
 		}
-		
-		return super.doStartTag();
+		return SKIP_BODY;
 	}
 
+	
 	/**
-	 * @return the configured jabref layout renderer in bibsonomy2-servlet.xml
-	 * this requires the {@link ContextLoader} configured in web.xml
-	 * 
-	 * FIXME: check if this can be done in a static way (such that the message source is only retrieved once).
+	 * Use the current RequestContext's application context as MessageSource.
 	 */
 	private MessageSource getMessageSource() {
-		final ServletContext servletContext = this.pageContext.getServletContext();
-        final WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(servletContext, SERVLET_CONTEXT_PATH);
-        final Map<String, MessageSource> messageSources = ctx.getBeansOfType(MessageSource.class);
-        
-        return messageSources.values().iterator().next();
+		return getRequestContext().getMessageSource();
 	}
+
 	
+	/**
+	 * Use the current RequestContext's application context as MessageSource.
+	 */
+	private Locale getLocale() {
+		return getRequestContext().getLocale();
+	}
 	
 	/**
 	 * Formats the difference between the given date and the current date using
@@ -67,9 +59,10 @@ public class TimeDiffFormatterTag extends TagSupport {
 	 * @param startDate
 	 * @param endDate 
 	 * @param locale
+	 * @param messageSource 
 	 * @return The formatted time difference. 
 	 */
-	public static String getDateDiff(final Date startDate, final Date endDate, final Locale locale) {
+	protected static String formatTimeDiff(final Date startDate, final Date endDate, final Locale locale, final MessageSource messageSource) {
 		/*
 		 * time between now and the given date
 		 */
@@ -120,7 +113,7 @@ public class TimeDiffFormatterTag extends TagSupport {
 	        } else {
 	            sb.append(days + " days");
 	        }
-	        if (days <= 3 && hrs > 0) {
+	        if (days <= 3 && hrs > 0) {		
 	            if (hrs == 1) {
 	                sb.append(" and an hour");
 	            } else {
@@ -159,16 +152,20 @@ public class TimeDiffFormatterTag extends TagSupport {
 		return sb.toString(); 
 	}
 
+	/**
+	 * @param startDate
+	 */
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
+	/**
+	 * If not given, the current date is used. 
+	 * 
+	 * @param endDate
+	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
-	
 }
