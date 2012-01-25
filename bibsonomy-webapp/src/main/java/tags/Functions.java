@@ -581,6 +581,7 @@ public class Functions  {
 	 * the locale. Only the largest part of the time difference is returned.
 	 * 
 	 * FIXME: I18N missing
+	 * FIXME: move into tag  
 	 * 
 	 * @param date
 	 * @param locale
