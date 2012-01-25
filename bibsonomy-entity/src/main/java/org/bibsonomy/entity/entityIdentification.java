@@ -91,15 +91,26 @@ public class entityIdentification {
 			     sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
 			     
 				 List<Integer> lastAuthorWithThisNameInsertedAuthorId = null;
-				 lastAuthorWithThisNameInsertedAuthorId = sessionRkr.selectList("org.mybatis.example.Entity-Identification.countAuthorsByName", authorName);	 
+				 lastAuthorWithThisNameInsertedAuthorId = sessionRkr.selectList("org.mybatis.example.Entity-Identification.lastIDInsertAuthor", authorName);	 
 				 
+				 boolean firstInsert = true;
+				 List<Integer> listID = null;
 				 for (PersonName coAuthor: allAuthorNamesOfOnePublication) { //add the coauthors to a table
 					 if (!coAuthor.equals(author)) {
 						 HashMap<String,String> coAuthorParameter = new HashMap<String,String>();
 						 coAuthorParameter.put("normalizedName", normalizePerson(coAuthor));
-						 coAuthorParameter.put("authorID", lastAuthorWithThisNameInsertedAuthorId.get(0) + "");
+						 coAuthorParameter.put("authorID", 1 + "");
 						 
-						 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", coAuthorParameter);
+						 if (firstInsert) {
+							 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertFirstCoAuthor", coAuthorParameter);
+							 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertFirstCoAuthor2", coAuthorParameter);
+							 listID = sessionRkr.selectList("org.mybatis.example.Entity-Identification.lastInsertID");	 
+							 firstInsert = false;	 
+						 }
+						 else {
+							 coAuthorParameter.put("listID", listID.get(0) + "");
+							 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthor", coAuthorParameter);
+						 }
 					 }
 				 }
 			}
