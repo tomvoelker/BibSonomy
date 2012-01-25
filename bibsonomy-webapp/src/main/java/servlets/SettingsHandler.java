@@ -144,10 +144,7 @@ public class SettingsHandler extends HttpServlet{
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();						
 						// log bookmark
-						/*
-						 * FIXME: this statement forgets to insert some columns which are defined to be NOT NULL and thus breaks this functionality!
-						 */
-						stmtP = conn.prepareStatement("INSERT INTO log_bookmark (content_id, `group`, user_name) SELECT content_id, `group`, user_name FROM bookmark WHERE user_name = ? AND `group` = ?");
+						stmtP = conn.prepareStatement("INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name, change_date, rating) SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, user_name, change_date, rating FROM bookmark WHERE user_name = ? AND `group` = ?");
 						stmtP.setString(1, friend);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();												
