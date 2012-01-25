@@ -20,9 +20,13 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
 public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	private static final long serialVersionUID = 8006189027834637063L;
 	
+	/**
+	 * Common message code prefix used for all messages.
+	 */
+	private static final String MESSAGE_PREFIX = "time.";
+	
 	private Date startDate;
 	private Date endDate;
-
 	
 	@Override
 	protected int doStartTagInternal() throws Exception {
@@ -63,16 +67,15 @@ public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	 * @return The formatted time difference. 
 	 */
 	protected static String formatTimeDiff(final Date startDate, final Date endDate, final Locale locale, final MessageSource messageSource) {
+
+	    /*
+	     * based on http://stackoverflow.com/questions/635935/how-can-i-calculate-a-time-span-in-java-and-format-the-output
+	     */
+		final long endDateTime = endDate.getTime();
+
 		/*
 		 * time between now and the given date
 		 */
-		
-	    final StringBuffer sb = new StringBuffer();
-
-	    /*
-	     * source: http://stackoverflow.com/questions/635935/how-can-i-calculate-a-time-span-in-java-and-format-the-output
-	     */
-		final long endDateTime = endDate.getTime();
 		long diffInSeconds = (endDateTime - startDate.getTime()) / 1000;
 	    final long sec    = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
 	    final long min    = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
@@ -81,75 +84,95 @@ public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	    final long months = (diffInSeconds = (diffInSeconds / 30)) >= 12 ? diffInSeconds % 12 : diffInSeconds;
 	    final long years  = (diffInSeconds = (diffInSeconds / 12));
 
+	    /*
+	     * holds the resulting message key
+	     */
+	    final StringBuffer sb = new StringBuffer(getMessage("prefix", null, locale, messageSource));
 	    if (years > 0) {
 	        if (years == 1) {
-	            sb.append("a year");
+	            sb.append(getMessage("a_year", null, locale, messageSource)); // "a year"
 	        } else {
-	            sb.append(years + " years");
+	            sb.append(getMessage("x_years", years, locale, messageSource)); // years + " years"
 	        }
 	        if (years <= 6 && months > 0) {
+	        	sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
 	            if (months == 1) {
-	                sb.append(" and a month");
+	                sb.append(getMessage("a_month", null, locale, messageSource)); // "a month"
 	            } else {
-	                sb.append(" and " + months + " months");
+	                sb.append(getMessage("x_months", months, locale, messageSource)); // months + " months"
 	            }
 	        }
 	    } else if (months > 0) {
 	        if (months == 1) {
-	            sb.append("a month");
+	            sb.append(getMessage("a_month", null, locale, messageSource)); // "a month"
 	        } else {
-	            sb.append(months + " months");
+	            sb.append(getMessage("x_months", months, locale, messageSource)); // months + " months"
 	        }
 	        if (months <= 6 && days > 0) {
+	        	sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
 	            if (days == 1) {
-	                sb.append(" and a day");
+	                sb.append(getMessage("a_day", null, locale, messageSource)); // "a day"
 	            } else {
-	                sb.append(" and " + days + " days");
+	                sb.append(getMessage("x_days", days, locale, messageSource)); // days + " days"
 	            }
 	        }
 	    } else if (days > 0) {
 	        if (days == 1) {
-	            sb.append("a day");
+	            sb.append(getMessage("a_day", null, locale, messageSource)); // "a day"
 	        } else {
-	            sb.append(days + " days");
+	            sb.append(getMessage("x_days", days, locale, messageSource)); // days + " days"
 	        }
 	        if (days <= 3 && hrs > 0) {		
+	        	sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
 	            if (hrs == 1) {
-	                sb.append(" and an hour");
+	                sb.append(getMessage("an_hour", null, locale, messageSource)); // "an hour"
 	            } else {
-	                sb.append(" and " + hrs + " hours");
+	                sb.append(getMessage("x_hours", hrs, locale, messageSource)); // hrs + " hours"
 	            }
 	        }
 	    } else if (hrs > 0) {
 	        if (hrs == 1) {
-	            sb.append("an hour");
+	            sb.append(getMessage("an_hour", null, locale, messageSource)); // "an hour"
 	        } else {
-	            sb.append(hrs + " hours");
+	            sb.append(getMessage("x_hours", hrs, locale, messageSource)); // hrs + " hours"
 	        }
 	        if (min > 1) {
-	            sb.append(" and " + min + " minutes");
+	        	sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
+	            sb.append(getMessage("x_minutes", min, locale, messageSource)); // min + " minutes"
 	        }
 	    } else if (min > 0) {
 	        if (min == 1) {
-	            sb.append("a minute");
+	            sb.append(getMessage("a_minute", null, locale, messageSource)); // "a minute"
 	        } else {
-	            sb.append(min + " minutes");
+	        	sb.append(getMessage("x_minutes", min, locale, messageSource)); // min + " minutes"
 	        }
 	        if (sec > 1) {
-	            sb.append(" and " + sec + " seconds");
+	        	sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
+	            sb.append(getMessage("x_seconds", sec, locale, messageSource)); // sec + " seconds"
 	        }
 	    } else {
 	        if (sec <= 1) {
-	            sb.append("about a second");
+	            sb.append(getMessage("about_a_second", null, locale, messageSource)); // "about a second"
 	        } else {
-	            sb.append("about " + sec + " seconds");
+	            sb.append(getMessage("about_x_seconds", sec, null, messageSource)); // "about " + sec + " seconds"
 	        }
 	    }
 
-	    sb.append(" ago");
+	    sb.append(getMessage("postfix", null, locale, messageSource)); // " ago"
 
 
 		return sb.toString(); 
+	}
+	
+	/**
+	 * @param code
+	 * @param number
+	 * @param locale
+	 * @param messageSource
+	 * @return
+	 */
+	private static String getMessage(final String code, final Long number, final Locale locale, final MessageSource messageSource) {
+		return messageSource.getMessage(MESSAGE_PREFIX + code, new Object[]{number}, locale);
 	}
 
 	/**
