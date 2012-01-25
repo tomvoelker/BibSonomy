@@ -53,7 +53,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		final User loginUser = context.getLoginUser();
 		command.setUser(loginUser);
-		
+				
 		// used to set the user specific value of maxCount/minFreq 
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 		
@@ -61,9 +61,12 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		if (UserUtils.userIsGroup(loginUser))  {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
+			// show sync tab only for non-spammers
+			command.showSyncTab(!loginUser.isSpammer());					
 		} else {
 			// if he is not, he will be forwarded to the first settings tab
 			command.showGroupTab(false);
+			command.showSyncTab(!loginUser.isSpammer());
 			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
 			this.errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
