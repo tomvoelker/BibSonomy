@@ -23,7 +23,6 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 /**
@@ -39,7 +38,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	protected LogicInterface logic;
 	protected RequestLogic requestLogic;
-	private MessageSource messageSource;
 
 	/**
 	 * @param command
@@ -221,10 +219,4 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.requestLogic = requestLogic;
 	}
 
-	/**
-	 * @param messageSource the messageSource to set
-	 */
-	public void setMessageSource(final MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
 }
