@@ -180,7 +180,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			//$FALL-THROUGH$
 		case HIDDEN:
 			// only a group owner may always see the group members
-			if ( !authUser.equalsIgnoreCase(groupname) ) {
+			if ( authUser == null || !authUser.equalsIgnoreCase(groupname) ) {
 				group.setUsers(Collections.<User> emptyList());
 			}
 			break;
