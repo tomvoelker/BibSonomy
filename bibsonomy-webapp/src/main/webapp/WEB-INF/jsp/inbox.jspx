@@ -30,7 +30,7 @@
 		<jsp:attribute name="sidebar">
 			<ul>
 				<li>
-            		<span class="sidebar_h">
+            		<span class="sidebar_hh">
               			<c:url var="message_remove" value="/removeMessage">
 							<c:param name="hash" value=""/>
 							<c:param name="user" value=""/>

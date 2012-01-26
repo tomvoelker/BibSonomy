@@ -432,6 +432,10 @@ a:hover {
 	padding: 5px;
 }
 
+#sidebar .sidebarBoxInner ul {
+	margin: 0px;
+}
+
 /* --- side bar navigation  ------------------------------------------------*/
 #sidebarnavi {
 	height: 60px;
@@ -466,12 +470,12 @@ a:hover {
 }
 
 .sidebarnavi_entry_01 {
-    background-position: -10px 124px;
+    background-position: -10px 126px;
     left: 0px;
 }
 
 .sidebarnavi_entry_01:hover {
-    background-position: -10px 6px;
+    background-position: -10px 8px;
 }
 
 .inbox_full {

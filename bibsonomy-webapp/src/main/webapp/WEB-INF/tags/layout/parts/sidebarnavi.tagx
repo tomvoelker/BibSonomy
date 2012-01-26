@@ -32,16 +32,27 @@
 							<fmt:message var="titleInbox" key="navi.inbox.empty" />
 						</c:otherwise>
 					</c:choose>
+					<c:choose>
+						<c:when test="${command.context.loginUser.basket.numPosts gt 0}">
+							<fmt:message var="msgInBasket" key="navi.pickedIn" />
+							<fmt:message var="msgBasket" key="navi.basket" />
+							<c:set var="titleBasket" value="${command.context.loginUser.basket.numPosts} ${msgInBasket} ${msgBasket}" />
+						</c:when>
+						<c:otherwise>
+							<fmt:message var="titleBasket" key="navi.basket" />
+						</c:otherwise>
+					</c:choose>
 					<fmt:message var="titleSpheres" key="navi.spheres.my" />
 					<fmt:message var="titleSettings" key="navi.settings" />
-					<fmt:message var="titleBasket" key="navi.basket" />
 					<fmt:message var="titleDiscussed" key="navi.discussedPosts.my" />
 					<fmt:message var="titleCV" key="navi.cv.my" />
 
 					<!-- show the menu items -->
 					<li class="sidebarnavi_entry sidebarnavi_entry_01 ${inboxClass}" title="${titleInbox}">
 						<a href="/inbox"><!-- empty --></a>
-						<span class="sidebarnavi_info"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
+						<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
+							<span class="sidebarnavi_info"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
+						</c:if>
 					</li>
 					
 					<li class="sidebarnavi_entry sidebarnavi_entry_02" title="${titleSpheres}">
@@ -50,6 +61,9 @@
 					
 					<li class="sidebarnavi_entry sidebarnavi_entry_03" title="${titleBasket}">
 						<a href="/basket"><!-- empty --></a>
+						<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
+							<span class="sidebarnavi_info"><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
+						</c:if>
 					</li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_04" title="${titleDiscussed}">
 						<a href="/discussed/user/${fn:escapeXml(command.context.loginUser.name)}"><!-- empty --></a>
