@@ -434,21 +434,18 @@ a:hover {
 
 /* --- side bar navigation  ------------------------------------------------*/
 #sidebarnavi {
-	height: 50px;
+	height: 60px;
 	background-color: #e4e4e4;
-}
-
-#sidebarnavi ul {
-/*	display: none;*/
 }
 
 
 .sidebarnavi_entry {
     background: url("/resources/image/tabactions.png");
-    height: 50px; 
+    height: 60px; 
     width: 44px;
     position: absolute;
     border-right: 1px solid #c6c6c6;
+    top: 5px;
 }
 
 .sidebarnavi_entry a {
@@ -456,6 +453,16 @@ a:hover {
     width: 44px;
     display: block;
     outline: none;
+}
+
+.sidebarnavi_info {
+	/** shows additional information in the side bar navigation */
+	float: right;
+	color: #da3200;
+	margin-right: 5px;
+	top: -5px;
+	position: relative;
+	font-weight: bold;
 }
 
 .sidebarnavi_entry_01 {

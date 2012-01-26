@@ -36,24 +36,26 @@
 					<fmt:message var="titleSettings" key="navi.settings" />
 					<fmt:message var="titleBasket" key="navi.basket" />
 					<fmt:message var="titleDiscussed" key="navi.discussedPosts.my" />
+					<fmt:message var="titleCV" key="navi.cv.my" />
 
 					<!-- show the menu items -->
-					<li class="sidebarnavi_entry sidebarnavi_entry_01 ${inboxClass}">
-						<a href="/inbox" title="${titleInbox}"><!-- empty --></a>
+					<li class="sidebarnavi_entry sidebarnavi_entry_01 ${inboxClass}" title="${titleInbox}">
+						<a href="/inbox"><!-- empty --></a>
+						<span class="sidebarnavi_info"><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
 					</li>
 					
-					<li class="sidebarnavi_entry sidebarnavi_entry_02">
-						<a href="/spheres" title="${titleSpheres}"><!-- empty --></a>
+					<li class="sidebarnavi_entry sidebarnavi_entry_02" title="${titleSpheres}">
+						<a href="/spheres"><!-- empty --></a>
 					</li>
 					
-					<li class="sidebarnavi_entry sidebarnavi_entry_03">
-						<a href="/basket" title="${titleBasket}"><!-- empty --></a>
+					<li class="sidebarnavi_entry sidebarnavi_entry_03" title="${titleBasket}">
+						<a href="/basket"><!-- empty --></a>
 					</li>
-					<li class="sidebarnavi_entry sidebarnavi_entry_04">
-						<a href="/discussed/user/${fn:escapeXml(command.context.loginUser.name)}" title="${titleDiscussed}"><!-- empty --></a>
+					<li class="sidebarnavi_entry sidebarnavi_entry_04" title="${titleDiscussed}">
+						<a href="/discussed/user/${fn:escapeXml(command.context.loginUser.name)}"><!-- empty --></a>
 					</li>
-					<li class="sidebarnavi_entry sidebarnavi_entry_05">
-						<a href="" title="Spheres"><!-- empty --></a>
+					<li class="sidebarnavi_entry sidebarnavi_entry_05" title="${titleCV}">
+						<a href="/cv/user/${fn:escapeXml(command.context.loginUser.name)}"><!-- empty --></a>
 					</li>
 				</c:when>
 				<c:otherwise>
