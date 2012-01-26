@@ -265,7 +265,12 @@
 						<menu:navi selectedNaviTab="${selectedNaviTab}" loginUser="${loginUser}" />
 					</div><!-- #navigation -->
 
-
+					
+					<c:if test="${not empty headerContainer}">
+						<div id="headercontainer">
+							<jsp:invoke fragment="headerContainer"/>
+						</div> <!--  headercontainer -->
+					</c:if>
 
 					<!--+
 						|
