@@ -65,7 +65,7 @@
 			+-->		
 		<c:choose>
 			<c:when test="${not empty loginUser.groups}">
-				<li class="pulldown  ${selectedNaviTab eq 'groups' ? 'active' : ''}">
+				<li class="pulldown ${selectedNaviTab eq 'groups' ? 'active' : ''}">
 					<span rel="grp_menu"><fmt:message key="navi.groups"/></span>
 
 					<table id="grp_menu" class="tnav_group nicedropmenudiv">
@@ -107,12 +107,12 @@
 	</ul>
 
     <!-- selects the correct navigation tab -->
-	<script type="text/javascript">
-		<![CDATA[
-		 	$(function() {
-	  			cssdropdown.startchrome("navigation");
-		 	}
-	  	]]>
-	</script>
+<!--	<script type="text/javascript">-->
+<!--		<![CDATA[-->
+<!--		 	$(function() {-->
+<!--	  			cssdropdown.startchrome("navigation");-->
+<!--		 	}-->
+<!--	  	]]>-->
+<!--	</script>-->
     
 </jsp:root>
