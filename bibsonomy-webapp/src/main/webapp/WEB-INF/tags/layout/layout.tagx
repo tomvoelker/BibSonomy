@@ -133,28 +133,32 @@
 				
 					<div id="header">
 
-						<ul id="infoline">
-							<c:choose>
-								<c:when test="${not empty loginUser.name}">
-									<li><fmt:message key="navi.loggedInAs"/>&amp;nbsp;<a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a></li>
-									<li><a href="/settings"><fmt:message key="navi.settings" /></a></li>
-								</c:when>
-								<c:otherwise>
-									<li><a href="/login"><fmt:message key="navi.login"/></a></li>
-								</c:otherwise>
-							</c:choose>
+						<div id="infoline">
+							<ul>
+								<c:choose>
+									<c:when test="${not empty loginUser.name}">
+										<li><fmt:message key="navi.loggedInAs"/>&amp;nbsp;<a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a></li>
+										<li><a href="/settings"><fmt:message key="navi.settings" /></a></li>
+									</c:when>
+									<c:otherwise>
+										<li><a href="/login"><fmt:message key="navi.login"/></a></li>
+									</c:otherwise>
+								</c:choose>
 							
-							<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-							<li><a href="${helpLangUrl}"><fmt:message key="navi.help"/></a></li>
-							<li><a href="${properties['project.blog']}"><fmt:message key="navi.news"/></a></li>
-							<li><a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a></li>	
-						</ul><!-- #infoline -->
+								<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+								<li><a href="${helpLangUrl}"><fmt:message key="navi.help"/></a></li>
+								<li><a href="${properties['project.blog']}"><fmt:message key="navi.news"/></a></li>
+								<li><a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a></li>	
+							</ul>
+						</div><!-- #infoline -->
 
-						<ul id="language">
-							<!-- FIXME: set active language dynamically -->
-							<li><a class="active" href="/${mtl:setParam(requPathAndQuery, 'lang', 'de')}">de</a></li>
-							<li><a href="/${mtl:setParam(requPathAndQuery, 'lang', 'en')}">en</a></li>
-						</ul><!-- #language -->
+						<div id="language">
+							<ul>
+								<!-- FIXME: set active language dynamically -->
+								<li><a class="active" href="/${mtl:setParam(requPathAndQuery, 'lang', 'de')}">de</a></li>
+								<li><a href="/${mtl:setParam(requPathAndQuery, 'lang', 'en')}">en</a></li>
+							</ul>
+						</div><!-- #language -->
 
 
 						<!--+
@@ -191,18 +195,22 @@
 									</li>
 								</c:otherwise>
 							</c:choose>
-						</ul>
-				
+						</ul><!-- #poststats -->
+
+
+						<c:if test="${not empty headerLogo}">
+							<div id="logoimage">
+								<img id="headerlogoimage" src="${headerLogo}"/>
+							</div>
+						</c:if>
 
 					</div><!-- #header -->
-			
-			
+
+
+
 			
 			<div id="main">
 
-				<c:if test="${not empty headerLogo}">
-					<img id="headerlogoimage" src="${headerLogo}"/>
-				</c:if>
 			
 				<div id="main_header">
 				
