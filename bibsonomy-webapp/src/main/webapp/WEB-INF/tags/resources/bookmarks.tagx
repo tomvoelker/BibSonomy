@@ -19,7 +19,7 @@
 		otherPostsUrlPrefix="/url/"
 		disableListNavigation="${disableListNavigation}"
 		disableActions="${disableActions}"
-		listID="bookmarkList"
+		listID="bookmarks"
 		listView="${listView}">
     
 		<jsp:attribute name="formatButtons">

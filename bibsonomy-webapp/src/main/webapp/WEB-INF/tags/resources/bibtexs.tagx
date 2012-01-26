@@ -22,7 +22,7 @@
 		otherPostsUrlPrefix="/bibtex/${hash.inter.id}"
 		disableActions="${disableActions}"
 		disableListNavigation="${disableListNavigation}"
-		listID="bibtexList"
+		listID="publications"
 		listView="${listView}"
 		fullscreen="${fullscreen}">
 		<jsp:attribute name="formatButtons">
