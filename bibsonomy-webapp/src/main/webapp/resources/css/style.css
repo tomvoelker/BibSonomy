@@ -267,6 +267,63 @@ a:hover {
 	background-color: #D8EBAE;
 }
 
+#sidebar ul {
+	list-style: none;
+	font-size: 95%;
+	margin: 3px 0;
+	padding: 5px;
+}
+
+/* hack to fix IE/Win's broken rendering of block-level anchors in lists */
+#sidebar li {
+	border-bottom: 1px solid #ccc;
+}
+
+/* fix for browsers that don't need the hack */
+html>body #sidebar li {
+	border-bottom: none;
+}
+/* --- tag cloud -----------------------------------------------------------*/
+.tagcloud {
+	overflow: hidden;
+	text-align: center;
+}
+
+.tagcloud li {
+	display: inline;
+	padding: 0em .1em 0em .1em;
+	line-height: 1.5em;
+	font-size: 90%;
+}
+
+.tagcloud a,.taglist a {
+	color: #069;
+}
+
+.tagcloud a:hover,.taglist a:hover {
+	color: #000000;
+	text-decoration: none;
+}
+
+.tagtiny a,.tagtiny {
+	color: #8D9964 ! important;
+	padding-right:10px;
+}
+
+.tagnormal a,.tagnormal {
+	color: #8C9963 ! important;
+	padding-right:10px;
+}
+
+.taglarge a,.taglarge {
+	color: #383d27 ! important;
+	padding-right:10px;
+}
+
+.taghuge a,.taghuge {
+	color: #2F3321 ! important;
+	padding-right:10px;
+}
 /*****************************************************************************/
 /* END SIDEBAR                                                               */
 /*****************************************************************************/
