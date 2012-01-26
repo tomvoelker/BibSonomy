@@ -18,9 +18,9 @@
 			sphereControl.renderSpheres() 
 		});
 	</script>
-	<span class="sidebar_h">
+	<span class="sidebar_h sidebar_collapse">
 		<c:out value="${title}"/>
 	</span>
 	<div id="spheresTemplates"><!-- keep me! --></div>
-	<ul class="sidebarContainer"><li><span id="spheresCloudElement"><!-- keep me! --></span></li></ul>
+	<ul class="sidebarContainer sidebar_collapse_content"><li><span id="spheresCloudElement"><!-- keep me! --></span></li></ul>
  </jsp:root>
