@@ -305,7 +305,14 @@ function switchNavi(scope, event) {
 
 	var element = $(xget_event(event));
 
-	element.parents("ul").css("left", "-9999");
+	/*
+	 * XXX: a hack to "unhover" the list. the worst part of it: we have to wait 
+	 * some time until we make the list visible again (though it's then 
+	 * otherwise hidden by CSS).
+	 */
+	var ul = element.parents("ul");
+	ul.css("visibility", "hidden");
+	window.setTimeout(function() {ul.css("visibility", "visible");}, 10);
 	
 	var username = null;
 
@@ -318,9 +325,14 @@ function switchNavi(scope, event) {
 	/*
 	 * change form action to redirect
 	 */
-	$("#search .smallform").attr("action", "/redirect")
+	var form = $("#search .smallform");
+	form.attr("action", "/redirect")
 	.append("<input type='hidden' name='scope' value='" + scope + "'/>");
 
+	if (username != null) {
+		form.append("<input type='hidden' name='requUser' value='" + username + "'/>");
+	}
+	
 	/*
 	 * Exchange text before form input field to selected text. FIXME: How to replace xget_event()? 
 	 */
@@ -337,9 +349,12 @@ function switchNavi(scope, event) {
 	 * prepare input field
 	 */
 	$("#inpf")
+	.attr("name", "search") // always do a search
 	.val(hint) // set hint as value
 	.addClass('descriptiveLabel') // add class
 	.descrInputLabel({});
+	
+	
 
 	// FIXME: how to do this?
 //	$(sN).bind('change', function(){setSearchInputLabel(this);}).trigger('change');
@@ -407,14 +422,10 @@ function initSidebarHeader() {
 		// scrollbarWidth=16px => sidebarWidth += scrollbarWidth - scrollbarWidth_default = 267px
 		//if (scrollbarWidth lt 0) scrollbarWidth = scrollbarWidth_default;
 		var new_sidebarWidth = sidebarWidth + scrollbarWidth - scrollbarWidth_default;
-	
-		// hide scrollbars in header
-		$('#headercontainer').css({"scroll": "hidden"});
-		$('#footercontainer').css({"scroll": "hidden"});
-		
-		// set new width of header, regarding to scrollbarwidth
+
+		// set new width of header, regarding to scrollbarwidth and hide scrollbars in header
 		$("#sidebarheader").width(new_sidebarWidth);
-		$("#headercontainer").css("padding-right", new_sidebarWidth);
-		$("#footercontainer").css("padding-right", new_sidebarWidth);
+		$('#headercontainer, #footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
+		
 	}
 }
