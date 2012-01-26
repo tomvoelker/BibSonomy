@@ -22,13 +22,14 @@
 			<bib:desc post="${post}"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="bmicon">
-			<bib:bmicon post="${post}" />
-		</jsp:attribute>
-		
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
 			<bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>
+		</jsp:attribute>
+
+		<!-- BibTeX preview + document upload -->
+		<jsp:attribute name="documents">
+			<bib:documents post="${post}"/>
 		</jsp:attribute>
 		
 		<!-- extended title which is shown beside the titlekey-->

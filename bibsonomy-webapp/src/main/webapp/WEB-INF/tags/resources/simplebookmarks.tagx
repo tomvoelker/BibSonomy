@@ -13,24 +13,15 @@
 	<rc:simplelist listView="${listView}" titleKey="bookmarks" otherPostsUrlPrefix="/url/" loginUserName="${loginUserName}">
 		
 		<!-- Bookmark title -->
-		<jsp:attribute name="title">
-			<bm:title post="${post}"/>
-		</jsp:attribute>
+		<jsp:attribute name="title"><bm:title post="${post}"/></jsp:attribute>
 		<!-- Bookmark description -->
-		<jsp:attribute name="desc">
-			<bm:desc post="${post}"/>
-		</jsp:attribute>
-		<jsp:attribute name="bmicon">
-			<bm:bmicon post="${post}" />
-		</jsp:attribute>
+		<jsp:attribute name="desc">	<bm:desc post="${post}"/></jsp:attribute>
 		<!-- Bookmark action -->
-		<jsp:attribute name="actions">
-			<bm:actions post="${post}" loginUserName="${loginUserName}"/>
-		</jsp:attribute>
+		<jsp:attribute name="actions"><bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+		<!-- Bookmark preview + document upload -->
+		<jsp:attribute name="documents"><bm:documents post="${post}"/></jsp:attribute>
 		<!-- extended title which is shown beside the titlekey -->
-		<jsp:attribute name="extTitle">
-			<jsp:invoke fragment="extTitle"/>
-		</jsp:attribute>
+		<jsp:attribute name="extTitle"><jsp:invoke fragment="extTitle"/></jsp:attribute>
 			
 	</rc:simplelist>
 
