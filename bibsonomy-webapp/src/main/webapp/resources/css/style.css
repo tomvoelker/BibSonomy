@@ -108,7 +108,7 @@ a:hover {
 	width: auto;
 	float: left;
 	list-style: none;
-	background-image: url("/resources/image/newDesign/dot.png");
+	background-image: url("/resources/image/dot.png");
 	background-repeat: no-repeat;
 	background-position: 0 .5em;
 	padding-left: .5em;
@@ -147,7 +147,7 @@ a:hover {
 	float: left;
 	list-style: none;
 	padding-left: 2px;
-	background-image: url("/resources/image/newDesign/dot.png");
+	background-image: url("/resources/image/dot.png");
 	background-repeat: no-repeat;
 	background-position: 0 .5em;
 	padding-left: .3em;
@@ -212,7 +212,7 @@ a:hover {
 }
 
 #navigation ul li.pulldown, #navigation2 ul li.pulldown {
-	background-image: url("/resources/image/newDesign/pulldown-marker-000000.png");
+	background-image: url("/resources/image/pulldown-marker-000000.png");
 	background-repeat: no-repeat;
 	background-position: 95% 1.8ex;
 }
@@ -230,7 +230,7 @@ a:hover {
 }
 
 #navigation2 ul li {
-	background-image: url("/resources/image/newDesign/abmelden.jpg");
+	background-image: url("/resources/image/abmelden.jpg");
 	background-repeat: no-repeat;
 	background-position: 0 0.9ex;
 	padding-left: 3ex;
@@ -389,7 +389,7 @@ html>body #sidebar li {
 	position: absolute;
 	top: 0px;
 	right: 0px;
-	background-image: url("/resources/image/newDesign/dreieck_or.png");
+	background-image: url("/resources/image/dreieck_or.png");
 	background-repeat: no-repeat;
 	background-position: 0 0;
 	width: 33px;
@@ -422,7 +422,7 @@ html>body #sidebar li {
 
 .post .action .item {
     background-repeat: no-repeat;
-	background: url("/resources/image/newDesign/postactions_black.png");
+	background: url("/resources/image/postactions_black.png");
     display: block;
     float: left;
 	height: 30px; 
@@ -543,7 +543,7 @@ html>body #sidebar li {
 }
 
 .stars-off-0\.75, .stars-on-0\.75 {
-    background: url("/resources/image/newDesign/stars.gif") repeat-x scroll 0 -24px transparent;
+    background: url("/resources/image/stars.gif") repeat-x scroll 0 -24px transparent;
     height: 12px;
 }
 
@@ -583,7 +583,7 @@ html>body #sidebar li {
 	padding-left: 121px;
 	height: 40px;
     padding-top: 20px;
-	background: url("/resources/image/newDesign/icons.png");
+	background: url("/resources/image/icons.png");
     background-repeat: no-repeat;
     margin: 0;
 	background-color: #ffffff;
@@ -592,7 +592,7 @@ html>body #sidebar li {
 #bookmarksheader .config, #publicationsheader .config {
 	height: 30px;
 	width: 30px;
-	background: url("/resources/image/newDesign/icons.png");
+	background: url("/resources/image/icons.png");
     background-repeat: no-repeat;
 	background-position: 0px -235px;
 	margin-top: 10px;
@@ -735,7 +735,7 @@ html>body #sidebar li {
 }
 	
 .sidebarnavi_entry {
-    background: url("/resources/image/newDesign/tabactions.jpg");
+    background: url("/resources/image/tabactions.jpg");
     height: 60px; 
     width: 55px;
     position: absolute;
