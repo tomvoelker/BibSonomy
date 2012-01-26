@@ -64,10 +64,12 @@
 		
 		<c:if test="${!empty listView.list}">
 				<!-- show available actions -->
-				<div class="kiste">
+				<div>
+					<!-- 
 					<c:if test="${not disableListNavigation}">
 						<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>
 					</c:if>
+					 -->
 					<c:if test="${not disableActions}">
 						<rc:actions resourceType="${listView.resourcetype}"/>
 					</c:if>				
@@ -92,7 +94,8 @@
                   </c:forEach>
                 </ul>
 		</c:if>
-			
+		
+		<!-- 	
 		<div class="kiste">		
 			<c:if test="${not disableListNavigation}">
 				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>
@@ -100,6 +103,7 @@
 			</c:if>
 			${mtl:ch('nbsp')}
 		</div>
+		 -->
 		
 	</div>
 

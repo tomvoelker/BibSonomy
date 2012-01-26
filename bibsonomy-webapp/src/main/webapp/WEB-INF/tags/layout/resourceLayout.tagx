@@ -4,6 +4,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -118,8 +119,19 @@
 				 --> 
 				</div>
 			</div>
-
 		</jsp:attribute>
+		
+		<jsp:attribute name="footerContainer">
+			<div id="bookmarksfooter">
+				<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
+				<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks"/>
+			</div>
+			
+			<div id="publicationsfooter">
+				<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+				<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications"/>
+			</div>			
+		</jsp:attribute>		
 		
 		
 		<jsp:attribute name="content">
