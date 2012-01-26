@@ -339,7 +339,7 @@ a:hover {
 
 
 #navigation2 a {
-	display: inline;
+	display: block;
 	width: auto;
 	list-style: none;
 	padding: 1ex 3ex;
