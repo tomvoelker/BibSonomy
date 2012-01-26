@@ -877,13 +877,14 @@ ul.news {
 	font-weight: bold;
 	font-size: 120%;
 	padding-left: 121px;
-	height: 30px;
+	height: 40px;
     padding-top: 20px;
 	background: url("/resources/image/icons.png");
     background-repeat: no-repeat;
     margin: 0;
 	background-color: #ffffff;
 }
+
 
 #bookmarksheader .config, #publicationsheader .config {
 	height: 30px;
@@ -905,6 +906,12 @@ ul.news {
 	padding-left: 122px;
 	background-position: 27px 2px;
 	border-right: 1px solid #c6c6c6;
+}
+
+#bookmarksfooter .footer {
+	border-right: 2px solid #c6c6c6;
+	height:30px;
+	width:98%;
 }    
 
 #publicationsheader .header {
