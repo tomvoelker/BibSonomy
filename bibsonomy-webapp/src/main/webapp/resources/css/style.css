@@ -678,7 +678,7 @@ ul.news {
 }
 
 .post .action .unpick{
-    background-position: -30px 30px;
+    background-position: -30px -27px;
     width: 23px
 }
 
@@ -688,7 +688,7 @@ ul.news {
 }
 
 .post .action .edit{
-    background-position: 0px 0px;
+    background-position: 0px -25px;
     width: 26px
 }
 	
@@ -703,7 +703,8 @@ ul.news {
 }
 
 .post .action .remove{
-    background-position: 0px -52px;
+    background-position: -30px -53px;
+    width: 35px
 }
 
 .post .action .url{
@@ -722,7 +723,8 @@ ul.news {
 }
 
 .post .action .openUrl{
-    background-position: -205px 0px;
+    background-position: 64px -55px;
+    width: 41px
 }
 
 .post .rating {
