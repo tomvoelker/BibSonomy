@@ -275,12 +275,16 @@ a:hover {
 #navigation ul li.pulldown, #navigation2 ul li.pulldown {
 	background-image: url("/resources/image/pulldown-marker-000000.png");
 	background-repeat: no-repeat;
-	background-position: 95% 1.8ex;
+/*	background-position: 95% 1.8ex; */
 }
 
 #navigation ul li a, #navigation2 ul li a {
 	color: black;
 	text-decoration: none;
+}
+
+.pulldown .nicedropmenudiv {
+	padding-top: 12px;
 }
 
 #navigation {
