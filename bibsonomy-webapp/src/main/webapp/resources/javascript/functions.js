@@ -62,7 +62,7 @@ function stopEvt () {
 }
 
 function init_sidebar() {
-	$("#sidebar li .sidebar_h").each(function(index){
+	$("#sidebar li .sidebar_collapse").each(function(index){
 		var span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
 		span.click(hideNextList);
 		$(this).prepend(span); 
