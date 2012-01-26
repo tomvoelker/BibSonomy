@@ -266,7 +266,7 @@
 	
 
 		<jsp:attribute name="sidebar">
-		<ul id="sidebar">			
+		<ul>			
 			<span class="sidebar_h">logging</span>	
 			<parts:logbox initialValue="no log messages" />
 			<br />

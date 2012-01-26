@@ -73,7 +73,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul id="sidebar">
+		<ul>
 
 			<!-- link to user page -->
 			<c:if test="${not empty command.requestedUser}">

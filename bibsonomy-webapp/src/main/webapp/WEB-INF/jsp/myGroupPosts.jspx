@@ -24,7 +24,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul id="sidebar">	
+		<ul>	
 			<!-- display user's tag relations -->			
 			<li>
 				<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>

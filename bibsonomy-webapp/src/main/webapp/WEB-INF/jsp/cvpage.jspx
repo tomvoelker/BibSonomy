@@ -24,7 +24,7 @@
     	 	| html header extension: page specific stylesheet
     	 	-->
 		<jsp:attribute name="sidebar">
-		 	<ul id="sidebar">
+		 	<ul>
 		 		<!--+
 					| only for logged in users: followers, friends, groups, etc.
 			 		-->

@@ -58,7 +58,7 @@
 	
 		
         <jsp:attribute name="sidebar">
-	        <ul id="sidebar">
+	        <ul>
 				<!-- loginUser.groups -->
 				<li>    
 					<span class="sidebar_h"><a href="/groups"><fmt:message key="groups"/></a></span>

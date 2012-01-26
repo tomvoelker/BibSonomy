@@ -36,7 +36,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul id="sidebar">
+			<ul>
 				
 			</ul>
 		</jsp:attribute>

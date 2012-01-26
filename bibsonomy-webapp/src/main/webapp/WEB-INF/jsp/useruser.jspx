@@ -28,7 +28,7 @@
 		
 		<!--  create sidebar -->
 		<jsp:attribute name="sidebar">	
-		<ul id="sidebar">	
+		<ul>	
 		
 				<!-- we need to switch if the user already follows this user or not 
 				<c:if test="${command.context.loginUser.name != command.requestedUser}">

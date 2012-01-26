@@ -46,7 +46,7 @@
 			    	var test = content;
 		    	}
 			</script>
-			<ul id="sidebar">	
+			<ul>	
 			
 				<!-- friendrelation members -->
     			<!--+

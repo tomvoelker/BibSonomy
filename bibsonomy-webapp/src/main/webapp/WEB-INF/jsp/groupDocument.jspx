@@ -32,7 +32,7 @@
 		</jsp:attribute>		
 		
 		<jsp:attribute name="sidebar">
-			<ul id="sidebar">		
+			<ul>		
 				<parts:tagsAndConceptsForSidebar/>
 				
 				<!-- tagcloud -->

@@ -20,6 +20,8 @@
 	<jsp:directive.attribute name="targetId" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
 
+<span class="sidebar_collapse_content">
+
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
 	<c:choose>
 		<c:when test="${cmd.style.id == 0}">
@@ -104,4 +106,5 @@
 			</c:if>			
 		</c:forEach>		
 	</ul>
+</span>
 </jsp:root>

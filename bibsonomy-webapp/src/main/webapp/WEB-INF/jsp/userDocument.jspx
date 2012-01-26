@@ -41,7 +41,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">		
-			<ul id="sidebar">
+			<ul>
 				<div class="smalltext">	
 					<parts:tagsAndConceptsForSidebar/>
 				</div>			

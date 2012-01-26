@@ -157,7 +157,7 @@
     
     
 		<jsp:attribute name="sidebar">
- 			<ul id="sidebar">
+ 			<ul>
             	<li>
              		<!-- display user's tag relations -->     
               		<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>

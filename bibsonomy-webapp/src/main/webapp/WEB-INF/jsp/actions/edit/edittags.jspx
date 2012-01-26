@@ -204,7 +204,7 @@
 		</jsp:attribute>
 			
 		<jsp:attribute name="sidebar">	
-			<ul id="sidebar">			
+			<ul>			
 				<li>
 					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
 					<span class="sidebar_h">

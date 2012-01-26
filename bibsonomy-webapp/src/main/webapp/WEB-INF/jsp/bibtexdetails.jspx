@@ -38,7 +38,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul id="sidebar">
+			<ul>
 				<c:set var="owner" value="${post.user.name}" />
 				<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
 				<!-- edit tags -->

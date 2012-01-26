@@ -27,7 +27,7 @@
 			
 		
 		<jsp:attribute name="sidebar">
-		<ul id="sidebar">
+		<ul>
 			<!-- link to join group -->
 			<c:if test="${command.context.userLoggedIn}">
 				<c:choose>
