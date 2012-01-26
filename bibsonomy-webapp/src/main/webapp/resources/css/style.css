@@ -400,6 +400,14 @@ a:hover {
     background-position: -10px 5px;
 }
 
+.inbox_full {
+    background-position: -8px 85px;
+}
+
+.inbox_full:hover {
+    background-position: -8px 185px;
+}
+
 .sidebarnavi_entry_02 {
     background-position: -50px 124px;
     left: 44px;

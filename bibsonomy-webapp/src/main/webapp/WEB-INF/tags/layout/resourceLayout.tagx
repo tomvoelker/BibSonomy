@@ -6,6 +6,7 @@
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
@@ -106,16 +107,7 @@
 			</div>
 			
 			<div id="sidebarheader">
-				<div id="sidebarnavi" class="navigation header">
-					<ul>
-						<li class="sidebarnavi_entry sidebarnavi_entry_01"><a href="" title="Posteingang"><!-- empty --></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_02"><a href="" title="Freunde"><!-- empty --></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_03"><a href="" title="Ablage"><!-- empty --></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_04"><a href="" title="Plaudern"><!-- empty --></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_05"><a href="" title="Spheres"><!-- empty --></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_06"><a href="" title="Einstellungen"><!-- empty --></a></li>
-					</ul>
-				</div>
+				<parts:sidebarnavi/>
 			</div>
 		</jsp:attribute>
 		

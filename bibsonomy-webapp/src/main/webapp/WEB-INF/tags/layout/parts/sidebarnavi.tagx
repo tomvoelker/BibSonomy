@@ -1,0 +1,62 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<!--+
+		| the sidebar navigation contains shortcuts and is in parts only visible for logged in users
+		+-->
+		
+		
+	<div id="sidebarnavi" class="navigation header">
+		<ul>
+			<!--+
+				| show part of the sidebar menu only for logged in users 
+				+-->
+			<c:choose>
+				<c:when test="${not empty command.context.loginUser.name}">
+					<!-- dynamically set inbox title and style class -->
+					<fmt:message var="msgInInbox" key="navi.inInbox" />
+					<fmt:message var="msgInbox" key="navi.inbox" />
+					<c:set var="titleInbox">
+						<c:out
+							value="${command.context.loginUser.inbox.numPosts} ${msgInInbox} ${msgInbox}" />
+					</c:set>
+					<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
+						<c:set var="inboxClass" value="inbox_full" />
+					</c:if>
+
+					<!-- show the menu items -->
+					<li class="sidebarnavi_entry sidebarnavi_entry_01 ${inboxClass}">
+						<a href="/inbox" title="${titleInbox}"><!-- empty --></a>
+					</li>
+					
+					<li class="sidebarnavi_entry sidebarnavi_entry_02">
+						<a href="" title="Freunde"><!-- empty --></a>
+					</li>
+					
+					<li class="sidebarnavi_entry sidebarnavi_entry_03">
+						<a href="" title="Ablage"><!-- empty --></a>
+					</li>
+					<li class="sidebarnavi_entry sidebarnavi_entry_04">
+						<a href="" title="Plaudern"><!-- empty --></a>
+					</li>
+					<li class="sidebarnavi_entry sidebarnavi_entry_05">
+						<a href="" title="Spheres"><!-- empty --></a>
+					</li>
+				</c:when>
+				<c:otherwise>
+					<!-- empty -->
+				</c:otherwise>
+			</c:choose>
+
+			<li class="sidebarnavi_entry sidebarnavi_entry_06">
+				<a href="" title="Einstellungen"><!-- empty --></a>
+			</li>
+		</ul>
+	</div>
+</jsp:root>
