@@ -62,35 +62,21 @@ function stopEvt () {
 }
 
 function init_sidebar() {
-	$("#sidebar li .sidebar_collapse").each(function(index){
+	$("#sidebar li .sidebar_collapse").each(function(index,item){
 		var span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
-		span.click(hideNextList);
+		span.click(function(){fadeNextList(item)});
 		$(this).prepend(span); 
 	});
 }
 
-/*
- * hide/unhide the next list following the element which called the method
- */
-function hideNextList() {
-	var node = this.parentNode;
-
-	while (node && node.nodeName.toUpperCase() != "UL") {
-		node = node.nextSibling;
-	}
-
-	if (node) {
-		/*
-		 * decide, if the list must be hidden or shown
-		 */
-		var b = (node.style.display != "none");
-		/*
-		 * show/hide
-		 */
-		node.style.display = b ? "none" : "block";
-		this.firstChild.src = "/resources/image/icon_" + (b ? "expand" : "collapse") + ".png";
-	}
+function fadeNextList(target) {
+	$(target).nextAll(".sidebar_collapse_content").fadeToggle("slow", function(){
+		var flag = $(this).css('display') == 'none';
+		var toggler = $(target).find(".toggler img");
+		toggler.attr("src", "/resources/image/icon_" + (flag ? "expand" : "collapse") + ".png");
+	});
 }
+
 
 /**
  * Ask the user if he/she really wants to delete the post.
