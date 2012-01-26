@@ -239,7 +239,7 @@ a:hover {
 #navigation > ul ul li {
 	float: none;
 }
-#navigation > ul ul a {
+#navigation > ul ul a, #navigation > ul table a {
 	white-space: nowrap; /* Stop text wrapping and creating multi-line dropdown items */
 }
 #navigation > ul li:hover ul, #navigation > ul li:hover table { /* Display the dropdown on hover */
@@ -256,7 +256,9 @@ a:hover {
 	background: #333;
 	text-decoration: underline;
 }
-
+#navigation > ul table td {
+	padding: 0;
+} 
 
 #navigation ul li.active, #navigation2 ul li.active {
 	color: #006699;
