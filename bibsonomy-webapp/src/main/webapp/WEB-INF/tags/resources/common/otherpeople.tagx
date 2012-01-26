@@ -9,8 +9,8 @@
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="valueOnly" type="java.lang.Boolean" required="false" />
 	
-	<c:if test="${!empty post.resource.interHash and post.resource.count > 0}">
-		<c:if test="${!empty valueOnly and valueOnly == true}">
+	<c:if test="${not empty post.resource.interHash and post.resource.count > 0}">
+		<c:if test="${not empty valueOnly and valueOnly}">
 			${post.resource.count}
 		</c:if>
 	
