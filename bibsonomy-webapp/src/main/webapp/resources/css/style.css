@@ -1040,6 +1040,20 @@ li.box_lowerconcept a {
 
 }
 
+.bookmarkOptions { 
+	border:1px solid black; 
+	z-index:70;
+ 	top:40px;
+	position:absolute;
+  	border: 1px solid #6f6f6f;
+  	background-color: #eee;
+  	position: absolute;
+  	margin-top: .5em;
+  	font-size: 80%;
+  	padding: .5em;
+  	display:none;	
+}
+
 .post .tags a.edittags img.editimage {
 	border: 0;
 	padding: 0;
