@@ -64,16 +64,14 @@ function stopEvt () {
 function init_sidebar() {
 	$("#sidebar li .sidebar_collapse").each(function(index,item){
 		var span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
-		span.click(function(){fadeNextList(item)});
+		span.click(function(){fadeNextList(item);});
 		$(this).prepend(span); 
 	});
 }
 
 function fadeNextList(target) {
 	$(target).nextAll(".sidebar_collapse_content").fadeToggle("slow", function(){
-		var flag = $(this).css('display') == 'none';
-		var toggler = $(target).find(".toggler img");
-		toggler.attr("src", "/resources/image/icon_" + (flag ? "expand" : "collapse") + ".png");
+		$(target).find(".toggler img").attr("src", "/resources/image/icon_" + ($(this).css('display') == 'none' ? "expand" : "collapse") + ".png");
 	});
 }
 
