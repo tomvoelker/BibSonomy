@@ -201,7 +201,6 @@ a:hover {
 	margin-bottom: 10px;
 	/* Clear floats */
 	float: left;
-	width: 100%;
 }
 #navigation > ul li {
 	float: left;
@@ -211,18 +210,30 @@ a:hover {
 
 #navigation > ul > li {
 	margin-right: 10px;
+	padding: 4px;
 }
 
-#navigation > ul a, #navigation .pulldown {
+#navigation > ul a, #navigation>ul>li {
 	display: block;
 	padding: 5px;
-	background: #c6c6c6;
 	text-decoration: none;
 }
-#navigation > ul a:hover, #navigation .pulldown:hover {
+
+ #navigation .pulldown>span, #navigation>ul>li>a{
+	display: block;
+	padding-top: 3px;
+	padding-bottom: 4px;
+ }
+
+#navigation > ul li:hover, #navigation .pulldown:hover {
 	color: #fff;
 	background: #333;
 }
+
+#navigation > ul li:hover>a {
+	color: #fff;
+}
+
 
 /*--- DROPDOWN ---*/
 #navigation > ul ul, #navigation > ul table {
@@ -232,7 +243,15 @@ a:hover {
 	position: absolute;
 	left: -9999px; /* Hide off-screen when not needed (this is more accessible than display:none;) */
 	border-bottom: 2px solid #c6c6c6;
+	margin-top: 5px;
 }
+
+#navigation > ul table {
+	border-left: 2px solid #c6c6c6;
+	border-right: 2px solid #c6c6c6;
+	
+}
+	
 #navigation > ul ul li {
 	float: none;
 }
@@ -243,11 +262,16 @@ a:hover {
 	left: 0; /* Bring back on-screen when needed */
 }
 #navigation > ul li:hover a { /* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
-	background: #f0f0f0;
 	text-decoration: underline;
+}
+
+#navigation > ul li.pulldown ul
+{
+	background: #f0f0f0;
 	border-left: 2px solid #c6c6c6;
 	border-right: 2px solid #c6c6c6;
 }
+
 #navigation > ul li:hover ul a, #navigation > ul li:hover table a { /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
 	text-decoration: none;
 }
@@ -260,16 +284,30 @@ a:hover {
 } 
 
 #navigation ul li.active {
-	color: #006699;
+	color: #006699; 
 	text-decoration: none;
 	background-color: white;
-	padding-bottom: 0;
-	height:25px;
+/*	padding-bottom: 0; */
+/*	height:25px; */
 }
 
 #navigation ul li.active a {
 	color: #006699;
 }
+
+#navigation ul li.active a {
+	color: #000000;
+}
+
+#navigation ul li a:hover {
+	color: #ffffff;
+}
+
+
+#navigation > ul > li.active a {
+	background: #f0f0f0;
+}
+
 
 #navigation ul li.pulldown {
 	background-image: url("/resources/image/pulldown-marker-000000.png");
@@ -307,6 +345,8 @@ a:hover {
 	background-repeat: no-repeat;
 	background-position: 0 0.9ex;
 	padding-left: 3ex;
+	padding-top: 8px;
+	display: block;
 }
 
 #intro {
