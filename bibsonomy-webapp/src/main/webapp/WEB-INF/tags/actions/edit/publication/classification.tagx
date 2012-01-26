@@ -18,8 +18,8 @@
 		<div id="classifications" /> 
 		
 		<script type="text/javascript">
-		    $(document).ready(function() {
-				javascript:initClassifications('classifications');
+		    $(function() {
+				initClassifications('classifications');
 		    });
 		</script>
 			
