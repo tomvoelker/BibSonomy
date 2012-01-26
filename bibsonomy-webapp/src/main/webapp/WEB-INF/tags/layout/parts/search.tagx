@@ -23,7 +23,6 @@
 			<li onclick="switchNavi('search', event)"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
 			<c:if test="${not empty requestedUser}">
 				<li onclick="switchNavi('explicit_user', event)"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
-				<c:set var="mode" value="requUser" /><!-- FIXME: who uses this? -->
 			</c:if>
 			<c:if test="${command.context.userLoggedIn and empty requestedUser}">
 				<li onclick="switchNavi('explicit_user', event)"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></li>
