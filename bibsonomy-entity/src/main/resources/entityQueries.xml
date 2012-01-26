@@ -20,21 +20,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  <select id="lastInsertID" resultType="int">
 	SELECT last_insert_id()
 </select>
-				
+			
+<select id="clusteringList" resultType="java.util.Map">
+	select author.author_id, author.normalized_name, coauthor.normalized_name, coauthor.coauthorlist_id FROM author INNER JOIN coauthor_list USING(author_id) INNER JOIN coauthor ON (coauthor.coauthorlist_id = coauthor_list.coauthorlist_id) ORDER BY author.normalized_name ASC, author.author_id ASC
+</select>
+	
 <insert id="insertAuthor" parameterType="String">
 	INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName}, #{lastName}, #{normalizedName});
 </insert>
 
 <insert id="insertFirstCoAuthor" parameterType="String">
-	INSERT INTO coauthor_list(author_id) VALUES(1)
+	INSERT INTO coauthor_list(author_id) VALUES(#{authorID})
 </insert>
 
 <insert id="insertFirstCoAuthor2" parameterType="String">
-	INSERT INTO coauthor(normalized_name, coauthorlist_id) VALUES (#{normalizedName}, 1);
+	INSERT INTO coauthor(normalized_name, coauthorlist_id) VALUES (#{normalizedName}, #{listID});
 </insert>
 
 <insert id="insertCoAuthor" parameterType="String">
-	INSERT INTO coauthor(coauthorlist_id,normalized_name) VALUES (#{ListID}, #{normalizedName});
+	INSERT INTO coauthor(coauthorlist_id,normalized_name) VALUES (#{listID}, #{normalizedName});
 </insert>
 
 </mapper>
