@@ -465,3 +465,74 @@ function naviSwitchSpecial(target) {
 	// unselect text
 	iN.value = iN.value;
 }
+
+
+/*
+ * TODO: new layout
+ */
+$(document).ready(function() { 
+	initBookmarksPublicationsLists();
+	initSidebarHeader();
+});
+
+function initBookmarksPublicationsLists() {
+	$(".action").hide();
+	$(".edittags").find(".editimage").hide();
+	if ($(".post") != 0) {
+		$(".post").hover(
+				function(){
+					$(this).find(".action").show();
+					$(this).find(".edittags").find(".editimage").show();
+					
+				},
+				function(){
+					$(this).find(".action").hide();
+					$(this).find(".edittags").find(".editimage").hide();
+				}
+		);
+	}
+
+	if ( ($("#bookmarks ul.posts").length != 0) && ($("#publications ul.posts").length != 0) && ($("#sidebar").length != 0) ) { 
+		// hoehe der postlisten anpassen auf groesste hoehe
+		// get heights
+		bookmarks_height	= $("#bookmarks ul.posts").height();
+		publications_height	= $("#publications ul.posts").height();
+		sidebar_height		= $("#sidebar").height();
+	
+		// get maximum height
+		maxheight = (bookmarks_height > publications_height ) ? bookmarks_height : publications_height;
+		maxheight = (maxheight > sidebar_height) ? maxheight : sidebar_height;
+	
+		// set heights to maximum_heights
+		$("#bookmarks ul.posts").height(maxheight);
+		$("#publications ul.posts").height(maxheight);
+		$("#sidebar").height(maxheight);
+	}
+}
+
+
+function initSidebarHeader() {
+	if ( ($("#postcontainer").length != 0) && ($("#bookmarks").length != 0) && ($("#publications").length != 0) && ($("#sidebar").length != 0) ) { 
+		// calculate scrollbar-width
+		var c = $("#postcontainer").width();
+		var s = $("#sidebar").width();
+		var b = $("#bookmarks").width();
+		var p = $("#publications").width();
+		var scrollbarWidth = c-(b+p);  // sidebar is in padding. width is width without padding
+		var sidebarWidth = $("#sidebarheader").width();
+		var sidebarWidthBody = $("#sidebar").width();
+	    var scrollbarWidth_default = 0;
+	
+		// sidebarWidth=263px : scrollbarWidth_default=12px
+		// scrollbarWidth=16px => sidebarWidth += scrollbarWidth - scrollbarWidth_default = 267px
+		//if (scrollbarWidth lt 0) scrollbarWidth = scrollbarWidth_default;
+		var new_sidebarWidth = sidebarWidth + scrollbarWidth - scrollbarWidth_default;
+	
+		// hide scrollbars in header
+		$('#headercontainer').css({"scroll": "hidden", "overflow-y": "hidden"});
+		
+		// set new width of header, regarding to scrollbarwidth
+		$("#sidebarheader").width(new_sidebarWidth);
+		$("#headercontainer").css("padding-right", new_sidebarWidth);
+	}
+}
