@@ -304,6 +304,8 @@ a:hover {
 /*****************************************************************************/
 /* BEGIN SIDEBAR                                                             */
 /*****************************************************************************/
+
+
 #sidebar {
 	position: absolute;
 	width: 250px;
@@ -327,16 +329,14 @@ a:hover {
 	text-decoration: none;
 }
 
+
+
+
 /** used for collapsing/uncollapsing sidebar entries */
 .toggler {
 	margin-right: .3em;
 	cursor: pointer;
 	color: #069;
-}
-
-#sidebarnavi {
-	height: 60px;
-	background-color: #e4e4e4;
 }
 
 #newsbox {
@@ -353,6 +353,63 @@ a:hover {
 	margin: 3px 0;
 	padding: 5px;
 }
+
+/* --- side bar navigation  ------------------------------------------------*/
+#sidebarnavi {
+	height: 40px;
+	background-color: #e4e4e4;
+}
+
+#sidebarnavi ul {
+/*	display: none;*/
+}
+
+
+.sidebarnavi_entry {
+    background: url("/resources/image/tabactions.png");
+    height: 40px; 
+    width: 44px;
+    position: absolute;
+    border-right: 1px solid #c6c6c6;    
+}
+
+.sidebarnavi_entry a {
+    height: 40px; 
+    width: 44px;
+    display: block;
+}
+
+.sidebarnavi_entry_01 {
+    background-position: -10px 0px;
+    left: 0px;
+}
+
+.sidebarnavi_entry_02 {
+    background-position: -50px 0px;
+    left: 44px;
+}
+
+.sidebarnavi_entry_03 {
+    background-position: -84px 0px;
+    left: 88px;
+}
+
+.sidebarnavi_entry_04 {
+    background-position: -130px 0px;
+    left: 132px;
+}
+
+.sidebarnavi_entry_05 {
+    background-position: -181px 0px;
+    left: 176px;
+}
+
+.sidebarnavi_entry_06 {
+    background-position: -236px 0px;
+    left: 220px;
+}
+
+
 
 /* hack to fix IE/Win's broken rendering of block-level anchors in lists */
 #sidebar li {
@@ -829,11 +886,6 @@ ul.news {
 	right: 0;
 }
 
-#sidebarnavi {
-	height: 60px;
-	background-color: #e4e4e4;
-}
-
 .listnav {
 	background-color: #e4e4e4;
 	margin: 2px;
@@ -844,49 +896,6 @@ ul.news {
 	text-align:center;
 }
 	
-.sidebarnavi_entry {
-    background: url("/resources/image/tabactions.jpg");
-    height: 60px; 
-    width: 55px;
-    position: absolute;
-    border-right: 1px solid #c6c6c6;    
-}
-
-.sidebarnavi_entry a {
-    height: 60px; 
-    width: 55px;
-    display: block;
-}
-
-.sidebarnavi_entry_01 {
-    background-position: 0px 0px;
-    left: 0px;
-}
-
-.sidebarnavi_entry_02 {
-    background-position: -58px 0px;
-    left: 56px;
-}
-
-.sidebarnavi_entry_03 {
-    background-position: -114px 0px;
-    left: 112px;
-}
-
-.sidebarnavi_entry_04 {
-    background-position: -172px 0px;
-    left: 168px;
-}
-
-.sidebarnavi_entry_05 {
-    background-position: -228px 0px;
-    left: 224px;
-}
-
-.sidebarnavi_entry_06 {
-    background-position: -284px 0px;
-    left: 280px;
-}
 
 #pageNavigation {
 	clear: both;
@@ -949,10 +958,6 @@ ul.news {
 }
 
 #pageNavigation .pageNavigation next2 {
-}
-
-#sidebarnavi ul {
-	display: none;
 }
 
 #newsbox {

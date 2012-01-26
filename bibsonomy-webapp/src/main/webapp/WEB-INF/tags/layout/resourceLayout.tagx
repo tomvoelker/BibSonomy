@@ -107,16 +107,14 @@
 			
 			<div id="sidebarheader">
 				<div id="sidebarnavi" class="navigation header">
-				<!-- 
 					<ul>
-						<li class="sidebarnavi_entry sidebarnavi_entry_01"><a href="" title="Posteingang"></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_02"><a href="" title="Freunde"></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_03"><a href="" title="Ablage"></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_04"><a href="" title="Plaudern"></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_05"><a href="" title="Spheres"></a></li>
-						<li class="sidebarnavi_entry sidebarnavi_entry_06"><a href="" title="Einstellungen"></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_01"><a href="" title="Posteingang"><!-- empty --></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_02"><a href="" title="Freunde"><!-- empty --></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_03"><a href="" title="Ablage"><!-- empty --></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_04"><a href="" title="Plaudern"><!-- empty --></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_05"><a href="" title="Spheres"><!-- empty --></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_06"><a href="" title="Einstellungen"><!-- empty --></a></li>
 					</ul>
-				 --> 
 				</div>
 			</div>
 		</jsp:attribute>
