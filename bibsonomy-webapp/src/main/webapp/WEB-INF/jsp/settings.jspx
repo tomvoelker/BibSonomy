@@ -39,6 +39,7 @@
 					<settings:sync command="${command}"/>
 				</c:when>
 			</c:choose>
+			
 		</jsp:attribute>
 
     
@@ -69,15 +70,5 @@
         	</ul>
         </jsp:attribute>
         
-        	
-		<jsp:attribute name="beforeBodyClose">
-          <script type="text/javascript">
-             //<mtl:cdata>
-             <![CDATA[
-                $(document).ready(function() {prepareErrorBoxes('dissError');});
-             ]]> 
-             //</mtl:cdata>
-          </script>
-      </jsp:attribute> 
 	</layout:tabLayout>
 </jsp:root>

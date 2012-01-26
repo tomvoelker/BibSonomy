@@ -44,7 +44,7 @@
             	</c:if>
             	<script type="Text/JavaScript">
 					<![CDATA[
-					$(document).ready(function() {
+					$(function() {
 						sysTagFadeBox(self);
 					});
 					]]>

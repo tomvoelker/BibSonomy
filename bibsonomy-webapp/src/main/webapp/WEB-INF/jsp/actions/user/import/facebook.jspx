@@ -200,7 +200,7 @@
 																								
 												<!-- The Spheres List by Mouseover of the Friend Button -->	
 												<script>	
-													$(document).ready(function() {
+													$(function() {
 														generateSphereDialog(getUserSelection('${rowCounter.count}'),'${ckey}', 'friendButton${rowCounter.count}', false, ${rowCounter.count}, "position1");
 													});
 												</script>

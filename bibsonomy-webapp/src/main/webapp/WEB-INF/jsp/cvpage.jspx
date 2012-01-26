@@ -173,7 +173,7 @@
 			</c:if>
 
 	<script>
-		$(document).ready( function() {
+		$(function() {
 			$("a.hand").each(function(index, link) {
 				$(link).click(function() {
 					

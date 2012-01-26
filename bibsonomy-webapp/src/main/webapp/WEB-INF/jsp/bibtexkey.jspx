@@ -33,7 +33,7 @@
 				<c:if test="${not empty command.requestedUser}"> 
 					<script type="text/javascript">
 					<![CDATA[
-					         $(document).ready(function(){
+					         $(function(){
 					     		$("#inpf").autocomplete("/generalAjax?action=getBibtexKeysForUser&requestedUser=${command.requestedUser}", {
 					     			width: 260,
 					     			selectFirst: true
