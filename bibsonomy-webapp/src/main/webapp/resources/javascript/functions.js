@@ -1582,7 +1582,7 @@ function addExportBibtexBox() {
 					
 					self.parents("form").submit(function() {
 						if (self.hasClass('descriptiveLabel') || self.val() == '') {
-							self.val('').removeClass( 'descriptiveLabel' ).trigger('focus');
+							self.val('').removeClass('descriptiveLabel' ).trigger('focus');
 							return false;
 						}
 					});

@@ -293,177 +293,57 @@ function minUsertags(minfreq) {
 	showMinfreq(minfreq);
 }
 
-var gOptions = new Array();
-
-
 /**
  * 
  * switches page default path to full navigation path
  * 
- * XXX: !NEW_LAYOUT! das dürfte komplett neugeschrieben werden müssen. :-(
- * 
- * @param target
+ * @param scope
+ * @param event
  * @return
  */
-function naviSwitchSpecial(target) {
+function switchNavi(scope, event) {
 
+	var element = $(xget_event(event));
+
+	element.parents("ul").css("left", "-9999");
+	
 	var username = null;
 
-	if(requUser != null) {
+	if (requUser != null) {
 		username = requUser;
-	} else if(currUser != null) {
+	} else if (currUser != null) {
 		username = currUser;
 	}
 
-	// obtain fundamental informations
-	var body = document.getElementsByTagName("body")[0];	
-	var bar = document.getElementById("heading").parentNode;
-	if(bar == null) { 
-		// backwards compatibility
-		bar = document.getElementById("path");
+	/*
+	 * change form action to redirect
+	 */
+	$("#search .smallform").attr("action", "/redirect")
+	.append("<input type='hidden' name='scope' value='" + scope + "'/>");
+
+	/*
+	 * Exchange text before form input field to selected text. FIXME: How to replace xget_event()? 
+	 */
+	$("#search a:first").html(element.html());
+	
+	/*
+	 * get hint for input field 
+	 */
+	var hint = getString("navi." + scope.replace(/\/.*/, "") + ".hint");
+	if (hint.search(/\?\?\?.*\?\?\?/) != -1) { 
+		hint = getString("navi.search.hint"); // fallback
 	}
+	/*
+	 * prepare input field
+	 */
+	$("#inpf")
+	.val(hint) // set hint as value
+	.addClass('descriptiveLabel') // add class
+	.descrInputLabel({});
 
-	// create headline node as container for following stuff 
-	var headlineNode = document.createElement("h1");
-	headlineNode.setAttribute("id", "path");
+	// FIXME: how to do this?
+//	$(sN).bind('change', function(){setSearchInputLabel(this);}).trigger('change');
 
-	// create a node with projectname default values
-	var pN = document.createElement("a");
-	pN.setAttribute("href", "/");
-	pN.setAttribute("rel", "Start_js");
-	pN.appendChild(document.createTextNode(projectName));
-	headlineNode.appendChild(pN);
-	headlineNode.appendChild(document.createTextNode(" :: "));
-
-	// create form as container for dropdown- and textfields
-	var fN = document.createElement("form");
-	fN.setAttribute("id", "specialsearch");
-	fN.setAttribute("method", "get");
-	fN.setAttribute("action", "/redirect");
-
-	// create dropdown box
-	var sN = document.createElement("select");
-	sN.setAttribute("name", "scope");
-	sN.setAttribute("size", "1");
-	sN.setAttribute("id", "scope");
-
-	// select options
-	var options = new Array("tag", "user", "group", "author", "concept/tag", "bibtexkey", "search", "explicit_user", "explicit_group");
-
-	// hint for input field
-	var hint = "";
-
-	// fill select dropdown box with options
-	for(var i = 0; i < options.length; i++) {
-
-		// exception for 'search' case
-		if(options[i] == "search") {
-
-			var oN = document.createElement("option");
-			oN.setAttribute("value", options[i]);
-			oN.appendChild(document.createTextNode(getString("navi.search") + ":" + getString("navi.all")));
-
-			if(options[i] == target) {
-				oN.setAttribute("selected", "");
-				hint = getString("navi.search.hint");
-			}
-
-			sN.appendChild(oN);
-
-		} else if(options[i] == "concept/tag") {
-
-			var oN = document.createElement("option");
-			oN.setAttribute("value", options[i]);
-			oN.appendChild(document.createTextNode(getString("navi.concept")));			
-
-			if(options[i] == target) {
-				oN.setAttribute("selected", "");
-				hint = getString("navi.concept.hint");
-			}
-
-			sN.appendChild(oN);
-
-		} else if(options[i] == "explicit_user") {
-
-			if(username != "" && username != null) {
-				var oN = document.createElement("option");
-				oN.setAttribute("value", "user:" + username);
-				oN.appendChild(document.createTextNode(getString("navi.search") + ":" + username));							
-
-				if(options[i] == target) {
-					oN.setAttribute("selected", "");
-					hint = getString("navi.search.hint");	
-				}
-
-				sN.appendChild(oN);
-			}
-
-		} else if(options[i] == "explicit_group") {
-			for(var j = 0; j < gOptions.length; ++j) {
-				var oN = document.createElement("option");
-				oN.setAttribute("value", "group:" + gOptions[j]);
-				oN.appendChild(document.createTextNode(getString("navi.search") + ":" + gOptions[j]));		
-
-				if(gOptions[j] == target) {
-					oN.setAttribute("selected", "");
-					hint = getString("navi.search.hint");	
-				}
-
-				sN.appendChild(oN);
-			}
-		} else {
-
-			var oN = document.createElement("option");
-			oN.setAttribute("value", options[i]);
-			oN.appendChild(document.createTextNode(getString("navi." + options[i])));			
-
-			if(options[i] == target) {
-				oN.setAttribute("selected", "");
-				hint = getString("navi." + options[i] + ".hint");
-			}
-
-			sN.appendChild(oN);
-		}		
-	}
-
-	// append dropdown box and spacer
-	fN.appendChild(sN);
-	fN.appendChild(document.createTextNode(" :: "));
-
-	// create and append textfield and spacer
-	var iN = document.createElement("input");
-	iN.setAttribute("type", "text");
-	iN.setAttribute("id", "inpf");
-	iN.setAttribute("name", "search");
-	iN.setAttribute("size", "30");
-
-	if(document.getElementById("inpf") != null) {
-		var iV = document.getElementById("inpf").value;
-		iN.value = iV;
-	}
-
-	fN.appendChild(iN);
-	headlineNode.appendChild(fN);
-	headlineNode.appendChild(document.createTextNode(" "));
-	// clone old navigation path and save it in a global variable for later restoring
-	curr_navi = bar.cloneNode(true);
-
-	// display new path element
-	bar.replaceChild(headlineNode, document.getElementById("heading"));
-	headlineNode.id="heading";
-
-	$(iN).descrInputLabel({});
-	$(sN).bind('change', function(){setSearchInputLabel(this);}).trigger('change');
-
-	// set focus to the input field
-	iN.focus();
-
-	// if the user uses opera, there is a workaround to set the cursor position
-	if(window.opera)
-		iN.select();
-
-	// unselect text
-	iN.value = iN.value;
 }
 
 

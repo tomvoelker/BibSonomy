@@ -14,28 +14,24 @@
 	<div id="search">
 		:: <jsp:invoke fragment="heading"/>
 		<ul>
-			<li onclick="naviSwitchSpecial('tag')"><fmt:message key="navi.tag"/></li>
-			<li onclick="naviSwitchSpecial('user')"><fmt:message key="navi.user"/></li>
-			<li onclick="naviSwitchSpecial('group')"><fmt:message key="navi.group"/></li>
-			<li onclick="naviSwitchSpecial('author')"><fmt:message key="navi.author"/></li>
-			<li onclick="naviSwitchSpecial('concept/tag')"><fmt:message key="navi.concept"/></li>
-			<li onclick="naviSwitchSpecial('bibtexkey')"><fmt:message key="navi.bibtexkey"/></li>
-			<li onclick="naviSwitchSpecial('search')"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
+			<li onclick="switchNavi('tag', event)"><fmt:message key="navi.tag"/></li>
+			<li onclick="switchNavi('user', event)"><fmt:message key="navi.user"/></li>
+			<li onclick="switchNavi('group', event)"><fmt:message key="navi.group"/></li>
+			<li onclick="switchNavi('author', event)"><fmt:message key="navi.author"/></li>
+			<li onclick="switchNavi('concept/tag', event)"><fmt:message key="navi.concept"/></li>
+			<li onclick="switchNavi('bibtexkey', event)"><fmt:message key="navi.bibtexkey"/></li>
+			<li onclick="switchNavi('search', event)"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
 			<c:if test="${not empty requestedUser}">
-				<li onclick="naviSwitchSpecial('explicit_user')"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
+				<li onclick="switchNavi('explicit_user', event)"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
 				<c:set var="mode" value="requUser" /><!-- FIXME: who uses this? -->
 			</c:if>
 			<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-				<li onclick="naviSwitchSpecial('explicit_user')"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></li>
+				<li onclick="switchNavi('explicit_user', event)"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></li>
 			</c:if>
 			<c:if test="${command.context.userLoggedIn}">
-				<li onclick="naviSwitchSpecial('followers')"><fmt:message key="navi.followedUsers"/></li>
 				<li style="color:black"><fmt:message key="navi.search"/> in group:</li><!--  FIXME: I18N -->
 				<c:forEach var="grp" items="${loginUser.groups}">
-					<script type="text/javascript">
-						gOptions.push('${grp.name}');
-					</script>
-					<li onclick="naviSwitchSpecial('${grp.name}')" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
+					<li onclick="switchNavi('${grp.name}', event)" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
 				</c:forEach>
 			</c:if>
 		</ul>
