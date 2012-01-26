@@ -8,30 +8,28 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
-	<!-- group of a post -->
+	<!-- Groups of a post -->
+	
+	<!-- TODO: Localize group names private and friends. This would have to be done at very many places... -->
+	
 	<c:forEach var="group" items="${post.groups}">
 		<c:if test="${!empty group.name and group.name ne 'public'}">
-			<c:out value=" "/>
 			<c:choose>
-				<c:when test="${group.name eq 'friend'}">
+				<c:when test="${group.name eq 'friends'}">
 					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
-					<a class="${friends}" href="/friend/${fn:escapeXml(post.user.name)}"><fmt:message key="friends"/></a>
+					<a class="friends" href="/friend/${fn:escapeXml(post.user.name)}"><c:out value="${group.name}" /></a>
+				</c:when>
+				<c:when test="${group.name eq 'private'}">
+					<fmt:message key="post.meta.asPrivate"/> 
+					<c:out value=" "/>
+					<a class="private" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 				</c:when>
 				<c:otherwise>
-					<c:choose>
-						<c:when test="${group.name eq 'private'}">
-							<c:set var="aclass" value="private"/>
-							<fmt:message key="post.meta.asPrivate"/> 
-						</c:when>
-						<c:otherwise>
-							<!-- Some regular (other) group -->
-							<fmt:message key="post.meta.asGroup"/> 
-							<c:set var="aclass" value="other"/>
-						</c:otherwise>
-					</c:choose>
+					<!-- Some regular (other) group -->
+					<fmt:message key="post.meta.asGroup"/> 
 					<c:out value=" "/>
-					<a class="${other}" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
+					<a class="other" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 				</c:otherwise>
 			</c:choose>
 		</c:if>	
