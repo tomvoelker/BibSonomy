@@ -10,6 +10,7 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+    <jsp:directive.attribute name="additionalItemClasses" type="java.lang.String" required="false"/>
   
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
