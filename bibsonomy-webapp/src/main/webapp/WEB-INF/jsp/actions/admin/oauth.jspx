@@ -52,28 +52,7 @@
 				}
 			</style>
 		</jsp:attribute>
-		
-		<jsp:attribute name="beforeBodyClose">
-          <script type="text/javascript">
-             //<mtl:cdata>
-             <![CDATA[
-                // vanishing error boxes
-                $(document).ready(function() {
-                	prepareErrorBoxes('dissError');
-                });
-                // Ensure consumer is to be removed and delete it.
-        		function deleteConsumer(consumerKey) {
-        			var box = window.confirm(getString('admin.oauth.consumer.ensure_delete'));
-        			if (box == true) { 
-        				document.getElementById("consumerKey").value = consumerKey;
-        				document.getElementById("deleteConsumerForm").submit();
-        			}
-        		} 
-             ]]> 
-             //</mtl:cdata>
-          </script>
-      </jsp:attribute> 
-		
+				
 		<jsp:attribute name="content">
 			<div id="outerBox">
 				<h2><fmt:message key="admin.actions.oauth"/></h2>
@@ -237,6 +216,23 @@
 	             		</fieldset>	
             	</form:form>
 			</div>
+			
+			
+			<script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // Ensure consumer is to be removed and delete it.
+        		function deleteConsumer(consumerKey) {
+        			var box = window.confirm(getString('admin.oauth.consumer.ensure_delete'));
+        			if (box == true) { 
+        				document.getElementById("consumerKey").value = consumerKey;
+        				document.getElementById("deleteConsumerForm").submit();
+        			}
+        		} 
+             ]]> 
+             //</mtl:cdata>
+          </script>
+			
 		</jsp:attribute>				
 	</layout:layout>
 </jsp:root>

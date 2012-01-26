@@ -75,6 +75,7 @@
 
 				</form:form>
 			</div>
+			
 		</jsp:attribute>
 		
         <jsp:attribute name="sidebar">
@@ -90,18 +91,5 @@
         	</ul>
         </jsp:attribute>
       
-		<jsp:attribute name="beforeBodyClose">
-        	<script type="text/javascript">
-             	//<mtl:cdata>
-             	<![CDATA[
-                	// vanishing error boxes
-                	$(document).ready( function(){
-						prepareErrorBoxes('dissError');
-            		});
-             	]]> 
-             	//</mtl:cdata>
-          	</script>
-		</jsp:attribute>
-
     </layout:layout>
 </jsp:root>

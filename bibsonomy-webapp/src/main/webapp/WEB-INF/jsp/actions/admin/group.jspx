@@ -46,7 +46,7 @@
 				<!--  autocomplete user info box -->
 				<script type="text/javascript">
 				<![CDATA[
-	  				$(document).ready(function(){
+	  				$(function() {
 						addAutocomplete("#selectedGroupName", '2');
 	  			});
 	  				function addAutocomplete(id, type) {

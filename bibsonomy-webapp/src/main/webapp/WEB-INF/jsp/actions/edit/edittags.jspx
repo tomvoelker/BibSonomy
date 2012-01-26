@@ -225,7 +225,7 @@
 			<script type="text/javascript">
             <![CDATA[
                      // vanishing error boxes
-                     $(document).ready( function(){
+                     $(function() {
                     	add_tags_toggle();
         	  			disableHandler();
         	  			add_toggle_relations();
