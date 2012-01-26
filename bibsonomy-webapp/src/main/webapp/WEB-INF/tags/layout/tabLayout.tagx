@@ -17,10 +17,10 @@
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
     <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
-	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
 				
 		
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" selectedNaviTab="${selectedNaviTab}" beforeBodyClose="${beforeBodyClose}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}" beforeBodyClose="${beforeBodyClose}">
 		<jsp:attribute name="content">
 			<div id="fullscreen">			
 			

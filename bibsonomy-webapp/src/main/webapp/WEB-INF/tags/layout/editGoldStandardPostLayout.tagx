@@ -17,7 +17,7 @@
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
     <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
-    <jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="hideGroupsAndTags" type="java.lang.Boolean" required="false"/>
     
     <jsp:directive.attribute name="headerExtResource" fragment="true" required="false" />
@@ -28,7 +28,7 @@
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
 	
-	<layout:paneLayout pageTitle="${editPageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	<layout:paneLayout pageTitle="${editPageTitle}" command="${command}" requPath="${requPath}" activeTab="${activeTab}">
 	    <!--+
     	 	| html header extension: page specific javascript
     	 	+-->

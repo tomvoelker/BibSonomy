@@ -24,7 +24,7 @@
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
-	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
 	
@@ -77,7 +77,7 @@
 				<!-- localized JavaScript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
 				<!--+ 
-				 	| merged jquery.js, functions.js, style.js, chrome.js
+				 	| merged jquery.js, functions.js, style.js
 				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js, jquery.sidebarresizer.js
 					| 
 					| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
@@ -247,10 +247,6 @@
 <!--								</c:if>-->
 <!--							</div>	-->
 <!--					-->
-								<!-- init dropdown menu -->
-<!--							<script type="text/javascript">-->
-<!--							  cssdropdown.startchrome("heading");-->
-<!--							</script>-->
 
 						</div>
 					
@@ -272,7 +268,7 @@
 						|
 						+-->
 					<div id="navigation">
-						<menu:navi selectedNaviTab="${selectedNaviTab}" loginUser="${loginUser}" />
+						<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 					</div><!-- #navigation -->
 
 					

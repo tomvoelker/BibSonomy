@@ -34,7 +34,7 @@
     <!-- page title -->
     <fmt:message key="post.meta.edit" var="pageTitle"/>
     
-    <layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" selectedNaviTab="nav_my">
+    <layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" activeTab="my">
 
       <jsp:attribute name="heading">
         <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<c:out value="${pageTitle}"/></a> 

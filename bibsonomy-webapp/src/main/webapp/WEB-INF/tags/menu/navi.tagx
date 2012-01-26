@@ -7,7 +7,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	
@@ -27,15 +27,15 @@
 		<!--+ 
 			| Home
 			+-->
-		<li class="${selectedNaviTab eq 'home' ? 'active' : ''}"><a href="/"><fmt:message key="navi.home"/></a></li>
+		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="/"><fmt:message key="navi.home"/></a></li>
 		<!--+ 
 		 	| myProjectName
 		 	+-->
 		<c:if test="${not empty loginUserName}">
-			<li class="pulldown ${selectedNaviTab eq 'my' ? 'active' : ''}">
-				<span rel="my_menu"><fmt:message key="navi.my"/>${properties['project.name']}</span>
-				<ul id="my_menu" class="nicedropmenudiv">
-					<li><a href="/user/${mtl:encodeURI(loginUserName)}" rel="my_menu"><fmt:message key="navi.my"/>${properties['project.name']}</a></li>
+			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}">
+				<span><fmt:message key="navi.my"/>${properties['project.name']}</span>
+				<ul>
+					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a></li>
 					<li><a href="/friends"><fmt:message key="navi.my.plural"/><fmt:message key="navi.friends.cap"/></a></li>
 				    <li><a href="/spheres"><fmt:message key="navi.my.plural"/><fmt:message key="navi.spheres.cap"/></a></li>
 					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.discussedPosts.Cap"/></a></li>
@@ -52,11 +52,11 @@
 			<!--+
 				| post a post
 				+-->
-			<li class="pulldown ${selectedNaviTab eq 'post' ? 'active' : ''}">
-				<span rel="post_menu"><fmt:message key="navi.postPost"/></span>
-				<ul id="post_menu" class="nicedropmenudiv">
-					<li><a id="nav_postBook" href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
-					<li><a id="nav_postPub" href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
+			<li class="pulldown ${activeTab eq 'post' ? 'active' : ''}">
+				<span><fmt:message key="navi.postPost"/></span>
+				<ul>
+					<li><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
+					<li><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
 				</ul>
 			</li>
 		</c:if>
@@ -65,10 +65,10 @@
 			+-->		
 		<c:choose>
 			<c:when test="${not empty loginUser.groups}">
-				<li class="pulldown ${selectedNaviTab eq 'groups' ? 'active' : ''}">
-					<span rel="grp_menu"><fmt:message key="navi.groups"/></span>
+				<li class="pulldown ${activeTab eq 'groups' ? 'active' : ''}">
+					<span><fmt:message key="navi.groups"/></span>
 
-					<table id="grp_menu" class="tnav_group nicedropmenudiv">
+					<table>
 						<c:forEach var="grp" items="${loginUser.groups}">
 							<tr>
 								<td><a href="/group/${mtl:encodeURI(grp.name)}"><c:out value='${grp.name}'/></a></td>
@@ -88,15 +88,15 @@
 				</li>
 			</c:when>
 			<c:otherwise>
-				<li class="${selectedNaviTab eq 'my' ? 'active' : ''}"><a id="nav_groups" href="/groups" rel="grp_menu"><fmt:message key="navi.groups"/></a></li>
+				<li class="${activeTab eq 'my' ? 'active' : ''}"><a id="nav_groups" href="/groups" rel="grp_menu"><fmt:message key="navi.groups"/></a></li>
 			</c:otherwise>
 		</c:choose>
 		<!--+
 			| popular
 			+-->
-		<li class="pulldown ${selectedNaviTab eq 'popular' ? 'active' : ''}">
+		<li class="pulldown ${activeTab eq 'popular' ? 'active' : ''}">
 			<span><fmt:message key="navi.popular" /></span>
-			<ul id="popular_menu" class="nicedropmenudiv">
+			<ul>
 				<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
 				<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
 				<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
@@ -105,14 +105,5 @@
 			</ul>
 		</li>
 	</ul>
-
-    <!-- selects the correct navigation tab -->
-<!--	<script type="text/javascript">-->
-<!--		<![CDATA[-->
-<!--		 	$(function() {-->
-<!--	  			cssdropdown.startchrome("navigation");-->
-<!--		 	}-->
-<!--	  	]]>-->
-<!--	</script>-->
     
 </jsp:root>

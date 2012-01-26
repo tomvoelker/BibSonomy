@@ -17,7 +17,7 @@
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
-	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
 
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
@@ -30,5 +30,5 @@
 		requPath="${requPath}" 
 		content="${content}" 
 		fullscreen="${fullscreen}" 
-		selectedNaviTab="${selectedNaviTab}"/>
+		activeTab="${activeTab}"/>
 </jsp:root>
