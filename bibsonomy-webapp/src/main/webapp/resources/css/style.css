@@ -206,61 +206,57 @@ a:hover {
 #navigation > ul {
 	list-style: none;
 	font-weight: bold;
-	/*margin-bottom: 10px;*/
+	margin-bottom: 10px;
 	/* Clear floats */
 	float: left;
 	width: 100%;
-	/* Bring the nav above everything else--uncomment if needed.
-	position:relative;
-	*/
-	z-index: 50;
 }
 #navigation > ul li {
 	float: left;
 	margin-right: 10px;
 	position: relative;
+	z-index: 50;
 }
-#navigation > ul a {
+#navigation > ul a, #navigation .pulldown {
 	display: block;
 	padding: 5px;
-	color: #fff;
-	background: #333;
+	background: #c6c6c6;
 	text-decoration: none;
 }
-#navigation > ul a:hover {
+#navigation > ul a:hover, #navigation .pulldown:hover {
 	color: #fff;
-	background: #6b0c36;
-	text-decoration: underline;
+	background: #333;
 }
 
 /*--- DROPDOWN ---*/
-#navigation > ul ul {
-	background: #C6C6C6; /* Adding a background makes the dropdown work properly in IE7+. Make this as close to your page's background as possible (i.e. white page == white background). */
+#navigation > ul ul, #navigation > ul table {
+	background: #c6c6c6; /* Adding a background makes the dropdown work properly in IE7+. Make this as close to your page's background as possible (i.e. white page == white background). */
 	background: rgba(198,198,198,0); /* But! Let's make the background fully transparent where we can, we don't actually want to see it if we can help it... */
 	list-style: none;
 	position: absolute;
 	left: -9999px; /* Hide off-screen when not needed (this is more accessible than display:none;) */
 }
 #navigation > ul ul li {
-	padding-top: 1px; /* Introducing a padding between the li and the a give the illusion spaced items */
 	float: none;
 }
 #navigation > ul ul a {
 	white-space: nowrap; /* Stop text wrapping and creating multi-line dropdown items */
 }
-#navigation > ul li:hover ul { /* Display the dropdown on hover */
+#navigation > ul li:hover ul, #navigation > ul li:hover table { /* Display the dropdown on hover */
 	left: 0; /* Bring back on-screen when needed */
 }
 #navigation > ul li:hover a { /* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
-	background: #6b0c36;
+	background: #c6c6c6;
 	text-decoration: underline;
 }
-#navigation > ul li:hover ul a { /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
+#navigation > ul li:hover ul a, #navigation > ul li:hover table a { /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
 	text-decoration: none;
 }
-#navigation > ul li:hover ul li a:hover{ /* Here we define the most explicit hover states--what happens when you hover each individual link. */
-	background:#333;
+#navigation > ul li:hover ul li a:hover, #navigation > ul li:hover table a:hover { /* Here we define the most explicit hover states--what happens when you hover each individual link. */
+	background: #333;
+	text-decoration: underline;
 }
+
 
 #navigation ul li.active, #navigation2 ul li.active {
 	color: #006699;

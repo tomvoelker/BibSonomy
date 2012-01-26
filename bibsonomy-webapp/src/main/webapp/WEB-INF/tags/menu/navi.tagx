@@ -35,7 +35,7 @@
 			<li class="pulldown ${selectedNaviTab eq 'my' ? 'active' : ''}">
 				<span rel="my_menu"><fmt:message key="navi.my"/>${properties['project.name']}</span>
 				<ul id="my_menu" class="nicedropmenudiv">
-					<li><a href="/user/${mtl:encodeURI(loginUserName)}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${properties['project.name']}</a></li>
+					<li><a href="/user/${mtl:encodeURI(loginUserName)}" rel="my_menu"><fmt:message key="navi.my"/>${properties['project.name']}</a></li>
 					<li><a href="/friends"><fmt:message key="navi.my.plural"/><fmt:message key="navi.friends.cap"/></a></li>
 				    <li><a href="/spheres"><fmt:message key="navi.my.plural"/><fmt:message key="navi.spheres.cap"/></a></li>
 					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.discussedPosts.Cap"/></a></li>
