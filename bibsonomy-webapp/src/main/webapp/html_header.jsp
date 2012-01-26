@@ -36,7 +36,6 @@
     <script type="text/javascript" src="/resources/javascript/functions.js"></script>
     <script type="text/javascript" src="/resources/javascript/tooltip.js"></script>
     <script type="text/javascript" src="/resources/javascript/style.js"></script>
-    <script type="text/javascript" src="/resources/javascript/chrome.js"></script>
 	<script type="text/javascript" src="/resources/jquery/jquery.js"></script>
     <script type="text/javascript" src="/resources/jquery/plugins/form/jquery.form.js"></script>
     <script type="text/javascript" src="/resources/jquery/plugins/corner/jquery.corner.js"></script>
