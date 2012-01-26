@@ -17,7 +17,7 @@
 	<!-- requPath + query -->
 	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
 	
-	<span class="actions">
+	<span class="selectEntriesPerPage">
 		<fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" />:${mtl:ch('nbsp')}
 		<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
 		
