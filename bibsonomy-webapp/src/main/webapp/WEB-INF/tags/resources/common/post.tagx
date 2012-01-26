@@ -23,6 +23,8 @@
        | They never have a userName. 
        | Since they also dont have several other properties, we dont show those.
        +-->
+       
+       
 	<li class="post ${additionalItemClasses}"><!-- additionalItemClasses to distinguish the odd numbered list elements from the even numbered ones -->
 
 		<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in and does NOT visit his own user page  -->

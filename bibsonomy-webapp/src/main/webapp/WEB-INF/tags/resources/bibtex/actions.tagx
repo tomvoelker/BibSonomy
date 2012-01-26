@@ -10,6 +10,19 @@
 	<jsp:directive.attribute name="noedittags" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
 
+
+<!-- FROM SVEN TODO DELETE -->
+		<div class="action">
+			<a class="item edit" href="" title="Bearbeiten"></a>
+			<a class="item delete" href="" title="Loeschen"></a>
+			<a class="item cummunity" href="" title="Gemeinschaftseintrag"></a>
+			<a class="item discuss" href="" title="Diskutieren"></a>
+		</div>
+<!-- FROM SVEN TODO DELETE -->
+
+
+
+
 	<c:if test="${command.context.userLoggedIn}">
 	
 		<!-- PICK / UNPICK -->
@@ -26,11 +39,11 @@
 		</c:url>
 		
 		<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-		<a onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
+		<a class="item pick" onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
 			<fmt:message key="bibtex.actions.${pickUnpick}"/>
 		</a>
 		
-		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+<!-- 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> -->
 
 		<!-- COPY -->
 		<c:choose>
