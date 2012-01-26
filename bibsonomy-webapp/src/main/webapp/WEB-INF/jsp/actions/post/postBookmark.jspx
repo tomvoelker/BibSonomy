@@ -13,7 +13,7 @@
 
 	<fmt:message key="navi.postBookmark" var="postBookmarkPageTitle"/>
 
-	<layout:paneLayout pageTitle="${postBookmarkPageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="nav_postBook">
+	<layout:paneLayout pageTitle="${postBookmarkPageTitle}" command="${command}" requPath="${requPath}" activeTab="post">
 
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${postBookmarkPageTitle}" /></a>

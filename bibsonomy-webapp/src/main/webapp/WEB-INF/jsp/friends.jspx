@@ -15,7 +15,7 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" 
 		command="${command}" requPath="${requPath}" 
-		selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
+		activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
 	
 		<jsp:attribute name="heading">
 		  <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friends"/></a> ::

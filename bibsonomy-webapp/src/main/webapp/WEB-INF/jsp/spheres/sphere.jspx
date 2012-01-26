@@ -20,7 +20,7 @@
 		<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
 	</fmt:message>
 
-	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
 		</jsp:attribute>

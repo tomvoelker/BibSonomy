@@ -18,7 +18,7 @@
 	
 	<fmt:message key="navi.settings" var="settingsPageTitle"/>
 	
-	<layout:tabLayout pageTitle="${settingsPageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
+	<layout:tabLayout pageTitle="${settingsPageTitle}" command="${command}" requPath="${requPath}" activeTab="my">
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
 		    <errors:global errors="${errors}"/>	

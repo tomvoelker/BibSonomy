@@ -16,7 +16,7 @@
     	requPath="${requPath}" 
     	command="${command}" 
     	pageTitle="${command.pageTitle}"
-        selectedNaviTab="nav_groups"
+        activeTab="groups"
       >
     	<!--+
     	 	| html header extension: page specific stylesheet

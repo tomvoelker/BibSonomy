@@ -15,7 +15,7 @@
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
  
-	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Bookmark" selectedNaviTab="nav_postBook">
+	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Bookmark" activeTab="post">
 
 		<jsp:attribute name="generalInformation">
             <editBook:required post="${command.post}" />

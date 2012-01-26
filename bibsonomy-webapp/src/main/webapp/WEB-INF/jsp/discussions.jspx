@@ -21,7 +21,7 @@
 		command="${command}" 
 		requPath="${requPath}"
 		disableActions="${true}"
-		selectedNaviTab="${(command.requestedUser eq command.context.loginUser.name) ? 'nav_my' : ''}">
+		activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
 	
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.discussedPosts"/></a> 
