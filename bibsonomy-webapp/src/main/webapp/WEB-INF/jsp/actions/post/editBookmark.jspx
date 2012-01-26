@@ -71,7 +71,7 @@
                 b.style.display = (b.value != '' ? '' : 'hidden');
               }
 
-              $(document).ready( function(){
+              $(function() {
               	scraping();
               	checkUrlForTitle();
               });

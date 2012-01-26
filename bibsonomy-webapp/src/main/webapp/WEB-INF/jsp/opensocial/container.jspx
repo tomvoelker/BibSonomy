@@ -103,7 +103,7 @@
 			    		my.cnt++;
 			    	};
 						
-  				$(document).ready(function(){
+  				$(function() {
   	  				my.init();
 	  			});
   			]]>
