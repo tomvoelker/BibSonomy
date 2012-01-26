@@ -386,6 +386,14 @@ a:hover {
 	font-weight: bold;
 }
 
+.sidebar_hh {
+	font-size: 120%;
+	color: #334d55;
+	margin: 0px;
+	padding: 5px;
+	font-weight: bold;
+}
+
 
 #sidebar a,#sidebar a:link,#sidebar a:visited {
 	color: #2F3321;
