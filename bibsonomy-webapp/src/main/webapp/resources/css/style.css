@@ -227,7 +227,7 @@ a:hover {
 /*--- DROPDOWN ---*/
 #navigation > ul ul, #navigation > ul table, #search ul {
 	background: #f0f0f0; /* Adding a background makes the dropdown work properly in IE7+. Make this as close to your page's background as possible (i.e. white page == white background). */
-	background: rgba(198,198,198,0); /* But! Let's make the background fully transparent where we can, we don't actually want to see it if we can help it... */
+/*	background: rgba(198,198,198,0); */ /* But! Let's make the background fully transparent where we can, we don't actually want to see it if we can help it... */ 
 	list-style: none;
 	position: absolute;
 	left: -9999px; /* Hide off-screen when not needed (this is more accessible than display:none;) */
@@ -306,16 +306,19 @@ a:hover {
 	color: #fff;
 }
 
+#navigation > ul > li > a:hover {
+	color: #000;
+}
 
 #navigation > ul > li.active a {
-	background: #f0f0f0;
 }
 
 
 #navigation ul li.pulldown {
 	background-image: url("/resources/image/pulldown-marker-000000.png");
 	background-repeat: no-repeat;
-/*	background-position: 95% 1.8ex; */
+	background-position: right center;
+	padding-right: 13px; 
 }
 
 #navigation ul li a, #navigation2 a {
