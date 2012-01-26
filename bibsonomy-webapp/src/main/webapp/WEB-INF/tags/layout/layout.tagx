@@ -292,7 +292,7 @@
 						</c:if>
 
 						<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}"/>							
-					
+
 						<jsp:invoke fragment="content"/>
 					
 					</div><!-- #postcontainer -->
@@ -330,9 +330,20 @@
 				    });					    
 				  ]]>
 				</script>
+				<c:if test="${fullscreen}">
+					<script type="text/javascript">
+		              <![CDATA[
+	   				    $(function() {$('#postcontainer').css('padding-right', "0");});
+					  ]]>
+					</script>
+				</c:if>					
         
 
-				<!-- Piwik --> 
+				<!--+
+					|
+					| Piwik
+					|
+					+--> 
 				<!-- TODO: Discuss where to store the piwik id and adress 
 					+ current: in theme files the whole piwik code ist stored
 					+ should (probably): code here/some js + id in config file
