@@ -11,7 +11,24 @@
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	
-	<div id="nice_tnav">
+	<!-- 
+	
+	
+	so soll's mal werden (auf CSS-Klassen achten!)
+	
+							<ul>
+							<li class="active"><a href="">Home</a></li>
+							<li class="pulldown"><a href="">Mein Bibsonomy</a></li>
+							<li><a href="">Eintragen...</a></li>
+							<li><a href="">Gruppen</a></li>
+							<li><a href="">Beliebt</a></li>
+						</ul>
+	
+	
+	
+	 -->
+	
+	
 	<ul>
 		<li>
 			<a id="nav_home" href="/">Home</a>
@@ -130,12 +147,11 @@
 		</li>
 
 	</ul>
-	</div>
 
     <!-- selects the correct navigation tab -->
 	<script type="text/javascript">
 		<![CDATA[
-	  		cssdropdown.startchrome("nice_tnav");
+	  		cssdropdown.startchrome("navigation");
 			if ("${selectedNaviTab}" != "" ) {
 				document.getElementById("${selectedNaviTab}").className = "checked";
 			}
