@@ -90,9 +90,14 @@
 			</div>
 		</c:if>
 		
-<!-- 		<div class="footer"></div> -->
+	<!--CAN THIS BE REMOVED? 		<div class="footer"></div> -->
 		
 		<!-- ACTIONS -->
+		<div class="action">
+			<jsp:invoke fragment="actions"/>
+		</div>
+
+<!-- The old actions. Do we stil need to work around that clearfix bug? -->		
 <!-- 		<div class="bmfoot"> -->
 <!-- 			actions like copy, edit, delete, pick, etc. -->
 <!-- 			FIXME: user name for community posts not given - copying currently not possible -->

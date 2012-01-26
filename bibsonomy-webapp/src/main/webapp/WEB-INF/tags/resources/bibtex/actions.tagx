@@ -7,20 +7,7 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="noedittags" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
-
-
-<!-- FROM SVEN TODO DELETE -->
-		<div class="action">
-			<a class="item edit" href="" title="Bearbeiten"></a>
-			<a class="item delete" href="" title="Loeschen"></a>
-			<a class="item cummunity" href="" title="Gemeinschaftseintrag"></a>
-			<a class="item discuss" href="" title="Diskutieren"></a>
-		</div>
-<!-- FROM SVEN TODO DELETE -->
-
-
 
 
 	<c:if test="${command.context.userLoggedIn}">
@@ -39,52 +26,32 @@
 		</c:url>
 		
 		<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-		<a class="item pick" onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
-			<fmt:message key="bibtex.actions.${pickUnpick}"/>
-		</a>
-		
-<!-- 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/> -->
+		<a class="item pick" onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}"><!-- Keep Me --></a>
 
-		<!-- COPY -->
+
+		<!-- COPY EDIT DELETE -->
 		<c:choose>
-			<c:when test="${loginUserName ne post.user.name}">
-				<!-- different users - COPY -->
+			
+			<!-- COPY -->
+			<c:when test="${loginUserName ne post.user.name}"><!-- user is not post's owner -->
 				<c:url var="copyLink" value="/editPublication">
 					<c:param name="hash" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 				</c:url>
 				<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
-         		<a href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-					<fmt:message key="bibtex.actions.copy"/>
-				</a>
-
+         		<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>
 			</c:when>
-			<c:otherwise>
-				<!-- same user - EDIT, DELETE, ... -->
-				<c:choose>
-					<c:when test="${noedittags}">
-						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
-             			<a href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-							<fmt:message key="bibtex.actions.edit"/>
-						</a>
-					</c:when>
-					<c:otherwise>						
-						<fmt:message key="bibtex.actions.edit.title" var="editTagsTitle"/>
-             			<a onclick="editTags(this,'${ckey}');return false;"
-							tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
-							href="/editPublication?intraHashToUpdate=${post.resource.intraHash}"
-							name="${post.resource.intraHash}"
-							title="${editTagsTitle}">
-							<fmt:message key="bibtex.actions.edit"/>
-						</a>
-					</c:otherwise>
-				</c:choose>
-				<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-				
+			
+			<!-- EDIT, DELETE -->
+			<c:otherwise><!-- user is post's owner -->
+			
+				<!-- EDIT -->
+				<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
+       			<a class="item edit" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
+			
 				<!-- DELETE -->					         
 				<fmt:message key="bibtex.actions.delete.title" var="deleteTitle"/>
-                
                 <c:url var="deleteUrl" value="/deletePost">
                    <c:param name="resourceHash" value="${post.resource.intraHash}" />
                    <c:param name="ckey" value="${ckey}" />
@@ -92,24 +59,23 @@
                 <c:choose>
                 	<!-- SHOW A CONFIRM WINDOW -->
                 	<c:when test="${command.context.loginUser.settings.confirmDelete}">
-                    	<a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
-                    		onclick="javascript: return confirmDelete();">
-                         		<fmt:message key="bibtex.actions.delete"/>
-                      	</a>
+                    	<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
+                    		onclick="javascript: return confirmDelete();"><!-- Keep Me --></a>
                 	</c:when>
-                	<!-- JUST DELETE -->
+                	<!-- JUST DELETE WITHOUT FURTHER CONFIRMATION-->
                 	<c:otherwise>
-                    	<a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}">
-                    		<fmt:message key="bibtex.actions.delete"/>
-                    	</a>
+                    	<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"><!-- Keep Me --></a>
                 	</c:otherwise>
                 </c:choose>                
 			</c:otherwise>
+			
 		</c:choose>
+	
 		
-		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+		<!-- ADMIN ACTIONS -->
 		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-			<!-- GOLDSTANDARD -->
+
+			<!-- COMMUNITY POST -->
 			<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
 				<c:param name="hash" value="${post.resource.intraHash}" />
 				<c:param name="user" value="${post.user.name}" />
@@ -117,14 +83,14 @@
 			</c:url>
 			
 			<fmt:message key="bibtex.actions.gold" var="goldTitle" />
-	    	<a href="${editGoldStandardLink}" title="${goldTitle}">
-				<c:out value="${goldTitle}" />
-			</a>
-			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+	    	<a class="item community" href="${editGoldStandardLink}" title="${goldTitle}"><!-- Keep Me --></a>
 		</c:if>
 		
-		<!-- REMOVE Message from Inbox -->
+
+		<!-- INBOX ACTIONS -->
 		<c:if test="${post.inboxPost}">
+			
+			<!-- REMOVE -->
 			<c:url var="message_remove" value="/removeMessage">
 				<c:param name="hash" value="${post.resource.intraHash}" />
 				<c:param name="user" value="${post.user.name}" />
@@ -132,68 +98,48 @@
 				<c:param name="clear" value="false" />
 			</c:url>
 			<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-			
 			<c:choose>
 			   	<!-- SHOW A CONFIRM WINDOW -->
 			   	<c:when test="${command.context.loginUser.settings.confirmDelete}">
-			   		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-			   			onclick="javascript: return confirmDelete();">
-			   			<fmt:message key="bibtex.actions.removeMessage"/>
-			   		</a>
+			   		<a class="item remove" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
+			   			onclick="javascript: return confirmDelete();"><!-- Keep Me --></a>
 			   	</c:when>
-			   	<!-- JUST DELETE -->
+			   	<!-- JUST DELETE WITHOUT FURTHER CONFIRMATION -->
 			   	<c:otherwise>
-			   		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
-			      			<fmt:message key="bibtex.actions.removeMessage"/>
-			   		</a>
+			   		<a class="item remove" href="${fn:escapeXml(message_remove)}" title="${removeTitle}"><!-- Keep Me --></a>
 			   	</c:otherwise>
 			</c:choose>
-			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		</c:if>					
-		
-		<!-- DISCUSS link -->
-		<fmt:message key="post.resource.discussion.title.bibtex" var="title"/>
-		<a href="/bibtex/${post.resource.interHash}#discussion" title="${title}"><fmt:message key="post.resource.discussion" /></a>		
-		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-		
+
 	</c:if>
 	
 	
+	<!-- RESOURCE LINKS (BIBTEX, URL, DOI) -->
 	<c:if test="${not disableResourceLinks}">
 
 		<!-- URL -->
 		<c:if test="${not empty post.resource.url}">
 			<fmt:message key="bibtex.actions.url.title" var="urlTitle" />
-	    	<a href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}">
-				<fmt:message key="bibtex.actions.url"/>
-			</a>
-			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+	    	<a class="item url" href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}"><!-- Keep Me --></a>
 		</c:if>
 		
 		<!-- DOI -->
 		<c:if test="${not empty post.resource.miscFields['doi']}">
 			<fmt:message key="post_bibtex.doi_isbn.doi" var="urlTitle"/>
-	    	<a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}">
-				<c:out value="${urlTitle}"/>
-			</a>
-			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+	    	<a class="item doi" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><!-- Keep Me --></a>
 		</c:if>
 		
 		<!-- BIBTEX -->
 	    <fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-	    <a href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">
-			<fmt:message key="bibtex.actions.bibtex"/>
-		</a>
+	    <a class="item bibtex" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><!-- Keep Me --></a>
 	
 		<!-- OPENURL -->
 		<c:if test="${not empty command.context.loginUser.openURL}">
-	    	<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	    	<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
-	    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}">
-	    		<fmt:message key="bibtex.actions.openurl"/>
-	    	</a>
+	    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}"><!-- Keep Me --></a>
 		</c:if>			
 	</c:if>
+
 	
 	<!-- UnAPI -->
     <abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr>

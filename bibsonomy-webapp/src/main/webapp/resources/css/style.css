@@ -637,6 +637,10 @@ ul.news {
     background-position: -117px 0px;
 }
 
+.post .action .url{
+    background-position: -205px 0px;
+}
+
 .post .action .bibtex{
     background-position: -151px 0px;
 }
@@ -644,6 +648,8 @@ ul.news {
 .post .action .doi{
     background-position: -205px 0px;
 }
+
+
 
 .post .rating {
 	margin-top: 1ex;
