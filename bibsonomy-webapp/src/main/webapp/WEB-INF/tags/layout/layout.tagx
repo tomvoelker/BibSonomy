@@ -256,12 +256,15 @@
 					</div><!-- #navigation -->
 
 					
-					<c:if test="${not empty headerContainer}">
-						<div id="headercontainer">
+					<div id="headercontainer">
+						<c:if test="${not empty headerContainer}">
 							<jsp:invoke fragment="headerContainer"/>
-						</div> <!-- #headercontainer -->
-					</c:if>
-
+						</c:if>
+						<div id="sidebarheader">
+							<parts:sidebarnavi/>
+						</div>
+					</div> <!-- #headercontainer -->
+		
 					<!--+
 						|
 						| main content box

@@ -591,6 +591,84 @@ ul.news {
 	color: #2F3321 ! important;
 	padding-right:10px;
 }
+
+/*--- simple css link buttons -----------------------------------------------*/
+
+.linkButton {
+	display: inline-block;
+	padding: 2px 2px 3px;
+	line-height: 1em;
+	background-color: #EEEEEE;
+	text-decoration: none;
+	font-size: 90%;
+	font-weight: normal;
+	font-family: arial; /*sans-serif*/
+	text-shadow: none;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+	border: 1px solid #6F6F6F;
+	-moz-box-shadow: 0 1px 3px #999;
+	-webkit-box-shadow: 0 1px 3px #999;
+	border-bottom: 1px solid #222;
+	position: relative;
+	cursor: pointer;
+	vertical-align: middle;
+	margin-right: 1px;
+}
+
+.linkButton:hover {
+	text-shadow: 0 1.5px 3px #AFAFAF;
+	border: 1px solid #006699;
+	-moz-box-shadow: 0 1px 3px #006699;
+	-webkit-box-shadow: 0 1px 3px #999;
+}
+
+.linkButton * {
+	border: none;
+	vertical-align: middle;
+	color: #5F5F5F;
+}
+
+/*--- relations/concepts ---------------------------------------------------*/
+.box_upperconcept {
+	font-size: 80%;
+	line-height: 1.2em;
+	text-indent: -3em;
+	margin-left: 3em;
+}
+
+#sidebar a.selectedConcept {
+	color: rgb(51, 77, 85) !important;
+	font-weight: bold;
+}
+
+li.box_upperconcept a {
+	color: #2F3321 ! important;
+}
+
+li.box_lowerconcept a {
+	color: #768053 ! important;
+}
+
+.box_lowerconcept {
+	display: inline;
+	font-size: 90%;
+	line-height: 1.1em;
+}
+
+.box_arrow {
+	display: inline;
+	font-size: 80%;
+	line-height: 1.2em;
+}
+
+.box_lowerconcept_elements {
+	display: inline;
+}
+
+
 /*****************************************************************************/
 /* END SIDEBAR                                                               */
 /*****************************************************************************/

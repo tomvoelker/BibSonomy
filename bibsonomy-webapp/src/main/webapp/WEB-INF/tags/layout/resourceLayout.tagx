@@ -129,9 +129,6 @@
 				</h2>			
 			</div>
 			
-			<div id="sidebarheader">
-				<parts:sidebarnavi/>
-			</div>
 		</jsp:attribute>
 		
 		<jsp:attribute name="footerContainer">

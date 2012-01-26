@@ -58,7 +58,7 @@
 							<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
 						</fmt:message>
 					</div>
-	    			<ul class="sphere_users">
+	    			<ul class="sphere_users sidebar_collapse_content">
 	   					<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
 	   						<spheres:userLink user="${item}"/>
 				    	</c:forEach>
