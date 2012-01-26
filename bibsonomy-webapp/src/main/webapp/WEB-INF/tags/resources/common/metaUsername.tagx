@@ -1,0 +1,21 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+
+	<!-- user name of a resource -->
+	<c:if test="${!isUserPage}">
+		<c:out value=" "/>
+		<fmt:message key="post.meta.taggedBy" />
+		<c:out value=" "/>
+		<a name="${fn:escapeXml(post.user.name)}" href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
+	</c:if>
+	
+	
+	
+</jsp:root>

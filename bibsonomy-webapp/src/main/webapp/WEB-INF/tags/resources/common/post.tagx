@@ -18,62 +18,52 @@
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
    
-	<li class="bm">
-		<!-- only display icon when user is logged in and does NOT visit his own user page  -->
+   <!--+ 
+       | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
+       | They never have a userName. 
+       | Since they also dont have several other properties, we dont show those.
+       +-->
+	<li class="post ${additionalItemClasses}"><!-- additionalItemClasses to distinguish the odd numbered list elements from the even numbered ones -->
+
+		<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in and does NOT visit his own user page  -->
         <c:if test="${command.context.userLoggedIn and command.requestedUser ne loginUserName}">
         	<!-- FIXME: user name for community posts not given - copying currently not possible -->
-        	<c:if test="${not empty post.user.name}">
-		  		  <c:choose>
-					<c:when test="${loginUserName eq post.user.name}">
-						<div class="bmicon_selected" title="${alreadyOwn}">
-							<jsp:invoke fragment="bmicon"/>
-						</div>
-					</c:when>
-					<c:otherwise>
-						<div class="bmicon_unselected" title="${copyThisPost}">
-							<jsp:invoke fragment="bmicon"/>
-						</div>
-					</c:otherwise>
-			  </c:choose>
+        	<c:if test="${not empty post.user.name}">	
+	        	<c:if test="${loginUserName eq post.user.name}">
+					<img class="overlay" src="/resources/image/inMyCollection.png" alt="inMyCollection"></img>
+				</c:if>
 			</c:if>
-        </c:if>
+		</c:if>
+		<!-- TODO: FIX URL -->
+		<div class="image mimetype_pdf"><img class="preview" alt="preview" src="/resources/image/preview1_80.jpg"></img></div>
+	
+
+		<!-- TITLE AND DESCRIPTION -->
+		<div class="title"><jsp:invoke fragment="title"/></div>
+		<c:if test="${not empty desc}"> 
+			<div class="desc"><jsp:invoke fragment="desc"/></div>
+		</c:if>
 		
-		<div class="bmtitle">
-			<jsp:invoke fragment="title"/>
-		</div>
-		<div class="bmdesc">
-			<jsp:invoke fragment="desc"/>
-		</div>
-		
-		<!-- meta (tags, user, posting date) -->
+		<!-- META DATA (posting date, user, groups) -->
 		<!--+ 
 		 	| FIXME: user name, tags, etc. for community posts not given -
 		 	| therefore display of metadata disabled. We could/should show here
 		 	| meta information about the community post, e.g., last change date,
 		 	| revision number, etc.
 		 	+-->
-		<c:if test="${not empty post.user.name}">
-			<span class="bmmeta">
-				<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-			</span>
-		</c:if>
+		<div class="time"><rc:metaDate post="${post}"/></div>
+		<div class="user"><rc:metaUsername post="${post}" /></div>
+ 		<div class="group"><rc:metaGroups post="${post}" /></div>
+ 		
+ 		<!-- TAGS -->
+		<div class="tags"> 
+			<rc:metaTags post="${post}" />	
+			<a class="edittags" href="" title="Tags bearbeiten"><img class="editimage" src="/resources/image/edit.gif" alt="edit"><!-- keep me --></img></a>
+		</div>
 		
-		<div class="bmfoot">
-			<!-- actions like copy, edit, delete, pick, etc. -->
-			<!-- FIXME: user name for community posts not given - copying currently not possible -->
-			<c:if test="${not empty post.user.name}">
-				<c:set var="act_fragment"><jsp:invoke fragment="actions"/></c:set>
-				<span class="bmaction">${act_fragment}</span>
-				
-				<!-- ugly hack to circumvent IEs clearfix bug -->
-				<c:if test="${not (fn:trim(act_fragment) eq '')}">
-					<jsp:text>${mtl:ch('nbsp')}</jsp:text>
-				</c:if>
-				<!-- end ugly hack (dbe) -->
-			</c:if>
-			
-			<!-- TODO: remove as soon lucene supports rating -->
-			<!-- ratings -->
+		<!-- RATING -->
+		<div class="rating">
+			<!-- TODO: remove as soon as lucene supports rating -->
 			<c:if test="${not empty post.resource.rating}">
 				<span class="bmrating">
 					<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}"/>
@@ -83,7 +73,39 @@
 					<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}"/>)</span>
 				</span>
 			</c:if>
-		</div>   
+		</div>
+		
+		<!-- NUMBER OF POSTS TO THIS RESOURCE -->
+		<!--+ 
+		 	| FIXME: user name, tags, etc. for community posts not given -
+		 	| therefore display of metadata disabled. We could/should show here
+		 	| meta information about the community post, e.g., last change date,
+		 	| revision number, etc.
+		 	+-->
+		<c:if test="${not empty post.user.name}">
+			<div class="usersaves">
+				<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" valueOnly="false"/>
+			</div>
+		</c:if>
+		
+<!-- 		<div class="footer"></div> -->
+		
+		<!-- ACTIONS -->
+<!-- 		<div class="bmfoot"> -->
+<!-- 			actions like copy, edit, delete, pick, etc. -->
+<!-- 			FIXME: user name for community posts not given - copying currently not possible -->
+<!--			<c:if test="${not empty post.user.name}">-->
+<!--				<c:set var="act_fragment"><jsp:invoke fragment="actions"/></c:set>-->
+<!--				<span class="bmaction">${act_fragment}</span>-->
+				
+<!-- 				ugly hack to circumvent IEs clearfix bug -->-->
+<!--				<c:if test="${not (fn:trim(act_fragment) eq '')}">-->
+<!--					<jsp:text>${mtl:ch('nbsp')}</jsp:text>-->
+<!--				</c:if>-->
+<!-- 				end ugly hack (dbe) -->
+<!--			</c:if>-->
+			
+<!-- 		</div>    -->
 	</li>
 
 </jsp:root>

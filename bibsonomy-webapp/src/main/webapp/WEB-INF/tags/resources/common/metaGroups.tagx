@@ -1,0 +1,40 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+
+	<!-- group of a post -->
+	<c:forEach var="group" items="${post.groups}">
+		<c:if test="${!empty group.name and group.name ne 'public'}">
+			<c:out value=" "/>
+			<c:choose>
+				<c:when test="${group.name eq 'friend'}">
+					<fmt:message key="post.meta.asGroup"/> 
+					<c:out value=" "/>
+					<a class="${friends}" href="/friend/${fn:escapeXml(post.user.name)}"><fmt:message key="friends"/></a>
+				</c:when>
+				<c:otherwise>
+					<c:choose>
+						<c:when test="${group.name eq 'private'}">
+							<c:set var="aclass" value="private"/>
+							<fmt:message key="post.meta.asPrivate"/> 
+						</c:when>
+						<c:otherwise>
+							<!-- Some regular (other) group -->
+							<fmt:message key="post.meta.asGroup"/> 
+							<c:set var="aclass" value="other"/>
+						</c:otherwise>
+					</c:choose>
+					<c:out value=" "/>
+					<a class="${other}" href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
+				</c:otherwise>
+			</c:choose>
+		</c:if>	
+	</c:forEach>
+
+</jsp:root>

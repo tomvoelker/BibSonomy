@@ -34,49 +34,6 @@
 		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="/user/${fn:escapeXml(post.user.name)}/" tags="${systagTitles}" title="System Tags"/>	
 	</c:if>
 	
-	<!-- group of a post -->
-	<c:forEach var="group" items="${post.groups}">
-		<c:if test="${!empty group.name and group.name ne 'public'}">
-		<c:out value=" "/>
-			<c:choose>
-				<c:when test="${group.name eq 'friends'}">
-					<fmt:message key="post.meta.asGroup"/> 
-					<c:out value=" "/>
-					<a href="/friend/${fn:escapeXml(post.user.name)}"><fmt:message key="friends"/></a>
-				</c:when>
-				<c:otherwise>
-					<fmt:message key="post.meta.asGroup"/> 
-					<c:out value=" "/>
-					<a href="/viewable/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
-				</c:otherwise>
-			</c:choose>
-		</c:if>	
-	</c:forEach>
-
-	<!-- user name of a resource -->
-	<c:if test="${!isUserPage}">
-		<c:out value=" "/>
-		<fmt:message key="post.meta.taggedBy" />
-		<c:out value=" "/>
-		<a name="${fn:escapeXml(post.user.name)}" href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
-	</c:if>
 	
 	<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-	
-	<!-- tagging date -->
-	<c:out value=" "/>
-	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
-		<!-- mouse-over: create date -->
-		<fmt:formatDate type="date" dateStyle="medium" value="${post.date}" var="createDate" />
-		<fmt:formatDate type="time" timeStyle="short" value="${post.date}" var="createTime" />
-		<!-- mouse-over: change date -->
-		<fmt:formatDate type="date" dateStyle="medium" value="${post.changeDate}" var="changeDate" />
-		<fmt:formatDate type="time" timeStyle="short" value="${post.changeDate}" var="changeTime" />
-		<!-- content: time difference to now -->
-		<fmt:message key="post.meta.changedOn" var="changedOn"/>
-		<span title="${createDate}, ${createTime}, ${changedOn} ${changeDate}, ${changeTime}">
-			<mtl:formatTimeDiff startDate="${post.changeDate}"/>
-		</span>
-	</fmt:timeZone>
-
 </jsp:root>

@@ -1,0 +1,26 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+
+
+	<c:out value=" "/>
+	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
+		<!-- mouse-over: create date -->
+		<fmt:formatDate type="date" dateStyle="medium" value="${post.date}" var="createDate" />
+		<fmt:formatDate type="time" timeStyle="short" value="${post.date}" var="createTime" />
+		<!-- mouse-over: change date -->
+		<fmt:formatDate type="date" dateStyle="medium" value="${post.changeDate}" var="changeDate" />
+		<fmt:formatDate type="time" timeStyle="short" value="${post.changeDate}" var="changeTime" />
+		<!-- content: time difference to now -->
+		<fmt:message key="post.meta.changedOn" var="changedOn"/>
+		<span title="${createDate}, ${createTime}, ${changedOn} ${changeDate}, ${changeTime}">
+			<mtl:formatTimeDiff startDate="${post.changeDate}"/>
+		</span>
+	</fmt:timeZone>
+</jsp:root>
