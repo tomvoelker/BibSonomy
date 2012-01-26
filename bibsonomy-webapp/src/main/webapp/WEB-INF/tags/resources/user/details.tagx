@@ -9,7 +9,7 @@
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
     <jsp:directive.attribute name="cssClass" type="java.lang.String" required="false" />
 
-    <table class="${cssClass}">
+    <table class="${cssClass} sidebar_collapse_content">
     
       <tr><th colspan="2">registration form data</th></tr>
       <tr><th>name</th><td><a href="/admin?aclUserInfo=${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a></td></tr>
