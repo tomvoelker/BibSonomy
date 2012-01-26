@@ -356,7 +356,7 @@ a:hover {
 
 /* --- side bar navigation  ------------------------------------------------*/
 #sidebarnavi {
-	height: 40px;
+	height: 50px;
 	background-color: #e4e4e4;
 }
 
@@ -367,10 +367,10 @@ a:hover {
 
 .sidebarnavi_entry {
     background: url("/resources/image/tabactions.png");
-    height: 40px; 
+    height: 50px; 
     width: 44px;
     position: absolute;
-    border-right: 1px solid #c6c6c6;    
+    border-right: 1px solid #c6c6c6;
 }
 
 .sidebarnavi_entry a {
@@ -380,32 +380,32 @@ a:hover {
 }
 
 .sidebarnavi_entry_01 {
-    background-position: -10px 0px;
+    background-position: -10px 5px;
     left: 0px;
 }
 
 .sidebarnavi_entry_02 {
-    background-position: -50px 0px;
+    background-position: -50px 5px;
     left: 44px;
 }
 
 .sidebarnavi_entry_03 {
-    background-position: -84px 0px;
+    background-position: -84px 5px;
     left: 88px;
 }
 
 .sidebarnavi_entry_04 {
-    background-position: -130px 0px;
+    background-position: -130px 5px;
     left: 132px;
 }
 
 .sidebarnavi_entry_05 {
-    background-position: -181px 0px;
+    background-position: -181px 5px;
     left: 176px;
 }
 
 .sidebarnavi_entry_06 {
-    background-position: -236px 0px;
+    background-position: -236px 5px;
     left: 220px;
 }
 
