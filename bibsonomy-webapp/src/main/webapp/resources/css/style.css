@@ -1007,11 +1007,13 @@ li.box_lowerconcept a {
 #bookmarksfooter .footer {
 	border-right: 1px solid #c6c6c6;
 	height:30px;
+	position:relative;
 }    
 
 #publicationsfooter .footer {
 	border-left: 1px solid #c6c6c6;
 	height:30px;
+	position:relative;
 }    
 
 #publicationsheader .header {
@@ -1076,9 +1078,7 @@ li.box_lowerconcept a {
 	height: 60px;
 	padding-right: 250px;
 	background-color: #c6c6c6;
-	overflow-y: scroll;
-	overflow-x:hidden;
-	
+	overflow:visible;
 }
 
 #sidebarheader {
