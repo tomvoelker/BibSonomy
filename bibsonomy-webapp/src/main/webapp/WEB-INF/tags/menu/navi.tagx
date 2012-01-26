@@ -81,7 +81,7 @@
 		<c:choose>
 			<c:when test="${not empty loginUser.groups}">
 				<li class="pulldown">
-					<span id="nav_groups" rel="grp_menu"><fmt:message key="navi.groups"/></a>
+					<span id="nav_groups" rel="grp_menu"><fmt:message key="navi.groups"/></span>
 
 					<table id="grp_menu" class="tnav_group nicedropmenudiv">
 						<c:forEach var="grp" items="${loginUser.groups}">
