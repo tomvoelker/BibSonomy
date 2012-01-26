@@ -75,7 +75,6 @@
 --%>
 <%-- <c:if test="${not empty user.name}">  --%>
 	<script type="text/javascript">
-  		cssdropdown.startchrome("nice_tnav");
 		if ("${selectedNaviTab}" != "" ) {
 			document.getElementById("${selectedNaviTab}").className = "checked";
 		} else {

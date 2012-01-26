@@ -21,9 +21,6 @@
 				<c:set var="mode" value="requUser" />
 			</c:if>
 		</div>
-		<script type="text/javascript">
-		  cssdropdown.startchrome("path");
-		</script>
 	</div>	
 	
 	<div id="mainHeaderRightBox">
