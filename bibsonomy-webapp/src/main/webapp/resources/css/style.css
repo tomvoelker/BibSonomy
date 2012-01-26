@@ -191,14 +191,6 @@ a:hover {
 	height: 31px;
 }
 
-#navigation2 ul li {
-	display: inline;
-	width: auto;
-	list-style: none;
-	padding: 1ex 3ex;
-	font-weight: bold;
-}
-
 /* 
  * navigation dropdown menu
  */ 
@@ -260,7 +252,7 @@ a:hover {
 	padding: 0;
 } 
 
-#navigation ul li.active, #navigation2 ul li.active {
+#navigation ul li.active {
 	color: #006699;
 	text-decoration: none;
 	background-color: white;
@@ -268,17 +260,17 @@ a:hover {
 	height:25px;
 }
 
-#navigation ul li.active a, #navigation2 ul li.active a {
+#navigation ul li.active a {
 	color: #006699;
 }
 
-#navigation ul li.pulldown, #navigation2 ul li.pulldown {
+#navigation ul li.pulldown {
 	background-image: url("/resources/image/pulldown-marker-000000.png");
 	background-repeat: no-repeat;
 /*	background-position: 95% 1.8ex; */
 }
 
-#navigation ul li a, #navigation2 ul li a {
+#navigation ul li a, #navigation2 a {
 	color: black;
 	text-decoration: none;
 }
@@ -294,8 +286,17 @@ a:hover {
 	float: right;
 }
 
-#navigation2 ul li {
-	background-image: url("/resources/image/abmelden.jpg");
+
+#navigation2 a {
+	display: inline;
+	width: auto;
+	list-style: none;
+	padding: 1ex 3ex;
+	font-weight: bold;
+}
+
+#navigation2 .signoff {
+	background-image: url("/resources/image/signoff.png");
 	background-repeat: no-repeat;
 	background-position: 0 0.9ex;
 	padding-left: 3ex;
