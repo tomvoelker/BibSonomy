@@ -18,7 +18,7 @@
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
     <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
-    <jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
     
     <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
     <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
