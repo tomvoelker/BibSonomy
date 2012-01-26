@@ -240,7 +240,37 @@ a:hover {
 
 #intro {
 	display: none;
-}	
+}
+
+/*****************************************************************************/
+/* BEGIN SIDEBAR                                                             */
+/*****************************************************************************/
+#sidebar {
+	position: absolute;
+	width: 250px;
+	right: 0px;
+	top: 0px;
+	z-index: 40;
+	background-color: #e4e4e4;
+}
+
+#sidebarnavi {
+	height: 60px;
+	background-color: #e4e4e4;
+}
+
+#newsbox {
+	background-color: #FFF69B;
+}
+
+#sidebox {
+	background-color: #D8EBAE;
+}
+
+/*****************************************************************************/
+/* END SIDEBAR                                                               */
+/*****************************************************************************/
+
 
 .post {
 	clear: left;
