@@ -101,8 +101,8 @@
 						   				<bib:desc post="${post}"/>
 						   			</jsp:attribute>
 						      		
-						      		<jsp:attribute name="bmicon"> 
-						      			<bib:bmicon post="${post}"/>
+						      		<jsp:attribute name="documents"> 
+						      			<bib:documents post="${post}"/>
 						      		</jsp:attribute>
 						      		
 						      		<jsp:attribute name="actions">
