@@ -205,10 +205,14 @@ a:hover {
 }
 #navigation > ul li {
 	float: left;
-	margin-right: 10px;
 	position: relative;
 	z-index: 50;
 }
+
+#navigation > ul > li {
+	margin-right: 10px;
+}
+
 #navigation > ul a, #navigation .pulldown {
 	display: block;
 	padding: 5px;
@@ -222,11 +226,12 @@ a:hover {
 
 /*--- DROPDOWN ---*/
 #navigation > ul ul, #navigation > ul table {
-	background: #c6c6c6; /* Adding a background makes the dropdown work properly in IE7+. Make this as close to your page's background as possible (i.e. white page == white background). */
+	background: #f0f0f0; /* Adding a background makes the dropdown work properly in IE7+. Make this as close to your page's background as possible (i.e. white page == white background). */
 	background: rgba(198,198,198,0); /* But! Let's make the background fully transparent where we can, we don't actually want to see it if we can help it... */
 	list-style: none;
 	position: absolute;
 	left: -9999px; /* Hide off-screen when not needed (this is more accessible than display:none;) */
+	border-bottom: 2px solid #c6c6c6;
 }
 #navigation > ul ul li {
 	float: none;
@@ -238,8 +243,10 @@ a:hover {
 	left: 0; /* Bring back on-screen when needed */
 }
 #navigation > ul li:hover a { /* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
-	background: #c6c6c6;
+	background: #f0f0f0;
 	text-decoration: underline;
+	border-left: 2px solid #c6c6c6;
+	border-right: 2px solid #c6c6c6;
 }
 #navigation > ul li:hover ul a, #navigation > ul li:hover table a { /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
 	text-decoration: none;
