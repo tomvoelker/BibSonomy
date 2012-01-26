@@ -252,6 +252,27 @@ a:hover {
 	background-color: #e4e4e4;
 }
 
+.sidebar_h {
+	font-size: 120%;
+	color: #334d55;
+	margin: 0px;
+	padding: 5px;
+	font-weight: bold;
+}
+
+
+#sidebar a,#sidebar a:link,#sidebar a:visited {
+	color: #2F3321;
+	text-decoration: none;
+}
+
+/** used for collapsing/uncollapsing sidebar entries */
+.toggler {
+	margin-right: .3em;
+	cursor: pointer;
+	color: #069;
+}
+
 #sidebarnavi {
 	height: 60px;
 	background-color: #e4e4e4;
@@ -281,6 +302,13 @@ a:hover {
 html>body #sidebar li {
 	border-bottom: none;
 }
+
+/* --- new box  ------------------------------------------------------------*/
+ul.news {
+	list-style: outside disc !important;
+	margin-left: 1.5em !important;
+}
+
 /* --- tag cloud -----------------------------------------------------------*/
 .tagcloud {
 	overflow: hidden;
