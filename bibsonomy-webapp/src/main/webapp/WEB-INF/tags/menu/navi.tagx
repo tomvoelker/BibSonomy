@@ -11,18 +11,6 @@
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	
-	<!-- 
-	
-	TODO: nach den ganzen nav_* IDs suchen 
-	
-	 id="nav_home"
-	 id="nav_my" 
-	 id="nav_post"
-	 id="nav_groups" 
-	 id="nav_popular"
-	
-	 -->
-	
 	<ul>
 		<!--+ 
 			| Home
@@ -88,7 +76,7 @@
 				</li>
 			</c:when>
 			<c:otherwise>
-				<li class="${activeTab eq 'my' ? 'active' : ''}"><a id="nav_groups" href="/groups" rel="grp_menu"><fmt:message key="navi.groups"/></a></li>
+				<li class="${activeTab eq 'my' ? 'active' : ''}"><a href="/groups"><fmt:message key="navi.groups"/></a></li>
 			</c:otherwise>
 		</c:choose>
 		<!--+
