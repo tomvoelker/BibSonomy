@@ -39,7 +39,7 @@
 							<c:set var="titleBasket" value="${command.context.loginUser.basket.numPosts} ${msgInBasket} ${msgBasket}" />
 						</c:when>
 						<c:otherwise>
-							<fmt:message var="titleBasket" key="navi.basket" />
+							<fmt:message var="titleBasket" key="navi.basket.empty" />
 						</c:otherwise>
 					</c:choose>
 					<fmt:message var="titleSpheres" key="navi.spheres.my" />

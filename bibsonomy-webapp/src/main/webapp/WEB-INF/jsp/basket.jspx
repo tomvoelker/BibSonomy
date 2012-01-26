@@ -23,7 +23,7 @@
 		<jsp:attribute name="sidebar">
 			<ul>			
 	          <li>
-	            <span class="sidebar_h">
+	            <span class="sidebar_hh">
 	              <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
 	              <a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}" title="${fn:escapeXml(removeAllVerbose)}"><fmt:message key="basket.removeAll"/></a>
 	            </span>
