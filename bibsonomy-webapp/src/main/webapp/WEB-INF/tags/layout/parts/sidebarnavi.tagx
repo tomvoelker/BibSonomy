@@ -20,15 +20,22 @@
 			<c:choose>
 				<c:when test="${not empty command.context.loginUser.name}">
 					<!-- dynamically set inbox title and style class -->
-					<fmt:message var="msgInInbox" key="navi.inInbox" />
-					<fmt:message var="msgInbox" key="navi.inbox" />
-					<c:set var="titleInbox">
-						<c:out
-							value="${command.context.loginUser.inbox.numPosts} ${msgInInbox} ${msgInbox}" />
-					</c:set>
-					<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
-						<c:set var="inboxClass" value="inbox_full" />
-					</c:if>
+					<c:choose>
+						<c:when test="${command.context.loginUser.inbox.numPosts gt 0}">
+							<fmt:message var="msgInInbox" key="navi.inInbox" />
+							<fmt:message var="msgInbox" key="navi.inbox" />
+							<c:set var="titleInbox" value="${command.context.loginUser.inbox.numPosts} ${msgInInbox} ${msgInbox}" />
+							<c:set var="inboxClass" value="inbox_full" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="inboxClass" value="inbox_empty" />
+							<fmt:message var="titleInbox" key="navi.inbox.empty" />
+						</c:otherwise>
+					</c:choose>
+					<fmt:message var="titleSpheres" key="navi.spheres.my" />
+					<fmt:message var="titleSettings" key="navi.settings" />
+					<fmt:message var="titleBasket" key="navi.basket" />
+					<fmt:message var="titleDiscussed" key="navi.discussedPosts.my" />
 
 					<!-- show the menu items -->
 					<li class="sidebarnavi_entry sidebarnavi_entry_01 ${inboxClass}">
@@ -36,14 +43,14 @@
 					</li>
 					
 					<li class="sidebarnavi_entry sidebarnavi_entry_02">
-						<a href="" title="Freunde"><!-- empty --></a>
+						<a href="/spheres" title="${titleSpheres}"><!-- empty --></a>
 					</li>
 					
 					<li class="sidebarnavi_entry sidebarnavi_entry_03">
-						<a href="" title="Ablage"><!-- empty --></a>
+						<a href="/basket" title="${titleBasket}"><!-- empty --></a>
 					</li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_04">
-						<a href="" title="Plaudern"><!-- empty --></a>
+						<a href="/discussed/user/${fn:escapeXml(command.context.loginUser.name)}" title="${titleDiscussed}"><!-- empty --></a>
 					</li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_05">
 						<a href="" title="Spheres"><!-- empty --></a>
@@ -55,7 +62,7 @@
 			</c:choose>
 
 			<li class="sidebarnavi_entry sidebarnavi_entry_06">
-				<a href="" title="Einstellungen"><!-- empty --></a>
+				<a href="/settings" title="${titleSettings}"><!-- empty --></a>
 			</li>
 		</ul>
 	</div>
