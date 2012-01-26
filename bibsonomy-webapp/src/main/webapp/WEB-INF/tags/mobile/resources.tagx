@@ -17,7 +17,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script> 
 			<script type="text/javascript">
 			<![CDATA[
-				$(document).ready(function() {
+				$(function() {
 					
 					/* get the selected resourceType from sessionStorage */
 					if(sessionStorage.getItem("resourceType") == 'bibtex') {

@@ -49,7 +49,7 @@
 												
 				<!-- Javascript for the Spheres List -->
 				<script>
-					$(document).ready(function() {
+					$(function() {
 						generateSphereDialog("${fn:escapeXml(command.requestedUser)}", "${ckey}", "linkButton", true, 0, "position2");
 
 					});

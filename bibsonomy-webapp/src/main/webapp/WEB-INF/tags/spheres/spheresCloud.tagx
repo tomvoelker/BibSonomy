@@ -10,7 +10,7 @@
 	<script src="${properties['project.home']}resources/javascript/jsrender.js" type="text/javascript"><!-- keep me! --></script>
    	<script type="text/javascript">
 		// query for spheres
-		$(document).ready( function() {
+		$(function() {
 			if (typeof sphereControl=="undefined") {
 				sphereControl = new SphereControl("${properties['project.home']}");
 			}

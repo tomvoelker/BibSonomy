@@ -117,9 +117,7 @@
 					//<mtl:cdata>
 					<![CDATA[
 						// vanishing error boxes
-						$(document).ready( function(){
-							prepareErrorBoxes('dissError');
-							
+						$(function(){
 							/* toggle recommendations */
 							$("#post-tags-recommends").hide();
 							$("#post-tags-input label").click(function() {
