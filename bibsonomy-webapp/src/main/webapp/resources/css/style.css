@@ -1006,13 +1006,11 @@ li.box_lowerconcept a {
 #bookmarksfooter .footer {
 	border-right: 1px solid #c6c6c6;
 	height:30px;
-	position:relative;
 }    
 
 #publicationsfooter .footer {
 	border-left: 1px solid #c6c6c6;
 	height:30px;
-	position:relative;
 }    
 
 #publicationsheader .header {
@@ -1124,11 +1122,10 @@ li.box_lowerconcept a {
 
 #footercontainer {
 	position:absolute;
-	height:23px;
+	height:30px;
 	bottom:-20px;
 	padding-right:250px;
-	overflow-x:hidden;
-	overflow-y: visible;
+	overflow: visible;
 	left: 0;
 	right: 0;
 	background-color: #fff;
@@ -1519,13 +1516,6 @@ li.box_lowerconcept a {
 
 .loginInvisible {
 	display: none;
-}
-
-
-.selectEntriesPerPage {
-	position:absolute;
-	right:0;
-	padding-top:0.3em;
 }
 
 /* end of login css code */
