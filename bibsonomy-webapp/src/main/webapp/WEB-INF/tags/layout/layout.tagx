@@ -207,6 +207,42 @@
 						<div id="logo">
 							<span class="sonomy"><a href="/">${properties['project.name']}</a></span><jsp:invoke fragment="heading"/><!-- FIXME: will not work -->
 <!--						<span class="bib">Bib</span><span class="sonomy">Sonomy</span>-->
+							
+							<!-- FIXME: will not work -->
+							<!-- dropdown menu for BibSonomy Path -->  
+							<div id="path_menu" class="dropmenudiv">
+								<a onclick="naviSwitchSpecial('tag')" style="cursor:pointer"><fmt:message key="navi.tag"/></a>
+								<a onclick="naviSwitchSpecial('user')" style="cursor:pointer"><fmt:message key="navi.user"/></a>
+								<a onclick="naviSwitchSpecial('group')" style="cursor:pointer"><fmt:message key="navi.group"/></a>
+								<a onclick="naviSwitchSpecial('author')" style="cursor:pointer"><fmt:message key="navi.author"/></a>
+								<a onclick="naviSwitchSpecial('concept/tag')" style="cursor:pointer"><fmt:message key="navi.concept"/></a>
+								<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer"><fmt:message key="navi.bibtexkey"/></a>
+								<a onclick="naviSwitchSpecial('search')" style="cursor:pointer"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a>
+								<c:if test="${not empty requestedUser}">
+									<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a>
+									<c:set var="mode" value="requUser" />
+								</c:if>
+								<c:if test="${command.context.userLoggedIn and empty requestedUser}">
+									<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
+									<c:set var="mode" value="requUser" />
+								</c:if>
+								<c:if test="${command.context.userLoggedIn}">
+								    <!-- <a onclick="naviSwitchSpecial('followers')" style="cursor:pointer"><fmt:message key="navi.followedUsers"/></a>  -->
+									<a style="color:black"><fmt:message key="navi.search"/> in group:</a>
+									<c:forEach var="grp" items="${loginUser.groups}">
+										<script type="text/javascript">
+											gOptions.push('${grp.name}');
+										</script>
+										<a onclick="naviSwitchSpecial('${grp.name}')" style="cursor:pointer; padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></a>
+									</c:forEach>
+								</c:if>
+							</div>	
+					
+							<!-- init dropdown menu -->
+							<script type="text/javascript">
+							  cssdropdown.startchrome("heading");
+							</script>
+
 						</div>
 					
 						<div id="logoSubtitle"><fmt:message key="system.desc"/></div><!-- FIXME: not shown by CSS -->
@@ -220,56 +256,6 @@
 			
 			<div id="main">
 
-			
-				<div id="main_header">
-				
-				
-				
-					<!--+
-						|
-						| heading
-						|
-						+-->
-					<h1 id="heading">
-						<a href="/">${properties['project.name']}</a> :: <jsp:invoke fragment="heading"/>
-					</h1>
-									
-					<!-- dropdown menu for BibSonomy Path -->  
-					<div id="path_menu" class="dropmenudiv">
-						<a onclick="naviSwitchSpecial('tag')" style="cursor:pointer"><fmt:message key="navi.tag"/></a>
-						<a onclick="naviSwitchSpecial('user')" style="cursor:pointer"><fmt:message key="navi.user"/></a>
-						<a onclick="naviSwitchSpecial('group')" style="cursor:pointer"><fmt:message key="navi.group"/></a>
-						<a onclick="naviSwitchSpecial('author')" style="cursor:pointer"><fmt:message key="navi.author"/></a>
-						<a onclick="naviSwitchSpecial('concept/tag')" style="cursor:pointer"><fmt:message key="navi.concept"/></a>
-						<a onclick="naviSwitchSpecial('bibtexkey')" style="cursor:pointer"><fmt:message key="navi.bibtexkey"/></a>
-						<a onclick="naviSwitchSpecial('search')" style="cursor:pointer"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a>
-						<c:if test="${not empty requestedUser}">
-							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a>
-							<c:set var="mode" value="requUser" />
-						</c:if>
-						<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
-							<c:set var="mode" value="requUser" />
-						</c:if>
-						<c:if test="${command.context.userLoggedIn}">
-						    <!-- <a onclick="naviSwitchSpecial('followers')" style="cursor:pointer"><fmt:message key="navi.followedUsers"/></a>  -->
-							<a style="color:black"><fmt:message key="navi.search"/> in group:</a>
-							<c:forEach var="grp" items="${loginUser.groups}">
-								<script type="text/javascript">
-									gOptions.push('${grp.name}');
-								</script>
-								<a onclick="naviSwitchSpecial('${grp.name}')" style="cursor:pointer; padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></a>
-							</c:forEach>
-						</c:if>
-					</div>	
-					
-					<!-- init dropdown menu -->
-					<script type="text/javascript">
-					  cssdropdown.startchrome("heading");
-					</script>
-					
-					<div id="welcomeTop"><fmt:message key="system.desc"/></div>
-				</div>
 				
 				<!-- Navigation -->
 				<menu:navi selectedNaviTab="${selectedNaviTab}" loginUser="${loginUser}" />
