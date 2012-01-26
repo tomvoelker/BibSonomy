@@ -188,12 +188,12 @@ a:hover {
 
 
 
-#navigation.navigation, #navigation2.navigation {
+#navigation, #navigation2 {
 	background-color: #c6c6c6;
 	height: 31px;
 }
 
-#navigation.navigation ul li, #navigation2.navigation ul li {
+#navigation ul li, #navigation2 ul li {
 	float: left;
 	width: auto;
 	list-style: none;
@@ -201,7 +201,7 @@ a:hover {
 	font-weight: bold;
 }
 	
-#navigation.navigation ul li.active, #navigation2.navigation ul li.active {
+#navigation ul li.active, #navigation2 ul li.active {
 	color: #006699;
 	text-decoration: none;
 	background-color: white;
@@ -209,17 +209,17 @@ a:hover {
 	height:25px;
 }
 
-#navigation.navigation ul li.active a, #navigation2.navigation ul li.active a {
+#navigation ul li.active a, #navigation2 ul li.active a {
 	color: #006699;
 }
 
-#navigation.navigation ul li.pulldown, #navigation2.navigation ul li.pulldown {
+#navigation ul li.pulldown, #navigation2 ul li.pulldown {
 	background-image: url("/resources/image/newDesign/pulldown-marker-000000.png");
 	background-repeat: no-repeat;
 	background-position: 95% 1.8ex;
 }
 
-#navigation.navigation ul li a, #navigation2.navigation ul li a {
+#navigation ul li a, #navigation2 ul li a {
 	color: black;
 	text-decoration: none;
 }
