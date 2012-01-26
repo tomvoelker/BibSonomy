@@ -215,7 +215,7 @@
 						</c:if>
 
 						<div id="logo">
-							<span class="sonomy"><a href="/">${properties['project.name']}</a></span><jsp:invoke fragment="heading"/><!-- FIXME: will not work -->
+							<span class="sonomy"><a href="/">${properties['project.name']}</a></span>
 <!--						<span class="bib">Bib</span><span class="sonomy">Sonomy</span>-->
 							
 							<!-- FIXME: will not work -->
