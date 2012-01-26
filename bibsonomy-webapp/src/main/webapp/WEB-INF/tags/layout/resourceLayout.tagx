@@ -89,6 +89,37 @@
 				</c:if>
             <jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
+		
+		<!--+
+			| header for resource lists and sidebar
+			+-->
+		<jsp:attribute name="headerContainer">
+			<div id="bookmarksheader">
+				<div class="config"><a href=""></a></div>
+				<h2 class="header">Lesezeichen</h2>
+			</div>
+			
+			<div id="publicationsheader">
+				<div class="config"><a href=""></a></div>
+				<h2 class="header">Publikationen</h2>
+			</div>
+			
+			<div id="sidebarheader">
+				<div id="sidebarnavi" class="navigation header">
+					<ul>
+						<li class="sidebarnavi_entry sidebarnavi_entry_01"><a href="" title="Posteingang"></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_02"><a href="" title="Freunde"></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_03"><a href="" title="Ablage"></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_04"><a href="" title="Plaudern"></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_05"><a href="" title="Spheres"></a></li>
+						<li class="sidebarnavi_entry sidebarnavi_entry_06"><a href="" title="Einstellungen"></a></li>
+					</ul> 
+				</div>
+			</div>
+
+		</jsp:attribute>
+		
+		
 		<jsp:attribute name="content">
 			<div id="general_100">
 				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in resourceList.js -->
