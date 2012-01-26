@@ -927,9 +927,13 @@ ul.news {
 }
 
 #bookmarksfooter .footer {
-	border-right: 2px solid #c6c6c6;
+	border-right: 1px solid #c6c6c6;
 	height:30px;
-	width:98%;
+}    
+
+#publicationsfooter .footer {
+	border-left: 1px solid #c6c6c6;
+	height:30px;
 }    
 
 #publicationsheader .header {
@@ -994,7 +998,7 @@ ul.news {
 	height: 60px;
 	padding-right: 250px;
 	background-color: #c6c6c6;
-	overflow: scroll;
+	overflow-y: scroll;
 	overflow-x:hidden;
 	
 }
@@ -1033,7 +1037,7 @@ ul.news {
 	bottom:-20px;
 	padding-right:250px;
 	overflow-x:hidden;
-	overflow-y:scroll;
+	overflow-y: visible;
 	left: 0;
 	right: 0;
 	background-color: #fff;
@@ -1057,7 +1061,7 @@ ul.news {
 	padding-right: 250px;
 	overflow: scroll;
 	overflow-x:hidden;
-	background-color: #E4E4E4;
+	background-color: #fff;
 	right: 0;
 }
 
