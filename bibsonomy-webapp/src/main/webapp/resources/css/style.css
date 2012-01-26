@@ -187,6 +187,11 @@ a:hover {
 	float: left;
 }
 
+#search {
+	display: inline;
+	position: relative;	
+}
+
 #navigation > ul li {
 	float: left;
 	position: relative;
@@ -210,7 +215,7 @@ a:hover {
 	padding-bottom: 4px;
 }
 
-#navigation > ul li:hover, #navigation .pulldown:hover, #search a:hover {
+#navigation > ul li:hover, #navigation .pulldown:hover, #search li:hover {
 	color: #fff;
 	background: #333;
 }
@@ -231,7 +236,7 @@ a:hover {
 }
 
 #search ul {
-	margin-top: 0;	
+	margin-top: 0;
 }
 
 #navigation > ul table {
@@ -242,9 +247,10 @@ a:hover {
 #navigation > ul ul li, #search li {
 	float: none;
 	z-index: 50;
+	color: #000;	
 }
 /* Stop text wrapping and creating multi-line dropdown items */
-#navigation > ul ul a, #navigation > ul table a, #search a {
+#navigation > ul ul a, #navigation > ul table a, #search li {
 	white-space: nowrap; 
 }
 /* Display the dropdown on hover */
@@ -252,7 +258,7 @@ a:hover {
 	left: 0; /* Bring back on-screen when needed */
 }
 /* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
-#navigation > ul li:hover a, #search:hover a { 
+#navigation > ul li:hover a { 
 	text-decoration: underline;
 }
 
@@ -269,7 +275,6 @@ a:hover {
 
 /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
 #navigation > ul li:hover ul a, #navigation > ul li:hover table a, #search:hover ul a { 
-	
 	text-decoration: none;
 }
 /* Here we define the most explicit hover states--what happens when you hover each individual link. */
@@ -294,11 +299,11 @@ a:hover {
 }
 
 #navigation ul li.active a {
-	color: #000000;
+	color: #000;
 }
 
 #navigation ul li a:hover {
-	color: #ffffff;
+	color: #fff;
 }
 
 
@@ -350,10 +355,6 @@ a:hover {
 	display: inline;
 	margin: 0px;
 	padding: 0px;
-}
-
-#search {
-	display: inline;	
 }
 
 #specialsearch {
@@ -553,7 +554,7 @@ ul.news {
 }
 
 .tagcloud a:hover,.taglist a:hover {
-	color: #000000;
+	color: #000;
 	text-decoration: none;
 }
 
@@ -619,8 +620,8 @@ ul.news {
 	margin-right: 24px;
 }
 
-.post .title a{
-	color: #000000;
+.post .title a {
+	color: #000;
 }
 
 .post .desc {
