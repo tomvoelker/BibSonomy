@@ -8,6 +8,7 @@
 	
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	
+	<!-- Controlls the actions for complete post lists -->
 	<c:if test="${command.context.userLoggedIn}">
 
       <span class="actions">
