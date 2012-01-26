@@ -96,11 +96,15 @@
 			<div id="bookmarksheader">
 				<div class="config">
 					<a class="configBookmarks" href=""><!-- fixme --></a>					
-					<div id="bookmarkOptions" class="bookmarkOptions" style="width:200px; border:1px dotted black; z-index:70;background-color:yellow;top:40px;position:absolute;">
+					<div id="bookmarkOptions" class="bookmarkOptions">
 						<ul>
-							<li>option 1</li>
-							<li>option 2</li>
-						</ul>						
+							<li>Export</li><!-- FIXME: i18n -->
+							<ul>
+								<li><c:url var="rssPath" value="/rss/${requPath}${requQueryString}" /><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}</li>
+								<li><c:url var="bibPath" value="/bookbib/${requPath}${requQueryString}" /><a href="${bibPath}">BibTeX</a>${mtl:ch('nbsp')}</li>
+            					<li><c:url var="xmlPath" value="/xml/${requPath}${requQueryString}" /><a href="${xmlPath}">XML</a></li>
+            				</ul>						
+						</ul>
 					</div>					
 				</div>
 				<h2 class="header">
