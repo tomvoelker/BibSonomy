@@ -79,7 +79,7 @@
 		<name>formatTimeDiff</name>
 		<info>formats the time difference between two dates</info>
 		<tagclass>org.bibsonomy.webapp.util.tags.TimeDiffFormatterTag</tagclass>
-		<bodycontent>JSP</bodycontent>
+		<bodycontent>empty</bodycontent>
 		<attribute>
 			<name>startDate</name>
 			<required>true</required>
