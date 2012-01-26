@@ -252,32 +252,46 @@
 					</div><!-- #header -->
 
 
+					<div id="navigation" class="navigation"><!-- FIXME: remove class, id is enough-->
+						<ul>
+							<li class="active"><a href="">Home</a></li>
+							<li class="pulldown"><a href="">Mein Bibsonomy</a></li>
+							<li><a href="">Eintragen...</a></li>
+							<li><a href="">Gruppen</a></li>
+							<li><a href="">Beliebt</a></li>
+						</ul>
+						<!-- FIXME: old navigation - will not work -->
+						<!-- Navigation -->
+						<menu:navi selectedNaviTab="${selectedNaviTab}" loginUser="${loginUser}" />
+					</div><!-- #navigation -->
 
+
+
+					<!--+
+						|
+						| main content box
+						|
+						+-->
+					<div id="postcontainer">
+						
+						<c:if test="${not empty contentIntro}">
+							<div id="intro">
+								<jsp:invoke fragment="contentIntro"/>
+							</div>
+						</c:if>
+
+						<div id="sidebar">
+							<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}"/>							
+						</div>
+					
+						<jsp:invoke fragment="content"/>
+					
+					</div><!-- #postcontainer -->
+					
+					
+				</div><!-- #container -->
 			
-			<div id="main">
-
-				
-				<!-- Navigation -->
-				<menu:navi selectedNaviTab="${selectedNaviTab}" loginUser="${loginUser}" />
-				
-				<!-- main content pane -->
-				<div id="outer">
-					<jsp:invoke fragment="content"/>
-				</div>
-				
-				
-				<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}"/>
-
-				<c:if test="${fullscreen}">
-					<script type="text/javascript">
-		              <![CDATA[
-						document.getElementById('outer').style.width = "100%";
-					  ]]>
-					</script>
-				</c:if>
-				
-				<!-- page footer -->
-				<div id="footer">
+				<div id="legalnotices">
 					<fmt:message key="system.offeredBy">
 						<fmt:param value="${properties['project.name']}"/>
 					</fmt:message>
@@ -290,19 +304,17 @@
 					<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
 						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
 					</c:if>
-					
-					<script type="text/javascript">
-		              <![CDATA[
-					    $(function() {
-			    			$('textarea').TextAreaResizer();
-			    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${properties['project.name']}");
-					    });					    
-					  ]]>
-					</script>
 				</div>
-				</div>
+							
+				<script type="text/javascript">
+	              <![CDATA[
+				    $(function() {
+		    			$('textarea').TextAreaResizer();
+		    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${properties['project.name']}");
+				    });					    
+				  ]]>
+				</script>
         
-                <jsp:invoke fragment="beforeBodyClose"/>
 
 				<!-- Piwik --> 
 				<!-- TODO: Discuss where to store the piwik id and adress 
@@ -314,6 +326,8 @@
 					<c:out escapeXml="false" value="${piwikJS}" />
 				</c:if>
 				<!-- End Piwik Tracking Code --> 
+
+                <jsp:invoke fragment="beforeBodyClose"/>
 				
 			</body>
 		</jsp:body>
