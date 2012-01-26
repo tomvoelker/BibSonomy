@@ -14,7 +14,7 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" activeTab="home">
 		<jsp:attribute name="heading">
-			<a href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.search"/></a>
+			<a href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.search"/></a> :: 
 			<form action="/search" method="get" class="smallform">
 		  		<input type="text" size="20" name="search" id="inpf"/>
 			</form>
