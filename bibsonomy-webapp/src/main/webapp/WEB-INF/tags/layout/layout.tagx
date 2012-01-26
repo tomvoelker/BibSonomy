@@ -204,6 +204,15 @@
 							</div>
 						</c:if>
 
+						<div id="logo">
+							<span class="sonomy"><a href="/">${properties['project.name']}</a></span><jsp:invoke fragment="heading"/><!-- FIXME: will not work -->
+<!--						<span class="bib">Bib</span><span class="sonomy">Sonomy</span>-->
+						</div>
+					
+						<div id="logoSubtitle"><fmt:message key="system.desc"/></div><!-- FIXME: not shown by CSS -->
+					
+						<div id="search"><jsp:invoke fragment="heading"/></div>
+
 					</div><!-- #header -->
 
 
