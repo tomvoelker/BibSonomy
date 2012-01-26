@@ -7,8 +7,6 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags">
-
-<!--	xmlns="http://www.w3.org/1999/xhtml"-->
 	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
@@ -25,6 +23,7 @@
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
+	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
@@ -39,7 +38,7 @@
 	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
 	
-	<!-- TODO: extract in seperate jsp file? -->
+	<!-- TODO: extract in separate JSP file? -->
 	<c:set var="resdir" scope="application" value="/resources" />
 
 	
@@ -280,7 +279,7 @@
 					<c:if test="${not empty headerContainer}">
 						<div id="headercontainer">
 							<jsp:invoke fragment="headerContainer"/>
-						</div> <!--  headercontainer -->
+						</div> <!-- #headercontainer -->
 					</c:if>
 
 					<!--+
@@ -302,6 +301,13 @@
 					
 					</div><!-- #postcontainer -->
 					
+
+					<c:if test="${not empty footerContainer}">
+						<div id="footercontainer">
+							<jsp:invoke fragment="footerContainer"/>
+						</div> <!--  #footercontainer -->
+					</c:if>
+
 					
 				</div><!-- #container -->
 			

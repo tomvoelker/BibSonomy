@@ -13,42 +13,27 @@
 	
 	<!-- 
 	
-	
-	so soll's mal werden (auf CSS-Klassen achten!)
-	
-							<ul>
-							<li class="active"><a href="">Home</a></li>
-							<li class="pulldown"><a href="">Mein Bibsonomy</a></li>
-							<li><a href="">Eintragen...</a></li>
-							<li><a href="">Gruppen</a></li>
-							<li><a href="">Beliebt</a></li>
-						</ul>
-	
-	
-	
-	
-	
-	 -->
-	
-	<!-- 
-	
 	TODO: nach den ganzen nav_* IDs suchen 
 	
+	 id="nav_home"
+	 id="nav_my" 
+	 id="nav_post"
+	 id="nav_groups" 
+	 id="nav_popular"
 	
 	 -->
-	
 	
 	<ul>
 		<!--+ 
 			| Home
 			+-->
-		<li><a id="nav_home" href="/"><fmt:message key="navi.home"/></a></li>
+		<li class="${selectedNaviTab eq 'home' ? 'active' : ''}"><a href="/"><fmt:message key="navi.home"/></a></li>
 		<!--+ 
 		 	| myProjectName
 		 	+-->
 		<c:if test="${not empty loginUserName}">
-			<li class="pulldown">
-				<span id="nav_my" rel="my_menu"><fmt:message key="navi.my"/>${properties['project.name']}</span>
+			<li class="pulldown ${selectedNaviTab eq 'my' ? 'active' : ''}">
+				<span rel="my_menu"><fmt:message key="navi.my"/>${properties['project.name']}</span>
 				<ul id="my_menu" class="nicedropmenudiv">
 					<li><a href="/user/${mtl:encodeURI(loginUserName)}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${properties['project.name']}</a></li>
 					<li><a href="/friends"><fmt:message key="navi.my.plural"/><fmt:message key="navi.friends.cap"/></a></li>
@@ -67,8 +52,8 @@
 			<!--+
 				| post a post
 				+-->
-			<li class="pulldown">
-				<span id="nav_post" rel="post_menu"><fmt:message key="navi.postPost"/></span>
+			<li class="pulldown ${selectedNaviTab eq 'post' ? 'active' : ''}">
+				<span rel="post_menu"><fmt:message key="navi.postPost"/></span>
 				<ul id="post_menu" class="nicedropmenudiv">
 					<li><a id="nav_postBook" href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
 					<li><a id="nav_postPub" href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
@@ -80,8 +65,8 @@
 			+-->		
 		<c:choose>
 			<c:when test="${not empty loginUser.groups}">
-				<li class="pulldown">
-					<span id="nav_groups" rel="grp_menu"><fmt:message key="navi.groups"/></span>
+				<li class="pulldown  ${selectedNaviTab eq 'groups' ? 'active' : ''}">
+					<span rel="grp_menu"><fmt:message key="navi.groups"/></span>
 
 					<table id="grp_menu" class="tnav_group nicedropmenudiv">
 						<c:forEach var="grp" items="${loginUser.groups}">
@@ -103,20 +88,20 @@
 				</li>
 			</c:when>
 			<c:otherwise>
-				<li><a id="nav_groups" href="/groups" rel="grp_menu"><fmt:message key="navi.groups"/></a></li>
+				<li class="${selectedNaviTab eq 'my' ? 'active' : ''}"><a id="nav_groups" href="/groups" rel="grp_menu"><fmt:message key="navi.groups"/></a></li>
 			</c:otherwise>
 		</c:choose>
 		<!--+
 			| popular
 			+-->
-		<li class="pulldown">
-			<span id="nav_popular"><fmt:message key="navi.popular" /></span>
+		<li class="pulldown ${selectedNaviTab eq 'popular' ? 'active' : ''}">
+			<span><fmt:message key="navi.popular" /></span>
 			<ul id="popular_menu" class="nicedropmenudiv">
-				<li><a id="nav_popular" href="/popular"><fmt:message key="navi.posts" /></a></li>
-				<li><a id="nav_tags" href="/tags"><fmt:message key="navi.tags"/></a></li>
-				<li><a id="nav_authors" href="/authors"><fmt:message key="navi.authors"/></a></li>
-				<li><a id="nav_relations" href="/relations"><fmt:message key="navi.relations"/></a></li>
-				<li><a id="nav_discussedPosts" href="/discussed"><fmt:message key="navi.discussions" /></a></li>
+				<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
+				<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
+				<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
+				<li><a href="/relations"><fmt:message key="navi.relations"/></a></li>
+				<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
 			</ul>
 		</li>
 	</ul>
@@ -124,10 +109,9 @@
     <!-- selects the correct navigation tab -->
 	<script type="text/javascript">
 		<![CDATA[
-	  		cssdropdown.startchrome("navigation");
-			if ("${selectedNaviTab}" != "" ) {
-				document.getElementById("${selectedNaviTab}").className = "checked";
-			}
+		 	$(function() {
+	  			cssdropdown.startchrome("navigation");
+		 	}
 	  	]]>
 	</script>
     
