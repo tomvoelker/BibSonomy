@@ -156,11 +156,16 @@
 							</ul>
 						</div><!-- #infoline -->
 
+						<!--+ 
+						 	|
+						 	| language
+						 	|
+						 	+-->
 						<div id="language">
 							<ul>
-								<!-- FIXME: set active language dynamically -->
-								<li><a class="active" href="/${mtl:setParam(requPathAndQuery, 'lang', 'de')}">de</a></li>
-								<li><a href="/${mtl:setParam(requPathAndQuery, 'lang', 'en')}">en</a></li>
+								<c:forTokens var="lang" items="en,de" delims=",">
+									<li><a class="${lang eq locale.language ? 'active' : ''}" href="/${mtl:setParam(requPathAndQuery, 'lang', lang)}">${lang}</a></li>
+								</c:forTokens>
 							</ul>
 						</div><!-- #language -->
 
