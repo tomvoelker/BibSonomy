@@ -453,7 +453,7 @@ a:hover {
 }
 
 .sidebarnavi_entry a {
-    height: 40px; 
+    height: 60px; 
     width: 44px;
     display: block;
     outline: none;
@@ -464,7 +464,6 @@ a:hover {
 	float: right;
 	color: #da3200;
 	margin-right: 5px;
-	top: -5px;
 	position: relative;
 	font-weight: bold;
 }
