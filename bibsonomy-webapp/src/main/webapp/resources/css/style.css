@@ -181,11 +181,9 @@ a:hover {
 	color: white;
 }
 
-#poststats div.entry span.amount {
+#poststats span.amount {
 	font-weight: bold;
 }
-
-
 
 
 #navigation, #navigation2 {
