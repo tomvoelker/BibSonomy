@@ -94,7 +94,15 @@
 			+-->
 		<jsp:attribute name="headerContainer">
 			<div id="bookmarksheader">
-				<div class="config"><a href=""><!-- fixme --></a></div>
+				<div class="config">
+					<a class="configBookmarks" href=""><!-- fixme --></a>					
+					<div id="bookmarkOptions" class="bookmarkOptions" style="width:200px; border:1px dotted black; z-index:70;background-color:yellow;top:40px;position:absolute;">
+						<ul>
+							<li>option 1</li>
+							<li>option 2</li>
+						</ul>						
+					</div>					
+				</div>
 				<h2 class="header">
 					<fmt:message key="bookmarks" />
 					<!-- Display total number of entries in list --> 
