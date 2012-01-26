@@ -49,16 +49,16 @@
 	<jsp:output doctype-root-element="html"	doctype-system="about:legacy-compat" />
   
 	<jsp:element name="html">
-<!--		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>-->
 		<jsp:body>
 			<head>
+				<meta http-equiv="X-UA-Compatible" content="IE=8" />
+				<meta charset="UTF-8" />
 				<!--+ 
 					| To have the locale available on all pages we set the scope to "request".
 					| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
 					|-->
 				<c:set var="locale" scope="request" value="${pageContext.response.locale}" />
 				
-				<meta charset="UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
 				<c:if test="${not empty personalized and personalized == true}">
 					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
