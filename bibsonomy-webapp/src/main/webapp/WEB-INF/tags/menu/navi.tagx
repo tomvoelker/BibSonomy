@@ -26,126 +26,99 @@
 	
 	
 	
+	
+	
+	 -->
+	
+	<!-- 
+	
+	TODO: nach den ganzen nav_* IDs suchen 
+	
+	
 	 -->
 	
 	
 	<ul>
-		<li>
-			<a id="nav_home" href="/">Home</a>
-		</li>
+		<!--+ 
+			| Home
+			+-->
+		<li><a id="nav_home" href="/"><fmt:message key="navi.home"/></a></li>
+		<!--+ 
+		 	| myProjectName
+		 	+-->
+		<c:if test="${not empty loginUserName}">
+			<li class="pulldown">
+				<span id="nav_my" rel="my_menu"><fmt:message key="navi.my"/>${properties['project.name']}</span>
+				<ul id="my_menu" class="nicedropmenudiv">
+					<li><a href="/user/${mtl:encodeURI(loginUserName)}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${properties['project.name']}</a></li>
+					<li><a href="/friends"><fmt:message key="navi.my.plural"/><fmt:message key="navi.friends.cap"/></a></li>
+				    <li><a href="/spheres"><fmt:message key="navi.my.plural"/><fmt:message key="navi.spheres.cap"/></a></li>
+					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.discussedPosts.Cap"/></a></li>
+					<li><a href="/relations/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></li>
+					<li><a href="/mySearch"><fmt:message key="navi.my.plural"/><fmt:message key="navi.search.cap"/></a></li>
+					<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.my.plural"/><fmt:message key="navi.pdfs"/></a></li>
+			        <li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.my.plural"/><fmt:message key="navi.duplicates.cap"/></a></li>
+			        <li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.my"/><fmt:message key="navi.bibtex.cap"/></a></li>
+			        <li><a href="/followers"><fmt:message key="navi.my.plural"/><fmt:message key="navi.followedUsers.my"/></a></li>
+			        <li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/><fmt:message key="navi.cv"/></a></li>
+					<li><a href="/viewable/private"><fmt:message key="navi.my.plural"/><fmt:message key="navi.privatePosts"/></a></li>		        
+				  </ul>
+			</li>
+			<!--+
+				| post a post
+				+-->
+			<li class="pulldown">
+				<span id="nav_post" rel="post_menu"><fmt:message key="navi.postPost"/></span>
+				<ul id="post_menu" class="nicedropmenudiv">
+					<li><a id="nav_postBook" href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
+					<li><a id="nav_postPub" href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
+				</ul>
+			</li>
+		</c:if>
+		<!--+
+			| groups
+			+-->		
 		<c:choose>
-			<c:when test="${not empty loginUserName}">
-				<li>
-					<!--+ 
-					 	|
-					 	| dropdown menu for myBibSonomy
-					 	|
-					 	+-->
-					<a id="nav_my" href="/user/${mtl:encodeURI(loginUserName)}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${properties['project.name']}</a>
+			<c:when test="${not empty loginUser.groups}">
+				<li class="pulldown">
+					<span id="nav_groups" rel="grp_menu"><fmt:message key="navi.groups"/></a>
 
-					  <div id="my_menu" class="nicedropmenudiv">
-					    <a href="/friends">
-					    	<fmt:message key="navi.my.plural"/>
-					    	<fmt:message key="navi.friends.cap"/>
-					    </a>
-					    <a href="/spheres">
-					    	<fmt:message key="navi.my.plural"/>
-					    	<fmt:message key="navi.spheres.cap"/>
-					    </a>
-						<a href="/discussed/user/${mtl:encodeURI(loginUserName)}">
-							<fmt:message key="navi.my.plural"/>
-							<fmt:message key="navi.discussedPosts.Cap"/>
-						</a>
-						<a href="/relations/${mtl:encodeURI(loginUserName)}">
-							<fmt:message key="navi.my.plural"/>
-							<fmt:message key="navi.relations.cap"/>
-						</a>
-						<a href="/mySearch">
-				        	<fmt:message key="navi.my.plural"/>
-				        	<fmt:message key="navi.search.cap"/>						
-						</a>
-				        <a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF">
-				        	<fmt:message key="navi.my.plural"/>
-				        	<fmt:message key="navi.pdfs"/>
-				        </a>
-				        <a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES">
-				        	<fmt:message key="navi.my.plural"/>
-				        	<fmt:message key="navi.duplicates.cap"/>
-				        </a>
-				        <a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000">
-				        	<fmt:message key="navi.my"/>
-				        	<fmt:message key="navi.bibtex.cap"/>
-				        </a>
-				        <a href="/followers">
-				        	<fmt:message key="navi.my.plural"/>
-				        	<fmt:message key="navi.followedUsers.my"/>
-				        </a>
-				        <a href="/cv/user/${mtl:encodeURI(loginUserName)}">
-				        	<fmt:message key="navi.my"/>
-				        	<fmt:message key="navi.cv"/>						
-						</a>
-						<a href="/viewable/private">
-				        	<fmt:message key="navi.my.plural"/>
-				        	<fmt:message key="navi.privatePosts"/>						
-						</a>		        
-					  </div>						
-				</li>
-				<li>
-					<a id="nav_postBook" href="/postBookmark"><fmt:message key="navi.postBookmark"/></a>
-				</li>
-				<li>
-					<a id="nav_postPub" href="/postPublication"><fmt:message key="navi.postPublication"/></a>
+					<table id="grp_menu" class="tnav_group nicedropmenudiv">
+						<c:forEach var="grp" items="${loginUser.groups}">
+							<tr>
+								<td><a href="/group/${mtl:encodeURI(grp.name)}"><c:out value='${grp.name}'/></a></td>
+								<td><a href="/relevantfor/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
+								<td><a href="/viewable/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
+								<td>
+									<c:if test="${grp.sharedDocuments}">
+										<a href="/group/${mtl:encodeURI(grp.name)}?filter=JUST_PDF">
+											<fmt:message key="navi.groups" /><fmt:message key="navi.pdfs" />
+										</a>
+									</c:if>
+								</td>
+								<td><a href="/discussed/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></td>
+							</tr>
+						</c:forEach>
+					</table>  	
 				</li>
 			</c:when>
-		</c:choose>	
-		<li>
-			<a id="nav_tags" href="/tags"><fmt:message key="navi.tags"/></a>
+			<c:otherwise>
+				<li><a id="nav_groups" href="/groups" rel="grp_menu"><fmt:message key="navi.groups"/></a></li>
+			</c:otherwise>
+		</c:choose>
+		<!--+
+			| popular
+			+-->
+		<li class="pulldown">
+			<span id="nav_popular"><fmt:message key="navi.popular" /></span>
+			<ul id="popular_menu" class="nicedropmenudiv">
+				<li><a id="nav_popular" href="/popular"><fmt:message key="navi.posts" /></a></li>
+				<li><a id="nav_tags" href="/tags"><fmt:message key="navi.tags"/></a></li>
+				<li><a id="nav_authors" href="/authors"><fmt:message key="navi.authors"/></a></li>
+				<li><a id="nav_relations" href="/relations"><fmt:message key="navi.relations"/></a></li>
+				<li><a id="nav_discussedPosts" href="/discussed"><fmt:message key="navi.discussions" /></a></li>
+			</ul>
 		</li>
-		<li>
-			<a id="nav_authors" href="/authors"><fmt:message key="navi.authors"/></a>
-		</li>		
-		<li>
-			<a id="nav_relations" href="/relations"><fmt:message key="navi.relations"/></a>								
-		</li>
-		<li>
-			<a id="nav_groups" href="/groups" rel="grp_menu"><c:if test="${not empty loginUser.groups}"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> </c:if><fmt:message key="navi.groups"/></a>
-		</li>
-  
-        <!-- dropdown menu for groups -->
-        <c:if test="${not empty loginUser.groups}">
-		  <li>
-		  	<div id="grp_menu" class="nicedropmenudiv">
-                
-                <table class="tnav_group">
-				  <c:forEach var="grp" items="${loginUser.groups}">
-                    <tr>
-					   <td><a href="/group/${fn:escapeXml(grp.name)}"><c:out value='${grp.name}'/></a></td>
-                       <td><a href="/relevantfor/group/${fn:escapeXml(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
-                       <td><a href="/viewable/${fn:escapeXml(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
-                       <td>
-                         <c:if test="${grp.sharedDocuments}">
-                           <a href="/group/${fn:escapeXml(grp.name)}?filter=JUST_PDF">
-                             <fmt:message key="navi.groups" />                   
-                             <fmt:message key="navi.pdfs" />
-                           </a>
-                         </c:if>
-                       </td>
-                       <td><a href="/discussed/group/${fn:escapeXml(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></td>
-                    </tr>
-				  </c:forEach>
-                </table>  	
-			</div>											
-	 	 </li>
-        </c:if>
-        
-		<li>
-			<a id="nav_popular" href="/popular"><fmt:message key="navi.popular" /></a>
-		</li>
-
-		<li>
-			<a id="nav_discussedPosts" href="/discussed"><fmt:message key="navi.recentlyDiscussedPosts" /></a>
-		</li>
-
 	</ul>
 
     <!-- selects the correct navigation tab -->
