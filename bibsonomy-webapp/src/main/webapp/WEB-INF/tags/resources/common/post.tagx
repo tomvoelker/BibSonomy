@@ -36,7 +36,9 @@
 				</c:if>
 			</c:if>
 		</c:if>
-		<!-- TODO: FIX URL -->
+		
+		
+		<!-- PREVIEW PICTURE -->
 		<div class="image mimetype_pdf"><img class="preview" alt="preview" src="/resources/image/preview1_80.jpg"></img></div>
 	
 
@@ -59,8 +61,10 @@
  		
  		<!-- TAGS -->
 		<div class="tags"> 
-			<rc:metaTags post="${post}" />	
-			<a class="edittags" href="" title="Tags bearbeiten"><img class="editimage" src="/resources/image/edit.gif" alt="edit"><!-- keep me --></img></a>
+			<rc:metaTags post="${post}" />
+			<c:if test="${loginUserName eq post.user.name}">
+				<a class="edittags" href="" title="Tags bearbeiten"><img class="editimage" src="/resources/image/edit.gif" alt="edit"><!-- keep me --></img></a>
+			</c:if>
 		</div>
 		
 		<!-- RATING -->
