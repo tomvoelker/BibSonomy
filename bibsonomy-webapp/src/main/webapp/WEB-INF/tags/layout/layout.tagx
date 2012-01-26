@@ -18,7 +18,6 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
-    <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
@@ -339,8 +338,6 @@
 				</c:if>
 				<!-- End Piwik Tracking Code --> 
 
-                <jsp:invoke fragment="beforeBodyClose"/>
-				
 			</body>
 		</jsp:body>
 	</jsp:element>

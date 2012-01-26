@@ -152,6 +152,39 @@
            	<!-- temporary content -->
            </div>
 
+
+
+			<!--+
+				|
+				|
+				|
+				+-->
+          <script type="text/javascript">
+             var userName = "${mtl:encodeURI(command.context.loginUser.name)}";
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(function(){
+		                // tagRecoOptions defined in post*.js
+		                $('#postForm').ajaxSubmit(tagRecoOptions); 
+		                          
+		                // get user's tags for suggestions
+		                $.ajax({
+		                    type: "GET",
+		                    url: "/json/tags/user/" + userName + "?tagcloud.maxCount=100000",
+		                    dataType: "jsonp",
+		                    success: function(json){
+		                       populateSuggestionsFromJSON(json);
+		                    }
+		                });
+	                }
+                );
+          
+             ]]> 
+             //</mtl:cdata>
+          </script>
+
+
 		</jsp:attribute>
 		
     
@@ -175,39 +208,6 @@
 				</li>
 			</ul>
 		</jsp:attribute>
-
-
-
-
-       <jsp:attribute name="beforeBodyClose">
-          <script type="text/javascript">
-             var userName = "${mtl:encodeURI(command.context.loginUser.name)}";
-             //<mtl:cdata>
-             <![CDATA[
-                // vanishing error boxes
-                $(document).ready( function(){
-						prepareErrorBoxes('dissError');
-                	}
-                );
-                // tagRecoOptions defined in post*.js
-                $('#postForm').ajaxSubmit(tagRecoOptions); 
-                          
-                // get user's tags for suggestions
-                $.ajax({
-                    type: "GET",
-                    url: "/json/tags/user/" + encodeURIComponent(userName) + "?tagcloud.maxCount=100000",
-                    dataType: "jsonp",
-                    success: function(json){
-                       populateSuggestionsFromJSON(json);
-                    }
-                });
-          
-             ]]> 
-             //</mtl:cdata>
-          </script>
-       
-       </jsp:attribute>
-
 	</layout:paneLayout>
 
 </jsp:root>

@@ -20,7 +20,6 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
-  	<jsp:directive.attribute name="beforeBodyClose" fragment="true" required="false"/>
 	
 	<!-- 
 		store some locale messages in variables to be
@@ -32,7 +31,7 @@
     <c:set var="swrcFeed"><fmt:message key="feeds.swrc"/></c:set>	
 
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}" beforeBodyClose="${beforeBodyClose}">		
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}" >		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/resourceList.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script>
@@ -51,9 +50,7 @@
             	</c:if>
             	<script type="Text/JavaScript">
 					<![CDATA[
-					$(document).ready(function() {
-						sysTagFadeBox(self);
-					});
+					$(function() {sysTagFadeBox(self);});
 					]]>
 				</script>
         <!-- set by url parameter -->

@@ -43,9 +43,7 @@
 			</c:if>
             <script type="Text/JavaScript">
 				<![CDATA[
-					$(document).ready(function() {
-						sysTagFadeBox(self);
-					});
+					$(function() {sysTagFadeBox(self);});
 				]]>
 			</script>
 		</jsp:attribute>

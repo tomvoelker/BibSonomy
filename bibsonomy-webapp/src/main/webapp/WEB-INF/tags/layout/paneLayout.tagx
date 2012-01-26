@@ -13,7 +13,6 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
-    <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
@@ -21,7 +20,6 @@
 
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
-		beforeBodyClose="${beforeBodyClose}" 
 		pageTitle="${pageTitle}" 
 		heading="${heading}" 
 		headerExt="${headerExt}" 
