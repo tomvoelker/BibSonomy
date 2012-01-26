@@ -98,12 +98,30 @@
 		<jsp:attribute name="headerContainer">
 			<div id="bookmarksheader">
 				<div class="config"><a href=""><!-- fixme --></a></div>
-				<h2 class="header">Lesezeichen</h2>
+				<h2 class="header">
+					<fmt:message key="bookmarks" />
+					<!-- Display total number of entries in list --> 
+					<c:if test="${!empty command.bookmark.list}">
+						<c:if test="${command.bookmark.totalCount != 0}">
+							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+							${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
+						</c:if>
+					</c:if>								
+				</h2>
 			</div>
 			
 			<div id="publicationsheader">
 				<div class="config"><a href=""><!-- fixme --></a></div>
-				<h2 class="header">Publikationen</h2>
+				<h2 class="header">
+					<fmt:message key="publications" />
+					<!-- Display total number of entries in list --> 
+					<c:if test="${!empty command.bibtex.list}">
+						<c:if test="${command.bibtex.totalCount != 0}">
+							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
+							${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bibtex.totalCount})</span>
+						</c:if>
+					</c:if>				
+				</h2>			
 			</div>
 			
 			<div id="sidebarheader">
@@ -113,19 +131,28 @@
 		
 		<jsp:attribute name="footerContainer">
 			<div id="bookmarksfooter">
-				<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
-				<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks"/>
+				<div class="footer">
+					<c:if test="${not disableListNavigation}">
+						<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
+						<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks"/>
+					</c:if>
+				</div>
 			</div>
 			
 			<div id="publicationsfooter">
-				<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-				<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications"/>
+				<div class="footer">
+					<c:if test="${not disableListNavigation}">
+						<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+						<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications"/>
+					</c:if>
+				</div>
 			</div>			
 		</jsp:attribute>		
 		
 		
 		<jsp:attribute name="content">
-			<div id="general_100">
+			<!-- FIXME: handle this box -->
+			<div id="general_100" style="display:none;">
 				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in resourceList.js -->
 				<ul id="bookmarkbibtexoptions">
 					<fmt:message var="expandBookmarks" key="list.expand.bookmarks"/>
@@ -151,8 +178,7 @@
 					<c:otherwise>
 						&amp;nbsp;
 					</c:otherwise>
-				</c:choose>
-				
+				</c:choose>				
 			</div>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
