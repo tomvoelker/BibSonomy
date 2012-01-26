@@ -14,7 +14,7 @@
 			${post.resource.count}
 		</c:if>
 	
-		<c:if test="${!empty valueOnly and valueOnly == false}">
+		<c:if test="${!empty valueOnly and not valueOnly}">
 			<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />
 			<fmt:message var="posts" key="post.meta.postsInSystem"/>
 			<c:if test="${post.resource.count == 1}">
