@@ -40,41 +40,26 @@
 	
 	<div class="${className}" id="${listID}">
 	
+		<!-- FIXME: migrate these actions to 
 		<div class="bboxheader">
-			<!-- Buttons -->
 			<c:if test="${!empty listView.list}">
 					<div class="listhButtons">
 						<jsp:invoke fragment="formatButtons"/>
 					</div>
 			</c:if>
-	
-			<!-- Headline -->
-			<h2 class="listh"><fmt:message key="${titleKey}" /></h2>
-		
-			<!-- Display total number of entries in list -->
-			<c:if test="${!empty listView.list}">
-				<c:if test="${listView.totalCount != 0}">
-					<div class="listh">
-						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
-						${mtl:ch('nbsp')}<span id="ttlctr" title="${totalTitle}">(${listView.totalCount})</span>
-					</div>
-				</c:if>
+			
+			<c:if test="${not disableActions}">
+				<rc:actions resourceType="${listView.resourcetype}"/>
 			</c:if>
 		</div>
+		 -->
 		
 		<c:if test="${!empty listView.list}">
-				<!-- show available actions -->
-				<div>
-					<!-- 
-					<c:if test="${not disableListNavigation}">
-						<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>
-					</c:if>
-					 -->
-					<c:if test="${not disableActions}">
-						<rc:actions resourceType="${listView.resourcetype}"/>
-					</c:if>				
+				<!-- show available actions
+				<div>				
 					${mtl:ch('nbsp')}
 				</div>
+				-->
 	   
                 <fmt:message key="post.meta.own_post" var="alreadyOwn" />
                 <fmt:message key="post.meta.copy_this_post" var="copyThisPost" />
@@ -93,19 +78,6 @@
 	            
                   </c:forEach>
                 </ul>
-		</c:if>
-		
-		<!-- 	
-		<div class="kiste">		
-			<c:if test="${not disableListNavigation}">
-				<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>
-				<rc:itemcount entriesPerPage="${listView.entriesPerPage}" entryType="${listView.resourcetype}" titleKey="${titleKey}"/>
-			</c:if>
-			${mtl:ch('nbsp')}
-		</div>
-		 -->
-		
+		</c:if>		
 	</div>
-
-
 </jsp:root>
