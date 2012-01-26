@@ -38,6 +38,6 @@ var tagRecoOptions = {
    } 
 }; 
 
-$(document).ready(function() {
+$(function() {
 	addAutoCompleteSendTag($('#inpf'));
 });

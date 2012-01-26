@@ -55,6 +55,18 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	if (!pathname.startsWith("/postPublication") && !pathname.startsWith("/postBookmark")){
 		init_sidebar();
 	}
+	
+	prepareErrorBoxes('dissError');
+	
+	/*
+	 * starts the preview rendering function
+	 */
+	imagePreview();
+	
+	/*
+	 * adds the box with the options to export BibTeX
+	 */
+	addExportBibtexBox();
 }
 
 function stopEvt () {
@@ -1451,8 +1463,10 @@ function prepareErrorBoxes(className) {
 		if(!$(this).hasClass('initiallyHidden'))
 			$(this).fadeIn("slow");    
 	});
-	// this is a workaround because the tags input element's id is not 'tags.so-and-so' but 'inpf'
-	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});  
+	if ($("." + className)) {
+		// this is a workaround because the tags input element's id is not 'tags.so-and-so' but 'inpf'
+		$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});
+	}
 }
 
 
@@ -1495,7 +1509,7 @@ function toggleFieldsetVisibility(el) {
 /**
  * Adds an "export options" box to the "BibTeX" export link. 
  */
-$(document).ready(function() {
+function addExportBibtexBox() {
 	$(".exportbibtex").each(function(index, elm) {
 		/*
 		 * add and show export options when hovering over the link
@@ -1541,7 +1555,7 @@ $(document).ready(function() {
 		});
 
 	});
-});
+}
 
 
 
@@ -1700,10 +1714,3 @@ String.prototype.startsWith = function(s) {
 String.prototype.trim = function () {
 	return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
 };
-
-/**
- * starts the preview rendering function
- */
-$(document).ready(
-		function(){imagePreview();}
-);

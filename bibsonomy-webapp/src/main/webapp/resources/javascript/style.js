@@ -470,7 +470,7 @@ function naviSwitchSpecial(target) {
 /*
  * TODO: new layout
  */
-$(document).ready(function() { 
+$(function() { 
 	initBookmarksPublicationsLists();
 	initSidebarHeader();
 });

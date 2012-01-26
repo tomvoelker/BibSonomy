@@ -45,11 +45,9 @@ function myownTagInit(chkbox, tagbox) {
 			}).parent().removeClass('hiddenElement');
 }
 
-$(document).ready(
-		function(){
-			myownTagInit($('#myownChkBox'), $('#inpf'));
-		}
-);
+$(function(){
+		myownTagInit($('#myownChkBox'), $('#inpf'));
+});
 
 function initSuggestionForPartTitles(el) {
 	el.each(function(index){ $(this).autocomplete({

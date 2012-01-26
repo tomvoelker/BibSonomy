@@ -70,6 +70,6 @@ function pumainit(){
 	
 }
 	
-$(document).ready(pumainit);    
+$(pumainit);    
 
 

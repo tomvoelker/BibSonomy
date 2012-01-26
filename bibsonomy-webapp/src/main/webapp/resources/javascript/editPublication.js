@@ -175,7 +175,7 @@ $(window).load(function() {
 	if (document.getElementById("post.resource.publisher")) changeView();
 });
 
-$(document).ready(function() {
+$(function() {
 	addAutoCompleteSendTag($('#inpf'));
 
 	var hash = $("#post\\.resource\\.interHash").val();

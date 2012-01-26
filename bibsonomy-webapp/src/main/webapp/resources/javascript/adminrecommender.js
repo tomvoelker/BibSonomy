@@ -1,5 +1,5 @@
 
-$(document).ready(function(){
+$(function(){
 	deselectAll(document.recConfig.activeRecs);
 	deselectAll(document.recConfig.disabledRecs);
 });
