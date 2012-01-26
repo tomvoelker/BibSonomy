@@ -661,6 +661,20 @@ ul.news {
 	color: #ffffff;
 }
 
+.post .group .friends {
+	font-weight: bold;
+	background-color: #660099;
+	padding: 0 3px;
+	color: #ffffff;
+}
+
+.post .group .other {
+	font-weight: bold;
+	background-color: #669900;
+	padding: 0 3px;
+	color: #ffffff;
+}
+
 .post.odd {
 	background-color: #f8f8f8;
 }		
