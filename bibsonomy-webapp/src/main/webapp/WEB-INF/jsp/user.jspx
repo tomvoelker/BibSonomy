@@ -74,7 +74,7 @@
 			<!-- display user's tag relations -->			
 			<li>
 				<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
-				<span class="sidebar_h sidebar_collapse">
+				<span class="sidebar_h">
 					<a href="/relations/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
 						<fmt:message key="tagrelations"/>
 					</a>
@@ -92,7 +92,7 @@
 				
 			<!-- display similar users -->
 			<li>				
-				<span class="sidebar_h sidebar_collapse">					 
+				<span class="sidebar_h">					 
 					<!-- requPath + query -->
 					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 					<fmt:message key="users.similar"/>
@@ -103,7 +103,7 @@
 	
 			<!-- display tags -->
 			<li>
-				<span class="sidebar_h sidebar_collapse"><fmt:message key="tags"/></span>
+				<span class="sidebar_h"><fmt:message key="tags"/></span>
 				<span class="sidebar_collapse_content">
 					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 				</span>
@@ -111,7 +111,7 @@
 			      
             <c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
               <li>
-                <span class="sidebar_h sidebar_collapse">user details</span>
+                <span class="sidebar_h">user details</span>
                 <user:details user="${command.user}"/>
               </li>
             </c:if>
