@@ -118,7 +118,7 @@ function errorSyncForm(jqXHR, textStatus, errorThrown, form) {
 	$(form).find(".progressGif").hide();
 }
 
-$(document).ready(function() {
+$(function() {
 	// TODO: convert to a jquery plugin?
 	$('ul.foldList').each(function(list) {
 		var maxItems = 2;
