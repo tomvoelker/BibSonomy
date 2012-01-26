@@ -29,10 +29,11 @@
             <c:url var="xmlPath" value="/xml/${requPath}${requQueryString}" /><a href="${xmlPath}">XML</a>
 		</jsp:attribute>
     
-		<jsp:attribute name="title">  <bm:title   post="${post}"/></jsp:attribute>
-		<jsp:attribute name="desc">	  <bm:desc    post="${post}"/></jsp:attribute>
-		<jsp:attribute name="bmicon"> <bm:bmicon  post="${post}"/></jsp:attribute>
-		<jsp:attribute name="actions"><bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+		<jsp:attribute name="title">     <bm:title   post="${post}"/></jsp:attribute>
+		<jsp:attribute name="desc">	     <bm:desc    post="${post}"/></jsp:attribute>
+		<jsp:attribute name="actions">   <bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
+		<jsp:attribute name="documents"> <bm:documents  post="${post}"/></jsp:attribute>
+		
     
 	</rc:list>
 	
