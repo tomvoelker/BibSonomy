@@ -609,7 +609,7 @@ ul.news {
 	font-weight: bold;
 	font-size: 120%;
 	padding-left: 121px;
-	height: 40px;
+	height: 20px;
     padding-top: 20px;
 	background: url("/resources/image/icons.png");
     background-repeat: no-repeat;
@@ -698,7 +698,7 @@ ul.news {
 	left: 0px;
 	right: 0px;
 	top: 125px;
-	height: 60px;
+	height: 120px;
 	padding-right: 250px;
 	background-color: #c6c6c6;
 	overflow: scroll;
@@ -760,6 +760,16 @@ ul.news {
 #sidebarnavi {
 	height: 60px;
 	background-color: #e4e4e4;
+}
+
+.listnav {
+	background-color: #e4e4e4;
+	margin: 2px;
+	padding: 2px;
+	width: 20px;
+	display:block;
+	float:left;
+	text-align:center;
 }
 	
 .sidebarnavi_entry {
