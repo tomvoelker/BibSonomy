@@ -661,35 +661,58 @@ ul.news {
     width: 30px;
 }
 
+.post .action .pick{
+    background-position: -30px 0px;
+    width: 23px
+}
+
+.post .action .unpick{
+    background-position: -30px 30px;
+    width: 23px
+}
+
+.post .action .copy{
+    background-position: 0px 0px;
+    width: 26px
+}
+
 .post .action .edit{
     background-position: 0px 0px;
+    width: 26px
 }
 	
 .post .action .delete{
-    background-position: -23px 0px;
+    background-position: 0px -53px;
+    width: 28px
 }
 
-.post .action .cummunity{
-    background-position: -52px 0px;
+.post .action .community{
+    background-position: 130px 0px;
+    width: 28px
 }
 
-.post .action .discuss{
-    background-position: -117px 0px;
+.post .action .remove{
+    background-position: 0px -52px;
 }
 
 .post .action .url{
-    background-position: -205px 0px;
+    background-position: 98px 0px;
+    width:24px
 }
 
 .post .action .bibtex{
-    background-position: -151px 0px;
+    background-position: 69px -1px;
+    width: 35px
 }
 
 .post .action .doi{
-    background-position: -205px 0px;
+    background-position: 28px 0px;
+    width:24px
 }
 
-
+.post .action .openUrl{
+    background-position: -205px 0px;
+}
 
 .post .rating {
 	margin-top: 1ex;
