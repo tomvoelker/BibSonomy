@@ -409,10 +409,12 @@ function initSidebarHeader() {
 		var new_sidebarWidth = sidebarWidth + scrollbarWidth - scrollbarWidth_default;
 	
 		// hide scrollbars in header
-		$('#headercontainer').css({"scroll": "hidden", "overflow-y": "hidden"});
+		$('#headercontainer').css({"scroll": "hidden"});
+		$('#footercontainer').css({"scroll": "hidden"});
 		
 		// set new width of header, regarding to scrollbarwidth
 		$("#sidebarheader").width(new_sidebarWidth);
 		$("#headercontainer").css("padding-right", new_sidebarWidth);
+		$("#footercontainer").css("padding-right", new_sidebarWidth);
 	}
 }
