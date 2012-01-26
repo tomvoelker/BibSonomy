@@ -26,7 +26,7 @@
 		</c:url>
 		
 		<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-		<a class="item pick" onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}"><!-- Keep Me --></a>
+		<a class="item ${pickUnpick}" onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}"><!-- Keep Me --></a>
 
 
 		<!-- COPY EDIT DELETE -->
@@ -136,7 +136,7 @@
 		<!-- OPENURL -->
 		<c:if test="${not empty command.context.loginUser.openURL}">
 	    	<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
-	    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}"><!-- Keep Me --></a>
+	    	<a class="item openUrl" href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}"><!-- Keep Me --></a>
 		</c:if>			
 	</c:if>
 
