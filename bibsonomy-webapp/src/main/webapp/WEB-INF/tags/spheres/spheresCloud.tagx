@@ -18,7 +18,7 @@
 			sphereControl.renderSpheres() 
 		});
 	</script>
-	<span class="sidebar_h sidebar_collapse">
+	<span class="sidebar_h">
 		<c:out value="${title}"/>
 	</span>
 	<div id="spheresTemplates"><!-- keep me! --></div>
