@@ -296,9 +296,7 @@
 							</div>
 						</c:if>
 
-						<div id="sidebar">
-							<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}"/>							
-						</div>
+						<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}"/>							
 					
 						<jsp:invoke fragment="content"/>
 					
