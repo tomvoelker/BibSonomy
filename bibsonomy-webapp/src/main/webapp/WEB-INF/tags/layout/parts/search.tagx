@@ -12,38 +12,33 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 
 	<div id="search">
-		<ul>
-			<li><a onclick="naviSwitchSpecial('tag')"><fmt:message key="navi.tag"/></a></li>
-			<li><a onclick="naviSwitchSpecial('user')"><fmt:message key="navi.user"/></a></li>
-			<li><a onclick="naviSwitchSpecial('group')"><fmt:message key="navi.group"/></a></li>
-			<li><a onclick="naviSwitchSpecial('author')"><fmt:message key="navi.author"/></a></li>
-			<li><a onclick="naviSwitchSpecial('concept/tag')"><fmt:message key="navi.concept"/></a></li>
-			<li><a onclick="naviSwitchSpecial('bibtexkey')"><fmt:message key="navi.bibtexkey"/></a></li>
-			<li><a onclick="naviSwitchSpecial('search')"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
-			<c:if test="${not empty requestedUser}">
-				<li><a onclick="naviSwitchSpecial('explicit_user')"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
-				<c:set var="mode" value="requUser" /><!-- FIXME: who uses this? -->
-			</c:if>
-			<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-				<li><a onclick="naviSwitchSpecial('explicit_user')"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a></li>
-			</c:if>
-			<c:if test="${command.context.userLoggedIn}">
-				<li><a onclick="naviSwitchSpecial('followers')"><fmt:message key="navi.followedUsers"/></a></li>
-				<li><a style="color:black"><fmt:message key="navi.search"/> in group:</a></li><!--  FIXME: I18N -->
-				<c:forEach var="grp" items="${loginUser.groups}">
-					<script type="text/javascript">
-						gOptions.push('${grp.name}');
-					</script>
-					<li><a onclick="naviSwitchSpecial('${grp.name}')" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></a></li>
-				</c:forEach>
-			</c:if>
-		</ul>	
-		<!--+
-			|
-			| search
-			| 
-	 		+-->
-		:: <jsp:invoke fragment="heading"/>
+			:: <jsp:invoke fragment="heading"/>
+				<ul>
+					<li><a onclick="naviSwitchSpecial('tag')"><fmt:message key="navi.tag"/></a></li>
+					<li><a onclick="naviSwitchSpecial('user')"><fmt:message key="navi.user"/></a></li>
+					<li><a onclick="naviSwitchSpecial('group')"><fmt:message key="navi.group"/></a></li>
+					<li><a onclick="naviSwitchSpecial('author')"><fmt:message key="navi.author"/></a></li>
+					<li><a onclick="naviSwitchSpecial('concept/tag')"><fmt:message key="navi.concept"/></a></li>
+					<li><a onclick="naviSwitchSpecial('bibtexkey')"><fmt:message key="navi.bibtexkey"/></a></li>
+					<li><a onclick="naviSwitchSpecial('search')"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
+					<c:if test="${not empty requestedUser}">
+						<li><a onclick="naviSwitchSpecial('explicit_user')"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>
+						<c:set var="mode" value="requUser" /><!-- FIXME: who uses this? -->
+					</c:if>
+					<c:if test="${command.context.userLoggedIn and empty requestedUser}">
+						<li><a onclick="naviSwitchSpecial('explicit_user')"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a></li>
+					</c:if>
+					<c:if test="${command.context.userLoggedIn}">
+						<li><a onclick="naviSwitchSpecial('followers')"><fmt:message key="navi.followedUsers"/></a></li>
+						<li><a style="color:black"><fmt:message key="navi.search"/> in group:</a></li><!--  FIXME: I18N -->
+						<c:forEach var="grp" items="${loginUser.groups}">
+							<script type="text/javascript">
+								gOptions.push('${grp.name}');
+							</script>
+							<li><a onclick="naviSwitchSpecial('${grp.name}')" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></a></li>
+						</c:forEach>
+					</c:if>
+				</ul>
 	</div>
 
 </jsp:root>

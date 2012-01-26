@@ -76,34 +76,7 @@ a:hover {
 	text-transform: uppercase;
 }
 
-
-
-.smallform {
-	display: inline;
-	margin: 0px;
-	padding: 0px;
-}
-
-#search {
-	display: inline;	
-}
-
-/*
-#search {
-	position: absolute;
-	top: 54px;
-	left: 30px;
-	height:3.5ex;
-	width: 50em;
-	padding: 2px;
-}
-*/
-
-#specialsearch {
-	display: inline;
-}
-
-#search .descriptiveLabel {
+.descriptiveLabel {
 	color: #bbb;
 }
 
@@ -206,7 +179,6 @@ a:hover {
 /* 
  * navigation dropdown menu
  */ 
-
 #navigation > ul {
 	list-style: none;
 	font-weight: bold;
@@ -214,6 +186,7 @@ a:hover {
 	/* Clear floats */
 	float: left;
 }
+
 #navigation > ul li {
 	float: left;
 	position: relative;
@@ -225,29 +198,29 @@ a:hover {
 	padding: 4px;
 }
 
-#navigation > ul a, #navigation > ul > li, #search > ul a {
+#navigation > ul a, #navigation > ul > li {
 	display: block;
 	padding: 5px;
 	text-decoration: none;
 }
 
-#navigation .pulldown>span, #navigation>ul>li>a{
+#navigation .pulldown > span, #navigation > ul > li > a {
 	display: block;
 	padding-top: 3px;
 	padding-bottom: 4px;
 }
 
-#navigation > ul li:hover, #navigation .pulldown:hover, #search > ul a:hover {
+#navigation > ul li:hover, #navigation .pulldown:hover, #search a:hover {
 	color: #fff;
 	background: #333;
 }
 
-#navigation > ul li:hover>a {
+#navigation > ul li:hover > a { /* FIXME: sollte das nicht durch die vorherige Regel abgedeckt sein? */ 
 	color: #fff;
 }
 
 /*--- DROPDOWN ---*/
-#navigation > ul ul, #navigation > ul table, #search > ul {
+#navigation > ul ul, #navigation > ul table, #search ul {
 	background: #f0f0f0; /* Adding a background makes the dropdown work properly in IE7+. Make this as close to your page's background as possible (i.e. white page == white background). */
 	background: rgba(198,198,198,0); /* But! Let's make the background fully transparent where we can, we don't actually want to see it if we can help it... */
 	list-style: none;
@@ -257,36 +230,50 @@ a:hover {
 	margin-top: 5px;
 }
 
+#search ul {
+	margin-top: 0;	
+}
+
 #navigation > ul table {
 	border-left: 2px solid #c6c6c6;
 	border-right: 2px solid #c6c6c6;
-	
 }
 
-#navigation > ul ul li, #search > ul li {
+#navigation > ul ul li, #search li {
 	float: none;
 	z-index: 50;
 }
-#navigation > ul ul a, #navigation > ul table a, #search > ul a {
-	white-space: nowrap; /* Stop text wrapping and creating multi-line dropdown items */
+/* Stop text wrapping and creating multi-line dropdown items */
+#navigation > ul ul a, #navigation > ul table a, #search a {
+	white-space: nowrap; 
 }
-#navigation > ul li:hover ul, #navigation > ul li:hover table, #currSearch { /* Display the dropdown on hover */
+/* Display the dropdown on hover */
+#navigation > ul li:hover ul, #navigation > ul li:hover table, #search:hover ul { 
 	left: 0; /* Bring back on-screen when needed */
 }
-#navigation > ul li:hover a, #search > ul { /* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
+/* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
+#navigation > ul li:hover a, #search:hover a { 
 	text-decoration: underline;
 }
 
-#navigation > ul li.pulldown ul {
+#navigation > ul li.pulldown ul, #search ul {
 	background: #f0f0f0;
 	border-left: 2px solid #c6c6c6;
 	border-right: 2px solid #c6c6c6;
+	z-index: 50;
 }
 
-#navigation > ul li:hover ul a, #navigation > ul li:hover table a { /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
+#search ul {
+	z-index: 51;	
+}
+
+/* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
+#navigation > ul li:hover ul a, #navigation > ul li:hover table a, #search:hover ul a { 
+	
 	text-decoration: none;
 }
-#navigation > ul li:hover ul li a:hover, #navigation > ul li:hover table a:hover { /* Here we define the most explicit hover states--what happens when you hover each individual link. */
+/* Here we define the most explicit hover states--what happens when you hover each individual link. */
+#navigation > ul li:hover ul li a:hover, #navigation > ul li:hover table a:hover, #search:hover ul li a:hover { 
 	background: #333;
 	text-decoration: underline;
 }
@@ -357,6 +344,22 @@ a:hover {
 	background-position: 0 0.9ex;
 	padding-left: 3ex;
 }
+
+
+.smallform {
+	display: inline;
+	margin: 0px;
+	padding: 0px;
+}
+
+#search {
+	display: inline;	
+}
+
+#specialsearch {
+	display: inline;
+}
+
 
 #intro {
 	display: none;
