@@ -18,7 +18,6 @@ includeJavaScript("/resources/javascript/functions.js");
 includeJavaScript("/resources/javascript/ajaxUtils.js");
 includeJavaScript("/resources/javascript/fileUpload.js");
 includeJavaScript("/resources/javascript/style.js");
-includeJavaScript("/resources/javascript/chrome.js");
 includeJavaScript("/resources/jquery/plugins/textarearesizer/jquery.textarearesizer.js");
 includeJavaScript("/resources/jquery/plugins/corner/jquery.corner.js");
 includeJavaScript("/resources/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js");
