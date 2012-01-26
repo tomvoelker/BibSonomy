@@ -16,6 +16,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * @author rja
  * @version $Id$
  */
+@Ignore
 public class TimeDiffFormatterTagTest {
 
 	private static final String EN = "en";
