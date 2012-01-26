@@ -389,6 +389,7 @@ a:hover {
     height: 40px; 
     width: 44px;
     display: block;
+    outline: none;
 }
 
 .sidebarnavi_entry_01 {
