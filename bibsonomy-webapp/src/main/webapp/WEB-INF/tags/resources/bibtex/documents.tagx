@@ -24,16 +24,17 @@
 			<!-- Post has no Dokuments => show entrytype + if user logged in link for upload -->
 			<c:choose>
 				<c:when test="${not empty post.user.name and post.user.name eq command.context.loginUser.name}">
-					<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+					<a class="entrytype ${post.resource.entrytype} addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 						<!-- TODO use the entrytype based previews => Tag entrytypePreviews--> 
-						<img class="${post.resource.entrytype}" src="/resources/image/pre_periodical.png" alt="${altPreview}"/>
+						<!-- <img class="${post.resource.entrytype}" src="/resources/image/pre_periodical.png" alt="${altPreview}"/> -->
 					</a>
 				</c:when>
 				<c:otherwise>
 						<!-- TODO use the entrytype based previews -->
 					<!-- don not use preview here, preview is needed for the real preview pix. we need some other general class -->
 					<!-- vom beispiel item pick edit usw. lernen! -->
-					<img class="${post.resource.entrytype}" src="/resources/image/pre_periodical.png" alt="${altPreview}"/>
+					<span class="entrytype ${post.resource.entrytype}"><!-- Keep ME--></span>
+<!-- 					<img class="${post.resource.entrytype}" src="/resources/image/pre_periodical.png" alt="${altPreview}"/> -->
 				</c:otherwise>
 			</c:choose>			
 		</c:otherwise>
