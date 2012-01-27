@@ -1008,14 +1008,10 @@ li.box_lowerconcept a {
 	border-right: 1px solid #c6c6c6;
 }
 
-#bookmarksfooter .footer {
+#bookmarksfooter .footer, #publicationsfooter .footer {
 	border-right: 1px solid #c6c6c6;
-	height:30px;
-}    
-
-#publicationsfooter .footer {
-	border-left: 1px solid #c6c6c6;
-	height:30px;
+	height:26px;
+	padding-top:4px;
 }    
 
 #publicationsheader .header {
