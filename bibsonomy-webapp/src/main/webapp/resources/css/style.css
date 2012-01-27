@@ -708,8 +708,6 @@ li.box_lowerconcept a {
 	top: 3px;
 	position: absolute;
 }
-.post .mimetype_pdf {
-}
 
 .post .title,  .post .desc, .post .authors {
 	white-space: nowrap;
@@ -929,10 +927,19 @@ li.box_lowerconcept a {
 }
 
 
-.post .image .preview {
+.post .pre_pic {
     border: 1px solid #DDDDDD;
     box-shadow: 0px 0px 6px #999999;
 }
+
+#preview{
+	position:absolute;
+	border:1px solid #ccc;
+	background:#eee;
+	padding:5px;
+	display:none;
+}
+
 
 .post .overlay {
 	position: absolute;
