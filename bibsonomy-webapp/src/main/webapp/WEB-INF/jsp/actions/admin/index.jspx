@@ -17,8 +17,8 @@
 	<fmt:message key="navi.admin" var="pageTitle" />
 		
 	<layout:layout pageTitle="${pageTitle}" loginUser="${command.context.loginUser}" requPath="${requPath}">
-		<jsp:attribute name="heading">	
-			<a href="/admin"><c:out value="${pageTitle}" /></a>
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.admin"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">

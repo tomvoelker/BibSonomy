@@ -27,11 +27,14 @@
 				href="${resdir}/css/admin.css" />
 		</jsp:attribute>
 		
-			<jsp:attribute name="heading">	
-		 <h1 id="path"> 
-			<a href="/admin"><fmt:message key="navi.admin"/></a> :: <a rel="path_menu"
-				href="/admin/spam"><fmt:message key="navi.spam" /></a>
-		</h1>
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.admin">
+				<jsp:attribute name="pathPart">
+					<li>
+						<a rel="path_menu" href="/admin/spam">Spam</a>
+					</li>
+				</jsp:attribute>
+			</parts:search>
 		</jsp:attribute>
 	
 		<jsp:attribute name="topcontent">

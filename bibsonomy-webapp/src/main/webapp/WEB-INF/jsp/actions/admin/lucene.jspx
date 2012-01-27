@@ -18,8 +18,13 @@
 	
 	<layout:layout pageTitle="${pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}" fullscreen="true">
 		<jsp:attribute name="heading">
-		    <a href="/admin"><c:out value="${pageTitle}" /></a> ::
-			<a rel="path_menu" href="/admin/lucene">Lucene</a>
+			<parts:search pathMessageKey="navi.admin">
+				<jsp:attribute name="pathPart">
+					<li>
+						<a rel="path_menu" href="/admin/lucene">Lucene</a>
+					</li>
+				</jsp:attribute>
+			</parts:search>
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">

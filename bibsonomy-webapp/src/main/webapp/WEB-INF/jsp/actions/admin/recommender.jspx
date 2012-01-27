@@ -17,9 +17,15 @@
 	
 	<layout:layout pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
 		<jsp:attribute name="heading">
-		    <a href="/admin"><fmt:message key="navi.admin"/></a> ::
-			<a rel="path_menu" href="/admin/recommender">Recommender</a>
-		</jsp:attribute>	
+			<parts:search pathMessageKey="navi.admin">
+				<jsp:attribute name="pathPart">
+					<li>
+						<a rel="path_menu" href="/admin/recommender">Recommender</a>
+					</li>
+				</jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
+		
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"
 				href="${resdir}/css/admin.css" />
