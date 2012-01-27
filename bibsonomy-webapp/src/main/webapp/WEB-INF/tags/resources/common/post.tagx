@@ -110,7 +110,7 @@
 <!--				<c:set var="act_fragment"><jsp:invoke fragment="actions"/></c:set>-->
 <!--				<span class="bmaction">${act_fragment}</span>-->
 				
-<!-- 				ugly hack to circumvent IEs clearfix bug -->-->
+<!-- 				ugly hack to circumvent IEs clearfix bug -->
 <!--				<c:if test="${not (fn:trim(act_fragment) eq '')}">-->
 <!--					<jsp:text>${mtl:ch('nbsp')}</jsp:text>-->
 <!--				</c:if>-->
