@@ -10,6 +10,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
     xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
+    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
   
@@ -37,7 +38,7 @@
     <layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" activeTab="my">
 
       <jsp:attribute name="heading">
-        <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<c:out value="${pageTitle}"/></a> 
+      	<parts:search pathMessageKey="post.meta.edit"/>
       </jsp:attribute>
 
 	  
