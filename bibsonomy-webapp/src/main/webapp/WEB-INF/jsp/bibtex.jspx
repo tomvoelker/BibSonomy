@@ -9,6 +9,7 @@
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -43,10 +44,7 @@
 	<layout:bibtexLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<c:out value="${pageTitle}"/></a> :: 
-			<form action="/search" method="get" class="smallform">
-			  <input type="text" size="20" name="search" value="${fn:escapeXml(title)}"/>
-			</form>
+			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">

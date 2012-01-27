@@ -8,16 +8,12 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:groupsLayout 
-    	requPath="${requPath}" 
-    	command="${command}" 
-    	pageTitle="${command.pageTitle}"
-        activeTab="groups"
-      >
+    <layout:groupsLayout requPath="${requPath}" command="${command}" pageTitle="${command.pageTitle}" activeTab="groups">
     	<!--+
     	 	| html header extension: page specific stylesheet
     	 	+-->
@@ -28,12 +24,7 @@
     	 	| heading
     	 	-->
     	<jsp:attribute name="heading">
-			<a rel="path_menu" href="/groups">
-				<img src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.groups"/>
-			</a> :: 
-			<form action="/group/" method="GET" class="smallform">
-  				<input type="text" size="20" name="group" id="inpf"/>
-			</form>
+			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
     	</jsp:attribute>
     	<!--+
     	 	| content

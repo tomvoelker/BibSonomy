@@ -8,16 +8,15 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.search"/></a> :: 
-			<form action="/search" method="get" class="smallform">
-		  		<input type="text" size="20" name="search" id="inpf" value='${fn:escapeXml(command.requestedSearch)}'/>
-			</form>							
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search" formInputValue="${command.requestedSearch}"/>
 		</jsp:attribute>
 	
 		<jsp:attribute name="sidebar">

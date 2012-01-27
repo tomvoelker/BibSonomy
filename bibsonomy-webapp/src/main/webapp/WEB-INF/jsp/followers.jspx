@@ -9,34 +9,16 @@
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 		
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}"
-		command="${command}" requPath="${requPath}"
-		activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
+	<layout:resourceLayout pageTitle="${command.pageTitle}"	command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
 
 		<jsp:attribute name="heading">
-		  <a rel="path_menu" href="#"><img alt=""
-				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message
-				key="navi.followees" /></a> ::
-	    	<form:form cssClass="smallform" action="/followers" method="GET">
-				<form:select path="requestedUser">
-					<fmt:message var="allTitle" key="navi.all.persons" />
-					<form:option value="" label="${allTitle}" />
-					<c:forEach var="user" items="${command.followersOfUser}">
-						<form:option value="${mtl:encodeURI(user.name)}"
-							label="${mtl:encodeURI(user.name)}" />
-					</c:forEach>				
-				</form:select>
-				<input type="hidden" name="ranking.method" value="${command.ranking.method}"/>
-				<input type="hidden" name="ranking.normalize" value="${command.ranking.normalize}"/>
-				<fmt:message var="go" key="navi.go" />
-				<input id="button" type="submit" value="${go}" />
-			</form:form>							
+			<parts:search pathMessageKey="navi.followees"/>
 		</jsp:attribute>
 
 

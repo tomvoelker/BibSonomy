@@ -8,33 +8,36 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.author"/></a> :: 
-			<span itemscope="itemscope" itemtype="http://schema.org/Person">
-				<a href="/author/${fn:escapeXml(command.requestedAuthor)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
-			</span> ::
-			<form action="/author/${fn:escapeXml(command.requestedAuthor)}" method="get" class="smallform">
-			  <input type="text" size="20" name="tag" id="inpf"/>
-			</form>										
+			<parts:search pathMessageKey="navi.author" formAction="/author/${mtl:encodeURI(command.requestedAuthor)}" formInputName="tag" formInputValue="${command.requestedTags}">
+				<jsp:attribute name="pathPart">
+					<li>
+						<span itemscope="itemscope" itemtype="http://schema.org/Person">
+							<a href="/author/${mtl:encodeURI(command.requestedAuthor)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
+						</span> ::
+					</li>
+				</jsp:attribute>
+			</parts:search>								
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">	
-		<ul>			
-			<!-- display related tags -->
-			<li>
-				<span class="sidebar_h"><fmt:message key="relatedtags"/></span>			
-				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
-			</li>
-			
-			<!-- display the tag cloud -->
-			<li><span class="sidebar_h"><fmt:message key="tags"/></span></li>
-			<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-		</ul>
+			<ul>			
+				<!-- display related tags -->
+				<li>
+					<span class="sidebar_h"><fmt:message key="relatedtags"/></span>			
+					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
+				</li>
+				
+				<!-- display the tag cloud -->
+				<li><span class="sidebar_h"><fmt:message key="tags"/></span></li>
+				<tags:cloud requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+			</ul>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

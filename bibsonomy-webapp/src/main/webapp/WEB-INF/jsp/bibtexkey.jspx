@@ -7,21 +7,30 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtexkey"/></a> ::
-			<c:if test="${not empty command.requestedUser}"><a href="/user/${fn:escapeXml(command.requestedUser)}">${fn:escapeXml(command.requestedUser)}</a> :: </c:if> 
-			<form action="/bibtexkey" method="get" class="smallform">
-		  		<input type="text" id="inpf" name="requestedKey" size="25" value="${fn:escapeXml(command.requestedKey)}" />
-		  		<c:if test="${not empty command.requestedUser}">
-		  			<input type="hidden" name="requestedUser" value="${fn:escapeXml(command.requestedUser)}" />
-		  		</c:if>
-			</form>	
+			<parts:search pathMessageKey="navi.bibtexkey" formAction="/bibtexkey" formInputName="requestedKey" formInputValue="${command.requestedKey}">
+				<jsp:attribute name="pathPart">
+					<c:if test="${not empty command.requestedUser}">
+						<li>
+							<a href="/user/${mtl:encodeURI(command.requestedUser)}">${fn:escapeXml(command.requestedUser)}</a> :: 
+				 		</li>
+				 	</c:if>
+				</jsp:attribute>
+				<jsp:attribute name="formExtra">
+					<c:if test="${not empty command.requestedUser}">
+						<input type="hidden" name="requestedUser" value="${fn:escapeXml(command.requestedUser)}" />
+					</c:if>
+				</jsp:attribute>
+			</parts:search>	
 		</jsp:attribute>
+		
+		
 		<jsp:attribute name="sidebar">
 			<ul>
 				<li>

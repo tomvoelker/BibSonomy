@@ -8,6 +8,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -37,10 +38,7 @@
 	
 	<layout:bookmarkLayout pageTitle="url :: ${bookmark.title}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}url</a> :: 
-			<form action="/url" method="get" class="smallform">
-		  		<input type="text" id="inpf" name="requUrl" size="25" value="${fn:escapeXml(command.bookmark.list[0].resource.url)}" />
-			</form>	
+			<parts:search pathMessageKey="navi.url" formAction="/url" formInputName="requUrl" formInputValue="${command.bookmark.list[0].resource.url}"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
