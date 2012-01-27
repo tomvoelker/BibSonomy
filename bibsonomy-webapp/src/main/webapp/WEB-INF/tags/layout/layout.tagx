@@ -198,8 +198,7 @@
 							 	| breadcrumb / search
 							 	|
 							 	+-->
-							<parts:search heading="${heading}" loginUser="${loginUser}" requestedUser="${requestedUser}"/>
-
+							<jsp:invoke fragment="heading"/>
 						</div>
 					
 						<div id="logoSubtitle"><fmt:message key="system.desc"/></div><!-- FIXME: not shown by CSS -->

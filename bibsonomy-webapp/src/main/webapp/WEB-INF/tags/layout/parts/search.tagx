@@ -7,31 +7,61 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:spring="http://www.springframework.org/tags">
 	
-	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	
+	<jsp:directive.attribute name="pathMessageKey" type="java.lang.String" required="true" description="The message key for the first element of the path"/>
+	<jsp:directive.attribute name="pathPart" fragment="true" required="false" description="Any further elements of the path. Should be enclosed in list elements."/>
+	<jsp:directive.attribute name="afterInput" fragment="true" required="false" description="Anything which should be shown after the form input field."/>
+	
+	
+	<jsp:directive.attribute name="formAction" type="java.lang.String" required="false" description="If not given, the form is hidden."/>
+	<jsp:directive.attribute name="formInputName" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
+	
 
 	<div id="search">
-		:: <jsp:invoke fragment="heading"/>
 		<ul>
-			<li onclick="switchNavi('tag', event)"><fmt:message key="navi.tag"/></li>
-			<li onclick="switchNavi('user', event)"><fmt:message key="navi.user"/></li>
-			<li onclick="switchNavi('group', event)"><fmt:message key="navi.group"/></li>
-			<li onclick="switchNavi('author', event)"><fmt:message key="navi.author"/></li>
-			<li onclick="switchNavi('concept/tag', event)"><fmt:message key="navi.concept"/></li>
-			<li onclick="switchNavi('bibtexkey', event)"><fmt:message key="navi.bibtexkey"/></li>
-			<li onclick="switchNavi('search', event)"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
-			<c:if test="${not empty requestedUser}">
-				<li onclick="switchNavi('user:${fn:escapeXml(requestedUser)}', event)"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
+			<li>
+				:: 
+				<a href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="${pathMessageKey}"/></a> ::
+				<ul>
+					<li onclick="switchNavi('tag', event)"><fmt:message key="navi.tag"/></li>
+					<li onclick="switchNavi('user', event)"><fmt:message key="navi.user"/></li>
+					<li onclick="switchNavi('group', event)"><fmt:message key="navi.group"/></li>
+					<li onclick="switchNavi('author', event)"><fmt:message key="navi.author"/></li>
+					<li onclick="switchNavi('concept/tag', event)"><fmt:message key="navi.concept"/></li>
+					<li onclick="switchNavi('bibtexkey', event)"><fmt:message key="navi.bibtexkey"/></li>
+					<li onclick="switchNavi('search', event)"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
+					<c:if test="${not empty requestedUser}">
+						<li onclick="switchNavi('user:${fn:escapeXml(requestedUser)}', event)"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
+					</c:if>
+					<c:if test="${command.context.userLoggedIn and empty requestedUser}">
+						<li onclick="switchNavi('user:${fn:escapeXml(command.context.loginUser.name)}', event)"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></li>
+					</c:if>
+					<c:if test="${command.context.userLoggedIn}">
+						<li style="color:black"><fmt:message key="navi.search.in_group"/></li>
+						<c:forEach var="grp" items="${command.context.loginUser.groups}">
+							<li onclick="switchNavi('group:${fn:escapeXml(grp.name)}', event)" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
+						</c:forEach>
+					</c:if>
+				</ul>
+			</li>
+			<c:if test="${not empty pathPart}">
+				<jsp:invoke fragment="pathPart"/>
 			</c:if>
-			<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-				<li onclick="switchNavi('user:${fn:escapeXml(loginUser.name)}', event)"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></li>
-			</c:if>
-			<c:if test="${command.context.userLoggedIn}">
-				<li style="color:black"><fmt:message key="navi.search"/> in group:</li><!--  FIXME: I18N -->
-				<c:forEach var="grp" items="${loginUser.groups}">
-					<li onclick="switchNavi('group:${fn:escapeXml(grp.name)}', event)" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
-				</c:forEach>
+			<li style="${empty formAction ? 'display: hidden' : ''}">
+				<form action="${formAction}" method="get" class="smallform">
+		  			<input type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
+		  			<c:if test="${not empty formExtra}">
+		  				<jsp:invoke fragment="formExtra"/>
+		  			</c:if>
+				</form>	
+			</li>
+			<c:if test="${not empty afterInput}"><!-- FIXME: wird noch nicht angezeigt -->
+				<li>
+					<jsp:invoke fragment="afterInput"/>
+				</li>
 			</c:if>
 		</ul>
 	</div>

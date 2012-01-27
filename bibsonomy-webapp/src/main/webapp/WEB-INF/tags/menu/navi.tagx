@@ -57,6 +57,9 @@
 					<span><fmt:message key="navi.groups"/></span>
 
 					<table>
+						<tr>
+							<td colspan="6"><a href="/groups"><fmt:message key="navi.groups.all"/></a></td>
+						</tr>
 						<c:forEach var="grp" items="${loginUser.groups}">
 							<tr>
 								<td><a href="/group/${mtl:encodeURI(grp.name)}"><c:out value='${grp.name}'/></a></td>
