@@ -710,6 +710,41 @@ li.box_lowerconcept a {
 	position: absolute;
 }
 
+.post .image .entrytype {
+    background-repeat: no-repeat;
+	background: url("/resources/image/previews2.png");
+    display: block;
+    float: left;
+    position: relative;
+    margin-left: 25px;
+    margin-top: 5px;
+}
+
+
+.post .image .article{ background-position: 0 0; width: 49px; height: 53px; } 
+.post .image .book{ background-position: 0 -54px; width: 65px; height: 46px; } 
+.post .image .booklet{ background-position: 0 -101px; width: 59px; height: 65px; } 
+.post .image .conference{ background-position: 0 -167px; width: 56px; height: 44px; } 
+.post .image .electronic{ background-position: 0 -212px; width: 55px; height: 45px; } 
+.post .image .inbook{ background-position: 0 -258px; width: 64px; height: 60px; } 
+.post .image .incollection{ background-position: 0 -319px; width: 64px; height: 60px; } 
+.post .image .inproceedings{ background-position: 0 -380px; width: 36px; height: 49px; } 
+.post .image .manual{ background-position: 0 -430px; width: 61px; height: 46px; } 
+.post .image .masterthesis{ background-position: 0 -477px; width: 58px; height: 64px; } 
+.post .image .misc{ background-position: 0 -542px; width: 36px; height: 49px; } 
+.post .image .patent{ background-position: 0 -592px; width: 43px; height: 55px; } 
+.post .image .pdf{ background-position: 0 -648px; width: 59px; height: 30px; } 
+.post .image .periodical{ background-position: 0 -679px; width: 60px; height: 41px; } 
+.post .image .phdthesis{ background-position: 0 -721px; width: 59px; height: 64px; } 
+.post .image .preamble{ background-position: 0 -786px; width: 50px; height: 53px; } 
+.post .image .presentation{ background-position: 0 -840px; width: 55px; height: 46px; } 
+.post .image .proceedings{ background-position: 0 -887px; width: 47px; height: 60px; } 
+.post .image .standard{ background-position: 0 -948px; width: 42px; height: 54px; } 
+.post .image .techreport{ background-position: 0 -1003px; width: 55px; height: 52px; } 
+.post .image .unpublished{ background-position: 0 -1056px; width: 36px; height: 49px; } 
+.post .image .web{ background-position: 0 -1106px; width: 61px; height: 37px; } 
+
+
 .post .title,  .post .desc, .post .authors {
 	white-space: nowrap;
 	overflow: hidden;
