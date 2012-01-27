@@ -50,7 +50,7 @@
 	    
             
         <jsp:attribute name="heading">
-          <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${editPageTitle}" /></a> 
+        	<parts:search pathMessageKey="navi.edit${resourceType}"/>
         </jsp:attribute>
       	<!--
    			  | 
