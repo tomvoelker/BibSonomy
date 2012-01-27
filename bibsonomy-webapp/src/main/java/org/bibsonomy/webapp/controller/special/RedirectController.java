@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.special;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -42,30 +44,31 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	@Override
 	public View workOn(final RedirectCommand command) {
 		log.debug("handling /redirect URLs");
-		String redirectUrl = "/login";
+		String redirectUrl = "/"; // TODO: which URL would be good?
 
 		final User user = command.getContext().getLoginUser();
 		final String myPage = command.getMyPage();
 		final String search = command.getSearch();
 		final String url    = command.getUrl();
-		log.debug("input: myPage=" + myPage + ", search=" + search + ", scope=" + command.getScope() + ", url=" + url);
+		final String scope = command.getScope();
+		log.debug("input: myPage=" + myPage + ", search=" + search + ", scope=" + scope + ", url=" + url);
 
-		if (command.getContext().isUserLoggedIn() && ValidationUtils.present(myPage)) {
+		if (command.getContext().isUserLoggedIn() && present(myPage)) {
 			/*
 			 * handle /my* pages
 			 */
 			redirectUrl = getMyPageRedirect(myPage, user.getName());
-		} else if (ValidationUtils.present(search)) {
+		} else if (present(search) && present(scope)) {
 			/*
 			 * handle main page search form
 			 */
 			try {
-				redirectUrl = getSearchPageRedirect(search, command.getScope(), command.getRequUser());
+				redirectUrl = getSearchPageRedirect(search, scope, command.getRequUser());
 			} catch (UnsupportedEncodingException e) {
 				log.error("Could not search form redirect URL.", e);
 			}
 
-		} else if (ValidationUtils.present(url)) { 
+		} else if (present(url)) { 
 			/* 
 			 * Handle /uri/ content negotiating using the Accept: header.
 			 */
