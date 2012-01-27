@@ -12,15 +12,15 @@
 	<c:if test="${not empty post.resource.note}">		
 		<em> 
 			<c:set var="cleanedNote" value="${mtl:cleanBibtex(post.resource.note)}" />
-		    <c:choose>
-		      <c:when test="${fn:length(cleanedNote) lt 155}">
+<!-- 		    <c:choose> -->
+<!-- 		      <c:when test="${fn:length(cleanedNote) lt 155}"> -->
 			    <c:out value="${cleanedNote}" />
-		      </c:when>
-		      <c:otherwise>
-		        <c:out value="${fn:substring(cleanedNote, 0, 155)}" />
-		        <span class="info">...<div><c:out value="${cleanedNote}" /></div></span>
-		      </c:otherwise>
-		    </c:choose>
+<!-- 		      </c:when> -->
+<!-- 		      <c:otherwise> -->
+<!-- 		        <c:out value="${fn:substring(cleanedNote, 0, 155)}" /> -->
+<!-- 		        <span class="info">...<div><c:out value="${cleanedNote}" /></div></span> -->
+<!-- 		      </c:otherwise> -->
+<!-- 		    </c:choose> -->
 		    .
 	    </em>
     </c:if>	

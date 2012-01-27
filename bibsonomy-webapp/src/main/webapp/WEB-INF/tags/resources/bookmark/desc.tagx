@@ -15,8 +15,7 @@
 	    <c:out value="${post.description}" />
       </c:when>
       <c:otherwise>
-        <c:out value="${fn:substring(post.description, 0, 155)}" />
-        <span class="info">...<div><c:out value='${post.description}'/></div></span>
+       <c:out value="${fn:substring(post.description, 0, 155)}" /> <span class="info">...<div><c:out value='${post.description}'/></div></span>
       </c:otherwise>
     </c:choose>
   

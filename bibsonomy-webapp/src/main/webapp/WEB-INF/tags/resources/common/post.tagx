@@ -47,7 +47,8 @@
 		<!-- TITLE AND DESCRIPTION -->
 		<div class="title"><jsp:invoke fragment="title"/></div>
 		<c:if test="${not empty desc}"> 
-			<div class="desc"><jsp:invoke fragment="desc"/></div>
+			<c:set var="descVar"><jsp:invoke fragment="desc"/></c:set>
+			<div class="desc"><span class="info"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></span></div>
 		</c:if>
 		
 
