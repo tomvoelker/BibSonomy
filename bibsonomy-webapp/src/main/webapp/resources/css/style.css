@@ -454,7 +454,6 @@ a:hover {
     width: 44px;
     position: absolute;
     border-right: 1px solid #c6c6c6;
-    top: 5px;
 }
 
 .sidebarnavi_entry a {
@@ -475,74 +474,75 @@ a:hover {
 }
 
 .sidebarnavi_entry_01 {
-    background-position: -10px 126px;
+    background-position: -10px 131px;
     left: 0px;
 }
 
 .sidebarnavi_entry_01:hover {
-    background-position: -10px 8px;
+    background-position: -10px 13px;
 }
 
 .inbox_full {
-    background-position: -8px 85px;
+    background-position: -8px 80px;
 }
 
 .inbox_full:hover {
-    background-position: -8px 185px;
+    background-position: -8px 180px;
 }
 
 .sidebarnavi_entry_02 {
-	background-position: -86px 124px;
+	background-position: -86px 127px;
 	left: 44px;
 }
 
 .sidebarnavi_entry_02:hover {
-	background-position: -86px 6px;
+	background-position: -86px 9px;
 }
 
 .sidebarnavi_entry_03 {
-    background-position: -50px 124px;
+    background-position: -50px 127px;
     left: 88px;
 }
 
 .sidebarnavi_entry_03:hover {
-    background-position: -50px 6px;
+    background-position: -50px 9px;
 }
 
 .sidebarnavi_entry_04 {
-    background-position: -279px 124px;
+    background-position: -279px 129px;
     left: 132px;
 }
 
 .sidebarnavi_entry_04:hover {
-    background-position: -279px 5px;
+    background-position: -279px 10px;
 }
 
 .sidebarnavi_entry_05 {
-	background-position: -238px 124px;
+	background-position: -236px 128px;
 	left: 176px;
 }
 
 .sidebarnavi_entry_05:hover {
-	background-position: -238px 6px;
+	background-position: -236px 10px;
 }
 
 .sidebarnavi_entry_06 {
-    background-position: -318px 125px;
+    background-position: -318px 129px;
 	left: 220px;
 }
 
 .sidebarnavi_entry_06:hover {
-    background-position: -318px 5px;
+    background-position: -318px 9px;
 }
 
 .sidebarnavi_entry_07 {
-    background-position: -363px 125px;
+    background-position: -361px 129px;
 	left: 264px;
+	width: 60px;
 }
 
 .sidebarnavi_entry_07:hover {
-    background-position: -363px 5px;
+    background-position: -361px 9px;
 }
 
 
