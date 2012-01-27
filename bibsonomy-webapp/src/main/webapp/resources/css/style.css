@@ -692,6 +692,7 @@ li.box_lowerconcept a {
 	padding: 8px;
 	background-color: #ffffff;
 	position: relative;
+	min-height: 100px; /* to give previews images enough space */ 
 }
 	
 .post:hover {
