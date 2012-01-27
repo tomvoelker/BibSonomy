@@ -51,8 +51,12 @@
 					<img src="${resdir}/image/relations.png"/>
 				</jsp:attribute>
 				<jsp:attribute name="headerContent">
-					<h2>
-						<fmt:message key="tagrelations" />
+					<h2 class="header">
+						<fmt:message key="tagrelations" />				
+						<c:if test="${command.concepts.totalCount != 0}">
+							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.concepts.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
+							${mtl:ch('nbsp')}<span id="ttlctr" title="${titleKey}">(${command.concepts.totalCount})</span>
+						</c:if>
 					</h2>
 				</jsp:attribute>
 			</parts:panelheader>
@@ -63,19 +67,6 @@
 			+-->
 		<jsp:attribute name="content">				
 			 <div id="general">
-				<span class="content_h">
-					<div class="listh">
-						<c:choose>
-							<c:when test="${command.concepts.totalCount != 0}">
-								<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.concepts.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
-										${mtl:ch('nbsp')}<span id="ttlctr" title="${titleKey}">(${command.concepts.totalCount})</span>
-							</c:when>
-							<c:otherwise>
-								${mtl:ch('nbsp')}
-							</c:otherwise>
-						</c:choose>
-					</div>
-				</span>
 				<fmt:message var="editPageTags" key="post.meta.edit.title"/>
 	 			<div class="kiste">		
 					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>
