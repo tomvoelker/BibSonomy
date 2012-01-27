@@ -294,23 +294,28 @@ a:hover {
 /*	height:25px; */
 }
 
-#navigation ul li.active a {
-	color: #006699;
+#navigation ul li.active:hover {
+	background-color: #333333; 
+}
+
+#navigation>ul>li.active:hover a:hover {
+	color: white;
 }
 
 #navigation ul li.active a {
 	color: #000;
 }
 
-#navigation ul li a:hover {
+#navigation>ul>li>a:hover {
 	color: #fff;
 }
 
-#navigation > ul > li > a:hover {
-	color: #000;
+#navigation>ul>li>table td:hover a {
+	color: white;
 }
 
 #navigation > ul > li.active a {
+	color: #red;
 }
 
 
@@ -1087,7 +1092,7 @@ li.box_lowerconcept a {
 	right: 0px;
 	top: 125px;
 	height: 60px;
-	padding-right: 300px;
+	padding-right: 314px;  /* 300px plus average scrollbar width - will be adjusted with javascript to correct width, depends on browser and operating system  */
 	background-color: #c6c6c6;
 	overflow:visible;
 }
@@ -1124,7 +1129,7 @@ li.box_lowerconcept a {
 	position:absolute;
 	height:30px;
 	bottom:-20px;
-	padding-right:300px;
+	padding-right: 314px;  /* 300px plus average scrollbar width - will be adjusted with javascript to correct width, depends on browser and operating system  */
 	overflow: visible;
 	left: 0;
 	right: 0;
