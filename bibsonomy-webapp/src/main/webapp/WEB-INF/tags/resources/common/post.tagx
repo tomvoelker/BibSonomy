@@ -87,6 +87,11 @@
 		</div>
 		
 
+		<!-- ACTIONS -->
+		<div class="action">
+			<jsp:invoke fragment="actions"/>
+		</div>
+
 		<!-- NUMBER OF POSTS TO THIS RESOURCE -->
 		<!--+ 
 		 	| FIXME: user name, tags, etc. for community posts not given -
@@ -100,13 +105,7 @@
 			</div>
 		</c:if>
 		
-		
-		<!-- ACTIONS -->
-		<div class="action">
-			<jsp:invoke fragment="actions"/>
-		</div>
-
-		<!--CAN THIS BE REMOVED? 		<div class="footer"></div> -->
+	 <!-- maybe we need this ... <div class="footer"></div>  --> 
 
 	</li>
 </jsp:root>
