@@ -1099,7 +1099,7 @@ li.box_lowerconcept a {
 
 #sidebarheader {
 	position: absolute;
-	width: 300px;
+	width: 314px;  /* 300px plus average scrollbar width - will be adjusted with javascript to correct width, depends on browser and operating system  */
 	right: 0px;
 	top: 0px;
 	z-index: 40;
