@@ -8,6 +8,7 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -15,7 +16,7 @@
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}"  requPath="${requPath}">
   
         <jsp:attribute name="heading">
-          <fmt:message key="navi.register"/>
+        	<parts:search pathMessageKey="navi.register"/>
         </jsp:attribute>
         
         <jsp:attribute name="content">
