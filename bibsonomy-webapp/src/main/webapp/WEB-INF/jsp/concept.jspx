@@ -85,7 +85,7 @@
 					<tags:cloud requPath="${requPathTagCloud}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user"/>
 				</li>
 			</c:if>
-		</ul>	
+		</ul>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

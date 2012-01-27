@@ -4,11 +4,11 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -41,12 +41,29 @@
 				</li>
         	</ul>
 		</jsp:attribute>
-
+		
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerLogo">
+					<img src="${resdir}/image/relations.png"/>
+				</jsp:attribute>
+				<jsp:attribute name="headerContent">
+					<h2>
+						<fmt:message key="tagrelations" />
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
+		
+		<!--+
+			| page content
+			+-->
 		<jsp:attribute name="content">				
 			 <div id="general">
-				<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
 				<span class="content_h">
-					<h2 class="listh"><fmt:message key="tagrelations" /></h2>
 					<div class="listh">
 						<c:choose>
 							<c:when test="${command.concepts.totalCount != 0}">

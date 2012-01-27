@@ -45,9 +45,7 @@
 					<fmt:message var="titleSpheres" key="navi.spheres.my" />
 					<fmt:message var="titleSettings" key="navi.settings" />
 					<fmt:message var="editTagsTitle" key="navi.editTags"/>
-					<fmt:message var="titleBlog" key="navi.news" />
-					<fmt:message var="titleHelp" key="navi.help"/>
-
+					
 					<!-- show the menu items -->
 					<li class="sidebarnavi_entry sidebarnavi_entry_01 ${inboxClass}" title="${titleInbox}">
 						<a href="/inbox"><!-- empty -->
@@ -82,6 +80,9 @@
 			<!--+
 				| these navigation elements are also active for not logged in users
 				+-->
+			<fmt:message var="titleBlog" key="navi.news" />
+			<fmt:message var="titleHelp" key="navi.help"/>
+				
 			<li class="sidebarnavi_entry sidebarnavi_entry_06">
 				<a href="${properties['project.blog']}" title="${titleBlog}"><!-- empty --></a>
 			</li>

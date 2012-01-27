@@ -13,6 +13,7 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
+	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
@@ -22,10 +23,11 @@
 		loginUser="${command.context.loginUser}" 
 		pageTitle="${pageTitle}" 
 		heading="${heading}" 
-		headerExt="${headerExt}" 
+		headerExt="${headerExt}"
 		requestedUser="${requestedUser}" 
 		sidebar="${sidebar}" 
-		requPath="${requPath}" 
+		requPath="${requPath}"
+		headerContainer="${headerContainer}" 
 		content="${content}" 
 		fullscreen="${fullscreen}" 
 		activeTab="${activeTab}"/>

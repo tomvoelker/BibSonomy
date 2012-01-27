@@ -458,7 +458,6 @@ a:hover {
 
 .sidebarnavi_entry a {
     height: 60px; 
-	width: 14.2857%;
     display: block;
     outline: none;
     text-decoration: none;
@@ -1098,6 +1097,7 @@ li.box_lowerconcept a {
 
 }
 
+
 .bookmarkOptions { 
 	border:1px solid black; 
 	z-index:70;
@@ -1148,7 +1148,7 @@ li.box_lowerconcept a {
 	top: 125px;
 	height: 60px;
 	padding-right: 314px;  /* 300px plus average scrollbar width - will be adjusted with javascript to correct width, depends on browser and operating system  */
-	background-color: #c6c6c6;
+	background-color: #FFFFFF;
 	overflow:visible;
 }
 
@@ -1178,6 +1178,32 @@ li.box_lowerconcept a {
 	padding-left: 0ex;
 	background-color: #ffffff;
 	margin-left: 0px;
+}
+
+/** header for one column content */
+#panelheader {
+	width: 100%;
+	height: 100%;
+	background-color: #ffffff;
+	margin-left: 0px;
+	height: 60px;
+}
+
+/** logo for page headings */
+#panelheader .headerLogo {
+	width: 80px;
+	float: left;
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+/** page headings */
+#panelheader .headerContent {
+	float: left;
+	position: absolute;
+	left: 80px;
+	right: 0px;
+	display: block;
 }
 
 #footercontainer {

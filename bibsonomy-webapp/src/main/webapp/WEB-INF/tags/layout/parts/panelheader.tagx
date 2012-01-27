@@ -1,0 +1,33 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:directive.attribute name="headerLogo" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerContent" fragment="true" required="false"/>
+	
+	<!--+
+		| panel header element: [headerLogo][headerContent]
+		+-->
+	<div id="panelheader">
+		<!-- logo for the page content -->
+		<div class="headerLogo">
+			<c:if test="${not empty headerLogo}">
+				<jsp:invoke fragment="headerLogo"/>
+			</c:if>
+		</div>
+		
+		<!-- header for the page content -->
+		<div class="headerContent">
+			<c:if test="${not empty headerContent}">
+				<jsp:invoke fragment="headerContent"/>
+			</c:if>
+		</div>
+	</div>
+		
+</jsp:root>
