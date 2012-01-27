@@ -8,6 +8,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	
@@ -16,25 +17,25 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
 		
         <jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.friend"/></a> :: 
-			<a href="/friend/${fn:escapeXml(command.requestedUser)}"><c:out value="${command.requestedUser}"/></a> ::
-			<form action="/friend/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
-			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
-			</form>
+			<parts:search pathMessageKey="navi.friend" formAction="/friend/${mtl:encodeURI(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
+				<jsp:attribute name="pathPart">
+					<li>
+						<a href="/friend/${mtl:encodeURI(command.requestedUser)}"><c:out value="${command.requestedUser}"/></a> ::					
+					</li>
+				</jsp:attribute>
+			</parts:search>	
         </jsp:attribute>
 
         <jsp:attribute name="sidebar">
-        <ul>
-	      <li>
-		    <span class="sidebar_h"><fmt:message key="tags" /></span>
-		      <c:if test="${not empty command.requestedTags}">
-			    <c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
-		      </c:if>
-		    <tags:cloud requPath="${requPath}" cmd="${command.tagcloud}"
-			 tagboxMinfreqStyle="none"
-			 showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-	      </li> 
-	    </ul>    
+        	<ul>
+	      		<li>
+		    		<span class="sidebar_h"><fmt:message key="tags" /></span>
+		      		<c:if test="${not empty command.requestedTags}">
+			    		<c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
+		      		</c:if>
+		    		<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+	      		</li>
+	    	</ul>
         </jsp:attribute>	
 	</layout:resourceLayout>
 </jsp:root>

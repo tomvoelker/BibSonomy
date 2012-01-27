@@ -9,6 +9,7 @@
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
     xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -22,8 +23,13 @@
 	
 		<!-- create menu -->
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
-			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a><span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>										
+			<parts:search pathMessageKey="navi.user" >
+				<jsp:attribute name="pathPart">
+					<li>
+						<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
+					</li>
+				</jsp:attribute>
+			</parts:search>
 		</jsp:attribute>
 		
 		<!--  create sidebar -->

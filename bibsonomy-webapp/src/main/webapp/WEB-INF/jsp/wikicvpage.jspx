@@ -15,6 +15,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<fmt:message key="navi.cv" var="cvPageTitle" />
@@ -61,13 +62,13 @@
     	 	| heading
     	 	-->
 		<jsp:attribute name="heading">
-			<c:out value="${cvPageTitle}" /> ::
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
-			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
-			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
-		  		<input type="text" size="20" name="tag" id="inpf"/>
-		  		<input type="hidden" id="reqUser" value="${command.requestedUser}" />
-			</form>
+			<parts:search pathMessageKey="navi.cv">
+				<jsp:attribute name="pathPart">
+					<li>
+						<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+					</li>
+				</jsp:attribute>
+			</parts:search>	
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">

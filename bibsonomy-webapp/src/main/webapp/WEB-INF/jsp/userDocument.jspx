@@ -15,18 +15,16 @@
 	
 	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
-			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
-			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
-			  <c:choose>
-			  <c:when test="${empty command.requestedTags}">
-				  <input type="text" size="20" name="tag" id="inpf"/>			  
-			  </c:when>
-			  <c:otherwise>
-				  <input type="text" size="20" name="tag" id="inpf" value="${fn:escapeXml(command.requestedTags)}"/>
-			  </c:otherwise>
-			  </c:choose>
-			</form>		
+			<parts:search pathMessageKey="navi.documents" formAction="/user/${mtl:encodeURI(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
+				<jsp:attribute name="formExtra">
+					<input type="hidden" name="filter" value="JUST_PDF"/>
+				</jsp:attribute>
+				<jsp:attribute name="pathPart">
+					<li>
+						<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+					</li>
+				</jsp:attribute>
+			</parts:search>
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">		

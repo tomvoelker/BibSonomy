@@ -11,6 +11,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld" 
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -24,17 +25,15 @@
 		activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
 	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.discussedPosts"/></a> 
-			<c:if test="${not empty command.requestedUser}"> :: <a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> </c:if>
-			<!-- 
-			::
-			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
-			  <input type="text" size="20" name="tag" id="inpf"/>
-			</form>
-			<user:name user="${command.user}"/>
-			<user:cv user="${command.user}"/>
-			 -->
-			
+			<parts:search pathMessageKey="navi.discussedPosts">
+				<jsp:attribute name="pathPart">
+					<c:if test="${not empty command.requestedUser}">
+						<li>
+							<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+						</li>
+					</c:if>
+				</jsp:attribute>
+			</parts:search>	
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">

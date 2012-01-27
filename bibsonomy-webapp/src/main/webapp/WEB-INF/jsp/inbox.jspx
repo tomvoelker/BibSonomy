@@ -8,6 +8,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	
@@ -18,7 +19,7 @@
 	<layout:resourceLayout pageTitle="${inboxPageTitle}" command="${command}" requPath="${requPath}"  disableActions="${true}">
 
 		<jsp:attribute name="heading">
-		    <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<c:out value="${inboxPageTitle}" /></a>
+			<parts:search pathMessageKey="navi.inbox"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
