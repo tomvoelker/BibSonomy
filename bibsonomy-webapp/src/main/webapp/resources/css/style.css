@@ -451,14 +451,14 @@ a:hover {
 .sidebarnavi_entry {
     background: url("/resources/image/tabactions.png");
     height: 60px; 
-    width: 44px;
+	width: 14.286%;
     position: absolute;
-    border-right: 1px solid #c6c6c6;
+    border-left: 1px solid #c6c6c6;
 }
 
 .sidebarnavi_entry a {
     height: 60px; 
-    width: 44px;
+	width: 14.2857%;
     display: block;
     outline: none;
     text-decoration: none;
@@ -466,20 +466,21 @@ a:hover {
 
 .sidebarnavi_info {
 	/** shows additional information in the side bar navigation */
-	float: right;
 	color: #da3200;
 	margin-right: 5px;
-	position: relative;
+	position: absolute;
 	font-weight: bold;
+	right: 0px;
 }
 
 .sidebarnavi_entry_01 {
-    background-position: -10px 131px;
+    border-left: 0;
+    background-position: -9px 131px;
     left: 0px;
 }
 
 .sidebarnavi_entry_01:hover {
-    background-position: -10px 13px;
+    background-position: -9px 13px;
 }
 
 .inbox_full {
@@ -492,7 +493,7 @@ a:hover {
 
 .sidebarnavi_entry_02 {
 	background-position: -86px 127px;
-	left: 44px;
+	left: 14.2857%;
 }
 
 .sidebarnavi_entry_02:hover {
@@ -501,7 +502,7 @@ a:hover {
 
 .sidebarnavi_entry_03 {
     background-position: -50px 127px;
-    left: 88px;
+    left: 28.5714%;
 }
 
 .sidebarnavi_entry_03:hover {
@@ -510,7 +511,7 @@ a:hover {
 
 .sidebarnavi_entry_04 {
     background-position: -279px 129px;
-    left: 132px;
+    left: 42.8571%;
 }
 
 .sidebarnavi_entry_04:hover {
@@ -519,7 +520,7 @@ a:hover {
 
 .sidebarnavi_entry_05 {
 	background-position: -236px 128px;
-	left: 176px;
+	left: 57.1429%;
 }
 
 .sidebarnavi_entry_05:hover {
@@ -528,7 +529,7 @@ a:hover {
 
 .sidebarnavi_entry_06 {
     background-position: -318px 129px;
-	left: 220px;
+	left: 71.4286%;
 }
 
 .sidebarnavi_entry_06:hover {
@@ -536,13 +537,12 @@ a:hover {
 }
 
 .sidebarnavi_entry_07 {
-    background-position: -361px 129px;
-	left: 264px;
-	width: 60px;
+    background-position: -363px 129px;
+	left: 85.7143%;
 }
 
 .sidebarnavi_entry_07:hover {
-    background-position: -361px 9px;
+    background-position: -363px 9px;
 }
 
 
