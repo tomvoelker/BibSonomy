@@ -4,7 +4,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
 	<fmt:message var="altPreview" key="preview"/>
-	<img src="/resources/image/preview1_80.jpg" alt="${altPreview}"/>
 	<!-- TODO Insert better and different pictures, depending on the url -->
+	<img src="/resources/image/pre_web.png" alt="${altPreview}"/>
 
 </jsp:root>
