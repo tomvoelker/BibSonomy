@@ -11,6 +11,7 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:spring="http://www.springframework.org/tags"
   	xmlns:form="http://www.springframework.org/tags/form"
+  	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -22,7 +23,7 @@
 
 	<layout:paneLayout pageTitle="${pageTitle} :: ${command.context.loginUser.name}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${pageTitle}" /></a> 
+			<parts:search pathMessageKey="navi.editTags"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">

@@ -11,6 +11,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	> 
 	
@@ -26,12 +27,13 @@
 		</jsp:attribute>
 	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="/spheres"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.sphere"/></a> :: 
-			<a href="/sphere/${fn:escapeXml(command.sphereName)}"><c:out value='${command.sphereName}'/></a> ::
-			<form action="/sphere/${fn:escapeXml(command.sphereName)}" method="get" class="smallform">
-			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
-			</form>
-			
+			<parts:search pathMessageKey="navi.sphere" formAction="/sphere/${mtl:encodeURI(command.sphereName)}" formInputName="tag" formInputValue="${command.requestedTags}">
+				<jsp:attribute name="pathPart">
+					<li>
+						<a href="/sphere/${mtl:encodeURI(command.sphereName)}"><c:out value='${command.sphereName}'/></a> ::
+					</li>
+				</jsp:attribute>
+			</parts:search>
 		</jsp:attribute>				
 				
 		<jsp:attribute name="contentHeading">

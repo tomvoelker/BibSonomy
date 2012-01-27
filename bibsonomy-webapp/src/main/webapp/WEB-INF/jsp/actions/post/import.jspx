@@ -10,6 +10,7 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -17,7 +18,7 @@
 	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.userName}" requPath="${requPath}">
 		
 		<jsp:attribute name="heading">
-			<fmt:message key="import"/>
+			<parts:search pathMessageKey="import"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">

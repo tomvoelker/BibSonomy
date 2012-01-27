@@ -14,6 +14,7 @@
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
@@ -41,12 +42,13 @@
 		
 		<!-- heading -->
 		<jsp:attribute name="heading">
-		    <c:out value="${cvPageTitle}" /> ::
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.group"/></a> :: 
-			<a href="/group/${fn:escapeXml(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
-			<form action="/group/${fn:escapeXml(command.requestedGroup)}" method="get" class="smallform">
-		  		<input type="text" size="20" name="tag" id="inpf"/>
-			</form>
+			<parts:search pathMessageKey="navi.cv">
+				<jsp:attribute name="pathPart">
+					<li>
+						<a href="/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
+					</li>
+				</jsp:attribute>
+			</parts:search>
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">

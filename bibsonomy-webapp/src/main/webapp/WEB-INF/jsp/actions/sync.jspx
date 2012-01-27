@@ -8,6 +8,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -26,7 +27,7 @@
 	
 		<!-- heading -->
 		<jsp:attribute name="heading">
-		   <a rel="path_menu" href="/sync"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<c:out value="${syncPageTitle}" /></a>
+			<parts:search pathMessageKey="navi.sync"/>
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">

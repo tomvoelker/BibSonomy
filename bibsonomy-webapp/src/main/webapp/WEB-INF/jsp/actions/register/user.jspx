@@ -18,7 +18,7 @@
   <layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
   
         <jsp:attribute name="heading">
-          <c:out value="${pageTitle}" />
+          	<parts:search pathMessageKey="navi.register"/>
         </jsp:attribute>
       
       	<jsp:attribute name="headerExt">

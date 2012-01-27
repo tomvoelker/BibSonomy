@@ -9,6 +9,7 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -29,7 +30,7 @@
   		</jsp:attribute>
 
 		<jsp:attribute name="heading">
-       		<c:out value="${loginTitle}" />
+			<parts:search pathMessageKey="navi.login"/>
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">
