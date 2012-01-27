@@ -5,6 +5,7 @@
 
 	<fmt:message var="altPreview" key="preview"/>
 	<!-- TODO Insert better and different pictures, depending on the url -->
-	<img src="/resources/image/pre_web.png" alt="${altPreview}"/>
+<!-- 	<img src="/resources/image/pre_web.png" alt="${altPreview}"/> -->
+	<span class="entrytype web"><!-- Keep me --></span>
 
 </jsp:root>
