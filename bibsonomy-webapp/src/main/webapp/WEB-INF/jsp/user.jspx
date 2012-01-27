@@ -6,6 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
     xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -23,13 +24,17 @@
 		
 	
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
-			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
-			<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
-			  <input type="text" size="20" name="tag" id="inpf"/>
-			</form>
-			<user:name user="${command.user}"/>
-			<user:cv user="${command.user}"/>
+			<parts:search pathMessageKey="navi.user" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag">
+				<jsp:attribute name="pathPart">
+					<li>
+						<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+					</li>
+				</jsp:attribute>
+				<jsp:attribute name="afterInput">
+					<user:name user="${command.user}"/>
+					<user:cv user="${command.user}"/>
+				</jsp:attribute>
+			</parts:search>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
