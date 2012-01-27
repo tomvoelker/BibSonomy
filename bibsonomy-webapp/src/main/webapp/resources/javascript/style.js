@@ -314,24 +314,25 @@ function switchNavi(scope, event) {
 	ul.css("visibility", "hidden");
 	window.setTimeout(function() {ul.css("visibility", "visible");}, 10);
 	
-	var username = null;
-
-	if (requUser != null) {
-		username = requUser;
-	} else if (currUser != null) {
-		username = currUser;
-	}
-
 	/*
-	 * change form action to redirect
+	 * tag /redirect/?scope=tag&search=<TAG>
+	 * user /redirect/?scope=user&search=<USER>
+	 * group /redirect/?scope=group&search=<GROUP>
+	 * author dito 
+	 * concept/tag dito 
+	 * bibtexkey dito 
+	 * search dito 
+	 * explicit_user (search:user) scope=user:jaeschke
+	 * explicit_user (search:user)
+	 * ${grp.name}
+	 * 
 	 */
-	var form = $("#search .smallform");
-	form.attr("action", "/redirect")
-	.append("<input type='hidden' name='scope' value='" + scope + "'/>");
+	
+	/*
+	 * change form action to redirect with the given scope
+	 */
+	var form = $("#search form").attr("action", "/redirect").append("<input type='hidden' name='scope' value='" + scope + "'/>");
 
-	if (username != null) {
-		form.append("<input type='hidden' name='requUser' value='" + username + "'/>");
-	}
 	
 	/*
 	 * Exchange text before form input field to selected text. FIXME: How to replace xget_event()? 
@@ -341,7 +342,7 @@ function switchNavi(scope, event) {
 	/*
 	 * get hint for input field 
 	 */
-	var hint = getString("navi." + scope.replace(/\/.*/, "") + ".hint");
+	var hint = getString("navi." + scope.replace(/\/.*/, "") + ".hint"); // FIXME: check all
 	if (hint.search(/\?\?\?.*\?\?\?/) != -1) { 
 		hint = getString("navi.search.hint"); // fallback
 	}
@@ -352,11 +353,11 @@ function switchNavi(scope, event) {
 	.attr("name", "search") // always do a search
 	.val(hint) // set hint as value
 	.addClass('descriptiveLabel') // add class
-	.descrInputLabel({});
+	.descrInputLabel({}); // make the label disappear on click/submit
 	
 	
 
-	// FIXME: how to do this?
+	// FIXME: how to do this? Do we need this?
 //	$(sN).bind('change', function(){setSearchInputLabel(this);}).trigger('change');
 
 }

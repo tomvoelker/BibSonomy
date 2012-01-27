@@ -22,15 +22,15 @@
 			<li onclick="switchNavi('bibtexkey', event)"><fmt:message key="navi.bibtexkey"/></li>
 			<li onclick="switchNavi('search', event)"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
 			<c:if test="${not empty requestedUser}">
-				<li onclick="switchNavi('explicit_user', event)"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
+				<li onclick="switchNavi('user:${fn:escapeXml(requestedUser)}', event)"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
 			</c:if>
 			<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-				<li onclick="switchNavi('explicit_user', event)"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></li>
+				<li onclick="switchNavi('user:${fn:escapeXml(loginUser.name)}', event)"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></li>
 			</c:if>
 			<c:if test="${command.context.userLoggedIn}">
 				<li style="color:black"><fmt:message key="navi.search"/> in group:</li><!--  FIXME: I18N -->
 				<c:forEach var="grp" items="${loginUser.groups}">
-					<li onclick="switchNavi('${grp.name}', event)" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
+					<li onclick="switchNavi('group:${fn:escapeXml(grp.name)}', event)" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
 				</c:forEach>
 			</c:if>
 		</ul>
