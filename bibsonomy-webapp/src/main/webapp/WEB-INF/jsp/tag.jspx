@@ -16,37 +16,35 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.tag"/></a> :: 
-		<form action="/tag/" method="get" class="smallform">
-		  <input type="text" size="20" name="tag" id="inpf" value="${fn:escapeXml(command.requestedTags)}"/>
-		</form>
-				
-		<!--  sorting options -->
-		<c:out value=" "/>
-		<c:url var="tagUrl" value="/tag/${mtl:encodeURI(command.requestedTags)}"/>
-		<span style="font-size: 65%">
-			<fmt:message key="sort.orderBy"/>
-			(
-			<c:out value=" "/>
-			<c:choose>
-				<c:when test="${command.order eq 'added'}">
-					<fmt:message key="sort.date"/>
-				</c:when>
-				<c:otherwise>
-					<a href="${tagUrl}"><fmt:message key="sort.date"/></a>
-				</c:otherwise>
-			</c:choose>
-			|
-			<c:choose>
-				<c:when test="${command.order eq 'folkrank'}">
-					<fmt:message key="sort.folkrank"/>
-				</c:when>
-				<c:otherwise>
-					<a href="${tagUrl}?order=folkrank"><fmt:message key="sort.folkrank"/></a>
-				</c:otherwise>
-			</c:choose>
-			)							
-		</span>		
+			<parts:search pathMessageKey="navi.tag" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
+				<jsp:attribute name="afterInput">
+					<!--  sorting options -->
+					<c:url var="tagUrl" value="/tag/${mtl:encodeURI(command.requestedTags)}"/>
+					<span style="font-size: 65%">
+						<fmt:message key="sort.orderBy"/>
+						(
+						<c:out value=" "/>
+						<c:choose>
+							<c:when test="${command.order eq 'added'}">
+								<fmt:message key="sort.date"/>
+							</c:when>
+							<c:otherwise>
+								<a href="${tagUrl}"><fmt:message key="sort.date"/></a>
+							</c:otherwise>
+						</c:choose>
+						|
+						<c:choose>
+							<c:when test="${command.order eq 'folkrank'}">
+								<fmt:message key="sort.folkrank"/>
+							</c:when>
+							<c:otherwise>
+								<a href="${tagUrl}?order=folkrank"><fmt:message key="sort.folkrank"/></a>
+							</c:otherwise>
+						</c:choose>
+						)							
+					</span>						
+				</jsp:attribute>
+			</parts:search>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
