@@ -378,7 +378,7 @@ a:hover {
 
 #sidebar {
 	position: absolute;
-	width: 250px;
+	width: 300px;
 	right: 0px;
 	top: 0px;
 	z-index: 40;
@@ -1087,14 +1087,14 @@ li.box_lowerconcept a {
 	right: 0px;
 	top: 125px;
 	height: 60px;
-	padding-right: 250px;
+	padding-right: 300px;
 	background-color: #c6c6c6;
 	overflow:visible;
 }
 
 #sidebarheader {
 	position: absolute;
-	width: 250px;
+	width: 300px;
 	right: 0px;
 	top: 0px;
 	z-index: 40;
@@ -1124,7 +1124,7 @@ li.box_lowerconcept a {
 	position:absolute;
 	height:30px;
 	bottom:-20px;
-	padding-right:250px;
+	padding-right:300px;
 	overflow: visible;
 	left: 0;
 	right: 0;
@@ -1134,7 +1134,7 @@ li.box_lowerconcept a {
 
 #sidebar {
 	position: absolute;
-	width: 250px;
+	width: 300px;
 	right: 0px;
 	top: 0px;
 	z-index: 40;
@@ -1146,7 +1146,7 @@ li.box_lowerconcept a {
 	left: 0px;
 	bottom: 10px;
 	top: 185px;
-	padding-right: 250px;
+	padding-right: 300px;
 	overflow: scroll;
 	overflow-x:hidden;
 	background-color: #fff;
