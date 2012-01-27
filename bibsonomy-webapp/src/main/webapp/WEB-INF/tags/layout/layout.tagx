@@ -141,7 +141,6 @@
 								<c:choose>
 									<c:when test="${not empty loginUser.name}">
 										<li><fmt:message key="navi.loggedInAs"/>&amp;nbsp;<a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a></li>
-										<li><a href="/settings"><fmt:message key="navi.settings" /></a></li>
 									</c:when>
 									<c:otherwise>
 										<li><a href="/login"><fmt:message key="navi.login"/></a></li>
@@ -149,8 +148,6 @@
 								</c:choose>
 							
 								<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-								<li><a href="${helpLangUrl}"><fmt:message key="navi.help"/></a></li>
-								<li><a href="${properties['project.blog']}"><fmt:message key="navi.news"/></a></li>
 								<li><a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a></li>	
 							</ul>
 						</div><!-- #infoline -->
@@ -175,16 +172,9 @@
 						 	|
 						 	+-->
 						<div id="poststats">
-							<c:choose>
-								<c:when test="${not empty loginUser.name}">
-									<a href="/edit_tags"><fmt:message key="navi.editTags"/></a>
-								</c:when>
-								<c:otherwise>
-									<c:if test="${empty noLoginBox}">
-										<parts:login requPath="${requPath}"/>
-									</c:if>
-								</c:otherwise>
-							</c:choose>
+							<c:if test="${empty loginUser.name and empty noLoginBox}">
+								<parts:login requPath="${requPath}"/>
+							</c:if>
 						</div><!-- #poststats -->
 
 
