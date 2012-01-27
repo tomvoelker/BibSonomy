@@ -220,11 +220,6 @@ public enum Views implements View {
 	SEARCHPAGE("search"),
 
 	/**
-	 * additional posts
-	 */
-	MY_GROUP_POSTS_PAGE("myGroupPosts"),
-
-	/**
 	 * relevant-for page
 	 */
 	RELEVANTFORPAGE("relevantfor"),

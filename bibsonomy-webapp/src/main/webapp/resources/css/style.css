@@ -176,9 +176,9 @@ a:hover {
 	height: 31px;
 }
 
-/* 
+/* ***************************************************************************
  * navigation dropdown menu
- */ 
+ * ***************************************************************************/ 
 #navigation > ul {
 	list-style: none;
 	font-weight: bold;
@@ -187,22 +187,20 @@ a:hover {
 	float: left;
 }
 
-#search {
-	display: inline;
-	position: relative;	
-}
-
 #navigation > ul li {
 	float: left;
 	position: relative;
-	z-index: 50;
+}
+
+#search, #search > ul, #search > ul > li {
+	display: inline;
 }
 
 #navigation > ul > li {
 	margin-right: 10px;
 	padding: 4px;
-}
-
+} 
+	
 #navigation > ul a, #navigation > ul > li {
 	display: block;
 	padding: 5px;
@@ -215,7 +213,7 @@ a:hover {
 	padding-bottom: 4px;
 }
 
-#navigation > ul li:hover, #navigation .pulldown:hover, #search li:hover {
+#navigation > ul li:hover, #navigation .pulldown:hover {
 	color: #fff;
 	background: #333;
 }
@@ -225,7 +223,7 @@ a:hover {
 }
 
 /*--- DROPDOWN ---*/
-#navigation > ul ul, #navigation > ul table, #search ul {
+#navigation > ul ul, #navigation > ul table, #search > ul ul {
 	background: #f0f0f0; /* Adding a background makes the dropdown work properly in IE7+. Make this as close to your page's background as possible (i.e. white page == white background). */
 /*	background: rgba(198,198,198,0); */ /* But! Let's make the background fully transparent where we can, we don't actually want to see it if we can help it... */ 
 	list-style: none;
@@ -235,7 +233,7 @@ a:hover {
 	margin-top: 5px;
 }
 
-#search ul {
+#search > ul ul {
 	margin-top: 0;
 }
 
@@ -244,17 +242,24 @@ a:hover {
 	border-right: 2px solid #c6c6c6;
 }
 
-#navigation > ul ul li, #search li {
-	float: none;
+#navigation * {
 	z-index: 50;
+}
+#search * {
+	z-index: 51;	
+}
+
+#navigation > ul ul li, #search > ul ul li {
+	float: none;
 	color: #000;	
 }
+
 /* Stop text wrapping and creating multi-line dropdown items */
-#navigation > ul ul a, #navigation > ul table a, #search li {
+#navigation > ul ul a, #navigation > ul table a, #search > ul ul li {
 	white-space: nowrap; 
 }
 /* Display the dropdown on hover */
-#navigation > ul li:hover ul, #navigation > ul li:hover table, #search:hover ul { 
+#navigation > ul li:hover ul, #navigation > ul li:hover table, #search > ul li:hover ul { 
 	left: 0; /* Bring back on-screen when needed */
 }
 /* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
@@ -262,25 +267,22 @@ a:hover {
 	text-decoration: underline;
 }
 
-#navigation > ul li.pulldown ul, #search ul {
+#navigation > ul li.pulldown ul, #search > ul li ul {
 	background: #f0f0f0;
 	border-left: 2px solid #c6c6c6;
 	border-right: 2px solid #c6c6c6;
-	z-index: 50;
-}
-
-#search ul {
-	z-index: 51;	
 }
 
 /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
-#navigation > ul li:hover ul a, #navigation > ul li:hover table a, #search:hover ul a { 
+#navigation > ul li:hover ul a, #navigation > ul li:hover table a, #search > ul li:hover ul a { 
 	text-decoration: none;
 }
 /* Here we define the most explicit hover states--what happens when you hover each individual link. */
-#navigation > ul li:hover ul li a:hover, #navigation > ul li:hover table a:hover, #search:hover ul li a:hover { 
+#navigation > ul li:hover * a:hover, #search > ul li:hover ul li:hover { 
 	background: #333;
 	text-decoration: underline;
+	color: #fff;
+	cursor: pointer;
 }
 #navigation > ul table td {
 	padding: 0;
@@ -290,15 +292,13 @@ a:hover {
 	color: #006699; 
 	text-decoration: none;
 	background-color: white;
-/*	padding-bottom: 0; */
-/*	height:25px; */
 }
 
 #navigation ul li.active:hover {
-	background-color: #333333; 
+	background-color: #333333;
 }
 
-#navigation>ul>li.active:hover a:hover {
+#navigation > ul > li.active:hover a:hover {
 	color: white;
 }
 

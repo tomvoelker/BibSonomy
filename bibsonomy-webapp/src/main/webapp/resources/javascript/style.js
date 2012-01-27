@@ -303,6 +303,9 @@ function minUsertags(minfreq) {
  */
 function switchNavi(scope, event) {
 
+	/*
+	 * TODO: How to replace xget_event()?
+	 */
 	var element = $(xget_event(event));
 
 	/*
@@ -315,37 +318,27 @@ function switchNavi(scope, event) {
 	window.setTimeout(function() {ul.css("visibility", "visible");}, 10);
 	
 	/*
-	 * tag /redirect/?scope=tag&search=<TAG>
-	 * user /redirect/?scope=user&search=<USER>
-	 * group /redirect/?scope=group&search=<GROUP>
-	 * author dito 
-	 * concept/tag dito 
-	 * bibtexkey dito 
-	 * search dito 
-	 * explicit_user (search:user) scope=user:jaeschke
-	 * explicit_user (search:user)
-	 * ${grp.name}
-	 * 
-	 */
-	
-	/*
 	 * change form action to redirect with the given scope
 	 */
 	var form = $("#search form").attr("action", "/redirect").append("<input type='hidden' name='scope' value='" + scope + "'/>");
 
+	/*
+	 * Exchange text before form input field to the selected text.  
+	 */
+	var text = element.html();
+	if (text.search(/- /) != -1) { // search in a group
+		text = getString("navi.group") + ":" + text.substr(2); 
+	}
+	$("#search a:first").html(text);
 	
 	/*
-	 * Exchange text before form input field to selected text. FIXME: How to replace xget_event()? 
+	 * heuristic to get the hint for the input field  
 	 */
-	$("#search a:first").html(element.html());
-	
-	/*
-	 * get hint for input field 
-	 */
-	var hint = getString("navi." + scope.replace(/\/.*/, "") + ".hint"); // FIXME: check all
+	var hint = getString("navi." + scope.replace(/\/.*/, "") + ".hint");
 	if (hint.search(/\?\?\?.*\?\?\?/) != -1) { 
 		hint = getString("navi.search.hint"); // fallback
 	}
+	
 	/*
 	 * prepare input field
 	 */
@@ -354,12 +347,6 @@ function switchNavi(scope, event) {
 	.val(hint) // set hint as value
 	.addClass('descriptiveLabel') // add class
 	.descrInputLabel({}); // make the label disappear on click/submit
-	
-	
-
-	// FIXME: how to do this? Do we need this?
-//	$(sN).bind('change', function(){setSearchInputLabel(this);}).trigger('change');
-
 }
 
 

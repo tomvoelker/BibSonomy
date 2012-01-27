@@ -191,11 +191,6 @@ function add_hints() {
 		el.value = getString("navi.tag.hint");
 		el.className = 'descriptiveLabel '+el.className;
 	}
-	// specialsearch (tag, user, group, author, relation)
-	var scope = null;
-	if (validElement(el, 'input') && el.name == 'search' && validElement((scope = document.getElementById("scope")), 'select')) {
-		$(scope).bind("change", function(){setSearchInputLabel(this);}).trigger('change');
-	}
 }
 
 /**
@@ -1602,29 +1597,6 @@ function overwriteLabel(el) {
 			|| value == getString("navi.bibtexkey.hint")) 
 			|| (el != null && value == getString("navi.search.hint"));
 }
-
-function setSearchInputLabel(scope) {
-	var search = $('input[name=search]');
-	if (!overwriteLabel(search)) return;
-
-	var value = scope.value;
-	var messageKey = "";
-	if (value == "tag" || value == "user" || value == "group" || value == "author" || value == "bibtexkey") {
-		messageKey = value;
-	} else if (value == "concept/tag") {
-		messageKey = "concept";
-	} else if (value.indexOf("user") != -1 || value == "search") {
-		messageKey = "search";
-	}
-	if (messageKey != "") {
-		search.val(getString("navi." + messageKey + ".hint"));
-	}
-
-	search.addClass('descriptiveLabel');
-
-	return search;
-}
-
 
 function appendToToolbar() {
 	$("#toolbar").append(
