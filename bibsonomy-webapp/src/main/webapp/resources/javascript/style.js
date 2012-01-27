@@ -418,15 +418,14 @@ function initSidebarHeader() {
 		var sidebarWidth = $("#sidebarheader").width();
 		var sidebarWidthBody = $("#sidebar").width();
 	    var scrollbarWidth_default = 0;
-	
-		// sidebarWidth=263px : scrollbarWidth_default=12px
-		// scrollbarWidth=16px => sidebarWidth += scrollbarWidth - scrollbarWidth_default = 267px
-		//if (scrollbarWidth lt 0) scrollbarWidth = scrollbarWidth_default;
-		var new_sidebarWidth = sidebarWidth + scrollbarWidth - scrollbarWidth_default;
 
-		// set new width of header, regarding to scrollbarwidth and hide scrollbars in header
+
+	    var new_sidebarWidth = sidebarWidthBody + scrollbarWidth;
+	    
+	    // set new width of header, regarding to scrollbarwidth and hide scrollbars in header
 		$("#sidebarheader").width(new_sidebarWidth);
 		$('#headercontainer, #footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
+		
 		
 	}
 }
