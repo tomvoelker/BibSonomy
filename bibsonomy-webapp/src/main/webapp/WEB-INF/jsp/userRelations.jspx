@@ -71,7 +71,7 @@
 	 			<div class="kiste">		
 					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>
 					<span class="actions">
-          			 	<a href="/edit_tags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
+          			 	<a href="/editTags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
 					</span>
 					${mtl:ch('nbsp')}
 				</div>
@@ -82,7 +82,7 @@
 					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>
 					
 					<span class="actions">
-          			 	<a href="/edit_tags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
+          			 	<a href="/editTags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
 					</span>
 					${mtl:ch('nbsp')}
 				</div>

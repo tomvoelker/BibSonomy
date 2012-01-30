@@ -27,7 +27,7 @@
  		<c:choose>
 			<c:when test="${!empty user.name}">
 				<span id="pickctr">${user.basket.numPosts}</span> picked in <a href="/basket">basket</a> &middot;
-				<a href="/edit_tags">edit tags</a> 
+				<a href="/editTags">edit tags</a> 
 			</c:when>
 			<c:otherwise>
 				<span style="display: block; margin-top: 7px;">

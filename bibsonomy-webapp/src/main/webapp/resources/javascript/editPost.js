@@ -308,7 +308,7 @@ function stringCompare(a, b) {
 }	
 
 /**
- * Called on edit_tags - collects tags from the sidebar.
+ * Called on /editTags - collects tags from the sidebar.
  * 
  * TODO: it seems that there is currently no autocompletion functionality that
  * uses these tags.
@@ -674,7 +674,7 @@ function suggest() {
 
 /**
  * 
- * clickable relations on edit_tags page
+ * clickable relations on /editTags page
  * 
  * @return
  */

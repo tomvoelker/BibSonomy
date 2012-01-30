@@ -67,7 +67,7 @@
 						<a href="/spheres" title="${titleSpheres}"><!-- empty --></a>
 					</li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_04" title="${titleDiscussed}">
-						<a href="/edit_tags" title="${editTagsTitle}"><!-- empty --></a>
+						<a href="/editTags" title="${editTagsTitle}"><!-- empty --></a>
 					</li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_05" title="${titleCV}">
 						<a href="/settings" title="${titleSettings}"><!-- empty --></a>

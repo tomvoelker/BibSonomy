@@ -81,7 +81,7 @@
 				</c:if>			
 		 
 		 
-		  		<form:form action="/edit_tags" method="post">
+		  		<form:form action="/editTags" method="post">
 		 
 		 			<fieldset class="fsInner">
 		 				<h2><fmt:message key="edittags.main.Header"/></h2>
@@ -164,7 +164,7 @@
 				<fmt:message var="supertag" key="edittags.supertag"/>
 				<fmt:message var="subtag" key="edittags.subtag"/>
 		
-				<form:form action="/edit_tags" method="post">
+				<form:form action="/editTags" method="post">
 		  
 		 			<fieldset class="fsInner">
 						<h2><fmt:message key="edittags.main.insertRelationsOne" /></h2>
@@ -193,7 +193,7 @@
 				</form:form>
 			  
 			    
-			    <form:form action="/edit_tags" method="post">
+			    <form:form action="/editTags" method="post">
 			    	<fieldset class="fsInner">  
 						<h2><fmt:message key="edittags.main.deleteRelationsOne" /></h2>
 			    		
