@@ -34,6 +34,22 @@
 			</c:if>
 	    </jsp:attribute>
 
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerLogo">
+					<img src="${resdir}/image/edit_tags.png"/>
+				</jsp:attribute>
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="navi.editTags" />				
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
+
 		<jsp:attribute name="content">
 			<div id="general_100">
 				<!-- 
