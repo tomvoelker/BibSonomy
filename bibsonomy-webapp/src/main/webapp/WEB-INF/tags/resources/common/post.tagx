@@ -51,28 +51,9 @@
 			<div class="desc info"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
 		</c:if>
 		
-
-		<!-- META DATA (posting date, user, groups) -->
-		<!--+ 
-		 	| FIXME: user name, tags, etc. for community posts not given -
-		 	| therefore display of metadata disabled. We could/should show here
-		 	| meta information about the community post, e.g., last change date,
-		 	| revision number, etc.
-		 	+-->
-		<div class="time"><rc:metaDate post="${post}"/></div>
-		<div class="user"><rc:metaUsername post="${post}" /></div>
- 		<div class="group"><rc:metaGroups post="${post}" /></div>
- 		
-
- 		<!-- TAGS -->
-		<div class="tags"> 
-			<rc:metaTags post="${post}" />
-			<c:if test="${loginUserName eq post.user.name}">
-				<a class="edittags" href="" title="Tags bearbeiten"><img class="editimage" src="/resources/image/edit.gif" alt="edit"><!-- keep me --></img></a>
-			</c:if>
-		</div>
+		<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
+		<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 		
-
 		<!-- RATING -->
 		<div class="rating">
 			<!-- TODO: remove as soon as lucene supports rating -->
@@ -93,18 +74,6 @@
 			<jsp:invoke fragment="actions"/>
 		</div>
 
-		<!-- NUMBER OF POSTS TO THIS RESOURCE -->
-		<!--+ 
-		 	| FIXME: user name, tags, etc. for community posts not given -
-		 	| therefore display of metadata disabled. We could/should show here
-		 	| meta information about the community post, e.g., last change date,
-		 	| revision number, etc.
-		 	+-->
-		<c:if test="${not empty post.user.name}">
-			<div class="usersaves">
-				<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" valueOnly="false"/>
-			</div>
-		</c:if>
 		
 	 <!-- maybe we need this ... <div class="footer"></div>  --> 
 

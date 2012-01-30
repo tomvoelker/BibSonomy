@@ -9,31 +9,32 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 
-	<!-- the tags of a resource -->
-	<c:if test="${!empty post.visibleTags}">
-		<fmt:message key="post.meta.taggedTo" />
-		<c:out value=" "/>
-		<span class="bmtags">
-			<c:forEach var="tag" items="${post.visibleTags}">
-				<a href="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a>
-				<c:out value=" "/>
-			</c:forEach>
-		<!-- TODO: add "for:" tags  -->
-		<!-- c:if test="${command.context.loginUser.name eq post.user.name}">
-			<c:forEach var="foruser" items="${resource.usersToPost}">
-				<a href="${basePath}user/${mtl:encodeURI(resource.user)}/for:${mtl:encodeURI(foruser)}">for:<c:out value='${foruser}' /></a>
-			</c:forEach>
-		</c:if -->
-		</span>
-	</c:if>
-	<c:if test="${!empty post.hiddenSystemTags}">
-		<c:set var="systagTitles" value=""/>
-		<c:forEach var="systag" items="${post.hiddenSystemTags}">
-			<c:set var="systagTitles" value="${systagTitles}${fn:escapeXml(systag.name)} " />
-		</c:forEach>		
-		<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="/user/${fn:escapeXml(post.user.name)}/" tags="${systagTitles}" title="System Tags"/>	
-	</c:if>
-	
-	
-	<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+
+	<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
+	<!--+ 
+	 	| FIXME: user name, tags, etc. for community posts not given -
+	 	| therefore display of metadata disabled. We could/should show here
+	 	| meta information about the community post, e.g., last change date,
+	 	| revision number, etc.
+	 	+-->
+		 	
+
+		<!-- DATE, OWNER, GROUPS, USERSAVES -->
+		<c:if test="${not empty post.user.name}">
+			<div class="time"><rc:metaDate post="${post}"/></div>
+			<div class="user"><rc:metaUsername post="${post}" /></div>
+ 			<div class="group"><rc:metaGroups post="${post}" /></div>
+			<div class="usersaves">
+				<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" valueOnly="false"/>
+			</div>
+		</c:if> 		
+
+ 		<!-- TAGS -->
+		<div class="tags"> 
+			<rc:metaTags post="${post}" />
+			<c:if test="${loginUserName eq post.user.name}">
+				<a class="edittags" href="" title="Tags bearbeiten"><img class="editimage" src="/resources/image/edit.gif" alt="edit"><!-- keep me --></img></a>
+			</c:if>
+		</div>
+
 </jsp:root>
