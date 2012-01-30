@@ -24,7 +24,7 @@
 								<!-- show "please select" hint -->
 								<fmt:message var="pleaseselect" key="form.input.select"/>
 								<form:option value="" label="${pleaseselect}"/>
-								<form:options items="${tagset.tags}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}" onclick="copyOptionTags('inpf',event)"/>
+								<form:options items="${tagset.tags}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}" onclick="copyOptionTags(event)"/>
 							</form:select>
 						</c:forEach>
 					</div>

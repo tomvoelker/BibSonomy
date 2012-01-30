@@ -89,19 +89,21 @@
   width: 20%;
   float: left;
 }
-#copytags, .fsSuggestion, .fsInput, .tagInput, #suggested {
+#copiedTags, .fsSuggestion, .fsInput, .tagInput, #suggestedTags, #recommendedTags {
   float: left;
   width: 73%;
+}
+
+#copiedTags li, #recommendedTags li, #suggestedTags li {
+	display: inline;
+	cursor: pointer;
+	color: #006699;		
 }
 
 .fsSmall {
   max-width: 15em;
 }
 
-#tagField {
-  float: left;
-  width: 73%; /* 2% space for reload button */   
-}
 
 .fsSuggestion {
     font-size: 80%;

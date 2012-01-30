@@ -170,14 +170,11 @@ function getFirstRelevantWord(title) {
 	return "";
 }
 
-$(window).load(function() {
+$(function() {
+	
 	// load only, when extended fields are available                                                                                              
 	if (document.getElementById("post.resource.publisher")) changeView();
-});
-
-$(function() {
-	addAutoCompleteSendTag($('#inpf'));
-
+	
 	var hash = $("#post\\.resource\\.interHash").val();
 	if(hash == -1)
 		return;

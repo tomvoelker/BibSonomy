@@ -19,12 +19,30 @@ var copyCollect;
 
 
 
-function clearTagField() {
- 	var sg = document.getElementById("tagField");
-	while(sg.hasChildNodes()) 
-		sg.removeChild(sg.firstChild);
+$(function() {
+	initTagAutocompletion($('#inpf_tags'));
+});
+
+
+/**
+ * Initializes the auto-completion for the tag box, e.g., 
+ * - adds a send-tag handler to the parameter tagbox
+ * providing auto-complete functionality by suggesting friends
+ * 
+ * @param tagbox
+ */
+function initTagAutocompletion(tagbox) {
+	/*
+	 * tags from side bar and from copied post
+	 */
+	$("#copiedTags li, #tagbox li a").each(function() {
+		$(this).click(copytag).removeAttr("href");
+	});
+	
+	initTagAutocompletionForSendTag(tagbox);
 }
 
+  
 
 function enableHandler() {
 	document.onkeydown = document.onkeypress = document.onkeyup = handler;
@@ -46,7 +64,7 @@ function Suggestion(tagname, wighting)	{
 function disHandler(event) {	}
 
 function handler(event) {
-	var inputValue = document.getElementById(activeField ? activeField : "inpf").value;
+	var inputValue = document.getElementById(activeField ? activeField : "inpf_tags").value;
 
 	var e = (event || window.event || event.shiftkey);
 
@@ -184,45 +202,43 @@ function handler(event) {
 }
 
 
-function handleRecommendedTags(msg) {
+/**
+ * AJAX callback that shows the recommended tags. 
+ * 
+ * @param xml
+ * @return
+ */
+function handleRecommendedTags(xml) {
 	var tagSuggestions = [];
-	var target = 'tagField';
 
 	// lookup and clear target node
-	var tagField = document.getElementById(target) 
-	clearTagField();
+	var tagField = $("#recommendedTags");
+	
+	// clear previous recommendations
+	tagField.empty();
 	
 	// lookup tags
-	var root = msg.getElementsByTagName('tags').item(0);
-	if( root == null ) {
+	var root = xml.getElementsByTagName('tags').item(0);
+	if (root == null) {
 		// FIXME: DEBUG
 		alert("Invalid Ajax response: <tags/> not found.");
 	}
 	// append each tag to target field
 	for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
 		var node = root.childNodes.item(iNode);
-		// work around firefox' phantom nodes
-		if( (node.nodeType == 1) && (node.tagName == 'tag') ) {
-			// collect tag informations
+		// work around to firefox' phantom nodes
+		if ((node.nodeType == 1) && (node.tagName == 'tag')) {
 			var tagName       = node.getAttribute('name');
-			var tagScore      = node.getAttribute('score');
-			var tagConfidence = node.getAttribute('confidence');
 			
-			// create link element from tag
-			var newTag = document.createElement('a');
-			var newText= document.createTextNode(tagName + " ");
-			newTag.setAttribute('href', "javascript:copytag('inpf', '"
-										+node.getAttribute('name')
-										+"')");
-			newTag.setAttribute('tabindex', '1');
-			newTag.appendChild(newText);
-			tagField.appendChild(newTag);
+			var newTag = $("<li tabindex='1'>" + tagName + " </li>");
+			newTag.click(copytag);
+			tagField.append(newTag);
 			
 			// append tag to suggestion list
 			var suggestion = new Object;
 			suggestion.label      = tagName;
-			suggestion.score      = tagScore;
-			suggestion.confidence = tagConfidence;
+			suggestion.score      = node.getAttribute('score');
+			suggestion.confidence = node.getAttribute('confidence');
 			tagSuggestions.push(suggestion);
 		}
 	}
@@ -231,8 +247,8 @@ function handleRecommendedTags(msg) {
 	populateSuggestionsFromRecommendations(tagSuggestions);
 
 	// enable reload button
-	document.getElementById("fsReloadLink").setAttribute("href","javascript:reloadRecommendation()");
-	document.getElementById("fsReloadButton").setAttribute("src","/resources/image/button_reload.png");
+	$("#fsReloadLink").click(reloadRecommendation);
+	$("#fsReloadButton").attr("src","/resources/image/button_reload.png");
 }
 
 /**
@@ -293,43 +309,22 @@ function stringCompare(a, b) {
 }	
 
 /**
- * Hier werden die Tags aus der Tagwolke, Copytags und Recommendations in Listen gepackt
+ * Called on edit_tags.
+ * 
  * 
  * @return
  */
-function setOps() {
-
-	var rows = document.getElementById("tagbox").getElementsByTagName("li");
-	for (var i = 0; i < rows.length; ++i) {
-		var a = rows[i].getElementsByTagName("a");
-		var tmp = a[a.length < 2 ? 0 : 2];
-		var tmpData = tmp.firstChild.data.trim();
-		listElements[tmpData] = i;
-		nodeList[tmpData] = tmp;
-		list.push(tmpData);
-	}
-
-	var recommendedTag = document.getElementById("recommendtag");
-	if (recommendedTag) {
-		var recommRows = recommendedTag.getElementsByTagName("li");
-		for (var i = 0; i < recommRows.length; ++i) {
-			var tmp = recommRows[i].getElementsByTagName("a")[0];
-			var tmpData = tmp.firstChild.data;
-			listElements[tmpData] = rows.length + i;
-			nodeList[tmpData] = tmp;
-			list.push(tmpData.trim());
-		}
-	}
-
-
-	var copyTag = document.getElementById("copytag");
-	if (copyTag) {
-		var copyRows = copyTag.getElementsByTagName("li");
-		for (var i = 0; i < copyRows.length; ++i) {
-			copyListElements[copyRows[i].firstChild.data] = i;
-			copyList[copyRows[i].firstChild.data] = copyRows[i];
-		}
-	}
+function collectTags() {
+	/*
+	 * tags from sidebar
+	 */
+	$("#tagbox li a").each(function(index) {
+		var el = $(this).get(0);
+		var tagName = el.firstChild.data.trim();
+		listElements[tagName] = index;
+		nodeList[tagName] = el;
+		list.push(tagName);
+	});
 
 	list.sort(unicodeCollation);		
 }
@@ -354,23 +349,23 @@ function populateSuggestionsFromJSON(json) {
 
 	// construct array from object such that sorting functions can be applied 
 	var tagList = [];
-	for( i in tagCloud ) {
+	for (var i in tagCloud) {
 		tagList.push(tagCloud[i]);
 	}
 	// now sort this array
 	tagList.sort(tagCompare);
 
 	// set global tag list, storing maximal tag frequency in maxTagFreq
-	for( var i=0; i<tagList.length; i++ ) {
+	for (var i=0; i<tagList.length; i++) {
 		var label = tagList[i].label;
 		var count = tagList[i].count;
-		if(count>maxTagFreq) 
+		if (count>maxTagFreq) 
 			maxTagFreq = count;
 
 		list.push(label);
 		var node = new Object;
-		node.title=count+" ";
-		node.count=count;
+		node.title = count + " ";
+		node.count = count;
 		nodeList[label] = node;
 	}
 
@@ -378,13 +373,18 @@ function populateSuggestionsFromJSON(json) {
 	return tagList;
 }
 
-
-/*	completes the inquiry	
- *	tab -> sortedCollection[0]
+/**
+ * Auto-completion for tag input field
+ * 
+ *  tab -> sortedCollection[0]
  *	mouseclick -> parameter value (tag)
+ *
+ * @param tag
+ * @return
  */
 function completeTag(tag) {
-	var inpf = document.getElementById(activeField ? activeField : "inpf");
+	
+	var inpf = document.getElementById(activeField ? activeField : "inpf_tags");
 	var inpfValue = inpf.value;
 
 	var tags = getTags(inpfValue);
@@ -467,7 +467,7 @@ function completeTag(tag) {
 function lookupRecommendedTag(tag) {
 	var tagName = tag.replace(/^\s+|\s+$/g, '');
 
-	var links = $("#tagField a").get();
+	var links = $("#recommendedTags a").get();
 	for (var i = 0; i < links.length; i++) {
 		if (tagName == links[i].firstChild.nodeValue.replace(/^\s+|\s+$/g, '')) {
 			return links[i];
@@ -524,7 +524,7 @@ function getTags(s) {
  */
 
 function getActiveTag(backspace) {
-	var input = getTags(document.getElementById(activeField ? activeField : "inpf").value);
+	var input = getTags(document.getElementById(activeField ? activeField : "inpf_tags").value);
 
 	for (var n in input) {
 		if (typeof savTag != "undefined") {
@@ -548,7 +548,7 @@ function getActiveTag(backspace) {
 
 function suggest() {
 	delete collect;
-	if(sortedCollection)
+	if (sortedCollection)
 		delete sortedCollection;
 	delete copyCollect;
 	collect = new Array();
@@ -565,7 +565,7 @@ function suggest() {
 	/*
 	 * if the following lines are activated, it's allowed to post duplicates in relations
 	 */
-	var tags = document.getElementById(activeField ? activeField : "inpf").value.toLowerCase().split(" ");
+	var tags = document.getElementById(activeField ? activeField : "inpf_tags").value.toLowerCase().split(" ");
 
 	/*
 	 * if the following lines are activated, it's not allowed to post duplicates in relations.
@@ -577,7 +577,7 @@ function suggest() {
 	setPos(0);
 
 	/*
-	 * Bin?re Suche ?ber die Listenelemente, in denen die Tags stehen
+	 * Bin?re Suche über die Listenelemente, in denen die Tags stehen
 	 */
 	while(!success && firstElement <= lastElement) {
 		midElement = Math.floor((firstElement + lastElement) / 2);
@@ -603,17 +603,18 @@ function suggest() {
 	}
 	collect.sort(byWight);
 
-	if(document.getElementById("copytags") != null) {
-		copyTag = document.getElementById("copytags");
-		copyRows = copyTag.getElementsByTagName("a");
-		for(var i = 0; i < copyRows.length; ++i) {
-			copyListElements[copyRows[i].firstChild.data.replace(/^\s+/, '').replace(/\s+$/, '')] = i;
-			copyList[copyRows[i].firstChild.data.replace(/^\s+/, '').replace(/\s+$/, '')] = copyRows[i];
-		}
-	}
+	/*
+	 * add tags from copied post
+	 */
+	$("#copiedTags li").each(function(i) {
+		var index = $(this).get(0).firstChild.data.replace(/^\s+/, '').replace(/\s+$/, '');
+		copyListElements[index] = i;
+		copyList[index] = index;
+	});
+	
 
 	/*	collects suggested entrys inside copytag elemens	*/
-	for(copyTag in copyListElements) {
+	for (var copyTag in copyListElements) {
 		var duplicate = false;
 		var tmpTag = "";
 		valid = true;
@@ -731,10 +732,10 @@ function add_toggle_relations() {
 
 function clearSuggestion() {
 	// remove selection
-	$("#copytag a").css("color", "").css("backgroundColor", "");
+	$("#copiedTags li").css("color", "").css("backgroundColor", ""); // FIXME: why not remove()?
 
 	// remove all child nodes
-	$("#suggested").empty();
+	$("#suggestedTags").empty();
 }
 
 function toggleTag(target, tagname) {
@@ -787,29 +788,26 @@ function addIfNotContained(tagString, tag) {
 	return neuetags.join(" ");
 }
 
-
-/*	adds list elements to the suggested list	*/
+/**
+ * adds list elements to the suggested list
+ * 
+ * @param sortedCollection
+ * @return
+ */
 function addToggleChild(sortedCollection) {
-	var sg = document.getElementById("suggested");
+	var sg = $("#suggestedTags");
 
-	for(var i in sortedCollection) {
-		var newTag = document.createElement("a");
-		sg.appendChild(document.createTextNode(" "));
-		newTag.className = "tagone";
-		newTag.appendChild(document.createTextNode(sortedCollection[i]));
-		newTag.removeAttribute("href");
-		newTag.style.cursor = "pointer";
-		newTag.setAttribute('href','javascript:completeTag("'+sortedCollection[i].replace(/"/g,'\\"')+'")');
-
-		if(i == getPos()) {
-			newTag.style.color = "white";
-			newTag.style.backgroundColor = "#006699";
+	for (var i in sortedCollection) {
+		var tag = sortedCollection[i];
+		var li = $("<li>" + tag + " </li>").click(function(){completeTag(tag.replace(/"/g,'\\"'));});
+		sg.append(li);
+		
+		if (i == getPos()) {
+			li.css({"color" : "white", "background" : "#006699"});
 		}
 
-		if(i == 3)
+		if (i == 3)
 			break;
-
-		sg.appendChild(newTag);
 	}
 }
 
@@ -835,12 +833,21 @@ function byWight(a, b) {
 /**
  * add or remove tag to/from target field
  * 
- * @param target
+ * @param targetId
  * @param tagname
  * @return
  */
-function copytag(target, tagname) {
-	var targetNode = document.getElementById(target);
+function copytag(targetId, tagname) {
+	/*
+	 * since jQuery gives us other arguments, we overwrite if no string is given
+	 */
+	if (!targetId || typeof targetId != 'string') {
+		targetId = "inpf_tags";
+	}
+	if (!tagname || typeof tagname != 'string') {
+		tagname = $(this).html();
+	}
+	var targetNode = document.getElementById(targetId);
 	if (targetNode) {
 		toggleTag(targetNode, tagname);
 	}
@@ -868,11 +875,8 @@ function getRelations(input) {
  * handler for the 'reload recommendations button'
  */
 function reloadRecommendation() {
-    $("#fsReloadLink").attr("href","#");
+    $("#fsReloadLink").click("");
     $("#fsReloadButton").attr("src","/resources/image/button_reload-inactive.png");
-
-    clearTagField();      
-
     $('#postForm').ajaxSubmit(tagRecoOptions); 
 }
 
@@ -899,18 +903,14 @@ function showTagSets(select) {
  * @param event
  * @return
  */
-function copyOptionTags(target, event){
-	copytag(target, xget_event(event).getAttributeNode("value").value);
+function copyOptionTags(event) {
+	copytag("inpf_tags", xget_event(event).getAttributeNode("value").value);
 }
 
 
-/**
- * adds a send-tag handler to the parameter tagbox
- * providing auto-complete functionality by suggesting friends
- * @param tagbox
- */
-function addAutoCompleteSendTag(tagbox) {
-	if(tagbox[0] == null)
+function initTagAutocompletionForSendTag(tagbox) {
+
+	if (tagbox[0] == null)
 		return;
 	
 	var friends = null;

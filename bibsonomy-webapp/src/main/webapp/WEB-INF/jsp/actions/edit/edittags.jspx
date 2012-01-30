@@ -245,7 +245,7 @@
                     	add_tags_toggle();
         	  			disableHandler();
         	  			add_toggle_relations();
-        	  			setOps();
+        	  			collectTags();
                      });
                   ]]> 			
 	 		</script>

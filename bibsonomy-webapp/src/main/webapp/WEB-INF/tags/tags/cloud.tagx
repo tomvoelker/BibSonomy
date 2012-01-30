@@ -16,8 +16,6 @@
 	-->
 	<jsp:directive.attribute name="highlightTags" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
-	<jsp:directive.attribute name="copytag" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="targetId" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
 
 <span class="sidebar_collapse_content">
@@ -79,14 +77,7 @@
 			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
 				<li class="${tagclass}">
 					<jspx:element name="a">
-						<jspx:attribute name="href">
-							<c:choose>
-								<!-- add the tag to a field -->
-								<c:when test="${copytag == true and not empty targetId}">javascript:copytag('${targetId}','${tag.name}')</c:when>
-								<!-- use the tag as a link to a page -->
-								<c:otherwise>/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}</c:otherwise>
-							</c:choose>
-						</jspx:attribute>
+						<jspx:attribute name="href">/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}</jspx:attribute>
 						<jspx:attribute name="title"><c:if test="${empty suppressTitle or suppressTitle == false }">${tag.usercount}<c:out value=" "/>${posts}</c:if></jspx:attribute>
 						<c:if test="${not (tagSizeMode eq 'detail')}">
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute> 
