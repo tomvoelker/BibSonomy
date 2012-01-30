@@ -838,7 +838,7 @@ span.info>div,div.help>div {
 	display: none;
 }
 
-span.info:hover>div,div.help:hover>div {
+div.help:hover>div {
 	display: block;
 	position: absolute;
 	top: 2em;
@@ -1790,7 +1790,7 @@ div.help>a,div.help>b {
 	display: none;
 }
 
-div.info:hover>div, div.help:hover>div {
+.info:hover>div, div.help:hover>div {
 	display: block;
 	position: absolute;
 	top: 3em+5px;
