@@ -194,17 +194,11 @@ a:hover {
 
 #search {
     font-size: 20px;
-    font-style: italic;
     bottom: 4px;
-    font-size: 14px;
     margin-left: 2em;
     white-space: nowrap;
     display: inline;
     position: absolute;
-}
-
-#search > ul li a {
-	font-style: normal;
 }
 
 #search > ul, #search > ul > li {
@@ -217,6 +211,8 @@ a:hover {
 
 #search > ul li ul {
 	margin-top: -4px;
+	font-style: italic;
+	font-size: 14px;	
 } 
 
 #search > ul ul > li {
