@@ -21,6 +21,9 @@ a:hover {
 	text-decoration: underline;
 }
 
+a img { 
+	border:0; 
+}
 
 #container {
 	position: absolute;
@@ -219,10 +222,6 @@ a:hover {
 #search > ul ul > li {
 	padding: 3px 6px;
 } 
-
-#search > ul > li > img {
-	border: none;
-}
 
 #search li.pdSubHeader {
 	
