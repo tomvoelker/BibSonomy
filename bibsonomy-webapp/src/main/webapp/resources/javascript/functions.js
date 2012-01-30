@@ -81,10 +81,6 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	 */
 	imagePreview();
 	
-	/*
-	 * adds the box with the options to export BibTeX
-	 */
-	//addExportBibtexBox();
 	
 	/*
 	 * adds list options (for bookmarks + publication lists)
@@ -759,54 +755,44 @@ function toggleFieldsetVisibility(el) {
 /**
  * Adds an "export options" box to the "BibTeX" export link. 
  */
-function addExportBibtexBox() {
-	$(".config").each(function(index, elm) {
+function addBibtexExportOptions() {
+	/*
+	 * add and show export options when hovering over the link
+	 */
+	var elm = $("#bibtexListExport"); 
+	elm.mouseover(function() {
 		/*
-		 * add and show export options when hovering over the link
+		 * anchor element where to put the options
 		 */
-		$(elm).mouseover(function() {
-			/*
-			 * the export options are always the next element after this link
-			 */
-			var next =  $("#bookmarkListOptions");  //$(this).next();
+		var anchor = $("#bibtexListExportOptions");
 
-			/*
-			 * add export options form if not already there
-			 */
-			if (!next.hasClass("bookmarkListOptions")) {
-				// create form
-				next = $(
-						"<form class='exportoptions' method='get' action='" + $(elm).attr("href") + "' style='display:none'>" +
-						"<input type='checkbox' name='generatedBibtexKeys'/>" + getString("post.resource.generateBibtexKey.export") + "<br/>" +
-						"<input type='checkbox' name='firstLastNames'/>" + getString("post.resource.personnames.export") + "<br/>" +
-						getString("posts") + ": " +
-						"</form>"
-				);
-				
-				// number of posts to be exported
-				var items = new Array(5, 10, 20, 50, 100, 1000);
-				for (var i = 0; i < items.length; i++) {
-					next.append("<input type='radio' name='items' value='" + items[i] + "'/>" + items[i] + " ");
-				}
+		/*
+		 * create form
+		 */
+		var form = $(
+				"<form class='exportoptions' method='get' action='" + elm.attr("href") + "'>" +
+				"<input type='checkbox' name='generatedBibtexKeys'/>" + getString("post.resource.generateBibtexKey.export") + "<br/>" +
+				"<input type='checkbox' name='firstLastNames'/>" + getString("post.resource.personnames.export") + "<br/>" +
+				getString("posts") + ": " +
+				"</form>"
+		);
+		
+		// number of posts to be exported
+		var items = new Array(5, 10, 20, 50, 100, 1000);
+		for (var i = 0; i < items.length; i++) {
+			form.append("<input type='radio' name='items' value='" + items[i] + "'/>" + items[i] + " ");
+		}
 
-				// submit button
-				next.append("<br/><input type='submit' value='" + getString("export.bibtex.title") + "'/>");
+		// submit button
+		form.append("<br/><input type='submit' value='" + getString("export.bibtex.title") + "'/>");
 
-				// insert form after export link
-				$(elm).after(next);
+		
+		// insert form after export link (make it empty before)
+		anchor.empty();
+		anchor.append(form);
 
-				// close export box by leaving it
-				next.mouseleave(function() {
-					$(this).hide("fade", {}, 500);
-				});
-			}
-			next.mouseleave(function() {
-				$(this).hide("fade", {}, 500);
-			});
-
-			next.show("fade", {}, 500);
-		});
-
+		// show export box 
+		anchor.show("fade", {}, 500);
 	});
 }
 
@@ -823,10 +809,11 @@ function addListOptions() {
 		optBoxAnchor.mouseover(function() {
 			var optBox =  $("#" + value + "ListOptions");
 			/*
-			 * close option box when leaving it with the mouse
+			 * close option box (and bibtex detail option box) when leaving it with the mouse
 			 */
 			optBox.mouseleave(function() {
 				$(this).hide("fade", {}, 500);
+				$("#bibtexListExportOptions").hide();
 			});
 			if (optBox.css("display") == "none") {
 				optBox.show("fade", {}, 500);	
@@ -838,7 +825,8 @@ function addListOptions() {
 		optBoxAnchor.click(function() {
 			$("#" + value + "ListOptions").hide("fade", {}, 500); 
 		});
-	});						
+	});
+	addBibtexExportOptions();
 }
 
 
