@@ -505,9 +505,10 @@ a:hover {
     text-decoration: none;
 }
 
+
 .sidebarnavi_info {
 	/** shows additional information in the side bar navigation */
-	color: #da3200;
+	color: #ea8b6f;
 	margin-right: 5px;
 	position: absolute;
 	font-weight: bold;
@@ -520,8 +521,8 @@ a:hover {
     left: 0px;
 }
 
-.sidebarnavi_entry_01:hover {
-    background-position: -9px 13px;
+a:hover.sidebarnavi_entry_01  {
+	color: #da3200;
 }
 
 .inbox_full {
@@ -1247,6 +1248,16 @@ li.box_lowerconcept a {
 	left: 80px;
 	right: 0px;
 	display: block;
+}
+
+#panelheader .header {
+	text-transform: uppercase;
+	color: #006699;
+	font-weight: bold;
+	font-size: 120%;
+	height: 40px;
+    padding-top: 20px;
+    margin: 0;
 }
 
 #footercontainer {

@@ -22,69 +22,29 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
 	</jsp:attribute>
 	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${pageTitle}" requPath="${requPath}" command="${command}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.spheres"/>
 		</jsp:attribute>
 	
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/resourceList.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script> 
-			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
-			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
-			<c:set var="burstUrl" value="/burst/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
-            <c:set var="swrcUrl" value="/swrc/${requPath}"/>
-            <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
-            <!-- UnAPI service -->
-            <link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
-            	<c:if test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
-            		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
-            	</c:if>
-            	<script type="Text/JavaScript">
-					<![CDATA[
-					$(function() {
-						sysTagFadeBox(self);
-					});
-					]]>
-				</script>
-        	<!-- set by url parameter -->
-	        <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
-        	<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
-        
-	        <!-- if not set by url parameter use usersettings -->
-			<c:if test="${not showPublication and not showBookmark}">
-				<c:set var="showPublication" value="${command.context.loginUser.settings.showBibtex}" />
-				<c:set var="showBookmark" value="${command.context.loginUser.settings.showBookmark}" />
-			</c:if>
-    	    <c:if test="${showBookmark and not showPublication }">
-        		<style>
-						#bibtexList {
-							display:none;
-						}
-						#bookmarkList {
-							width:97%;
-						}
-				</style>
-				<c:set var="optionShowBoth"><c:out value=""/></c:set>
-				<c:set var="optionExpandBookmark"><c:out value="hiddenElement"/></c:set>
-        	</c:if>
-			<c:if test="${showPublication and not showBookmark}">
-				<style>
-					#bookmarkList {
-						display:none;
-					}
-					#bibtexList {
-						width:97%;
-					}
-				</style>
-				<c:set var="optionShowBoth"><c:out value=""/></c:set>
-				<c:set var="optionExpandBibtex"><c:out value="hiddenElement"/></c:set>
-			</c:if>
-			
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
+		</jsp:attribute>
+		
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerLogo">
+					<img src="${resdir}/image/relations.png"/>
+				</jsp:attribute>
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="navi.spheres"/>
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
@@ -137,24 +97,6 @@
 				    <div class="sphere_tag_cloud">
 				    	<tags:cloud requPath="sphere/${fn:escapeXml(entry.key)}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="0"/>
 				    </div>
-				<!-- 
-				    <div class="sphere_control">
-				    	<button:linkButton href="#" title="show publication">
-							<jsp:attribute name="text">
-								Show Posts
-							</jsp:attribute>
-						</button:linkButton>
-				    	<button:linkButton href="#" title="manage this sphere">
-							<jsp:attribute name="text">
-								Manage Sphere
-							</jsp:attribute>
-						</button:linkButton>
-				    </div>
-				-->
-				    <div class="sphere_resources">
-	        			<resources:bookmarks listView="${command.spheresBMPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
-	        			<resources:bibtexs listView="${command.spheresPBPosts[entry.key]}" loginUserName="${command.context.loginUser}" disableActions="${true}" disableListNavigation="${true}" requPath="${requPath}"/>
-	        		</div>
 	        		
 	        		<div class="sphere_footer"><!--  --></div>
 	        		
@@ -162,5 +104,5 @@
 			</div>
 			</div>
 		</jsp:attribute>
-	</layout:layout>
+	</layout:paneLayout>
 </jsp:root>
