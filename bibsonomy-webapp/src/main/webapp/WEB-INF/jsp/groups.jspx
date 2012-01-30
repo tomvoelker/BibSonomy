@@ -41,7 +41,7 @@
 					</h2>
 				</jsp:attribute>
 			</parts:panelheader>
-		</jsp:attribute>    	
+		</jsp:attribute>
     	
     	<!--+
     	 	| content

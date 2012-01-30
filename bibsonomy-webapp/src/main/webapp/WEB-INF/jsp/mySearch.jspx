@@ -27,7 +27,7 @@
 		<jsp:attribute name="headerContainer">
 			<parts:panelheader>
 				<jsp:attribute name="headerLogo">
-					<img src="${resdir}/image/relations.png"/>
+					<img src="${resdir}/image/search.png"/>
 				</jsp:attribute>
 				<jsp:attribute name="headerContent">
 					<h2 class="header">

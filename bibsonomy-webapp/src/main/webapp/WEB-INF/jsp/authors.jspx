@@ -18,7 +18,23 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.authors" formAction="/author/" formInputName="author"/>
 		</jsp:attribute>
-			
+		
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="navi.authors" />				
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
+				
+		<!--+
+			| page content
+			+-->
 		<jsp:attribute name="content">
 			<c:if test="${not empty command.authorList}">
 				<fmt:message var="posts" key="posts"/>

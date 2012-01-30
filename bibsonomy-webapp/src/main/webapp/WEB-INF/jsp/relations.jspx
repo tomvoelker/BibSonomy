@@ -19,7 +19,20 @@
     	<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/concept/tag/" formInputName="tag"/>
     	</jsp:attribute>
-    
+    			
+    <!--+
+		| page content header
+		+-->
+	<jsp:attribute name="headerContainer">
+		<parts:panelheader>
+			<jsp:attribute name="headerContent">
+				<h2 class="header">
+					<fmt:message key="navi.relations" />
+				</h2>
+			</jsp:attribute>
+		</parts:panelheader>
+	</jsp:attribute>
+		
     <jsp:attribute name="content">
     	<!-- header text output -->
 		<div style="margin-top: 20px; margin-left: 10px; margin-bottom: 10px;">

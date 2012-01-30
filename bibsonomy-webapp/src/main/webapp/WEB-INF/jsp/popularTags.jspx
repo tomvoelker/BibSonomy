@@ -19,6 +19,22 @@
 			<parts:search pathMessageKey="navi.tags" formAction="/tag/" formInputName="tag"/>
 		</jsp:attribute>
 		
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="navi.tags" />				
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
+				
+		<!--+
+			| page content
+			+-->
 		<jsp:attribute name="content">			
 			<div style="text-align:center;padding:2em 5em 2em 5em;" class="tags_first">
  			  <fmt:message var="posts" key="posts"/>
