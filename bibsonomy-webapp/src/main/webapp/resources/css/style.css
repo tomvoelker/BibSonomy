@@ -206,7 +206,7 @@ a:hover {
 	display: inline;
 }
 
-#search > ul > li.hidden {
+#search > ul > li.hidden, .initiallyHidden {
 	display: none;
 }
 
