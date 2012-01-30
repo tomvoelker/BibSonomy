@@ -490,9 +490,9 @@ a img {
 /* --- side bar navigation  ------------------------------------------------*/
 #sidebarnavi {
 	height: 60px;
-	background-color: #e4e4e4;
+	background: url("/resources/image/sidebarnav_bg.png");
+	/*background-color: #e4e4e4;*/
 }
-
 
 .sidebarnavi_entry {
     background: url("/resources/image/tabactions.png");
@@ -501,6 +501,11 @@ a img {
     position: absolute;
     border-left: 1px solid #c6c6c6;
 }
+
+.sidebarnavi_entry:hover {
+	background-color: #e4e4e4;
+}
+
 
 .sidebarnavi_entry a {
     height: 60px; 
@@ -1330,7 +1335,6 @@ div.help>a,div.help>b {
 	top: 0px;
 	z-index: 40;
 	background-color: #e4e4e4;
-	background-color: white;
 	padding-right: 0;
 }
 
