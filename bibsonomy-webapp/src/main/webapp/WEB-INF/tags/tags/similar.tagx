@@ -7,7 +7,7 @@
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedTagCommand" required="true" />
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
 
-	<ul class="taglist">
+	<ul class="taglist sidebar_collapse_content">
 		<c:forEach var="tag" items="${cmd.relatedTags}">
 
 			<!--  determine css depending on similarity counts -->
