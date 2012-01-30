@@ -48,6 +48,13 @@
             <script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
 	    </jsp:attribute>
 	    
+	    <jsp:attribute name="headerContainer">
+	    	<div id="panelheader">
+	    		<div class="headerContent">
+					<h2 class="header"><fmt:message key="post.resource.edit${resourceType}"/></h2><!-- TODO: generalize -->
+				</div>
+			</div>
+	    </jsp:attribute>
             
         <jsp:attribute name="heading">
         	<parts:search pathMessageKey="navi.edit${resourceType}"/>
@@ -60,8 +67,6 @@
 		      -->
 		<jsp:attribute name="content">
 		   <div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
-
-              <h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.edit${resourceType}"/></h2><!-- TODO: generalize -->
 
               <!-- 
                  | show global errors
