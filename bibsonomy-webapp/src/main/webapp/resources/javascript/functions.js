@@ -32,9 +32,13 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	 */
 	add_hints();
 
-	// add a callback to every input that has the descriptiveLabel class 
-	// so that hints get removed after focussing the input form
-	$('.descriptiveLabel').each(function(){$(this).descrInputLabel({});});
+	/*
+	 * add a callback to every input that has the descriptiveLabel class
+	 * so that hints get removed after focusing the input form 
+	 */
+	$('.descriptiveLabel').each(function() {
+		$(this).descrInputLabel({});
+	});
 
 	tagbox  = document.getElementById("tagbox");
 	ckey = lckey;
@@ -128,69 +132,92 @@ function maximizeById(id) {
  * 		password/text corresponding form element
  **/
 function getFormTextCopy(el) {
-	return $('#'+el.id+pwd_id_postfix).
-	css('color','#aaa').
-	width( $(el).width() ).
-	click(function(){hideFormTextCopy({elementCopy:'#'+el.id+pwd_id_postfix, element:el});})[0];
+	var copyId = '#' + el.get(0).id + pwd_id_postfix;
+	return $(copyId).css('color', '#aaa').width(el.width()).click(function(){hideFormTextCopy({elementCopy : copyId, element : el});});
 }
 
-//on blur of the user name input field set the password form in front of the fake password form
+
+/**
+ * on blur of the user name input field set the password form in front of the fake password form
+ * @param map
+ * @return
+ */
 function hideFormTextCopy(map) {
 	$(map.elementCopy).hide();
 	$(map.element).removeClass('hiddenElement').focus();
 }
 
-//adds hints to input fields
+/**
+ * adds hints to input fields
+ * 
+ * FIXME: all elements should be "input" fields (check is missing!)
+ * 
+ * @return
+ */
 function add_hints() {
-	// for search input field
-	var el = document.getElementById("se");
-	if (validElement(el) && (el.value == "" || el.value == getString("navi.search.hint"))) {
-		// add hint
-		el.value		= getString("navi.search.hint");
-		el.className 	= 'descriptiveLabel '+el.className;
-	}
-	// for username input field
-	el = document.getElementById("un");
-	if (validElement(el, 'input') && el.name == "username") {
-		if(el.value == "" || el.value == getString("navi.username")) {
-			el.value 		= getString("navi.username");
-			el.className 	= 'descriptiveLabel '+el.className;
+	/*
+	 * username
+	 */
+	var un = $("#un[name='username']");
+	if (un.length) {
+		if (un.val() == "" || un.val() == getString("navi.username")) {
+			un.val(getString("navi.username"));
+			un.addClass("descriptiveLabel");
 		}
-		el.onblur = function(){hideFormTextCopy({elementCopy:'#pw'+pwd_id_postfix, element:'#pw'})};
+		un.blur(function(){hideFormTextCopy({elementCopy : '#pw' + pwd_id_postfix, element : '#pw'});});
 	}
-	// for password input field
-	el = document.getElementById("pw");
-	if (validElement(el, 'input') && el.name == "password") {
-		el = getFormTextCopy(el);
-		el.value = getString("navi.password");
+	/*
+	 * password
+	 */
+	var pw = $("#pw[name='password']");
+	if (pw.length) {
+		getFormTextCopy(pw).val(getString("navi.password"));
 	}
-	// for username ldap input field
-	el = document.getElementById("unldap");
-	if (validElement(el, 'input') && el.name == "username") {
-		if(el.value == "" || el.value == getString("navi.username.ldap")) {
-			el.value = getString("navi.username.ldap");
-			el.className = 'descriptiveLabel '+el.className;
+	/*
+	 * LDAP username
+	 */
+	var unldap = $("#unldap[name='username']");
+	if (unldap.length) {
+		if (unldap.val() == "" || unldap.val() == getString("navi.username.ldap")) {
+			unldap.val(getString("navi.username.ldap"));
+			unldap.addClass("descriptiveLabel");
 		}
-		el.onblur = function(){hideFormTextCopy({elementCopy:'#pwldap'+pwd_id_postfix, element:'#pwldap'})};
+		unldap.blur(function(){hideFormTextCopy({elementCopy : '#pwldap' + pwd_id_postfix, element : '#pwldap'});});
 	}
-	// for password ldap input field
-	el = document.getElementById("pwldap");
-	if (validElement(el, 'input') && el.name == "password" && (el.value == "" || el.value == getString("navi.password.ldap"))) {
-		el = getFormTextCopy(el);
-		el.value = getString("navi.password.ldap");
+	/*
+	 * LDAP password
+	 */
+	var pwldap = $("#pwldap[name='password']");
+	if (pwldap.length) {
+		getFormTextCopy(pwldap).val(getString("navi.password.ldap"));
 	}
-	// for openid input field
-	el = document.getElementById("openID");
-	if (validElement(el, 'input') && el.name == "openID" && (el.value == "" || el.value == getString("navi.openid"))) {
-		el.value = getString("navi.openid");
-		el.className = 'descriptiveLabel '+el.className;
+	/*
+	 * OpenID
+	 */
+	var openid = $("#openID[name='openID']");
+	if (openid.length) {
+		if (openid.val() == "" || openid.val() == getString("navi.openid")) {
+			openid.val(getString("navi.openid"));
+			openid.addClass("descriptiveLabel");
+		}
 	}
-	// for tag input field
-	el = document.getElementById("inpf");
-	if (validElement(el, 'input') && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == getString("navi.tag.hint"))) {
-		el.value = getString("navi.tag.hint");
-		el.className = 'descriptiveLabel '+el.className;
+	/*
+	 * tag input field
+	 */
+	var tag = $("#inpf[name|='tag']");
+	if (tag.length && (tag.val() == "" || tag.val() == getString("navi.tag.hint"))) {
+		tag.val(getString("navi.tag.hint"));
+		tag.addClass("descriptiveLabel");
 	}
+	/*
+	 * search input field
+	 */
+	var search = $("#inpf[name='search']");
+	if (search.length && (search.val() == "" || search.val() == getString("navi.search.hint"))) {
+		search.val(getString("navi.search.hint"));
+		search.addClass("descriptiveLabel");
+	}
+
 }
 
 /**
@@ -1585,18 +1612,6 @@ function addExportBibtexBox() {
 		);
 	};
 })(jQuery);
-
-function overwriteLabel(el) {
-	var value = el.val();
-	return (!value.length 
-			|| value == getString("navi.author.hint") 
-			|| value == getString("navi.tag.hint") 
-			|| value == getString("navi.user.hint") 
-			|| value == getString("navi.group.hint") 
-			|| value == getString("navi.concept.hint") 
-			|| value == getString("navi.bibtexkey.hint")) 
-			|| (el != null && value == getString("navi.search.hint"));
-}
 
 function appendToToolbar() {
 	$("#toolbar").append(
