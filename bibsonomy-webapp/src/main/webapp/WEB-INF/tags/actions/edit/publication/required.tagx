@@ -25,7 +25,7 @@
 		<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!--  --></script>
 	  	<script src="${resdir}/jquery/plugins/ui//jquery-ui-i18n.js" type="text/javascript"><!--  --></script>
          <div class="fsRow">
-            <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help"/>
+            <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help" cssClass="widehelp"/>
             <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
             <div class="dissError"><form:errors path="post.resource.entrytype" /></div>
 		

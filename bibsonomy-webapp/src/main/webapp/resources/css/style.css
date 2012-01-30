@@ -850,6 +850,11 @@ span.info:hover>div,div.help:hover>div {
 	padding: 5px;
 }
 
+div.widehelp:hover div {
+	width: 600px;
+}
+
+
 div.help>a,div.help>b {
 	font-weight: bold;
 	color: #006699;
