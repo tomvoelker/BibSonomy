@@ -24,7 +24,7 @@ import org.bibsonomy.webapp.view.Views;
 
 
 /**
- * Controller for the edit_tags page 
+ * Controller for the editTags page 
  * 
  * @author Henrik Bartholmai
  * @version $Id$
