@@ -54,29 +54,23 @@
 		</div>
 		 -->
 		
-		<c:if test="${!empty listView.list}">
-				<!-- show available actions
-				<div>				
-					${mtl:ch('nbsp')}
-				</div>
-				-->
-
-                <!-- iterate over a list of resources and create the list -->
-                <ul id="${listView.resourcetype}" class="posts">
-                  <c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
-				  
-				  <c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
-				  
-                    <!-- show one post -->
-        			<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
-    					<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
-    					<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
-    					<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>
-     					<jsp:attribute name="documents"><jsp:invoke fragment="documents"/></jsp:attribute>
-    				</rc:post>
-	            
-                  </c:forEach>
-                </ul>
-		</c:if>		
+        <!-- iterate over a list of resources and create the list -->
+        <ul class="posts">
+			<c:if test="${!empty listView.list}">
+	                  <c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
+					  
+					  <c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
+					  
+	                    <!-- show one post -->
+	        			<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
+	    					<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
+	    					<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
+	    					<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>
+	     					<jsp:attribute name="documents"><jsp:invoke fragment="documents"/></jsp:attribute>
+	    				</rc:post>
+		            
+	                  </c:forEach>
+			</c:if>		
+        </ul>
 	</div>
 </jsp:root>
