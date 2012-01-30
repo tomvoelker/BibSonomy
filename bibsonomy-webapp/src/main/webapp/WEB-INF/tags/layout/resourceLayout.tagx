@@ -94,17 +94,9 @@
 			+-->
 		<jsp:attribute name="headerContainer">
 			<div id="bookmarksheader">
-				<div class="config">
-					<a class="configBookmarks" href=""><!-- fixme --></a>					
-					<div id="bookmarkOptions" class="bookmarkOptions">
-						<ul>
-							<li>Export</li><!-- FIXME: i18n -->
-							<ul>
-								<li><c:url var="rssPath" value="/rss/${requPath}${requQueryString}" /><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}</li>
-								<li><c:url var="bibPath" value="/bookbib/${requPath}${requQueryString}" /><a href="${bibPath}">BibTeX</a>${mtl:ch('nbsp')}</li>
-            					<li><c:url var="xmlPath" value="/xml/${requPath}${requQueryString}" /><a href="${xmlPath}">XML</a></li>
-            				</ul>						
-						</ul>
+				<div id="bookmarkListConfig" class="config">
+					<div id="bookmarkListOptions" class="listOptions">
+						<rc:actions resourceType="bookmark"/>
 					</div>					
 				</div>
 				<h2 class="header">
@@ -120,7 +112,11 @@
 			</div>
 			
 			<div id="publicationsheader">
-				<div class="config"><a href=""><!-- fixme --></a></div>
+				<div id="publicationListConfig" class="config">
+					<div id="publicationListOptions" class="listOptions">
+						<rc:actions resourceType="bibtex"/>
+					</div>						
+				</div>
 				<h2 class="header">
 					<fmt:message key="publications" />
 					<!-- Display total number of entries in list --> 

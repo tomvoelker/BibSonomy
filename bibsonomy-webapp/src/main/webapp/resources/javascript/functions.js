@@ -84,7 +84,12 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	/*
 	 * adds the box with the options to export BibTeX
 	 */
-	addExportBibtexBox();
+	//addExportBibtexBox();
+	
+	/*
+	 * adds list options (for bookmarks + publication lists)
+	 */
+	addListOptions();
 }
 
 /**
@@ -755,7 +760,7 @@ function toggleFieldsetVisibility(el) {
  * Adds an "export options" box to the "BibTeX" export link. 
  */
 function addExportBibtexBox() {
-	$(".exportbibtex").each(function(index, elm) {
+	$(".config").each(function(index, elm) {
 		/*
 		 * add and show export options when hovering over the link
 		 */
@@ -763,12 +768,12 @@ function addExportBibtexBox() {
 			/*
 			 * the export options are always the next element after this link
 			 */
-			var next = $(this).next();
+			var next =  $("#bookmarkListOptions");  //$(this).next();
 
 			/*
 			 * add export options form if not already there
 			 */
-			if (!next.hasClass("exportoptions")) {
+			if (!next.hasClass("bookmarkListOptions")) {
 				// create form
 				next = $(
 						"<form class='exportoptions' method='get' action='" + $(elm).attr("href") + "' style='display:none'>" +
@@ -795,12 +800,47 @@ function addExportBibtexBox() {
 					$(this).hide("fade", {}, 500);
 				});
 			}
+			next.mouseleave(function() {
+				$(this).hide("fade", {}, 500);
+			});
 
 			next.show("fade", {}, 500);
 		});
 
 	});
 }
+
+/**
+ * adds javascript to the list headers to create a dropdown menu with
+ * list action options (export, basket, sort, ...)
+ */
+function addListOptions() {
+	/*
+	 * show list action options when hovering over the div
+	 */
+	$.each(["bookmark", "publication"], function(index, value) {
+		var optBoxAnchor = $("#" + value + "ListConfig");
+		optBoxAnchor.mouseover(function() {
+			var optBox =  $("#" + value + "ListOptions");
+			/*
+			 * close option box when leaving it with the mouse
+			 */
+			optBox.mouseleave(function() {
+				$(this).hide("fade", {}, 500);
+			});
+			if (optBox.css("display") == "none") {
+				optBox.show("fade", {}, 500);	
+			}
+		});
+		/*
+		 * option box can be closed by clicking on the div
+		 */
+		optBoxAnchor.click(function() {
+			$("#" + value + "ListOptions").hide("fade", {}, 500); 
+		});
+	});						
+}
+
 
 
 

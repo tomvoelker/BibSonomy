@@ -1274,12 +1274,11 @@ div.help>a,div.help>b {
 }
 
 
-.bookmarkOptions { 
-	border:1px solid black; 
+.listOptions { 
+	border:2px solid #c6c6c6; 
 	z-index:70;
  	top:40px;
 	position:absolute;
-  	border: 1px solid #6f6f6f;
   	background-color: #eee;
   	position: absolute;
   	margin-top: .5em;
@@ -1819,4 +1818,18 @@ div.help>a,div.help>b {
 	position:absolute;
 	right:0;
 	padding-top:0.3em;
+}
+
+.listOptionLine {
+	margin-left: 0px;
+	margin-bottom: 20px;
+}
+
+.listOptionHeading {
+	margin-top: 10px;
+	font-weight:bold;
+}
+
+#bibtexListExportOptions {
+	display:none;
 }

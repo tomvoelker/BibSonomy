@@ -8,42 +8,103 @@
 	
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	
-	<!-- Controlls the actions for complete post lists -->
-	<c:if test="${command.context.userLoggedIn}">
-
-      <span class="actions">
-        <c:choose>
-
-
-          <!-- ****************************** BibTeX *************************** -->
-          <c:when test="${resourceType eq 'bibtex'}">
-            <c:url var="editUrl"   value="/beditbib/${requPath}" />
-            <fmt:message var="editPageTags"       key="post.meta.edit.title"/>
-            <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
-
-            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-
-            <fmt:message var="pickPublications"   key="post.meta.pick.title"/>
-            <a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick"/></a>
-
-            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-
-            <fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
-            <a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick"/></a>
-            
-		  </c:when>
-
-
-	      <!-- ****************************** Bookmarks *************************** -->
-          <c:otherwise>
-			<c:url var="editUrl" value="/bediturl/${requPath}"/>
-            <fmt:message var="editPageTags" key="post.meta.edit.title"/>
-            <a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
-		  </c:otherwise>
-
-		</c:choose>
-      </span>
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 		
+	<!--+ 
+		+ heading 
+		+-->
+	<c:if test="${resourceType eq 'bibtex'}">
+		<fmt:message key="bibtex.actions.heading"/>
+		<c:set var="isBibtex" value="${true}"/>
 	</c:if>
-
+	<c:if test="${resourceType eq 'bookmark'}">
+		<fmt:message key="bookmark.actions.heading"/>
+		<c:set var="isBookmark" value="${true}"/>
+	</c:if>
+	
+	<!--+ 
+		+ list with options 
+		+-->
+	<ul>	
+		<!--+ 
+			+ export (RSS, BibTeX, XML, more...) 
+			+-->
+		<li>						
+			<div class="listOptionHeading"><fmt:message key="navi.export"/>:</div>
+			<span class="listOptionLine">
+				<c:url var="rssPath" value="/rss${requPathAndQuery}" />
+				<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
+				<c:url var="bibPath" value="/bookbib${requPathAndQuery}" />				
+				<c:if test="${isBibtex}">
+					<c:url var="bibPath" value="/bib${requPathAndQuery}"/>
+					<a href="${bibPath}" id="bibtexListExport"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
+				</c:if>
+				<c:if test="${isBookmark}">
+					<c:url var="bibPath" value="/bookbib${requPathAndQuery}" />
+					<a href="${bibPath}"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}					
+				</c:if>				
+	  			<c:url var="xmlPath" value="/xml${requPathAndQuery}" />
+	  			<a href="${xmlPath}"><fmt:message key="post.meta.xml"/></a>,${mtl:ch('nbsp')}
+	  			<c:url var="morePath" value="/export${requPathAndQuery}" />
+	  			<a href="${morePath}"><fmt:message key="bibtex.more_dots"/></a>
+	  		</span>
+		</li>
+   		<!--+ 
+			+ placeholder for extended bibtex export options 
+			+-->		
+		<c:if test="${isBibtex}">	
+			<li>
+				<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
+			</li>
+		</c:if>
+   		<!--+ 
+			+ basket actions (pick, unpick) 
+			+-->	  	
+		<li>
+			<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
+  			<span class="listOptionLine">
+				<fmt:message var="pickPublications" key="post.meta.pick.title"/>
+				<a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick"/></a>,${mtl:ch('nbsp')}	  			
+  				<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
+				<a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick"/></a>
+  			</span>
+	  	</li>	  				
+   		<!--+ 
+			+ sort options
+			+ FIXME: would be nice to have the current sorting non-linked
+			+-->	  				
+	  	<li>
+	  		<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
+   			<span class="listOptionLine">
+   				<fmt:message key="post.meta.sort.criterion"/>:${mtl:ch('nbsp')}
+   				<c:set var="requPathAndQuery" value="${requPathAndQuery}"/>
+   				<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'title')}"><fmt:message key="post.resource.title"/></a>,${mtl:ch('nbsp')}
+   				<c:if test="${isBibtex}">
+   					<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'author')}"><fmt:message key="post.resource.author"/></a>,${mtl:ch('nbsp')} 
+   					<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'year')}"><fmt:message key="post.resource.year"/></a>,${mtl:ch('nbsp')}   					
+   					<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'date')}"><fmt:message key="sort.date"/></a>,${mtl:ch('nbsp')}
+   				</c:if>
+   				<a href="/help_en/Sorting%2Bpublications"><fmt:message key="bibtex.more_dots"/></a>
+   			</span><br/>
+   			<span class="listOptionLine">
+   				<fmt:message key="post.meta.sort.order"/>:${mtl:ch('nbsp')}
+   				<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'ascending')}"><fmt:message key="post.meta.sort.order.ascending"/></a>,${mtl:ch('nbsp')} 
+				<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'descending')}"><fmt:message key="post.meta.sort.order.descending"/></a>
+   			</span>								
+	  	</li>
+   		<!--+ 
+			+ other options (batch edit)
+			+-->		  	
+	  	<li>
+	  		<div class="listOptionHeading"><fmt:message key="post.meta.others/>":</div>
+	  		<c:if test="${isBibtex}">
+				<c:url var="editUrl"   value="/beditbib/${requPath}" />
+			</c:if>
+			<c:if test="${isBookmark}">
+				<c:url var="editUrl" value="/bediturl/${requPath}"/>
+			</c:if>
+			<fmt:message var="editPageTags" key="post.meta.edit.title"/>
+			<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.batch_edit"/></a>
+	  	</li> 	
+	</ul>	
 </jsp:root>
