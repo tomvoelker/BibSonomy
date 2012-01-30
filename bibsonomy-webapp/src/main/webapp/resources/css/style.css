@@ -867,6 +867,8 @@ div.help>a,div.help>b {
 	background-color: #ffffff;
 	position: relative;
 	min-height: 100px; /* to give previews images enough space */ 
+	margin-left: 10px;
+	margin-right: 10px
 }
 	
 .post:hover {
