@@ -19,13 +19,31 @@
     <jsp:attribute name="heading">
     	<parts:search pathMessageKey="navi.mysearch"/>
 	</jsp:attribute>
-      
-        
-    <jsp:attribute name="content">
+
+
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerLogo">
+					<img src="${resdir}/image/relations.png"/>
+				</jsp:attribute>
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="mysearch.header"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
+		
+		<!--+
+			| page content
+			+-->
+		<jsp:attribute name="content">
         	
       <div id="searchbox">
 	    
-        <h2><fmt:message key="mysearch.header"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></h2>
 	
 	    <form name="searchform" onsubmit="checkInput()">
 	      <fieldset class="fsVisible">

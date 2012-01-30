@@ -47,6 +47,30 @@
 				]]>
 			</script>
 		</jsp:attribute>
+		
+		<!--+
+			| page header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<div id="publicationsheader">
+				<div class="config"><a href=""><!-- fixme --></a></div>
+				<h2 class="header">
+					<fmt:message key="publications" />
+					<!-- Display total number of entries in list --> 
+					<c:if test="${!empty command.bibtex.list}">
+						<c:if test="${command.bibtex.totalCount != 0}">
+							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
+							${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bibtex.totalCount})</span>
+						</c:if>
+					</c:if>				
+				</h2>			
+			</div>
+			
+		</jsp:attribute>
+		
+		<!--+
+			| page content
+			+-->
 		<jsp:attribute name="content">
 			<!--+ 
 			 	| FIXME: if the command does not contain the property goldStandard 
