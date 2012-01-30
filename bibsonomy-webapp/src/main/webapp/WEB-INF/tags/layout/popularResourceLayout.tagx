@@ -74,7 +74,7 @@
 								<resources:bibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}"/>
 
 
-									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">
+<!--									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">-->
 <!--											<jsp:attribute name="extTitle">-->
 <!--												<h2 class="listh">(${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>-->
 <!--											</jsp:attribute>-->
