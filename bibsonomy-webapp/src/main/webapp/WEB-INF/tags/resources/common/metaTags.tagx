@@ -8,10 +8,14 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
+
+	
 	<!-- the tags of a resource -->
 	<c:if test="${!empty post.visibleTags}">
 		<span class="bmtags">
+	
 			<!-- HIDDEN SYSTEM TAGS -->
+			<fmt:message var="tagMsg" key="systemtag"/>
 			<c:if test="${!empty post.hiddenSystemTags}">
 				<c:set var="systagTitles" value=""/>
 				<c:forEach var="systag" items="${post.hiddenSystemTags}">
@@ -19,16 +23,13 @@
 				</c:forEach>		
 				<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="/user/${fn:escapeXml(post.user.name)}/" tags="${systagTitles}" title="System Tags"/>	
 			</c:if>
+	
 			<!-- ALL REGULAR TAGS -->
+			<fmt:message var="tagMsg" key="navi.tag"/>
 			<c:forEach var="tag" items="${post.visibleTags}">
-				<a href="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a>
+				<a href="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" title="${tagMsg} ${tag.name}"><c:out value="${tag.name}"/></a>
 			</c:forEach>
-			<!-- TODO: add "for:" tags  -->
-			<!-- c:if test="${command.context.loginUser.name eq post.user.name}">
-				<c:forEach var="foruser" items="${resource.usersToPost}">
-					<a href="${basePath}user/${mtl:encodeURI(resource.user)}/for:${mtl:encodeURI(foruser)}">for:<c:out value='${foruser}' /></a>
-				</c:forEach>
-			</c:if -->
+
 		</span>
 	</c:if>
 	

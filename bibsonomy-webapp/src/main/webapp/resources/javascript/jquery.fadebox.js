@@ -48,10 +48,10 @@ $(".hiddenSystemTag").fadeBox(
 				var tags = ($(self).attr('tags')).replace(/^\s|\s$/g, '').split(" ");
 				var url = $(self).attr('url');
 				var t = 0;
-				var content = '<a href="'+url+tags[t]+'">' + tags[t] + '</a>';
+				var content = '<a href="'+url+tags[t]+'" title="'+getString('systemtag')+' '+tags[t]+'">' + tags[t] + '</a>';
 														
 				while (++t < tags.length) {
-					content += ' <a href="'+url+tags[t] +'">' + tags[t] + '</a>';
+					content += ' <a href="'+url+tags[t] +'" title="'+getString('systemtag')+' '+tags[t]+'">' + tags[t] + '</a>';
 				}
 				return content;
 			},

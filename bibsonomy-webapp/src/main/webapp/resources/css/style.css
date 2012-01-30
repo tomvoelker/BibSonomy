@@ -1671,6 +1671,15 @@ div.info:hover>div, div.help:hover>div {
 	z-index: 25;
 }
 
+.listhButtons a {
+	border: 1px solid #006699;
+	background-color: #fff;
+	color: #000;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin: 0;
+}
+
 
 /* end of login css code */
 

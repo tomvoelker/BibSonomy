@@ -10,6 +10,7 @@
 
 	<!-- initialize with empty list -->
 	<c:set var="personList" value=""/>
+	<fmt:message var="personStatus" key="navi.author"/> 
 	<!-- determine personType for schema.org markup -->
 	<c:set var="authorEditor" value=""/>
 	<c:choose>
@@ -20,30 +21,38 @@
 		<c:when test="${not empty publication.editor}">
 			<c:set var="personList" value="${publication.editor}"/>
 			<c:set var="authorEditor" value="editor"/>
+			<fmt:message var="personStatus" key="editor"/>
 		</c:when>
 	</c:choose>
+	
 
 	<span class="authorEditorList"> 
 		<c:forEach var="person" items="${personList}" varStatus="loopStatus">
+		
+			<c:set var="personName">
+ 				<c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" />
+			</c:set>
 			<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
+		
 			 <c:choose>
 			 	<c:when test="${schemaOrgMarkUp}">
 			 		<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-			 			<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="name">
-			 				<c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" />
+			 			<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="name" title="${personStatus} ${personName}">
+			 				<c:out value="${personName}"/>
 			 			</a>
 					</span>
 				</c:when>
 				<c:otherwise>
-				 	<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}">
-			 		<c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" />
-			 	</a>
-				
+				 	<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" title="${personStatus} ${personName}">
+			 				<c:out value="${personName}"/>
+				 	</a>
 				</c:otherwise>
 			</c:choose>
+
 			<!-- append separator "," -->
 			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>
 		</c:forEach>
+		
 		<!-- append "(eds.)" -->
 		<c:if test="${empty publication.author and not empty publication.editor}">
 			<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/>).

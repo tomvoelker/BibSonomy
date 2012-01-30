@@ -13,7 +13,8 @@
 		<c:out value=" "/>
 		<fmt:message key="post.meta.taggedBy" />
 		<c:out value=" "/>
-		<a name="${fn:escapeXml(post.user.name)}" href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
+		<c:set var="userName" value="${fn:escapeXml(post.user.name)}"/>
+		<a name="${userName}" href="/user/${UserName}" title="${userName}"><c:out value="${userName}" /></a>
 	</c:if>
 	
 	
