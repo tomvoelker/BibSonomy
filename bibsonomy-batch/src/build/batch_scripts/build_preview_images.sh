@@ -10,6 +10,8 @@
 # Version: $Id$
 #
 # Changes:
+# 2012-01-30 (rja)
+# - changed size of SMALL previews to 80x80
 # 2011-12-08 (rja)
 # - added file name for documents that could not be handled
 # 2011-12-06 (rja)
@@ -79,7 +81,7 @@ for doc in $DOCUMENTS; do
 		gs -q -dSAFER -sDEVICE=png16m -dLastPage=1 -r150 -o$temp $doc
 		if [ $? ]; then
 		    # make small JPEG previews
-		    convert -quiet -thumbnail '100x100>' $temp ${doc}_SMALL.jpg
+		    convert -quiet -thumbnail '80x80>' $temp ${doc}_SMALL.jpg
 		    convert -quiet -thumbnail '200x200>' $temp ${doc}_MEDIUM.jpg
 		    convert -quiet -thumbnail '400x400>' $temp ${doc}_LARGE.jpg
 		fi
@@ -93,7 +95,7 @@ for doc in $DOCUMENTS; do
 	    if [ ! -f $small -o $TASK == "force" ]; then
 		# echo "converting $doc ($type)"
 		# make small JPEG previews
-		convert -quiet -thumbnail '100x100>' $doc ${doc}_SMALL.jpg
+		convert -quiet -thumbnail '80x80>' $doc ${doc}_SMALL.jpg
 		convert -quiet -thumbnail '200x200>' $doc ${doc}_MEDIUM.jpg
 		convert -quiet -thumbnail '400x400>' $doc ${doc}_LARGE.jpg
 	    fi
