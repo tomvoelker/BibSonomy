@@ -82,7 +82,7 @@ function init_sidebar() {
 }
 
 function fadeNextList(target) {
-	$(target).nextAll(".sidebar_collapse_content").fadeToggle("slow", function(){
+	$(target).nextAll(".sidebar_collapse_content").toggle("slow", function(){
 		$(target).find(".toggler img").attr("src", "/resources/image/icon_" + ($(this).css('display') == 'none' ? "expand" : "collapse") + ".png");
 	});
 }

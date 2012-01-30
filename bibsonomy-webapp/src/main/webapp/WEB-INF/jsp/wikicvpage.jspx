@@ -71,6 +71,25 @@
 			</parts:search>	
     	</jsp:attribute>
 		
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerLogo">
+					<img src="${resdir}/image/cv_header.png"/>
+				</jsp:attribute>
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="navi.cv.my" />				
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
+		
+		<!--+
+			| page content 
+			+-->
 		<jsp:attribute name="content">
 		<div>
 		<div id="general_100">

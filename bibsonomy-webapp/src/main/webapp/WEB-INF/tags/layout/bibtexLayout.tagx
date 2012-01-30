@@ -34,6 +34,7 @@
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" activeTab="${activeTab}">
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script>
+			
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
 			<c:set var="burstUrl" value="/burst/${requPath}"/>
