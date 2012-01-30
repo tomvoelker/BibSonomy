@@ -24,7 +24,7 @@
 		<ul>
 			<li>
 				<!--  ::  --> 
-				<a href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="${pathMessageKey}"/></a> ::
+				<a href="#"><img alt="" src="${resdir}/image/pulldown-marker-large_white.png"/>${mtl:ch('nbsp')}<fmt:message key="${pathMessageKey}"/></a> ::
 				<ul>
 					<li onclick="switchNavi('tag', event)"><fmt:message key="navi.tag"/></li>
 					<li onclick="switchNavi('user', event)"><fmt:message key="navi.user"/></li>
