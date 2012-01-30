@@ -7,5 +7,6 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 	
 	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-	<a href="${bookUrl}" rel="nofollow"><c:out value='${post.resource.title}'/></a>
+	<c:set var="bookTitle" value="${post.resource.title}"/>
+	<a href="${bookUrl}" rel="nofollow" title="${bookTitle}"><c:out value='${bookTitle}'/></a>
 </jsp:root>
