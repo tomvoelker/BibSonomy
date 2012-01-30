@@ -1251,12 +1251,10 @@ div.help>a,div.help>b {
 
 .bookmarksContainer .posts {
 	background-color: #ffffff;
-	border-right: 1px solid #c6c6c6;
 }
 
 .publicationsContainer .posts {
 	background-color: #ffffff;
-	border-left: 1px solid #c6c6c6;
 }
 
 .bookmarksContainer .desc, .publicationsContainer .desc {
