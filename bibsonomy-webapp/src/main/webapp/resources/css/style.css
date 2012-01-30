@@ -1220,25 +1220,23 @@ div.help>a,div.help>b {
 #bookmarksheader .header {
 	padding-left: 122px;
 	background-position: 27px 2px;
-	border-right: 1px solid #c6c6c6;
 }
 
 #bookmarksfooter .footer, #publicationsfooter .footer {
 	height:26px;
 	padding-top:4px;
 	position:relative;
+	padding-left: 1em;
+	padding-right: 1em;
 }
 
 #bookmarksfooter .footer {
-	border-right: 1px solid #c6c6c6;
 }
 
 #publicationsfooter .footer {
-	border-left: 1px solid #c6c6c6;
 }
 
 #publicationsheader .header {
-	border-left: 1px solid #c6c6c6;
 	padding-left: 122px;
     background-position: 27px -61px;
 }	
@@ -1418,6 +1416,11 @@ div.help>a,div.help>b {
 	right: 0;
 }
 
+
+.nextprev {
+	padding-left: 0.5em;
+}
+	
 .listnav {
 	border:1px solid #c6c6c6;
 	margin:2px;
@@ -1811,7 +1814,7 @@ div.help>a,div.help>b {
 
 .selectEntriesPerPage {
 	position:absolute;
-	right:0;
+	right: 1em;
 	padding-top:0.3em;
 }
 
