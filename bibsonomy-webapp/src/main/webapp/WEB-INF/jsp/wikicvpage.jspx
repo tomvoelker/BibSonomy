@@ -80,7 +80,7 @@
 					<img src="${resdir}/image/cv_header.png"/>
 				</jsp:attribute>
 				<jsp:attribute name="headerContent">
-					<h2>
+					<h2 class="header">
 						<c:choose>
 							<c:when test="${command.context.loginUser.name eq command.requestedUser}">
 								<fmt:message key="navi.cv.my" />
