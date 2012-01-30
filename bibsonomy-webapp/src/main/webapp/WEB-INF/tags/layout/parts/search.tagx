@@ -23,7 +23,7 @@
 	<div id="search">
 		<ul>
 			<li>
-				:: 
+				<!--  ::  --> 
 				<a href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="${pathMessageKey}"/></a> ::
 				<ul>
 					<li onclick="switchNavi('tag', event)"><fmt:message key="navi.tag"/></li>
@@ -40,9 +40,9 @@
 						<li onclick="switchNavi('user:${fn:escapeXml(command.context.loginUser.name)}', event)"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></li>
 					</c:if>
 					<c:if test="${command.context.userLoggedIn}">
-						<li style="color:black"><fmt:message key="navi.search.in_group"/></li>
+						<li class="pdSubHeader"><fmt:message key="navi.search.in_group"/></li>
 						<c:forEach var="grp" items="${command.context.loginUser.groups}">
-							<li onclick="switchNavi('group:${fn:escapeXml(grp.name)}', event)" style="padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
+							<li class="pdSubitems" onclick="switchNavi('group:${fn:escapeXml(grp.name)}', event)">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
 						</c:forEach>
 					</c:if>
 				</ul>
@@ -50,7 +50,7 @@
 			<c:if test="${not empty pathPart}">
 				<jsp:invoke fragment="pathPart"/>
 			</c:if>
-			<li style="${empty formAction ? 'display: hidden' : ''}">
+			<li class="${empty formAction ? 'notUsedForm' : ''}">
 				<form action="${formAction}" method="get" class="smallform">
 		  			<input type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
 		  			<c:if test="${not empty formExtra}">

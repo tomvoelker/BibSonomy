@@ -194,22 +194,49 @@ a:hover {
 
 #search {
     font-size: 20px;
-    font-variant: small-caps;
+    font-style: italic;
     bottom: 4px;
-    font-size: 16px;
+    font-size: 14px;
     margin-left: 2em;
     white-space: nowrap;
     display: inline;
     position: absolute;
 }
 
+#search > ul li a {
+	font-style: normal;
+}
+
 #search > ul, #search > ul > li {
 	display: inline;
 }
 
-#search > ul ul > li {
-	padding: 0px 4px;
+#search > ul > li.notUsedForm {
+	display: none;
+}
+
+#search > ul li ul {
+	margin-top: -4px;
 } 
+
+#search > ul ul > li {
+	padding: 3px 6px;
+} 
+
+#search li.pdSubHeader {
+	
+}
+
+#search > ul li:hover ul li.pdSubHeader:hover {
+	background: transparent;
+	color: black;
+	text-decoration: none;
+	cursor: default;
+}
+
+#search li.pdSubitems {
+	padding-left: 2em;
+}
 
 #navigation > ul > li {
 	margin-right: 10px;
