@@ -50,7 +50,7 @@
 			<c:if test="${not empty pathPart}">
 				<jsp:invoke fragment="pathPart"/>
 			</c:if>
-			<li class="${empty formAction ? 'notUsedForm' : ''}">
+			<li class="${empty formAction ? 'hidden' : ''}">
 				<form action="${formAction}" method="get" class="smallform">
 		  			<input type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
 		  			<c:if test="${not empty formExtra}">

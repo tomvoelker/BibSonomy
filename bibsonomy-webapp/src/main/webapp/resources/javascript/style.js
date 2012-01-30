@@ -8,9 +8,6 @@ var style_sort = new Array("alph", "freq");
 var style_show = new Array("cloud", "list");
 var userMinFreq = 1;
 
-//var style_sort = new Array(getString("tagbox.sort.alpha"), getString("tagbox.sort.freq"));
-//var style_show = new Array(getString("tagbox.style.cloud"), getString("tagbox.style.list"));
-
 function init_tagbox(show, sort, minfreq, requUser) {
 	style_list = document.createElement("ul");
 	style_list.className= "floatul";
@@ -99,7 +96,13 @@ function getMinTagsLink (count) {
 	return node;
 }
 
-//create minfreq links for users (which are loaded via AJAX)
+/**
+ * create minfreq links for users (which are loaded via AJAX)
+ * 
+ * @param count
+ * @param currUser
+ * @return
+ */
 function showUserMinfreq(count, currUser) {
 
 	var minfreqList = document.createElement("li");
@@ -130,10 +133,12 @@ function showUserMinfreq(count, currUser) {
 	minfreqList.appendChild(document.createTextNode(") "));
 
 	style_list.replaceChild(minfreqList, style_list.childNodes[2]);
-
 }
 
-//create default minfreq links
+/**
+ * create default minfreq links
+ * @return
+ */
 function showMinfreq() {
 	var minfreqList = document.createElement("li");
 

@@ -205,7 +205,7 @@ a:hover {
 	display: inline;
 }
 
-#search > ul > li.notUsedForm {
+#search > ul > li.hidden {
 	display: none;
 }
 
