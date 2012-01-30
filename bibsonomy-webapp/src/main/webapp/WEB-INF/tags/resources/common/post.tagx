@@ -52,7 +52,7 @@
 		</c:if>
 		
 		<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
-		<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+		<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}"/>
 		
 		<!-- RATING -->
 		<div class="rating">

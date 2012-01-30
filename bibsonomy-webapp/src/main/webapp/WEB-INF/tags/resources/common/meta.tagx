@@ -8,6 +8,7 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="false"/>
 
 
 	<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
@@ -32,7 +33,7 @@
  		<!-- TAGS -->
 		<div class="tags"> 
 			<rc:metaTags post="${post}" />
-			<c:if test="${loginUserName eq post.user.name}">
+			<c:if test="${not empty loginUserName and loginUserName eq post.user.name}">
 				<a class="edittags" href="" title="Tags bearbeiten"><img class="editimage" src="/resources/image/edit.gif" alt="edit"><!-- keep me --></img></a>
 			</c:if>
 		</div>

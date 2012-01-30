@@ -27,7 +27,7 @@
 			<!-- ALL REGULAR TAGS -->
 			<fmt:message var="tagMsg" key="navi.tag"/>
 			<c:forEach var="tag" items="${post.visibleTags}">
-				<a href="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" title="${tagMsg} ${tag.name}"><c:out value="${tag.name}"/></a>
+				<a href="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" title="${tagMsg} ${tag.name}"><c:out value="${tag.name}"/></a><c:out value=" "/>
 			</c:forEach>
 
 		</span>
