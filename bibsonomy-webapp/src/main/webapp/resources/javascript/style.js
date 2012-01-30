@@ -300,7 +300,7 @@ function minUsertags(minfreq) {
 
 /**
  * 
- * switches page default path to full navigation path
+ * Switch the page default path to the full navigation path + form.
  * 
  * @param scope
  * @param event
@@ -335,6 +335,12 @@ function switchNavi(scope, event) {
 		text = getString("navi.group") + ":" + text.substr(2); 
 	}
 	$("#search a:first").html(text);
+	/*
+	 * remove all remaining list elements 
+	 */
+	$("#search > ul > li").each(function(){
+		if (!$(this).find("form, ul").length) $(this).remove(); 
+	});
 	
 	/*
 	 * heuristic to get the hint for the input field  
