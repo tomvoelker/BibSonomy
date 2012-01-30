@@ -285,6 +285,7 @@
 				    $(function() {
 		    			$('textarea').TextAreaResizer();
 		    			init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${properties['project.name']}");
+	   				    initBookmarksPublicationsListsLast();
 				    });					    
 				  ]]>
 				</script>
@@ -292,7 +293,7 @@
 					<script type="text/javascript">
 		              <![CDATA[
 	   				    $(function() {$('#postcontainer').css('padding-right', "0");});
-					  ]]>
+	   				  ]]>
 					</script>
 				</c:if>					
         

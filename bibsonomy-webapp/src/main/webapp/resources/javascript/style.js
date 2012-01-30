@@ -386,6 +386,10 @@ function initBookmarksPublicationsLists() {
 		);
 	}
 
+}
+
+
+function initBookmarksPublicationsListsLast() {
 	if ( ($("#bookmarks ul.posts").length != 0) && ($("#publications ul.posts").length != 0) && ($("#sidebar").length != 0) ) { 
 		// hoehe der postlisten anpassen auf groesste hoehe
 		// get heights
@@ -403,7 +407,6 @@ function initBookmarksPublicationsLists() {
 		$("#sidebar").height(maxheight);
 	}
 }
-
 
 function initSidebarHeader() {
 	if ( ($("#postcontainer").length != 0) && ($("#bookmarks").length != 0) && ($("#publications").length != 0) && ($("#sidebar").length != 0) ) { 
