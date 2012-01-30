@@ -18,9 +18,9 @@
     <c:out value=" "/>
     <span class="info">...
       <div>
-        <div class="bmtitle"><bm:title post="${post}"/></div>
-        <div class="bmdesc"> <bm:desc post="${post}"/></div>
-        <span class="bmmeta">
+        <div class="ptitle"><bm:title post="${post}"/></div>
+        <div class="pdesc"> <bm:desc post="${post}"/></div>
+        <span>
           <rc:meta post="${post}" otherPostsUrlPrefix="/url/"/>
         </span>
       </div>

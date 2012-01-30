@@ -23,8 +23,8 @@
       <c:set var="description">
         <bib:desc post="${post}"/>
         <div class="abstract"><c:out value="${post.resource.abstract}"/></div>
-        <span class="bmmeta">
-          <rc:meta post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
+        <span>
+          <rc:meta post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}" showTagsLabel="${true}"/>
         </span>
       </c:set>
       <c:out value="${description}"/>

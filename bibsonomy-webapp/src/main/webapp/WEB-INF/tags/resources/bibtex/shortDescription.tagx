@@ -14,10 +14,10 @@
     <c:out value=" "/>
     <span class="info">...
       <div>
-        <div class="bmtitle"><bib:title post="${post}"/></div>
-        <div class="bmdesc"> <bib:desc post="${post}"/></div>
-        <span class="bmmeta">
-          <rc:meta post="${post}" otherPostsUrlPrefix="/bib/"/>
+        <div class="ptitle"><bib:title post="${post}"/></div>
+        <div class="pdesc"> <bib:desc post="${post}"/></div>
+        <span>
+           <rc:meta post="${post}" otherPostsUrlPrefix="/bib/"/>
         </span>
       </div>
     </span>
