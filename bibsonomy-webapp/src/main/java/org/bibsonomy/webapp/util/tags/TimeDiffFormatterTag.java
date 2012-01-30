@@ -60,6 +60,8 @@ public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	 * 
 	 * FIXME: I18N missing
 	 * 
+	 * If one of the dates is not given, "" is returned.
+	 * 
 	 * @param startDate
 	 * @param endDate 
 	 * @param locale
@@ -68,6 +70,7 @@ public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	 */
 	protected static String formatTimeDiff(final Date startDate, final Date endDate, final Locale locale, final MessageSource messageSource) {
 
+		if (!present(startDate) || !present(endDate)) return "";
 	    /*
 	     * based on http://stackoverflow.com/questions/635935/how-can-i-calculate-a-time-span-in-java-and-format-the-output
 	     */
