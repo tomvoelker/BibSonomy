@@ -136,11 +136,11 @@
 							</buttons:help>			
 						<div class="fsRow">
 					      <form:label cssClass="fsLabel" path="editTags.delTags"><fmt:message key="edittags.main.replace" />:</form:label><buttons:help message="edittags.help.delTags" />
-					      <form:input cssClass="fsInput" path="editTags.delTags" id="inpf" onclick="setActiveInputField(this.id)" />		        
+					      <form:input cssClass="fsInput" path="editTags.delTags" onclick="setActiveInputField(this.id)" />		        
 					    </div>
 						<div class="fsRow">
 					      <form:label cssClass="fsLabel" path="editTags.addTags"><fmt:message key="edittags.main.newtags" />:</form:label><buttons:help message="edittags.help.addTags" />
-					      <form:input cssClass="fsInput" path="editTags.addTags" id="inpfNew" onclick="setActiveInputField(this.id)" />		        
+					      <form:input cssClass="fsInput" path="editTags.addTags" onclick="setActiveInputField(this.id)" />		        
 					    </div>
 						<div class="fsRow">
 		        			<form:label cssClass="fsLabel" path="editTags.updateRelations"><fmt:message key="edittags.main.updaterelations" />:</form:label><buttons:help message="edittags.help.updateRelations" />
@@ -242,7 +242,6 @@
             <![CDATA[
                      // vanishing error boxes
                      $(function() {
-                    	add_tags_toggle();
         	  			disableHandler();
         	  			add_toggle_relations();
         	  			collectTags();

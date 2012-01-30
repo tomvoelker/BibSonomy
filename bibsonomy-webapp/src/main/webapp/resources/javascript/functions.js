@@ -239,12 +239,12 @@ function add_hints() {
 }
 
 /**
- * Clears #inpf if it's value is equal to the tag hint.
+ * Clears #inpf_tags if it's value is equal to the tag hint.
  * 
  * @return
  */
 function clear_tags() {
-	var tag = $("#inpf");
+	var tag = $("#inpf_tags");
 	if (tag.val() == getString("navi.tag.hint")) {tag.val('');}
 }
 
@@ -271,18 +271,6 @@ function toggle_required_author_editor () {
 		}
 	}
 }
-
-/**
- * Set the current input field to the given id and clear the suggestions.
- * 
- * @param id
- * @return
- */
-function setActiveInputField(id) {
-	activeField = id;
-	$("#suggested").empty();
-}
-
 
 /**
  * returns the node of an event

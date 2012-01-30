@@ -15,7 +15,6 @@ var savTag = "";
 var activeTag = "";
 var sortedCollection;
 var collect;
-var copyCollect;
 
 
 
@@ -36,9 +35,9 @@ function initTagAutocompletion(tagbox) {
 	 * tags from side bar and from copied post
 	 */
 	$("#copiedTags li, #tagbox li a").each(function() {
-		$(this).click(copytag).removeAttr("href");
+		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
 	});
-	
+
 	initTagAutocompletionForSendTag(tagbox);
 }
 
@@ -309,8 +308,10 @@ function stringCompare(a, b) {
 }	
 
 /**
- * Called on edit_tags.
+ * Called on edit_tags - collects tags from the sidebar.
  * 
+ * TODO: it seems that there is currently no autocompletion functionality that
+ * uses these tags.
  * 
  * @return
  */
@@ -490,8 +491,10 @@ function simulateClick(target) {
 } 
 
 
-/*
+/**
  * Gibt eine Liste aus Tags zurück. Bei Relationen werden die Tags gesplittet.
+ * @param s
+ * @return
  */
 function getTags(s) {
 	var tmpInput = s.split(" ");
@@ -519,10 +522,12 @@ function getTags(s) {
 
 }
 
-/*
- *  Findet das Wort, welches gerade editiert wird
+/**
+ * Findet das Wort, welches gerade editiert wird
+ * 
+ * @param backspace
+ * @return
  */
-
 function getActiveTag(backspace) {
 	var input = getTags(document.getElementById(activeField ? activeField : "inpf_tags").value);
 
@@ -542,18 +547,20 @@ function getActiveTag(backspace) {
 	delete input;
 }
 
-/*
- * Vorschlagsfunktion
+/**
+ * Suggestions for tag-inbut box, completed when user presses TAB.
+ * 
+ * 
+ * @return
  */
-
 function suggest() {
 	delete collect;
-	if (sortedCollection)
-		delete sortedCollection;
-	delete copyCollect;
 	collect = new Array();
+
+	delete sortedCollection;
 	sortedCollection = new Array();
-	copyCollect = new Array();
+
+	var copyCollect = new Array();
 	var searchString = activeTag.toLowerCase();
 	var searchLength = searchString.length;
 	var success = false;
@@ -601,7 +608,7 @@ function suggest() {
 		else
 			firstElement = midElement + 1;
 	}
-	collect.sort(byWight);
+	collect.sort(byWeight);
 
 	/*
 	 * add tags from copied post
@@ -613,7 +620,7 @@ function suggest() {
 	});
 	
 
-	/*	collects suggested entrys inside copytag elemens	*/
+	/*	collects suggested entrys inside copytag elements	*/
 	for (var copyTag in copyListElements) {
 		var duplicate = false;
 		var tmpTag = "";
@@ -666,36 +673,8 @@ function suggest() {
 }
 
 /**
- * Called on /edit_tags to make the tags from the sidebar clickable such that
- * on a click they are added to the active input field.  
- *
- * @return
- */
-function add_tags_toggle() {
-	$("#tagbox li a").each(function() {
-		$(this).click(function() {
-//			alert("t");
-//			var v = xget_event(event).childNodes[0].nodeValue;
-//			var v = this.childNodes[0].nodeValue;
-//			alert("toggle " + v);
-
-			clear_tags(); // remove getString("navi.tag.hint") 
-
-//			toggleTag(
-//			document.getElementById(activeField ? activeField : "inpf"), 
-//			v
-//			);
-		})
-		.removeAttr("href")
-		.css("cursor", "pointer");
-	});
-
-}
-
-
-/**
  * 
- * clickable relations for edit_tags
+ * clickable relations on edit_tags page
  * 
  * @return
  */
@@ -735,6 +714,18 @@ function clearSuggestion() {
 	$("#copiedTags li").css("color", "").css("backgroundColor", ""); // FIXME: why not remove()?
 
 	// remove all child nodes
+	$("#suggestedTags").empty();
+}
+
+
+/**
+ * Set the current input field to the given id and clear the suggestions.
+ * 
+ * @param id
+ * @return
+ */
+function setActiveInputField(id) {
+	activeField = id;
 	$("#suggestedTags").empty();
 }
 
@@ -816,7 +807,7 @@ function addToggleChild(sortedCollection) {
  * Sortiert 2 Tags nach Gewichtung
  */
 
-function byWight(a, b) {
+function byWeight(a, b) {
 	if(b.wighting == a.wighting) {
 		if(b.tagname < a.tagname)
 			return -1;
@@ -834,22 +825,23 @@ function byWight(a, b) {
  * add or remove tag to/from target field
  * 
  * @param targetId
- * @param tagname
+ * @param tagName
  * @return
  */
-function copytag(targetId, tagname) {
+function copytag(targetId, tagName) {
 	/*
 	 * since jQuery gives us other arguments, we overwrite if no string is given
 	 */
 	if (!targetId || typeof targetId != 'string') {
-		targetId = "inpf_tags";
+		targetId = activeField ? activeField : "inpf_tags"; // default fall back 
 	}
-	if (!tagname || typeof tagname != 'string') {
-		tagname = $(this).html();
+	// target is given - check tagName
+	if (!tagName || typeof tagName != 'string') {
+		tagName = $(this).html();
 	}
 	var targetNode = document.getElementById(targetId);
 	if (targetNode) {
-		toggleTag(targetNode, tagname);
+		toggleTag(targetNode, tagName);
 	}
 }
 
