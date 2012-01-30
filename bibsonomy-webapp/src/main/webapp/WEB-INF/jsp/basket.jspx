@@ -39,7 +39,7 @@
 
 			<!-- quick links on what you can do -->
 			
-			<p>Beispielsweise können Sie schnell und einfach</p>
+			<p><fmt:message key="basket.info.examples"/></p>
 			<ul class="news">
 				<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.edit.tags"/></a></li>
 				<li><a href="/export/${fn:escapeXml(requPath)}${requQueryString}"><fmt:message key="basket.export"/></a></li>
