@@ -12,11 +12,12 @@
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="listIndex" type="java.lang.String" required="false" />
-	
+	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
+		
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
-
+ 
 	<rc:list
 		titleKey="bookmarks" 
 		loginUserName="${loginUserName}"
@@ -26,9 +27,11 @@
 		disableActions="${disableActions}"
 		listID="bookmarks_${listIndex}"
 		className="bookmarksContainer"
-		listView="${listView}">
+		listView="${listView}"
+		extTitle="${extTitle}"
+	>
     
-		<jsp:attribute name="formatButtons">
+    		<jsp:attribute name="formatButtons">
 			<!-- Buttons to show content of page in different formats -->
 			<c:url var="rssPath" value="/rss/${requPath}${requQueryString}" /><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}
 			<c:url var="bibPath" value="/bookbib/${requPath}${requQueryString}" /><a href="${bibPath}">BibTeX</a>${mtl:ch('nbsp')}

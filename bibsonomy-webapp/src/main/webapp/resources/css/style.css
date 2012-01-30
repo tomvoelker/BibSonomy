@@ -1176,7 +1176,6 @@ div.help>a,div.help>b {
 	width: 50%;
 	float: left;
 	padding-left: 0ex;
-	background-color: #c6c6c6;
 }
 
 	
@@ -1184,7 +1183,6 @@ div.help>a,div.help>b {
 	width: 50%;
 	float: left;
 	padding-left: 0ex;
-	background-color: #c6c6c6;
 	margin-left: 0px;
 }
 
@@ -1244,6 +1242,12 @@ div.help>a,div.help>b {
 	padding-left: 122px;
     background-position: 27px -61px;
 }	
+
+.postlistTitle {
+	font-size: 130%;
+	font-weight: bold;
+	padding: 3ex 1em 1ex 1em;
+}
 
 .bookmarksContainer .posts {
 	background-color: #ffffff;

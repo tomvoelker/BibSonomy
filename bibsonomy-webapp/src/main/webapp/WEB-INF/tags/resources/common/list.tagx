@@ -15,6 +15,7 @@
     <jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="className"  type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
 
 	<jsp:directive.attribute name="formatButtons" fragment="true" required="true"/>
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -54,6 +55,11 @@
 			</c:if>
 		</div>
 		 -->
+		
+		<c:if test="${not empty extTitle}">
+ 			<div class="postlistTitle posts">${extTitle}</div>
+		</c:if>
+		
 		
         <!-- iterate over a list of resources and create the list -->
         <ul class="posts">
