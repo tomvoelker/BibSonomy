@@ -8,15 +8,6 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
-    <!-- show only short descriptions completely -->
-    <!-- TODO: make max description length a configurable constant -->
- <!--    <c:choose>    <c:when test="${fn:length(post.description) lt 155}"> -->
-	    <c:out value="${post.description}" />
-<!--      </c:when>
-      <c:otherwise>
-       <c:out value="${fn:substring(post.description, 0, 155)}" /> <span class="info">...<div><c:out value='${post.description}'/></div></span>
-      </c:otherwise>
-    </c:choose>
-   --> 
+    <c:out value="${post.description}"/>
 	
 </jsp:root>
