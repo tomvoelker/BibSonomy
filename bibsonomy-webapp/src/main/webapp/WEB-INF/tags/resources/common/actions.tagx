@@ -96,7 +96,7 @@
 			+ other options (batch edit)
 			+-->		  	
 	  	<li>
-	  		<div class="listOptionHeading"><fmt:message key="post.meta.others/>":</div>
+	  		<div class="listOptionHeading"><fmt:message key="post.meta.others"/>":</div>
 	  		<c:if test="${isBibtex}">
 				<c:url var="editUrl"   value="/beditbib/${requPath}" />
 			</c:if>
