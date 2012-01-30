@@ -1081,6 +1081,7 @@ li.box_lowerconcept a {
 #bookmarksfooter .footer, #publicationsfooter .footer {
 	height:26px;
 	padding-top:4px;
+	position:relative;
 }
 
 #bookmarksfooter .footer {
@@ -1348,6 +1349,7 @@ li.box_lowerconcept a {
 /*
  * Temporarly styling elements for the login header element
  */
+ 	
 .login {
 	float: left;
 }
@@ -1660,3 +1662,10 @@ span.info:hover>div,div.help:hover>div {
 
 
 /* end of login css code */
+
+
+.selectEntriesPerPage {
+	position:absolute;
+	right:0;
+	padding-top:0.3em;
+}
