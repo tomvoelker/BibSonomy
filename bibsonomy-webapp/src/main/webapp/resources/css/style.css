@@ -919,35 +919,28 @@ div.help>a,div.help>b {
 .post .image .web{ background-position: 0 -1106px; width: 61px; height: 37px; } 
 
 
-.post .title,  .post .desc, .post .authors {
+.ptitle,  .pdesc, .post .authors {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
   	-o-text-overflow: ellipsis;  /* necessary for opera 9+10 */
 }
 
-.post .title {
+.ptitle {
 	font-size: 120%;
 	font-weight: bold;
+}
+
+.post .ptitle {
 	margin-left: 110px;
 	margin-right: 24px;
 }
 
-.post .title a {
+.post .ptitle a {
 	color: #000;
 }
 
-.post .desc {
-	font-size: 90%;
-	margin-left: 110px;
-}
-
-.post .meta {
-	font-size: 90%;
-	margin-left: 110px;
-}
-
-.post .authors {
+.post .pdesc, .post .meta, .post .authors {
 	font-size: 90%;
 	margin-left: 110px;
 }
@@ -1063,7 +1056,7 @@ div.help>a,div.help>b {
 	clear: both;
 }
 
-.post .tags {
+.post .ptags {
 	margin-left: 110px;
 	margin-top: 1ex;		
 	margin-bottom: 5ex;		
@@ -1074,7 +1067,7 @@ div.help>a,div.help>b {
 */			
 }
 
-.post .tags a {
+.ptags a {
 	padding: 0.5ex;
 	margin-right: 2px;
 	margin-bottom: 0.5ex;
@@ -1084,44 +1077,42 @@ div.help>a,div.help>b {
 	font-size: 100%
 }
 
-.post .tags a {
+.ptags a {
 	background-color: #eeeeee;
 }
 
-.post .tags a:hover {
+.ptags a:hover {
 	background-color: #c8dc8d;
 }
 
-.post .time {
-	display: inline;
+.post .ptime {
 	margin-left: 110px;
 }
 
-.post .user {
+.puser, .ptime, .pgroup {
 	display: inline;
 }
 
-.post .group {
-	display: inline;
+.pgroup {
 	padding-left: 0.5ex;
 	
 }
 
-.post .group .private {
+.pgroup .private {
 	font-weight: bold;
 	background-color: #006699;
 	padding: 0 3px;
 	color: #ffffff;
 }
 
-.post .group .friends {
+.pgroup .friends {
 	font-weight: bold;
 	background-color: #660099;
 	padding: 0 3px;
 	color: #ffffff;
 }
 
-.post .group .other {
+.pgroup .other {
 	font-weight: bold;
 	background-color: #669900;
 	padding: 0 3px;
@@ -1287,31 +1278,31 @@ div.help>a,div.help>b {
   	display:none;	
 }
 
-.post .tags a.edittags img.editimage {
+.ptags a.edittags img.editimage {
 	border: 0;
 	padding: 0;
 	margin: 0;
 }
 
-.post .tags a.edittags {
+.ptags a.edittags {
 	background: none;
 	color: #006699;
 }
 
-.post .tags a.edittags:hover {
+.ptags a.edittags:hover {
 	background: none;
 	color: #006699;
 }
 
-.post .tags a.systemtags {
+.ptags a.systemtags {
 	background: none;
 }
 
-.post .tags a.systemtags:hover {
+.ptags a.systemtags:hover {
 	background: none;
 }
 
-.post .tags .editimage {
+.ptags .editimage {
 	height: 13px;
     vertical-align: text-top;
 }

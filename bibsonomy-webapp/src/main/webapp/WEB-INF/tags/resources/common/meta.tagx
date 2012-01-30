@@ -9,7 +9,8 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="false"/>
-
+	<jsp:directive.attribute name="showUserSaves" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
 
 	<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
 	<!--+ 
@@ -18,21 +19,22 @@
 	 	| meta information about the community post, e.g., last change date,
 	 	| revision number, etc.
 	 	+-->
-		 	
 
 		<!-- DATE, OWNER, GROUPS, USERSAVES -->
 		<c:if test="${not empty post.user.name}">
-			<div class="time"><rc:metaDate post="${post}"/></div>
-			<div class="user"><rc:metaUsername post="${post}" /></div>
- 			<div class="group"><rc:metaGroups post="${post}" /></div>
+			<div class="ptime"><rc:metaDate post="${post}"/></div>
+			<div class="puser"><rc:metaUsername post="${post}" /></div>
+ 			<div class="pgroup"><rc:metaGroups post="${post}" /></div>
+			<c:if test="${showUserSaves}">
 			<div class="usersaves">
 				<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" valueOnly="false"/>
 			</div>
+			</c:if>
 		</c:if> 		
 
  		<!-- TAGS -->
-		<div class="tags"> 
-			<rc:metaTags post="${post}" />
+		<div class="ptags"> 
+			<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 			<c:if test="${not empty loginUserName and loginUserName eq post.user.name}">
 				<a class="edittags" href="" title="Tags bearbeiten"><img class="editimage" src="/resources/image/edit.gif" alt="edit"><!-- keep me --></img></a>
 			</c:if>

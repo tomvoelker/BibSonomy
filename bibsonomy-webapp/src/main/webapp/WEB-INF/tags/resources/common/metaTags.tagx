@@ -7,13 +7,16 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-
+	<!-- Decide wether or not to display "Tags: " before listing all tags -->
+	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
 
 	
 	<!-- the tags of a resource -->
 	<c:if test="${!empty post.visibleTags}">
-		<span class="bmtags">
-	
+		<span>
+			<c:if test="${showTagsLabel}">
+				<fmt:message key="tags"/><c:out value=": "/>
+			</c:if>
 			<!-- HIDDEN SYSTEM TAGS -->
 			<fmt:message var="tagMsg" key="systemtag"/>
 			<c:if test="${!empty post.hiddenSystemTags}">
