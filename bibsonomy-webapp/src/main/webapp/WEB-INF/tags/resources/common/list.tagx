@@ -13,6 +13,7 @@
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false" description="Should actions for all posts in the list be shown? Defaults to true if not set."/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" description="Should navigation links (next/pref) be shown? Defaults to true if not set."/>
     <jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="className"  type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 
 	<jsp:directive.attribute name="formatButtons" fragment="true" required="true"/>
@@ -33,12 +34,12 @@
 		<c:set var="disableActions" value="${false}"/>
 	</c:if>
 	
-	<c:set var="className" value="bookbox" />
+	<c:set var="additionalClassName" value="bookbox" />
 	<c:if test="${fullscreen}">
-		<c:set var="className" value="full_${className}" />
+		<c:set var="additionalClassName" value="full_${className}" />
 	</c:if>
 	
-	<div class="${className}" id="${listID}">
+	<div id="${listID}" class="${className} ${additionalClassName}">
 	
 		<!-- FIXME: migrate these actions to 
 		<div class="bboxheader">

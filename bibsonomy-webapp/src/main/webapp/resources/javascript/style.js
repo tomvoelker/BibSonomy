@@ -390,11 +390,11 @@ function initBookmarksPublicationsLists() {
 
 
 function initBookmarksPublicationsListsLast() {
-	if ( ($("#bookmarks ul.posts").length != 0) && ($("#publications ul.posts").length != 0) && ($("#sidebar").length != 0) ) { 
+	if ( ($("#bookmarks_0 ul.posts").length != 0) && ($("#publications_0 ul.posts").length != 0) && ($("#sidebar").length != 0) ) { 
 		// hoehe der postlisten anpassen auf groesste hoehe
 		// get heights
-		bookmarks_height	= $("#bookmarks ul.posts").height();
-		publications_height	= $("#publications ul.posts").height();
+		bookmarks_height	= $("#bookmarks_0 ul.posts").height();
+		publications_height	= $("#publications_0 ul.posts").height();
 		sidebar_height		= $("#sidebar").height();
 	
 		// get maximum height
@@ -402,8 +402,8 @@ function initBookmarksPublicationsListsLast() {
 		maxheight = (maxheight > sidebar_height) ? maxheight : sidebar_height;
 	
 		// set heights to maximum_heights
-		$("#bookmarks ul.posts").height(maxheight);
-		$("#publications ul.posts").height(maxheight);
+		$("#bookmarks_0 ul.posts").height(maxheight);
+		$("#publications_0 ul.posts").height(maxheight);
 		$("#sidebar").height(maxheight);
 	}
 }

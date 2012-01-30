@@ -31,21 +31,28 @@
 						<div class="popular">
 							<c:choose>
 								<c:when test="${not empty command.listsBookmark[status.index]}">
-									<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">
-											<jsp:attribute name="extTitle">
-												<h2 class="listh">(${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>
-											</jsp:attribute>
-									</resources:simplebookmarks>
+
+			<resources:bookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}"/>
+
+<!--									<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">-->
+<!--											<jsp:attribute name="extTitle">-->
+<!--												<h2 class="listh">(${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>-->
+<!--											</jsp:attribute>-->
+<!--									</resources:simplebookmarks>-->
 								</c:when>
 								<c:otherwise><div class="bookbox"/></c:otherwise>
 							</c:choose>
 							<c:choose>
 								<c:when test="${not empty command.listsBibTeX[status.index]}">
-									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">
-											<jsp:attribute name="extTitle">
-												<h2 class="listh">(${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>
-											</jsp:attribute>
-									</resources:simplebibtexs>
+
+			<resources:bibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}"/>
+
+
+<!--									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">-->
+<!--											<jsp:attribute name="extTitle">-->
+<!--												<h2 class="listh">(${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/>)</h2>-->
+<!--											</jsp:attribute>-->
+<!--									</resources:simplebibtexs>-->
 								</c:when>
 								<c:otherwise><div class="bookbox"/></c:otherwise>
 							</c:choose>

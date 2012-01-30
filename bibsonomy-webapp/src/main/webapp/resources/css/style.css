@@ -1181,7 +1181,7 @@ div.help>a,div.help>b {
 }
 
 
-#bookmarks {
+.bookmarksContainer {
 	width: 50%;
 	float: left;
 	padding-left: 0ex;
@@ -1189,7 +1189,7 @@ div.help>a,div.help>b {
 }
 
 	
-#publications {
+.publicationsContainer {
 	width: 50%;
 	float: left;
 	padding-left: 0ex;
@@ -1254,22 +1254,22 @@ div.help>a,div.help>b {
     background-position: 27px -61px;
 }	
 
-#bookmarks .posts {
+.bookmarksContainer .posts {
 	background-color: #ffffff;
 	border-right: 1px solid #c6c6c6;
 }
 
-#publications .posts {
+.publicationsContainer .posts {
 	background-color: #ffffff;
 	border-left: 1px solid #c6c6c6;
 }
 
-#bookmarks .desc, #publications .desc {
+.bookmarksContainer .desc, .publicationsContainer .desc {
 	color: #666666;
 	font-style: italic;
 }
 
-#publications .authors {
+.publicationsContainer .authors {
 
 }
 
