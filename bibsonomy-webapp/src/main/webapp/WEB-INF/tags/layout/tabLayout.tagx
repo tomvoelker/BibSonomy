@@ -16,10 +16,11 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 				
 		
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" headerContainer="${headerContainer}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}">
 		<jsp:attribute name="content">
 			<div id="fullscreen">			
 			
