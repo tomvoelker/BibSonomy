@@ -13,7 +13,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:groupsLayout requPath="${requPath}" command="${command}" pageTitle="${command.pageTitle}" activeTab="groups">
+    <layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${command.pageTitle}">
     	<!--+
     	 	| html header extension: page specific stylesheet
     	 	+-->
@@ -22,13 +22,30 @@
 	    </jsp:attribute>
     	<!--+
     	 	| heading
-    	 	-->
+    	 	+-->
     	<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.groups" formAction="/group/" formInputName="group"/>
     	</jsp:attribute>
+
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerLogo">
+					<img src="${resdir}/image/relations.png"/>
+				</jsp:attribute>
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="navi.groups" />				
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>    	
+    	
     	<!--+
     	 	| content
-    	 	-->
+    	 	+-->
 		<jsp:attribute name="content">
           <div id="general_100">
             <!--+ 
@@ -132,5 +149,5 @@
             </table>
             </div>
 		</jsp:attribute>
-    </layout:groupsLayout>
+    </layout:paneLayout>
 </jsp:root>
