@@ -47,7 +47,7 @@
 		
 		<!-- loop over concepts -->		
 		<c:forEach var="concept" items="${cmd.conceptList}">
-			<li class="box_upperconcept">			
+			<li>
 				<!-- display link to hide relation -->
 				<c:if test="${usersOwnRelations}">
 					<a onclick="hideConcept(event);"
@@ -77,7 +77,7 @@
 				<c:out value=" "/>
 				
 				<!-- display subtags -->
-				<ul id="${concept.name}" class="box_lowerconcept_elements">
+				<ul>
 					<!-- iterate over subtags to get highest usercount -->
 					<c:set var="maxCount" value="0" />
      	  			<c:forEach var="subtag" items="${concept.subTags}">
@@ -85,7 +85,7 @@
      	  			</c:forEach>
      	  			<!-- display subtags -->
 					<c:forEach var="subtag" items="${concept.subTags}">
-						<li class="box_lowerconcept">
+						<li>
 							<!-- show style attribute for fontsize only when neccessary -->
 							<c:choose>
 								<c:when test="${fontsize == 100}">

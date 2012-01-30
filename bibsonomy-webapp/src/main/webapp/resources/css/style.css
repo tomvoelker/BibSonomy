@@ -458,7 +458,9 @@ a img {
 	text-decoration: none;
 }
 
-
+.floatul li {
+	display: inline;	
+}
 
 
 /** used for collapsing/uncollapsing sidebar entries */
@@ -696,8 +698,7 @@ ul.news {
 }
 
 /*--- relations/concepts ---------------------------------------------------*/
-.box_upperconcept {
-	font-size: 80%;
+#relations > li {
 	line-height: 1.2em;
 	text-indent: -3em;
 	margin-left: 3em;
@@ -708,28 +709,22 @@ ul.news {
 	font-weight: bold;
 }
 
-li.box_upperconcept a {
+#relations > li a {
 	color: #2F3321 ! important;
 }
 
-li.box_lowerconcept a {
+#relations li ul li a {
 	color: #768053 ! important;
+	display: inline;
 }
 
-.box_lowerconcept {
+#relations li ul li {
 	display: inline;
 	font-size: 90%;
 	line-height: 1.1em;
 }
-
-.box_arrow {
-	display: inline;
-	font-size: 80%;
-	line-height: 1.2em;
-}
-
-.box_lowerconcept_elements {
-	display: inline;
+#relations li ul {
+	display: inline;	
 }
 
 

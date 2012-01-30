@@ -73,7 +73,7 @@
 				<ul class="tagcloud" style="text-align:left;">
 					<c:forEach var="relation" items="${upperTag.subTags}" >  
 						<c:set var="link" value="${mtl:encodeURI(relation.name)}" />
-			            <li class="box_lowerconcept"> 
+			            <li> 
 			  	        	<!-- determine subTag title depending on its frequency -->
 			    	      	<fmt:message var="subTagUsers" key="users" /> <!-- plural -->		
 						  	<c:if test="${relation.usercount == 1}">

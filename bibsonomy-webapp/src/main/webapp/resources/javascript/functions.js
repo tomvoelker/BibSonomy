@@ -1132,7 +1132,7 @@ function ajax_updateRelations(data) {
 
 			// new list item for this super tag
 			var rel_item = $(
-					"<li class='box_upperconcept'>" + 
+					"<li>" + 
 					"<a onclick='hideConcept(event)' href='/ajax/pickUnpickConcept?action=hide&tag=" + encodeURIComponent(upper) + "&ckey=" + ckey + "'>" + String.fromCharCode(8595) + "</a> " +
 					"<a href='/concept/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(upper) + "'>" + upper + "</a>" +
 					" " + String.fromCharCode(8592) + " " +
@@ -1140,14 +1140,14 @@ function ajax_updateRelations(data) {
 			);
 
 			// add subtags
-			var lowerul = $("<ul id='" + upper + "' class='box_lowerconcept_elements'></ul>");
+			var lowerul = $("<ul></ul>");
 
 			// iterate over lower tags
 			var lowers = rel.getElementsByTagName("lower");
 			for (y = 0; y < lowers.length; y++) {
 				var lower = lowers[y].firstChild.nodeValue;
 				// add item
-				lowerul.append("<li class='box_lowerconcept'><a href'/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(lower) + "'>" + lower + "</a> </li>");
+				lowerul.append("<li><a href'/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(lower) + "'>" + lower + "</a> </li>");
 			}
 
 			// append list of lower tags to supertag item
