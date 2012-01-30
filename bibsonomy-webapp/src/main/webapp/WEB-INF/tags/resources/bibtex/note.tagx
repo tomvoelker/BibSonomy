@@ -7,21 +7,9 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
 
 
-    <!-- show only short notes completely -->
-    <!-- TODO: make max note length a configurable constant -->	
-	<c:if test="${not empty post.resource.note}">		
+ 	<c:if test="${not empty post.resource.note}">		
 		<em> 
-			<c:set var="cleanedNote" value="${mtl:cleanBibtex(post.resource.note)}" />
-<!-- 		    <c:choose> -->
-<!-- 		      <c:when test="${fn:length(cleanedNote) lt 155}"> -->
-			    <c:out value="${cleanedNote}" />
-<!-- 		      </c:when> -->
-<!-- 		      <c:otherwise> -->
-<!-- 		        <c:out value="${fn:substring(cleanedNote, 0, 155)}" /> -->
-<!-- 		        <span class="info">...<div><c:out value="${cleanedNote}" /></div></span> -->
-<!-- 		      </c:otherwise> -->
-<!-- 		    </c:choose> -->
-		    .
+			<c:out value="${mtl:cleanBibtex(post.resource.note)}."/>
 	    </em>
     </c:if>	
 	
