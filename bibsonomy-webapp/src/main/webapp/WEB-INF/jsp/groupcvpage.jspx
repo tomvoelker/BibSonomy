@@ -40,6 +40,7 @@
 		</jsp:attribute>
 		
 		
+		
 		<!-- heading -->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.cv">
@@ -50,14 +51,29 @@
 				</jsp:attribute>
 			</parts:search>
     	</jsp:attribute>
+    	
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader>
+				<jsp:attribute name="headerLogo">
+					<img src="${resdir}/image/cv_header.png"/>
+				</jsp:attribute>
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="group.cv.headline"></fmt:message>
+						${mtl:ch('nbsp')}
+						<c:out value="${fn:escapeXml(command.group.realname)}" />
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
 		
+		<!--+
+			| page content
+			+-->
 		<jsp:attribute name="content">
-			<h2>
-				<fmt:message key="group.cv.headline"></fmt:message>
-				${mtl:ch('nbsp')}
-				<c:out value="${fn:escapeXml(command.group.realname)}" />
-			</h2>
-
 			<div class="groupImage">
 				<img src="/picture/user/${command.group.name}"/>
 				<c:if test="${not empty command.group.homepage}">

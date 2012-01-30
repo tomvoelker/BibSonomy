@@ -60,7 +60,7 @@
 
 		<!--+
     	 	| heading
-    	 	-->
+    	 	+-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.cv">
 				<jsp:attribute name="pathPart">
@@ -80,8 +80,20 @@
 					<img src="${resdir}/image/cv_header.png"/>
 				</jsp:attribute>
 				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<fmt:message key="navi.cv.my" />				
+					<h2>
+						<c:choose>
+							<c:when test="${command.context.loginUser.name eq command.requestedUser}">
+								<fmt:message key="navi.cv.my" />
+							</c:when>
+							<c:when test="${command.isGroup}">
+								<fmt:message key="group.cv.headline"></fmt:message>
+								${mtl:ch('nbsp')}
+								<c:out value="${fn:escapeXml(command.group.realname)}" />
+							</c:when>
+							<c:otherwise>
+								<fmt:message key="navi.cv" />
+							</c:otherwise>
+						</c:choose>
 					</h2>
 				</jsp:attribute>
 			</parts:panelheader>

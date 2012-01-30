@@ -59,7 +59,7 @@
 
 		<!--+
     	 	| heading
-    	 	-->
+    	 	+-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.cv">
 				<jsp:attribute name="pathPart">
@@ -80,7 +80,14 @@
 				</jsp:attribute>
 				<jsp:attribute name="headerContent">
 					<h2 class="header">
-						<fmt:message key="navi.cv.my" />				
+						<c:choose>
+							<c:when test="${command.context.loginUser.name eq command.requestedUser}">
+								<fmt:message key="navi.cv.my" />
+							</c:when>
+							<c:otherwise>
+								<fmt:message key="navi.cv" />
+							</c:otherwise>
+						</c:choose>
 					</h2>
 				</jsp:attribute>
 			</parts:panelheader>
