@@ -30,7 +30,19 @@ var getSetPos = 0;
  */
 function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, lckey, lprojectName) {
 	/*
-	 * assign functions for cursor position
+	 * assign global variables
+	 */
+	if (lrequUser != "") {
+		requUser = lrequUser;
+	}
+	projectName = lprojectName;	
+	ckey = lckey;
+	currUser = lcurrUser;
+	
+	tagbox = $(".tagbox");
+	
+	/*
+	 * assign functions for cursor position; FIXME: why here?
 	 */
 	setPos = function(p) {
 		if (p == null)
@@ -41,56 +53,73 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 		return setPos(null);
 	};
 
-	/*
+	/* *************************************************************************
+	 * scope: global (or hard to define)
+	 */
+	
+	/* scope: text input fields
+	 * 
 	 * adds hints for text input fields
+	 * 
 	 */
 	add_hints();
 
-	/*
+	/* scope: text input fields
+	 * 
 	 * add a callback to every input that has the descriptiveLabel class
 	 * so that hints get removed after focusing the input form 
 	 */
 	$('.descriptiveLabel').each(function() {
 		$(this).descrInputLabel({});
 	});
+	
+	/* scope: error boxes
+	 * 
+	 */
+	prepareErrorBoxes('dissError');
 
-	tagbox  = $(".tagbox");
-	ckey = lckey;
-	currUser = lcurrUser;
+	/* scope: textarea input fields
+	 *  
+	 */
+	$('textarea').TextAreaResizer();
 
-	if(lrequUser != "") {
-		requUser = lrequUser;
-	}
-
-	projectName = lprojectName;
-
+	
+	/* *************************************************************************
+	 * scope: sidebar
+	 */
+	/*
+	 * initialize the tag box
+	 */
 	$(tagbox).each(function(index, item) {
 		init_tagbox(item, tagbox_style, tagbox_sort, tagbox_minfreq);
 	});
-
-	//FIXME: use some other condition, that does not depend on a location's name
+	/*
+	 * initialize the sidebar (basically adds the [-] togglers)
+	 * FIXME: use some other condition, that does not depend on a location's name
+	 */
 	var pathname = location.pathname;
 	if (!pathname.startsWith("/postPublication") && !pathname.startsWith("/postBookmark")){
 		init_sidebar();
 	}
 
-	prepareErrorBoxes('dissError');
-
+	/* *************************************************************************
+	 * scope: post lists
+	 */
 	/*
 	 * starts the preview rendering function
 	 */
 	imagePreview();
-
-
 	/*
 	 * adds list options (for bookmarks + publication lists)
 	 */
 	addListOptions();
-
-	$('textarea').TextAreaResizer();
-
+	/*
+	 * in-place tag edit for posts
+	 */
 	$(".editTags").click(editTags);
-
+	/*
+	 * system tags of posts
+	 */
 	$(".hiddenSystemTag").fadeBox({timeout : 1500});
 }
 
@@ -717,7 +746,7 @@ function addBibtexExportOptions() {
 		form.append("<br/><input type='submit' value='" + getString("export.bibtex.title") + "'/>");
 		/*
 		 * prevent click to be propagated to parent (otherwise the whole 
-		 * action box will dissappear, see click handerl in addListOptions() ).
+		 * action box will dissappear, see click handler in addListOptions() ).
 		 */
 		form.click(function(event) {
 			event.stopPropagation();
