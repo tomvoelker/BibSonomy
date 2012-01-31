@@ -1853,3 +1853,7 @@ div.help>a,div.help>b {
 #bibtexListExportOptions {
 	display:none;
 }
+
+.italic {
+	font-style: italic;
+}

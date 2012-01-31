@@ -75,7 +75,7 @@
    				<!-- title -->
    				<c:choose>
    					<c:when test="${sortPage eq 'title'}">
-   						<fmt:message key="post.resource.title"/>
+   						<span class="italic"><fmt:message key="post.resource.title"/></span>
    					</c:when>
    					<c:otherwise>
    						<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'title')}"><fmt:message key="post.resource.title"/></a>
@@ -84,7 +84,7 @@
    				<!-- date / default sorting -->
    				<c:choose>
 	   				<c:when test="${sortPage eq 'none' or sortPage eq 'date'}">
-	   					<fmt:message key="sort.date"/>
+	   					<span class="italic"><fmt:message key="sort.date"/></span>
 	   				</c:when>
 	   				<c:otherwise>
 	   					<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'date')}"><fmt:message key="sort.date"/></a>
@@ -92,7 +92,7 @@
    				</c:choose><c:if test="${isBibtex}">,${mtl:ch('nbsp')}	<!--  UGLY formatting, but we have to do so, oterwise we'll get an extra blank :( -->
    					<c:choose>
    						<c:when test="${sortPage eq 'author'}">
-   							<fmt:message key="post.resource.author"/>
+   							<span class="italic"><fmt:message key="post.resource.author"/></span>
    						</c:when>
    						<c:otherwise>
    							<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'author')}"><fmt:message key="post.resource.author"/></a>
@@ -100,7 +100,7 @@
    					</c:choose>,${mtl:ch('nbsp')}   		
 	   				<c:choose>
 	   					<c:when test="${sortPage eq 'year'}">
-	   						<fmt:message key="post.resource.year"/>
+	   						<span class="italic"><fmt:message key="post.resource.year"/></span>
 	   					</c:when>
 	   					<c:otherwise>
 	   						<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'year')}"><fmt:message key="post.resource.year"/></a>
@@ -113,7 +113,7 @@
    				<fmt:message key="post.meta.sort.order"/>:${mtl:ch('nbsp')}
    				<c:choose>
    					<c:when test="${sortPageOrder eq 'asc'}">
-   						<fmt:message key="post.meta.sort.order.ascending"/>
+   						<span class="italic"><fmt:message key="post.meta.sort.order.ascending"/></span>
    					</c:when>
    					<c:otherwise>
    						<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'asc')}"><fmt:message key="post.meta.sort.order.ascending"/></a>
@@ -121,7 +121,7 @@
    				</c:choose>,${mtl:ch('nbsp')}
    				<c:choose>
    					<c:when test="${sortPageOrder eq 'desc'}">
-   						<fmt:message key="post.meta.sort.order.descending"/>
+   						<span class="italic"><fmt:message key="post.meta.sort.order.descending"/></span>
    					</c:when>
    					<c:otherwise>
    						<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'desc')}"><fmt:message key="post.meta.sort.order.descending"/></a>
