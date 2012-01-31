@@ -144,9 +144,9 @@
 					<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
 	  				<span class="listOptionLine">
 						<fmt:message var="pickPublications" key="post.meta.pick.title"/>
-						<a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick"/></a>,${mtl:ch('nbsp')}	  			
+						<a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}	  			
 	  					<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
-						<a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick"/></a>
+						<a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
 	  				</span>
 		  		</li>
 	  		</c:if>
