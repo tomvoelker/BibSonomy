@@ -54,7 +54,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 		$(this).descrInputLabel({});
 	});
 
-	tagbox  = document.getElementById("tagbox");
+	tagbox  = $(".tagbox");
 	ckey = lckey;
 	currUser = lcurrUser;
 
@@ -64,9 +64,9 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 
 	projectName = lprojectName;
 
-	if (tagbox) {
-		init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
-	}
+	$(tagbox).each(function(index, item) {
+		init_tagbox(item, tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
+	});
 
 	//FIXME: use some other condition, that does not depend on a location's name
 	var pathname = location.pathname;
