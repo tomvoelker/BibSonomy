@@ -9,7 +9,7 @@
 					/*
 					 * the system tags are in a list following the icon to show them
 					 */
-					var hiddenBox = $(this).siblings("ul");
+					var hiddenBox = $(this).siblings("ul:first");
 					var hideTimeout = 0;
 
 					// hide the system tags
