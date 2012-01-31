@@ -212,6 +212,7 @@
 		<module>bibsonomy-pingback</module>
 		<module>bibsonomy-recommender</module>
 		<module>bibsonomy-rest-client</module>
+		<module>bibsonomy-rest-client-oauth</module>
 		<module>bibsonomy-rest-common</module>
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-scraper</module>
@@ -546,6 +547,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-rest-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-rest-client-oauth</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
