@@ -1289,6 +1289,7 @@ form.editTags, form.editTags input {
 	margin-top: 10px;
 	margin-right: 20px;
 	float: right;
+	cursor: pointer;
 }
 
 #bookmarksheader .config a, #publicationsheader .config a {

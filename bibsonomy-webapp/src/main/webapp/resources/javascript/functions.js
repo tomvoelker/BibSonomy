@@ -487,17 +487,6 @@ function pickUnpickPublication(evt) {
 	 */
 	updateBasket(xget_event(evt).getAttribute("href").replace(/^.*?\?/, ""));
 
-	/*
-	 * decide which page will be processed
-	 * -> on the /basket page we have to remove the listitems
-	 * -> on other we have to change the pick <-> unpick link (not yet implemented)
-	 */
-	if (location.pathname.startsWith("/basket")) {
-		$(evt.currentTarget.parentNode.parentNode.parentNode).remove(); // XXX: !NEW_LAYOUT! depends on DOM tree
-
-		document.getElementById("ttlctr").childNodes[0].nodeValue = "(" + document.getElementById("pickctr").childNodes[0].nodeValue + ")";
-	}
-
 	breakEvent(evt);
 }
 
@@ -517,7 +506,6 @@ function updateBasket (param) {
 		data : param,
 		dataType : "text",
 		success: function(data) {
-		alert(data);
 		/*
 		 * update the number of basket items
 		 */
@@ -525,7 +513,7 @@ function updateBasket (param) {
 			// special case for the /basket page
 			window.location.reload();
 		} else {
-			document.getElementById("pickctr").childNodes[0].nodeValue = data; 
+			$("#pickctr").empty().append(data); 
 		}
 
 	}
