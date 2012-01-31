@@ -896,6 +896,13 @@ div.help>a,div.help>b {
     margin-top: 5px;
 }
 
+.post .editTags, .post .action {
+	visibility: hidden;	
+}
+
+.post:hover .editTags, .post:hover .action {
+	visibility: visible;
+}
 
 .post .image .article{ background-position: 0 0; width: 49px; height: 53px; } 
 .post .image .book{ background-position: 0 -54px; width: 65px; height: 46px; } 
@@ -1280,19 +1287,20 @@ div.help>a,div.help>b {
   	display:none;	
 }
 
-.ptags a.edittags img.editimage {
+.ptags .editTags {
+	background: none;
 	border: 0;
 	padding: 0;
 	margin: 0;
+	cursor: pointer;
 }
 
-.ptags a.edittags {
+.ptags {
 	background: none;
 	color: #006699;
 }
 
-.ptags a.edittags:hover {
-	background: none;
+.ptags .editTags:hover {
 	color: #006699;
 }
 
@@ -1304,7 +1312,7 @@ div.help>a,div.help>b {
 	background: none;
 }
 
-.ptags .editimage {
+.ptags .editTags {
 	height: 13px;
     vertical-align: text-top;
 }
@@ -1808,14 +1816,28 @@ div.help>a,div.help>b {
 	margin: 0;
 }
 
+.systemTags {
+	position: absolute;
+	display: none;
+	z-index: 51;
+}
+
+.systemTags li {
+	display: inline;
+	margin-right: .5em;
+}
+
+.hiddenSystemTag {
+	cursor: pointer;
+}
 
 /* end of login css code */
 
 
 .selectEntriesPerPage {
-	position:absolute;
+	position: absolute;
 	right: 1em;
-	padding-top:0.3em;
+	padding-top: 0.3em;
 }
 
 .listOptionLine {

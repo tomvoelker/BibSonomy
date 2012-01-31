@@ -85,6 +85,7 @@
                 				<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
                 				<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
                 				<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
+                				<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
                 				<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
                 				<include>${project.build.webapp.resourcedir}/jquery/plugins/textarearesizer/jquery.textarearesizer.js</include>
                 				<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>

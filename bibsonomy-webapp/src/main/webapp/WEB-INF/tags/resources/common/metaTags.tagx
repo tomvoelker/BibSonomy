@@ -11,29 +11,29 @@
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
 
 	
-	<!-- the tags of a resource -->
-	<c:if test="${!empty post.visibleTags}">
-		<span>
-			<c:if test="${showTagsLabel}">
-				<fmt:message key="tags"/><c:out value=": "/>
-			</c:if>
-			<!-- HIDDEN SYSTEM TAGS -->
-			<fmt:message var="tagMsg" key="systemtag"/>
-			<c:if test="${!empty post.hiddenSystemTags}">
-				<c:set var="systagTitles" value=""/>
+	<!-- the tags of a post -->
+	<c:if test="${not empty post.visibleTags}">
+		<c:if test="${showTagsLabel}">
+			<fmt:message key="tags"/><c:out value=": "/>
+		</c:if>
+		
+		<!-- HIDDEN SYSTEM TAGS -->
+		<fmt:message var="tagMsg" key="systemtag"/>
+		<c:if test="${not empty post.hiddenSystemTags}">
+			<img class="hiddenSystemTag" alt="system tags" src="${resdir}/image/cog_wheel.png"/>
+			<ul class="listhButtons systemTags">
+				<!-- join system tags into a string that is later parsed again by a JavaScript routine -->
 				<c:forEach var="systag" items="${post.hiddenSystemTags}">
-					<c:set var="systagTitles" value="${systagTitles}${fn:escapeXml(systag.name)} " />
-				</c:forEach>		
-				<img alt="SystemTags" class="hiddenSystemTag" src="${resdir}/image/cog_wheel.png" url="/user/${fn:escapeXml(post.user.name)}/" tags="${systagTitles}" title="System Tags"/>	
-			</c:if>
-	
-			<!-- ALL REGULAR TAGS -->
-			<fmt:message var="tagMsg" key="navi.tag"/>
-			<c:forEach var="tag" items="${post.visibleTags}">
-				<a href="/user/${fn:escapeXml(post.user.name)}/${mtl:encodeURI(tag.name)}" title="${tagMsg} ${tag.name}"><c:out value="${tag.name}"/></a><c:out value=" "/>
-			</c:forEach>
+					<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a></li>
+				</c:forEach>
+			</ul>	
+		</c:if>
 
-		</span>
+		<!-- ALL REGULAR TAGS -->
+		<fmt:message var="tagMsg" key="navi.tag"/>
+		<c:forEach var="tag" items="${post.visibleTags}">
+			<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" title="${tagMsg} ${tag.name}"><c:out value="${tag.name}"/></a><c:out value=" "/>
+		</c:forEach>
 	</c:if>
 	
 	

@@ -34,7 +34,6 @@
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}" >		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/resourceList.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/jquery.fadebox.js"><!-- keep me --></script>
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
@@ -48,11 +47,6 @@
             	<c:if test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
             		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
             	</c:if>
-            	<script type="Text/JavaScript">
-					<![CDATA[
-					$(function() {sysTagFadeBox(self);});
-					]]>
-				</script>
         <!-- set by url parameter -->
         <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
         <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />

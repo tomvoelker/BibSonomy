@@ -363,28 +363,9 @@ function switchNavi(scope, event) {
  * TODO: new layout
  */
 $(function() { 
-	initBookmarksPublicationsLists();
 	initSidebarHeader();
+	initBookmarksPublicationsListsLast();
 });
-
-function initBookmarksPublicationsLists() {
-	$(".action").hide();
-	$(".edittags").find(".editimage").hide();
-	if ($(".post") != 0) {
-		$(".post").hover(
-				function(){
-					$(this).find(".action").show();
-					$(this).find(".edittags").find(".editimage").show();
-					
-				},
-				function(){
-					$(this).find(".action").hide();
-					$(this).find(".edittags").find(".editimage").hide();
-				}
-		);
-	}
-
-}
 
 
 function initBookmarksPublicationsListsLast() {

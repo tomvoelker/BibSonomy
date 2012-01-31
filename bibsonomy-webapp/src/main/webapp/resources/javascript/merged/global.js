@@ -22,6 +22,6 @@ includeJavaScript("/resources/jquery/plugins/textarearesizer/jquery.textarearesi
 includeJavaScript("/resources/jquery/plugins/corner/jquery.corner.js");
 includeJavaScript("/resources/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js");
 includeJavaScript("/resources/javascript/jquery.sidebarresizer.js");
+includeJavaScript("/resources/javascript/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/userRelation.js");
 includeJavaScript("/resources/javascript/addToSpheres.js");
-

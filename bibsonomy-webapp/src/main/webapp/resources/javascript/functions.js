@@ -86,6 +86,12 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	 * adds list options (for bookmarks + publication lists)
 	 */
 	addListOptions();
+	
+	$('textarea').TextAreaResizer();
+	
+	$(".editTags").click(editTags);
+	
+	$(".hiddenSystemTag").fadeBox({timeout : 1500});
 }
 
 /**
@@ -582,12 +588,16 @@ function sendEditTags(obj, type, ckey, link) {
 	return false;
 }
 
-
-
-/*
- * edit tags in place
- */	
-function editTags(obj, ckey) {
+	
+/**
+ * Edit tags for a post in-place.
+ * 
+ * @return
+ */
+function editTags() {
+	$(this).parents(".ptags");
+	
+	
 	var tags = obj.getAttribute("tags");
 	var link = obj.getAttribute("href");
 	var hash = obj.getAttribute("name");
