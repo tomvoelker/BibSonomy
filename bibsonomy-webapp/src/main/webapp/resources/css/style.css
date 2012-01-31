@@ -514,12 +514,15 @@ a img {
     display: block;
     outline: none;
     text-decoration: none;
+	color: #ea8b6f;
 }
 
+.sidebarnavi_entry a:hover  {
+	color: #ff0000;
+}
 
 .sidebarnavi_info {
 	/** shows additional information in the side bar navigation */
-	color: #ea8b6f;
 	margin-right: 5px;
 	position: absolute;
 	font-weight: bold;
