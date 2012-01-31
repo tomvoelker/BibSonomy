@@ -1056,13 +1056,6 @@ div.help>a,div.help>b {
     width: 30px;
 }
 
-.post .action .edittags {
-	background-position: 130px, -27px;
-	width: 16px;
-	heigth: 16px;
-	
-}
-
 .post .action .pick{
     background-position: -30px 0px;
     width: 23px
@@ -1143,7 +1136,18 @@ div.help>a,div.help>b {
 }
 
 .ptags .tags {
-	display: inline;	
+	display: inline;
+	width: 80%;	
+}
+
+
+
+.post .ptags ul {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 93%;
 }
 
 .ptags a {
@@ -1154,15 +1158,18 @@ div.help>a,div.help>b {
 	background-color: #c8dc8d;
 }
 
-.ptags span.editTags {
-	background: none;
-	border: 0;
-	padding: 0;
-	margin: 0;
+.post .ptags span.editTags {
+	display: inline-block;
+	background-repeat: no-repeat;
+	background: url("/resources/image/postactions_black.png");
+	background-position: 123px -34px;
+	width: 14px;
+ 	height: 15px;
 	cursor: pointer;
-	height: 13px;
-    vertical-align: text-top;	
+    vertical-align: text-bottom;
+    background-color: inherit;	
 }
+
 
 form.editTags, form.editTags input {
 	display: inline;;	
