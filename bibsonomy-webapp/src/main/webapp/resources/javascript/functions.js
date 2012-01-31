@@ -855,7 +855,7 @@ function createParameters(title) {
  */
 this.imagePreview = function(){	
 	var xOff = 400;
-	var yOff = 0;
+	var yOff = 450; // must be a bit more that the height of the preview
 	$("a.preview").hover(function(e){
 		this.t = this.title;
 		this.title = "";	
@@ -863,14 +863,19 @@ this.imagePreview = function(){
 		/*
 		 * build preview image URL by appending "?preview=LARGE"
 		 */
-		$("body").append("<p id='preview'><img src='"+ this.href +"?preview=LARGE'/>"+ c +"</p>");         
-		$("#preview").css("top",(e.pageY - yOff) + "px").css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px").fadeIn("fast");      
+		$("body").append("<p id='preview'><img src='"+ this.href +"?preview=LARGE'/>"+ c +"</p>");
+		$("#preview")
+		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
+		.css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px")
+		.fadeIn("fast");      
 	}, function(){
 		this.title = this.t;	
 		$("#preview").remove();
 	});		   
 	$("a.preview").mousemove(function(e){
-		$("#preview").css("top",(e.pageY - yOff) + "px").css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px");
+		$("#preview")
+		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
+		.css("left",(e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px");
 	});		     	      
 };
 
