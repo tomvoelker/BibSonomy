@@ -16,11 +16,13 @@
 	
 		<c:if test="${not empty valueOnly and not valueOnly}">
 			<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />
-			<fmt:message var="posts" key="post.meta.postsInSystem"/>
+			<fmt:message var="title" key="post.meta.postsInSystem">
+				<fmt:param value="${post.resource.count}"/>
+			</fmt:message>
 			<c:if test="${post.resource.count == 1}">
-				<fmt:message var="posts" key="post.meta.postInSystem"/>
+				<fmt:message var="title" key="post.meta.postInSystem"/>
 			</c:if>
-			<a href="${otherPeopleUrl}" title="${post.resource.count} ${posts}">${post.resource.count}</a>
+			<a href="${otherPeopleUrl}" title="${title}">${post.resource.count}</a>
 		</c:if>
 	</c:if>
 	

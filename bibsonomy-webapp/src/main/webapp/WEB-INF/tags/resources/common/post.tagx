@@ -51,9 +51,11 @@
 			<div class="pdesc info"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
 		</c:if>
 		
+	
 		<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
 		<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
 		
+	
 		<!-- RATING -->
 		<div class="rating">
 			<!-- TODO: remove as soon as lucene supports rating -->
