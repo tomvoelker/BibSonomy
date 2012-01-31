@@ -137,16 +137,14 @@
 							| 
 						 	+-->
 						<div id="infoline">
-							<ul>
-								<c:choose>
-									<c:when test="${not empty loginUser.name}">
-										<li><fmt:message key="navi.loggedInAs"/>&amp;nbsp;<a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a></li>
-									</c:when>
-									<c:otherwise>
-										<li><a href="/login"><fmt:message key="navi.login"/></a></li>
-									</c:otherwise>
-								</c:choose>	
-							</ul>
+							<c:choose>
+								<c:when test="${not empty loginUser.name}">
+									<fmt:message key="navi.loggedInAs"/>&amp;nbsp;<a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a>
+								</c:when>
+								<c:otherwise>
+									<a href="/login"><fmt:message key="navi.login"/></a>
+								</c:otherwise>
+							</c:choose>	
 						</div><!-- #infoline -->
 
 						<!--+ 

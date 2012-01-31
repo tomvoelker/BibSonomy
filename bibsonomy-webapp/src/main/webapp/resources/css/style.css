@@ -93,25 +93,6 @@ a img {
 	margin-right: 7em;
 }
 
-#infoline ul li {
-	width: auto;
-	float: left;
-	list-style: none;
-	background-image: url("/resources/image/dot.png");
-	background-repeat: no-repeat;
-	background-position: 0 .5em;
-	padding-left: .5em;
-	padding-right: .3em;
-}
-
-#infoline ul li:first-child {
-	width: auto;
-	float: left;
-	margin-left: 1ex;
-	background-image: none;
-}
-
-
 #infoline a {
 	color: white;
 	text-decoration: none;
@@ -154,6 +135,10 @@ a img {
 
 #language ul li a.active {
 	font-weight: bold;
+}
+
+#language a:hover, #infoline a:hover {
+	text-decoration: underline;	
 }
 
 #poststats {
@@ -1254,6 +1239,7 @@ form.editTags, form.editTags input {
 	background:#eee;
 	padding:5px;
 	display:none;
+	z-index: 52;
 }
 
 
