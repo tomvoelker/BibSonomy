@@ -122,15 +122,8 @@ function fadeNextList(target) {
  * @return
  */
 function confirmDelete() {
-	// the post's list element
-	var li = $(this).parents(".bm");
-	// highlight post
-	li.css("background", "#fdd");
 	// get confirmation
-	var del = confirm(getString("post.meta.delete.confirm"));
-	// remove background color
-	li.css("background", "transparent");
-	return del;
+	return confirm(getString("post.meta.delete.confirm"));
 }
 
 /**
@@ -464,17 +457,6 @@ function pickUnpickAll(evt, pickUnpick) {
 	breakEvent(evt);    	
 }    
 
-function breakEvent(evt) {
-	// break link
-	if (evt.stopPropagation) {
-		evt.stopPropagation();
-		evt.preventDefault();
-	} else if (window.event){
-		window.event.cancelBubble = true;
-		window.event.returnValue = false;
-	}
-}
-
 /**
  * pick or unpick a single publication
  * 
@@ -489,8 +471,6 @@ function pickUnpickPublication(evt) {
 
 	breakEvent(evt);
 }
-
-
 
 
 /**
@@ -520,6 +500,23 @@ function updateBasket (param) {
 	});
 } 
 
+
+/**
+ * FIXME: legacy code
+ * 
+ * @param evt
+ * @return
+ */
+function breakEvent(evt) {
+	// break link
+	if (evt.stopPropagation) {
+		evt.stopPropagation();
+		evt.preventDefault();
+	} else if (window.event){
+		window.event.cancelBubble = true;
+		window.event.returnValue = false;
+	}
+}
 
 
 /**

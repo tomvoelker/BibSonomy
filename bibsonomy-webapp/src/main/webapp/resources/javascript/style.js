@@ -246,7 +246,7 @@ function sendMinfreqRequ(tagbox, minfreq) {
 			/*
 			 * replace tags
 			 */
-			$(tagbox).empty().append($(html).find("li"));
+			$(tagbox).empty().append($(html).find("ul.tagcloud li"));
 			/*
 			 * re-order tags
 			 */
