@@ -45,7 +45,7 @@ function changeTagBox(mode) {
 		style_list.replaceChild(getStyleItem(mode, style_show), style_list.childNodes[1]);
 	} else if (mode == "alph" || mode == "freq") {
 		style_list.replaceChild(getStyleItem(mode, style_sort), style_list.childNodes[0]);
-		mode == "alph" ? setTagBoxAlph() : setTagBoxFreq();
+		mode == "alph" ? setTagBoxAlph(tagbox) : setTagBoxFreq(tagbox);
 	}
 }
 
@@ -164,12 +164,11 @@ function showMinfreq() {
  * 
  * @return
  */
-function setTagBoxAlph() {
+function setTagBoxAlph(tagbox) {
 	var collection_tagname = new Array(); // array of tagnames
 	var collection_li = new Object(); // map tagname -> li
 
 	/* store tagbox */
-	var tagbox = document.getElementById("tagbox");
 	var litags = tagbox.getElementsByTagName("li");
 	for (var x = 0; x < litags.length; x++){
 		var tagname = litags[x].getElementsByTagName("a")[0].firstChild.nodeValue;
@@ -199,14 +198,13 @@ function setTagBoxAlph() {
  * 
  * @return
  */
-function setTagBoxFreq() {
+function setTagBoxFreq(tagbox) {
 	var collection_tagname = new Array();
 	var collection_li = new Object();
 	var collection_tagposts = new Object();
 	var collection_numberofposts = new Array();
 
 	/* store tagbox */
-	var tagbox = document.getElementById("tagbox");
 	var litags = tagbox.getElementsByTagName("li");
 	for (var x = 0; x < litags.length; x++) {
 		var tags = litags[x].getElementsByTagName("a");		
@@ -285,9 +283,9 @@ function sendMinfreqRequ(minfreq, currUser) {
 	
 			// re-order tags
 			if (data.slice(start, end) == "ALPHA") {
-				setTagBoxAlph();
+				setTagBoxAlph(tagbox);
 			} else{
-				setTagBoxFreq();
+				setTagBoxFreq(tagbox);
 			}
 		}
 	});
