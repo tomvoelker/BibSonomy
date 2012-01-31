@@ -73,24 +73,24 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	if (!pathname.startsWith("/postPublication") && !pathname.startsWith("/postBookmark")){
 		init_sidebar();
 	}
-	
+
 	prepareErrorBoxes('dissError');
-	
+
 	/*
 	 * starts the preview rendering function
 	 */
 	imagePreview();
-	
-	
+
+
 	/*
 	 * adds list options (for bookmarks + publication lists)
 	 */
 	addListOptions();
-	
+
 	$('textarea').TextAreaResizer();
-	
+
 	$(".editTags").click(editTags);
-	
+
 	$(".hiddenSystemTag").fadeBox({timeout : 1500});
 }
 
@@ -358,11 +358,11 @@ function unicodeCollation(ersterWert, zweiterWert) {
  * @return
  */
 function hideConcept(evt) {
-    var link = xget_event(evt);
+	var link = xget_event(evt);
 	// get concept name
-    var concept = link.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
-    // update relations list, hide concept
-    updateRelations(evt, "hide", concept);
+	var concept = link.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
+	// update relations list, hide concept
+	updateRelations(evt, "hide", concept);
 } 
 
 /**
@@ -519,149 +519,83 @@ function updateBasket (param) {
 	});
 } 
 
-/*
- * 
- */
-function sendEditTags(obj, type, ckey, link) {
-	var tags = obj.childNodes[0].value;
-	var hash = obj.childNodes[0].name;
-	var ckey = obj.childNodes[1].value;
-	var targetChild = 0;
 
-	$.ajax( {
-		type :"POST",
-		url :"/batchEdit?newTags['" + hash + "']=" + encodeURIComponent(tags.trim())
-		+ "&ckey=" + ckey
-		+ "&deleteCheckedPosts=true"
-		+ "&resourcetype=" + type
-		+ "&format=ajax",
-		dataType :"html",
-		global :"false",
-		success : function(data) {
-		var parent = obj.parentNode;
-		$(obj).parent().children(".help").remove();
 
-		if (data.trim().length > 0) {
-			if (type == "bibtex") {
-				$(obj).parent().children(':first').css({'float':'left'});
-			}
-
-			$(obj).before(data);
-			return false;
-		}
-
-		if (type == "bibtex") {
-			$(obj).parent().children(':first').css({'float':''});
-			targetChild = 2;
-			parent.removeChild(parent.childNodes[targetChild]);
-			parent.removeChild(parent.childNodes[targetChild]);
-		} else {
-			parent.removeChild(parent.firstChild);
-			parent.removeChild(parent.firstChild);
-		}
-
-		var edit = document.createElement("a");
-		edit.setAttribute("onclick", "editTags(this, '" + ckey + "'); return false;");
-		edit.setAttribute("tags", tags.trim());
-		edit.setAttribute("href", link);
-		edit.setAttribute("name", hash);
-		edit.appendChild(document.createTextNode(getString("post.meta.edit")));
-
-		parent.insertBefore(edit, parent.childNodes[targetChild]);
-		parent = parent.parentNode.previousSibling.childNodes[1];
-
-		while (parent.hasChildNodes()) {
-			parent.removeChild(parent.firstChild);
-		}
-
-		var tagList = tags.split(" ");
-
-		for (i in tagList) {
-			var tag = document.createElement("a");
-			tag.setAttribute("href", "/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(tagList[i]));
-			tag.appendChild(document.createTextNode(tagList[i] + " "));
-			parent.appendChild(tag);
-		}
-	}
-	});
-
-	return false;
-}
-
-	
 /**
  * Edit tags for a post in-place.
  * 
  * @return
  */
 function editTags() {
-	$(this).parents(".ptags");
-	
-	
-	var tags = obj.getAttribute("tags");
-	var link = obj.getAttribute("href");
-	var hash = obj.getAttribute("name");
-	var targetChild = 0;
-	var parent = obj.parentNode;
-	var type = "bookmark";
-
-	if (link.search(/^\/editPublication/) != -1)	{
-		type = "bibtex";
-		targetChild = 2;
-		parent.removeChild(parent.childNodes[targetChild]);
-	}
-
-	// remove the other childnodes
-	// FIXME: this is a bad heuristic!
-	parent.removeChild(parent.childNodes[targetChild]);
-
-	// creates Form Element
-	var form = document.createElement("form");
-	form.className = "tagtextfield";
-	form.setAttribute('onsubmit', 'sendEditTags(this, \'' 
-			+ type + '\',  \'' + ckey + '\', '
-			+ '\'' + link + '\'); return false;');
-
-	// creates an input Field
-	var input = document.createElement("input");
-	input.setAttribute('name',hash);
-	input.setAttribute('size','30');
-	input.value = tags;
-
-	var hidden = document.createElement("input");
-	hidden.type="hidden";
-	hidden.setAttribute("name", "ckey");
-	hidden.value = ckey;
-
-	// creates the link to detail-editing
-	var details = document.createElement("a");
-	details.setAttribute('href', link);
-
 	/*
-	 * NOTE: don't refactor, otherwise localization (I18N) get's broken, because
-	 * generate_localized_strings.pl does not find the keys for the messages 
+	 * div around all tags (will be hidden/replaced with tag edit box)
 	 */
-	if (type == "bibtex") {
-		details.appendChild(document.createTextNode(getString("bibtex.actions.details")));
-		details.title=getString("bibtex.actions.details.title");
-	} else {
-		details.appendChild(document.createTextNode(getString("bookmark.actions.details")));
-		details.title=getString("bookmark.actions.details.title");
-	}
-
-	// append all the created elements
-	form.appendChild(input);
-	form.appendChild(hidden);
-
-	if (type == "bibtex") {
-		parent.insertBefore(document.createTextNode(" | "), parent.childNodes[targetChild]);
-		parent.insertBefore(details, parent.childNodes[targetChild]);
-		parent.insertBefore(form, parent.childNodes[targetChild]);
-	} else {
-		parent.insertBefore(details, parent.firstChild);
-		parent.insertBefore(form, parent.firstChild);
-	}
+	var ptags = $(this).parents(".ptags");
+	/*
+	 * load the jQuery script for sending the form
+	 */
+	$.getScript(
+			"/resources/jquery/plugins/form/jquery.form.js",
+			function() {
+				ptags.hide();
+				/*
+				 * collect regular tags + system tags into a string
+				 */
+				var tagString = "";
+				var tags = ptags.find("ul li a").each(function() {tagString += $(this).html() + " ";});
+				/*
+				 * extract hash of post from edit URL
+				 */
+				var editUrl = ptags.parents(".post").find(".action .edit").attr("href");
+				var hash = editUrl.substr(editUrl.indexOf("intraHashToUpdate=") + "intraHashToUpdate=".length, 32);
+				/*
+				 * extract type of post
+				 */
+				var type = editUrl.search(/^\/editPublication/) != -1 ? "bibtex" : "bookmark";
+				/*
+				 * add form to edit the tags
+				 */
+				var form = $("<form method='post' action='/batchEdit?deleteCheckedPosts=true&format=ajax&resourcetype=" + type + "' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
+				var input = $("<input name=\"newTags['" + hash + "']\" value='" + tagString + "'/>");
+				var submit = $("<input type='submit' value='" + getString("post.meta.edit") + "'/>");
+				form.append(input).append(submit);
+				/*
+				 * resize input field
+				 */
+//				input.width(parseInt(ptags.width()) + "px");
+				/*
+				 * show form
+				 */
+				ptags.after(form);
+				/*
+				 * add submit handler (that removes the form and re-builds the tags)
+				 */
+				form.ajaxForm(function() {
+					/*
+					 * get new tags from form input field
+					 */
+					var tags = input.val().split(" ");
+					/*
+					 * remove form
+					 */
+					form.remove();
+					/*
+					 * remove old tags
+					 */
+					ptags.find("li").remove();
+					/*
+					 * add new tags
+					 */
+					var ul = ptags.find("ul.tags");
+					for (var t = 0; t < tags.length; t++) {
+						ul.append("<li><a href='/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(tags[t]) + "'>" + tags[t] + "</a></li>");
+					}
+					ptags.show();
+				});
+			}
+	);
 }
+
 
 
 
@@ -774,7 +708,7 @@ function addBibtexExportOptions() {
 				getString("posts") + ": " +
 				"</form>"
 		);
-		
+
 		// number of posts to be exported
 		var items = new Array(5, 10, 20, 50, 100, 1000);
 		for (var i = 0; i < items.length; i++) {
@@ -790,7 +724,7 @@ function addBibtexExportOptions() {
 		form.click(function(event) {
 			event.stopPropagation();
 		});		
-		
+
 		// insert form after export link (make it empty before)
 		anchor.empty();
 		anchor.append(form);
@@ -847,7 +781,7 @@ function addListOptions() {
 							self.removeClass('descriptiveLabel');
 						}
 					});
-					
+
 					self.parents("form").submit(function() {
 						if (self.hasClass('descriptiveLabel') || self.val() == '') {
 							self.val('').removeClass('descriptiveLabel' ).trigger('focus');

@@ -45,7 +45,7 @@ function addDocument() {
 	 * 
 	 * FIXME: ensure that script is loaded before user can do something
 	 */
-	$.getScript('/resources/jquery/plugins/form/jquery.form.js');  
+	$.getScript('/resources/jquery/plugins/form/jquery.form.js');
 	
 	/*
 	 * when upload form already exists, remove it 

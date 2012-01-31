@@ -31,9 +31,11 @@
 
 		<!-- ALL REGULAR TAGS -->
 		<fmt:message var="tagMsg" key="navi.tag"/>
-		<c:forEach var="tag" items="${post.visibleTags}">
-			<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" title="${tagMsg} ${tag.name}"><c:out value="${tag.name}"/></a><c:out value=" "/>
-		</c:forEach>
+		<ul class="tags">
+			<c:forEach var="tag" items="${post.visibleTags}">
+				<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></li>
+			</c:forEach>
+		</ul>
 	</c:if>
 	
 	

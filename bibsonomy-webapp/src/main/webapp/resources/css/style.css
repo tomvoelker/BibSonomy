@@ -1065,33 +1065,60 @@ div.help>a,div.help>b {
 	clear: both;
 }
 
-.post .ptags {
+.post .ptags, .post form.editTags {
 	margin-left: 110px;
 	margin-top: 1ex;		
 	margin-bottom: 5ex;		
-/*	bottom: 1ex;
-	left: 118px;
-	position: absolute;
-	right: 1ex;
-*/			
 }
 
-.ptags a {
-	padding: 0.5ex;
-	margin-right: 2px;
+.ptags li {
 	margin-bottom: 0.5ex;
 	color: black;
-	display: inline-block;
 	padding: 0.3ex 0.5ex;
-	font-size: 100%
+	display: inline;
+}
+
+.ptags .tags {
+	display: inline;	
 }
 
 .ptags a {
-	background-color: #eeeeee;
+	background-color: #eee;
 }
 
 .ptags a:hover {
 	background-color: #c8dc8d;
+}
+
+.ptags span.editTags {
+	background: none;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	height: 13px;
+    vertical-align: text-top;	
+}
+
+form.editTags, form.editTags input {
+	display: inline;;	
+}
+
+.ptags {
+	background: none;
+	color: #006699;
+}
+
+.ptags .editTags:hover {
+	color: #006699;
+}
+
+.ptags a.systemtags {
+	background: none;
+}
+
+.ptags a.systemtags:hover {
+	background: none;
 }
 
 .post .ptime {
@@ -1285,36 +1312,6 @@ div.help>a,div.help>b {
   	font-size: 80%;
   	padding: .5em;
   	display:none;	
-}
-
-.ptags .editTags {
-	background: none;
-	border: 0;
-	padding: 0;
-	margin: 0;
-	cursor: pointer;
-}
-
-.ptags {
-	background: none;
-	color: #006699;
-}
-
-.ptags .editTags:hover {
-	color: #006699;
-}
-
-.ptags a.systemtags {
-	background: none;
-}
-
-.ptags a.systemtags:hover {
-	background: none;
-}
-
-.ptags .editTags {
-	height: 13px;
-    vertical-align: text-top;
 }
 
 #headercontainer {
