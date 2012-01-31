@@ -65,7 +65,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	projectName = lprojectName;
 
 	$(tagbox).each(function(index, item) {
-		init_tagbox(item, tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
+		init_tagbox(item, tagbox_style, tagbox_sort, tagbox_minfreq);
 	});
 
 	//FIXME: use some other condition, that does not depend on a location's name

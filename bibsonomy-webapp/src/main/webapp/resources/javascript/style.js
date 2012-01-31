@@ -1,161 +1,127 @@
-/*
- * XXX: almost all methods depend on the DOM tree of the layout !NEW_LAYOUT!
- */
-
 var request = null;
 var style_sort = new Array("alph", "freq");
 var style_show = new Array("cloud", "list");
+var availableMinFreqCounts = new Array(1,2,5,10,50);
 var userMinFreq = 1;
+/*
+ * points to the function with the current sort style, such that we can sort
+ * tags again, if we retrieved them on a minFreq change 
+ */
+var currentSortStyle = null;
 
-function init_tagbox(tagbox, show, sort, minfreq, requUser) {
-	style_list = document.createElement("ul");
-	style_list.className= "floatul";
+/**
+ * XXX: variable "tagbox_minfreq_style" is defined in cloud.tagx!
+ * 
+ * Creates the link to change the tagbox 
+ * 
+ * @param tagbox
+ * @param show
+ * @param sort
+ * @param minfreq
+ * @return
+ */
+function init_tagbox(tagbox, show, sort, minfreq) {
 
-	style_list.appendChild(document.createElement("li"));
-	style_list.appendChild(document.createElement("li"));
-	style_list.appendChild(document.createElement("li"));
+	var styleList = $("<ul class='floatul'></ul>")
+	.append(getStyleItem(tagbox, styleList, style_sort[sort], style_sort))
+	.append(getStyleItem(tagbox, styleList, style_show[show], style_show));
 
-	style_list.replaceChild(getStyleItem(tagbox, style_list, style_sort[sort], style_sort), style_list.childNodes[0]);
-	style_list.replaceChild(getStyleItem(tagbox, style_list, style_show[show], style_show), style_list.childNodes[1]);
 	if (typeof tagbox_minfreq_style != "undefined") {
 		if (tagbox_minfreq_style == "user") {
-			showUserMinfreq(tagbox, style_list, minfreq, requUser);
+			styleList.append(getUserMinfreq(tagbox, styleList, minfreq));
 		} else if (tagbox_minfreq_style == "default") {
-			showMinfreq(tagbox, style_list);  
-		} else if (tagbox_minfreq_style == "none"){
-			// do nothing
-		}
+			styleList.append(getUserMinfreq(tagbox, styleList, -1));  
+		} 
 	}
+	changeTagBox(tagbox, styleList, style_show[show]);
+	changeTagBox(tagbox, styleList, style_sort[sort]);
 
-	var span = document.createElement("span");
-	span.appendChild(style_list);  
-
-	changeTagBox(tagbox, style_list, style_show[show]);
-	changeTagBox(tagbox, style_list, style_sort[sort]);
-
-	tagbox.parentNode.insertBefore(span, tagbox);
-}
-
-function attachChangeTagBox(tagbox, style_list, mode) { 
-	return(function() {	changeTagBox(tagbox, style_list, mode);	});
+	tagbox.parentNode.insertBefore(styleList.get(0), tagbox); // XXX: refactor to jQuery
 }
 
 function changeTagBox(tagbox, style_list, mode) {
 	if (mode == "list" || mode == "cloud"){
-		tagbox.className = "tag" + mode;
-		style_list.replaceChild(getStyleItem(tagbox, style_list, mode, style_show), style_list.childNodes[1]);
+		$(tagbox).attr("class", "tag" + mode);
+		style_list.children().eq(1).replaceWith(getStyleItem(tagbox, style_list, mode, style_show));
 	} else if (mode == "alph" || mode == "freq") {
-		style_list.replaceChild(getStyleItem(tagbox, style_list, mode, style_sort), style_list.childNodes[0]);
+		style_list.children().eq(0).replaceWith(getStyleItem(tagbox, style_list, mode, style_sort));
 		mode == "alph" ? setTagBoxAlph(tagbox) : setTagBoxFreq(tagbox);
 	}
 }
 
 
-function getStyleItem(tagbox, style_list, style, style_arr) {
-	var style_sort = document.createElement("li");
+/**
+ * Creates the style change links for changing sorting (alph/freq) and style (cloud/list) of the tag cloud.
+ * 
+ * @param tagbox
+ * @param style_list
+ * @param activeStyle
+ * @param style_arr
+ * @return
+ */
+function getStyleItem(tagbox, style_list, activeStyle, style_arr) {
+	var styleSort = $("<li> (</li>");
 
-	var node = document.createElement("a");
-	node.style.cursor = "pointer";
-
-	style_sort.appendChild(document.createTextNode(" ("));
-	if(style == style_arr[0]) {
-		style_sort.appendChild(document.createTextNode(getString("tagbox." + style_arr[0]) + " | "));
-
-		node.onclick = attachChangeTagBox(tagbox, style_list, style_arr[1]);
-		node.appendChild(document.createTextNode(getString("tagbox." + style_arr[1])));
-		style_sort.appendChild(node);
-	} else {
-		node.onclick = attachChangeTagBox(tagbox, style_list, style_arr[0]);
-		node.appendChild(document.createTextNode(getString("tagbox." + style_arr[0])));
-		style_sort.appendChild(node);
-
-		style_sort.appendChild(document.createTextNode(" | " + getString("tagbox." + style_arr[1])));
+	for (var i = 0; i < style_arr.length; i++) {
+		if (activeStyle == style_arr[i]) {
+			/*
+			 * current style
+			 */
+			styleSort.append(getString("tagbox." + style_arr[i]));
+		} else {
+			/*
+			 * other style
+			 */
+			styleSort.append(
+					$("<a>" + getString("tagbox." + style_arr[i]) + "</a>")
+					.css("cursor", "pointer")
+					.click({"style" : style_arr[i]}, function(event) { // XXX: to circumvent the closure behavior, we must give the style information as "eventData"
+						changeTagBox(tagbox, style_list, event.data.style);
+					})
+			);
+		}
+		if (i + 1 < style_arr.length) styleSort.append(" | ");
 	}
-	style_sort.appendChild(document.createTextNode(") "));
-
-	return style_sort;
-}
-function attachMinUsertags(tagbox, style_list, count) { return(function() { minUsertags(tagbox, style_list, count);});}
-
-function getMinUsertagsLink (tagbox, style_list, count) {
-	var node = document.createElement("a");
-	node.onclick = attachMinUsertags(tagbox, style_list, count);
-	node.appendChild(document.createTextNode(count));
-	node.style.cursor = "pointer";
-	return node;
+	return styleSort.append(") ");
 }
 
-function getMinTagsLink (tagbox, style_list, count) {
-	var node = document.createElement("a");
-	if (userMinFreq != count) {
-		node.onclick = attachMinUsertags(tagbox, style_list, count);
-		node.style.cursor = "pointer";
-	}
 
-	node.appendChild(document.createTextNode(count));
-
-	return node;
-}
 
 /**
  * create minfreq links for users (which are loaded via AJAX)
  * 
  * @param count
- * @param currUser
  * @return
  */
-function showUserMinfreq(tagbox, style_list, count, currUser) {
+function getUserMinfreq(tagbox, styleList, count) {
+	var minfreqList = $("<li> (" + getString("tagbox.minfreq") + " </li>");
 
-	var minfreqList = document.createElement("li");
-
-	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
-
-	if (count == 1) {
-		minfreqList.appendChild(document.createTextNode("1 | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 2));
-		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 5));
-	} else if(count == 2) {
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 1));
-		minfreqList.appendChild(document.createTextNode(" | 2 | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 5));
-	} else if(count == 5) {
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 1));
-		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 2));
-		minfreqList.appendChild(document.createTextNode(" | 5"));
-	} else {	
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 1));
-		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 2));
-		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 5));		
+	/*
+	 * build links for each supported number of tags
+	 */
+	for (var i = 0; i < availableMinFreqCounts.length; i++) {
+		if (count == availableMinFreqCounts[i]) {
+			/*
+			 * append count
+			 */
+			minfreqList.append(count);
+		} else {
+			/*
+			 * append link
+			 */
+			var a = $("<a>" + availableMinFreqCounts[i] + "</a>");
+			a.click({"count" : availableMinFreqCounts[i]}, function(event) { // XXX: to circumvent the closure behavior, we must give the count information as "eventData"
+				sendMinfreqRequ(tagbox, event.data.count);
+			});
+			a.css("cursor", "pointer");
+			minfreqList.append(a);
+		}
+		if (i + 1 < availableMinFreqCounts.length) minfreqList.append(" | ");
 	}
-	minfreqList.appendChild(document.createTextNode(") "));
+	minfreqList.append(") ");
 
-	style_list.replaceChild(minfreqList, style_list.childNodes[2]);
+	return minfreqList;
 }
-
-/**
- * create default minfreq links
- * @return
- */
-function showMinfreq(tagbox, style_list) {
-	var minfreqList = document.createElement("li");
-
-	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
-
-	minfreqList.appendChild(getMinTagsLink(tagbox, style_list, 1));
-	minfreqList.appendChild(document.createTextNode(" | "));
-	minfreqList.appendChild(getMinTagsLink(tagbox, style_list, 2));
-	minfreqList.appendChild(document.createTextNode(" | "));
-	minfreqList.appendChild(getMinTagsLink(tagbox, style_list, 5));
-
-	minfreqList.appendChild(document.createTextNode(") "));
-
-	style_list.replaceChild(minfreqList, style_list.childNodes[2]);	
-}
-
 
 
 /**
@@ -166,6 +132,7 @@ function showMinfreq(tagbox, style_list) {
  * @return
  */
 function setTagBoxAlph(tagbox) {
+	currentSortStyle = setTagBoxAlph;
 	var collection_tagname = new Array(); // array of tagnames
 	var collection_li = new Object(); // map tagname -> li
 
@@ -200,6 +167,7 @@ function setTagBoxAlph(tagbox) {
  * @return
  */
 function setTagBoxFreq(tagbox) {
+	currentSortStyle = setTagBoxFreq;
 	var collection_tagname = new Array();
 	var collection_li = new Object();
 	var collection_tagposts = new Object();
@@ -212,7 +180,7 @@ function setTagBoxFreq(tagbox) {
 		var tagname = tags[0].firstChild.nodeValue;
 		collection_tagname.push(tagname);
 		collection_li[tagname] = litags[x];//.cloneNode(true); //NOTE: does new code work in all browsers?
-		
+
 		// extract post count
 		var numberofpost = parseInt(tags[0].getAttribute("title").split(" ")[0]);
 		collection_tagposts[tagname] = numberofpost;
@@ -230,7 +198,7 @@ function setTagBoxFreq(tagbox) {
 
 	/* sort by number of posts (descending) */ 
 	collection_numberofposts.sort(unicodeCollation).reverse();
-	
+
 	/* build new tagbox */
 	for (var x = 0; x < collection_numberofposts.length; x++){
 		var tags = new Array();
@@ -255,47 +223,43 @@ function setTagBoxFreq(tagbox) {
 	delete collection_li;
 	delete collection_tagposts;
 	delete collection_numberofposts;
-	
+
 }
 
-//FIXME: check, if method still works
-//FIXME: removed ckey from request, should not be necessary any longer - check!
-function sendMinfreqRequ(tagbox, minfreq, currUser) {
+
+/**
+ * Retrieve the HTML tag cloud with the given parameters and replace the 
+ * existing tag cloud with it.
+ * 
+ * @param tagbox
+ * @param minfreq
+ * @return
+ */
+function sendMinfreqRequ(tagbox, minfreq) {
 	if (minfreq == null) minfreq = 1;
 	userMinFreq = minfreq;
 
 	$.ajax({
 		url : "?tagcloud.minFreq=" + minfreq + "&tagstype=default&format=tagcloud",
-		dataType : "text",
-		success : function (data) {
+		dataType : "html",
+		success : function (html) {
 			/*
-			 * replace the tags
-			 * XXX: depends on DOM tree !NEW_LAYOUT!
+			 * replace tags
 			 */
-			// ensure that we look in the correct list (the tagCloud / list)
-			var start = data.indexOf("<li class=\"tag");
-			var end = data.indexOf("</ul>", start);
-	
-			tagbox.innerHTML = data.slice(start, end); // FIXME: use jQuery to insert
-	
-			var sListStartTag = "<span>";
-			start = data.indexOf(sListStartTag) + sListStartTag.length;
-			end = data.indexOf("</span>", start);
-	
-			// re-order tags
-			if (data.slice(start, end) == "ALPHA") {
-				setTagBoxAlph(tagbox);
-			} else{
-				setTagBoxFreq(tagbox);
-			}
+			$(tagbox).empty().append($(html).find("li"));
+			/*
+			 * re-order tags
+			 */
+			currentSortStyle(tagbox);
+			/*
+			 * update minfreq links
+			 */
+			var styleList = $(tagbox).prev("ul");
+			styleList.children().eq(2).replaceWith(getUserMinfreq(tagbox, styleList, minfreq));
 		}
 	});
 }
 
-function minUsertags(tagbox, style_list, minfreq) {
-	sendMinfreqRequ(tagbox, minfreq);
-	showMinfreq(tagbox, style_list, minfreq);
-}
 
 /**
  * 
@@ -320,7 +284,7 @@ function switchNavi(scope, event) {
 	var ul = element.parents("ul");
 	ul.css("visibility", "hidden");
 	window.setTimeout(function() {ul.css("visibility", "visible");}, 10);
-	
+
 	/*
 	 * change form action to redirect with the given scope
 	 */
@@ -340,7 +304,7 @@ function switchNavi(scope, event) {
 	$("#search > ul > li").each(function(){
 		if (!$(this).find("form, ul").length) $(this).remove(); 
 	});
-	
+
 	/*
 	 * heuristic to get the hint for the input field  
 	 */
@@ -348,7 +312,7 @@ function switchNavi(scope, event) {
 	if (hint.search(/\?\?\?.*\?\?\?/) != -1) { 
 		hint = getString("navi.search.hint"); // fallback
 	}
-	
+
 	/*
 	 * prepare input field
 	 */
@@ -377,11 +341,11 @@ function initBookmarksPublicationsListsLast() {
 		bookmarks_height	= $("#bookmarks_0 ul.posts").height();
 		publications_height	= $("#publications_0 ul.posts").height();
 		sidebar_height		= $("#sidebar").height();
-	
+
 		// get maximum height
 		maxheight = (bookmarks_height > publications_height ) ? bookmarks_height : publications_height;
 		maxheight = (maxheight > sidebar_height) ? maxheight : sidebar_height;
-	
+
 		// set heights to maximum_heights
 		$("#bookmarks_0 ul.posts").height(maxheight);
 		$("#publications_0 ul.posts").height(maxheight);
@@ -399,15 +363,15 @@ function initSidebarHeader() {
 		var scrollbarWidth = c-(b+p);  // sidebar is in padding. width is width without padding
 		var sidebarWidth = $("#sidebarheader").width();
 		var sidebarWidthBody = $("#sidebar").width();
-	    var scrollbarWidth_default = 0;
+		var scrollbarWidth_default = 0;
 
 
-	    var new_sidebarWidth = sidebarWidthBody + scrollbarWidth;
-	    
-	    // set new width of header, regarding to scrollbarwidth and hide scrollbars in header
+		var new_sidebarWidth = sidebarWidthBody + scrollbarWidth;
+
+		// set new width of header, regarding to scrollbarwidth and hide scrollbars in header
 		$("#sidebarheader").width(new_sidebarWidth);
 		$('#headercontainer, #footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
-		
-		
+
+
 	}
 }
