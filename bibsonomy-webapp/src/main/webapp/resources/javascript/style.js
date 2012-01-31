@@ -75,20 +75,20 @@ function getStyleItem(tagbox, style_list, style, style_arr) {
 
 	return style_sort;
 }
-function attachMinUsertags(tagbox, count) { return(function() { minUsertags(tagbox, count);});}
+function attachMinUsertags(tagbox, style_list, count) { return(function() { minUsertags(tagbox, style_list, count);});}
 
-function getMinUsertagsLink (tagbox, count) {
+function getMinUsertagsLink (tagbox, style_list, count) {
 	var node = document.createElement("a");
-	node.onclick = attachMinUsertags(tagbox, count);
+	node.onclick = attachMinUsertags(tagbox, style_list, count);
 	node.appendChild(document.createTextNode(count));
 	node.style.cursor = "pointer";
 	return node;
 }
 
-function getMinTagsLink (tagbox, count) {
+function getMinTagsLink (tagbox, style_list, count) {
 	var node = document.createElement("a");
 	if (userMinFreq != count) {
-		node.onclick = attachMinUsertags(tagbox, count);
+		node.onclick = attachMinUsertags(tagbox, style_list, count);
 		node.style.cursor = "pointer";
 	}
 
@@ -112,24 +112,24 @@ function showUserMinfreq(tagbox, style_list, count, currUser) {
 
 	if (count == 1) {
 		minfreqList.appendChild(document.createTextNode("1 | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 2));
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 2));
 		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 5));
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 5));
 	} else if(count == 2) {
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 1));
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 1));
 		minfreqList.appendChild(document.createTextNode(" | 2 | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 5));
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 5));
 	} else if(count == 5) {
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 1));
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 1));
 		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 2));
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 2));
 		minfreqList.appendChild(document.createTextNode(" | 5"));
 	} else {	
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 1));
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 1));
 		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 2));
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 2));
 		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (tagbox, 5));		
+		minfreqList.appendChild(getMinUsertagsLink (tagbox, style_list, 5));		
 	}
 	minfreqList.appendChild(document.createTextNode(") "));
 
@@ -145,11 +145,11 @@ function showMinfreq(tagbox, style_list) {
 
 	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
 
-	minfreqList.appendChild(getMinTagsLink(tagbox, 1));
+	minfreqList.appendChild(getMinTagsLink(tagbox, style_list, 1));
 	minfreqList.appendChild(document.createTextNode(" | "));
-	minfreqList.appendChild(getMinTagsLink(tagbox, 2));
+	minfreqList.appendChild(getMinTagsLink(tagbox, style_list, 2));
 	minfreqList.appendChild(document.createTextNode(" | "));
-	minfreqList.appendChild(getMinTagsLink(tagbox, 5));
+	minfreqList.appendChild(getMinTagsLink(tagbox, style_list, 5));
 
 	minfreqList.appendChild(document.createTextNode(") "));
 
@@ -292,9 +292,9 @@ function sendMinfreqRequ(tagbox, minfreq, currUser) {
 	});
 }
 
-function minUsertags(tagbox, minfreq) {
+function minUsertags(tagbox, style_list, minfreq) {
 	sendMinfreqRequ(tagbox, minfreq);
-	showMinfreq(tagbox, minfreq);
+	showMinfreq(tagbox, style_list, minfreq);
 }
 
 /**

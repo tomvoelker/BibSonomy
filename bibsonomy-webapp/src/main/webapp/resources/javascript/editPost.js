@@ -34,7 +34,7 @@ function initTagAutocompletion(tagbox) {
 	/*
 	 * tags from side bar and from copied post
 	 */
-	$("#copiedTags li, #tagbox li a").each(function() {
+	$("#copiedTags li, .tagbox li a").each(function() {
 		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
 	});
 
@@ -319,7 +319,7 @@ function collectTags() {
 	/*
 	 * tags from sidebar
 	 */
-	$("#tagbox li a").each(function(index) {
+	$(".tagbox li a").each(function(index) {
 		var el = $(this).get(0);
 		var tagName = el.firstChild.data.trim();
 		listElements[tagName] = index;

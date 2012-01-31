@@ -49,7 +49,7 @@
 	</c:if>
 	
 
-	<ul class="${style}" id="tagbox">
+	<ul class="${style} tagbox">
 	
 		<!-- loop over tags -->
 		<c:forEach var="tag" items="${cmd.tags}">
