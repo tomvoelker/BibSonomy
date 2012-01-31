@@ -90,7 +90,7 @@
 			<div id="bookmarksheader">
 				<div id="bookmarkListConfig" class="config">
 					<div id="bookmarkListOptions" class="listOptions">
-						<rc:actions resourceType="bookmark"/>
+						<rc:actions resourceType="bookmark" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}"/>
 					</div>					
 				</div>
 				<h2 class="header">
@@ -108,7 +108,7 @@
 			<div id="publicationsheader">
 				<div id="publicationListConfig" class="config">
 					<div id="publicationListOptions" class="listOptions">
-						<rc:actions resourceType="bibtex"/>
+						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}"/>
 					</div>						
 				</div>
 				<h2 class="header">

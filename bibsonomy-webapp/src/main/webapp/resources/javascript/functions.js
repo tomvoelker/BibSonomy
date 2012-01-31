@@ -783,7 +783,13 @@ function addBibtexExportOptions() {
 
 		// submit button
 		form.append("<br/><input type='submit' value='" + getString("export.bibtex.title") + "'/>");
-
+		/*
+		 * prevent click to be propagated to parent (otherwise the whole 
+		 * action box will dissappear, see click handerl in addListOptions() ).
+		 */
+		form.click(function(event) {
+			event.stopPropagation();
+		});		
 		
 		// insert form after export link (make it empty before)
 		anchor.empty();
@@ -800,30 +806,22 @@ function addBibtexExportOptions() {
  */
 function addListOptions() {
 	/*
-	 * show list action options when hovering over the div
+	 * show and hide list actions when clicking on the div
 	 */
 	$.each(["bookmark", "publication"], function(index, value) {
 		var optBoxAnchor = $("#" + value + "ListConfig");
-		optBoxAnchor.mouseover(function() {
+		optBoxAnchor.click(function(event) {			
 			var optBox =  $("#" + value + "ListOptions");
+			optBox.toggle("fade", {}, 500);
 			/*
-			 * close option box (and bibtex detail option box) when leaving it with the mouse
+			 * hide extended bibtex export options each time when opening/closing the menu
 			 */
-			optBox.mouseleave(function() {
-				$(this).hide("fade", {}, 500);
-				$("#bibtexListExportOptions").hide();
-			});
-			if (optBox.css("display") == "none") {
-				optBox.show("fade", {}, 500);	
-			}
-		});
-		/*
-		 * option box can be closed by clicking on the div
-		 */
-		optBoxAnchor.click(function() {
-			$("#" + value + "ListOptions").hide("fade", {}, 500); 
-		});
+			$("#bibtexListExportOptions").hide();
+		});		
 	});
+	/*
+	 * add mouseover to "BibTeX" link (publications only) to display extended options
+	 */
 	addBibtexExportOptions();
 }
 
