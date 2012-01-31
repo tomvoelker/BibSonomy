@@ -57,9 +57,11 @@
 					
 					<li class="sidebarnavi_entry sidebarnavi_entry_02">
 						<a href="/basket" title="${titleBasket}"><!-- empty -->
-							<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
-								<div id="pickctr" class="sidebarnavi_info"><c:out value="${command.context.loginUser.basket.numPosts}"/></div>
-							</c:if>
+							<div id="pickctr" class="sidebarnavi_info"><!-- maybe empty -->
+								<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
+									<c:out value="${command.context.loginUser.basket.numPosts}"/>
+								</c:if>
+							</div>
 						</a>
 					</li>
 					
