@@ -445,7 +445,7 @@ function unpickAll(evt) {
 
 function pickUnpickAll(evt, pickUnpick) {
 	var param  = "";
-	$("#bibtex li div.bmtitle a").each(function(index) {
+	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
 		var href = $(this).attr("href");
 		if (!href.match(/^.*\/documents[\/?].*/)){
 			param += href.replace(/^.*bibtex./, "") + " ";
@@ -468,8 +468,13 @@ function breakEvent(evt) {
 	}
 }
 
-//this picks or unpicks a publication
-function pickUnpickPublication(evt){
+/**
+ * pick or unpick a single publication
+ * 
+ * @param evt
+ * @return
+ */
+function pickUnpickPublication(evt) {
 	/*
 	 * pick/unpick publication
 	 */
@@ -505,6 +510,7 @@ function updateBasket (param) {
 		data : param,
 		dataType : "text",
 		success: function(data) {
+		alert(data);
 		/*
 		 * update the number of basket items
 		 */
