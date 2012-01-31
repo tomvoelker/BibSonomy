@@ -127,7 +127,7 @@ function getUserMinfreq(tagbox, styleList, count) {
 /**
  * Sorts the tag cloud in the sidebar alphabetically.
  * 
- * Don't try to use jQuery for this, it slows down the code (by a factor of approx. 2).
+ * XXX: Don't try to use jQuery for this, it slows down the code (by a factor of approx. 2).
  * 
  * @return
  */
@@ -162,7 +162,7 @@ function setTagBoxAlph(tagbox) {
 /**
  * Sorts the tag cloud in the sidebar by frequency.
  * 
- * Don't try to use jQuery for this, it slows down the code (by a factor of approx. 2).
+ * XXX: Don't try to use jQuery for this, it slows down the code (by a factor of approx. 2).
  * 
  * @return
  */
@@ -324,10 +324,6 @@ function switchNavi(scope, event) {
 	$("#inpf").parents("li").removeClass("hidden"); // show form
 }
 
-
-/*
- * TODO: new layout
- */
 $(function() { 
 	initSidebarHeader();
 	initBookmarksPublicationsListsLast();
@@ -371,7 +367,5 @@ function initSidebarHeader() {
 		// set new width of header, regarding to scrollbarwidth and hide scrollbars in header
 		$("#sidebarheader").width(new_sidebarWidth);
 		$('#headercontainer, #footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
-
-
 	}
 }
