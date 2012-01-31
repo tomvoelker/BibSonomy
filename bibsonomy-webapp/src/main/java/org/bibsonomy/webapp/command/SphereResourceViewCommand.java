@@ -14,7 +14,7 @@ import org.bibsonomy.model.User;
  * 
  * TODO: this is a merge of two parameter classes and thus needs some cleanup 
  */
-public class SphereResourceViewCommand extends FriendsResourceViewCommand {
+public class SphereResourceViewCommand extends UserResourceViewCommand {
 	
 	private String 			sphereName 	= "";
 	private List<User> 		relatedUsers;
