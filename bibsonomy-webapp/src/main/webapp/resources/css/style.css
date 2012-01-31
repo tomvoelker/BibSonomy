@@ -504,10 +504,9 @@ a img {
     border-left: 1px solid #c6c6c6;
 }
 
-.sidebarnavi_entry:hover {
+.sidebarnavi_entry_active:hover {
 	background-color: #e4e4e4;
 }
-
 
 .sidebarnavi_entry a {
     height: 60px; 
@@ -531,24 +530,32 @@ a img {
 
 .sidebarnavi_entry_01 {
     border-left: 0;
-    background-position: -9px 131px;
+    background-position: -9px -90px;
     left: 0px;
 }
 
-a:hover.sidebarnavi_entry_01  {
-	color: #da3200;
+.sidebarnavi_entry_01_inactive {
+    border-left: 0;
+    background-position: -9px -192px;
+    left: 0px;
+}
+
+.sidebarnavi_entry_01:hover {
+    border-left: 0;
+    background-position: -9px 10px;
+    left: 0px;
 }
 
 .inbox_full {
-    background-position: -8px 80px;
+    background-position: -8px -140px;
 }
 
 .inbox_full:hover {
-    background-position: -8px 180px;
+    background-position: -8px -40px;
 }
 
 .sidebarnavi_entry_02 {
-	background-position: -86px 127px;
+	background-position: -86px -91px;
 	left: 14.2857%;
 }
 
@@ -556,8 +563,13 @@ a:hover.sidebarnavi_entry_01  {
 	background-position: -86px 9px;
 }
 
+.sidebarnavi_entry_02_inactive {
+	background-position: -86px -194px;
+	left: 14.2857%;
+}
+
 .sidebarnavi_entry_03 {
-    background-position: -50px 127px;
+    background-position: -50px -91px;
     left: 28.5714%;
 }
 
@@ -565,8 +577,13 @@ a:hover.sidebarnavi_entry_01  {
     background-position: -50px 9px;
 }
 
+.sidebarnavi_entry_03_inactive {
+    background-position: -50px -193px;
+    left: 28.5714%;
+}
+
 .sidebarnavi_entry_04 {
-    background-position: -279px 129px;
+    background-position: -279px -89px;
     left: 42.8571%;
 }
 
@@ -574,8 +591,13 @@ a:hover.sidebarnavi_entry_01  {
     background-position: -279px 10px;
 }
 
+.sidebarnavi_entry_04_inactive {
+    background-position: -279px -193px;
+    left: 42.8571%;
+}
+
 .sidebarnavi_entry_05 {
-	background-position: -236px 128px;
+	background-position: -236px -90px;
 	left: 57.1429%;
 }
 
@@ -583,8 +605,13 @@ a:hover.sidebarnavi_entry_01  {
 	background-position: -236px 10px;
 }
 
+.sidebarnavi_entry_05_inactive {
+	background-position: -236px -194px;
+	left: 57.1429%;
+}
+
 .sidebarnavi_entry_06 {
-    background-position: -318px 129px;
+    background-position: -318px -89px;
 	left: 71.4286%;
 }
 
@@ -592,8 +619,13 @@ a:hover.sidebarnavi_entry_01  {
     background-position: -318px 9px;
 }
 
+.sidebarnavi_entry_06_inactive {
+    background-position: -318px -89px;
+	left: 71.4286%;
+}
+
 .sidebarnavi_entry_07 {
-    background-position: -363px 129px;
+    background-position: -363px -89px;
 	left: 85.7143%;
 }
 
@@ -601,6 +633,10 @@ a:hover.sidebarnavi_entry_01  {
     background-position: -363px 9px;
 }
 
+.sidebarnavi_entry_07_inactive {
+    background-position: -363px -89px;
+	left: 85.7143%;
+}
 
 
 /* hack to fix IE/Win's broken rendering of block-level anchors in lists */
