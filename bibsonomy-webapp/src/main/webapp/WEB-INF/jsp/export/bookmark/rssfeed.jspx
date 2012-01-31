@@ -43,7 +43,7 @@
     	<c:out value="${fn:escapeXml(mtl:removeXmlControlChars(post.description))}"/>
 		<c:if test="${command.context.userLoggedIn}">
 		&amp;lt;a href="/editBookmark&amp;#63;hash=${post.resource.intraHash}&amp;amp;user=${mtl:encodeURI(post.user.name)}&amp;amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}"&amp;gt;				
-			<fmt:message key="bookmark.actions.copy"/>
+			<fmt:message key="post.actions.copy"/>
 		&amp;lt;/a&amp;gt;
 		</c:if>
     </description>
