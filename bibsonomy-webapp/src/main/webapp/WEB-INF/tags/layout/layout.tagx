@@ -133,7 +133,7 @@
 
 						<!--+
 							|
-							| sign in, help, news, about 
+							| sign in 
 							| 
 						 	+-->
 						<div id="infoline">
@@ -145,10 +145,7 @@
 									<c:otherwise>
 										<li><a href="/login"><fmt:message key="navi.login"/></a></li>
 									</c:otherwise>
-								</c:choose>
-							
-								<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-								<li><a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a></li>	
+								</c:choose>	
 							</ul>
 						</div><!-- #infoline -->
 
@@ -274,6 +271,9 @@
 					<c:out value=" "/>
 					<parts:email address="${properties['project.email']}"/> - 
 					<fmt:message key="system.termsOfUse"/>
+					<c:out value=" - "/>
+					<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+					<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
 					
 					<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
 						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
