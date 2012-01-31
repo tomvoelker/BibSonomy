@@ -1,5 +1,9 @@
-.sphere {
+.spheres {
 	margin: 1%;
+}
+
+.sphere_hidden {
+	display: none;
 }
 
 .sphere_header {

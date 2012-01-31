@@ -58,25 +58,17 @@
 					| show spheres graph if supported by browser
 					+-->
 				<div id="spheresGraph" style="width: 100%;">
+	  				
 					<!-- 
 					<input type="button" id="Big" value="+" 	onclick="$('#spheresGraph').animate({height:'520px'}, 2700); externUpdate();"></input>
     				<input type="button" id="Small" value=" - " onclick="$('#spheresGraph').animate({height:'300px'}, 2700); externUpdate();"></input>
     				-->
-					<![CDATA[
-						<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.min.js"></script>
-						<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.geom.min.js"></script>
-						<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.layout.min.js"></script>			
-						<script type="text/javascript" src="${resdir}/javascript/spheresGraph.js"></script>
-					    
-					    <script type="text/javascript">
-					    		SphereDisplay = new SphereDisplay();
-	   					</script>
-	  				]]>
 				</div>
 				
-			<div class="sphere">
+			<div class="spheres">
 				<c:forEach items="${command.spheres}" var="entry">
-		    		<div class="sphere_header" id="sphere_${fn:escapeXml(entry.key)}">
+				<span class="sphere sphere_hidden" id="sphere_${fn:escapeXml(entry.key)}">
+		    		<div class="sphere_header">
 		    			<a href="/sphere/${fn:escapeXml(entry.key)}">
 		    				<c:out value="${entry.key}"/>
 		    			</a>
@@ -99,10 +91,19 @@
 				    </div>
 	        		
 	        		<div class="sphere_footer"><!--  --></div>
-	        		
+	        	</span>
 				</c:forEach>
 			</div>
 			</div>
+							<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.min.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.geom.min.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/d3-library/d3.layout.min.js"><!-- keep me --></script>			
+				<script type="text/javascript" src="${resdir}/javascript/spheresGraph.js"><!-- keep me --></script>
+					    
+			    <script type="text/javascript">
+		    		SphereDisplay = new SphereDisplay();
+				</script>
+			
 		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

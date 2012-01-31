@@ -7,6 +7,7 @@ function SphereDisplay() {
 	
 	if (!this.checkSVG()) {
 		// browser doesn't support SVG
+		$(".sphere").toggleClass("sphere_hidden");
 		$("#spheresGraph").hide();
 		return;
 	}
@@ -154,7 +155,14 @@ SphereDisplay.prototype.update = function() {
     nodeEnter.append("svg:circle") .on("click", 
     	function(d) {
     		if (d.group == 1) {
+       			$(".sphere").hide();
+       			$("#sphere_"+d.name).show();
     			backref.click(d)
+    		}
+    	}).on("mouseover", function(d) {
+    		if (d.group==1) {
+    			$(".sphere").hide();
+    			$("#sphere_"+d.name).show();
     		}
     	}).attr("r", function(d){return backref.setRadius(d);}).style("fill", this.color)
 	
@@ -170,6 +178,10 @@ SphereDisplay.prototype.update = function() {
     			$('html, body').animate({scrollTop: $("#sphere_" + d.name ).offset().top}, 'slow');
     		} 
     	}).on("mouseover", function(d) {
+    		if (d.group==1) {
+    			$(".sphere").hide();
+    			$("#sphere_"+d.name).show();
+    		}
     		this.style.cursor='pointer';
     	}).attr("xlink:href", function(d) {
     		if(d.group == "2") {
