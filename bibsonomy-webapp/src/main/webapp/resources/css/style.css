@@ -1327,7 +1327,8 @@ form.editTags, form.editTags input {
 #bookmarksfooter .footer, #publicationsfooter .footer {
 	height:26px;
 	padding-top:4px;
-	position:relative;
+	text-align:center;
+	position: relative;
 	padding-left: 1em;
 	padding-right: 1em;
 }
@@ -1490,6 +1491,7 @@ form.editTags, form.editTags input {
 
 .nextprev {
 	padding-left: 0.5em;
+	width: 100%;
 }
 	
 .listnav {
@@ -1500,6 +1502,7 @@ form.editTags, form.editTags input {
 	display:block;
 	float:left;
 	text-align:center;
+	font-weight:bold;
 }
 	
 
@@ -1897,11 +1900,6 @@ form.editTags, form.editTags input {
 /* end of login css code */
 
 
-.selectEntriesPerPage {
-	position: absolute;
-	right: 1em;
-	padding-top: 0.3em;
-}
 
 .listOptionLine {
 	margin-left: 0px;

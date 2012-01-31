@@ -90,7 +90,7 @@
 			<div id="bookmarksheader">
 				<div id="bookmarkListConfig" class="config">
 					<div id="bookmarkListOptions" class="listOptions">
-						<rc:actions resourceType="bookmark" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}"/>
+						<rc:actions resourceType="bookmark" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${showBookmark}" showPublication="${showPublication}"/>
 					</div>					
 				</div>
 				<h2 class="header">
@@ -108,7 +108,7 @@
 			<div id="publicationsheader">
 				<div id="publicationListConfig" class="config">
 					<div id="publicationListOptions" class="listOptions">
-						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}"/>
+						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${showBookmark}" showPublication="${showPublication}"/>
 					</div>						
 				</div>
 				<h2 class="header">
@@ -129,8 +129,7 @@
 			<div id="bookmarksfooter">
 				<div class="footer">
 					<c:if test="${not disableListNavigation}">
-						<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
-						<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks"/>
+						<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>						
 					</c:if>
 				</div>
 			</div>
@@ -138,8 +137,7 @@
 			<div id="publicationsfooter">
 				<div class="footer">
 					<c:if test="${not disableListNavigation}">
-						<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-						<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications"/>
+						<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>						
 					</c:if>
 				</div>
 			</div>			

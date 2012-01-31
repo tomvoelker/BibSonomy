@@ -9,8 +9,7 @@
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 	
-	<span class="nextprev">
-	
+	<div class="nextprev">
            <!-- ********** FIRST ************** -->
         <c:if test="${listView.totalCount > 0}">
             <c:url var="firstUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,0)}"/>
@@ -83,7 +82,6 @@
          </c:url>
          <fmt:message var="gotoLast" key="goto.last"/>
          <a class="listnav" href="${fn:escapeXml(lastUrl)}" title="${gotoLast}" rel="Last"><fmt:message key="last"/></a>
-        </c:if>
-                 						
-	</span>
+        </c:if>         						
+	</div>
 </jsp:root>

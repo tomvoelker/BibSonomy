@@ -748,6 +748,9 @@ function addListOptions() {
 		optBoxAnchor.click(function(event) {			
 			var optBox =  $("#" + value + "ListOptions");
 			optBox.toggle("fade", {}, 500);
+			optBox.mouseleave(function(event) {
+				$(this).hide("fade", {}, 500);
+			});
 			/*
 			 * hide extended bibtex export options each time when opening/closing the menu
 			 */

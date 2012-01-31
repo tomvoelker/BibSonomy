@@ -9,6 +9,8 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 		
@@ -72,15 +74,6 @@
    			<span class="listOptionLine">
    				<fmt:message key="post.meta.sort.criterion"/>:${mtl:ch('nbsp')}
    				<c:set var="requPathAndQuery" value="${requPathAndQuery}"/>
-   				<!-- title -->
-   				<c:choose>
-   					<c:when test="${sortPage eq 'title'}">
-   						<span class="italic"><fmt:message key="post.resource.title"/></span>
-   					</c:when>
-   					<c:otherwise>
-   						<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'title')}"><fmt:message key="post.resource.title"/></a>
-   					</c:otherwise>
-   				</c:choose>,${mtl:ch('nbsp')}   				
    				<!-- date / default sorting -->
    				<c:choose>
 	   				<c:when test="${sortPage eq 'none' or sortPage eq 'date'}">
@@ -89,6 +82,15 @@
 	   				<c:otherwise>
 	   					<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'date')}"><fmt:message key="sort.date"/></a>
 	   				</c:otherwise>
+   				</c:choose>,${mtl:ch('nbsp')}   				
+   				<!-- title -->
+   				<c:choose>
+   					<c:when test="${sortPage eq 'title'}">
+   						<span class="italic"><fmt:message key="post.resource.title"/></span>
+   					</c:when>
+   					<c:otherwise>
+   						<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'title')}"><fmt:message key="post.resource.title"/></a>
+   					</c:otherwise>
    				</c:choose><c:if test="${isBibtex}">,${mtl:ch('nbsp')}	<!--  UGLY formatting, but we have to do so, oterwise we'll get an extra blank :( -->
    					<c:choose>
    						<c:when test="${sortPage eq 'author'}">
@@ -105,9 +107,8 @@
 	   					<c:otherwise>
 	   						<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'year')}"><fmt:message key="post.resource.year"/></a>
 	   					</c:otherwise>
-	   				</c:choose>,${mtl:ch('nbsp')}
-   					<a href="/help_en/Sorting%2Bpublications"><fmt:message key="bibtex.more_dots"/></a>   					   					   					
-   				</c:if>   				
+	   				</c:choose>   					   					   					   					
+   				</c:if>
    			</span><br/>
    			<span class="listOptionLine">
    				<fmt:message key="post.meta.sort.order"/>:${mtl:ch('nbsp')}
@@ -127,15 +128,17 @@
    						<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'desc')}"><fmt:message key="post.meta.sort.order.descending"/></a>
    					</c:otherwise>
    				</c:choose>				
-   			</span>								
+   			</span><br/>
+   			<c:if test="${isBibtex}">
+	   			<span class="listOptionLine">
+	   				<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
+	   			</span>					
+   			</c:if>			
 	  	</li>
    		<!--+ 
-			+ actions only for logged-in users (basket, edit)
+			+ basket actions (pick, unpick) only for publications, and logged-in users
 			+-->
 		<c:if test="${command.context.userLoggedIn}">
-	   		<!--+ 
-				+ basket actions (pick, unpick) only for publications
-				+-->
 			<c:if test="${isBibtex}">				  	
 				<li>
 					<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
@@ -147,20 +150,66 @@
 	  				</span>
 		  		</li>
 	  		</c:if>
-	   		<!--+ 
-				+ other options (batch edit)
-				+-->	  		
-		  	<li>
-		  		<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
-		  		<c:if test="${isBibtex}">
-					<c:url var="editUrl"   value="/beditbib/${requPath}" />
-				</c:if>
+	  	</c:if>
+   		<!--+ 
+			+ other options (batch edit, show/hide lists, entries per page)
+			+-->	  		
+	  	<li>
+	  		<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
+	  		<!-- edit -->
+		  	<c:if test="${command.context.userLoggedIn}">
+		  		<span class="listOptionLine">
+			  		<c:if test="${isBibtex}">
+						<c:url var="editUrl"   value="/beditbib/${requPath}" />
+					</c:if>
+					<c:if test="${isBookmark}">
+						<c:url var="editUrl" value="/bediturl/${requPath}"/>
+					</c:if>
+					<fmt:message var="editPageTags" key="post.meta.edit.title"/>
+					<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.batch_edit"/>...</a>
+				</span><br/>	
+			</c:if>				
+			<!-- show / hide resource types -->
+			<span class="listOptionLine">
+				<fmt:message key="post.meta.display"/>:
+				<c:choose>
+					<c:when test="${showPublication and showBookmark }">
+						<fmt:message key="navi.all"/>
+					</c:when>
+					<c:otherwise>
+						<a href="${mtl:removeParam(requPathAndQuery, 'resourcetype')}"><fmt:message key="navi.all"/></a>
+					</c:otherwise>
+				</c:choose>,${mtl:ch('nbsp')}
 				<c:if test="${isBookmark}">
-					<c:url var="editUrl" value="/bediturl/${requPath}"/>
+					<c:choose>
+						<c:when test="${showBookmark and not showPublication }">
+							<fmt:message key="post.meta.show_bookmarks_only"/>
+						</c:when>
+						<c:otherwise>
+							<a href="${mtl:setParam(requPathAndQuery, 'resourcetype', 'bookmark')}"><fmt:message key="post.meta.show_bookmarks_only"/></a>
+						</c:otherwise>
+					</c:choose>
 				</c:if>
-				<fmt:message var="editPageTags" key="post.meta.edit.title"/>
-				<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.batch_edit"/></a>
-		  	</li>	  		
-	  	</c:if>	  	  	 	
+				<c:if test="${isBibtex}">
+					<c:choose>
+						<c:when test="${showPublication and not showBookmark }">
+							<fmt:message key="post.meta.show_publications_only"/>
+						</c:when>
+						<c:otherwise>
+							<a href="${mtl:setParam(requPathAndQuery, 'resourcetype', 'publication')}"><fmt:message key="post.meta.show_publications_only"/></a>
+						</c:otherwise>
+					</c:choose>			
+				</c:if>
+			</span><br/>
+			<!--  entries per page -->	
+			<span class="listOptionLine">		
+				<c:if test="${isBookmark}">				
+					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks"/>
+				</c:if>
+				<c:if test="${isBibtex}">
+					<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications"/>
+				</c:if>			
+			</span>
+	  	</li>	  			  		  	  	 	
 	</ul>	
 </jsp:root>
