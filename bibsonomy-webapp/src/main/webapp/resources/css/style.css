@@ -791,6 +791,39 @@ ul.news {
 	background-color: #eee;
 }
 
+/*
+ * jquery ui tabs
+ */
+div.ui-tabs div.ui-tabs-panel {
+	border: 1px solid #069;
+	margin-top: 1.85em;
+}
+
+div.ui-tabs ul.ui-tabs-nav {
+	padding: 0px;
+}
+
+div.ui-tabs ul.ui-tabs-nav li {
+	border: 1px solid #bbb;
+	margin: 0px;
+	background-color: #eee;
+	top: 0px;
+	font-size: 80%;
+}
+
+div.ui-tabs ul.ui-tabs-nav li:hover {
+	background-color: #fff;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
+	background-color: #fff;
+	border: 1px solid #069;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
+	color: #069;
+}
+
 /* --- tooltips -------------------------------------------------------------*/
 span.info {
 	position: relative;
@@ -997,6 +1030,13 @@ div.help>a,div.help>b {
     float: left;
 	height: 30px; 
     width: 30px;
+}
+
+.post .action .edittags {
+	background-position: 130px, -27px;
+	width: 16px;
+	heigth: 16px;
+	
 }
 
 .post .action .pick{
