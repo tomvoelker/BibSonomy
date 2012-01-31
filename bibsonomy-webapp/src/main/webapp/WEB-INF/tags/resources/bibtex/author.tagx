@@ -10,7 +10,6 @@
 
 	<!-- initialize with empty list -->
 	<c:set var="personList" value=""/>
-	<fmt:message var="personStatus" key="navi.author"/> 
 	<!-- determine personType for schema.org markup -->
 	<c:set var="authorEditor" value=""/>
 	<c:choose>
@@ -21,7 +20,6 @@
 		<c:when test="${not empty publication.editor}">
 			<c:set var="personList" value="${publication.editor}"/>
 			<c:set var="authorEditor" value="editor"/>
-			<fmt:message var="personStatus" key="editor"/>
 		</c:when>
 	</c:choose>
 	
@@ -37,13 +35,13 @@
 			 <c:choose>
 			 	<c:when test="${schemaOrgMarkUp}">
 			 		<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-			 			<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="name" title="${personStatus} ${personName}">
+			 			<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" itemprop="name">
 			 				<c:out value="${personName}"/>
 			 			</a>
 					</span>
 				</c:when>
 				<c:otherwise>
-				 	<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}" title="${personStatus} ${personName}">
+				 	<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}">
 			 				<c:out value="${personName}"/>
 				 	</a>
 				</c:otherwise>
