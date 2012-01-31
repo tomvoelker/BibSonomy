@@ -1,5 +1,8 @@
 .spheres {
 	margin: 1%;
+	border: 1px solid #999999;
+	border-radius: 25px;
+	padding: 30px;
 }
 
 .sphere_hidden {
@@ -7,12 +10,22 @@
 }
 
 .sphere_header {
-	font-size: 110%;
+	font-size: 120%;
 	font-weight: bold;
 	color: #006699;
 	width: 100%;
 	border-bottom: 1px solid #D3DFE2;
 	margin-bottom: 1ex;
+}
+
+.sphere_bottom_header {
+	font-size: 120%;
+	font-weight: bold;
+	color: #aeaeae;
+	width: 100%;
+	border-bottom: 0;
+	margin-bottom: 1ex;
+	text-align: left;
 }
 
 .sphere_users {

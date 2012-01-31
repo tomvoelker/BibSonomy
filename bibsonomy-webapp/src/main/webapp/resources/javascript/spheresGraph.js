@@ -9,6 +9,7 @@ function SphereDisplay() {
 		// browser doesn't support SVG
 		$(".sphere").toggleClass("sphere_hidden");
 		$("#spheresGraph").hide();
+		$(".spheres_initial_explanation").hide();
 		return;
 	}
 
@@ -155,15 +156,11 @@ SphereDisplay.prototype.update = function() {
     nodeEnter.append("svg:circle") .on("click", 
     	function(d) {
     		if (d.group == 1) {
-       			$(".sphere").hide();
-       			$("#sphere_"+d.name).show();
     			backref.click(d)
     		}
+    		backref.displaySphere(d);
     	}).on("mouseover", function(d) {
-    		if (d.group==1) {
-    			$(".sphere").hide();
-    			$("#sphere_"+d.name).show();
-    		}
+    		backref.displaySphere(d);
     	}).attr("r", function(d){return backref.setRadius(d);}).style("fill", this.color)
 	
 		
@@ -178,10 +175,7 @@ SphereDisplay.prototype.update = function() {
     			$('html, body').animate({scrollTop: $("#sphere_" + d.name ).offset().top}, 'slow');
     		} 
     	}).on("mouseover", function(d) {
-    		if (d.group==1) {
-    			$(".sphere").hide();
-    			$("#sphere_"+d.name).show();
-    		}
+    		backref.displaySphere(d);
     		this.style.cursor='pointer';
     	}).attr("xlink:href", function(d) {
     		if(d.group == "2") {
@@ -223,6 +217,17 @@ SphereDisplay.prototype.update = function() {
         nodes.px += (backref.getWidth()/2 - nodes.px) * k;
         */ 
 	});
+}
+
+/**
+ * display details for selected sphere
+ */
+SphereDisplay.prototype.displaySphere = function(d) {
+	$(".spheres_initial_explanation").hide();
+	if (d.group==1) {
+		$(".sphere").hide();
+		$("#sphere_"+d.name).show();
+	}	
 }
 
 /**

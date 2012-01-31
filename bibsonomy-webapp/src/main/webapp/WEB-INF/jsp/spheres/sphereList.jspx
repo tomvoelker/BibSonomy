@@ -32,6 +32,24 @@
 		</jsp:attribute>
 		
 		<!--+
+			| sidebar
+			+-->
+		<jsp:attribute name="sidebar">
+			<br/><br/>
+			<ul>
+				<li>				
+				<span class="sidebar_h">					 
+					<!-- requPath + query -->
+					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+					<fmt:message key="users.recommended"/>
+					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
+				</span>
+				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+			</li>
+			</ul>
+		</jsp:attribute>
+		
+		<!--+
 			| page content header
 			+-->
 		<jsp:attribute name="headerContainer">
@@ -66,12 +84,17 @@
 				</div>
 				
 			<div class="spheres">
+				<p class="spheres_initial_explanation">
+					<fmt:message key="spheres.interactive.explanation"/>
+				</p>
 				<c:forEach items="${command.spheres}" var="entry">
 				<span class="sphere sphere_hidden" id="sphere_${fn:escapeXml(entry.key)}">
 		    		<div class="sphere_header">
-		    			<a href="/sphere/${fn:escapeXml(entry.key)}">
-		    				<c:out value="${entry.key}"/>
-		    			</a>
+		    			<fmt:message key="spheres.sphere.title">
+		    				<fmt:param>
+		    					<a href="/sphere/${fn:escapeXml(entry.key)}"><c:out value="${entry.key}"/></a>
+		    				</fmt:param>
+		    			</fmt:message>
 		    			<!-- 
 		    			<input type="button" value="Top" onclick="$('html, body').animate({scrollTop:0}, 'slow');" onmouseover="this.style.cursor='pointer';" style="float: right; position: relative"></input>
 		    			 -->
@@ -81,12 +104,14 @@
 		    			| display buddies
 		    			+-->
 		    		<div class="sphere_users left_sphere_list_entry">
+		    			<div class="sphere_bottom_header"><fmt:message key="group.cv.members"/>:</div>
 	    				<c:forEach items="${entry.value}" var="item" varStatus="loop">
 	    					<spheres:userLink user="${item}"/>
 					    </c:forEach>
 				    </div>
 				    
 				    <div class="sphere_tag_cloud">
+		    			<div class="sphere_bottom_header"><fmt:message key="post.resource.tags.cap"/>:</div>
 				    	<tags:cloud requPath="sphere/${fn:escapeXml(entry.key)}" cmd="${command.spheresTagClouds[entry.key]}" showTooltips="0"/>
 				    </div>
 	        		
