@@ -10,27 +10,31 @@
 	<!-- Decide wether or not to display "Tags: " before listing all tags -->
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
 
-	
-	<!-- the tags of a post -->
+
+	<!--+
+		| Display all tags of a post. 
+		| If there are hidden systemtags (that are visible for the logginUser) display the small icon. 
+		| Afterwards all tags.
+		+ -->	
+
+
+	<!-- HIDDEN SYSTEM TAGS -->
+	<c:if test="${not empty post.hiddenSystemTags}">
+		<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title"/>
+		<img class="hiddenSystemTag" alt="systemTagsTitle" src="${resdir}/image/cog_wheel.png"/>
+		<ul class="listhButtons systemTags">
+			<c:forEach var="systag" items="${post.hiddenSystemTags}">
+				<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a></li>
+			</c:forEach>
+		</ul>	
+	</c:if>
+
+
+	<!-- ALL REGULAR TAGS -->
 	<c:if test="${not empty post.visibleTags}">
 		<c:if test="${showTagsLabel}">
 			<fmt:message key="tags"/><c:out value=": "/>
 		</c:if>
-		
-		<!-- HIDDEN SYSTEM TAGS -->
-		<fmt:message var="tagMsg" key="systemtag"/>
-		<c:if test="${not empty post.hiddenSystemTags}">
-			<img class="hiddenSystemTag" alt="system tags" src="${resdir}/image/cog_wheel.png"/>
-			<ul class="listhButtons systemTags">
-				<!-- join system tags into a string that is later parsed again by a JavaScript routine -->
-				<c:forEach var="systag" items="${post.hiddenSystemTags}">
-					<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a></li>
-				</c:forEach>
-			</ul>	
-		</c:if>
-
-		<!-- ALL REGULAR TAGS -->
-		<fmt:message var="tagMsg" key="navi.tag"/>
 		<ul class="tags">
 			<c:forEach var="tag" items="${post.visibleTags}">
 				<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></li>
