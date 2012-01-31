@@ -443,6 +443,13 @@ function unpickAll(evt) {
 	pickUnpickAll(evt, "unpickAll");
 }
 
+/**
+ * Pick or unpick all publications from the current post list.
+ * 
+ * @param evt
+ * @param pickUnpick
+ * @return
+ */
 function pickUnpickAll(evt, pickUnpick) {
 	var param  = "";
 	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {

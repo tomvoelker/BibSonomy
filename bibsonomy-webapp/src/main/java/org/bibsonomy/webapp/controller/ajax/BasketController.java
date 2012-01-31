@@ -86,7 +86,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	 * @param command
 	 * @return List<Post<BibTex>>
 	 */
-	private List<Post<? extends Resource>> createObjects(BasketManagerCommand command){
+	private List<Post<? extends Resource>> createObjects(final BasketManagerCommand command){
 		// create new list and necessary variables
 		final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
 		

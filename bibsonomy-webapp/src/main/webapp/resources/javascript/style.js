@@ -357,6 +357,7 @@ function switchNavi(scope, event) {
 	.val(hint) // set hint as value
 	.addClass('descriptiveLabel') // add class
 	.descrInputLabel({}); // make the label disappear on click/submit
+	$("#inpf").parents("li").removeClass("hidden"); // show form
 }
 
 
