@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,6 +26,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.UserComparator;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.SphereResourceViewCommand;
 import org.bibsonomy.webapp.command.TagCloudCommand;
@@ -218,6 +219,12 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			spheresTagClouds.put(sphere.getKey(), tagCloudCommand);
 			
 		}
+		
+		// retrieve similar users, by the given user similarity measure
+		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
+		final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, null, null, userRelation, null, 0, 10);	
+		command.getRelatedUserCommand().setRelatedUsers(similarUsers);
+		
 		
 		// fill command object
 		command.setSpheresBMPosts(spheresBMPosts);
