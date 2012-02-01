@@ -467,6 +467,27 @@
 		</dynamic>
 	</sql>
 	
+	<!-- start and end date -->
+	<sql id="startEndDate">
+		<dynamic prepend="AND">
+			<isNull property="startDate">
+				<!-- endDate == null: NOP -->
+				<isNotNull property="endDate">
+					b.date &lt;= #endDate#
+				</isNotNull>
+			</isNull>
+			<isNotNull property="startDate">
+				<isNull property="endDate">
+					#startDate# &lt;= b.date
+				</isNull>
+				<isNotNull property="endDate">
+					b.date BETWEEN #startDate# AND #endDate#
+				</isNotNull>
+			</isNotNull>
+		</dynamic>
+	</sql>
+	
+	
 	<!-- retrieves names of groupmembers of specified group -->
 	<sql id="selectGroupMembers">
 		SELECT g.user_name
