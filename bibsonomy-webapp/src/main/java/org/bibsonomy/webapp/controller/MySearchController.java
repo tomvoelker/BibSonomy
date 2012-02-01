@@ -78,7 +78,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			// FIXME: we should deliver items dynamically via ajax,
 			// displaying a 'wheel of fortune' until all items are loaded
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, Integer.MAX_VALUE);
+			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, null, null, Integer.MAX_VALUE);
 			this.postProcessAndSortList(command, resourceType);
 		}
 

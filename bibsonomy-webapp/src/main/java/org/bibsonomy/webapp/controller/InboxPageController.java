@@ -34,7 +34,7 @@ public class InboxPageController extends SingleResourceListController implements
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
-			this.setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, entriesPerPage);
+			this.setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			postProcessAndSortList(command, resourceType);
 			/* 
 			 * TODO: move to ibatis result mapping!
@@ -44,7 +44,7 @@ public class InboxPageController extends SingleResourceListController implements
 				post.setInboxPost(true);
 			}
 			// the number of items in this user's inbox has already been fetched
-			this.setTotalCount(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, entriesPerPage, null);
+			this.setTotalCount(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 		}
 		this.endTiming();
 

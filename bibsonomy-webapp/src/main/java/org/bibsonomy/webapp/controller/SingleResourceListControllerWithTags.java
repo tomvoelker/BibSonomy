@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -31,9 +32,9 @@ public class SingleResourceListControllerWithTags extends SingleResourceListCont
 	 * @param start start parameter
 	 * @param end end parameter
 	 **/
-	protected void setRelatedTags(final TagResourceViewCommand cmd, Class<? extends Resource> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search) {
+	protected void setRelatedTags(final TagResourceViewCommand cmd, Class<? extends Resource> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Date startDate, Date endDate, Order order, int start, int end, String search) {
 		final RelatedTagCommand relatedTagCommand = cmd.getRelatedTagCommand();
-		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, order, start, end, search, null));		
+		relatedTagCommand.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, null, search, regex, null, order, startDate, endDate, start, end));		
 	}
 	
 	/**
@@ -50,9 +51,9 @@ public class SingleResourceListControllerWithTags extends SingleResourceListCont
 	 * @param end
 	 * @param search
 	 */
-	protected void setSimilarTags(final TagResourceViewCommand cmd, Class<? extends Resource> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Order order, int start, int end, String search) {
+	protected void setSimilarTags(final TagResourceViewCommand cmd, Class<? extends Resource> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, Order order, final Date startDate, final Date endDate, int start, int end, String search) {
 		final RelatedTagCommand similarTags = cmd.getSimilarTags();
-		similarTags.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, order, start, end, search, TagSimilarity.COSINE));		
+		similarTags.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, null, search, regex, TagSimilarity.COSINE, order, startDate, endDate, start, end));		
 	}
 
 }
