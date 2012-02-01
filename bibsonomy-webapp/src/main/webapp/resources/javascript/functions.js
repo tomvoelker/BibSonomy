@@ -284,6 +284,14 @@ function add_hints() {
 		tag.addClass("descriptiveLabel");
 	}
 	/*
+	 * group
+	 */
+	var tag = $("#inpf[name|='group']");
+	if (tag.length && (tag.val() == "" || tag.val() == getString("navi.group.hint"))) {
+		tag.val(getString("navi.group.hint"));
+		tag.addClass("descriptiveLabel");
+	}
+	/*
 	 * search input field
 	 */
 	var search = $("#inpf[name='search']");
