@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -496,12 +497,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForHomepage(final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForHomepage(final FilterEntity filter, final Date startDate, final Date endDate, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setGroupId(GroupID.PUBLIC);
 		param.setSimHash(HashID.INTER_HASH);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
+		param.setStartDate(startDate);
+		param.setEndDate(endDate);
 
 		return this.getPostsForHomepage(param, session);
 	}
