@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -75,7 +76,7 @@ public class ResourceListControllerTest {
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(ALL_CLASSES));
 		testController.setUserSettings(DEFAULT_SETTINGS);
 		final ResourceViewCommand cmd = new ResourceViewCommand();
-		cmd.setTagstype("default");
+		cmd.setTagstype(TagsType.DEFAULT);
 		testController.handleTagsOnly(cmd, null, null, null, null, null, 0, null);
 		
 		assertEquals(Collections.emptySet(), testController.getListsToInitialize("", null));
