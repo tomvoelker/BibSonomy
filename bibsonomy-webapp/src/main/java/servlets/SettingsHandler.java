@@ -182,11 +182,11 @@ public class SettingsHandler extends HttpServlet{
 			} catch(final SQLException e) {
 				conn.rollback();     // rollback all queries
 				log.fatal("Could not change settings for user " + currUser + ".", e);
-				getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
+				getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
 			}       
 		} catch (final Exception e) {
 			log.fatal(e);
-			response.sendRedirect("/errors/databaseError.jsp");
+			response.sendRedirect("/errors/error.jsp");
 		} finally {
 			// Always make sure result sets and statements are closed,
 			// and the connection is returned to the pool
