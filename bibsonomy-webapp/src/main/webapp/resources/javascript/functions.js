@@ -123,6 +123,34 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	$(".hiddenSystemTag").fadeBox({timeout : 1500});
 }
 
+
+/**
+ * Retrieves the posts for the given query and appends them to the given list. 
+ * 
+ * @param query - A path + query that describes the posts to retrieve.
+ * @param list - The list where the posts shall be appended.
+ * @return
+ */
+function renderPosts(query, list) {
+	$.ajax({
+		url : "/posts" + query,
+		dataType : "html",
+		success : function(data) {
+			$(list).append($(data));
+			/*
+			 * FIXME: does this really always work? 
+			 * What about posts that have already been prepared?
+			 * Are there any methods missing?
+			 */
+			$(".editTags").click(editTags);
+			$(".hiddenSystemTag").fadeBox({timeout : 1500});
+			imagePreview();
+		}
+	});
+}
+
+
+
 /**
  * Adds [-] buttons to sidebar elements to toggle visibility of each element. 
  * 
