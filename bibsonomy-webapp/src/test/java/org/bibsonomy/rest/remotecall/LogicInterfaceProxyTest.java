@@ -500,33 +500,33 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getBookmarkByTagName query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getBookmarkByTagName query
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
-		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null /* must be null because order is inferred and not transmitted */, null,  7, 1264, null);
+		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null, null,  null /* must be null because order is inferred and not transmitted */, null, null, 7, 1264);
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getPublicationForGroupAndTag query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getPublicationForGroupAndTag query
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
-		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, null, 0, 1, null);
+		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, null, null, null, null, 0, 1);
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getPublicationByHashForUser query 
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getPublicationByHashForUser query 
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
-		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, null, 0, 5, null);
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, null, null, null, null, 0, 5);
 	}
 	
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, Date startDate, Date endDate, final int start, final int end) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -536,10 +536,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
 		}
 		
-		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, filter, start, end, search)).andReturn(expectedPosts);
+		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, filter, order, null, null, start, end)).andReturn(expectedPosts);
 		EasyMock.replay(serverLogic);
 
-		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, order, filter, start, end, search);
+		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, filter, order, null, null, start, end);
 		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
@@ -574,16 +574,17 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getTagsTest() {
-		getTags(org.bibsonomy.model.Resource.class, GroupingEntity.GROUP, "testGroup", "regex", null, null, null, 4, 22, null, null);
+		getTags(org.bibsonomy.model.Resource.class, GroupingEntity.GROUP, "testGroup", null, null, null, "regex", null, null, null, null, 4, 22);
 	}
 	
+	
 	@Override
-	public List<Tag> getTags(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end) {
 		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
-		EasyMock.expect(serverLogic.getTags(resourceType, grouping, groupingName, regex, tags, null, order, start, end, null, null)).andReturn(expected);
+		EasyMock.expect(serverLogic.getTags(resourceType, grouping, groupingName, tags, null, null, regex, null, order, null, null, start, end)).andReturn(expected);
 		EasyMock.replay(serverLogic);
 		
-		final List<Tag> returned = clientLogic.getTags(resourceType, grouping, groupingName, regex, tags, null, order, start, end, null, null);
+		final List<Tag> returned = clientLogic.getTags(resourceType, grouping, groupingName, tags, null, null, regex, null, order, null, null, start, end);
 		CommonModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile("(.*\\.)?(id|stem)"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
@@ -878,7 +879,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, StatisticsConstraint constraint, Order order, Date startDate, Date endDate, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -896,7 +897,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public int getTagStatistics(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Date startDate, Date endDate, int start, int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

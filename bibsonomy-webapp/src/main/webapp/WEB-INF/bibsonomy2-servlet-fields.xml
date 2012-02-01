@@ -37,6 +37,8 @@
 				-->
 				<value>*.entriesPerPage</value>
 				<value>*.start</value>
+				<value>startDate</value>
+				<value>endDate</value>
 				<!-- further general parameters for resource view pages -->
 				<!-- TODO: check, which are really neccessary to be set via parameters -->
 				<value>filter</value>
