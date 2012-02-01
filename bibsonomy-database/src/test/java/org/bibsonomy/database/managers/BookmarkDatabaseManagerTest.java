@@ -190,7 +190,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Override
 	public void testGetPostsForHomepage() {
-		final List<Post<Bookmark>> posts = bookmarkDb.getPostsForHomepage(null, 10, 0, null, this.dbSession);
+		final List<Post<Bookmark>> posts = bookmarkDb.getPostsForHomepage(null, null, null, 10, 0, null, this.dbSession);
 		assertEquals(5, posts.size());
 	}
 
