@@ -41,6 +41,7 @@
 		FROM popular_tags
 		WHERE content_type=#contentType#
 		AND tag_lower != 'imported'
+		ORDER BY tag_ctr DESC
 		LIMIT #limit# OFFSET #offset#		 
 	</select>
 	
@@ -352,6 +353,7 @@
 		SELECT tag_lower AS tag_name, tag_ctr 
 		FROM popular_tags
 		WHERE content_type=#contentType#
+		ORDER BY tag_ctr DESC
 		LIMIT #limit#		 
 	</select>
 	
