@@ -57,7 +57,7 @@
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>yuicompressor-maven-plugin</artifactId>
-				<version>1.1</version>
+				<version>1.2</version>
 				<executions>
 					<execution>
 						<id>check_and_compress</id>
@@ -72,10 +72,6 @@
 					<nosuffix>true</nosuffix>
 					<suffix></suffix>
 					<disableOptimizations>true</disableOptimizations>
-					<!-- TODO: css files disabled because plugin stops with exception -->
-					<excludes>
-						<exclude>**/*.css</exclude>
-					</excludes>
 					<aggregations>
 						<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
 		            	<aggregation>
