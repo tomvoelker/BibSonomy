@@ -49,7 +49,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 		}		
 		
@@ -62,7 +62,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 			this.setGroupDetails(command, groupingName);
 			
 			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null,  0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), null, 0, 20, null);
 				this.endTiming();
 				return Views.VIEWABLETAGPAGE;
 			}

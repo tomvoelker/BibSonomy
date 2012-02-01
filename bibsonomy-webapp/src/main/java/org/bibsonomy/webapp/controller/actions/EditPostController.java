@@ -243,7 +243,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * Thus, if the loginUser has several posts with the same hash in his inbox,
 		 * we get them all and must compare each post against the given user name.
 		 */
-		final List<?> dbPosts = logic.getPosts((Class<? extends Resource>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, 0, Integer.MAX_VALUE, null);
+		final List<?> dbPosts = logic.getPosts((Class<? extends Resource>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, null, null, null, 0, Integer.MAX_VALUE);
 		if (present(dbPosts)) {
 			for (final Object dbPost : dbPosts) {
 				final Post<RESOURCE> castedDbPost = (Post<RESOURCE>) dbPost;

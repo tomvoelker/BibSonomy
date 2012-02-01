@@ -76,10 +76,10 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, order, null, null, entriesPerPage);
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, order, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 			
-			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, entriesPerPage, null);
+			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			totalNumPosts += listCommand.getTotalCount();
 		}	
 		
@@ -99,11 +99,11 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		if ("html".equals(format)) {
 			command.setPageTitle("tag :: " + StringUtils.implodeStringCollection(requTags, " "));		
 			if (tagCount > 0) {
-				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, command.getStartDate(), command.getEndDate(), order, 0, Parameters.NUM_RELATED_TAGS, null);
 			}
 			// similar tags only make sense for a single requested tag
 			if (tagCount == 1) {
-				this.setSimilarTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+				this.setSimilarTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, command.getStartDate(), command.getEndDate(), 0, Parameters.NUM_RELATED_TAGS, null);
 			}
 			// set total nr. of posts 
 			command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);

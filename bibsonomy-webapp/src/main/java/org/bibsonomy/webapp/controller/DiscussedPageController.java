@@ -70,17 +70,17 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
 			/*
 			 * set the post counts
 			 */
-			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, entriesPerPage, null);
+			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 		}
 
 		// get discussion statistics
-		command.setDiscussionsStatistic(this.logic.getPostStatistics(Resource.class, groupingEntity, groupingName, null, null, null, FilterEntity.POSTS_WITH_DISCUSSIONS, 0, 0, null, null));
+		command.setDiscussionsStatistic(this.logic.getPostStatistics(Resource.class, groupingEntity, groupingName, null, null, null, FilterEntity.POSTS_WITH_DISCUSSIONS, null, null, command.getStartDate(), command.getEndDate(), 0, 0));
 		
 		
 		// html format - retrieve tags and return HTML view
