@@ -752,7 +752,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 
 		publicationDb.createPost(toInsert, this.dbSession);
 		
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		param.setSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
@@ -811,7 +811,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final Group group = GroupUtils.getPrivateGroup();
 		toInsert.getGroups().add(group);
 		
-		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
+		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		List<Post<BibTex>> post2 = publicationDb.getPosts(postParam, this.dbSession);
 		posts = publicationDb.getPostsByHashForUser(username, hash, requestedUserName, new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession);
 		assertEquals(0, posts.size());

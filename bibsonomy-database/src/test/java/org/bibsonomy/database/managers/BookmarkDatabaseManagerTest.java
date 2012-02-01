@@ -535,7 +535,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		// no oldIntraHash and no update
 		bookmarkDb.createPost(toInsert, this.dbSession);
 		final String userName = toInsert.getUser().getName();
-		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, GroupingEntity.USER, userName, Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
+		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, GroupingEntity.USER, userName, Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
 		CommonModelUtils.assertPropertyEquality(toInsert, posts.get(0), Integer.MAX_VALUE, null, new String[] { "resource", "tags", "user", "date", "changeDate" });
