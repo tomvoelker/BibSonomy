@@ -34,7 +34,6 @@ import org.junit.Test;
  * @author tst
  * @version $Id$
  */
-@Ignore
 public class BibSonomyScraperTest {
 	
 	/**
@@ -59,6 +58,7 @@ public class BibSonomyScraperTest {
 	 * starts URL test with id url_209
 	 */
 	@Test
+	@Ignore // TODO: remove as soon as bibsonomy supports /publication
 	public void url3TestRun(){
 		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_209"));
@@ -68,6 +68,7 @@ public class BibSonomyScraperTest {
 	 * starts URL test with id url_210
 	 */
 	@Test
+	@Ignore // TODO: remove as soon as bibsonomy supports /publication
 	public void url4TestRun(){
 		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_210"));
