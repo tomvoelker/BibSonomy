@@ -1001,11 +1001,7 @@ function initTagAutocompletionForSendTag(tagbox) {
  * @return
  */
 function toggleImage(pictureId, pictureActive, pictureInactive, divId) {
-	$(document.getElementById(divId)).slideToggle("slow"); 
-	var  imageSource= $(document.getElementById(pictureId)).attr("src");
-	if(imageSource==pictureActive) {
-		$('#'+pictureId).attr('src',pictureInactive);
-	} else {
-		$('#'+pictureId).attr('src',pictureActive);
-	}
+	$("#" + divId).slideToggle("slow"); 
+	var pic = $("#" + pictureId);
+	pic.attr('src', pic.attr("src") == pictureActive ? pictureInactive : pictureActive);
 }
