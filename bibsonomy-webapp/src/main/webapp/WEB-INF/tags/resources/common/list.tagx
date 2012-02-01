@@ -63,7 +63,7 @@
 		
         <!-- iterate over a list of resources and create the list -->
         <ul class="posts">
-			<c:if test="${!empty listView.list}">
+			<c:if test="${not empty listView.list}">
 	                  <c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
 					  
 					  <c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>

@@ -293,7 +293,7 @@ public enum Views implements View {
 	AJAX_ERRORS("ajax/errors"),
 
 	/* *****************************************************
-	 * ADMIN views ****************************************************
+	 * ADMIN views 
 	 */
 	/**
 	 * spam admin page
@@ -325,7 +325,7 @@ public enum Views implements View {
 	ADMIN("actions/admin/index"),
 
 	/* *****************************************************
-	 * action views ****************************************************
+	 * action views 
 	 */
 
 	/**
@@ -457,7 +457,7 @@ public enum Views implements View {
 	EDIT_TAGS("actions/edit/edittags"),
 
 	/* *****************************************************
-	 * OpenSocial views ****************************************************
+	 * OpenSocial views 
 	 */
 	/**
 	 * a plain text OAuth response message (e.g. "/oauth/requestToken")
@@ -538,6 +538,11 @@ public enum Views implements View {
 	 * JSON for both bookmarks and publications
 	 */
 	JSON("export/json"),
+	
+	/**
+	 * HTML-rendered posts lists for both bookmarks and publications 
+	 */
+	POSTS("export/posts"),
 
 	/**
 	 * html output for bookmarks
@@ -659,6 +664,7 @@ public enum Views implements View {
 	 */
 	public static final String FORMAT_STRING_CSV = "csv";
 	public static final String FORMAT_STRING_JSON = "json";
+	public static final String FORMAT_STRING_POSTS = "posts";
 	/*
 	 * publications
 	 */
@@ -744,6 +750,7 @@ public enum Views implements View {
 	public static Views getViewByFormat(final String format) {
 		if (FORMAT_STRING_BIB.equals(format) || FORMAT_STRING_BIBTEX.equals(format)) return BIBTEX;
 		if (FORMAT_STRING_JSON.equals(format)) return JSON;
+		if (FORMAT_STRING_POSTS.equals(format)) return POSTS;
 		if (FORMAT_STRING_BURST.equals(format)) return BURST;
 		if (FORMAT_STRING_RSS.equals(format)) return RSS;
 		if (FORMAT_STRING_PUBLRSS.equals(format)) return PUBLRSS;

@@ -143,7 +143,14 @@
 		<from>^/+csv/+(.*)$</from>
 		<set type="parameter" name="format">csv</set>
 		<to>/$1</to>
-	</rule>	
+	</rule>
+	<!-- only the completely rendered posts -->
+	<rule>
+		<name>/posts/</name>
+		<from>^/+posts/+(.*)$</from>
+		<set type="parameter" name="format">posts</set>
+		<to>/$1</to>
+	</rule>		
 	<!-- ****** JabRef Layouts *****  -->
 	<rule>
 		<name>/layout/</name>
