@@ -175,19 +175,21 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 *            name of the grouping. if grouping is user, then its the
 	 *            username. if grouping is set to {@link GroupingEntity#ALL},
 	 *            then its an empty string!
-	 * @param regex
-	 *            a regular expression used to filter the tagnames
 	 * @param tags
 	 * @param hash
 				  a resource hash (bibtex or bookmark)
+	 * @param search - search string
+	 * @param regex
+	 *            a regular expression used to filter the tagnames
+	 * @param relation TODO
 	 * @param order 
+	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned  
+	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned 
 	 * @param start
 	 * @param end
-	 * @param search - search string
-	 * @param relation TODO
 	 * @return a set of tags, en empty set else
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagSimilarity relation);
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
 	/**  
 	 * retrieves a filterable list of authors.
@@ -573,14 +575,16 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param resourceType
 	 * @param grouping
 	 * @param groupingName
-	 * @param regex
 	 * @param tags
+	 * @param regex
 	 * @param status
+	 * @param startDate TODO
+	 * @param endDate TODO
 	 * @param start
 	 * @param end
 	 * @return the number of relations from a user
 	 */
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Date startDate, Date endDate, int start, int end);
 
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser
