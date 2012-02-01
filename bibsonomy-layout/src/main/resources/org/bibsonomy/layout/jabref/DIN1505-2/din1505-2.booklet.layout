@@ -1,9 +1,0 @@
-<div style="margin-bottom:1em">
-\begin{author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}:
-\end{author}<i>\title</i>\begin{howpublished}.
-\howpublished\end{howpublished}\begin{address}.
-\address\end{address},
-\year\begin{note}. -
-\note\end{note}\begin{isbn}. - ISBN
-\isbn\end{isbn}
-</div>

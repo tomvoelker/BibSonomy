@@ -1,3 +1,0 @@
-<div style="margin-bottom:1em">
-\begin{author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\format[IfEmptyInsertDIN1505T2TitlePrefix]{\organization}\end{author}\begin{organization}\format[IfNotEmptyInsertDIN1505T2NameSeparator]{\author}<span style="font-variant: small-caps">\organization</span> (Hrsg.): \end{organization}<i>\title</i>\begin{edition}. \edition\end{edition}\begin{address}. \address\end{address}\begin{year}, \year\end{year}\begin{note}. - \note\end{note}
-</div>
