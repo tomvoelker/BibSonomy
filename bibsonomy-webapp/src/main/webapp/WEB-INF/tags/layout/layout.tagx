@@ -77,7 +77,7 @@
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
 				<!--+ 
 				 	| merged jquery.js, functions.js, style.js
-				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js, jquery.sidebarresizer.js
+				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js
 					| 
 					| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
 				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
@@ -99,7 +99,7 @@
 				</c:if>
 				<!-- enable on-site spammer killing when user is admin -->
 				<c:if test="${loginUser.role eq 'ADMIN'}">
-				  <script type="text/javascript" src="${resdir}/javascript/spammer.js"><!-- keep me --></script>
+				  <script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
 				</c:if>
 
 				<c:if test="${not empty additionalJS}">

@@ -82,11 +82,11 @@
 		
 			
 			<!--include spammer scripts -->
-				<script type="text/javascript" src="${resdir}/javascript/spammer.js"><!-- keep me --></script>
-				<script type="text/javascript" src="${resdir}/javascript/ajax-dynamic-content.js"><!-- keep me --></script>
-				<script type="text/javascript" src="${resdir}/javascript/ajax.js"><!-- keep me --></script>
-				<script type="text/javascript" src="${resdir}/javascript/ajax-tooltip.js"><!-- keep me --></script>
-				<script type="text/javascript" src="${resdir}/javascript/marksame.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/admin/ajax-dynamic-content.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/admin/ajax.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/admin/ajax-tooltip.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/admin/marksame.js"><!-- keep me --></script>
 		
 	
 			<!--check which tab command to include -->	
