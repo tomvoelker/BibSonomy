@@ -1,0 +1,5 @@
+<div style="margin-bottom:1em">
+\format[AuthorLastFirst,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,HTMLChars]{\author}:
+<i>\title</i>\begin{address}. \address\end{address}. \school\begin{type}, \type\end{type}, \year\begin{note}. -
+\note\end{note}
+</div>

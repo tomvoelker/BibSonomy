@@ -1,0 +1,6 @@
+<div style="margin-bottom:1em">
+\begin{author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\format[IfNotEmptyInsertDIN1505T2TitlePrefix]{\title}\end{author}\begin{title}<i>\title</i>\end{title}\begin{howpublished}.
+\howpublished\end{howpublished}\begin{year},
+\year\end{year}\begin{note}. -
+\note\end{note}
+</div>

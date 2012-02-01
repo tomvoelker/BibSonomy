@@ -1,0 +1,15 @@
+<div style="margin-bottom:1em">
+\begin{author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\end{author}\begin{editor}\format[IfNotEmptyInsertDIN1505T2NameSeparator]{\author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
+<i>\title</i>
+In: <i>\booktitle</i>\begin{volume}.
+\volume\end{volume}\begin{number}.
+\number\end{number}\begin{edition}.
+\edition\end{edition}\begin{address}.
+\address\end{address}
+: <span style="font-variant: small-caps">\publisher</span>,
+\year\begin{series}
+(\series)\end{series}\begin{note}.
+- \note\end{note}\begin{isbn}.
+- ISBN-\isbn\end{isbn}\begin{pages},
+S. \pages\end{pages}
+</div>

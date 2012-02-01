@@ -1,0 +1,12 @@
+<div style="margin-bottom:1em">
+\begin{organization}<span style="font-variant: small-caps">\organization</span> (Veranst.):
+\end{organization}<i>\title</i>\begin{series}
+\series\end{series}\begin{volume}.
+\volume\end{volume}\begin{number}.
+\number\end{number}\begin{address}.
+\address\end{address}\begin{publisher}
+: <span style="font-variant: small-caps">\publisher</span>\end{publisher}\begin{year},
+\year\end{year}\begin{note}. -
+\note\end{note}\begin{isbn}. - ISBN
+\isbn\end{isbn}
+</div>
