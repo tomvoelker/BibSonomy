@@ -105,14 +105,14 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getFilter(), null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
 			/*
 			 * set the post counts
 			 */
 			if (!publicationFilter) {
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage, null);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 				totalNumPosts += listCommand.getTotalCount();
 			}
 		}
@@ -146,7 +146,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
 			
 			if (present(requTags)) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				this.endTiming();
 

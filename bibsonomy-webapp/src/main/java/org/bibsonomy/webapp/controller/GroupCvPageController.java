@@ -53,7 +53,7 @@ public class GroupCvPageController extends ResourceListController implements Min
 		 *  retrieve and set the requested resource lists
 		 */
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
-			this.setList(command, resourceType, groupingEntity, requestedGroup, Collections.singletonList(MyOwnSystemTag.NAME), null, null, null, null, entries);
+			this.setList(command, resourceType, groupingEntity, requestedGroup, Collections.singletonList(MyOwnSystemTag.NAME), null, null, null, null, null, null, entries);
 		}
 		
 		/*

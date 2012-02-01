@@ -92,7 +92,7 @@ public class SearchPageController extends SingleResourceListController implement
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, null, null, search, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final List<?> list = listCommand.getList();

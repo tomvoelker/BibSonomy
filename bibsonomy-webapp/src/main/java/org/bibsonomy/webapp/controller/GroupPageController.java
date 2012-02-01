@@ -71,12 +71,12 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
 			// retrieve resource counts, if no tags are given
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) { 
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage, null);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			}
 		}
 
@@ -87,7 +87,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				 * handle the "relevant for group" pages
 				 */
 				command.setPageTitle("relevant for :: " + groupingName); // TODO: i18n
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
 				this.endTiming();
 				return Views.RELEVANTFORPAGE;
 			} 
@@ -103,7 +103,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			this.setGroupDetails(command, groupingName);
 
 			if (requTags.size() > 0) {
-				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
 			}
 			
 			this.endTiming();

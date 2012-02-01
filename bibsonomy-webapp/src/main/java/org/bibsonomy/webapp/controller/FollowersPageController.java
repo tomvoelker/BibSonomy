@@ -66,10 +66,10 @@ public class FollowersPageController extends SingleResourceListController implem
 		
 		// fetch all tags of logged-in user
 		final String username = command.getContext().getLoginUser().getName();
-		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, 0, Integer.MAX_VALUE, null, null);
+		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);
 		
 		// fetch all tags of followed users TODO implement...
-		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, 0, Integer.MAX_VALUE, null, null);		
+		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);		
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
@@ -79,7 +79,7 @@ public class FollowersPageController extends SingleResourceListController implem
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();
 			final int origStart = listCommand.getStart();
 			listCommand.setStart(start);
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			listCommand.setEntriesPerPage(origEntriesPerPage);
 			listCommand.setStart(origStart);
 										

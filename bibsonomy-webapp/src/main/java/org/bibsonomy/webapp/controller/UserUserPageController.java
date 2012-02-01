@@ -18,8 +18,8 @@ import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RankingUtil;
-import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -59,10 +59,10 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		command.setSortPageOrder("desc");
 
 		// fetch all tags of logged-in user
-		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, groupingEntity, command.getContext().getLoginUser().getName(), null, null, null, null, 0, Integer.MAX_VALUE, null, null);
+		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, groupingEntity, command.getContext().getLoginUser().getName(), null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);
 		
 		// fetch all tags of requested user
-		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null, null);		
+		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, groupingEntity, groupingName, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);		
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
@@ -70,7 +70,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 						
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			listCommand.setEntriesPerPage(origEntriesPerPage);
 										
 			// compute the ranking for each post in the list
@@ -85,7 +85,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			}
 			
 			// set total nr. 
-			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, origEntriesPerPage, null);
+			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), origEntriesPerPage);
 		}
 
 
