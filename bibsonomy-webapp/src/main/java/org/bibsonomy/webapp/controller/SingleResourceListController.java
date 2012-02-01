@@ -64,8 +64,8 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * 
 	 */
 	protected int getPostCountForSidebar(final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
-		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null).getCount()
-				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null).getCount();
+		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, null, FilterEntity.UNFILTERED, null, Order.ADDED, null, null, 0, 999).getCount()
+				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, null, FilterEntity.UNFILTERED, null, Order.ADDED, null, null, 0, 999).getCount();
 	}
 
 }

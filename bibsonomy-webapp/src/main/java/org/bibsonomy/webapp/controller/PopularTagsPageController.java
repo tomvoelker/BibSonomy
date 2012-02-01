@@ -30,7 +30,7 @@ public class PopularTagsPageController implements MinimalisticController<TagClou
 		command.setPageTitle("Tags"); // TODO: i18n
 		
 		/* fill command with tags */
-		command.setTags(this.logic.getTags(Resource.class, GroupingEntity.ALL, null, null, null, null, Order.POPULAR, 0, 100, null, null));
+		command.setTags(this.logic.getTags(Resource.class, GroupingEntity.ALL, null, null, null, null, null, null, Order.POPULAR, null, null, 0, 100));
 		
 		return Views.POPULAR_TAGS;
 	}

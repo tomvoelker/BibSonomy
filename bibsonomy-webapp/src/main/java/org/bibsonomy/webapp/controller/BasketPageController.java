@@ -39,7 +39,7 @@ public class BasketPageController extends SingleResourceListController implement
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
 
-			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, Integer.MAX_VALUE);
+			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, null, null, Integer.MAX_VALUE);
 			this.postProcessAndSortList(command, resourceType);
 
 			/*

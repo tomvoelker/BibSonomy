@@ -49,7 +49,7 @@ public class CvPageController extends ResourceListController implements Minimali
 		 */
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
-			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(MyOwnSystemTag.NAME), null, Order.ADDED, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(MyOwnSystemTag.NAME), null, null, null, Order.ADDED, null, null, entriesPerPage);
 		}
 		
 		return Views.CVPAGE;
