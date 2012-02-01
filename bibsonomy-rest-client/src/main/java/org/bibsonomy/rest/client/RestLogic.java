@@ -206,7 +206,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, Date startDate, Date endDate, final int start, final int end) {
 		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
@@ -222,7 +222,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, Date startDate, Date endDate, final int start, final int end) {
 		final GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setFilter(regex);
@@ -409,7 +409,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, Date startDate, Date endDate, final int start, final int end) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -425,7 +425,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Date startDate, Date endDate, final int start, final int end) {
 		throw new UnsupportedOperationException();
 	}
 
