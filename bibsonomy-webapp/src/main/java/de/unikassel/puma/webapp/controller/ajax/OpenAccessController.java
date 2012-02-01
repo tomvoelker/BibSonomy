@@ -49,7 +49,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		final String action = command.getAction();
 		if (present(action)) {
 			if (GET_SENT_REPOSITORIES.equals(action)) {
-				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, FilterEntity.POSTS_WITH_REPOSITORY, 0, Integer.MAX_VALUE, null);
+				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, FilterEntity.POSTS_WITH_REPOSITORY, null, null, null, 0, Integer.MAX_VALUE);
 
 				// TODO: implement this
 				/*

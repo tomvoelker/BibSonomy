@@ -192,13 +192,13 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			if (command.getShowSpamPosts().equals("true")) {
 				filter = FilterEntity.ADMIN_SPAM_POSTS;
 			}
-			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, Order.ADDED, filter, 0, 5, null);
+			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, Order.ADDED, null, null, 0, 5);
 			command.setBookmarks(bookmarks);
 
-			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 100, null, null).getCount();
+			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, null, null, null, null, 0, 100).getCount();
 			command.setBookmarkCount(totalBookmarks);
 
-			final int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 10000, null, null).getCount();
+			final int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, null, null, null, null, 0, 10000).getCount();
 			command.setBibtexCount(totalBibtex);
 		}
 	}
