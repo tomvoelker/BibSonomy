@@ -65,7 +65,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		 * fetch posts
 		 */		
 		final List<String> tags = Collections.singletonList(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, requestedBibTexKey));
-		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null, null, 0, 20, null));
+		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null, null, null, null, null, 0, 20));
 	}
 	
 	/**
