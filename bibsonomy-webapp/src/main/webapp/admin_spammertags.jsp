@@ -2,11 +2,11 @@
 
 <%@include file="/boxes/admin/login.jsp"%>
 
-<script type="text/javascript" src="/ajax/scriptaculous/lib/prototype.js"></script>
-<script type="text/javascript" src="/ajax/scriptaculous/src/scriptaculous.js"></script> 
-<script type="text/javascript" src="/resources/javascript/ajax-dynamic-content.js"></script>
-<script type="text/javascript" src="/resources/javascript/ajax.js"></script>
-<script type="text/javascript" src="/resources/javascript/ajax-tooltip.js"></script>
+<script type="text/javascript" src="/resources/javascript/admin/scriptaculous/lib/prototype.js"></script>
+<script type="text/javascript" src="/resources/javascript/admin/scriptaculous/src/scriptaculous.js"></script> 
+<script type="text/javascript" src="/resources/javascript/admin/ajax-dynamic-content.js"></script>
+<script type="text/javascript" src="/resources/javascript/admin/ajax.js"></script>
+<script type="text/javascript" src="/resources/javascript/admin/ajax-tooltip.js"></script>
 <link rel="stylesheet" type="text/css" href="/resources/css/spammer.css">
     
 
