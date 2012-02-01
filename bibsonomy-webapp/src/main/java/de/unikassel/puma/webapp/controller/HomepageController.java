@@ -41,7 +41,7 @@ public class HomepageController extends SingleResourceListController implements 
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			// disable manual setting of start value for home page
 			command.getListCommand(resourceType).setStart(0);
-			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, null, 5);
+			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 5);
 			postProcessAndSortList(command, resourceType);
 		}
 												
@@ -53,7 +53,7 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * add news posts (= latest blog posts) FIXME: make configurable
 			 */
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "puma", Arrays.asList("pumanews"), null, null, null, 0, 3, null));
+			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "puma", Arrays.asList("pumanews"), null, null, null, null, null, null, 0, 3));
 			
 			this.endTiming();
 			return Views.PUMAHOMEPAGE;		
