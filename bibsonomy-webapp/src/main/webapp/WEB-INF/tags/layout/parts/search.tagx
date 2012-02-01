@@ -56,7 +56,9 @@
 		  			<c:if test="${not empty formExtra}">
 		  				<jsp:invoke fragment="formExtra"/>
 		  			</c:if>
-				</form>	
+		  			<fmt:message key="navi.search" var="searchButton"/>
+		  			<input type="submit" value="${searchButton}"/>
+				</form>
 			</li>
 			<c:if test="${not empty afterInput}"><!-- FIXME: wird noch nicht angezeigt -->
 				<li>
