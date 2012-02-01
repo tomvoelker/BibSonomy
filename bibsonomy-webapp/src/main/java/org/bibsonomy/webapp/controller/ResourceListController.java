@@ -173,11 +173,11 @@ public abstract class ResourceListController {
 	 * @param search
 	 */
 	protected void handleTagsOnly(final ResourceViewCommand cmd, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
-		final String tagsType = cmd.getTagstype();
-		if (tagsType != null) {
+		final TagsType  tagsType = cmd.getTagstype();
+		if (present(tagsType)) {
 
 			// if tags are requested (not related tags), remove non-systemtags from tags list
-			if (tagsType.equalsIgnoreCase(TagsType.DEFAULT.getName()) && tags != null ) {
+			if (TagsType.DEFAULT.equals(tagsType) && tags != null ) {
 				SystemTagsExtractor.removeAllNonSystemTags(tags);
 			}
 

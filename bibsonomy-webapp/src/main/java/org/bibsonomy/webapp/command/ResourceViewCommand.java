@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -26,8 +27,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private String requestedUser;
 	private Set<Class<? extends Resource>> resourcetype;
 	
-	// TODO: could be of type TagsType
-	private String tagstype; // for queries for specific kinds of tags
+	private TagsType tagstype; // for queries for specific kinds of tags
 	
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
@@ -242,14 +242,14 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @return the tagstype
 	 */
-	public String getTagstype() {
+	public TagsType getTagstype() {
 		return this.tagstype;
 	}
 
 	/**
 	 * @param tagstype the tagstype to set
 	 */
-	public void setTagstype(final String tagstype) {
+	public void setTagstype(final TagsType  tagstype) {
 		this.tagstype = tagstype;
 	}
 
