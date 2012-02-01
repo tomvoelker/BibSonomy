@@ -11,7 +11,7 @@
  * @param {Object}
  *            ckey
  */
-function deleteUrl(self, url, hash, ckey){
+function deleteUrl(self, url, hash, ckey) {
     $.ajax({
         type: "GET",
         url: "/ajax/additionalURLs",
@@ -38,40 +38,42 @@ function deleteUrl(self, url, hash, ckey){
  * (bibtexdetails.tagx)
  */
 $(function(){
-    $(".postUrl").click(function(){
-        var options = {
-            success: function(data){;
-                var object = $(this);
-                var url = $("url", data).text();
-				var status = $("status", data).text();
-                var urlText = $("text", data).text();
-                var ckey = $("ckey", data).text();
-                var hash = $("hash", data).text();
-
-                if("ok" == status) {
-                	$('#urlList').prepend(function(){
-                		var urlLnk = $('<a href="' + url + '">' + urlText + '</a>');
-                		var element = $("<div></div>").append(urlLnk).append(' (').append($('<a href="">' + getString("post.bibtex.delete") + '</a>').click(function(){
-                        deleteUrl(this, url, hash, ckey);
-                        return false;
-                    })).append(')');
-                    $("#f_addURL").hide();
-                    return element;
-                })
-				}else{
-					alert(data.globalErrors[0].message);
-                }
-            },
-		
-        };
-        
-        $("#f_addURL").ajaxSubmit(options);
+    $(".postUrl").click(function() {
+    	/*
+    	 * load the jQuery script for sending the form
+    	 */
+    	$.getScript("/resources/jquery/plugins/form/jquery.form.js", function() {
+    	
+	    	
+	        $("#f_addURL").ajaxSubmit({
+	            success: function(data) {;
+	            	var url = $("url", data).text();
+	            	var status = $("status", data).text();
+	            	var urlText = $("text", data).text();
+	            	var ckey = $("ckey", data).text();
+	            	var hash = $("hash", data).text();
+	
+	            	if ("ok" == status) {
+	            		$('#urlList').prepend(function() {
+	            			$("#f_addURL").hide();
+	            			return $("<div><a href='" + url + "'>" + urlText + "</a> (</div>")
+	            				.append($("<a href=''>" + getString("post.bibtex.delete") + "</a>").click(function() {
+	            					deleteUrl(this, url, hash, ckey);
+	            					return false;
+	            				})).append(')');
+	            		});
+	            	} else {
+	            		alert(data.globalErrors[0].message);
+	            	}
+	        	}
+	        });
+    	});
     });
 });
 
 /**
  * Function which sets the "f_addURL" - form to display = 'block'
  */
-function addUrlForm(){
-    document.getElementById('f_addURL').style.display = 'block';
+function addUrlForm() {
+    $('#f_addURL').css("display", "block");
 }
