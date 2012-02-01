@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.FilterEntity;
@@ -24,6 +25,10 @@ public class ResourceViewCommand extends BaseCommand {
 	public static final String DEFAULT_SORTPAGEORDER = "asc";
 	
 	private TagCloudCommand tagcloud = new TagCloudCommand();
+	
+	private Date startDate;
+	private Date endDate;
+	
 	private String requestedUser;
 	private Set<Class<? extends Resource>> resourcetype;
 	
@@ -293,6 +298,22 @@ public class ResourceViewCommand extends BaseCommand {
 	 */
 	public void setReferer(final String referer) {
 		this.referer = referer;
+	}
+
+	public Date getStartDate() {
+		return this.startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return this.endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 }

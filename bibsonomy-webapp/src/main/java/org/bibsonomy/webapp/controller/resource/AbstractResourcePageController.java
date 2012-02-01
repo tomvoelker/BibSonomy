@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller.resource;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -101,14 +102,16 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 		 * LogicInterface checks for the type and returns the corresponding post(s). 
 		 */
 		final int entriesPerPage = command.getListCommand(this.getResourceClass()).getEntriesPerPage();		
-		this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, entriesPerPage);
+		final Date startDate = command.getStartDate();
+		final Date endDate = command.getEndDate();
+		this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, startDate, endDate, entriesPerPage);
 
 		if (GroupingEntity.ALL.equals(groupingEntity)) {
 			/* 
 			 * retrieve total count with given hash 
 			 * (only for /<RESOURCE>/HASH)
 			 */
-			this.setTotalCount(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, entriesPerPage, null);
+			this.setTotalCount(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, null, startDate, endDate, entriesPerPage);
 		} else if (GroupingEntity.USER.equals(groupingEntity)) {
 			/*
 			 * Complete the post details for the first post of a given user 
@@ -207,7 +210,7 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 				 * fetch posts of all users with the given hash, add users to related
 				 * users list				
 				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, 0, 1000, null);
+				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, null, 0, 1000);
 				for (final Post<R> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}
@@ -228,7 +231,9 @@ public abstract class AbstractResourcePageController<R extends Resource> extends
 				 * with the interHash of firstBibtex in their collection. In allPosts, only public posts
 				 * are contained, hence it can be smaller.
 				 */
-				this.setTotalCount(command, this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, 1000, null);
+				final Date startDate = command.getStartDate();
+				final Date endDate = command.getEndDate();
+				this.setTotalCount(command, this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, startDate, endDate, 1000);
 				firstResource.setCount(command.getListCommand(this.getResourceClass()).getTotalCount());
 
 				/*
