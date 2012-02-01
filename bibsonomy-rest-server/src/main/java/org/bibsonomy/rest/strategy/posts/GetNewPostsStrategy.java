@@ -30,6 +30,6 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, Order.ADDED, null, this.getView().getStartValue(), this.getView().getEndValue(), search);
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, null, Order.ADDED, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

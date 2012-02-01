@@ -29,6 +29,6 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, hash, null, null, getView().getStartValue(), getView().getEndValue(), search); 
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, hash, search, null, null, null, null, getView().getStartValue(), getView().getEndValue()); 
 	}
 }
