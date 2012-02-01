@@ -329,12 +329,13 @@
 	<layout name="din1505">
 		<displayName>DIN 1505</displayName>
 		<description xml:lang="en">
-			HTML output format according to the German Institute for
+			HTML output format according to the German Institute for 
 			Standardization (DIN).
 		</description>
 		<description xml:lang="de">
 			HTML Ausgabeformat gemäß dem Deutschen Institut für Normung.
 		</description>
+		<directory>din1505</directory>
 		<baseFileName>din1505</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
@@ -342,17 +343,18 @@
 	<layout name="din1505year">
 		<displayName>DIN 1505, grouped by year</displayName>
 		<description xml:lang="en">
-			HTML output format according to the German Institute for
-			Standardization (DIN), grouped by year.
+			HTML output format according to the German Institute for 
+			Standardization (DIN), grouped by year
 		</description>
 		<description xml:lang="de">
-			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung, gruppiert
-			nach Jahren.
+			HTML Ausgabeformat gemäß dem Deutschen Institut für Normung,
+			gruppiert nach Jahr.
 		</description>
+		<directory>din1505year</directory>
 		<baseFileName>din1505year</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>		
+	</layout>	
 	<layout name="mms">
 		<displayName>DIN 1505 MMS</displayName>
 		<description xml:lang="en">
@@ -665,17 +667,6 @@
 		</description>
 		<directory>chicago</directory>
 		<baseFileName>Chicago.biblio</baseFileName>
-		<mimeType>text/html</mimeType>
-		<extension>.html</extension>
-	</layout>
-	<layout name="din1505-2">
-		<displayName>DIN 1505-2</displayName>
-		<description xml:lang="en">HTML output format according to the German Institute for Standardization (DIN).</description>
-		<description xml:lang="de">
-			HTML Ausgabeformat gemäß dem Deutschen Institut für Normung.
-		</description>
-		<directory>DIN1505-2</directory>
-		<baseFileName>din1505-2</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
