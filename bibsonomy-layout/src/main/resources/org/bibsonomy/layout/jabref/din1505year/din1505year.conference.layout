@@ -1,0 +1,16 @@
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<div style="margin-bottom:1em">
+\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\begin{editor}
+; \format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
+\title\begin{volume}.
+\volume\end{volume}\begin{number}.
+\number\end{number}.
+In: <i>\booktitle</i>\begin{address}.
+\address\end{address}\begin{publisher}
+: <span style="font-variant: small-caps">\publisher</span>\end{publisher},
+\year\begin{series}
+(\series)\end{series}\begin{note}. -
+\note\end{note}\begin{isbn}. - ISBN
+\isbn\end{isbn}\begin{pages},
+S. \pages\end{pages}
+</div>

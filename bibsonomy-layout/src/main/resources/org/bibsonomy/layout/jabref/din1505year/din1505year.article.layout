@@ -1,0 +1,10 @@
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+<div style="margin-bottom:1em">
+\begin{author}\format[AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}:\end{author}
+\title\begin{journal}.
+In: <i>\journal</i>\end{journal}\begin{volume},
+\volume\end{volume}
+(\year)\begin{number},
+Nr. \number\end{number}\begin{pages},
+S. \pages\end{pages}
+</div>
