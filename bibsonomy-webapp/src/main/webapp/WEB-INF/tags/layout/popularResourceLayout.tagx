@@ -22,25 +22,11 @@
 
 		<jsp:attribute name="headerContainer">
 			<div id="bookmarksheader">
-				<div id="bookmarkListConfig" class="config">
-					<div id="bookmarkListOptions" class="listOptions">
-						<rc:actions resourceType="bookmark"/>
-					</div>					
-				</div>
-				<h2 class="header">
-					<fmt:message key="bookmarks" />
-				</h2>
+				<h2 class="header"><fmt:message key="bookmarks" /></h2>
 			</div>
 			
 			<div id="publicationsheader">
-				<div id="publicationListConfig" class="config">
-					<div id="publicationListOptions" class="listOptions">
-						<rc:actions resourceType="bibtex"/>
-					</div>						
-				</div>
-				<h2 class="header">
-					<fmt:message key="publications" />
-				</h2>			
+				<h2 class="header"><fmt:message key="publications" /></h2>			
 			</div>
 		</jsp:attribute>
 
