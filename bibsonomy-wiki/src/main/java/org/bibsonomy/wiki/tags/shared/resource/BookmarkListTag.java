@@ -56,7 +56,7 @@ public class BookmarkListTag extends SharedResourceTag {
  			tags = tagAtttributes.get(NAME);
  		}
  		final List<Post<Bookmark>> posts;
- 		posts = this.logic.getPosts(Bookmark.class, requestType.getGroupingEntity(), this.getRequestedName(requestType), Collections.singletonList(tags), null, null, null, 0, Integer.MAX_VALUE, null);
+ 		posts = this.logic.getPosts(Bookmark.class, requestType.getGroupingEntity(), this.getRequestedName(requestType), Collections.singletonList(tags), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
 		
  		
         renderedHTML.append("<div class='align'>");
