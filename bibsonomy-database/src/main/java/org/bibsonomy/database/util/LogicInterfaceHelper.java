@@ -2,6 +2,7 @@ package org.bibsonomy.database.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -77,10 +78,12 @@ public class LogicInterfaceHelper {
 	 * @param end as specified for {@link PostLogicInterface#getPosts}
 	 * @param search as specified for {@link PostLogicInterface#getPosts} 
 	 * @param filter as specified for {@link PostLogicInterface#getPosts}
+	 * @param startDate as specified for {@link PostLogicInterface#getPosts}
+	 * @param endDate as specified for {@link PostLogicInterface#getPosts}
 	 * @param loginUser logged in user as specified for {@link PostLogicInterface#getPosts}
 	 * @return the fresh param object 
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final FilterEntity filter, final User loginUser) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final Date startDate, final Date endDate, final String search, final FilterEntity filter, final User loginUser) {
 		/*
 		 * delegate to simpler method
 		 */
@@ -102,6 +105,11 @@ public class LogicInterfaceHelper {
 		} else {
 			param.setHash(hash);
 		}
+		/*
+		 * set start and end date
+		 */
+		param.setStartDate(startDate);
+		param.setEndDate(endDate);
 		
 		param.setUserName(loginUser.getName());
 		param.setGrouping(grouping);

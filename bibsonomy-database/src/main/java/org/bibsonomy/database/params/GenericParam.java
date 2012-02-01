@@ -173,6 +173,16 @@ public abstract class GenericParam {
 	private int groupId;
 	/** If we're searching for a group this is used for the name of the group */
 	private String requestedGroupName;
+	
+	/**
+	 * Return posts that have been created after (inclusive) this date. 
+	 */
+	private Date startDate;
+	/**
+	 * Return posts that have been created before (inclusive) this date. 
+	 */
+	private Date endDate;
+	
 	/** The SQL-Limit which is by default 10 */
 	private int limit;
 	/** The SQL-Offset which is by default 0 */
@@ -1056,5 +1066,21 @@ public abstract class GenericParam {
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	public Date getStartDate() {
+		return this.startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return this.endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 }

@@ -119,6 +119,7 @@
 	      	  WHERE b.group = #groupId#
 	      	  	AND u.to_classify = FALSE
 	      	  	AND u.spammer = FALSE
+	      	  	<include refid="startEndDate"/>
   		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) as b
 		    LEFT JOIN tas AS t USING (content_id)
