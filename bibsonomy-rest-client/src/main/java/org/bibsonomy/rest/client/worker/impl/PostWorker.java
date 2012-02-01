@@ -107,9 +107,4 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 		
 		return post;
 	}
-
-	@Override
-	protected Reader readResponse(final PostMethod method) throws IOException, ErrorPerformingRequestException {
-		return new StringReader(method.getResponseBodyAsString());
-	}
 }
