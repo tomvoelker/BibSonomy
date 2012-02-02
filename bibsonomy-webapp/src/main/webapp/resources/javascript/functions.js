@@ -150,6 +150,72 @@ function renderPosts(query, list) {
 }
 
 
+function updatePosts(query, seconds) {
+	setInterval(function() {
+		$.each(["bookmark", "publication"], function(index, resourceType) {
+			/*
+			 * we will add the posts to this list
+			 */
+			var list = $("#" + resourceType + "s_0 ul.posts");
+			/*
+			 * get the date of the most recent post 
+			 */
+			var date = list.find("li:first span[itemprop='dateCreated']").attr("content");
+			/*
+			 * get newer posts
+			 */
+			$.ajax({
+				url : "/posts" + query + "?startDate=" + encodeURIComponent(date) + "&resourcetype=" + resourceType,
+				dataType : "html",
+				success : function(data) {
+					/*
+					 * add hidden posts to list and show them in reverse order (after some time)
+					 */
+					$(data).hide().prependTo(list).reverse().each(function(index) {
+						var post = $(this);
+						// fix class for background color (FIXME: sometimes doesn't work) 
+						if (post.next().hasClass("odd")) {
+							post.removeClass("odd").addClass("even");
+						} else {
+							post.removeClass("even").addClass("odd");
+						}
+						setTimeout(fadePostIn, index * 1000, post);
+					});
+
+					/*
+					 * FIXME: does this really always work? 
+					 * What about posts that have already been prepared?
+					 * Are there any methods missing?
+					 */
+					$(".editTags").click(editTags);
+					$(".hiddenSystemTag").fadeBox({timeout : 1500});
+					imagePreview();
+				}
+			});
+		});
+	}, 1000 * seconds);
+}
+
+/**
+ * Fades the given post in and removes the last post of the surrounding post list.
+ * 
+ * @param post
+ * @return
+ */
+function fadePostIn(post) {
+	post.fadeIn("slow").parents("ul.posts").find("li.post:last").fadeOut("slow").remove();
+}
+
+
+function showPosts(list, posts, delay, index) {
+	if (index <= posts.length) {
+		$(posts[index]).hide().prependTo(list).show("fade", function() {
+			list.find("li:last").hide("fade", {}, delay);
+			showPosts(list, posts, index + 1);
+		}, delay);
+	}
+}
+
 
 /**
  * Adds [-] buttons to sidebar elements to toggle visibility of each element. 
@@ -944,6 +1010,12 @@ this.imagePreview = function(){
 	});		     	      
 };
 
+/*
+ * jQuery "plugin" to get elements in reverse order. Use like this:
+ * 
+ * $(selector).reverse();
+ */
+jQuery.fn.reverse = [].reverse;
 
 /*
  * overloaded/added methods of the String class

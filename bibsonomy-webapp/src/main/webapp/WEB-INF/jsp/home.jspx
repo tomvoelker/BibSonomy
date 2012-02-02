@@ -16,6 +16,10 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" activeTab="home">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+			
+			<script type="text/javascript">
+				$(function(){updatePosts("/", 60);});
+			</script>
 		</jsp:attribute>
 
 		<!-- show info text if user not logged in -->
