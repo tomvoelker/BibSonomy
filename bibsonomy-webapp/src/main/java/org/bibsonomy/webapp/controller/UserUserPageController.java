@@ -108,7 +108,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			
 			this.endTiming();
 			// return personalized view
-			return Views.USERUSERPAGE;
+			return Views.USERPERSONALIZEDPAGE;
 		}
 		
 		this.endTiming();
