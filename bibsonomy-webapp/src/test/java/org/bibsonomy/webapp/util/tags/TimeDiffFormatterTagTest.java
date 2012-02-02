@@ -2,7 +2,11 @@ package org.bibsonomy.webapp.util.tags;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,12 +20,36 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * @author rja
  * @version $Id$
  */
-@Ignore
 public class TimeDiffFormatterTagTest {
 
 	private static final String EN = "en";
 	private static final String DE = "de";
 
+	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+	
+	/**
+	 * This date gave some strange results.
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testGetDateDiffSomeYears() throws ParseException {
+		final Date startDate = df.parse("2005-12-30 17:04");
+		final Date endDate = df.parse("2012-02-02 08:05");
+		
+		final ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
+		ms.setBasename("messages");
+		
+		final String formatTimeDiff = TimeDiffFormatterTag.formatTimeDiff(startDate, endDate, new Locale("de"), ms);
+//		System.out.println(formatTimeDiff);
+		assertEquals("vor 6 Jahren und 2 Monaten", formatTimeDiff);
+	}
+	
+	/*
+	 * FIXME: English tests are disabled since they work only on machines with
+	 * an English locale. 
+	 */
+	
 	@Test
 	@Ignore
 	public void testGetDateDiffSecondsEn() {
@@ -102,8 +130,8 @@ public class TimeDiffFormatterTagTest {
 		final ResourceBundleMessageSource ms = new ResourceBundleMessageSource();
 		ms.setBasename("messages");
 		
-		final String formatTimeDiff = TimeDiffFormatterTag.formatTimeDiff(startDate, endDate, null, ms);
-		System.out.println(formatTimeDiff);
+		final String formatTimeDiff = TimeDiffFormatterTag.formatTimeDiff(startDate, endDate, new Locale(lang), ms);
+//		System.out.println(formatTimeDiff);
 		assertEquals(expected, formatTimeDiff);
 	}
 
