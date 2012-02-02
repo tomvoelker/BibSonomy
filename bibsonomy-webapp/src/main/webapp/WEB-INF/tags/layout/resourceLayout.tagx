@@ -156,9 +156,9 @@
 					<!-- <li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li> -->
 					<!-- <li id="optionShowBoth" class="${optionShowBoth}"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li> -->
 					<!-- <li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li> -->
-					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="?resourcetype=bookmark" title="${expandBookmarks}">&gt;</a></li>
-					<li id="optionShowBoth" class="${optionShowBoth}"><a href="?resourcetype=bookmark&amp;resourcetype=publication" title="${showBoth}">|</a></li>
-					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="?resourcetype=publication" title="${expandPublications}">&lt;</a></li>
+					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="?resourcetype=bookmark" title="${expandBookmarks}">&amp;gt;</a></li>
+					<li id="optionShowBoth" class="${optionShowBoth}"><a href="?resourcetype=bookmark&amp;amp;resourcetype=publication" title="${showBoth}">|</a></li>
+					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="?resourcetype=publication" title="${expandPublications}">&amp;lt;</a></li>
 				</ul>
 				<!-- 
 					Some pages show a short introductory text at the top - this text 
