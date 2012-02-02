@@ -26,9 +26,6 @@ import org.bibsonomy.importer.DBLP.DBLPException;
 import org.bibsonomy.importer.DBLP.db.DBHandler;
 import org.bibsonomy.importer.DBLP.parser.DBLPEntry;
 import org.w3c.dom.Document;
-import org.w3c.dom.bootstrap.DOMImplementationRegistry;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
 import org.w3c.tidy.Tidy;
 
 
@@ -41,18 +38,13 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 
 	private static final Log log = LogFactory.getLog(HTTPBibtexUpdate.class);
 
-	private final LSSerializer writer;
-
 	private final Tidy tidy;
 
 	public HTTPBibtexUpdate (String baseURL, String user, String passhash) throws MalformedURLException, IOException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		super (baseURL, user, passhash);
-		tidy = new Tidy();
-		tidy.setQuiet(true);
-		tidy.setShowWarnings(false);
-		final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
-		final DOMImplementationLS impl = (DOMImplementationLS)registry.getDOMImplementation("LS");
-		writer = impl.createLSSerializer();
+		this.tidy = new Tidy();
+		this.tidy.setQuiet(true);
+		this.tidy.setShowWarnings(false);
 	}
 
 	private final Map<String, Integer> httpStatusCounts = new HashMap<String, Integer>();
