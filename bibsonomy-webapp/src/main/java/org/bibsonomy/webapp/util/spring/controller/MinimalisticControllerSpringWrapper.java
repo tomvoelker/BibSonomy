@@ -51,7 +51,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
 	
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	private String controllerBeanName;
 	
@@ -268,13 +268,15 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		/*
 		 * Register a custom date editor to support binding of date fields.
 		 * 
-		 * FIXME: This is a HACK to allow the DBLP update to set the date of 
-		 * (bookmark) posts. The problem is, that the date format is now fixed 
-		 * for ALL our controllers, since we can't override this initBinder
-		 * method (since we're using this MinimalisticController ... wrapper)
-		 *  
+		 * This date format must be used for all dates that should be bound to 
+		 * bean properties. Currently, it is used by 
+		 * - the DBLP update (to set the date of bookmarks)
+		 * - the getPosts() parameters startDate and endDate
+		 * 
+		 * Ergo: you can't easily change this date format!  
+		 * 
 		 */
-		binder.registerCustomEditor(Date.class, new CustomDateEditor(DATE_FORMAT, true));
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(ISO8601_DATE_FORMAT, true));
 		
 		/*
 		 * setting the dis/allowed fields for the binder
