@@ -52,7 +52,7 @@
     				+-->
     			<c:if test="${authMethod == 'INTERNAL'}">
 					<div class="headlogin ${visibility}" id="headLogin${status.count}">
-						<form:form method="POST" action="/login_${authMethodName}">
+						<form:form method="POST" action="/login_${authMethodName}" id="login_${authMethodName}">
 							<input type="text" size="15" name="username" id="un"  tabindex="1"/>&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
 							<input type="password" size="15" class="hiddenElement" name="password" style="width:150px;" id="pw" autocomplete="off" tabindex="2"/>
 							<input type="text" id="pw_form_copy" name="" autocomplete="off"/>
@@ -68,7 +68,7 @@
     				+-->
       			<c:if test="${authMethod == 'LDAP'}">
       				<div class="headlogin ${visibility}" id="headLogin${status.count}">
-						<form:form method="POST" action="/login_${authMethodName}">
+						<form:form method="POST" action="/login_${authMethodName}" id="login_${authMethodName}">
 							<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
 							<input type="password" size="15" class="hiddenElement" name="password" style="width:100px;" id="pwldap" autocomplete="off"/>
 							<input type="text" id="pwldap_form_copy" name="" autocomplete="off"/>
