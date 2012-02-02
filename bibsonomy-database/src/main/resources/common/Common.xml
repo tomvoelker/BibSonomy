@@ -470,19 +470,13 @@
 	<!-- start and end date -->
 	<sql id="startEndDate">
 		<dynamic prepend="AND">
-			<isNull property="startDate">
-				<!-- endDate == null: NOP -->
-				<isNotNull property="endDate">
-					b.date &lt;= #endDate#
-				</isNotNull>
-			</isNull>
+			<isNotNull property="endDate">
+				b.date &lt; #endDate#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="AND">
 			<isNotNull property="startDate">
-				<isNull property="endDate">
-					#startDate# &lt;= b.date
-				</isNull>
-				<isNotNull property="endDate">
-					b.date BETWEEN #startDate# AND #endDate#
-				</isNotNull>
+				#startDate# &lt; b.date
 			</isNotNull>
 		</dynamic>
 	</sql>
