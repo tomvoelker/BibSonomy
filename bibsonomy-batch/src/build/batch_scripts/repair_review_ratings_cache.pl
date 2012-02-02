@@ -18,16 +18,20 @@ check_running();
 
 my $master = get_master();
 # lock both tables
-$master->prepare("LOCK TABLES review_ratings_cache WRITE");
-$master->prepare("LOCK TABLES discussion WRITE");
+#$master->prepare("LOCK TABLES review_ratings_cache WRITE");
+#$master->prepare("LOCK TABLES discussion WRITE");
 
 # delete old data
-$master->prepare("DELETE FROM review_ratings_cache");
+$stm_delete_old_ratings = $master->prepare("DELETE FROM review_ratings_cache");
 
 # recalc the avg 
-$master->prepare("INSERT INTO review_ratings_cache (interhash, rating_arithmetic_mean, number_of_ratings) SELECT interHash, avg(rating) as rating_arithmetic_mean, count(DISTINCT(user_name)) as number_of_ratings FROM discussion where type=1 AND `group` >= 0 GROUP BY interHash");
+$stm_insert_new_ratings = $master->prepare("INSERT INTO review_ratings_cache (interhash, rating_arithmetic_mean, number_of_ratings) SELECT interHash, avg(rating) as rating_arithmetic_mean, count(DISTINCT(user_name)) as number_of_ratings FROM discussion where type=1 AND `group` >= 0 GROUP BY interHash");
+
+# execute
+$stm_delete_old_ratings->execute();
+$stm_insert_new_ratings->execute();
 
 # unlock tables
-$master->prepare("UNLOCK TABLES");
+#$master->prepare("UNLOCK TABLES");
 $master->commit;
 $master->disconnect();
