@@ -21,7 +21,7 @@
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
 					<li>
-						<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>

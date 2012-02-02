@@ -18,9 +18,9 @@
 			<parts:search pathMessageKey="navi.author" formAction="/author/${mtl:encodeURI(command.requestedAuthor)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<li>
-						<span itemscope="itemscope" itemtype="http://schema.org/Person">
+						:: <span itemscope="itemscope" itemtype="http://schema.org/Person">
 							<a href="/author/${mtl:encodeURI(command.requestedAuthor)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
-						</span> ::
+						</span>
 					</li>
 				</jsp:attribute>
 			</parts:search>								

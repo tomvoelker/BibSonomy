@@ -15,10 +15,10 @@
 	<!-- TODO: i18n -->
 	<layout:layout pageTitle="An error occured!" loginUser="${command.context.loginUser}" requPath="">
 		<jsp:attribute name="heading">
-			<fmt:message key="error"/>
+			<parts:search pathMessageKey="error"/>
 		</jsp:attribute>	
+		
 		<jsp:attribute name="content">
-    
           <div id="general">
             <errors:global errors="${errors}"/>
           </div>

@@ -22,7 +22,7 @@
 				</jsp:attribute>
 				<jsp:attribute name="pathPart">
 					<li>
-						<a href="/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
+						:: <a href="/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>	

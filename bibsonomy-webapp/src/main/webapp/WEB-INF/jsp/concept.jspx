@@ -32,8 +32,8 @@
 				<jsp:attribute name="pathPart">
 					<c:if test="${not empty command.requestedGroup || not empty command.requestedUser}">
 						<li>
-							<fmt:message key="navi.${not empty command.requestedGroup ? 'group' : 'user'}"/> ::
-							<a href="${formAction}"><c:out value="${not empty command.requestedGroup ? command.requestedGroup : command.requestedUser}"/></a> ::
+							:: <fmt:message key="navi.${not empty command.requestedGroup ? 'group' : 'user'}"/> ::
+							<a href="${formAction}"><c:out value="${not empty command.requestedGroup ? command.requestedGroup : command.requestedUser}"/></a>
 						</li>
 					</c:if>
 				</jsp:attribute>

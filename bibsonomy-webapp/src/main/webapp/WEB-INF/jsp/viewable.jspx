@@ -18,7 +18,7 @@
 			<parts:search pathMessageKey="navi.viewable" formAction="/viewable/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
 					<li>
-						<a href="/viewable/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
+						:: <a href="/viewable/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>

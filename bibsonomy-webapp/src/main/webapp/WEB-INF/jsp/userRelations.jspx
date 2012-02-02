@@ -21,7 +21,7 @@
 			<parts:search pathMessageKey="navi.relations" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
 					<li>
-						<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 					</li>
 				</jsp:attribute>
 				<jsp:attribute name="afterInput">
