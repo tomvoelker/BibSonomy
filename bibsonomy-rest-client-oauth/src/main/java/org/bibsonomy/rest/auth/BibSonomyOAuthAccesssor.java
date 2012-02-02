@@ -70,11 +70,11 @@ public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
 	private static final OAuthClient OAUTH_CLIENT = new OAuthClient(new net.oauth.client.httpclient3.HttpClient3());
 	
 	/** url for obtaining (temporary) request tokens */
-	public static final String OAUTH_REQUEST_URL = "http://opensocial.bibsonomy.org/oauth/requestToken";
+	public static final String OAUTH_REQUEST_URL = "http://www.bibsonomy.org/oauth/requestToken";
 	/** url for authorizing request tokens */
-	public static final String OAUTH_AUTHORIZATION_URL = "http://opensocial.bibsonomy.org/oauth/authorize";
+	public static final String OAUTH_AUTHORIZATION_URL = "http://www.bibsonomy.org/oauth/authorize";
 	/** url for obtaining access tokens from previously authorized request tokens */
-	public static final String OAUTH_ACCESS_URL = "http://opensocial.bibsonomy.org/oauth/accessToken";
+	public static final String OAUTH_ACCESS_URL = "http://www.bibsonomy.org/oauth/accessToken";
 	
 	/** remote user id */
 	private String userId;
