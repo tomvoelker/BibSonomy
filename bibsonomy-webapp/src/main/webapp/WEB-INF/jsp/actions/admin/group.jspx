@@ -21,7 +21,7 @@
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
 					<li>
-						<a rel="path_menu" href="/admin/group">Group</a>
+						:: <a rel="path_menu" href="/admin/group">Group</a>
 					</li>
 				</jsp:attribute>
 			</parts:search>

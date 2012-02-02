@@ -30,7 +30,7 @@
 			<parts:search pathMessageKey="navi.sphere" formAction="/sphere/${mtl:encodeURI(command.sphereName)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<li>
-						<a href="/sphere/${mtl:encodeURI(command.sphereName)}"><c:out value='${command.sphereName}'/></a> ::
+						:: <a href="/sphere/${mtl:encodeURI(command.sphereName)}"><c:out value='${command.sphereName}'/></a>
 					</li>
 				</jsp:attribute>
 			</parts:search>

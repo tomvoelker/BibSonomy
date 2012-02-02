@@ -6,6 +6,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
@@ -37,7 +38,7 @@
   		</jsp:attribute>
 
 		<jsp:attribute name="heading">
-       		<c:out value="${loginTitle}" />
+			<parts:search pathMessageKey="navi.login" />
     	</jsp:attribute>
 		
 		

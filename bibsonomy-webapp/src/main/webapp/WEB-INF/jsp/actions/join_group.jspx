@@ -26,7 +26,7 @@
     		<parts:search pathMessageKey="joinGroup">
 				<jsp:attribute name="pathPart">
 					<li>
-						<a href="/group/${mtl:encodeURI(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
+						:: <a href="/group/${mtl:encodeURI(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
 					</li>
 				</jsp:attribute>    		
     		</parts:search>

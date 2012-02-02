@@ -4,13 +4,14 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<layout:paneLayout pageTitle="${command.pageTitle} error 500" command="${command}" requPath="${requPath}">
 	
 	<jsp:attribute name="heading">
-		error 500
+		<parts:search pathMessageKey="error.404"/>
 	</jsp:attribute>
 	
 	<jsp:attribute name="content">
