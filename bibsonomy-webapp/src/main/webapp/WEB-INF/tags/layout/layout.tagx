@@ -138,7 +138,7 @@
 						 	+-->
 						<div id="infoline">
 							<c:choose>
-								<c:when test="${not empty loginUser.name}">
+								<c:when test="${command.context.userLoggedIn}">
 									<fmt:message key="navi.loggedInAs"/>&amp;nbsp;<a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a>
 								</c:when>
 								<c:otherwise>
@@ -167,7 +167,7 @@
 						 	|
 						 	+-->
 						<div id="poststats">
-							<c:if test="${empty loginUser.name and empty noLoginBox}">
+							<c:if test="${not command.context.userLoggedIn and empty noLoginBox}">
 								<parts:login requPath="${requPath}"/>
 							</c:if>
 						</div><!-- #poststats -->
@@ -208,7 +208,9 @@
 						|
 						+-->
 					<div id="navigation2">
-						<a href="/logout" class="signoff"><fmt:message key="navi.logout"/></a>
+						<c:if test="${command.context.userLoggedIn}">
+							<a href="/logout" class="signoff"><fmt:message key="navi.logout"/></a>
+						</c:if>
 					</div>
 					
 
