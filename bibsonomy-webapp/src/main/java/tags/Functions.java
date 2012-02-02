@@ -528,9 +528,7 @@ public class Functions  {
 	 * @return the formatted date
 	 */
 	public static String formatDateISO8601(final Date date) {
-		final String dateStr = ISO8601_FORMAT_HELPER.format(date);
-		// convert format 2011-08-29'T'23:23:23+0200 to 2011-08-29'T'23:23:23+02:00
-		return dateStr.substring(0, dateStr.length() - 2) + ":" + dateStr.substring(dateStr.length() - 2, dateStr.length());
+		return ISO8601_FORMAT_HELPER.format(date);
 	}
 	
 	/**
