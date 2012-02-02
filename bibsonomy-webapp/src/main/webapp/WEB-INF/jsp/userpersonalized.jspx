@@ -26,7 +26,7 @@
 			<parts:search pathMessageKey="navi.user" >
 				<jsp:attribute name="pathPart">
 					<li>
-						<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
+						:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> <span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
 					</li>
 				</jsp:attribute>
 			</parts:search>

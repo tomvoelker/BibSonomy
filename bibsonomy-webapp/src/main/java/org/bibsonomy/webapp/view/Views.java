@@ -65,7 +65,7 @@ public enum Views implements View {
 	/**
 	 * user-user page to highlight the relevant posts / tags of user 2 to user 1
 	 */
-	USERUSERPAGE("useruser"),
+	USERPERSONALIZEDPAGE("userpersonalized"),
 
 	/**
 	 * user page displaying the resources of a single user tagged with a given
