@@ -20,7 +20,7 @@
 			<parts:search pathMessageKey="navi.friend" formAction="/friend/${mtl:encodeURI(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<li>
-						<a href="/friend/${mtl:encodeURI(command.requestedUser)}"><c:out value="${command.requestedUser}"/></a> ::					
+						:: <a href="/friend/${mtl:encodeURI(command.requestedUser)}"><c:out value="${command.requestedUser}"/></a>					
 					</li>
 				</jsp:attribute>
 			</parts:search>	
