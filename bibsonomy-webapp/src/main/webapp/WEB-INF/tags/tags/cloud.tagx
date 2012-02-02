@@ -18,7 +18,7 @@
 	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
 
-<span class="sidebar_collapse_content">
+<div class="sidebar_collapse_content">
 
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
 	<c:choose>
@@ -97,5 +97,5 @@
 			</c:if>			
 		</c:forEach>		
 	</ul>
-</span>
+</div>
 </jsp:root>
