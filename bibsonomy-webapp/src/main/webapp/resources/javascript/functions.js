@@ -207,16 +207,6 @@ function fadePostIn(post) {
 }
 
 
-function showPosts(list, posts, delay, index) {
-	if (index <= posts.length) {
-		$(posts[index]).hide().prependTo(list).show("fade", function() {
-			list.find("li:last").hide("fade", {}, delay);
-			showPosts(list, posts, index + 1);
-		}, delay);
-	}
-}
-
-
 /**
  * Adds [-] buttons to sidebar elements to toggle visibility of each element. 
  * 
