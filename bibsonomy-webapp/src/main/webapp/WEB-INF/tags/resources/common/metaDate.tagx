@@ -20,7 +20,7 @@
 		<!-- content: time difference to now -->
 		<fmt:message key="post.meta.changedOn" var="changedOn"/>
 		<span title="${createDate}, ${createTime}, ${changedOn} ${changeDate}, ${changeTime}">
-			<mtl:formatTimeDiff startDate="${post.changeDate}"/>
+			<mtl:formatTimeDiff startDate="${post.date}"/>
 		</span>
 	</fmt:timeZone>
 </jsp:root>
