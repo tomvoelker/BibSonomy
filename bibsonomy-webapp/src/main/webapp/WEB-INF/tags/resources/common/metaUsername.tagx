@@ -9,12 +9,11 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
 	<!-- user name of a resource -->
-	<c:if test="${!isUserPage}">
+	<c:if test="${not isUserPage}">
 		<c:out value=" "/>
 		<fmt:message key="post.meta.taggedBy" />
 		<c:out value=" "/>
-		<c:set var="userName" value="${fn:escapeXml(post.user.name)}"/>
-		<a name="${userName}" href="/user/${UserName}" title="${userName}"><c:out value="${userName}" /></a>
+		<a href="/user/${mtl:encodeURI(post.user.name)}"><c:out value="${post.user.name}" /></a>
 	</c:if>
 	
 	
