@@ -108,7 +108,7 @@ public class HTTPBookmarkUpdate extends HTTPUpdate {
 	}
 
 	
-	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");	
+	private static final SimpleDateFormat ISO8601_FORMAT_HELPER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	
 	/*
 	 * insert the given bookmark
@@ -125,13 +125,13 @@ public class HTTPBookmarkUpdate extends HTTPUpdate {
 		conn.setInstanceFollowRedirects(false); // do not follow redirects!
 		
 		/* write request parameters */
-		PrintWriter out = new PrintWriter(conn.getOutputStream());
+		final PrintWriter out = new PrintWriter(conn.getOutputStream());
 		out.print("url=" + URLEncoder.encode(url, "UTF-8"));
 		out.print("&description=" + URLEncoder.encode(title, "UTF-8"));
 		out.print("&extended=" + URLEncoder.encode(description, "UTF-8"));
 		out.print("&tags=" + URLEncoder.encode("dblp", "UTF-8"));
 		out.print("&ckey=" + cKey);
-		if (date != null) out.print("&date=" + URLEncoder.encode(simpleDateFormat.format(date), "UTF-8"));
+		if (date != null) out.print("&date=" + URLEncoder.encode(ISO8601_FORMAT_HELPER.format(date), "UTF-8"));
 		out.close();
 		
 		conn.getContentLength(); // actually connect
