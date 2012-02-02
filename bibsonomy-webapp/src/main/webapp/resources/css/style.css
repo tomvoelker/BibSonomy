@@ -809,11 +809,50 @@ ul.news {
 	border-top: 1px solid #AAA;
 }
 
-/* --- fsForm ---------------------------------------------------------------*/
+/* ******************************************************************
+ * forms using field sets (e.g., on /editBookmark) 
+ */
 .fsOuter,.fsInner,.fsVisible {
 	border: 1px solid #069;
 	background-color: #eee;
 }
+
+/* 
+ * necessary to show the "viewable for" and "relevant for" group boxes side by side
+ * <groupboxes>
+ */
+#fsgroupBoxleft, #fsgroupBoxright {
+	border: 1px solid #069;
+	background-color: #eee;
+	padding: 10px;
+	min-height: 15ex;
+}
+
+#groupBoxleft, #groupBoxright {
+	position: relative;
+	display: inline;
+	width: 49.8%;
+}
+
+#groupBoxleft {
+	float: left;
+}
+
+#groupBoxright {
+	float: right;
+}
+
+.clearfloat {
+	clear: both;
+}
+/*
+ * </groupboxes>
+ */
+
+
+
+
+
 
 /*
  * jquery ui tabs
