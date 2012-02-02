@@ -28,6 +28,11 @@ public class TimeDiffFormatterTagTest {
 	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 	
 	/**
+	 * This date format is used for input parameters (e.g. beans)
+	 */
+	private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	
+	/**
 	 * This date gave some strange results.
 	 * 
 	 * @throws ParseException
@@ -43,6 +48,12 @@ public class TimeDiffFormatterTagTest {
 		final String formatTimeDiff = TimeDiffFormatterTag.formatTimeDiff(startDate, endDate, new Locale("de"), ms);
 //		System.out.println(formatTimeDiff);
 		assertEquals("vor 6 Jahren und 2 Monaten", formatTimeDiff);
+	}
+	
+	@Test
+	public void testIsoDateParsing() throws ParseException {
+		final String date = "2012-01-30T13:13:16+0100";
+		assertEquals(date, ISO8601_DATE_FORMAT.format(ISO8601_DATE_FORMAT.parse(date)));
 	}
 	
 	/*

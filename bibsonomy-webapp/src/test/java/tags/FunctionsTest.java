@@ -3,6 +3,8 @@ package tags;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -63,6 +65,13 @@ public class FunctionsTest {
 		assertEquals("/user/jjohns92\r/shop_gjw4", Functions.getLowerPath("/user/jjohns92\r/shop_gjw4/products.aspx?sku=1162318&shbid=18672"));
 		assertEquals("/search", Functions.getLowerPath("/search/clustering"));
 		assertEquals("", Functions.getLowerPath("/groups"));
+	}
+	
+	@Test
+	public void testFormatDateISO8601() throws ParseException {
+		final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		final String date = "2012-01-30T13:13:16+0100";
+		assertEquals(date, Functions.formatDateISO8601(ISO8601_DATE_FORMAT.parse(date)));
 	}
 	
 	@Test
