@@ -347,8 +347,6 @@
 	**/
 	function appendRow(title, authors, bibtexhash, url) {		
 		var table = document.getElementById("resultlist");
-		var spacer1 = document.createTextNode(" | ");	
-		var spacer2 = document.createTextNode(" | ");
 		var tr = document.createElement("tr");
 		
 		var titletd = document.createElement("td");			
@@ -366,23 +364,21 @@
 		linktd.style.fontSize = "70%";	
 				
 		var link = document.createElement("a");	
-
+		link.className="item bibtex";
 		
 		link.href = "/bib/bibtex/" + simHashID + bibtexhash + "/" + loginusername;
 
 		
 		
-		link.innerHTML = "BibTeX";
-
 		var pick = document.createElement("a");
+		pick.className="item pick";
 		pick.onclick = pickUnpickPublication;
 		pick.href = "/ajax/pickUnpickPost?action=pick&hash=" + bibtexhash + "&user=" + encodeURIComponent(loginusername) + "&ckey=" + ckey;
-		pick.innerHTML = pickMessage;
 		
 		if (url != "") {
 			var urllink = document.createElement("a");
+			urllink.className="item url";
 			urllink.href = url;		
-			urllink.innerHTML = "URL";						
 		}
 				
 		div1.innerHTML = title;	
@@ -391,10 +387,8 @@
 		titletd.appendChild(span1);
 					
 		linktd.appendChild(link);
-		linktd.appendChild(spacer1);		
 		linktd.appendChild(pick);
 		if (url != "") {
-			linktd.appendChild(spacer2);
 			linktd.appendChild(urllink);			
 		}	
 					

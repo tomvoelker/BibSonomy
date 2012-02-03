@@ -1108,7 +1108,7 @@ div.help>a,div.help>b {
 }
 
 
-.post .action .item {
+.post .action .item, #resultlist .item {
     background-repeat: no-repeat;
 	background: url("/resources/image/postactions_black.png");
     display: block;
@@ -1117,12 +1117,12 @@ div.help>a,div.help>b {
     width: 30px;
 }
 
-.post .action .pick{
+.post .action .pick, #resultlist .pick {
     background-position: -30px 0px;
     width: 23px
 }
 
-.post .action .unpick{
+.post .action .unpick {
     background-position: -30px -27px;
     width: 23px
 }
@@ -1152,12 +1152,12 @@ div.help>a,div.help>b {
     width: 35px
 }
 
-.post .action .url{
+.post .action .url, #resultlist .url {
     background-position: 98px 0px;
     width:24px
 }
 
-.post .action .bibtex{
+.post .action .bibtex , #resultlist .bibtex {
     background-position: 69px -1px;
     width: 35px
 }
