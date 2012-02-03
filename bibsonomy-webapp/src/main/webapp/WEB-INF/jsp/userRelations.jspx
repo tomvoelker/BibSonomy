@@ -15,7 +15,15 @@
 	
 	<fmt:message key="navi.relations" var="relationsPageTitle" />
 
-	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<!--+
+		|
+		| FIXME: we need a separate layout for relations!
+		|
+		| Currently not shown is the number of relations in the headline: ${command.concepts.totalCount} should be added to headerMessageKey  
+		| 
+	 	+-->
+
+	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" headerMessageKey="tagrelations" headerLogoClass="relations" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag">
@@ -41,32 +49,13 @@
 				</li>
         	</ul>
 		</jsp:attribute>
-		
-		<!--+
-			| page content header
-			+-->
-		<jsp:attribute name="headerContainer">
-			<parts:panelheader>
-				<jsp:attribute name="headerLogo">
-					<img src="${resdir}/image/relations.png"/>
-				</jsp:attribute>
-				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<fmt:message key="tagrelations" />				
-						<c:if test="${command.concepts.totalCount != 0}">
-							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.concepts.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
-							${mtl:ch('nbsp')}<span id="ttlctr" title="${titleKey}">(${command.concepts.totalCount})</span>
-						</c:if>
-					</h2>
-				</jsp:attribute>
-			</parts:panelheader>
-		</jsp:attribute>
+
 		
 		<!--+
 			| page content
 			+-->
-		<jsp:attribute name="content">				
-			 <div id="general">
+		<jsp:attribute name="content">
+		
 				<fmt:message var="editPageTags" key="post.meta.edit.title"/>
 	 			<div class="kiste">		
 					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>
@@ -86,7 +75,6 @@
 					</span>
 					${mtl:ch('nbsp')}
 				</div>
-			</div>
 
 			<div id="itembox">
 				<fmt:message key="tagrelations.show.itemspercount">.

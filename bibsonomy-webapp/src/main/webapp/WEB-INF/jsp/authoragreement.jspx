@@ -19,7 +19,7 @@
 	
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	
-	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" headerMessageKey="navi.publication" requestedUser="${command.requestedUser}" requPath="${requPath}">
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
@@ -33,18 +33,10 @@
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">
-			<ul>
-				
-			</ul>
-		</jsp:attribute>
-				
 		<jsp:attribute name="content">
-		<!-- display content -->
-		<c:forEach var="post" items="${command.bibtex.list}">
-			<resource:authoragreement post="${post}" referer="${command.referer}"/>
-		</c:forEach>
-		
+			<c:forEach var="post" items="${command.bibtex.list}">
+				<resource:authoragreement post="${post}" referer="${command.referer}"/>
+			</c:forEach>
 		</jsp:attribute>
 		
 	</layout:paneLayout>

@@ -12,31 +12,14 @@
     xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
       	
-  <layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" fullscreen="true" activeTab="my">
-   	
-    <jsp:attribute name="heading">
-    	<parts:search pathMessageKey="navi.mysearch"/>
-	</jsp:attribute>
+	<layout:paneLayout pageTitle="${command.pageTitle}" headerMessageKey="mysearch.header" headerLogoClass="search" command="${command}" requPath="${requPath}" activeTab="my">
 
-
-		<!--+
-			| page content header
-			+-->
-		<jsp:attribute name="headerContainer">
-			<parts:panelheader>
-				<jsp:attribute name="headerLogo">
-					<img src="${resdir}/image/search.png"/>
-				</jsp:attribute>
-				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<fmt:message key="mysearch.header"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
-					</h2>
-				</jsp:attribute>
-			</parts:panelheader>
+    	<jsp:attribute name="heading">
+    		<parts:search pathMessageKey="navi.mysearch"/>
 		</jsp:attribute>
-		
+
 		<!--+
 			| page content
 			+-->

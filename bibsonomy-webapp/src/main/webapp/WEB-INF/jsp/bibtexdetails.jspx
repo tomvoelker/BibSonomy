@@ -21,9 +21,8 @@
 	
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	
-	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" headerMessageKey="navi.publication" headerLogoClass="publications" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 		<jsp:attribute name="headerExt">
-			
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
 			<c:if test="${not empty additionalFsformCSS}">
@@ -87,7 +86,6 @@
 		</jsp:attribute>
 				
 		<jsp:attribute name="content">
-			<!-- display content -->
 			<resource:bibtexdetails post="${post}" referer="${command.referer}"/>
 		</jsp:attribute>
 		
