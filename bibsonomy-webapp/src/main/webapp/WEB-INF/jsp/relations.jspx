@@ -14,24 +14,12 @@
 	
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:layout loginUser="${command.context.loginUser}"	pageTitle="${command.pageTitle}" requPath="${requPath}" activeTab="popular">
+    <layout:paneLayout command="${command}" headerMessageKey="navi.relations" pageTitle="${command.pageTitle}" requPath="${requPath}" activeTab="popular">
       	
     	<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/concept/tag/" formInputName="tag"/>
     	</jsp:attribute>
     			
-    <!--+
-		| page content header
-		+-->
-	<jsp:attribute name="headerContainer">
-		<parts:panelheader>
-			<jsp:attribute name="headerContent">
-				<h2 class="header">
-					<fmt:message key="navi.relations" />
-				</h2>
-			</jsp:attribute>
-		</parts:panelheader>
-	</jsp:attribute>
 		
     <jsp:attribute name="content">
     	<!-- header text output -->
@@ -93,5 +81,5 @@
 	  </div>
 	</jsp:attribute>
        
-  </layout:layout>
+  </layout:paneLayout>
 </jsp:root>
