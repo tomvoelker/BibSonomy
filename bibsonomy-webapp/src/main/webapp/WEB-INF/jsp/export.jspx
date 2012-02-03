@@ -14,7 +14,7 @@
 	
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
+    <layout:paneLayout headerMessageKey="export.header" command="${command}" pageTitle="${command.pageTitle}" requPath="${requPath}">
       	
     <jsp:attribute name="heading">
     	<parts:search pathMessageKey="navi.export"/>
@@ -22,11 +22,6 @@
       
         
     <jsp:attribute name="content">
-        
-      <div id="general">
-
-        <h2><fmt:message key="export.header"/></h2>
-
 
         <c:url var="bibtex"  value="/bib/${requPath}${requQueryString}" />
         <c:url var="publ"    value="/publ/${requPath}${requQueryString}" />
@@ -65,7 +60,7 @@
         <hr/>
 
 			
-      	<dl class="faq">
+      	<dl>
 		  <dt><a href="${fn:escapeXml(bibtex)}">BibTeX</a></dt>
 		  <dd><fmt:message key="export.bibtex.faq"/></dd>
 						
@@ -111,11 +106,6 @@
   		  </fmt:message>
  		</p>
 
-
-
-      </div>
-
-
     </jsp:attribute>
-  </layout:layout>
+  </layout:paneLayout>
 </jsp:root>
