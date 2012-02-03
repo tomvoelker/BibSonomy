@@ -8,7 +8,7 @@
 	xmlns:spring="http://www.springframework.org/tags">
 	
 	<jsp:directive.attribute name="headerLogo" fragment="true" required="false"/>
-	<jsp:directive.attribute name="headerClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="headerContent" fragment="true" required="false"/>
 	
 	<!--+
@@ -16,7 +16,8 @@
 		+-->
 	<div id="panelheader">
 		<!-- logo for the page content -->
-		<div class="headerLogo">
+		<div class="headerLogo ${not empty headerLogoClass ? headerLogoClass : ''}">
+			<!-- keep me -->
 			<c:if test="${not empty headerLogo}">
 				<jsp:invoke fragment="headerLogo"/>
 			</c:if>

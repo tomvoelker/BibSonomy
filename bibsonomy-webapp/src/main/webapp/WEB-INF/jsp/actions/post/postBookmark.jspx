@@ -14,52 +14,42 @@
 
 	<fmt:message key="navi.postBookmark" var="postBookmarkPageTitle"/>
 
-	<layout:paneLayout pageTitle="${postBookmarkPageTitle}" command="${command}" requPath="${requPath}" activeTab="post">
+	<layout:paneLayout pageTitle="${postBookmarkPageTitle}" headerMessageKey="post_bookmark.heading" headerLogoClass="bookmarks" command="${command}" requPath="${requPath}" activeTab="post">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.postBookmark"/>
 		</jsp:attribute>
 	
 		<jsp:attribute name="content">
-			
-			<div id="general">
-				  <c:if test="${not empty user.name}">
-				    <p>
-						<h2><fmt:message key="post_bookmark.heading"/></h2>
-						<p class="smalltext"><fmt:message key="post_bookmark.description" /></p>
-				    </p>
-				  </c:if>
+			<p><fmt:message key="post_bookmark.description" /></p>
 				  
-				  <form style="margin: 3% 10px 3% 5px;" method="POST" action="/editBookmark">
-				    <label for="url"><fmt:message key="post.resource.url" /></label> 
-				    <input class="input" type="text" name="url" id="url" size="60" value="http://" />
-				    <fmt:message key="post.resource.post" var="post_bookmark"/>
-				    <input type="submit" name="submit" value="${post_bookmark}" />
-				  </form>
-			</div>
+			<form method="POST" action="/editBookmark">
+				<label for="url"><fmt:message key="post.resource.url" /></label> 
+				<input class="input" type="text" name="url" id="url" size="60" value="http://" />
+				<fmt:message key="post.resource.post" var="post_bookmark" />
+				<input type="submit" name="submit" value="${post_bookmark}" />
+			</form>
 		</jsp:attribute>
 
 		<!-- 
 			the sidebar shows the "postPublication" buttons
 		 -->
 		<jsp:attribute name="sidebar">
-			<div class="boxcontent">
-				<h3>
-					<fmt:message key="buttons.bookmarklet">
-						<fmt:param value="${properties['project.name']}"></fmt:param>
-					</fmt:message>
-				</h3>
-				<p>
-					<fmt:message key="post.resource.hint"/>
-				</p>
-				<ul>
-					<li><buttons:postBookmark/></li>
-					<li><buttons:postBookmarkPopUp/></li>
-				</ul>
-				<p>
-					<fmt:message key="post.resource.hint1"/>
-				</p>
-			</div>
+			<h3>
+				<fmt:message key="buttons.bookmarklet">
+					<fmt:param value="${properties['project.name']}"></fmt:param>
+				</fmt:message>
+			</h3>
+			<p>
+				<fmt:message key="post.resource.hint"/>
+			</p>
+			<ul>
+				<li><buttons:postBookmark/></li>
+				<li><buttons:postBookmarkPopUp/></li>
+			</ul>
+			<p>
+				<fmt:message key="post.resource.hint1"/>
+			</p>
 		</jsp:attribute>
 
 	</layout:paneLayout>

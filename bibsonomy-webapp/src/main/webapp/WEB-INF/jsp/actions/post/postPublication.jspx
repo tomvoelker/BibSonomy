@@ -20,7 +20,7 @@
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
 	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
 	
-	<layout:tabLayout command="${command}" pageTitle="${msgPostPublication}" requPath="${requPath}" activeTab="post">
+	<layout:tabLayout command="${command}" pageTitle="${msgPostPublication}" headerMessageKey="navi.postPublication" headerLogoClass="publications" requPath="${requPath}" activeTab="post">
 			 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.postPublication"/>
@@ -35,6 +35,9 @@
 				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
 			</c:if>
 	    </jsp:attribute>
+
+	    
+	    
 		<jsp:attribute name="tabcontent">
       <c:set var="post" value="${command.post}"/>
 		<div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
@@ -121,23 +124,21 @@
 			the sidebar shows the "postPublication" buttons
 		 -->
 		<jsp:attribute name="sidebar">
-			<div class="boxcontent">
-				<h3>
-					<fmt:message key="buttons.bookmarklet">
-						<fmt:param value="${properties['project.name']}"></fmt:param>
-					</fmt:message>
-				</h3>
-				<p>
-					<fmt:message key="post.resource.hint"/>
-				</p>
-				<ul>
-					<li><buttons:postPublication/></li>
-					<li><buttons:postPublicationPopUp/></li>
-				</ul>
-				<p>
-					<fmt:message key="post.resource.hint1"/>
-				</p>
-			</div>
+			<h3>
+				<fmt:message key="buttons.bookmarklet">
+					<fmt:param value="${properties['project.name']}"></fmt:param>
+				</fmt:message>
+			</h3>
+			<p>
+				<fmt:message key="post.resource.hint"/>
+			</p>
+			<ul>
+				<li><buttons:postPublication/></li>
+				<li><buttons:postPublicationPopUp/></li>
+			</ul>
+			<p>
+				<fmt:message key="post.resource.hint1"/>
+			</p>
 		</jsp:attribute>
 
 	</layout:tabLayout>

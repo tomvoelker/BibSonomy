@@ -5,18 +5,28 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<!--+
+		|
+		| A layout for all pages that don't show post lists but use the complete
+		| space left to the sidebar for their contents.
+		| 
+	 	+-->
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
-	<jsp:directive.attribute name="headerExt" fragment="true" />
-	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
+	
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
-	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
 
 	<layout:layout 
@@ -27,8 +37,31 @@
 		requestedUser="${requestedUser}" 
 		sidebar="${sidebar}" 
 		requPath="${requPath}"
-		headerContainer="${headerContainer}" 
-		content="${content}" 
-		fullscreen="${fullscreen}" 
-		activeTab="${activeTab}"/>
+		activeTab="${activeTab}">
+	
+			
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}">
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="${headerMessageKey}" />				
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
+	
+	
+		<jsp:attribute name="content">
+			<div id="fullscreen">
+				<jsp:invoke fragment="content"/>
+			</div>
+		</jsp:attribute>	
+	
+	</layout:layout>
+		
+		
+		
 </jsp:root>

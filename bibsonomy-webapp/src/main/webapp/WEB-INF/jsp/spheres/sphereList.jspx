@@ -18,11 +18,8 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.spheres" var="pageTitle"/>
-	<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
-	</jsp:attribute>
 	
-	<layout:paneLayout pageTitle="${pageTitle}" requPath="${requPath}" command="${command}">
+	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="navi.spheres" headerLogoClass="spheres" requPath="${requPath}" command="${command}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.spheres"/>
 		</jsp:attribute>
@@ -47,22 +44,6 @@
 				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 			</li>
 			</ul>
-		</jsp:attribute>
-		
-		<!--+
-			| page content header
-			+-->
-		<jsp:attribute name="headerContainer">
-			<parts:panelheader>
-				<jsp:attribute name="headerLogo">
-					<img src="${resdir}/image/relations.png"/>
-				</jsp:attribute>
-				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<fmt:message key="navi.spheres"/>
-					</h2>
-				</jsp:attribute>
-			</parts:panelheader>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">

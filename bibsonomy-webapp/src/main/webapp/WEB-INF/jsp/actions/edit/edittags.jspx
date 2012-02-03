@@ -21,7 +21,7 @@
 	
 	<fmt:message key="navi.editTags" var="pageTitle" />
 
-	<layout:paneLayout pageTitle="${pageTitle} :: ${command.context.loginUser.name}" command="${command}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${pageTitle} :: ${command.context.loginUser.name}" headerMessageKey="navi.editTags" headerLogoClass="editTags" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.editTags"/>
 		</jsp:attribute>
@@ -35,24 +35,7 @@
 			</c:if>
 	    </jsp:attribute>
 
-		<!--+
-			| page content header
-			+-->
-		<jsp:attribute name="headerContainer">
-			<parts:panelheader>
-				<jsp:attribute name="headerLogo">
-					<img src="${resdir}/image/edit_tags.png"/>
-				</jsp:attribute>
-				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<fmt:message key="navi.editTags" />				
-					</h2>
-				</jsp:attribute>
-			</parts:panelheader>
-		</jsp:attribute>
-
 		<jsp:attribute name="content">
-			<div id="general_100">
 				<!-- 
 					message for "reset" buttons
 			 	-->
@@ -217,8 +200,6 @@
 
 			    	</fieldset>
 				</form:form>
-				
-			</div>
 		</jsp:attribute>
 			
 		<jsp:attribute name="sidebar">	

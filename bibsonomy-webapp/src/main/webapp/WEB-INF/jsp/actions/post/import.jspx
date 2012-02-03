@@ -15,35 +15,29 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.userName}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" headerMessageKey="import" requestedUser="${command.userName}" requPath="${requPath}">
 		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="import"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-						
-			<div id="general">	
 				
-				<!-- display potential errors -->
-				<errors:global errors="${errors}"/>
-             	
-				<!-- in case of existing errors, look into the importType and redraw the 
-					 respective form 
-					 TODO: Handle firefoxImport simply by error-Messages on the main page -->
-				<c:choose>
-					<c:when test="${empty command.importType or (command.importType eq 'firefox' and command.totalCount == 0)}">		
-						<post:firefoxImport/>
-					</c:when>
-					<c:otherwise>
-						<!-- make some output about the import results -->	
-						<post:importResults command="${command}"/>
-					</c:otherwise>
-				</c:choose>
-		
-        	</div>
-      
-      
+			<!-- display potential errors -->
+			<errors:global errors="${errors}"/>
+            	
+			<!-- in case of existing errors, look into the importType and redraw the 
+				 respective form 
+				 TODO: Handle firefoxImport simply by error-Messages on the main page -->
+			<c:choose>
+				<c:when test="${empty command.importType or (command.importType eq 'firefox' and command.totalCount == 0)}">		
+					<post:firefoxImport/>
+				</c:when>
+				<c:otherwise>
+					<!-- make some output about the import results -->	
+					<post:importResults command="${command}"/>
+				</c:otherwise>
+			</c:choose>
 		</jsp:attribute>
 		
 	</layout:paneLayout>

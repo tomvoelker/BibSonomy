@@ -13,26 +13,46 @@
 	<jsp:directive.attribute name="tabcontent" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
-	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
-	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
+	
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
+	
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 				
 		
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" headerContainer="${headerContainer}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}">
+	
+	
+		<!--+
+			| page content header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}">
+				<jsp:attribute name="headerContent">
+					<h2 class="header">
+						<fmt:message key="${headerMessageKey}" />				
+					</h2>
+				</jsp:attribute>
+			</parts:panelheader>
+		</jsp:attribute>
+	
+	
+	
 		<jsp:attribute name="content">
-			<div id="fullscreen">			
+			<div id="fullscreen">
 			
 				<!-- Top Content if available -->
-				<c:if test="${!empty topcontent}">
+				<c:if test="${not empty topcontent}">
 					<jsp:invoke fragment="topcontent"/>				
 				</c:if>	
 										
 				<!-- Tabs -->			
 				<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>				
 				<div class="tab_content">					
-					<c:if test="${!empty tabcontent}">
+					<c:if test="${not empty tabcontent}">
 						<jsp:invoke fragment="tabcontent"/>				
 					</c:if>	
 				</div>				

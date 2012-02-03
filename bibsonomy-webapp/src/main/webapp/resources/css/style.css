@@ -48,6 +48,11 @@ a img {
 	height: 94px;
 }
 
+#fullscreen {
+	margin-left: 8px;
+	margin-right: 8px;
+}
+
 #logoimage {
 	display:none
 }
@@ -983,8 +988,7 @@ div.help>a,div.help>b {
 }
 
 .post .image .entrytype {
-    background-repeat: no-repeat;
-	background: url("/resources/image/previews.png");
+	background: url("/resources/image/previews.png") no-repeat;
     display: block;
     float: left;
     position: relative;
@@ -1022,6 +1026,24 @@ div.help>a,div.help>b {
 .post .image .techreport{ background-position: 0 -1003px; width: 55px; height: 52px; } 
 .post .image .unpublished{ background-position: 0 -1056px; width: 36px; height: 49px; } 
 .post .image .web{ background-position: 0 -1106px; width: 61px; height: 37px; } 
+
+/*
+ * header logos for all pages (FIXME: must be positioned correctly)
+ */
+.headerLogo.image {border: 0}
+.headerLogo.image {background: url("/resources/image/icons.png") no-repeat;} 
+.headerLogo.image.bookmarks {background-position: 27px 2px; width: 30px; height: 30px; }
+.headerLogo.image.publications {background-position: 27px -61px; width: 30px; height: 30px; }
+.headerLogo.image.tags {background-position: 27px -200px; width: 30px; height: 30px; }
+/*
+ * FIXME: put into icons.png
+ */ 
+.headerLogo.image.spheres {background-image: url('/resources/image/relations.png'); width: 30px; height: 30px; }
+.headerLogo.image.relations {background-image: url('/resources/image/relations.png'); width: 30px; height: 30px; }
+.headerLogo.image.settings {background-image: url('/resources/image/settings.png'); width: 30px; height: 30px; }
+.headerLogo.image.search {background-image: url('/resources/image/search.png'); width: 30px; height: 30px; }
+.headerLogo.image.editTags {background-image: url('/resources/image/edit_tags.png'); width: 30px; height: 30px; }
+
 
 
 .ptitle,  .pdesc, .post .authors {

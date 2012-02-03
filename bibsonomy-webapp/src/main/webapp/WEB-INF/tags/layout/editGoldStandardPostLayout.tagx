@@ -28,7 +28,7 @@
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
 	
-	<layout:paneLayout pageTitle="${editPageTitle}" command="${command}" requPath="${requPath}" activeTab="${activeTab}">
+	<layout:paneLayout pageTitle="${editPageTitle}" headerMessageKey="post.resource.edit${resourceType}" headerLogoClass="${fn:toLowerCase(resourceType)}s" command="${command}" requPath="${requPath}" activeTab="${activeTab}">
 	    <!--+
     	 	| html header extension: page specific javascript
     	 	+-->
@@ -48,14 +48,6 @@
             <script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
 	    </jsp:attribute>
 	    
-	    <jsp:attribute name="headerContainer">
-	    	<div id="panelheader">
-	    		<div class="headerContent">
-					<h2 class="header"><fmt:message key="post.resource.edit${resourceType}"/></h2><!-- TODO: generalize -->
-				</div>
-			</div>
-	    </jsp:attribute>
-            
         <jsp:attribute name="heading">
         	<parts:search pathMessageKey="navi.edit${resourceType}"/>
         </jsp:attribute>
@@ -66,7 +58,6 @@
    			  |     existierende wird editiert, der gepostete ist in "diffPost") 
 		      -->
 		<jsp:attribute name="content">
-		   <div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
 
               <!-- 
                  | show global errors
@@ -151,8 +142,7 @@
               <c:if test="${not empty extraInformation}">
                   <jsp:invoke fragment="extraInformation"/>
               </c:if>
-           </div>
-           
+
            <div id="hiddenUpload" style="display:none;">
            	<!-- temporary content -->
            </div>

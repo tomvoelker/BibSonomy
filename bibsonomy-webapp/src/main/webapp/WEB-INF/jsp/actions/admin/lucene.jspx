@@ -16,7 +16,7 @@
 	
 	<fmt:message key="navi.admin" var="pageTitle" />
 	
-	<layout:layout pageTitle="${pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}" fullscreen="true">
+	<layout:layout pageTitle="${pageTitle} :: Lucene" loginUser="${command.context.loginUser}" requPath="${requPath}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
