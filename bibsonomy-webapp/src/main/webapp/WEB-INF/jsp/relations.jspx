@@ -23,7 +23,7 @@
 		
     <jsp:attribute name="content">
     	<!-- header text output -->
-		<div style="margin-top: 20px; margin-left: 10px; margin-bottom: 10px;">
+		<div>
 			<!-- need to switch between if the user is logged in or not -->
 	        <fmt:message key="tagrelations.all.text.partOne"/>
 		    <c:if test="${command.context.userLoggedIn}">
