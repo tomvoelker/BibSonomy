@@ -17,7 +17,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:layout loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" requPath="${requPath}">
+    <layout:paneLayout pageTitle="${command.pageTitle}" requPath="${requPath}" command="${command}" headerMessageKey="joinGroup">
   
     	<!--+
     	 	| heading
@@ -44,8 +44,6 @@
     	 	| content
     	 	-->
 		<jsp:attribute name="content">
-
-			<div id="general">
 				<form:form action="/join_group?group=${command.group}" method="POST">
 		        	<errors:global errors="${errors}"/>             
 					<div class="fsOuter">
@@ -78,8 +76,6 @@
 	             	</div>	
 
 				</form:form>
-			</div>
-			
 		</jsp:attribute>
 		
         <jsp:attribute name="sidebar">
@@ -95,5 +91,5 @@
         	</ul>
         </jsp:attribute>
       
-    </layout:layout>
+    </layout:paneLayout>
 </jsp:root>

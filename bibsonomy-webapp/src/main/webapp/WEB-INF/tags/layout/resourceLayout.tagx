@@ -25,61 +25,20 @@
 		store some locale messages in variables to be
 	    able to access them inside element attributes
 	-->
-	<c:set var="bookmarkRssFeed"><fmt:message key="feeds.bookmark"/></c:set>
-	<c:set var="publicationRssFeed"><fmt:message key="feeds.publication"/></c:set>
-	<c:set var="burstRssFeed"><fmt:message key="feeds.burst"/></c:set>
-    <c:set var="swrcFeed"><fmt:message key="feeds.swrc"/></c:set>	
+	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
+	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
+	<fmt:message key="feeds.burst" var="burstRssFeed"/>
+    <fmt:message key="feeds.swrc" var="swrcFeed"/>	
 
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}" >		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/resourceList.js"><!-- keep me --></script>
-			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
-			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
-			<c:set var="burstUrl" value="/burst/${requPath}"/>
-			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
-            <c:set var="swrcUrl" value="/swrc/${requPath}"/>
-            <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
+			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="/rss/${requPath}" />
+			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="/publrss/${requPath}" />
+			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="/burst/${requPath}" />
+            <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="/swrc/${requPath}" />
             <!-- UnAPI service -->
             <link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
-            	<c:if test="${command.context.loginUser.settings.showBookmark and command.context.loginUser.settings.showBibtex}">
-            		<c:set var="optionShowBoth"><c:out value="hiddenElement"/></c:set>
-            	</c:if>
-        <!-- set by url parameter -->
-        <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
-        <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
-        
-        <!-- if not set by url parameter use usersettings -->
-				<c:if test="${not showPublication and not showBookmark}">
-					<c:set var="showPublication" value="${command.context.loginUser.settings.showBibtex}" />
-					<c:set var="showBookmark" value="${command.context.loginUser.settings.showBookmark}" />
-				</c:if>
-        <c:if test="${showBookmark and not showPublication }">
-        	<style>
-						#bibtexList {
-							display:none;
-						}
-						#bookmarkList {
-							width:97%;
-						}
-					</style>
-					<c:set var="optionShowBoth"><c:out value=""/></c:set>
-					<c:set var="optionExpandBookmark"><c:out value="hiddenElement"/></c:set>
-        </c:if>
-				<c:if test="${showPublication and not showBookmark}">
-					<style>
-						#bookmarkList {
-							display:none;
-						}
-						#bibtexList {
-							width:97%;
-						}
-					</style>
-					<c:set var="optionShowBoth"><c:out value=""/></c:set>
-					<c:set var="optionExpandBibtex"><c:out value="hiddenElement"/></c:set>
-				</c:if>
             <jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 		
@@ -145,21 +104,13 @@
 		
 		
 		<jsp:attribute name="content">
-			<!-- FIXME: handle this box -->
-			<div id="general_100" style="display:none;">
-				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in resourceList.js -->
-				<ul id="bookmarkbibtexoptions">
-					<fmt:message var="expandBookmarks" key="list.expand.bookmarks"/>
-					<fmt:message var="expandPublications" key="list.expand.publications"/>
-					<fmt:message var="showBoth" key="list.expand.both"/>
-					<!-- TODO: load lists via ajax -->
-					<!-- <li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li> -->
-					<!-- <li id="optionShowBoth" class="${optionShowBoth}"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li> -->
-					<!-- <li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li> -->
-					<li id="optionExpandBookmark" class="${optionExpandBookmark}"><a href="?resourcetype=bookmark" title="${expandBookmarks}">&amp;gt;</a></li>
-					<li id="optionShowBoth" class="${optionShowBoth}"><a href="?resourcetype=bookmark&amp;amp;resourcetype=publication" title="${showBoth}">|</a></li>
-					<li id="optionExpandBibtex" class="${optionExpandBibtex}"><a href="?resourcetype=publication" title="${expandPublications}">&amp;lt;</a></li>
-				</ul>
+			<!--+
+				|
+				| FIXME: handle this box
+				|
+				+-->
+			<div id="fullscreen">
+				
 				<!-- 
 					Some pages show a short introductory text at the top - this text 
 					should be put into the contentHeading attribute. If the text is not

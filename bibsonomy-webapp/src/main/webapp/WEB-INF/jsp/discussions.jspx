@@ -46,9 +46,9 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
 	    </jsp:attribute>
 	    
-	        	<!--+
+	    <!--+
     	 	| content
-    	 	-->
+    	 	+-->
 		<jsp:attribute name="contentHeading">
           <div id="general_100">
   			<p id="groupIntro">
