@@ -23,6 +23,7 @@
 
 package org.bibsonomy.scraper.url.kde.biomed;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
@@ -49,7 +51,7 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 
 	private static final String BIOMEDCENTRAL_HOST  = "biomedcentral.com";
 	private static final String BIOMEDCENTRAL_BIBTEX_PATH = "citation";
-	private static final String BIOMEDCENTRAL_BIBTEX_PARAMS = "?format=bibtex&include=cit&direct=0&action=submit";
+	private static final String BIOMEDCENTRAL_BIBTEX_PARAMS = "format=bibtex&include=cit&direct=on&action=submit";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BIOMEDCENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
@@ -73,23 +75,21 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 			}
 		}
 
-		if(!url.endsWith("/")) {
-			url += "/" + BIOMEDCENTRAL_BIBTEX_PARAMS;
-		} else {
-			url += BIOMEDCENTRAL_BIBTEX_PARAMS;
-		}			
-
 		try {
 			sc.setUrl(new URL(url));
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		}
-		String bibResult = sc.getPageContent();
-
-		if(bibResult != null) {
-			sc.setBibtexResult(bibResult);
-			return true;
+		
+		try {
+			String bibResult = WebUtils.getPostContentAsString(sc.getUrl(), BIOMEDCENTRAL_BIBTEX_PARAMS);
+			if(bibResult != null) {
+				sc.setBibtexResult(bibResult);
+				return true;
+			}
+		} catch (IOException ex) {
 		}
+
 		return false;
 	}
 
