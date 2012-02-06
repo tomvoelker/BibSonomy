@@ -1499,6 +1499,7 @@ form.editTags, form.editTags input {
 /** logo for page headings */
 #panelheader .headerLogo {
 	width: 80px;
+	height: 80px;
 	float: left;
 	margin-left: 10px;
 	margin-top: 10px;
