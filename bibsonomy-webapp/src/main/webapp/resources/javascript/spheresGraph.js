@@ -170,15 +170,13 @@ SphereDisplay.prototype.update = function() {
     	.attr("x", function(d) { return d.size + 8 })
     	.attr("y", ".31em")	
     	.append("a")
-    	.on("click", function(d) {
-    		if(d.group == "1") {
-    			$('html, body').animate({scrollTop: $("#sphere_" + d.name ).offset().top}, 'slow');
-    		} 
-    	}).on("mouseover", function(d) {
+    	.on("mouseover", function(d) {
     		backref.displaySphere(d);
     		this.style.cursor='pointer';
     	}).attr("xlink:href", function(d) {
-    		if(d.group == "2") {
+    		if(d.group == "1") {
+    			return "/sphere/" + d.name;
+    		} else if(d.group == "2") {
     			return "/user/" + d.name;
     		}
     	}).text( function(d) {
