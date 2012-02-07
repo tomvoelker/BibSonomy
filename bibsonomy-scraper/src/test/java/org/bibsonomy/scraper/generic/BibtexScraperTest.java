@@ -47,13 +47,13 @@ public class BibtexScraperTest {
 	}
 	
 	/**
-	 * starts URL test with id url_126
+	 * starts URL test with id url_216
 	 */
 	@Test
 	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_126"));
+		assertTrue(runner.runSingleTest("url_216"));
 	}
 	
 }
