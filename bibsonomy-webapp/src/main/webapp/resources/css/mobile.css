@@ -262,7 +262,7 @@ a img {
 	font-size: 0.9em;
 }
 
-.bboxheader, .kiste, .bmaction {
+.bboxheader, .kiste, .action {
 	display: none;
 }
 
@@ -285,50 +285,65 @@ a img {
 	background: url('../image/mobile/star_unselected.png') no-repeat center center;
 }
 
-#bookmark, #bibtex {
+ul.posts {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.bm {
+.post  {
 	padding: 5px 10px;
 	border-bottom: 2px solid #DDDDDD;
 }
 
-#bookmark li:nth-of-type(2n-1), #bibtex li:nth-of-type(2n-1) {
+ul.posts li:nth-of-type(2n-1) {
 	background: #EEEEEE;
 }
 
-.bmtags a {
-	padding-left: 20px;
+.ptags a {
+	padding-left: 17px;
+	padding-right: 8px;
 	background: url('../image/mobile/tag.png') center left no-repeat;
 	text-decoration: none;
 	color: #336699;
 }
 
-.bmmeta a {
-	text-decoration: none;
-	color: #336699;
+.ptime {
+	float: left;
+	margin-right: 5px;
 }
 
-.bmtitle {
+.ptitle {
 
 	width: 70%;	
 }
-.bmtitle  a {
+.ptitle  a {
 	font-size: 1.4em;
 	font-weight: bold;
 	text-decoration: none;
 	color: #336699;
 }
 
-.bmdesc {
+.pdesc {
 	font-size: 0.8em;
 }
 
-.bmdesc .info {
+div.info>div {
 	display: none;	
+}
+
+.tags li {
+	display: inline-block;
+	background: transparent ! important ; 
+}
+
+.ptags {
+	position: relative;
+	left: -40px;
+}
+
+.usersaves {
+	display: none;
 }
 
 #footer {
