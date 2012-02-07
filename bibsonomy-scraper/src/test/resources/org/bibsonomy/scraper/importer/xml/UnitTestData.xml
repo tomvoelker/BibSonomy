@@ -1303,5 +1303,11 @@
 		<BibFile>NEJMScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nejm.NEJMScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_216">
+		<TestDescription>Scraper for bibtex extraction from sourcecode</TestDescription>
+		<URL>http://www.bibsonomy.org/bibtex/29691ce71c1ad7bafafa63e301c4df140/maxirichter</URL>
+		<BibFile>BibtexScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.BibtexScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
