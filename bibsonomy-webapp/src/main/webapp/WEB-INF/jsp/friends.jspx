@@ -20,12 +20,18 @@
 			<parts:search pathMessageKey="navi.friends" formAction="/friends/" formInputName="user"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="contentHeading">
-			<fmt:message key="friends.intro">
-				<fmt:param value="${properties['project.name']}"/>
-			</fmt:message>
-		</jsp:attribute>	
-		
+		<!--+
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<fmt:message key="friends.intro">
+						<fmt:param value="${properties['project.name']}"/>
+					</fmt:message>
+				</jsp:attribute>
+			</parts:infobox>
+         </jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
 		<ul>	
