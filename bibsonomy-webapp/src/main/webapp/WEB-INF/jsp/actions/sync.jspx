@@ -15,7 +15,7 @@
 
 	<fmt:message key="navi.sync" var="syncPageTitle"/>	
 
-	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${syncPageTitle}">
+	<layout:paneLayout requPath="${requPath}" pageTitle="${syncPageTitle}" command="${command}" headerMessageKey="navi.sync">
 	
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
@@ -42,8 +42,6 @@
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
 			<fmt:message var="resetService" key="synchronization.server.reset" />
 			
-			<div id="general_100">
-				
 				<!-- iterate over all services -->
 				<c:forEach var="service" items="${command.syncServer}" varStatus="status">
 					<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
@@ -202,9 +200,9 @@
 						</li>
 					</c:forEach>
 					</ul>
-				</c:if>				
-			</div>
+				</c:if>
+
 		</jsp:attribute>
-	</layout:layout>
+	</layout:paneLayout>
 	
 </jsp:root>
