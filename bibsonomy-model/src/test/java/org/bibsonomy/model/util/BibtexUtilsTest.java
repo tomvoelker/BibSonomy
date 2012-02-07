@@ -24,10 +24,12 @@
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -36,6 +38,8 @@ import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -310,6 +314,55 @@ public class BibtexUtilsTest {
 		BibTexUtils.sortBibTexList(posts, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.DESC));
 		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts.get(0).getResource().getAuthor());
 		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts.get(1).getResource().getAuthor());
+	}
+	
+	
+	/**
+	 * tests BibtexUtils.mergeDuplicates
+	 */
+	@Test
+	public void testMergeDuplicates() {		
+		/*
+		 * create post 1
+		 */
+		final Post<BibTex> post1 = new Post<BibTex>();
+		final BibTex bibtex1 = new BibTex();
+		bibtex1.setInterHash("test");
+		post1.setResource(bibtex1);
+		post1.addTag("tag1");
+		post1.addTag("tag2");
+		post1.setUser(new User("user1"));
+		/*
+		 * create post 2
+		 */
+		final Post<BibTex> post2 = new Post<BibTex>();
+		final BibTex bibtex2 = new BibTex();
+		bibtex2.setInterHash("test");
+		post2.setResource(bibtex2);
+		post2.addTag("tag2");
+		post2.addTag("tag3");
+		post2.setUser(new User("user2"));
+		/*
+		 * create list
+		 */
+		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();		
+		posts.add(post1);
+		posts.add(post2);
+		/*
+		 * merge duplicates
+		 */
+		BibTexUtils.mergeDuplicates(posts);
+		/*
+		 * check result
+		 */
+		assertEquals(1, posts.size());
+		Set<Tag> tags = posts.get(0).getTags();
+		assertEquals(5, tags.size());
+		assertTrue(tags.contains(new Tag("tag1")));
+		assertTrue(tags.contains(new Tag("tag2")));
+		assertTrue(tags.contains(new Tag("tag3")));
+		assertTrue(tags.contains(new Tag("merged:user1")));
+		assertTrue(tags.contains(new Tag("merged:user2")));
 	}
 
 	/**

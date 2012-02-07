@@ -93,6 +93,15 @@ public class BibTexUtils {
 	public static final String ADDITIONAL_MISC_FIELD_BIBURL = "biburl";
 
 	/**
+	 * This field is intended to point towards the (plain text) bibtex record
+	 * of the given bibtex entry, i.e. usually towards something like
+	 *   http://www.bibsonomy.org/bib/bibtex/INTRAHASH/USERNAME
+	 * Needed mainly when exporting via JabRef filters.
+	 */
+	public static final String ADDITIONAL_MISC_FIELD_BIBRECORD = "bibrecord";
+	
+	
+	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource) 
 	 */
@@ -170,6 +179,9 @@ public class BibTexUtils {
 	private static final String BIBTEX_EDITOR_FIELD = "editor";
 
 	private static final String BIBTEX_AUTHOR_FIELD = "author";
+	
+	/** prefix for tags indicating post owners when duplicates=merge */
+	private static final String MERGED_PREFIX = "merged:";
 
 	/**
 	 * the supported entrytypes of a bibtex
@@ -738,6 +750,42 @@ public class BibTexUtils {
 		// FIXME: a bit cumbersome at this point - but we need to work on the bibtexList
 		bibtexList.clear();
 		bibtexList.addAll(temp);
+	}
+	
+	
+	/**
+	 * Merge duplicates within a list of publication posts. Returns a list of publications
+	 * with unique interhashes; tags of duplicates (according to the interhash) are aggregated. 
+	 * 
+	 * @param publicationList
+	 */
+	public static void mergeDuplicates(final List<Post<BibTex>> publicationList) {
+		Map<String,Post<BibTex>> hashToPost = new HashMap<String, Post<BibTex>>();
+		for (Post<BibTex> post : publicationList) {
+			// add merged:USERNAME tag to indicate all users who own the post
+			post.addTag(MERGED_PREFIX + post.getUser().getName());
+			final String hash = post.getResource().getInterHash();
+			// create new map entry, if not yet present
+			if (! hashToPost.containsKey(hash)) {				
+				hashToPost.put(hash, post);
+			}
+			else {
+				// add all tags to existing post in map
+				hashToPost.get(hash).getTags().addAll(post.getTags()); 				
+			}
+		}
+		publicationList.clear();
+		publicationList.addAll(hashToPost.values());
+ 	}
+	
+	
+	
+	/**
+	 * 
+	 * @param bibtexList
+	 */
+	public static void aggregateDuplicates(final List<Post<BibTex>> bibtexList) {
+		
 	}
 
 
