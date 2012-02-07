@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command;
 import java.util.Date;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.model.Resource;
@@ -44,8 +45,8 @@ public class ResourceViewCommand extends BaseCommand {
 	private String sortPageOrder = DEFAULT_SORTPAGEORDER;
 	
 	/** show duplicates? */
-	private boolean duplicates = true;
-	
+	private Duplicates duplicates = Duplicates.YES;
+
 	private boolean notags = false;
 
 	/**
@@ -69,19 +70,6 @@ public class ResourceViewCommand extends BaseCommand {
 	/** filter group resources  */
 	private FilterEntity filter;
 
-	/**
-	 * @return the duplicates
-	 */
-	public boolean isDuplicates() {
-		return this.duplicates;
-	}
-	
-	/**
-	 * @param duplicates the duplicates to set
-	 */
-	public void setDuplicates(final boolean duplicates) {
-		this.duplicates = duplicates;
-	}
 	
 	/**
 	 * @return name of the user whose resources are requested
@@ -299,7 +287,20 @@ public class ResourceViewCommand extends BaseCommand {
 	public void setReferer(final String referer) {
 		this.referer = referer;
 	}
-
+	
+	/**
+	 * @return enum how to handle duplicates
+	 */
+	public Duplicates getDuplicates() {
+		return this.duplicates;
+	}
+	
+	/**
+	 * @param duplicates  the duplicates
+	 */
+	public void setDuplicates(Duplicates duplicates) {
+		this.duplicates = duplicates;
+	}
 	public Date getStartDate() {
 		return this.startDate;
 	}

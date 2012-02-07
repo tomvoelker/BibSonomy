@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.StatisticsConstraint;
@@ -215,13 +216,19 @@ public abstract class ResourceListController {
 			cmd.setSortPageOrder(DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS);
 		}
 		
-		if (!cmd.isDuplicates()) {
+		// remove duplicates
+		if (Duplicates.NO.equals(cmd.getDuplicates())) {
 			BibTexUtils.removeDuplicates(posts);
 			// re-sort list by date in descending order, if nothing else requested
 			if (ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
 				cmd.setSortPage("date");
 				cmd.setSortPageOrder("desc");
 			}
+		}
+		
+		// merge duplicates
+		if (Duplicates.MERGED.equals(cmd.getDuplicates())) {
+			BibTexUtils.mergeDuplicates(posts);
 		}
 		
 		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
