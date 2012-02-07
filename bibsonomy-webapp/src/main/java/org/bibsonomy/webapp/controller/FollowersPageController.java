@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Resource;
@@ -62,7 +63,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		command.setSortPage("ranking");
 		command.setSortPageOrder("desc");
 		command.setPersonalized(true);
-		command.setDuplicates(false);
+		command.setDuplicates(Duplicates.NO);
 		
 		// fetch all tags of logged-in user
 		final String username = command.getContext().getLoginUser().getName();

@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collections;
 import java.util.List;
 
+import org.bibsonomy.common.enums.Duplicates;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Group;
@@ -36,7 +37,7 @@ public class GroupCvPageController extends ResourceListController implements Min
 			return Views.ERROR404;
 		}
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
-		command.setDuplicates(false);
+		command.setDuplicates(Duplicates.NO);
 		
 		command.setPageTitle("Curriculum vitae"); // TODO: i18n
 		
