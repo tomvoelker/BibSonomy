@@ -21,6 +21,9 @@
 			<parts:search pathMessageKey="navi.basket"/>
 		</jsp:attribute>
 		
+		<!--+
+			| sidebar
+			+-->
 		<jsp:attribute name="sidebar">
 			<ul>			
 	          <li>
@@ -31,22 +34,27 @@
 	          </li>
 			</ul>
  		</jsp:attribute>
-    
-    	<jsp:attribute name="contentExt">
-    		
-        	<!-- short info, what the basket is -->
-            <p><fmt:message key="basket.info"/></p>                 
-
-			<!-- quick links on what you can do -->
-			
-			<p><fmt:message key="basket.info.examples"/></p>
-			<ul class="news">
-				<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.edit.tags"/></a></li>
-				<li><a href="/export/${fn:escapeXml(requPath)}${requQueryString}"><fmt:message key="basket.export"/></a></li>
-				<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.delete"/></a></li>
-			</ul>
-
-    	</jsp:attribute>
+ 		
+    	<!--+
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+		        	<!-- short info, what the basket is -->
+		            <fmt:message key="basket.info"/>                 
+		
+					<!-- quick links on what you can do -->
+					
+					<p><fmt:message key="basket.info.examples"/></p>
+					<ul class="news">
+						<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.edit.tags"/></a></li>
+						<li><a href="/export/${fn:escapeXml(requPath)}${requQueryString}"><fmt:message key="basket.export"/></a></li>
+						<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.delete"/></a></li>
+					</ul>
+				</jsp:attribute>
+			</parts:infobox>
+         </jsp:attribute>
     
 	</layout:bibtexLayout>
 
