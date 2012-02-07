@@ -54,7 +54,7 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 									   "Scientific Literature Digital Library and Search Engine " + href(SITE_URL, SITE_NAME);
 	
 	private static final String HOST = "citeseerx.ist.psu.edu";
-	private static final Pattern bibtexPattern = Pattern.compile("<h2>BibTeX.*?</h2>\\s*<div class=\"content\">\\s*(@.*?)\\s*</div>", Pattern.MULTILINE | Pattern.DOTALL);
+	private static final Pattern bibtexPattern = Pattern.compile("<div id=\"bibtex\" class=\"block\">.*?<h3>BibTeX</h3>.*?<p>(.+?)</p>.*?</div>", Pattern.MULTILINE | Pattern.DOTALL);
 	private static final Pattern abstractPattern = Pattern.compile("Abstract:.*?<p class=\"para4\">(.*?)</p>", Pattern.MULTILINE | Pattern.DOTALL);
 	
 	private static final Pattern brokenUrlFixPattern = Pattern.compile(".*summary\\d+.*");
