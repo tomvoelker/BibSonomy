@@ -88,7 +88,7 @@ public class BibtexScraper implements Scraper {
 			/* 
 			 * copied from SnippetScraper
 			 */
-			final BibtexParser parser = new BibtexParser(true);
+			final BibtexParser parser = new BibtexParser(false);
 			final BibtexFile bibtexFile = new BibtexFile();
 			final BufferedReader sr = new BufferedReader(new StringReader(source));
 			// parse source
