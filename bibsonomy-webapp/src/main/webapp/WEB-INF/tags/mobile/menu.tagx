@@ -176,8 +176,8 @@
 		    		$(this).toggleClass("active");
 		    		$("#toggle-publications").toggleClass("active");
 		    		
-					$("#bookmarkList").show();
-					$("#bibtexList").hide();
+					$("#bookmarks_0").show();
+					$("#publications_0").hide();
 					
 					/* save resourceType */
 					sessionStorage.setItem("resourceType", "bookmark");
@@ -192,8 +192,8 @@
 		    		$(this).toggleClass("active");
 		    		$("#toggle-bookmarks").toggleClass("active");
 		    		
-					$("#bookmarkList").hide();
-					$("#bibtexList").show();
+					$("#bookmarks_0").hide();
+					$("#publications_0").show();
 					
 					sessionStorage.setItem("resourceType", "bibtex");
 					
