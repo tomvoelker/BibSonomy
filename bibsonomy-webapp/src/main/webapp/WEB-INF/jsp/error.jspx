@@ -7,6 +7,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
     xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
