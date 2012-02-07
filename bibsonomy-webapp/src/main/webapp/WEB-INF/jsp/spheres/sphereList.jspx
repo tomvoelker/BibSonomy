@@ -32,7 +32,6 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<br/><br/>
 			<ul>
 				<li>				
 				<span class="sidebar_h">					 
@@ -47,7 +46,7 @@
 		</jsp:attribute>
 		
 		<!--+
-			| sidebar
+			| infobox
 			+-->
 		<jsp:attribute name="infobox">
 			<parts:infobox infoTextKey="spheres.intro"/>

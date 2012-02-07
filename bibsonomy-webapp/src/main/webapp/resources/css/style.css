@@ -427,6 +427,10 @@ a img {
 #infobox .content {
 	padding: 15px;
 }
+
+#infobox .content a, #infobox .content a:link, #infobox .content a:visited {
+	text-decoration: underline;
+}
 /*****************************************************************************/
 /* END INFOBOX                                                               */
 /*****************************************************************************/

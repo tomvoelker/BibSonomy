@@ -22,6 +22,9 @@
 			<parts:search pathMessageKey="navi.inbox"/>
 		</jsp:attribute>
 		
+		<!--+
+			| infobox
+			+-->
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">

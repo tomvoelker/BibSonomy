@@ -47,30 +47,33 @@
 	    </jsp:attribute>
 	    
 	    <!--+
-    	 	| content
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+	  			  <c:choose>
+	  				<c:when test="${not empty command.requestedUser }">
+						<fmt:message key="system.recentlyDiscussed.intro.requUser">
+							<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
+						</fmt:message>
+	               	</c:when>
+	               	<c:when test ="${not empty command.requestedGroup }">
+	               		<fmt:message key="system.recentlyDiscussed.intro.requGroup">
+							<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
+						</fmt:message>
+	               	</c:when>
+					<c:otherwise>
+	               		<fmt:message key="system.recentlyDiscussed.intro.noUser"/>
+					</c:otherwise>
+				  </c:choose>
+				</jsp:attribute>
+			</parts:infobox>
+         </jsp:attribute>
+	    
+	    <!--+
+    	 	| sidebar
     	 	+-->
-		<jsp:attribute name="contentHeading">
-          <div id="general_100">
-  			<p id="groupIntro">
-  			  <c:choose>
-  				<c:when test="${not empty command.requestedUser }">
-					<fmt:message key="system.recentlyDiscussed.intro.requUser">
-						<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
-					</fmt:message>
-               	</c:when>
-               	<c:when test ="${not empty command.requestedGroup }">
-               		<fmt:message key="system.recentlyDiscussed.intro.requGroup">
-						<fmt:param value="${fn:escapeXml(command.requestedGroup)}"/>
-					</fmt:message>
-               	</c:when>
-				<c:otherwise>
-               		<fmt:message key="system.recentlyDiscussed.intro.noUser"/>
-				</c:otherwise>
-			  </c:choose>
-			</p> 
-		  </div>
-		</jsp:attribute>
-		
 		<jsp:attribute name="sidebar">
 		<ul>
 
