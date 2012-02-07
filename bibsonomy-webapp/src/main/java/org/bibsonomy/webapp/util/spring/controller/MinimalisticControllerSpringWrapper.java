@@ -272,6 +272,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 * bean properties. Currently, it is used by 
 		 * - the DBLP update (to set the date of bookmarks)
 		 * - the getPosts() parameters startDate and endDate
+		 * - the birthday on /settings (damn!)
 		 * 
 		 * Ergo: you can't easily change this date format!  
 		 * 
