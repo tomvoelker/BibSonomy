@@ -1987,3 +1987,48 @@ form.editTags, form.editTags input {
 .italic {
 	font-style: italic;
 }
+
+.reqinput {
+	background-color: #e5f3fa;
+}
+/*
+ * textarea with autoresize
+ */
+div.grippie {
+	background: url(/resources/image/resize_grip.png) no-repeat scroll
+		center 2px;
+	border-color: #006699;
+	border-style: solid;
+	border-width: 0pt 1px 1px;
+	cursor: s-resize;
+	height: 8px;
+	overflow: hidden;
+	margin-bottom: 2px;
+}
+
+input[type=text],input[type=password],input[type=file],textarea,select {
+	border: 1px solid #069;
+	padding: 2px;
+	font-family: monospace;
+	font-weight: normal;
+}
+
+
+div.fsRow div.resizable-textarea {
+	width: 73%;
+	float: left;
+}
+
+div.reviewTextBox div.resizable-textarea {
+	width: 100%;
+		
+}
+
+div.fsRow div.resizable-textarea textarea {
+	float: none;
+	width: 100%;
+	margin-bottom: 0px;
+	border-bottom: none;
+}
+
+
