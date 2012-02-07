@@ -80,9 +80,10 @@ public class BibtexScraper implements Scraper {
 		if (pageContent == null) return null;
 		
 		// html clean up
-		final String source = StringEscapeUtils.unescapeHtml(pageContent).replace("<br/>", "\n");
-		// TODO: may be some other format elements like <i>, <p> etc. are still in code
-		
+		final String source = StringEscapeUtils.unescapeHtml(pageContent).replaceAll("<\\s*+br\\s*+/?>", "\n")
+				//this should remove the remaining html tags
+				.replaceAll("</?\\s*+\\w++.*?>", "");
+
 		try {
 			
 			/* 
