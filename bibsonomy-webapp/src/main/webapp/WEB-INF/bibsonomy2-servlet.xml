@@ -300,6 +300,7 @@
 					</bean>
 				</entry>	
 				<!-- Wiki Config -->
+				<!-- 
 				<entry key="/cvpage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="cvPageController"/>
@@ -311,9 +312,10 @@
 							</list>
 						</property>
 					</bean>
-				</entry>	
+				</entry>
+				 -->	
 				<!-- -->
-				<!-- JSP Config TODO: Delete me 
+				<!-- JSP Config TODO: Delete me  --> 
 				<entry key="/cvpage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="cvPageController"/>
@@ -337,7 +339,7 @@
 						</property>
 					</bean>
 				</entry>
-				End JSP Config -->
+
 				<entry key="/relations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRelationsController"/>
@@ -598,6 +600,7 @@
 		<property name="logic" ref="logic"/>
 	</bean>
 	<!-- Wiki Config -->
+	<!-- 
 	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.WikiCvPageController" scope="request" parent="resourceController">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="wikiRenderer" ref="wikiRenderer"/>
@@ -607,10 +610,10 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</set>
 		</property>
-	</bean> 
-	<!-- -->
+	</bean>
+	 --> 
 	
-	<!-- JSP Config TODO: Delete me
+	<!-- JSP Config TODO: Delete me -->
 	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request" parent="resourceController">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="forcedResources">
@@ -633,7 +636,6 @@
 			</set>
 		</property>
 	</bean>	
-	End JSP Config -->
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>

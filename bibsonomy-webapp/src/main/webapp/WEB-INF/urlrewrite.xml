@@ -423,6 +423,7 @@
 	<!-- ############## Curriculum vitae pages ############### -->
 	
 	<!-- /cv/NAME -->
+	<!-- 
 	<rule>
 		<name>/cv/user/USER</name>
 		<from>^/+cv/+user/(.+)$</from>
@@ -436,22 +437,21 @@
 		<set type="parameter" name="requestedUser">$1</set>
 		<to last="true">/cvpage</to>
 	</rule>
+	 -->
 	
-	
-	<!-- JSP Config /cv/NAME 
+	<!-- JSP Config /cv/NAME  --> 
 	<rule>
 		<name>/cv/user/USER</name>
-		<from>^/+cv/+group/(.+)$</from>
+		<from>^/+cv/+user/(.+)$</from>
 		<set type="parameter" name="requestedUser">$1</set>
 		<to last="true">/cvpage</to>
-	</rule>  JSP Config TODO: Delete me
+	</rule>  
 	<rule>
 		<name>/cv/group/USER</name>
 		<from>^/+cv/+group/(.+)$</from>
 		<set type="parameter" name="requestedGroup">$1</set>
 		<to last="true">/groupcvpage</to>
 	</rule>
-	 End JSP Config -->
 	
 	<!-- /picture/user/USER -->
 	<rule>
