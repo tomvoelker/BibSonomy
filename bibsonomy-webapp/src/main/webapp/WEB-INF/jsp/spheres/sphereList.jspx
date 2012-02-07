@@ -46,13 +46,19 @@
 			</ul>
 		</jsp:attribute>
 		
+		<!--+
+			| sidebar
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox infoTextKey="spheres.intro"/>
+		</jsp:attribute>
+		
+		<!--+
+			| content
+			+-->
 		<jsp:attribute name="content">
 
 			<div id="general_100">
-  				<p id="groupIntro">
-					<fmt:message key="spheres.intro"/>
-				</p>
-
 				<!--+
 					| show spheres graph if supported by browser
 					+-->

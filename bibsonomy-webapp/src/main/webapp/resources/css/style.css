@@ -61,7 +61,7 @@ a img {
 	position: absolute;
 	top: 10px;
 	left: 30px;
-	right: 300px; /* needed for opera */
+	right: 300px; /* needed for opera */ /* FIXME: disturbs quick login */
 	color: white;
 	font-size: 38px;
 }
@@ -410,18 +410,37 @@ a img {
 	display: none;
 }
 
+/*****************************************************************************/
+/* BEGIN INFOBOX                                                             */
+/*****************************************************************************/
+#infobox {
+	background-color: #ccd8e8;
+	background-image: url("/resources/image/infobox_bg.png");
+	background-repeat: no-repeat;
+}
+
+#infobox .header {
+	padding: 0.5em 0 0 15px;
+	margin: 0;
+}
+
+#infobox .content {
+	padding: 15px;
+}
+/*****************************************************************************/
+/* END INFOBOX                                                               */
+/*****************************************************************************/
 
 
 /*****************************************************************************/
 /* BEGIN SIDEBAR                                                             */
 /*****************************************************************************/
-
-
 #sidebar {
 	position: absolute;
 	width: 300px;
 	right: 0px;
 	top: 0px;
+	bottom: 0px;
 	z-index: 40;
 	background-color: #e4e4e4;
 }
@@ -1541,6 +1560,7 @@ form.editTags, form.editTags input {
 	width: 300px;
 	right: 0px;
 	top: 0px;
+	bottom: 0px;
 	z-index: 40;
 	background-color: #e4e4e4;
 }

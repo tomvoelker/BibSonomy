@@ -19,11 +19,12 @@
 	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
 	
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 				
 		
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" infobox="${infobox}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}">
 	
 	
 		<!--+

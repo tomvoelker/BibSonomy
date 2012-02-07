@@ -25,6 +25,7 @@
 	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
 	
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
@@ -34,7 +35,8 @@
 		pageTitle="${pageTitle}" 
 		heading="${heading}" 
 		headerExt="${headerExt}"
-		requestedUser="${requestedUser}" 
+		requestedUser="${requestedUser}"
+		infobox="${infobox}" 
 		sidebar="${sidebar}" 
 		requPath="${requPath}"
 		activeTab="${activeTab}">

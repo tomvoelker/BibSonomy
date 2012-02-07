@@ -18,6 +18,7 @@
     <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>  
   
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false" />
@@ -31,7 +32,7 @@
 	<fmt:message key="feeds.burst" var="burstRssFeed" />
 	
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" activeTab="${activeTab}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" infobox="${infobox}" sidebar="${sidebar}" requPath="${requPath}" activeTab="${activeTab}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />

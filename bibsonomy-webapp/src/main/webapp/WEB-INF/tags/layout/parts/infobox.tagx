@@ -1,0 +1,45 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:directive.attribute name="headerKey" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="infoTextKey" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="infoTextBody" fragment="true" required="false"/>
+	
+	<!--+
+		| render the infobox
+		+-->
+	<div id="infobox">
+		<!-- header for the info box -->
+		<ul>
+			<li>
+				<span class="sidebar_h">
+					<c:choose>
+						<c:when test="${not empty headerKey}">
+							<fmt:message key="headerKey"/>
+						</c:when>
+						<c:otherwise>
+							<fmt:message key="navi.infobox"/>
+						</c:otherwise>
+					</c:choose>
+				</span>
+				<!-- content of the info box -->
+				<div class="content sidebar_collapse_content">
+					<c:choose>
+						<c:when test="${not empty infoTextKey}">
+							<fmt:message key="${infoTextKey}"/>
+						</c:when>
+						<c:when test="${not empty infoTextBody}">
+							<jsp:invoke fragment="infoTextBody"/>
+						</c:when>
+					</c:choose>
+				</div>
+			</li>
+		</ul>
+	</div>
+</jsp:root>

@@ -18,6 +18,7 @@
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
@@ -245,7 +246,7 @@
 							</div>
 						</c:if>
 
-						<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}"/>							
+						<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>							
 
 						<jsp:invoke fragment="content"/>
 					

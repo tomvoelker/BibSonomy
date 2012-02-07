@@ -22,12 +22,19 @@
 			<parts:search pathMessageKey="navi.inbox"/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="contentHeading">
-			<fmt:message key="inboxPage.about">
-				<fmt:param>${command.context.loginUser.name}</fmt:param>
-			</fmt:message>
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<fmt:message key="inboxPage.about">
+						<fmt:param value="${command.context.loginUser.name}"/>
+					</fmt:message>
+				</jsp:attribute>
+			</parts:infobox>
          </jsp:attribute>
 
+		<!--+
+			| sidebar
+			+-->
 		<jsp:attribute name="sidebar">
 			<ul>
 				<li>

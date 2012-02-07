@@ -15,6 +15,7 @@
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
@@ -31,7 +32,7 @@
     <fmt:message key="feeds.swrc" var="swrcFeed"/>	
 
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}" >		
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" infobox="${infobox}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}">		
 		<jsp:attribute name="headerExt">
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="/rss/${requPath}" />
 			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="/publrss/${requPath}" />
