@@ -98,9 +98,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	 * FIXME: use some other condition, that does not depend on a location's name
 	 */
 	var pathname = location.pathname;
-	if (!pathname.startsWith("/postPublication") && !pathname.startsWith("/postBookmark")){
-		init_sidebar();
-	}
+	init_sidebar();
 
 	/* *************************************************************************
 	 * scope: post lists

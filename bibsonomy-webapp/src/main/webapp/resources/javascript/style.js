@@ -345,6 +345,7 @@ function initBookmarksPublicationsListsLast() {
 		// set heights to maximum_heights
 		$("#bookmarks_0 ul.posts").height(maxheight);
 		$("#publications_0 ul.posts").height(maxheight);
+		$("#sidebar").height(maxheight);
 	}
 }
 
