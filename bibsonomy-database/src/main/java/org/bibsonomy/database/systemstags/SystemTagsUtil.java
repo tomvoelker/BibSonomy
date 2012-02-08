@@ -144,7 +144,7 @@ public class SystemTagsUtil {
 	 */
 	public static String removeSystemTag(final String tags, final String tagType) {
 		if (present(tags)) {
-			return RELEVANT_FOR_PATTERN.matcher(tags).replaceAll("");
+			return RELEVANT_FOR_PATTERN.matcher(tags).replaceAll("").trim();
 		}
 		return tags;
 	}
