@@ -89,6 +89,14 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				command.setPageTitle("relevant for :: " + groupingName); // TODO: i18n
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
 				this.endTiming();
+				/*
+				 * Remove "relevant:for" from tags such that only the remaining 
+				 * tags are shown in the input form.
+				 * XXX: another way to achieve this would be to let the 
+				 * urlrewritefilter signal in another way that "sys:relevantFor:GROUP" 
+				 * is requested (e.g., by another parameter or so)
+				 */
+				command.setRequestedTags(SystemTagsUtil.removeSystemTag(command.getRequestedTags(), RelevantForSystemTag.NAME));
 				return Views.RELEVANTFORPAGE;
 			} 
 

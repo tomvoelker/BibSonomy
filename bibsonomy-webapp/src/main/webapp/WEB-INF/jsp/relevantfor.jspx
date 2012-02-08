@@ -15,7 +15,7 @@
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.group" formAction="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag">
+			<parts:search pathMessageKey="navi.relevantFor" formAction="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<li>
 						:: <a href="/relevantfor/group/${mtl:encodeURI(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
