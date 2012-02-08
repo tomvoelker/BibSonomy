@@ -17,27 +17,15 @@
 		 	| display info box
 		 	+-->
 		<c:if test="${not empty infobox}">
-			<div class="sidebarBoxOuter">
-				<div class="sidebarBoxInner">
-					<jsp:invoke fragment="infobox" />
-				</div>
-			</div>
+			<jsp:invoke fragment="infobox" />
 		</c:if>
 		
 		<c:if test="${not empty newsbar}">
-			<div class="sidebarBoxOuter" id="newsbox">
-				<div class="sidebarBoxInner">
-					<jsp:invoke fragment="newsbar" />
-				</div>
-			</div>
+			<jsp:invoke fragment="newsbar" />
 		</c:if>
 
 		<c:if test="${not empty sidebar}">
-			<div class="sidebarBoxOuter" id="sidebox">
-				<div class="sidebarBoxInner">
-					<jsp:invoke fragment="sidebar" />
-				</div>
-			</div>
+			<jsp:invoke fragment="sidebar" />
 		</c:if>
 	</div>
 

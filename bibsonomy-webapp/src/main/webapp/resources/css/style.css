@@ -465,7 +465,7 @@ a img {
 }
 
 
-#sidebar a,#sidebar a:link,#sidebar a:visited {
+#sidebar a, #sidebar a:link, #sidebar a:visited {
 	color: #2F3321;
 	text-decoration: none;
 }
@@ -497,7 +497,7 @@ a img {
 	padding: 5px;
 }
 
-#sidebar .sidebarBoxInner ul {
+#sidebar ul {
 	margin: 0px;
 }
 
