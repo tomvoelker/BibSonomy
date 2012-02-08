@@ -346,7 +346,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
 
-		HashID.getSimHash(param.getSimHash()); 
+
 		return this.getPostsByTagNamesForUser(param, session);
 	}
 

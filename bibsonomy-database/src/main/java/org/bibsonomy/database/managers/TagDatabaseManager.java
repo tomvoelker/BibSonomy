@@ -652,7 +652,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTagsViewable(final TagParam param, final DBSession session) {
-		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+		if (GroupID.isSpecialGroupId(param.getGroupId())) {
 			// show users own tags, which are private, public or for friends
 			param.setRequestedUserName(param.getUserName());
 			return this.queryForList("getTagsViewableBySpecialGroup", param, Tag.class, session);

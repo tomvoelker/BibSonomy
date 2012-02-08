@@ -27,7 +27,7 @@ public class GetTagsViewable extends TagChainElement {
 			return new ArrayList<Tag>(0);
 		}
 		param.setGroupId(groupId);
-		if (present(param.getTagIndex()) == true) return this.db.getRelatedTagsViewable(param, session);
+		if (present(param.getTagIndex())) return this.db.getRelatedTagsViewable(param, session);
 		return this.db.getTagsViewable(param, session);
 	}
 
