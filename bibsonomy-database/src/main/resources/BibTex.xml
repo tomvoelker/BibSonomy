@@ -480,7 +480,7 @@
 	</select>
 
 	<select id="getBibTexViewableByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, b.group, #requestedGroupName# AS group_name, <include refid="reviewRatingsRows" />
 		FROM bibtex b  <include refid="reviewRatingsJoinPublication" />, tas t, bibhash h,
 		     (SELECT t1.content_id
 		      FROM <include refid="tagFromQuery"/>

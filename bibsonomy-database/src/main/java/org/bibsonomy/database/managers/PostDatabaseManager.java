@@ -614,7 +614,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	/**  
-	 * <em>/viewable/EineGruppe</em><br/><br/>
+	 * <em>/viewable/GROUP</em><br/>
 	 * 
 	 * Prepares queries to retrieve posts which are set viewable to group.
 	 * 
@@ -635,7 +635,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 
 		final P param = this.createParam(loginUserName, null, limit, offset);
-		param.setRequestedGroupName(requestedGroupName);
+		param.setRequestedGroupName(requestedGroupName); // only set to avoid the JOIN with the group table and directly show the group name
 		param.setGroupId(groupId);
 		param.setSimHash(simHash);
 		param.addAllToSystemTags(systemTags);
@@ -644,13 +644,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 * TODO: check method
+	 * <em>/viewable/GROUP/TAG</em><br/>
 	 * 
-	 * Returns viewable BibTexs for a given tag.
+	 * Returns posts that are viewable for a certain group and have the given tag(s).
+	 * 
+	 * @param requestedGroupName - the name of the group for which the posts shall be viewable
 	 * @param loginUserName 
-	 * @param requestedUserName
 	 * @param tagIndex
-	 * @param groupId
+	 * @param groupId - the id of the group for which the posts shall be viewable
 	 * @param filter
 	 * @param limit
 	 * @param offset
@@ -658,14 +659,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsViewableByTag(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsViewableByTag(final String requestedGroupName, final String loginUserName, final List<TagIndex> tagIndex, final int groupId, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (GroupID.isSpecialGroupId(groupId)) {
-			return this.getPostsByTagNamesForUser(loginUserName, requestedUserName, tagIndex, groupId, Collections.<Integer>emptyList(), limit, offset, filter, systemTags, session);
+			return this.getPostsByTagNamesForUser(loginUserName, loginUserName, tagIndex, groupId, Collections.<Integer>emptyList(), limit, offset, filter, systemTags, session);
 		}
 
-		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
-		param.setTagIndex(tagIndex);
+		final P param = this.createParam(loginUserName, loginUserName, limit, offset);
+		param.setRequestedGroupName(requestedGroupName); // only set to avoid the JOIN with the group table and directly show the group name 
 		param.setGroupId(groupId);
+		param.setTagIndex(tagIndex);
 		param.addAllToSystemTags(systemTags);
 
 		return this.postList("get" + this.resourceClassName + "ViewableByTag", param, session);
