@@ -709,6 +709,16 @@ ul.news {
 	padding-right:10px;
 }
 
+.tagone a {
+	color: #3399cc;
+}
+
+.tagten a {
+	font-size: 140%;
+	color: #3F472E;
+}
+
+
 /*--- simple css link buttons -----------------------------------------------*/
 
 .linkButton {
