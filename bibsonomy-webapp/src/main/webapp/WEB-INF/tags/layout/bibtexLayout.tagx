@@ -82,7 +82,7 @@
 					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandard}" loginUser="${command.context.loginUser}"/>
 				</c:when>
 				<c:otherwise>
-					<div id="general_100">
+					<div id="fullscreen">
 						<c:if test="${not empty contentHeading}">
 							<jsp:invoke fragment="contentHeading" />
 						</c:if>

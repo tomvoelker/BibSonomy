@@ -53,17 +53,17 @@
 	    </jsp:attribute>
 
 		<jsp:attribute name="sidebar">
-		<ul>
-		<!-- display tags -->
-			<li>
-				<span class="sidebar_h"><fmt:message key="tags"/></span>
-				<tags:cloud requPath="tag" cmd="${command.tagcloud}"/>
-			</li>
-		</ul>
+			<ul>
+			<!-- display tags -->
+				<li>
+					<span class="sidebar_h"><fmt:message key="tags"/></span>
+					<tags:cloud requPath="tag" cmd="${command.tagcloud}"/>
+				</li>
+			</ul>
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
-			<h2 itemprop="name"><a href="${bookmark.url}" itemprop="url"><c:out value="${bookmark.title}" /></a></h2>
+			<h2 itemprop="name"><a href="${fn:escapeXml(bookmark.url)}" itemprop="url"><c:out value="${bookmark.title}" /></a></h2>
 		
 			<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
