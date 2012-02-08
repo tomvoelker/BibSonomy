@@ -25,7 +25,7 @@
 					</c:otherwise>
 				</c:choose>
 			</c:if>
-			<!--  determine css depending on c	o-occurrence counts -->
+			<!--  determine css depending on co-occurrence counts -->
 			<c:if test="${order eq 'added'}">
 				<c:set var="relatedness" value="${tag.usercount / cmd.tagGlobalCount}"/>
 				<c:choose>
