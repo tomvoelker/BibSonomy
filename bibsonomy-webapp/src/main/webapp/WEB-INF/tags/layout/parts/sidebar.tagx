@@ -16,7 +16,7 @@
 		<!--+
 		 	| display info box
 		 	+-->
-		<c:if test="${not empty infobox}">
+		<c:if test="${not empty infobox and command.context.loginUser.settings.simpleInterface}">
 			<jsp:invoke fragment="infobox" />
 		</c:if>
 		
