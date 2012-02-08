@@ -25,7 +25,9 @@
 		</c:if>
 
 		<c:if test="${not empty sidebar}">
-			<jsp:invoke fragment="sidebar" />
+			<div id="sidebox">
+				<jsp:invoke fragment="sidebar" />
+			</div>
 		</c:if>
 	</div>
 

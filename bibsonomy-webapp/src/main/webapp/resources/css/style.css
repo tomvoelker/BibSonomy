@@ -1649,25 +1649,6 @@ form.editTags, form.editTags input {
 	color: #fff;
 }
 
-#pageNavigation .pageNavigation prev2 {
-}
-
-#pageNavigation .pageNavigation prev {
-}
-
-#pageNavigation .pageNavigation next {
-}
-
-#pageNavigation .pageNavigation next2 {
-}
-
-#newsbox {
-	background-color: #FFF69B;
-}
-#sidebox {
-	background-color: #D8EBAE;
-}
-
 
 .hiddenElement {
 	display: none !important;
