@@ -37,6 +37,11 @@ public class SystemTagsUtil {
 	private final static String PREFIX ="sys";
 	public final static String DELIM = ":";
 
+	/**
+	 * Used to remove the relevant for tag in {@link #removeSystemTag(String, String)}. FIXME: Workaround!
+	 */
+	private final static Pattern RELEVANT_FOR_PATTERN = Pattern.compile("sys:relevantFor:.+?\\b");
+	
 
 	/*
 	 * Methods to tell systemTags from "regular" tags 
@@ -127,6 +132,23 @@ public class SystemTagsUtil {
 		return false;
 	}
 
+	/**
+	 * Removes the the system tag with the given type from the string.
+	 * FIXME: Currently the tagType is ignored and only the relevantFor system tag is removed!
+	 * 
+	 * 
+	 * @param tags - a string of tags
+	 * @param tagType - the type of the system tag to be removed. FIXME No.1: unused; 
+	 * 				 FIXME No. 2: shouldn't we always use "final SystemTag tagType" instead of "final String tagType"?
+	 * @return
+	 */
+	public static String removeSystemTag(final String tags, final String tagType) {
+		if (present(tags)) {
+			return RELEVANT_FOR_PATTERN.matcher(tags).replaceAll("");
+		}
+		return tags;
+	}
+	
 	/**
 	 * Counts the number of "regular" (i.e., non-system) tags
 	 * within a list of tags
@@ -324,6 +346,8 @@ public class SystemTagsUtil {
 		return false;
 	}
 
+
+	
 	public static boolean hasTypeAndArgument(final String tagName) {
 		if (!present(tagName)) {
 			return false;
