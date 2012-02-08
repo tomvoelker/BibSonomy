@@ -57,25 +57,33 @@
 	</select>
 
  	<select id="getTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_ctr 
-		FROM tas t
-		WHERE t.group = #groupId#
-		<include refid="getTagsByResourceType"/>
-		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+		SELECT tag_name, COUNT(tag_name) AS tag_ctr 
+			FROM tas t
+			WHERE t.group = #groupId#
+			<include refid="getTagsByResourceType"/>
+			GROUP BY t.tag_name
+			<isEqual property="order" compareValue="FREQUENCY">
+			  ORDER BY tag_ctr DESC
+			</isEqual>
+			LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getTagsViewableBySpecialGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_ctr 
-		FROM tas t
-		WHERE t.group = #groupId# 
-		AND t.user_name = #requestedUserName#
-		<include refid="getTagsByResourceType"/>
-		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
+		SELECT tag_name, COUNT(tag_name) AS tag_ctr 
+			FROM tas t
+			WHERE t.group = #groupId# 
+			  AND t.user_name = #requestedUserName#
+			<include refid="getTagsByResourceType"/>
+			GROUP BY t.tag_name
+			<isEqual property="order" compareValue="FREQUENCY">
+			  ORDER BY tag_ctr DESC
+			</isEqual>
+			LIMIT #limit# OFFSET #offset#
 	</select>
 				
 	<!--
 		ATTENTION: for the query 'getTagsByUser', the resultMap 'TagCommon.tagWithGlobalCount'
-	 	might be a bit misleading, als the 'global' count here is not the total number of posts
+	 	might be a bit misleading, as the 'global' count here is not the total number of posts
 	 	_in the system_ which are annotated by this tag, but the total number of posts
 	 	_of a single user_ annotated by this tag.
 	 	We should rename the attribute 'globalcount' to 'resourcecount' to make it better 
@@ -83,17 +91,17 @@
 	 	dbe, 2007/09/27
 	-->		  
 	<select id="getTagsByUser" resultMap="TagCommon.tagWithGlobalAndUserCount" parameterClass="tagParam">
-		SELECT t1.tag_name, count(t1.tag_name) AS tag_ctr_user, t.tag_ctr_public AS tag_ctr_global   
-		FROM tas t1, tags t  
-		WHERE t1.user_name = #requestedUserName# 	 
-		<include refid="getTagsByResourceType"/>
-		<include refid="restrictToGroups"/>
-		AND t1.tag_name = t.tag_name 
-		GROUP BY t1.tag_name 
-		<isEqual property="order" compareValue="FREQUENCY">
-			ORDER BY tag_ctr_user DESC
-		</isEqual>
-		LIMIT #limit# OFFSET #offset#
+		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr_user, t.tag_ctr_public AS tag_ctr_global   
+			FROM tas t1, tags t  
+			WHERE t1.user_name = #requestedUserName# 	 
+			  <include refid="getTagsByResourceType"/>
+			  <include refid="restrictToGroups"/>
+			  AND t1.tag_name = t.tag_name 
+			GROUP BY t1.tag_name 
+			<isEqual property="order" compareValue="FREQUENCY">
+			  ORDER BY tag_ctr_user DESC
+			</isEqual>
+			LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getTagsByGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
@@ -180,17 +188,17 @@
 
 	<select id="getRelatedTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tt.tag_name, COUNT(tt.tag_name) AS tag_ctr
-		FROM tas t, tas tt
-		WHERE tt.content_id = t.content_id	
-		AND t.group = #groupId#
-		<isNotNull property="requestedUserName">
-			AND t.user_name = #requestedUserName#
-		</isNotNull>
-		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
-		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
-		GROUP BY tt.tag_name
-		ORDER BY tag_ctr DESC 
-		LIMIT #limit# OFFSET #offset#
+			FROM tas t, tas tt
+			WHERE tt.content_id = t.content_id	
+			  AND t.group = #groupId#
+			<isNotNull property="requestedUserName">
+				AND t.user_name = #requestedUserName#
+			</isNotNull>
+			AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
+			AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
+			GROUP BY tt.tag_name
+			ORDER BY tag_ctr DESC 
+			LIMIT #limit# OFFSET #offset#
 	</select>
 	 
 	<!-- 
