@@ -184,7 +184,7 @@
 				AND t.user_name = #requestedUserName#
 			  </isNotNull>
 			  AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_lower = LOWER(#tagIndex[].tagName#)</iterate>)
-			  AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_lower != LOWER(#tagIndex[].tagName)#</iterate>)	
+			  AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_lower != LOWER(#tagIndex[].tagName#)</iterate>)	
 			GROUP BY tt.tag_lower
 			ORDER BY tag_ctr DESC 
 			LIMIT #limit# OFFSET #offset#
