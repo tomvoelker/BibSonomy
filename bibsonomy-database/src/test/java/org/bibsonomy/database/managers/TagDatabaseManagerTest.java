@@ -57,7 +57,8 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getTagsViewable() {
-		final List<Tag> tags = tagDb.getTagsViewable(ParamUtils.getDefaultTagParam(), this.dbSession);
+		final TagParam defaultTagParam = ParamUtils.getDefaultTagParam();
+		final List<Tag> tags = tagDb.getTagsViewable(defaultTagParam.getContentTypeConstant(), defaultTagParam.getUserName(), defaultTagParam.getGroupId(), defaultTagParam.getRequestedUserName(), defaultTagParam.getLimit(), defaultTagParam.getOffset(), this.dbSession);
 		assertEquals(10, tags.size());
 	}
 
