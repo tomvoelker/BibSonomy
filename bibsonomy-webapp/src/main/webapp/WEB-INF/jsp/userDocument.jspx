@@ -27,17 +27,6 @@
 			</parts:search>
 		</jsp:attribute>
 		
-		<jsp:attribute name="contentHeading">		
-			<c:choose>
-		      <c:when test="${command.filter eq 'DUPLICATES'}">
-		      	<fmt:message key="post.meta.duplicates"/> 
-		      </c:when>
-		      <c:otherwise>
-		     	 <fmt:message key="post.meta.documents"/> 
-		      </c:otherwise>
-		    </c:choose>			
-		</jsp:attribute>
-		
 		<jsp:attribute name="sidebar">		
 			<ul>
 				<div class="smalltext">	
@@ -62,6 +51,14 @@
 				</li>
 			</ul>
 		</jsp:attribute>
+		
+		<!--+
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox infoTextKey="${command.filter eq 'DUPLICATES' ? 'post.meta.duplicates' : 'post.meta.documents'}"/>
+		</jsp:attribute>
+		
 	</layout:bibtexLayout>
 
 </jsp:root>
