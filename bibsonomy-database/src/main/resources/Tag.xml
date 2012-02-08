@@ -353,9 +353,9 @@
 	<select id="getPopularTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT * 
 		  FROM (
-        	SELECT tag_lower AS tag_name, tag_ctr_public AS tag_ctr
+        	SELECT tag_name, tag_ctr_public AS tag_ctr
           	  FROM tags 
-              WHERE tag_lower NOT IN ('dblp', 'imported', 'system:imported', 'public','nn')
+              WHERE tag_name NOT IN ('dblp', 'imported', 'system:imported', 'public','nn')
                 AND show_tag = TRUE  
           	  ORDER BY tag_ctr_public 
           	  DESC LIMIT #limit#
