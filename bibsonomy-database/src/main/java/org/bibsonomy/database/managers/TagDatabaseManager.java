@@ -714,7 +714,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		if (this.exceedsMaxSize(param.getTagIndex())) {
 			return new ArrayList<Tag>();
 		}
-		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
+		if (GroupID.isSpecialGroupId(param.getGroupId())) {
 			// for special groups, check additionally if tag is "owned"
 			// by the logged-in user
 			param.setRequestedUserName(param.getUserName());
