@@ -94,6 +94,8 @@
 		<URL>http://www.ingentaconnect.com/search/article?title=articlerank&amp;title_type=tka&amp;year_from=1998&amp;year_to=2009&amp;database=1&amp;pageSize=20&amp;index=1</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
+		<!-- Search Error -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_16">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
