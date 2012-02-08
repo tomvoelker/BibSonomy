@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +33,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 			throw new MalformedURLSchemeException("error.viewable_page_not_logged_in");
 		}				
 		
-		if (command.getRequestedGroup() == null || "".equals(command.getRequestedGroup())) {
+		if (!present(command.getRequestedGroup())) {
 			throw new MalformedURLSchemeException("error.viewable_page_without_group");
 		}		
 						
