@@ -35,9 +35,9 @@ public class GetTagsViewable extends TagChainElement {
 			return Collections.emptyList();
 		}
 		if (present(param.getTagIndex())) {
-			return this.db.getRelatedTagsViewable(param.getContentTypeConstant(), loginUserName, groupId, requestedUserName, param.getTagIndex(), param.getLimit(), param.getOffset(), session);
+			return this.db.getRelatedTagsViewable(param.getContentTypeConstant(), loginUserName, groupId, requestedUserName, param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
 		}
-		return this.db.getTagsViewable(param.getContentTypeConstant(), loginUserName, groupId, requestedUserName, param.getLimit(), param.getOffset(), session);
+		return this.db.getTagsViewable(param.getContentTypeConstant(), loginUserName, groupId, requestedUserName, param.getOrder(), param.getLimit(), param.getOffset(), session);
 
 	}
 

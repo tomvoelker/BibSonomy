@@ -651,13 +651,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final String requestedUserName, final Order order, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
+		param.setContentType(contentType);
 		param.setGroupId(groupId);
 		param.setUserName(loginUserName);
+		param.setOrder(order);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		param.setContentType(contentType);
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own tags, which are private, public or for friends
 			param.setRequestedUserName(requestedUserName);
@@ -715,7 +716,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final String requestedUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final String requestedUserName, final List<TagIndex> tagIndex, final Order order, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
 			return new ArrayList<Tag>();
@@ -725,7 +726,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setGroupId(groupId);
 		param.setUserName(loginUserName);
 		param.setTagIndex(tagIndex);
-		param.setLimit(limit);
+		param.setOrder(order);
+		param.setLimit(limit);		
 		param.setOffset(offset);
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// for special groups, check additionally if tag is "owned"
