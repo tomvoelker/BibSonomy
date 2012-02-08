@@ -651,10 +651,16 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getTagsViewable(final TagParam param, final DBSession session) {
-		if (GroupID.isSpecialGroupId(param.getGroupId())) {
+	public List<Tag> getTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+		final TagParam param = new TagParam();
+		param.setGroupId(groupId);
+		param.setUserName(loginUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setContentType(contentType);
+		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own tags, which are private, public or for friends
-			param.setRequestedUserName(param.getUserName());
+			param.setRequestedUserName(requestedUserName);
 			return this.queryForList("getTagsViewableBySpecialGroup", param, Tag.class, session);
 		}
 		return this.queryForList("getTagsViewable", param, Tag.class, session);
@@ -676,9 +682,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Tet related tags from a given user and a given list of tags.
+	 * Get related tags from a given user and a given list of tags.
 	 * 
-	 * @param userName 
+	 * @param loginUserName 
 	 * @param requestedUserName
 	 * @param tagIndex
 	 * @param visibleGroupIDs
@@ -687,13 +693,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsForUser(final String userName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getRelatedTagsForUser(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
 			return new ArrayList<Tag>();
 		}		
 		final TagParam param = new TagParam();
-		param.setUserName(userName);
+		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		param.addGroups(visibleGroupIDs);
 		param.setTagIndex(tagIndex);
@@ -709,15 +715,22 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsViewable(final TagParam param, final DBSession session) {
+	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final String requestedUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
-		if (this.exceedsMaxSize(param.getTagIndex())) {
+		if (this.exceedsMaxSize(tagIndex)) {
 			return new ArrayList<Tag>();
 		}
-		if (GroupID.isSpecialGroupId(param.getGroupId())) {
+		final TagParam param = new TagParam();
+		param.setContentType(contentType);
+		param.setGroupId(groupId);
+		param.setUserName(loginUserName);
+		param.setTagIndex(tagIndex);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		if (GroupID.isSpecialGroupId(groupId)) {
 			// for special groups, check additionally if tag is "owned"
 			// by the logged-in user
-			param.setRequestedUserName(param.getUserName());
+			param.setRequestedUserName(requestedUserName);
 		}
 		return this.queryForList("getRelatedTagsViewable", param, Tag.class, session);
 	}
