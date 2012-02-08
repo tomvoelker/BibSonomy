@@ -23,13 +23,18 @@
 
 package org.bibsonomy.scraper.url.kde.bmj;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
@@ -41,7 +46,7 @@ public class BMJScraper extends CitationManagerScraper {
 	private static final String SITE_URL = "http://www.bmj.com/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download to citation manager</a>");
+	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"([^\"]*)\"[^>]*>Download to citation manager</a>");
 	
 	private static final List<Tuple<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "bmj.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -66,6 +71,28 @@ public class BMJScraper extends CitationManagerScraper {
 	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
+	}
+	
+	@Override
+	protected String buildDownloadLink(URL url, String content) throws ScrapingFailureException {
+
+		// get link to "download to citation manager" page
+		final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
+		
+		//throw exception if download link "download to citation manager" not found
+		if(!downloadLinkMatcher.find())
+			throw new ScrapingFailureException("Download link is not available");
+		
+		try {
+			//get download link
+			Matcher m2 = Pattern.compile("href=\"(/highwire/citation/\\d++/bibtex)\"")
+					.matcher(WebUtils.getContentAsString("http://" + url.getHost() + downloadLinkMatcher.group(1)));
+			if (!m2.find())
+				throw new ScrapingFailureException("Download link is not available");
+			return "http://" + url.getHost() + m2.group(1);
+		} catch (IOException ex) {
+			throw new ScrapingFailureException(ex);
+		}
 	}
 
 }
