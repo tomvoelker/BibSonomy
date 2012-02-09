@@ -2086,4 +2086,21 @@ div.fsRow div.resizable-textarea textarea {
 	border-bottom: none;
 }
 
+/*
+ * error boxes
+ */ 
+.errorcontainer {
+	border: 1px solid rgb(0, 102, 153);
+	padding: 1em;
+	margin-bottom: 1em;
+}
+#error {
+	padding: 15px;
+	border: 1px solid #aeaeae;
+}
 
+.error {
+	color: #ff6600;
+	max-width: 800px;
+	overflow: scroll;
+}
