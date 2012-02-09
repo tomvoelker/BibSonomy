@@ -892,11 +892,11 @@ ul.news {
 
 
 /*
- * jquery ui tabs
+ * jQuery UI tabs (used, for example, on /login)
  */
 div.ui-tabs div.ui-tabs-panel {
 	border: 1px solid #069;
-	margin-top: 1.85em;
+	margin-top: 2.2em;
 }
 
 div.ui-tabs ul.ui-tabs-nav {
@@ -905,10 +905,8 @@ div.ui-tabs ul.ui-tabs-nav {
 
 div.ui-tabs ul.ui-tabs-nav li {
 	border: 1px solid #bbb;
-	margin: 0px;
 	background-color: #eee;
 	top: 0px;
-	font-size: 80%;
 }
 
 div.ui-tabs ul.ui-tabs-nav li:hover {
