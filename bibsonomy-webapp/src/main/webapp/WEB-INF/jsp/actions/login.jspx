@@ -16,7 +16,7 @@
 	
 	<fmt:message key="navi.login" var="loginTitle" />
 	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}" noLoginBox="true">
+	<layout:paneLayout command="${command}" pageTitle="${loginTitle}" requPath="${requPath}" noLoginBox="true" headerMessageKey="navi.login">
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
@@ -34,64 +34,62 @@
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<div id="general_fixed">
-          		<mtl:exists path="command.notice">
-            		<c:if test="${not empty command.notice}">
-              			<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
-                			<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
-                			<br />
-                			<br />
-                			<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>
-                			<br />
-                			<br />
-                			<fmt:message key="login.notice.welcome_3">
-                				<fmt:param value="${fn:escapeXml('/register')}" />
-                				<fmt:param value="${fn:escapeXml(command.referer)}" />
-                			</fmt:message>
-        	      		</div>
-            		</c:if>
-            	</mtl:exists>
+         	<mtl:exists path="command.notice">
+           		<c:if test="${not empty command.notice}">
+             			<div style="border: 1px solid #006699; padding: 1em; margin-bottom: 1em;">
+               			<fmt:message key="login.notice.welcome_1" /> <a style="font-weight: bold;" href="/">${properties['project.name']}</a>, <fmt:message key="login.notice.welcome_2" />
+               			<br />
+               			<br />
+               			<b><fmt:message key="${fn:escapeXml(command.notice)}" /></b>
+               			<br />
+               			<br />
+               			<fmt:message key="login.notice.welcome_3">
+               				<fmt:param value="${fn:escapeXml('/register')}" />
+               				<fmt:param value="${fn:escapeXml(command.referer)}" />
+               			</fmt:message>
+       	      		</div>
+           		</c:if>
+           	</mtl:exists>
 
-				<!-- show global error messages -->
-           		<errors:global errors="${errors}" />
-           
- 		    	<c:if test="${not empty command.message}">
- 		    		<div class="errorcontainer">
-                    	<h3><fmt:message key="error"/></h3>
- 		    			<div class="error">
- 		    				<fmt:message key="error.login.${command.message}"/>
- 		    			</div>
- 		    		</div>
- 		    	</c:if>
- 		    
- 		     
- 		    	<div id="logins">
- 		    		<!-- tab header -->
-          			<ul>
-						<c:forEach var="authMethod" items="${authConfig}">
-			  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-			  				<fmt:message var="tabTitle" key="login.method.${authMethodName}" />
-			  				<!-- we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME -->
-			  				<c:if test="${not empty tabTitle}">
-              					<li><a href="#login_${authMethodName}"><c:out value="${tabTitle}"/></a></li>
-              				</c:if>
-            			</c:forEach>
-          			</ul>
-          
-		  			<c:forEach var="authMethod" items="${authConfig}">
-            			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-            			<div id="login_${authMethodName}">           
-           					<form:form action="/login_${authMethodName}" method="POST">
-              					<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
-      							<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
-      							<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
-      						</form:form>
-						</div>
-          			</c:forEach>
-          		</div>
-          	</div>    
+			<!-- show global error messages -->
+         	<errors:global errors="${errors}" />
+         
+	    	<c:if test="${not empty command.message}">
+	    		<div class="errorcontainer">
+                  	<h3><fmt:message key="error"/></h3>
+	    			<div class="error">
+	    				<fmt:message key="error.login.${command.message}"/>
+	    			</div>
+	    		</div>
+	    	</c:if>
+		    
+		     
+	    	<div id="logins">
+	    		<!-- tab header -->
+        		<ul>
+				<c:forEach var="authMethod" items="${authConfig}">
+	  				<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+	  				<fmt:message var="tabTitle" key="login.method.${authMethodName}" />
+	  				<!-- we can disable showing certain login methods by storing an empty string for login.method.AUTHMETHODNAME -->
+	  				<c:if test="${not empty tabTitle}">
+            			<li><a href="#login_${authMethodName}"><c:out value="${tabTitle}"/></a></li>
+            		</c:if>
+          		</c:forEach>
+        		</ul>
+        
+  				<c:forEach var="authMethod" items="${authConfig}">
+          			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+          			<div id="login_${authMethodName}">           
+         				<form:form action="/login_${authMethodName}" method="POST">
+	            			<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
+    						<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
+    						<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
+    					</form:form>
+					</div>
+        		</c:forEach>
+        	</div>
       	</jsp:attribute>
       	
       	
-	</layout:layout>
+	</layout:paneLayout>
 </jsp:root>
