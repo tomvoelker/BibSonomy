@@ -9,7 +9,7 @@
 		<c:when test="${not empty user.name}">
 			<li>
 				<c:url var="userHome" value="/user/${user.name}" />
-				<c:url var="userRelations" value="/relations/${user.name}" />
+				<c:url var="userRelations" value="/concepts/${user.name}" />
 				<c:url var="userPDF" value="/user/${user.name}">
 					<c:param name="filter" value="JUST_PDF" />
 				</c:url>
@@ -47,7 +47,7 @@
 		<a id="nav_authors" href="/authors">authors</a>
 	</li>
 	<li>
-	  <a id="nav_relations" href="/relations">relations</a>
+	  <a id="nav_relations" href="/concepts">concepts</a>
 	</li>
 	<li>
      <a id="nav_urls" href="/groups" rel="grp_menu"><c:if test="${not empty user.groups}"><img src="/resources/image/nice_box_arrow.png" alt="" /> </c:if>groups</a>
