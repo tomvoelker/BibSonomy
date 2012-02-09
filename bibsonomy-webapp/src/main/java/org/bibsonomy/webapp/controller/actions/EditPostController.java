@@ -726,40 +726,28 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * an exception. This could be caused by a non-rechable captcha-server. 
 	 */
 	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
-		if (present(response)) {
-			if (present(challenge)) {
-				/*
-				 * check captcha response
-				 */
-				try {
-					final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
+		/*
+		 * check captcha response
+		 */
+		try {
+			final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
 
-					if (!res.isValid()) {
-						/*
-						 * invalid response from user
-						 */
-						errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha", "The provided security token is invalid.");
-					} else if (res.getErrorMessage() != null) {
-						/*
-						 * valid response, but still an error
-						 */
-						log.warn("Could not validate captcha response: " + res.getErrorMessage());
-					}
-				} catch (final Exception e) {
-					log.fatal("Could not validate captcha response:" + e.getMessage());
-					throw new InternServerException("error.captcha");
-				}
-			} else {
+			if (!res.isValid()) {
 				/*
-				 * FIXME: what to do if no challenge is given?
+				 * invalid response from user
 				 */
+				errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha", "The provided security token is invalid.");
+			} else if (res.getErrorMessage() != null) {
+				/*
+				 * valid response, but still an error
+				 */
+				log.warn("Could not validate captcha response: " + res.getErrorMessage());
 			}
-		} else {
-			/*
-			 * no response given
-			 */
-			errors.rejectValue("recaptcha_response_field", "error.field.required", "This field is required.");
+		} catch (final Exception e) {
+			log.fatal("Could not validate captcha response:" + e.getMessage());
+			throw new InternServerException("error.captcha");
 		}
+
 	}
 
 	/**
