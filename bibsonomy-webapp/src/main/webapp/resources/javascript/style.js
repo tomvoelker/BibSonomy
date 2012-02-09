@@ -331,20 +331,50 @@ $(function() {
 
 
 function initBookmarksPublicationsListsLast() {
-	if ( ($("#bookmarks_0 ul.posts").length != 0) && ($("#publications_0 ul.posts").length != 0) && ($("#sidebar").length != 0) ) { 
-		// hoehe der postlisten anpassen auf groesste hoehe
-		// get heights
-		bookmarks_height	= $("#bookmarks_0 ul.posts").height();
-		publications_height	= $("#publications_0 ul.posts").height();
-		sidebar_height		= $("#sidebar").height();
+	
+	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
+	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
+	
+	if ( ($("#sidebar").length != 0) ) { 
 
-		// get maximum height
-		maxheight = (bookmarks_height > publications_height ) ? bookmarks_height : publications_height;
-		maxheight = (maxheight > sidebar_height) ? maxheight : sidebar_height;
+		// set heigth of fullscreen arean above post lists, if available
+		fullscreenHeight = 0;
+		if ($("#fullscreen").length != 0) fullscreenHeight = $("#fullscreen").height(); 
+
+		// get heights
+		bookmarksHeight = fullscreenHeight; 
+		$('.bookmarksContainer').each(function(index) {
+			bookmarksHeight += $(this).height();
+		});
+			
+		publicationsHeight = fullscreenHeight; 
+		$('.publicationsContainer').each(function() {
+			publicationsHeight += $(this).height();
+		});
+
+		sidebarHeight = $("#sidebar").height();
+
+		// calculate maximum height
+		maxheight = (bookmarksHeight > publicationsHeight ) ? bookmarksHeight : publicationsHeight;
+		maxheight = (maxheight > sidebarHeight) ? maxheight : sidebarHeight;
 
 		// set heights to maximum_heights
-		$("#bookmarks_0 ul.posts").height(maxheight);
-		$("#publications_0 ul.posts").height(maxheight);
+		// only every last list will adjusted in height 
+		if (numberOfBookmarkLists != 0) {
+			$("#bookmarks_"+(numberOfBookmarkLists-1)).height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
+		}
+		
+		if (numberOfBookmarkLists != 0) {
+			$("#publications_"+(numberOfPublicationLists-1)).height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
+		}
+		
+		
+		// if there are no post lists and the only content is within element with id fullscreen, adjust length of this element
+		// (if it is smaller than sidebar, otherwise new height is already maxheight)
+		if (numberOfBookmarkLists==0 && numberOfPublicationLists==0 && fullscreenHeight>0) {
+			fullscreenHeight = maxheight;
+		}
+
 		$("#sidebar").height(maxheight);
 	}
 }
