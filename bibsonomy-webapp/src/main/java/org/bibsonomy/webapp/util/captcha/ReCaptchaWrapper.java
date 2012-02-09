@@ -25,7 +25,7 @@ public class ReCaptchaWrapper implements Captcha {
 	
 	@Override
 	public CaptchaResponse checkAnswer(String challenge, String response, String remoteAddr) {
-		return new ReCaptchaResponseWrapper(reCaptcha.checkAnswer(remoteAddr, challenge, response));
+		return new ReCaptchaResponseWrapper(reCaptcha.checkAnswer(remoteAddr, challenge == null ? "" : challenge, response == null ? "" : response));
 	}
 
 	@Override
