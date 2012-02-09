@@ -1154,15 +1154,23 @@ div.help>a,div.help>b {
 	margin-right: 3px;
 }
 
-.post .usersaves a {
+.post .usersaves:hover {
+	background-image: url("/resources/image/dreieck_or_hover.png");
+	cursor:pointer;
+	color:#fff;
+}
+
+.post .usersaves span {
 	color: #aaaaaa;
 	font-weight: bold;
 	padding-right: 3px;
 	padding-left: 16px;
 	font-size: 90%;
 }
+.post .usersaves:hover span {
+	color: #fff;
+}
 
-	
 .post .action {
 	display: block;
 	margin-top: 1ex;

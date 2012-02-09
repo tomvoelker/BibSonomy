@@ -16,7 +16,7 @@
 			<c:if test="${post.resource.count == 1}">
 				<fmt:message var="title" key="post.meta.postInSystem"/>
 			</c:if>
-			<a href="${otherPeopleUrl}" title="${title}">${post.resource.count}</a>
+			<a class="usersaves" href="${otherPeopleUrl}" title="${title}"><span>${post.resource.count}</span></a>
 	</c:if>
 	
 </jsp:root>

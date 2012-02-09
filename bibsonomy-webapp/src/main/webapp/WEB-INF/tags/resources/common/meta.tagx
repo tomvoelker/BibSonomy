@@ -26,9 +26,7 @@
 			<div class="puser"><rc:metaUsername post="${post}" /></div>
  			<div class="pgroup"><rc:metaGroups post="${post}" /></div>
 			<c:if test="${showUserSaves}">
-			<div class="usersaves">
 				<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-			</div>
 			</c:if>
 		</c:if> 		
 
