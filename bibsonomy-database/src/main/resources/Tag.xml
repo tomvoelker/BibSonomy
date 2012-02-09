@@ -161,6 +161,12 @@
 		WHERE tag_name = #tagName#
 	</update>
 	
+	<!--+ 
+	 	|
+	 	| FIXME: this query is broken. When several tags are requested, they must
+	 	| be combined using a self-join. 
+	 	|
+	 	+-->
 	<select id="getRelatedTagsForGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT t1.tag_lower AS tag_name, COUNT(t1.tag_lower) AS tag_ctr
 		  FROM tas t 
@@ -176,6 +182,12 @@
 		LIMIT #limit# OFFSET #offset#
 	</select>
 
+	<!--+ 
+	 	|
+	 	| FIXME: this query is broken. When several tags are requested, they must
+	 	| be combined using a self-join. 
+	 	|
+	 	+-->
 	<select id="getRelatedTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tt.tag_lower AS tag_name, COUNT(tt.tag_lower) AS tag_ctr
 			FROM tas t JOIN tas tt USING (content_id)
@@ -285,7 +297,13 @@
              ) AS tt
 		  USING (content_id)
 	</select>
-	
+
+	<!--+ 
+	 	|
+	 	| FIXME: this query is probably broken. When several tags are requested, they must
+	 	| be combined using a self-join. 
+	 	|
+	 	+-->
 	<select id="getRelatedTagsOrderedByFolkrank" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT w.item AS tag_name , ROUND(SUM(weight),5) * 10000 AS tag_ctr
 		FROM rankings r
