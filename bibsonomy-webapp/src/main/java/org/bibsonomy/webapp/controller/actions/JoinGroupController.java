@@ -5,8 +5,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -20,7 +21,7 @@ import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.captcha.Captcha;
-import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
+import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
@@ -36,6 +37,8 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class JoinGroupController implements ErrorAware, ValidationAwareController<JoinGroupCommand>, RequestAware, Validator<JoinGroupCommand> {
+	
+	private static final Log log = LogFactory.getLog(JoinGroupController.class);
 	
 	private Captcha captcha;
 	private RequestLogic requestLogic;
@@ -135,22 +138,11 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			return Views.ERROR;
 		}
 		
-		// FIXME: captcha checking; duplicate code EditPostController, PasswordReminderController, …
-		if (!present(command.getRecaptcha_response_field())) {
-			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-		} else {
-			final CaptchaResponse resp = captcha.checkAnswer(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
-			if (!present(resp)) {
-				throw new InternServerException("error.captcha");
-			}
-			if (!resp.isValid()) {
-				errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-			} else {
-				if (present(resp.getErrorMessage())) {
-					errors.reject(resp.getErrorMessage());
-				}
-			}
-		}
+		/*
+		 * check captacha; an error is added if it fails.
+		 */
+		CaptchaUtil.checkCaptcha(this.captcha, this.errors, this.log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
+
 		
 		if (errors.hasErrors()) {
 			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));

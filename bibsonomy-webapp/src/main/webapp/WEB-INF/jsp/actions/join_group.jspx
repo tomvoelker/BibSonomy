@@ -45,7 +45,9 @@
     	 	-->
 		<jsp:attribute name="content">
 				<form:form action="/join_group?group=${command.group}" method="POST">
-		        	<errors:global errors="${errors}"/>             
+		        	
+		        	<errors:global errors="${errors}"/>
+		        	
 					<div class="fsOuter">
 						<h2><fmt:message key="navi.join"><fmt:param>${command.group}</fmt:param></fmt:message></h2>
 
