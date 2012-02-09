@@ -118,7 +118,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	/*
 	 * system tags of posts
 	 */
-	$(".hiddenSystemTag").fadeBox({timeout : 1500});
+//	$(".hiddenSystemTag").fadeBox({timeout : 1500});
 }
 
 
@@ -141,7 +141,7 @@ function renderPosts(query, list) {
 			 * Are there any methods missing?
 			 */
 			$(".editTags").click(editTags);
-			$(".hiddenSystemTag").fadeBox({timeout : 1500});
+//			$(".hiddenSystemTag").fadeBox({timeout : 1500});
 			imagePreview();
 		}
 	});
@@ -186,7 +186,7 @@ function updatePosts(query, seconds) {
 					 * Are there any methods missing?
 					 */
 					$(".editTags").click(editTags);
-					$(".hiddenSystemTag").fadeBox({timeout : 1500});
+//					$(".hiddenSystemTag").fadeBox({timeout : 1500});
 					imagePreview();
 				}
 			});
@@ -660,6 +660,7 @@ function editTags() {
 				 */
 				var tagString = "";
 				var tags = ptags.find("ul li a").each(function() {tagString += $(this).html() + " ";});
+				tags = ptags.find("div div a").each(function() {tagString += $(this).html() + " ";});
 				/*
 				 * extract hash of post from edit URL
 				 */
