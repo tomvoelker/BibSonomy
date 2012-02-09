@@ -1109,7 +1109,7 @@ div.help>a,div.help>b {
 .headerLogo.image.settings {background-image: url('/resources/image/settings.png'); width: 30px; height: 30px; }
 .headerLogo.image.search {background-image: url('/resources/image/search.png'); width: 30px; height: 30px; }
 .headerLogo.image.editTags {background-image: url('/resources/image/edit_tags.png'); width: 30px; height: 30px; }
-
+.headerLogo.image.openid {background-image: url('/resources/image/openid-logo-small.png'); width: 30px;}
 
 
 .ptitle,  .pdesc, .post .authors {
@@ -2122,6 +2122,6 @@ div.fsRow div.resizable-textarea textarea {
 
 .error {
 	color: #ff6600;
-	max-width: 800px;
+	max-width: 1200px;
 	overflow: scroll;
 }
