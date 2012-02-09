@@ -36,6 +36,26 @@
 			</c:if>
 		</jsp:attribute>
 		
+				<!--+
+			| page header
+			+-->
+		<jsp:attribute name="headerContainer">
+			<div id="bookmarksheader">
+				<div class="config"><a href=""><!-- fixme --></a></div>
+				<h2 class="header">
+					<fmt:message key="bookmarks" />
+					<!-- Display total number of entries in list --> 
+					<c:if test="${!empty command.bookmark.list}">
+						<c:if test="${command.bookmark.totalCount != 0}">
+							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+							${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
+						</c:if>
+					</c:if>				
+				</h2>			
+			</div>
+			
+		</jsp:attribute>
+		
 		<jsp:attribute name="content">
 			<div id="fullscreen" itemscope="itemscope" itemtype="http://schema.org/WebPage">
 				<c:if test="${not empty contentHeading}">
