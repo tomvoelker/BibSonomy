@@ -190,7 +190,7 @@
              		<!-- display user's tag relations -->     
               		<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
               		<span class="sidebar_h">
-                		<a href="/relations/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
+                		<a href="/concepts/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
                   			<fmt:message key="tagrelations"/>
                 		</a>
               		</span> 
