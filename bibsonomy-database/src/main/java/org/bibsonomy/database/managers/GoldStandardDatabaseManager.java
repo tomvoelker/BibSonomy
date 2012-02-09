@@ -268,6 +268,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	@Override
 	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
+		if (present(userName)) {
+			return false;
+		}
 		return this.deletePost(resourceHash, false, session);
 	}
 	
