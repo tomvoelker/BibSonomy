@@ -9,23 +9,21 @@
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="confirmationMailFragment" required="false" fragment="true"/>
 	
 	<fmt:message key="navi.register" var="userSuccessPageTitle"/>
 
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${userSuccessPageTitle}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${userSuccessPageTitle}" requPath="${requPath}" command="${command}" headerMessageKey="navi.register">
   
         <jsp:attribute name="heading">
-          <c:out value="userSuccessPageTitle" />
+        	<parts:search pathMessageKey="navi.register"/>
         </jsp:attribute>
       
         
         <jsp:attribute name="content">
-
-		  <div id="bookbox">
-      
       
             <!-- ###################### welcome ####################### -->
             <h2><fmt:message key="register.success" ><fmt:param value="${command.context.loginUser.name}"/></fmt:message></h2>
@@ -43,9 +41,7 @@
                   <buttons:postBookmark/>
                   <buttons:postPublication/>
                 </p>
-                <p style="font-size: 80%;">
-                  <fmt:message key="register.internetExplorer"/> <a href="/help"><fmt:message key="register.internetExplorer.here"/></a>.
-                </p>
+                <p><fmt:message key="register.internetExplorer"/> <a href="/help"><fmt:message key="register.internetExplorer.here"/></a>.</p>
               </li>
               <li style="padding-top:2em;">
                 <fmt:message key="register.nextSteps.step2.surf"/>
@@ -57,10 +53,7 @@
 			<c:if test="${not empty confirmationMailFragment}">
 				<jsp:invoke fragment="confirmationMailFragment"/>
 			</c:if>
-          </div>
 
-
-          <div id="bibbox">
 
             <!-- ###################### help graphic ####################### -->
 			<!-- TODO: Bild erneuern, Groesse korrekt angeben, lokalisieren -->
@@ -68,10 +61,9 @@
             <fmt:message key="image.register.success" var="successImage"/>
             <img src="${successImage}" style="float:left;" alt="${dragButtons}" title="${dragButtons}"/>
 
-          </div>
       
 	    </jsp:attribute>
       
-	</layout:layout>
+	</layout:paneLayout>
 
 </jsp:root>

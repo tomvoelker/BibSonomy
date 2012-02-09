@@ -32,9 +32,9 @@
         <jsp:attribute name="infobox">
         	<parts:infobox>
         		<jsp:attribute name="infoTextBody">
-        			<fmt:message key="register.openid.hint1"/>
-            		<a href="/registerOpenID"><fmt:message key="register.openid.hint2"/></a>
-            		<fmt:message key="register.openid.hint3"/>
+        			<fmt:message key="register.openid.hint">
+        				<fmt:param value="/registerOpenID"/>
+        			</fmt:message>
         		</jsp:attribute>
         	</parts:infobox>
         </jsp:attribute>
