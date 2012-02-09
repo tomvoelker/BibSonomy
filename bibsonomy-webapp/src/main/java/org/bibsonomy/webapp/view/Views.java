@@ -356,11 +356,6 @@ public enum Views implements View {
 	REGISTER_USER_SUCCESS_ADMIN("actions/register/user_success_admin"),
 
 	/**
-	 * where user can register using her openid url
-	 */
-	REGISTER_USER_OPENID("actions/register/openid/user"),
-
-	/**
 	 * OpenID register form prefilled with information from the OpenID provider
 	 */
 	REGISTER_USER_OPENID_PROVIDER_FORM("actions/register/openid/provider_form"),
