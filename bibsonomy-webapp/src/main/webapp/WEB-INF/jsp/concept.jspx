@@ -52,15 +52,15 @@
 				<c:choose>
 					<c:when test="${not empty command.requestedUser}">
 						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.user.title"/></c:set>
-						<c:url var="relationsUrl" value="/relations/${command.requestedUser}" />
+						<c:url var="relationsUrl" value="/concepts/${command.requestedUser}" />
 					</c:when>
 					<c:when test="${not empty command.requestedGroup}">
 						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.group.title"/></c:set>
-						<c:url var="relationsUrl" value="/relations/${command.requestedGroup}" />
+						<c:url var="relationsUrl" value="/concepts/${command.requestedGroup}" />
 					</c:when>						
 					<c:otherwise>
 						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.all.title"/></c:set>
-						<c:url var="relationsUrl" value="/relations" />
+						<c:url var="relationsUrl" value="/concepts" />
 					</c:otherwise>
 				</c:choose>
 				<span class="sidebar_h">				

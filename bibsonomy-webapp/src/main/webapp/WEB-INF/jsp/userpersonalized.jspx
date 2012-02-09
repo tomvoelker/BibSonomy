@@ -73,7 +73,7 @@
 			<li>
 				<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
 				<span class="sidebar_h">
-					<a href="/relations/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
+					<a href="/concepts/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
 						<fmt:message key="tagrelations"/>
 					</a>
 				</span>	

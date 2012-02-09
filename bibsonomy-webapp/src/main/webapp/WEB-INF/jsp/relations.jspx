@@ -25,11 +25,13 @@
     	<!-- header text output -->
 		<div>
 			<!-- need to switch between if the user is logged in or not -->
-	        <fmt:message key="tagrelations.all.text.partOne"/>
+	        <fmt:message key="tagrelations.all.text.partOne">
+	        	<fmt:param value="${properties['project.name']}"/>
+	        </fmt:message>
 		    <c:if test="${command.context.userLoggedIn}">
 		    <c:out value=" " />
 				<fmt:message key="tagrelations.all.text.partTwo">
-			    	<fmt:param><a href="/relations/${mtl:encodeURI(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations"/></a></fmt:param>
+			    	<fmt:param><a href="/concepts/${mtl:encodeURI(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></fmt:param>
 			      	<fmt:param><a href="/editTags"><fmt:message key="navi.editTags"/></a></fmt:param>
 			    </fmt:message>
 		    </c:if>

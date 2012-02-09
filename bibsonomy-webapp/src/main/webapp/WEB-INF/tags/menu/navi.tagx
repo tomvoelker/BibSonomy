@@ -27,7 +27,7 @@
 					<li><a href="/friends"><fmt:message key="navi.my.plural"/><fmt:message key="navi.friends.cap"/></a></li>
 				    <li><a href="/spheres"><fmt:message key="navi.my.plural"/><fmt:message key="navi.spheres.cap"/></a></li>
 					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.discussedPosts.Cap"/></a></li>
-					<li><a href="/relations/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></li>
+					<li><a href="/concepts/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></li>
 					<li><a href="/mySearch"><fmt:message key="navi.my.plural"/><fmt:message key="navi.search.cap"/></a></li>
 					<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.my.plural"/><fmt:message key="navi.pdfs"/></a></li>
 			        <li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.my.plural"/><fmt:message key="navi.duplicates.cap"/></a></li>
@@ -91,7 +91,7 @@
 				<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
 				<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
 				<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
-				<li><a href="/relations"><fmt:message key="navi.relations"/></a></li>
+				<li><a href="/concepts"><fmt:message key="navi.relations"/></a></li>
 				<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
 			</ul>
 		</li>
