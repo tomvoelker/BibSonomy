@@ -814,9 +814,31 @@
 		<from>^/+search$</from>
 		<to type="redirect" last="true">/search/${escape:%1}</to>
 	</rule>
+	
 
+	<!-- ############## /concepts ############### -->
+	
+	<!--+ 
+		| Everywhere the former relations should now be called concepts. 
+		| We leave the link to /relations for users that used that page.
+		| TODO: further cleanup
+		+-->
+	
+	<rule>
+		<name>/concepts/USER</name>
+		<from>^/+concepts/+(.+)$</from>
+		<set type="parameter" name="requestedUser">$1</set>
+		<to last="true">/relations</to>
+	</rule>
+	
+	<rule>
+		<name>/concepts</name>
+		<from>^/+concepts/*$</from>
+		<to last="true">/allRelations</to>
+	</rule>
 
-	<!-- ############## /relations ############### -->
+	
+
 	<rule>
 		<name>/relations/USER</name>
 		<from>^/+relations/+(.+)$</from>
