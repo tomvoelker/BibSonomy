@@ -268,7 +268,7 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 	 * Checks the captcha. If the response from the user does not match the captcha,
 	 * an error is added. 
 	 * 
-	 * FIXME: duplictaed in {@link EditPostController} 
+	 * FIXME: duplicated in {@link EditPostController} 
 	 * 
 	 * @param command - the command associated with this request.
 	 * @param hostInetAddress - the address of the client
@@ -276,30 +276,26 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 	 * an exception. This could be caused by a non-rechable captcha-server. 
 	 */
 	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
-		if (org.bibsonomy.util.ValidationUtils.present(challenge) && org.bibsonomy.util.ValidationUtils.present(response)) {
-			/*
-			 * check captcha response
-			 */
-			try {
-				final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
+		/*
+		 * check captcha response
+		 */
+		try {
+			final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
 
-				if (!res.isValid()) {
-					/*
-					 * invalid response from user
-					 */
-					errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-				} else if (res.getErrorMessage() != null) {
-					/*
-					 * valid response, but still an error
-					 */
-					log.warn("Could not validate captcha response: " + res.getErrorMessage());
-				}
-			} catch (final Exception e) {
-				log.fatal("Could not validate captcha response.", e);
-				throw new InternServerException("error.captcha");
+			if (!res.isValid()) {
+				/*
+				 * invalid response from user
+				 */
+				errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+			} else if (res.getErrorMessage() != null) {
+				/*
+				 * valid response, but still an error
+				 */
+				log.warn("Could not validate captcha response: " + res.getErrorMessage());
 			}
-		} else {
-			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+		} catch (final Exception e) {
+			log.fatal("Could not validate captcha response.", e);
+			throw new InternServerException("error.captcha");
 		}
 	}
 
