@@ -37,7 +37,6 @@
 			<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 			<c:if test="${not empty loginUserName and loginUserName eq post.user.name}">
 				<fmt:message key="post.actions.edit.tags.title" var="editTags"/>
-<!-- 				<span class="editTags" href="" title="${editTags}"><img src="/resources/image/edit.gif" alt="edit"/></span> -->
  					<span class="editTags" href="" title="${editTags}"><!-- Keep Me --> </span>
 			</c:if>
 		</div>

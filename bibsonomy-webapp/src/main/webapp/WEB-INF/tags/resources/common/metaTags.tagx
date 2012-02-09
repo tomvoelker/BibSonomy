@@ -17,30 +17,34 @@
 		| Afterwards all tags.
 		+ -->	
 
-
 	<!-- HIDDEN SYSTEM TAGS -->
 	<c:if test="${not empty post.hiddenSystemTags}">
 		<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title"/>
-		<img class="hiddenSystemTag" alt="systemTagsTitle" src="${resdir}/image/cog_wheel.png"/>
-		<ul class="listhButtons systemTags">
-			<c:forEach var="systag" items="${post.hiddenSystemTags}">
-				<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a></li>
-			</c:forEach>
-		</ul>	
+		<div class="info hiddenSystemTag">
+			<img class="" alt="systemTagsTitle" src="${resdir}/image/cog_wheel.png"/>
+			<div>
+				<c:forEach var="systag" items="${post.hiddenSystemTags}">
+					<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a><c:out value=" "/>
+				</c:forEach>
+			</div>
+		</div>	
 	</c:if>
-
 
 	<!-- ALL REGULAR TAGS -->
 	<c:if test="${not empty post.visibleTags}">
 		<c:if test="${showTagsLabel}">
 			<fmt:message key="tags"/><c:out value=": "/>
 		</c:if>
-		<ul class="tags">
+		<ul class="tags info">
 			<c:forEach var="tag" items="${post.visibleTags}">
 				<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></li>
 			</c:forEach>
+			<div>
+				<c:forEach var="tag" items="${post.visibleTags}">
+					<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name} "/></a><c:out value=" "/>
+				</c:forEach>
+			</div>
 		</ul>
 	</c:if>
-	
 	
 </jsp:root>
