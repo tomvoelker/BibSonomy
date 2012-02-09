@@ -8,11 +8,15 @@
 	margin-left: 10px;	
 }
 
-.fsLegend {
+#fsform legend {
     text-align:left;
-    width:auto;
-    font-weight:normal;
 }
+
+#fsform legend img {
+    padding-right: .5em;
+}
+
+
 .fsOuter, .fsInner, .fsVisible {
     position: relative;
 }
