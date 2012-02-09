@@ -10,7 +10,7 @@ public class MockCaptchaResponse implements CaptchaResponse {
 
 	@Override
 	public String getErrorMessage() {
-		return "No error occured.";
+		return null;
 	}
 
 	@Override

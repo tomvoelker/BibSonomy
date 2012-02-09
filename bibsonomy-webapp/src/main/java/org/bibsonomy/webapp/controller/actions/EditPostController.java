@@ -19,7 +19,6 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -48,7 +47,7 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.captcha.Captcha;
-import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
+import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -158,7 +157,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			/*
 			 * check the captcha (if it is wrong, an error is added)
 			 */
-			this.checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
+			CaptchaUtil.checkCaptcha(captcha, errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
 		}
 		
 		/*
@@ -713,42 +712,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		command.setTags(TagUtils.toTagString(post.getTags(), " "));
 	}
 
-
-	/**
-	 * Checks the captcha. If the response from the user does not match the captcha,
-	 * an error is added. 
-	 * 
-	 * FIXME: copied from {@link UserRegistrationController}
-	 * 
-	 * @param command - the command associated with this request.
-	 * @param hostInetAddress - the address of the client
-	 * @throws InternServerException - if checking the captcha was not possible due to 
-	 * an exception. This could be caused by a non-rechable captcha-server. 
-	 */
-	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
-		/*
-		 * check captcha response
-		 */
-		try {
-			final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
-
-			if (!res.isValid()) {
-				/*
-				 * invalid response from user
-				 */
-				errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha", "The provided security token is invalid.");
-			} else if (res.getErrorMessage() != null) {
-				/*
-				 * valid response, but still an error
-				 */
-				log.warn("Could not validate captcha response: " + res.getErrorMessage());
-			}
-		} catch (final Exception e) {
-			log.fatal("Could not validate captcha response:" + e.getMessage());
-			throw new InternServerException("error.captcha");
-		}
-
-	}
 
 	/**
 	 * Initializes the relevant for groups in the command from the (system) tags of the 

@@ -11,7 +11,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
@@ -27,7 +26,7 @@ import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.captcha.Captcha;
-import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
+import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.validation.UserRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -163,7 +162,7 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 			 * 
 			 * check captcha
 			 */
-			checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
+			CaptchaUtil.checkCaptcha(captcha, errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
 		}
 
 		/*
@@ -262,41 +261,6 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		 * ... and present him a success view
 		 */
 		return new ExtendedRedirectView(successRedirect);
-	}
-
-	/**
-	 * Checks the captcha. If the response from the user does not match the captcha,
-	 * an error is added. 
-	 * 
-	 * FIXME: duplicated in {@link EditPostController} 
-	 * 
-	 * @param command - the command associated with this request.
-	 * @param hostInetAddress - the address of the client
-	 * @throws InternServerException - if checking the captcha was not possible due to 
-	 * an exception. This could be caused by a non-rechable captcha-server. 
-	 */
-	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
-		/*
-		 * check captcha response
-		 */
-		try {
-			final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
-
-			if (!res.isValid()) {
-				/*
-				 * invalid response from user
-				 */
-				errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-			} else if (res.getErrorMessage() != null) {
-				/*
-				 * valid response, but still an error
-				 */
-				log.warn("Could not validate captcha response: " + res.getErrorMessage());
-			}
-		} catch (final Exception e) {
-			log.fatal("Could not validate captcha response.", e);
-			throw new InternServerException("error.captcha");
-		}
 	}
 
 	@Override

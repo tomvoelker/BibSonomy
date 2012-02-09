@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.HashUtils;
@@ -29,7 +28,7 @@ import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.captcha.Captcha;
-import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
+import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.validation.PasswordReminderValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.jasypt.util.text.BasicTextEncryptor;
@@ -86,7 +85,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		/*
 		 * check captcha
 		 */
-		this.checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
+		CaptchaUtil.checkCaptcha(this.captcha, this.errors, this.log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
 
 		/*
 		 * If the user name is null, we get an exception on getUserDetails.
@@ -247,42 +246,6 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		Assert.isTrue(Role.ADMIN.equals(this.adminLogic.getAuthenticatedUser().getRole()), "The provided logic interface must have admin access.");
 	}
 
-	/**
-	 * Checks the captcha. If the response from the user does not match the captcha,
-	 * an error is added. 
-	 * 
-	 * FIXME: functionality for a super class or sth. like that
-	 * 
-	 * @param command - the command associated with this request.
-	 * @param hostInetAddress - the address of the client
-	 * @throws InternServerException - if checking the captcha was not possible due to 
-	 * an exception. This could be caused by a non-rechable captcha-server. 
-	 */
-	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
-		if (org.bibsonomy.util.ValidationUtils.present(challenge) && org.bibsonomy.util.ValidationUtils.present(response)) {
-			/*
-			 * check captcha response
-			 */
-			try {
-				final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
-
-				if (!res.isValid()) {
-					/*
-					 * invalid response from user
-					 */
-					errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-				} else if (res.getErrorMessage() != null) {
-					/*
-					 * valid response, but still an error
-					 */
-					log.warn("Could not validate captcha response: " + res.getErrorMessage());
-				}
-			} catch (final Exception e) {
-				log.fatal("Could not validate captcha response.", e);
-				throw new InternServerException("error.captcha");
-			}
-		}
-	}
 
 	/**
 	 * Creates the random string
