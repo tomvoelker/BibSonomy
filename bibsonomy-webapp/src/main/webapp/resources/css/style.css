@@ -90,7 +90,7 @@ a img {
 
 
 .systemAbout {
-	
+	padding-top: 2ex;
 }
 
 .systemRegister {
@@ -1426,6 +1426,14 @@ form.editTags, form.editTags input {
 	margin-left: 0px;
 }
 
+#bookmarksheader .header {
+	border-right: 1px solid #c6c6c6;
+}
+
+#publicationsheader .header {
+	border-left: 1px solid #c6c6c6;
+}
+
 #bookmarksheader .header, #publicationsheader .header {
 	text-transform: uppercase;
 	color: #006699;
@@ -1473,9 +1481,11 @@ form.editTags, form.editTags input {
 }
 
 #bookmarksfooter .footer {
+	border-right: 1px solid #c6c6c6;
 }
 
 #publicationsfooter .footer {
+	border-left: 1px solid #c6c6c6;
 }
 
 #publicationsheader .header {
@@ -1493,9 +1503,20 @@ form.editTags, form.editTags input {
 	background-color: #ffffff;
 }
 
+.bookmarksContainer ul.posts {
+	background-color: #ffffff;
+	border-right: 1px solid #c6c6c6;
+}
+
 .publicationsContainer .posts {
 	background-color: #ffffff;
 }
+
+.publicationsContainer ul.posts {
+	background-color: #ffffff;
+	border-left: 1px solid #c6c6c6;
+}
+
 
 .bookmarksContainer .desc, .publicationsContainer .desc {
 	color: #666666;

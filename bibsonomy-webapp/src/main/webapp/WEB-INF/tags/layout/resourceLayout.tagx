@@ -105,27 +105,34 @@
 		
 		
 		<jsp:attribute name="content">
+
+			<c:if  test="${not empty contentHeading}">
+				<div id="fullscreen">
+						<jsp:invoke fragment="contentHeading" />
+				</div>
+			</c:if>
+			
 			<!--+
 				|
 				| FIXME: handle this box
 				|
 				+-->
-			<div id="fullscreen">
+<!--			<div id="fullscreen">-->
 				
 				<!-- 
 					Some pages show a short introductory text at the top - this text 
 					should be put into the contentHeading attribute. If the text is not
 					available, we need a non-breakable space - for layout reasons. :-(
 				 -->
-				<c:choose>
-					<c:when  test="${not empty contentHeading}">
-						<jsp:invoke fragment="contentHeading" />
-					</c:when>
-					<c:otherwise>
-						&amp;nbsp;
-					</c:otherwise>
-				</c:choose>				
-			</div>
+<!--				<c:choose>-->
+<!--					<c:when  test="${not empty contentHeading}">-->
+<!--						<jsp:invoke fragment="contentHeading" />-->
+<!--					</c:when>-->
+<!--					<c:otherwise>-->
+<!--						&amp;nbsp;-->
+<!--					</c:otherwise>-->
+<!--				</c:choose>				-->
+<!--			</div>-->
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>

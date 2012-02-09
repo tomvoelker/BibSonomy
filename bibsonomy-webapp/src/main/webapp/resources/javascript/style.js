@@ -380,12 +380,12 @@ function initBookmarksPublicationsListsLast() {
 }
 
 function initSidebarHeader() {
-	if ( ($("#postcontainer").length != 0) && ($("#bookmarks").length != 0) && ($("#publications").length != 0) && ($("#sidebar").length != 0) ) { 
+	if ( ($("#postcontainer").length != 0) && ($("#bookmarks_0").length != 0) && ($("#publications_0").length != 0) && ($("#sidebar").length != 0) ) { 
 		// calculate scrollbar-width
 		var c = $("#postcontainer").width();
-		var s = $("#sidebar").width();
-		var b = $("#bookmarks").width();
-		var p = $("#publications").width();
+		//var s = $("#sidebar").width();
+		var b = $("#bookmarks_0").width();
+		var p = $("#publications_0").width();
 		var scrollbarWidth = c-(b+p);  // sidebar is in padding. width is width without padding
 		var sidebarWidth = $("#sidebarheader").width();
 		var sidebarWidthBody = $("#sidebar").width();
