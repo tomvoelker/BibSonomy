@@ -24,7 +24,7 @@
 			      <!-- dropdown menu for myBibSonomy -->  
 				  <div id="my_menu" class="nicedropmenudiv">
 				    <a href="/friends">myFriends</a>
-					<a href="${userRelations}">myRelations</a>
+					<a href="${userRelations}">myConcepts</a>
 					<a href="/mySearch">mySearch</a>
 			        <a href="${userPDF}">myPDF</a>
 			        <a href="${userDuplicates}">myDuplicates</a>
