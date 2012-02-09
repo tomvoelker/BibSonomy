@@ -12,18 +12,15 @@
 
 	<fmt:message key="navi.register" var="pageTitle" />
 	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}">
+	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="navi.register">
   
         <jsp:attribute name="heading">
         	<parts:search pathMessageKey="navi.register"/>
         </jsp:attribute>
         
         <jsp:attribute name="content">
-        	<div id="general">
-	            <h2><fmt:message key="register.welcome"/> <a href="/">${properties['project.name']}</a>!</h2>
-  
-    	        <p><fmt:message key="register.activate"/></p>
-			</div>
+            <h2><fmt:message key="register.welcome"/> <a href="/">${properties['project.name']}</a>!</h2>
+   	        <p><fmt:message key="register.activate"/></p>
 	    </jsp:attribute>
-	</layout:layout>
+	</layout:paneLayout>
 </jsp:root>

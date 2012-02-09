@@ -12,7 +12,7 @@
 
 	<register:user_success>
 		<jsp:attribute name="confirmationMailFragment">
-			<hr style="margin: 2em 0em 2em 0em;"/>
+			<hr/>
 
             <!-- ###################### confirmation ####################### -->
 			<p><fmt:message key="register.confirmationMail"/></p>
@@ -20,6 +20,8 @@
 				<tr><td><fmt:message key="navi.username"/>:</td><td><c:out value="${command.context.loginUser.name}"/></td></tr>
 				<tr><td><fmt:message key="user.settings.email"/>:</td><td><c:out value="${command.context.loginUser.email}"/></td></tr>
 			</table>  
+		
+			<hr/>
 		
 		</jsp:attribute>
 	</register:user_success>
