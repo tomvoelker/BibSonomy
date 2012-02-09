@@ -77,6 +77,15 @@ a img {
 	color: white;
 }
 
+.systemName {
+    color: #006699;
+    float: left;
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 70px;
+    font-weight: bold;
+    margin-top: 40px;
+}
+
 #logoSubtitle {
 	position: absolute;
 	top: 54px;
