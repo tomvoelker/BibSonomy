@@ -974,7 +974,7 @@ span.info:hover,div.help:hover {
 	z-index: 25;
 }
 
-span.info>div,div.help>div {
+span.info>div,div.help>div{
 	display: none;
 }
 
@@ -1077,8 +1077,8 @@ div.help>a,div.help>b {
 /*
  * FIXME: put into icons.png
  */ 
-.headerLogo.image.spheres {background-image: url('/resources/image/relations.png'); width: 30px; height: 30px; }
-.headerLogo.image.relations {background-image: url('/resources/image/relations.png'); width: 30px; height: 30px; }
+.headerLogo.image.spheres {background-image: url('/resources/image/concepts.png'); width: 30px; height: 30px; }
+.headerLogo.image.relations {background-image: url('/resources/image/concepts.png'); width: 30px; height: 30px; }
 .headerLogo.image.settings {background-image: url('/resources/image/settings.png'); width: 30px; height: 30px; }
 .headerLogo.image.search {background-image: url('/resources/image/search.png'); width: 30px; height: 30px; }
 .headerLogo.image.editTags {background-image: url('/resources/image/edit_tags.png'); width: 30px; height: 30px; }
@@ -1235,25 +1235,30 @@ div.help>a,div.help>b {
 	display: inline;
 }
 
-.ptags .tags {
-	display: inline;
-	width: 80%;	
-}
 
-
-
-.post .ptags ul {
+.post .ptags>ul.tags {
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 93%;
+  	-o-text-overflow: ellipsis;  /* necessary for opera 9+10 */
+	float: left;
+	max-width: 86%;
+	white-space: nowrap;
 }
 
 .ptags a {
 	background-color: #eee;
+	padding-left: 1px;
+	padding-right: 1px;
 }
 
+.ptags ul div a, .ptags div div a  {
+	background-color: #fff;
+}
+
+.ptags ul div a:hover, .ptags div div a:hover  {
+	background-color: #fff;
+}
 .ptags a:hover {
 	background-color: #c8dc8d;
 }
@@ -1267,9 +1272,9 @@ div.help>a,div.help>b {
  	height: 15px;
 	cursor: pointer;
     vertical-align: text-bottom;
-    background-color: inherit;	
+    background-color: inherit;
+    float:left;	
 }
-
 
 form.editTags, form.editTags input {
 	display: inline;;	
@@ -1947,11 +1952,11 @@ form.editTags, form.editTags input {
 	display: block;
 }
 
-.loginInvisible, div.info>div {
+.loginInvisible, div.info>div, ul.info>div {
 	display: none;
 }
 
-.info:hover>div, div.help:hover>div {
+.info:hover>div, div.help:hover>div, ul.info:hover>div{
 	display: block;
 	position: absolute;
 	top: 3em+5px;
@@ -1984,7 +1989,9 @@ form.editTags, form.editTags input {
 }
 
 .hiddenSystemTag {
-	cursor: pointer;
+/* 	cursor: pointer; */
+	float: left;
+	margin-right: 2px;
 }
 
 /* end of login css code */
