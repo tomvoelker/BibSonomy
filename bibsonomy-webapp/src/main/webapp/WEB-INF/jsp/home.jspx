@@ -35,10 +35,9 @@
 					style="float:left; margin: 10px;" width="98" height="120"/>
 				
 				<!-- project name -->
-				<span class="systemName">
+				<div class="systemName">
 					<a href=""><c:out value="${properties['project.name']}"/></a>
-				</span>
-				<div style="clear: left;"><!-- keep me --></div>
+				</div>
 				
 				<!-- introduction -->
 				<div class="systemAbout">
@@ -53,7 +52,8 @@
 					<fmt:message key="system.register"/>
 				</div>
 				
-				<div style="clear: left; padding-top: 1.5em; font-size: 80%; margin-bottom: -2%;"><fmt:message key="system.recent"/></div>
+<!--				<div class="systemRecent"><fmt:message key="system.recent"/></div>-->
+				<div class="systemInfoClear"> <!-- do not remove --></div>
 			</c:if>
 		</jsp:attribute>
 
