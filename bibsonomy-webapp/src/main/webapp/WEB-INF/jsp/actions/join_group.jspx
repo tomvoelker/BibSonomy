@@ -21,7 +21,7 @@
   
     	<!--+
     	 	| heading
-    	 	-->
+    	 	+-->
     	<jsp:attribute name="heading">
     		<parts:search pathMessageKey="joinGroup">
 				<jsp:attribute name="pathPart">
@@ -72,14 +72,19 @@
 				</form:form>
 		</jsp:attribute>
 		
+		<!--+
+			| sidebar
+			+-->
         <jsp:attribute name="sidebar">
 	        <ul>
 				<!-- loginUser.groups -->
 				<li>    
 					<span class="sidebar_h"><a href="/groups"><fmt:message key="groups"/></a></span>
-					<ul><c:forEach var="group" items="${command.context.loginUser.groups}">
-			  			<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a></li>
-					</c:forEach></ul>
+					<ul class="sidebar_collapse_content">
+						<c:forEach var="group" items="${command.context.loginUser.groups}">
+			  				<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a></li>
+						</c:forEach>
+					</ul>
 				</li>
 
         	</ul>

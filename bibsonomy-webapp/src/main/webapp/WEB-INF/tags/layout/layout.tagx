@@ -252,12 +252,17 @@
 					</div><!-- #postcontainer -->
 					
 
-					<c:if test="${not empty footerContainer}">
-						<div id="footercontainer">
-							<jsp:invoke fragment="footerContainer"/>
-						</div> <!--  #footercontainer -->
-					</c:if>
-
+					<div id="footercontainer">
+						<c:choose>
+							<c:when test="${not empty footerContainer}">
+								<jsp:invoke fragment="footerContainer"/>
+							</c:when>
+							<c:otherwise>
+								<div id="fullscreenfooter"><!-- keep me --></div>
+							</c:otherwise>
+						</c:choose>
+					</div> <!--  #footercontainer -->
+	
 					
 				</div><!-- #container -->
 			
