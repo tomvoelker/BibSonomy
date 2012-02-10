@@ -14,32 +14,44 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<fmt:message key="navi.login" var="loginTitle" />
+	<fmt:message key="navi.oauth.authorization" var="oAuthTitle" />
 	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}">
-
-		<jsp:attribute name="headerExt">
-  		</jsp:attribute>
-
+	<layout:paneLayout command="${command}" pageTitle="${oAuthTitle}" requPath="${requPath}" headerMessageKey="navi.oauth.authorization">
+	
+		<!--+
+			| heading 
+			+-->
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.login" />
+			<parts:search pathMessageKey="navi.oauth.authorization" />
     	</jsp:attribute>
-		
-		
+
+		<!--+
+			| content
+			+-->
 		<jsp:attribute name="content">
-			<div id="general">
-				<h1>OAuth Authorization</h1>
-				<br/><br/>
-				
-				You successfully authorized the application <c:out value="${command.appTitle}"/> to access your data in BibSonomy.
-				<br/><br/>
-				
+			<p>
+				<fmt:message key="oauth.authorization.success">
+					<fmt:param>
+						<c:out value="${command.appTitle}"/>
+					</fmt:param>
+					<fmt:param>
+						<c:out value="${properties['project.name']}"/>
+					</fmt:param>
+				</fmt:message>
+			</p>
+
+			<p>
+				<!-- keep me -->			
 				<c:if test="${command.entry.callbackToken != null}">
-					Please enter code <b><c:out value="${command.entry.callbackToken}"/></b> at the consumer.
+					<fmt:message key="oauth.authorization.callback.token">
+						<fmt:param>
+							<c:out value="${command.entry.callbackToken}"/>
+						</fmt:param>
+					</fmt:message>
 				</c:if>
-			</div>
+			</p>
       	</jsp:attribute>
       	
       	
-	</layout:layout>
+	</layout:paneLayout>
 </jsp:root>

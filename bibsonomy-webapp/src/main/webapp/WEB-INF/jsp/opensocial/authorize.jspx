@@ -14,19 +14,21 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<fmt:message key="navi.login" var="loginTitle" />
+	<fmt:message key="navi.oauth.authorization" var="oAuthTitle" />
 	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${loginTitle}" requPath="${requPath}">
+	<layout:paneLayout command="${command}" pageTitle="${oAuthTitle}" requPath="${requPath}" headerMessageKey="navi.oauth.authorization">
 
+		<!--+
+			| page specific styling
+			+-->
 		<jsp:attribute name="headerExt">
 			<style type="text/css">
 				.oauthIcon {
 					float: left;
-					width: 20%;
+					width: 100px;
 				}
 				.oauthMeta {
-					float: right;
-					width: 80%;
+					margin-left: 100px;
 				}
 				.oauthTitle {
 					font-weight: bold;
@@ -37,40 +39,56 @@
 			</style>			
   		</jsp:attribute>
 
+		<!--+
+			| heading 
+			+-->
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.login" />
+			<parts:search pathMessageKey="navi.oauth.authorization" />
     	</jsp:attribute>
-		
-		
-		<jsp:attribute name="content">
-			<div id="general">
-				<h1>OAuth Authorization</h1>
-				<br/><br/>
-				
-				The following application wants to access your account information
-				<br/><br/>
 
-				<div class="oauthIcon">
-					<c:if test="${command.appIcon != null}"><img src="${command.appIcon}"/></c:if>
-				</div>
-				<span class="oauthMeta">
+		<!--+
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+		    		<fmt:message key="oauth.authorization.explanation">
+						<fmt:param value="${properties['project.name']}"/>
+					</fmt:message>
+				</jsp:attribute>
+			</parts:infobox>
+         </jsp:attribute>
+         
+		<!--+
+			| content
+			+-->
+		<jsp:attribute name="content">
+				<p>
+					<fmt:message key="oauth.authorization.intro"/>
+				</p>
+
+				<c:if test="${not empty command.appIcon}">
+					<div class="oauthIcon">
+						<img src="${command.appIcon}"/>
+					</div>
+				</c:if>
+				
+				<div class="oauthMeta">
 					<span class="oauthTitle"><c:out value="${command.appTitle}"/></span>
 					<br/><br/>
 					<span class="oauthDescription"><c:out value="${command.appDescription}" default=""/></span>
 					<br/><br/>
 					<form class="oauthActions" name="authZForm" action="authorize" method="POST">
-						<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"/>
-						<input type="hidden" name="oauth_token" value="${command.entry.token}"/>
-						<input type="submit" name="authorizeAction" value="Deny"/>
-						<input type="submit" name="authorizeAction" value="Authorize"/>
+						<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"><!-- keep me --></input>
+						<input type="hidden" name="oauth_token" value="${command.entry.token}"><!-- keep me --></input>
+						<input type="submit" name="authorizeAction" value="Deny"><!-- keep me --></input>
+						<input type="submit" name="authorizeAction" value="Authorize"><!-- keep me --></input>
 					</form>
-				</span>
-				<div style="clear: both;"/>
-				<br/>
-
-          	</div>    
+				</div>
+				<div style="clear: both;"><!-- keep me --></div>
+				
       	</jsp:attribute>
       	
       	
-	</layout:layout>
+	</layout:paneLayout>
 </jsp:root>
