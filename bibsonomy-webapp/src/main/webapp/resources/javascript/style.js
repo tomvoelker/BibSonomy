@@ -326,7 +326,8 @@ function switchNavi(scope, event) {
 
 $(function() { 
 	initSidebarHeader();
-	//initBookmarksPublicationsListsLast();
+	// FIXME: to ensure that the method is called after "most" other methods, we add a timeout ...
+	window.setTimeout("initBookmarksPublicationsListsLast()", 500);
 });
 
 

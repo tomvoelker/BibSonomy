@@ -278,11 +278,6 @@
 						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
 					</c:if>
 				</div>
-					
-				<script type="text/javascript">
-					window.setTimeout("initBookmarksPublicationsListsLast()", 500);
-				</script>
-					
 							
 				<script type="text/javascript">
 	              <![CDATA[
