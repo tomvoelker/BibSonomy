@@ -55,6 +55,10 @@ a img {
 	margin-right: 8px;
 }
 
+#fullscreen h2 {
+	margin-top: 0px;
+}
+
 #logoimage {
 	display:none
 }

@@ -64,6 +64,11 @@
 			</div>
 		</jsp:attribute>	
 	
+	
+		<jsp:attribute name="footerContainer">
+			<!-- keep me -->
+		</jsp:attribute>	
+	
 	</layout:layout>
 		
 		
