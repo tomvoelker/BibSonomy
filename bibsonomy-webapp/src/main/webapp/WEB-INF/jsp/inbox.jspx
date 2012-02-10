@@ -8,6 +8,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -49,9 +50,13 @@
 							<c:param name="clear" value="true"/>
 						</c:url>
 						<fmt:message var="removeTitle" key="inbox.actions.removeAllMessages.title"/>
-	    				<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
-	       					<fmt:message key="inbox.actions.removeAllMessages"/>
-	    				</a>
+						
+						<button:linkButton name="linkButton" title="${removeTitle}" href="${fn:escapeXml(message_remove)}">
+							<jsp:attribute name="text">
+								<fmt:message key="inbox.actions.removeAllMessages"/>
+							</jsp:attribute>
+						</button:linkButton>
+						
             		</span>
           		</li>	
          	</ul>	
