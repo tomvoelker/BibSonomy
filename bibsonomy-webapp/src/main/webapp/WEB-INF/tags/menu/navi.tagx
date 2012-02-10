@@ -79,7 +79,7 @@
 				</li>
 			</c:when>
 			<c:otherwise>
-				<li class="${activeTab eq 'my' ? 'active' : ''}"><a href="/groups"><fmt:message key="navi.groups"/></a></li>
+				<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="/groups"><fmt:message key="navi.groups"/></a></li>
 			</c:otherwise>
 		</c:choose>
 		<!--+
