@@ -651,7 +651,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final String requestedUserName, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final Order order, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setContentType(contentType);
 		param.setGroupId(groupId);
@@ -661,7 +661,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setOffset(offset);
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own tags, which are private, public or for friends
-			param.setRequestedUserName(requestedUserName);
+			param.setRequestedUserName(loginUserName);
 			return this.queryForList("getTagsViewableBySpecialGroup", param, Tag.class, session);
 		}
 		return this.queryForList("getTagsViewable", param, Tag.class, session);
@@ -716,7 +716,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final String requestedUserName, final List<TagIndex> tagIndex, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getRelatedTagsViewable(final ConstantID contentType, final String loginUserName, final int groupId, final List<TagIndex> tagIndex, final Order order, final int limit, final int offset, final DBSession session) {
 		// check maximum number of tags
 		if (this.exceedsMaxSize(tagIndex)) {
 			return new ArrayList<Tag>();
@@ -732,7 +732,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// for special groups, check additionally if tag is "owned"
 			// by the logged-in user
-			param.setRequestedUserName(requestedUserName);
+			param.setRequestedUserName(loginUserName);
 		}
 		return this.queryForList("getRelatedTagsViewable", param, Tag.class, session);
 	}
