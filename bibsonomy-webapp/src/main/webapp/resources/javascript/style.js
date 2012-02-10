@@ -326,15 +326,13 @@ function switchNavi(scope, event) {
 
 $(function() { 
 	initSidebarHeader();
-	initBookmarksPublicationsListsLast();
+	//initBookmarksPublicationsListsLast();
 });
 
 
 function initBookmarksPublicationsListsLast() {
-	
 	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
 	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
-	
 	if ( ($("#sidebar").length != 0) ) { 
 
 		// set heigth of fullscreen arean above post lists, if available
@@ -357,15 +355,16 @@ function initBookmarksPublicationsListsLast() {
 		// calculate maximum height
 		maxheight = (bookmarksHeight > publicationsHeight ) ? bookmarksHeight : publicationsHeight;
 		maxheight = (maxheight > sidebarHeight) ? maxheight : sidebarHeight;
-
 		// set heights to maximum_heights
 		// only every last list will adjusted in height 
 		if (numberOfBookmarkLists != 0) {
-			$("#bookmarks_"+(numberOfBookmarkLists-1)).height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
+			//$("#bookmarks_"+(numberOfBookmarkLists-1)).height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
+			$("#bookmarks_"+(numberOfBookmarkLists-1)+">ul.posts").height(maxheight-bookmarksHeight+$("#bookmarks_"+(numberOfBookmarkLists-1)).height());
 		}
 		
 		if (numberOfBookmarkLists != 0) {
-			$("#publications_"+(numberOfPublicationLists-1)).height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
+			//$("#publications_"+(numberOfPublicationLists-1)).height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
+			$("#publications_"+(numberOfPublicationLists-1)+">ul.posts").height(maxheight-publicationsHeight+$("#publications_"+(numberOfPublicationLists-1)).height());
 		}
 		
 		
