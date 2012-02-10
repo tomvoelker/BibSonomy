@@ -63,7 +63,7 @@ a img {
 	position: absolute;
 	top: 10px;
 	left: 30px;
-	/*right: 300px;*/ /* needed for opera */ /* FIXME: disturbs quick login */
+	right: 30px; /* needed for opera */ /* disturbs quick login! Solution: raise quicklogin with z-index to 10  */
 	color: white;
 	font-size: 38px;
 	white-space: nowrap;
@@ -189,6 +189,7 @@ a img {
 	text-align: right;
 	color: white;
 	font-size: 90%;
+	z-index: 10;
 }
 
 #poststats a {
