@@ -8,6 +8,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -26,11 +27,13 @@
 			+-->
 		<jsp:attribute name="sidebar">
 			<ul>			
-	          <li>
-	            <span class="sidebar_hh">
-	              <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
-	              <a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}" title="${fn:escapeXml(removeAllVerbose)}"><fmt:message key="basket.removeAll"/></a>
-	            </span>
+	          <li style="text-align: center;">
+	            <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
+	          	<button:linkButton name="linkButton" title="${fn:escapeXml(removeAllVerbose)}" href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
+					<jsp:attribute name="text">
+						<fmt:message key="basket.removeAll"/>
+					</jsp:attribute>
+				</button:linkButton>
 	          </li>
 			</ul>
  		</jsp:attribute>

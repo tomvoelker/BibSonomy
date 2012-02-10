@@ -41,23 +41,20 @@
 			+-->
 		<jsp:attribute name="sidebar">
 			<ul>
-				<li>
-            		<span class="sidebar_hh">
-              			<c:url var="message_remove" value="/removeMessage">
-							<c:param name="hash" value=""/>
-							<c:param name="user" value=""/>
-							<c:param name="ckey" value="${ckey}"/>
-							<c:param name="clear" value="true"/>
-						</c:url>
-						<fmt:message var="removeTitle" key="inbox.actions.removeAllMessages.title"/>
+				<li style="text-align: center;">
+           			<c:url var="message_remove" value="/removeMessage">
+						<c:param name="hash" value=""/>
+						<c:param name="user" value=""/>
+						<c:param name="ckey" value="${ckey}"/>
+						<c:param name="clear" value="true"/>
+					</c:url>
+					<fmt:message var="removeTitle" key="inbox.actions.removeAllMessages.title"/>
 						
-						<button:linkButton name="linkButton" title="${removeTitle}" href="${fn:escapeXml(message_remove)}">
-							<jsp:attribute name="text">
-								<fmt:message key="inbox.actions.removeAllMessages"/>
-							</jsp:attribute>
-						</button:linkButton>
-						
-            		</span>
+					<button:linkButton name="linkButton" title="${removeTitle}" href="${fn:escapeXml(message_remove)}">
+						<jsp:attribute name="text">
+							<fmt:message key="inbox.actions.removeAllMessages"/>
+						</jsp:attribute>
+					</button:linkButton>
           		</li>	
          	</ul>	
 		</jsp:attribute>
