@@ -95,9 +95,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	});
 	/*
 	 * initialize the sidebar (basically adds the [-] togglers)
-	 * FIXME: use some other condition, that does not depend on a location's name
 	 */
-	var pathname = location.pathname;
 	init_sidebar();
 
 	/* *************************************************************************
@@ -374,6 +372,7 @@ function clear_tags() {
 }
 
 /**
+ * 
  * toggle background color for required publication fields
  * 
  * @return

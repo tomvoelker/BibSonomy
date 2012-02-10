@@ -711,7 +711,7 @@ function add_toggle_relations() {
 
 function clearSuggestion() {
 	// remove selection
-	$("#copiedTags li").css("color", "").css("backgroundColor", ""); // FIXME: why not remove()?
+	$("#copiedTags li").css({"color" : "", "backgroundColor" : ""}); // FIXME: why not remove()?
 
 	// remove all child nodes
 	$("#suggestedTags").empty();
