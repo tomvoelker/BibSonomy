@@ -23,11 +23,6 @@ public class GetTagsViewable extends TagChainElement {
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		final String requestedGroupName = param.getRequestedGroupName();
 		final String loginUserName = param.getUserName();
-		/*
-		 * For the special groups public, private, and friends, we must only 
-		 * retrieve posts for this user name. Normally, this is the loginUserName!
-		 */
-		final String requestedUserName = param.getRequestedUserName();
 		// retrieve ID of the requested group
 		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(requestedGroupName, loginUserName, session);
 		if (groupId == GroupID.INVALID.getId()) {
@@ -35,9 +30,9 @@ public class GetTagsViewable extends TagChainElement {
 			return Collections.emptyList();
 		}
 		if (present(param.getTagIndex())) {
-			return this.db.getRelatedTagsViewable(param.getContentTypeConstant(), loginUserName, groupId, requestedUserName, param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
+			return this.db.getRelatedTagsViewable(param.getContentTypeConstant(), loginUserName, groupId, param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
 		}
-		return this.db.getTagsViewable(param.getContentTypeConstant(), loginUserName, groupId, requestedUserName, param.getOrder(), param.getLimit(), param.getOffset(), session);
+		return this.db.getTagsViewable(param.getContentTypeConstant(), loginUserName, groupId, param.getOrder(), param.getLimit(), param.getOffset(), session);
 
 	}
 
