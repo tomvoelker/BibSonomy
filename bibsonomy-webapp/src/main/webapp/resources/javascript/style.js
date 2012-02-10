@@ -336,7 +336,7 @@ function initBookmarksPublicationsListsLast() {
 	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
 	if ( ($("#sidebar").length != 0) ) { 
 
-		// set heigth of fullscreen arean above post lists, if available
+		// set heigth of fullscreen area above post lists, if available
 		fullscreenHeight = 0;
 		if ($("#fullscreen").length != 0) fullscreenHeight = $("#fullscreen").height(); 
 

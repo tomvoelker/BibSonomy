@@ -136,6 +136,7 @@ a img {
 	top: 1.8ex;
 	position: absolute;
 	margin-right: 7em;
+	z-index: 10;
 }
 
 #infoline a {
@@ -155,6 +156,7 @@ a img {
 	font-size: 130%;
 	margin-top: 0.8ex;
 	text-transform: uppercase;
+	z-index: 10;
 }
 	
 #language ul li {
@@ -487,6 +489,7 @@ a img {
 	top: 0px;
 	z-index: 40;
 	background-color: #e4e4e4;
+	bottom: 0; /* important for minheight of sidebar */
 }
 
 .sidebar_h {
