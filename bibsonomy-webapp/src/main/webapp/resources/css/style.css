@@ -1651,6 +1651,12 @@ form.editTags, form.editTags input {
 	background-color: #E4E4E4;
 }
 
+#fullscreenfooter {
+	height: 30px;
+	width: 100%;
+	background-color: white;
+	
+}
 
 #postcontainer {
 	position: absolute;

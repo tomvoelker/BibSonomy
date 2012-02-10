@@ -66,7 +66,7 @@
 	
 	
 		<jsp:attribute name="footerContainer">
-			<!-- keep me -->
+			<div id="fullscreenfooter"><!-- keep me --></div>
 		</jsp:attribute>	
 	
 	</layout:layout>
