@@ -19,7 +19,6 @@
 	<layout:paneLayout command="${command}" pageTitle="${loginTitle}" requPath="${requPath}" noLoginBox="true" headerMessageKey="navi.login">
 
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
   			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
 			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
   			<script type="text/javascript">
