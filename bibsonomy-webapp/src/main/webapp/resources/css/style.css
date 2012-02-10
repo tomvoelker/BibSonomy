@@ -1001,8 +1001,9 @@ span.info:hover,div.help:hover {
 	z-index: 25;
 }
 
-span.info>div,div.help>div{
+span.info > div, div.help > div {
 	display: none;
+	min-width: 300px;
 }
 
 div.help:hover>div {
