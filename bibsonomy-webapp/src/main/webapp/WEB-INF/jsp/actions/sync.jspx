@@ -18,7 +18,6 @@
 	<layout:paneLayout requPath="${requPath}" pageTitle="${syncPageTitle}" command="${command}" headerMessageKey="navi.sync">
 	
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/sync.css" />
 			<script type="text/javascript" src="${resdir}/javascript/date.js"><!-- keep me! --></script>
     		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me! --></script>

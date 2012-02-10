@@ -22,13 +22,6 @@
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	
 	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" headerMessageKey="navi.publication" headerLogoClass="publications" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
-		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
-			<spring:theme code="stylesheet.additional.fsform" var="additionalFsformCSS" text=""/> 
-			<c:if test="${not empty additionalFsformCSS}">
-				<link rel="stylesheet" type="text/css" href="${additionalFsformCSS}" />
-			</c:if>
-	    </jsp:attribute>
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
