@@ -510,6 +510,10 @@ a img {
 	display: inline;	
 }
 
+.action {
+	font-size: 80%;
+	background-color: #eee;
+}
 
 /** used for collapsing/uncollapsing sidebar entries */
 .toggler {
@@ -528,7 +532,6 @@ a img {
 
 #sidebar ul {
 	list-style: none;
-	font-size: 95%;
 	margin: 3px 0;
 	padding: 5px;
 }
