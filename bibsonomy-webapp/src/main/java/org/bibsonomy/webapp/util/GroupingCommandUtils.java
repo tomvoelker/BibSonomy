@@ -32,7 +32,7 @@ public abstract class GroupingCommandUtils {
 	 * @param command the command to init
 	 */
 	public static void initGroupingCommand(final GroupingCommand command) {
-		command.setAbstractGrouping(PUBLIC_GROUP.getName());
+		command.setAbstractGrouping(GroupUtils.PUBLIC_GROUP_NAME);
 		command.setGroups(new ArrayList<String>());
 	}
 	
@@ -92,12 +92,12 @@ public abstract class GroupingCommandUtils {
 			/*
 			 * only private
 			 */
-			command.setAbstractGrouping(PRIVATE_GROUP.getName());
+			command.setAbstractGrouping(GroupUtils.PRIVATE_GROUP_NAME);
 		} else if (groups.contains(PUBLIC_GROUP)) {
 			/*
 			 * only public
 			 */
-			command.setAbstractGrouping(PUBLIC_GROUP.getName());
+			command.setAbstractGrouping(GroupUtils.PUBLIC_GROUP_NAME);
 		} else {
 			/*
 			 * other

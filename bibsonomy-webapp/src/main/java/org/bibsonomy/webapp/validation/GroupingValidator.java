@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
@@ -20,10 +19,6 @@ import org.springframework.validation.Errors;
  */
 public class GroupingValidator implements Validator<GroupingCommand> {
 	private static final Log log = LogFactory.getLog(GroupingValidator.class);
-
-	
-	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
-	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
 	@Override
 	public boolean supports(final Class<?> clazz) {
@@ -37,7 +32,7 @@ public class GroupingValidator implements Validator<GroupingCommand> {
 		final String abstractGrouping = command.getAbstractGrouping();
 		final List<String> groups = command.getGroups();
 		
-		if (PUBLIC_GROUP.getName().equals(abstractGrouping) || PRIVATE_GROUP.getName().equals(abstractGrouping)) {
+		if (GroupUtils.PUBLIC_GROUP_NAME.equals(abstractGrouping) || GroupUtils.PRIVATE_GROUP_NAME.equals(abstractGrouping)) {
 			if (present(groups)) {
 				/*
 				 * "public" or "private" selected, but other group(s) chosen
@@ -46,7 +41,7 @@ public class GroupingValidator implements Validator<GroupingCommand> {
 			}
 		} else if (GroupingCommandUtils.OTHER_ABSTRACT_GROUPING.equals(abstractGrouping)) {
 			log.debug("grouping 'other' found ... checking given groups");
-			if (groups == null || groups.isEmpty()) {
+			if (!present(groups)) {
 				log.debug("error: no groups given");
 				/*
 				 * "other" selected, but no group chosen
