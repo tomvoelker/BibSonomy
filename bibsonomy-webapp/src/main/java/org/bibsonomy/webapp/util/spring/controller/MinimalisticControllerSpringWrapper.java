@@ -29,6 +29,7 @@ import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableEx
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -66,7 +67,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	 * @param conversionService the conversionService to set
 	 */
 	@Required
-	public void setConversionService(ConversionService conversionService) {
+	public void setConversionService(final ConversionService conversionService) {
 		this.conversionService = conversionService;
 	}
 
@@ -108,7 +109,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	 * @param urlGenerator the urlGenerator to set
 	 */
 	@Required
-	public void setUrlGenerator(URLGenerator urlGenerator) {
+	public void setUrlGenerator(final URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
 	
@@ -131,10 +132,12 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	@SuppressWarnings("unchecked")
 	@Override
 	protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-		((RequestLogic) getApplicationContext().getBean("requestLogic")).setRequest(request); // hack but thats springs fault
-		((ResponseLogic) getApplicationContext().getBean("responseLogic")).setResponse(response); // hack but thats springs fault
-		final MinimalisticController<T> controller = (MinimalisticController<T>) getApplicationContext().getBean(controllerBeanName);
-		/**
+		final ApplicationContext applicationContext = this.getApplicationContext();
+		applicationContext.getBean("requestLogic", RequestLogic.class).setRequest(request); // hack but thats springs fault
+		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
+		final MinimalisticController<T> controller = (MinimalisticController<T>) applicationContext.getBean(controllerBeanName);
+		
+		/*
 		 * Controller is put into request.
 		 * 
 		 * FIXME: is this still neccessary?
