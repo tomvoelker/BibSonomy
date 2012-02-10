@@ -34,12 +34,16 @@
 					</li>
 				</jsp:attribute>
 			</parts:search>
-		</jsp:attribute>				
+		</jsp:attribute>
 				
-		<jsp:attribute name="contentHeading">
-			<fmt:message key="spheres.sphere.intro">
-				<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
-			</fmt:message>
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<fmt:message key="spheres.sphere.intro">
+						<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
+					</fmt:message>
+				</jsp:attribute>
+			</parts:infobox>
 		</jsp:attribute>	
 		
 		<jsp:attribute name="sidebar">
