@@ -28,7 +28,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/adminlucene.css" />
 			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 			<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />

@@ -30,7 +30,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 		
 			<style type="text/css">
 				#oauthConsumerList {
