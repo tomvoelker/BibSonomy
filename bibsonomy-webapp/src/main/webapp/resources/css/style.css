@@ -1276,7 +1276,7 @@ div.help>a,div.help>b {
 	clear: both;
 }
 
-.post .ptags, .post form.editTags {
+.post .ptags {
 	margin-left: 110px;
 	margin-top: 1ex;		
 	margin-bottom: 5ex;		
@@ -1330,8 +1330,18 @@ div.help>a,div.help>b {
     float:left;	
 }
 
+.post form.editTags {
+	margin-left: 110px;
+/*	margin-top: 1ex; */		
+/*	margin-bottom: 5ex; */
+}
+	
+form.editTags input[type=text] {
+	width: 60%;
+}	
+	
 form.editTags, form.editTags input {
-	display: inline;;	
+	/* display: inline; */	
 }
 
 .ptags {
