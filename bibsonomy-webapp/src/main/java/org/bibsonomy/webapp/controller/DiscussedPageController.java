@@ -14,7 +14,12 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for pages /discussed, /discussed/user/USERNAME and /discussed/group/GROUPNAME
+ * Controller for pages
+ * 	<ul>
+ * 		<li>/discussed</li>
+ * 		<li>/discussed/user/USERNAME</li>
+ * 		<li>/discussed/group/GROUPNAME</li>
+ *  </ul>
  * 
  * @author Sven Stefani
  * @version $Id$
@@ -44,22 +49,6 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 			groupingName = null;
 		}
 		
-	
-
-//		/*
-//		 * if user is logged in, check if the logged in user follows the requested user
-//		 */
-//		final RequestWrapperContext context = command.getContext();
-//		if (context.isUserLoggedIn()) {
-//			final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
-//			for (final User u : followersOfUser){
-//				if (u.getName().equals(groupingName)) {
-//					command.setFollowerOfUser(true);
-//					break;
-//				}
-//			}
-//		}
-		
 		
 		// if filter is set to POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER alle posts of both users, positive classified users and not classified users, will be retrieved.
 		// add to url: ?filter==POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER
@@ -82,40 +71,9 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 		// get discussion statistics
 		command.setDiscussionsStatistic(this.logic.getPostStatistics(Resource.class, groupingEntity, groupingName, null, null, null, FilterEntity.POSTS_WITH_DISCUSSIONS, null, null, command.getStartDate(), command.getEndDate(), 0, 0));
 		
-		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			// set page title
-//			command.setPageTitle("user :: " + groupingName); // TODO: i18n
-			
-
-			/*
-			 * For logged in users we check, if he is in a friends or group relation
-			 * with the requested user. 
-//			 */
-//			final String loginUserName = context.getLoginUser().getName();
-//			if (context.isUserLoggedIn()) {
-//				/*
-//				 * Put the user into command to be able to show some details.
-//				 * 
-//				 * The DBLogic checks, if the login user may see the user's 
-//				 * details. 
-//				 */
-//				final User requestedUser = logic.getUserDetails(groupingName);
-//				command.setUser(requestedUser);
-//				/*
-//				 * Has loginUser this user set as friend?
-//				 */
-//				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
-//				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
-//				/*
-//				 * TODO: we need an adminLogic to access the requested user's groups ...
-//				 */
-//			}
-			
-			this.endTiming();
-
-	
+			this.endTiming();	
 			return Views.DISCUSSEDPAGE;
 		}
 		
