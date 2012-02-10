@@ -821,6 +821,13 @@ ul.news {
 	display: inline;	
 }
 
+#groupmembers {
+	text-align: center;
+}
+
+#groupmembers li {
+	display: inline;
+}
 
 /*****************************************************************************/
 /* END SIDEBAR                                                               */
