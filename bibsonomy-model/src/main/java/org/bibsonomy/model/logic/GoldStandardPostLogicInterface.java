@@ -33,6 +33,11 @@ import java.util.Set;
 public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	
 	/**
+	 * the user name of the gold standard
+	 */
+	public static final String GOLD_STANDARD_USER_NAME = "";
+
+	/**
 	 * adds references to a gold standard resource
 	 * 
 	 * @param postHash   the hash of the gold standard post
