@@ -11,6 +11,17 @@
 	<jsp:directive.attribute name="infoTextKey" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="infoTextBody" fragment="true" required="false"/>
 	
+	<c:choose>
+		<c:when test="${not command.context.loginUser.settings.simpleInterface}">
+			<c:set var="initialState" value="initially_collapsed" />
+			<c:set var="initialDisplay" value="none" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="initialState" value="" />
+			<c:set var="initialDisplay" value="block" />
+		</c:otherwise>
+	</c:choose>
+	
 	<!--+
 		| render the infobox
 		+-->
@@ -18,7 +29,7 @@
 		<!-- header for the info box -->
 		<ul>
 			<li>
-				<span class="sidebar_h">
+				<span class="sidebar_h ${initialState}">
 					<c:choose>
 						<c:when test="${not empty headerKey}">
 							<fmt:message key="headerKey"/>
@@ -29,7 +40,7 @@
 					</c:choose>
 				</span>
 				<!-- content of the info box -->
-				<div class="content sidebar_collapse_content">
+				<div class="content sidebar_collapse_content" style="display: ${initialDisplay}">
 					<c:choose>
 						<c:when test="${not empty infoTextKey}">
 							<fmt:message key="${infoTextKey}"/>
