@@ -185,8 +185,7 @@
 						</c:if>
 
 						<div id="logo">
-							<span class="sonomy"><a href="/">${properties['project.name']}</a></span>
-<!--						<span class="bib">Bib</span><span class="sonomy">Sonomy</span>-->
+							<span class="text"><a href="/">${properties['project.name']}</a></span>
 							
 							<!--+ 
 							 	|
