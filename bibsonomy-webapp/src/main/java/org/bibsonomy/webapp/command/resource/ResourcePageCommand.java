@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.command.resource;
 import java.util.List;
 
 import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
@@ -16,7 +15,6 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	private String requestedHash;
 	
 	private List<DiscussionItem> discussionItems;
-	private Post<R> goldStandard;
 
 	/**
 	 * @return the requestedHash
@@ -30,20 +28,6 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	 */
 	public void setRequestedHash(final String requestedHash) {
 		this.requestedHash = requestedHash;
-	}
-
-	/**
-	 * @return the goldStandard
-	 */
-	public Post<R> getGoldStandard() {
-		return this.goldStandard;
-	}
-
-	/**
-	 * @param goldStandard the goldStandard to set
-	 */
-	public void setGoldStandard(final Post<R> goldStandard) {
-		this.goldStandard = goldStandard;
 	}
 
 	/**
