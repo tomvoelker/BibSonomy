@@ -212,12 +212,19 @@ function fadePostIn(post) {
  */
 function init_sidebar() {
 	$("#sidebar li .sidebar_h").each(function(index,item){
-		var span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
+		var span;
+		if ($(item).hasClass("initially_collapsed")) {
+			span = $("<span class='toggler'><img src='/resources/image/icon_expand.png'/></span>");
+		} else { 
+			span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
+		}
+		
 		span.click(function(){
 			fadeNextList(item);
 		});
 		$(this).prepend(span); 
 	});
+
 }
 
 function fadeNextList(target) {
