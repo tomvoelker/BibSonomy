@@ -13,7 +13,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.buttons" var="buttonsPageTitle"/>
-	<layout:paneLayout pageTitle="${buttonsPageTitle}" headerMessageKey="navi.buttons"  command="${command}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${buttonsPageTitle}" headerMessageKey="buttons.bookmarklet"  command="${command}" requPath="${requPath}">
 		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.buttons"/>
@@ -21,14 +21,11 @@
 	
 		<jsp:attribute name="content">
 		
-			<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />
-			
-			<h2><fmt:message key="buttons.bookmarklet"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></h2>
-		
+			<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
     
-            <!-- 
-               |              myBibSonomy 
-               -->	
+            <!--+ 
+                |              myBibSonomy 
+                +-->	
          	<c:if test="${command.context.userLoggedIn}">
 				<p>
 					<fmt:message key="buttons.mybibsonomy_part_one"/><buttons:myBibSonomy username="${userName}"/><fmt:message key="buttons.mybibsonomy_part_two"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
