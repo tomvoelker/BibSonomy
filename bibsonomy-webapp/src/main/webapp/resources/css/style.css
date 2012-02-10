@@ -1648,19 +1648,9 @@ form.editTags, form.editTags input {
 	overflow: visible;
 	left: 0;
 	right: 0;
-	background-color: #fff;
+	background-color: #c6c6c6;
 }
 
-
-#sidebar {
-	position: absolute;
-	width: 300px;
-	right: 0px;
-	top: 0px;
-	bottom: 0px;
-	z-index: 40;
-	background-color: #e4e4e4;
-}
 
 #postcontainer {
 	position: absolute;
