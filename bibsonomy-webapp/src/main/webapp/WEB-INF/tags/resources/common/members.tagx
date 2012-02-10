@@ -13,7 +13,7 @@
 				<fmt:message key="members"/>${mtl:ch('nbsp')}	
 			</span>
 	
-			<ul id="groupmembers" class="sidebar_collapse_content">
+			<ul id="groupmembers" class="cloud sidebar_collapse_content">
 				<c:forEach var="member" items="${users}">
 					<li>
 				      <a href="/user/${fn:escapeXml(member.name)}">${member.name}</a>
