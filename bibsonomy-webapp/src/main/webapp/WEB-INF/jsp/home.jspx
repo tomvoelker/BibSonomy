@@ -24,8 +24,6 @@
 
 		<!-- show info text if user not logged in -->
 		<jsp:attribute name="contentHeading">
-			<!-- needed for layout reasons -->
-<!--			${mtl:ch('nbsp')}-->
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
 
 				<!-- FIXME: add theme! -->
