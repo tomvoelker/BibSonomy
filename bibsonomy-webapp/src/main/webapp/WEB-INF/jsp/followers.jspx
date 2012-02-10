@@ -112,51 +112,53 @@
 		</jsp:attribute>
 		
 		<!-- content heading -->
-		<jsp:attribute name="contentHeading">
-			<div id="general">
-				<fmt:message key="followersPage.about">
-					<fmt:param>${properties['project.home']}help_${locale.language}/Followers</fmt:param>
-				</fmt:message>
-				<c:out value=" "/>
-				<c:set var="ofUsers">
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<fmt:message key="followersPage.about">
+						<fmt:param>${properties['project.home']}help_${locale.language}/Followers</fmt:param>
+					</fmt:message>
+					<c:out value=" "/>
+					<c:set var="ofUsers">
+						<c:choose>
+							<c:when test="${empty command.requestedUser or command.requestedUser eq ''}">
+								<fmt:message key="followersPage.entries.ofAllFollowedUsers"/>
+							</c:when>
+						<c:otherwise>
+							<fmt:message key="followersPage.entries.ofUser">
+								<fmt:param><a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a></fmt:param>
+							</fmt:message>
+						</c:otherwise>
+						</c:choose>
+					</c:set>
 					<c:choose>
-						<c:when test="${empty command.requestedUser or command.requestedUser eq ''}">
-							<fmt:message key="followersPage.entries.ofAllFollowedUsers"/>
-						</c:when>
-					<c:otherwise>
-						<fmt:message key="followersPage.entries.ofUser">
-							<fmt:param><a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a></fmt:param>
-						</fmt:message>
-					</c:otherwise>
+						<c:when test="${empty command.ranking.period or command.ranking.period == 0}">
+							<fmt:message key="followersPage.all.mostRecent.contentHeading">
+								<fmt:param>${command.ranking.periodEnd}</fmt:param>
+								<fmt:param>${ofUsers}</fmt:param>
+							</fmt:message>
+						</c:when>	
+						<c:otherwise>
+							<fmt:message key="followersPage.all.recent.contentHeading">
+								<fmt:param>${command.ranking.periodStart}</fmt:param>
+								<fmt:param>${command.ranking.periodEnd}</fmt:param>
+								<fmt:param>${ofUsers}</fmt:param>
+							</fmt:message>
+						</c:otherwise>
 					</c:choose>
-				</c:set>
-				<c:choose>
-					<c:when test="${empty command.ranking.period or command.ranking.period == 0}">
-						<fmt:message key="followersPage.all.mostRecent.contentHeading">
-							<fmt:param>${command.ranking.periodEnd}</fmt:param>
-							<fmt:param>${ofUsers}</fmt:param>
-						</fmt:message>
-					</c:when>	
-					<c:otherwise>
-						<fmt:message key="followersPage.all.recent.contentHeading">
-							<fmt:param>${command.ranking.periodStart}</fmt:param>
-							<fmt:param>${command.ranking.periodEnd}</fmt:param>
-							<fmt:param>${ofUsers}</fmt:param>
-						</fmt:message>
-					</c:otherwise>
-				</c:choose>
-				<c:out value=" "/>
-				<fmt:message key="Show"/>
-				<c:out value=" "/>
-				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
-				<c:if test="${not empty command.ranking.period and command.ranking.period > 0}">
-					<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.prevPeriod)}" ><fmt:message key="younger"/></a>
-					${mtl:ch('nbsp')}<c:out value="|"/>${mtl:ch('nbsp')}
-				</c:if>			
-				<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.nextPeriod)}" ><fmt:message key="older"/></a>
-				<c:out value=" "/>
-				<fmt:message key="posts"/>.			
-			</div>				
+					<c:out value=" "/>
+					<fmt:message key="Show"/>
+					<c:out value=" "/>
+					<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+					<c:if test="${not empty command.ranking.period and command.ranking.period > 0}">
+						<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.prevPeriod)}" ><fmt:message key="younger"/></a>
+						${mtl:ch('nbsp')}<c:out value="|"/>${mtl:ch('nbsp')}
+					</c:if>			
+					<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.nextPeriod)}" ><fmt:message key="older"/></a>
+					<c:out value=" "/>
+					<fmt:message key="posts"/>.
+				</jsp:attribute>
+			</parts:infobox>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>
