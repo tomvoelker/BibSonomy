@@ -34,17 +34,31 @@ import org.bibsonomy.model.Group;
  * @version $Id$
  */
 public class GroupUtils {
+	
+	/**
+	 * the public group name
+	 */
+	public static final String PUBLIC_GROUP_NAME = "public";
+	
+	/**
+	 * the private group name
+	 */
+	public static final String PRIVATE_GROUP_NAME = "private";
 
+	/**
+	 * the friends group name
+	 */
+	public static final String FRIENDS_GROUP_NAME = "friends";
 
 	private static final Group INVALID_GROUP = getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
 
-	private static final Group FRIENDS_GROUP = getGroup("friends", "friends group", GroupID.FRIENDS, Privlevel.HIDDEN);
-	private static final Group PRIVATE_GROUP = getGroup("private", "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
-	private static final Group PUBLIC_GROUP  = getGroup("public",  "public group",  GroupID.PUBLIC,  Privlevel.PUBLIC);
+	private static final Group FRIENDS_GROUP = getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS, Privlevel.HIDDEN);
+	private static final Group PRIVATE_GROUP = getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
+	private static final Group PUBLIC_GROUP  = getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC,  Privlevel.PUBLIC);
 
-	private static final Group FRIENDS_SPAM_GROUP = getGroup("friends", "friends group", GroupID.FRIENDS_SPAM, Privlevel.HIDDEN);
-	private static final Group PRIVATE_SPAM_GROUP = getGroup("private", "private group", GroupID.PRIVATE_SPAM, Privlevel.HIDDEN);
-	private static final Group PUBLIC_SPAM_GROUP  = getGroup("public",  "public group",  GroupID.PUBLIC_SPAM,  Privlevel.PUBLIC);
+	private static final Group FRIENDS_SPAM_GROUP = getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS_SPAM, Privlevel.HIDDEN);
+	private static final Group PRIVATE_SPAM_GROUP = getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE_SPAM, Privlevel.HIDDEN);
+	private static final Group PUBLIC_SPAM_GROUP  = getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC_SPAM,  Privlevel.PUBLIC);
 
 
 	/**
