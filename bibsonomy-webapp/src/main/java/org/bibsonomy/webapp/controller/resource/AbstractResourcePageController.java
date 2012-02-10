@@ -170,8 +170,6 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 * get the gold standard
 			 */
 			goldStandard = (Post<G>) this.logic.getPostDetails(goldHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
-			
-			command.getListCommand(this.getGoldStandardClass()).setList(Collections.singletonList(goldStandard));
 		} catch (final ResourceNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
@@ -184,6 +182,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 */
 		if (present(goldStandard)) {
 			firstResource = goldStandard.getResource();
+			command.getListCommand(this.getGoldStandardClass()).setList(Collections.singletonList(goldStandard));
 		} else {
 			final List<Post<R>> resourceList = command.getListCommand(this.getResourceClass()).getList();
 			if (!present(resourceList)) {
