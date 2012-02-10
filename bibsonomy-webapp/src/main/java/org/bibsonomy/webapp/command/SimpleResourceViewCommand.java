@@ -21,10 +21,15 @@ import org.bibsonomy.model.statistics.StatisticsValues;
  * @version $Id$
  */
 public class SimpleResourceViewCommand extends ResourceViewCommand {
+	// TODO: rename to bookmarks
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
+	// TODO: rename to publications
 	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
+	
 	private ListCommand<Post<GoldStandardPublication>> goldStandardPublications = new ListCommand<Post<GoldStandardPublication>>(this);
-
+	private ListCommand<Post<GoldStandardBookmark>>	goldStandardBookmarks = new ListCommand<Post<GoldStandardBookmark>>(this);
+	
+	// TODO: move to DiscussedViewCommand ?
 	private StatisticsValues discussionsStatistic;
 	
 	/**
@@ -47,8 +52,7 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 		}
 		
 		if (resourceType == GoldStandardBookmark.class) {
-			// TODO
-			return null;
+			return (ListCommand) getGoldStandardBookmarks();
 		}
 		
 		throw new UnsupportedResourceTypeException(resourceType.getName());
@@ -94,6 +98,20 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	 */
 	public ListCommand<Post<GoldStandardPublication>> getGoldStandardPublications() {
 		return goldStandardPublications;
+	}
+
+	/**
+	 * @return the goldStandardBookmarks
+	 */
+	public ListCommand<Post<GoldStandardBookmark>> getGoldStandardBookmarks() {
+		return this.goldStandardBookmarks;
+	}
+
+	/**
+	 * @param goldStandardBookmarks the goldStandardBookmarks to set
+	 */
+	public void setGoldStandardBookmarks(final ListCommand<Post<GoldStandardBookmark>> goldStandardBookmarks) {
+		this.goldStandardBookmarks = goldStandardBookmarks;
 	}
 
 	/**
