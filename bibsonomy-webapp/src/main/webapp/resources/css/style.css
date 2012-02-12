@@ -807,8 +807,8 @@ ul.news {
 
 /*--- relations/concepts ---------------------------------------------------*/
 #relations > li {
-	line-height: 1.2em;
-	text-indent: -3em;
+	line-height: 1.5em;
+	text-indent: -1em;
 	margin-left: 3em;
 }
 
@@ -1694,10 +1694,14 @@ form.editTags, form.editTags input {
 	margin:2px;
 	padding: 2px;
 	width: 20px;
-	display:block;
 	float:left;
 	text-align:center;
 	font-weight:bold;
+}
+
+.listnavElem {
+	display:block;
+	width:20px;
 }
 	
 
