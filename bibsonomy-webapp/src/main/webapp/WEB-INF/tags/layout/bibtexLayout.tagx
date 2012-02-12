@@ -6,6 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication">
 
@@ -15,6 +16,7 @@
     <jsp:directive.attribute name="unpick" type="java.lang.Boolean" required="false" description="If TRUE, unpick links (instead of pick links) are shown."/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableBasket" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>  
   
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
@@ -48,7 +50,12 @@
 			+-->
 		<jsp:attribute name="headerContainer">
 			<div id="publicationsheader">
-				<div class="config"><a href=""><!-- fixme --></a></div>
+				<div id="publicationListConfig" class="config">
+					<div id="publicationListOptions" class="listOptions">
+						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${false}" showPublication="${true}" disableListNavigation="${disableListNavigation}" disableBasket="${disableBasket}" disableResourcetypeSelection="${true}"/>
+					</div>
+				</div>				
+				
 				<h2 class="header">
 					<fmt:message key="publications" />
 					<!-- Display total number of entries in list --> 
