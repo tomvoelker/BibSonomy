@@ -16,7 +16,7 @@
 	
 	<fmt:message key="navi.basket" var="pageTitle"/>
 	
-	<layout:bibtexLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}">
+	<layout:bibtexLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableBasket="${true}" disableListNavigation="${true}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.basket"/>
