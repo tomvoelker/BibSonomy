@@ -56,27 +56,22 @@
 			+-->
 		<jsp:attribute name="content">
 		
-				<fmt:message var="editPageTags" key="post.meta.edit.title"/>
-	 			<div class="kiste">		
-					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>
-					<span class="actions">
-          			 	<a href="/editTags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
-					</span>
-					${mtl:ch('nbsp')}
+				<fmt:message var="editPageTags" key="post.meta.edit.title"/>			
+				<div>
+					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${false}" requestedUserName="${command.requestedUser}"/>
 				</div>
-			
-				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${false}" requestedUserName="${command.requestedUser}"/>
-			
-				<div class="kiste">		
+				
+				<div>		
 					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>
-					
-					<span class="actions">
-          			 	<a href="/editTags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
-					</span>
-					${mtl:ch('nbsp')}
 				</div>
 
+			<!-- FIXME: These actions should be moved to the top!!
 			<div id="itembox">
+				<span class="actions">
+          			 	<a href="/editTags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
+					</span>
+					${mtl:ch('nbsp')}
+			
 				<fmt:message key="tagrelations.show.itemspercount">.
 					<fmt:param value="${fn:escapeXml(command.concepts.entriesPerPage)}"/>
 				</fmt:message>
@@ -87,9 +82,11 @@
 					<fmt:param><a href="?concepts.entriesPerPage=50">50</a></fmt:param>
 					<fmt:param><a href="?concepts.entriesPerPage=100">100</a></fmt:param>
 				</fmt:message>
-			</div>		
+			</div>
+			 -->
+			 		
 		</jsp:attribute>
 
 	</layout:paneLayout>
 
-</jsp:root>
+</jsp:root
