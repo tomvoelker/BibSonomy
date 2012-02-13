@@ -868,25 +868,28 @@ function addListOptions() {
 	 */
 	$.each(["bookmark", "publication"], function(index, value) {
 		var optBoxAnchor = $("#" + value + "ListConfig");
-		optBoxAnchor.click(function(event) {			
-			var optBox =  $("#" + value + "ListOptions");
-			optBox.toggle("fade", {}, 500);
-			optBox.mouseleave(function(event) {
-				$(this).hide("fade", {}, 500);
-			});
-			/*
-			 * hide extended bibtex export options each time when opening/closing the menu
-			 */
-			$("#bibtexListExportOptions").hide();
+		var optBox =  $("#" + value + "ListOptions");
+		optBox.mouseleave(function(event) {
+			$(this).hide("fade", {}, 500);
 		});		
+		optBoxAnchor.hoverIntent(function(event) {			
+			optBox.show("fade", {}, 500);
+			// hide extended bibtex export options each time when opening the menu
+			$("#bibtexListExportOptions").hide();
+		}, function(event){
+			optBox.hide("fade", {}, 500);
+		});		
+		optBoxAnchor.click(function(event) {			
+			optBox.toggle("fade", {}, 500);
+			// hide extended bibtex export options each time when opening/closing the menu
+			$("#bibtexListExportOptions").hide();
+		});
 	});
 	/*
 	 * add mouseover to "BibTeX" link (publications only) to display extended options
 	 */
 	addBibtexExportOptions();
 }
-
-
 
 
 

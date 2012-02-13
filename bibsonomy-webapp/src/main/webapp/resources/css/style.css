@@ -1573,12 +1573,11 @@ form.editTags, form.editTags input {
 .listOptions { 
 	border:2px solid #c6c6c6; 
 	z-index:70;
- 	top:40px;
+ 	top:30px;
 	position:absolute;
   	background-color: #eee;
   	position: absolute;
   	margin-top: .5em;
-  	font-size: 80%;
   	padding: .5em;
   	display:none;	
 }
