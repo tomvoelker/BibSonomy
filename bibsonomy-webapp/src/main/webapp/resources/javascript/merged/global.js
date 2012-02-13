@@ -20,6 +20,7 @@ includeJavaScript("/resources/javascript/fileUpload.js");
 includeJavaScript("/resources/javascript/style.js");
 includeJavaScript("/resources/jquery/plugins/textarearesizer/jquery.textarearesizer.js");
 includeJavaScript("/resources/jquery/plugins/corner/jquery.corner.js");
+includeJavaScript("/resources/jquery/plugins/hoverIntent/jquery.hoverIntent.js");
 includeJavaScript("/resources/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js");
 includeJavaScript("/resources/javascript/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/userRelation.js");
