@@ -10,6 +10,7 @@
 	<jsp:directive.attribute name="headerLogo" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="headerContent" fragment="true" required="false"/>
+	<jsp:directive.attribute name="pageOptions" fragment="true" required="false"/>
 	
 	<!--+
 		| panel header element: [headerLogo][headerContent]
@@ -24,11 +25,27 @@
 		</div>
 		
 		<!-- header for the page content -->
-		<div class="headerContent">
+		<div>
+			<c:if test="${not empty pageOptions}">
+				<div id="pageConfig" class="config">
+					<div id="pageOptions" class="pageOptions">
+						<jsp:invoke fragment="pageOptions"/>
+					</div>
+				</div>
+			</c:if>					
 			<c:if test="${not empty headerContent}">
-				<jsp:invoke fragment="headerContent"/>
+				<h2 class="header">
+					<jsp:invoke fragment="headerContent"/>
+				</h2>
 			</c:if>
 		</div>
 	</div>
 		
 </jsp:root>
+
+
+
+
+
+
+

@@ -1491,16 +1491,23 @@ form.editTags, form.editTags input {
 }
 
 
-#bookmarksheader .config, #publicationsheader .config {
+.config {
 	height: 30px;
 	width: 30px;
 	background: url("/resources/image/icons.png");
     background-repeat: no-repeat;
 	background-position: 0px -235px;
 	margin-top: 10px;
-	margin-right: 20px;
 	float: right;
 	cursor: pointer;
+}
+
+#bookmarksheader .config, #publicationsheader .config {
+	margin-right: 20px;
+}
+
+#panelheader .config {
+	margin-right: 20px;
 }
 
 #bookmarksheader .config a, #publicationsheader .config a {
@@ -1570,7 +1577,7 @@ form.editTags, form.editTags input {
 }
 
 
-.listOptions { 
+.listOptions, .pageOptions { 
 	border:2px solid #c6c6c6; 
 	z-index:70;
  	top:30px;

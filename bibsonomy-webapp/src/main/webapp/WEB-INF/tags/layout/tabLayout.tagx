@@ -33,9 +33,7 @@
 		<jsp:attribute name="headerContainer">
 			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}">
 				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<fmt:message key="${headerMessageKey}" />				
-					</h2>
+					<fmt:message key="${headerMessageKey}" />				
 				</jsp:attribute>
 			</parts:panelheader>
 		</jsp:attribute>

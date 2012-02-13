@@ -866,9 +866,9 @@ function addListOptions() {
 	/*
 	 * show and hide list actions when clicking on the div
 	 */
-	$.each(["bookmark", "publication"], function(index, value) {
-		var optBoxAnchor = $("#" + value + "ListConfig");
-		var optBox =  $("#" + value + "ListOptions");
+	$.each(["bookmarkList", "publicationList", "page"], function(index, value) {
+		var optBoxAnchor = $("#" + value + "Config");
+		var optBox =  $("#" + value + "Options");
 		optBox.mouseleave(function(event) {
 			$(this).hide("fade", {}, 500);
 		});		

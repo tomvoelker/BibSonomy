@@ -78,17 +78,20 @@
 				<jsp:attribute name="headerLogo">
 					<img src="${resdir}/image/cv_header.png"/>
 				</jsp:attribute>
-				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<c:choose>
-							<c:when test="${command.context.loginUser.name eq command.requestedUser}">
-								<fmt:message key="navi.cv.my" />
-							</c:when>
-							<c:otherwise>
-								<fmt:message key="navi.cv" />
-							</c:otherwise>
-						</c:choose>
-					</h2>
+				<jsp:attribute name="headerContent">						
+					<c:choose>
+						<c:when test="${command.context.loginUser.name eq command.requestedUser}">
+							<fmt:message key="navi.cv.my" />
+						</c:when>
+						<c:otherwise>
+							<fmt:message key="navi.cv" />
+						</c:otherwise>
+					</c:choose>
+				</jsp:attribute>
+				<jsp:attribute name="pageOptions">					
+					<ul>
+						<li><a href="/settings?selTab=0">edit Settings</a><!-- FIXME i18n, url ... --></li>
+					</ul>
 				</jsp:attribute>
 			</parts:panelheader>
 		</jsp:attribute>
