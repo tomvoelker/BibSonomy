@@ -20,21 +20,7 @@
     	<parts:search pathMessageKey="navi.export"/>
 	</jsp:attribute>
       
-	<!--+
-		| infobox
-		+-->        
-    <jsp:attribute name="infobox">
-		<parts:infobox>
-			<jsp:attribute name="infoTextBody">
-				<c:url var="currURL" value="/${requPath}${requQueryString}" />
-				<fmt:message key="export.info"><fmt:param><a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a></fmt:param></fmt:message>
-			</jsp:attribute>
-		</parts:infobox>
-	</jsp:attribute>      
-
-	<!--+
-		| content
-		+-->        
+        
     <jsp:attribute name="content">
 
         <c:url var="bibtex"  value="/bib/${requPath}${requQueryString}" />
@@ -67,6 +53,8 @@
 			</c:forEach>
           </select>
 
+          <c:url var="currURL" value="/${requPath}${requQueryString}" />
+          <p><fmt:message key="export.info"><fmt:param><a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a></fmt:param></fmt:message></p>
         </div>
         
         <hr/>
