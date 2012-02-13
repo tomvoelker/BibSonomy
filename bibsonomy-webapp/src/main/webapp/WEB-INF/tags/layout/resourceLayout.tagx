@@ -29,7 +29,11 @@
 	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
 	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
 	<fmt:message key="feeds.burst" var="burstRssFeed"/>
-    <fmt:message key="feeds.swrc" var="swrcFeed"/>	
+    <fmt:message key="feeds.swrc" var="swrcFeed"/>
+    
+    <!-- which resourcetypes to display (controlled via URL-param + user settings, see ResourceListController.getListsToInitialize) -->
+    <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
 
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" infobox="${infobox}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}">		
@@ -69,7 +73,7 @@
 				<div id="publicationListConfig" class="config">
 					<div id="publicationListOptions" class="listOptions">
 						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${showBookmark}" showPublication="${showPublication}"/>
-					</div>						
+					</div>
 				</div>
 				<h2 class="header">
 					<fmt:message key="publications" />
