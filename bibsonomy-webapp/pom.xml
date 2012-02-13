@@ -85,7 +85,8 @@
                 				<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
                 				<include>${project.build.webapp.resourcedir}/jquery/plugins/textarearesizer/jquery.textarearesizer.js</include>
                 				<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
-                				<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js</include>
+                				<include>${project.build.webapp.resourcedir}/jquery/plugins/hoverIntent/jquery.hoverIntent.js</include>
+                				<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js</include>                				
               					<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
               					<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
