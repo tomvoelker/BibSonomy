@@ -806,6 +806,11 @@ ul.news {
 }
 
 /*--- relations/concepts ---------------------------------------------------*/
+
+#relations {
+	margin-bottom: 5px;
+}
+
 #relations > li {
 	line-height: 1.5em;
 	text-indent: -1em;
@@ -1693,17 +1698,23 @@ form.editTags, form.editTags input {
 	border:1px solid #c6c6c6;
 	margin:2px;
 	padding: 2px;
-	width: 20px;
-	float:left;
+	min-width: 20px;
+	display:inline-block;
 	text-align:center;
 	font-weight:bold;
 }
 
-.listnavElem {
-	display:block;
-	width:20px;
+.listnavSelected {
+	border:1px solid #c6c6c6;
+	background-color: #c6c6c6;
+	margin:2px;
+	padding: 2px;
+	min-width: 20px;
+	display:inline-block;
+	text-align:center;
+	font-weight:bold;
 }
-	
+
 
 #pageNavigation {
 	clear: both;
