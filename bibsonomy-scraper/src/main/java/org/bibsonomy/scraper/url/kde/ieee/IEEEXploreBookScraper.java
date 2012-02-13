@@ -84,6 +84,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
 	}
 	
+	@Override
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		
@@ -111,7 +112,6 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 				throw new InternalFailureException(ex);
 			}
 		}
-		System.out.println(bibtex);
 		if(bibtex != null){
 			// clean up
 			bibtex = bibtex.replace("<br>", "");
@@ -359,6 +359,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		return info;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
