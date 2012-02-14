@@ -17,7 +17,11 @@
 	
 	<fmt:message key="navi.inbox" var="inboxPageTitle" />
 
-	<layout:resourceLayout pageTitle="${inboxPageTitle}" command="${command}" requPath="${requPath}"  disableActions="${true}">
+	<layout:resourceLayout pageTitle="${inboxPageTitle}" 
+			command="${command}" 
+			requPath="${requPath}"  
+			disableActions="${true}"
+			showInboxActions="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.inbox"/>
