@@ -50,7 +50,6 @@
 					<fmt:message key="system.register"/>
 				</div>
 				
-<!--				<div class="systemRecent"><fmt:message key="system.recent"/></div>-->
 				<div class="systemInfoClear"> <!-- do not remove --></div>
 			</c:if>
 		</jsp:attribute>
