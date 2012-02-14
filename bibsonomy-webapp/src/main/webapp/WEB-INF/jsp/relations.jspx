@@ -45,9 +45,8 @@
 			| content
 			+-->
 	    <jsp:attribute name="content">		    
-	      <div id="general">
 	      	<!-- table for all concepts -->
-	     	<table>
+	     	<table id="relations">
 			<!-- iterate over given concepts to calculate the highest usercount (needed to compute fontsize)-->
 	     	  	<c:set var="maxUpperCount" value="0" />
 	     	  	<c:set var="minUpperCount" value="0" />
@@ -88,7 +87,6 @@
 				</tr>
 			</c:forEach>
 			</table>
-		  </div>
 		</jsp:attribute>
        
   </layout:paneLayout>

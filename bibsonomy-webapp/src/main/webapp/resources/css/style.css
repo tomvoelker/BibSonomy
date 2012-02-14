@@ -832,11 +832,11 @@ ul.news {
 }
 
 #relations > li a {
-	color: #2F3321 ! important;
+	color: #2F3321 !important;
 }
 
-#relations li ul li a {
-	color: #768053 ! important;
+#relations li ul li a, #relations td a {
+	color: #768053 !important;
 	display: inline;
 }
 
