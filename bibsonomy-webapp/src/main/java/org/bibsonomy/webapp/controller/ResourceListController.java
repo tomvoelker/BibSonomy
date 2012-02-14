@@ -365,46 +365,63 @@ public abstract class ResourceListController {
 	}
 	
 	/**
+	 * Choose which resource lists (e.g. bookmarks, publications) a controller has to initialize.
+	 * Hereby the resources requested/supported by (i) the controller itself, (ii) the format param, 
+	 * (iii) URL param and (iv) user settings are considered. Parameter settings override user settings,
+	 * if possible.
+	 * 
 	 * @param format e.g. "json"
-	 * @param urlParamResources ?resourcetype=bookmark&resourcetype=publication
+	 * @param resourcesToInitialize initially filled by ?resourcetype=bookmark&resourcetype=publication
 	 * @return all resources that must be initialized by this controller
 	 */
-	public Set<Class<? extends Resource>> getListsToInitialize(final String format, final Set<Class<? extends Resource>> urlParamResources) {
+	public Set<Class<? extends Resource>> getListsToInitialize(final String format, Set<Class<? extends Resource>> resourcesToInitialize) {
+		// explictly don't intialize resources (e.g. when only tags are requested)
 		if (this.initializeNoResources) {
-			return Collections.emptySet();
+			resourcesToInitialize.clear();
 		}
-		
-		if (present(this.forcedResources)) {
-			return this.forcedResources;
+		// some pages (e.g. CV) don't allow to change resources by settings / url params
+		else if (present(this.forcedResources)) {
+			resourcesToInitialize.addAll(this.forcedResources);
 		}
-		
-		final Set<Class<? extends Resource>> supportFormat = intersection(this.supportedResources, this.getResourcesForFormat(format));
-		final Set<Class<? extends Resource>> supportParam = intersection(this.supportedResources, urlParamResources);
-		final Set<Class<? extends Resource>> supportUser = intersection(this.supportedResources, this.getUserResourcesFromSettings());
-		
-		if (!present(supportFormat) && !present(supportParam)) {
-			return Collections.emptySet();
-		}
-		
-		if (present(supportFormat)) {
-			final Set<Class<? extends Resource>> supportFormatParam = intersection(supportFormat, supportParam);
-			if (present(supportFormatParam)) {
-				return supportFormatParam;
+		else {
+			// resources supported by format parameter 
+			final Set<Class<? extends Resource>> supportFormat = intersection(this.supportedResources, this.getResourcesForFormat(format));
+			// resources given by URL params
+			final Set<Class<? extends Resource>> supportParam = intersection(this.supportedResources, resourcesToInitialize);
+			// resources selected by user settings
+			final Set<Class<? extends Resource>> supportUser = intersection(this.supportedResources, this.getUserResourcesFromSettings());			
+			// controller does not support resources required by format param -> empty list
+			if (!present(supportFormat) && !present(supportParam)) {
+				resourcesToInitialize.clear();
+			}			
+			else if (present(supportFormat)) {
+				final Set<Class<? extends Resource>> supportFormatParam = intersection(supportFormat, supportParam);
+				if (present(supportFormatParam)) {
+					// controller supports resources requested by format & URL param
+					resourcesToInitialize.addAll(supportFormatParam);
+				}
+				else {
+					final Set<Class<? extends Resource>> supportFormatUser = intersection(supportFormat, supportUser);
+					if (present(supportFormatUser)) {
+						// controller supports resources requested by format & user settings
+						resourcesToInitialize.addAll(supportFormatUser);
+					}
+					else {
+						// controller supports resources requested by format
+						resourcesToInitialize.addAll(supportFormat);
+					}
+				}								
 			}
-			
-			final Set<Class<? extends Resource>> supportFormatUser = intersection(supportFormat, supportUser);
-			if (present(supportFormatUser)) {
-				return supportFormatUser;
+			else if (!present(supportFormat) && present(supportParam)) {
+				// resources requested by URL param don't match resources supported by format -> empty list
+				resourcesToInitialize.clear();
 			}
-			
-			return supportFormat;
+			else {
+				// default: initialize all resources supported by current controller
+				resourcesToInitialize.addAll(this.supportedResources);
+			}
 		}
-		
-		if (!present(supportFormat) && present(supportParam)) {
-			return Collections.emptySet();
-		}
-		
-		return this.supportedResources;
+		return resourcesToInitialize;
 	}
 	
 	/**

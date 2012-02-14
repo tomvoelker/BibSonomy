@@ -31,7 +31,7 @@
 	<fmt:message key="feeds.burst" var="burstRssFeed"/>
     <fmt:message key="feeds.swrc" var="swrcFeed"/>
     
-    <!-- which resourcetypes to display (controlled via URL-param + user settings, see ResourceListController.getListsToInitialize) -->
+    <!-- which resourcetypes to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize) -->
     <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
     <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
 
