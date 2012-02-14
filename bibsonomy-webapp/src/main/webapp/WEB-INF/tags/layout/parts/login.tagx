@@ -33,6 +33,20 @@
 		+-->
 	<script type="text/javascript" src="${resdir}/jquery/plugins/msDropDown/jquery.dd.js"><!-- keep me --></script>
 	
+	
+	<!--+
+	    | dropdown selection list for choosing authentication method
+	    +-->
+	<select name="loginSelect" id="loginSelect" onchange="quickSelectAuthMethod(this.value);">
+		<c:forEach var="authMethod" items="${authConfig}" varStatus="status">
+			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+			<fmt:message key="login.method.${authMethodName}" var="loginMessage" />
+			<c:if test="${not empty loginMessage}">
+				<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
+			</c:if>
+		</c:forEach>
+	</select>
+	
 	<!--+
 	    | set message strings
 	    +-->
@@ -59,6 +73,7 @@
 							<input type="hidden" name="rememberMe" value="true" />
 							<input type="hidden" name="referer" value="${requPath}" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
+							<input type="submit" style="margin-left: 1em" value="${login}"/>
 						</form:form>
 					</div>    			
       			</c:if>
@@ -75,6 +90,7 @@
 							<input type="hidden" name="rememberMe" value="true" />
 							<input type="hidden" name="referer" value="${requPath}" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
+							<input type="submit" style="margin-left: 1em" value="${login}"/>
 						</form:form>
 					</div>
       			</c:if>
@@ -88,6 +104,7 @@
 							<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
 							<input type="hidden" name="rememberMe" value="true" />
 							<input type="hidden" name="referer" value="${requPath}" />
+							<input type="submit" style="margin-left: 1em" value="${login}"/>
 		            	</form:form>
 	            	</div>
       			</c:if>
@@ -95,18 +112,6 @@
     	</c:forEach>
 	</div>
 
-	<!--+
-	    | dropdown selection list for chosing authentication method
-	    +-->
-	<select name="loginSelect" id="loginSelect" onchange="quickSelectAuthMethod(this.value);">
-		<c:forEach var="authMethod" items="${authConfig}" varStatus="status">
-			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-			<fmt:message key="login.method.${authMethodName}" var="loginMessage" />
-			<c:if test="${not empty loginMessage}">
-				
-				<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
-			</c:if>
-		</c:forEach>
-	</select>
+
 
 </jsp:root>
