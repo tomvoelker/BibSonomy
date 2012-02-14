@@ -76,12 +76,18 @@
 					</li>
 				</c:when>
 				<c:otherwise>
+					<fmt:message var="titleInbox" key="navi.inbox.inactive" />
+					<fmt:message var="titleBasket" key="navi.basket.inactive" />
+					<fmt:message var="titleSpheres" key="navi.spheres.inactive" />
+					<fmt:message var="titleSettings" key="navi.settings.inactive" />
+					<fmt:message var="titleEditTags" key="navi.editTags.inactive"/>
+				
 					<!-- show the menu items -->
-					<li class="sidebarnavi_entry sidebarnavi_entry_01_inactive"><!-- empty --></li>
-					<li class="sidebarnavi_entry sidebarnavi_entry_02_inactive"><!-- empty --></li>
-					<li class="sidebarnavi_entry sidebarnavi_entry_03_inactive"><!-- empty --></li>
-					<li class="sidebarnavi_entry sidebarnavi_entry_04_inactive"><!-- empty --></li>
-					<li class="sidebarnavi_entry sidebarnavi_entry_05_inactive"><!-- empty --></li>
+					<li class="sidebarnavi_entry sidebarnavi_entry_01_inactive" title="${titleInbox}"><!-- empty --></li>
+					<li class="sidebarnavi_entry sidebarnavi_entry_02_inactive" title="${titleBasket}"><!-- empty --></li>
+					<li class="sidebarnavi_entry sidebarnavi_entry_03_inactive" title="${titleSpheres}"><!-- empty --></li>
+					<li class="sidebarnavi_entry sidebarnavi_entry_04_inactive" title="${titleEditTags}"><!-- empty --></li>
+					<li class="sidebarnavi_entry sidebarnavi_entry_05_inactive" title="${titleSettings}"><!-- empty --></li>
 				</c:otherwise>
 			</c:choose>
 			<!--+
