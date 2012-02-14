@@ -25,7 +25,9 @@
 	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" description="The key of the message to be shown in the heading."/>
 	<jsp:directive.attribute name="headerMessage" type="java.lang.String" required="false" description="The message to be shown in the heading. Use only, when variable. Else, use headerMessageKey."/>
-	
+	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="pageOptions" fragment="true" required="false"/>
+		
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
@@ -49,7 +51,7 @@
 			| page content header
 			+-->
 		<jsp:attribute name="headerContainer">
-			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}">
+			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}" showPageOptions="${showPageOptions}">
 				<jsp:attribute name="headerContent">
 					<c:choose>
 						<c:when test="${empty headerMessageKey}">
@@ -59,6 +61,11 @@
 							<fmt:message key="${headerMessageKey}"/>	
 						</c:otherwise>
 					</c:choose>
+				</jsp:attribute>
+				<jsp:attribute name="pageOptions">
+					<c:if test="${not empty pageOptions}">
+						<jsp:invoke fragment="pageOptions"/>
+					</c:if>					
 				</jsp:attribute>
 			</parts:panelheader>
 		</jsp:attribute>
