@@ -2288,7 +2288,6 @@ div.fsRow div.resizable-textarea textarea {
 #copiedTags, .fsSuggestion, .fsInput, .tagInput, #suggestedTags, #recommendedTags {
   float: left;
   width: 73%;
-  max-width: 50em;
 }
 
 #copiedTags li, #recommendedTags li, #suggestedTags li {
