@@ -21,7 +21,11 @@
 	
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
 	
-	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" headerMessageKey="navi.publication" headerLogoClass="publications" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<fmt:message var="headerMessage" key="bibtex.entry.of">
+		<fmt:param value="${post.user.name}"/>
+	</fmt:message>
+	
+	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" headerMessage="${headerMessage}" headerLogoClass="publications" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
