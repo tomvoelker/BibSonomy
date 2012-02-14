@@ -227,7 +227,7 @@ public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
 			if (present(accessor.consumer.callbackURL)) {
 				callback = OAuth.newList(OAuth.OAUTH_CALLBACK, accessor.consumer.callbackURL);
 			}
-			OAUTH_CLIENT.getRequestTokenResponse(accessor,null,callback);
+			OAUTH_CLIENT.getRequestToken(accessor,null,callback);
 		}
 		else if ("access".equals(operation)) {
 			//
