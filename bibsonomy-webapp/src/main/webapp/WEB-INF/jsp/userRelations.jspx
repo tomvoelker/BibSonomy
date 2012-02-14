@@ -23,7 +23,24 @@
 		| 
 	 	+-->
 
-	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" headerMessageKey="tagrelations" headerLogoClass="relations" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<c:choose>
+		<c:when test="${command.requestedUser eq command.context.loginUser.name}">
+			<!-- user's own concepts -->
+			<fmt:message var="headerMessage" key="concept.title_with_count.my">
+				<fmt:param value="${command.concepts.totalCount}"/>
+			</fmt:message>
+		</c:when>
+		<c:otherwise>
+			<!--  another user's concepts -->
+			<fmt:message var="headerMessage" key="concept.title_with_count">
+				<fmt:param value="${command.requestedUser}"/>
+				<fmt:param value="${command.concepts.totalCount}"/>
+			</fmt:message>
+		</c:otherwise>
+	</c:choose>
+
+
+	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" headerMessage="${headerMessage}" headerLogoClass="relations" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag">
@@ -55,38 +72,7 @@
 			| page content
 			+-->
 		<jsp:attribute name="content">
-		
-				<fmt:message var="editPageTags" key="post.meta.edit.title"/>
-
-
-			
-				<div>
-					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${false}" requestedUserName="${command.requestedUser}"/>
-				</div>
-				
-				<div>		
-					<rc:nextprev listView="${command.concepts}"	listViewStartParamName="concepts.start"/>					 
-				</div>
-
-			<!-- FIXME: move these actions to top (schwarzes raedchen)			
-			<div id="itembox">
-				<span class="actions">
-         			 	<a href="/editTags" title="${editPageTags}"><fmt:message key="post.meta.edit" /></a>
-				</span>
-				${mtl:ch('nbsp')}			
-				<fmt:message key="tagrelations.show.itemspercount">.
-					<fmt:param value="${fn:escapeXml(command.concepts.entriesPerPage)}"/>
-				</fmt:message>
-				${mtl:ch('nbsp')}
-				<fmt:message key="tagrelations.show.itemspercount.count">.
-					<fmt:param><a href="?concepts.entriesPerPage=10">10</a></fmt:param>
-					<fmt:param><a href="?concepts.entriesPerPage=25">25</a></fmt:param>
-					<fmt:param><a href="?concepts.entriesPerPage=50">50</a></fmt:param>
-					<fmt:param><a href="?concepts.entriesPerPage=100">100</a></fmt:param>
-				</fmt:message>
-			</div>
-			 -->
-			 		
+			<tags:concepts cmd="${command.concepts}" usersOwnRelations="${false}" requestedUserName="${command.requestedUser}"/>
 		</jsp:attribute>
 
 	</layout:paneLayout>
