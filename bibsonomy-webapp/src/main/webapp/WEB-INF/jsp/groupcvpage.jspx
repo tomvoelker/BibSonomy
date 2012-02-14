@@ -56,17 +56,20 @@
 			| page content header
 			+-->
 		<jsp:attribute name="headerContainer">
-			<parts:panelheader>
+			<parts:panelheader showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.group.name}">
 				<jsp:attribute name="headerLogo">
 					<img src="${resdir}/image/cv_header.png"/>
 				</jsp:attribute>
 				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<fmt:message key="group.cv.headline"></fmt:message>
-						${mtl:ch('nbsp')}
-						<c:out value="${fn:escapeXml(command.group.realname)}" />
-					</h2>
+					<fmt:message key="group.cv.headline"></fmt:message>
+					${mtl:ch('nbsp')}
+					<c:out value="${fn:escapeXml(command.group.realname)}" />
 				</jsp:attribute>
+				<jsp:attribute name="pageOptions">					
+					<ul>
+						<li><a href="/settings?selTab=3"><fmt:message key="settings.editGroup"/></a></li>
+					</ul>						
+				</jsp:attribute>					
 			</parts:panelheader>
 		</jsp:attribute>
 		
