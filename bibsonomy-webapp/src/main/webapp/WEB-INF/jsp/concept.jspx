@@ -51,15 +51,15 @@
 			<li>
 				<c:choose>
 					<c:when test="${not empty command.requestedUser}">
-						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.user.title"/></c:set>
-						<c:url var="relationsUrl" value="/concepts/${command.requestedUser}" />
+						<fmt:message var="tagRelationsTitle" key="tagrelations.user.title"/>
+						<c:url var="relationsUrl" value="/concepts/${mtl:encodeURI(command.requestedUser)}" />
 					</c:when>
 					<c:when test="${not empty command.requestedGroup}">
-						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.group.title"/></c:set>
-						<c:url var="relationsUrl" value="/concepts/${command.requestedGroup}" />
+						<fmt:message var="tagRelationsTitle" key="tagrelations.group.title"/>
+						<c:url var="relationsUrl" value="/concepts/${mtl:encodeURI(command.requestedGroup)}" />
 					</c:when>						
 					<c:otherwise>
-						<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.all.title"/></c:set>
+						<fmt:message var="tagRelationsTitle" key="tagrelations.all.title"/>
 						<c:url var="relationsUrl" value="/concepts" />
 					</c:otherwise>
 				</c:choose>
@@ -74,10 +74,10 @@
 			<!-- if requestedUser is set, show the tag cloud -->			
 			<c:if test="${(not empty command.requestedUser) or (not empty command.requestedGroup)}">
 				<c:if test="${not empty command.requestedUser}">
-					<c:set var="requPathTagCloud" value="user/${fn:escapeXml(command.requestedUser)}"/>
+					<c:set var="requPathTagCloud" value="user/${mtl:encodeURI(command.requestedUser)}"/>
 				</c:if>
 				<c:if test="${not empty command.requestedGroup}">
-					<c:set var="requPathTagCloud" value="group/${fn:escapeXml(command.requestedGroup)}"/>
+					<c:set var="requPathTagCloud" value="group/${mtl:encodeURI(command.requestedGroup)}"/>
 				</c:if>				
 				<!-- display tags -->
 				<li>
