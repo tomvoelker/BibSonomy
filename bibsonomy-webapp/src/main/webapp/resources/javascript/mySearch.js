@@ -310,8 +310,8 @@
 	**/
 	function clearFilter() {
 		var filter_field = document.searchform.filter;
-		filter_field.value = "<enter title, authors or tags>";
-		filter_field.style.color = "gray";
+		filter_field.className = ((filter_field.className.length > 0)?filter_field.className+' ':'')+'descriptiveLabel';
+		filter_field.value = getString("mysearch.option.filter.text");
 	}		
 	
 	/**

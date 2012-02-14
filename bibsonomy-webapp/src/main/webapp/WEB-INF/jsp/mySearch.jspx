@@ -66,10 +66,7 @@
 	<fieldset class="fsVisible">
 	<legend><fmt:message key="mysearch.option.result.header"/></legend>			
 		<fmt:message key="mysearch.option.filter"/>&#160;
-		<input value='${listboxtitle}' name="filter" type="text" size="40" onKeyUp="showTitleList();"
-						onfocus="if (this.value=='${listboxtitle}') {this.value = '';this.style.color='black';}"
-						onblur="if (this.value == '') {this.value = '${listboxtitle}';this.style.color='gray';}" 
-						style="color: gray;" /> 						
+		<input value='${listboxtitle}' name="filter" class="descriptiveLabel" type="text" size="40" onKeyUp="showTitleList();" /> 						
 		<p>		
 			<div id='numresult' style="text-align:right; padding-bottom:2px; color:gray;">&#160;</div>	
 			<div class="scroller">
