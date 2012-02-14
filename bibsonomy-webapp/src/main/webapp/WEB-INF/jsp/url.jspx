@@ -61,8 +61,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
-			<h2 itemprop="name"><a href="${fn:escapeXml(bookmark.url)}" itemprop="url"><c:out value="${bookmark.title}" /></a></h2>
-		
 			<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
 	</layout:bookmarkLayout>

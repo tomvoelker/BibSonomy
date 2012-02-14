@@ -40,7 +40,7 @@
 	</c:choose>
 
 
-	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" headerMessage="${headerMessage}" headerLogoClass="relations" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" headerMessage="${headerMessage}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag">

@@ -85,11 +85,14 @@
 				</c:if>
 			</ul>
 		</jsp:attribute>
-		
+
+		<!--+
+			| discussion
+		 	+-->		
 		<jsp:attribute name="contentHeading">
-			<h2><c:out value="${title}" /></h2>		
 			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
+
 	</layout:bibtexLayout>
 
 </jsp:root>

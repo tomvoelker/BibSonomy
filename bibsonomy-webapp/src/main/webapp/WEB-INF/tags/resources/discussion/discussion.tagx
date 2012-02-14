@@ -3,6 +3,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
     
@@ -46,7 +47,11 @@
 		</ul>
    		
    		<!-- Headline -->
-	   	<h3><fmt:message key="post.resource.discussion.headline" /></h3>
+	   	<h2>
+	   		<fmt:message key="post.resource.discussion.headline.title">
+	   			<fmt:param value="${mtl:cleanBibtex(resource.title)}"/>
+	   		</fmt:message>
+	   	</h2>
 		
 		<!-- Aggregated RatingInfo -->
     	<review:reviewRatingsInfo resource="${resource}" />
