@@ -57,7 +57,7 @@
             	| show copied tags if available
             	+-->
     		<c:if test="${not empty command.copytags}">
-      			<div>
+      			<div class="fsRow">
                		<div class="fsLabel">
          				<fmt:message key="post.resource.copytags" />
                		</div>
