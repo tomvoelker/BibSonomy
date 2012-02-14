@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 #
 # This script parses messages*.properties files and generates
 # corresponding javascript files with an array containing the 
@@ -15,7 +16,7 @@
 # - initial version
 #
 
-#!/usr/bin/perl
+
 use strict;
 use Encode;
 use File::Find;
