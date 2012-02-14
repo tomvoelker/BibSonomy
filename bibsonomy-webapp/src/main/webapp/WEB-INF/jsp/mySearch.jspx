@@ -71,7 +71,7 @@
 						onblur="if (this.value == '') {this.value = '${listboxtitle}';this.style.color='gray';}" 
 						style="color: gray;" /> 						
 		<p>		
-			<div id='numresult' style="text-align:right; font-size:70%; padding-bottom:2px; color:gray;">&#160;</div>	
+			<div id='numresult' style="text-align:right; padding-bottom:2px; color:gray;">&#160;</div>	
 			<div class="scroller">
 				<table class="result_table"><tbody id="resultlist"></tbody></table>
 			</div>			
