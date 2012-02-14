@@ -1134,9 +1134,9 @@ div.help>a,div.help>b {
  */
 .headerLogo.image {border: 0}
 .headerLogo.image {background: url("/resources/image/icons.png") no-repeat;} 
-.headerLogo.image.bookmarks {background-position: 27px 2px; width: 30px; height: 30px; }
-.headerLogo.image.publications {background-position: 27px -61px; width: 30px; height: 30px; }
-.headerLogo.image.tags {background-position: 27px -200px; width: 30px; height: 30px; }
+.headerLogo.image.bookmarks {background-position: 9px 2px; width: 30px; height: 30px; }
+.headerLogo.image.publications {background-position: 9px -61px; width: 30px; height: 30px; }
+.headerLogo.image.tags {background-position: 9px -200px; width: 30px; height: 30px; }
 /*
  * FIXME: put into icons.png
  */ 
@@ -1628,8 +1628,8 @@ form.editTags, form.editTags input {
 
 /** logo for page headings */
 #panelheader .headerLogo, #bookmarksheader .headerLogo, #publicationsheader .headerLogo {
-	width: 80px;
-	height: 80px;
+	width: 50px;
+	height: 50px;
 	float: left;
 }
 
