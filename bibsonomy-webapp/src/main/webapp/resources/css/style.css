@@ -1707,6 +1707,12 @@ form.editTags, form.editTags input {
 	font-weight:bold;
 }
 
+.listnav:hover {
+	background-color: #c6c6c6;
+}
+
+
+
 .listnavSelected {
 	border:1px solid #c6c6c6;
 	background-color: #c6c6c6;
