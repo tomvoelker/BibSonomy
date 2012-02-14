@@ -20,7 +20,7 @@
 	<!-- HIDDEN SYSTEM TAGS -->
 	<c:if test="${not empty post.hiddenSystemTags}">
 		<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title"/>
-		<div class="info hiddenSystemTag">
+		<div class="extend hiddenSystemTag">
 			<img class="" alt="systemTagsTitle" src="${resdir}/image/cog_wheel.png"/>
 			<div>
 				<c:forEach var="systag" items="${post.hiddenSystemTags}">
@@ -35,7 +35,7 @@
 		<c:if test="${showTagsLabel}">
 			<fmt:message key="tags"/><c:out value=": "/>
 		</c:if>
-		<ul class="tags info">
+		<ul class="tags extend">
 			<c:forEach var="tag" items="${post.visibleTags}">
 				<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></li>
 			</c:forEach>
