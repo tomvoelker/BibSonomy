@@ -113,10 +113,6 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	 * in-place tag edit for posts
 	 */
 	$(".editTags").click(editTags);
-	/*
-	 * system tags of posts
-	 */
-//	$(".hiddenSystemTag").fadeBox({timeout : 1500});
 }
 
 
@@ -139,7 +135,6 @@ function renderPosts(query, list) {
 			 * Are there any methods missing?
 			 */
 			$(".editTags").click(editTags);
-//			$(".hiddenSystemTag").fadeBox({timeout : 1500});
 			imagePreview();
 		}
 	});
@@ -184,7 +179,6 @@ function updatePosts(query, seconds) {
 					 * Are there any methods missing?
 					 */
 					$(".editTags").click(editTags);
-//					$(".hiddenSystemTag").fadeBox({timeout : 1500});
 					imagePreview();
 				}
 			});
