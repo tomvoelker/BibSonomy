@@ -98,12 +98,12 @@ a img {
 }
 
 .systemRegister {
+	margin-top: 2ex;
 	margin-bottom: 2ex;
 }
 
 .systemRegister h2 {
-	font-size: 120%;
-	margin-top: 1ex;
+	font-size: 150%;
 	margin-bottom: .5ex;
 }
 
