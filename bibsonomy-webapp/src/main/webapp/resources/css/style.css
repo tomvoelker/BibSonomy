@@ -1077,6 +1077,7 @@ div.help>a,div.help>b {
 	left: 3px;
 	bottom: 3px;
 	top: 3px;
+	z-index: 1;
 	position: absolute;
 }
 
