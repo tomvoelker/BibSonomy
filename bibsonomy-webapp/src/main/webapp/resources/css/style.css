@@ -540,10 +540,6 @@ a img {
 	color: #069;
 }
 
-#newsbox {
-	background-color: #FFF69B;
-}
-
 #sidebox {
 	background-color: #D8EBAE;
 }
@@ -719,6 +715,12 @@ html>body #sidebar li {
 }
 
 /* --- new box  ------------------------------------------------------------*/
+.newsbox {
+	background-color: #FFF69B;
+	background-image: url("/resources/image/globe.png");
+	background-repeat: no-repeat;
+}
+
 ul.news {
 	list-style: outside disc !important;
 	margin-left: 1.5em !important;

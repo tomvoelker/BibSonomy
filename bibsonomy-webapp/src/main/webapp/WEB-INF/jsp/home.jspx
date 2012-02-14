@@ -57,7 +57,7 @@
 		<jsp:attribute name="newsbar">
 			<c:if test="${not empty command.news}">
 				<!-- news box ( = latest blog posts) -->
-				<ul>
+				<ul class="newsbox">
 					<li>
 						<span class="sidebar_hh"><fmt:message key="navi.news"/></span>
 						<posts:tinybookmarks posts="${command.news}" cssClass="news"/>
