@@ -1457,17 +1457,13 @@ form.editTags, form.editTags input {
 }
 
 
-.bookmarksContainer {
+.bookmarksContainer, .publicationsContainer  {
 	width: 50%;
 	float: left;
 	padding-left: 0ex;
 }
-
 	
 .publicationsContainer {
-	width: 50%;
-	float: left;
-	padding-left: 0ex;
 	margin-left: 0px;
 }
 
@@ -1614,7 +1610,7 @@ form.editTags, form.editTags input {
 }
 
 
-#bookmarksheader, #bookmarksfooter {
+#bookmarksheader, #bookmarksfooter, #publicationsheader, #publicationsfooter {
 	width: 50%;
 	float: left;
 	padding-left: 0ex;
@@ -1623,10 +1619,6 @@ form.editTags, form.editTags input {
 
 	
 #publicationsheader, #publicationsfooter {
-	width: 50%;
-	float: left;
-	padding-left: 0ex;
-	background-color: #ffffff;
 	margin-left: 0px;
 }
 
