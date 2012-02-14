@@ -624,16 +624,16 @@ a img {
 }
 
 .sidebarnavi_entry_02 {
-	background-position: -86px -91px;
+	background-position: -96px -95px;
 	left: 14.2857%;
 }
 
 .sidebarnavi_entry_02:hover {
-	background-position: -86px 9px;
+	background-position: -96px 5px;
 }
 
 .sidebarnavi_entry_02_inactive {
-	background-position: -86px -194px;
+	background-position: -95px -200px;
 	left: 14.2857%;
 }
 
@@ -657,7 +657,7 @@ a img {
 }
 
 .sidebarnavi_entry_04:hover {
-    background-position: -279px 10px;
+    background-position: -279px 9px;
 }
 
 .sidebarnavi_entry_04_inactive {
@@ -671,7 +671,7 @@ a img {
 }
 
 .sidebarnavi_entry_05:hover {
-	background-position: -236px 10px;
+	background-position: -236px 11px;
 }
 
 .sidebarnavi_entry_05_inactive {
@@ -685,7 +685,7 @@ a img {
 }
 
 .sidebarnavi_entry_06:hover {
-    background-position: -318px 9px;
+    background-position: -319px 10px;
 }
 
 .sidebarnavi_entry_06_inactive {
