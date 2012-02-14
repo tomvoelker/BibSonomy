@@ -48,7 +48,7 @@
 		<div class="ptitle"><jsp:invoke fragment="title"/></div>
 			<c:set var="descVar"><jsp:invoke fragment="desc"/></c:set>
 		<c:if test="${not empty descVar}">
-			<div class="pdesc info"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
+			<div class="pdesc extend"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
 		</c:if>
 		
 	

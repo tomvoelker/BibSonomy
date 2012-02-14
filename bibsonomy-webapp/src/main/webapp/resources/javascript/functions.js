@@ -113,6 +113,15 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	 * in-place tag edit for posts
 	 */
 	$(".editTags").click(editTags);
+	
+	$('.extend').hoverIntent(function(event) {
+		var infoBox = $('div', this);
+		infoBox.show("fade", {}, 500);
+	}, function(event){
+		var infoBox = $('div', this);
+		infoBox.hide("fade", {}, 500);
+	});		
+
 }
 
 

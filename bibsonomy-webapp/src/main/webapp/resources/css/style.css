@@ -1052,6 +1052,18 @@ div.help:hover>div {
 	padding: 5px;
 }
 
+.extend>div {
+	display: none;
+	position: absolute;
+	border: 1px solid #ccc;
+	background-color: #eee;
+	color: #000;
+	padding: 5px;
+	z-index: 25;
+	white-space: normal; 
+	
+}
+
 div.widehelp:hover div {
 	width: 600px;
 }
@@ -1324,13 +1336,6 @@ div.help>a,div.help>b {
 	padding-right: 1px;
 }
 
-.ptags ul div a, .ptags div div a  {
-	background-color: #fff;
-}
-
-.ptags ul div a:hover, .ptags div div a:hover  {
-	background-color: #fff;
-}
 .ptags a:hover {
 	background-color: #c8dc8d;
 }
