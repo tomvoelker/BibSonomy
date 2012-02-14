@@ -81,9 +81,11 @@
 				</c:when>
 				<c:otherwise>
 					<div id="fullscreen">
-						<c:if test="${not empty contentHeading}">
-							<jsp:invoke fragment="contentHeading" />
-						</c:if>
+						<div id="fscontent">
+							<c:if test="${not empty contentHeading}">
+								<jsp:invoke fragment="contentHeading" />
+							</c:if>
+						</div>
 					</div>
 
 					<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>

@@ -26,6 +26,8 @@
 
 <%-------------------------- Content Area (3 columns) -----------------------%>
 <div id="fullscreen">
+<div id="fscontent">
+
 
 <%@include file="/boxes/admin/navi.jsp"%>
 <%-------------------------- add / remove tags or spammers -----------------------%>
@@ -239,6 +241,7 @@
 </table>	
 </div>
 
+</div> <!-- ende fscontent -->
 </div> <!-- ende fullscreen -->
 
 

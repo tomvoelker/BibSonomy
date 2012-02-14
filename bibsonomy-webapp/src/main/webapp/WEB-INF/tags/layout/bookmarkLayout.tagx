@@ -58,9 +58,11 @@
 		
 		<jsp:attribute name="content">
 			<div id="fullscreen" itemscope="itemscope" itemtype="http://schema.org/WebPage">
-				<c:if test="${not empty contentHeading}">
-					<jsp:invoke fragment="contentHeading" />
-				</c:if>
+				<div id="fscontent">
+					<c:if test="${not empty contentHeading}">
+						<jsp:invoke fragment="contentHeading" />
+					</c:if>
+				</div>
 			</div>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>

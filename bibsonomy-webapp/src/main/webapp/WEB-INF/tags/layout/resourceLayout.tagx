@@ -113,7 +113,9 @@
 
 			<c:if  test="${not empty contentHeading}">
 				<div id="fullscreen">
+					<div id="fscontent">
 						<jsp:invoke fragment="contentHeading" />
+					</div>
 				</div>
 			</c:if>
 			

@@ -42,18 +42,20 @@
 	
 		<jsp:attribute name="content">
 			<div id="fullscreen">
-			
-				<!-- Top Content if available -->
-				<c:if test="${not empty topcontent}">
-					<jsp:invoke fragment="topcontent"/>				
-				</c:if>	
-										
-				<!-- Tabs -->			
-				<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>				
-				<div class="tab_content">					
-					<c:if test="${not empty tabcontent}">
-						<jsp:invoke fragment="tabcontent"/>				
+				<div id="fscontent">
+				
+					<!-- Top Content if available -->
+					<c:if test="${not empty topcontent}">
+						<jsp:invoke fragment="topcontent"/>				
 					</c:if>	
+											
+					<!-- Tabs -->			
+					<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>				
+					<div class="tab_content">					
+						<c:if test="${not empty tabcontent}">
+							<jsp:invoke fragment="tabcontent"/>				
+						</c:if>	
+					</div>
 				</div>				
 			</div>
 		</jsp:attribute>			
