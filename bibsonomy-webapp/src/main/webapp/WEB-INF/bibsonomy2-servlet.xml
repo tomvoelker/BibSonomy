@@ -475,6 +475,20 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/downloadFile">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="downloadFileController"/>
+						<property name="allowedFields">
+							<list>
+								<value>intrahash</value>
+								<value>requestedUser</value>
+								<value>filename</value>
+								<value>ckey</value>
+								<value>preview</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/search">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="searchPageController"/>
@@ -590,6 +604,11 @@
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
+	</bean>
+
+	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
+		<property name="logic" ref="logic" />
+		<property name="docpath" value="${project.document.path}"/>
 	</bean>
 	
 	<bean id="discussedPageController" class="org.bibsonomy.webapp.controller.DiscussedPageController" scope="request" parent="multiResourceListControllerWithTags">

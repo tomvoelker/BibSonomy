@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller.actions;
+package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
