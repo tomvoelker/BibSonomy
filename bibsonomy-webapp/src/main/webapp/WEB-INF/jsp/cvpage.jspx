@@ -20,7 +20,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" >
+	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${command.pageTitle}" headerMessageKey="navi.cv${command.context.loginUser.name eq command.requestedUser ? '.my' : ''}" headerLogoClass="cv">
 			
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
@@ -74,21 +74,11 @@
 		<!--+
 			| page content header
 			+-->
+<!--
+FIXME: how to show in paneLayout?
+ 
 		<jsp:attribute name="headerContainer">		
 			<parts:panelheader showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
-				<jsp:attribute name="headerLogo">
-					<img src="${resdir}/image/cv_header.png"/>
-				</jsp:attribute>
-				<jsp:attribute name="headerContent">						
-					<c:choose>
-						<c:when test="${command.context.loginUser.name eq command.requestedUser}">
-							<fmt:message key="navi.cv.my" />
-						</c:when>
-						<c:otherwise>
-							<fmt:message key="navi.cv" />
-						</c:otherwise>
-					</c:choose>
-				</jsp:attribute>							
 				<jsp:attribute name="pageOptions">					
 					<ul>
 						<li><a href="/settings?selTab=0"><fmt:message key="settings.editProfile"/></a></li>
@@ -96,27 +86,33 @@
 				</jsp:attribute>				
 			</parts:panelheader>
 		</jsp:attribute>
-		
-		<!--+
-			| page content
-			+-->
-		<jsp:attribute name="content">
-			<!--  Show a hint on how to fill the cv-page if the loginUser looks at his own cv-page -->
+ -->
+ 
+ 
+ 		<!--+
+ 			| infobox:  Show a hint on how to fill the cv-page if the loginUser looks at his own cv-page 
+ 			+-->
+ 		<jsp:attribute name="infobox">
 			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
-				<div id="general_100">
-					<span class="smalltext">
+	 			<parts:infobox>
+ 					<jsp:attribute name="infoTextBody">
 						<fmt:message key = "cv.hint"/>
-						<ul class="helpList">
+						<ul class="news">
 							<li><fmt:message key = "cv.hint2">
 								<fmt:param><fmt:message key = "settings.public"/></fmt:param>
 								</fmt:message></li>
 							<li><fmt:message key = "cv.hint3"/></li>
 						</ul>
-						<fmt:message key = "cv.hint4"/>
-					</span>
-				</div>
-			</c:if>
-			
+						<fmt:message key = "cv.hint4"/> 					
+ 					</jsp:attribute>
+	 			</parts:infobox>
+ 			</c:if>
+ 		</jsp:attribute>
+ 
+		<!--+
+			| page content
+			+-->
+		<jsp:attribute name="content">
 			<c:if test="${not empty command.user.realname or not empty command.user.place or not empty command.user.birthday or not empty command.user.profession}">
 				<div id="personalData">
 	      		 	<h2><fmt:message key="cv.personal_data"/></h2>
@@ -263,6 +259,6 @@
 	</c:if>
 
 </jsp:attribute>
-</layout:layout>
+</layout:paneLayout>
 	
 </jsp:root>
