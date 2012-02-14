@@ -20,13 +20,15 @@
 		</c:when>
 		
 		<c:otherwise>
-			<!-- Post has no Dokuments => show entrytype + if user logged in link for upload -->
+			<!--+
+				| post has no documents => show entrytype + if user logged in link for upload
+				+-->
 			<c:choose>
 				<c:when test="${not empty post.user.name and post.user.name eq command.context.loginUser.name}">
 					<a class="entrytype ${post.resource.entrytype} addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}"><!-- Keep Me --></a>
 				</c:when>
 				<c:otherwise>
-					<!-- No Link, as this is not the loginusers post-->
+					<!-- no link, as this is not the login user's post-->
 					<span class="entrytype ${post.resource.entrytype}"><!-- Keep ME--></span>
 				</c:otherwise>
 			</c:choose>			
