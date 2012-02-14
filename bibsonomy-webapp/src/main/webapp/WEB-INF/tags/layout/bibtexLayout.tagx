@@ -16,7 +16,7 @@
     <jsp:directive.attribute name="unpick" type="java.lang.Boolean" required="false" description="If TRUE, unpick links (instead of pick links) are shown."/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="disableBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>  
   
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
@@ -52,7 +52,7 @@
 			<div id="publicationsheader">
 				<div id="publicationListConfig" class="config">
 					<div id="publicationListOptions" class="listOptions">
-						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${false}" showPublication="${true}" disableListNavigation="${disableListNavigation}" disableBasket="${disableBasket}" disableResourcetypeSelection="${true}"/>
+						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${false}" showPublication="${true}" disableListNavigation="${disableListNavigation}" isBasket="${isBasket}" disableResourcetypeSelection="${true}"/>
 					</div>
 				</div>				
 				

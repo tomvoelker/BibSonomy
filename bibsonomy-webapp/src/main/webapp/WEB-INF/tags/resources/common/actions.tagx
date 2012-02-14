@@ -11,7 +11,7 @@
 	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
-	<jsp:directive.attribute name="disableBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
@@ -142,18 +142,26 @@
    		<!--+ 
 			+ basket actions (pick, unpick) only for publications, and logged-in users
 			+-->
-		<c:if test="${command.context.userLoggedIn and (not disableBasket)}">
-			<c:if test="${isBibtex}">				  	
-				<li>
-					<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
-	  				<span class="listOptionLine">
-						<fmt:message var="pickPublications" key="post.meta.pick.title"/>
-						<a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}	  			
-	  					<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
-						<a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
-	  				</span>
-		  		</li>
-	  		</c:if>
+		<c:if test="${command.context.userLoggedIn and isBibtex}">
+			<li>
+				<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
+				<span class="listOptionLine">
+					<c:choose>  				
+		 				<c:when test="${isBasket}">
+		            		<fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
+		          			<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
+								<fmt:message key="basket.removeAll"/>
+							</a>
+						</c:when>
+						<c:otherwise>
+							<fmt:message var="pickPublications" key="post.meta.pick.title"/>
+							<a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}	  			
+		  					<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
+							<a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
+		  				</c:otherwise>
+	  				</c:choose>
+  				</span>
+	  		</li>
 	  	</c:if>
 	  	<!--+
 	  		+ inbox actions 
@@ -167,7 +175,7 @@
 						<c:param name="user" value=""/>
 						<c:param name="ckey" value="${ckey}"/>
 						<c:param name="clear" value="true"/>
-					</c:url>	  			
+					</c:url>
 					<fmt:message var="removeTitle" key="inbox.actions.removeAllMessages.title"/>	
 					<a title="${removeTitle}" href="${fn:escapeXml(message_remove)}">
 						<fmt:message key="inbox.actions.removeAllMessages"/>
