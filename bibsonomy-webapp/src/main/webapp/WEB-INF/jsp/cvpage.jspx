@@ -20,7 +20,12 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${command.pageTitle}" headerMessageKey="navi.cv${command.context.loginUser.name eq command.requestedUser ? '.my' : ''}" headerLogoClass="cv">
+	<layout:paneLayout requPath="${requPath}" 
+		command="${command}" 
+		pageTitle="${command.pageTitle}" 
+		headerMessageKey="navi.cv${command.context.loginUser.name eq command.requestedUser ? '.my' : ''}" 
+		headerLogoClass="cv" 
+		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
 			
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
@@ -72,21 +77,13 @@
 		</jsp:attribute>
     	
 		<!--+
-			| page content header
+			| page options
 			+-->
-<!--
-FIXME: how to show in paneLayout?
- 
-		<jsp:attribute name="headerContainer">		
-			<parts:panelheader showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
-				<jsp:attribute name="pageOptions">					
-					<ul>
-						<li><a href="/settings?selTab=0"><fmt:message key="settings.editProfile"/></a></li>
-					</ul>						
-				</jsp:attribute>				
-			</parts:panelheader>
-		</jsp:attribute>
- -->
+		<jsp:attribute name="pageOptions">
+			<ul>
+				<li><a href="/settings?selTab=0"><fmt:message key="settings.editProfile"/></a></li>
+			</ul>						
+		</jsp:attribute>				
  
  
  		<!--+
