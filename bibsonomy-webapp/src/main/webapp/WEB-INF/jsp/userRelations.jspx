@@ -40,7 +40,12 @@
 	</c:choose>
 
 
-	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" headerMessage="${headerMessage}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" 
+			headerMessage="${headerMessage}" 
+			command="${command}" 
+			requestedUser="${command.requestedUser}" 
+			requPath="${requPath}"
+			showPageOptions="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag">
@@ -67,6 +72,16 @@
         	</ul>
 		</jsp:attribute>
 
+		<!--+
+			+ page options
+			+-->
+		<jsp:attribute name="pageOptions">
+			<ul>
+				<li>
+					<a href="/editTags"><fmt:message key="navi.editConcepts"/>...</a>
+				</li>
+			</ul>
+		</jsp:attribute>
 		
 		<!--+
 			| page content
