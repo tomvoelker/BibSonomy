@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.Duplicates;
@@ -31,7 +32,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private Date endDate;
 	
 	private String requestedUser;
-	private Set<Class<? extends Resource>> resourcetype;
+	private Set<Class<? extends Resource>> resourcetype = new HashSet<Class<? extends Resource>>();
 	
 	private TagsType tagstype; // for queries for specific kinds of tags
 	
