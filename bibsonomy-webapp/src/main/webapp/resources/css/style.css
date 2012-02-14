@@ -1477,15 +1477,8 @@ form.editTags, form.editTags input {
 	margin-left: 0px;
 }
 
-#bookmarksheader .header {
-	border-right: 1px solid #c6c6c6;
-}
 
-#publicationsheader .header {
-	border-left: 1px solid #c6c6c6;
-}
-
-#bookmarksheader .header, #publicationsheader .header {
+#bookmarksheader .header, #publicationsheader .header, #panelheader .header {
 	text-transform: uppercase;
 	color: #006699;
 	font-weight: bold;
@@ -1493,12 +1486,17 @@ form.editTags, form.editTags input {
 	padding-left: 121px;
 	height: 40px;
     padding-top: 20px;
-	background: url("/resources/image/icons.png");
-    background-repeat: no-repeat;
     margin: 0;
 	background-color: #ffffff;
 }
 
+#bookmarksheader .header {
+	border-right: 1px solid #c6c6c6;
+}
+
+#publicationsheader .header {
+	border-left: 1px solid #c6c6c6;
+}
 
 .config {
 	height: 30px;
@@ -1511,11 +1509,7 @@ form.editTags, form.editTags input {
 	cursor: pointer;
 }
 
-#bookmarksheader .config, #publicationsheader .config {
-	margin-right: 20px;
-}
-
-#panelheader .config {
+#bookmarksheader .config, #publicationsheader .config, #panelheader .config {
 	margin-right: 20px;
 }
 
@@ -1524,10 +1518,6 @@ form.editTags, form.editTags input {
 	width: 30px;
 }
 
-#bookmarksheader .header {
-	padding-left: 122px;
-	background-position: 27px 2px;
-}
 
 #bookmarksfooter .footer, #publicationsfooter .footer {
 	height:26px;
@@ -1545,11 +1535,6 @@ form.editTags, form.editTags input {
 #publicationsfooter .footer {
 	border-left: 1px solid #c6c6c6;
 }
-
-#publicationsheader .header {
-	padding-left: 122px;
-    background-position: 27px -61px;
-}	
 
 .postlistTitle {
 	font-size: 130%;
@@ -1642,12 +1627,10 @@ form.editTags, form.editTags input {
 }
 
 /** logo for page headings */
-#panelheader .headerLogo {
+#panelheader .headerLogo, #bookmarksheader .headerLogo, #publicationsheader .headerLogo {
 	width: 80px;
 	height: 80px;
 	float: left;
-	margin-left: 10px;
-	margin-top: 10px;
 }
 
 /** page headings */
@@ -1659,15 +1642,6 @@ form.editTags, form.editTags input {
 	display: block;
 }
 
-#panelheader .header {
-	text-transform: uppercase;
-	color: #006699;
-	font-weight: bold;
-	font-size: 120%;
-	height: 40px;
-    padding-top: 20px;
-    margin: 0;
-}
 
 #footercontainer {
 	position:absolute;
