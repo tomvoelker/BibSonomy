@@ -819,7 +819,7 @@ function addBibtexExportOptions() {
 	 * add and show export options when hovering over the link
 	 */
 	var elm = $("#bibtexListExport"); 
-	elm.mouseover(function() {
+	elm.hoverIntent(function() {
 		/*
 		 * anchor element where to put the options
 		 */
@@ -858,7 +858,7 @@ function addBibtexExportOptions() {
 
 		// show export box 
 		anchor.show("fade", {}, 500);
-	});
+	}, function() {});
 }
 
 /**
