@@ -1,0 +1,22 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<jsp:directive.tag description="Renders a form submit button with the given message and the ckey hidden input field." body-content="empty"/>
+
+	<jsp:directive.attribute name="messageKey" type="java.lang.String" required="true" description="The key for the submit message."/>
+
+	 
+	<div class="clearfloat p">
+		<input type="hidden" name="ckey" value="${command.context.ckey}"/>	
+
+		<fmt:message key="${messageKey}" var="submitButton"/>
+
+		<input type="submit" value="${submitButton}" />
+	</div>
+
+</jsp:root>

@@ -13,10 +13,6 @@
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Should the form field be smaller than normal (e.g., having CSS class 'fsSmall')?"/>
 	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
 	<jsp:directive.attribute name="rows" type="java.lang.Integer" required="false" description="The number of rows. Default is 3."/>
-
-<!--	<jsp:directive.attribute name="labelMessageKey" type="java.lang.String" required="true" description="Message key for the form label."/>-->
-<!--	<jsp:directive.attribute name="helpMessageKey" type="java.lang.String" required="false" description="Message key for the fly-by help."/>-->
-
 	 
 	<div class="fsRow">
 		<!-- label -->
