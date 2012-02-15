@@ -19,7 +19,7 @@ public class GroupReportingCommand extends BaseCommand {
 	private String requestedGroup = "";
 
 	/** transposes displayed matrix if is set to 1 */
-	private String transposeMatrix = "";
+	private String transposeMatrix = "1";
 
 	private String requestedTags;
 
