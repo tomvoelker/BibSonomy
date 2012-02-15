@@ -381,6 +381,7 @@ public abstract class ResourceListController {
 		}
 		// some pages (e.g. CV) don't allow to change resources by settings / url params
 		else if (present(this.forcedResources)) {
+			resourcesToInitialize.clear();
 			resourcesToInitialize.addAll(this.forcedResources);
 		}
 		else {
@@ -389,10 +390,12 @@ public abstract class ResourceListController {
 			// resources given by URL params
 			final Set<Class<? extends Resource>> supportParam = intersection(this.supportedResources, resourcesToInitialize);
 			// resources selected by user settings
-			final Set<Class<? extends Resource>> supportUser = intersection(this.supportedResources, this.getUserResourcesFromSettings());			
+			final Set<Class<? extends Resource>> supportUser = intersection(this.supportedResources, this.getUserResourcesFromSettings());
+			// we start with an empty return set
+			resourcesToInitialize.clear();
 			// controller does not support resources required by format param -> empty list
 			if (!present(supportFormat) && !present(supportParam)) {
-				resourcesToInitialize.clear();
+				// do nothing -> return empty set
 			}			
 			else if (present(supportFormat)) {
 				final Set<Class<? extends Resource>> supportFormatParam = intersection(supportFormat, supportParam);
@@ -414,7 +417,7 @@ public abstract class ResourceListController {
 			}
 			else if (!present(supportFormat) && present(supportParam)) {
 				// resources requested by URL param don't match resources supported by format -> empty list
-				resourcesToInitialize.clear();
+				// do nothing -> return empty set
 			}
 			else {
 				// default: initialize all resources supported by current controller

@@ -15,7 +15,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.webapp.command.ResourceViewCommand;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -49,8 +49,8 @@ public class ResourceListControllerTest {
 		return settings;
 	}
 		
-	@BeforeClass
-	public static void createSets() {
+	@Before
+	public void createSets() {
 		STANDARD_VIEW_CLASSES = new HashSet<Class<? extends Resource>>();
 		STANDARD_VIEW_CLASSES.add(Bookmark.class);
 		STANDARD_VIEW_CLASSES.add(BibTex.class);
@@ -140,13 +140,13 @@ public class ResourceListControllerTest {
 		 * bookmark and publication settings activated
 		 */
 		testController.setUserSettings(getSettings(true, true));
-		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize("html", null));
+		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize("html", new HashSet<Class<? extends Resource>>()));
 		
 		/*
 		 * respects user settings
 		 */
 		testController.setUserSettings(getSettings(true, false));
-		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize("html", null));
+		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize("html", new HashSet<Class<? extends Resource>>()));
 		
 		/*
 		 * url param "overrides" user settings
