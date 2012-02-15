@@ -5,6 +5,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 >
 
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="LDAP Login Form" description="Renders the login form for OpenID login." />
@@ -18,11 +19,9 @@
 			<a class="provider" href="http://yahoo.com/">Yahoo!</a> &amp;middot;
 			<a class="provider" href="http://myopenid.com/">myOpenID</a> 
 		</div>
-		<div class="fsRow">
-       		<form:label cssClass="fsLabel" path="openID" ><fmt:message key="login.method.openid"/></form:label>
-       		<form:input cssClass="fsInput" path="openID"/>
-      		<div class="dissError"><form:errors path="openID" /></div>
-   		</div>
+		
+		<bform:input path="openID" noHelp="${true}" labelMessageKey="login.method.openid" required="${true}" />
+
    		<div class="fsRow">
        		<form:label cssClass="fsLabel" path="rememberMe" ><fmt:message key="login.rememberMe"/></form:label>
        		<form:checkbox path="rememberMe"/>
