@@ -9,6 +9,7 @@
   xmlns:form="http://www.springframework.org/tags/form"
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
   
@@ -40,7 +41,7 @@
 
 				<fieldset class="fsOuter">
 				
-					<parts:fieldset maximized="${true}" legendKey="register.personal">
+					<bform:fieldset maximized="${true}" legendKey="register.personal">
 						<jsp:attribute name="content">
 							<div class="fsRow">
 				  				<form:label cssClass="fsLabel" path="registerUser.name" ><fmt:message key="navi.username"/>*</form:label>
@@ -66,10 +67,10 @@
 				  				<div class="dissError"><form:errors path="registerUser.email" /></div>
 	            			</div>
             			</jsp:attribute>
-            		</parts:fieldset>
+            		</bform:fieldset>
             		
             		
-            		<parts:fieldset maximized="${false}" legendKey="register.additional">
+            		<bform:fieldset maximized="${false}" legendKey="register.additional">
               			<jsp:attribute name="content">  
 	              			<div class="fsRow">
 				  				<form:label cssClass="fsLabel" path="registerUser.homepage" ><fmt:message key="user.settings.homepage"/></form:label>
@@ -83,9 +84,9 @@
 				  				<div class="dissError"><form:errors path="registerUser.realname" /></div>
 	            			</div>
 	            		</jsp:attribute>
-            		</parts:fieldset>
+            		</bform:fieldset>
             		
-            		<parts:fieldset maximized="${true}" legendKey="register.captchaAndPrivacy">
+            		<bform:fieldset maximized="${true}" legendKey="register.captchaAndPrivacy">
 						<jsp:attribute name="content">
               
 							<div class="fsRow">
@@ -100,7 +101,7 @@
 				  				<div class="dissError"><form:errors path="acceptPrivacy" /></div>
 	            			</div>
 	            		</jsp:attribute>
-	            	</parts:fieldset>
+	            	</bform:fieldset>
              
              		<div class="clearfloat p">
              			<input type="hidden" name="ckey" value="${command.context.ckey}"/>	

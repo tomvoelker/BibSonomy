@@ -5,13 +5,14 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
     <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
 
-	<parts:fieldset maximized="true" legendKey="post.resource.tags.describe">
+	<bform:fieldset maximized="true" legendKey="post.resource.tags.describe">
 		<jsp:attribute name="content">
 
 	        <span class="fsLabel"> (<fmt:message key="post.resource.spaceseparated"/>) *</span>
@@ -70,5 +71,5 @@
     		</c:if>
 
 		</jsp:attribute>
-	</parts:fieldset>
+	</bform:fieldset>
 </jsp:root>

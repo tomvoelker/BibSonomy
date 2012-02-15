@@ -5,6 +5,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:form="http://www.springframework.org/tags/form">
 
     <!-- 
@@ -18,7 +19,7 @@
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
 	
 	<div id="groupBoxleft">
-		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.viewablefor">
+		<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.viewablefor">
 		<!-- fieldset id="fsgroupBoxleft"-->
 			<jsp:attribute name="content">
 	
@@ -36,7 +37,7 @@
 	            <div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 	            
 	    	</jsp:attribute>
-		</parts:fieldset>
+		</bform:fieldset>
 	</div>
 	
 	<script type="text/javascript">
