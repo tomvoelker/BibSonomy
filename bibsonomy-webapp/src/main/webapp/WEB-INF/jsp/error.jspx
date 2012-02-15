@@ -25,7 +25,7 @@
 		
 		<jsp:attribute name="pageOptions">
 			<ul>
-				<li><fmt:message key="error.report"/>${mtl:ch('nbsp')}:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}"/></li>
+				<li><fmt:message key="error.report"/>${mtl:ch('nbsp')}:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}" subject="[${command.context.loginUser.name}] error on ${requPath}"/></li>
 			</ul>
 		</jsp:attribute>
 						
