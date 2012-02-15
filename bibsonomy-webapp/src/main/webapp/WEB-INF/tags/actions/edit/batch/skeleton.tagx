@@ -34,7 +34,7 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	<!-- page title -->
 	<fmt:message key="post.meta.edit" var="pageTitle" />
 
-	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" headerMessageKey="batchedit.info">
+	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" headerMessageKey="batchedit.info" showPageOptions="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="post.meta.edit" />
@@ -66,6 +66,12 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
       		</jsp:attribute>
       		
         </batch:content> 
+      </jsp:attribute>
+      
+      <jsp:attribute name="pageOptions">
+      	<ul>
+      		<li><a href="/editTags"><fmt:message key="edittags.main.Header"/>...</a></li>
+      	</ul>
       </jsp:attribute>
 
 	</layout:paneLayout>
