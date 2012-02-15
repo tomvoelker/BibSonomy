@@ -6,6 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -15,17 +16,26 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<fmt:message key="navi.publication" var="pageTitle" />
+	<!--+
+		+ variables, messages
+		+-->
 	<c:set var="post" value="${command.bibtex.list[0]}" />
-	<c:set var="publication" value="${post.resource}" />
-	
+	<c:set var="publication" value="${post.resource}" />	
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
-	
+	<c:set var="owner" value="${post.user.name}" />
+	<c:set var="isOwnPost" value="${owner eq command.context.loginUser.name}"/>
+	<fmt:message key="navi.publication" var="pageTitle" />	
 	<fmt:message var="headerMessage" key="bibtex.entry.of">
 		<fmt:param value="${post.user.name}"/>
 	</fmt:message>
 	
-	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" headerMessage="${headerMessage}" headerLogoClass="publications" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
+			headerMessage="${headerMessage}" 
+			headerLogoClass="publications" 
+			command="${command}" 
+			requestedUser="${command.requestedUser}" 
+			requPath="${requPath}"
+			showPageOptions="${true}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
@@ -35,11 +45,10 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<c:set var="owner" value="${post.user.name}" />
+			<ul>				
 				<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
 				<!-- edit tags -->
-				<c:if test="${owner eq command.context.loginUser.name}">
+				<c:if test="${isOwnPost}">
 					<li>
 						<span class="sidebar_h"><fmt:message key="navi.editTags"/></span>
 						<form action="/batchEdit" method="POST" style="padding:0.8em;" class="sidebar_collapse_content">
@@ -87,6 +96,10 @@
 				
 		<jsp:attribute name="content">
 			<resource:bibtexdetails post="${post}" referer="${command.referer}"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="customPageOptions">
+			<bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
 		</jsp:attribute>
 		
 	</layout:paneLayout>
