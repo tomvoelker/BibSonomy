@@ -102,10 +102,7 @@
 
                <tr>
                  <td style="text-align:center;" colspan="2">
-                   <div class="kiste">
-                     <rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>   
-                     ${mtl:ch('nbsp')}
-                   </div>
+                   <div class="kiste">${mtl:ch('nbsp')}</div>
                  </td>
                  <td>
                    <input type="submit" value="${buttonUpdate}" style="float:right; width:100%"/>
