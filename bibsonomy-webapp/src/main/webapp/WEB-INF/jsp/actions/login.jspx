@@ -16,7 +16,12 @@
 	
 	<fmt:message key="navi.login" var="loginTitle" />
 	
-	<layout:paneLayout command="${command}" pageTitle="${loginTitle}" requPath="${requPath}" noLoginBox="true" headerMessageKey="navi.login">
+	<layout:paneLayout command="${command}" 
+		pageTitle="${loginTitle}" 
+		requPath="${requPath}" 
+		noLoginBox="true" 
+		headerMessageKey="navi.login"
+		showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
   			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
@@ -87,6 +92,17 @@
 					</div>
         		</c:forEach>
         	</div>
+      	</jsp:attribute>
+      	
+      	<jsp:attribute name="pageOptions">
+      		<ul>
+      			<li>
+      				<a href="/register"><fmt:message key="login.register"/></a>
+      			</li>
+      			<li>
+      				<a href="/reminder"><fmt:message key="navi.passReminder"/></a>
+      			</li>
+      		</ul>
       	</jsp:attribute>
       	
       	
