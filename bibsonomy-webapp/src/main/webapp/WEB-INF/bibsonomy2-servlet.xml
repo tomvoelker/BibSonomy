@@ -32,7 +32,7 @@
 	            <bean class="org.bibsonomy.web.spring.converter.StringToDateConverter">
 	            	<property name="formats">
 	            		<list>
-	            			<!-- this format is used by
+	            			<!-- this format (ISO 8601) is used by
 	            				- the DBLP update (to set the date of bookmarks)
 	            				- the getPosts() parameters startDate and endDate
 	            			 -->
