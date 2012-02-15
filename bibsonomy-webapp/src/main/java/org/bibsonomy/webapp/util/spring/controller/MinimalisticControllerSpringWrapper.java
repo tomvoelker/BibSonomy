@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.util.spring.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +26,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.validation.BindException;
@@ -52,7 +49,6 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
 	
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
-	private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	private String controllerBeanName;
 	
@@ -244,7 +240,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		
 		log.debug("Returning model and view.");
 		
-		/**
+		/*
 		 * If the view is already a Spring view, use it directly.
 		 * The primal reason for the this workaround is, that Spring's RedirctView
 		 * automatically appends the model parameters to each redirected URL. This
@@ -264,23 +260,9 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		super.initBinder(request, binder);
 
 		/*
-		 * set convertion service (string => enum, string => class)
+		 * set convertion service
 		 */
 		binder.setConversionService(this.conversionService);
-		
-		/*
-		 * Register a custom date editor to support binding of date fields.
-		 * 
-		 * This date format must be used for all dates that should be bound to 
-		 * bean properties. Currently, it is used by 
-		 * - the DBLP update (to set the date of bookmarks)
-		 * - the getPosts() parameters startDate and endDate
-		 * - the birthday on /settings (damn!)
-		 * 
-		 * Ergo: you can't easily change this date format!  
-		 * 
-		 */
-		binder.registerCustomEditor(Date.class, new CustomDateEditor(ISO8601_DATE_FORMAT, true));
 		
 		/*
 		 * setting the dis/allowed fields for the binder
