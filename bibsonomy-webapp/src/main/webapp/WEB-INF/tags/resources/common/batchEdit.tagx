@@ -6,13 +6,13 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="isBibtex" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isPublication" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
 	
 	<!--+
 		+ batch edit
 		+-->	
- 	<c:if test="${isBibtex}">
+ 	<c:if test="${isPublication}">
 		<c:url var="editUrl"   value="/beditbib/${requPathAndQuery}" />
 	</c:if>
 	<c:if test="${isBookmark}">

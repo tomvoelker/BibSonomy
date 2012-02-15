@@ -21,7 +21,7 @@
 		+ -->
 	<c:if test="${resourceType eq 'bibtex'}">
 		<fmt:message key="bibtex.actions.heading"/>
-		<c:set var="isBibtex" value="${true}"/>
+		<c:set var="isPublication" value="${true}"/>
 	</c:if>
 	<c:if test="${resourceType eq 'bookmark'}">
 		<fmt:message key="bookmark.actions.heading"/>
@@ -35,13 +35,13 @@
 	<div class="listOptionHeading"><fmt:message key="navi.export"/>:</div>
 	<ul>
 		<li>
-			<rc:export requPathAndQuery="${requPathAndQuery}" isBibtex="${isBibtex}" isBookmark="${isBookmark}"/>
+			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
 		</li>				
  	</ul>
  	<!--+ 
 		+ placeholder for extended bibtex export options 
 		+-->		
-	<c:if test="${isBibtex}">	
+	<c:if test="${isPublication}">	
 		<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
 	</c:if>				
  	<!--+ 
@@ -55,7 +55,7 @@
 		<li>
 			<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>	
 		</li>
-		<c:if test="${isBibtex}">
+		<c:if test="${isPublication}">
 			<li>
 				<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
 			</li>
@@ -64,7 +64,7 @@
  	<!--+ 
 		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users
 		+-->
-	<c:if test="${command.context.userLoggedIn and isBibtex}">
+	<c:if test="${command.context.userLoggedIn and isPublication}">
 		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
 		<ul>	
 			<li>
@@ -91,13 +91,13 @@
  		<!-- edit -->
   		<c:if test="${command.context.userLoggedIn}">
 	  		<li>
-				<rc:batchEdit isBibtex="${isBibtex}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/>
+				<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/>
 			</li>	
 		</c:if>
 		<!-- show / hide resource types -->
 		<c:if test="${not disableResourcetypeSelection}">		
 			<li>
-				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}"/>
+				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/>
 			</li>
 		</c:if>	
 		<!--  entries per page -->
@@ -106,7 +106,7 @@
 				<c:if test="${isBookmark}">				
 					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
-				<c:if test="${isBibtex}">
+				<c:if test="${isPublication}">
 					<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>			
 			</li>

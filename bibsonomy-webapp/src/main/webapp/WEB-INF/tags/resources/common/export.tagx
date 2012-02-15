@@ -6,13 +6,13 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="isBibtex" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isPublication" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
 	
 	<!--+
 		+ export actions for publications / bookmarks
 		+-->
-	<c:if test="${isBibtex}">
+	<c:if test="${isPublication}">
 		<c:url var="rssPath" value="/publrss${requPathAndQuery}" />
 		<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
 		<c:url var="bibPath" value="/bib${requPathAndQuery}"/>
