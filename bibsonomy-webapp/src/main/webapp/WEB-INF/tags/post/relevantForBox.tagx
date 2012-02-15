@@ -5,6 +5,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:form="http://www.springframework.org/tags/form">
 
 
@@ -19,7 +20,7 @@
   
   
 	<div id="groupBoxright">
-		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.relevantfor">
+		<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.relevantfor">
 		<!-- fieldset id="fsgroupBoxright"-->
 			<jsp:attribute name="content">
 
@@ -34,6 +35,6 @@
               		<fmt:message key="post.resource.relevant"/>
             	</span>
 			</jsp:attribute>	
-		</parts:fieldset>
+		</bform:fieldset>
 	</div>
 </jsp:root>
