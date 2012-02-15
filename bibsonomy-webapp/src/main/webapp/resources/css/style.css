@@ -1231,7 +1231,7 @@ div.help>a,div.help>b {
 }
 
 
-.post .action .item, #resultlist .item {
+.post .action .item, #resultlist .item, #pageOptions .item {
     background-repeat: no-repeat;
 	background: url("/resources/image/postactions_black.png");
     display: block;
@@ -1240,57 +1240,57 @@ div.help>a,div.help>b {
     width: 30px;
 }
 
-.post .action .pick, #resultlist .pick {
+.post .action .pick, #resultlist .pick, #pageOptions .pick {
     background-position: -30px 0px;
     width: 23px
 }
 
-.post .action .unpick {
+.post .action .unpick, #pageOptions .unpick {
     background-position: -30px -27px;
     width: 23px
 }
 
-.post .action .copy{
+.post .action .copy, #pageOptions .copy{
     background-position: 0px 0px;
     width: 26px
 }
 
-.post .action .edit{
+.post .action .edit, #pageOptions .edit{
     background-position: 0px -25px;
     width: 26px
 }
 	
-.post .action .delete{
+.post .action .delete, #pageOptions .delete{
     background-position: 0px -53px;
     width: 28px
 }
 
-.post .action .community{
+.post .action .community, #pageOptions .community{
     background-position: 130px 0px;
     width: 28px
 }
 
-.post .action .remove{
+.post .action .remove, #pageOptions .remove{
     background-position: -30px -53px;
     width: 35px
 }
 
-.post .action .url, #resultlist .url {
+.post .action .url, #resultlist .url, #pageOptions .url {
     background-position: 98px 0px;
     width:24px
 }
 
-.post .action .bibtex , #resultlist .bibtex {
+.post .action .bibtex , #resultlist .bibtex, #pageOptions .bibtex {
     background-position: 69px -1px;
     width: 35px
 }
 
-.post .action .doi{
+.post .action .doi, #pageOptions .doi{
     background-position: 28px 0px;
     width:24px
 }
 
-.post .action .openUrl{
+.post .action .openUrl, #pageOptions .openUrl{
     background-position: 64px -55px;
     width: 41px
 }
@@ -1512,6 +1512,13 @@ form.editTags, form.editTags input {
 	margin-top: 10px;
 	float: right;
 	cursor: pointer;
+}
+
+.customConfig {
+	margin-top: 10px;
+	margin-right: 10px;
+	float: right;
+	cursor: pointer;	
 }
 
 #bookmarksheader .config, #publicationsheader .config, #panelheader .config {
@@ -2091,15 +2098,16 @@ form.editTags, form.editTags input {
 
 
 
-.listOptionLine {
-	margin-left: 0px;
-	margin-bottom: 20px;
-}
 
 .listOptionHeading {
-	margin-top: 10px;
+	margin-top: 15px;
 	font-weight:bold;
 }
+
+#publicationListOptions ul, #bookmarkListOptions ul, #pageOptions ul {
+	margin-left: 0px;
+}
+
 
 #bibtexListExportOptions {
 	display:none;

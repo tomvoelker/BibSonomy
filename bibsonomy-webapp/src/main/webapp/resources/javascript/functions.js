@@ -871,22 +871,24 @@ function addListOptions() {
 	 */
 	$.each(["bookmarkList", "publicationList", "page"], function(index, value) {
 		var optBoxAnchor = $("#" + value + "Config");
-		var optBox =  $("#" + value + "Options");
-		optBox.mouseleave(function(event) {
-			$(this).hide("fade", {}, 500);
-		});		
-		optBoxAnchor.hoverIntent(function(event) {			
-			optBox.show("fade", {}, 500);
-			// hide extended bibtex export options each time when opening the menu
-			$("#bibtexListExportOptions").hide();
-		}, function(event){
-			optBox.hide("fade", {}, 500);
-		});		
-		optBoxAnchor.click(function(event) {			
-			optBox.toggle("fade", {}, 500);
-			// hide extended bibtex export options each time when opening/closing the menu
-			$("#bibtexListExportOptions").hide();
-		});
+			if ( optBoxAnchor.length ) {
+				var optBox =  $("#" + value + "Options");
+				optBox.mouseleave(function(event) {
+					$(this).hide("fade", {}, 500);
+			});				
+			optBoxAnchor.hoverIntent(function(event) {			
+				optBox.show("fade", {}, 500);
+				// hide extended bibtex export options each time when opening the menu
+				$("#bibtexListExportOptions").hide();
+			}, function(event){
+				optBox.hide("fade", {}, 500);
+			});		
+			optBoxAnchor.click(function(event) {			
+				optBox.toggle("fade", {}, 500);
+				// hide extended bibtex export options each time when opening/closing the menu
+				$("#bibtexListExportOptions").hide();
+			});
+		}
 	});
 	/*
 	 * add mouseover to "BibTeX" link (publications only) to display extended options
