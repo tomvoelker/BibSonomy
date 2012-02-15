@@ -14,7 +14,12 @@
 	
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:paneLayout headerMessageKey="export.header" headerLogoClass="publications" command="${command}" pageTitle="${command.pageTitle}" requPath="${requPath}">
+    <layout:paneLayout headerMessageKey="export.header" 
+    		headerLogoClass="publications" 
+    		command="${command}" 
+    		pageTitle="${command.pageTitle}" 
+    		requPath="${requPath}"
+    		showPageOptions="${command.context.userLoggedIn}">
       	
     <jsp:attribute name="heading">
     	<parts:search pathMessageKey="navi.export"/>
@@ -107,5 +112,12 @@
  		</p>
 
     </jsp:attribute>
+    
+    <jsp:attribute name="pageOptions">
+    	<ul>
+    		<li><a href="/settings?selTab=2"><fmt:message key="navi.uploadCustomLayout"/>...</a></li>
+    	</ul>
+    </jsp:attribute>
+    
   </layout:paneLayout>
 </jsp:root>
