@@ -55,7 +55,8 @@
 		    </div>
  		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="user.birthday"/></form:label>
-		      <form:input cssClass="fsInput fsSmall" path="user.birthday"/>
+		      <fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
+		      <input class="fsInput fsSmall" name="user.birthday" id="user.birthday" value="${userBirthday}" />
 		      <div class="dissError"><form:errors path="user.birthday" /></div>		      
 		      <form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
 		    </div>

@@ -7,19 +7,48 @@
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	                    
-	<!--
-		conversion service to convert:
-		- strings to enums (a generic converter)
-		- strings to class (and "bookmark", "publication" to resource classes)
-	-->
+	<!-- conversion service to convert strings to objects -->
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 	        <list>
+	        	<!-- strings to enums (a generic converter) -->
 	            <bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
+	            
+	            <!-- converts a string to a class (and "bookmark", "publication" to resource classes) -->
 	            <bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
+	            
+	            <!-- 
+	            	converts strings to urls (empty strings are converted to null)
+	            	if you do not add this converter the ObjectToObjectConverter tries
+	            	to call the url constructor and fails instead of returning null
+	            	 -->
 	            <bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
+	            
+	            <!-- convert a string to a list of persons and vice versa -->
 	            <bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
 	            <bean class="org.bibsonomy.web.spring.converter.PersonListToStringConverter" />
+	           	
+	           	<!-- add a custom date converter to support binding of date fields. -->
+	            <bean class="org.bibsonomy.web.spring.converter.StringToDateConverter">
+	            	<property name="formats">
+	            		<list>
+	            			<!-- this format is used by
+	            				- the DBLP update (to set the date of bookmarks)
+	            				- the getPosts() parameters startDate and endDate
+	            			 -->
+	            			<bean class="java.text.SimpleDateFormat">
+	            				<constructor-arg value="yyyy-MM-dd'T'HH:mm:ssZ" />
+	            			</bean>
+	            			<!-- 
+	            				this simpler format is used by
+	            				- the birthday on /settings
+	            				 -->
+	            			<bean class="java.text.SimpleDateFormat">
+	            				<constructor-arg value="yyyy-MM-dd" />
+	            			</bean>
+	            		</list>
+	            	</property>
+	            </bean>
 	        </list>
 	    </property>
 	</bean>
