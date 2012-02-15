@@ -1,0 +1,51 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="true" />
+	
+	<!--+
+		+ actions concerning different sorting criteria
+		+-->	
+	<fmt:message key="post.meta.sort.criterion"/>:${mtl:ch('nbsp')}
+	<!-- date / default sorting -->
+	<c:choose>
+		<c:when test="${sortPage eq 'none' or sortPage eq 'date'}">
+			<span class="italic"><fmt:message key="sort.date"/></span>
+		</c:when>
+		<c:otherwise>
+			<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'date')}"><fmt:message key="sort.date"/></a>
+		</c:otherwise>
+	</c:choose>,${mtl:ch('nbsp')}   				
+	<!-- title -->
+	<c:choose>
+		<c:when test="${sortPage eq 'title'}">
+			<span class="italic"><fmt:message key="post.resource.title"/></span>
+		</c:when>
+		<c:otherwise>
+			<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'title')}"><fmt:message key="post.resource.title"/></a>
+		</c:otherwise>
+	</c:choose><c:if test="${isBibtex}">,${mtl:ch('nbsp')}	<!--  UGLY formatting, but we have to do so, oterwise we'll get an extra blank :( -->
+		<c:choose>
+			<c:when test="${sortPage eq 'author'}">
+				<span class="italic"><fmt:message key="post.resource.author"/></span>
+			</c:when>
+			<c:otherwise>
+				<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'author')}"><fmt:message key="post.resource.author"/></a>
+			</c:otherwise>
+		</c:choose>,${mtl:ch('nbsp')}   		
+		<c:choose>
+			<c:when test="${sortPage eq 'year'}">
+				<span class="italic"><fmt:message key="post.resource.year"/></span>
+			</c:when>
+			<c:otherwise>
+				<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'year')}"><fmt:message key="post.resource.year"/></a>
+			</c:otherwise>
+		</c:choose>   					   					   					   					
+	</c:if>
+
+</jsp:root>
