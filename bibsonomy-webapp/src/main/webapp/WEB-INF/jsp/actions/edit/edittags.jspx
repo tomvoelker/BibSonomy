@@ -84,10 +84,10 @@
 									</div>
 				     				<span class="bmmeta">
 				        				<fmt:message key="edittags.example.partTwo">
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a></fmt:param>
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy">folksonomy</a></fmt:param>
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project">project</a></fmt:param>
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
+											<fmt:param> <a href="/user/${mtl:encodeURI(command.context.loginUser.name)}/bibtex">bibtex</a></fmt:param>
+											<fmt:param> <a href="/user/${mtl:encodeURI(command.context.loginUser.name)}/folksonomy">folksonomy</a></fmt:param>
+											<fmt:param> <a href="/user/${mtl:encodeURI(command.context.loginUser.name)}/project">project</a></fmt:param>
+											<fmt:param> <a href="/user/${mtl:encodeURI(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
 				       						<fmt:param><fmt:formatDate value="${newDate}" pattern="yyyy-MM-dd HH:mm:ss" /></fmt:param>
 				       					</fmt:message>
 									</span>
@@ -98,14 +98,14 @@
 				     
 									<span class="bmmeta">
 				        				<fmt:message key="edittags.example.partTwo">
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a></fmt:param>
+											<fmt:param> <a href="/user/${mtl:encodeURI(command.context.loginUser.name)}/bibtex">bibtex</a></fmt:param>
 											<fmt:param> 
-												<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bookmarking">bookmarking</a>
+												<a href="/user/${mtl:encodeURI(command.context.loginUser.name)}/bookmarking">bookmarking</a>
 												<c:out value=" "/>
-												<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/social">social</a>
+												<a href="/user/${mtl:encodeURI(command.context.loginUser.name)}/social">social</a>
 											</fmt:param>
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/system">system</a></fmt:param>
-											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
+											<fmt:param> <a href="/user/${mtl:encodeURI(command.context.loginUser.name)}/system">system</a></fmt:param>
+											<fmt:param> <a href="/user/${mtl:encodeURI(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
 				       						<fmt:param><fmt:formatDate value="${newDate}" pattern="yyyy-MM-dd HH:mm:ss" /></fmt:param>
 				       					</fmt:message>
 									</span>
