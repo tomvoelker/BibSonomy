@@ -3,20 +3,18 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	
+	
 	<c:if test="${not empty post.resource.interHash and post.resource.count > 0}">
 			<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />
-			<fmt:message var="title" key="post.meta.postsInSystem">
-				<fmt:param value="${post.resource.count}"/>
-			</fmt:message>
-			<c:if test="${post.resource.count == 1}">
-				<fmt:message var="title" key="post.meta.postInSystem"/>
-			</c:if>
+			<buttons:singularPluralMsgVar var="title" key="post.meta.postsInSystem" count="${post.resource.count}"/>
 			<a class="usersaves" href="${otherPeopleUrl}" title="${title}"><span>${post.resource.count}</span></a>
 	</c:if>
+	
 	
 </jsp:root>
