@@ -238,6 +238,11 @@ a img {
 	border: none;
 }
 
+.overlay {
+	display: none;
+}
+
+
 #more-bar ul {
 	
 	list-style: square;
