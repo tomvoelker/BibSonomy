@@ -38,12 +38,14 @@
 			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
 		</li>				
  	</ul>
+ 	
  	<!--+ 
 		+ placeholder for extended bibtex export options 
 		+-->		
 	<c:if test="${isPublication}">	
 		<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
-	</c:if>				
+	</c:if>	
+				
  	<!--+ 
 		+ sort options
 		+-->	  				
@@ -60,7 +62,8 @@
 				<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
 			</li>
 		</c:if>
-	</ul>			
+	</ul>		
+		
  	<!--+ 
 		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users
 		+-->
@@ -72,6 +75,7 @@
 			</li>
 		</ul>	
  	</c:if>
+ 	
  	<!--+
  		+ inbox actions 
  		+-->
@@ -83,6 +87,7 @@
 			</li>
 		</ul>
  	</c:if>
+ 	
  	<!--+ 
 		+ other options (batch edit, show/hide lists, entries per page)
 		+-->	  		
@@ -101,7 +106,7 @@
 			</li>
 		</c:if>	
 		<!--  entries per page -->
-		<c:if test="${not disableListNavigation}">	
+		<c:if test="${not disableListNavigation}">
 			<li>		
 				<c:if test="${isBookmark}">				
 					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
