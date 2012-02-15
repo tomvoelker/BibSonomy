@@ -4,6 +4,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 	
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
@@ -52,11 +53,11 @@
 						<!--
      						| groups 
     			    	   -->
-	     	 			<parts:fieldset maximized="false" legendKey="post.resource.viewablefor">
+	     	 			<bform:fieldset maximized="false" legendKey="post.resource.viewablefor">
 							<jsp:attribute name="content">
 								<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${discussionItem.groups}"/>
   							</jsp:attribute>
-						</parts:fieldset>
+						</bform:fieldset>
 					</div>
  					<div style="float:right">
  						<fmt:message key="post.resource.${discussionItemClass}.actions.${action}" var="buttonText" />

@@ -5,12 +5,13 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form">
 
 <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.bibtex.files">
+	<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.bibtex.files">
 		
 		<jsp:attribute name="content">
 			<fmt:message var="delete" key="post.bibtex.delete"/>
@@ -88,6 +89,6 @@
 			</div>
 						
 		</jsp:attribute>
-	</parts:fieldset>
+	</bform:fieldset>
 	
 </jsp:root>

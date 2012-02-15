@@ -12,6 +12,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
 
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
@@ -83,11 +84,11 @@
                                 <!--
                                    | general information 
                                    -->
-                                <parts:fieldset maximized="true" legendKey="post.resource.fields.general">
+                                <bform:fieldset maximized="true" legendKey="post.resource.fields.general">
                                 	<jsp:attribute name="content">
     	                                <jsp:invoke fragment="generalInformation"/>
 									</jsp:attribute>
-                                </parts:fieldset>
+                                </bform:fieldset>
 								
 								<jsp:invoke fragment="tagsAndGroups" />
 								
@@ -100,7 +101,7 @@
                                    | a Captcha for our spammers ... 
                                    -->         
 								<c:if test="${not empty command.captchaHTML}">
-									<parts:fieldset maximized="true" legendKey="captcha">
+									<bform:fieldset maximized="true" legendKey="captcha">
 										<jsp:attribute name="content">
 									
 											<c:if test="${resourceType eq 'Publication'}">
@@ -114,7 +115,7 @@
 											<span class="fsLabel"><fmt:message key="captcha"/></span>
 						              		<span class="fsInput">${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></span>
 						              	</jsp:attribute>
-						            </parts:fieldset>
+						            </bform:fieldset>
 						        </c:if>
 
                                 <!--

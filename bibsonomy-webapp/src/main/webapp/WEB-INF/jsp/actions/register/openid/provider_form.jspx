@@ -9,6 +9,7 @@
 	xmlns:spring="http://www.springframework.org/tags" 
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors" 
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -28,7 +29,7 @@
 
 				<fieldset class="fsOuter">
 				
-					<parts:fieldset maximized="${true}" legendKey="register.openid.required">
+					<bform:fieldset maximized="${true}" legendKey="register.openid.required">
 						<jsp:attribute name="content">
 							<div class="fsRow">
 				  				<form:label cssClass="fsLabel" path="registerUser.name" ><fmt:message key="navi.username"/>*</form:label>
@@ -48,9 +49,9 @@
 	            			</div>
 						</jsp:attribute>
 
-					</parts:fieldset>
+					</bform:fieldset>
 
-            		<parts:fieldset maximized="${false}" legendKey="register.openid.optional">
+            		<bform:fieldset maximized="${false}" legendKey="register.openid.optional">
               			<jsp:attribute name="content">  
 	            			<div class="fsRow">
 				  				<form:label cssClass="fsLabel" path="registerUser.realname" ><fmt:message key="user.settings.realname"/></form:label>
@@ -81,7 +82,7 @@
 	            			
 
 	            		</jsp:attribute>
-            		</parts:fieldset>
+            		</bform:fieldset>
 
              		<div class="clearfloat p">
              			<input type="hidden" name="ckey" value="${command.context.ckey}"/>	

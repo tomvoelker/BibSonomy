@@ -5,6 +5,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
@@ -37,7 +38,7 @@
 			<editpub:details post="${post}" />
 			
 			<c:if test="${not empty command.scrapingContext}">
-          		<parts:fieldset maximized="false" legendKey="post.resource.fields.scraper" >
+          		<bform:fieldset maximized="false" legendKey="post.resource.fields.scraper" >
           			<jsp:attribute name="content">
 
 		                  <div class="fsRow">
@@ -67,7 +68,7 @@
 		                  </div>
 		                  
                 	</jsp:attribute>
-            	</parts:fieldset>
+            	</bform:fieldset>
          	</c:if>
          	
        </jsp:attribute>
