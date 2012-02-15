@@ -16,11 +16,9 @@
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	
-	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
-		
-	<!--+ 
-		+ heading 
-		+-->
+	<!--+
+		+ heading, variables
+		+ -->
 	<c:if test="${resourceType eq 'bibtex'}">
 		<fmt:message key="bibtex.actions.heading"/>
 		<c:set var="isBibtex" value="${true}"/>
@@ -29,223 +27,89 @@
 		<fmt:message key="bookmark.actions.heading"/>
 		<c:set var="isBookmark" value="${true}"/>
 	</c:if>
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
 	<!--+ 
-		+ list with options 
+		+ export (RSS, BibTeX, XML, more...) 
 		+-->
-	<ul>	
-		<!--+ 
-			+ export (RSS, BibTeX, XML, more...) 
-			+-->
-		<li>						
-			<div class="listOptionHeading"><fmt:message key="navi.export"/>:</div>
-			<span class="listOptionLine">
-				<!--  Publications -->				
-				<c:if test="${isBibtex}">
-					<c:url var="rssPath" value="/publrss${requPathAndQuery}" />
-					<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
-					<c:url var="bibPath" value="/bib${requPathAndQuery}"/>
-					<a href="${bibPath}" id="bibtexListExport"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
-					<c:url var="burstPath"  value="/burst/${requPath}${requQueryString}" />
-					<a href="${burstPath}"><fmt:message key="post.meta.rdf"/></a>,${mtl:ch('nbsp')}
-					<c:url var="morePath" value="/export${requPathAndQuery}" />
-	  				<a href="${morePath}"><fmt:message key="bibtex.more_dots"/></a>
-				</c:if>
-				<!-- Bookmarks -->
-				<c:if test="${isBookmark}">
-					<c:url var="rssPath" value="/publrss${requPathAndQuery}" />
-					<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
-					<c:url var="bibPath" value="/bookbib${requPathAndQuery}" />
-					<a href="${bibPath}"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
-	  				<c:url var="xmlPath" value="/xml${requPathAndQuery}" />
-	  				<a href="${xmlPath}"><fmt:message key="post.meta.xml"/></a>										
-				</c:if>				
-	  		</span>
+	<div class="listOptionHeading"><fmt:message key="navi.export"/>:</div>
+	<ul>
+		<li>
+			<rc:export requPathAndQuery="${requPathAndQuery}" isBibtex="${isBibtex}" isBookmark="${isBookmark}"/>
+		</li>				
+ 	</ul>
+ 	<!--+ 
+		+ placeholder for extended bibtex export options 
+		+-->		
+	<c:if test="${isBibtex}">	
+		<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
+	</c:if>				
+ 	<!--+ 
+		+ sort options
+		+-->	  				
+ 	<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
+	<ul>
+		<li>
+			<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/>
 		</li>
-   		<!--+ 
-			+ placeholder for extended bibtex export options 
-			+-->		
-		<c:if test="${isBibtex}">	
+		<li>
+			<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>	
+		</li>
+		<c:if test="${isBibtex}">
 			<li>
-				<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
+				<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
 			</li>
-		</c:if>				
-   		<!--+ 
-			+ sort options
-			+-->	  				
-	  	<li>
-	  		<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
-   			<span class="listOptionLine">
-   				<fmt:message key="post.meta.sort.criterion"/>:${mtl:ch('nbsp')}
-   				<c:set var="requPathAndQuery" value="${requPathAndQuery}"/>
-   				<!-- date / default sorting -->
-   				<c:choose>
-	   				<c:when test="${sortPage eq 'none' or sortPage eq 'date'}">
-	   					<span class="italic"><fmt:message key="sort.date"/></span>
-	   				</c:when>
-	   				<c:otherwise>
-	   					<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'date')}"><fmt:message key="sort.date"/></a>
-	   				</c:otherwise>
-   				</c:choose>,${mtl:ch('nbsp')}   				
-   				<!-- title -->
-   				<c:choose>
-   					<c:when test="${sortPage eq 'title'}">
-   						<span class="italic"><fmt:message key="post.resource.title"/></span>
-   					</c:when>
-   					<c:otherwise>
-   						<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'title')}"><fmt:message key="post.resource.title"/></a>
-   					</c:otherwise>
-   				</c:choose><c:if test="${isBibtex}">,${mtl:ch('nbsp')}	<!--  UGLY formatting, but we have to do so, oterwise we'll get an extra blank :( -->
-   					<c:choose>
-   						<c:when test="${sortPage eq 'author'}">
-   							<span class="italic"><fmt:message key="post.resource.author"/></span>
-   						</c:when>
-   						<c:otherwise>
-   							<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'author')}"><fmt:message key="post.resource.author"/></a>
-   						</c:otherwise>
-   					</c:choose>,${mtl:ch('nbsp')}   		
-	   				<c:choose>
-	   					<c:when test="${sortPage eq 'year'}">
-	   						<span class="italic"><fmt:message key="post.resource.year"/></span>
-	   					</c:when>
-	   					<c:otherwise>
-	   						<a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'year')}"><fmt:message key="post.resource.year"/></a>
-	   					</c:otherwise>
-	   				</c:choose>   					   					   					   					
-   				</c:if>
-   			</span><br/>
-   			<span class="listOptionLine">
-   				<fmt:message key="post.meta.sort.order"/>:${mtl:ch('nbsp')}
-   				<c:choose>
-   					<c:when test="${sortPageOrder eq 'asc'}">
-   						<span class="italic"><fmt:message key="post.meta.sort.order.ascending"/></span>
-   					</c:when>
-   					<c:otherwise>
-   						<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'asc')}"><fmt:message key="post.meta.sort.order.ascending"/></a>
-   					</c:otherwise>
-   				</c:choose>,${mtl:ch('nbsp')}
-   				<c:choose>
-   					<c:when test="${sortPageOrder eq 'desc'}">
-   						<span class="italic"><fmt:message key="post.meta.sort.order.descending"/></span>
-   					</c:when>
-   					<c:otherwise>
-   						<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'desc')}"><fmt:message key="post.meta.sort.order.descending"/></a>
-   					</c:otherwise>
-   				</c:choose>				
-   			</span><br/>
-   			<c:if test="${isBibtex}">
-	   			<span class="listOptionLine">
-	   				<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
-	   			</span>					
-   			</c:if>			
-	  	</li>
-   		<!--+ 
-			+ basket actions (pick, unpick) only for publications, and logged-in users
-			+-->
-		<c:if test="${command.context.userLoggedIn and isBibtex}">
+		</c:if>
+	</ul>			
+ 	<!--+ 
+		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users
+		+-->
+	<c:if test="${command.context.userLoggedIn and isBibtex}">
+		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
+		<ul>	
 			<li>
-				<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
-				<span class="listOptionLine">
-					<c:choose>  				
-		 				<c:when test="${isBasket}">
-		            		<fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
-		          			<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
-								<fmt:message key="basket.removeAll"/>
-							</a>
-						</c:when>
-						<c:otherwise>
-							<fmt:message var="pickPublications" key="post.meta.pick.title"/>
-							<a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}	  			
-		  					<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
-							<a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
-		  				</c:otherwise>
-	  				</c:choose>
-  				</span>
-	  		</li>
-	  	</c:if>
-	  	<!--+
-	  		+ inbox actions 
-	  		+-->
-	  	<c:if test="${command.context.userLoggedIn and showInboxActions}">
+				<rc:basket isBasket="${isBasket}"/>
+			</li>
+		</ul>	
+ 	</c:if>
+ 	<!--+
+ 		+ inbox actions 
+ 		+-->
+ 	<c:if test="${command.context.userLoggedIn and showInboxActions}">
+		<div class="listOptionHeading"><fmt:message key="navi.inbox"/>:</div>
+		<ul>
+			<li>
+				<rc:inbox/>
+			</li>
+		</ul>
+ 	</c:if>
+ 	<!--+ 
+		+ other options (batch edit, show/hide lists, entries per page)
+		+-->	  		
+ 	<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
+ 	<ul>
+ 		<!-- edit -->
+  		<c:if test="${command.context.userLoggedIn}">
 	  		<li>
-	  			<div class="listOptionHeading"><fmt:message key="navi.inbox"/>:</div>
-	  			<span class="listOptionLine">
-           			<c:url var="message_remove" value="/removeMessage">
-						<c:param name="hash" value=""/>
-						<c:param name="user" value=""/>
-						<c:param name="ckey" value="${ckey}"/>
-						<c:param name="clear" value="true"/>
-					</c:url>
-					<fmt:message var="removeTitle" key="inbox.actions.removeAllMessages.title"/>	
-					<a title="${removeTitle}" href="${fn:escapeXml(message_remove)}">
-						<fmt:message key="inbox.actions.removeAllMessages"/>
-					</a>	  				
-	  			</span>
-	  		</li>
-	  	</c:if>
-   		<!--+ 
-			+ other options (batch edit, show/hide lists, entries per page)
-			+-->	  		
-	  	<li>
-	  		<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
-	  		<!-- edit -->
-		  	<c:if test="${command.context.userLoggedIn}">
-		  		<span class="listOptionLine">
-			  		<c:if test="${isBibtex}">
-						<c:url var="editUrl"   value="/beditbib/${requPath}" />
-					</c:if>
-					<c:if test="${isBookmark}">
-						<c:url var="editUrl" value="/bediturl/${requPath}"/>
-					</c:if>
-					<fmt:message var="editPageTags" key="post.meta.edit.title"/>
-					<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.batch_edit"/>...</a>
-				</span><br/>	
-			</c:if>
-			<c:if test="${not disableResourcetypeSelection}">
-				<!-- show / hide resource types -->
-				<span class="listOptionLine">
-					<fmt:message key="post.meta.display"/>:
-					<c:choose>
-						<c:when test="${showPublication and showBookmark }">
-							<fmt:message key="navi.all"/>
-						</c:when>
-						<c:otherwise>
-							<a href="${mtl:removeParam(requPathAndQuery, 'resourcetype')}"><fmt:message key="navi.all"/></a>
-						</c:otherwise>
-					</c:choose>,${mtl:ch('nbsp')}
-					<c:if test="${isBookmark}">
-						<c:choose>
-							<c:when test="${showBookmark and not showPublication }">
-								<fmt:message key="post.meta.show_bookmarks_only"/>
-							</c:when>
-							<c:otherwise>
-								<a href="${mtl:setParam(requPathAndQuery, 'resourcetype', 'bookmark')}"><fmt:message key="post.meta.show_bookmarks_only"/></a>
-							</c:otherwise>
-						</c:choose>
-					</c:if>
-					<c:if test="${isBibtex}">
-						<c:choose>
-							<c:when test="${showPublication and not showBookmark }">
-								<fmt:message key="post.meta.show_publications_only"/>
-							</c:when>
-							<c:otherwise>
-								<a href="${mtl:setParam(requPathAndQuery, 'resourcetype', 'publication')}"><fmt:message key="post.meta.show_publications_only"/></a>
-							</c:otherwise>
-						</c:choose>			
-					</c:if>
-				</span><br/>
-			</c:if>	
-			<c:if test="${not disableListNavigation}">
-			<!--  entries per page -->	
-				<span class="listOptionLine">		
-					<c:if test="${isBookmark}">				
-						<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks"/>
-					</c:if>
-					<c:if test="${isBibtex}">
-						<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications"/>
-					</c:if>			
-				</span>
-			</c:if>
-	  	</li>	  			  		  	  	 	
-	</ul>	
+				<rc:batchEdit isBibtex="${isBibtex}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/>
+			</li>	
+		</c:if>
+		<!-- show / hide resource types -->
+		<c:if test="${not disableResourcetypeSelection}">		
+			<li>
+				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}"/>
+			</li>
+		</c:if>	
+		<!--  entries per page -->
+		<c:if test="${not disableListNavigation}">	
+			<li>		
+				<c:if test="${isBookmark}">				
+					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
+				</c:if>
+				<c:if test="${isBibtex}">
+					<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
+				</c:if>			
+			</li>
+		</c:if>
+	</ul>
 </jsp:root>

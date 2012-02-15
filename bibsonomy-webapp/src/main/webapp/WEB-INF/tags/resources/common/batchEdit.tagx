@@ -1,0 +1,24 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="isBibtex" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
+	
+	<!--+
+		+ batch edit
+		+-->	
+ 	<c:if test="${isBibtex}">
+		<c:url var="editUrl"   value="/beditbib/${requPathAndQuery}" />
+	</c:if>
+	<c:if test="${isBookmark}">
+		<c:url var="editUrl" value="/bediturl/${requPathAndQuery}"/>
+	</c:if>
+	<fmt:message var="editPageTags" key="post.meta.edit.title"/>
+	<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.batch_edit"/>...</a>
+
+</jsp:root>

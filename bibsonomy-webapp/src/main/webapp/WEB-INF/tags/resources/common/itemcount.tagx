@@ -6,6 +6,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="entriesPerPage" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="entryType" type="java.lang.String" required="true" />		
 	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="true"/>		
 
@@ -14,28 +15,23 @@
 	<!-- entrytype whose entries per page will be in/decreased -->
 	<c:set var="entryTypeEntriesPerPage" value="${entryType}.entriesPerPage"/>
 	
-	<!-- requPath + query -->
-	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
 	
-	<span class="selectEntriesPerPage">
-		<fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" />:${mtl:ch('nbsp')}
-		<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
-		
-			<!-- build url --> 
-			<c:url var="numListUrl" value="/${mtl:setParam(requPathAndQuery,entryTypeEntriesPerPage,num)}">
-				<!-- <c:param name="${entryType}.entriesPerPage" value="${num}" /> -->
-			</c:url>
+	<fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" />:${mtl:ch('nbsp')}
+	<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
 	
-			<!-- display link or current number of entries per page -->
-			<c:choose>
-				<c:when test="${num == entriesPerPage}">
-					${num}${mtl:ch('nbsp')}
-				</c:when>
-				<c:otherwise>
-					<a href="${fn:escapeXml(numListUrl)}">${num}</a>${mtl:ch('nbsp')}
-				</c:otherwise>
-			</c:choose>
-		</c:forEach>
-	</span>
+		<!-- build url --> 
+		<c:url var="numListUrl" value="/${mtl:setParam(requPathAndQuery,entryTypeEntriesPerPage,num)}">
+		</c:url>
+
+		<!-- display link or current number of entries per page -->
+		<c:choose>
+			<c:when test="${num == entriesPerPage}">
+				${num}${mtl:ch('nbsp')}
+			</c:when>
+			<c:otherwise>
+				<a href="${fn:escapeXml(numListUrl)}">${num}</a>${mtl:ch('nbsp')}
+			</c:otherwise>
+		</c:choose>
+	</c:forEach>
 
 </jsp:root>
