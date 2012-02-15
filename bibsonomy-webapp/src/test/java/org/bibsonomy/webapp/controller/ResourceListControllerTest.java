@@ -79,7 +79,7 @@ public class ResourceListControllerTest {
 		cmd.setTagstype(TagsType.DEFAULT);
 		testController.handleTagsOnly(cmd, null, null, null, null, null, 0, null);
 		
-		assertEquals(Collections.emptySet(), testController.getListsToInitialize("", null));
+		assertEquals(Collections.emptySet(), testController.getListsToInitialize("", new HashSet<Class<? extends Resource>>()));
 	}
 	
 	@Test
@@ -87,11 +87,11 @@ public class ResourceListControllerTest {
 		final TestResourceListController testController = new TestResourceListController();
 		testController.setSupportedResources(new HashSet<Class<? extends Resource>>(BOOKMARK_CLASS));
 		testController.setUserSettings(getSettings(true, false));
-		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize("html", null));
+		assertEquals(BOOKMARK_CLASS, testController.getListsToInitialize("html", new HashSet<Class<? extends Resource>>()));
 		
 		assertEquals(Collections.emptySet(), testController.getListsToInitialize("bibtex", PUBLICATION_CLASS));
 		
-		assertEquals(Collections.emptySet(), testController.getListsToInitialize("bibtex", null));
+		assertEquals(Collections.emptySet(), testController.getListsToInitialize("bibtex", new HashSet<Class<? extends Resource>>()));
 		assertEquals(Collections.emptySet(), testController.getListsToInitialize("bibtex", BOOKMARK_CLASS));
 	}
 	
@@ -104,7 +104,7 @@ public class ResourceListControllerTest {
 		 *  NEW
 		 */
 		final String format = "json";
-		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize(format, null));
+		assertEquals(STANDARD_VIEW_CLASSES, testController.getListsToInitialize(format, new HashSet<Class<? extends Resource>>()));
 		assertEquals(PUBLICATION_CLASS, testController.getListsToInitialize(format, PUBLICATION_CLASS));
 		assertEquals(GOLD_PUB_CLASS, testController.getListsToInitialize(format, GOLD_PUB_CLASS));
 	}
