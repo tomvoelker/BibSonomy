@@ -5,6 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:spring="http://www.springframework.org/tags">
 	
 	<!--+
@@ -22,9 +23,7 @@
 					<!-- dynamically set inbox title and style class -->
 					<c:choose>
 						<c:when test="${command.context.loginUser.inbox.numPosts gt 0}">
-							<fmt:message var="msgInInbox" key="navi.inInbox" />
-							<fmt:message var="msgInbox" key="navi.inbox" />
-							<c:set var="titleInbox" value="${command.context.loginUser.inbox.numPosts} ${msgInInbox} ${msgInbox}" />
+							<buttons:singularPluralMsgVar var="titleInbox" key="navi.inInbox" count="${command.context.loginUser.inbox.numPosts}"/>
 							<c:set var="inboxClass" value="inbox_full" />
 						</c:when>
 						<c:otherwise>
@@ -34,9 +33,7 @@
 					</c:choose>
 					<c:choose>
 						<c:when test="${command.context.loginUser.basket.numPosts gt 0}">
-							<fmt:message var="msgInBasket" key="navi.pickedIn" />
-							<fmt:message var="msgBasket" key="navi.basket" />
-							<c:set var="titleBasket" value="${command.context.loginUser.basket.numPosts} ${msgInBasket} ${msgBasket}" />
+							<buttons:singularPluralMsgVar var="titleBasket" key="navi.inClipboard" count="${command.context.loginUser.basket.numPosts}" />
 						</c:when>
 						<c:otherwise>
 							<fmt:message var="titleBasket" key="navi.basket.empty" />
