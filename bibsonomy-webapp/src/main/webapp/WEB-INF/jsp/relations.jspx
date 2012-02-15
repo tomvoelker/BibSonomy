@@ -14,7 +14,12 @@
 	
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:paneLayout command="${command}" headerMessageKey="navi.relations" pageTitle="${command.pageTitle}" requPath="${requPath}" activeTab="popular">
+    <layout:paneLayout command="${command}" 
+    		headerMessageKey="navi.relations" 
+    		pageTitle="${command.pageTitle}" 
+    		requPath="${requPath}" 
+    		activeTab="popular"
+    		showPageOptions="${command.context.userLoggedIn}">
       	
     	<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/concept/tag/" formInputName="tag"/>
@@ -87,6 +92,14 @@
 				</tr>
 			</c:forEach>
 			</table>
+		</jsp:attribute>
+		
+		<jsp:attribute name="pageOptions">
+			<ul>
+				<li>
+					<a href="/editTags"><fmt:message key="navi.editOwnConcepts"/></a>
+				</li>			
+			</ul>
 		</jsp:attribute>
        
   </layout:paneLayout>
