@@ -1,0 +1,15 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
+	
+	<jsp:directive.attribute name="key" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="count" type="java.lang.Integer" required="true"/>
+    <jsp:directive.attribute name="var" rtexprvalue="false" required="true"/>
+
+  	<jsp:directive.variable name-from-attribute="var" alias="varAlias" scope="AT_END"/>
+ 
+  	<c:set var="varAlias"><buttons:singularPluralMsg key="${key}" count="${count}"/></c:set>
+
+</jsp:root>
