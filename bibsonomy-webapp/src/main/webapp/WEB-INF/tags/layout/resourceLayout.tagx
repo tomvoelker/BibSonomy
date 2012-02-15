@@ -33,8 +33,8 @@
     <fmt:message key="feeds.swrc" var="swrcFeed"/>
     
     <!-- which resourcetypes to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize) -->
-    <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
-    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+    <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
 
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" infobox="${infobox}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}">		
