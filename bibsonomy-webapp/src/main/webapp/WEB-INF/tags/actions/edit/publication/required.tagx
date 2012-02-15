@@ -6,6 +6,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+    xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
   >
   
 
@@ -24,7 +25,8 @@
 		<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>
 		<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!--  --></script>
 	  	<script src="${resdir}/jquery/plugins/ui//jquery-ui-i18n.js" type="text/javascript"><!--  --></script>
-         <div class="fsRow">
+	  	
+		<div class="fsRow">
             <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help" cssClass="widehelp"/>
             <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
             <div class="dissError"><form:errors path="post.resource.entrytype" /></div>
@@ -40,46 +42,23 @@
             <div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
 		</div>
 
+		
+		<bform:textarea path="post.resource.title" required="${true}" rows="2"/>
+		<bform:textarea path="post.resource.author" required="${true}" rows="2"/>
 
-          <div class="fsRow">
-		  	<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label><buttons:help message="post.resource.title.help"/>
-            <form:textarea cssClass="fsInput reqinput" path="post.resource.title" tabindex="2" rows="2"/>
-		  	<div class="dissError"><form:errors path="post.resource.title" /></div>
-          </div>
-
-          <div class="fsRow">
-            <form:label cssClass="fsLabel" path="post.resource.author" ><fmt:message key="post.resource.author"/>* </form:label><buttons:help message="post.resource.author.help"/>
-            <form:textarea cssClass="fsInput reqinput" path="post.resource.author" tabindex="2" rows="2"/>
-            <div class="dissError"><form:errors path="post.resource.author" /></div>
-          </div>
-
-          <div class="fsRow hiddenElement">
+		<div class="fsRow hiddenElement">
 			<label class="fsLabel"><fmt:message key="post.resource.myown"/></label><buttons:help message="post.resource.myown.help"/>
 			<input type="checkbox" id="myownChkBox" tabindex="2"/>
-          </div>
-          
-          <div class="fsRow">
-            <form:label cssClass="fsLabel" path="post.resource.editor" ><fmt:message key="post.resource.editor"/>* </form:label><buttons:help message="post.resource.editor.help"/>
-            <form:textarea cssClass="fsInput reqinput" path="post.resource.editor" tabindex="2" rows="2"/>
-            <div class="dissError"><form:errors path="post.resource.editor" /></div>
-          </div>
-          
-		  <div class="fsRow">
-            <form:label cssClass="fsLabel" path="post.resource.year" ><fmt:message key="post.resource.year"/>* </form:label><buttons:help message="post.resource.year.help"/>
-            <form:input cssClass="fsInput fsSmall reqinput" path="post.resource.year" tabindex="2"/>
-            <div class="dissError"><form:errors path="post.resource.year" /></div>
-          </div>
+		</div>
+
+		<bform:textarea path="post.resource.editor" required="${true}" rows="2"/>
+		<bform:input path="post.resource.year" required="${true}" small="${true}"/>
 
 		<c:if test="${autocompletion}">
 			<script type="text/javascript">
             	//<mtl:cdata>
             	<![CDATA[
-					$(
-	    	     		function(){
-	    	     			initSuggestionForPartTitles($('#post\\.resource\\.title'));
-							$('body').append($('<div id="title_window" style="position:absolute;display:none;"></div>'));
-				     	}
-	    	     	);
+					$(function(){initSuggestionForPartTitles($('#post\\.resource\\.title'));});
 	     		]]> 
             	//</mtl:cdata>
      		</script>
