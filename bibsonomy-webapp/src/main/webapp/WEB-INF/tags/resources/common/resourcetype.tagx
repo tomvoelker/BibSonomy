@@ -7,6 +7,8 @@
 
 	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="isPublication" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
 	
 	<!--+
@@ -18,7 +20,7 @@
 			<fmt:message key="navi.all"/>
 		</c:when>
 		<c:otherwise>
-			<a href="${mtl:removeParam(requPathAndQuery, 'resourcetype')}"><fmt:message key="navi.all"/></a>
+			<a href="${mtl:setParam(requPathAndQuery, 'resourcetype', 'all')}"><fmt:message key="navi.all"/></a>
 		</c:otherwise>
 	</c:choose>,${mtl:ch('nbsp')}
 	<c:if test="${isBookmark}">
@@ -31,7 +33,7 @@
 			</c:otherwise>
 		</c:choose>
 	</c:if>
-	<c:if test="${isBibtex}">
+	<c:if test="${isPublication}">
 		<c:choose>
 			<c:when test="${showPublication and not showBookmark }">
 				<fmt:message key="post.meta.show_publications_only"/>
