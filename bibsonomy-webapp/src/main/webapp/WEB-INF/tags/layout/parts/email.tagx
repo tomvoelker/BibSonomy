@@ -1,16 +1,24 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-	<jsp:directive.attribute name="address" type="java.lang.String" required="true" />
+	<jsp:directive.tag description="Renders an email address in a spam-safe way." body-content="empty"/>
+
+	<jsp:directive.attribute name="address" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="subject" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="body" type="java.lang.String" required="false"/>
 		
 	<c:set var="username" value="${fn:split(address, '@')[0]}"/>
 	<c:set var="hostname" value="${fn:split(address, '@')[1]}"/>
 		
 	<script type="text/javascript">
 		<![CDATA[
-    	{at="@"; q='"'; l = String.fromCharCode(60); r = String.fromCharCode(62); document.write(l + "a href=" + q + "mailto:${username}" + at + "${hostname}" + q + r + "${username}" + at + "${hostname}" + l + "\/a" + r); }
+    	 {
+          at="@"; q='"'; l = String.fromCharCode(60); r = String.fromCharCode(62); 
+    	  document.write(l + "a href=" + q + "mailto:${username}" + at + "${hostname}?subject=" + encodeURIComponent("${mtl:quoteJSON(subject)}") + "&body=" + encodeURIComponent("${mtl:quoteJSON(body)}") + q + r + "${username}" + at + "${hostname}" + l + "\/a" + r); 
+    	 }
     	]]>
   	</script>
 	<noscript>
