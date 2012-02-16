@@ -13,6 +13,7 @@
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Should the form field be smaller than normal (e.g., having CSS class 'fsSmall')?"/>
 	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>
+	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="A link to a help page."/>
 	<jsp:directive.attribute name="labelMessageKey" type="java.lang.String" required="false" description="An alternative message key for the label, if it is different from the path (which is used by default)."/>
 	 
 	<div class="fsRow">
@@ -20,7 +21,7 @@
 		<form:label cssClass="fsLabel" path="${path}"><fmt:message key="${empty labelMessageKey ? path : labelMessageKey}"/>${required ? '* ' : ''}</form:label>
 		
 		<!-- help -->
-		<c:if test="${empty noHelp or not noHelp}"><buttons:help message="${path}.help"/></c:if>
+		<c:if test="${empty noHelp or not noHelp}"><buttons:help message="${path}.help" helpPage="${helpPage}"/></c:if>
 		
 		<!-- input -->
 		<form:input cssClass="fsInput${small ? ' fsSmall' : ''}${required ? ' reqinput' : ''}" path="${path}" tabindex="2"/>
