@@ -1115,11 +1115,11 @@ div.help>a,div.help>b {
     margin-right: auto;
 }
 
-.post .editTags, .post .action {
+.post .editTags, .post .ieditTags, .post .action {
 	visibility: hidden;	
 }
 
-.post:hover .editTags, .post:hover .action {
+.post:hover .editTags, .post:hover .ieditTags, .post:hover .action {
 	visibility: visible;
 }
 
@@ -1342,33 +1342,29 @@ div.help>a,div.help>b {
 	background-color: #c8dc8d;
 }
 
-.post .ptags span.editTags {
+/* .post .ptags span.editTags { */
+.post .ptags span {
 	display: inline-block;
 	background-repeat: no-repeat;
-	background: url("/resources/image/postactions_black.png");
-	background-position: 123px -34px;
-	width: 14px;
- 	height: 15px;
-	cursor: pointer;
+	background: url("/resources/image/post_actions.png");
     vertical-align: text-bottom;
     background-color: inherit;
     float:left;	
 }
 
+.post .ptags span.ieditTags{ background-position: 0 -83px; width: 21px; height: 18px;} 
+
+.post .ptags span.editTags:hover{ background-position: 0 -121px; width: 21px; height: 18px; cursor:pointer;} 
+.post .ptags span.editTags{ background-position: 0 -159px; width: 21px; height: 18px; cursor:pointer;}
+
 .post form.editTags {
 	margin-left: 110px;
-/*	margin-top: 1ex; */		
-/*	margin-bottom: 5ex; */
 }
 	
 form.editTags input[type=text] {
 	width: 60%;
 }	
 	
-form.editTags, form.editTags input {
-	/* display: inline; */	
-}
-
 .ptags {
 	background: none;
 	color: #006699;
