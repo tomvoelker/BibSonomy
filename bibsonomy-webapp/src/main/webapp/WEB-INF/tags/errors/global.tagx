@@ -5,6 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:spring="http://www.springframework.org/tags"
+    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
     <jsp:directive.attribute name="errors"  type="org.springframework.validation.Errors" required="true"/>
@@ -16,6 +17,8 @@
 		<c:if test="${not empty errors.globalErrors}">
 			<div class="errorcontainer">
 				<h3><fmt:message key="error"/></h3>
+
+				<fmt:message key="error.report"/>${mtl:ch('nbsp')}:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}" subject="[${command.context.loginUser.name}] error on /${requPath}" body="${errors.globalErrors}"/>
 
 				<c:forEach var="error" items="${errors.globalErrors}">
 					<c:if test="${empty cssClass}"><c:set var="cssClass" value="error"/></c:if>
