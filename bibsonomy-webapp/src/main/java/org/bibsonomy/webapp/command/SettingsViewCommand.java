@@ -57,12 +57,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * list with friends of the current login user
 	 */
 	private List<User> userFriends;
-	
-	/**
-	 * the privacy level of this user's profile {friends, private or public}
-	 */
-	private String profilePrivlevel;
-	
+		
 	private String importType;
 	
 	private boolean overwrite;
@@ -178,20 +173,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		}
 	}
 	
-	/**
-	 * @return the privacy level of this user's profile
-	 */
-	public String getProfilePrivlevel() {
-		return this.profilePrivlevel;
-	}
-
-	/**
-	 * @param profilePrivlevel - the privacy level of this user's profile
-	 */
-	public void setProfilePrivlevel(final String profilePrivlevel) {
-		this.profilePrivlevel = profilePrivlevel;
-	}
-
 	/**
 	 * @return importType
 	 */

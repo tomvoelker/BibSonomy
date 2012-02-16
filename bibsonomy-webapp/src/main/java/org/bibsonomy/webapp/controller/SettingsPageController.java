@@ -12,6 +12,7 @@ import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
@@ -48,7 +49,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
-
+		/*
+		 * the user can only change his/her own settings, thus we take the 
+		 * loginUser 
+		 */
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
 
@@ -60,25 +64,28 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 		}
+		
+		/*
+		 * get friends for sidebar
+		 */
+		command.setUserFriends(logic.getUserRelationship(command.getUser().getName(), UserRelation.FRIEND_OF, null));
+		command.setFriendsOfUser(logic.getUserRelationship(command.getUser().getName(), UserRelation.OF_FRIEND, null));
 
 		// show sync tab only for non-spammers
 		command.showSyncTab(!loginUser.isSpammer());
 
 		switch (command.getSelTab()) {
-		case 0:
-			// called by the my profile tab
-			workOnMyProfileTab(command);
+		case 0:	// profile tab
 			break;
-		case 1:
-			// called by the setting tab
+		case 1:	// setting tab
 			break;
-		case 2:
+		case 2:	// import tab
 			checkInstalledJabrefLayout(command);
 			break;
-		case 3:
+		case 3:	// group tab
 			workOnGroupTab(command);
 			break;
-		case 4:
+		case 4:	// sync tab
 			workOnSyncSettingsTab(command);
 			break;
 		default:
@@ -89,23 +96,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		return Views.SETTINGSPAGE;
 	}
 
-	private void workOnMyProfileTab(final SettingsViewCommand command) {
-		final User user = command.getUser();
-		
-
-		/*
-		 *  retrieve friend list of the user
-		 *  FIXME: why is the complete user retrieved, not only his friends?
-		 *  FIXME: and what are the following two statements doing? 
-		 *  Don't they retrieve the friends?!  
-		 */
-		command.setUser(logic.getUserDetails(command.getUser().getName()));
-
-		command.setUserFriends(logic.getUserRelationship(user.getName(), UserRelation.FRIEND_OF, null));
-		command.setFriendsOfUser(logic.getUserRelationship(user.getName(), UserRelation.OF_FRIEND, null));
-		// retrieve profile privacy level setting
-		command.setProfilePrivlevel(user.getSettings().getProfilePrivlevel().name().toLowerCase());
-	}
 
 	/**
 	 * checks whether the user has already uploaded jabref layout definitions
@@ -190,7 +180,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	@Override
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setUser(new User());
+		final User user = new User();
+		command.setUser(user);
+		user.setSettings(new UserSettings());
 		return command;
 	}
 

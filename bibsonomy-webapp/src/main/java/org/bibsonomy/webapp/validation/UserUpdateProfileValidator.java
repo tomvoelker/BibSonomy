@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.Validator;
@@ -43,7 +42,6 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 
 		this.checkUserRealName(user.getRealname(), errors);
 		this.checkUserGender(user.getGender(), errors);
-		this.checkProfilePrivlevel(command.getProfilePrivlevel(), errors);
 		this.checkUserEmailAdress(user.getEmail(), errors);
 		this.checkUserHomepage(user.getHomepage(), errors);
 		this.checkUserOpenURL(user.getOpenURL(), errors);
@@ -77,12 +75,6 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 			} catch (final MalformedURLException ex) {
 				errors.rejectValue("user.openURL", "error.profile.openurl");
 			}
-		}
-	}
-
-	private void checkProfilePrivlevel(final String level, final Errors errors) {
-		if (!ProfilePrivlevel.isProfilePrivlevel(level)) {
-			errors.rejectValue("user.settings.profilePrivlevel", "error.field.valid.profilePrivlevel"); // TODO: create error message ??!
 		}
 	}
 
