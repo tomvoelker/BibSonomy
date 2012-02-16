@@ -16,7 +16,7 @@
 
 		<fmt:message key="${messageKey}" var="submitButton"/>
 
-		<input type="submit" value="${submitButton}" />
+		<input class="fsSubmit" type="submit" value="${submitButton}" />
 	</div>
 
 </jsp:root>
