@@ -222,8 +222,8 @@
 		linktd.style.fontSize = "70%";	
 				
 		var link = document.createElement("a");	
-		link.className="item bibtex";
-		
+		link.className="litem";
+		link.innerHTML = getString("bibtex.actions.bibtex");
 		link.href = "/bib/bibtex/" + simHashID + bibtexhash + "/" + loginusername;
 		link.title = getString("bibtex.actions.bibtex.title");
 		
@@ -236,9 +236,15 @@
 		
 		if (url != "") {
 			var urllink = document.createElement("a");
-			urllink.className="item url";
+			urllink.className="litem";
 			urllink.href = url;		
 			urllink.title = getString("bibtex.actions.url.title");
+			urllink.innerHTML = getString("bibtex.actions.url");
+		} else {
+			var urllink = document.createElement("span");
+			urllink.className="ilitem";
+			urllink.title = getString("bibtex.actions.url.inactive");
+			urllink.innerHTML = getString("bibtex.actions.url");
 		}
 				
 		div1.innerHTML = title;	
@@ -248,9 +254,9 @@
 					
 		linktd.appendChild(link);
 		linktd.appendChild(pick);
-		if (url != "") {
+//		if (url != "") {
 			linktd.appendChild(urllink);			
-		}	
+//		}	
 					
 		tr.appendChild(titletd);	
 		tr.appendChild(linktd);	
