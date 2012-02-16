@@ -1292,20 +1292,6 @@ Most actions appear in three ways
 .post .action .delete:hover, #pageOptions .delete:hover, .post .action .remove:hover, #pageOptions .remove:hover { background-position: 0 -237px; width: 16px; height: 20px; } 
 .post .action .delete, #pageOptions .delete, .post .action .remove, #pageOptions .remove{ background-position: 0 -277px; width: 16px; height: 20px; } 
 
-.post .action .ibibtex , #resultlist .ibibtex, #pageOptions .ibibtex { background-position: 0 -317px; width: 36px; height: 9px; } 
-.post .action .idoi, #pageOptions .idoi{ background-position: 5px -337px; width: 30px; height: 19px; } 
-
-.post .action .url:hover, #resultlist .url:hover, #pageOptions .url:hover{ background-position: 0 -376px; width: 30px; height: 24px; } 
-.post .action .url, #resultlist .url, #pageOptions .url{ background-position: 0 -420px; width: 30px; height: 24px; } 
-
-.post .action .doi:hover, #pageOptions .doi:hover{ background-position: 0 -464px; width: 30px; height: 24px; } 
-.post .action .doi, #pageOptions .doi{ background-position: 0 -508px; width: 30px; height: 24px; } 
-
-.post .action .bibtex:hover , #resultlist .bibtex:hover, #pageOptions .bibtex:hover {background-position: 0 -552px; width: 46px; height: 24px; } 
-.post .action .bibtex , #resultlist .bibtex, #pageOptions .bibtex {background-position: 0 -596px; width: 46px; height: 24px; } 
-
-.post .action .openUrl:hover, #pageOptions .openUrl:hover{ background-position: 0 -640px; width: 30px; height: 24px; } 
-.post .action .openUrl, #pageOptions .openUrl{ background-position: 0 -684px; width: 30px; height: 24px; }
 
 .post .action .icommunity, #pageOptions .icommunity{ background-position: 0 -723px; width: 19px; height: 16px; } 
 .post .action .community:hover, #pageOptions .community:hover{ background-position: 0 -754px; width: 19px; height: 16px; } 
@@ -1322,12 +1308,7 @@ Most actions appear in three ways
 .post .action .icopy, #pageOptions .icopy{ background-position: 0 -989px; width: 17px; height: 21px; } 
 .post .action .copy, #pageOptions .copy{ background-position: 0 -1030px; width: 17px; height: 21px; } 
 
-.post .action .iopenUrl, #pageOptions .iopenUrl{ background-position: 0 -1071px; width: 22px; height: 17px; } 
-.post .action .iurl, #resultlist .iurl, #pageOptions .iurl{ background-position: 0 -1108px; width: 21px; height: 10px; } 
 .post .action .pick, #resultlist .pick, #pageOptions .pick{ background-position: 0 -1138px; width: 27px; height: 22px; } 
-
-
-
 
 
 /***** POST RATINGS ****/
