@@ -12,6 +12,7 @@
 	<jsp:directive.attribute name="path" type="java.lang.String" required="true" description="Path to property for data binding (e.g., post.resource.journal), labels, and the help message (.help is appended)"/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Should the form field be smaller than normal (e.g., having CSS class 'fsSmall')?"/>
 	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
+	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>	
 	<jsp:directive.attribute name="rows" type="java.lang.Integer" required="false" description="The number of rows. Default is 3."/>
 	 
 	<div class="fsRow">
@@ -19,7 +20,7 @@
 		<form:label cssClass="fsLabel" path="${path}"><fmt:message key="${path}"/>${required ? '* ' : ''}</form:label>
 		
 		<!-- help -->
-		<buttons:help message="${path}.help"/>
+		<c:if test="${empty noHelp or not noHelp}"><buttons:help message="${path}.help"/></c:if>
 		
 		<!-- input -->
 		<form:textarea cssClass="fsInput${small ? ' fsSmall' : ''}${required ? ' reqinput' : ''}" path="${path}" tabindex="2" rows="${not empty rows ? rows : 3}"/>
