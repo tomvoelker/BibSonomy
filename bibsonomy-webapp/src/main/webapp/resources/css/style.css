@@ -1314,10 +1314,13 @@ div.help>a,div.help>b {
 .ptags li {
 	margin-bottom: 0.5ex;
 	color: black;
-	padding: 0.3ex 0.5ex;
+	padding-right: 0.5ex;
 	display: inline;
 }
 
+.ptags .hiddenSystemTag img {
+	padding-right: 0.5ex;
+}
 
 .post .ptags>ul.tags {
     display: inline-block;
