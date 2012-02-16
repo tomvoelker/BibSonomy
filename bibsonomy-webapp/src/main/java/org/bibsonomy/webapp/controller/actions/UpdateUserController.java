@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.Wiki;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -38,13 +36,11 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 
-		final User loginUser = context.getLoginUser(); 
-
-		/**
+		/*
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			return super.workOn(command);
 		}
 
@@ -52,11 +48,10 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		 * check the ckey
 		 */
 		if (context.isValidCkey()) {
-			log.debug("User is logged in, ckey is valid");
-			// update user informations here
-			updateUserProfile(loginUser, command.getUser(), command.getProfilePrivlevel());
+			// update user profile 
+			updateUserProfile(context.getLoginUser(), command.getUser());
 		} else {
-			errors.reject("error.field.valid.ckey");
+			this.errors.reject("error.field.valid.ckey");
 		}
 
 		return super.workOn(command);
@@ -69,7 +64,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	 * @param loginUser
 	 * @param command
 	 */
-	private void updateUserProfile(final User loginUser, final User commandUser, final String profilePrivlevel) {
+	private void updateUserProfile(final User loginUser, final User commandUser) {
 		loginUser.setRealname(commandUser.getRealname());
 		loginUser.setGender(commandUser.getGender());
 		loginUser.setBirthday(commandUser.getBirthday());
@@ -83,10 +78,9 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		loginUser.setHobbies(commandUser.getHobbies());
 		loginUser.setPlace(commandUser.getPlace());
 
-		/*
-		 * FIXME: use command.user.privlevel instead of string "group"!
-		 */
-		loginUser.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(profilePrivlevel));
+		final ProfilePrivlevel profilePrivlevel = commandUser.getSettings().getProfilePrivlevel();
+		
+		loginUser.getSettings().setProfilePrivlevel(profilePrivlevel);
 
 		updateUser(loginUser, errors);
 	}
@@ -98,7 +92,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	 */
 	private void updateUser(final User user, final Errors errors) {
 		try {
-			logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+			this.logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
 		} catch(DatabaseException e) {
 			final List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
 
