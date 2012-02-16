@@ -13,6 +13,7 @@
     xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
     xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
     xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+    xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
 	xmlns:spring="http://www.springframework.org/tags">
     
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -67,6 +68,52 @@
 					</c:forEach></ul>
 				</li>
 
+				<!-- loginUser.friends -->
+				<li>
+					<span class="sidebar_h"><fmt:message key="friends.friendof"/></span> 
+					<ul class="tagcloud sidebar_collapse_content">
+              			<c:forEach var="user" items="${command.userFriends}">
+                			<li><a href="/friend/${mtl:encodeURI(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
+              			</c:forEach>
+            		</ul>
+          		</li>
+
+		          <li><span class="sidebar_h"><fmt:message key="friends.yourfriends"/></span>
+		            <ul class="sidebar_collapse_content">
+		              <c:forEach var="user" items="${command.friendsOfUser}">
+		                <li>
+		                  <a href="/user/${mtl:encodeURI(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
+			                <fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+		                  <a
+		    	             class="action" 
+		    	             href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings"
+		    	             title="${deleteFriendTitle}">
+		    		        <fmt:message key="friends.actions.delete"/>
+		                  </a>
+		                </li>
+		              </c:forEach>
+		            </ul>
+		          </li>
+		          
+				  <!-- list all spheres -->
+				  <li>
+					<fmt:message key="spheres.sidebar.title" var="spheresCloudTitle" />
+					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
+				  </li>
+						
+		          <!--  add a friend  -->
+		          <li><span class="sidebar_h"><fmt:message key="friends.addfriend"/></span>
+		
+		            <form class="sidebar_collapse_content" name="friends" method="POST" action="/ajax/handleUserRelation">
+		              <label for="laddfriend"><fmt:message key="user"/> </label><c:out value=" "/>
+		              <input type="text" size="20" name="requestedUserName" id="laddfriend"/><c:out value=" "/>
+		              <input type="hidden" value="addFriend" name="action"/>
+		              <input type="hidden" value="settings" name="forward"/>
+		              <input type="hidden" value="${ckey}" name="ckey"/>
+		              <fmt:message var="addFriend" key="friends.button.add"/>
+		              <input type="submit" name="submit" value="${addFriend}"/>
+		            </form>
+		            </li>
         	</ul>
         </jsp:attribute>
         
