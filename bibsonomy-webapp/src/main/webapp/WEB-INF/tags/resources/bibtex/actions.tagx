@@ -147,17 +147,18 @@
 	<!--+
 		| RESOURCE LINKS (URL, DOI, BIBTEX, OPEN URL)
 		+-->
+	<!-- CSS: litem = link-item, ilitem = inactive link-item -->
 	<c:if test="${not disableResourceLinks}">
 
 		<!-- URL -->
 		<c:choose>
 			<c:when test="${not empty post.resource.url}">
 				<fmt:message key="bibtex.actions.url.title" var="urlTitle" />
-	    		<a class="item url" href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}"><!-- Keep Me --></a>
+	    		<a class="litem" href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}">URL</a>
 			</c:when>
 			<c:otherwise>
 				<fmt:message key="bibtex.actions.url.inactive" var="urlTitle" />
-	    		<span class="item iurl" title="${urlTitle}"><!-- Keep Me --></span>
+	    		<span class="ilitem" title="${urlTitle}">URL</span>
 			</c:otherwise>				
 		</c:choose>
 		
@@ -165,27 +166,27 @@
 		<c:choose>
 			<c:when test="${not empty post.resource.miscFields['doi']}">
 				<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
-	    		<a class="item doi" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><!-- Keep Me --></a>
+	    		<a class="litem" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}">DOI</a>
 			</c:when>
 			<c:otherwise>
 				<fmt:message key="bibtex.actions.doi.inactive" var="urlTitle"/>
-	    		<span class="item idoi" title="${urlTitle}"><!-- Keep Me --></span>
+	    		<span class="ilitem" title="${urlTitle}">DOI</span>
 	    	</c:otherwise>
 		</c:choose>
 		
 		<!-- BIBTEX -->
 	    <fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-	    <a class="item bibtex" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><!-- Keep Me --></a>
+	    <a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">BibTeX</a>
 	
 		<!-- OPENURL -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn and not empty command.context.loginUser.openURL}">
 	    		<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
-	    		<a class="item openUrl" href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}"><!-- Keep Me --></a>
+	    		<a class="litem" href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}">OpenURL</a>
 			</c:when>			
 			<c:otherwise>
 	    		<fmt:message key="bibtex.actions.openurl.inactive" var="openurlTitle" />
-	    		<span class="item iopenUrl" title="${openurlTitle}"><!-- Keep Me --></span>
+	    		<span class="ilitem" title="${openurlTitle}">OpenURL</span>
 			</c:otherwise>
 		</c:choose>		
 	</c:if>

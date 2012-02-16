@@ -1226,7 +1226,17 @@ div.help>a,div.help>b {
 }
 
 
-/******** Post Actions ********/
+/******** Post Actions ********
+Post actions are the icons that allow copy, edit, delete, ... , bibtex, doi, ...
+They are divided into 2 Groups:
+* item : Real graphical icons
+* litem: "linked icon": We use text to display the icons that are simple links
+Most actions appear in three ways
+* inactive (no link, only a message): i... (ilitem, icopy, ...)
+* active
+* hovered upon
+*/
+
 .post .action {
 	display: block;
 	margin-top: 1ex;
@@ -1242,8 +1252,31 @@ div.help>a,div.help>b {
 	background: url("/resources/image/post_actions.png");
     display: block;
     float: left;
-    margin-left: 2px;
+    margin-right: 10px;
 }
+
+
+.post .action .litem, #resultlist .litem, #pageOptions .litem {
+	color:#000000;
+    margin-right: 10px;
+    float: left;
+    padding-top: 4px;
+    font-size:	small;
+    font-weight: bold;
+}
+
+.post .action .ilitem, #resultlist .ilitem, #pageOptions .ilitem{
+    margin-right: 10px;
+    float: left;
+	color: #aaaaaa;
+	padding-top: 4px;
+	font-size: small;
+}
+
+.post .action .litem:hover, #resultlist .litem:hover, #pageOptions .litem:hover {
+	color:#006699;
+}
+
 
 .post .action .unpick, #pageOptions .unpick { background-position: 0 0; width: 27px; height: 22px; } 
 
@@ -1293,6 +1326,11 @@ div.help>a,div.help>b {
 .post .action .iurl, #resultlist .iurl, #pageOptions .iurl{ background-position: 0 -1108px; width: 21px; height: 10px; } 
 .post .action .pick, #resultlist .pick, #pageOptions .pick{ background-position: 0 -1138px; width: 27px; height: 22px; } 
 
+
+
+
+
+/***** POST RATINGS ****/
 
 .post .rating {
 	margin-top: 1ex;
