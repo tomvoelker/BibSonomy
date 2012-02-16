@@ -23,7 +23,7 @@
 			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}">
 				<span><fmt:message key="navi.my"/>${properties['project.name']}</span>
 				<ul>
-					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a></li>
+					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/><fmt:message key="navi.posts.cap"/></a></li>
 					<li><a href="/friends"><fmt:message key="navi.my.plural"/><fmt:message key="navi.friends.cap"/></a></li>
 				    <li><a href="/spheres"><fmt:message key="navi.my.plural"/><fmt:message key="navi.spheres.cap"/></a></li>
 					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.discussedPosts.Cap"/></a></li>
