@@ -421,14 +421,15 @@ function initSidebarHeader() {
 
 		var new_sidebarWidth = $("#sidebar").width() + scrollbarWidth;
 		// set new width of header, regarding to scrollbarwidth and hide scrollbars in header
-		$("#sidebarheader").css.("width", new_sidebarWidth);
+		$("#sidebarheader").css("width", new_sidebarWidth);
 	
-		if ($("#headercontainer").length != 0)
+		if ($("#headercontainer").length != 0) {
 			$('#headercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
 		}
 	
-		if ($("#footercontainer").length != 0)
+		if ($("#footercontainer").length != 0) {
 			$('#footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
+		}
 	}
 
 	if ($("#headercontainer").length != 0) {
