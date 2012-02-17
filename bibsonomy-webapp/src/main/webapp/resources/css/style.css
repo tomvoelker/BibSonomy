@@ -33,7 +33,7 @@ a img {
 	left: 20px; 
 	right: 20px;
     background-color: white;	
-	min-width: 950px;
+/*	min-width: 950px; */
 	min-height: 310px
 }
 
@@ -1254,7 +1254,7 @@ Most actions appear in three ways
 	background: url("/resources/image/post_actions.png");
     display: block;
     float: left;
-    margin-right: 10px;
+    margin-right: 4px;
 }
 
 
@@ -1318,8 +1318,8 @@ Most actions appear in three ways
 .post .rating {
 	margin-top: 1ex;
 	position: absolute;
-	bottom: 2ex;
-	right: 2ex;
+	bottom: 1.3ex;
+	right: 8px;
 }
 
 .post .footer {
@@ -2438,4 +2438,38 @@ table.report td.value {
 
 #post\.resource\.bibtexKey {
 	width: 25%;
+}
+
+
+@media screen and (max-width: 1024px) {
+	.post .image, .post .overlay {
+		display: none;
+	}
+	
+	.post .ptitle, .post .puser, .post .ptime, .post .ptags, .post .pdesc {
+		margin-left: 0px;
+	}
+	
+	.post .action {
+		left: 8px;
+	}
+	
+	#sidebar, #sidebarheader, sidebarfooter {
+		display: none;
+	}
+	
+	#postcontainer {
+		padding-right: 0;
+	}
+	
+	#footercontainer, #headercontainer {
+		padding-right: 13px;
+	}
+
+	
+@media screen and (min-width: 1025px) {
+	
+	#footercontainer, #headercontainer {
+		padding-right: 0px;
+	}	
 }
