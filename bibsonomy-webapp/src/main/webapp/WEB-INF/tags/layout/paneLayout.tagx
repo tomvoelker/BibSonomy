@@ -45,6 +45,7 @@
 		sidebar="${sidebar}" 
 		requPath="${requPath}"
 		noLoginBox="${noLoginBox}"
+		hideFooterContainer="true"
 		activeTab="${activeTab}">
 	
 			
