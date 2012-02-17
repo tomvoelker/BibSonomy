@@ -909,7 +909,8 @@ ul.news {
 	border: 1px solid #069;
 	clear: both;
 	padding: 0.5em 1em;
-	min-width: 725px;
+	/* min-width: 725px; */
+	min-width: 595px; 
 }
 
 .tab_content hr {
@@ -2243,7 +2244,8 @@ div.fsRow div.resizable-textarea textarea {
     position: relative;
 }
 .fsOuter, .fsInner{
-	min-width: 650px;
+	/* min-width: 650px; */
+	/* min-width: 560px; */
 }
 .fsOuter {
     padding: 0 10px 10px 10px;
@@ -2428,4 +2430,12 @@ table.report td.value {
 
 #groupsList tr:hover:not(.groupsNewChar) td>a{
 	color: white;
+}
+
+#post\.resource\.entrytype {
+	width: 20%;
+}
+
+#post\.resource\.bibtexKey {
+	width: 25%;
 }
