@@ -2397,3 +2397,13 @@ table.report td.value {
 	font-size: 80%;
 	color: #888888;
 }
+
+#groupsList tr:hover:not(.groupsNewChar) {
+	background-color: #006699;
+	color: white;
+	
+}
+
+#groupsList tr:hover:not(.groupsNewChar) td>a{
+	color: white;
+}
