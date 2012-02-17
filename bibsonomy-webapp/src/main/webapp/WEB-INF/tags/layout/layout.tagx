@@ -26,6 +26,8 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
+	
 	
 
     <!-- 
@@ -127,7 +129,12 @@
 
 			</head>
 			<body>
-				<div id="container"><!-- everything but the footer -->
+				<c:set var="noPageNavigationClass" value=""/>
+				<c:if test="${hideFooterContainer}">
+					<c:set var="noPageNavigationClass" value="noPageNavigation"/>
+				</c:if>
+				
+				<div id="container" class="${noPageNavigationClass}"><!-- everything but the footer -->
 				
 					<div id="header">
 

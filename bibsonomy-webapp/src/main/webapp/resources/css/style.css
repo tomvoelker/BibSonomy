@@ -1685,6 +1685,28 @@ form.editTags input[type=text] {
 	background-color: #E4E4E4;
 }
 
+
+#container.noPageNavigation>#footercontainer {
+	display: none;
+}
+
+
+/** #container.noPageNavigation ... will be used, if no page navigation is available **/ 
+#container.noPageNavigation {
+	bottom:20px;
+}
+	
+#container.noPageNavigation>#postcontainer {
+	bottom: 6px;
+}
+
+#container.noPageNavigation>#footercontainer {
+	display: none;
+}
+
+
+
+
 #fullscreenfooter {
 	height: 30px;
 	width: 100%;
