@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.util.BibTexUtils;
@@ -67,7 +68,9 @@ public class SpiresScraper extends AbstractUrlScraper{
 				
 				URL bibtexUrl = url;
 				if (!url.getQuery().contains(FORMAT_WWWBRIEFBIBTEX)) { 
-					bibtexUrl = new URL(url.toString() + "&" + FORMAT_WWWBRIEFBIBTEX);
+					Matcher m = Pattern.compile("<a href=\"?(/spires/find/hep/www\\?.*?\\&FORMAT=WWWBRIEFBIBTEX)\"?>").matcher(sc.getPageContent());
+					if (!m.find()) throw new ScrapingFailureException("no download link found");
+					bibtexUrl = new URL(url.getProtocol() + "://" + url.getHost() + m.group(1));
 				}
 				
 				final Document temp = XmlUtils.getDOM(bibtexUrl);
