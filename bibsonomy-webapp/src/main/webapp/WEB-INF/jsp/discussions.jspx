@@ -21,7 +21,7 @@
 		pageTitle="${pageTitle}" 
 		command="${command}" 
 		requPath="${requPath}"
-		disableActions="${true}"
+		showPageOptions="${false}"
 		activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
 	
 		<jsp:attribute name="heading">
