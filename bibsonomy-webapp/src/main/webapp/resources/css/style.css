@@ -1112,8 +1112,6 @@ div.help>a,div.help>b {
 	background-color: #ffffff;
 	position: relative;
 	min-height: 100px; /* to give previews images enough space */ 
-	margin-left: 10px;
-	margin-right: 10px
 }
 	
 .post:hover {
@@ -1627,6 +1625,8 @@ form.editTags input[type=text] {
 .bookmarksContainer ul.posts {
 	background-color: #ffffff;
 	border-right: 1px solid #c6c6c6;
+	padding-left: 10px;
+	padding-right: 10px
 }
 
 .publicationsContainer .posts {
@@ -1636,6 +1636,8 @@ form.editTags input[type=text] {
 .publicationsContainer ul.posts {
 	background-color: #ffffff;
 	border-left: 1px solid #c6c6c6;
+	padding-left: 10px;
+	padding-right: 10px
 }
 
 .publicationsContainer ul.posts.wide, .bookmarksContainer ul.posts.wide {
