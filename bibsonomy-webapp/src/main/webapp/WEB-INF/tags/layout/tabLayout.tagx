@@ -24,7 +24,7 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 				
 		
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" infobox="${infobox}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}">
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" infobox="${infobox}" sidebar="${sidebar}" requPath="${requPath}" headerExt="${headerExt}" activeTab="${activeTab}" hideFooterContainer="${true}">
 	
 	
 		<!--+
