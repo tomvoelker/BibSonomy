@@ -56,6 +56,19 @@ a img {
 #fullscreen {
 }
 
+
+#fullscreen>#fscontent>.infobox {
+    background-color: #FFF69B;
+    border: 2px solid #666666;
+    box-shadow: 0 0 4px 0;
+    left: 50px;
+    margin-top: 40px;
+    position: absolute;
+    right: 350px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
+    z-index: 60;
+}
+
+
 #fscontent {
 	padding-left: 8px;
 	padding-right: 8px;
@@ -2490,6 +2503,11 @@ table.report td.value {
 	#footercontainer, #headercontainer {
 		padding-right: 13px !important;
 	}
+	
+	#fullscreen>#fscontent>.infobox {
+		right: 50px;
+	}
+	
 }
 
 @media screen and (max-width: 1099px) {

@@ -32,30 +32,32 @@
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
 
 				<!-- FIXME: add theme! -->
-
-				<!-- logo -->
-				<img src="/resources/image/logo.png" alt="${fn:escapeXml(properties['project.name'])}" 
-					style="float:left; margin: 10px;" width="98" height="120"/>
 				
-				<!-- project name -->
-				<div class="systemName">
-					<a href=""><c:out value="${properties['project.name']}"/></a>
+				<div class="infobox">
+					<!-- logo -->
+					<img src="/resources/image/logo.png" alt="${fn:escapeXml(properties['project.name'])}" 
+						style="float:left; margin: 10px;" width="98" height="120"/>
+					
+					<!-- project name -->
+					<div class="systemName">
+						<a href=""><c:out value="${properties['project.name']}"/></a>
+					</div>
+					
+					<!-- introduction -->
+					<div class="systemAbout">
+						<fmt:message key="system.about">
+							<fmt:param value="${properties['project.name']}"/>
+						</fmt:message>
+					</div>
+					
+					<!-- registration -->
+					<div class="systemRegister">	
+						<h2><a href="/login"><fmt:message key="navi.login"/></a></h2>
+						<fmt:message key="system.register"/>
+					</div>
+					
+					<div class="systemInfoClear"> <!-- do not remove --></div>
 				</div>
-				
-				<!-- introduction -->
-				<div class="systemAbout">
-					<fmt:message key="system.about">
-						<fmt:param value="${properties['project.name']}"/>
-					</fmt:message>
-				</div>
-				
-				<!-- registration -->
-				<div class="systemRegister">	
-					<h2><a href="/login"><fmt:message key="navi.login"/></a></h2>
-					<fmt:message key="system.register"/>
-				</div>
-				
-				<div class="systemInfoClear"> <!-- do not remove --></div>
 			</c:if>
 		</jsp:attribute>
 
