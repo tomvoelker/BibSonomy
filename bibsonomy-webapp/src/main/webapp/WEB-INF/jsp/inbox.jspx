@@ -20,7 +20,7 @@
 	<layout:resourceLayout pageTitle="${inboxPageTitle}" 
 			command="${command}" 
 			requPath="${requPath}"  
-			disableActions="${true}"
+			showPageOptions="${true}"
 			showInboxActions="${true}">
 
 		<jsp:attribute name="heading">
