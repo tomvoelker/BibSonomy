@@ -2182,6 +2182,7 @@ form.editTags input[type=text] {
 
 #publicationListOptions ul, #bookmarkListOptions ul, #pageOptions ul {
 	margin-left: 0px;
+	padding-left: 1em;
 }
 
 
