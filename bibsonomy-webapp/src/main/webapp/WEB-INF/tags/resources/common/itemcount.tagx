@@ -20,8 +20,7 @@
 	<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
 	
 		<!-- build url --> 
-		<c:url var="numListUrl" value="/${mtl:setParam(requPathAndQuery,entryTypeEntriesPerPage,num)}">
-		</c:url>
+		<c:url var="numListUrl" value="${mtl:setParam(requPathAndQuery,entryTypeEntriesPerPage,num)}"/>
 
 		<!-- display link or current number of entries per page -->
 		<c:choose>
