@@ -1492,10 +1492,24 @@ form.editTags input[type=text] {
 
 
 .bookmarksContainer, .publicationsContainer  {
-	width: 50%;
 	float: left;
 	padding-left: 0ex;
 }
+
+.bookmarksContainer.standard, .publicationsContainer.standard {
+	width:50%;
+}
+
+.bookmarksContainer.wide, .publicationsContainer.wide {
+	max-width:800px;
+	width:100%;
+	border:none;
+}
+
+.bookmarksContainer.narrow, .publicationsContainer.narrow {
+	display:none;
+}
+
 	
 .publicationsContainer {
 	margin-left: 0px;
@@ -1516,6 +1530,10 @@ form.editTags input[type=text] {
 
 #bookmarksheader .header {
 	border-right: 1px solid #c6c6c6;
+}
+
+#bookmarksheader .header.wide, #publicationsheader .header.wide {
+	border:none;
 }
 
 #publicationsheader .header {
@@ -1591,6 +1609,11 @@ form.editTags input[type=text] {
 	border-left: 1px solid #c6c6c6;
 }
 
+.publicationsContainer ul.posts.wide, .bookmarksContainer ul.posts.wide {
+	background-color: #ffffff;
+	border:none;
+}
+
 
 .bookmarksContainer .desc, .publicationsContainer .desc {
 	color: #666666;
@@ -1637,10 +1660,22 @@ form.editTags input[type=text] {
 
 
 #bookmarksheader, #bookmarksfooter, #publicationsheader, #publicationsfooter {
-	width: 50%;
 	float: left;
 	padding-left: 0ex;
 	background-color: #ffffff;
+}
+
+#bookmarksheader.standard, #bookmarksfooter.standard, #publicationsheader.standard, #publicationsfooter.standard {
+	width: 50%;
+}
+
+
+#bookmarksheader.wide, #bookmarksfooter.wide, #publicationsheader.wide, #publicationsfooter.wide {
+	width:100%;
+}
+
+#bookmarksheader.narrow, #bookmarksfooter.narrow, #publicationsheader.narrow, #publicationsfooter.narrow {
+	display:none;
 }
 
 	

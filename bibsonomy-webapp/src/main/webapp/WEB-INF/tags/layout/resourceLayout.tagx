@@ -35,6 +35,8 @@
     <!-- which resourcetypes to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize) -->
     <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
     <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+    <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
+    <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" infobox="${infobox}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}">		
@@ -52,14 +54,15 @@
 			| header for resource lists and sidebar
 			+-->
 		<jsp:attribute name="headerContainer">
-			<div id="bookmarksheader">
+						
+			<div id="bookmarksheader" class="${bookmarksWidthClass}">
 				<div id="bookmarkListConfig" class="config">
 					<div id="bookmarkListOptions" class="listOptions">
 						<rc:actions resourceType="bookmark" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${showBookmark}" showPublication="${showPublication}" showInboxActions="${showInboxActions}"/>
 					</div>					
 				</div>
 				<div class="headerLogo image bookmarks"><!--  --></div>
-				<h2 class="header">
+				<h2 class="header ${bookmarksWidthClass}">
 					<fmt:message key="bookmarks" />
 					<!-- Display total number of entries in list --> 
 					<c:if test="${!empty command.bookmark.list}">
@@ -70,15 +73,15 @@
 					</c:if>								
 				</h2>
 			</div>
-			
-			<div id="publicationsheader">
+						
+			<div id="publicationsheader" class="${publicationsWidthClass}">
 				<div id="publicationListConfig" class="config">
 					<div id="publicationListOptions" class="listOptions">
 						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${showBookmark}" showPublication="${showPublication}" showInboxActions="${showInboxActions}"/>
 					</div>
 				</div>
 				<div class="headerLogo image publications"><!--  --></div>
-				<h2 class="header">
+				<h2 class="header ${publicationsWidthClass}">
 					<fmt:message key="publications" />
 					<!-- Display total number of entries in list --> 
 					<c:if test="${!empty command.bibtex.list}">
@@ -93,7 +96,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="footerContainer">
-			<div id="bookmarksfooter">
+			<div id="bookmarksfooter" class="${bookmarksWidthClass}">
 				<div class="footer">
 					<c:if test="${not disableListNavigation}">
 						<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>						
@@ -101,7 +104,7 @@
 				</div>
 			</div>
 			
-			<div id="publicationsfooter">
+			<div id="publicationsfooter" class="${publicationsWidthClass}">
 				<div class="footer">
 					<c:if test="${not disableListNavigation}">
 						<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>						
@@ -142,8 +145,8 @@
 <!--					</c:otherwise>-->
 <!--				</c:choose>				-->
 <!--			</div>-->
-			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" widthClassName="${bookmarksWidthClass}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" widthClassName="${publicationsWidthClass }"/>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

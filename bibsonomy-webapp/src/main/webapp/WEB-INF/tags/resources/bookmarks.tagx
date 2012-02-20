@@ -13,6 +13,7 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="listIndex" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
 		
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
@@ -29,6 +30,7 @@
 		className="bookmarksContainer"
 		listView="${listView}"
 		extTitle="${extTitle}"
+		widthClassName="${widthClassName}"
 	>
     
     		<jsp:attribute name="formatButtons">

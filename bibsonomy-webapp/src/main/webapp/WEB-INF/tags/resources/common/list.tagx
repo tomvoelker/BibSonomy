@@ -14,6 +14,7 @@
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" description="Should navigation links (next/pref) be shown? Defaults to true if not set."/>
     <jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="className"  type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
 
@@ -22,8 +23,6 @@
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
-	
-	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 
@@ -34,13 +33,8 @@
 	<c:if test="${empty disableActions}">
 		<c:set var="disableActions" value="${false}"/>
 	</c:if>
-	
-	<c:set var="additionalClassName" value="bookbox" />
-	<c:if test="${fullscreen}">
-		<c:set var="additionalClassName" value="full_${className}" />
-	</c:if>
-	
-	<div id="${listID}" class="${className} ${additionalClassName}">
+		
+	<div id="${listID}" class="${className} ${widthClassName}">
 	
 		<!-- FIXME: migrate these actions to 
 		<div class="bboxheader">
@@ -62,7 +56,7 @@
 		
 		
         <!-- iterate over a list of resources and create the list -->
-        <ul class="posts">
+        <ul class="posts ${widthClassName}">
 			<c:if test="${not empty listView.list}">
 	                  <c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
 					  
