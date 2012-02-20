@@ -437,7 +437,7 @@ function initSidebarHeader() {
 	}
 	
 	if ($("#footercontainer").length != 0) {
-		$('#footercontainer').css({"scroll": "hidden", "padding-right" : scrollbarWidth});
+		$('#footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
 	}
 	
 	
