@@ -131,6 +131,7 @@ a img {
 
 .systemAbout {
 	padding-top: 2ex;
+	clear: both;
 }
 
 .systemRegister {
