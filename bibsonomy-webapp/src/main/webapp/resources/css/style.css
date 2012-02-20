@@ -2477,17 +2477,10 @@ table.report td.value {
 }
 
 
-@media screen and (max-width: 1024px) {
-	.post .image, .post .overlay {
-		display: none;
-	}
+@media screen and (max-width: 899px) {
 	
-	.post .ptitle, .post .puser, .post .ptime, .post .ptags, .post .pdesc {
-		margin-left: 0px;
-	}
-	
-	.post .action {
-		left: 8px;
+	body {
+		background-color: blue;
 	}
 	
 	#sidebar, #sidebarheader, sidebarfooter {
@@ -2499,13 +2492,29 @@ table.report td.value {
 	}
 	
 	#footercontainer, #headercontainer {
-		padding-right: 13px;
+		padding-right: 13px !important;
 	}
+}
 
+@media screen and (max-width: 1099px) {
+
+	body {
+		background-color: purple;
+	}
 	
-@media screen and (min-width: 1025px) {
+	.post .image, .post .overlay {
+		display: none;
+	}
 	
-	#footercontainer, #headercontainer {
-		padding-right: 0px;
-	}	
+	.post .ptitle, .post .puser, .post .ptime, .post .ptags, .post .pdesc {
+		margin-left: 0px;
+	}
+	
+	.post .action {
+		left: 8px;
+	}
+}	
+	
+@media screen and (min-width: 1100px) {
+	
 }
