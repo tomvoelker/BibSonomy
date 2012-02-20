@@ -479,6 +479,26 @@
 						<property name="controllerBeanName" value="inboxPageController"/>
 					</bean>
 				</entry>			
+				<entry key="/BibTeXHashExample">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="bibTeXHashExampleController"/>
+                                                <property name="allowedFields">
+                                                        <list>
+                                                                <value>post.resource.title</value>
+                                                                <value>post.resource.author</value>
+                                                                <value>post.resource.editor</value>
+                                                                <value>post.resource.year</value>
+                                                                <value>post.resource.entrytype</value>
+                                                                <value>post.resource.journal</value>
+                                                                <value>post.resource.booktitle</value>
+                                                                <value>post.resource.volume</value>
+                                                                <value>post.resource.number</value>
+                                                                <value>post.resource.interHash</value>
+                                                                <value>post.resource.intraHash</value>
+                                                        </list>
+                                                </property>
+					</bean>
+				</entry> 
 				<entry key="/unapi">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="UnAPIController"/>
@@ -730,6 +750,9 @@
 			</set>
 		</property>
 	</bean>
+
+        <bean id="bibTeXHashExampleController" class="org.bibsonomy.webapp.controller.BibTeXHashExampleController" scope="request">
+        </bean>
 
 	<bean id="authorsPageController" class="org.bibsonomy.webapp.controller.AuthorsPageController" scope="request">
 		<property name="logic" ref="logic"/>

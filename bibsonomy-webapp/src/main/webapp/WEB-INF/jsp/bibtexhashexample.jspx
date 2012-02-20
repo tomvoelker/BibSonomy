@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+          xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+          xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+          xmlns:form="http://www.springframework.org/tags/form"
+          xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
+          xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+    <jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
+
+    <fmt:message key="navi.bibtexhashexample" var="bibtexhashexamplePageTitle"/>
+
+    <layout:paneLayout pageTitle="${bibtexhashexamplePageTitle}" headerMessageKey="bibtexhashexample.heading" headerLogoClass="bookmarks" command="${command}" requPath="${requPath}" activeTab="post">
+
+        <jsp:attribute name="heading">
+            <parts:search pathMessageKey="navi.bibtexhashexample"/>
+        </jsp:attribute>
+
+        <jsp:attribute name="content">
+            <p><fmt:message key="bibtexhashexample.description" /></p>
+
+            <form:form>
+            
+                <div class="fsRow">
+                    <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help" cssClass="widehelp"/>
+                    <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
+                </div>
+                
+                <bform:textarea path="post.resource.title" rows="2" />
+                <bform:textarea rows="2" path="post.resource.author" />
+                <bform:textarea rows="2" path="post.resource.editor" />
+                <bform:input small="${true}" path="post.resource.year" />
+
+                <bform:input path="post.resource.journal" />
+                <bform:input path="post.resource.booktitle" />
+                <bform:input path="post.resource.volume" />
+                <bform:input path="post.resource.number" />
+                
+<!--                    <table>
+                        <tr><th colspan="2">used in interhash and intrahash</th></tr>
+                        <tr><td>title:  </td><td><bform:textarea path="post.resource.title" rows="2" /></td></tr>
+                        <tr><td>author: </td><td><bform:textarea rows="2" path="post.resource.author" /></td></tr>
+                        <tr><td>editor: </td><td><bform:textarea rows="2" path="post.resource.editor" /></td></tr>
+                        <tr><td>year:   </td><td><bform:input size="100" path="post.resource.year" /></td></tr>
+                        <tr><th colspan="2">used only in intrahash</th></tr>
+                        <tr><td>entrytype:  </td><td><form:input path="post.resource.entrytype" /></td></tr>
+                        <tr><td>journal:    </td><td><bform:input path="post.resource.journal" /></td></tr>
+                        <tr><td>booktitle:  </td><td><bform:input path="post.resource.booktitle" /></td></tr>
+                        <tr><td>volume:     </td><td><bform:input path="post.resource.volume" /></td></tr>
+                        <tr><td>number:     </td><td><bform:input path="post.resource.number" /></td></tr>
+
+                        <tr><th colspan="2">resulting hashes</th></tr>
+                        <tr><td>interhash:</td><td><tt>${hash.inter.id}${command.bibtex.interHash}</tt> ist <tt><a href="/bibtex/${hash.inter.id}${command.bibtex.interHash}">/bibtex/${hash.inter.id}${command.bibtex.interHash}</a></tt></td></tr>
+                        <tr><td>intrahash:</td><td><tt>${hash.intra.id}${command.bibtex.intraHash}</tt> ist <tt><a href="/bibtex/${hash.inter.id}${command.bibtex.intraHash}">/bibtex/${hash.inter.id}${command.bibtex.intraHash}</a></tt></td></tr>
+                    </table> -->
+                    <input type="submit"/>
+                <div class="fsRow">
+                    <tt><c:out value="${hash.inter.id}" /><c:out value="${post.resource.title}" /></tt> ist <!--tt><a href="/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.interHash}" />">/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.interHash}" /></a></tt--><br />
+                    <tt><c:out value="${hash.inter.id}" /><c:out value="${post.resource.intraHash}" /></tt> ist <!--tt><a href="/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.intraHash}" />">/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.intraHash}" /></a></tt-->
+                </div>
+            </form:form>
+        </jsp:attribute>
+
+
+
+        <!--+
+                        | infobox
+                        +-->
+        <jsp:attribute name="infobox">
+            <parts:infobox>
+                <jsp:attribute name="infoTextBody">
+                    <ul>
+                        <li>
+                            <fmt:message key="post.resource.hint"/>
+                        </li>
+                        <ul>
+                            <li><buttons:postBookmark/></li>
+                            <li><buttons:postBookmarkPopUp/></li>
+                        </ul>
+                        <li>
+                            <fmt:message key="post.resource.hint1"/>
+                        </li>
+                    </ul>
+                </jsp:attribute>
+            </parts:infobox>
+        </jsp:attribute>
+
+    </layout:paneLayout>
+
+</jsp:root>
