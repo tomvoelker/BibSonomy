@@ -36,7 +36,7 @@
 	
     <input id="publicInput" name="publicInput" value="${public}" type="hidden" />
 	
-	<layout:bookmarkLayout pageTitle="url :: ${bookmark.title}" command="${command}" requPath="${requPath}">
+	<layout:resourceLayout pageTitle="url :: ${bookmark.title}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.url" formAction="/url" formInputName="requUrl" formInputValue="${command.bookmark.list[0].resource.url}"/>
 		</jsp:attribute>
@@ -63,6 +63,6 @@
 		<jsp:attribute name="contentHeading">
 			<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
-	</layout:bookmarkLayout>
+	</layout:resourceLayout>
 
 </jsp:root>

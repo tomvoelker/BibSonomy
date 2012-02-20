@@ -41,7 +41,7 @@
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
 	
-	<layout:bibtexLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requPath="${requPath}">
+	<layout:resourceLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
@@ -93,6 +93,6 @@
 			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
 
-	</layout:bibtexLayout>
+	</layout:resourceLayout>
 
 </jsp:root>

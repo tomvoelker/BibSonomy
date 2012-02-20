@@ -16,7 +16,12 @@
 	
 	<fmt:message key="navi.basket" var="pageTitle"/>
 	
-	<layout:bibtexLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" isBasket="${true}" disableListNavigation="${true}">
+	<layout:resourceLayout pageTitle="${pageTitle}" 
+			command="${command}" 
+			requPath="${requPath}" 
+			isBasket="${true}" 
+			disableListNavigation="${true}"
+			disableResourcetypeSelection="${true}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.basket"/>
@@ -59,6 +64,6 @@
 			</parts:infobox>
          </jsp:attribute>
     
-	</layout:bibtexLayout>
+	</layout:resourceLayout>
 
 </jsp:root>

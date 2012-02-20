@@ -10,7 +10,6 @@
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false" description="Should actions for all posts in the list be shown? Defaults to true if not set."/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" description="Should navigation links (next/pref) be shown? Defaults to true if not set."/>
     <jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="className"  type="java.lang.String" required="false"/>
@@ -30,26 +29,9 @@
 	<c:if test="${empty disableListNavigation}">
 		<c:set var="disableListNavigation" value="${false}"/>
 	</c:if>	
-	<c:if test="${empty disableActions}">
-		<c:set var="disableActions" value="${false}"/>
-	</c:if>
 		
 	<div id="${listID}" class="${className} ${widthClassName}">
-	
-		<!-- FIXME: migrate these actions to 
-		<div class="bboxheader">
-			<c:if test="${!empty listView.list}">
-					<div class="listhButtons">
-						<jsp:invoke fragment="formatButtons"/>
-					</div>
-			</c:if>
 			
-			<c:if test="${not disableActions}">
-				<rc:actions resourceType="${listView.resourcetype}"/>
-			</c:if>
-		</div>
-		 -->
-		
 		<c:if test="${not empty extTitle}">
  			<div class="postlistTitle posts">${extTitle}</div>
 		</c:if>

@@ -4,6 +4,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -14,6 +15,7 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
@@ -21,46 +23,76 @@
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
-	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
+	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>	
 	
-	<!-- 
-		store some locale messages in variables to be
-	    able to access them inside element attributes
-	-->
+	<!--+	
+		+ variables & messages
+		+-->
 	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
 	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
 	<fmt:message key="feeds.burst" var="burstRssFeed"/>
     <fmt:message key="feeds.swrc" var="swrcFeed"/>
-    
+    <c:set var="requPath"><c:out value="${requPath}" escapeXml="true"/>    
     <!-- which resourcetypes to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize) -->
     <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
     <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
     <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
     <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
-	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>	
-	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" infobox="${infobox}" sidebar="${sidebar}" newsbar="${newsbar}" requPath="${requPath}" activeTab="${activeTab}" personalized="${command.personalized}">		
+		
+	<!--+
+		+ main layout
+		+-->	
+	<layout:layout loginUser="${command.context.loginUser}" 
+			pageTitle="${pageTitle}" heading="${heading}" 
+			requestedUser="${command.requestedUser}" 
+			infobox="${infobox}" 
+			sidebar="${sidebar}" 
+			newsbar="${newsbar}" 
+			requPath="${requPath}" 
+			activeTab="${activeTab}" 
+			personalized="${command.personalized}">
+			
+			
+		<!--+
+			+ HTML header extension
+			+ -->		
 		<jsp:attribute name="headerExt">
-			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="/rss/${requPath}" />
-			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="/publrss/${requPath}" />
-			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="/burst/${requPath}" />
-            <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="/swrc/${requPath}" />
+			<c:if test="${showPublication}">
+				<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="/publrss/${requPath}" />
+				<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="/burst/${requPath}" />
+				<link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="/swrc/${requPath}" />
+			</c:if>
+			<c:if test="${showBookmark}">
+				<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="/rss/${requPath}" />            	
+            </c:if>
             <!-- UnAPI service -->
             <link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
             <jsp:invoke fragment="headerExt"/>
-		</jsp:attribute>
+		</jsp:attribute>	
 		
+			
 		<!--+
 			| header for resource lists and sidebar
 			+-->
 		<jsp:attribute name="headerContainer">
-						
+			<!-- bookmarks -->					
 			<div id="bookmarksheader" class="${bookmarksWidthClass}">
-				<div id="bookmarkListConfig" class="config">
-					<div id="bookmarkListOptions" class="listOptions">
-						<rc:actions resourceType="bookmark" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${showBookmark}" showPublication="${showPublication}" showInboxActions="${showInboxActions}"/>
-					</div>					
-				</div>
+				<c:if test="${empty disableActions or disableActions == false }">
+					<div id="bookmarkListConfig" class="config">
+						<div id="bookmarkListOptions" class="listOptions">
+							<rc:actions resourceType="bookmark" 
+								sortPage="${command.sortPage}" 
+								sortPageOrder="${command.sortPageOrder}" 
+								showBookmark="${showBookmark}" 
+								showPublication="${showPublication}" 
+								showInboxActions="${showInboxActions}" 
+								isBasket="${isBasket}"
+								disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+						</div>					
+					</div>
+				</c:if>
 				<div class="headerLogo image bookmarks"><!--  --></div>
 				<h2 class="header ${bookmarksWidthClass}">
 					<fmt:message key="bookmarks" />
@@ -73,13 +105,22 @@
 					</c:if>								
 				</h2>
 			</div>
-						
+			<!-- publications -->			
 			<div id="publicationsheader" class="${publicationsWidthClass}">
-				<div id="publicationListConfig" class="config">
-					<div id="publicationListOptions" class="listOptions">
-						<rc:actions resourceType="bibtex" sortPage="${command.sortPage}" sortPageOrder="${command.sortPageOrder}" showBookmark="${showBookmark}" showPublication="${showPublication}" showInboxActions="${showInboxActions}"/>
+				<c:if test="${empty disableActions or disableActions == false }">
+					<div id="publicationListConfig" class="config">
+						<div id="publicationListOptions" class="listOptions">
+							<rc:actions resourceType="bibtex" 
+								sortPage="${command.sortPage}" 
+								sortPageOrder="${command.sortPageOrder}" 
+								showBookmark="${showBookmark}" 
+								showPublication="${showPublication}" 
+								showInboxActions="${showInboxActions}" 
+								isBasket="${isBasket}"
+								disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+						</div>
 					</div>
-				</div>
+				</c:if>
 				<div class="headerLogo image publications"><!--  --></div>
 				<h2 class="header ${publicationsWidthClass}">
 					<fmt:message key="publications" />
@@ -91,19 +132,23 @@
 						</c:if>
 					</c:if>				
 				</h2>			
-			</div>
-			
-		</jsp:attribute>
+			</div>			
+		</jsp:attribute>	
 		
+			
+		<!--+
+		  	+ footer for resource lists and sidebar
+		  	+-->
 		<jsp:attribute name="footerContainer">
+			<!-- bookmarks -->
 			<div id="bookmarksfooter" class="${bookmarksWidthClass}">
 				<div class="footer">
 					<c:if test="${not disableListNavigation}">
 						<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>						
 					</c:if>
 				</div>
-			</div>
-			
+			</div>			
+			<!-- publications -->
 			<div id="publicationsfooter" class="${publicationsWidthClass}">
 				<div class="footer">
 					<c:if test="${not disableListNavigation}">
@@ -114,39 +159,37 @@
 		</jsp:attribute>		
 		
 		
+		<!--+
+			+ main content (resource lists)
+			+-->
 		<jsp:attribute name="content">
-
-			<c:if  test="${not empty contentHeading}">
-				<div id="fullscreen">
-					<div id="fscontent">
-						<jsp:invoke fragment="contentHeading" />
-					</div>
-				</div>
-			</c:if>
-			
-			<!--+
-				|
-				| FIXME: handle this box
-				|
-				+-->
-<!--			<div id="fullscreen">-->
-				
-				<!-- 
-					Some pages show a short introductory text at the top - this text 
-					should be put into the contentHeading attribute. If the text is not
-					available, we need a non-breakable space - for layout reasons. :-(
-				 -->
-<!--				<c:choose>-->
-<!--					<c:when  test="${not empty contentHeading}">-->
-<!--						<jsp:invoke fragment="contentHeading" />-->
-<!--					</c:when>-->
-<!--					<c:otherwise>-->
-<!--						&amp;nbsp;-->
-<!--					</c:otherwise>-->
-<!--				</c:choose>				-->
-<!--			</div>-->
-			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" widthClassName="${bookmarksWidthClass}"/>
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" widthClassName="${publicationsWidthClass }"/>
+			<c:choose>
+				<!-- if a community post is present show the community post, not the list of posts -->
+				<c:when test="${not empty command.goldStandardPublications.list}">
+					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+				</c:when>
+				<c:otherwise>			
+					<!-- additional heading for content area -->
+					<c:if  test="${not empty contentHeading}">
+						<div id="fullscreen">
+							<div id="fscontent">
+								<jsp:invoke fragment="contentHeading" />
+							</div>
+						</div>
+					</c:if>
+					<!-- bibtex/bookmark lists -->			
+					<resources:bookmarks listView="${command.bookmark}" 
+							loginUserName="${command.context.loginUser.name}" 
+							disableListNavigation="${disableListNavigation}" 
+							requPath="${requPath}" 
+							widthClassName="${bookmarksWidthClass}"/>
+					<resources:bibtexs listView="${command.bibtex}" 
+							loginUserName="${command.context.loginUser.name}" 
+							disableListNavigation="${disableListNavigation}" 
+							requPath="${requPath}" 
+							widthClassName="${publicationsWidthClass }"/>			
+				</c:otherwise>
+			</c:choose>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

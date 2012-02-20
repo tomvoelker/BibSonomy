@@ -62,10 +62,11 @@
                     </table> -->
                     <input type="submit"/>
                 <div class="fsRow">
-                    <tt><c:out value="${hash.inter.id}" /><c:out value="${post.resource.title}" /></tt> ist <!--tt><a href="/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.interHash}" />">/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.interHash}" /></a></tt--><br />
-                    <tt><c:out value="${hash.inter.id}" /><c:out value="${post.resource.intraHash}" /></tt> ist <!--tt><a href="/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.intraHash}" />">/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.intraHash}" /></a></tt-->
+                    <tt><c:out value="${hash.inter.id}" /><c:out value="${command.post.resource.title}" /></tt> ist <!--tt><a href="/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.interHash}" />">/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.interHash}" /></a></tt--><br />
+                    <tt><c:out value="${hash.inter.id}" /><c:out value="${command.post.resource.intraHash}" /></tt> ist <!--tt><a href="/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.intraHash}" />">/bibtex/<c:out value="${hash.inter.id}" /><c:out value="${post.resource.intraHash}" /></a></tt-->
                 </div>
             </form:form>
+            AAAAAA ${command.post.resource} BBBBBBBB
         </jsp:attribute>
 
 
