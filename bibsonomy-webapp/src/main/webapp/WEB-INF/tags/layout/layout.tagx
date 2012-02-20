@@ -129,12 +129,7 @@
 
 			</head>
 			<body>
-				<c:set var="noPageNavigationClass" value=""/>
-				<c:if test="${hideFooterContainer}">
-					<c:set var="noPageNavigationClass" value="noPageNavigation"/>
-				</c:if>
-				
-				<div id="container" class="${noPageNavigationClass}"><!-- everything but the footer -->
+				<div id="container" class="${hideFooterContainer ? 'noPageNavigation' : ''}"><!-- everything but the footer -->
 				
 					<div id="header">
 
