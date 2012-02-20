@@ -41,7 +41,11 @@
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
 	
-	<layout:resourceLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">
+	<layout:resourceLayout pageTitle="${pageTitle} :: ${title}" 
+			command="${command}" 
+			requPath="${requPath}" 
+			disableResourcetypeSelection="${true}"
+			showPageOptions="${true}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
@@ -84,6 +88,10 @@
 					</li>			
 				</c:if>
 			</ul>
+		</jsp:attribute>
+		
+		<jsp:attribute name="customPageOptions">
+			TODO: put custom page options (copy, add references, ...) here!
 		</jsp:attribute>
 
 		<!--+

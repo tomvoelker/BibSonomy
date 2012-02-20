@@ -14,7 +14,6 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
@@ -25,7 +24,9 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
-	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>	
 	
 	<!--+	
 		+ variables & messages
@@ -80,18 +81,25 @@
 		<jsp:attribute name="headerContainer">
 			<!-- bookmarks -->					
 			<div id="bookmarksheader" class="${bookmarksWidthClass}">
-				<c:if test="${empty disableActions or disableActions == false }">
+				<c:if test="${empty showPageOptions or showPageOptions == true }">
 					<div id="bookmarkListConfig" class="config">
 						<div id="bookmarkListOptions" class="listOptions">
-							<rc:actions resourceType="bookmark" 
-								sortPage="${command.sortPage}" 
-								sortPageOrder="${command.sortPageOrder}" 
-								showBookmark="${showBookmark}" 
-								showPublication="${showPublication}" 
-								showInboxActions="${showInboxActions}" 
-								isBasket="${isBasket}"
-								disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-						</div>					
+							<c:choose>
+								<c:when test="${not empty customPageOptions}">
+									<jsp:invoke fragment="customPageOptions"/>
+								</c:when>
+								<c:otherwise>
+									<rc:actions resourceType="bookmark" 
+										sortPage="${command.sortPage}" 
+										sortPageOrder="${command.sortPageOrder}" 
+										showBookmark="${showBookmark}" 
+										showPublication="${showPublication}" 
+										showInboxActions="${showInboxActions}" 
+										isBasket="${isBasket}"
+										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+								</c:otherwise>
+							</c:choose>
+						</div>
 					</div>
 				</c:if>
 				<div class="headerLogo image bookmarks"><!--  --></div>
@@ -108,17 +116,24 @@
 			</div>
 			<!-- publications -->			
 			<div id="publicationsheader" class="${publicationsWidthClass}">
-				<c:if test="${empty disableActions or disableActions == false }">
-					<div id="publicationListConfig" class="config">
+				<c:if test="${empty showPageOptions or showPageOptions == true }">
+					<div id="publicationListConfig" class="config">					
 						<div id="publicationListOptions" class="listOptions">
-							<rc:actions resourceType="bibtex" 
-								sortPage="${command.sortPage}" 
-								sortPageOrder="${command.sortPageOrder}" 
-								showBookmark="${showBookmark}" 
-								showPublication="${showPublication}" 
-								showInboxActions="${showInboxActions}" 
-								isBasket="${isBasket}"
-								disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+							<c:choose>
+								<c:when test="${not empty customPageOptions}">
+									<jsp:invoke fragment="customPageOptions"/>
+								</c:when>
+								<c:otherwise>						
+									<rc:actions resourceType="bibtex" 
+										sortPage="${command.sortPage}" 
+										sortPageOrder="${command.sortPageOrder}" 
+										showBookmark="${showBookmark}" 
+										showPublication="${showPublication}" 
+										showInboxActions="${showInboxActions}" 
+										isBasket="${isBasket}"
+										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+								</c:otherwise>
+							</c:choose>
 						</div>
 					</div>
 				</c:if>

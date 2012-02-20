@@ -13,6 +13,9 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
+	<!--+
+		+ variables & messages
+		+ -->
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardBookmarks.list}" />
 	<c:set var="bookmark" value="${command.bookmark.list[0].resource}" />
 
@@ -36,11 +39,25 @@
 	
     <input id="publicInput" name="publicInput" value="${public}" type="hidden" />
 	
-	<layout:resourceLayout pageTitle="url :: ${bookmark.title}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">
+	<!--+
+		+ main layout
+		+ -->
+	<layout:resourceLayout pageTitle="url :: ${bookmark.title}" 
+		command="${command}" 
+		requPath="${requPath}" 
+		disableResourcetypeSelection="${true}"
+		showPageOptions="${true }">
+		
+		<!--+
+			+ page heading
+			+ -->		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.url" formAction="/url" formInputName="requUrl" formInputValue="${command.bookmark.list[0].resource.url}"/>
 		</jsp:attribute>
 		
+		<!--+
+			+ HTML header extension
+			+ -->		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
@@ -50,6 +67,9 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
 	    </jsp:attribute>
 
+		<!--+
+			+ sidebar
+			+ -->
 		<jsp:attribute name="sidebar">
 			<ul>
 			<!-- display tags -->
@@ -60,6 +80,16 @@
 			</ul>
 		</jsp:attribute>
 		
+		<!--+
+			+ page options
+			+ -->
+		<jsp:attribute name="customPageOptions">
+			TODO: put page actions here!
+		</jsp:attribute>
+				
+		<!--+
+			+ content heading
+			+ -->
 		<jsp:attribute name="contentHeading">
 			<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
