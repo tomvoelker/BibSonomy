@@ -44,7 +44,7 @@
 						<c:choose>
 							<c:when test="${not empty command.listsBookmark[status.index]}">
 								<c:set var="extTitle">${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-								<resources:bookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}"/>
+								<resources:bookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}"/>
 
 <!--									<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">-->
 <!--											<jsp:attribute name="extTitle">-->
@@ -58,7 +58,7 @@
 							<c:when test="${not empty command.listsBibTeX[status.index]}">
 
 								<c:set var="extTitle">${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-								<resources:bibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}"/>
+								<resources:bibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}"/>
 
 
 <!--									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">-->
