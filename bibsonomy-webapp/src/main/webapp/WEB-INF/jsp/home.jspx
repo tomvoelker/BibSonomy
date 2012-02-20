@@ -34,6 +34,7 @@
 				<!-- FIXME: add theme! -->
 				
 				<div class="infobox">
+					<div class="close"><a onclick="$('#fullscreen').hide();"><fmt:message key="box.close"/></a></div>
 					<!-- logo -->
 					<img src="/resources/image/logo.png" alt="${fn:escapeXml(properties['project.name'])}" 
 						style="float:left; margin: 10px;" width="98" height="120"/>
