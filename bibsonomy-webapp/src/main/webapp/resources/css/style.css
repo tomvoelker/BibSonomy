@@ -1155,7 +1155,7 @@ div.help>a,div.help>b {
 .headerLogo.image {background: url("/resources/image/icons.png") no-repeat;} 
 .headerLogo.image.bookmarks {background-position: 9px 2px; width: 30px; height: 30px; }
 .headerLogo.image.publications {background-position: 9px -61px; width: 30px; height: 30px; }
-.headerLogo.image.tags {background-position: 9px -200px; width: 30px; height: 30px; }
+.headerLogo.image.tags {background-position: 4px -182px; width: 30px; height: 30px; }
 /*
  * FIXME: put into icons.png
  */ 
