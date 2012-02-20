@@ -100,7 +100,7 @@
 			</li>	
 		</c:if>
 		<!-- show / hide resource types -->
-		<c:if test="${not disableResourcetypeSelection}">		
+		<c:if test="${not disableResourcetypeSelection}">
 			<li>
 				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/>
 			</li>

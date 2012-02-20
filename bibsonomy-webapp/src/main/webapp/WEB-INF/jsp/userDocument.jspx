@@ -13,7 +13,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.documents" formAction="/user/${mtl:encodeURI(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="formExtra">
@@ -59,6 +59,6 @@
 			<parts:infobox infoTextKey="${command.filter eq 'DUPLICATES' ? 'post.meta.duplicates' : 'post.meta.documents'}"/>
 		</jsp:attribute>
 		
-	</layout:bibtexLayout>
+	</layout:resourceLayout>
 
 </jsp:root>

@@ -12,7 +12,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.bibtexkey" formAction="/bibtexkey" formInputName="requestedKey" formInputValue="${command.requestedKey}">
 				<jsp:attribute name="pathPart">
@@ -62,6 +62,6 @@
 	    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me --></script> 
 			</c:if>
 		</jsp:attribute>
-	</layout:bibtexLayout>
+	</layout:resourceLayout>
 
 </jsp:root>
