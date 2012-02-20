@@ -1107,6 +1107,8 @@ div.help>a,div.help>b {
 }
 
 /* --- post lists -----------------------------------------------------------*/
+
+
 .post {
 	clear: left;
 	padding: 8px;
@@ -1144,6 +1146,7 @@ div.help>a,div.help>b {
     margin-left: auto;
     margin-right: auto;
 }
+
 
 .post .editTags, .post .ieditTags, .post .action {
 	visibility: hidden;	
@@ -1196,6 +1199,13 @@ div.help>a,div.help>b {
 .headerLogo.image.cv {background-image: url('/resources/image/cv_header.png'); width: 30px;}
 
 
+
+.post .metaContainer {
+	margin-left: 110px;
+	margin-right: 14px;
+}
+
+
 .ptitle,  .pdesc, .post .authors {
 	white-space: nowrap;
 	overflow: hidden;
@@ -1209,8 +1219,6 @@ div.help>a,div.help>b {
 }
 
 .post .ptitle {
-	margin-left: 110px;
-	margin-right: 24px;
 }
 
 .post .ptitle a {
@@ -1219,7 +1227,6 @@ div.help>a,div.help>b {
 
 .post .pdesc, .post .meta, .post .authors {
 	font-size: 90%;
-	margin-left: 110px;
 }
 
 .post .usersaves {
@@ -1355,7 +1362,6 @@ Most actions appear in three ways
 }
 
 .post .ptags {
-	margin-left: 110px;
 	margin-top: 1ex;		
 	margin-bottom: 5ex;		
 }
@@ -1407,7 +1413,6 @@ Most actions appear in three ways
 .post .ptags span.editTags{ background-position: 0 -159px; width: 21px; height: 18px; cursor:pointer;}
 
 .post form.editTags {
-	margin-left: 110px;
 }
 	
 form.editTags input[type=text] {
@@ -1432,7 +1437,6 @@ form.editTags input[type=text] {
 }
 
 .post .ptime {
-	margin-left: 110px;
 }
 
 .puser, .ptime, .pgroup {
@@ -2542,6 +2546,11 @@ table.report td.value {
 	.post .action {
 		left: 8px;
 	}
+	
+	.post .metaContainer {
+		margin-left: 0px;
+	}
+	
 }	
 	
 @media screen and (min-width: 1100px) {

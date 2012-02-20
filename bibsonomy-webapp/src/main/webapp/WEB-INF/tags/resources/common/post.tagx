@@ -32,57 +32,59 @@
 			<jsp:invoke fragment="documents"/>
 		</div>
 
-
-		<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
-        <c:if test="${command.context.userLoggedIn}">
-        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
-        	<c:if test="${not empty post.user.name}">	
-	        	<c:if test="${loginUserName eq post.user.name}">
-					<img class="overlay" src="/resources/image/inMyCollection.png" alt="inMyCollection"></img>
+		<div class="metaContainer"> <!-- container class for all post information next to image  -->
+			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
+	        <c:if test="${command.context.userLoggedIn}">
+	        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
+	        	<c:if test="${not empty post.user.name}">	
+		        	<c:if test="${loginUserName eq post.user.name}">
+						<img class="overlay" src="/resources/image/inMyCollection.png" alt="inMyCollection"></img>
+					</c:if>
 				</c:if>
 			</c:if>
-		</c:if>
-
-
-		<!-- TITLE AND DESCRIPTION -->
-		<div class="ptitle"><jsp:invoke fragment="title"/></div>
-			<c:set var="descVar"><jsp:invoke fragment="desc"/></c:set>
-		<c:choose>
-			<c:when test="${not empty descVar}">
-				<div class="pdesc extend"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
-			</c:when>
-			<c:otherwise>
-				<div class="pdesc">${mtl:ch('nbsp')}</div>
-			</c:otherwise>
-		</c:choose>
-		
 	
-		<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
-		<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
-		
 	
-		<!-- RATING -->
-		<div class="rating">
-			<!-- TODO: remove as soon as lucene supports rating -->
-			<c:if test="${not empty post.resource.rating}">
-				<span class="bmrating">
-					<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}"/>
-					<a href="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox" title="${title}">
-						<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
-					</a>
-					<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}"/>)</span>
-				</span>
-			</c:if>
+			<!-- TITLE AND DESCRIPTION -->
+			<div class="ptitle"><jsp:invoke fragment="title"/></div>
+				<c:set var="descVar"><jsp:invoke fragment="desc"/></c:set>
+			<c:choose>
+				<c:when test="${not empty descVar}">
+					<div class="pdesc extend"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
+				</c:when>
+				<c:otherwise>
+					<div class="pdesc">${mtl:ch('nbsp')}</div>
+				</c:otherwise>
+			</c:choose>
+			
+		
+			<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
+			<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
+			
+		
+			<!-- RATING -->
+			<div class="rating">
+				<!-- TODO: remove as soon as lucene supports rating -->
+				<c:if test="${not empty post.resource.rating}">
+					<span class="bmrating">
+						<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}"/>
+						<a href="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox" title="${title}">
+							<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
+						</a>
+						<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}"/>)</span>
+					</span>
+				</c:if>
+			</div>
+			
+	
+			<!-- ACTIONS -->
+			<div class="action">
+				<jsp:invoke fragment="actions"/>
+			</div>
+
+			<!-- maybe we need this ... <div class="footer"></div>  --> 
+
 		</div>
 		
-
-		<!-- ACTIONS -->
-		<div class="action">
-			<jsp:invoke fragment="actions"/>
-		</div>
-
-		
-	 <!-- maybe we need this ... <div class="footer"></div>  --> 
 
 	</li>
 </jsp:root>
