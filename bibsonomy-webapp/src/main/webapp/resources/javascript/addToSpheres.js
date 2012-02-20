@@ -350,8 +350,8 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	            }; break;
 	            
 	            case "position2": 	{
-	            	$(".addContainer").css("left", -192);		
-					$(".addContainer").css("top",  38);
+	            	$(".addContainer").css("left", -222);		
+					$(".addContainer").css("top",  29);
 	            }; break;
 	            
 	            default: console.error("No or bad Parameter for Sphere Dialog Position.");
@@ -368,15 +368,15 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	            }; break;
 	            
 	            case "position2": 	{
-	            	$(".addContainer").css("left", -172);		
-					$(".addContainer").css("top",  37);
+	            	$(".addContainer").css("left", -204);		
+					$(".addContainer").css("top",  29);
 	            }; break;
 	            
 	            default: console.error("No or bad Parameter for Sphere Dialog Position.");
         	}
         	return;
 		}
-		
+				
 		//OTHER BROWSERS
 		switch(dialogPosition) {
             case "position1": 	{
