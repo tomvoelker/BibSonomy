@@ -1295,7 +1295,7 @@ Most actions appear in three ways
 
 .post .action .litem, #resultlist .litem, #pageOptions .litem {
 	color:#000000;
-    margin-right: 10px;
+    margin-right: 4px;
     float: left;
     padding-top: 4px;
     font-size:	small;
@@ -1303,7 +1303,7 @@ Most actions appear in three ways
 }
 
 .post .action .ilitem, #resultlist .ilitem, #pageOptions .ilitem{
-    margin-right: 10px;
+    margin-right: 4px;
     float: left;
 	color: #aaaaaa;
 	padding-top: 4px;
