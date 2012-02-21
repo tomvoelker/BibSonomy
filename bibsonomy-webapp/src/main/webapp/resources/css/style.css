@@ -2513,7 +2513,7 @@ table.report td.value {
 }
 
 
-@media screen and (max-width: 899px) {
+@media screen and (max-width: 1130px) {
 	
 	#sidebar, #sidebarheader, sidebarfooter {
 		display: none;
@@ -2533,7 +2533,7 @@ table.report td.value {
 	
 }
 
-@media screen and (max-width: 1099px) {
+@media screen and (max-width: 1350px) {
 
 	.post .image, .post .overlay {
 		display: none;
@@ -2553,6 +2553,3 @@ table.report td.value {
 	
 }	
 	
-@media screen and (min-width: 1100px) {
-	
-}
