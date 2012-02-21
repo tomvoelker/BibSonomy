@@ -127,9 +127,7 @@
                                     <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 									<fmt:message key="save" var="save" />
-							      	<fmt:message key="resetbutton" var="reset" />
 									<form:hidden path="intraHashToUpdate" />
-									<input type="reset" value="${reset}" tabindex="2"/>
 									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
 								</div>
 				    </fieldset>
