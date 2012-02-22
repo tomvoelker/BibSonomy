@@ -53,7 +53,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected String create() {
-		final FileUploadInterface up = fileUploadFactory.getFileUploadHandler(this.items, FileUploadInterface.fileUploadExt);
+		final FileUploadInterface up = fileUploadFactory.getFileUploadHandler(this.items, FileUploadInterface.FILE_UPLOAD_EXTENSIONS);
 		
 		try {
 			final Document document = up.writeUploadedFile();
