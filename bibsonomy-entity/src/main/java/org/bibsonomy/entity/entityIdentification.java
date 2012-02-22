@@ -41,7 +41,7 @@ public class entityIdentification {
 	public static void main(String[] args) throws PersonListParserException {
 		
 		float timeAtstart = System.nanoTime();
-		
+			
 		String resource = "config.xml";
 		Reader reader;
 				

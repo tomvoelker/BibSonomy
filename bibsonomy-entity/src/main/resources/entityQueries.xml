@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	SELECT last_insert_id()
 </select>
 			
-<select id="clusteringList" resultType="java.util.Map">
+<select id="clusteringList" resultType="java.util.HashMap">
 	select author.author_id, author.normalized_name, coauthor.normalized_name, coauthor.coauthorlist_id FROM author INNER JOIN coauthor_list USING(author_id) INNER JOIN coauthor ON (coauthor.coauthorlist_id = coauthor_list.coauthorlist_id) ORDER BY author.normalized_name ASC, author.author_id ASC
 </select>
 	
