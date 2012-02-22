@@ -33,7 +33,7 @@ a img {
 	left: 20px; 
 	right: 20px;
     background-color: white;	
-/*	min-width: 950px; */
+	min-width: 666px; 
 	min-height: 310px
 }
 
@@ -2513,7 +2513,7 @@ table.report td.value {
 }
 
 
-@media screen and (max-width: 1130px) {
+@media screen and (max-width: 1015px) {
 	
 	#sidebar, #sidebarheader, sidebarfooter {
 		display: none;
@@ -2531,9 +2531,13 @@ table.report td.value {
 		right: 50px;
 	}
 	
-}
+	#bookmarksheader .header, #publicationsheader .header {
+		padding-left: 100px;
+	}
 
-@media screen and (max-width: 1350px) {
+}	
+	
+@media screen and (max-width: 1240px) {
 
 	.post .image, .post .overlay {
 		display: none;
