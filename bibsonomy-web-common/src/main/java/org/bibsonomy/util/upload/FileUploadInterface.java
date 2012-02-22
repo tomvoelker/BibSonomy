@@ -12,35 +12,37 @@ public interface FileUploadInterface {
 	/**
 	 * firefox extion
 	 */
-	public static final String[] firefoxImportExt = { "html", "htm" };
+	public static final String[] FIREFOX_IMPORT_EXTENSIONS = { "html", "htm" };
 	
 	/**
 	 * all extensions allowed for document upload
 	 * pdf, ps, djv, djvu, txt extensions
 	 */
-	public static final String[] fileUploadExt = { 
+	public static final String[] FILE_UPLOAD_EXTENSIONS = { 
 		"pdf", "ps", 
 		"djv", "djvu", 
 		"txt", "tex",
 		"doc", "docx", "ppt", "pptx", "xls", "xlsx", 
 		"ods", "odt", "odp",
-		"jpg", "jpeg", "tif", "tiff", "png"
+		"jpg", "jpeg", "tif", "tiff", "png",
+		"htm", "html",
+		"epub"
 		};
 	
 	/**
 	 * png, jpg extensions
 	 */
-	public static final String[] pictureExt = { "png", "jpg", "jpeg" };
+	public static final String[] PICTURE_EXTENSIONS = { "png", "jpg", "jpeg" };
 	
 	/**
 	 * layout defintion extension
 	 */
-	public static final String[] fileLayoutExt = { "layout" };
+	public static final String[] LAYOUT_EXTENSIONS = { "layout" };
 	
 	/**
 	 * bibtex, endnote extension
 	 */
-	public static final String[] bibtexEndnoteExt = {"bib", "endnote"};
+	public static final String[] BIBTEX_ENDNOTE_EXTENSIONS = {"bib", "endnote", "ris"};
 	
 	/**
 	 * Writes the uploaded file to the disk and returns the file together
