@@ -31,7 +31,7 @@ import org.springframework.context.MessageSource;
 public class DocumentsController extends AjaxController implements MinimalisticController<AjaxDocumentCommand> {
 	private static final Log log = LogFactory.getLog(DocumentsController.class);
 
-	private static final String ALLOWED_EXTENSIONS = StringUtils.implodeStringArray(FileUploadInterface.fileUploadExt, ", ");
+	private static final String ALLOWED_EXTENSIONS = StringUtils.implodeStringArray(FileUploadInterface.FILE_UPLOAD_EXTENSIONS, ", ");
 
 	/**
 	 * Path to the documents folder
@@ -163,7 +163,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * unsupported file extensions
 		 */
-		if (!StringUtils.matchExtension(fileItem.getName(), FileUploadInterface.fileUploadExt)) {
+		if (!StringUtils.matchExtension(fileItem.getName(), FileUploadInterface.FILE_UPLOAD_EXTENSIONS)) {
 			return getXmlError("error.upload.failed.filetype", new Object[] {ALLOWED_EXTENSIONS}, fileID, fileItem.getName(), locale);	
 		}
 

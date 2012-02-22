@@ -452,7 +452,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		try {
 
 			final CommonsMultipartFile uploadedFile = command.getFile();
-			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), FileUploadInterface.bibtexEndnoteExt);
+			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
 			/*
 			 * FIXME: the upload file handler throws an exception, 
 			 * if the file type does not match - this exception also comes, when
@@ -467,7 +467,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 
 			String fileContent = null;
-			if (StringUtils.matchExtension(fileName, FileUploadInterface.bibtexEndnoteExt[1])) {
+			if (StringUtils.matchExtension(fileName, FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS[1])) {
 				/*
 				 * In case the uploaded file is in EndNote format, we convert it to BibTeX.				
 				 */
@@ -492,7 +492,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * FIXME: the key is missing! We need to get the supported file types from the exception
 			 */
-			errors.reject("error.upload.failed.filetype", FileUploadInterface.bibtexEndnoteExt, e.getMessage());
+			errors.reject("error.upload.failed.filetype", FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS, e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {

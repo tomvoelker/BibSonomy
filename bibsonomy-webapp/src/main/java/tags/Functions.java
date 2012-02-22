@@ -238,7 +238,7 @@ public class Functions  {
 	 * @return <code>true</code> iff the url is a link to a pdf or ps file
 	 */
 	public static boolean isLinkToDocument(final String url) {
-		return StringUtils.matchExtension(url, FileUploadInterface.fileUploadExt);
+		return StringUtils.matchExtension(url, FileUploadInterface.FILE_UPLOAD_EXTENSIONS);
 	}
 
 	/**
