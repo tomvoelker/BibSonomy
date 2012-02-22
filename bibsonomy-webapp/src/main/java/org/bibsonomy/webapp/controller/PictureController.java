@@ -242,7 +242,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 			 * a file is given --> save it
 			 */
 			try {
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), FileUploadInterface.pictureExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), FileUploadInterface.PICTURE_EXTENSIONS);
 				final File file = uploadFileHandler.writeUploadedFile().getFile();
 
 				/*

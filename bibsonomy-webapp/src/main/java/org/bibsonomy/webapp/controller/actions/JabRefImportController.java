@@ -155,7 +155,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 			try {
 				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);				
 				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(fileItem.getFileItem()), FileUploadInterface.fileLayoutExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(fileItem.getFileItem()), FileUploadInterface.LAYOUT_EXTENSIONS);
 				/*
 				 * write file to disk
 				 */
