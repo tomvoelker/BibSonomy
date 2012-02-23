@@ -615,10 +615,10 @@ function updateBasket (param) {
 		dataType : "text",
 		success: function(data) {
 		/*
-		 * update the number of basket items
+		 * update the number of clipboard items
 		 */
-		if (location.pathname.startsWith("/basket")) {
-			// special case for the /basket page
+		if (location.pathname.startsWith("/clipboard")) {
+			// special case for the /clipboard page
 			window.location.reload();
 		} else {
 			$("#pickctr").empty().append(data); 
