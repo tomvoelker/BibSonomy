@@ -490,15 +490,6 @@
 		<to last="true">/downloadFile</to>
 	</rule>
 	
-	<!-- delete document -->
-	<!-- TODO: remove? old code? -->
-	<!--<rule>
-		<name>/documents/FILEHASH/INTRAHASH</name>
-		<from>^/+documents/+([0-9a-fA-F]+)/+([0-9a-fA-F]+)</from>
-		<set type="parameter" name="fileHash">$1</set>
-		<set type="parameter" name="intraHash">$2</set>
-		<to last="true">/documents</to>
-	</rule>-->
 
 	<!-- ############## viewable pages ############### -->
 	<!-- /viewable/GROUP/TAG -->
@@ -954,4 +945,10 @@
 		<from>^/BibtexHandler$</from>
 		<to last="true">/editPublication</to>
 	</rule>
+	<rule><!-- in February 2012 we renamed the basket to "clipboard" -->
+		<name>/basket</name>
+		<from>^/basket$</from>
+		<to type="redirect" last="true">/clipboard</to>
+	</rule>
+	
 </urlrewrite>
