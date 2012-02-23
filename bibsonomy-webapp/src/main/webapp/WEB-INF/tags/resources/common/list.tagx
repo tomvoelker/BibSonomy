@@ -22,6 +22,7 @@
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
+	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 
 	<jsp:directive.variable name-given="post" scope="NESTED"/>
 
@@ -39,6 +40,9 @@
 		
         <!-- iterate over a list of resources and create the list -->
         <ul class="posts ${widthClassName}">
+			<c:if test="${not empty addAsFirstItem}">
+				<li class="first"><jsp:invoke fragment="addAsFirstItem"/></li>
+			</c:if>
 			<c:if test="${not empty listView.list}">
 	                  <c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
 					  

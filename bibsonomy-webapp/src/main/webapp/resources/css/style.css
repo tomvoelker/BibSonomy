@@ -2513,6 +2513,12 @@ table.report td.value {
 }
 
 
+.posts .first h2 {
+	margin-top: 0;
+	padding-top: 30px;
+}
+
+
 @media screen and (max-width: 1015px) {
 	
 	#sidebar, #sidebarheader, sidebarfooter {

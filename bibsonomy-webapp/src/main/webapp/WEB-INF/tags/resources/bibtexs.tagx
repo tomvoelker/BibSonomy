@@ -14,7 +14,7 @@
 	<jsp:directive.attribute name="listIndex" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
-	
+	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
@@ -31,6 +31,7 @@
 		listView="${listView}"
 		widthClassName="${widthClassName}"
 		extTitle="${extTitle}"
+		addAsFirstItem="${addAsFirstItem}"
 	>
 	
 		<jsp:attribute name="formatButtons">

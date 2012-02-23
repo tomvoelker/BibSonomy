@@ -26,7 +26,9 @@
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
 	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>	
+	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="addAsFirstPublicationsListItem" fragment="true" required="false"/>
+	<jsp:directive.attribute name="addAsFirstBookmarksListItem" fragment="true" required="false"/>
 	
 	<!--+	
 		+ variables & messages
@@ -37,8 +39,8 @@
     <fmt:message key="feeds.swrc" var="swrcFeed"/>
     <c:set var="requPath" value="${fn:escapeXml(requPath)}"/>    
     <!-- which resourcetypes to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize) -->
-    <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+    <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstPublicationsListItem }" />
+    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstBookmarksListItem }" />
     <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
     <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
@@ -193,17 +195,21 @@
 							</div>
 						</div>
 					</c:if>
-					<!-- bibtex/bookmark lists -->			
+					<!-- bibtex/bookmark lists -->
+								
 					<resources:bookmarks listView="${command.bookmark}" 
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${requPath}" 
-							widthClassName="${bookmarksWidthClass}"/>
+							widthClassName="${bookmarksWidthClass}"
+							addAsFirstItem="${addAsFirstBookmarksListItem}"/> 
+							
 					<resources:bibtexs listView="${command.bibtex}" 
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${requPath}" 
-							widthClassName="${publicationsWidthClass }"/>			
+							widthClassName="${publicationsWidthClass }"
+							addAsFirstItem="${addAsFirstPublicationsListItem}"/> 
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>

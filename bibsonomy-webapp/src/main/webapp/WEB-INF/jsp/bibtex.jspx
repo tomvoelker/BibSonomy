@@ -97,7 +97,7 @@
 		<!--+
 			| discussion
 		 	+-->		
-		<jsp:attribute name="contentHeading">
+		<jsp:attribute name="addAsFirstBookmarksListItem">
 			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
 
