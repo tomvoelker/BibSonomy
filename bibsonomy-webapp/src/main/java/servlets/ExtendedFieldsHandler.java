@@ -32,7 +32,7 @@ public class ExtendedFieldsHandler extends HttpServlet{
 		final User user = AuthenticationUtils.getUser();
 		final String currUser = user.getName(); 
 		if (currUser == null) {
-			response.sendRedirect("/login?referer=/basket");
+			response.sendRedirect("/login");
 			return;
 		}
 
