@@ -950,5 +950,10 @@
 		<from>^/basket$</from>
 		<to type="redirect" last="true">/clipboard</to>
 	</rule>
+	<rule><!-- in February 2012 we build the new "BibTeXHashExample" -->
+		<name>/BibTeXHashExample.jsp</name>
+		<from>^/BibTeXHashExample.jsp</from>
+		<to type="redirect" last="true">/hashExample</to>
+	</rule>
 	
 </urlrewrite>
