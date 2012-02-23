@@ -26,7 +26,7 @@
 	<div id="mainHeaderRightBox">
  		<c:choose>
 			<c:when test="${!empty user.name}">
-				<span id="pickctr">${user.basket.numPosts}</span> picked in <a href="/basket">basket</a> &middot;
+				<span id="pickctr">${user.basket.numPosts}</span> picked in <a href="/clipboard">clipboard</a> &middot;
 				<a href="/editTags">edit tags</a> 
 			</c:when>
 			<c:otherwise>
