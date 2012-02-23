@@ -26,9 +26,9 @@ public enum Views implements View {
 	HOMEPAGE("home"),
 
 	/**
-	 * the first page you see when entering the application
+	 * here users can calculate the hashes of their publications
 	 */
-	BIBTEXHASHEXAMPLE("bibtexhashexample"),
+	HASHEXAMPLE("hashexample"),
 
 	/**
 	 * the page where a user can change his personal settings
