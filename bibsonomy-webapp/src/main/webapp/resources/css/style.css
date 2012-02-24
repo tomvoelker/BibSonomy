@@ -58,7 +58,7 @@ a img {
 
 
 #fullscreen>#fscontent>.infobox {
-    background-color: #FFFCEA;
+    background-color: #FFFFFF;
     border: 2px solid #666666;
     box-shadow: 0 0 5px 0;
     left: 80px;
@@ -67,11 +67,14 @@ a img {
     right: 380px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
     z-index: 60;
     opacity: 0.95;
+    max-width: 780px;
     filter: alpha(opacity=95);
 	-moz-border-radius:10px; /* Firefox */
 	-webkit-border-radius:10px; /* Safari, Chrome */
 	-khtml-border-radius:10px; /* Konqueror */
 	border-radius:10px; /* CSS3 */
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #fullscreen>#fscontent>.infobox .content {
@@ -146,6 +149,7 @@ a img {
 
 .systemAbout {
 	padding-top: 2ex;
+	font-size: larger;
 	clear: both;
 }
 
@@ -1414,7 +1418,7 @@ Most actions appear in three ways
 }
 
 .ptags a:hover {
-	background-color: #c8dc8d;
+	background-color: #c9c9c9;
 }
 
 /* .post .ptags span.editTags { */
