@@ -75,7 +75,7 @@
 	<c:choose>
 		<c:when test="${post.inboxPost}">
 		<!-- INBOX REMOVE -->
-		<!-- Inobx can be viewed only by signed in users -->
+		<!-- Inobx can be viewed only by signed in users and only in the own inbox-->
 		<c:url var="message_remove" value="/removeMessage">
 			<c:param name="hash" value="${post.resource.intraHash}" />
 			<c:param name="user" value="${post.user.name}" />
@@ -98,7 +98,7 @@
 		<c:otherwise>
 			<!-- REGULAR POST DELETE -->					
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn}">
+				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
 					<fmt:message key="bibtex.actions.delete.title" var="deleteTitle"/>
             		<c:url var="deleteUrl" value="/deletePost">
             			<c:param name="resourceHash" value="${post.resource.intraHash}" />
@@ -176,7 +176,7 @@
 		
 		<!-- BIBTEX -->
 	    <fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-	    <a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
+	    <a class="litem" href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex.short"/></a>
 	
 		<!-- OPENURL -->
 		<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.simpleInterface}">
