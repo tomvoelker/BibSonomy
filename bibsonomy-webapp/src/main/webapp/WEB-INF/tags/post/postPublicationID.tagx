@@ -33,7 +33,7 @@
 					</div>
 		
 					<div class="fsRow">
-						<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.doi" /></label>
+						<label class="fsLabel"><fmt:message key="bibtex.actions.doi" /></label>
 						<input type="text" name="selection" class="fsInput" />
 					</div>
 		
