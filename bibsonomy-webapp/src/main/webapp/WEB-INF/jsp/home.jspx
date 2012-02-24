@@ -54,8 +54,8 @@
 						
 						<!-- registration -->
 						<div class="systemRegister">	
-							<h2><a href="/login"><fmt:message key="navi.login"/></a></h2>
-							<fmt:message key="system.register"/>
+							<h2><a href="/login"><fmt:message key="system.loginRegister"/></a></h2>
+<!-- 							<fmt:message key="system.register"/> -->
 						</div>
 						
 						<div class="systemInfoClear"> <!-- do not remove --></div>
