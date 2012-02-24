@@ -29,7 +29,7 @@
 				<jsp:attribute name="pathPart">
 					<c:if test="${not empty command.requestedUser}">
 						<li>
-							<a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+							:: <a href="/user/${mtl:encodeURI(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
 						</li>
 					</c:if>
 				</jsp:attribute>
