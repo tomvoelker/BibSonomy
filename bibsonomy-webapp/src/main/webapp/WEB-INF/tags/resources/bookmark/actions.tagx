@@ -70,22 +70,22 @@
 		<c:otherwise>
 			<!-- REGULAR POST DELETE -->					
 			<c:choose>
-				<c:when test="${command.context.userLoggedIn}">
-				<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
-				<c:url var="deleteUrl" value="/deletePost">
-					<c:param name="resourceHash" value="${post.resource.intraHash}" />
-					<c:param name="ckey" value="${ckey}" />
-				</c:url>
-			    <c:choose>
-			    	<c:when test="${command.context.loginUser.settings.confirmDelete}">
-				    	<!-- SHOW A CONFIRM WINDOW -->
-			    		<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"
-			    			onclick="javascript: return confirmDelete();"><!-- Keep Me --></a>
-			    	</c:when>
-			    	<c:otherwise>
-	                	<!-- JUST DELETE WITHOUT FURTHER CONFIRMATION-->
-			    		<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"><!-- Keep Me --></a>
-			    	</c:otherwise>
+				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
+					<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
+					<c:url var="deleteUrl" value="/deletePost">
+						<c:param name="resourceHash" value="${post.resource.intraHash}" />
+						<c:param name="ckey" value="${ckey}" />
+					</c:url>
+			    	<c:choose>
+			    		<c:when test="${command.context.loginUser.settings.confirmDelete}">
+				    		<!-- SHOW A CONFIRM WINDOW -->
+			    			<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"
+			    				onclick="javascript: return confirmDelete();"><!-- Keep Me --></a>
+			    		</c:when>
+			    		<c:otherwise>
+	                		<!-- JUST DELETE WITHOUT FURTHER CONFIRMATION-->
+			    			<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"><!-- Keep Me --></a>
+			    		</c:otherwise>
                		</c:choose>
              	</c:when>                
 				<c:otherwise>
