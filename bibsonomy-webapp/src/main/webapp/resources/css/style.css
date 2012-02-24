@@ -1202,16 +1202,21 @@ div.help>a,div.help>b {
 .headerLogo.image.bookmarks {background-position: 9px 2px; width: 30px; height: 30px; }
 .headerLogo.image.publications {background-position: 9px -61px; width: 30px; height: 30px; }
 .headerLogo.image.tags {background-position: 4px -182px; width: 30px; height: 30px; }
+.headerLogo.image.spheres {background-position: 4px -278px; width: 30px; height: 30px; }
+.headerLogo.image.cv {background-position: 4px -528px; width: 30px; height: 30px; }
+.headerLogo.image.settings {background-position: 4px -320px; width: 30px; height: 30px; }
+.headerLogo.image.editTags {background-position: 4px -414px; width: 30px; height: 30px; }
+.headerLogo.image.search {background-position: 4px -367px; width: 30px; height: 25px; }
+
 /*
- * FIXME: put into icons.png
+ * FIXME: logo isn't shown
+ */
+.headerLogo.image.relations {background-position: 4px -278px; width: 30px; height: 30px; }
+
+/*
+ * FIXME: fix logo position
  */ 
-.headerLogo.image.spheres {background-image: url('/resources/image/concepts.png'); width: 30px; height: 30px; }
-.headerLogo.image.relations {background-image: url('/resources/image/concepts.png'); width: 30px; height: 30px; }
-.headerLogo.image.settings {background-image: url('/resources/image/settings.png'); width: 30px; height: 30px; }
-.headerLogo.image.search {background-image: url('/resources/image/search.png'); width: 30px; height: 30px; }
-.headerLogo.image.editTags {background-image: url('/resources/image/edit_tags.png'); width: 30px; height: 30px; }
 .headerLogo.image.openid {background-image: url('/resources/image/openid-logo-small-bw.png'); width: 30px;}
-.headerLogo.image.cv {background-image: url('/resources/image/cv_header.png'); width: 30px;}
 
 
 
