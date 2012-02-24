@@ -55,7 +55,7 @@
 					<div id="gold_resources_links">
 						<ul>
 							<c:if test="${not empty goldstandard.miscFields['doi']}">
-								<fmt:message key="post_bibtex.doi_isbn.doi" var="urlTitle"/>
+								<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
 								<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}"/>
 								<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
 							</c:if>
