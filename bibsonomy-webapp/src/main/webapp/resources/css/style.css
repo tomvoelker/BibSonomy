@@ -58,17 +58,28 @@ a img {
 
 
 #fullscreen>#fscontent>.infobox {
-    background-color: #FFF69B;
+    background-color: #f0f0f0;
     border: 2px solid #666666;
-    box-shadow: 0 0 4px 0;
-    left: 50px;
+    box-shadow: 0 0 5px 0;
+    left: 80px;
     margin-top: 40px;
     position: absolute;
-    right: 350px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
+    right: 380px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
     z-index: 60;
+    opacity: 0.95;
+    filter: alpha(opacity=95);
+	-moz-border-radius:10px; /* Firefox */
+	-webkit-border-radius:10px; /* Safari, Chrome */
+	-khtml-border-radius:10px; /* Konqueror */
+	border-radius:10px; /* CSS3 */
 }
 
+#fullscreen>#fscontent>.infobox .content {
+	padding: 2em;
 
+}
+
+	
 .close a {
 	cursor: pointer;
 	padding-left: 4px;
@@ -79,6 +90,10 @@ a img {
 	color: white;
 	background-color: #666;
 	font-weight: bold;
+	-moz-border-radius-bottomleft:10px; /* Firefox */
+	-webkit-border-bottom-left-radius:10px; /* Safari, Chrome */
+	-khtml-border-bottom-left-radius:10px; /* Konqueror */
+	border-bottom-left-radius:10px; /* CSS3 */
 }
 
 .close {
@@ -2519,6 +2534,8 @@ table.report td.value {
 }
 
 
+
+
 @media screen and (max-width: 1015px) {
 	
 	#sidebar, #sidebarheader, sidebarfooter {
@@ -2534,7 +2551,7 @@ table.report td.value {
 	}
 	
 	#fullscreen>#fscontent>.infobox {
-		right: 50px;
+		right: 80px;
 	}
 	
 	#bookmarksheader .header, #publicationsheader .header {
