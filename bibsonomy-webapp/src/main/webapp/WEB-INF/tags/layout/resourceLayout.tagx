@@ -27,6 +27,8 @@
 	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="addAsFirstPublicationsListItem" fragment="true" required="false"/>
 	<jsp:directive.attribute name="addAsFirstBookmarksListItem" fragment="true" required="false"/>
 	
@@ -106,7 +108,14 @@
 				</c:if>
 				<div class="headerLogo image bookmarks"><!--  --></div>
 				<h2 class="header ${bookmarksWidthClass}">
-					<fmt:message key="bookmarks" />
+					<c:choose>
+						<c:when test="${not empty customBookmarksHeaderText}">
+							<c:out value="${customBookmarksHeaderText}"/>
+						</c:when>
+						<c:otherwise>
+							<fmt:message key="bookmarks" />	
+						</c:otherwise>
+					</c:choose>
 					<!-- Display total number of entries in list --> 
 					<c:if test="${!empty command.bookmark.list}">
 						<c:if test="${command.bookmark.totalCount != 0}">
@@ -141,7 +150,14 @@
 				</c:if>
 				<div class="headerLogo image publications"><!--  --></div>
 				<h2 class="header ${publicationsWidthClass}">
-					<fmt:message key="publications" />
+					<c:choose>
+						<c:when test="${not empty customPublicationsHeaderText}">
+							<c:out value="${customPublicationsHeaderText}"/>
+						</c:when>
+						<c:otherwise>
+							<fmt:message key="publications" />
+						</c:otherwise>
+					</c:choose>
 					<!-- Display total number of entries in list --> 
 					<c:if test="${!empty command.bibtex.list}">
 						<c:if test="${command.bibtex.totalCount != 0}">

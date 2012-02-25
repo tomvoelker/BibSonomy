@@ -12,7 +12,7 @@ li.ui-state-hover {
 	text-align: center;
 	display: table;
 	border-collapse: collapse;
-	width: 630px;
+/*	width: 630px; */
 }
 
 .sidebarcontainer #review_info_rating {
@@ -163,4 +163,8 @@ ul.newMenu li a:hover {
 	border-left-color: #EDC240;
 	border-left-width: 0;
 */	
+}
+
+.posts .first #discussionMainMenu {
+	margin-top: 3px;
 }

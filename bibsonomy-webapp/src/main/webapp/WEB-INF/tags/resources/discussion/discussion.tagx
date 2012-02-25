@@ -31,9 +31,11 @@
    		
    		<!-- The three Buttons -->
    		<ul id="discussionMainMenu" class="newMenu">
+<!-- 
 			<li>
 				<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
 			</li>
+ -->
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
 				<li><a href="#createreview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>

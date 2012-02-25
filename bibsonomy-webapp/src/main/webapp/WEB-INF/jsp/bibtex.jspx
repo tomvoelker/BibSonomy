@@ -38,6 +38,7 @@
 		<c:set var="publication" value="${command.goldStandardPublications.list[0].resource}" />
 	</c:if>
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
+	<fmt:message key="post.resource.discussion.headline" var="discussionsTitle"/>
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
 	
@@ -45,8 +46,9 @@
 			command="${command}" 
 			requPath="${requPath}" 
 			disableResourcetypeSelection="${true}"
-			showPageOptions="${true}">
-	
+			showPageOptions="${true}"
+			customBookmarksHeaderText="${discussionsTitle}">		 	
+			
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>
@@ -97,6 +99,7 @@
 		<!--+
 			| discussion
 		 	+-->		
+		 	
 		<jsp:attribute name="addAsFirstBookmarksListItem">
 			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
 		</jsp:attribute>
