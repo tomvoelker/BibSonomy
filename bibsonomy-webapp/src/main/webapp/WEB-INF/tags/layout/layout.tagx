@@ -129,7 +129,10 @@
 
 			</head>
 			<body>
-				<div id="container" class="${hideFooterContainer ? 'noPageNavigation' : ''}"><!-- everything but the footer -->
+				<c:if test="${not command.context.userLoggedIn}">
+					<c:set var="noUserSignedIn" value="true" />
+				</c:if>
+				<div id="container" class="${hideFooterContainer ? 'noPageNavigation ' : ''}${noUserSignedIn ? 'noUser ' : ''}"><!-- everything but the footer -->
 				
 					<div id="header">
 
