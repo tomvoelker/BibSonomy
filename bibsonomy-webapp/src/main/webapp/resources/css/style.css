@@ -1927,7 +1927,14 @@ form.editTags input[type=text] {
 
 #loginSelect_msdd {
 	margin-right: 1em;
+	width: 50px !important;
+	color: black;
 }
+
+#loginSelect_msdd a{
+	color: black;
+}
+
 
 /* dd.css - to be cleaned */
 	/************** Skin 1 *********************/

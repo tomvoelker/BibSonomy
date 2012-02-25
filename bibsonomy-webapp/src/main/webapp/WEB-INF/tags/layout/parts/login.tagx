@@ -42,7 +42,7 @@
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
 			<fmt:message key="login.method.${authMethodName}" var="loginMessage" />
 			<c:if test="${not empty loginMessage}">
-				<option value="${status.count}" title="${image_login_base}${authMethod}.png">${status.count}&amp;nbsp;&amp;nbsp;</option>
+				<option value="${status.count}" title="${image_login_base}${authMethod}.png"><fmt:message key="login.method.${fn:toLowerCase(authMethod)}"/></option>
 			</c:if>
 		</c:forEach>
 	</select>
