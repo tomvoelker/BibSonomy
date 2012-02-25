@@ -61,13 +61,14 @@ a img {
     background-color: #FFFFFF;
     border: 2px solid #666666;
     box-shadow: 0 0 5px 0;
-    left: 80px;
+    left: 20px;
     margin-top: 40px;
     position: absolute;
-    right: 380px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
+    right: 320px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
     z-index: 60;
     opacity: 0.95;
     max-width: 780px;
+    min-width: 580px;
     filter: alpha(opacity=95);
 	-moz-border-radius:10px; /* Firefox */
 	-webkit-border-radius:10px; /* Safari, Chrome */
@@ -82,21 +83,24 @@ a img {
 
 }
 
-	
 .close a {
 	cursor: pointer;
 	padding-left: 4px;
 	padding-bottom: 1px;
 	padding-right: 3px;
-	border-bottom: 2px solid #666;
-	border-left: 2px solid #666;
+	border: 2px solid #666;
+	border-right:none; 
 	color: white;
-	background-color: #666;
+	background-color: red;
 	font-weight: bold;
 	-moz-border-radius-bottomleft:10px; /* Firefox */
 	-webkit-border-bottom-left-radius:10px; /* Safari, Chrome */
 	-khtml-border-bottom-left-radius:10px; /* Konqueror */
 	border-bottom-left-radius:10px; /* CSS3 */
+	-moz-border-radius-topright:10px; /* Firefox */
+	-webkit-border-top-right-radius:10px; /* Safari, Chrome */
+	-khtml-border-top-right-radius:10px; /* Konqueror */
+	border-top-right-radius:10px; /* CSS3 */
 }
 
 .close {

@@ -42,7 +42,7 @@
 						
 						<!-- project name -->
 						<div class="systemName">
-							<a href=""><c:out value="${properties['project.name']}"/></a>
+							<c:out value="${properties['project.name']}"/>
 						</div>
 						
 						<!-- introduction -->
