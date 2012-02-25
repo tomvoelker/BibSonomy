@@ -41,8 +41,10 @@
     <fmt:message key="feeds.swrc" var="swrcFeed"/>
     <c:set var="requPath" value="${fn:escapeXml(requPath)}"/>    
     <!-- which resourcetypes to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize) -->
-    <c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstPublicationsListItem }" />
-    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstBookmarksListItem }" />
+    <c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+    <c:set var="showPublication" value="${(showPublicationList or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
+    <c:set var="showBookmarkList" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+    <c:set var="showBookmark" value="${showBookmarkList or not empty addAsFirstBookmarksListItem }" />
     <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
     <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
@@ -58,8 +60,10 @@
 			newsbar="${newsbar}" 
 			requPath="${requPath}" 
 			activeTab="${activeTab}" 
-			personalized="${command.personalized}">
+			personalized="${command.personalized}"
+			hideFooterContainer="${showPublicationList}"
 			
+			>
 			
 		<!--+
 			+ HTML header extension
