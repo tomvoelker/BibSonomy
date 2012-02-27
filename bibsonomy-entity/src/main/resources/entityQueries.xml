@@ -6,39 +6,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <!-- database bibsonomy_strudel -->
 <select id="selectBibtex" parameterType="int" resultType="String">
-	SELECT author FROM bibtex WHERE `group` = #{groupId} LIMIT 1000
+SELECT author FROM bibtex LIMIT 1000
 </select>
+
 <select id="selectAuthor" parameterType="String" resultType="String">
-	SELECT author FROM author WHERE `group` = 0
+SELECT author FROM author
 </select>
  
- <!-- database projekt_autoren_id -->
- <select id="lastIDInsertAuthor" parameterType="String" resultType="int">
-	SELECT author_id FROM author WHERE normalized_name = #{normalizedName} ORDER BY author_id DESC
+<select id="selectAuthorNames" parameterType="String" resultType="String">
+SELECT normalized_name FROM author GROUP BY normalized_name
 </select>
 
- <select id="lastInsertID" resultType="int">
-	SELECT last_insert_id()
-</select>
-			
-<select id="clusteringList" resultType="java.util.HashMap">
-	select author.author_id, author.normalized_name, coauthor.normalized_name, coauthor.coauthorlist_id FROM author INNER JOIN coauthor_list USING(author_id) INNER JOIN coauthor ON (coauthor.coauthorlist_id = coauthor_list.coauthorlist_id) ORDER BY author.normalized_name ASC, author.author_id ASC
+<!-- database projekt_autoren_id -->
+<select id="countAuthorsByName" parameterType="String" resultType="int">
+SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 1000
 </select>
 	
+<select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
+SELECT CAST(author_id as varchar), normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName}
+</select>
+			
 <insert id="insertAuthor" parameterType="String">
-	INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName}, #{lastName}, #{normalizedName});
+INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName}, #{lastName}, #{normalizedName});
 </insert>
 
-<insert id="insertFirstCoAuthor" parameterType="String">
-	INSERT INTO coauthor_list(author_id) VALUES(#{authorID})
+<insert id="insertCoAuthors" parameterType="String">
+INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (currval('author_author_id_seq'),#{normalizedName});
 </insert>
 
-<insert id="insertFirstCoAuthor2" parameterType="String">
-	INSERT INTO coauthor(normalized_name, coauthorlist_id) VALUES (#{normalizedName}, #{listID});
+<insert id="insertMergedCoAuthor" parameterType="HashMap">
+INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (Cast(#{authorID} as Integer),#{normalizedCoauthor});
 </insert>
 
-<insert id="insertCoAuthor" parameterType="String">
-	INSERT INTO coauthor(coauthorlist_id,normalized_name) VALUES (#{listID}, #{normalizedName});
-</insert>
+<delete id="deleteAuthor" parameterType="int">
+DELETE FROM author_coauthor WHERE author_id = #{tmpInnerMaxAuthorID};
+DELETE FROM author WHERE author_id = #{tmpInnerMaxAuthorID};
+</delete>
 
 </mapper>
