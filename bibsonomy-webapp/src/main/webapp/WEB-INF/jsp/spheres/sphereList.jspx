@@ -19,7 +19,7 @@
 	
 	<fmt:message key="navi.spheres" var="pageTitle"/>
 	
-	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="navi.spheres" headerLogoClass="spheres" requPath="${requPath}" command="${command}">
+	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="navi.spheres" headerLogoClass="spheresHeader" requPath="${requPath}" command="${command}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.spheres"/>
 		</jsp:attribute>

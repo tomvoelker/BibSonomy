@@ -1210,7 +1210,7 @@ div.help>a,div.help>b {
 .headerLogo.image.bookmarks {background-position: 9px 2px; width: 30px; height: 30px; }
 .headerLogo.image.publications {background-position: 9px -61px; width: 30px; height: 30px; }
 .headerLogo.image.tags {background-position: 4px -182px; width: 30px; height: 30px; }
-.headerLogo.image.spheres {background-position: 4px -278px; width: 30px; height: 30px; }
+.headerLogo.image.spheresHeader {background: url("/resources/image/tabactions.png") no-repeat; background-position: -47px -95px; }
 .headerLogo.image.cv {background-position: 4px -528px; width: 30px; height: 30px; }
 .headerLogo.image.settings {background-position: 4px -320px; width: 30px; height: 30px; }
 .headerLogo.image.editTags {background-position: 4px -414px; width: 30px; height: 30px; }
