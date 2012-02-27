@@ -33,9 +33,6 @@ public class DBStatisticsManager extends DBManager {
 	/* ******************************************************************************************
 	 * Misc
 	 */
-	public static int getTagTagBatches(String showSpammer) {     
-		return getCtr("SELECT count(*) AS ctr FROM tagtag_batch");
-	}
 	public static int getTags(String showSpammer) {              
 		return getCtr("SELECT count(*) AS ctr FROM tags WHERE tag_ctr_public > 0");
 	}

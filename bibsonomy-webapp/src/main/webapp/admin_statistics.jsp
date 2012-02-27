@@ -104,7 +104,6 @@ show statistics: <a href="?showSpammer=no">without spammers</a>, <a href="?showS
 <table id="table6" class="thetable">
   <tr><th>tags              </th><td><ajax:get var="stats.tags"/>              </td></tr>
   <tr><th>tag-tag relations </th><td><ajax:get var="stats.tagTagRelations"/>   </td></tr>
-  <tr><th>tagtag batches    </th><td><ajax:get var="stats.tagTagBatches"/>     </td></tr>
   <tr><th>posts in baskets  </th><td><ajax:get var="stats.postsInBaskets"/>    </td></tr>
   <tr><th>user layouts      </th><td><ajax:get var="stats.usersWithOwnLayout"/></td></tr>
   <tr><th>uploaded documents</th><td><ajax:get var="stats.uploadedDocuments"/> </td></tr>

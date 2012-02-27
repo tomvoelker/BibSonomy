@@ -22,9 +22,8 @@ public class StatisticsBean implements Serializable {
 		this.showSpammer = showSpammer;
 	}
 
-	private Date today = new Date();
+	private final Date today = new Date();
 	
-	private int tagTagBatches = -1;
 	private int tags = -1;
 	private int postsInBaskets = -1; // average!
 	private int tagTagRelations = -1; // average!
@@ -159,11 +158,6 @@ public class StatisticsBean implements Serializable {
 		if (tags == -1) tags = DBStatisticsManager.getTags(showSpammer);
 		return tags;
 	}
-	public int getTagTagBatches() {
-		if (tagTagBatches == -1) tagTagBatches = DBStatisticsManager.getTagTagBatches(showSpammer);
-		return tagTagBatches;
-	}
-
 	public int getTas() {
 		if (tas == -1) tas = DBStatisticsManager.getTas(showSpammer);
 		return tas;
