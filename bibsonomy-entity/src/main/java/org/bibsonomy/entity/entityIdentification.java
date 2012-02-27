@@ -39,17 +39,12 @@ import org.bibsonomy.util.StringUtils;
 public class entityIdentification {
 
 	public static void main(String[] args) throws PersonListParserException {
-		
-		float timeAtStart = System.nanoTime();
-		
 
-		float timeAtstart = System.nanoTime();
-			
+		float timeAtStart = System.nanoTime();
 
 		String resource = "config.xml";
 		Reader reader;
 				
-		System.exit(0);
 		List<String> authorList = null;
 		try {
 			reader = Resources.getResourceAsReader(resource);
@@ -58,13 +53,10 @@ public class entityIdentification {
 			SqlSession session = sqlMapper.openSession();
 			try {
 			authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtex", 1);
-			//author = (String)session.selectOne(
-			//"org.mybatis.example.BlogMapper.selectBibtex");
 			System.out.println(authorList.get(3));
 			} finally {
-			session.close();
+				session.close();
 			}
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -79,11 +71,6 @@ public class entityIdentification {
 			
 			SqlSession sessionRkr = sqlMapper.openSession();
 
-		//TODO List<List<PersonName>> coAuthorList = new ArrayList<List<PersonName>>(0);
-		//TODO List<String> allPersons = new ArrayList<String>(0);
-			
-
-		
 		//read all entries from bibtex and save it to author table
 
 		for (String authors: authorList) { //authorList for each publication
@@ -93,12 +80,6 @@ public class entityIdentification {
 				sessionRkr.commit();
 			     HashMap<String, String> authorName = new HashMap<String, String>();
 
-			     authorName.put("firstName", author.getFirstName());
-			     authorName.put("lastName", author.getLastName());
-			     authorName.put("normalizedName", author.getFirstName() + author.getLastName());
-			 
-			     sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);			 
-
 			     authorName.put("firstName", StringUtil.foldToASCII(author.getFirstName()));
 			     authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
 			     authorName.put("normalizedName", normalizePerson(author));
@@ -106,31 +87,6 @@ public class entityIdentification {
 			     sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
 			     
 				 List<Integer> lastAuthorWithThisNameInsertedAuthorId = null;
-				 lastAuthorWithThisNameInsertedAuthorId = sessionRkr.selectList("org.mybatis.example.Entity-Identification.lastIDInsertAuthor", authorName);	 
-				 
-				 boolean firstInsert = true;
-				 List<Integer> listID = null;
-				 if ( allAuthorNamesOfOnePublication.size() > 1) { //there are no coauthors if size == 1
-					 for (PersonName coAuthor: allAuthorNamesOfOnePublication) { //add the coauthors to database
-						 if (!coAuthor.equals(author)) { 
-							 HashMap<String,String> coAuthorParameter = new HashMap<String,String>();
-							 coAuthorParameter.put("normalizedName", normalizePerson(coAuthor));
-							 coAuthorParameter.put("authorID", lastAuthorWithThisNameInsertedAuthorId.get(0) + "");
-						 
-							 if (firstInsert) {
-								 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertFirstCoAuthor", coAuthorParameter);
-								 listID = sessionRkr.selectList("org.mybatis.example.Entity-Identification.lastInsertID");
-								 coAuthorParameter.put("listID", listID.get(0) + "");
-								 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertFirstCoAuthor2", coAuthorParameter);	 
-								 firstInsert = false;	 
-							 }
-							 else {
-								 coAuthorParameter.put("listID", listID.get(0) + "");
-								 sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthor", coAuthorParameter);
-							 }
-						 }
-					 }
-				 }
 			}
 		}
 		
