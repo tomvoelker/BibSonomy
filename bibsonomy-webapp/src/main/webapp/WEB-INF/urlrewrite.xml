@@ -422,7 +422,12 @@
 
 	<!-- ############## Curriculum vitae pages ############### -->
 	
-	<!-- /cv/NAME -->
+	<!--+
+		| /cv/NAME and /cv/GROUP
+		| Of the following 4 rules
+		| 1 and 2 are used for the WIKI-CV
+		| 3 and 4 are used for the JSP-CV
+		+-->
 	<!-- 
 	<rule>
 		<name>/cv/user/USER</name>
@@ -439,7 +444,6 @@
 	</rule>
 	 -->
 	
-	<!-- JSP Config /cv/NAME  --> 
 	<rule>
 		<name>/cv/user/USER</name>
 		<from>^/+cv/+user/(.+)$</from>
