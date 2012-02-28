@@ -9,5 +9,5 @@
 
 	<!--  display title -->
 	<c:set var="bibUrlTemplate">/bibtex/${hash.inter.id}${post.resource.interHash}</c:set>
-	<a href="${bibUrlTemplate}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a><c:out value=" "/>
+	<a href="${bibUrlTemplate}" title="${mtl:cleanBibtex(post.resource.title)}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a><c:out value=" "/>
 </jsp:root>
