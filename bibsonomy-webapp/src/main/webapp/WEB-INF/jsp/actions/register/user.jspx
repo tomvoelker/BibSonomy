@@ -67,7 +67,7 @@
             		</bform:fieldset>
             		
             		
-            		<bform:fieldset maximized="${false}" legendKey="register.additional">
+            		<bform:fieldset maximized="${true}" legendKey="register.additional">
               			<jsp:attribute name="content">  
               				<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>;
    	          				<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>;
