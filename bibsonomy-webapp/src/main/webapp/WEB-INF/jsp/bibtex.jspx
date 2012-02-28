@@ -46,7 +46,7 @@
 			command="${command}" 
 			requPath="${requPath}" 
 			disableResourcetypeSelection="${true}"
-			showPageOptions="${true}"
+			showPageOptions="${false}"
 			customBookmarksHeaderText="${discussionsTitle}">		 	
 			
 		<jsp:attribute name="heading">
@@ -92,9 +92,11 @@
 			</ul>
 		</jsp:attribute>
 		
+		<!-- 
 		<jsp:attribute name="customPageOptions">
-			TODO: put custom page options (copy, add references, ...) here!
+			FIXME: put custom page options (copy, add references, ...) here (will have to rework resourceLayout for that)
 		</jsp:attribute>
+		 -->
 
 		<!--+
 			| discussion
