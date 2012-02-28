@@ -26,6 +26,7 @@
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
 	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
@@ -61,7 +62,7 @@
 			requPath="${requPath}" 
 			activeTab="${activeTab}" 
 			personalized="${command.personalized}"
-			hideFooterContainer="${showPublicationList}"
+			hideFooterContainer="${hideFooterContainer}"
 			
 			>
 			

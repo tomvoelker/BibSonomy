@@ -18,7 +18,9 @@
 			requPath="${requPath}" 
 			disableListNavigation="${true}" 
 			activeTab="home"
-			showPageOptions="${false}">
+			showPageOptions="${false}"
+			hideFooterContainer="${true}">
+			
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 			
