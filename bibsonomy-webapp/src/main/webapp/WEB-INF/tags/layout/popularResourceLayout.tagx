@@ -21,13 +21,15 @@
 	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" infobox="${infobox}" sidebar="${sidebar}" requPath="${requPath}" activeTab="${activeTab}">
 		<jsp:attribute name="headerExt"/>
 
+		<!-- FIXME: layout assumes that always both entrytypes are displayed; adapt to ?resourceType=XY -->
+
 		<jsp:attribute name="headerContainer">
-			<div id="bookmarksheader">
-				<h2 class="header"><fmt:message key="bookmarks" /></h2>
+			<div id="bookmarksheader" class="standard">
+				<h2 class="header standard"><fmt:message key="bookmarks" /></h2>
 			</div>
 			
-			<div id="publicationsheader">
-				<h2 class="header"><fmt:message key="publications" /></h2>			
+			<div id="publicationsheader" class="standard">
+				<h2 class="header standard"><fmt:message key="publications" /></h2>			
 			</div>
 		</jsp:attribute>
 
@@ -44,7 +46,7 @@
 						<c:choose>
 							<c:when test="${not empty command.listsBookmark[status.index]}">
 								<c:set var="extTitle">${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-								<resources:bookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}"/>
+								<resources:bookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}" widthClassName="standard"/>
 
 <!--									<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}">-->
 <!--											<jsp:attribute name="extTitle">-->
@@ -58,7 +60,7 @@
 							<c:when test="${not empty command.listsBibTeX[status.index]}">
 
 								<c:set var="extTitle">${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-								<resources:bibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}"/>
+								<resources:bibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disableListNavigation="${disableListNavigation}" requPath="${requPath}" listIndex="${status.index}" extTitle="${extTitle}" widthClassName="standard"/>
 
 
 <!--									<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}">-->
