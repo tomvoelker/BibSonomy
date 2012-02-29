@@ -21,42 +21,37 @@
 		 	+-->
 		<c:if test="${not empty loginUserName}">
 			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}">
-				<span><fmt:message key="navi.my"/>${properties['project.name']}</span>
-				<!-- 
-					posts
-					*private posts
-					*posts for friends  (Anmerkung: Name noch nicht festgelegt)
-					*documents
-					*duplicates
-					-----------------
-					discussed posts
-					inbox
-					basket
-					-----------------
-					spheres
-					*friends
-					*followed users
-					-----------------
-					concepts
-					*browse
-					*BibTeX
-					*CV
-					-----------------
-					settings
-				 -->
+				<a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a>
 				<ul>
-					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/><fmt:message key="navi.posts.cap"/></a></li>
-					<li><a href="/friends"><fmt:message key="navi.my.plural"/><fmt:message key="navi.friends.cap"/></a></li>
-				    <li><a href="/spheres"><fmt:message key="navi.my.plural"/><fmt:message key="navi.spheres.cap"/></a></li>
-					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.discussedPosts.Cap"/></a></li>
-					<li><a href="/concepts/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations.cap"/></a></li>
-					<li><a href="/mySearch"><fmt:message key="navi.my.plural"/><fmt:message key="navi.search.cap"/></a></li>
-					<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.my.plural"/><fmt:message key="navi.pdfs"/></a></li>
-			        <li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.my.plural"/><fmt:message key="navi.duplicates.cap"/></a></li>
-			        <li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.my"/><fmt:message key="navi.bibtex.cap"/></a></li>
-			        <li><a href="/followers"><fmt:message key="navi.my.plural"/><fmt:message key="navi.followedUsers.my"/></a></li>
-			        <li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/><fmt:message key="navi.cv"/></a></li>
-					<li><a href="/viewable/private"><fmt:message key="navi.my.plural"/><fmt:message key="navi.privatePosts"/></a></li>		        
+					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
+					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+						<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>		        
+						<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>		        					
+						<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
+				        <li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
+					</c:if>
+					<li class="separator">${mtl:ch('nbsp')}</li>
+					
+					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
+					<li><a href="/basket"><fmt:message key="navi.basket"/></a></li>
+					<li><a href="/inbox"><fmt:message key="navi.inbox"/></a></li>
+					<li class="separator">${mtl:ch('nbsp')}</li>
+					
+				    <li><a href="/spheres"><fmt:message key="navi.spheres"/></a></li>
+					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+						<li><a href="/friends"><fmt:message key="navi.friends"/></a></li>
+				        <li><a href="/followers"><fmt:message key="navi.followees"/></a></li>
+						<li class="separator">${mtl:ch('nbsp')}</li>
+					</c:if>
+	
+					<li><a href="/concepts/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
+					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+				        <li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
+						<li><a href="/mySearch"><fmt:message key="navi.browse"/></a></li>
+				        <li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
+						<li class="separator">${mtl:ch('nbsp')}</li>
+					</c:if>					
+			        <li><a href="/settings"><fmt:message key="navi.settings"/></a></li>
 				  </ul>
 			</li>
 			<!--+
