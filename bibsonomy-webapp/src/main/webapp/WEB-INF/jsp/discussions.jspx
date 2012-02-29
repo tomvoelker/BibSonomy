@@ -66,6 +66,8 @@
 	               		<fmt:message key="system.recentlyDiscussed.intro.noUser"/>
 					</c:otherwise>
 				  </c:choose>
+				  <br/>
+				  <fmt:message key ="system.recentlyDiscussed.intro.help"/>
 				</jsp:attribute>
 			</parts:infobox>
          </jsp:attribute>
