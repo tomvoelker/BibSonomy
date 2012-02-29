@@ -22,6 +22,28 @@
 		<c:if test="${not empty loginUserName}">
 			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}">
 				<span><fmt:message key="navi.my"/>${properties['project.name']}</span>
+				<!-- 
+					posts
+					*private posts
+					*posts for friends  (Anmerkung: Name noch nicht festgelegt)
+					*documents
+					*duplicates
+					-----------------
+					discussed posts
+					inbox
+					basket
+					-----------------
+					spheres
+					*friends
+					*followed users
+					-----------------
+					concepts
+					*browse
+					*BibTeX
+					*CV
+					-----------------
+					settings
+				 -->
 				<ul>
 					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/><fmt:message key="navi.posts.cap"/></a></li>
 					<li><a href="/friends"><fmt:message key="navi.my.plural"/><fmt:message key="navi.friends.cap"/></a></li>
