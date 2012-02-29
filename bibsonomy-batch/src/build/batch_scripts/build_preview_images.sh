@@ -73,7 +73,7 @@ for doc in $DOCUMENTS; do
 	"application/postscript" | "application/pdf")
 	    # when no small preview there, generate a new one
 	    small=${doc}_SMALL.jpg
-	    if [ ! -f $small -o $TASK == "force" ]; then
+	    if [ ! -f $small -o $TASK = "force" ]; then
 		# echo "converting $doc ($type)"
 		# get a temporary file
 		temp=$(tempfile)
@@ -92,7 +92,7 @@ for doc in $DOCUMENTS; do
 	"image/jpeg" | "image/png" | "image/tiff" )
 	    # when no small preview there, generate a new one
 	    small=${doc}_SMALL
-	    if [ ! -f $small -o $TASK == "force" ]; then
+	    if [ ! -f $small -o $TASK = "force" ]; then
 		# echo "converting $doc ($type)"
 		# make small JPEG previews
 		convert -quiet -thumbnail '80x80>' $doc ${doc}_SMALL.jpg
