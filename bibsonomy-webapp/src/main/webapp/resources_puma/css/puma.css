@@ -2,6 +2,9 @@ body {
 	background-color: #F7EFED;
 }
 
+a {
+    color: #DF430D;
+}
 
 #logoimage {
     display: block;
@@ -37,7 +40,7 @@ body {
 
 
 #navigation, #navigation2 {
-    background-color: #DBC3BC;
+    background-color: #CABEA6;
 }
 
 #navigation > ul {
@@ -45,14 +48,13 @@ body {
 }
 
 #postcontainer {
-	border: 2px solid #DBC3BC;
+	border: 1px solid #DBC3BC;
 	border-top: 0;
 	border-bottom: 0;
-	top: 187px;
 }
 
 #container.noPageNavigation #postcontainer {
-	border-bottom: 2px solid #DBC3BC;
+	border-bottom: 1px solid #DBC3BC;
 }
 
 #container.noPageNavigation {
@@ -61,13 +63,13 @@ body {
 
 
 #footercontainer {
-	border: 2px solid #DBC3BC;
+	border: 1px solid #DBC3BC;
 	border-top: 0;
 }
 
 #headercontainer {
-	border: 2px solid #DBC3BC;
-	border-top: 0px;
+	border-left: 1px solid #DBC3BC;
+	border-right: 1px solid #DBC3BC;
 }
 
 input[type="text"], input[type="password"], input[type="file"], textarea, select {
@@ -76,4 +78,24 @@ input[type="text"], input[type="password"], input[type="file"], textarea, select
 
 .tab_content, .tab .selected {
     border: 1px solid #DBC3BC;
+}
+
+.bookmarksContainer ul.posts, .publicationsContainer ul.posts {
+	border: none;
+}
+
+#bookmarksheader .header, #publicationsheader .header {
+    border: none;
+}
+
+#bookmarksfooter .footer, #publicationsfooter .footer {
+    border: none;
+}
+
+#bookmarksheader .header, #publicationsheader .header, #panelheader .header {
+	color: #DF430D;
+}
+
+#navigation ul li.active { 
+	color: #DF430D;
 }
