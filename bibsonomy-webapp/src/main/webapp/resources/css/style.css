@@ -353,8 +353,8 @@ a img {
 	background: #333;
 }
 
-#navigation > ul li:hover > a { /* FIXME: sollte das nicht durch die vorherige Regel abgedeckt sein? */ 
-	color: #fff;
+#navigation > ul li:hover > a { 
+	color: #fff !important;
 }
 
 /*--- DROPDOWN ---*/
@@ -495,6 +495,17 @@ a img {
 	background-repeat: no-repeat;
 	background-position: 0 0.9ex;
 	padding-left: 3ex;
+}
+
+/*
+ * division line in navigation menu
+ */
+#navigation .separator {
+	height: 2px;
+	background: #c6c6c6;
+}
+#navigation .separator:hover {
+	background: #c6c6c6;
 }
 
 
