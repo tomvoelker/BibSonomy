@@ -80,6 +80,14 @@ input[type="text"], input[type="password"], input[type="file"], textarea, select
     border: 1px solid #DBC3BC;
 }
 
+.tab .selected {
+	border-bottom: none;
+}
+
+.tab_content {
+	margin: 2ex 0ex;
+}
+
 .bookmarksContainer ul.posts, .publicationsContainer ul.posts {
 	border: none;
 }
@@ -99,3 +107,36 @@ input[type="text"], input[type="password"], input[type="file"], textarea, select
 #navigation ul li.active { 
 	color: #DF430D;
 }
+
+.pgroup .private {
+    background-color: #DF430D;
+}
+
+.tab .selected a {
+	color: #DF430D;
+}
+
+.fsOuter {
+	padding: 2ex;
+}
+
+.fsOuter, .fsInner, .fsVisible {
+    background-color: #F8F8F8;
+    border: 1px solid #DBC3BC;
+}
+
+.reqinput {
+    background-color: #F7EFED;
+}
+
+div.help > a, div.help > b {
+    color: #DF430D;
+}
+
+ul#gold_menu li a {
+    background-color: #DF430D;
+    border: 1px solid #DBC3BC;
+    color: white !important;
+}
+
+
