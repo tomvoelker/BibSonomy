@@ -139,4 +139,29 @@ ul#gold_menu li a {
     color: white !important;
 }
 
-
+#pumageneral {
+    font-size: 130%;
+    font-weight: normal;
+    margin-bottom: 4ex;
+    margin-top: 3ex;
+    text-align: center;
+}
+#wrap_btn {
+    float: none;
+    margin: auto;
+    width: 510px;
+}
+#wrap_advantages {
+    margin-bottom: 10px;
+    margin-top: 3ex;
+    min-height: 175px;
+    text-align: center;
+    width: 100%;
+}
+#desc_advantages {
+    color: #DF430D;
+    font-weight: normal;
+    height: 5ex;
+    padding: 2ex 3em;
+    text-align: center;
+}
