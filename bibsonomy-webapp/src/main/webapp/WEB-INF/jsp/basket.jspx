@@ -22,7 +22,22 @@
 			isBasket="${true}" 
 			disableListNavigation="${true}"
 			disableResourcetypeSelection="${true}">
+
+		<jsp:attribute name="headerExt">
+			
+			<script type="text/javascript">        
+				<![CDATA[
+					
+					$(document).ready(function() {
+						loadQRVideo();
+					});
+					
+				]]>
+				
+			</script>
 	
+		</jsp:attribute>
+
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.basket"/>
 		</jsp:attribute>
