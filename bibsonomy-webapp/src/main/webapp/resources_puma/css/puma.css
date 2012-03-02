@@ -6,28 +6,47 @@ a {
     color: #DF430D;
 }
 
+
+#container {
+	top: 14px;
+}
+
 #logoimage {
     display: block;
-    margin-top: -10px;
+    margin-top: -9px;
     position: absolute;
     z-index: 55;
 }
 
 #headerlogoimage {
-	height: 116px;
+	height: 100px;
+}
+
+#logo {
+	top: 0px;
+}
+
+#logoSubtitle {
+	top: 45px;
+	line-height: 2ex;
 }
 
 #logo, #logoSubtitle {
-	left: 115px;
+	left: 100px;
 }
 
-#logo, #logo a, #logoSubtitle {
+#logo, #logo a {
 	color: black;
+}
+
+#logoSubtitle {
+	color: #666;
 }
 
 #header {
 	background-color: #F7EFED;
 	border-bottom: 2px solid black;
+	height: 80px;
 }
 
 #infoline, #infoline a {
@@ -44,13 +63,14 @@ a {
 }
 
 #navigation > ul {
-	margin-left: 2px;
+	margin-left: 1px;
 }
 
 #postcontainer {
 	border: 1px solid #DBC3BC;
 	border-top: 0;
 	border-bottom: 0;
+	top: 172px;
 }
 
 #container.noPageNavigation #postcontainer {
@@ -70,10 +90,16 @@ a {
 #headercontainer {
 	border-left: 1px solid #DBC3BC;
 	border-right: 1px solid #DBC3BC;
+	top: 112px;
 }
 
 input[type="text"], input[type="password"], input[type="file"], textarea, select {
     border: 1px solid #DBC3BC;
+    font-size: 100%;
+}
+
+input#inpf {
+	font-size: 14px;
 }
 
 .tab_content, .tab .selected {
