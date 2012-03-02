@@ -1718,14 +1718,14 @@ form.editTags input[type=text] {
 	right: 0px;
 	top: 125px;
 	height: 60px;
-	padding-right: 314px;  /* 300px plus average scrollbar width - will be adjusted with javascript to correct width, depends on browser and operating system  */
+	padding-right: 300px;
 	background-color: #FFFFFF;
 	overflow:visible;
 }
 
 #sidebarheader {
 	position: absolute;
-	width: 314px;  /* 300px plus average scrollbar width - will be adjusted with javascript to correct width, depends on browser and operating system  */
+	width: 300px;
 	right: 0px;
 	top: 0px;
 	z-index: 40;

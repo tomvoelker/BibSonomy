@@ -330,33 +330,6 @@ $(function() {
 	window.setTimeout("initBookmarksPublicationsListsLast()", 500);
 });
 
-/* http://www.alexandre-gomes.com/?p=115 */
-function getScrollBarWidth () {  
-    var inner = document.createElement('p');  
-    inner.style.width = "100%";  
-    inner.style.height = "200px";  
-  
-    var outer = document.createElement('div');  
-    outer.style.position = "absolute";  
-    outer.style.top = "0px";  
-    outer.style.left = "0px";  
-    outer.style.visibility = "hidden";  
-    outer.style.width = "200px";  
-    outer.style.height = "150px";  
-    outer.style.overflow = "hidden";  
-    outer.appendChild (inner);  
-  
-    document.body.appendChild (outer);  
-    var w1 = inner.offsetWidth;  
-    outer.style.overflow = 'scroll';  
-    var w2 = inner.offsetWidth;  
-    if (w1 == w2) w2 = outer.clientWidth;  
-  
-    document.body.removeChild (outer);  
-  
-    return (w1 - w2);  
-};  
-
 function initBookmarksPublicationsListsLast() {
 	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
 	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
@@ -407,19 +380,12 @@ function initBookmarksPublicationsListsLast() {
 }
 
 function initSidebarHeader() {
-	scrollbarWidth = getScrollBarWidth();
+	
 	if ( ($("#postcontainer").length != 0) && ($("#bookmarks_0").length != 0) && ($("#publications_0").length != 0) && ($("#sidebar").length != 0) ) { 
-//		// calculate scrollbar-width
-//		var c = $("#postcontainer").width();
-//		//var s = $("#sidebar").width();
-//		var b = $("#bookmarks_0").width();
-//		var p = $("#publications_0").width();
-//		var scrollbarWidth = c-(b+p);  // sidebar is in padding. width is width without padding
-//		var sidebarWidth = $("#sidebarheader").width();
-//		var sidebarWidthBody = $("#sidebar").width();
-//		var scrollbarWidth_default = 0;
 
-		var new_sidebarWidth = $("#sidebar").width() + scrollbarWidth;
+		sidebar_diff = $("#sidebarheader").offset().left - $("#sidebar").offset().left;
+		var new_sidebarWidth = $("#sidebar").width() + sidebar_diff;
+		
 		// set new width of header, regarding to scrollbarwidth and hide scrollbars in header
 		$("#sidebarheader").css("width", new_sidebarWidth);
 	
@@ -439,6 +405,5 @@ function initSidebarHeader() {
 	if ($("#footercontainer").length != 0) {
 		$('#footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
 	}
-	
 	
 }
