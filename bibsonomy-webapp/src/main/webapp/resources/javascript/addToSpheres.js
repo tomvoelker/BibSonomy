@@ -476,7 +476,7 @@ function SphereControl(projectHome) {
 SphereControl.prototype.renderSpheres = function() {
 	var backref = this;
 	
-	$("#spheresTemplates").load(backref.projectHome + '/resources/templates/spherestemplates.xml', function(data, textStatus) {
+	$("#spheresTemplates").load(backref.projectHome + 'resources/templates/spherestemplates.xml', function(data, textStatus) {
 			backref.getSpheres(function(data){backref["cb_handleSpheres"](data)});
 	});
 };
@@ -490,7 +490,7 @@ SphereControl.prototype.renderSpheres = function() {
  * @return JSONized user recommendations 
  */
 SphereControl.prototype.getSpheres = function(callBack, callError) {
-	this.fetchData(this.projectHome + '/json/spheres', null, callBack, callError);
+	this.fetchData(this.projectHome + 'json/spheres', null, callBack, callError);
 };
 
 /**
