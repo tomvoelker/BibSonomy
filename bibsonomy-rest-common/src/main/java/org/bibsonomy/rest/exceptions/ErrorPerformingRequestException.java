@@ -1,6 +1,6 @@
 /**
  *
- *  BibSonomy-Rest-Client - The REST-client.
+ *  BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
  *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
