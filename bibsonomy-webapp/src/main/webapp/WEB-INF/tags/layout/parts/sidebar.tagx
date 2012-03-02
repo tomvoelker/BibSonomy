@@ -5,7 +5,8 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:spring="http://www.springframework.org/tags">
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources">
 	
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
@@ -22,6 +23,15 @@
 		
 		<c:if test="${not empty newsbar}">
 			<jsp:invoke fragment="newsbar" />
+		</c:if>
+		
+		<c:if test="${not empty sidebar}">
+		
+			<div id="qrcode">
+				<video id="sourcevid" autoplay="autoplay">
+				</video>
+			</div>
+		
 		</c:if>
 
 		<c:if test="${not empty sidebar}">
