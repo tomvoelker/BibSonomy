@@ -27,13 +27,12 @@
 			
 			<script type="text/javascript">        
 				<![CDATA[
-					
-					$(document).ready(function() {
-						loadQRVideo();
-					});
+										
+					function urlFromFlash(text) {
+						addloadedEntryToBasket(text);
+					}
 					
 				]]>
-				
 			</script>
 	
 		</jsp:attribute>
@@ -46,6 +45,7 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
+			<parts:qrcode />
 			<ul>			
 	          <li style="text-align: center;">
 	            <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>

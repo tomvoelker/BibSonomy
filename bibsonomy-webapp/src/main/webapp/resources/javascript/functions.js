@@ -125,48 +125,17 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 }
 
 /**
- * Loads qr code reader into basket sidebar.
- * Takes a html5 video tag if available or replaces it
- * with flash application.
+ * Adds read entry from qr reader app to the basket.
+ * User has to push another button to pick them all.
+ * Else page would constantly reload and user had to confirm
+ * camera security setting.
+ * 
+ * @param text The query link.
  */
-function loadQRVideo() {
-	/*
-	 * Assign the <video> element to a variable
-	 */ 
-	var video = document.getElementById('sourcevid');
-
-	/*
-	 * Replace the source of the video element with the stream from the camera
-	 */ 
-	if (navigator.getUserMedia) {
-		navigator.getUserMedia('video',	successCallback, errorCallback);
-						
-		/*
-		 * Below is the latest syntax. Using the old syntax for 
-		 * the time being for backwards compatibility. navigator.getUserMedia({video: true}, successCallback, errorCallback);
-		 */ 
-		function successCallback(stream) {
-			video.src = stream;
-		}
-		
-		function errorCallback(error) {
-			$("div#qrcode").html("");
-			return;
-		}
-	} else {
-		$("div#qrcode").html("\<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\"\
-						  width=\"100%\" height=\"100%\" id=\"QReader\" align=\"left\">\
-						  <param name=\"movie\" value=\"/resources/qrcode/QReader.swf\" />\
-						  <param name=\"quality\" value=\"high\" />\
-						  <param name=\"wmode\" value=\"direct\" />\
-						  <param name=\"allowscriptaccess\" value=\"sameDomain\" />\
-						  <embed src=\"/resources/qrcode/QReader.swf\" quality=\"high\"\
-						  width=\"100%\" height=\"100%\" name=\"QReader\" align=\"\"\
-						  type=\"application/x-shockwave-flash\"\
-						  pluginspage=\"http://www.macromedia.com/go/getflashplayer\" />\
-						  </object>");
-		return;
-	}
+function addloadedEntryToBasket(text)
+{
+	text = text.substring(text.indexOf("/bibtex"));
+	renderPosts(text, $("#publications_0 ul.posts"));
 }
 
 /**
@@ -178,19 +147,32 @@ function loadQRVideo() {
  */
 function renderPosts(query, list) {
 	
-	
 	$.ajax({
 		url : "/posts" + query,
 		dataType : "html",
 		success : function(data) {
-			$(list).append($(data));
-			/*
-			 * FIXME: does this really always work? 
-			 * What about posts that have already been prepared?
-			 * Are there any methods missing?
-			 */
-			$(".editTags").click(editTags);
-			imagePreview();
+			
+			var found = false;
+			
+			$(list).find('li').each(function(index) 
+			{
+			    if($(this).find('div.ptitle').find('a').attr('title') == $(data).find('div.ptitle').find('a').attr('title'))
+			    {
+			    	found = true;
+			    }
+			});
+			
+			if(!found)
+			{
+				$(list).append($(data));
+				/*
+				 * FIXME: does this really always work? 
+				 * What about posts that have already been prepared?
+				 * Are there any methods missing?
+				 */
+				$(".editTags").click(editTags);
+				imagePreview();
+			}
 		}
 	});
 }

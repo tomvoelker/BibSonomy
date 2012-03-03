@@ -10,6 +10,7 @@
 	
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="qrcode"  fragment="true" required="false"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 
 	<div id="sidebar">
@@ -25,13 +26,8 @@
 			<jsp:invoke fragment="newsbar" />
 		</c:if>
 		
-		<c:if test="${not empty sidebar}">
-		
-			<div id="qrcode">
-				<video id="sourcevid" autoplay="autoplay">
-				</video>
-			</div>
-		
+		<c:if test="${not empty qrcode}">
+			<jsp:invoke fragment="qrcode" />
 		</c:if>
 
 		<c:if test="${not empty sidebar}">
