@@ -528,7 +528,10 @@ public class Functions  {
 	 * @return the formatted date
 	 */
 	public static String formatDateISO8601(final Date date) {
-		return ISO8601_FORMAT_HELPER.format(date);
+		if (present(date)) {
+			return ISO8601_FORMAT_HELPER.format(date);
+		}
+		return "";
 	}
 	
 	/**
