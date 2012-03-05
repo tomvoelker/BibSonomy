@@ -26,23 +26,23 @@
 				<!--  ::  --> 
 				<a href="#"><img alt="" src="${resdir}/image/pulldown-marker-large_white.png"/>${mtl:ch('nbsp')}<fmt:message key="${pathMessageKey}"/></a>
 				<ul>
-					<li onclick="switchNavi('tag', event)"><fmt:message key="navi.tag"/></li>
-					<li onclick="switchNavi('user', event)"><fmt:message key="navi.user"/></li>
-					<li onclick="switchNavi('group', event)"><fmt:message key="navi.group"/></li>
-					<li onclick="switchNavi('author', event)"><fmt:message key="navi.author"/></li>
-					<li onclick="switchNavi('concept/tag', event)"><fmt:message key="navi.concept"/></li>
-					<li onclick="switchNavi('bibtexkey', event)"><fmt:message key="navi.bibtexkey"/></li>
-					<li onclick="switchNavi('search', event)"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
+					<li onclick="return switchNavi('tag', this);"><fmt:message key="navi.tag"/></li>
+					<li onclick="return switchNavi('user', this);"><fmt:message key="navi.user"/></li>
+					<li onclick="return switchNavi('group', this);"><fmt:message key="navi.group"/></li>
+					<li onclick="return switchNavi('author', this);"><fmt:message key="nav thisr"/></li>
+					<li onclick="return switchNavi('concept/tag', this);"><fmt:message key="navi.concept"/></li>
+					<li onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></li>
+					<li onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
 					<c:if test="${not empty requestedUser}">
-						<li onclick="switchNavi('user:${fn:escapeXml(requestedUser)}', event)"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
+						<li onclick="return switchNavi('user:${fn:escapeXml(requestedUser)}', this);"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></li>
 					</c:if>
 					<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-						<li onclick="switchNavi('user:${fn:escapeXml(command.context.loginUser.name)}', event)"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></li>
+						<li onclick="return switchNavi('user:${fn:escapeXml(command.context.loginUser.name)}', this);"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></li>
 					</c:if>
 					<c:if test="${command.context.userLoggedIn}">
 						<li class="pdSubHeader"><fmt:message key="navi.search.in_group"/></li>
 						<c:forEach var="grp" items="${command.context.loginUser.groups}">
-							<li class="pdSubitems" onclick="switchNavi('group:${fn:escapeXml(grp.name)}', event)">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
+							<li class="pdSubitems" onclick="return switchNavi('group:${fn:escapeXml(grp.name)}', this);">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
 						</c:forEach>
 					</c:if>
 				</ul>

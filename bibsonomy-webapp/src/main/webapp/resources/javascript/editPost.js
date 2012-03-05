@@ -843,6 +843,7 @@ function copytag(targetId, tagName) {
 	if (targetNode) {
 		toggleTag(targetNode, tagName);
 	}
+	return false;
 }
 
 function getRelations(input) {
@@ -892,11 +893,11 @@ function showTagSets(select) {
  * copy a value from an "option" form field to the input field with the target id.
  * 
  * @param target
- * @param event
+ * @param element
  * @return
  */
-function copyOptionTags(event) {
-	copytag("inpf_tags", xget_event(event).getAttributeNode("value").value);
+function copyOptionTags(element) {
+	return copytag("inpf_tags", element.getAttributeNode("value").value);
 }
 
 

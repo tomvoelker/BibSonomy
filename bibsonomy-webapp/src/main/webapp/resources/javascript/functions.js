@@ -428,26 +428,6 @@ function toggle_required_author_editor () {
 }
 
 /**
- * returns the node of an event
- * 
- * FIXME: legacy code
- * 
- * @param event
- * @return
- */
-function xget_event (event) {
-	if (!event) event = window.event;
-	if (event.srcElement) {
-		// Internet Explorer
-		return event.srcElement;
-	} else if (event.target) {
-		// Netscape and Firefox
-		return event.target;
-	}
-}
-
-
-/**
  * FIXME: legacy code
  * 
  * @return
@@ -462,8 +442,6 @@ function checkBrowser() {
 	} 
 	return "undefined";
 } 
-
-
 
 /**
  * Sorts two values
@@ -503,32 +481,30 @@ function unicodeCollation(ersterWert, zweiterWert) {
 
 /**
  * removes a relation from the list of shown relations
- * @param evt
+ * @param element
  * @return
  */
-function hideConcept(evt) {
-	var link = xget_event(evt);
+function hideConcept(element) {
 	// get concept name
-	var concept = link.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
+	var concept = element.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
 	// update relations list, hide concept
-	updateRelations(evt, "hide", concept);
+	return updateRelations("hide", concept);
 } 
 
 /**
  * updates the user's relations in the sidebar
  * 
- * @param evt
  * @param action
  * @param concept
  * @return
  */
-function updateRelations (evt, action, concept) {
+function updateRelations (action, concept) {
 	$.ajax({
 		url : "/ajax/pickUnpickConcept?action=" + action + "&tag=" + encodeURIComponent(concept) + "&ckey=" + ckey,
 		success : ajax_updateRelations,
 		dataType : "xml"
 	});
-	breakEvent(evt);
+	return false;
 } 
 
 
@@ -556,7 +532,7 @@ function ajax_updateRelations(data) {
 			// new list item for this super tag
 			var rel_item = $(
 					"<li>" + 
-					"<a onclick='hideConcept(event)' href='/ajax/pickUnpickConcept?action=hide&tag=" + encodeURIComponent(upper) + "&ckey=" + ckey + "'>" + String.fromCharCode(8595) + "</a> " +
+					"<a onclick='return hideConcept(this);' href='/ajax/pickUnpickConcept?action=hide&tag=" + encodeURIComponent(upper) + "&ckey=" + ckey + "'>" + String.fromCharCode(8595) + "</a> " +
 					"<a href='/concept/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(upper) + "'>" + upper + "</a>" +
 					" " + String.fromCharCode(8592) + " " +
 					"</li>"
@@ -584,22 +560,21 @@ function ajax_updateRelations(data) {
 
 
 
-function pickAll(evt) {
-	pickUnpickAll(evt, "pickAll");
+function pickAll() {
+	return pickUnpickAll("pickAll");
 }
 
-function unpickAll(evt) {
-	pickUnpickAll(evt, "unpickAll");
+function unpickAll() {
+	return pickUnpickAll("unpickAll");
 }
 
 /**
  * Pick or unpick all publications from the current post list.
  * 
- * @param evt
  * @param pickUnpick
  * @return
  */
-function pickUnpickAll(evt, pickUnpick) {
+function pickUnpickAll(pickUnpick) {
 	var param  = "";
 	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
 		var href = $(this).attr("href");
@@ -608,24 +583,20 @@ function pickUnpickAll(evt, pickUnpick) {
 		}
 	}
 	);
-	updateBasket("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
-
-	breakEvent(evt);    	
+	return updateBasket("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
 }    
 
 /**
  * pick or unpick a single publication
  * 
- * @param evt
+ * @param element
  * @return
  */
-function pickUnpickPublication(evt) {
+function pickUnpickPublication(element) {
 	/*
 	 * pick/unpick publication
 	 */
-	updateBasket(xget_event(evt).getAttribute("href").replace(/^.*?\?/, ""));
-
-	breakEvent(evt);
+	return updateBasket(element.getAttribute("href").replace(/^.*?\?/, ""));
 }
 
 
@@ -654,26 +625,8 @@ function updateBasket (param) {
 
 	}
 	});
+	return false;
 } 
-
-
-/**
- * FIXME: legacy code
- * 
- * @param evt
- * @return
- */
-function breakEvent(evt) {
-	// break link
-	if (evt.stopPropagation) {
-		evt.stopPropagation();
-		evt.preventDefault();
-	} else if (window.event){
-		window.event.cancelBubble = true;
-		window.event.returnValue = false;
-	}
-}
-
 
 /**
  * Edit tags for a post in-place.

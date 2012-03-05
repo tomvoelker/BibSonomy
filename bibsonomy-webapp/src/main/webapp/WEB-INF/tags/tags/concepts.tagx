@@ -50,7 +50,7 @@
 			<li>
 				<!-- display link to hide relation -->
 				<c:if test="${usersOwnRelations}">
-					<a onclick="hideConcept(event);"
+					<a onclick="return hideConcept(this);"
 						href="/ajax/pickUnpickConcept?action=hide&amp;tag=${fn:escapeXml(concept.name)}&amp;ckey=${ckey}&amp;forward=true"
 						title="${hideRelationTitle}">
 						<fmt:message key="tagrelations.hide"/>

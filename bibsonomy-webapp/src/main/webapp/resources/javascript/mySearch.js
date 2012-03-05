@@ -230,7 +230,7 @@
 		
 		var pick = document.createElement("a");
 		pick.className="item pick";
-		pick.onclick = pickUnpickPublication;
+		pick.onclick = pickUnpickPublication(pick);
 		pick.href = "/ajax/pickUnpickPost?action=pick&hash=" + bibtexhash + "&user=" + encodeURIComponent(loginusername) + "&ckey=" + ckey;
 		pick.title = getString("bibtex.actions.pick.title");
 		

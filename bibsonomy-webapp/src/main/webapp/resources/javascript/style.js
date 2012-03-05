@@ -269,13 +269,8 @@ function sendMinfreqRequ(tagbox, minfreq) {
  * @param event
  * @return
  */
-function switchNavi(scope, event) {
-
-	/*
-	 * TODO: How to replace xget_event()?
-	 */
-	var element = $(xget_event(event));
-
+function switchNavi(scope, element) {
+	var element = $(element);
 	/*
 	 * XXX: a hack to "unhover" the list. the worst part of it: we have to wait 
 	 * some time until we make the list visible again (though it's then 
@@ -322,6 +317,7 @@ function switchNavi(scope, event) {
 	.addClass('descriptiveLabel') // add class
 	.descrInputLabel({}); // make the label disappear on click/submit
 	$("#inpf").parents("li").removeClass("hidden"); // show form
+	return false;
 }
 
 $(function() { 
