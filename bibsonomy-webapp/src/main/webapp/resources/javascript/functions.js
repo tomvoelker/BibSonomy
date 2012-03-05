@@ -132,8 +132,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
  * 
  * @param text The query link.
  */
-function addloadedEntryToBasket(text)
-{
+function urlFromFlash(text) {
 	text = text.substring(text.indexOf("/bibtex"));
 	renderPosts(text, $("#publications_0 ul.posts"));
 }
@@ -147,6 +146,10 @@ function addloadedEntryToBasket(text)
  */
 function renderPosts(query, list) {
 	
+	/*
+	 * TODO: fix the continues get requests from the reader
+	 * by introducing catching of this failure.
+	 */
 	$.ajax({
 		url : "/posts" + query,
 		dataType : "html",
@@ -156,14 +159,12 @@ function renderPosts(query, list) {
 			
 			$(list).find('li').each(function(index) 
 			{
-			    if($(this).find('div.ptitle').find('a').attr('title') == $(data).find('div.ptitle').find('a').attr('title'))
-			    {
+			    if($(this).find('div.ptitle').find('a').attr('title') == $(data).find('div.ptitle').find('a').attr('title')) {
 			    	found = true;
 			    }
 			});
 			
-			if(!found)
-			{
+			if(!found) {
 				$(list).append($(data));
 				/*
 				 * FIXME: does this really always work? 
