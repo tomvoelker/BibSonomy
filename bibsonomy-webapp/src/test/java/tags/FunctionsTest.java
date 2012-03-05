@@ -75,6 +75,11 @@ public class FunctionsTest {
 	}
 	
 	@Test
+	public void testFormatDateISO8601NPECheck() throws ParseException {
+		assertEquals("", Functions.formatDateISO8601(null));
+	}
+	
+	@Test
 	public void testGetDate() throws Exception {
 		final Locale locale = new Locale("de");
 		assertEquals("15.02.2010", Functions.getDate(" 15 ", "february", "2010", locale));
