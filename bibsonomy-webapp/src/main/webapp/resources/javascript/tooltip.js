@@ -99,14 +99,14 @@ window.onload = initTip;
 var t1,t2;	// for setTimeouts
 var tipOn = false;	// check if over tooltip link
 
-function preDoTooltip(evt) {
-	doTooltip(xget_event(evt));
+function preDoTooltip(element) {
+	return doTooltip(element);
 }
 
-function doTooltip(evt) {
+function doTooltip(element) {
 
-	tipText = evt.firstChild.data;
-	tipCount = evt.getAttribute("title");
+	tipText = element.firstChild.data;
+	tipCount = element.getAttribute("title");
 
 	if (!tooltip) return;
 	if (t1) clearTimeout(t1);	if (t2) clearTimeout(t2);
@@ -119,6 +119,7 @@ function doTooltip(evt) {
 	}
 	if (!tipFollowMouse) positionTip(evt);
 	else t1=setTimeout("tipcss.visibility='visible'",100);
+	return false;
 }
 
 var mouseX, mouseY;

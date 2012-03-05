@@ -27,7 +27,7 @@
 				<c:param name="action" value="${pickUnpick}"/>
 			</c:url>
 			<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-			<a class="item ${pickUnpick}" onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}"><!-- Keep Me --></a>
+			<a class="item ${pickUnpick}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}"><!-- Keep Me --></a>
 		</c:when>
 		<c:otherwise>
 			<fmt:message key="bibtex.actions.pick.inactive" var="pickUnpickTitle"/>
