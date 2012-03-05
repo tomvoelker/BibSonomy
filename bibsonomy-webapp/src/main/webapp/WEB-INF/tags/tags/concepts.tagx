@@ -19,13 +19,13 @@
 					<fmt:message key="tagrelations.showAll.title" var="showAllRelationsTitle" />
 					<fmt:message key="tagrelations.hideAll.title" var="hideAllRelationsTitle" />
 				    
-				    (<a onclick="updateRelations(event,'all', 'show');"
+				    (<a onclick="return updateRelations('all', 'show');"
 							href="/ajax/pickUnpickConcept?action=all&amp;tag=show&amp;ckey=${ckey}&amp;forward=true"
 							title="${showAllRelationsTitle}">
 						<fmt:message key="tagrelations.showAll" />
 						</a>
 				    |
-				    <a onclick="updateRelations(event,'all', 'hide');"
+				    <a onclick="return updateRelations('all', 'hide');"
 							href="/ajax/pickUnpickConcept?action=all&amp;tag=hide&amp;ckey=${ckey}&amp;forward=true"
 							title="${hideAllRelationsTitle}">
 						<fmt:message key="tagrelations.hideAll" />

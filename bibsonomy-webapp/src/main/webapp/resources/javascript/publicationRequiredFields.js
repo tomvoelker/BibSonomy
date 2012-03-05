@@ -46,7 +46,7 @@ function myownTagInit(chkbox, tagbox) {
 }
 
 $(function(){
-		myownTagInit($('#myownChkBox'), $('#inpf'));
+		myownTagInit($('#myownChkBox'), $('#inpf_tags'));
 });
 
 function initSuggestionForPartTitles(el) {
