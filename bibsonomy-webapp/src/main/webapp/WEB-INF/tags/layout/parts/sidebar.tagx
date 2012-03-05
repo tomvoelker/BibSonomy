@@ -5,12 +5,10 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources">
+	xmlns:spring="http://www.springframework.org/tags">
 	
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
-	<jsp:directive.attribute name="qrcode"  fragment="true" required="false"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 
 	<div id="sidebar">
@@ -24,10 +22,6 @@
 		
 		<c:if test="${not empty newsbar}">
 			<jsp:invoke fragment="newsbar" />
-		</c:if>
-		
-		<c:if test="${not empty qrcode}">
-			<jsp:invoke fragment="qrcode" />
 		</c:if>
 
 		<c:if test="${not empty sidebar}">
