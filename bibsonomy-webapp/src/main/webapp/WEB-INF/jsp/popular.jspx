@@ -16,7 +16,7 @@
 	<layout:popularResourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="popular">
 	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.popular" formAction="/search/" formInputName="search"/>
+			<parts:search pathMessageKey="navi.popular" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
