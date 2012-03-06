@@ -7,9 +7,10 @@
     
     <jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="false" />
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
-   <jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+    <jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+ 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
  	
-	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${comment}" action="create" discussionItemClass="comment" userName="${userName}">
+	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${comment}" action="create" discussionItemClass="comment" userName="${userName}" postUserName="${postUserName}">
 		<jsp:attribute name="additionalInputs">
 			<span style="float:left"><fmt:message key="post.resource.comment.actions.post" /></span>
 	 		<buttons:help message="post.resource.comment.help">

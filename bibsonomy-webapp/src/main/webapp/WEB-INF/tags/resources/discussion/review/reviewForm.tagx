@@ -9,6 +9,7 @@
     <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="false" />
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
    	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
 	
 	<c:set var="action" value="create" />
 	
@@ -16,7 +17,7 @@
 		<c:set var="action" value="edit" />
 	</c:if>
 	
-	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${review}" action="${action}" discussionItemClass="review" userName="${userName}">
+	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${review}" action="${action}" discussionItemClass="review" userName="${userName}" postUserName="${postUserName}">
 		<jsp:attribute name="additionalInputs">
 			<span style="float:left"><fmt:message key="post.resource.review.actions.post"/></span>
 			<span class="reviewrating" style="float:right">

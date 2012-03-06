@@ -7,10 +7,11 @@
 
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
+ 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
 
 	<div id="discussionbox">
 		
 		<!-- TODO: display comment count -->
-		<discussion:discussion loginUser="${command.context.loginUser}" resource="${resource}" discussionItems="${discussionItems}" />
+		<discussion:discussion loginUser="${command.context.loginUser}" resource="${resource}" discussionItems="${discussionItems}"  postUserName="${postUserName}"/>
 	</div>	
 </jsp:root>

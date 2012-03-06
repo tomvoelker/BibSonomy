@@ -157,7 +157,8 @@
 		</div>
 		
 		<!-- discussion -->
-		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" />
+		<!-- this is a goldstandard page => postUserName is the goldstandard user "" -->
+		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
 		
 	</div>
 </jsp:root>
