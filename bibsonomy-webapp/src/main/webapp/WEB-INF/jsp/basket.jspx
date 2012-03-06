@@ -31,7 +31,19 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<parts:qrcode />
+			<parts:qrcode>
+				<jsp:attribute name="errorHeader">
+					<fmt:message key="qrcode.error.errorHeader" />
+				</jsp:attribute>
+				
+				<jsp:attribute name="errorMessage">
+					<fmt:message key="qrcode.error.errorMessage" />
+				</jsp:attribute>
+				
+				<jsp:attribute name="infoMessage">
+					<fmt:message key="qrcode.info.infoMessage" />
+				</jsp:attribute>
+			</parts:qrcode>
 			
 			<ul>			
 	          <li style="text-align: center;">
