@@ -21,7 +21,7 @@
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
 					<li>
-						:: <a rel="path_menu" href="/admin/spam">Spam</a>
+						:: <a rel="path_menu" href="/admin/sync">Synchronization</a>
 					</li>
 				</jsp:attribute>
 			</parts:search>
@@ -50,7 +50,7 @@
 							<c:forEach var="service" items="${command.avlClients}">
 								<div class="fsRow">
 									<span><c:out value="Name: ${service.name} URI: ${service.service} SSL DN: ${service.sslDn} ("/></span>
-									<a href="/admin/sync?action=deleteService&amp;service=${fn:escapeXml(service)}&amp;server=false">
+									<a href="/admin/sync?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=false">
 										<c:out value="${delete}" />
 									</a>
 									<c:out value=")"/>
@@ -77,7 +77,7 @@
 							<c:forEach var="service" items="${command.avlServer}">
 								<div class="fsRow">
 									<span><c:out value="Name: ${service.name} URI: ${service.service} SECURE API URL:: ${service.secureAPI}("/></span>
-									<a href="/admin/sync?action=deleteService&amp;service=${fn:escapeXml(service)}&amp;server=true">
+									<a href="/admin/sync?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=true">
 										<c:out value="${delete}" />
 									</a>
 									<c:out value=")"/>
