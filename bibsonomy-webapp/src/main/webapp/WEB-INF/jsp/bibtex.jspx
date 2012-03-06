@@ -103,7 +103,7 @@
 		 	+-->		
 		 	
 		<jsp:attribute name="addAsFirstBookmarksListItem">
-			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}" />
+			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
 		</jsp:attribute>
 
 	</layout:resourceLayout>
