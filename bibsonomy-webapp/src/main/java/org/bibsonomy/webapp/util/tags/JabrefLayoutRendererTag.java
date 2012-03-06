@@ -6,11 +6,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,9 +16,8 @@ import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 /**
  * a jsp tag that prints the rendered layout of the configured
@@ -30,15 +26,11 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author dzo
  * @version $Id$
  */
-public class JabrefLayoutRendererTag extends TagSupport {
-	private static final String SUPPORTED_EXTENSION = ".html";
-
+public class JabrefLayoutRendererTag extends RequestContextAwareTag {
 	private static final long serialVersionUID = 8006189027834637063L;
-	
 	private static final Log log = LogFactory.getLog(JabrefLayoutRendererTag.class);
 	
-	// TODO: move
-	private static final String SERVLET_CONTEXT_PATH = "org.springframework.web.servlet.FrameworkServlet.CONTEXT.bibsonomy2";
+	private static final String SUPPORTED_EXTENSION = ".html";	
 
 	/**
 	 * the posts to render
@@ -46,16 +38,15 @@ public class JabrefLayoutRendererTag extends TagSupport {
 	private List<Post<? extends Resource>> posts;
 	
 	private String layout;
-
+	
 	@Override
-	public int doStartTag() throws JspException {
+	protected int doStartTagInternal() throws Exception {
 		try {
 			pageContext.getOut().print(this.renderPosts());		
 		} catch (final IOException ex) {
 			throw new JspException("Error: IOException while writing to client" + ex.getMessage());
 		}
-		
-		return super.doStartTag();
+		return SKIP_BODY;
 	}
 	
 	private String renderPosts() {
@@ -84,16 +75,9 @@ public class JabrefLayoutRendererTag extends TagSupport {
 		return "";
 	}
 	
-	/**
-	 * @return the configured jabref layout renderer in bibsonomy2-servlet.xml
-	 * this requires the {@link ContextLoader} configured in web.xml
-	 */
 	private JabrefLayoutRenderer getJabRefLayoutRenderer() {
-		final ServletContext servletContext = this.pageContext.getServletContext();
-        final WebApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(servletContext, SERVLET_CONTEXT_PATH);
-        final Map<String, JabrefLayoutRenderer> renderer = ctx.getBeansOfType(JabrefLayoutRenderer.class);
-        
-        return renderer.values().iterator().next();
+        final WebApplicationContext ctx = this.getRequestContext().getWebApplicationContext();
+        return ctx.getBean(JabrefLayoutRenderer.class);
 	}
 	
 	/**
