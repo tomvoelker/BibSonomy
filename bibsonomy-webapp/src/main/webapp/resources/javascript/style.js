@@ -377,7 +377,7 @@ function initBookmarksPublicationsListsLast() {
 
 function initSidebarHeader() {
 	
-	if ( ($("#postcontainer").length != 0) && ($("#bookmarks_0").length != 0) && ($("#publications_0").length != 0) && ($("#sidebar").length != 0) ) { 
+	if (($("#sidebarheader").length != 0) && ($("#sidebar").length != 0) && ($("#headercontainer").length != 0)) { 
 
 		sidebar_diff = $("#sidebarheader").offset().left - $("#sidebar").offset().left;
 		var new_sidebarWidth = $("#sidebar").width() + sidebar_diff;
