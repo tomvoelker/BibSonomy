@@ -23,6 +23,11 @@ public class DiscussionItemAjaxCommand<D extends DiscussionItem> extends AjaxCom
 	private String hash;
 	
 	/**
+	 * the user name who owns the original post
+	 */
+	private String postUserName;
+	
+	/**
 	 * The abstract (or general) group of the post:
 	 * public, private, or other 
 	 */
@@ -91,5 +96,20 @@ public class DiscussionItemAjaxCommand<D extends DiscussionItem> extends AjaxCom
 	 */
 	public void setHash(String hash) {
 		this.hash = hash;
+	}
+
+	/**
+	 * @return the name of the post's owner
+	 * The post is the one, that the discussing user chose to start the discussion
+	 */
+	public String getPostUserName() {
+		return postUserName;
+	}
+
+	/**
+	 * @param userName
+	 */
+	public void setPostUserName(String userName) {
+		this.postUserName = userName;
 	}	
 }

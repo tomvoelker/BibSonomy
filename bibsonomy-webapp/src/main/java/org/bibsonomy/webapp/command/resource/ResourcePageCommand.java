@@ -15,6 +15,23 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	private String requestedHash;
 	
 	private List<DiscussionItem> discussionItems;
+	
+	private String postOwner;
+
+	/**
+	 * @return the owner of the post
+	 */
+	public String getPostOwner() {
+		return this.postOwner;
+	}
+
+	/**
+	 * set the owner of a post
+	 * @param postOwner
+	 */
+	public void setPostOwner(String postOwner) {
+		this.postOwner = postOwner;
+	}
 
 	/**
 	 * @return the requestedHash

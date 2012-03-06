@@ -27,7 +27,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public abstract class AbstractResourcePageController<R extends Resource, G extends R> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {
 	private static final int TAG_LIMIT = 1000;
-	
+
 	@Override
 	public ResourcePageCommand<R> instantiateCommand() {
 		return new ResourcePageCommand<R>();
