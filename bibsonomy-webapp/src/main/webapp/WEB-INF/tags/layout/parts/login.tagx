@@ -75,6 +75,7 @@
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 							<input type="submit" style="margin-left: 1em" value="${login}"/>
 						</form:form>
+						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
 					</div>    			
       			</c:if>
 
@@ -92,6 +93,7 @@
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 							<input type="submit" style="margin-left: 1em" value="${login}"/>
 						</form:form>
+						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
 					</div>
       			</c:if>
 
@@ -106,6 +108,7 @@
 							<input type="hidden" name="referer" value="${requPath}" />
 							<input type="submit" style="margin-left: 1em" value="${login}"/>
 		            	</form:form>
+						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
 	            	</div>
       			</c:if>
 			</div>
