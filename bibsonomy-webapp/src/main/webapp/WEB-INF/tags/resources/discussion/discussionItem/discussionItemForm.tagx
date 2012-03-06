@@ -13,6 +13,7 @@
     <jsp:directive.attribute name="discussionItemClass" type="java.lang.String" required="true" />
     <jsp:directive.attribute name="additionalInputs" fragment="true" required="false"/>
     <jsp:directive.attribute name="userName" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
     
     <form action="/ajax/${discussionItemClass}s" method="post" class="${action}${discussionItemClass}">
 		<c:if test="${not empty discussionItem}">
@@ -20,6 +21,7 @@
 		</c:if>
    		<input name="ckey" value="${command.context.ckey}" type="hidden" />
    		<input name="hash" value="${resource.interHash}" type="hidden" />
+   		<input name="postUserName" value="${postUserName}" type="hidden" />
    		<c:if test="${not empty discussionItem.hash}">
    			<input name="discussionItem.hash" value="${discussionItem.hash}" type="hidden" />
    		</c:if>

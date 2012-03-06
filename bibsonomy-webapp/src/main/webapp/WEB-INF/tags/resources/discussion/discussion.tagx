@@ -10,6 +10,7 @@
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
     <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
     <jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
+ 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
     
    	<!-- create new review / comment for create review / comment form -->
    	<jsp:useBean id="newDate" class="java.util.Date" />
@@ -64,12 +65,12 @@
 		    <c:if test="${command.context.userLoggedIn}">
 		    	<!-- review and comment forms -->
 	    		<div id="createReview" class="createReview">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}"/>
+		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
 		    		<!-- TODO: add tips for reviewing a resource -->
 	    		</div>
 		    
 			    <div id="createComment" class="initiallyHidden">
-			    	<comment:commentForm resource="${resource}" userName="${loginUser.name}"/>
+			    	<comment:commentForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
 			    </div>
 			</c:if>
 			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
