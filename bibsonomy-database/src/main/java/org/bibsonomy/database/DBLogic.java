@@ -26,7 +26,6 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
@@ -96,6 +95,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.extra.BibTexExtra;
+import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -108,7 +108,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
-import org.bibsonomy.util.ObjectUtils;
 
 /**
  * Database Implementation of the LogicInterface
@@ -1126,6 +1125,9 @@ public class DBLogic implements LogicInterface {
 		return groupName;
 	}
 
+	
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -2592,6 +2594,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -2607,67 +2610,19 @@ public class DBLogic implements LogicInterface {
 		 * TODO: Only checking should be done, GoldstandardCreation is the job of the calling Controller
 		 */
 		try {
-			/* 
-			 * first check if gold standard post exists in db
-			 */
-			Post<?> goldStandardPost = this.getPostDetails(interHash, "", session);
-
-			/*
-			 * if not create one
-			 */
+			// verify that there exists a gold standard
+			Post<? extends Resource> goldStandardPost = this.getPostDetails(interHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
 			if (!present(goldStandardPost)) {
-				log.debug("no gold standard found for interHash " + interHash + ". Creating new gold standard");
-				final String hash = HashID.INTER_HASH.getId() + interHash;
-				// FIXME: these lists maybe also contain private posts of the logged in user!
-				final List<Post<Bookmark>> bookmarkPosts = this.getPosts(Bookmark.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, null, null, null, 0, 1);
-				final List<Post<BibTex>> publicationPosts = this.getPosts(BibTex.class, GroupingEntity.ALL, null, Collections.<String>emptyList(), hash, null, null, null, null, null, 0, 1);
-
-				/*
-				 * create gold standard
-				 */
-				Resource goldResource = null;
-				if (present(publicationPosts)) {
-					final GoldStandardPublication goldStandardPublication = new GoldStandardPublication();
-					ObjectUtils.copyPropertyValues(publicationPosts.get(0).getResource(), goldStandardPublication);
-					/*
-					 * clear some private stuff
-					 */
-					goldStandardPublication.setPrivnote("");
-					goldResource = goldStandardPublication;
-				} else if (present(bookmarkPosts)) {
-					final GoldStandardBookmark goldStandardBookmark = new GoldStandardBookmark();
-					ObjectUtils.copyPropertyValues(bookmarkPosts.get(0).getResource(), goldStandardBookmark);
-
-					goldResource = goldStandardBookmark;
-				} else {
-					log.warn("neither publications nor bookmarks found for hash '" + interHash + "'");
-				}
-
-				if (present(goldResource)) {
-					final Post<Resource> createPost = new Post<Resource>();
-					createPost.setResource(goldResource);
-
-					PostUtils.populatePost(createPost, this.loginUser);
-					this.createPost(createPost, session);
-					goldStandardPost = createPost;
-				}
+				throw new ResourceNotFoundException("To the discussion item no post could be found for interHash "+interHash+" and user "+username+".");
 			}
-
 			/*
-			 * only if we found or created a community post create the discussion
-			 * item
+			 * create the discussion item
 			 */
-			if (present(goldStandardPost)) {
-				/*
-				 * create the discussion item
-				 */
-				discussionItem.setResourceType(goldStandardPost.getResource().getClass());
-				final User commentUser = this.userDBManager.getUserDetails(username, session);
-				discussionItem.setUser(commentUser);
-	
-				this.createDiscussionItem(interHash, discussionItem, session);
-				session.commitTransaction();
-			}
+			discussionItem.setResourceType(goldStandardPost.getResource().getClass());
+			final User commentUser = this.userDBManager.getUserDetails(username, session);
+			discussionItem.setUser(commentUser);
+			this.createDiscussionItem(interHash, discussionItem, session);
+			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 			session.close();

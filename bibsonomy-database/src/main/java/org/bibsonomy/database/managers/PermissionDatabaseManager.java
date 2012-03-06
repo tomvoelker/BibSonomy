@@ -61,9 +61,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @param itemType
      */
     public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
-	if (!isAdmin(loginUser) && end > END_MAX) {
-	    throw new AccessDeniedException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
-	}
+    	if (!isAdmin(loginUser) && end > END_MAX) {
+    		throw new AccessDeniedException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
+    	}
     }
 
     /**
@@ -73,9 +73,11 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
      * @param loginUser
      */
     public void ensureWriteAccess(final Post<? extends Resource> post, final User loginUser) {
-    	// TODO: remove as soon as everybody can edit community posts
     	if (post.getResource() instanceof GoldStandard<?>) {
-    		this.ensureAdminAccess(loginUser);
+    		// only regular users (no spammers) may modify or create Community Posts
+    		if (loginUser.isSpammer()) {
+    			throw new AccessDeniedException("You are not authorized to modify this post.");
+    		}
     	} else {
     		// delegate write access check
     		this.ensureIsAdminOrSelf(loginUser, post.getUser().getName());
