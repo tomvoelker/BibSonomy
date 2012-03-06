@@ -161,6 +161,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>hash</value>
+								<value>postUserName</value>
 								<value>discussionItem.text</value>
 								<value>discussionItem.hash</value>
 								<value>discussionItem.anonymous</value>
@@ -177,6 +178,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>hash</value>
+								<value>postUserName</value>
 								<value>discussionItem.rating</value>
 								<value>discussionItem.text</value>
 								<value>discussionItem.hash</value>
