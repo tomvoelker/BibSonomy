@@ -2,11 +2,6 @@ body {
 	background-color: #F7EFED;
 }
 
-a {
-    color: #DF430D;
-}
-
-
 #container {
 	top: 14px;
 }
@@ -191,3 +186,52 @@ ul#gold_menu li a {
     padding: 2ex 3em;
     text-align: center;
 }
+
+#groupsList tr:hover:not(.groupsNewChar) {
+    background-color: #CABEA6;
+    color: #000000;
+}
+
+#groupsList tr:hover:not(.groupsNewChar) td > a {
+    color: #000000;
+}
+
+#sidebox {
+    background-color: #F7EFED;
+}
+
+
+#sidebar a, #sidebar a:link, #sidebar a:visited {
+    color: #2D1A13;
+}
+
+#sidebar a, #sidebar a:link, #sidebar a:visited {
+    color: #2D1A13;
+}
+
+.tagnormal a, .taghuge {
+    color: #2D1A13 !important;
+}
+
+.taglarge a, .taglarge {
+    color: #894F39 !important;
+}
+
+.tagnormal a, .tagnormal {
+    color: #AD6348 !important;
+}
+
+.tagtiny a,.tagtiny {
+	color: #E58360 ! important;
+}
+
+
+/*
+#492A1F
+
+#894F39
+
+#AD6348
+
+#E58360
+*/
