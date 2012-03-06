@@ -225,13 +225,68 @@ ul#gold_menu li a {
 	color: #E58360 ! important;
 }
 
+.dd .ddChild a.selected {
+    background-color: inherit;
+}
 
-/*
-#492A1F
+.dd .ddChild a.selected:hover {
+    background-color: #66CCFF;
+}
 
-#894F39
 
-#AD6348
+.loginHelp {
+    background-color: Salmon;
+    color: black;
+    height: 300px;
+    position: absolute;
+    width: 300px;
+    background-color: #FFFFFF;
+    border: 2px solid #666666;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 0 0 5px 0;
+    opacity: 0.95;
+    margin-top: 8px;
+	font-size: 120%;
+	padding: 10px;
+	text-align: left;
+}
 
-#E58360
-*/
+#sidebar, #sidebarheader {
+	z-index: 9;
+}
+
+#loginParts_LDAP:hover .loginHelp {
+	display: block;
+	background-image: url("http://www.ub.uni-kassel.de/uploads/pics/mufuka_oRand_02.gif");
+	background-repeat: no-repeat;
+	background-position: 50% 150px;
+}
+
+#loginParts_LDAP .loginHelp {
+	display: none;
+}
+
+#loginParts_INTERNAL:hover .loginHelp {
+	display: none;
+}
+
+#loginParts_INTERNAL .loginHelp {
+	display: none;
+}
+
+#loginParts_HTTPBASIC:hover .loginHelp {
+	display: none;
+}
+
+#loginParts_HTTPBASIC .loginHelp {
+	display: none;
+}
+
+#loginParts_OPENID:hover .loginHelp {
+	display: none;
+}
+
+#loginParts_OPENID .loginHelp {
+	display: none;
+}
+
