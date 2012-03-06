@@ -127,6 +127,23 @@
 	
 	<!--+ 
 	 	|
+	 	| auto synchronization job
+	 	|
+	 	+-->
+	 	
+	 	<bean id="autoSyncJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	 		<property name="targetObject" ref="autoSync"/>
+	 		<property name="targetMethod" value="performAutoSync"/>
+	 		<property name="concurrent" value="false" />
+	 	</bean>
+	 	<bean id="autoSyncCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+			<property name="cronExpression" value="0 30 19 * * ?" /> 
+			<property name="jobDetail" ref="autoSyncJob" />
+		</bean>
+	
+	
+	<!--+ 
+	 	|
 	 	| finally, add all your cronjobs here
 	 	|
 	 	+-->
@@ -139,6 +156,7 @@
 	            <ref bean="luceneUpdateBibTexCronTriggerWithIndexOptimization" />
 	            <ref bean="luceneUpdateBookmarkCronTriggerWithIndexOptimization" />
 	            <ref bean="luceneUpdateGoldStandardPublicationCronTriggerWithIndexOptimization" />
+	     		<ref bean="autoSyncCronTrigger" />
 	            <!--
 	            	cron-triggered generation of indexes is disabled for Biblicious
 	            <ref bean="luceneGenerateBibTexCronTrigger" />
