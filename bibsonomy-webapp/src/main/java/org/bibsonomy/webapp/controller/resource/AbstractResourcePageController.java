@@ -192,7 +192,11 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 */
 				throw new ResourceNotFoundException(shortHash);
 			}
-			firstResource = resourceList.get(0).getResource();			
+			firstResource = resourceList.get(0).getResource();	
+			/*
+			 * TODO: As first Resource we'd like to use the post, which is the one, that the user clicked on
+			 * (as long as no goldstandard exists).
+			 */
 		}
 		
 		this.endTiming();		
