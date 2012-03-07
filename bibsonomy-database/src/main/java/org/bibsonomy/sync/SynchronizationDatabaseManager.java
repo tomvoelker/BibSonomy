@@ -248,13 +248,13 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * 
-	 * @param userName - the user's name
+	 * @param userName - the user's name 
 	 * @param service - select a particular service
 	 * @param server - set to <code>true</code>, if queried for a server, otherwise client.
 	 * @param session
-	 * @return all synchronization server for user
+	 * @return all synchronization server for user if user name is provided, for all users otherwise
 	 */
-	public List<SyncService> getSyncServersForUser(final String userName, final URI service, final boolean server, final DBSession session) {
+	public List<SyncService> getSyncServices(final String userName, final URI service, final boolean server, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setServer(server);
@@ -264,7 +264,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			return queryForList("getSyncClientsForUser", param, SyncService.class, session);
 		}
 		
-		return queryForList("getSyncServersForUser", param, SyncService.class, session);
+		return queryForList("getSyncServers", param, SyncService.class, session);
 	}
 
 	/**

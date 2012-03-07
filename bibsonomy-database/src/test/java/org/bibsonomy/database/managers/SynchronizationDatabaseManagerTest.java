@@ -70,7 +70,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	
 	@Test
 	public void testGetSyncClients() {
-		final List<SyncService> syncClients = syncDBManager.getSyncServersForUser(syncUser1, null, false, this.dbSession);
+		final List<SyncService> syncClients = syncDBManager.getSyncServices(syncUser1, null, false, this.dbSession);
 		syncClients.size();
 	}
 
@@ -95,7 +95,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 
 		syncDBManager.createSyncServerForUser(syncUser1, service, dbSession);
 
-		List<SyncService> services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
+		List<SyncService> services = syncDBManager.getSyncServices(syncUser1, null, true, dbSession);
 		assertEquals(1, services.size());
 		assertTrue(services.contains(service));
 		final SyncService syncService = services.get(0);
@@ -114,7 +114,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		service.setResourceType(resourceType2);
 		syncDBManager.updateSyncServerForUser(syncUser1, service, dbSession);
 		
-		services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
+		services = syncDBManager.getSyncServices(syncUser1, null, true, dbSession);
 		assertTrue(services.contains(service));
 		assertEquals(1, services.size());
 		final SyncService syncService2 = services.get(0);
@@ -124,9 +124,12 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		assertEquals(credentialsSyncUser2, syncService2.getServerUser());
 		
 		syncDBManager.deleteSyncServerForUser(syncUser1, testURI, dbSession);
-		services = syncDBManager.getSyncServersForUser(syncUser1, null, true, dbSession);
+		services = syncDBManager.getSyncServices(syncUser1, null, true, dbSession);
 		assertFalse(services.contains(service));
 		assertEquals(0, services.size());
+		
+		List<SyncService> syncServers = syncDBManager.getSyncServices(null, null, true, dbSession);
+		assertEquals(1, syncServers.size());
 	}
 
 	/**
