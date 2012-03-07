@@ -16,7 +16,8 @@
 	</insert>
 
 	<select id="getAllSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy FROM sync_services ss
+		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy, false AS autosync 
+		FROM sync_services ss
 		WHERE server = #server#
 	</select>
 	
@@ -28,12 +29,14 @@
 		ORDER BY ss.`service_id`, device_id, last_sync_date DESC
 	</select>
 
-	<select id="getSyncServersForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT s.user_name, s.credentials, ss.name, ss.uri, ss.secure_api, ss.ssl_dn, s.content_type, s.direction, s.strategy
+	<select id="getSyncServers" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+		SELECT s.user_name, s.credentials, ss.name, ss.uri, ss.secure_api, ss.ssl_dn, s.content_type, s.direction, s.strategy, s.autosync <isEmpty property="userName" prepend=", ">s.user_name</isEmpty>
 		  FROM sync s
 		    JOIN sync_services ss USING (service_id)
-		  WHERE s.user_name = #userName#
-		    AND ss.server = #server#
+		  WHERE ss.server = #server#
+		    <isNotEmpty property="userName" prepend="AND">
+		    	s.user_name = #userName#
+		    </isNotEmpty>
 			<isNotEmpty property="service" prepend="AND">
 		  		ss.uri = #service# 
 		  	</isNotEmpty>		    
@@ -121,7 +124,8 @@
 		  SET s.credentials = #syncService.serverUser#,
 		  	  s.direction = #syncService.direction#,
 		  	  s.content_type = #syncService.resourceType#,
-		  	  s.strategy = #syncService.strategy#
+		  	  s.strategy = #syncService.strategy#,
+		  	  s.autosync = #syncService.autosync#
 		  WHERE s.user_name = #userName#
 			AND ss.uri = #syncService.service#
 			AND ss.server = TRUE

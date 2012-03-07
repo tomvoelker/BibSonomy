@@ -33,6 +33,8 @@
 		<result property="resourceType"	column="content_type"	javaType="resourceTypeClass" />
 		<result property="strategy"		column="strategy"		javaType="conflictStrategy" />
 		<result property="sslDn"		column="ssl_dn"			javaType="string" />
+		<result property="autosync"     column="autosync"       javaType="boolean"/>
+		<result property="userName"     column="user_name"      javaType="string" />
 	</resultMap>
 	
 	<resultMap id="syncServiceDetails" class="syncService" extends="syncClient" groupBy="service">
