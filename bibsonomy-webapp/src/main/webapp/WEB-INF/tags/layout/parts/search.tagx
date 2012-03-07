@@ -29,7 +29,7 @@
 					<li onclick="return switchNavi('tag', this);"><fmt:message key="navi.tag"/></li>
 					<li onclick="return switchNavi('user', this);"><fmt:message key="navi.user"/></li>
 					<li onclick="return switchNavi('group', this);"><fmt:message key="navi.group"/></li>
-					<li onclick="return switchNavi('author', this);"><fmt:message key="nav thisr"/></li>
+					<li onclick="return switchNavi('author', this);"><fmt:message key="navi.author"/></li>
 					<li onclick="return switchNavi('concept/tag', this);"><fmt:message key="navi.concept"/></li>
 					<li onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></li>
 					<li onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></li>
