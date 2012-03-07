@@ -236,9 +236,15 @@ ul#gold_menu li a {
 
 #loginParts_LDAP:hover .loginHelp {
 	display: block;
-	background-image: url("http://www.ub.uni-kassel.de/uploads/pics/mufuka_oRand_02.gif");
+	background-image: url("http://puma.uni-kassel.de/t3pics/mufuka_beidseitig-ueberlagert400.png");
 	background-repeat: no-repeat;
-	background-position: 50% 150px;
+	background-position: 50% 130px;
+}
+
+.loginHelp {
+	height: 350px;
+	width: 410px;
+	
 }
 
 #loginParts_LDAP .loginHelp {

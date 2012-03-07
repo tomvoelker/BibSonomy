@@ -2560,8 +2560,8 @@ table.report td.value {
 
 .loginHelp {
     color: black;
-    height: 300px;
-    width: 300px;
+    height: 350px;
+    width: 410px;
     position: absolute;
     background-color: #FFFFFF;
     border: 2px solid #666666;
@@ -2572,6 +2572,7 @@ table.report td.value {
 	font-size: 120%;
 	padding: 10px;
 	text-align: left;
+	right: 0;
 }
 
 
@@ -2602,13 +2603,6 @@ table.report td.value {
 #loginParts_OPENID .loginHelp {
 	display: none;
 }
-
-
-
-
-
-
-
 
 
 .posts .first h2 {
