@@ -26,6 +26,10 @@ public class DiscussionItemAjaxCommand<D extends DiscussionItem> extends AjaxCom
 	 * the user name who owns the original post
 	 */
 	private String postUserName;
+	/**
+	 * the user name who owns the original post
+	 */
+	private String intraHash;
 	
 	/**
 	 * The abstract (or general) group of the post:
@@ -111,5 +115,19 @@ public class DiscussionItemAjaxCommand<D extends DiscussionItem> extends AjaxCom
 	 */
 	public void setPostUserName(String userName) {
 		this.postUserName = userName;
+	}	
+	/**
+	 * @return the intraHash of the post owner
+	 * The post is the one, that the discussing user chose to start the discussion
+	 */
+	public String getIntraHash() {
+		return this.intraHash;
+	}
+
+	/**
+	 * @param intraHash
+	 */
+	public void setIntraHash(String intraHash) {
+		this.intraHash = intraHash;
 	}	
 }

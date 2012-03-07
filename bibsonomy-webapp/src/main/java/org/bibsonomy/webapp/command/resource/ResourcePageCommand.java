@@ -17,6 +17,23 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	private List<DiscussionItem> discussionItems;
 	
 	private String postOwner;
+	
+	private String intraHash;
+
+	/**
+	 * @return the intraHash of a post
+	 */
+	public String getIntraHash() {
+		return this.intraHash;
+	}
+
+	/**
+	 * set the intraHash of a post
+	 * @param intraHash
+	 */
+	public void setIntraHash(String intraHash) {
+		this.intraHash = intraHash;
+	}
 
 	/**
 	 * @return the owner of the post
