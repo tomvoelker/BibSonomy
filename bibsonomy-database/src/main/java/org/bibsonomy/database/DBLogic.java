@@ -456,7 +456,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			return syncDBManager.getSyncServersForUser(userName, service, server, session);
+			return syncDBManager.getSyncServices(userName, service, server, session);
 		} finally {
 			session.close();
 		}
