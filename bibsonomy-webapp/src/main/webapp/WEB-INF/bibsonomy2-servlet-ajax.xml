@@ -162,6 +162,7 @@
 							<list>
 								<value>hash</value>
 								<value>postUserName</value>
+								<value>intraHash</value>
 								<value>discussionItem.text</value>
 								<value>discussionItem.hash</value>
 								<value>discussionItem.anonymous</value>
@@ -179,6 +180,7 @@
 							<list>
 								<value>hash</value>
 								<value>postUserName</value>
+								<value>intraHash</value>
 								<value>discussionItem.rating</value>
 								<value>discussionItem.text</value>
 								<value>discussionItem.hash</value>

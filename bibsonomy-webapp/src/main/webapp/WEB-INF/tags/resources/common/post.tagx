@@ -5,6 +5,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:discussion ="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
@@ -62,19 +63,7 @@
 			
 		
 			<!-- RATING -->
-			<div class="rating">
-				<!-- TODO: remove as soon as lucene supports rating -->
-				<c:if test="${not empty post.resource.rating}">
-					<span class="bmrating">
-						<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}"/>
-						<a href="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox" title="${title}">
-							<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
-						</a>
-						<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}"/>)</span>
-					</span>
-				</c:if>
-			</div>
-			
+			<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 	
 			<!-- ACTIONS -->
 			<div class="action">
