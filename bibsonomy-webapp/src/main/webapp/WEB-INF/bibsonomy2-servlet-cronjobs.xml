@@ -136,9 +136,14 @@
 	 		<property name="targetMethod" value="performAutoSync"/>
 	 		<property name="concurrent" value="false" />
 	 	</bean>
-	 	<bean id="autoSyncCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-			<property name="cronExpression" value="0 30 19 * * ?" /> 
+<!-- 	 	<bean id="autoSyncCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> -->
+<!-- 			<property name="cronExpression" value="0 51 17 * * ?" />  -->
+<!-- 			<property name="jobDetail" ref="autoSyncJob" /> -->
+<!-- 		</bean> -->
+		<bean id="autoSyncCronTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean"> 
 			<property name="jobDetail" ref="autoSyncJob" />
+			<property name="startDelay" value="60000" /> <!-- start one minute after startup -->
+			<property name="repeatInterval" value="300000" /> <!-- repeat all 5 mins -->
 		</bean>
 	
 	

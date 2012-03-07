@@ -83,6 +83,8 @@
 	
 	<bean id="autoSync" class="org.bibsonomy.webapp.util.AutoSync">
 	 		<property name="adminLogic" ref="adminLogic"/>
+	 		<property name="userLogicFactory" ref="restLogicFactory" />
+	 		<property name="syncClient" ref="synchronizationClient" />
 	 </bean>
 	
 </beans>

@@ -12,6 +12,7 @@
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
   xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
   
+  
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="serverUser['userName']" ><fmt:message key="navi.username"/></form:label>
 		<form:input cssClass="fsInput" path="serverUser['userName']"/>
@@ -24,12 +25,17 @@
 	</div>
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="direction" ><fmt:message key="synchronization.direction"/></form:label>
-		<form:select cssClass="fsInput fsSmall" path="direction">
+		<form:select cssClass="fsInput fsSmall dirselect" path="direction">
 			<form:option value="BOTH"><fmt:message key="synchronization.direction.both"/></form:option>
 			<form:option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server.on_client"/></form:option>
 			<form:option value="SERVER_TO_CLIENT"><fmt:message key="synchronization.direction.server_to_client.on_client"/></form:option>
 		</form:select>
 		<div class="dissError"><form:errors path="direction" /></div>
+		
+		<span class="autosyncSpan" >
+			<form:checkbox path="autosync" value="true" />
+			<form:label cssClass="fsLabel" path="autosync"><fmt:message key="synchronization.autosync"/></form:label>
+		</span>	
 	</div>
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="resourceType" ><fmt:message key="synchronization.resourceType"/></form:label>
@@ -40,5 +46,25 @@
 			</form:select>
 		<div class="dissError"><form:errors path="resourceType" /></div>
 	</div>
+	
+	<script type="text/javascript">
+    $(
+		  function() {
+			  var select = $(".dirselect");
+			  if(select.val()=="BOTH") {
+			  	select.parent().find(".autosyncSpan").hide();
+			  }
+		  }		 
+	 );
+	   
+	  $(".dirselect").change(function() {
+		  if($(this).val()=="BOTH") {
+			  $(this).parent().find(".autosyncSpan").hide();
+		  } else {
+			  $(this).parent().find(".autosyncSpan").show();
+		  }
+	  });
+  </script>
+  
  
  </jsp:root>
