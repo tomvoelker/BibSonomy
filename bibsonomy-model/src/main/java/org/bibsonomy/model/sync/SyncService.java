@@ -46,7 +46,9 @@ public class SyncService {
 	private ConflictResolutionStrategy strategy;
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
 	private String sslDn;
-
+	private boolean autosync = false;
+	private String userName;
+	
 	/**
 	 * @return the name
 	 */
@@ -193,6 +195,34 @@ public class SyncService {
 		this.sslDn = sslDn;
 	}
 	
+	/**
+	 * @return the autosync
+	 */
+	public boolean isAutosync() {
+		return autosync;
+	}
+
+	/**
+	 * @param autosync the autosync to set
+	 */
+	public void setAutosync(boolean autosync) {
+		this.autosync = autosync;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

@@ -92,7 +92,8 @@ public interface SyncLogicInterface {
 
 	/**
 	 * 
-	 * @param userName
+	 * @param userName - if not provided AND server is <code>true</code> returns list of 
+	 * all servers for all users
 	 * @param service - if provided, the specified service only is returned. 
 	 * Otherwise, all services configured for the given user.
 	 * @param server - if <code>true</code>, sync servers are returned. Otherwise clients.
