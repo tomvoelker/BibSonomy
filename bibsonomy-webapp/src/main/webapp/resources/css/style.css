@@ -474,19 +474,18 @@ a img {
 	padding-top: 12px;
 }
 
-#navigation {
-}
-
 #navigation2 {
 	float: right;
+	padding-right: 3ex;
 }
 
+#navigation2 > * {
+	display: inline-block;
+	padding-top: 8px;
+	padding-bottom: 9px;
+}
 
 #navigation2 a {
-	display: block;
-	width: auto;
-	list-style: none;
-	padding: 1ex 3ex;
 	font-weight: bold;
 }
 
@@ -495,6 +494,7 @@ a img {
 	background-repeat: no-repeat;
 	background-position: 0 0.9ex;
 	padding-left: 3ex;
+	margin-left: 3ex;
 }
 
 /*

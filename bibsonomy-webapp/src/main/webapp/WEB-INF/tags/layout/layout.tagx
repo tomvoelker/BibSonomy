@@ -129,29 +129,10 @@
 
 			</head>
 			<body>
-				<c:if test="${not command.context.userLoggedIn}">
-					<c:set var="noUserSignedIn" value="true" />
-				</c:if>
 
-				<div id="container" class="${hideFooterContainer ? 'noPageNavigation ' : hideFooterContainer}${noUserSignedIn ? 'noUser ' : ''}"><!-- everything but the footer -->
+				<div id="container" class="${hideFooterContainer ? 'noPageNavigation ' : hideFooterContainer}${not command.context.userLoggedIn ? 'noUser ' : ''}"><!-- everything but the footer -->
 				
 					<div id="header">
-
-						<!--+
-							|
-							| sign in 
-							| 
-						 	+-->
-						<div id="infoline">
-							<c:choose>
-								<c:when test="${command.context.userLoggedIn}">
-									<fmt:message key="navi.loggedInAs"/>&amp;nbsp;<a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a>
-								</c:when>
-								<c:otherwise>
-									<a href="/login"><fmt:message key="navi.login"/></a>
-								</c:otherwise>
-							</c:choose>	
-						</div><!-- #infoline -->
 
 						<!--+ 
 						 	|
@@ -207,15 +188,22 @@
 
 					</div><!-- #header -->
 
+
 					<!--+
 						|
-						| logout
+						| sign in + logout
 						|
 						+-->
 					<div id="navigation2">
-						<c:if test="${command.context.userLoggedIn}">
-							<a href="/logout" class="signoff"><fmt:message key="navi.logout"/></a>
-						</c:if>
+						<c:choose>
+							<c:when test="${command.context.userLoggedIn}">
+								<fmt:message key="navi.loggedInAs"/><c:out value=" "/><a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a>
+								<a href="/logout" class="signoff"><fmt:message key="navi.logout"/></a>
+							</c:when>
+							<c:otherwise>
+								<a href="/login"><fmt:message key="navi.login"/></a>
+							</c:otherwise>
+						</c:choose>	
 					</div>
 					
 
