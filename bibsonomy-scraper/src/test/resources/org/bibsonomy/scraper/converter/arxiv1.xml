@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+<responseDate>2012-03-08T15:22:00Z</responseDate>
+<request verb="GetRecord" identifier="oai:arXiv.org:1203.1314" metadataPrefix="oai_dc">http://export.arxiv.org/oai2</request>
+<GetRecord>
+<record>
+<header>
+ <identifier>oai:arXiv.org:1203.1314</identifier>
+ <datestamp>2012-03-07</datestamp>
+ <setSpec>cs</setSpec>
+
+</header>
+<metadata>
+ <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+ <dc:title>Model based Software Develeopment: Issues &amp; Challenges</dc:title>
+ <dc:creator>basha, N Md Jubair</dc:creator>
+ <dc:creator>Moiz, Salman Abdul</dc:creator>
+ <dc:creator>Rizwanullah, Mohammed</dc:creator>
+
+ <dc:subject>Computer Science - Software Engineering</dc:subject>
+ <dc:description>  One of the goals of software design is to model a system in such a way that
+it is easily understandable. Nowadays the tendency for software development is
+changing from manual coding to automatic code generation; it is becoming
+model-based. This is a response to the software crisis, in which the cost of
+hardware has decreased and conversely the cost of software development has
+increased sharply. The methodologies that allowed this change are model-based,
+thus relieving the human from detailed coding. Still there is a long way to
+achieve this goal, but work is being done worldwide to achieve this objective.
+This paper presents the drastic changes related to modeling and important
+challenging issues and techniques that recur in MBSD.
+</dc:description>
+ <dc:description>Comment: 6 pages, 1 figure, NCRTCST-12</dc:description>
+ <dc:date>2012-03-06</dc:date>
+ <dc:type>text</dc:type>
+ <dc:identifier>http://arxiv.org/abs/1203.1314</dc:identifier>
+
+ <dc:identifier>Special Issue of International Journal of Computer Science &amp;
+  Informatics (IJCSI), ISSN (PRINT) : 2231--5292, 2012 Vol.- II, Issue-1, 2</dc:identifier>
+ </oai_dc:dc>
+</metadata>
+</record>
+</GetRecord>
+</OAI-PMH>

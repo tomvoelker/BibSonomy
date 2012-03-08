@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+<responseDate>2012-03-08T17:19:28Z</responseDate>
+<request verb="GetRecord" identifier="oai:arXiv.org:astro-ph/0703339" metadataPrefix="oai_dc">http://export.arxiv.org/oai2</request>
+<GetRecord>
+<record>
+<header>
+ <identifier>oai:arXiv.org:astro-ph/0703339</identifier>
+ <datestamp>2009-11-13</datestamp>
+ <setSpec>physics:astro-ph</setSpec>
+
+</header>
+<metadata>
+ <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+ <dc:title>Low-mass, helium-enriched PG1159 stars: a possible evolutionary origin
+  and the implications for their pulsational stability properties</dc:title>
+ <dc:creator>Althaus, L. G.</dc:creator>
+ <dc:creator>C&#xf3;rsico, A. H.</dc:creator>
+ <dc:creator>Bertolami, M. M. Miller</dc:creator>
+
+ <dc:subject>Astrophysics</dc:subject>
+ <dc:description>  We examine a recently-proposed evolutionary scenario that could explain the
+existence of the low-mass, helium-enriched PG1159 stars. We assess the
+overstability of pulsation g-modes of stellar models as evolution proceeds
+along the PG1159 domain. Stellar models are extracted from the full evolution
+of a 1 Mo model star that experiences its first thermal pulse as a late thermal
+pulse (LTP) after leaving the AGB. The evolutionary stages corresponding to the
+born-again episode and the subsequent helium sub-flashes are taken into account
+in detail. Under reasonable mass-loss rate assumptions, the evolutionary
+scenario reproduces the high helium abundances observed in some PG1159 stars.
+We find that, despite the high helium abundance in the driving layers, there
+exists a narrow region in the log g-log Teff diagram for which the
+helium-enriched PG1159 sequence exhibits unstable pulsation modes with periods
+in the range 500 to 1600 s. In particular, the nonpulsating helium-enriched
+PG1159 star, MCT 0130-1937, is located outside the theoretical instability
+domain. Our results suggest that MCT 0130-1937 is a real non-pulsating star and
+that the lack of pulsations should not be attributed to unfavorable geometry.
+Our study hints at a consistent picture between the evolutionary scenario that
+could explain the existence of helium-enriched PG1159 stars and the nonvariable
+nature of MCT 0130-1937. We also present theoretical support for the unusually
+high helium abundance observed in the nonpulsating PG1159 star HS 1517+7403. We
+suggest that HS 1517+7403 could be a transition object linking the low-mass
+helium-rich O(He) stars with the helium-enriched PG1159 stars via the
+evolutionary connection K1-27--&gt;HS 1517+7403--&gt;MCT 0130-1937.
+</dc:description>
+ <dc:description>Comment: 7 pages, 5 figures. To be published in Astronomy and Astrophysics
+  (2007)</dc:description>
+ <dc:date>2007-03-13</dc:date>
+ <dc:type>text</dc:type>
+
+ <dc:identifier>http://arxiv.org/abs/astro-ph/0703339</dc:identifier>
+ <dc:identifier>doi:10.1051/0004-6361:20066887</dc:identifier>
+ </oai_dc:dc>
+</metadata>
+</record>
+</GetRecord>
+</OAI-PMH>

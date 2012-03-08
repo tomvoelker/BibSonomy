@@ -23,27 +23,34 @@
 
 package org.bibsonomy.scraper.converter;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
- * Converter for oai to bibtex
+ * Converter for OAI to BibTeX
  * @author tst
  * @version $Id$
  */
 public class OAIConverter {
-	
-	private static final String PATTERN_TITLE = "<dc:title>([^<]*)<";
-	private static final String PATTERN_CREATOR = "<dc:creator>([^<]*)<";
-	private static final String PATTERN_DESCRIPTION = "<dc:description>([^<]*)<";
-	private static final String PATTERN_DATE = "<dc:date>([^<]*)<";
-	private static final String PATTERN_IDENTIFIER = "<dc:identifier>([^<]*)<";
-	
-	private static final String PATTERN_YEAR = ".*(\\d{4}).*";
-	
+
+	private static final Pattern PATTERN_TITLE = Pattern.compile("<dc:title>([^<]*)<");
+	private static final Pattern PATTERN_CREATOR = Pattern.compile("<dc:creator>([^<]*)<");
+	private static final Pattern PATTERN_DESCRIPTION = Pattern.compile("<dc:description>([^<]*)<", Pattern.MULTILINE);
+	private static final Pattern PATTERN_DATE = Pattern.compile("<dc:date>([^<]*)<");
+	private static final Pattern PATTERN_IDENTIFIER = Pattern.compile("<dc:identifier>([^<]*)<");
+
+	private static final Pattern PATTERN_YEAR = Pattern.compile(".*(\\d{4}).*");
+
 	/**
 	 * convert a oai2 refernce into bibtex
 	 * @param reference 
@@ -51,126 +58,92 @@ public class OAIConverter {
 	 * @throws ScrapingException
 	 */
 	public static String convert(String reference) throws ScrapingException{
-		StringBuffer bibtexResult = new StringBuffer();
-		
-		String key = "";
-		//parse reference
-		
-		// get title
+
+		/*
+		 * title
+		 */
 		String title = null;
-		Pattern patternTitle = Pattern.compile(PATTERN_TITLE);
-		Matcher matcherTitle = patternTitle.matcher(reference);
-		if(matcherTitle.find())
-			title = matcherTitle.group(1);
-		
-		//get authors
-		String creator = "";
-		Pattern patternCreator = Pattern.compile(PATTERN_CREATOR);
-		Matcher matcherCreator = patternCreator.matcher(reference);
-		while(matcherCreator.find()){
-			if(creator.equals("")){
-				creator = matcherCreator.group(1);
-				// add lastname from the first author to bibtex key
-				key = creator.substring(0, creator.indexOf(","));
-			}else
-				creator = creator + " and " + matcherCreator.group(1);
+		final Matcher matcherTitle = PATTERN_TITLE.matcher(reference);
+		if (matcherTitle.find()) {
+			title = StringEscapeUtils.unescapeHtml(matcherTitle.group(1));
+		}
+
+		/*
+		 * author 
+		 */
+		final List<PersonName> author = new LinkedList<PersonName>();
+		final Matcher matcherCreator = PATTERN_CREATOR.matcher(reference);
+		while (matcherCreator.find()) {
+			author.addAll(PersonNameUtils.discoverPersonNamesIgnoreExceptions(StringEscapeUtils.unescapeHtml(matcherCreator.group(1))));
+		}
+
+
+		String year = null;
+		final Matcher matcherDate = PATTERN_DATE.matcher(reference);
+		if (matcherDate.find()) {
+			final String date = matcherDate.group(1);
+			final Matcher matcherYear = PATTERN_YEAR.matcher(date);
+			if (matcherYear.find()) {
+				year = matcherYear.group(1);
+			}
 		}
 		
 		String description = "";
 		String note = "";
-		Pattern patternDescription = Pattern.compile(PATTERN_DESCRIPTION, Pattern.MULTILINE);
-		Matcher matcherDescription = patternDescription.matcher(reference);
-		while(matcherDescription.find()){
-			if(matcherDescription.group(1).startsWith("Comment:"))
-				note = matcherDescription.group(1);
-			else if(description.equals(""))
-				description = matcherDescription.group(1);
+		final Matcher matcherDescription = PATTERN_DESCRIPTION.matcher(reference);
+		while (matcherDescription.find()) {
+			if (matcherDescription.group(1).startsWith("Comment:"))
+				note = StringEscapeUtils.unescapeHtml(matcherDescription.group(1));
 			else
-				description = description + " " + matcherDescription.group(1);
+				description = description + StringEscapeUtils.unescapeHtml(matcherDescription.group(1)) + " ";
 		}
-		
-		String year = null;
-		Pattern patternDate = Pattern.compile(PATTERN_DATE);
-		Matcher matcherDate = patternDate.matcher(reference);
-		if(matcherDate.find()){
-			String date = matcherDate.group(1);
-			Pattern patternYear = Pattern.compile(PATTERN_YEAR);
-			Matcher matcherYear = patternYear.matcher(date);
-			if(matcherYear.find()){
-				year = matcherYear.group(1);
-				key = key + year;
+
+		String doi = null;
+		String url = null;
+		final Matcher matcherIdentifier = PATTERN_IDENTIFIER.matcher(reference);
+		while (matcherIdentifier.find()) {
+			final String identifier = matcherIdentifier.group(1);
+			if (identifier.startsWith("doi:")) {
+				doi = identifier.substring("doi:".length());
+			} else if (identifier.startsWith("http")) {
+				url = StringEscapeUtils.unescapeHtml(identifier);
 			}
 		}
-		
-		String identifier = null;
-		Pattern patternIdentifier = Pattern.compile(PATTERN_IDENTIFIER);
-		Matcher matcherIdentifier = patternIdentifier.matcher(reference);
-		if(matcherIdentifier.find())
-			identifier = matcherIdentifier.group(1);
-		
-		// build bibtex
-		
-		// start and bibtex key
-		bibtexResult.append("@MISC{");
-		bibtexResult.append(key);
-		bibtexResult.append(",\n");
-		
+
+
+		// start with BibTeX key
+		final StringBuilder bibtexResult = new StringBuilder("@misc{" + BibTexUtils.generateBibtexKey(author, null, year, title) + ",\n");
+
 		// title
-		if(title != null){
-			bibtexResult.append("title = {");
-			bibtexResult.append(title);
-			bibtexResult.append("}");
-			bibtexResult.append(",\n");
-		}else
-			throw new ScrapingFailureException("no title found");
+		if (present(title))
+			bibtexResult.append("  title = {" + title + "},\n");
 		
 		// author
-		if(!creator.equals("")){
-			bibtexResult.append("author = {");
-			bibtexResult.append(creator);
-			bibtexResult.append("}");
-			bibtexResult.append(",\n");
-		}else
-			throw new ScrapingFailureException("no authors found");
+		if (present(author))
+			bibtexResult.append("  author = {" + PersonNameUtils.serializePersonNames(author) + "},\n");
 
 		// year
-		if(year != null){
-			bibtexResult.append("year = {");
-			bibtexResult.append(year);
-			bibtexResult.append("}");
-			bibtexResult.append(",\n");
-		}else
-			throw new ScrapingFailureException("no year found");
+		if (present(year)) 
+			bibtexResult.append("  year = {" + year + "},\n");
 
 		// abstract
-		if(!description.equals("")){
-			bibtexResult.append("abstract = {");
-			bibtexResult.append(description);
-			bibtexResult.append("}");
-			bibtexResult.append(",\n");
-		}
+		if (present(description))
+			bibtexResult.append("  abstract = {" + description.trim() + "},\n");
 		
-		// url
-		if(identifier != null){
-			bibtexResult.append("url = {");
-			bibtexResult.append(identifier);
-			bibtexResult.append("}");
-			bibtexResult.append(",\n");
-		}
+		// URL
+		if (present(url))
+			bibtexResult.append("  url = {" + url + "},\n");
+
+		// DOI
+		if (present(doi))
+			bibtexResult.append("  doi = {" + doi + "},\n");
 
 		// note
-		if(note != null){
-			bibtexResult.append("note = {");
-			bibtexResult.append(note);
-			bibtexResult.append("}");
-			bibtexResult.append(",\n");
-		}
+		if (present(note))
+			bibtexResult.append("  note = {" + note + "},\n");
 
-		// remove last ","
-		bibtexResult = new StringBuffer(bibtexResult.subSequence(0, bibtexResult.lastIndexOf(",")));
-		
-		// finish bibtex
-		bibtexResult.append("\n}\n");
+		// finish BibTeX
+		bibtexResult.append("}\n");
 
 		return bibtexResult.toString();
 	}
