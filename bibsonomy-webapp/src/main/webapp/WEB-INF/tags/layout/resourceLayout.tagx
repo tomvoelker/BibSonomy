@@ -49,27 +49,6 @@
     <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
     <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
-	<c:if test="${not disableListNavigation}">
-		<c:set var="addAsLastBookmarksListItem">
-				<div id="bookmarksfooter" class="${bookmarksWidthClass}">
-					<div class="footer">
-						<c:if test="${not disableListNavigation}">
-							<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>						
-						</c:if>
-					</div>
-				</div>			
-		</c:set>
-
-		<c:set var="addAsLastPublicationsListItem">
-			<div id="publicationsfooter" class="${publicationsWidthClass}">
-				<div class="footer">
-						<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>						
-				</div>
-			</div>			
-		</c:set>
-	</c:if>
-
-
 		
 	<!--+
 		+ main layout
@@ -244,16 +223,40 @@
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${requPath}" 
 							widthClassName="${bookmarksWidthClass}"
-							addAsFirstItem="${addAsFirstBookmarksListItem}"
-							addAsLastItem="${addAsLastBookmarksListItem}"/> 
+							addAsFirstItem="${addAsFirstBookmarksListItem}">
+
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
+									<div class="footer">
+										<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>						
+									</div>
+								</div>
+							</c:if>			
+						</jsp:attribute>
+					
+							
+					</resources:bookmarks> 
 							
 					<resources:bibtexs listView="${command.bibtex}" 
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${requPath}" 
 							widthClassName="${publicationsWidthClass}"
-							addAsFirstItem="${addAsFirstPublicationsListItem}" 
-							addAsLastItem="${addAsLastPublicationsListItem}"/>
+							addAsFirstItem="${addAsFirstPublicationsListItem}">
+
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="publicationsfooter" class="${publicationsWidthClass}">
+									<div class="footer">
+											<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>						
+									</div>
+								</div>			
+							</c:if>			
+						</jsp:attribute>
+						
+							
+					</resources:bibtexs>
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
