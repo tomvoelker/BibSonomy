@@ -2611,6 +2611,29 @@ table.report td.value {
 }
 
 
+
+/* 
+	modifications for scrolling layout	
+*/
+
+#container {
+	overflow: auto;
+}
+
+#headercontainer {
+}
+
+#postcontainer {
+	overflow: visible;
+}
+
+
+
+/* 
+	modifications for smaller screens	
+*/
+
+
 @media screen and (max-width: 830px) {
 	
 	#container.noUser #logoSubtitle {
