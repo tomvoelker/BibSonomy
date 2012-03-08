@@ -489,6 +489,10 @@ a img {
 	font-weight: bold;
 }
 
+#navigation2 a:hover {
+	text-decoration: underline;
+}
+
 #navigation2 .signoff {
 	background-image: url("/resources/image/signoff.png");
 	background-repeat: no-repeat;
