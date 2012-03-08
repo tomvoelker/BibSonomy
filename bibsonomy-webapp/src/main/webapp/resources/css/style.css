@@ -28,10 +28,10 @@ a img {
 
 #container {
 	position: absolute;
-	top: 20px;
-	bottom: 40px;
-	left: 20px; 
-	right: 20px;
+	top: 18px;
+	bottom: 18px;
+	left: 18px; 
+	right: 18px;
     background-color: white;	
 	min-width: 666px; 
 	min-height: 310px
@@ -1648,14 +1648,6 @@ form.editTags input[type=text] {
 	padding-right: 1em;
 }
 
-#bookmarksfooter .footer {
-	border-right: 1px solid #c6c6c6;
-}
-
-#publicationsfooter .footer {
-	border-left: 1px solid #c6c6c6;
-}
-
 .postlistTitle {
 	font-size: 130%;
 	font-weight: bold;
@@ -1740,8 +1732,12 @@ form.editTags input[type=text] {
 	background-color: #ffffff;
 }
 
-#bookmarksheader.standard, #bookmarksfooter.standard, #publicationsheader.standard, #publicationsfooter.standard {
+#bookmarksheader.standard, #publicationsheader.standard {
 	width: 50%;
+}
+
+#bookmarksfooter.standard, #publicationsfooter.standard {
+	width: 100%;
 }
 
 
@@ -1801,11 +1797,6 @@ form.editTags input[type=text] {
 	display: none;
 }
 
-
-/** #container.noPageNavigation ... will be used, if no page navigation is available **/ 
-#container.noPageNavigation {
-	bottom:20px;
-}
 	
 #container.noPageNavigation>#postcontainer {
 	bottom: 6px;
@@ -2616,18 +2607,25 @@ table.report td.value {
 	modifications for scrolling layout	
 */
 
-#container {
-	overflow: auto;
+@media screen and (max-height: 630px) {
+
+	#container {
+		overflow: auto;
+		overflow-x: hidden;
+		left: 2px;
+		right: 0px;
+		top: 2px;
+	}
+	
+	#headercontainer {
+	}
+	
+	#postcontainer {
+		overflow: visible;
+		bottom: auto;
+	}
+
 }
-
-#headercontainer {
-}
-
-#postcontainer {
-	overflow: visible;
-}
-
-
 
 /* 
 	modifications for smaller screens	
@@ -2642,7 +2640,7 @@ table.report td.value {
 	
 }	
 
-@media screen and (max-width: 1015px) {
+@media screen and (max-width: 1010px) {
 	
 	#sidebar, #sidebarheader, sidebarfooter {
 		display: none;
