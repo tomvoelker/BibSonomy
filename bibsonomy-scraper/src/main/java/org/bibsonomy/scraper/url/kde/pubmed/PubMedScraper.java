@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -87,23 +88,32 @@ public class PubMedScraper extends AbstractUrlScraper {
 				// try to scrape with new URL-Pattern
 				// avoid crashes
 			} else {
-				// try to get the PMID out of the parameters
-				Pattern pa = Pattern.compile("PMID\\:\\D*(\\d+)");
-				Matcher ma = pa.matcher(sc.getPageContent());
-
-				// if the PMID is existent then get the bibtex from hubmed
-				if (ma.find()) {
-					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids="
-							+ ma.group(1);
-					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+				// try to find link for RIS export
+				String pageContent = sc.getPageContent();
+				Matcher risLinkMatcher = Pattern.compile("href=\"((\\.\\./)*+.*?\\?wicket:interface=.*?:export:exportlink::ILinkListener::)").matcher(pageContent);
+				if (risLinkMatcher.find()) {
+					URL risURL = new URL(_origUrl + "/" + risLinkMatcher.group(1));
+					RisToBibtexConverter c = new RisToBibtexConverter();
+					bibtexresult = c.RisToBibtex(WebUtils.getContentAsString(risURL));
 				} else {
+					// try to get the PMID out of the parameters
+					Pattern pa = Pattern.compile("PMID\\:\\D*(\\d+)");
+					Matcher ma = pa.matcher(pageContent);
 	
-					Pattern pa1 = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
-					Matcher ma1 = pa1.matcher(sc.getPageContent());
-	
-					if (ma1.find()) {
-						String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma1.group(1);
+					// if the PMID is existent then get the bibtex from hubmed
+					if (ma.find()) {
+						String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids="
+								+ ma.group(1);
 						bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+					} else {
+		
+						Pattern pa1 = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
+						Matcher ma1 = pa1.matcher(pageContent);
+		
+						if (ma1.find()) {
+							String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma1.group(1);
+							bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
+						}
 					}
 				}
 			}
