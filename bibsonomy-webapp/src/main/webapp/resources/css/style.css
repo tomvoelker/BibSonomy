@@ -2611,7 +2611,7 @@ table.report td.value {
 	modifications for scrolling layout	
 */
 
-@media screen and (max-height: 630px) {
+@media screen and (max-height: 900px) {
 
 	#container {
 		overflow: auto;
