@@ -350,16 +350,18 @@
 		SELECT ctr FROM bibhash WHERE hash = #hash# AND type = #simHash#
 	</select>
 
-	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, <include refid="reviewRatingsRows" />
-		FROM (SELECT * FROM bibtex t1
+	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPostWithPickStatus" parameterClass="bibtexParam">
+		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, <include refid="reviewRatingsRows" />, IF(col.content_id IS NULL, FALSE, TRUE) AS picked 
+		  FROM (SELECT * FROM bibtex t1
 		      WHERE simhash$simHash$ = #hash#
 		            <include refid="inGroups"/>
 		            AND user_name = #requestedUserName#
 		      ORDER BY date DESC) AS b2
-		LEFT OUTER JOIN tas t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, bibhash h, groupids g
-		WHERE <include refid="bibtexSimHash2"/>
-		      AND b2.group = g.group
+		    LEFT OUTER JOIN tas t ON (b2.content_id = t.content_id) 
+		    <include refid="reviewRatingsJoinPublication2" />
+		    LEFT JOIN bibhash h ON (<include refid="bibtexSimHash2"/>)
+		    LEFT JOIN groupids g ON (b2.group = g.group)
+		    LEFT OUTER JOIN collector col ON (b2.content_id = col.content_id)
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
