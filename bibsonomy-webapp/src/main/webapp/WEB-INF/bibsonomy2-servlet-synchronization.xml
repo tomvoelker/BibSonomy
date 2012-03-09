@@ -81,7 +81,8 @@
 	<bean id="mockSynchronizationClient" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
 	<alias name="${project.bean.syncclient}" alias="synchronizationClient"/>
 	
-	<bean id="autoSync" class="org.bibsonomy.webapp.util.AutoSync">
+	<!-- Autosync -->
+	<bean id="autoSync" class="org.bibsonomy.synchronization.AutoSync">
 	 		<property name="adminLogic" ref="adminLogic"/>
 	 		<property name="userLogicFactory" ref="restLogicFactory" />
 	 		<property name="syncClient" ref="synchronizationClient" />
