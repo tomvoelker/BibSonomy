@@ -16,7 +16,7 @@
 	</insert>
 
 	<select id="getAllSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy, false AS autosync 
+		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy, false AS autosync, NULL as user_name
 		FROM sync_services ss
 		WHERE server = #server#
 	</select>
