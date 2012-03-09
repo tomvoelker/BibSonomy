@@ -73,7 +73,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 		final List<User> list = logic.getUsers(null, GroupingEntity.PENDING, null, null, null, null, null, activationCode, 0, 1);
 		User pendingUser = null;
 		if (list.size() == 0 || !present(activationCode)) {
-			errors.reject("error.illegal_activation_code");
+			errors.reject("error.illegal_activation_code", new Object[]{activationCode}, "the activation code {0} is not valid");
 		} else {
 			log.debug("trying to activate user with code '" + activationCode + "'");
 
