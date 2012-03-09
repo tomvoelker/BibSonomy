@@ -44,15 +44,19 @@
 	</resultMap>	
 
 	<resultMap id="bibtexPost" class="post" extends="Common.posts">
-		<result property="resource"   resultMap="BibTexCommon.bibtex" />
+		<result property="resource" resultMap="BibTexCommon.bibtex" />
 	</resultMap>
-	
+
 	<resultMap id="bibtexPostWithDocuments" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
 	</resultMap>	
 	
 	<resultMap id="bibtexPostWithRepositorys" class="post" extends="bibtexPost" >
 		<result property="repositorys"	resultMap="RepositoryCommon.repository"/>
+	</resultMap>
+
+	<resultMap id="bibtexPostWithPickStatus" class="post" extends="bibtexPost">
+		<result property="picked" column="picked" javaType="boolean"/>
 	</resultMap>
 
 	<sql id="commonBibtexAttributes">
