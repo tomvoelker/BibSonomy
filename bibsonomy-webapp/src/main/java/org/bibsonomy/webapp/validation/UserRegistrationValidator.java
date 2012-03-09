@@ -58,7 +58,7 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 			/*
 			 * passwords are not empty and don't match
 			 */
-			errors.reject("error.field.valid.passwordCheck", "passwords don't match");
+			errors.rejectValue("passwordCheck", "error.field.valid.passwordCheck", "passwords don't match");
 		}
 
 		/*
