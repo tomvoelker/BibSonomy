@@ -111,7 +111,7 @@ public class Post<T extends Resource> implements Serializable {
 	/**
 	 * identifier if this post is picked or not
 	 */
-	private boolean isPicked = false;
+	private boolean picked = false;
 	
 	/**
 	 * identifier if post is in the inbox
@@ -328,16 +328,16 @@ public class Post<T extends Resource> implements Serializable {
 	 * @return boolean
 	 */
 	public boolean isPicked() {
-		return this.isPicked;
+		return this.picked;
 	}
 
 	/**
 	 * Set if this post is picked or not
 	 * 
-	 * @param isPicked
+	 * @param picked
 	 */
-	public void setPicked(boolean isPicked) {
-		this.isPicked = isPicked;
+	public void setPicked(final boolean picked) {
+		this.picked = picked;
 	}
 	
 	@Override
