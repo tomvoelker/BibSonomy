@@ -321,7 +321,7 @@ function switchNavi(scope, element) {
 }
 
 $(function() { 
-	initSidebarHeader();
+	/* initSidebarHeader(); */
 	// FIXME: to ensure that the method is called after "most" other methods, we add a timeout ...
 	window.setTimeout("initBookmarksPublicationsListsLast()", 500);
 });
@@ -376,7 +376,7 @@ function initBookmarksPublicationsListsLast() {
 }
 
 function initSidebarHeader() {
-	
+
 	if (($("#sidebarheader").length != 0) && ($("#sidebar").length != 0) && ($("#headercontainer").length != 0)) { 
 
 		sidebar_diff = $("#sidebarheader").offset().left - $("#sidebar").offset().left;
@@ -392,14 +392,11 @@ function initSidebarHeader() {
 		if ($("#footercontainer").length != 0) {
 			$('#footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
 		}
+
 	}
 
-	if ($("#headercontainer").length != 0) {
-		$('#headercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
-	}
+//	if (($("#sidebarheader").length != 0) && ($("#sidebar").length != 0) && ($("#headercontainer").length != 0)) { 
+
 	
-	if ($("#footercontainer").length != 0) {
-		$('#footercontainer').css({"scroll": "hidden", "padding-right" : new_sidebarWidth});
-	}
 	
 }

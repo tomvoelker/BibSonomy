@@ -2606,12 +2606,64 @@ table.report td.value {
 }
 
 
-
 /* 
-	modifications for scrolling layout	
+	modifications for complete scrolling layout	
 */
 
-@media screen and (max-height: 900px) {
+body {
+    overflow: auto;
+}
+	
+	
+#container {
+	overflow: hidden;
+	overflow-x: hidden;
+	left: 4px;
+	right: 4px;
+	top: 4px;
+	bottom:4px;
+	position: static;
+}
+
+#headercontainer {
+	position: static;
+}
+
+#postcontainer {
+	overflow: visible;
+	bottom: auto;
+	position: static;
+}
+
+#navigation > ul {
+    margin-bottom: 0;
+}
+
+#sidebarheader {
+	top: 133px;
+	right: 8px;	
+
+}
+
+
+#sidebar {
+	top: 193px;
+	right: 8px;	
+
+}
+
+#legalnotices {
+	/* TODO */
+    display: none;
+}
+
+
+
+/* 
+	modifications for scrolling layout with one absolute border	
+*/
+
+@media screen and (max-height: 200px) {
 
 	#container {
 		overflow: auto;
@@ -2630,6 +2682,7 @@ table.report td.value {
 	}
 
 }
+
 
 /* 
 	modifications for smaller screens	
