@@ -477,6 +477,8 @@
 		<URL>http://www.usenix.org/publications/library/proceedings/coots98/krishnaswamy.html</URL>
 		<BibFile>UsenixScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
+		<!-- Page not found -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_81">
 		<TestDescription>URL test for proceeding page from usenix.org with current layout (author multiline)</TestDescription>
