@@ -361,7 +361,7 @@
 		    <include refid="reviewRatingsJoinPublication2" />
 		    LEFT JOIN bibhash h ON (<include refid="bibtexSimHash2"/>)
 		    LEFT JOIN groupids g ON (b2.group = g.group)
-		    LEFT OUTER JOIN collector col ON (b2.content_id = col.content_id)
+		    LEFT OUTER JOIN collector col ON (b2.content_id = col.content_id AND col.user_name = #userName#)
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
