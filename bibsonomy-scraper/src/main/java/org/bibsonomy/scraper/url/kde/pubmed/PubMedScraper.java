@@ -58,6 +58,11 @@ public class PubMedScraper extends AbstractUrlScraper {
 	private static final String UK_PUBMED_CENTRAL_HOST = "ukpmc.ac.uk";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern, Pattern>>();
+	
+	private static Pattern RISLINKPATTERN = Pattern.compile("href=\"((\\.\\./)*+.*?\\?wicket:interface=.*?:export:exportlink::ILinkListener::)");
+	private static Pattern PMIDQUERYPATTERN = Pattern.compile("\\d+");
+	private static Pattern PMIDPATTERN = Pattern.compile("PMID\\:\\D*(\\d+)");
+	
 	static {
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -74,9 +79,8 @@ public class PubMedScraper extends AbstractUrlScraper {
 
 		try {
 			if (_origUrl.matches("(?im)^.+db=PubMed.+$")) {
-				// try to get the PMID out of the parameters
-				Pattern pa = Pattern.compile("\\d+");
-				Matcher ma = pa.matcher(sc.getUrl().getQuery());
+				
+				Matcher ma = PMIDQUERYPATTERN.matcher(sc.getUrl().getQuery());
 
 				// if the PMID is existent then get the bibtex from hubmed
 				if (ma.find()) {
@@ -90,15 +94,15 @@ public class PubMedScraper extends AbstractUrlScraper {
 			} else {
 				// try to find link for RIS export
 				String pageContent = sc.getPageContent();
-				Matcher risLinkMatcher = Pattern.compile("href=\"((\\.\\./)*+.*?\\?wicket:interface=.*?:export:exportlink::ILinkListener::)").matcher(pageContent);
+				
+				Matcher risLinkMatcher = RISLINKPATTERN.matcher(pageContent);
 				if (risLinkMatcher.find()) {
 					URL risURL = new URL(_origUrl + "/" + risLinkMatcher.group(1));
 					RisToBibtexConverter c = new RisToBibtexConverter();
 					bibtexresult = c.RisToBibtex(WebUtils.getContentAsString(risURL));
 				} else {
-					// try to get the PMID out of the parameters
-					Pattern pa = Pattern.compile("PMID\\:\\D*(\\d+)");
-					Matcher ma = pa.matcher(pageContent);
+					
+					Matcher ma = PMIDPATTERN.matcher(pageContent);
 	
 					// if the PMID is existent then get the bibtex from hubmed
 					if (ma.find()) {
