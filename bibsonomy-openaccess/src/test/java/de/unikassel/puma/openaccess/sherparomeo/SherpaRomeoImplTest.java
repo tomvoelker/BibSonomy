@@ -9,6 +9,7 @@ import org.junit.Test;
  * @author rja
  * @version $Id$
  */
+@Ignore
 public class SherpaRomeoImplTest {
 
 	@Test
