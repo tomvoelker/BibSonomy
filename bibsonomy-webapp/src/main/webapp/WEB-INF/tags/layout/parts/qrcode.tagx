@@ -48,18 +48,4 @@
 		<h3><a href="http://www.adobe.com/go/getflashplayer"><fmt:message key="qrcode.error.flashMissing"/></a></h3>
 	</div>
 	
-	<div>			
-		<ul>
-			<li style="text-align: center;">
-				<fmt:message var="pickPublications" key="post.meta.pick.title"/>
-				<button:linkButton name="linkButton" title="${pickPublications}"
-								   href="" onclick="pickAll(event);">
-					<jsp:attribute name="text">
-						<fmt:message key="post.meta.pick.all" />
-					</jsp:attribute>
-				</button:linkButton>
-			</li>
-		</ul>
-	</div>
-	
 </jsp:root>

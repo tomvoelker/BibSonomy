@@ -157,22 +157,35 @@ function renderPosts(query, list) {
 			
 			var found = false;
 			
-			$(list).find('li').each(function(index) 
+			if($(data).find('a').is('.unpick'))
 			{
-			    if($(this).find('div.ptitle').find('a').attr('title') == $(data).find('div.ptitle').find('a').attr('title')) {
-			    	found = true;
-			    }
-			});
+				found = true;
+			}
 			
 			if(!found) {
-				$(list).append($(data));
-				/*
-				 * FIXME: does this really always work? 
-				 * What about posts that have already been prepared?
-				 * Are there any methods missing?
-				 */
-				$(".editTags").click(editTags);
-				imagePreview();
+				
+				$(data).find('a.pick').click();
+				$(document).ajaxStop(function() {
+
+					$.ajax({
+						url : "/posts" + query,
+						dataType : "html",
+						success : function(actData) {
+					
+							$(list).append($(actData));
+							
+							/*
+							 * FIXME: does this really always work? 
+							 * What about posts that have already been prepared?
+							 * Are there any methods missing?
+							 */
+							$(".editTags").click(editTags);
+							imagePreview();
+						}
+					});
+					$(this).unbind('ajaxStop');
+				});
+
 			}
 		}
 	});
@@ -617,7 +630,8 @@ function updateBasket (param) {
 		/*
 		 * update the number of clipboard items
 		 */
-		if (location.pathname.startsWith("/clipboard")) {
+			
+		if (location.pathname.startsWith("/clipboard") && param.search(/action=unpick/) != -1) {
 			// special case for the /clipboard page
 			window.location.reload();
 		} else {
