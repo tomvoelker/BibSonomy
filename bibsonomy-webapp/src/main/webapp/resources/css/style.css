@@ -2612,17 +2612,13 @@ table.report td.value {
 
 body {
     overflow: auto;
+    margin: 0;
 }
 	
 	
 #container {
 	overflow: hidden;
-	overflow-x: hidden;
-	left: 4px;
-	right: 4px;
-	top: 4px;
-	bottom:4px;
-	position: static;
+    position: static;
 }
 
 #headercontainer {
@@ -2640,21 +2636,21 @@ body {
 }
 
 #sidebarheader {
-	top: 133px;
-	right: 8px;	
+	top: 125px;
+	right: 0px;	
 
 }
 
 
 #sidebar {
-	top: 193px;
-	right: 8px;	
+	top: 185px;
+	right: 0px;	
 
 }
 
 #legalnotices {
-	/* TODO */
-    display: none;
+    position: static;
+    padding: 2px 5px;
 }
 
 
