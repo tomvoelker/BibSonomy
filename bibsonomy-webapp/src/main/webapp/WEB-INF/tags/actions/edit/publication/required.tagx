@@ -19,6 +19,9 @@
 	
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
     <jsp:directive.attribute name="autocompletion" type="java.lang.Boolean" required="true"/>
+    <jsp:directive.attribute name="hideBibTeXKey" type="java.lang.Boolean" required="false"/>
+    
+    
    		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
 		<script type="text/javascript" src="${resdir}/javascript/publicationRequiredFields.js"> <!--  --></script>
@@ -31,15 +34,17 @@
             <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
             <div class="dissError"><form:errors path="post.resource.entrytype" /></div>
 		
-		  <form:input cssClass="fsFloatInput reqinput" path="post.resource.bibtexKey" tabindex="2"/>
-            <!-- reload button for BibTeX key -->
-            <fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
-            <a style="cursor:pointer">
-              <img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
-            </a>
-            <buttons:help message="post.resource.bibtexKey.help" cssStyle="float:none;"/>
-            <form:label cssClass="fsFloatLabel" cssStyle="clear: none !important;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/> </form:label>
-            <div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
+			<c:if test="${empty hideBibTeXKey or not hideBibTeXKey}">
+			    <form:input cssClass="fsFloatInput reqinput" path="post.resource.bibtexKey" tabindex="2"/>
+	            <!-- reload button for BibTeX key -->
+	            <fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
+	            <a style="cursor:pointer">
+	              <img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
+	            </a>
+	            <buttons:help message="post.resource.bibtexKey.help" cssStyle="float:none;"/>
+	            <form:label cssClass="fsFloatLabel" cssStyle="clear: none !important;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/> </form:label>
+	            <div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
+            </c:if>
 		</div>
 
 		
