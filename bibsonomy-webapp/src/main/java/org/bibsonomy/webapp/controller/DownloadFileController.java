@@ -70,6 +70,27 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 			command.setContentType(FileUtil.CONTENT_TYPE_IMAGE_JPEG);
 			command.setFilename(command.getFilename() + "." + FileUtil.CONTENT_TYPE_IMAGE_JPEG);
 		} else {
+			/*
+			 *
+			 * Hallo Philipp, hier mal eine Skizze:
+			 *   
+			 * final String filePath = FileUtil.getFilePath(this.docpath, document.getFileHash());
+			 * if (command.getQrCode()) {
+			 *   final String qrFilePath 
+			 *   try { 
+			 *     qrFilePath = qrCodeRenderer.render(filePath, requestedUser, intrahash);
+			 *   } catch (final Exception e) {
+			 *     errors.reject("error.SINNVOLLER_KEY");
+			 *     return Views.ERROR;
+			 *   }
+			 *   command.setPathToFile(qrFilePath);
+			 * } else {
+			 *   command.setPathToFile(filePath);
+			 * }
+			 * command.setContentType(FileUtil.getContentType(document.getFileName()));
+			 * 
+			 *   
+			 */
 			command.setPathToFile(FileUtil.getFilePath(this.docpath, document.getFileHash()));
 			command.setContentType(FileUtil.getContentType(document.getFileName()));
 		}
