@@ -790,7 +790,11 @@ function addToggleChild(sortedCollection) {
 
 	for (var i in sortedCollection) {
 		var tag = sortedCollection[i];
-		var li = $("<li>" + tag + " </li>").click(function(){completeTag(tag.replace(/"/g,'\\"'));});
+		var li = $("<li>" + tag + " </li>").click(function(suggestion) {
+		    return function () {
+		    	completeTag(suggestion.replace(/"/g,'\\"'));return false;
+		      }
+		    }(tag));
 		sg.append(li);
 		
 		if (i == getPos()) {
