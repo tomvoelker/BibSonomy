@@ -9,7 +9,6 @@ import java.util.List;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -96,18 +95,12 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 		
 		final String loginUserName = loginUser.getName();
 
-		/*
-		 * FIXME make ConflictResolutionStrategy settable
-		 */
-		final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
 		switch (httpMethod) {
 		case POST:
 			final SyncService newSyncServer = command.getNewSyncServer();
-			newSyncServer.setStrategy(strategy);
 			this.logic.createSyncServer(loginUserName, newSyncServer);
 			break;
 		case PUT:
-			syncServer.setStrategy(strategy);
 			this.logic.updateSyncServer(loginUserName, syncServer);
 			break;
 		case DELETE:
