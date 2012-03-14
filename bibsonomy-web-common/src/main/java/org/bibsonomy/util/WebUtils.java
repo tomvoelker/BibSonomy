@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  */
 public class WebUtils {
-		private static final Log log = LogFactory.getLog(WebUtils.class);
+	private static final Log log = LogFactory.getLog(WebUtils.class);
 
 	/**
 	 * maximal number of redirects to follow in {@link #getRedirectUrl(URL)}
@@ -77,7 +77,7 @@ public class WebUtils {
 	private static final String COOKIE_HEADER_NAME  	 = "Cookie";
 	private static final String CONTENT_TYPE_HEADER_NAME = "Content-Type";
 
-	/*
+	/**
 	 * The maximum number of characters (~bytes) to read from a HTTP connection.
 	 * We fixed this to 1 MB to avoid that radio streams or huge files
 	 * mess up our heap. If this is not enough, please increase the size
@@ -85,7 +85,7 @@ public class WebUtils {
 	 */
 	private static final int MAX_CONTENT_LENGTH = 1 * 1024 * 1024;
 
-	/*
+	/**
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
 	 * HttpClient is thread safe and we can use one instance for several requests.
 	 */
@@ -538,13 +538,15 @@ public class WebUtils {
 		return DEFAULT_CHARSET;
 	}
 
-	/** Copies the stream into the string builder.
+	/**
+	 * Copies the stream into the string builder.
 	 * 
 	 * @param inputStream
-	 * @return
+	 * @param charset 
+	 * @return stringbuilder with the contents of the inputstream
 	 * @throws IOException
 	 */
-	private static StringBuilder inputStreamToStringBuilder(final InputStream inputStream, final String charset) throws IOException {
+	public static StringBuilder inputStreamToStringBuilder(final InputStream inputStream, final String charset) throws IOException {
 		final InputStreamReader in;
 		/*
 		 * set charset
