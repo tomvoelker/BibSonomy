@@ -5,8 +5,16 @@ import java.sql.SQLException;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
+import com.ibatis.sqlmap.engine.type.TypeHandler;
 
+/**
+ * {@link TypeHandler} for {@link ConflictResolutionStrategy}
+ * 
+ * @author wla
+ * @version $Id$
+ */
 public class ConflictResolutionStrategyTypeHandlerCallback extends AbstractTypeHandlerCallback {
+	
 	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
