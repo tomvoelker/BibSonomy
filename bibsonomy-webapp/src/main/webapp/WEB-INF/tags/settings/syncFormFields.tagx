@@ -33,7 +33,7 @@
 		<div class="dissError"><form:errors path="resourceType" /></div>
 	</div>
 	<div class="fsRow">
-		<form:label cssClass="fsLabel" path="strategy"><fmt:message key="synchronization.conflictctResolution"/></form:label>
+		<form:label cssClass="fsLabel" path="strategy"><fmt:message key="synchronization.conflictResolution"/></form:label>
 		<form:select cssClass="fsInput fsSmall" path="strategy">
 			<form:option value="LAST_WINS"><fmt:message key="synchronization.lastWins"/></form:option>
 			<form:option value="FIRST_WINS"><fmt:message key="synchronization.firstWins"/></form:option>
