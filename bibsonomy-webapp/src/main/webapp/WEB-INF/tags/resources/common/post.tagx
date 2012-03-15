@@ -4,7 +4,6 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:discussion ="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
@@ -47,7 +46,7 @@
 	
 			<!-- TITLE AND DESCRIPTION -->
 			<div class="ptitle"><jsp:invoke fragment="title"/></div>
-				<c:set var="descVar"><jsp:invoke fragment="desc"/></c:set>
+			<c:set var="descVar"><jsp:invoke fragment="desc"/></c:set>
 			<c:choose>
 				<c:when test="${not empty descVar}">
 					<div class="pdesc extend"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
