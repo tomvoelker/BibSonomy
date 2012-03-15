@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.sql.DataSource;
 import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
 
-
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
 import org.apache.ibatis.datasource.jndi.JndiDataSourceFactory;
 import org.apache.ibatis.io.Resources;
@@ -30,6 +29,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.annotations.Param;
+import org.apache.lucene.queryParser.ParseException;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
@@ -62,7 +62,7 @@ public class entityIdentification {
 			e.printStackTrace();
 		}
 		
-		String resourceRkr = "config.xml";
+		String resourceRkr = "configRkr.xml";
 		Reader readerRkr;
 		
 		try {
@@ -78,20 +78,34 @@ public class entityIdentification {
 						
 			for (PersonName author: allAuthorNamesOfOnePublication) { //each author in the list of authors
 				sessionRkr.commit();
-			     HashMap<String, String> authorName = new HashMap<String, String>();
+				HashMap<String, String> authorName = new HashMap<String, String>();
 
-			     authorName.put("firstName", StringUtil.foldToASCII(author.getFirstName()));
-			     authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
-			     authorName.put("normalizedName", normalizePerson(author));
+			    authorName.put("firstName", StringUtil.foldToASCII(author.getFirstName()));
+			    authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
+			    authorName.put("normalizedName", normalizePerson(author));
 
-			     sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
-			     
-				 List<Integer> lastAuthorWithThisNameInsertedAuthorId = null;
+			    sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
+			
+			    for (PersonName coauthor: allAuthorNamesOfOnePublication) {
+			    	//add all coauthors for this author thats not the author
+			    	if (coauthor != author) sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", normalizePerson(coauthor));
+			    }
+				List<Integer> lastAuthorWithThisNameInsertedAuthorId = null;
 			}
 		}
 		
+		System.exit(1);
+		
 		int threshold = 2;
 		List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
+		
+		LuceneTest lucene =  new LuceneTest();
+		try {
+			lucene.HelloLucene(authorNames);
+		} catch (IOException e) {}
+		catch (ParseException p) {}
+		
+		System.exit(1);
 		
 		//check the name for every author
 		for(int m=0; m < authorNames.size(); m++) {
@@ -179,7 +193,6 @@ public class entityIdentification {
 				for(int k=0; k < innerCoauthors.size(); k++) { 
 					if(!outerCoauthors.contains(innerCoauthors.get(k))) coauthorsToAdd.add(innerCoauthors.get(k));
 				}
-	
 		
 				for(int k=0;k < coauthorsToAdd.size(); k++) {
 					HashMap<String, String> coAuthorToAdd = new HashMap<String, String>();
