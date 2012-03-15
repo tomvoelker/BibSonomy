@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +50,6 @@ public class entityIdentification {
 		try {
 			reader = Resources.getResourceAsReader(resource);
 			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
-			
 			SqlSession session = sqlMapper.openSession();
 			try {
 			authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtex", 1);
@@ -72,10 +72,11 @@ public class entityIdentification {
 			SqlSession sessionRkr = sqlMapper.openSession();
 
 		//read all entries from bibtex and save it to author table
-
+		ArrayList<LinkedList<PersonName>> allAuthorsWithCoAuthors = new ArrayList<LinkedList<PersonName>>();
 		for (String authors: authorList) { //authorList for each publication
-			final List<PersonName> allAuthorNamesOfOnePublication = PersonNameUtils.discoverPersonNames(authors);
-						
+			List<PersonName> allAuthorNamesOfOnePublication = PersonNameUtils.discoverPersonNames(authors);
+			allAuthorsWithCoAuthors.add((LinkedList)allAuthorNamesOfOnePublication);
+			
 			for (PersonName author: allAuthorNamesOfOnePublication) { //each author in the list of authors
 				sessionRkr.commit();
 				HashMap<String, String> authorName = new HashMap<String, String>();
@@ -84,29 +85,31 @@ public class entityIdentification {
 			    authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
 			    authorName.put("normalizedName", normalizePerson(author));
 
-			    sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
+			    //sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
 			
+			    /*
 			    for (PersonName coauthor: allAuthorNamesOfOnePublication) {
 			    	//add all coauthors for this author thats not the author
-			    	if (coauthor != author) sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", normalizePerson(coauthor));
+			    if (coauthor != author) sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", normalizePerson(coauthor));
 			    }
+			    */
+
 				List<Integer> lastAuthorWithThisNameInsertedAuthorId = null;
 			}
 		}
+		
+		LuceneTest lucene =  new LuceneTest();
+		try {
+			lucene.HelloLucene(allAuthorsWithCoAuthors);
+		} catch (IOException e) {}
+		catch (ParseException p) {}
 		
 		System.exit(1);
 		
 		int threshold = 2;
 		List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
 		
-		LuceneTest lucene =  new LuceneTest();
-		try {
-			lucene.HelloLucene(authorNames);
-		} catch (IOException e) {}
-		catch (ParseException p) {}
-		
-		System.exit(1);
-		
+				
 		//check the name for every author
 		for(int m=0; m < authorNames.size(); m++) {
 			//do this as long there is something we can merge
@@ -243,7 +246,6 @@ public class entityIdentification {
 		String normalizedName = newFirstName + personName.getLastName();
 		return normalizedName.toLowerCase();		
 	}
-
 	
 	/**
 	 * Extracts from the last name the last part and cleans it. I.e., from 
@@ -279,7 +281,7 @@ public class entityIdentification {
 		final String first = personName.getFirstName();
 		final String last  = personName.getLastName();
 		if (present(first) && !present(last)) {
-			/*
+			/*		entityIdentification.normalizePerson(personName)
 			 * Only the first name is given. This should practically never happen,
 			 * since we put such names into the last name field.
 			 * 
