@@ -46,16 +46,8 @@
 	
 			<!-- TITLE AND DESCRIPTION -->
 			<div class="ptitle"><jsp:invoke fragment="title"/></div>
-			<c:set var="descVar"><jsp:invoke fragment="desc"/></c:set>
-			<c:choose>
-				<c:when test="${not empty descVar}">
-					<div class="pdesc extend"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
-				</c:when>
-				<c:otherwise>
-					<div class="pdesc">${mtl:ch('nbsp')}</div>
-				</c:otherwise>
-			</c:choose>
-			
+			<div class="pdesc extend"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
+	
 		
 			<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
 			<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
