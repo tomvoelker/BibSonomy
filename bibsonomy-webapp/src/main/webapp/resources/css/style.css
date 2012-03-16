@@ -26,6 +26,10 @@ a img {
 	border:0; 
 }
 
+.floatclear {
+	clear: both; 
+}
+	
 #container {
 	position: absolute;
 	top: 18px;
@@ -2613,6 +2617,7 @@ table.report td.value {
 body {
     overflow: auto;
     margin: 0;
+    background-color: inherit;
 }
 	
 	
@@ -2644,16 +2649,26 @@ body {
 
 #sidebar {
 	top: 185px;
-	right: 0px;	
+	right: 0px;
+	position: static;
+	float: right;	
 
 }
 
 #legalnotices {
     position: static;
     padding: 2px 5px;
+    background-color: #C6C6C6;
+    padding: 3px 6px; 
 }
 
+.tab_content {
+	clear: left;
+}
 
+#fullscreen{
+	padding-bottom : 5ex;
+}
 
 /* 
 	modifications for scrolling layout with one absolute border	

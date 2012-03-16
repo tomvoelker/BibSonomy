@@ -4,12 +4,12 @@
 
 
 .resources {
-        clear: both;
+        clear: left;
         margin: 5px 5px 5px 5px;
 }
 
 h2 {
-        clear: both;
+        clear: left;
         margin: 5px 0px 10px 5px;
         border-bottom: solid #eee 2px;
 }

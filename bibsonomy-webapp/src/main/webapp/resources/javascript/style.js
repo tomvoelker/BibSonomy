@@ -321,19 +321,22 @@ function switchNavi(scope, element) {
 }
 
 $(function() { 
-	/* initSidebarHeader(); */
+	//initSidebarHeader();
 	// FIXME: to ensure that the method is called after "most" other methods, we add a timeout ...
 	window.setTimeout("initBookmarksPublicationsListsLast()", 500);
 });
-
 function initBookmarksPublicationsListsLast() {
+
 	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
 	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
 	if ( ($("#sidebar").length != 0) ) { 
 
 		// set heigth of fullscreen area above post lists, if available
 		fullscreenHeight = 0;
-		if ($("#fullscreen").length != 0) fullscreenHeight = $("#fullscreen").height(); 
+		//if ($("#fullscreen").length != 0) fullscreenHeight = $("#fullscreen").height(); 
+		if ($("#postcontainer").length != 0) {
+			maxheight = $("#postcontainer").height();
+		}
 
 		// get heights
 		bookmarksHeight = fullscreenHeight; 
@@ -349,7 +352,7 @@ function initBookmarksPublicationsListsLast() {
 		sidebarHeight = $("#sidebar").height();
 
 		// calculate maximum height
-		maxheight = (bookmarksHeight > publicationsHeight ) ? bookmarksHeight : publicationsHeight;
+//		maxheight = (bookmarksHeight > publicationsHeight ) ? bookmarksHeight : publicationsHeight;
 		maxheight = (maxheight > sidebarHeight) ? maxheight : sidebarHeight;
 		// set heights to maximum_heights
 		// only every last list will adjusted in height 
@@ -370,13 +373,12 @@ function initBookmarksPublicationsListsLast() {
 			fullscreenHeight = maxheight;
 		}
 
-		$("#sidebar").height(maxheight);
+		$("#sidebar").css({"min-height": maxheight});
 	}
 	
 }
 
 function initSidebarHeader() {
-
 	if (($("#sidebarheader").length != 0) && ($("#sidebar").length != 0) && ($("#headercontainer").length != 0)) { 
 
 		sidebar_diff = $("#sidebarheader").offset().left - $("#sidebar").offset().left;

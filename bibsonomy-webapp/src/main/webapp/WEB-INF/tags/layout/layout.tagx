@@ -231,6 +231,8 @@
 						| main content box
 						|
 						+-->
+					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>							
+
 					<div id="postcontainer">
 						
 						<c:if test="${not empty contentIntro}">
@@ -239,10 +241,9 @@
 							</div>
 						</c:if>
 
-						<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>							
-
 						<jsp:invoke fragment="content"/>
 					
+						<div class="floatclear"></div>
 					</div><!-- #postcontainer -->
 					
 
