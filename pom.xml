@@ -210,6 +210,7 @@
 		<module>bibsonomy-openaccess</module>
 		<module>bibsonomy-opensocial</module>
 		<module>bibsonomy-pingback</module>
+		<module>bibsonomy-qrcode</module>
 		<module>bibsonomy-recommender</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-client-oauth</module>
@@ -596,6 +597,11 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-opensocial</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-qrcode</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
