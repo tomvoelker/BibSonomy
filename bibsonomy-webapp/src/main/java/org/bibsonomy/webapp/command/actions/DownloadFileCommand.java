@@ -40,6 +40,8 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 	
 	private PreviewSize preview = null;
 	
+	private boolean qrcode = false;
+	
 
 	/**
 	 * 
@@ -129,5 +131,15 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 
 	public void setPreview(PreviewSize preview) {
 		this.preview = preview;
+	}
+
+
+	public boolean isQrcode() {
+		return this.qrcode;
+	}
+
+
+	public void setQrcode(boolean qrcode) {
+		this.qrcode = qrcode;
 	}	
 }

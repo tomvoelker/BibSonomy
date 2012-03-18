@@ -160,6 +160,10 @@
 	</bean>
     <bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
 	
+	<bean id="qrCodeRenderer" class="org.bibsonomy.util.QRCodeRenderer" scope="singleton">
+		<property name="projectHome" value="${project.home}" />
+	</bean>
+		
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" value="${project.home}" />
@@ -524,6 +528,7 @@
 								<value>filename</value>
 								<value>ckey</value>
 								<value>preview</value>
+								<value>qrcode</value>
 							</list>
 						</property>
 					</bean>
@@ -648,6 +653,7 @@
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="docpath" value="${project.document.path}"/>
+		<property name="qrCodeRenderer" ref="qrCodeRenderer" />
 	</bean>
 	
 	<bean id="discussedPageController" class="org.bibsonomy.webapp.controller.DiscussedPageController" scope="request" parent="multiResourceListControllerWithTags">

@@ -265,6 +265,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-qrcode</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-web-common</artifactId>
 		</dependency>
 		<dependency>

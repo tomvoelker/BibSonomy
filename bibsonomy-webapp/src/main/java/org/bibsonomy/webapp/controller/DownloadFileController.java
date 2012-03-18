@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.QRCodeRenderer;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -26,6 +27,9 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 	 * logical interface to BibSonomy's core functionality
 	 */
 	private LogicInterface logic = null;
+	
+	private QRCodeRenderer qrCodeRenderer;
+	
 
 	/**
 	 * document path
@@ -68,30 +72,39 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 			 * preview images are always JPEGs!
 			 */
 			command.setContentType(FileUtil.CONTENT_TYPE_IMAGE_JPEG);
-			command.setFilename(command.getFilename() + "." + FileUtil.CONTENT_TYPE_IMAGE_JPEG);
+			command.setFilename(command.getFilename() + "." + FileUtil.CONTENT_TYPE_IMAGE_JPEG);		
+			
 		} else {
+			
+			final String filePath = FileUtil.getFilePath(this.docpath, document.getFileHash());
+			
 			/*
-			 *
-			 * Hallo Philipp, hier mal eine Skizze:
-			 *   
-			 * final String filePath = FileUtil.getFilePath(this.docpath, document.getFileHash());
-			 * if (command.getQrCode()) {
-			 *   final String qrFilePath 
-			 *   try { 
-			 *     qrFilePath = qrCodeRenderer.render(filePath, requestedUser, intrahash);
-			 *   } catch (final Exception e) {
-			 *     errors.reject("error.SINNVOLLER_KEY");
-			 *     return Views.ERROR;
-			 *   }
-			 *   command.setPathToFile(qrFilePath);
-			 * } else {
-			 *   command.setPathToFile(filePath);
-			 * }
-			 * command.setContentType(FileUtil.getContentType(document.getFileName()));
-			 * 
-			 *   
+			 * check if document has property qrcode
 			 */
-			command.setPathToFile(FileUtil.getFilePath(this.docpath, document.getFileHash()));
+			if(command.isQrcode()) {
+				
+				final String qrFilePath;
+				
+				/*
+				 * try to embed qrcode
+				 */
+				try {
+					qrFilePath = qrCodeRenderer.manipulate(filePath, command.getRequestedUser(), command.getIntrahash());
+				} catch (final Exception e) {
+					e.printStackTrace();
+					errors.reject("error.document_not_converted");
+					return Views.ERROR;
+				}
+				
+				/*
+				 * set path to manipulated file.
+				 */
+				command.setPathToFile(qrFilePath);
+				
+			} else {
+				command.setPathToFile(filePath);
+			}
+			
 			command.setContentType(FileUtil.getContentType(document.getFileName()));
 		}
 		/*
@@ -126,6 +139,13 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 	@Override
 	public Errors getErrors() {
 		return this.errors;
+	}
+
+	/**
+	 * @param qrCodeRenderer
+	 */
+	public void setQrCodeRenderer(QRCodeRenderer qrCodeRenderer) {
+		this.qrCodeRenderer = qrCodeRenderer;
 	}
 
 }

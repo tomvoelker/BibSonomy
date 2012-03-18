@@ -126,30 +126,15 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 
 /**
  * Adds read entry from qr reader app to the basket.
- * User has to push another button to pick them all.
- * Else page would constantly reload and user had to confirm
- * camera security setting.
+ * Entry is only added if it has a pick link. Afterwards the pick link is clicked.
+ * Entry is pulled via ajax one more time to get the actual entry with unpick link.
  * 
  * @param text The query link.
  */
 function urlFromFlash(text) {
-	text = text.substring(text.indexOf("/bibtex"));
-	renderPosts(text, $("#publications_0 ul.posts"));
-}
-
-/**
- * Retrieves the posts for the given query and appends them to the given list. 
- * 
- * @param query - A path + query that describes the posts to retrieve.
- * @param list - The list where the posts shall be appended.
- * @return
- */
-function renderPosts(query, list) {
 	
-	/*
-	 * TODO: fix the continues get requests from the reader
-	 * by introducing catching of this failure.
-	 */
+	var query = text.substring(text.indexOf("/bibtex"));
+	
 	$.ajax({
 		url : "/posts" + query,
 		dataType : "html",
@@ -172,7 +157,7 @@ function renderPosts(query, list) {
 						dataType : "html",
 						success : function(actData) {
 					
-							$(list).append($(actData));
+							$("#publications_0 ul.posts").prepend($(actData));
 							
 							/*
 							 * FIXME: does this really always work? 
@@ -188,9 +173,35 @@ function renderPosts(query, list) {
 
 			}
 		}
-	});
+	});	
 }
 
+/**
+ * Retrieves the posts for the given query and appends them to the given list. 
+ * 
+ * @param query - A path + query that describes the posts to retrieve.
+ * @param list - The list where the posts shall be appended.
+ * @return
+ */
+function renderPosts(query, list) {
+	
+	$.ajax({
+		url : "/posts" + query,
+		dataType : "html",
+		success : function(data) {
+			
+			$(list).append($(data));
+							
+			/*
+			 * FIXME: does this really always work? 
+			 * What about posts that have already been prepared?
+			 * Are there any methods missing?
+			 */
+			$(".editTags").click(editTags);
+			imagePreview();
+		}
+	});
+}
 
 function updatePosts(query, seconds) {
 	setInterval(function() {
