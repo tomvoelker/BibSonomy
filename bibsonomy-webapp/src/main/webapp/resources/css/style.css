@@ -44,7 +44,7 @@ a img {
 #legalnotices {
 	position: absolute;
 	text-align: right;
-	bottom: 2px;
+	bottom: -16px;
 	right: 20px;
 	font-size: 90%;
 	white-space: nowrap;
@@ -565,7 +565,7 @@ a img {
 	position: absolute;
 	width: 300px;
 	right: 0px;
-	top: 0px;
+	top: 185px;
 	z-index: 9;
 	background-color: #e4e4e4;
 	bottom: 0; /* important for minheight of sidebar */
@@ -2613,61 +2613,68 @@ table.report td.value {
 /* 
 	modifications for complete scrolling layout	
 */
-
-body {
-    overflow: auto;
-    margin: 0;
-    background-color: inherit;
-}
+@media screen and (max-height: 20000px) {
+	
+	body {
+	    overflow: auto;
+	    margin: 0;
+	    background-color: inherit;
+	}
+		
+		
+	#container {
+		overflow: hidden;
+	    position: static;
+	}
+	
+	#headercontainer {
+		position: static;
+	}
+	
+	#postcontainer {
+		overflow: visible;
+		bottom: auto;
+		position: static;
+		background-color: #E4E4E4;
+	}
+	
+	#navigation > ul {
+	    margin-bottom: 0;
+	}
+	
+	#sidebarheader {
+		top: 125px;
+		right: 0px;	
+	
+	}
 	
 	
-#container {
-	overflow: hidden;
-    position: static;
-}
-
-#headercontainer {
-	position: static;
-}
-
-#postcontainer {
-	overflow: visible;
-	bottom: auto;
-	position: static;
-}
-
-#navigation > ul {
-    margin-bottom: 0;
-}
-
-#sidebarheader {
-	top: 125px;
-	right: 0px;	
-
-}
-
-
-#sidebar {
-	top: 185px;
-	right: 0px;
-	position: static;
-	float: right;	
-
-}
-
-#legalnotices {
-    position: static;
-    padding: 2px 5px;
-    background-color: #C6C6C6;
-    padding: 3px 6px; 
-}
-
-.tab_content {
-	clear: left;
-}
-
-#fullscreen{
-	padding-bottom : 5ex;
+	#sidebar {
+		top: 185px;
+		right: 0px;
+		position: static;
+		float: right;	
+	
+	}
+	
+	#legalnotices {
+	    position: static;
+	    padding: 2px 5px;
+	    background-color: #C6C6C6;
+	    padding: 3px 6px; 
+	}
+	
+	.tab_content {
+		clear: left;
+	}
+	
+	#fullscreen{
+	    background-color: #ffffff;
+	}
+	
+	#fscontent {
+    	padding-bottom: 5ex;
+	}
 }
 
 /* 
