@@ -35,7 +35,11 @@ import org.bibsonomy.model.sync.SynchronizationData;
  * @version $Id$
  */
 public final class SynchronizationUtils {
-	private static final String CLIENT_SPECIAL_SCHEME = "client";
+	/**
+	 * To allow multiple instances for one client
+	 * we introduced the special client scheme.
+	 */
+	public static final String CLIENT_SPECIAL_SCHEME = "client";
 
 	private SynchronizationUtils() {}
 
