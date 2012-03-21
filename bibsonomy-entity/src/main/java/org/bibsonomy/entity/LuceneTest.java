@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 class LuceneTest {
 	public void HelloLucene(ArrayList<LinkedList<PersonName>> allAuthorsWithCoAuthors) throws IOException, ParseException {
@@ -38,11 +39,13 @@ class LuceneTest {
 			for (PersonName author: allAuthorsOfOnePublication) { //iterate all authors
 				//add the author
 				Document doc = new Document();
-				doc.add(new Field("author", entityIdentification.normalizePerson(author), Field.Store.YES, Field.Index.ANALYZED));
-				addAuthorDoc(w,doc,entityIdentification.normalizePerson(author));
+				doc.add(new Field("author", entityIdentification.normalizePerson(author), Field.Store.YES, Field.Index.ANALYZED)); //add the normalized name to author field
 				for (PersonName coauthor: allAuthorsOfOnePublication) {
 					//add the coauthors as document
-					if (author != coauthor) doc.add(new Field("coauthor", entityIdentification.normalizePerson(coauthor), Field.Store.YES, Field.Index.ANALYZED));;
+					if (author != coauthor) {
+						//if (entityIdentification.normalizePerson(author).equals("b.ganter")) System.out.println("add: " + entityIdentification.normalizePerson(coauthor) + " to: " + entityIdentification.normalizePerson(author));
+						doc.add(new Field("coauthor", entityIdentification.normalizePerson(coauthor), Field.Store.YES, Field.Index.ANALYZED)); //add normalized name to coauthor field
+					}
 				}
 			w.addDocument(doc);
 			}
@@ -51,40 +54,67 @@ class LuceneTest {
 		w.close();
 
 		//2. query
-		String querystr = "author:b.ganter AND coauthor:r.wille";
-
-		//the "title" arg specifies the default field to use
-		//when no field is explicitly specified in the query.
-		Query q = new QueryParser(Version.LUCENE_35, "author", analyzer).parse(querystr);
-
-		//3. search
-		int hitsPerPage = 10;
-		IndexReader reader = IndexReader.open(index);
-		IndexSearcher searcher = new IndexSearcher(reader);
-		TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
-		searcher.search(q, collector);
-		ScoreDoc[] hits = collector.topDocs().scoreDocs;
-	   
-		//4. display results
-		System.out.println("Found " + hits.length + " hits.");
-		for(int i=0;i<hits.length;++i) {
-			int docId = hits[i].doc;
-			Document d = searcher.doc(docId);
-			System.out.println((i + 1) + ". " + d.get("author"));
-		}
-
-		//searcher can only be closed when there
-		//is no need to access the documents any more.
-		searcher.close();
-		}
-
-	public void addAuthorDoc(IndexWriter w, Document doc, String value) throws IOException {
-		doc.add(new Field("author", value, Field.Store.YES, Field.Index.ANALYZED));
-		w.addDocument(doc);
+		String querystr = "author:b.ganter~0.7 AND (coauthor:r.wille~0.7 OR coauthor:g.dorn~0.7)";
+		
+		processQuery(querystr, index);
 	}
 	
-	public void addCoauthorDoc(IndexWriter w, Document doc, String value) throws IOException {
-		doc.add(new Field("coauthor", value, Field.Store.YES, Field.Index.ANALYZED));
-		w.addDocument(doc);
+	public static Directory createLuceneIndex(List<Map<Integer,String>> allAuthors) {
+		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
+		Directory index = new RAMDirectory();
+		
+		try {
+			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
+			IndexWriter w = new IndexWriter(index, config);
+		
+			for (Map<Integer,String> author: allAuthors) { //iterate every publication
+				Document doc = new Document();
+				doc.add(new Field("author", author.get("normalized_name"), Field.Store.YES, Field.Index.ANALYZED)); //add the normalized name to author field
+				doc.add(new Field("author_id", String.valueOf(author.get("author_id")), Field.Store.YES, Field.Index.ANALYZED)); //add the author_id to author_id field
+				w.addDocument(doc);
+			}
+		}
+		catch (IOException e) {}
+		return index;
+	}	
+	
+	public static int getAuthorsWithNameLikeX(String x) {
+		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
+		Directory index = new RAMDirectory();
+		processQuery("author:" + x + "~0.7", index);
+		
+		return 0;
 	}
+	
+	public static void processQuery(String query, Directory index) {
+		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
+		try {
+			//the "title" arg specifies the default field to use
+			//when no field is explicitly specified in the query.
+			Query q = new QueryParser(Version.LUCENE_35, "author", analyzer).parse(query);
+
+			//3. search
+			int hitsPerPage = 10;
+			IndexReader reader = IndexReader.open(index);
+			IndexSearcher searcher = new IndexSearcher(reader);
+			TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
+			searcher.search(q, collector);
+			ScoreDoc[] hits = collector.topDocs().scoreDocs;
+			   
+			//4. display results
+			System.out.println("Found " + hits.length + " hits.");
+			for(int i=0;i<hits.length;++i) {
+				int docId = hits[i].doc;
+				Document d = searcher.doc(docId);
+				System.out.println((i + 1) + ". " + d.get("author") + " coauthors: " + d.get("coauthor"));
+			}
+
+			//searcher can only be closed when there
+			//is no need to access the documents any more.
+			searcher.close();
+		}
+		catch (IOException e) {}
+		catch (ParseException p) {}
+	}
+		
 }

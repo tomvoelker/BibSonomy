@@ -18,12 +18,16 @@ SELECT normalized_name FROM author GROUP BY normalized_name
 </select>
 
 <!-- database projekt_autoren_id -->
+<select id="selectRkrAuthor" parameterType="String" resultType="HashMap">
+SELECT author_id, normalized_name FROM author
+</select>
+
 <select id="countAuthorsByName" parameterType="String" resultType="int">
 SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 1000
 </select>
 	
 <select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
-SELECT CAST(author_id as varchar), normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName}
+SELECT cast(author_id as CHAR), normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName}
 </select>
 			
 <insert id="insertAuthor" parameterType="String">
@@ -31,7 +35,7 @@ INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName},
 </insert>
 
 <insert id="insertCoAuthors" parameterType="String">
-INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (currval('author_author_id_seq'),#{normalizedName});
+INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (LAST_INSERT_ID(),#{normalizedName});
 </insert>
 
 <insert id="insertMergedCoAuthor" parameterType="HashMap">

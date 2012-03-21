@@ -30,7 +30,21 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.apache.ibatis.annotations.Param;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.Version;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
@@ -78,6 +92,7 @@ public class entityIdentification {
 			allAuthorsWithCoAuthors.add((LinkedList)allAuthorNamesOfOnePublication);
 			
 			for (PersonName author: allAuthorNamesOfOnePublication) { //each author in the list of authors
+				
 				sessionRkr.commit();
 				HashMap<String, String> authorName = new HashMap<String, String>();
 
@@ -85,9 +100,9 @@ public class entityIdentification {
 			    authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
 			    authorName.put("normalizedName", normalizePerson(author));
 
-			    //sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
+			    //TODO sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
 			
-			    /*
+			    /*TODO
 			    for (PersonName coauthor: allAuthorNamesOfOnePublication) {
 			    	//add all coauthors for this author thats not the author
 			    if (coauthor != author) sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", normalizePerson(coauthor));
@@ -104,6 +119,10 @@ public class entityIdentification {
 		} catch (IOException e) {}
 		catch (ParseException p) {}
 		
+		List<Map<Integer,String>> allAuthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectRkrAuthor");
+		Directory index = LuceneTest.createLuceneIndex(allAuthors);
+		LuceneTest.processQuery("author:g.dorn~0.7", index);
+
 		System.exit(1);
 		
 		int threshold = 2;
@@ -229,7 +248,7 @@ public class entityIdentification {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static String normalizePersonName(PersonName personName) {
 		//reduce the
 		String newFirstName = null;
