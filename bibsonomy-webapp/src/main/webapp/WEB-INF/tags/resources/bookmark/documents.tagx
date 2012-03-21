@@ -5,7 +5,13 @@
 
 	<fmt:message var="altPreview" key="preview"/>
 
-	<!-- TODO Insert better and different pictures, depending on the url -->
-	<span class="entrytype web"><!-- Keep me --></span>
+	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
+	<span class="">
+			<a class="preview" href="${bookUrl }"> 
+				<img class="pre_pic" src="/preview/bookmark/${post.resource.interHash}?preview=small" alt="${altPreview}"/>
+			</a>
+	</span>
+
+
 
 </jsp:root>
