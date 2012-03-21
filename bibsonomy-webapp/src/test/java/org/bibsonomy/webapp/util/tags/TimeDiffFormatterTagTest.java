@@ -35,6 +35,11 @@ public class TimeDiffFormatterTagTest {
 	/**
 	 * This date gave some strange results.
 	 * 
+	 * Last time the reason was that someone with a mis-configured 
+	 * ResourceBundleEditor comitted a messages_de.properties where the empty
+	 * value "time.postfix" was removed. Thus: always enable "Keep properties 
+	 * with empty values" in your ResourceBundleEditor settings!
+	 * 
 	 * @throws ParseException
 	 */
 	@Test
