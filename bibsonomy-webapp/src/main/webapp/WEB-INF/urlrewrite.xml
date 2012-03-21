@@ -494,6 +494,15 @@
 		<to last="true">/downloadFile</to>
 	</rule>
 	
+	<!-- download a thumbnail of a web page -->
+	<rule>
+		<name>/preview/(bookmark|publication)/INTRAHASH</name>
+		<from>^/+preview/+(bookmark|publication)/+([0-9a-fA-F]+)</from>
+		<set type="parameter" name="resourcetype">$1</set>
+		<set type="parameter" name="intrahash">$2</set>
+		<to last="true">/preview</to>
+	</rule>	
+	
 
 	<!-- ############## viewable pages ############### -->
 	<!-- /viewable/GROUP/TAG -->

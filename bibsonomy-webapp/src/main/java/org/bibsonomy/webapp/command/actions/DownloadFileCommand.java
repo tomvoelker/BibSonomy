@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command.actions;
 import java.io.Serializable;
 
 import org.bibsonomy.common.enums.PreviewSize;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
@@ -38,7 +39,15 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 	 */
 	private String contentType = null;
 	
+	/**
+	 * size of document preview images
+	 */
 	private PreviewSize preview = null;
+	
+	/**
+	 * type of the resource the document is attached to
+	 */
+	private Class<? extends Resource> resourcetype;
 	
 	private boolean qrcode = false;
 	
@@ -141,5 +150,15 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 
 	public void setQrcode(boolean qrcode) {
 		this.qrcode = qrcode;
+	}
+
+
+	public Class<? extends Resource> getResourcetype() {
+		return resourcetype;
+	}
+
+
+	public void setResourcetype(Class<? extends Resource> resourcetype) {
+		this.resourcetype = resourcetype;
 	}	
 }

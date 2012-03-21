@@ -534,6 +534,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/preview">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="previewController" />
+						<property name="allowedFields">
+							<list>
+								<value>intrahash</value>
+								<value>preview</value>
+								<value>resourcetype</value>
+							</list>
+						</property>
+					</bean>
+				</entry>				
 				<entry key="/search">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="searchPageController"/>
@@ -656,6 +668,11 @@
 		<property name="docpath" value="${project.document.path}"/>
 		<property name="qrCodeRenderer" ref="qrCodeRenderer" />
 	</bean>
+	
+	<bean id="previewController" class="org.bibsonomy.webapp.controller.PreviewController"
+		scope="request">
+		<property name="previewPath" value="${project.preview.path}" />
+	</bean>	
 	
 	<bean id="discussedPageController" class="org.bibsonomy.webapp.controller.DiscussedPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>

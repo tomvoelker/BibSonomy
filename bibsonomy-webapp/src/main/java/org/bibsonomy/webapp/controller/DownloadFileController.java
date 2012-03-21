@@ -67,7 +67,7 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 		 */
 		final PreviewSize preview = command.getPreview();
 		if (present(preview)) {
-			command.setPathToFile(FileUtil.getPreviewPath(this.docpath, document.getFileHash(), document.getFileName(), preview));
+			command.setPathToFile(FileUtil.getUserDocumentPreviewPath(this.docpath, document.getFileHash(), document.getFileName(), preview));
 			/*
 			 * preview images are always JPEGs!
 			 */
