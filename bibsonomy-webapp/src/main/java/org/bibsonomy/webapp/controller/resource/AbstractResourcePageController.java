@@ -11,6 +11,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
@@ -199,6 +200,12 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 */
 		}
 		
+		/*
+		 * preprint handling 
+		 */
+		handleDiskussionItems(goldStandard, command.getContext().getLoginUser());
+		
+		
 		this.endTiming();		
 		return this.handleFormat(command, format, longHash, requUser, groupingEntity, goldHash, goldStandard, firstResource);
 	}
@@ -257,6 +264,18 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		return Views.getViewByFormat(format);
 	}
 
+	/**
+	 * This method is required to handle discussions for preprint entry type of publication. 
+	 * The functionality is implemented in {@link PublicationPageController}.
+	 * @param goldStandard
+	 * @param loginUser
+	 */
+	protected void handleDiskussionItems(Post<G> goldStandard, User loginUser) {
+		/*
+		 * do nothing for bookmarks
+		 */
+	}
+	
 	protected abstract View getResourcePage();
 
 	protected abstract View getDetailsView();
@@ -264,4 +283,5 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	protected abstract Class<R> getResourceClass();
 	
 	protected abstract Class<G> getGoldStandardClass();
+	
 }
