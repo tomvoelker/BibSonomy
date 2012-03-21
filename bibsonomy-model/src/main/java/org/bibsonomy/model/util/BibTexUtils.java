@@ -183,6 +183,14 @@ public class BibTexUtils {
 	/** prefix for tags indicating post owners when duplicates=merge */
 	private static final String MERGED_PREFIX = "merged:";
 
+	
+	
+	/**
+	 * To remove the preprint entry type remove all occurrences of this string and the corresponding types 
+	 * in swrcEntryTypes and risEntryTypes in class Functions in webapp module.
+	 */
+	public static final String PREPRINT = "preprint";
+	
 	/**
 	 * the supported entrytypes of a bibtex
 	 * be careful when changing order some code uses the order to map entrytypes to (swrc|ris) entrytypes
@@ -192,8 +200,10 @@ public class BibTexUtils {
 	 * FIXME: this is bad. Please fix this behaviour. 
 	 */
 	public static final String[] ENTRYTYPES = {"article", "book", "booklet", "conference", "electronic", "inbook", "incollection", "inproceedings",
-		"manual", "mastersthesis", "misc", "patent", "periodical", "phdthesis", "preamble", "presentation", "proceedings", "standard", "techreport", "unpublished"
+		"manual", "mastersthesis", "misc", "patent", "periodical", "phdthesis", "preamble", "presentation", "proceedings", "standard", "techreport", "unpublished",
+		PREPRINT
 	};
+	
 
 	/*
 	 * patterns used for matching
