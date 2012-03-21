@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.StringUtils;
@@ -46,8 +47,15 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		final List<String> requTags = command.getRequestedTagsList();
 		
 		// count number of non system tags
-		final int tagCount = SystemTagsUtil.countNonSystemTags(requTags); 
+		int tagCount = SystemTagsUtil.countNonSystemTags(requTags);
 		
+		// special handling for 'myown' tag (is counted as system tag above, but 
+		// we want to have related/similar tags for it)
+		if (tagCount == 0 && requTags.size() == 1 && MyOwnSystemTag.NAME.equalsIgnoreCase(requTags.get(0))) {
+			tagCount = 1;
+		}
+			
+			
 		// handle case when only tags are requested
 		// FIXME we can only retrieve 1000 tags here
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
