@@ -73,13 +73,17 @@ public class FileUtil {
 	}
 	
 	/**
+	 * Create a path to a document a particular user has attached to a resource.
+	 * The difference to getPreviewPath is that we create here only paths to documents
+	 * which a particular user has uploaded.
+	 * 
 	 * @param filePath - the document path
 	 * @param fileName - the documents name on disk
 	 * @param documentFileName - the original name of the document - used to guess the MIME type
 	 * @param preview - the type of preview that is requested
 	 * @return The path to the preview image or to a default preview image.
 	 */
-	public static String getPreviewPath(final String filePath, final String fileName, final String documentFileName, final PreviewSize preview) {
+	public static String getUserDocumentPreviewPath(final String filePath, final String fileName, final String documentFileName, final PreviewSize preview) {
 		/*
 		 * first check, if real preview exists
 		 */
@@ -94,6 +98,21 @@ public class FileUtil {
 		 * filePath/previews/image_jpeg_SMALL.jpg
 		 */
 		return filePath + PREVIEW_DIR + "/" + contentType.replaceAll("[\\./]", "_") + "_" + preview.name() + "." + EXTENSION_JPG;
+	}
+	
+	
+	/**
+	 * Create a path to a global preview image of a given resource. The difference to
+	 * getUserDocumentPreviewPath is that we create here paths to preview images
+	 * for which no user has necessarily uploaded a document (especially bookmarks).
+	 * 
+	 * @param previewPath - the path to the previews
+	 * @param intrahash - the intrahash of the resource
+	 * @param preview - preview size
+	 * @return the path to the preview image
+	 */
+	public static String getPreviewPath(final String previewPath, final String intrahash, final PreviewSize preview) {
+		return getFilePath(previewPath, intrahash) + "_" + preview.name();
 	}
 
 	/**
@@ -122,7 +141,7 @@ public class FileUtil {
 	 * type. NOTE: the method looks only at the name of the file not at the
 	 * content!
 	 * 
-	 * NOTE: {@link #getPreviewPath(String, String, String, PreviewSize)} depends
+	 * NOTE: {@link #getUserDocumentPreviewPath(String, String, String, PreviewSize)} depends
 	 * on the content types returned by this method. If you add a new content type,
 	 * you must also add the corresponding preview image!
 	 * 
