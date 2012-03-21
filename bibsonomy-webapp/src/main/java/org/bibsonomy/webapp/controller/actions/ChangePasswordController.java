@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -33,11 +32,6 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public class ChangePasswordController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand>, CookieAware {
 	private static final Log log = LogFactory.getLog(ChangePasswordController.class);
-
-	/**
-	 * logic interface
-	 */
-	private LogicInterface adminLogic = null;
 	
 	/**
 	 * to update the user password cookie
@@ -127,7 +121,7 @@ public class ChangePasswordController extends SettingsPageController implements 
 			/*
 			 * update password of user
 			 */
-			final String updatedUser = this.adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_PASSWORD);
+			final String updatedUser = this.logic.updateUser(loginUser, UserUpdateOperation.UPDATE_PASSWORD);
 			
 			/*
 			 * change the cookie
@@ -157,15 +151,6 @@ public class ChangePasswordController extends SettingsPageController implements 
 	@Override
 	public boolean isValidationRequired(final SettingsViewCommand command) {
 		return true;
-	}
-	
-	/**
-	 * sets the admin logic interface
-	 * 
-	 * @param adminLogic
-	 */
-	public void setAdminLogic(final LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
 	}
 	
 	/**
