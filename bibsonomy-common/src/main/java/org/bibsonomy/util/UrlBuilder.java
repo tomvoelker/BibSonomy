@@ -87,7 +87,7 @@ public class UrlBuilder {
 			/*
 			 * remove the last &
 			 */
-			url.substring(0, url.length() - 1);
+			return url.substring(0, url.length() - 1);
 		}
 		
 		return url.toString();
