@@ -228,8 +228,13 @@ function createReview() {
 		dataType:   "json",
 		data:		reviewData,
 		success:	function(response) {
+						var reload = (response.reload);
+						if(reload == "true") {
+			 				window.location.reload();
+			 			}
 						// display review
 			 			var reviewView = $('#newReview').remove();
+			 			
 			 			reviewView.attr("id", "ownReview");
 			 			updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
 			 			

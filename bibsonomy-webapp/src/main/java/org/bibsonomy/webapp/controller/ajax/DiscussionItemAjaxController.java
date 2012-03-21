@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.ajax;
 
+import static org.bibsonomy.model.util.BibTexUtils.PREPRINT;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
@@ -106,11 +107,13 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		 */
 		GroupingCommandUtils.initGroups(command, discussionItem.getGroups());
 		
+		
+		boolean reloadPage = false;
 
 		try {
 			switch(this.requestLogic.getHttpMethod()) {
 				case POST:
-					this.createDiscussionItem(interHash, userName, postUserName, intraHash, discussionItem);
+					reloadPage = this.createDiscussionItem(interHash, userName, postUserName, intraHash, discussionItem);
 					break;
 				case PUT:
 					this.logic.updateDiscussionItem(userName, interHash, discussionItem);
@@ -129,6 +132,12 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		final JSONObject result = new JSONObject();
 		// TODO: send some error, if hash is null and show it to user
 		result.put("hash", discussionItem.getHash());
+		
+		//preprint handling
+		if (reloadPage) {
+			result.put("reload", "true");
+		}
+		
 		command.setResponseString(result.toString());		
 		return Views.AJAX_JSON;
 	}
@@ -136,7 +145,9 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 
 	
 	@SuppressWarnings("null") // the originalPost could be null, but this is caught using present
-	private void createDiscussionItem(final String interHash, final String userName, final String postUserName, final String intraHash, DiscussionItem discussionItem) {
+	private boolean createDiscussionItem(final String interHash, final String userName, final String postUserName, final String intraHash, DiscussionItem discussionItem) {
+		boolean reloadPage = false;
+		
 		/*
 		 * Before the discussionItem is created 
 		 * we have to check whether the fitting Community Post exists
@@ -152,6 +163,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			 * then the postUserName contains the owner of the post to which the user wants to start a discussion.
 			 * We first retrieve a suitable post (originalPost) to create a goldstandard from 
 			 */
+			reloadPage = true;
 			log.debug("no gold standard found for intraHash " + interHash + ". Creating new gold standard");
 			Post<? extends Resource> originalPost = null;
 			
@@ -201,10 +213,33 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 				throw new IllegalStateException("A discussion item could not be created for hash "+interHash+" and username "+postUserName+" by user "+userName+" because no post was found that it could have been appended to.");
 			}
 			this.logic.createPosts(Collections.<Post<? extends Resource>>singletonList(newGoldStandardPost));
+		} else {
+			reloadPage = firstCommentInPreprint(goldStandardPost, postUserName); 
 		}
 		this.logic.createDiscussionItem(interHash, userName, discussionItem);
+		
+		return reloadPage;
 	}
 
+	/**
+	 * Remove this method if you remove the preprint entry type
+	 * @param goldStandard
+	 * @param userName
+	 * @return <code>true</code> if given post is a publication with entry type preprint <code>false</code> otherwise
+	 */
+	private boolean firstCommentInPreprint(Post<? extends Resource> goldStandard, String userName) {
+		Resource res = goldStandard.getResource();
+		if(res.getClass().equals(BibTex.class)) {
+			if(((BibTex)res).getEntrytype().equals(PREPRINT)) {
+				for (DiscussionItem item : res.getDiscussionItems()) {
+					if(item.getUser().getName().equals(userName)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
 	
 	@Override
 	public Errors getErrors() {

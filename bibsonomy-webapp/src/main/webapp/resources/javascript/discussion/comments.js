@@ -146,7 +146,11 @@ function createComment() {
 		type:		"POST",
 		data:		commentData,
 		dataType:   "json",
-		success:	function(response) {			
+		success:	function(response) {
+						var reload = (response.reload);
+						if(reload == "true") {
+			 				window.location.reload();
+			 			}
 						// clone template set text
 						var commentTemplate = $('#commentTemplate').clone();
 						commentTemplate.removeAttr('id');
