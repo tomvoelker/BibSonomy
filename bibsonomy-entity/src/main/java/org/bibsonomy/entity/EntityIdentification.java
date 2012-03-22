@@ -51,7 +51,7 @@ import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.StringUtils;
 
-public class entityIdentification {
+public class EntityIdentification {
 
 	public static void main(String[] args) throws PersonListParserException {
 
@@ -113,38 +113,35 @@ public class entityIdentification {
 			}
 		}
 		
+		/*
 		LuceneTest lucene =  new LuceneTest();
 		try {
 			lucene.HelloLucene(allAuthorsWithCoAuthors);
 		} catch (IOException e) {}
 		catch (ParseException p) {}
-		
-		List<Map<Integer,String>> allAuthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectRkrAuthor");
-		Directory index = LuceneTest.createLuceneIndex(allAuthors);
-		LuceneTest.processQuery("author:g.dorn~0.7", index);
-
-		System.exit(1);
-		
+		*/	
+				
 		int threshold = 2;
 		List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
 		
-				
 		//check the name for every author
 		for(int m=0; m < authorNames.size(); m++) {
 			//do this as long there is something we can merge
 			while (true) {
+				System.out.println(authorNames.get(m));
 				//merge authors who have the same coauthors
-				List<Map<String,String>> authorsWithNameX = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorNames.get(m));
+				//TODO List<Map<String,String>> testX = getAuthorsWithNameLikeX("r.wille", sessionRkr);
+				List<Map<Integer,String>> authorsWithNameX = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorNames.get(m));
 				if (authorsWithNameX.isEmpty()) {
+					System.out.println("its empty");
 					m++;
 					continue;
 				}
 
-				
-		//cluster the author table
-		//HashMap<String, List<String>> authorCluster = new HashMap<String, List<String>>();
-		//authorCluster = sessionRkr.selectMap("org.mybatis.example.Entity-Identification.lastIDInsertAuthor");
-		//System.out.println();
+				//cluster the author table
+				//HashMap<String, List<String>> authorCluster = new HashMap<String, List<String>>();
+				//authorCluster = sessionRkr.selectMap("org.mybatis.example.Entity-Identification.lastIDInsertAuthor");
+				//System.out.println();
 
 				Iterator outerItr = authorsWithNameX.iterator();
 		
@@ -152,7 +149,10 @@ public class entityIdentification {
 				int outerAuthorID = 0, outerMaxAuthorID=0, tmpInnerMaxAuthorID=0;
 				int counter=0, max=0;
 				int outerMax = 0;
-				int firstAuthorID = Integer.parseInt(authorsWithNameX.get(0).get("author_id"));
+				
+				System.out.println(authorsWithNameX.get(0).get("normalized_coauthor"));
+				System.out.println(String.valueOf(authorsWithNameX.get(0).get("author_id")));
+				int firstAuthorID = Integer.parseInt(String.valueOf((authorsWithNameX.get(0).get("author_id"))));
 			
 				//tmp lists to compare within the iterations
 				List<String> coAuthorNamesOuterIteration = new ArrayList<String>();		
@@ -165,16 +165,16 @@ public class entityIdentification {
 				while (outerItr.hasNext()) {
 					Map<String,String> outerCoAuthor = (Map)outerItr.next();
 					coAuthorNamesOuterIteration.add(outerCoAuthor.get("normalized_coauthor"));
-					if (outerAuthorID != Integer.parseInt(outerCoAuthor.get("author_id"))) {
-						outerAuthorID = Integer.parseInt(outerCoAuthor.get("author_id"));
+					if (outerAuthorID != Integer.parseInt(String.valueOf(outerCoAuthor.get("author_id")))) {
+						outerAuthorID = Integer.parseInt(String.valueOf(outerCoAuthor.get("author_id")));
 				
 						Iterator innerItr = authorsWithNameX.iterator();
 						while (innerItr.hasNext()) {
 							Map<String,String> innerCoAuthor = (Map)innerItr.next();
 					
-							if (Integer.parseInt(outerCoAuthor.get("author_id")) == Integer.parseInt(innerCoAuthor.get("author_id"))) continue;
+							if (Integer.parseInt(String.valueOf(outerCoAuthor.get("author_id"))) == Integer.parseInt(String.valueOf(innerCoAuthor.get("author_id")))) continue;
 				
-							if (innerAuthorID != Integer.parseInt(innerCoAuthor.get("author_id"))) {		
+							if (innerAuthorID != Integer.parseInt(String.valueOf(innerCoAuthor.get("author_id")))) {		
 								for (int k=0; k < coAuthorNamesOuterIteration.size(); k++) {
 									if (coAuthorNamesInnerIteration.contains(coAuthorNamesOuterIteration.get(k))) counter++;
 								}
@@ -185,7 +185,7 @@ public class entityIdentification {
 									maxAuthorID = innerAuthorID;
 								}
 							
-								innerAuthorID = Integer.parseInt(innerCoAuthor.get("author_id"));
+								innerAuthorID = Integer.parseInt(String.valueOf(innerCoAuthor.get("author_id")));
 								counter = 0;
 							}
 					
@@ -194,7 +194,7 @@ public class entityIdentification {
 						coAuthorNamesOuterIteration.clear();
 						if (max > outerMax) {
 							outerMax = max;
-							outerMaxAuthorID = Integer.parseInt(outerCoAuthor.get("author_id"));
+							outerMaxAuthorID = Integer.parseInt(String.valueOf(outerCoAuthor.get("author_id")));
 							tmpInnerMaxAuthorID = innerAuthorID;
 							outerCoauthors = coAuthorNamesOuterIteration;
 							innerCoauthors = coAuthorNamesInnerIteration;
@@ -247,6 +247,44 @@ public class entityIdentification {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static List<Map<String,String>> getAuthorsWithNameLikeX (String nameX, SqlSession sessionRkr) {
+		List<Map<Integer,String>> allAuthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectRkrAuthor");
+		Directory index = LuceneTest.createLuceneIndex(allAuthors);
+		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
+		
+		String query = "author:" + nameX + "~0.8";
+		List<Map<String,String>> listOfAuthorsWithNameLikeX = new ArrayList<Map<String,String>>();
+		
+		try {
+			Query q = new QueryParser(Version.LUCENE_35, "author", analyzer).parse(query);
+
+			int hitsPerPage = 50;
+			IndexReader luceneReader = IndexReader.open(index);
+			IndexSearcher searcher = new IndexSearcher(luceneReader);
+			TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
+			searcher.search(q, collector);
+			ScoreDoc[] hits = collector.topDocs().scoreDocs;
+	
+			System.out.println("Found " + hits.length + " hits.");
+			for(int i=0;i<hits.length;++i) {
+				Map<String,String> authorMap = new HashMap<String, String>();
+				int docId = hits[i].doc;
+				Document d = searcher.doc(docId);
+				System.out.println((i + 1) + ". " + d.get("author") + " author_id: " + d.get("author_id"));
+				authorMap.put("author_id", d.get("author_id"));
+				authorMap.put("normalized_name", d.get("author"));
+				listOfAuthorsWithNameLikeX.add(authorMap);
+			}
+
+			searcher.close();
+	
+		}
+		catch (IOException e) {}
+		catch (ParseException p) {}
+	
+		return listOfAuthorsWithNameLikeX;
 	}
 	
 	public static String normalizePersonName(PersonName personName) {
