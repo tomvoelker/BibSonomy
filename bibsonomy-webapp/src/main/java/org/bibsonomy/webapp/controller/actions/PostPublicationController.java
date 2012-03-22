@@ -1,6 +1,8 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.util.upload.FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS;
+import static org.bibsonomy.util.upload.FileUploadInterface.FILE_UPLOAD_EXTENSIONS;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,13 +65,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
 
 	/**
-	 * if the user tries to import more than MAXCOUNT_ERRORHANDLING posts AND an error exists
+	 * if the user tries to import more than MAXCOUNT_ERRORHANDLING posts AND an error exists 
 	 * in one or more of the posts, the correct posts will be saved no matter what.
 	 */
 	private static final Integer MAXCOUNT_ERRORHANDLING = 1000;
 	/**
 	 * The session dictionary name for temporarily stored publications. 
-	 * Will be used when PostPublicationCommand.editBeforeImport is true. 
+	 * Will be used when PostPublicationCommand.editBeforeImport is true.
 	 */
 	public static final String TEMPORARILY_IMPORTED_PUBLICATIONS = "TEMPORARILY_IMPORTED_PUBLICATIONS";
 
@@ -87,7 +89,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * TODO: we could inject this object using Spring.
 	 */
 	private final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
-
 
 	@Override
 	public PostPublicationCommand instantiateCommand() {
@@ -118,12 +119,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 			throw new AccessDeniedNoticeException("please log in", LOGIN_NOTICE + publication.getClass().getSimpleName().toLowerCase());
 		}
 
-		/* 
-		 * If the user entered the post data manually, the EditPublicationController
+		/*
+		 * If the user entered the post data manually, the EditPublicationController 
 		 * will handle the remaining work.
 		 * 
-		 * To find out, if the data was entered manually, a good heuristic is to 
-		 * check if an entrytype is given, because that field can't be empty. 
+		 * To find out, if the data was entered manually, a good heuristic is to
+		 * check if an entrytype is given, because that field can't be empty.
 		 */
 		if (present(publication.getEntrytype())) {
 			log.debug("user has manually entered post data -> forwarding to edit post controller");
@@ -145,16 +146,16 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final String selection = command.getSelection();
 		if (present(selection)) {
 			/*
-			 * The user has entered text into the snippet selection - we use that 
+			 * The user has entered text into the snippet selection - we use that
 			 */
 			log.debug("user has filled selection");
 			snippet = this.handleSelection(command, selection);
-		} else if(present(command.getFile())) {
+		} else if (present(command.getFile())) {
 			/*
 			 * The user uploads a BibTeX or EndNote file
 			 */
 			log.debug("user uploads a file");
-			// get the (never empty) content or add corresponding errors 
+			// get the (never empty) content or add corresponding errors
 			snippet = handleFileUpload(command);
 		} else {
 			/*
@@ -164,6 +165,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * FIXME: that second case should result in some error and hint for the user
 			 */
 			return Views.POST_PUBLICATION;
+		}
+
+		// pdf file uploaded
+		if (present(command.getFileName())) {
+			return super.workOn(command);
 		}
 
 		/*
@@ -200,7 +206,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		try {
 			/*
-			 * Parse the BibTeX snippet	
+			 * Parse the BibTeX snippet
 			 */
 			posts = parser.parseBibTeXPosts(snippet);
 		} catch (final ParseException ex) {
@@ -247,7 +253,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				command.setSelection(null);
 				command.setPost(post);
 				/*
-				 * When exactly one post is imported, its tags are not put into 
+				 * When exactly one post is imported, its tags are not put into
 				 * the tag field. Instead, we show them here as "tags of copied post".
 				 */
 				command.setCopytags(new LinkedList<Tag>(post.getTags()));
@@ -261,14 +267,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * add additional information from the form to the 
 		 * post (description, groups)... present in both upload tabs
 		 */
-		for (final Post<BibTex> post: posts) {
+		for (final Post<BibTex> post : posts) {
 			post.setUser(context.getLoginUser());
 			post.setDescription(command.getDescription());
 			if (!present(post.getTags())) {
 				post.setTags(Collections.singleton(TagUtils.getImportedTag()));
 			}
 			/*
-			 * set visibility of this post for the groups, the user specified 
+			 * set visibility of this post for the groups, the user specified
 			 */
 			GroupingCommandUtils.initGroups(command, post.getGroups());
 			/*
@@ -322,7 +328,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * If there were any errors, some posts were not stored in the database. We
 		 * need to get them from the session later on, thus we store them there.
 		 */
-		if (errors.hasErrors())	{
+		if (errors.hasErrors()) {
 			/*
 			 * Trigger the correct setting of the "delete/save" check boxes on
 			 * the batch edit page.
@@ -379,12 +385,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * that don't have any errors. The posts are returned in a hashmap, where
 	 * each post points to its position in the original list such that we can
 	 * later add errors (from the database) at the correct position.  
-	 *  
+	 * 
 	 * @param posts
 	 * @return
 	 */
 	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
-		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>(); 
+		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>();
 
 		/*
 		 * iterate over all posts
@@ -433,7 +439,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			}
 		}
 		if (lineFound) {
-			errors.reject("import.error.erroneous_line_numbers", new Object[]{buf}, "Your submitted publications contain errors at lines {0}.");
+			errors.reject("import.error.erroneous_line_numbers", new Object[] { buf }, "Your submitted publications contain errors at lines {0}.");
 		}
 	}
 
@@ -445,20 +451,33 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @return
 	 */
 	private String handleFileUpload(final PostPublicationCommand command) {
+		boolean keepTempFile = false;
+
 		/*
 		 * get temp file
 		 */
 		File file = null;
+		String fileContent = null;
 		try {
 
 			final CommonsMultipartFile uploadedFile = command.getFile();
+
+			if (!present(uploadedFile) || !present(uploadedFile.getFileItem().getName())) {
+				errors.reject("error.upload.failed.noFileSelected");
+				return null;
+			}
+
+			//check if uploaded file is one of allowed files, otherwise it can be a endnote or bibtex file
+			if (StringUtils.matchExtension(uploadedFile.getFileItem().getName(), FILE_UPLOAD_EXTENSIONS)) {
+				log.debug("the file is in pdf format");
+
+				handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), FILE_UPLOAD_EXTENSIONS).writeUploadedFile());
+				keepTempFile = true;
+				return null;
+			}
+
 			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
-			/*
-			 * FIXME: the upload file handler throws an exception, 
-			 * if the file type does not match - this exception also comes, when
-			 * no file is given at all. We should check for empty file names and
-			 * give a specific error message then.
-			 */
+
 			final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
 			file = uploadedDocument.getFile();
 
@@ -466,10 +485,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 
-			String fileContent = null;
-			if (StringUtils.matchExtension(fileName, FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS[1])) {
+			if (!StringUtils.matchExtension(fileName, BIBTEX_ENDNOTE_EXTENSIONS[0])) {
 				/*
-				 * In case the uploaded file is in EndNote format, we convert it to BibTeX.				
+				 * In case the uploaded file is in EndNote or RIS format, we convert it to BibTeX.
 				 */
 				log.debug("the file is in EndNote format");
 				fileContent = e2bConverter.endnoteToBibtexString(reader);
@@ -490,24 +508,22 @@ public class PostPublicationController extends AbstractEditPublicationController
 			errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
 		} catch (final UnsupportedFileTypeException e) {
 			/*
-			 * FIXME: the key is missing! We need to get the supported file types from the exception
+			 * FIXME add also extensions form FILE_UPLOAD_EXTENSIONS to the message? 
 			 */
-			errors.reject("error.upload.failed.filetype", FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS, e.getMessage());
+			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringArray(BIBTEX_ENDNOTE_EXTENSIONS, ", ")}, e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
 			/*
-			 * clear temporary file
-			 * FIXME: is this method always called?
+			 * clear temporary file, but keep pdf's
 			 */
-			log.debug("deleting uploaded temp file");
-			if (file != null) {
+			if (file != null && !keepTempFile) {
+				log.debug("deleting uploaded temp file");
 				file.delete();
 			}
 		}
 		return null;
 	}
-
 
 	/**
 	 * Tries to save the posts in the database.
@@ -533,20 +549,20 @@ public class PostPublicationController extends AbstractEditPublicationController
 			logic.createPosts(new LinkedList<Post<?>>(postsToStore.keySet()));
 		} catch (final DatabaseException e) {
 			/*
-			 * get error messages 
+			 * get error messages
 			 */
-			final Map<String, List<ErrorMessage>> errorMessages = e.getErrorMessages(); 
-			log.debug("caught database exception, found " +  errorMessages.size() + " errors");
+			final Map<String, List<ErrorMessage>> errorMessages = e.getErrorMessages();
+			log.debug("caught database exception, found " + errorMessages.size() + " errors");
 			/*
 			 * these posts will be updated
 			 */
 			final LinkedList<Post<?>> postsForUpdate = new LinkedList<Post<?>>();
 			/*
-			 * check for all posts what kind of errors they have 
-			 */			
+			 * check for all posts what kind of errors they have
+			 */
 			for (final Entry<Post<BibTex>, Integer> entry : postsToStore.entrySet()) {
 				/*
-				 * get post and its position in the original list of posts 
+				 * get post and its position in the original list of posts
 				 */
 				final Post<BibTex> post = entry.getKey();
 				final Integer i = entry.getValue();
@@ -555,11 +571,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 				 * get all error messages for this post
 				 */
 				final List<ErrorMessage> postErrorMessages = errorMessages.get(post.getResource().getIntraHash());
-				if (present(postErrorMessages))	{
+				if (present(postErrorMessages)) {
 					boolean hasErrors = false;
 					boolean hasDuplicate = false;
 					/*
-					 * go over all error messages 
+					 * go over all error messages
 					 */
 					for (final ErrorMessage errorMessage : postErrorMessages) {
 						log.debug("found error " + errorMessage);
@@ -570,7 +586,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 								 * if we shall overwrite posts, duplicates are no errors
 								 */
 								continue;
-							} 
+							}
 						}
 						/*
 						 * add error to error list
@@ -631,6 +647,21 @@ public class PostPublicationController extends AbstractEditPublicationController
 	@Override
 	protected PostPublicationCommand instantiateEditPostCommand() {
 		return new PostPublicationCommand();
+	}
+
+	/**
+	 * Attach the uploaded file to command. This is required to attach file to the new post
+	 * 
+	 * @param command
+	 * @param document
+	 */
+	private void handleNonSnippetFile(PostPublicationCommand command, Document document) {
+		List<String> fileNames = command.getFileName();
+		if (!present(fileNames)) {
+			fileNames = new ArrayList<String>();
+			command.setFileName(fileNames);
+		}
+		fileNames.add(document.getMd5hash() + document.getFile().getName() + document.getFileName());
 	}
 
 	/**
