@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.mybatis.example.Entity-Identification">
+
+<!-- database bibsonomy_strudel -->
+<select id="selectBibtex" parameterType="int" resultType="String">
+SELECT author FROM bibtex LIMIT 1000
+</select>
+
+<select id="selectAuthor" parameterType="String" resultType="String">
+SELECT author FROM author
+</select>
+ 
+<select id="selectAuthorNames" parameterType="String" resultType="String">
+SELECT normalized_name FROM author GROUP BY normalized_name
+</select>
+
+<!-- database projekt_autoren_id -->
+<select id="countAuthorsByName" parameterType="String" resultType="int">
+SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 1000
+</select>
+	
+<select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
+SELECT CAST(author_id as varchar), normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName}
+</select>
+			
+<insert id="insertAuthor" parameterType="String">
+INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName}, #{lastName}, #{normalizedName});
+</insert>
+
+<insert id="insertCoAuthors" parameterType="String">
+INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (currval('author_author_id_seq'),#{normalizedName});
+</insert>
+
+<insert id="insertMergedCoAuthor" parameterType="HashMap">
+INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (Cast(#{authorID} as Integer),#{normalizedCoauthor});
+</insert>
+
+<delete id="deleteAuthor" parameterType="int">
+DELETE FROM author_coauthor WHERE author_id = #{tmpInnerMaxAuthorID};
+DELETE FROM author WHERE author_id = #{tmpInnerMaxAuthorID};
+</delete>
+
+</mapper>
