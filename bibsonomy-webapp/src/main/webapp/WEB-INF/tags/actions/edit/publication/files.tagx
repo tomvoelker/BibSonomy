@@ -11,7 +11,7 @@
 
 <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.bibtex.files">
+	<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface or not empty command.fileName}" legendKey="post.bibtex.files">
 		
 		<jsp:attribute name="content">
 			<fmt:message var="delete" key="post.bibtex.delete"/>

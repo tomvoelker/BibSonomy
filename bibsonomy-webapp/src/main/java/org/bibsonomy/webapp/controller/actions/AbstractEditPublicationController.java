@@ -48,7 +48,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	private Scraper scraper;
 	
 	private String docPath;
-	private String tempPath;
+	protected String tempPath;
 
 	@Override
 	protected View getPostView() {
@@ -195,7 +195,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	 * The temporary files will be stored on the file system and in the database 
 	 */
 	private void handleAddFiles(final EditPublicationCommand command, final String userName) {
-		// TODO: check length of fileHash list and fileName list
 		final List<String> fileNames = command.getFileName();
 		if (!present(fileNames)) {
 			return;
