@@ -36,11 +36,18 @@
 				</div>
 			</c:when>
 			<c:otherwise>
-				<c:if test="${not empty customPageOptions}">
-					<div id="pageOptions" class="customConfig">
-						<jsp:invoke fragment="customPageOptions"/>
-					</div>
-				</c:if>
+				<c:choose>
+					<c:when test="${not empty customPageOptions}">
+						<div id="pageOptions" class="customConfig">
+							<jsp:invoke fragment="customPageOptions"/>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div id="pageConfig" class="config disabled">
+							<!-- leave me -->
+						</div>
+					</c:otherwise>
+				</c:choose>
 			</c:otherwise>
 		</c:choose>
 		
