@@ -43,7 +43,7 @@ public class AutoSync {
 			
 			
 			User clientUser = adminLogic.getUserDetails(syncService.getUserName());
-			log.info("Autosync for user:" + clientUser.getName() + " and service: " + syncService.getName());
+			log.info("Autosync for user:" + clientUser.getName() + " and service: " + syncService.getService().toString());
 			LogicInterface clientLogic = userLogicFactory.getLogicAccess(clientUser.getName(), clientUser.getApiKey());
 			
 			Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = syncClient.getSyncPlan(clientLogic, syncService);
