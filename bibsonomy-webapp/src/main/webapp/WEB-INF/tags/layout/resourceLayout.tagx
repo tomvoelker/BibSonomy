@@ -48,6 +48,7 @@
     <c:set var="showBookmark" value="${showBookmarkList or not empty addAsFirstBookmarksListItem }" />
     <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
     <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
+    <c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions == true ? 'config' : 'config disabled'}"/>
 
 		
 	<!--+
@@ -89,9 +90,9 @@
 			+-->
 		<jsp:attribute name="headerContainer">
 			<!-- bookmarks -->					
-			<div id="bookmarksheader" class="${bookmarksWidthClass}">
-				<c:if test="${empty showPageOptions or showPageOptions == true }">
-					<div id="bookmarkListConfig" class="config">
+			<div id="bookmarksheader" class="${bookmarksWidthClass}">								
+				<div id="bookmarkListConfig" class="${pageOptionsClass}">
+					<c:if test="${empty showPageOptions or showPageOptions == true }">					
 						<div id="bookmarkListOptions" class="listOptions">
 							<c:choose>
 								<c:when test="${not empty customPageOptions}">
@@ -110,8 +111,8 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-					</div>
-				</c:if>
+					</c:if>		
+				</div>
 				<div class="headerLogo image bookmarks"><!--  --></div>
 				<h2 class="header ${bookmarksWidthClass}">
 					<c:choose>
@@ -132,9 +133,9 @@
 				</h2>
 			</div>
 			<!-- publications -->			
-			<div id="publicationsheader" class="${publicationsWidthClass}">
-				<c:if test="${empty showPageOptions or showPageOptions == true }">
-					<div id="publicationListConfig" class="config">					
+			<div id="publicationsheader" class="${publicationsWidthClass}">			
+				<div id="publicationListConfig" class="${pageOptionsClass}">
+					<c:if test="${empty showPageOptions or showPageOptions == true }">										
 						<div id="publicationListOptions" class="listOptions">
 							<c:choose>
 								<c:when test="${not empty customPageOptions}">
@@ -153,8 +154,8 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-					</div>
-				</c:if>
+					</c:if>						
+				</div>
 				<div class="headerLogo image publications"><!--  --></div>
 				<h2 class="header ${publicationsWidthClass}">
 					<c:choose>

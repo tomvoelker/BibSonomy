@@ -1632,7 +1632,7 @@ form.editTags input[type=text] {
 
 .config.disabled {
 	background: url("/resources/image/icons.png");
-	background-position: 0px -280px;
+	background-position: -36px -235px;
 	float: right;
 	cursor: auto;
 }
