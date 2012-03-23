@@ -1630,6 +1630,13 @@ form.editTags input[type=text] {
 	cursor: pointer;
 }
 
+.config.disabled {
+	background: url("/resources/image/icons.png");
+	background-position: 0px -280px;
+	float: right;
+	cursor: auto;
+}
+
 .customConfig {
 	margin-top: 10px;
 	margin-right: 10px;
@@ -1703,7 +1710,7 @@ form.editTags input[type=text] {
 .listOptions, .pageOptions { 
 	border:2px solid #c6c6c6; 
 	z-index:70;
- 	top:30px;
+ 	top:160px;
 	position:absolute;
   	background-color: #eee;
   	position: absolute;
