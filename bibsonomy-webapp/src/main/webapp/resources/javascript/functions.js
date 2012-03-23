@@ -885,12 +885,16 @@ function addListOptions() {
 			});				
 			optBoxAnchor.hoverIntent(function(event) {			
 				optBox.show("fade", {}, 500);
-				optBoxAnchor.css("background-position", "-61px -236px");
+				if (! optBoxAnchor.hasClass("disabled") ) {
+					optBoxAnchor.css("background-position", "-61px -236px");
+				}
 				// hide extended bibtex export options each time when opening the menu
 				$("#bibtexListExportOptions").hide();
 			}, function(event){
 				optBox.hide("fade", {}, 500);
-				optBoxAnchor.css("background-position", "0px -235px");
+				if (! optBoxAnchor.hasClass("disabled") ) {
+					optBoxAnchor.css("background-position", "0px -235px");
+				}
 			});						
 //			optBoxAnchor.click(function(event) {			
 //				optBox.show("fade", {}, 500);
