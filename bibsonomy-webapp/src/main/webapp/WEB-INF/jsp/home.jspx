@@ -18,7 +18,7 @@
 			requPath="${requPath}" 
 			disableListNavigation="${true}" 
 			activeTab="home"
-			showPageOptions="${false}"
+			showPageOptions="${true}"
 			hideFooterContainer="${true}">
 			
 		<jsp:attribute name="heading">
