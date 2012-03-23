@@ -23,7 +23,7 @@
 		<a href="${morePath}"><fmt:message key="bibtex.more_dots"/></a>
 	</c:if>
 	<c:if test="${isBookmark}">
-		<c:url var="rssPath" value="/publrss${requPathAndQuery}" />
+		<c:url var="rssPath" value="/rss${requPathAndQuery}" />
 		<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
 		<c:url var="bibPath" value="/bookbib${requPathAndQuery}" />
 		<a href="${bibPath}"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
