@@ -105,6 +105,7 @@
 										showPublication="${showPublication}" 
 										showInboxActions="${showInboxActions}" 
 										isBasket="${isBasket}"
+										disableListNavigation="${disableListNavigation}"
 										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
 								</c:otherwise>
 							</c:choose>
@@ -147,6 +148,7 @@
 										showPublication="${showPublication}" 
 										showInboxActions="${showInboxActions}" 
 										isBasket="${isBasket}"
+										disableListNavigation="${disableListNavigation}"
 										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
 								</c:otherwise>
 							</c:choose>
