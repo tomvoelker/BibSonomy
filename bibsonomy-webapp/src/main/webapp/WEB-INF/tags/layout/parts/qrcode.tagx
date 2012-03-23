@@ -17,11 +17,11 @@
 	<script type="text/javascript">
 		
 		var width = $("#sidebox").width();
-		var heigth = 0.75 * width;
+		var height = 0.75 * width;
 	
 		var flashvars = {
 			dynamicWidth: parseInt(width),
-			dynamicHeight: parseInt(heigth),
+			dynamicHeight: parseInt(height),
 			dynamicErrorHeader: "${errorHeader}",
 			dynamicErrorMessage: "${errorMessage}",
 			dynamicInfoMessage: "${infoMessage}"
