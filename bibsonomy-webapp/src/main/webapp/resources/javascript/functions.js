@@ -885,16 +885,18 @@ function addListOptions() {
 			});				
 			optBoxAnchor.hoverIntent(function(event) {			
 				optBox.show("fade", {}, 500);
+				optBoxAnchor.css("background-position", "-61px -236px");
 				// hide extended bibtex export options each time when opening the menu
 				$("#bibtexListExportOptions").hide();
 			}, function(event){
 				optBox.hide("fade", {}, 500);
-			});		
-			optBoxAnchor.click(function(event) {			
-				optBox.toggle("fade", {}, 500);
-				// hide extended bibtex export options each time when opening/closing the menu
-				$("#bibtexListExportOptions").hide();
-			});
+				optBoxAnchor.css("background-position", "0px -235px");
+			});						
+//			optBoxAnchor.click(function(event) {			
+//				optBox.show("fade", {}, 500);
+//				// hide extended bibtex export options each time when opening/closing the menu
+//				$("#bibtexListExportOptions").hide();
+//			});
 		}
 	});
 	/*
