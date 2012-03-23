@@ -15,10 +15,14 @@ SELECT author FROM author
  
  <!-- bibsonomy_strudel Tests -->
  <select id="selectBibtexDBLP" parameterType="int" resultType="String">
-select author from bibtex where user_name = 'dblp' and author like '%00%' LIMIT 10000
+SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' LIMIT 10000
 </select>
- 
+  
 <!-- database projekt_autoren_id -->
+<select id="selectLastInsertID" parameterType="int" resultType="int">
+SELECT LAST_INSERT_ID()
+</select>
+
 <select id="selectAuthorNames" parameterType="String" resultType="String">
 SELECT normalized_name FROM author GROUP BY normalized_name
 </select>

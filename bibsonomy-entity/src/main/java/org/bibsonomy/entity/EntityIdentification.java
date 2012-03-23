@@ -61,49 +61,22 @@ public class EntityIdentification {
 		Reader reader;
 				
 		List<String> authorList = null;
-		List<String> dblpAuthorList = null;
+		List<Map<String,Integer>> authorIDNumberList = new ArrayList<Map<String,Integer>>();
 		
 		try {
 			reader = Resources.getResourceAsReader(resource);
 			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
 			SqlSession session = sqlMapper.openSession();
 			try {
-			authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtex", 1);
-			System.out.println(authorList.get(3));
-		
-			List<PersonName> allAuthorsOfOnePublicationDBLP = null;
-			//testing data
-			dblpAuthorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP");
-			for (String authorsDBLP: dblpAuthorList) { //authorList for each publication from user dblp
-				allAuthorsOfOnePublicationDBLP = PersonNameUtils.discoverPersonNames(authorsDBLP);	
-				for (PersonName author: allAuthorsOfOnePublicationDBLP) {
-					//remove the numbers from the author e.g. Martin Müller 0002
-					boolean isInt;
-					try {
-						Integer.parseInt(author.getLastName());
-						isInt = true;
-					}
-					catch(NumberFormatException nfe) {
-						isInt = false;
-					}
-					if (!isInt) System.out.println(author.getFirstName() + " : " + author.getLastName());
-					else {
-						List<PersonName> authorWithoutNumber = PersonNameUtils.discoverPersonNames(author.getFirstName());
-						System.out.println("Special: " + normalizePerson(authorWithoutNumber.get(0)));
-					}
-					
-				}
-			}
-		
+			authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP", 1);
+			System.out.println(authorList.get(0));			
 		} finally {
 			session.close();
 		}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		System.exit(1);
-		
+				
 		String resourceRkr = "configRkr.xml";
 		Reader readerRkr;
 		
@@ -123,23 +96,50 @@ public class EntityIdentification {
 				
 				sessionRkr.commit();
 				HashMap<String, String> authorName = new HashMap<String, String>();
-
-			    authorName.put("firstName", StringUtil.foldToASCII(author.getFirstName()));
+				
+				author = removeNumberFromAuthor(author);
+				
+				authorName.put("firstName", StringUtil.foldToASCII(author.getFirstName()));
 			    authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
-			    authorName.put("normalizedName", normalizePerson(author));
+				authorName.put("normalizedName", normalizePerson(author));			    
 
-			    //TODO sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
+				int authorNumber = 0;
+				try {
+					Integer.parseInt(author.getLastName());
+					authorNumber = Integer.parseInt(author.getLastName());
+				}
+				catch(NumberFormatException nfe) {
+					authorNumber = 1;
+				}
+				
+			    //TODO insert
+			    sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
+			    
+				List<Integer> lastInsertID = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectLastInsertID");
+				List<PersonName> allAuthorsOfOnePublicationDBLP = null;
+
+				//add the authorID + authorNumber combination to the list
+				HashMap<String,Integer> IDAndNumber = new HashMap<String,Integer>();
+				IDAndNumber.put("authorID",lastInsertID.get(0));
+				IDAndNumber.put("authorNumber",authorNumber);
+				authorIDNumberList.add(IDAndNumber);
 			
-			    /*TODO
 			    for (PersonName coauthor: allAuthorNamesOfOnePublication) {
 			    	//add all coauthors for this author thats not the author
-			    if (coauthor != author) sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", normalizePerson(coauthor));
+			    	coauthor = removeNumberFromAuthor(coauthor);
+			    	if (coauthor != author) sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", normalizePerson(coauthor));
 			    }
-			    */
-
-				List<Integer> lastAuthorWithThisNameInsertedAuthorId = null;
 			}
 		}
+		
+		System.out.println(authorIDNumberList.get(0).get("authorID"));
+		System.out.println(authorIDNumberList.get(0).get("authorNumber"));
+		
+		//run the algorithms
+		
+		//compare
+		
+		System.exit(1);
 		
 		/*
 		LuceneTest lucene =  new LuceneTest();
@@ -312,6 +312,36 @@ public class EntityIdentification {
 		catch (ParseException p) {}
 	
 		return listOfAuthorsWithNameLikeX;
+	}
+	
+	private static PersonName removeNumberFromAuthor(PersonName author) {
+		boolean isInt;
+		int authorNumber = 0;
+		try {
+			Integer.parseInt(author.getLastName());
+			isInt = true;
+			authorNumber = Integer.parseInt(author.getLastName());
+		}
+		catch(NumberFormatException nfe) {
+			isInt = false;
+		}
+		
+		if (isInt) {
+			//authorNumber = Integer.parseInt(author.getLastName());
+			//fix the authorName (the lastName is the authorNumber)
+			try {
+				List<PersonName> authorWithoutNumber = PersonNameUtils.discoverPersonNames(author.getFirstName());
+
+				author.setFirstName(authorWithoutNumber.get(0).getFirstName());
+				author.setLastName(authorWithoutNumber.get(0).getLastName());
+			} catch (PersonListParserException plpe) {}
+		    
+		}
+		else { 
+			//authorNumber = 1;
+		}
+		
+		return author;
 	}
 	
 	public static String normalizePersonName(PersonName personName) {
