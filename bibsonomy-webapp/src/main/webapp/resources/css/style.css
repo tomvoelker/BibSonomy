@@ -1524,6 +1524,12 @@ form.editTags input[type=text] {
 	background-color: white;
 }
 
+.post.none {
+	margin-left:80px;
+	margin-top:40px;
+	width:100%;
+}
+
 
 .post .pre_pic {
     border: 1px solid #DDDDDD;

@@ -44,21 +44,28 @@
 			<c:if test="${not empty addAsFirstItem}">
 				<li class="first"><jsp:invoke fragment="addAsFirstItem"/></li>
 			</c:if>
-			<c:if test="${not empty listView.list}">
-	                  <c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
-					  
-					  <c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
-					  
-	                    <!-- show one post -->
-	        			<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
-	    					<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
-	    					<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
-	    					<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>
-	     					<jsp:attribute name="documents"><jsp:invoke fragment="documents"/></jsp:attribute>
-	    				</rc:post>
-		            
-	                  </c:forEach>
-			</c:if>		
+			<c:choose>
+				<c:when test="${not empty listView.list}">
+		                  <c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
+						  
+						  <c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
+						  
+		                    <!-- show one post -->
+		        			<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
+		    					<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
+		    					<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
+		    					<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>
+		     					<jsp:attribute name="documents"><jsp:invoke fragment="documents"/></jsp:attribute>
+		    				</rc:post>
+			            
+		                  </c:forEach>
+				</c:when>
+				<c:otherwise>
+					<span class="post none">
+						<fmt:message key="posts.no_matching_entries"/>
+					</span>
+				</c:otherwise>
+			</c:choose>		
 			<c:if test="${not empty addAsLastItem}">
 				<li class="last"><jsp:invoke fragment="addAsLastItem"/></li>
 			</c:if>
