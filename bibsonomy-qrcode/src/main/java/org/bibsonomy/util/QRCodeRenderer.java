@@ -17,6 +17,8 @@ public class QRCodeRenderer {
 		
 		Future<String> embedderFuture = pool.submit(new QRCodeEmbedder(filePath, encodee));
 		
+		pool.shutdown();
+		
 		String manipulatedFilePath = embedderFuture.get(QRCodeEmbedder.WAIT_TIME, TimeUnit.MILLISECONDS);
 			
 		return manipulatedFilePath;

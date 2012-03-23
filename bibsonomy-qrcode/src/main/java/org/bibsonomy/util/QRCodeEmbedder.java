@@ -6,6 +6,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import de.intarsys.cwt.awt.environment.CwtAwtGraphicsContext;
@@ -44,7 +45,7 @@ public class QRCodeEmbedder implements Callable<String>{
 	{
 		try
 		{
-			if(!(new File(this.outFile).exists())) {
+			if(new File(this.outFile).createNewFile()) {
 				PDDocument createFromLocator = PDDocument.createFromLocator(new FileLocator(this.inFile));
 				
 				PDPage pageAt = createFromLocator.getPageTree().getPageAt(0);
@@ -91,16 +92,21 @@ public class QRCodeEmbedder implements Callable<String>{
 		
 	}
 	
-	private BufferedImage renderPage(final PDPage page, int scale) throws CSException
+	private BufferedImage renderPage(final PDPage page, int scale) throws CSException, IOException
 	{
         Rectangle2D rect = page.getCropBox().toNormalizedRectangle();
         BufferedImage image = null;
         IGraphicsContext graphics = null;
         try {
+        	
+        		/*
+        		 * FIXME: Find compromise between resolution and black
+        		 * white transformation.
+        		 */
                 image = new BufferedImage(
                         (int) (rect.getWidth() * scale),
-                        (int) (rect.getHeight()* scale),
-                        BufferedImage.TYPE_INT_RGB
+                        (int) (rect.getHeight() * scale),
+                        BufferedImage.TYPE_BYTE_BINARY
                 );
                 Graphics2D g2 = (Graphics2D) image.getGraphics();
                 graphics = new CwtAwtGraphicsContext(g2);
@@ -123,7 +129,7 @@ public class QRCodeEmbedder implements Callable<String>{
                                 }
                         });
                         renderer.process(content, page.getResources());
-                }
+                }                 
                 return image;
         } finally {
                 if (graphics != null) {
