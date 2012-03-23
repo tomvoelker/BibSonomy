@@ -85,6 +85,6 @@
   		<artifactId>jai-imageio</artifactId>
   		<version>5.3</version>
   	</dependency>
-  	
+
   </dependencies>
 </project>
