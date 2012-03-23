@@ -1,5 +1,7 @@
 package org.bibsonomy.synchronization;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,6 +36,11 @@ public class AutoSync {
 	public void performAutoSync() {
 		log.info("start automatic synchronization");
 		
+		if(!present(syncClient)) {
+			log.info("snyc client not available");
+			return;
+		}
+		
 		List<SyncService> syncServices = adminLogic.getSyncService(null, null, true);
 		for (SyncService syncService : syncServices) {
 			//skip, if autosync not selected or direction is both
@@ -47,6 +54,10 @@ public class AutoSync {
 			LogicInterface clientLogic = userLogicFactory.getLogicAccess(clientUser.getName(), clientUser.getApiKey());
 			
 			Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = syncClient.getSyncPlan(clientLogic, syncService);
+			if (!present(syncPlan)) {
+				log.info("no sync plan received");
+				continue;
+			}
 			/*
 			 * run sync plan
 			 */
