@@ -189,7 +189,12 @@ public class URLGenerator {
 	 * @return The URL pointing to the post of that user for the publication represented by the given intrahash. 
 	 */
 	public String getPublicationUrl(final String intraHash, final String userName) {
-		return this.getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash + "/" + UrlUtils.safeURIEncode(userName));
+		String url = projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash; 
+		if (present(userName)) {
+			url += "/" + UrlUtils.safeURIEncode(userName);
+			
+		}
+		return this.getUrl(url);
 	}
 	
 	
@@ -223,7 +228,12 @@ public class URLGenerator {
 	 * @return The URL pointing to the post of that user for the bookmark represented by the given intrahash.
 	 */
 	public String getBookmarkUrl(final String intraHash, final String userName) {
-		return this.getUrl(projectHome + BOOKMARK_PREFIX + "/" + intraHash + "/" + UrlUtils.safeURIEncode(userName));
+		String url = projectHome + BOOKMARK_PREFIX + "/" + intraHash;
+		if (present(userName)) {
+			url += "/" + UrlUtils.safeURIEncode(userName);
+			
+		}
+		return this.getUrl(url);
 	}
 
 
