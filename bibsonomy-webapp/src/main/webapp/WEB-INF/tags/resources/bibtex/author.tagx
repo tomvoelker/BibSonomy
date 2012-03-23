@@ -27,8 +27,15 @@
 	<span class="authorEditorList"> 
 		<c:forEach var="person" items="${personList}" varStatus="loopStatus">
 		
+			<!-- 
+				we don't need to escapeXml when building person name, because
+				it is displayed later only via c:out, which escapes XML chars 
+				anyway. 
+			 -->
 			<c:set var="personName">
- 				<c:out value="${mtl:cleanBibtex(person.firstName)}" /><c:out value=" "/><c:out value="${mtl:cleanBibtex(person.lastName)}" />
+ 				${mtl:cleanBibtex(person.firstName)}
+ 				<c:out value=" "/>
+ 				${mtl:cleanBibtex(person.lastName)}
 			</c:set>
 			<c:if test="${loopStatus.last and not loopStatus.first}"><c:out value=" "/><fmt:message key="and"/><c:out value=" "/></c:if>
 		
@@ -42,7 +49,7 @@
 				</c:when>
 				<c:otherwise>
 				 	<a href="/author/${fn:escapeXml(mtl:cleanBibtex(person.lastName))}">
-			 				<c:out value="${personName}"/>
+			 			<c:out value="${personName}"/>
 				 	</a>
 				</c:otherwise>
 			</c:choose>
