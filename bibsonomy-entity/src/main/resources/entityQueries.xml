@@ -13,6 +13,11 @@ SELECT author FROM bibtex LIMIT 1000
 SELECT author FROM author
 </select>
  
+ <!-- bibsonomy_strudel Tests -->
+ <select id="selectBibtexDBLP" parameterType="int" resultType="String">
+select author from bibtex where user_name = 'dblp' and author like '%00%' LIMIT 10000
+</select>
+ 
 <!-- database projekt_autoren_id -->
 <select id="selectAuthorNames" parameterType="String" resultType="String">
 SELECT normalized_name FROM author GROUP BY normalized_name

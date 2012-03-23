@@ -61,6 +61,8 @@ public class EntityIdentification {
 		Reader reader;
 				
 		List<String> authorList = null;
+		List<String> dblpAuthorList = null;
+		
 		try {
 			reader = Resources.getResourceAsReader(resource);
 			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
@@ -68,13 +70,39 @@ public class EntityIdentification {
 			try {
 			authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtex", 1);
 			System.out.println(authorList.get(3));
-			} finally {
-				session.close();
+		
+			List<PersonName> allAuthorsOfOnePublicationDBLP = null;
+			//testing data
+			dblpAuthorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP");
+			for (String authorsDBLP: dblpAuthorList) { //authorList for each publication from user dblp
+				allAuthorsOfOnePublicationDBLP = PersonNameUtils.discoverPersonNames(authorsDBLP);	
+				for (PersonName author: allAuthorsOfOnePublicationDBLP) {
+					//remove the numbers from the author e.g. Martin Müller 0002
+					boolean isInt;
+					try {
+						Integer.parseInt(author.getLastName());
+						isInt = true;
+					}
+					catch(NumberFormatException nfe) {
+						isInt = false;
+					}
+					if (!isInt) System.out.println(author.getFirstName() + " : " + author.getLastName());
+					else {
+						List<PersonName> authorWithoutNumber = PersonNameUtils.discoverPersonNames(author.getFirstName());
+						System.out.println("Special: " + normalizePerson(authorWithoutNumber.get(0)));
+					}
+					
+				}
 			}
+		
+		} finally {
+			session.close();
+		}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		System.exit(1);
 		
 		String resourceRkr = "configRkr.xml";
 		Reader readerRkr;
@@ -116,7 +144,7 @@ public class EntityIdentification {
 		/*
 		LuceneTest lucene =  new LuceneTest();
 		try {
-			lucene.HelloLucene(allAuthorsWithCoAuthors);
+			lucene.luceneSearch(allAuthorsWithCoAuthors);
 		} catch (IOException e) {}
 		catch (ParseException p) {}
 		*/	
@@ -244,14 +272,13 @@ public class EntityIdentification {
 		sessionRkr.commit();
 		sessionRkr.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public static List<Map<String,String>> getAuthorsWithNameLikeX (String nameX, SqlSession sessionRkr) {
 		List<Map<Integer,String>> allAuthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectRkrAuthor");
-		Directory index = LuceneTest.createLuceneIndex(allAuthors);
+		Directory index = Lucene.createLuceneIndex(allAuthors);
 		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
 		
 		String query = "author:" + nameX + "~0.8";
