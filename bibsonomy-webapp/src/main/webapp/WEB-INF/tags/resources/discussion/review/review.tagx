@@ -26,12 +26,12 @@
   			<c:choose>
    				<c:when test="${schemaOrgMarkUp}">
 					<div class="review text" itemprop="reviewBody">
-						<c:out value="${review.text}" />
+						<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
 					</div>
 				</c:when>
 				<c:otherwise>
 					<div class="review text">
-						<c:out value="${review.text}" />
+						<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
 					</div>
 				</c:otherwise>
 			</c:choose>			
