@@ -3,6 +3,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment">
     
    	<jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="true" />
@@ -15,12 +16,12 @@
    			<c:choose>
    				<c:when test="${schemaOrgMarkUp}">
    					<div class="comment text" itemprop="commentText">
-						<c:out value="${comment.text}" />
+   						<mtl:publicationReference text="${fn:escapeXml(comment.text)}" />
 					</div>
 				</c:when>
 				<c:otherwise>
    					<div class="comment text">
-						<c:out value="${comment.text}" />
+						<mtl:publicationReference text="${fn:escapeXml(comment.text)}" />
 					</div>
 				</c:otherwise>
 			</c:choose>			

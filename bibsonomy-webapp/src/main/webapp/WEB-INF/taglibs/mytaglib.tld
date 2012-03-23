@@ -91,6 +91,18 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+	<tag>
+		<name>publicationReference</name>
+		<info>Replaces wiki-style links with html links</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.PublicationReferenceTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>text</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 
 
 	<function>
