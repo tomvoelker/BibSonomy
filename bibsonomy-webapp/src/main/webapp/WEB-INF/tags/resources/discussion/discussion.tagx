@@ -58,6 +58,13 @@
 		
 		<!-- Aggregated RatingInfo -->
     	<review:reviewRatingsInfo resource="${resource}" />
+    	
+    		
+		<div cssClass="fsRow">
+			<c:if test="${resource.entrytype=='preprint' and empty resource.discussionItems}">
+				<fmt:message key="post.resource.preprint.hint" />
+			</c:if>
+		</div>
 	
  	  	<!-- The input forms -->
  	  	<div id="discussion" data-interHash="${resource.interHash}">
