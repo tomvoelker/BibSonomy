@@ -372,7 +372,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			return this.e2bConverter.endnoteToBibtex(selection);
 		}
 		if (RisToBibtexConverter.canHandle(selection)) {
-			return new RisToBibtexConverter().RisToBibtex(selection);
+			return new RisToBibtexConverter().risToBibtex(selection);
 		}
 		/*
 		 * should be BibTeX
