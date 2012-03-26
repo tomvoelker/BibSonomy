@@ -85,9 +85,9 @@ public class RisToBibtexConverter {
 		"SN  - 9780739118597  9780739118603  0739118595  0739118609  9780739147856  0739147854\n" +
 		"ER  - \n";
 
-		System.out.println(new RisToBibtexConverter().RisToBibtex(bsp));
-		System.out.println(new RisToBibtexConverter().RisToBibtex(bsp2));
-		System.out.println(new RisToBibtexConverter().RisToBibtex(bsp3));
+		System.out.println(new RisToBibtexConverter().risToBibtex(bsp));
+		System.out.println(new RisToBibtexConverter().risToBibtex(bsp2));
+		System.out.println(new RisToBibtexConverter().risToBibtex(bsp3));
 	}
 
 
@@ -102,7 +102,7 @@ public class RisToBibtexConverter {
 	 * @param Ris
 	 * @return The resulting BibTeX string.
 	 */
-	public String RisToBibtex(String Ris) {
+	public String risToBibtex(String Ris) {
 		/**
 		 * Parse the entries in the source, and return a List of BibtexEntry
 		 * objects.
@@ -197,8 +197,17 @@ public class RisToBibtexConverter {
 				} else if (key.equals("T2") || key.equals("T3") || key.equals("BT")) {
 					bibtexMap.put("booktitle", value);
 				} else if (key.equals("A1") || key.equals("AU")) {
-					// take care of trailing "," and "."
-					if (value.endsWith(",") || value.endsWith(".")) {
+					// take care of trailing ","
+					if (value.endsWith(",")) {
+						value = value.substring(0, value.length() - 1);
+					}
+					// remove trailing ", Jr." (wrong place for BibTeX)
+					if (value.endsWith(", Jr.")) {
+						value = value.substring(0, value.length() - ", Jr.".length());
+					}
+					// take care of entries like 
+					// A1  - Braams, Johannes.
+					if (value.endsWith(".") && value.lastIndexOf(" ") < value.length() - 3) {
 						value = value.substring(0, value.length() - 1);
 					}
 					if (author.equals("")) // don't add " and " for the first author
