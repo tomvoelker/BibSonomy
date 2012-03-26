@@ -55,7 +55,7 @@ public class ToBibtexConverterTest {
 			// test the conversion
 			final String expectedBibTeX = this.readEntryFromFile("test1_risBibtex.bib");
 			final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-			final String bibTeX = ris2bConverter.RisToBibtex(ris);
+			final String bibTeX = ris2bConverter.risToBibtex(ris);
 			assertEquals (expectedBibTeX, bibTeX);
 		} catch (IOException ex) {
 			fail(ex.getMessage());
@@ -74,7 +74,7 @@ public class ToBibtexConverterTest {
 			// test the conversion
 			final String expectedBibTeX = this.readEntryFromFile("WorldCat_53972111.bib");
 			final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-			final String bibTeX = ris2bConverter.RisToBibtex(ris);
+			final String bibTeX = ris2bConverter.risToBibtex(ris);
 			assertEquals (expectedBibTeX, bibTeX);
 		} catch (IOException ex) {
 			fail(ex.getMessage());
