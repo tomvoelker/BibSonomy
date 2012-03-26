@@ -113,7 +113,7 @@ public class NatureScraper extends AbstractUrlScraper {
 
 						// convert ris to bibtex
 						final RisToBibtexConverter converter = new RisToBibtexConverter();
-						final String bibtex = converter.RisToBibtex(ris);
+						final String bibtex = converter.risToBibtex(ris);
 
 						// return bibtex
 						if(bibtex != null){

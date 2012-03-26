@@ -141,7 +141,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		} else {
 			ris = ris.replaceFirst("ER\\s{2}-\\s[\\n.]*\\z", "UR  - " + replacementURL + "\nER  - ");
 		}
-		return converter.RisToBibtex(ris);
+		return converter.risToBibtex(ris);
 	}
 	
 	private static String getRIS(final URL publPageURL, final boolean search) throws IOException {
@@ -178,7 +178,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		/*
 		 * convert RIS to BibTeX
 		 */
-		final String bibtex = converter.RisToBibtex(ris);
+		final String bibtex = converter.risToBibtex(ris);
 		
 		/*
 		 * add URL

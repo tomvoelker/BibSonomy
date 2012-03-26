@@ -106,7 +106,7 @@ public class AGUScraper extends AbstractUrlScraper {
 					// convert ris to bibtex
 					String bibtex = null;
 					RisToBibtexConverter converter = new RisToBibtexConverter();
-					bibtex = converter.RisToBibtex(ris);
+					bibtex = converter.risToBibtex(ris);
 					
 					if(present(bibtex)){
 						// finish

@@ -95,7 +95,7 @@ public class CellScraper extends AbstractUrlScraper {
 						String bibtex = null;
 						
 						RisToBibtexConverter converter = new RisToBibtexConverter();
-						bibtex = converter.RisToBibtex(ris);
+						bibtex = converter.risToBibtex(ris);
 						
 						if(bibtex != null){
 							bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());

@@ -87,7 +87,7 @@ public class MetapressScraper extends AbstractUrlScraper {
 				
 				if(ris!=null){
 					RisToBibtexConverter converter = new RisToBibtexConverter();
-					String bibtex = converter.RisToBibtex(ris);
+					String bibtex = converter.risToBibtex(ris);
 
 					//replace /r with /n
 					bibtex = bibtex.replace("\r", "\n");

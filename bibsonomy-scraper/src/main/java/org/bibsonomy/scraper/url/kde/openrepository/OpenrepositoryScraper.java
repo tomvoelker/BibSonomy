@@ -114,7 +114,7 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 				String ris = WebUtils.getContentAsString(new URL(downloadURL));
 
 				RisToBibtexConverter converter = new RisToBibtexConverter();
-				String bibtex = converter.RisToBibtex(ris);
+				String bibtex = converter.risToBibtex(ris);
 
 				if(present(bibtex)){
 					sc.setBibtexResult(bibtex);
