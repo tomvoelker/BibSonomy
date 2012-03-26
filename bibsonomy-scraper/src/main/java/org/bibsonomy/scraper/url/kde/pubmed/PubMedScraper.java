@@ -69,6 +69,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + UK_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)
 			throws ScrapingException {
 		String bibtexresult = null;
@@ -99,7 +100,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 				if (risLinkMatcher.find()) {
 					URL risURL = new URL(_origUrl + "/" + risLinkMatcher.group(1));
 					RisToBibtexConverter c = new RisToBibtexConverter();
-					bibtexresult = c.RisToBibtex(WebUtils.getContentAsString(risURL));
+					bibtexresult = c.risToBibtex(WebUtils.getContentAsString(risURL));
 				} else {
 					
 					Matcher ma = PMIDPATTERN.matcher(pageContent);
@@ -148,6 +149,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 		return info;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
