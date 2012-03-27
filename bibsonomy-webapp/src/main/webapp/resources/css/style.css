@@ -2670,6 +2670,7 @@ table.report td.value {
 	
 	#fullscreen{
 	    background-color: #ffffff;
+	    float: left;
 	}
 	
 	#sidebarheader {
