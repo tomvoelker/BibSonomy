@@ -293,6 +293,11 @@ public class DBLogic implements LogicInterface {
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		// TODO: handle resourceType = null
 		this.permissionDBManager.ensureWriteAccess(loginUser, userName);
+		
+		if(!present(strategy)) {
+			log.error("no conflict resolution strategy received in getSyncPlan method! Use LAST WINS");
+		}
+		
 		Date lastSuccessfulSyncDate = null;
 
 		final List<SynchronizationPost> posts;
