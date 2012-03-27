@@ -217,13 +217,13 @@
 					</div><!-- #navigation -->
 
 					
+					<div id="sidebarheader">
+						<parts:sidebarnavi/>
+					</div>
 					<div id="headercontainer">
 						<c:if test="${not empty headerContainer}">
 							<jsp:invoke fragment="headerContainer"/>
 						</c:if>
-						<div id="sidebarheader">
-							<parts:sidebarnavi/>
-						</div>
 					</div> <!-- #headercontainer -->
 		
 					<!--+
