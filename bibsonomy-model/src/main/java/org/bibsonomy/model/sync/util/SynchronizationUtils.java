@@ -28,6 +28,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.sync.SynchronizationData;
 
 /**
@@ -35,6 +37,8 @@ import org.bibsonomy.model.sync.SynchronizationData;
  * @version $Id$
  */
 public final class SynchronizationUtils {
+	private static final Log log = LogFactory.getLog(SynchronizationUtils.class);
+	
 	/**
 	 * To allow multiple instances for one client
 	 * we introduced the special client scheme.
@@ -59,10 +63,13 @@ public final class SynchronizationUtils {
 	public static SynchronizationData buildSynchronizationDataforService(final URI service) {
 		final SynchronizationData data = new SynchronizationData();
 		if (!isClientURI(service)) {
+			log.info("create sync data for service without device id");
 			data.setService(service);
 			data.setDeviceId(""); // other services get an empty string as device id
 			return data;
 		}
+		log.info("create sync data for service with device id");
+		
 		
 		/*
 		 * e.g. Android App, iOS App, Texlipse Plugin, …
