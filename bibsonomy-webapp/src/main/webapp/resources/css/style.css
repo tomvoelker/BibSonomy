@@ -2626,8 +2626,10 @@ table.report td.value {
 
 /* 
 	modifications for complete scrolling layout	
-*/
+
 @media screen and (max-height: 20000px) {
+
+*/
 	
 	body {
 	    overflow: auto;
@@ -2671,6 +2673,7 @@ table.report td.value {
 	#fullscreen{
 	    background-color: #ffffff;
 	    float: left;
+	    width: 100%;
 	}
 	
 	#sidebarheader {
@@ -2702,31 +2705,11 @@ table.report td.value {
 		padding-bottom: 2em;
 	}
 	
-}
-
 /* 
-	modifications for scrolling layout with one absolute border	
-*/
-
-@media screen and (max-height: 200px) {
-
-	#container {
-		overflow: auto;
-		overflow-x: hidden;
-		left: 2px;
-		right: 0px;
-		top: 2px;
-	}
-	
-	#headercontainer {
-	}
-	
-	#postcontainer {
-		overflow: visible;
-		bottom: auto;
-	}
-
 }
+
+	/modifications for complete scrolling layout	
+*/
 
 
 /* 
