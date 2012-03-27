@@ -62,7 +62,7 @@ a img {
 }
 
 
-#fullscreen>#fscontent>.infobox {
+#overlayInfobox {
     background-color: #FFFFFF;
     border: 2px solid #666666;
     box-shadow: 0 0 5px 0;
@@ -83,7 +83,7 @@ a img {
 	margin-right: auto;
 }
 
-#fullscreen>#fscontent>.infobox .content {
+#overlayInfobox .content {
 	padding: 0 2em;
 
 }
