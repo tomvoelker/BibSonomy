@@ -19,7 +19,7 @@
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
-	<jsp:directive.attribute name="overlayInfobox" fragment="true" required="false"/>
+	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
@@ -131,10 +131,8 @@
 			</head>
 			<body>
 
-				<c:if test="${not empty overlayInfobox}">
-					<div id="overlayInfobox">
-						<jsp:invoke fragment="overlayInfobox"/>
-					</div>
+				<c:if test="${not empty beforeMainContainer}">
+					<jsp:invoke fragment="beforeMainContainer"/>
 				</c:if>
 
 				<div id="container" class="${hideFooterContainer ? 'noPageNavigation ' : hideFooterContainer}${not command.context.userLoggedIn ? 'noUser ' : ''}"><!-- everything but the footer -->
