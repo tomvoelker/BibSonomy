@@ -50,7 +50,7 @@ public class AutoSync {
 			
 			
 			User clientUser = adminLogic.getUserDetails(syncService.getUserName());
-			log.info("Autosync for user:" + clientUser.getName() + " and service: " + syncService.getService().toString());
+			log.info("Autosync for user:" + clientUser.getName() + " and service: " + syncService.getService().toString() + " api: " + syncService.getSecureAPI());
 			LogicInterface clientLogic = userLogicFactory.getLogicAccess(clientUser.getName(), clientUser.getApiKey());
 			
 			Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = syncClient.getSyncPlan(clientLogic, syncService);
@@ -58,6 +58,8 @@ public class AutoSync {
 				log.info("no sync plan received");
 				continue;
 			}
+			
+			log.info("sync plan created");
 			/*
 			 * run sync plan
 			 */
