@@ -28,6 +28,9 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 	 */
 	private LogicInterface logic = null;
 	
+	/**
+	 * qr code renderer
+	 */
 	private QRCodeRenderer qrCodeRenderer;
 	
 
@@ -91,7 +94,6 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 				try {
 					qrFilePath = qrCodeRenderer.manipulate(filePath, command.getRequestedUser(), command.getIntrahash());
 				} catch (final Exception e) {
-					e.printStackTrace();
 					errors.reject("error.document_not_converted");
 					return Views.ERROR;
 				}
@@ -142,10 +144,11 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 	}
 
 	/**
-	 * @param qrCodeRenderer
+	 * @param qrCodeRenderer the qrCodeRenderer to set
 	 */
 	public void setQrCodeRenderer(QRCodeRenderer qrCodeRenderer) {
 		this.qrCodeRenderer = qrCodeRenderer;
 	}
 
+	
 }

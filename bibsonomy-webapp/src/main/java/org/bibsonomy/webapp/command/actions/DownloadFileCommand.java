@@ -49,6 +49,9 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 	 */
 	private Class<? extends Resource> resourcetype;
 	
+	/**
+	 * embed qr code into document or not
+	 */
 	private boolean qrcode = false;
 	
 
@@ -142,12 +145,16 @@ public class DownloadFileCommand extends BaseCommand implements Serializable, Do
 		this.preview = preview;
 	}
 
-
+	/**
+	 * @return the qrcode
+	 */
 	public boolean isQrcode() {
 		return this.qrcode;
 	}
-
-
+	
+	/**
+	 * @param qrcode the qrcode to set
+	 */
 	public void setQrcode(boolean qrcode) {
 		this.qrcode = qrcode;
 	}
