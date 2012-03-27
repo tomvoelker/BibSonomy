@@ -156,7 +156,12 @@ function urlFromFlash(text) {
 						url : "/posts" + query,
 						dataType : "html",
 						success : function(actData) {
-					
+							
+							/*
+							 * remove no entry message
+							 */
+							$('span.post, span.none').remove();
+							
 							$("#publications_0 ul.posts").prepend($(actData));
 							
 							/*
