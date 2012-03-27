@@ -15,6 +15,7 @@ div#goldstandard {
 	padding-right: 20px;
 	padding-top: 15px;
 	padding-bottom: 10px;
+	background-color: white;
 }
 
 div#goldstandard textarea {
@@ -37,7 +38,7 @@ h2#gold_title {
 }
 
 div#gold_refs, div#postUsers, div#gold_exports {
-	clear: both;	
+	clear: left;	
 }
 
 div#gold_references, div#gold_referencedBy {

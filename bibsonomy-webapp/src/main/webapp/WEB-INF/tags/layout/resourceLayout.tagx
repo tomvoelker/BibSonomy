@@ -214,9 +214,7 @@
 					<!-- additional heading for content area -->
 					<c:if  test="${not empty contentHeading}">
 						<div id="fullscreen">
-							<div id="fscontent">
-								<jsp:invoke fragment="contentHeading" />
-							</div>
+							<jsp:invoke fragment="contentHeading" />
 						</div>
 					</c:if>
 					<!-- bibtex/bookmark lists -->

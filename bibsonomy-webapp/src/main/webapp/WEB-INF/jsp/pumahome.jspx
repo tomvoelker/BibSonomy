@@ -34,72 +34,74 @@
 
 			<c:if test="${not command.context.userLoggedIn}">
 
-				<div class="infobox">
-					<div class="close"><a onclick="$('#fullscreen').hide();"><fmt:message key="box.close"/></a></div>
-					<div class="content">
-	
-						<c:set var="btn_collect">
-							<fmt:message key="image.button.collect"/>
-						</c:set>
-						<c:set var="btn_collect_hover">
-							<fmt:message key="image.button.collect.hover"/>
-						</c:set>
-						<c:set var="btn_organize">
-							<fmt:message key="image.button.organize"/>
-						</c:set>
-						<c:set var="btn_organize_hover">
-							<fmt:message key="image.button.organize.hover"/>
-						</c:set>
-						<c:set var="btn_share">
-							<fmt:message key="image.button.share"/>
-						</c:set>
-						<c:set var="btn_share_hover">
-							<fmt:message key="image.button.share.hover"/>
-						</c:set>
-						
-						<spring:theme code="image.button.video" var="btn_video" text=""/>
+				<div id="fscontent">
+					<div class="infobox">
+						<div class="close"><a onclick="$('#fullscreen').hide();"><fmt:message key="box.close"/></a></div>
+						<div class="content">
 		
-						<div id="pumageneral">
-							<p>
-		
-								<fmt:message key="system.about">
-									<fmt:param value="${properties['project.name']}"/>
-								</fmt:message>
-							</p>
-		
-								<c:set var="desc_collect">
-									<fmt:message key="button.collect.description"/>
-								</c:set>
-								<c:set var="desc_organize">
-									<fmt:message key="button.organize.description"/>
-								</c:set>
-								<c:set var="desc_share">
-									<fmt:message key="button.share.description"/>
-								</c:set>
-								<c:set var="desc_buttons">
-									<fmt:message key="button.description"/>
-								</c:set>
+							<c:set var="btn_collect">
+								<fmt:message key="image.button.collect"/>
+							</c:set>
+							<c:set var="btn_collect_hover">
+								<fmt:message key="image.button.collect.hover"/>
+							</c:set>
+							<c:set var="btn_organize">
+								<fmt:message key="image.button.organize"/>
+							</c:set>
+							<c:set var="btn_organize_hover">
+								<fmt:message key="image.button.organize.hover"/>
+							</c:set>
+							<c:set var="btn_share">
+								<fmt:message key="image.button.share"/>
+							</c:set>
+							<c:set var="btn_share_hover">
+								<fmt:message key="image.button.share.hover"/>
+							</c:set>
 							
-						        <div id="wrap_advantages">
-									<div id="wrap_btn">
-										<img id="btnCollect" alt="Sammeln" class="btnHomepage" onMouseover="this.src='${btn_collect_hover}'; replaceElementsTextnode('desc_advantages','${desc_collect}');" onMouseout="this.src='${btn_collect}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');"  src="${btn_collect}" />
-										<img id="btnOrganize" alt="Verwalten" class="btnHomepage" onMouseover="this.src='${btn_organize_hover}';replaceElementsTextnode('desc_advantages','${desc_organize}');" onMouseout="this.src='${btn_organize}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');" src="${btn_organize}" />
-										<img id="btnShare" alt="Teilen" class="btnHomepage" onMouseover="this.src='${btn_share_hover}'; replaceElementsTextnode('desc_advantages','${desc_share}')" onMouseout="this.src='${btn_share}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');" src="${btn_share}" />
-		
-										<div id="desc_advantages" style="color:#aaa;">
-											<!-- need a text node here in dom, &nbsp; added! -->
-											&amp;nbsp;${desc_buttons}&amp;nbsp;
+							<spring:theme code="image.button.video" var="btn_video" text=""/>
+			
+							<div id="pumageneral">
+								<p>
+			
+									<fmt:message key="system.about">
+										<fmt:param value="${properties['project.name']}"/>
+									</fmt:message>
+								</p>
+			
+									<c:set var="desc_collect">
+										<fmt:message key="button.collect.description"/>
+									</c:set>
+									<c:set var="desc_organize">
+										<fmt:message key="button.organize.description"/>
+									</c:set>
+									<c:set var="desc_share">
+										<fmt:message key="button.share.description"/>
+									</c:set>
+									<c:set var="desc_buttons">
+										<fmt:message key="button.description"/>
+									</c:set>
+								
+							        <div id="wrap_advantages">
+										<div id="wrap_btn">
+											<img id="btnCollect" alt="Sammeln" class="btnHomepage" onMouseover="this.src='${btn_collect_hover}'; replaceElementsTextnode('desc_advantages','${desc_collect}');" onMouseout="this.src='${btn_collect}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');"  src="${btn_collect}" />
+											<img id="btnOrganize" alt="Verwalten" class="btnHomepage" onMouseover="this.src='${btn_organize_hover}';replaceElementsTextnode('desc_advantages','${desc_organize}');" onMouseout="this.src='${btn_organize}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');" src="${btn_organize}" />
+											<img id="btnShare" alt="Teilen" class="btnHomepage" onMouseover="this.src='${btn_share_hover}'; replaceElementsTextnode('desc_advantages','${desc_share}')" onMouseout="this.src='${btn_share}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');" src="${btn_share}" />
+			
+											<div id="desc_advantages" style="color:#aaa;">
+												<!-- need a text node here in dom, &nbsp; added! -->
+												&amp;nbsp;${desc_buttons}&amp;nbsp;
+											</div>
+			
 										</div>
-		
-									</div>
-						        </div>
-							
-							<p>
-								<fmt:message key="system.introduction">
-									<fmt:param value="${properties['project.name']}"/>
-								</fmt:message>									
-							</p>
-		
+							        </div>
+								
+								<p>
+									<fmt:message key="system.introduction">
+										<fmt:param value="${properties['project.name']}"/>
+									</fmt:message>									
+								</p>
+			
+							</div>
 						</div>
 					</div>
 				</div>

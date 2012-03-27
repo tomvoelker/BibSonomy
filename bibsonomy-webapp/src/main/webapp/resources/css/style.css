@@ -2691,7 +2691,14 @@ table.report td.value {
 		right: 0px;
 		position: static;
 		float: right;	
+	}
 	
+	.bookmarksContainer.wide, .publicationsContainer.wide, #fscontent {
+		max-width: none;
+	}
+	
+	#fscontent {
+		padding-bottom: 2em;
 	}
 	
 }
