@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
@@ -35,6 +37,7 @@ import org.bibsonomy.rest.client.RestLogicFactory;
  * @version $Id$
  */
 public abstract class AbstractSynchronizationClient {
+	private static final Log log = LogFactory.getLog(AbstractSynchronizationClient.class);
 	protected static final String APISTRING = "api";
 	
 	/*
@@ -68,6 +71,7 @@ public abstract class AbstractSynchronizationClient {
 	 */
 	protected LogicInterface getServerLogic(final SyncService syncServer) {
 		final Properties serverUser = syncServer.getServerUser();
+		log.info("get server logic for: " + syncServer.getService() + " (api: " + syncServer.getSecureAPI() +")");
 		URI api = syncServer.getSecureAPI();
 		
 		// FIXME: logic returns empty not null uri as secure api
