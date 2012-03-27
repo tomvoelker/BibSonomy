@@ -450,7 +450,7 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="harvardhtmlyear-linked">
-		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<displayName>Harvard (HTML version), with abstract and export links, grouped by year</displayName>
 		<description xml:lang="en">
 			HTML output format formatted according to the Harvard bibliography
 			style guidelines and grouped by year. Includes Links to Abstract and
@@ -469,7 +469,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="harvardhtmlyear-linked-full">
-		<displayName>Harvard (HTML version), grouped by year</displayName>
+		<displayName>Harvard (HTML version), with abstract, export links and fulltext, grouped by year</displayName>
 		<description xml:lang="en">
 			HTML output format formatted according to the Harvard bibliography
 			style guidelines and grouped by year. Includes Links to Abstract, 
