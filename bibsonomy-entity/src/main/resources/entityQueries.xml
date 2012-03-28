@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <!-- database bibsonomy_strudel -->
 <select id="selectBibtex" parameterType="int" resultType="String">
-SELECT author FROM bibtex LIMIT 1000
+SELECT author FROM bibtex LIMIT 100
 </select>
 
 <select id="selectAuthor" parameterType="String" resultType="String">
@@ -15,7 +15,7 @@ SELECT author FROM author
  
  <!-- bibsonomy_strudel Tests -->
  <select id="selectBibtexDBLP" parameterType="int" resultType="String">
-SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' LIMIT 10000
+SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' LIMIT 100
 </select>
   
 <!-- database projekt_autoren_id -->
@@ -32,7 +32,7 @@ SELECT author_id, normalized_name FROM author
 </select>
 
 <select id="countAuthorsByName" parameterType="String" resultType="int">
-SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 1000
+SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 100
 </select>
 	
 <select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
@@ -51,9 +51,13 @@ INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (LAST_INSERT_
 INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (#{authorID},#{normalizedCoauthor});
 </insert>
 
-<delete id="deleteAuthor" parameterType="int">
+<delete id="deleteCoAuthors" parameterType="int">
 DELETE FROM author_coauthor WHERE author_id = #{tmpInnerMaxAuthorID};
+</delete>
+
+<delete id="deleteAuthor" parameterType="int">
 DELETE FROM author WHERE author_id = #{tmpInnerMaxAuthorID};
 </delete>
 
+<!-- tas -->
 </mapper>

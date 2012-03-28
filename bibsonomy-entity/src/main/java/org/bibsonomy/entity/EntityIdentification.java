@@ -61,7 +61,7 @@ public class EntityIdentification {
 		Reader reader;
 				
 		List<String> authorList = null;
-		List<Map<String,Integer>> authorIDNumberList = new ArrayList<Map<String,Integer>>();
+		List<Map<String,ArrayList<String>>> authorIDNumberList = new ArrayList<Map<String,ArrayList<String>>>();
 		
 		try {
 			reader = Resources.getResourceAsReader(resource);
@@ -69,7 +69,6 @@ public class EntityIdentification {
 			SqlSession session = sqlMapper.openSession();
 			try {
 			authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP", 1);
-			System.out.println(authorList.get(0));			
 		} finally {
 			session.close();
 		}
@@ -83,46 +82,83 @@ public class EntityIdentification {
 		try {
 			readerRkr = Resources.getResourceAsReader(resourceRkr);
 			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(readerRkr);
-			
 			SqlSession sessionRkr = sqlMapper.openSession();
 
 		//read all entries from bibtex and save it to author table
 		ArrayList<LinkedList<PersonName>> allAuthorsWithCoAuthors = new ArrayList<LinkedList<PersonName>>();
 		for (String authors: authorList) { //authorList for each publication
-			List<PersonName> allAuthorNamesOfOnePublication = PersonNameUtils.discoverPersonNames(authors);
+			//System.out.println("List of authors: " + authors);
+			ArrayList<String> authorNamesWhoHaveANumber = new ArrayList<String>();
+			ArrayList<Integer> authorNumbers = new ArrayList<Integer>();
+			//remove the numbers from the authors
+			final Pattern p = Pattern.compile("\\s+([^\\s]+?)\\s+([0-9]{4})");
+			final Matcher matcher = p.matcher(authors);
+			while (matcher.find()) {
+				authorNamesWhoHaveANumber.add(matcher.group(1));
+				authorNumbers.add(Integer.parseInt(matcher.group(2)));
+			}
+			
+			final Pattern p2 = Pattern.compile("[0-9]{4}");
+			final String cleanedAuthors = p2.matcher(authors).replaceAll("");
+			
+			List<PersonName> allAuthorNamesOfOnePublication = PersonNameUtils.discoverPersonNames(cleanedAuthors);
 			allAuthorsWithCoAuthors.add((LinkedList)allAuthorNamesOfOnePublication);
 			
+			int countAuthors = 0;
 			for (PersonName author: allAuthorNamesOfOnePublication) { //each author in the list of authors
-				
+				//System.out.println("Author as string: " + author.toString());
 				sessionRkr.commit();
 				HashMap<String, String> authorName = new HashMap<String, String>();
 				
+				int authorNumber = 1;
+				if (authorNamesWhoHaveANumber.size() > 0 && countAuthors < authorNamesWhoHaveANumber.size()) {
+					if (authorNamesWhoHaveANumber.get(countAuthors).equals(author.getLastName())) {
+						authorNumber = authorNumbers.get(countAuthors);
+						countAuthors++;
+					}
+				}
 				author = removeNumberFromAuthor(author);
 				
 				authorName.put("firstName", StringUtil.foldToASCII(author.getFirstName()));
 			    authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
 				authorName.put("normalizedName", normalizePerson(author));			    
-
-				int authorNumber = 0;
-				try {
-					Integer.parseInt(author.getLastName());
-					authorNumber = Integer.parseInt(author.getLastName());
-				}
-				catch(NumberFormatException nfe) {
-					authorNumber = 1;
-				}
 				
 			    //TODO insert
 			    sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
 			    
 				List<Integer> lastInsertID = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectLastInsertID");
 				List<PersonName> allAuthorsOfOnePublicationDBLP = null;
-
-				//add the authorID + authorNumber combination to the list
-				HashMap<String,Integer> IDAndNumber = new HashMap<String,Integer>();
-				IDAndNumber.put("authorID",lastInsertID.get(0));
-				IDAndNumber.put("authorNumber",authorNumber);
-				authorIDNumberList.add(IDAndNumber);
+				
+				int k=0;
+				boolean found = false;
+				//search the list if there is already a person with this name
+				for (Map<String, ArrayList<String>> authorHashMap: authorIDNumberList) {
+					//System.out.println("compare: " + authorHashMap.get("authorNameAndNumber").get(0) + " with " + normalizePerson(author) + authorNumber);
+					if (authorHashMap.get("authorNameAndNumber").get(0).equals(normalizePerson(author) + authorNumber)) {
+						//add the new authorID to the already existing data
+						//System.out.println("reAdd: " + authorHashMap.get("authorNameAndNumber").get(0));
+						ArrayList<String> authorIDs = authorHashMap.get("authorIDs");
+						authorIDs.add(String.valueOf(lastInsertID.get(0)));
+						authorHashMap.put("authorIDs",authorIDs);
+						authorIDNumberList.set(k, authorHashMap);
+						found = true;
+						break;
+					}
+					k++;
+				}
+				if (!found) {
+					//this author is new and we add this author to the list
+					Map<String,ArrayList<String>> authorHashMap = new HashMap<String,ArrayList<String>>();
+					ArrayList<String> authorID = new ArrayList<String>();
+					ArrayList<String> authorNameAndNumber = new ArrayList<String>();
+					authorNameAndNumber.add(normalizePerson(author) + authorNumber);
+					authorID.add(String.valueOf(lastInsertID.get(0)));
+					
+					//System.out.println("add: " + authorNameAndNumber.get(0));
+					authorHashMap.put("authorNameAndNumber", authorNameAndNumber);
+					authorHashMap.put("authorIDs",authorID);
+					authorIDNumberList.add(authorHashMap);
+				}
 			
 			    for (PersonName coauthor: allAuthorNamesOfOnePublication) {
 			    	//add all coauthors for this author thats not the author
@@ -131,16 +167,18 @@ public class EntityIdentification {
 			    }
 			}
 		}
-		
-		System.out.println(authorIDNumberList.get(0).get("authorID"));
-		System.out.println(authorIDNumberList.get(0).get("authorNumber"));
+				
+		for (Map<String, ArrayList<String>> test: authorIDNumberList) {
+			System.out.println(test.get("authorNameAndNumber").get(0));
+			for(int k=0; k < test.get("authorIDs").size(); k++) {
+				System.out.println(test.get("authorIDs").get(k));
+			}
+		}
 		
 		//run the algorithms
 		
 		//compare
-		
-		System.exit(1);
-		
+				
 		/*
 		LuceneTest lucene =  new LuceneTest();
 		try {
@@ -151,6 +189,7 @@ public class EntityIdentification {
 				
 		int threshold = 2;
 		List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
+		List<List<Integer>> authorIDsList = new ArrayList<List<Integer>>();
 		
 		//check the name for every author
 		for(int m=0; m < authorNames.size(); m++) {
@@ -167,10 +206,6 @@ public class EntityIdentification {
 				}
 
 				//cluster the author table
-				//HashMap<String, List<String>> authorCluster = new HashMap<String, List<String>>();
-				//authorCluster = sessionRkr.selectMap("org.mybatis.example.Entity-Identification.lastIDInsertAuthor");
-				//System.out.println();
-
 				Iterator outerItr = authorsWithNameX.iterator();
 		
 				int innerAuthorID=0, maxAuthorID=0;
@@ -178,8 +213,6 @@ public class EntityIdentification {
 				int counter=0, max=0;
 				int outerMax = 0;
 				
-				System.out.println(authorsWithNameX.get(0).get("normalized_coauthor"));
-				System.out.println(String.valueOf(authorsWithNameX.get(0).get("author_id")));
 				int firstAuthorID = Integer.parseInt(String.valueOf((authorsWithNameX.get(0).get("author_id"))));
 			
 				//tmp lists to compare within the iterations
@@ -254,11 +287,41 @@ public class EntityIdentification {
 				}
 		
 				System.out.println("we delete: " + tmpInnerMaxAuthorID);
+				
+				//search the list with the actual authorID and save the redundant ID
+				int n=0;
+				boolean found = false;
+				for (List<Integer> authorIDs: authorIDsList) {
+					int authorIDsSize = authorIDs.size();
+					for (int k=0; k<authorIDsSize; k++) {
+						//System.out.println("outerAuthorID:" + outerAuthorID + " " + authorIDs.get(k));
+						if (outerAuthorID == authorIDs.get(k)) {
+							authorIDs.add(tmpInnerMaxAuthorID);
+							authorIDsList.set(n, authorIDs);
+							found = true;
+						}
+					}
+					n++;
+				}
+				if (!found) {
+					List<Integer> authorIDs = new ArrayList<Integer>();
+					authorIDs.add(outerAuthorID);
+					authorIDs.add(tmpInnerMaxAuthorID);
+					authorIDsList.add(authorIDs);
+				}
+				
 				//delete the author we merged
+				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteCoAuthors", tmpInnerMaxAuthorID);
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteAuthor", tmpInnerMaxAuthorID);
 			}
 		}
 		
+		for (List<Integer> authorIDList: authorIDsList ) {
+			System.out.println("-----------------------------------------------");
+			for (int k=0; k < authorIDList.size(); k++) {
+				System.out.println(authorIDList.get(k)); 
+			}
+		}
 		System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
 		
 		/*
