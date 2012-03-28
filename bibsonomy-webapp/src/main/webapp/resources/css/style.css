@@ -638,7 +638,7 @@ a img {
 .sidebarnavi_entry {
     background: url("/resources/image/tabactions.png");
     height: 60px; 
-	width: 14.286%;
+	width: 42px;
     position: absolute;
     border-left: 1px solid #c6c6c6;
 }
@@ -695,7 +695,7 @@ a img {
 
 .sidebarnavi_entry_02 {
 	background-position: -96px -95px;
-	left: 14.2857%;
+	left: 42px;
 }
 
 .sidebarnavi_entry_02:hover {
@@ -704,12 +704,12 @@ a img {
 
 .sidebarnavi_entry_02_inactive {
 	background-position: -95px -200px;
-	left: 14.2857%;
+	left: 42px;
 }
 
 .sidebarnavi_entry_03 {
     background-position: -50px -91px;
-    left: 28.5714%;
+    left: 84px;
 }
 
 .sidebarnavi_entry_03:hover {
@@ -718,7 +718,7 @@ a img {
 
 .sidebarnavi_entry_03_inactive {
     background-position: -50px -193px;
-    left: 28.5714%;
+    left: 84px;
 }
 
 .sidebarnavi_entry_04 {
@@ -2682,15 +2682,25 @@ table.report td.value {
 		float: right;
 	}
 	
-	.sidebarnavi_entry {
+	
+	#sidebarnavi {
 		position: relative;
-		display: inline-block;
-		width: 14%;
-	}
-	.sidebarnavi_entry_01, .sidebarnavi_entry_02, .sidebarnavi_entry_03, .sidebarnavi_entry_04, .sidebarnavi_entry_05, .sidebarnavi_entry_06 , .sidebarnavi_entry_07 {
-    	left: auto;
 	}
 	
+	.sidebarnavi_entry {
+		display: inline-block;
+		width: 42px;
+		position: relative;
+	}
+
+	.sidebarnavi_entry_01, .sidebarnavi_entry_02, .sidebarnavi_entry_03, .sidebarnavi_entry_04, .sidebarnavi_entry_05, .sidebarnavi_entry_06 , .sidebarnavi_entry_07 {
+    	left: 0;
+	}
+	
+	.sidebarnavi_entry_01_inactive, .sidebarnavi_entry_02_inactive, .sidebarnavi_entry_03_inactive, .sidebarnavi_entry_04_inactive, .sidebarnavi_entry_05_inactive, .sidebarnavi_entry_06_inactive , .sidebarnavi_entry_07_inactive {
+    	left: 0;
+	}
+
 	#sidebar {
 		top: 185px;
 		right: 0px;
