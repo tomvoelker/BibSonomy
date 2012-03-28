@@ -2645,6 +2645,7 @@ table.report td.value {
 	
 	#headercontainer {
 		position: static;
+		clear: left;
 	}
 	
 	#postcontainer {
