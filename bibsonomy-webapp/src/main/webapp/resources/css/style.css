@@ -2451,6 +2451,7 @@ div.fsRow div.resizable-textarea textarea {
 #copiedTags, .fsSuggestion, .fsInput, .tagInput, #suggestedTags, #recommendedTags {
   float: left;
   width: 73%;
+  background-color: white;
 }
 
 #copiedTags li, #recommendedTags li, #suggestedTags li {
@@ -2639,7 +2640,7 @@ table.report td.value {
 		
 		
 	#container {
-		overflow: hidden;
+		/*overflow: hidden;*/
 	    position: static;
 	}
 	
