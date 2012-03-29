@@ -2337,8 +2337,9 @@ div.fsRow div.resizable-textarea textarea {
 .errorcontainer {
 	border: 1px solid rgb(0, 102, 153);
 	padding: 1em;
-	margin-bottom: 1em;
+    margin: 0 2px 1em;
 }
+
 #error {
 	padding: 15px;
 	border: 1px solid #aeaeae;
