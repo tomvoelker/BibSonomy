@@ -384,6 +384,7 @@ a img {
 #navigation > ul table {
 	border-left: 2px solid #c6c6c6;
 	border-right: 2px solid #c6c6c6;
+	border-right: 2px solid #C6C6C6;	
 }
 
 #navigation * {
@@ -415,6 +416,7 @@ a img {
 	background: #f0f0f0;
 	border-left: 2px solid #c6c6c6;
 	border-right: 2px solid #c6c6c6;
+	border-right: 2px solid #C6C6C6;	
 }
 
 /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
