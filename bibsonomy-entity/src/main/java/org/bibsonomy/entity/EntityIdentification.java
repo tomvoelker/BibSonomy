@@ -1,5 +1,6 @@
 package org.bibsonomy.entity;
 
+import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -200,7 +201,7 @@ public class EntityIdentification {
 				//TODO List<Map<String,String>> testX = getAuthorsWithNameLikeX("r.wille", sessionRkr);
 				List<Map<Integer,String>> authorsWithNameX = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorNames.get(m));
 				if (authorsWithNameX.isEmpty()) {
-					System.out.println("its empty");
+					//System.out.println("its empty");
 					m++;
 					continue;
 				}
@@ -263,11 +264,11 @@ public class EntityIdentification {
 					}
 				}
 		
-				System.out.println("OuterMax: " + outerMax + " - Merge " + outerAuthorID + " with " + tmpInnerMaxAuthorID);
+				//System.out.println("OuterMax: " + outerMax + " - Merge " + outerAuthorID + " with " + tmpInnerMaxAuthorID);
 		
 				//end when there are no more authors to merge
 				if (outerMax < threshold) {
-					System.out.println("end this");
+					//System.out.println("end this");
 					break;
 				}
 			
@@ -281,12 +282,12 @@ public class EntityIdentification {
 					HashMap<String, String> coAuthorToAdd = new HashMap<String, String>();
 					coAuthorToAdd.put("authorID", outerMaxAuthorID + "");
 					coAuthorToAdd.put("normalizedCoauthor", coauthorsToAdd.get(k));
-					System.out.println("We have to add: " + coAuthorToAdd.get("authorID") + " " + coAuthorToAdd.get("normalizedCoauthor"));
+					//System.out.println("We have to add: " + coAuthorToAdd.get("authorID") + " " + coAuthorToAdd.get("normalizedCoauthor"));
 			
 					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedCoAuthor", coAuthorToAdd);			 
 				}
 		
-				System.out.println("we delete: " + tmpInnerMaxAuthorID);
+				//System.out.println("we delete: " + tmpInnerMaxAuthorID);
 				
 				//search the list with the actual authorID and save the redundant ID
 				int n=0;
@@ -297,6 +298,7 @@ public class EntityIdentification {
 						//System.out.println("outerAuthorID:" + outerAuthorID + " " + authorIDs.get(k));
 						if (outerAuthorID == authorIDs.get(k)) {
 							authorIDs.add(tmpInnerMaxAuthorID);
+							//TODO we cant merge the same author IDs if (tmpInnerMaxAuthorID != outerAuthorID) 
 							authorIDsList.set(n, authorIDs);
 							found = true;
 						}
@@ -322,6 +324,50 @@ public class EntityIdentification {
 				System.out.println(authorIDList.get(k)); 
 			}
 		}
+		
+		//TODO System.exit(1);
+		
+		//compare the results
+		float avgClusters = 0;
+		int countAuthors = 0, countIDs = 0;
+		for (Map<String, ArrayList<String>> author: authorIDNumberList) { //every author where we know the correct IDs
+			if (author.get("authorIDs").size() < 2) continue;
+			
+			int countClusters = 0;
+			countAuthors++;
+			ArrayList<Integer> savePositions = new ArrayList<Integer>(); 
+			countIDs += author.get("authorIDs").size();
+			System.out.println("this author has the following IDs:");
+			
+			for (int k=0; k<author.get("authorIDs").size(); k++) { //every ID of this authors
+				System.out.println(author.get("authorIDs").get(k));
+				//count the clusters this IDs are split into
+				boolean found = false;;
+				int m=0;
+				for (List<Integer> calculatedIDsList: authorIDsList) { //every cluster we want to compare
+					for(Integer calculatedID: calculatedIDsList) { //every ID of this cluster
+						if (calculatedID == Integer.parseInt(author.get("authorIDs").get(k))) {
+							found = true;
+							if (!savePositions.contains(m))  {
+								System.out.println("new one");
+								//save the position
+								savePositions.add(m);
+								countClusters++;
+								break;
+							}
+						}
+					}
+				m++;
+				}
+				if (!found) countClusters++;
+			}
+			System.out.println("this author is split into: " + countClusters + " clusters");
+			avgClusters += countClusters;
+		}
+		//avgClusters
+		System.out.println("Each author with more then one ID has an average of " + (float)countIDs/(float)countAuthors + " IDs");
+		System.out.println("Each author is split into an average of " + (float)avgClusters/(float)countAuthors + " clusters");
+		
 		System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
 		
 		/*
@@ -331,6 +377,8 @@ public class EntityIdentification {
 		System.out.println("Soundex Code Last Name: " + soundex.encode(personNames.get(0).getLastName()));
 		System.out.println("Soundex Code First Name: " + soundex.encode(personNames.get(0).getFirstName()));
 		*/
+		
+		//org.bibsonomy.model.util PersonNameUtils
 
 		sessionRkr.commit();
 		sessionRkr.close();
