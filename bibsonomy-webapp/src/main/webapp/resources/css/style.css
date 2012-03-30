@@ -2720,6 +2720,23 @@ table.report td.value {
 		padding-bottom: 2em;
 	}
 	
+	
+	#search .smallform #inpf {
+		margin-bottom: 0;
+		vertical-align: top;
+		height: 16px;
+	}
+	
+	#search .smallform input[type=submit] {
+		margin-bottom: 0;
+		vertical-align: top;
+		height: 23px;
+	}
+	
+	#search > ul li ul {
+		margin-top: 0;
+	}
+	
 /* 
 }
 
