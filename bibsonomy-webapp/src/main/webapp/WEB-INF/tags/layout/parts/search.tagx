@@ -7,6 +7,11 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:spring="http://www.springframework.org/tags">
 	
+    <!-- 
+      set theme variables    
+     -->
+    <spring:theme code="image.dropdown.large" var="imageDropdown"/>
+	
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	
 	<jsp:directive.attribute name="pathMessageKey" type="java.lang.String" required="true" description="The message key for the first element of the path"/>
@@ -24,7 +29,7 @@
 		<ul>
 			<li>
 				<!--  ::  --> 
-				<a href="#"><img alt="" src="${resdir}/image/pulldown-marker-large_white.png"/>${mtl:ch('nbsp')}<fmt:message key="${pathMessageKey}"/></a>
+				<a href="#"><img alt="" src="${imageDropdown}"/>${mtl:ch('nbsp')}<fmt:message key="${pathMessageKey}"/></a>
 				<ul>
 					<li onclick="return switchNavi('tag', this);"><fmt:message key="navi.tag"/></li>
 					<li onclick="return switchNavi('user', this);"><fmt:message key="navi.user"/></li>
