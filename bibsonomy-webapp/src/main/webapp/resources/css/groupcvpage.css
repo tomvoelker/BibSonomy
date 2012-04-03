@@ -9,9 +9,13 @@
 }
 
 h2 {
-        clear: left;
+		clear: left;
         margin: 5px 0px 10px 5px;
         border-bottom: solid #eee 2px;
+}
+
+#panelheader h2 {
+		clear: inherit;
 }
 
 .hand {
