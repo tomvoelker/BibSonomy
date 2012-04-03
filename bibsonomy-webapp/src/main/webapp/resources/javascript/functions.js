@@ -1017,8 +1017,8 @@ this.imagePreview = function(){
 		 */
 		$("body").append("<p id='preview'><img src='"+ this.href + (this.href.indexOf("?") > 0 ? "&" : "?") + "preview=LARGE'/>"+ c +"</p>");		
 		$("#preview")
-		.css("top", Math.max((e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)), 50) + "px")
-		.css("left", Math.max((e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)), 50) + "px")
+		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
+		.css("left", (e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px")
 		.fadeIn("fast");      
 	}, function(){
 		this.title = this.t;	
@@ -1026,8 +1026,8 @@ this.imagePreview = function(){
 	});		   
 	$("a.preview").mousemove(function(e){
 		$("#preview")
-		.css("top", Math.max((e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)), 50) + "px")
-		.css("left", Math.max((e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)), 50) + "px");
+		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
+		.css("left", (e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px");
 	});		     	      
 };
 
