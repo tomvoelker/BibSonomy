@@ -13,8 +13,13 @@ SELECT author FROM bibtex LIMIT 100
 SELECT author FROM author
 </select>
  
- <!-- bibsonomy_strudel Tests -->
- <select id="selectBibtexDBLP" parameterType="int" resultType="String">
+<!--  MyOwn test -->
+<select id="selectMyOwn" parameterType="String" resultType="java.util.Map">
+select tas.user_name, bibtex.author from tas inner join bibtex using(content_id) where tag_name = 'myown' order by user_name
+</select>
+
+<!-- bibsonomy_strudel DBLP Tests -->
+<select id="selectBibtexDBLP" parameterType="int" resultType="String">
 SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' LIMIT 100
 </select>
   
@@ -59,5 +64,4 @@ DELETE FROM author_coauthor WHERE author_id = #{tmpInnerMaxAuthorID};
 DELETE FROM author WHERE author_id = #{tmpInnerMaxAuthorID};
 </delete>
 
-<!-- tas -->
 </mapper>

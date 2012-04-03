@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import javax.sql.DataSource;
 import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
@@ -62,6 +64,7 @@ public class EntityIdentification {
 		Reader reader;
 				
 		List<String> authorList = null;
+		List<Map<String,String>> myOwnAuthorList = null;
 		List<Map<String,ArrayList<String>>> authorIDNumberList = new ArrayList<Map<String,ArrayList<String>>>();
 		
 		try {
@@ -70,6 +73,7 @@ public class EntityIdentification {
 			SqlSession session = sqlMapper.openSession();
 			try {
 			authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP", 1);
+			myOwnAuthorList = session.selectList("org.mybatis.example.Entity-Identification.selectMyOwn", 1);
 		} finally {
 			session.close();
 		}
@@ -77,6 +81,68 @@ public class EntityIdentification {
 			e.printStackTrace();
 		}
 				
+		String userName = null;
+		int userNameCount = 0;
+		HashMap<String,Integer> saveFirstNameCount = new HashMap<String,Integer>();
+		HashMap<String,Integer> saveLastNameCount = new HashMap<String,Integer>();
+		for(int k=0; k < myOwnAuthorList.size(); k++) {
+			//TODO count  the name only one time for each publication e.g. Alexander X. and Alexaner Y.
+			List<PersonName> authors = PersonNameUtils.discoverPersonNames(myOwnAuthorList.get(k).get("author"));
+			for(PersonName author: authors) {
+				int countFirstName = 0, countLastName = 0;
+				if (saveFirstNameCount.containsKey(author.getFirstName())) {
+					countFirstName = saveFirstNameCount.get(author.getFirstName());
+					saveFirstNameCount.put(author.getFirstName(),++countFirstName);
+				}
+				else saveFirstNameCount.put(author.getFirstName(),1);
+				
+				if (saveLastNameCount.containsKey(author.getLastName())) {
+					countLastName = saveLastNameCount.get(author.getLastName());
+					saveLastNameCount.put(author.getLastName(),++countLastName);
+				}
+				else saveLastNameCount.put(author.getLastName(),1);				
+			}
+			
+			if (userName == null) userName =  myOwnAuthorList.get(k).get("user_name");
+			else if(!myOwnAuthorList.get(k).get("user_name").equals(userName)) {
+				if (userNameCount > 1) {
+					System.out.println("user_name: " + myOwnAuthorList.get(k).get("user_name"));
+					System.out.println("---firstName:---");
+					String nameWithMostCounts = null;
+					int nameCount = 0;
+					for( Map.Entry<String, Integer> e : saveFirstNameCount.entrySet()) {
+						if (e.getValue() > nameCount) {
+							nameWithMostCounts = e.getKey();
+							nameCount = e.getValue();
+						}
+						//System.out.println(e.getKey() + ": " + e.getValue());
+					}
+					System.out.println("winner is: " + nameWithMostCounts + " with " + nameCount);
+					System.out.println("---lastName:---");
+					nameWithMostCounts = null;
+					nameCount = 0;
+					for( Map.Entry<String, Integer> e : saveLastNameCount.entrySet()) {
+						if (e.getValue() > nameCount) {
+							nameWithMostCounts = e.getKey();
+							nameCount = e.getValue();
+						}
+						//System.out.println(e.getKey() + ": " + e.getValue());
+					}
+					System.out.println("winner is: " + nameWithMostCounts + " with " + nameCount);
+				}
+					
+				//delete the name counts
+				userNameCount = 0;
+				userName = null;
+				saveFirstNameCount.clear();
+				saveLastNameCount.clear();
+			}
+			else userNameCount++;
+		}
+		System.out.println("ende");
+		System.exit(1);
+		
+		
 		String resourceRkr = "configRkr.xml";
 		Reader readerRkr;
 		
@@ -122,7 +188,9 @@ public class EntityIdentification {
 				
 				authorName.put("firstName", StringUtil.foldToASCII(author.getFirstName()));
 			    authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
-				authorName.put("normalizedName", normalizePerson(author));			    
+				authorName.put("normalizedName", normalizePerson(author));	
+				
+				//TODO String test = org.bibsonomy.model.util.PersonNameUtils.discoverPersonNames(persons);
 				
 			    //TODO insert
 			    sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
@@ -196,7 +264,6 @@ public class EntityIdentification {
 		for(int m=0; m < authorNames.size(); m++) {
 			//do this as long there is something we can merge
 			while (true) {
-				System.out.println(authorNames.get(m));
 				//merge authors who have the same coauthors
 				//TODO List<Map<String,String>> testX = getAuthorsWithNameLikeX("r.wille", sessionRkr);
 				List<Map<Integer,String>> authorsWithNameX = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorNames.get(m));
@@ -349,7 +416,7 @@ public class EntityIdentification {
 						if (calculatedID == Integer.parseInt(author.get("authorIDs").get(k))) {
 							found = true;
 							if (!savePositions.contains(m))  {
-								System.out.println("new one");
+								System.out.println("--split--");
 								//save the position
 								savePositions.add(m);
 								countClusters++;
@@ -378,8 +445,6 @@ public class EntityIdentification {
 		System.out.println("Soundex Code First Name: " + soundex.encode(personNames.get(0).getFirstName()));
 		*/
 		
-		//org.bibsonomy.model.util PersonNameUtils
-
 		sessionRkr.commit();
 		sessionRkr.close();
 		} catch (IOException e) {
