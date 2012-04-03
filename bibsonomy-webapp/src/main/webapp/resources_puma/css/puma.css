@@ -22,16 +22,17 @@ a {
 }
 
 #logo {
-	top: 0px;
+	top: 7px;
+	font-size: 34px;
 }
 
 #logoSubtitle {
 	top: 45px;
-	line-height: 2ex;
+	line-height: 2.1ex;
 }
 
 #logo, #logoSubtitle {
-	left: 100px;
+	left: 92px;
 }
 
 #logo, #logo a {
@@ -59,6 +60,11 @@ a {
 
 #navigation, #navigation2 {
     background-color: #DF430D;
+    color: white;
+}
+
+#navigation2 .signoff {
+    background-image: url("/resources_puma/image/signoff_white.png");
 }
 
 #navigation > ul {
@@ -78,18 +84,22 @@ a {
 }
 
 #navigation ul li.pulldown {
-    background-image: url("/resources/image/pulldown-marker-medium_white.png");
+    background-image: url("/resources_puma/image/pulldown-marker-medium_white.png");
 }
 
 #navigation .pulldown > span {
     color: #F7EFED;;
+}
+
+#navigation .pulldown.active > span {
+    color: inherit;
 }
     
 #navigation > ul > li > a:hover {
     color: #F7EFED;
 }
 
-#navigation > ul ul li a {
+#navigation > ul ul li a, #navigation > ul li table a {
 	color: black;
 }
 
