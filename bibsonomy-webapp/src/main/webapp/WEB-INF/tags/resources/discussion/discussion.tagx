@@ -5,6 +5,7 @@
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
     
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
@@ -61,8 +62,7 @@
     	
     		
 		<div cssClass="fsRow">
-			<!-- TODO: Find a better way to test this -->
-			<c:if test="${resource.class.simpleName != 'Bookmark' and resource.class.simpleName != 'GoldStandardBookmark' and resource.entrytype=='preprint' and empty resource.discussionItems}">
+			<c:if test="${not fn:contains(resource.class.simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
 				<fmt:message key="post.resource.preprint.hint" />
 			</c:if>
 		</div>
