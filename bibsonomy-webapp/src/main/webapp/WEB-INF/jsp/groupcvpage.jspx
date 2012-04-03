@@ -77,6 +77,8 @@
 			| page content
 			+-->
 		<jsp:attribute name="content">
+		<div id="fullscreen"> 
+ 			<div id="fscontent"> 
 			<div class="groupImage">
 				<img src="/picture/user/${command.group.name}"/>
 				<c:if test="${not empty command.group.homepage}">
@@ -171,6 +173,8 @@
 				
 				</div>
 			</c:if>
+			</div>
+			</div>
 		</jsp:attribute>
 		
 	</layout:layout>
