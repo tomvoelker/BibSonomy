@@ -107,6 +107,11 @@ a {
 	color: black;
 }
 
+#navigation > ul ul li a, #navigation > ul li table {
+	font-size: inherit;
+	font-weight: bold;
+}
+
 #navigation2 a {
     color: #F7EFED;
 }	
