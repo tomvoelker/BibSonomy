@@ -95,7 +95,7 @@
 		<jsp:attribute name="contentHeading">
 			<div id="fscontent">
 				<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" postUserName="${command.postOwner}"/>
-			<div id="fscontent">
+			</div>
 		</jsp:attribute>
 	</layout:resourceLayout>
 
