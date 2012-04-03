@@ -2,19 +2,23 @@ body {
 	background-color: #F7EFED;
 }
 
+a {
+	color: #872708;
+}
+
 #container {
 	top: 14px;
 }
 
 #logoimage {
     display: block;
-    margin-top: -9px;
+    margin-top: 0px;
     position: absolute;
     z-index: 55;
 }
 
 #headerlogoimage {
-	height: 100px;
+	height: 90px;
 }
 
 #logo {
@@ -54,12 +58,44 @@ body {
 
 
 #navigation, #navigation2 {
-    background-color: #CABEA6;
+    background-color: #DF430D;
 }
 
 #navigation > ul {
 	margin-left: 1px;
 }
+
+#navigation ul li a { 
+	color: #F7EFED;
+}
+
+#navigation ul li.active { 
+	color: #DF430D;
+}
+
+#navigation > ul li:hover, #navigation .pulldown:hover {
+    color: #F7EFED;
+}
+
+#navigation ul li.pulldown {
+    background-image: url("/resources/image/pulldown-marker-medium_white.png");
+}
+
+#navigation .pulldown > span {
+    color: #F7EFED;;
+}
+    
+#navigation > ul > li > a:hover {
+    color: #F7EFED;
+}
+
+#navigation > ul ul li a {
+	color: black;
+}
+
+#navigation2 a {
+    color: #F7EFED;
+}	
 
 #postcontainer {
 	border: 1px solid #DBC3BC;
@@ -122,10 +158,6 @@ input#inpf {
 }
 
 #bookmarksheader .header, #publicationsheader .header, #panelheader .header {
-	color: #DF430D;
-}
-
-#navigation ul li.active { 
 	color: #DF430D;
 }
 
