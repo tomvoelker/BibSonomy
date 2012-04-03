@@ -67,7 +67,7 @@ a img {
     border: 2px solid #666666;
     box-shadow: 0 0 5px 0;
     left: 20px;
-    margin-top: 40px;
+    margin-top: 100px;
     position: absolute;
     right: 320px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
     z-index: 60;
