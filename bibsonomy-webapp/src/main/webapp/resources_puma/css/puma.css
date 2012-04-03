@@ -58,6 +58,10 @@ a {
 }
 
 
+#search {
+    font-size: 18px;
+}
+
 #navigation, #navigation2 {
     background-color: #DF430D;
     color: white;
@@ -186,6 +190,18 @@ input#inpf {
 .fsOuter, .fsInner, .fsVisible {
     background-color: #F8F8F8;
     border: 1px solid #DBC3BC;
+}
+
+div.ui-tabs div.ui-tabs-panel {
+    border: 1px solid #DBC3BC;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
+    border: 1px solid #DBC3BC;
+}
+
+div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
+    color: #872708;
 }
 
 .reqinput {
