@@ -61,7 +61,8 @@
     	
     		
 		<div cssClass="fsRow">
-			<c:if test="${resource.entrytype=='preprint' and empty resource.discussionItems}">
+			<!-- TODO: Find a better way to test this -->
+			<c:if test="${resource.class.simpleName != 'Bookmark' and resource.class.simpleName != 'GoldStandardBookmark' and resource.entrytype=='preprint' and empty resource.discussionItems}">
 				<fmt:message key="post.resource.preprint.hint" />
 			</c:if>
 		</div>
