@@ -17,12 +17,12 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
-	private final String userName;
-	private final List<String> tags;
-	private final String tagString;
-	private final String search;
-	private final Class<? extends Resource> resourceType;
-	
+	protected final String userName;
+	protected final List<String> tags;
+	protected final String tagString;
+	protected final String search;
+	protected Class<? extends Resource> resourceType;
+
 	/**
 	 * @param context
 	 * @param userName
@@ -49,13 +49,14 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	@Override
 	protected StringBuilder getLinkPrefix() {
 		final StringBuilder sb = new StringBuilder(this.getUrlRenderer().getApiUrl());
-		sb.append(RESTConfig.USERS_URL).append("/").append(this.userName).append("/").append(RESTConfig.POSTS_URL); 
+		sb.append(RESTConfig.USERS_URL).append("/").append(this.userName).append("/").append(RESTConfig.POSTS_URL);
 		return sb;
 	}
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null, this.search, null, null, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(this.resourceType, GroupingEntity.USER, this.userName, this.tags, null, this.search, null, null, null, null, this.getView().getStartValue(),
+				this.getView().getEndValue());
 	}
 
 	@Override

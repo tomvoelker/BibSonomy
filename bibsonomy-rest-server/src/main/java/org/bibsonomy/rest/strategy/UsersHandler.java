@@ -1,11 +1,17 @@
 package org.bibsonomy.rest.strategy;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.StringTokenizer;
 
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
+import org.bibsonomy.rest.strategy.clipboard.DeleteClipboardStrategy;
+import org.bibsonomy.rest.strategy.clipboard.GetClipboardStrategy;
+import org.bibsonomy.rest.strategy.clipboard.PostClipboardStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.DeleteUserConceptStrategy;
@@ -39,7 +45,7 @@ public class UsersHandler implements ContextHandler {
 		final int numTokensLeft = urlTokens.countTokens();
 		final String userName;
 		final String req;
-		
+
 		switch (numTokensLeft) {
 		case 0:
 			// /users
@@ -61,9 +67,13 @@ public class UsersHandler implements ContextHandler {
 				return createUserConceptsStrategy(context, httpMethod, userName);
 			}
 
-			// /users/[username]/friends , /users/[username]/followers 
-			if (RESTConfig.FRIENDS_SUB_PATH.equalsIgnoreCase(req) || RESTConfig.FOLLOWERS_SUB_PATH.equalsIgnoreCase(req) ) {
+			// /users/[username]/friends , /users/[username]/followers
+			if (RESTConfig.FRIENDS_SUB_PATH.equalsIgnoreCase(req) || RESTConfig.FOLLOWERS_SUB_PATH.equalsIgnoreCase(req)) {
 				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, null);
+			}
+			// /users/[username]/clipboard
+			if (RESTConfig.CLIPBOARD_SUBSTRING.equalsIgnoreCase(req)) {
+				return createUserClipboardStrategy(context, httpMethod, userName, null);
 			}
 			break;
 		case 3:
@@ -85,6 +95,10 @@ public class UsersHandler implements ContextHandler {
 			if (RESTConfig.FRIENDS_SUB_PATH.equalsIgnoreCase(req)) {
 				final String tag = urlTokens.nextToken();
 				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, tag);
+			}
+			if (RESTConfig.CLIPBOARD_SUBSTRING.equalsIgnoreCase(req)) {
+				final String resourceHash = urlTokens.nextToken();
+				return createUserClipboardStrategy(context, httpMethod, userName, resourceHash);
 			}
 			break;
 		case 4:
@@ -126,7 +140,7 @@ public class UsersHandler implements ContextHandler {
 			// map @me to login user name
 			return context.getLogic().getAuthenticatedUser().getName();
 		}
-		
+
 		return userName;
 	}
 
@@ -232,6 +246,26 @@ public class UsersHandler implements ContextHandler {
 			return new DeleteUserConceptStrategy(context, conceptName, userName);
 		default:
 			throw new UnsupportedHttpMethodException(httpMethod, "Concept-Conceptname");
+		}
+	}
+
+	private Strategy createUserClipboardStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
+		switch (httpMethod) {
+		case GET:
+			return new GetClipboardStrategy(context, userName);
+		case POST:
+			if (!present(resourceHash)) {
+				throw new BadRequestOrResponseException("missed resource hash");
+			}
+			return new PostClipboardStrategy(context, userName, resourceHash);
+		case DELETE:
+			boolean clearClipboard = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.CLIPBOARD_CLEAR, "false"));
+			if (!present(resourceHash) && !clearClipboard) {
+				throw new BadRequestOrResponseException("missed resource hash");
+			}
+			return new DeleteClipboardStrategy(context, userName, resourceHash, clearClipboard);
+		default:
+			throw new UnsupportedHttpMethodException(httpMethod, "clipboard");
 		}
 	}
 }
