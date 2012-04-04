@@ -223,6 +223,12 @@ ul#gold_menu li a {
     color: white !important;
 }
 
+ul.newMenu li a {
+    background-color: #DF430D;
+    border: 1px solid #DBC3BC;
+    color: white !important;
+}
+
 #pumageneral {
     font-size: 130%;
     font-weight: normal;
@@ -295,6 +301,12 @@ ul#gold_menu li a {
 .dd .ddChild a.selected:hover {
     background-color: #66CCFF;
 }
+
+
+div.grippie {
+    border-color: #DBC3BC;
+}
+
 
 
 #loginParts_LDAP:hover .loginHelp {
