@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.Date;
@@ -72,6 +74,7 @@ import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
+import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
 import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
@@ -90,6 +93,7 @@ import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
+import org.bibsonomy.rest.client.queries.post.PickPostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
@@ -116,11 +120,13 @@ public class RestLogic implements LogicInterface {
 	private final RenderingFormat renderingFormat;
 	private final ProgressCallbackFactory progressCallbackFactory;
 
-
 	/**
-	 * @param username the username
-	 * @param apiKey the API key
-	 * @param apiURL the API url
+	 * @param username
+	 *            the username
+	 * @param apiKey
+	 *            the API key
+	 * @param apiURL
+	 *            the API url
 	 * @param renderingFormat
 	 * @param progressCallbackFactory
 	 */
@@ -135,7 +141,7 @@ public class RestLogic implements LogicInterface {
 		this.accessor = null;
 	}
 
-	public RestLogic(final AuthenticationAccessor accessor, String apiUrl, RenderingFormat renderingFormat, ProgressCallbackFactory progressCallbackFactory) {
+	public RestLogic(final AuthenticationAccessor accessor, final String apiUrl, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
 		this.apiURL = apiUrl;
 		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
 		this.renderingFormat = renderingFormat;
@@ -206,13 +212,14 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, Date startDate, Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setResourceHash(hash);
 		query.setResourceType(resourceType);
 		query.setTags(tags);
+		query.setUserName(this.getAuthenticatedUser().getName());
 		return (List) execute(query);
 	}
 
@@ -222,7 +229,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, Date startDate, Date endDate, final int start, final int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setFilter(regex);
@@ -245,7 +252,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {		
+	public List<String> createPosts(final List<Post<?>> posts) {
 		/*
 		 * FIXME: this iteration should be done on the server, i.e.,
 		 * CreatePostQuery should support several posts ... although it's
@@ -409,7 +416,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, Date startDate, Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -420,12 +427,12 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
-		//TODO maybe return 0;
+		// TODO maybe return 0;
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Date startDate, Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -474,12 +481,23 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public int createBasketItems(final List<Post<? extends Resource>> posts) {
-		throw new UnsupportedOperationException();
+		final PickPostQuery query = new PickPostQuery();
+		query.setUserName(posts.get(0).getUser().getName());
+		query.setResourceHash(posts.get(0).getResource().getIntraHash());
+		return execute(query);
 	}
 
 	@Override
 	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
-		throw new UnsupportedOperationException();
+		final UnpickClipboardQuery query = new UnpickClipboardQuery();
+		query.setClearAll(clearAll);
+
+		if (present(posts)) {
+			query.setUserName(posts.get(0).getUser().getName());
+			query.setResourceHash(posts.get(0).getResource().getIntraHash());
+		}
+
+		return execute(query);
 	}
 
 	@Override

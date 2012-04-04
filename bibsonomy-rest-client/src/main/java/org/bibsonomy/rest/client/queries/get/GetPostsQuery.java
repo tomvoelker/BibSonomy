@@ -40,7 +40,6 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
-
 /**
  * Use this Class to receive an ordered list of all posts.
  * 
@@ -59,6 +58,8 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 	private String resourceHash;
+	private String userName;
+
 	/**
 	 * Gets bibsonomy's posts list.
 	 */
@@ -75,8 +76,12 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 *            end of the list
 	 */
 	public GetPostsQuery(int start, int end) {
-		if (start < 0) start = 0;
-		if (end < start) end = start;
+		if (start < 0) {
+			start = 0;
+		}
+		if (end < start) {
+			end = start;
+		}
 
 		this.start = start;
 		this.end = end;
@@ -100,7 +105,9 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			this.grouping = grouping;
 			return;
 		}
-		if (groupingValue == null || groupingValue.length() == 0) throw new IllegalArgumentException("no grouping value given");
+		if (groupingValue == null || groupingValue.length() == 0) {
+			throw new IllegalArgumentException("no grouping value given");
+		}
 
 		this.grouping = grouping;
 		this.groupingValue = groupingValue;
@@ -134,7 +141,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	/**
 	 * @param order
-	 * 				the order to set
+	 *            the order to set
 	 */
 	public void setOrder(final Order order) {
 		this.order = order;
@@ -142,17 +149,18 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	/**
 	 * @param search
-	 * 				the search string to set
+	 *            the search string to set
 	 */
 	public void setSearch(final String search) {
 		// TODO: use url encode!?
 		this.search = search.replace(" ", "+");
 	}
 
-
 	@Override
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+		if (this.downloadedDocument == null) {
+			throw new IllegalStateException("Execute the query first.");
+		}
 		try {
 			return this.getRenderer().parsePostList(this.downloadedDocument);
 		} catch (final InternServerException ex) {
@@ -183,6 +191,9 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		case FRIEND:
 			url += "&friend=" + this.groupingValue;
 			break;
+		case BASKET:
+			this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + userName + "/" + RESTConfig.CLIPBOARD_SUBSTRING);
+			return null;
 		default:
 			throw new UnsupportedOperationException("The grouping " + this.grouping + " is currently not supported by this query.");
 		}
@@ -203,15 +214,23 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			url += "&" + RESTConfig.RESOURCE_PARAM + "=" + this.resourceHash;
 		}
 
-		if(this.order != null){
+		if (this.order != null) {
 			url += "&" + RESTConfig.ORDER_PARAM + "=" + this.order;
 		}
 
-		if(this.search != null && this.search.length() > 0){
+		if (this.search != null && this.search.length() > 0) {
 			url += "&" + RESTConfig.SEARCH_PARAM + "=" + this.search;
 		}
-		log.debug("GetPostsQuery doExecute() called - URL: "+url);
+		log.debug("GetPostsQuery doExecute() called - URL: " + url);
 		this.downloadedDocument = performGetRequest(url);
 		return null;
+	}
+
+	/**
+	 * @param userName
+	 *            the userName to set
+	 */
+	public void setUserName(final String userName) {
+		this.userName = userName;
 	}
 }
