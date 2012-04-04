@@ -95,13 +95,13 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		
 		
 		if(matcher.find()){
-			postContent = "citations-format=citation-abstract&download-format=download-bibtex&fromPageName=bookAbstract&recordIds=" + matcher.group(1);
+			postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + matcher.group(1);
 		}
 		
 		matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
 		
 		if(matcher.find()){
-			postContent = "citations-format=citation-abstract&download-format=download-bibtex&fromPageName=abstract&recordIds=" + matcher.group(1);
+			postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + matcher.group(1);
 		}
 		
 		if (postContent != null) {
