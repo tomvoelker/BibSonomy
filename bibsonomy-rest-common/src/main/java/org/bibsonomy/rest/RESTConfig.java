@@ -32,11 +32,13 @@ import org.bibsonomy.rest.validation.ModelValidator;
  * @version $Id$
  */
 public final class RESTConfig {
-	private RESTConfig() {}
-	
-	@Deprecated // TODO: inject via spring beans
+	private RESTConfig() {
+	}
+
+	@Deprecated
+	// TODO: inject via spring beans
 	public static ModelValidator MODEL_VALIDATOR = null;
-	
+
 	public static final String POSTS_URL = "posts";
 
 	public static final String POSTS_ADDED_SUB_PATH = "added";
@@ -68,36 +70,40 @@ public final class RESTConfig {
 	public static final String FOLLOWERS_SUB_PATH = "followers";
 
 	public static final String GROUPS_URL = "groups";
-	
+
 	public static final String RESOURCE_TYPE_PARAM = "resourcetype";
-	
+
 	public static final String RESOURCE_PARAM = "resource";
-	
+
 	public static final String TAGS_PARAM = "tags";
-	
+
 	public static final String FILTER_PARAM = "filter";
-	
+
 	public static final String ORDER_PARAM = "order";
-	
+
 	public static final String CONCEPT_STATUS_PARAM = "status";
-	
+
 	public static final String SEARCH_PARAM = "search";
-	
+
 	public static final String SUB_TAG_PARAM = "subtag";
-	
+
 	public static final String REGEX_PARAM = FILTER_PARAM;
-	
+
 	public static final String START_PARAM = "start";
-	
+
 	public static final String END_PARAM = "end";
-	
+
 	public static final String SYNC_STRATEGY_PARAM = "strategy";
 
 	public static final String SYNC_DIRECTION_PARAM = "direction";
-	
+
 	public static final String SYNC_DATE_PARAM = "date";
-	
+
 	public static final String SYNC_STATUS = "status";
+
+	public static final String CLIPBOARD_SUBSTRING = "clipboard";
+
+	public static final String CLIPBOARD_CLEAR = "clear";
 
 	/**
 	 * Request Attribute ?relation="incoming/outgoing"
@@ -112,7 +118,7 @@ public final class RESTConfig {
 
 	/** default value */
 	public static final String DEFAULT_ATTRIBUTE_VALUE_RELATION = INCOMING_ATTRIBUTE_VALUE_RELATION;
-	
+
 	/** place holder for the login user - used e.g. for OAuth requests */
 	public static final String USER_ME = "@me";
 }
