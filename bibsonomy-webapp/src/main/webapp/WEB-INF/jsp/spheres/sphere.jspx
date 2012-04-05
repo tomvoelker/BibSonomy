@@ -12,8 +12,7 @@
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
