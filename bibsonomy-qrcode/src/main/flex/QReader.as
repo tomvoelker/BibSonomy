@@ -83,7 +83,13 @@ private function init():void
 		
 		video = new Video(cam.width, cam.height);
 		video.attachCamera(cam);
-				
+		
+		var matrix:Matrix = new Matrix();
+		matrix.a = -1;
+		matrix.tx = video.width;
+		
+		video.transform.matrix = matrix;
+		
 		theCam.addChild(video);
 
 		refreshTimer = new Timer(1000/detectionRate);
@@ -101,8 +107,19 @@ private function init():void
 private function decodeSnapshot(evt:TimerEvent):void
 {
     // try to decode the current snapshpt
+    var oldMatrix:Matrix = video.transform.matrix;
+    
+    var matrix:Matrix = new Matrix();
+	matrix.a = -1;
+	matrix.tx = video.width;
+		
+	video.transform.matrix = matrix;
+    
     var bmd:BitmapData = new BitmapData(video.width, video.height);
     bmd.draw(video);
+    
+    video.transform.matrix = oldMatrix;
+    
     this.decodeBitmapData(bmd, video.width, video.height);
 }
 
