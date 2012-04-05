@@ -5,8 +5,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URI;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
@@ -31,7 +34,8 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware, RequestAware {
-
+	private static final Log log = LogFactory.getLog(SettingsPageController.class);
+	
 	/**
 	 * hold current errors
 	 */
@@ -68,8 +72,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * get friends for sidebar
 		 */
-		command.setUserFriends(logic.getUserRelationship(command.getUser().getName(), UserRelation.FRIEND_OF, null));
-		command.setFriendsOfUser(logic.getUserRelationship(command.getUser().getName(), UserRelation.OF_FRIEND, null));
+		final String loggedInUserName = command.getUser().getName();
+		command.setUserFriends(logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
+		command.setFriendsOfUser(logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 
 		// show sync tab only for non-spammers
 		command.showSyncTab(!loginUser.isSpammer());
@@ -103,27 +108,38 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 */
 	private void checkInstalledJabrefLayout(final SettingsViewCommand command) {
-
-		final LayoutPart[] values = LayoutPart.values();
-
-		for (final LayoutPart layoutpart : values) {
-
-			final String fileHash = JabrefLayoutUtils.userLayoutHash(command
-					.getContext().getLoginUser().getName(), layoutpart);
-
-			final Document document = this.logic.getDocument(command.getContext()
-					.getLoginUser().getName(), fileHash);
-
-			if (document != null) {
-				if ("begin".equals(layoutpart.getName())) {
+		final String loggedInUserName = command.getContext().getLoginUser().getName();
+		/* 
+		 * set jabref layouts of the users
+		 * TODO: better solution?
+		 */
+		for (final LayoutPart layoutpart : LayoutPart.values()) {
+			final String fileHash = JabrefLayoutUtils.userLayoutHash(loggedInUserName, layoutpart);
+			/*
+			 * check whether the user has the jabref layout (begin, end or item)
+			 */
+			final Document document = this.logic.getDocument(loggedInUserName, fileHash);
+			/*
+			 * if a document was found
+			 * set the corresponding hash and name of the file
+			 */
+			if (present(document)) {
+				switch (layoutpart) {
+				case BEGIN:
 					command.setBeginHash(fileHash);
 					command.setBeginName(document.getFileName());
-				} else if ("end".equals(layoutpart.getName())) {
+					break;
+				case END:
 					command.setEndHash(fileHash);
 					command.setEndName(document.getFileName());
-				} else if ("item".equals(layoutpart.getName())) {
+					break;
+				case ITEM:
 					command.setItemHash(fileHash);
 					command.setItemName(document.getFileName());
+					break;
+				default:
+					log.warn("can't handle layoutpart " + layoutpart);
+					break;
 				}
 			}
 		}
@@ -131,19 +147,23 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	private void workOnGroupTab(final SettingsViewCommand command) {
 		final String groupName = command.getContext().getLoginUser().getName();
-		//the group to update
+		// the group to update
 		final Group group = logic.getGroupDetails(groupName);
 		if (present(group)) {
 			command.setGroup(group);
 			/*
 			 * get group users
 			 */
-			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));
+			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, Integer.MAX_VALUE));
 			/*
 			 * FIXME: use the group in the command instead of 
 			 * this hand-written conversion
 			 */
 			command.setPrivlevel(group.getPrivlevel().ordinal());
+			
+			/* 
+			 * TODO: use share docs directly
+			 */
 			int sharedDocsAsInt =  0;
 			if (group.isSharedDocuments()) {
 				sharedDocsAsInt = 1;
