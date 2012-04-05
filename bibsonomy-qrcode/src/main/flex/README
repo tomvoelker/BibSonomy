@@ -1,0 +1,13 @@
+
+1. Download and extract the Flex 4 SDK to a directory of your choice. 
+2. Define FLEX_HOME environment variable with a full path to Flex4 SDK folder.
+
+On Mac or Linux:
+
+$ export FLEX_HOME=/specify-full-path-to/flex4_sdk
+
+on Win:
+
+$ set FLEX_HOME=/specify-full-path-to/flex4_sdk
+
+3. Run apache ant task in eclipse.

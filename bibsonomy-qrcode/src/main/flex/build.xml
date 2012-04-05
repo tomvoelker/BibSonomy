@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+ * Copyright 2011 ZXing authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<project name="QReader" default="build" basedir="./">
+	<property environment="env" />
+	<property name="FLEX_HOME" location="${env.FLEX_HOME}" />
+	<property name="dist" location="${basedir}/../../../dist" />
+	<property name="lib" location="${basedir}/lib" />
+
+	<fail unless="FLEX_HOME"
+        message="Error: define FLEX_HOME env. var. with a path to Flex4 SDK" />
+
+	<taskdef resource="flexTasks.tasks"
+           classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
+	
+	<target name="init">
+		<delete dir="${dist}" />
+	    <mkdir dir="${dist}" />
+	</target>
+	
+	<target name="clean">
+		<delete>
+			<fileset dir="${dist}" includes="**/QReader.swf" />
+		</delete>
+	</target>
+
+	<target name="build" depends="init">
+		<mxmlc file="Main.mxml"
+	           output="${dist}/QReader.swf"
+	           debug="false">
+			<library-path dir="${lib}" append="true">
+				<include name="*.swc"/>
+			</library-path>
+			<load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+			<source-path path-element="${FLEX_HOME}/frameworks"/>
+		</mxmlc>
+	</target>
+
+</project>
