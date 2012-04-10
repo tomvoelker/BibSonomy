@@ -6,6 +6,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 <!--+ 
+    | TODO: clean up (use c:out instead of fn:escapeXml, ...)
+    | TODO: hide complete section if nothing to show
 	| Links to user's  or global concept / tag pages for the sidebar
 	+-->
 <li>
@@ -130,7 +132,7 @@
 				</c:set>
 				<a title="${conceptTitle}" 
 					href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(conceptVar.name)}">
-					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+					<c:out value="${conceptVar.name}"/>
 				</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFrom"/>
@@ -161,7 +163,7 @@
 				</c:set>
 				<a title="${conceptTitle}" 
 					href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(conceptVar.name)}">
-					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+					<c:out value="${conceptVar.name}"/>
 				</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFrom"/>
@@ -192,7 +194,7 @@
 				</c:set>
 				<a title="${conceptTitle}" 
 					href="/concept/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(conceptVar.name)}">
-					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+					<c:out value="${conceptVar.name}"/>
 				</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromGroup"/>
