@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.RecommendedTag;
-import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 
 /**
@@ -17,11 +16,8 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
  * @author fei
  * @version $Id$
  */
-public class SelectOne implements RecommendationSelector {
+public class SelectOne extends SimpleSelector {
 	private static final Log log = LogFactory.getLog(SelectOne.class);
-	private String info = "Strategy for selecting one recommender.";
-
-	private DBLogic dbLogic;
 
 	/**
 	 * Selection strategy which selects recommender (uniform) randomly.
@@ -29,7 +25,7 @@ public class SelectOne implements RecommendationSelector {
 	 * recommender is chosen. 
 	 */
 	@Override
-	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void selectResult(final Long qid, final RecommendedTagResultManager resultCache, final Collection<RecommendedTag> recommendedTags) throws SQLException {
 		log.debug("Selecting result.");
 		
 		// get list of recommenders which delivered tags in given query
@@ -52,8 +48,8 @@ public class SelectOne implements RecommendationSelector {
 		
 		// check if selected recommender delivered tags
 		boolean isActive = false;
-		for (Iterator<Long> i = listActive.iterator(); i.hasNext(); ) {
-			Long next = i.next();
+		for (final Iterator<Long> i = listActive.iterator(); i.hasNext(); ) {
+			final Long next = i.next();
 			if( next.equals(sid) ) 
 				isActive = true;
 		}
@@ -69,33 +65,6 @@ public class SelectOne implements RecommendationSelector {
 
 	@Override
 	public String getInfo() {
-		return info;
+		return "Strategy for selecting one recommender.";
 	}
-
-	@Override
-	public void setInfo(String info) {
-		this.info = info;
-	}
-
-
-	@Override
-	public byte[] getMeta() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setMeta(byte[] meta) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public DBLogic getDbLogic() {
-		return this.dbLogic;
-	}
-
-	public void setDbLogic(DBLogic dbLogic) {
-		this.dbLogic = dbLogic;
-	}
-
 }
