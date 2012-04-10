@@ -33,6 +33,6 @@
 	<typeAlias alias="bibtexParam"        type="org.bibsonomy.community.database.param.BibTexParam" />
 	
 	<!-- Results -->
-	<typeAlias alias="pair"               type="org.bibsonomy.community.util.Pair" />
+	<typeAlias alias="pair"               type="org.bibsonomy.common.Pair" />
 	
 </sqlMap>

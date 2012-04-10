@@ -8,35 +8,35 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.community.importer.parser.DataInputParser;
-import org.bibsonomy.community.util.Pair;
 import org.bibsonomy.community.util.Triple;
 
 public class CSVReader {
 	private static final Log log = LogFactory.getLog(CSVReader.class); 
 	private String delimiter = "\t";
 
-	protected <T,U> void loadFile(String fileName, Collection<Pair<T,U>> map, DataInputParser<T> parseFirst, DataInputParser<U> parseSecond) throws IOException {
-		BufferedReader input =  new BufferedReader(new FileReader(fileName));
+	protected <T,U> void loadFile(final String fileName, final Collection<Pair<T,U>> map, final DataInputParser<T> parseFirst, final DataInputParser<U> parseSecond) throws IOException {
+		final BufferedReader input =  new BufferedReader(new FileReader(fileName));
 		
 		String nextLine = null;
 		while( (nextLine=input.readLine())!=null ) {
-			int pos = nextLine.indexOf(getDelimiter());
+			final int pos = nextLine.indexOf(getDelimiter());
 			if( pos >= 0 ) {
-				String first  = nextLine.substring(0, pos);
-				String second = nextLine.substring(pos+1);
+				final String first  = nextLine.substring(0, pos);
+				final String second = nextLine.substring(pos+1);
 				
 				map.add(new Pair<T,U>(parseFirst.parseString(first), parseSecond.parseString(second)));
 			}
 		}
 	}
 	
-	protected <T,U> void loadFile(String fileName, int srcCol, int dstCol, Collection<Pair<T,U>> map, DataInputParser<T> parseFirst, DataInputParser<U> parseSecond) throws IOException {
-		BufferedReader input =  new BufferedReader(new FileReader(fileName));
+	protected <T,U> void loadFile(final String fileName, final int srcCol, final int dstCol, final Collection<Pair<T,U>> map, final DataInputParser<T> parseFirst, final DataInputParser<U> parseSecond) throws IOException {
+		final BufferedReader input =  new BufferedReader(new FileReader(fileName));
 		
 		String nextLine = null;
 		while( (nextLine=input.readLine())!=null ) {
-			String[] cells = nextLine.split(getDelimiter());
+			final String[] cells = nextLine.split(getDelimiter());
 			if( Math.max(srcCol,dstCol)>=cells.length ) {
 				log.error("Given columns ("+srcCol+"/"+dstCol+" don't exist in input string '"+nextLine+"'");
 			} else {
@@ -46,12 +46,12 @@ public class CSVReader {
 	}
 	
 	
-	protected <T,U,V> void loadFile(String fileName, int fstCol, int sndCol, int trdCol, Collection<Triple<T,U,V>> map, DataInputParser<T> parseFirst, DataInputParser<U> parseSecond, DataInputParser<V> parseThird) throws IOException {
-		BufferedReader input =  new BufferedReader(new FileReader(fileName));
+	protected <T,U,V> void loadFile(final String fileName, final int fstCol, final int sndCol, final int trdCol, final Collection<Triple<T,U,V>> map, final DataInputParser<T> parseFirst, final DataInputParser<U> parseSecond, final DataInputParser<V> parseThird) throws IOException {
+		final BufferedReader input =  new BufferedReader(new FileReader(fileName));
 		
 		String nextLine = null;
 		while( (nextLine=input.readLine())!=null ) {
-			String[] cells = nextLine.split(getDelimiter());
+			final String[] cells = nextLine.split(getDelimiter());
 			if( Math.max(fstCol, Math.max(sndCol,trdCol))>=cells.length ) {
 				log.error("Given columns ("+fstCol+"/"+sndCol+"/"+trdCol+") don't exist in input string '"+nextLine+"'");
 			} else {
@@ -61,9 +61,9 @@ public class CSVReader {
 		
 	}	
 
-	protected Collection<String[]> loadFile(String fileName) throws IOException {
-		BufferedReader input =  new BufferedReader(new FileReader(fileName));
-		Collection<String[]> retVal = new ArrayList<String[]>();
+	protected Collection<String[]> loadFile(final String fileName) throws IOException {
+		final BufferedReader input =  new BufferedReader(new FileReader(fileName));
+		final Collection<String[]> retVal = new ArrayList<String[]>();
 		
 		String nextLine = null;
 		while( (nextLine=input.readLine())!=null ) {
@@ -76,7 +76,7 @@ public class CSVReader {
 	// getter/setter
 	//------------------------------------------------------------------------
 
-	public void setDelimiter(String delimiter) {
+	public void setDelimiter(final String delimiter) {
 		this.delimiter = delimiter;
 	}
 

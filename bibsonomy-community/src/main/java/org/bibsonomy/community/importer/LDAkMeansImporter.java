@@ -10,18 +10,17 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.community.algorithm.Algorithm;
 import org.bibsonomy.community.algorithm.MockAlgorithm;
 import org.bibsonomy.community.importer.parser.DataInputParser;
 import org.bibsonomy.community.importer.parser.DoubleDataInputParser;
 import org.bibsonomy.community.importer.parser.IntegerDataInputParser;
 import org.bibsonomy.community.importer.parser.StringDataInputParser;
+import org.bibsonomy.community.model.Cluster;
 import org.bibsonomy.community.model.Post;
-import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.Tag;
 import org.bibsonomy.community.model.User;
-import org.bibsonomy.community.util.Pair;
-import org.bibsonomy.community.model.Cluster;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -40,52 +39,52 @@ import org.bibsonomy.util.ValidationUtils;
 public class LDAkMeansImporter extends CSVImporter {
 	private final static Log log = LogFactory.getLog(LDAkMeansImporter.class); 
 	
-	private Map<Integer,String> userIdMap = new HashMap<Integer, String>();
-	private Map<Integer,String> resourceHashMap = new HashMap<Integer, String>();
-	private Map<Integer,Integer> resourceTypeMap = new HashMap<Integer, Integer>();
+	private final Map<Integer,String> userIdMap = new HashMap<Integer, String>();
+	private final Map<Integer,String> resourceHashMap = new HashMap<Integer, String>();
+	private final Map<Integer,Integer> resourceTypeMap = new HashMap<Integer, Integer>();
 	
-	private Collection<Cluster<User>> communities = new ArrayList<Cluster<User>>();;
-	private Collection<Cluster<Post<? extends Resource>>> resources = new ArrayList<Cluster<Post<? extends Resource>>>();
-	private Collection<Cluster<Tag>> topics = new ArrayList<Cluster<Tag>>();
+	private final Collection<Cluster<User>> communities = new ArrayList<Cluster<User>>();;
+	private final Collection<Cluster<Post<? extends Resource>>> resources = new ArrayList<Cluster<Post<? extends Resource>>>();
+	private final Collection<Cluster<Tag>> topics = new ArrayList<Cluster<Tag>>();
 	
 	private Integer clusterCount = -1;
 	private Integer topicCount   = -1;
 	
-	private Algorithm algorithm;
+	private final Algorithm algorithm;
 	
-	public LDAkMeansImporter(String userMapFile, String contentIDsFile, String clusteringFile, String resouceFile, String topicFile) throws IOException {
-		Collection<Pair<Integer, Integer>> userClustering         = new ArrayList<Pair<Integer,Integer>>();
+	public LDAkMeansImporter(final String userMapFile, final String contentIDsFile, final String clusteringFile, final String resouceFile, final String topicFile) throws IOException {
+		final Collection<Pair<Integer, Integer>> userClustering  = new ArrayList<Pair<Integer,Integer>>();
 		
-		Map<Integer, Cluster<User>> userMap = new HashMap<Integer, Cluster<User>>();
-		Map<Integer, Collection<Integer>> user2Clusters = new HashMap<Integer, Collection<Integer>>();
-		Map<Integer, Cluster<Post<? extends Resource>>> resourceMap = new HashMap<Integer, Cluster<Post<? extends Resource>>>();
-		Map<Integer, Cluster<Tag>> topicMap = new HashMap<Integer, Cluster<Tag>>();
+		final Map<Integer, Cluster<User>> userMap = new HashMap<Integer, Cluster<User>>();
+		final Map<Integer, Collection<Integer>> user2Clusters = new HashMap<Integer, Collection<Integer>>();
+		final Map<Integer, Cluster<Post<? extends Resource>>> resourceMap = new HashMap<Integer, Cluster<Post<? extends Resource>>>();
+		final Map<Integer, Cluster<Tag>> topicMap = new HashMap<Integer, Cluster<Tag>>();
 
-		Set<Integer> topicsCache = new HashSet<Integer>();
-		Set<Integer> communCache = new HashSet<Integer>();
+		final Set<Integer> topicsCache = new HashSet<Integer>();
+		final Set<Integer> communCache = new HashSet<Integer>();
 
 		// count number of occurrences for each resource
-		Map<String,Integer> resourceCount  = new HashMap<String, Integer>();
+		final Map<String,Integer> resourceCount  = new HashMap<String, Integer>();
 		// calculate number of clusters containing given resource
-		Map<String,Map<Integer,Integer>> clusterResourceCount  = new HashMap<String, Map<Integer,Integer>>();
+		final Map<String,Map<Integer,Integer>> clusterResourceCount  = new HashMap<String, Map<Integer,Integer>>();
 		// calculate frequency of given resource in given cluster
-		Map<Integer,Map<String,Integer>> clusterResourceFrequency = new HashMap<Integer, Map<String,Integer>>();
+		final Map<Integer,Map<String,Integer>> clusterResourceFrequency = new HashMap<Integer, Map<String,Integer>>();
 		
 		// count number of occurrences for each resource
-		Map<String,Integer> tagCount  = new HashMap<String, Integer>();
+		final Map<String,Integer> tagCount  = new HashMap<String, Integer>();
 		// calculate number of clusters containing given resource
-		Map<String,Map<Integer,Integer>> clusterTagCount  = new HashMap<String, Map<Integer,Integer>>();
+		final Map<String,Map<Integer,Integer>> clusterTagCount  = new HashMap<String, Map<Integer,Integer>>();
 		// calculate frequency of given resource in given cluster
-		Map<Integer,Map<String,Integer>> clusterTagFrequency = new HashMap<Integer, Map<String,Integer>>();
+		final Map<Integer,Map<String,Integer>> clusterTagFrequency = new HashMap<Integer, Map<String,Integer>>();
 		
 		//--------------------------------------------------------------------
 		// read in data
 		//--------------------------------------------------------------------
-		DataInputParser<String> stringParser   = new StringDataInputParser();
-		DataInputParser<Integer> integerParser = new IntegerDataInputParser();
-		DataInputParser<Double> doubleParser   = new DoubleDataInputParser();
+		final DataInputParser<String> stringParser   = new StringDataInputParser();
+		final DataInputParser<Integer> integerParser = new IntegerDataInputParser();
+		final DataInputParser<Double> doubleParser   = new DoubleDataInputParser();
 		
-		Collection<Pair<Integer, String>>  userList     = new ArrayList<Pair<Integer,String>>();
+		final Collection<Pair<Integer, String>>  userList     = new ArrayList<Pair<Integer,String>>();
 		
 		log.info("Reading usernames...");
 		loadFile(userMapFile, userList, integerParser, stringParser);
@@ -94,24 +93,24 @@ public class LDAkMeansImporter extends CSVImporter {
 		loadFile(clusteringFile, userClustering, integerParser, integerParser);
 		setDelimiter("\t");
 		log.info("Loading community resource assignments...");
-		Collection<String[]> communityResourcesInput = loadFile(resouceFile);
+		final Collection<String[]> communityResourcesInput = loadFile(resouceFile);
 		log.info("Loading resource types...");
-		Collection<String[]> resourceList = loadFile(contentIDsFile);
+		final Collection<String[]> resourceList = loadFile(contentIDsFile);
 		log.info("Loading community topics...");
-		Collection<String[]> communityTopicsInput = loadFile(topicFile);
+		final Collection<String[]> communityTopicsInput = loadFile(topicFile);
 		
 		//--------------------------------------------------------------------
 		// build data structures
 		//--------------------------------------------------------------------
 		// build user id mapping
-		for( Pair<Integer,String> entry : userList ) {
+		for( final Pair<Integer,String> entry : userList ) {
 			userIdMap.put(entry.getFirst(), entry.getSecond());
 		}	
 		
 		//--------------------------------------------------------------------
 		// build content type mapping
 		//--------------------------------------------------------------------
-		for( String[] row : resourceList ) {
+		for( final String[] row : resourceList ) {
 			Integer contentId;
 			Integer contentType;
 			String hash;
@@ -120,7 +119,7 @@ public class LDAkMeansImporter extends CSVImporter {
 				contentId   = integerParser.parseString(row[3]);
 				contentType = integerParser.parseString(row[4]);
 				hash        = row[0];
-			} catch( Exception e ) {
+			} catch( final Exception e ) {
 				continue;
 			}
 
@@ -140,9 +139,9 @@ public class LDAkMeansImporter extends CSVImporter {
 		//--------------------------------------------------------------------
 		// build user clusters
 		//--------------------------------------------------------------------
-		for( Pair<Integer,Integer> entry : userClustering ) {
-			Integer userId    = entry.getFirst();
-			Integer clusterId = entry.getSecond();
+		for( final Pair<Integer,Integer> entry : userClustering ) {
+			final Integer userId    = entry.getFirst();
+			final Integer clusterId = entry.getSecond();
 			
 			communCache.add(clusterId);
 			
@@ -152,7 +151,7 @@ public class LDAkMeansImporter extends CSVImporter {
 				userName = "<undef>";
 				continue;
 			}
-			User user = new User(userName);
+			final User user = new User(userName);
 			user.setWeight(1.0);
 			
 			// user cluster lookup
@@ -176,7 +175,7 @@ public class LDAkMeansImporter extends CSVImporter {
 			
 			community.getInstances().add(user);
 		};
-		for( Map.Entry<Integer, Cluster<User>> entry : userMap.entrySet() ) {
+		for( final Map.Entry<Integer, Cluster<User>> entry : userMap.entrySet() ) {
 			communities.add(entry.getValue());
 		}
 
@@ -184,7 +183,7 @@ public class LDAkMeansImporter extends CSVImporter {
 		// build resource clusters
 		//--------------------------------------------------------------------
 		log.info("Building resource clusters...");
-		for( String[] row : communityResourcesInput ) {
+		for( final String[] row : communityResourcesInput ) {
 																																																																										Integer contentId;
 			Integer clusterId;
 			Double  weight;
@@ -192,23 +191,23 @@ public class LDAkMeansImporter extends CSVImporter {
 				contentId = integerParser.parseString(row[0]);
 				clusterId = integerParser.parseString(row[1]);
 				weight    = doubleParser.parseString(row[2]);
-			} catch( Exception e ) {
+			} catch( final Exception e ) {
 				continue;
 			}
 			
-			Integer contentType = resourceTypeMap.get(contentId);
+			final Integer contentType = resourceTypeMap.get(contentId);
 			if( contentType == null ) {
 				log.error("No content type for content id "+contentId);
 				continue;
 			}
 			
-			String hash = resourceHashMap.get(contentId);
+			final String hash = resourceHashMap.get(contentId);
 			if( hash == null ) {
 				log.error("No hash for content id " + contentId);
 				continue;
 			}
 			
-			Post<? extends Resource> post = new Post<Resource>();
+			final Post<? extends Resource> post = new Post<Resource>();
 			post.setContentType(contentType);
 			post.setContentId(contentId);
 			post.setWeight(weight);
@@ -248,7 +247,7 @@ public class LDAkMeansImporter extends CSVImporter {
 			}
 		};
 		log.info("Got "+resourceMap.size()+" communites for "+communityResourcesInput.size()+" resource assignments");
-		for( Map.Entry<Integer, Cluster<Post<? extends Resource>>> entry : resourceMap.entrySet() ) {
+		for( final Map.Entry<Integer, Cluster<Post<? extends Resource>>> entry : resourceMap.entrySet() ) {
 			resources.add(entry.getValue());
 		}
 		
@@ -256,12 +255,12 @@ public class LDAkMeansImporter extends CSVImporter {
 		// build tag clusters
 		//--------------------------------------------------------------------
 		log.info("Building tag clusters");
-		Set<String> topicTagCache = new HashSet<String>();
-		for( String[] row : communityTopicsInput ) {
-			Integer clusterId = integerParser.parseString(row[0]); 
-			Integer topicId   = integerParser.parseString(row[1]);
-			String  tagName   = stringParser.parseString(row[2]);
-			Double  weight    = doubleParser.parseString(row[3]);
+		final Set<String> topicTagCache = new HashSet<String>();
+		for( final String[] row : communityTopicsInput ) {
+			final Integer clusterId = integerParser.parseString(row[0]); 
+			final Integer topicId   = integerParser.parseString(row[1]);
+			final String  tagName   = stringParser.parseString(row[2]);
+			final Double  weight    = doubleParser.parseString(row[3]);
 			if( weight < 0.5 ) {
 				continue;
 			}
@@ -273,7 +272,7 @@ public class LDAkMeansImporter extends CSVImporter {
 				continue;
 			}
 
-			Tag tag = new Tag(tagName);
+			final Tag tag = new Tag(tagName);
 			tag.setTopicId(topicId);
 			tag.setWeight(weight);
 			
@@ -321,7 +320,7 @@ public class LDAkMeansImporter extends CSVImporter {
 			}
 			
 		};
-		for( Map.Entry<Integer, Cluster<Tag>> entry : topicMap.entrySet() ) {
+		for( final Map.Entry<Integer, Cluster<Tag>> entry : topicMap.entrySet() ) {
 			topics.add(entry.getValue());
 		}
 		
@@ -333,23 +332,23 @@ public class LDAkMeansImporter extends CSVImporter {
 		//--------------------------------------------------------------------
 		// calculate tf-idf for resources
 		//--------------------------------------------------------------------
-		Integer nResources = resourceCount.keySet().size();
-		for( Cluster<Post<? extends Resource>> cluster : resources ) {
-			Integer community = cluster.getClusterID();
+		final Integer nResources = resourceCount.keySet().size();
+		for( final Cluster<Post<? extends Resource>> cluster : resources ) {
+			final Integer community = cluster.getClusterID();
 			// get maximal resource frequency for given cluster
 			double maxFreq = 0;
-			for( Map.Entry<String,Integer> entry : clusterResourceFrequency.get(community).entrySet() ) {
+			for( final Map.Entry<String,Integer> entry : clusterResourceFrequency.get(community).entrySet() ) {
 				if( entry.getValue() > maxFreq ) {
 					maxFreq = entry.getValue();
 				}
 			}
 			// calculate ranking value for each post
-			for( Post<? extends Resource> post : cluster.getInstances() ) {
-				String hash = resourceHashMap.get(post.getContentId());
-				Integer resourceClusters = clusterResourceCount.get(hash).keySet().size();
-				double tf = 
+			for( final Post<? extends Resource> post : cluster.getInstances() ) {
+				final String hash = resourceHashMap.get(post.getContentId());
+				final Integer resourceClusters = clusterResourceCount.get(hash).keySet().size();
+				final double tf = 
 					clusterResourceFrequency.get(community).get(hash)/maxFreq;
-				double idf = 
+				final double idf = 
 					Math.log(1.0*nResources / resourceClusters);
 				
 				post.setWeight(tf*idf);
@@ -359,22 +358,22 @@ public class LDAkMeansImporter extends CSVImporter {
 		//--------------------------------------------------------------------
 		// calculate tf-idf for tags
 		//--------------------------------------------------------------------
-		Integer nTags = tagCount.keySet().size();
-		for( Cluster<Tag> cluster : topics ) {
-			Integer community = cluster.getClusterID();
+		final Integer nTags = tagCount.keySet().size();
+		for( final Cluster<Tag> cluster : topics ) {
+			final Integer community = cluster.getClusterID();
 			// get maximal resource frequency for given cluster
 			double maxFreq = 0;
-			for( Map.Entry<String,Integer> entry : clusterTagFrequency.get(community).entrySet() ) {
+			for( final Map.Entry<String,Integer> entry : clusterTagFrequency.get(community).entrySet() ) {
 				if( entry.getValue() > maxFreq ) {
 					maxFreq = entry.getValue();
 				}
 			}
 			// calculate ranking value for each post
-			for( Tag tag : cluster.getInstances() ) {
-				Integer tagClusters = clusterTagCount.get(tag.getName()).keySet().size();
-				double tf = 
+			for( final Tag tag : cluster.getInstances() ) {
+				final Integer tagClusters = clusterTagCount.get(tag.getName()).keySet().size();
+				final double tf = 
 					clusterTagFrequency.get(community).get(tag.getName())/maxFreq;
-				double idf = 
+				final double idf = 
 					Math.log(1.0*nTags/ tagClusters);
 				
 				tag.setWeight(tf*idf);
@@ -384,27 +383,33 @@ public class LDAkMeansImporter extends CSVImporter {
 	}
 
 
+	@Override
 	public int getClusterCount() {
 		return this.clusterCount;
 	}
 
+	@Override
 	public int getTopicCount() {
 		return this.topicCount;
 	}
 
+	@Override
 	public Collection<Cluster<User>> getCommunities() {
 		return this.communities;
 	}
 
+	@Override
 	public Collection<Cluster<Post<? extends Resource>>> getResources() {
 		return this.resources;
 	}
 
+	@Override
 	public Collection<Cluster<Tag>> getTopics() {
 		return this.topics;
 	}
 
 
+	@Override
 	public Algorithm getAlgorithm() {
 		return this.algorithm;
 	}

@@ -1,5 +1,7 @@
 package org.bibsonomy.community.util;
 
+import org.bibsonomy.common.Pair;
+
 public class Triple <T, U, V> extends Pair<T,U>
 {
 	private V third;
@@ -11,15 +13,14 @@ public class Triple <T, U, V> extends Pair<T,U>
 		this.hash = 0;
 	}
 	
-	public Triple( T f, U s, V t )
+	public Triple( final T f, final U s, final V t )
 	{
-		setFirst(f);
-		setSecond(s);
+		super(f, s);
 		setThird(t);
 		hash = (getThird() == null? 0 : getThird().hashCode() * 97) + super.hashCode();
 	}
 
-	public void setThird(V third) {
+	public void setThird(final V third) {
 		this.third = third;
 	}
 
@@ -34,7 +35,7 @@ public class Triple <T, U, V> extends Pair<T,U>
 	}
 
 	@Override
-	public boolean equals( Object oth )
+	public boolean equals( final Object oth )
 	{
 		if ( this == oth )
 		{
@@ -44,7 +45,7 @@ public class Triple <T, U, V> extends Pair<T,U>
 		{
 			return false;
 		}
-		Triple<T, U, V> other = getClass().cast( oth );
+		final Triple<T, U, V> other = getClass().cast( oth );
 		
 		return (getFirst() == null? other.getFirst() == null : getFirst().equals( other.getFirst() ))
 		&& (getSecond() == null? other.getSecond() == null : getSecond().equals( other.getSecond() ))

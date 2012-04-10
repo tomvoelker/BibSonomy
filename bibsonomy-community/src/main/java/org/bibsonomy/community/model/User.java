@@ -3,7 +3,7 @@ package org.bibsonomy.community.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bibsonomy.community.util.Pair;
+import org.bibsonomy.common.Pair;
 
 public class User extends org.bibsonomy.model.User {
 	private static final long serialVersionUID = 1L;
@@ -16,11 +16,11 @@ public class User extends org.bibsonomy.model.User {
 		super();
 	}
 	
-	public User(String userName) {
+	public User(final String userName) {
 		super(userName);
 	}
 
-	public User(org.bibsonomy.model.User user) {
+	public User(final org.bibsonomy.model.User user) {
 		setName(user.getName());
 	}
 
@@ -32,7 +32,7 @@ public class User extends org.bibsonomy.model.User {
 		this.communityAffiliation.remove(new Pair<Integer,Integer>(runId,clusterId));
 	}
 	
-	public void setWeight(double weight) {
+	public void setWeight(final double weight) {
 		this.weight = weight;
 	}
 
@@ -40,7 +40,7 @@ public class User extends org.bibsonomy.model.User {
 		return weight;
 	}
 
-	public void setCommunityAffiliation(Map<Integer,Double> communityAffiliation) {
+	public void setCommunityAffiliation(final Map<Integer,Double> communityAffiliation) {
 		this.communityAffiliation = communityAffiliation;
 	}
 
