@@ -36,6 +36,8 @@ import org.bibsonomy.util.ExceptionUtils;
 public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	
+	private static final Tag BIBSONOMY_FRIEND_SYSTEM_TAG = new Tag(NetworkRelationSystemTag.BibSonomyFriendSystemTag);
+	
 	private static final UserDatabaseManager singleton = new UserDatabaseManager();
 	private static final UserChain chain = new UserChain();
 	
@@ -608,8 +610,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				    // restrict to users labeled with the given tag, if present
 				    param.setTag(new Tag(tag));
 				} else {
-					final String bibSonomyUserTag = NetworkRelationSystemTag.BibSonomyFriendSystemTag;
-					param.setTag(new Tag(bibSonomyUserTag));
+					param.setTag(BIBSONOMY_FRIEND_SYSTEM_TAG);
 				}
 		    	// TODO: should we introduce network_user_ids???
 				break;
