@@ -5,7 +5,7 @@
 			   creationComplete="init();">
 	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<!-- animation for camera shutter effect -->
 		<s:Fade id="flashFX" duration="550" /> 
 		
 		<s:Parallel id="discardPhoto">
@@ -21,6 +21,7 @@
 			</s:children>
 		</s:Parallel>
 		
+		<!-- sound for camera shutter effect -->
 		<mx:SoundEffect id="mySound" source="@Embed(source='assets/snap.mp3')" />
 		
 	</fx:Declarations>
@@ -28,14 +29,16 @@
 	<fx:Script source="QReader.as" />
 	
 	<s:VGroup horizontalCenter="0" verticalCenter="0">
-		
+		<!-- camera display -->
 		<s:Group id="videoArea">
 				
 			<s:SpriteVisualElement id="theCam" width="{camWidth}" height="{camHeight}" />
-						
+			
+			<!-- overlay that is displayed when qr code is recognized -->
 			<s:Group id="previewBox" visible="false" hideEffect="{discardPhoto}">
 				<s:Image id="preview" width="100%" height="100%"/>	
 				
+				<!-- assign effect -->
 				<s:BorderContainer 
 					id="flashLight" 
 					width="100%" 
