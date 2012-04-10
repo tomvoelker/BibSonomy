@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.tags.database.params.Pair;
+import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
-import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
 import org.bibsonomy.recommender.tags.database.params.TasEntry;
 

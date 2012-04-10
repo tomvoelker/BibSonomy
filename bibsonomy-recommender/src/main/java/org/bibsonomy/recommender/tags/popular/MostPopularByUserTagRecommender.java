@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.AbstractTagRecommender;
 import org.bibsonomy.recommender.tags.database.DBLogic;
-import org.bibsonomy.recommender.tags.database.params.Pair;
 
 /**
  * Returns the most popular (i.e., most often used) tags of the user as 
@@ -42,7 +42,7 @@ public class MostPopularByUserTagRecommender extends AbstractTagRecommender {
 						recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond()) / count), 0.5));
 					}
 				}
-			} catch (SQLException ex) {
+			} catch (final SQLException ex) {
 				log.error("Error getting recommendations for user " + username, ex);
 			}
 		}
@@ -52,23 +52,16 @@ public class MostPopularByUserTagRecommender extends AbstractTagRecommender {
 	public String getInfo() {
 		return "Most Popular Tags By User Recommender";
 	}
-	
-	/**
-	 * @return the dbLogic
-	 */
-	public DBLogic getDbLogic() {
-		return this.dbLogic;
-	}
 
 	/**
 	 * @param dbLogic the dbLogic to set
 	 */
-	public void setDbLogic(DBLogic dbLogic) {
+	public void setDbLogic(final DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
 
 	@Override
-	protected void setFeedbackInternal(Post<? extends Resource> post) {
+	protected void setFeedbackInternal(final Post<? extends Resource> post) {
 		/*
 		 * this recommender ignores feedback
 		 */

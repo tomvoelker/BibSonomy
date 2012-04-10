@@ -14,6 +14,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -24,7 +25,6 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.database.params.LatencyParam;
-import org.bibsonomy.recommender.tags.database.params.Pair;
 import org.bibsonomy.recommender.tags.database.params.PostGuess;
 import org.bibsonomy.recommender.tags.database.params.PostParam;
 import org.bibsonomy.recommender.tags.database.params.PostRecParam;
@@ -67,17 +67,17 @@ public class DBAccess implements DBLogic {
 	private DBAccess() {
 		try {
 			// initialize database client for recommender logs
-			String resource = "SqlMapConfig_recommender.xml";
-			Reader reader = Resources.getResourceAsReader (resource);
+			final String resource = "SqlMapConfig_recommender.xml";
+			final Reader reader = Resources.getResourceAsReader (resource);
 			sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
 			log.info("Database [1] connection initialized.");
 			
 			// initialize database client for accessing post data
-			String resource2 = "SqlMapConfig_recommenderBibDB.xml";
-			Reader reader2 = Resources.getResourceAsReader (resource2);
+			final String resource2 = "SqlMapConfig_recommenderBibDB.xml";
+			final Reader reader2 = Resources.getResourceAsReader (resource2);
 			sqlBibMap = SqlMapClientBuilder.buildSqlMapClient(reader2);
 			log.info("Database [2] connection initialized.");			
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException ("Error initializing DBAccess class. Cause: " + e);
 		}
 	}
@@ -114,9 +114,9 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID, int queryTimeout ) throws SQLException {
+	public Long addQuery(final String userName, final Date date, final Post<? extends Resource> post, final int postID, final int queryTimeout ) throws SQLException {
 		// construct parameter
-		RecQueryParam recQuery = new RecQueryParam();
+		final RecQueryParam recQuery = new RecQueryParam();
 		recQuery.setTimeStamp(new Timestamp(date.getTime()));
 		recQuery.setUserName(userName);
 		recQuery.setPid(postID);
@@ -127,7 +127,7 @@ public class DBAccess implements DBLogic {
 			recQuery.setContentType(new Integer(2));
 		
 		// insert recommender query
-		Long queryId = (Long) sqlMap.insert("addRecommenderQuery", recQuery);
+		final Long queryId = (Long) sqlMap.insert("addRecommenderQuery", recQuery);
 
 		// store post
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) )
@@ -145,17 +145,17 @@ public class DBAccess implements DBLogic {
 	 *       and put a corresponding foreign key constraint to the db
 	 */
 	@Override
-	public Long addRecommender(Long queryId, String recId, String recDescr, byte[] recMeta ) throws SQLException {
+	public Long addRecommender(final Long queryId, final String recId, final String recDescr, final byte[] recMeta ) throws SQLException {
 		Long settingId = null;
 
-		SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient sqlMap = getSqlMapInstance();
 	   	try {
     		sqlMap.startTransaction();
     		
     		// insert recommender settings
     		settingId = insertRecommenderSetting(recId, recDescr, recMeta);
     		// connect query with setting
-    		RecQuerySettingParam queryMap = new RecQuerySettingParam();
+    		final RecQuerySettingParam queryMap = new RecQuerySettingParam();
     		queryMap.setQid(queryId);
     		queryMap.setSid(settingId);
     		sqlMap.insert("addRecommenderQuerySetting", queryMap);
@@ -178,11 +178,11 @@ public class DBAccess implements DBLogic {
 	 * @throws SQLException
 	 */
 	@Override
-	public void addRecommenderToQuery(Long qid, Long sid ) throws SQLException {
-		SqlMapClient sqlMap = getSqlMapInstance();
+	public void addRecommenderToQuery(final Long qid, final Long sid ) throws SQLException {
+		final SqlMapClient sqlMap = getSqlMapInstance();
 
         	// connect query with setting
-        	RecQuerySettingParam queryMap = new RecQuerySettingParam();
+        	final RecQuerySettingParam queryMap = new RecQuerySettingParam();
         	queryMap.setQid(qid);
         	queryMap.setSid(sid);
         	sqlMap.insert("addRecommenderQuerySetting", queryMap);
@@ -192,17 +192,17 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addResultSelector(java.lang.Long, java.lang.String, byte[])
 	 */
 	@Override
-	public Long addResultSelector(Long qid, String selectorInfo, byte[] selectorMeta ) throws SQLException {
+	public Long addResultSelector(final Long qid, final String selectorInfo, final byte[] selectorMeta ) throws SQLException {
 		Long selectorID = null;
 
-		SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient sqlMap = getSqlMapInstance();
 	   	try {
         		sqlMap.startTransaction();
         		
         		// insert recommender settings
         		selectorID = insertSelectorSetting(selectorInfo, selectorMeta);
         		// connect query with setting
-        		SelectorQueryMapParam queryMap = new SelectorQueryMapParam();
+        		final SelectorQueryMapParam queryMap = new SelectorQueryMapParam();
         		queryMap.setQid(qid);
         		queryMap.setSid(selectorID);
         		sqlMap.insert("addSelectorQuerySetting", queryMap);
@@ -222,15 +222,15 @@ public class DBAccess implements DBLogic {
 	 * @param rid result selector's id
 	 */
 	@Override
-	public void setResultSelectorToQuery(Long qid, Long rid )  {
+	public void setResultSelectorToQuery(final Long qid, final Long rid )  {
 		// connect query with setting
-		SelectorQueryMapParam queryMap = new SelectorQueryMapParam();
+		final SelectorQueryMapParam queryMap = new SelectorQueryMapParam();
 		queryMap.setQid(qid);
 		queryMap.setSid(rid);
 		log.info("Storing selection for " + qid + " ("+rid+")");
 		try {
 			sqlMap.insert("addSelectorQuerySetting", queryMap);
-		} catch (SQLException ex) {
+		} catch (final SQLException ex) {
 			log.error("ERROR STORING RECOMMENDER SELECTION");
 		}		
 	}
@@ -240,12 +240,12 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addSelectedRecommender(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public void addSelectedRecommender(Long qid, Long sid) throws SQLException {
-		SqlMapClient sqlMap = getSqlMapInstance();
+	public void addSelectedRecommender(final Long qid, final Long sid) throws SQLException {
+		final SqlMapClient sqlMap = getSqlMapInstance();
 	   	try {
         		sqlMap.startTransaction();
         		
-        		RecQuerySettingParam queryMap = new RecQuerySettingParam();
+        		final RecQuerySettingParam queryMap = new RecQuerySettingParam();
         		queryMap.setQid(qid); 
         		queryMap.setSid(sid);
         		// insert recommender settings
@@ -261,20 +261,20 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addRecommendation(java.lang.Long, java.lang.Long, java.util.SortedSet, long)
 	 */
 	@Override
-	public int addRecommendation(Long queryId, Long settingsId, SortedSet<RecommendedTag> tags, long latency ) throws SQLException {
+	public int addRecommendation(final Long queryId, final Long settingsId, final SortedSet<RecommendedTag> tags, final long latency ) throws SQLException {
 		if (tags==null) return 0;
 		
-		SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient sqlMap = getSqlMapInstance();
 	   	try {
         		sqlMap.startTransaction();
         		sqlMap.startBatch();
         		// insert recommender response
         		// #qid#, #sid#, #latency#, #score#, #confidence#, #tagName# )
-        		RecResponseParam response = new RecResponseParam();
+        		final RecResponseParam response = new RecResponseParam();
         		response.setQid(queryId);
         		response.setSid(settingsId);
     			response.setLatency(latency);
-        		for( RecommendedTag tag : tags ) {
+        		for( final RecommendedTag tag : tags ) {
         			response.setTagName( tag.getName() );
         			response.setConfidence( tag.getConfidence() );
         			response.setScore( tag.getScore() );
@@ -293,10 +293,10 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#connectWithPost(org.bibsonomy.model.Post, int)
 	 */
 	@Override
-	public void connectWithPost(Post<? extends Resource> post, int postID) throws SQLException {
-		SqlMapClient sqlMap = getSqlMapInstance();
+	public void connectWithPost(final Post<? extends Resource> post, final int postID) throws SQLException {
+		final SqlMapClient sqlMap = getSqlMapInstance();
 
-		PostRecParam postMap = new PostRecParam();
+		final PostRecParam postMap = new PostRecParam();
 		postMap.setUserName(post.getUser().getName());
 		postMap.setDate(post.getDate());
 		postMap.setPostID(postID);
@@ -310,8 +310,8 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommendations(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public SortedSet<RecommendedTag> getRecommendations(Long qid, Long sid) throws SQLException {
-	    SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+	public SortedSet<RecommendedTag> getRecommendations(final Long qid, final Long sid) throws SQLException {
+	    final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 	    getRecommendations(qid, sid, result);
 		
 	    return result;
@@ -323,15 +323,15 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void getRecommendations(final Long qid, final Long sid, final Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// TODO ugly inefficient implementation
 		log.warn("Inefficient implementation");
 		
 		// print out newly added recommendations
-		RecQuerySettingParam queryMap = new RecQuerySettingParam();
+		final RecQuerySettingParam queryMap = new RecQuerySettingParam();
 		queryMap.setQid(qid);
 		queryMap.setSid(sid);
-		List<RecommendedTag> queryResult = sqlMap.queryForList("getRecommendationsByQidSid", queryMap);
+		final List<RecommendedTag> queryResult = sqlMap.queryForList("getRecommendationsByQidSid", queryMap);
 		recommendedTags.addAll(queryResult);
 	}	
 	
@@ -339,8 +339,8 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommendations(java.lang.Long)
 	 */
 	@Override
-	public SortedSet<RecommendedTag> getRecommendations(Long qid) throws SQLException {
-		SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+	public SortedSet<RecommendedTag> getRecommendations(final Long qid) throws SQLException {
+		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		getRecommendations(qid, result);
 		
 		return result;
@@ -351,10 +351,10 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public void getRecommendations(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void getRecommendations(final Long qid, final Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// TODO ugly inefficient implementation
 		log.warn("Inefficient implementation");
-		List<RecommendedTag> queryResult = sqlMap.queryForList("getRecommendationsByQid", qid);
+		final List<RecommendedTag> queryResult = sqlMap.queryForList("getRecommendationsByQid", qid);
 		recommendedTags.addAll(queryResult);
 	}
 	
@@ -363,8 +363,8 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<RecommendedTag> getSelectedTags(Long qid) throws SQLException {
-		List<RecommendedTag> queryResult = sqlMap.queryForList("getSelectedRecommendationsByQid", qid);
+	public List<RecommendedTag> getSelectedTags(final Long qid) throws SQLException {
+		final List<RecommendedTag> queryResult = sqlMap.queryForList("getSelectedRecommendationsByQid", qid);
 	
 		return queryResult;
 	}		
@@ -374,8 +374,8 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Long> getSelectedRecommenderIDs(Long qid) throws SQLException {
-		List<Long> queryResult = getSqlMapInstance().queryForList("getQuerySelection", qid);
+	public List<Long> getSelectedRecommenderIDs(final Long qid) throws SQLException {
+		final List<Long> queryResult = getSqlMapInstance().queryForList("getQuerySelection", qid);
 	
 		return queryResult;
 	}
@@ -385,11 +385,11 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<TasEntry> getNewestEntries(Integer offset, Integer range) throws SQLException {
-		TasParam param = new TasParam();
+	public List<TasEntry> getNewestEntries(final Integer offset, final Integer range) throws SQLException {
+		final TasParam param = new TasParam();
 		param.setOffset(offset);
 		param.setRange(range);
-		List<TasEntry> queryResult = sqlBibMap.queryForList("getNewestEntries", param);
+		final List<TasEntry> queryResult = sqlBibMap.queryForList("getNewestEntries", param);
 		
 		return queryResult;
 	}
@@ -428,7 +428,7 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTagsForUser(java.lang.String)
 	 */
 	@Override
-	public Integer getNumberOfTagsForUser(String username) throws SQLException {
+	public Integer getNumberOfTagsForUser(final String username) throws SQLException {
 		return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForUser", username);
 	}
 	
@@ -436,7 +436,7 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTasForUser(java.lang.String)
 	 */
 	@Override
-	public Integer getNumberOfTasForUser(String username) throws SQLException {
+	public Integer getNumberOfTasForUser(final String username) throws SQLException {
 		return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForUser", username);
 	}
 	
@@ -470,10 +470,10 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getUserIDByName(String)
 	 */
 	@Override
-	public Integer getUserIDByName(String userName) {
+	public Integer getUserIDByName(final String userName) {
 		try {
 			return (Integer)getSqlBibMapInstance().queryForObject("getUserIDByName", userName);
-		} catch (SQLException ex) {
+		} catch (final SQLException ex) {
 			log.error("Couldn't map user " + userName + " to the corresponding id.", ex);
 			return null;
 		}
@@ -483,10 +483,10 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getUserNameByID(int)
 	 */
 	@Override
-	public String getUserNameByID(int userID) {
+	public String getUserNameByID(final int userID) {
 		try {
 			return (String)getSqlBibMapInstance().queryForObject("getUserNameByID", userID);
-		} catch (SQLException ex) {
+		} catch (final SQLException ex) {
 			log.error("Couldn't map user id " + userID+ " to the corresponding user name.", ex);
 			return null;
 		}
@@ -497,8 +497,8 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<String> getTagNamesForRecQuery(Long sid, Long qid) throws SQLException {
-		RecQuerySettingParam param = new RecQuerySettingParam();
+	public List<String> getTagNamesForRecQuery(final Long sid, final Long qid) throws SQLException {
+		final RecQuerySettingParam param = new RecQuerySettingParam();
 		param.setQid(qid);
 		param.setSid(sid);
 		return sqlMap.queryForList("getTagNamesForRecQuery", param);
@@ -509,7 +509,7 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<String> getTagNamesForPost(Integer cid) throws SQLException {
+	public List<String> getTagNamesForPost(final Integer cid) throws SQLException {
 		return sqlBibMap.queryForList("getTagNamesForCID", cid);
 	}
 	
@@ -517,7 +517,7 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommender(java.lang.Long)
 	 */
 	@Override
-	public RecSettingParam getRecommender(Long sid) throws SQLException {
+	public RecSettingParam getRecommender(final Long sid) throws SQLException {
 		return (RecSettingParam)getSqlMapInstance().queryForObject("getRecommenderByID", sid);
 	}
 	
@@ -526,7 +526,7 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getActiveRecommenderIDs(final Long qid) throws SQLException {
 		return getSqlMapInstance().queryForList("getActiveRecommenderIDsForQuery", qid);
 	}
 
@@ -535,7 +535,7 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getAllRecommenderIDs(final Long qid) throws SQLException {
 		return getSqlMapInstance().queryForList("getAllRecommenderIDsForQuery", qid);
 	}
 	/* (non-Javadoc)
@@ -543,7 +543,7 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Pair<Long,Long>> getRecommenderSelectionCount(Long qid) throws SQLException {
+	public List<Pair<Long,Long>> getRecommenderSelectionCount(final Long qid) throws SQLException {
 		return getSqlMapInstance().queryForList("getRecommenderSelectionCount", qid);
 	}
 	
@@ -553,7 +553,7 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Long> getAllNotSelectedRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getAllNotSelectedRecommenderIDs(final Long qid) throws SQLException {
 		return getSqlMapInstance().queryForList("getAllNotSelectedRecommenderIDsForQuery", qid);
 	}
 	
@@ -562,7 +562,7 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getSelector(java.lang.Long)
 	 */
 	@Override
-	public SelectorSettingParam getSelector(Long sid) throws SQLException {
+	public SelectorSettingParam getSelector(final Long sid) throws SQLException {
 		return (SelectorSettingParam)getSqlMapInstance().queryForObject("getSelectorByID", sid);
 	}
 	
@@ -570,7 +570,7 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getQuery(java.lang.Long)
 	 */
 	@Override
-	public RecQueryParam getQuery(Long qid) throws SQLException {
+	public RecQueryParam getQuery(final Long qid) throws SQLException {
 		return (RecQueryParam)sqlMap.queryForObject("getQueryByID", qid);
 	}
 
@@ -579,7 +579,7 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException {
+	public List<RecQueryParam> getQueriesForRecommender(final Long sid) throws SQLException {
 		return sqlMap.queryForList("getQueriesBySID", sid);
 	}
 	
@@ -587,7 +587,7 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommenderAdminOverview(java.lang.String)
 	 */
 	@Override
-	public RecAdminOverview getRecommenderAdminOverview(String id) throws SQLException{
+	public RecAdminOverview getRecommenderAdminOverview(final String id) throws SQLException{
 		return (RecAdminOverview)getSqlMapInstance().queryForObject("recAdminOverview", id);
 	}
 	
@@ -595,10 +595,10 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getAverageLatencyForRecommender(java.lang.Long, java.lang.Long)
 	 */
 	@Override
-	public Long getAverageLatencyForRecommender(Long sid, Long numberOfQueries) throws SQLException{
+	public Long getAverageLatencyForRecommender(final Long sid, final Long numberOfQueries) throws SQLException{
 		if (numberOfQueries <= 0) return null;
 		
-		LatencyParam param = new LatencyParam(sid,numberOfQueries);
+		final LatencyParam param = new LatencyParam(sid,numberOfQueries);
 		return (Long)getSqlMapInstance().queryForObject("getAverageLatencyForSettingID", param);
 	}
 
@@ -642,9 +642,9 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommenderIdsForSettingIds(java.util.List)
 	 */
 	@Override
-	public Map<Long, String> getRecommenderIdsForSettingIds(List<Long> sids) throws SQLException{
-		Map<Long, String> resultmap = new TreeMap<Long,String>();
-		for (Long sid: sids) {
+	public Map<Long, String> getRecommenderIdsForSettingIds(final List<Long> sids) throws SQLException{
+		final Map<Long, String> resultmap = new TreeMap<Long,String>();
+		for (final Long sid: sids) {
 			resultmap.put(sid, this.getRecommender(sid).getRecId());
 		}
 		return resultmap;
@@ -654,18 +654,18 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#updateRecommenderstatus(java.util.List, java.util.List)
 	 */
 	@Override
-	public void updateRecommenderstatus(List<Long> activeRecs, List<Long> disabledRecs ) throws SQLException{
-		SqlMapClient sqlMap = getSqlMapInstance();
+	public void updateRecommenderstatus(final List<Long> activeRecs, final List<Long> disabledRecs ) throws SQLException{
+		final SqlMapClient sqlMap = getSqlMapInstance();
 		
 		if (activeRecs != null) {
-		    for(Long p: activeRecs) {
+		    for(final Long p: activeRecs) {
 			sqlMap.update("activateRecommender", p);
 		    }
 		}
 		 
 		
 		if (disabledRecs != null) {
-		    for(Long p: disabledRecs) {
+		    for(final Long p: disabledRecs) {
 			sqlMap.update("deactivateRecommender", p);
 		    }
 		}
@@ -676,8 +676,8 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#removeRecommender(java.lang.String)
 	 */
 	@Override
-	public void removeRecommender(String url) throws SQLException{
-		SqlMapClient sqlMap = getSqlMapInstance();
+	public void removeRecommender(final String url) throws SQLException{
+		final SqlMapClient sqlMap = getSqlMapInstance();
 		sqlMap.insert("unlinkRecommender", url);
 		sqlMap.delete("deleteFromRecommenderStatus", url);
 		sqlMap.delete("deleteFromRecommenderSettings", url);
@@ -687,15 +687,15 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#updateRecommenderUrl(java.lang.Long, java.net.URL)
 	 */
 	@Override
-	public void updateRecommenderUrl(long sid, URL url) throws SQLException{
-		RecSettingParam param = new RecSettingParam();
+	public void updateRecommenderUrl(final long sid, final URL url) throws SQLException{
+		final RecSettingParam param = new RecSettingParam();
 		param.setRecId(url.toString());
 		param.setSetting_id(sid);
 		param.setRecMeta(url.toString().getBytes());
 		
-		SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient sqlMap = getSqlMapInstance();
 		
-		Long settingId = (Long) sqlMap.queryForObject("lookupRecommenderSetting", param);
+		final Long settingId = (Long) sqlMap.queryForObject("lookupRecommenderSetting", param);
 		if (settingId != null && settingId != sid) {
 		    throw new SQLException("Cannot edit recommender-url because recommender-Setting with url '" + url.toString() + "' already exists!");
 		}
@@ -709,19 +709,19 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public Long guessQueryFromPost(Integer content_id) throws SQLException {
+	public Long guessQueryFromPost(final Integer content_id) throws SQLException {
 		Long result  = null;
 		TasEntry tas = null;
 		
 		// get post's timestamp
-		List<?> queryresult = sqlBibMap.queryForList("getTasEntryForID", content_id);
+		final List<?> queryresult = sqlBibMap.queryForList("getTasEntryForID", content_id);
 		if( queryresult.size()>0 ) {
 			tas = (TasEntry)(sqlBibMap.queryForList("getTasEntryForID", content_id).get(0));
 			// get nearest recommender queries
-			PostParam param = new PostParam();
+			final PostParam param = new PostParam();
 			param.setTimestamp(tas.getTimeStamp());
 			param.setUserName(tas.getUserName());
-			List<QueryGuess> qids = sqlMap.queryForList("getNearestQueriesForPost", param);
+			final List<QueryGuess> qids = sqlMap.queryForList("getNearestQueriesForPost", param);
 			// select first one if exists
 			if( (qids.size()>0)&&(qids.get(0).getDiff()<300) )
 				result = qids.get(0).getQid();			
@@ -736,18 +736,18 @@ public class DBAccess implements DBLogic {
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public Integer guessPostFromQuery(Long query_id) throws SQLException {
+	public Integer guessPostFromQuery(final Long query_id) throws SQLException {
 		Integer result  = null;
 		
 		// get query information
-		RecQueryParam recQuery = (RecQueryParam)sqlMap.queryForObject("getQueryByID", query_id);
+		final RecQueryParam recQuery = (RecQueryParam)sqlMap.queryForObject("getQueryByID", query_id);
 		
 		if( recQuery != null ) {
 			// look for nearest post
-			PostParam param = new PostParam();
+			final PostParam param = new PostParam();
 			param.setTimestamp(recQuery.getTimeStamp());
 			param.setUserName(recQuery.getUserName());
-			List<PostGuess> cids = sqlBibMap.queryForList("getNearestPostsForQuery", param);
+			final List<PostGuess> cids = sqlBibMap.queryForList("getNearestPostsForQuery", param);
 			// select first one if exists
 			// FIXME: think of something usefull
 			if( (cids.size()>0)&&(cids.get(0).getDiff()<300) )
@@ -764,10 +764,10 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getQueryForPost(java.lang.String, java.util.Date, java.lang.Integer)
 	 */
 	@Override
-	public Long getQueryForPost(String user_name, Date date, Integer postID) throws SQLException {
-		SqlMapClient sqlMap = getSqlMapInstance();
+	public Long getQueryForPost(final String user_name, final Date date, final Integer postID) throws SQLException {
+		final SqlMapClient sqlMap = getSqlMapInstance();
 		
-		PostRecParam postParam = new PostRecParam();
+		final PostRecParam postParam = new PostRecParam();
 		postParam.setDate(date);
 		postParam.setUserName(user_name);
 		postParam.setPostID(postID);
@@ -781,13 +781,13 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getContentIDForQuery(java.lang.Long)
 	 */
 	@Override
-	public Integer getContentIDForQuery(Long queryID) throws SQLException {
-		SqlMapClient sqlMap = getSqlMapInstance();
-		SqlMapClient bibMap = getSqlBibMapInstance();
+	public Integer getContentIDForQuery(final Long queryID) throws SQLException {
+		final SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient bibMap = getSqlBibMapInstance();
 		Integer retVal = null;
 		
 		// first get hash, username and post date
-		PostRecParam postParam = (PostRecParam)sqlMap.queryForObject("lookupPostForQuery", queryID);
+		final PostRecParam postParam = (PostRecParam)sqlMap.queryForObject("lookupPostForQuery", queryID);
 		
 		// now get content_id
 		if( postParam.getContentType()==1 ) {
@@ -814,7 +814,7 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getContentIDForQuery(java.lang.String, java.util.Date, java.lang.Integer)
 	 */
 	@Override
-	public Integer getContentIDForQuery(String userName, Date date, Integer postID) {
+	public Integer getContentIDForQuery(final String userName, final Date date, final Integer postID) {
 		log.error("NOT IMPLEMENTED");
 		return null;
 	}
@@ -826,12 +826,12 @@ public class DBAccess implements DBLogic {
 	 * @return unique identifier for given settings
 	 */
 	@Override
-	public Long insertRecommenderSetting(String recId, String recDescr, byte[] recMeta) throws SQLException {
+	public Long insertRecommenderSetting(final String recId, final String recDescr, final byte[] recMeta) throws SQLException {
 		Long settingId = null;
 
-		SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient sqlMap = getSqlMapInstance();
 
-		RecSettingParam setting = new RecSettingParam();
+		final RecSettingParam setting = new RecSettingParam();
 		setting.setRecId(recId);
 		setting.setRecMeta(recMeta);
 		setting.setRecDescr(recDescr);
@@ -870,12 +870,12 @@ public class DBAccess implements DBLogic {
 	 * @throws SQLException 
 	 */
 	@Override
-	public Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta) throws SQLException {
+	public Long insertSelectorSetting(final String selectorInfo, final byte[] selectorMeta) throws SQLException {
 		Long selectorID = null;
 
-		SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient sqlMap = getSqlMapInstance();
 
-		SelectorSettingParam setting = new SelectorSettingParam();
+		final SelectorSettingParam setting = new SelectorSettingParam();
 		setting.setInfo(selectorInfo);
 		setting.setMeta(selectorMeta);
 
@@ -902,8 +902,8 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#storeRecommendation(java.lang.Long, java.lang.Long, java.util.Collection)
 	 */
 	@Override
-	public int storeRecommendation(Long qid, Long rid, Collection<RecommendedTag> result) throws SQLException {
-		SqlMapClient sqlMap = getSqlMapInstance();
+	public int storeRecommendation(final Long qid, final Long rid, final Collection<RecommendedTag> result) throws SQLException {
+		final SqlMapClient sqlMap = getSqlMapInstance();
 		try {
 			sqlMap.startTransaction();
 			sqlMap.startBatch();
@@ -913,10 +913,10 @@ public class DBAccess implements DBLogic {
 			
 			// insert recommender response
 			// #qid#, #score#, #confidence#, #tagName# )
-			SelectorTagParam response = new SelectorTagParam();
+			final SelectorTagParam response = new SelectorTagParam();
 			response.setQid(qid);
 			response.setRid(rid);
-			for( RecommendedTag tag : result ) {
+			for( final RecommendedTag tag : result ) {
 				response.setTagName( tag.getName() );
 				response.setConfidence( tag.getConfidence() );
 				response.setScore( tag.getScore() );
@@ -942,7 +942,7 @@ public class DBAccess implements DBLogic {
 	 * @return true on success, false otherwise
 	 * @throws SQLException 
 	 */
-	private boolean storeBibTexPost(String userName, Long qid, Post<BibTex> post, String oldHash, boolean update ) throws SQLException {
+	private boolean storeBibTexPost(final String userName, final Long qid, final Post<BibTex> post, final String oldHash, final boolean update ) throws SQLException {
 		// TODO Auto-generated method stub
 		log.warn("storeBibTexPost not tested.");
 		final BibTexParam param = new BibTexParam();
@@ -952,7 +952,7 @@ public class DBAccess implements DBLogic {
 		param.setDate(post.getDate());
 		param.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
 		
-		SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient sqlMap = getSqlMapInstance();
 		try {
 			sqlMap.startTransaction();
    			sqlMap.insert("insertBibTex", param);
@@ -976,7 +976,7 @@ public class DBAccess implements DBLogic {
 	 * @return true on success, false otherwise
 	 * @throws SQLException 
 	 */
-	private boolean storeBookmarkPost(String userName, Long qid, Post<Bookmark> post, String oldHash, boolean update ) throws SQLException {
+	private boolean storeBookmarkPost(final String userName, final Long qid, final Post<Bookmark> post, final String oldHash, final boolean update ) throws SQLException {
 		final BookmarkParam param = new BookmarkParam();
 		param.setResource(post.getResource());
 		param.setDate(post.getDate());
@@ -1009,18 +1009,18 @@ public class DBAccess implements DBLogic {
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#logRecommendation(java.lang.Long, java.lang.Long, long, java.util.SortedSet, java.util.SortedSet)
 	 */
 	@Override
-	public boolean logRecommendation(Long qid, Long sid, long latency, SortedSet<RecommendedTag> tags, SortedSet<RecommendedTag> preset) throws SQLException {
+	public boolean logRecommendation(final Long qid, final Long sid, final long latency, final SortedSet<RecommendedTag> tags, final SortedSet<RecommendedTag> preset) throws SQLException {
 		// get a new session
-		SqlMapClient sqlMap = getSqlMapInstance();
+		final SqlMapClient sqlMap = getSqlMapInstance();
 		try {
 			sqlMap.startTransaction();
 
 			// log each recommended tag
-			RecResponseParam response = new RecResponseParam();
+			final RecResponseParam response = new RecResponseParam();
 			response.setQid(qid);
 			response.setSid(sid);
 			response.setLatency(latency);
-    		for( RecommendedTag tag : tags ) {
+    		for( final RecommendedTag tag : tags ) {
     			response.setTagName(tag.getName());
     			response.setConfidence(tag.getConfidence());
     			response.setScore(tag.getScore());

@@ -5,7 +5,7 @@
 	    | SQL Map Config for the main database 
 	    -->
 	
-	<typeAlias alias="pair" type="org.bibsonomy.recommender.tags.database.params.Pair" />
+	<typeAlias alias="pair" type="org.bibsonomy.common.Pair" />
 	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="postGuess" type="org.bibsonomy.recommender.tags.database.params.PostGuess" />
 	<typeAlias alias="postParam"  type="org.bibsonomy.recommender.tags.database.params.PostParam" />

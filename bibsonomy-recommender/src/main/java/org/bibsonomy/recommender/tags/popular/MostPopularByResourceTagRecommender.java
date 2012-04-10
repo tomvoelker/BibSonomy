@@ -1,17 +1,19 @@
 package org.bibsonomy.recommender.tags.popular;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.AbstractTagRecommender;
 import org.bibsonomy.recommender.tags.database.DBLogic;
-import org.bibsonomy.recommender.tags.database.params.Pair;
 
 /**
  * Returns the most popular (i.e., most often attached) tags of the resource as 
@@ -28,16 +30,15 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 	
 	@Override
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
-
 		final Resource resource = post.getResource();
+		
 		/*
 		 * we have to call recalculateHashes() first, otherwise the intraHash is not available
 		 */
 		resource.recalculateHashes();
 
 		final String intraHash = resource.getIntraHash();
-
-		if (intraHash != null) {
+		if (present(intraHash)) {
 			try {
 				/*
 				 * we get the count to normalize the score
@@ -46,7 +47,7 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 				log.debug("Resource has " + count + " TAS.");
 
 				final List<Pair<String,Integer>> tagsWithCount = dbLogic.getMostPopularTagsForResource(resource.getClass(), intraHash, numberOfTagsToRecommend);
-				if (tagsWithCount != null && !tagsWithCount.isEmpty()) {
+				if (present(tagsWithCount)) {
 					for (final Pair<String,Integer> tagWithCount : tagsWithCount) {
 						final String tag = getCleanedTag(tagWithCount.getFirst());
 						if (tag != null) {
@@ -57,7 +58,7 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 				} else {
 					log.debug("Resource not found or no tags available.");
 				}
-			} catch (SQLException ex) {
+			} catch (final SQLException ex) {
 				log.error("Error getting recommendations for resource " + resource, ex);
 			}
 		} else {
@@ -71,21 +72,14 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 	}
 
 	/**
-	 * @return the dbLogic
-	 */
-	public DBLogic getDbLogic() {
-		return this.dbLogic;
-	}
-
-	/**
 	 * @param dbLogic the dbLogic to set
 	 */
-	public void setDbLogic(DBLogic dbLogic) {
+	public void setDbLogic(final DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
 
 	@Override
-	protected void setFeedbackInternal(Post<? extends Resource> post) {
+	protected void setFeedbackInternal(final Post<? extends Resource> post) {
 		/*
 		 * this recommender ignores feedback
 		 */
