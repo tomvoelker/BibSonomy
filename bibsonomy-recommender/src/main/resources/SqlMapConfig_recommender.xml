@@ -2,25 +2,9 @@
 PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
-	<!--
-		Die folgende Einstellungen spezifizieren Details der SqlMap
-		Konfiguration wie zum Beispiel das Transaktion Management. Sie sind
-		alle optional (Details im Handbuch).
-	-->
 	<!-- 
-	<settings 
-		maxRequests="32" 
-		cacheModelsEnabled="true" 
-		enhancementEnabled="true"
-		lazyLoadingEnabled="true" 
-		maxSessions="10"
-		maxTransactions="5" 
-		useStatementNamespaces="false" />
-	-->
-	<!--
-		Type aliases erlauben ihnen, einen kurzen Namen statt eines langen
-		voll qualifizierten Klassennamen zu definieren.
-	-->
+		| SQL Map Config for the recommender database
+		-->
 
 	<typeAlias alias="byteBuffer"      type="byte[]"/>	
 	<typeAlias alias="timestamp"       type="java.sql.Timestamp"/>
@@ -52,22 +36,12 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 
 	<typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 
-	
-	<!--
-		Spezifizieren sie eine DataSource für diese SQL Map. Hier nehmen wir
-		eine einfache SimpleDataSource. Beachten sie die Verwendung der
-		properties aus oben angegebener properties-Datei.
-	-->
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">
 			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_recommender"/>
 		</dataSource>
 	</transactionManager>
-	<!--
-		Geben sie alle SQL Map XML Dateien an, die in dieser SQL Map geladen
-		werden sollen. Beachten sie das alle Dateien im Classpath liegen. Zur
-		Zeit haben wir nur eine Datei…
-	-->
+	
 	<sqlMap resource="common/RecommendationLogCommon.xml" />
 	<sqlMap resource="RecommendationLog.xml" />
 </sqlMapConfig>
