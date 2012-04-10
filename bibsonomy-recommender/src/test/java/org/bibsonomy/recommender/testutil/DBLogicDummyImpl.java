@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.tags.database;
+package org.bibsonomy.recommender.testutil;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -11,10 +11,11 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.tags.database.params.Pair;
+import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
