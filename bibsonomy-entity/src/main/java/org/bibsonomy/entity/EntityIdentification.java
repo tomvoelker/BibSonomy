@@ -153,12 +153,13 @@ public class EntityIdentification {
 					
 					//now we think we know the real name and we can check all the names the person is listed in the database with
 					String realName = null;
-					boolean firstNameTest = true;
-					if (lastNameCount > firstNameCount) {
+					boolean lastNameTest = false;
+					if (lastNameCount >= firstNameCount) {
 						realName = lastNameWithMostCounts;
-						firstNameTest = false;
+						 lastNameTest = true;
 					}
 					else realName = firstNameWithMostCounts;
+					System.out.println("realName: " + realName);
 					
 					HashMap<String,Integer> otherNamesOfThisAuthor = new HashMap<String,Integer>();
 					List<PersonName> tempAuthorNames = null;
@@ -167,20 +168,20 @@ public class EntityIdentification {
 						tempAuthorNames = PersonNameUtils.discoverPersonNames(tempAuthorsList);
 					}
 					for (PersonName authorName: tempAuthorNames) { //check if there is an author with the same first/last name in the publication
-						if(firstNameTest) { //save other lastNames
-							if (authorName.getFirstName() != null) {
-								if(authorName.getFirstName().equals(realName)) {
+						if(lastNameTest) { //save other lastNames
+							if (authorName.getLastName() != null) {
+								if(authorName.getLastName().equals(realName)) {
 									int count = 1;
-									if (otherNamesOfThisAuthor.containsKey(authorName.getLastName())) count = otherNamesOfThisAuthor.get(authorName.getLastName());
+									if (otherNamesOfThisAuthor.containsKey(authorName.getFirstName())) count = otherNamesOfThisAuthor.get(authorName.getFirstName()) + 1;
 									otherNamesOfThisAuthor.put(authorName.getLastName(), count);
 								}
 							}
 						}
 						else { //save other firstNames
 							if (authorName.getLastName() != null) {
-								if(authorName.getLastName().equals(realName)) {
+								if(authorName.getFirstName().equals(realName)) {
 									int count = 1;
-									if(otherNamesOfThisAuthor.containsKey(authorName.getFirstName())) count = otherNamesOfThisAuthor.get(authorName.getFirstName());
+									if(otherNamesOfThisAuthor.containsKey(authorName.getLastName())) count = otherNamesOfThisAuthor.get(authorName.getLastName()) + 1;
 									otherNamesOfThisAuthor.put(authorName.getFirstName(), count);
 								}
 							}
