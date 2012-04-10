@@ -7,11 +7,9 @@
 		<version>2.0.24-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-webapp</artifactId>
 	<packaging>war</packaging>
 	<name>BibSonomy-Webapp</name>
-	<version>2.0.24-SNAPSHOT</version>
 	<description>The webapplication for Bibsonomy.</description>
 	<build>
 		<plugins>
@@ -44,8 +42,6 @@
 								<mkdir dir="${project.downloaded-resources.directory}" />
 								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
 									dest="${project.downloaded-resources.directory}/wurfl.zip" />
-								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/web_browsers_patch.xml"
-									dest="${project.downloaded-resources.directory}/web_browsers_patch.xml" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -135,6 +131,48 @@
 				<directory>${project.downloaded-resources.directory}</directory>
 			</resource>
 		</resources>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-antrun-plugin</artifactId>
+										<versionRange>[1.4,)</versionRange>
+										<goals>
+											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>net.alchim31.maven</groupId>
+										<artifactId>yuicompressor-maven-plugin</artifactId>
+										<versionRange>[1.1,)</versionRange>
+										<goals>
+											<goal>compress</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<profiles>
 		<profile>
@@ -488,8 +526,6 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-synchronization</artifactId>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
       		<groupId>com.restfb</groupId>
@@ -499,7 +535,7 @@
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
-		<wurfl.version>2.2</wurfl.version>
+		<wurfl.version>2.3.1</wurfl.version>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
 	</properties>

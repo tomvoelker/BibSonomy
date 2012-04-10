@@ -247,17 +247,6 @@
       			<constructor-arg value="classpath:wurfl.zip" />
    			</bean>
   		</constructor-arg>
-  		<constructor-arg index="1">
-   			<bean class="net.sourceforge.wurfl.core.resource.WURFLResources">
-      			<constructor-arg>
-        			<list>
-          				<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
-            				<constructor-arg value="classpath:web_browsers_patch.xml" />
-          				</bean>
-        			</list>
-      			</constructor-arg>
-    		</bean>
-  		</constructor-arg>
 	</bean>
 	<bean id="wurfl.matcherManager" class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
 		<constructor-arg ref="wurfl.model" />
