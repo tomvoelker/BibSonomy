@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.util.JSONUtils;
 
 /**
  * Writes given lists in JSON format.
@@ -65,7 +66,7 @@ public class JSONWriter {
 	
 	public void write(int depth, final Collection<Tuple<Pattern, Pattern>> patterns) throws UnsupportedEncodingException, IOException {
 		int ctr = 0;
-		int max = patterns.size();
+		final int max = patterns.size();
 		write(depth, "[\n");
 		for (final Tuple<Pattern, Pattern> tuple : patterns) {
 			ctr++;
@@ -89,73 +90,16 @@ public class JSONWriter {
 		}
 		write(depth, "]\n");
 	}
-	
 	/**
 	 * Quotes a String such that it is usable for JSON.
-	 * 
-	 * FIXME: copied from Functions.java
 	 * 
 	 * @param value
 	 * @return The quoted String.
 	 */
 	public static String quoteJSON(final Pattern value) {
-		if(value == null)
-			return null;
-		final StringBuffer sb = new StringBuffer();
-		escapeJSON(value.toString(), sb);
-		return sb.toString();
+		return JSONUtils.quoteJSON(value.toString());
 	}
 
-	/**
-	 * Taken from http://code.google.com/p/json-simple/
-	 * 
-	 * FIXME: copied from Functions.java
-	 * 
-	 * @param s - Must not be null.
-	 * @param sb
-	 */
-	private static void escapeJSON(final String s, final StringBuffer sb) {
-		for (int i = 0; i < s.length(); i++) {
-			char ch=s.charAt(i);
-			switch(ch){
-			case '"':
-				sb.append("\\\"");
-				break;
-			case '\\':
-				sb.append("\\\\");
-				break;
-			case '\b':
-				sb.append("\\b");
-				break;
-			case '\f':
-				sb.append("\\f");
-				break;
-			case '\n':
-				sb.append("\\n");
-				break;
-			case '\r':
-				sb.append("\\r");
-				break;
-			case '\t':
-				sb.append("\\t");
-				break;
-			default:
-				// Reference: http://www.unicode.org/versions/Unicode5.1.0/
-				if ((ch >= '\u0000' && ch <= '\u001F') || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch <= '\u20FF')) {
-					String ss = Integer.toHexString(ch);
-					sb.append("\\u");
-					for (int k = 0; k < 4 - ss.length(); k++) {
-						sb.append('0');
-					}
-					sb.append(ss.toUpperCase());
-				}
-				else{
-					sb.append(ch);
-				}
-			}
-		}
-	}
-	
 	public void write(final String s) throws UnsupportedEncodingException, IOException {
 		outputStream.write(s.getBytes("UTF-8"));
 	}
@@ -164,12 +108,9 @@ public class JSONWriter {
 		outputStream.write((getDepth(depth) + s).getBytes("UTF-8"));
 	}
 	
-	
 	private static String getDepth(final int depth) {
 		if (depth >= depths.length) return depths[depths.length - 1];
 		return depths[depth];
 	}
-	
-	
 }
 
