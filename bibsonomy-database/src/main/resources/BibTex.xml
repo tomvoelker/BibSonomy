@@ -217,6 +217,7 @@
 			 WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
 			   AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
 			   AND <include refid="relationTagResourceWhereQuery"/>    <!-- take all rows, which are owned by a related user -->
+			   AND b.group = #groupId#   
 			 	   <isNotEmpty property="tagIndex" prepend="AND">
 				  	 <include refid="tagWhereQuery"/> AND
 			  		 <include refid="tagResourceWhereQuery"/>
