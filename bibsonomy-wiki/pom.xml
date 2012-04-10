@@ -1,42 +1,37 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>bibsonomy</artifactId>
-    <groupId>org.bibsonomy</groupId>
-    <version>2.0.24-SNAPSHOT</version>
-  </parent>
-  <groupId>org.bibsonomy</groupId>
-  <artifactId>bibsonomy-wiki</artifactId>
-  <version>2.0.24-SNAPSHOT</version>
-  <name>BibSonomy CV Wiki</name>
-  <url>http://maven.apache.org</url>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  <dependencies>
-	<dependency>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<artifactId>bibsonomy-model</artifactId>
-	</dependency>
-  	<dependency>
-		<groupId>info.bliki.wiki</groupId>
-		<artifactId>bliki-core</artifactId>
-		<version>3.0.16</version>
-	</dependency>
-  </dependencies>
-          <repositories>
-                <repository>
-                        <id>info-bliki-repository</id>
-                        <url>http://gwtwiki.googlecode.com/svn/maven-repository/</url>
-                        <releases>
-                                <enabled>true</enabled>
-                        </releases>
-                        <snapshots>
-                                <enabled>false</enabled>
-                        </snapshots>
-                </repository>
-        </repositories>
-
+		<version>2.0.24-SNAPSHOT</version>
+	</parent>
+	<artifactId>bibsonomy-wiki</artifactId>
+	<name>BibSonomy CV Wiki</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>info.bliki.wiki</groupId>
+			<artifactId>bliki-core</artifactId>
+			<version>3.0.16</version>
+		</dependency>
+	</dependencies>
+	<!-- TODO: deploy wiki to biblicious and remove the repository -->
+	<repositories>
+		<repository>
+			<id>info-bliki-repository</id>
+			<url>http://gwtwiki.googlecode.com/svn/maven-repository/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
