@@ -30,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.util.JSONUtils;
 
 /**
@@ -64,11 +64,11 @@ public class JSONWriter {
 		this.outputStream = outputStream;
 	}
 	
-	public void write(int depth, final Collection<Tuple<Pattern, Pattern>> patterns) throws UnsupportedEncodingException, IOException {
+	public void write(int depth, final Collection<Pair<Pattern, Pattern>> patterns) throws UnsupportedEncodingException, IOException {
 		int ctr = 0;
 		final int max = patterns.size();
 		write(depth, "[\n");
-		for (final Tuple<Pattern, Pattern> tuple : patterns) {
+		for (final Pair<Pattern, Pattern> tuple : patterns) {
 			ctr++;
 			depth++;
 			write(depth, "{\n");

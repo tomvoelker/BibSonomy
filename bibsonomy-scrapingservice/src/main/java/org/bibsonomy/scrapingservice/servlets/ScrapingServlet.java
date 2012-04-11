@@ -45,6 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -57,7 +58,6 @@ import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.KDEUrlCompositeScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -244,7 +244,7 @@ public class ScrapingServlet extends HttpServlet {
 			 * currently: patterns of url scrapers in JSON format
 			 * TODO: use better parameter names 
 			 */
-			final List<Tuple<Pattern, Pattern>> urlPatterns = urlCompositeScraper.getUrlPatterns();
+			final List<Pair<Pattern, Pattern>> urlPatterns = urlCompositeScraper.getUrlPatterns();
 			if ("json".equals(format)) {
 				log.info("format = json");
 				/*
