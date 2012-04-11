@@ -34,8 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -56,12 +56,12 @@ public class JStorScraper extends AbstractUrlScraper {
 	private static final String JSTOR_EXPORT_PATH_AND_QUERY = "/action/exportSingleCitation?singleCitation=true&suffix=";
 	private static final String JSTOR_DOWNLOAD_PATH = "/action/downloadSingleCitation?format=bibtex&include=abs&singleCitation=true&noDoi=yesDoi&suffix={id}&downloadFileName={id}";
 
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_ABSTRACT_PATH + ".*")));
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_EXPORT_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_ABSTRACT_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_EXPORT_PATH + ".*")));
 	}
 	
 	public String getInfo() {
@@ -211,7 +211,7 @@ public class JStorScraper extends AbstractUrlScraper {
 		return cookieString.toString();
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
