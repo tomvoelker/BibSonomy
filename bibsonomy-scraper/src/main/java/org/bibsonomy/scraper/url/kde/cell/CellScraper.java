@@ -31,10 +31,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -56,15 +56,15 @@ public class CellScraper extends AbstractUrlScraper {
 	
 	private static Pattern patternId = Pattern.compile("\\/abstract\\/([^\\/]*)");
 
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
 	static {
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST_CELL), Pattern.compile(PATH_BIOPHYSICAL + ".*")));
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST_CELL), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST_CELL), Pattern.compile(PATH_BIOPHYSICAL + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST_CELL), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
 	@Override
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 

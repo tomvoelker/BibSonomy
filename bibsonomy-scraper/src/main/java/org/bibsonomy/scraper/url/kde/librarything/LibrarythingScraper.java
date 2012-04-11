@@ -32,9 +32,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
@@ -85,7 +85,7 @@ public class LibrarythingScraper extends AbstractUrlScraper {
 
 	private static String LIBRARYTHING_PATTERN_WORK_ISBN_13 = "<td class=\"left\">ISBN-13</td><td class=\"bookNonEditField\">([^<]*)</td>";
 
-	final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*librarything\\..*"), AbstractUrlScraper.EMPTY_PATTERN));
+	final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*librarything\\..*"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final String PATTERN_LINK = "<a\\b[^>]*>([^<]*)</a>";
 
@@ -249,7 +249,7 @@ public class LibrarythingScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
