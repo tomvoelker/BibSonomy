@@ -38,10 +38,10 @@ import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -102,9 +102,9 @@ public class ScrapingService extends AbstractUrlScraper {
 	}
 
 	@Override
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(AbstractUrlScraper.EMPTY_PATTERN, AbstractUrlScraper.EMPTY_PATTERN));
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		List<Pair<Pattern,Pattern>> list = new LinkedList<Pair<Pattern,Pattern>>();
+		list.add(new Pair<Pattern, Pattern>(AbstractUrlScraper.EMPTY_PATTERN, AbstractUrlScraper.EMPTY_PATTERN));
 		return list;
 	}
 

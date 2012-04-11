@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -74,7 +74,7 @@ public class MathSciNetScraper extends AbstractUrlScraper {
 	private static final Pattern pg1Pattern = Pattern.compile("<input type=\"hidden\" name=\"pg1\" value=\"([^\"]*)\" />");
 	private static final Pattern s1Pattern = Pattern.compile("<input type=\"hidden\" name=\"s1\" value=\"([^\"]*)\" />");
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile("^.*" + URL_MATHSCINET_HOST), Pattern.compile(URL_MATHSCINET_PATH + ".*")));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile("^.*" + URL_MATHSCINET_HOST), Pattern.compile(URL_MATHSCINET_PATH + ".*")));
 
 	/**
 	 * Extract a reference from a bibtex page as post and snippet. It also extracts a single references from its overview page (get its bibtex link and download it). 
@@ -174,7 +174,7 @@ public class MathSciNetScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 

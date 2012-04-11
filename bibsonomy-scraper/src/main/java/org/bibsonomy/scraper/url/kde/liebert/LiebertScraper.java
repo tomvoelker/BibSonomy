@@ -34,8 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -59,12 +59,12 @@ public class LiebertScraper extends AbstractUrlScraper {
 	private static final String LIEBERT_BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
 	private static final String LIEBERT_BIBTEX_PARAMS = "?downloadFileName=bibsonomy&include=cit&format=bibtex&direct=on&doi=";
 
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + LIEBERT_HOST);
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(LIEBERT_ABSTRACT_PATH + ".*")));
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(LIEBERT_BIBTEX_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(LIEBERT_ABSTRACT_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(LIEBERT_BIBTEX_PATH + ".*")));
 	}
 	
 	public String getInfo() {
@@ -205,7 +205,7 @@ public class LiebertScraper extends AbstractUrlScraper {
 		return cookieString.toString();
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
