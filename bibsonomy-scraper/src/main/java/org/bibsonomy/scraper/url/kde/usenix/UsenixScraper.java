@@ -30,9 +30,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -75,12 +75,12 @@ public class UsenixScraper extends AbstractUrlScraper {
 	
 	private static final String CURRENT_PATTERN_GET_PAGES = "<b>Pp.(.*)</b>";
 
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>(); 
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>(); 
 	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + HOST);
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_1 + ".*")));
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_2)));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_1 + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(PATH_2)));
 	}
 	
 	public String getInfo() {
@@ -328,7 +328,7 @@ public class UsenixScraper extends AbstractUrlScraper {
 			return "20" + decade;
 	}
 	
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
