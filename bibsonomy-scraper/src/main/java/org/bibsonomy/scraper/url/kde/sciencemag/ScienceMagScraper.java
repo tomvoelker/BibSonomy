@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
@@ -39,7 +39,7 @@ public class ScienceMagScraper extends CitationManagerScraper {
 	private static final String SITE_NAME = "Science Magazine";
 	private static final String SITE_URL = "http://www.sciencemag.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private static final List<Tuple<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Tuple<Pattern, Pattern>(
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
 			Pattern.compile(".*" + "sciencemag.org"), 
 			Pattern.compile("/content" + ".*")
 		));
@@ -62,7 +62,7 @@ public class ScienceMagScraper extends CitationManagerScraper {
 	}
 
 	@Override
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
 }
