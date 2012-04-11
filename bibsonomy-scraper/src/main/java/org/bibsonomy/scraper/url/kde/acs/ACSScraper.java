@@ -35,8 +35,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -63,12 +63,12 @@ public class ACSScraper extends AbstractUrlScraper {
 	private static final Pattern pathPatternAbstract = Pattern.compile(ACS_PATH + ".*");
 	private static final Pattern pathPatternBibtex = Pattern.compile(ACS_BIBTEX_PATH + ".*");
 	
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + "pubs.acs.org");
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, pathPatternBibtex));
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, pathPatternAbstract));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, pathPatternBibtex));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, pathPatternAbstract));
 	}
 
 	public String getInfo() {
@@ -204,7 +204,7 @@ public class ACSScraper extends AbstractUrlScraper {
 		return out.toString();
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 

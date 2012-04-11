@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -79,10 +79,10 @@ public class IOPScraper extends AbstractUrlScraper {
 	 */
 	private static final String DOWNLOAD_LINK_VALUE = "Download citation";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	static{
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*")));
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + NEW_IOP_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NEW_IOP_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 		
 		
@@ -127,7 +127,7 @@ public class IOPScraper extends AbstractUrlScraper {
 		return false;
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 	public String getSupportedSiteName() {

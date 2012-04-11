@@ -29,9 +29,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -52,12 +52,12 @@ public class AnthroSourceScraper extends AbstractUrlScraper {
 	private static final String AS_ABSTRACT_PATH = "/doi/abs/";
 	private static final String AS_BIBTEX_PATH = "/action/showCitFormats";
 
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + AS_HOST);
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(AS_ABSTRACT_PATH + ".*")));
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile(AS_BIBTEX_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(AS_ABSTRACT_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(AS_BIBTEX_PATH + ".*")));
 	}
 	
 	public String getInfo() {
@@ -70,7 +70,7 @@ public class AnthroSourceScraper extends AbstractUrlScraper {
 		return false;
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
