@@ -27,8 +27,8 @@ package org.bibsonomy.scrapingservice.writers;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.KDEUrlCompositeScraper;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class JSONWriterTest {
 		
 		final UrlCompositeScraper scraper = new KDEUrlCompositeScraper();
 		
-		final List<Tuple<Pattern, Pattern>> urlPatterns = scraper.getUrlPatterns();
+		final List<Pair<Pattern, Pattern>> urlPatterns = scraper.getUrlPatterns();
 		Assert.assertNotNull(urlPatterns);
 		Assert.assertTrue(urlPatterns.size() > 10);
 	}
