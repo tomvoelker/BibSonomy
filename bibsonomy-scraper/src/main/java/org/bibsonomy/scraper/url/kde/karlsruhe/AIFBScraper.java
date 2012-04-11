@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
@@ -68,18 +68,18 @@ public class AIFBScraper extends AbstractUrlScraper {
     private static final String DELIVERABLE		= "Deliverable\\d+";
     private static final String UNPUBLISHED		= "Unpublished\\d+";
     
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
     static {
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + ARTICLE)));
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INPROCEEDINGS)));
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + BOOK)));
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INCOLLECTION)));
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PROCEEDINGS)));
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PHDTHESIS)));
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + TECHREPORT)));
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + DELIVERABLE)));
-    	patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + UNPUBLISHED)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + ARTICLE)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INPROCEEDINGS)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + BOOK)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INCOLLECTION)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PROCEEDINGS)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PHDTHESIS)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + TECHREPORT)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + DELIVERABLE)));
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + UNPUBLISHED)));
     }
 
 	@Override
@@ -109,7 +109,7 @@ public class AIFBScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 

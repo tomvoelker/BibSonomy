@@ -34,9 +34,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -99,7 +99,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 	 */
 	private static final String LINK_BEFORE_DOI = "<a href=\"http://scitation.aip.org/jhtml/doi.jsp\">doi:</a>";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(hostPattern, pathPattern));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
 	
 	/**
 	 * Extract snippets from a bibtex page and single references from overview pages 
@@ -314,7 +314,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 

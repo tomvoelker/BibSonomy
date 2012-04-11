@@ -27,6 +27,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
+
 /**
  * @author rja
  * @version $Id$
@@ -40,7 +42,7 @@ public interface UrlScraper extends Scraper {
 	 * 
 	 * @return A list of supported (host,path)-Patterns. 
 	 */
-	public abstract List<Tuple<Pattern, Pattern>> getUrlPatterns();
+	public abstract List<Pair<Pattern, Pattern>> getUrlPatterns();
 
 	/** Checks if this scraper supports the given URL.
 	 * <p>

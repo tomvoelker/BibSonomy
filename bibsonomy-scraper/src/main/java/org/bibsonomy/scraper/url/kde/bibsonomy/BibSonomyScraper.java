@@ -30,9 +30,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -57,8 +57,8 @@ public class BibSonomyScraper extends AbstractUrlScraper {
 	
 	private static final String BIBTEX_FORMAT_PATH_PREFIX = "/bib";
 
-	private static final List<Tuple<Pattern,Pattern>> patterns = Collections.singletonList(
-		new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BIBSONOMY_HOST), Pattern.compile(BIBTEX_PUBLICATION_PATH_PATTERN))
+	private static final List<Pair<Pattern,Pattern>> patterns = Collections.singletonList(
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + BIBSONOMY_HOST), Pattern.compile(BIBTEX_PUBLICATION_PATH_PATTERN))
 	);
 	
 	/**
@@ -92,7 +92,7 @@ public class BibSonomyScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 

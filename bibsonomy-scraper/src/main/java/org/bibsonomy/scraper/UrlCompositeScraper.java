@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
+
 /**
  * Contains all active UrlScrapers. 
  * 
@@ -39,8 +41,8 @@ import java.util.regex.Pattern;
  */
 public class UrlCompositeScraper extends CompositeScraper<UrlScraper> implements UrlScraper {
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		final List<Tuple<Pattern, Pattern>> urlPatterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		final List<Pair<Pattern, Pattern>> urlPatterns = new LinkedList<Pair<Pattern,Pattern>>();
 		for (final Scraper scraper: getScraper()) {
 			if (scraper instanceof UrlScraper) {
 				urlPatterns.addAll(((UrlScraper)scraper).getUrlPatterns());	

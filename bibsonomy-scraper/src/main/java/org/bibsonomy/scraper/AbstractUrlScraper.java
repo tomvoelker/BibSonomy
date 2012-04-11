@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -50,14 +51,14 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#getUrlPatterns()
 	 */
-	public abstract List<Tuple<Pattern,Pattern>> getUrlPatterns();
+	public abstract List<Pair<Pattern,Pattern>> getUrlPatterns();
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#supportsUrl(java.net.URL)
 	 */
 	public boolean supportsUrl(final URL url) {
 		if (url != null) {
-			final List<Tuple<Pattern, Pattern>> urlPatterns = getUrlPatterns();
+			final List<Pair<Pattern, Pattern>> urlPatterns = getUrlPatterns();
 
 			/*
 			 * possible matching combinations:
@@ -65,7 +66,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 			 * first = true && second = null
 			 * first = null && second = true
 			 */
-			for (final Tuple<Pattern, Pattern> tuple: urlPatterns){
+			for (final Pair<Pattern, Pattern> tuple: urlPatterns){
 				final boolean match1 = tuple.getFirst() == EMPTY_PATTERN ||
 				tuple.getFirst().matcher(url.getHost()).find();
 

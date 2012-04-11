@@ -29,8 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -48,7 +48,7 @@ public class NberScraper extends AbstractUrlScraper {
 
 	private static final String NBER_HOST  = "www.nber.org";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + NBER_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NBER_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return info;
@@ -73,7 +73,7 @@ public class NberScraper extends AbstractUrlScraper {
 			throw new ScrapingFailureException("getting bibtex failed");
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {		
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {		
 		return patterns;
 	}
 
