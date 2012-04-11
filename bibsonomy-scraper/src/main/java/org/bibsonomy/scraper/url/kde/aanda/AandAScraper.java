@@ -28,9 +28,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -56,7 +56,7 @@ public class AandAScraper extends AbstractUrlScraper{
 	
 	private static final String downloadUrl = "http://www.aanda.org/index.php?option=com_makeref&task=output&type=bibtex&doi=";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
@@ -135,7 +135,7 @@ public class AandAScraper extends AbstractUrlScraper{
 	}
 	
 	@Override
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 }
