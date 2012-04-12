@@ -37,11 +37,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -275,7 +275,6 @@ public class BibTexUtils {
 		final String firstName = personName.getFirstName();
 		if (present(firstName) && firstName.length() == 1) {
 			auinit1 = firstName;
-			personName.setFirstName(null);
 		} else {
 			auinit1 = null;
 		}
