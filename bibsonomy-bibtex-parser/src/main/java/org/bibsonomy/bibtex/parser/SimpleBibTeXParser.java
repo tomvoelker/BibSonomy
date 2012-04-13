@@ -348,11 +348,11 @@ public class SimpleBibTeXParser {
 		field = getValue(entry.getFieldValue("type"));  	   if (field != null) bibtex.setType(field);
 
 		/*
-		 * Sometimes the "volume" is contained in the "issue" field. If no volume
+		 * Sometimes the "number" is contained in the "issue" field. If no number
 		 * is given but an issue, we use this one.
 		 */
 		field = getValue(entry.getFieldValue("issue"));
-		if (present(field) && !present(bibtex.getVolume())) bibtex.setVolume(field);
+		if (present(field) && !present(bibtex.getNumber())) bibtex.setNumber(field);
 		
 		/*
 		 * special handling for month - it can be a macro!

@@ -78,7 +78,7 @@ public class StandardBibTeXFields {
 		
 		// added, because otherwise "day" will go to "misc"
 		standardBibSonomyFields.add("day");
-		// is used as volume (if no volume given)
+		// is used as number (if no number given)
 		standardBibTeXFields.add("issue"); 
 
 		// standard fields for bibsonomy
