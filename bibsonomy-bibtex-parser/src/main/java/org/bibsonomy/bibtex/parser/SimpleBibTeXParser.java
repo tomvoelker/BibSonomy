@@ -298,7 +298,7 @@ public class SimpleBibTeXParser {
 		 */
 		nonStandardFieldNames.removeAll(StandardBibTeXFields.getStandardBibTeXFields());
 
-		// iter over arraylist to retrieve nonstandard field values
+		// iterate over list to retrieve nonstandard field values
 		for (final String key:nonStandardFieldNames) {
 			bibtex.addMiscField(key, getValue(entry.getFieldValue(key)));
 		}
@@ -337,16 +337,23 @@ public class SimpleBibTeXParser {
 		field = getValue(entry.getFieldValue("key"));	       if (field != null) bibtex.setKey(field);
 		field = getValue(entry.getFieldValue("note"));         if (field != null) bibtex.setNote(field);         
 		field = getValue(entry.getFieldValue("number"));       if (field != null) bibtex.setNumber(field);       
-		field = getValue(entry.getFieldValue("organization")); if (field != null) bibtex.setOrganization(field); 
-		field = getValue(entry.getFieldValue("pages"));        if (field != null) bibtex.setPages(field);        
-		field = getValue(entry.getFieldValue("publisher"));    if (field != null) bibtex.setPublisher(field);    
-		field = getValue(entry.getFieldValue("school"));       if (field != null) bibtex.setSchool(field);       
-		field = getValue(entry.getFieldValue("series"));       if (field != null) bibtex.setSeries(field);       
-		field = getValue(entry.getFieldValue("url"));          if (field != null) bibtex.setUrl(field);           
-		field = getValue(entry.getFieldValue("volume"));	   if (field != null) bibtex.setVolume(field);        
+		field = getValue(entry.getFieldValue("organization")); if (field != null) bibtex.setOrganization(field);
+		field = getValue(entry.getFieldValue("pages"));        if (field != null) bibtex.setPages(field);
+		field = getValue(entry.getFieldValue("publisher"));    if (field != null) bibtex.setPublisher(field);
+		field = getValue(entry.getFieldValue("school"));       if (field != null) bibtex.setSchool(field);
+		field = getValue(entry.getFieldValue("series"));       if (field != null) bibtex.setSeries(field);
+		field = getValue(entry.getFieldValue("url"));          if (field != null) bibtex.setUrl(field);
+		field = getValue(entry.getFieldValue("volume"));	   if (field != null) bibtex.setVolume(field);
 		field = getValue(entry.getFieldValue("abstract"));	   if (field != null) bibtex.setAbstract(field);
-		field = getValue(entry.getFieldValue("type"));  	   if (field != null) bibtex.setType(field);          
+		field = getValue(entry.getFieldValue("type"));  	   if (field != null) bibtex.setType(field);
 
+		/*
+		 * Sometimes the "volume" is contained in the "issue" field. If no volume
+		 * is given but an issue, we use this one.
+		 */
+		field = getValue(entry.getFieldValue("issue"));
+		if (present(field) && !present(bibtex.getVolume())) bibtex.setVolume(field);
+		
 		/*
 		 * special handling for month - it can be a macro!
 		 * FIXME: a month (or any other field!) can even be a 
