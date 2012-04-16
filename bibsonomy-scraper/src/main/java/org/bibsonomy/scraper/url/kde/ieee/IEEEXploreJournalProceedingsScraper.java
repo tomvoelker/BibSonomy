@@ -92,10 +92,11 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 				id = matcher.group(1);
 
 			if(id != null){
-				String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations?citations-format=citation-abstract&download-format=download-bibtex&fromPageName=abstract&recordIds=" + id;
+				String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations";
+				String postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + id;
 				String bibtex = null;
 				try {
-					bibtex = WebUtils.getContentAsString(new URL(downUrl));
+					bibtex = WebUtils.getPostContentAsString(new URL(downUrl), postContent);
 				} catch (MalformedURLException ex) {
 					throw new InternalFailureException(ex);
 				} catch (IOException ex) {
