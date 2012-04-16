@@ -2320,11 +2320,12 @@ public class DBLogic implements LogicInterface {
 			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
 		} catch (final Exception ex) {
 			log.error(ex);
+			throw new RuntimeException(ex);
 		} finally {
 			session.close();
 		}
 
-		return 0;
+//		return 0;
 	}
 
 	/*
