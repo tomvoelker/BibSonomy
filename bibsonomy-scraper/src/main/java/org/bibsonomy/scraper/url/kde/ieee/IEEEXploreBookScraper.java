@@ -58,8 +58,6 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	private static final String info = "This scraper creates a BibTeX entry for the books at " +
 	href(SITE_URL, SITE_NAME);
 
-	private static final String IEEE_COOKIE_LOOKUP = "http://ieeexplore.ieee.org/Xplore/home.jsp";
-	
 	private static final String IEEE_HOST        = "ieeexplore.ieee.org";
 	private static final String IEEE_BOOK_PATH   = "xpl";
 	private static final String IEEE_SEARCH_PATH = "search";
@@ -106,13 +104,12 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		
 		if (postContent != null) {
 			try {
-				String cookie = WebUtils.getCookies(new URL(IEEE_COOKIE_LOOKUP));
-				bibtex = WebUtils.getPostContentAsString(cookie, new URL(EXPORT_ARNUM_URL), postContent);
+				bibtex = WebUtils.getPostContentAsString(new URL(EXPORT_ARNUM_URL), postContent);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}
-		if(bibtex != null){
+		if(bibtex != null && bibtex.length() > 0){
 			// clean up
 			bibtex = bibtex.replace("<br>", "");
 
@@ -132,6 +129,8 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	}
 
 	/**
+	 * @FIXME: This should be refactored.
+	 * 
 	 * @param sc
 	 * @return bibtex
 	 * @throws ScrapingException
