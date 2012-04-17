@@ -81,6 +81,7 @@ public class EntityIdentification {
 			e.printStackTrace();
 		}
 				
+		//"myown" test
 		//count the first and last names and define the name of the user as the most counted first and last name
 		String userName = null;
 		int userNameCount = 0;
@@ -154,9 +155,11 @@ public class EntityIdentification {
 					//now we think we know the real name and we can check all the names the person is listed in the database with
 					String realName = null;
 					boolean lastNameTest = false;
-					if (lastNameCount >= firstNameCount) {
+					//TODO bernauer: 2 names with the same count -> first and last names may mix up
+					//if first names consisting only of a single letter, different persons with this same single letter can dominate the right lastName e.g. like with A. {Vaivads}
+					if (lastNameCount >= firstNameCount || ((firstNameWithMostCounts.length() <= 2) && lastNameCount >= 0.6 * firstNameCount)) {
 						realName = lastNameWithMostCounts;
-						 lastNameTest = true;
+						lastNameTest = true;
 					}
 					else realName = firstNameWithMostCounts;
 					System.out.println("realName: " + realName);
@@ -166,29 +169,29 @@ public class EntityIdentification {
 					publicationsForThisUsername.remove(publicationsForThisUsername.size()-1); //remove the last element
 					for (String tempAuthorsList: publicationsForThisUsername) { //go through the publications for this userName
 						tempAuthorNames = PersonNameUtils.discoverPersonNames(tempAuthorsList);
-					}
-					for (PersonName authorName: tempAuthorNames) { //check if there is an author with the same first/last name in the publication
-						if(lastNameTest) { //save other lastNames
-							if (authorName.getLastName() != null) {
-								if(authorName.getLastName().equals(realName)) {
-									int count = 1;
-									if (otherNamesOfThisAuthor.containsKey(authorName.getFirstName())) count = otherNamesOfThisAuthor.get(authorName.getFirstName()) + 1;
-									otherNamesOfThisAuthor.put(authorName.getLastName(), count);
+						for (PersonName authorName: tempAuthorNames) { //check if there is an author with the same first or last name in the publication
+							if(lastNameTest) { //save other lastNames
+								if (authorName.getLastName() != null && authorName.getFirstName() != null) {
+									if(authorName.getLastName().equals(realName)) {
+										int count = 1;
+										if (otherNamesOfThisAuthor.containsKey(authorName.getFirstName())) count = otherNamesOfThisAuthor.get(authorName.getFirstName()) + 1;
+										otherNamesOfThisAuthor.put(authorName.getFirstName(), count);
+									}
+								}
+							}
+							else { //save other firstNames
+								if(authorName.getLastName() != null && authorName.getFirstName() != null) {
+									if(authorName.getFirstName().equals(realName)) {
+										int count = 1;
+										if(otherNamesOfThisAuthor.containsKey(authorName.getLastName())) count = otherNamesOfThisAuthor.get(authorName.getLastName()) + 1;
+										otherNamesOfThisAuthor.put(authorName.getLastName(), count);
+									}
 								}
 							}
 						}
-						else { //save other firstNames
-							if (authorName.getLastName() != null) {
-								if(authorName.getFirstName().equals(realName)) {
-									int count = 1;
-									if(otherNamesOfThisAuthor.containsKey(authorName.getLastName())) count = otherNamesOfThisAuthor.get(authorName.getLastName()) + 1;
-									otherNamesOfThisAuthor.put(authorName.getFirstName(), count);
-								}
-							}
-						}
 					}
-					System.out.println("other names of this person are:");
-					for( Map.Entry<String, Integer> e : otherNamesOfThisAuthor.entrySet()) {
+					System.out.println("this person has the following names:");
+					for(Map.Entry<String, Integer> e : otherNamesOfThisAuthor.entrySet()) {
 						System.out.println(e.getKey() + " count: " + e.getValue());
 					}
 				}
