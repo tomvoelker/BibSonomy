@@ -89,4 +89,19 @@ function handleUserRelation(actionString, userName, relationName, callback, elem
 }
 
 
+/**
+ * Validates the User Name before the Ajax Request
+ * 
+ * @returns {Boolean}
+ */
+function checkUsername(userName) {
+	var regExp = new RegExp("^[a-zA-Z0-9]+$");
+
+	if(regExp.test(userName)) {
+		return true;
+	} else {
+		alert(getString("error.user.no_valid_username"));
+		return false;
+	}
+}
 
