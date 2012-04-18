@@ -41,7 +41,7 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 	/**
 	 * the url of the BibSonomy (bibsonomy.org) API
 	 */
-	public static final String BIBSONOMY_API_URL = "http://bibsonomy.org/api/";
+	public static final String BIBSONOMY_API_URL = "http://www.bibsonomy.org/api/";
 	
 	private static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
 	private static final ProgressCallbackFactory DEFAULT_CALLBACK_FACTORY = new ProgressCallbackFactoryImpl();
