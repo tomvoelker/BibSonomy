@@ -9,6 +9,6 @@
 	<c:if test="${not empty post.description}">
    		<c:out value="${post.description} "/>
    	</c:if>
-	<a href="${fn:escapeXml(post.resource.url)}"><c:out value="${post.resource.url}"/></a>
+	<a rel="nofollow" href="${fn:escapeXml(post.resource.url)}"><c:out value="${post.resource.url}"/></a>
 	
 </jsp:root>
