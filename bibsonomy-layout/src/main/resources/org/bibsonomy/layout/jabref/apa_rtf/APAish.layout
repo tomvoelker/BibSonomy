@@ -1,0 +1,45 @@
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,RTFChars]{\author}
+ (\year). 
+\format[RTFChars]{\title} 
+\begin{type}
+[\format[RTFChars]{\type}]
+\end{type}. 
+\begin{journal}
+}{\\i \format[RTFChars]{\journal}} {\\b \volume}{
+\end{journal}
+\begin{number}
+(\number)
+\end{number}
+\begin{editor}
+. }{In
+ }{\format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,RTFChars]{\editor}
+ (ed.), 
+\end{editor}
+\begin{booktitle}
+{\\i \format[RTFChars]{\booktitle}. } 
+\end{booktitle} 
+\begin{organization}
+\organization
+\end{organization}
+\begin{institution}
+(Technical report, \institution) 
+\end{institution}
+\begin{publisher}
+\format[RTFChars]{\publisher}.  
+\end{publisher} 
+\begin{howpublished}
+\howpublished . 
+\end{howpublished}
+\begin{note}
+(\note) 
+\end{note}
+\begin{pages}
+, \pages .
+\end{pages} 
+\begin{url}
+Retrieved 
+\format[RTFChars]{\lastchecked} 
+from \format[RTFChars]{\url}. 
+\end{url}
+\\par
+\\par

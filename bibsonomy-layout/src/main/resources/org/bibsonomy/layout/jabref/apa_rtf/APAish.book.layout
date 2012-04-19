@@ -1,0 +1,24 @@
+\begin{author}
+\format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\end{author}
+\begin{editor}
+\format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}, (ed.).
+\end{editor}
+ (\year). }
+{\\i \format[RTFChars]{\title}
+\begin{volume}
+, Vol. \volume
+\end{volume}. }{
+\begin{publisher}
+\format[RTFChars]{\publisher}
+\end{publisher}. }
+{\begin{isbn}
+ (ISBN: \format[RTFChars]{\isbn}.) 
+\end{isbn}
+\begin{url}
+ Retrieved 
+\format[RTFChars]{\lastchecked} 
+from \format[RTFChars]{\url}. 
+\end{url}}{
+\\par
+\\par

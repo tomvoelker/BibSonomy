@@ -1,0 +1,23 @@
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,RTFChars]{\author}
+ (\year). }{
+{\\i \format[RTFChars]{\title}}
+ (\type \number). 
+\begin{organization}
+\organization
+\end{organization}
+\begin{institution}
+\institution
+\end{institution}. }{
+\begin{howpublished}
+\howpublished .
+\end{howpublished}
+\begin{note}
+ (\note) 
+\end{note}}{
+\begin{url}
+ Retrieved 
+\format[RTFChars]{\lastchecked} 
+from \format[RTFChars]{\url}. 
+\end{url}}{
+\\par
+\\par
