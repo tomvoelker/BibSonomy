@@ -60,36 +60,43 @@ public class EntityIdentification {
 
 		float timeAtStart = System.nanoTime();
 
+		//database configs
 		String resource = "config.xml";
 		Reader reader;
-				
-		List<String> authorList = null;
-		List<Map<String,String>> myOwnAuthorList = null;
-		
-		
+
+		String resourceRkr = "configRkr.xml";
+		Reader readerRkr;
+
+		//get the data from the database
 		try {
 			reader = Resources.getResourceAsReader(resource);
 			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
 			SqlSession session = sqlMapper.openSession();
-			try {
-			authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP", 1);
-			myOwnAuthorList = session.selectList("org.mybatis.example.Entity-Identification.selectMyOwn", 1);
-		} finally {
+
+			readerRkr = Resources.getResourceAsReader(resourceRkr);
+			SqlSessionFactory sqlMapperRkr = new SqlSessionFactoryBuilder().build(readerRkr);
+			SqlSession sessionRkr = sqlMapperRkr.openSession();
+
+			//run "myown" test
+			MyOwnTest.findSamePersonDifferentNames(session);
+
+			//run dblp test
+			DblpTest dblpTest = new DblpTest();
+			dblpTest.preperations(session, sessionRkr);
+
+			AuthorClustering.authorClustering(session, sessionRkr);
+			//dblpTest.compareResults(authorIDsList);
+			
+			System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
+
 			session.close();
-		}
+			sessionRkr.close();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-				
-		//run "myown" test
-		MyOwnTest.findSamePersonDifferentNames(myOwnAuthorList);
-		
-		//run dblp test
-		DblpTest.findDifferentPersonSameNames(authorList);
-		
-		System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
 	}
-	
+
 	public static String normalizePersonName(PersonName personName) {
 		//reduce the
 		String newFirstName = null;
@@ -179,5 +186,5 @@ public class EntityIdentification {
 	public static boolean present(final String string) {
 		return ((string != null) && (string.trim().length() > 0));
 	}
-	
+
 }

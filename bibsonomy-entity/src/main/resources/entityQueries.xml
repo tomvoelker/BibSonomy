@@ -15,7 +15,7 @@ SELECT author FROM author
  
 <!--  MyOwn test -->
 <select id="selectMyOwn" parameterType="String" resultType="java.util.Map">
-select tas.user_name, bibtex.author from tas inner join bibtex using(content_id) where tag_name = 'myown' order by user_name
+SELECT tas.user_name, bibtex.author FROM tas INNER JOIN bibtex using(content_id) WHERE tag_name = 'myown' ORDER BY user_name
 </select>
 
 <!-- bibsonomy_strudel DBLP Tests -->

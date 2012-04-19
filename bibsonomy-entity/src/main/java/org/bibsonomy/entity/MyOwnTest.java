@@ -7,14 +7,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
 import org.apache.lucene.queryParser.ParseException;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 
 public class MyOwnTest {
-	public static void findSamePersonDifferentNames(List<Map<String,String>> myOwnAuthorList) {
-		//"myown" test
+	public static void findSamePersonDifferentNames(SqlSession session) {
+		 List<Map<String,String>> myOwnAuthorList = session.selectList("org.mybatis.example.Entity-Identification.selectMyOwn", 1);
+
 		//count the first and last names and define the name of the user as the most counted first and last name
 		String userName = null;
 		int userNameCount = 0;
