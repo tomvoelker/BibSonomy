@@ -688,5 +688,24 @@
 		<baseFileName>APAish</baseFileName>
 		<mimeType>text/rtf</mimeType>
 		<extension>.rtf</extension>
-	</layout>	
+	</layout>
+	<layout name="apa_html" >
+		<displayName>Publication List in HTML Format according American Pychological Association (APA) guidelines</displayName>
+		<description xml:lang="en">
+			Publication list formatted according to the guidelines of the American Psychological
+			Association (APA); output is created in HTML format.
+			For further details, see http://ralmond.net/APAish/.	
+			This filter was originally created by Gottfried Vosgerau by adapting the Harvard RTF export filter.	
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine Publikationsliste gemäß der Richtlinien der American Psychological
+			Association (APA); die Ausgabe erfolgt im HTML Format.
+			Weitere Details finden Sie unter http://ralmond.net/APAish/.
+			Dieser Filter wurde von Gottfried Vosgerau basierend auf der Vorlage des Harvard RTF Filters erstellt. 
+		</description>
+		<directory>apa_html</directory>
+		<baseFileName>APAish</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 </layouts>
