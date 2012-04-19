@@ -1,0 +1,122 @@
+************************************************
+
+*******                                 ********
+*******  Readme: APAish Export Filter  ********
+*******                                 ******** 
+*******           for JabRef            ********
+*******                                 ********
+*******           version 0.2           ********
+*******           2009-09-26             ********
+*******                                 ******** 
+************************************************
+
+written by ralmond (almond@acm.org)
+Hacked from Harvard Export Filter written by gottfried
+         (vosgerau@uni-tuebingen.de) 
+
+
+This is a modificaiton of the harvard export filter to conform to the
+American Psychological Association (APA) style guidelines.  These
+guidelines are used by a number of journals and conferences,
+particularly in the education.  I call it APAish rather than APA
+because, (a) the APA style guides are rather picky and I'm sure I have
+not gotten all of the details correct, and (b) I've added some
+eccentric changes (mostly having to do with treatment of the URL, doi
+and ISBN fields for which I do not think the standards have kept up
+with the new millenium).
+
+Finally, I owe a big debt to Erik Meijer (apacite at gmail.com) the
+author of the excellent LaTeX/bibtex package apacite available at fine
+CTAN mirrors everywhere.
+
+URLs
+
+APAish looks for the lastcheck and url field of the bibtex entry.  If
+both are present, it adds a line of the form:
+"Retrieved <lastchecked> from <url>." to the end of the entry.  If
+<lastchecked> is not present, it is omitted.  This is not APA standard
+but fairly useful.
+
+DOIs and ISBNs
+
+If the doi field is filled out for an article, or the ISBN for a book
+this is added to the entry in parenthesis.
+
+Publishers address.
+
+Adding the physical address of the publisher to the bibliography entry
+is an antemillenial practice that wastes valuable page count.  I don't
+bother.  
+
+Editors [*TODO*]
+Currently, I'm not sure how to distinguish between a single and
+multiple editors.  I'm just using (ed.) for both.
+
+Type [*TODO*]
+Apacite supports default values for this field based on the type of
+object.  Currently, JabRef doesn't seem to have a good way to put in
+default values.
+
+
+Currently unsupported bibtex fields:
+
+address [see above], annote [not used], chair, chapter
+[typically not used by APA, use title for title of chapter and
+booktitle for chapter of book], crossref [unless used internally by
+JabRef], day, edition, englishtitle, firstkey [used for citations],
+key [used for citations], month, note, original year, series [See
+notes in apacite package], symposium, text, translator. 
+
+Currently unspported document types:
+
+magazine, newspaper, lecture, intechreport
+
+misc, booklet, manual, unpublished and proceedings all use the default (.layout) type.
+
+
+
+****************************
+** Original Harvard Readme
+*****************************
+
+The harvard export filter allows you to export your biliography entries into an Rich Text Format file (*.rtf) according to the Harvard citation standards often used in arts and humanities. The Rich Text Format file can be opened with word processing programms like Word, Open Office, Star Writer, etc. on all systems and then be copied directly into the other files.
+
+
+Installation
+************
+
+The following 11 [12 for APAish] files are needed for the harvard export filter:
+	harvard.article.layout
+	harvard.begin.layout
+	harvard.book.layout
+        [APAish.conference.layout]
+	harvard.end.layout
+	harvard.inbook.layout
+	harvard.incollection.layout
+	harvard.inproceedings.layout
+	harvard.layout
+	harvard.mastersthesis.layout
+	harvard.phdthesis.layout
+	harvard.proceedings.layout [APAish uses deafult for
+		proceedings]
+        [APAish.techreport.layout]
+
+Put all of these 11 files in one directory. Note that all have to be in the same directory.
+
+Start JabRef. In the "Options" menu you will find the button "Manage costum exports". The "Manage costum exports" interface will appear. Click the "Add new" button. You can choose a name for the export filter (e.g. "Harvard"). Specify the location of the main layout file (which is the file "harvard.layout") by typing the full path or by using the "Browse" button. The file extension should be set to ".rtf". Click "OK".
+
+Now you will find the new costum export filter in the "File" menu under the pop-up menu "Custom export". To export the entries of your database just click on the name of the new filter and specify the output file.
+
+
+Important Notes
+***************
+
+Although we tried to make the filter as good as possible, please note that formatting command like \emph or \textbf are ignored. 
+
+The use of special characters such as \"a or \`a may lead to strange results. Therefore, if you use special characters check the output and use the find and replace command to correct the output.
+
+The ordering of the entries may not match the usual alphabetic order in some cases. Please check your file before usage.
+
+
+**************************
+end of file harvard.readme
