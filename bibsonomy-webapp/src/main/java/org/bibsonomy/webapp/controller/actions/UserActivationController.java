@@ -68,17 +68,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 			throw new AccessDeniedException("error.logged.in.user.activate");
 		}
 		
-		String activationCode = command.getActivationCode();
-		
-		/*
-		 * Possible fix for invalid activation code 
-		 * prevent copy-paste-error trailing "."
-		 */
-		if (present(activationCode) && activationCode.length() == 33) {
-			if (activationCode.endsWith(".")) {
-				activationCode = activationCode.replaceAll("\\.", "");
-			}
-		}
+		final String activationCode = command.getActivationCode();
 		
 		final List<User> list = logic.getUsers(null, GroupingEntity.PENDING, null, null, null, null, null, activationCode, 0, 1);
 		User pendingUser = null;
