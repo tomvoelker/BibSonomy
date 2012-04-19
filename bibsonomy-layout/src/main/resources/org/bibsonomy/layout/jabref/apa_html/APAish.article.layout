@@ -1,0 +1,22 @@
+\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+ (\year). 
+\format[HTMLChars]{\title}. <i> \format[HTMLChars]{\journal}</i>
+\begin{volume}
+ <b> \volume</b>
+\end{volume}
+\begin{number}
+ (\number)
+\end{number}
+\begin{pages}
+, \pages
+\end{pages}. 
+\begin{doi}
+ (Doi: \format[HTMLChars]{\doi}.) 
+\end{doi}
+\begin{url}
+ Retrieved 
+\format[HTMLChars]{\lastchecked} 
+from \format[HTMLChars]{\url}. 
+\end{url}
+<br/>
+<br/>

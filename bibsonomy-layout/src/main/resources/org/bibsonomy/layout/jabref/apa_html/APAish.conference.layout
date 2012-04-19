@@ -1,0 +1,30 @@
+\begin{author}
+\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\end{author}
+ (\year). 
+\format[HTMLChars]{\title}. 
+In 
+\begin{editor}
+\format[HTMLChars,AuthorFirstFirstAbbrCommas,AuthorAndsReplacer]{\editor}
+ (ed.), 
+\end{editor}
+<i> \format[HTMLChars]{\booktitle}</i>
+\begin{volume}
+, Vol. \volume
+\end{volume}
+\begin{pages}
+ (pp. \pages)
+\end{pages}. 
+\begin{publisher}
+\format[HTMLChars]{\publisher}
+\end{publisher}. 
+\begin{isbn}
+ (ISBN: \format[HTMLChars]{\isbn}.) 
+\end{isbn}
+\begin{url}
+ Retrieved 
+\format[HTMLChars]{\lastchecked} 
+from \format[HTMLChars]{\url}. 
+\end{url}
+<br/>
+<br/>

@@ -1,0 +1,23 @@
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
+ (\year). 
+<i> \format[HTMLChars]{\title}</i>
+ (\type \number). 
+\begin{organization}
+\organization
+\end{organization}
+\begin{institution}
+\institution
+\end{institution}. 
+\begin{howpublished}
+\howpublished .
+\end{howpublished}
+\begin{note}
+ (\note) 
+\end{note}
+\begin{url}
+ Retrieved 
+\format[HTMLChars]{\lastchecked} 
+from \format[HTMLChars]{\url}. 
+\end{url}
+<br/>
+<br/>

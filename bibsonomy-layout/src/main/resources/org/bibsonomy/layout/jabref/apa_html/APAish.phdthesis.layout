@@ -1,0 +1,16 @@
+\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\year). 
+<i> \format[HTMLChars]{\title}. </i>
+\begin{type}
+\format[HTMLChars]{\type}
+\end{type}
+Unpublished doctoral disseration
+\begin{school}
+, \school
+\end{school}. 
+\begin{url}
+ Retrieved 
+\format[HTMLChars]{\lastchecked} 
+from \format[HTMLChars]{\url}. 
+\end{url}
+<br/>
+<br/>

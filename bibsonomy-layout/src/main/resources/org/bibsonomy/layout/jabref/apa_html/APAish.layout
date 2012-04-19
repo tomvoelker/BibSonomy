@@ -1,0 +1,45 @@
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
+ (\year). 
+\format[HTMLChars]{\title} 
+\begin{type}
+[\format[HTMLChars]{\type}]
+\end{type}. 
+\begin{journal}
+<i>\format[HTMLChars]{\journal}</i> <b>\volume</b>
+\end{journal}
+\begin{number}
+(\number)
+\end{number}
+\begin{editor}
+. In
+ \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars]{\editor}
+ (ed.), 
+\end{editor}
+\begin{booktitle}
+<i> \format[HTMLChars]{\booktitle}. </i> 
+\end{booktitle} 
+\begin{organization}
+\organization
+\end{organization}
+\begin{institution}
+(Technical report, \institution) 
+\end{institution}
+\begin{publisher}
+\format[HTMLChars]{\publisher}.  
+\end{publisher} 
+\begin{howpublished}
+\howpublished . 
+\end{howpublished}
+\begin{note}
+(\note) 
+\end{note}
+\begin{pages}
+, \pages .
+\end{pages} 
+\begin{url}
+Retrieved 
+\format[HTMLChars]{\lastchecked} 
+from \format[HTMLChars]{\url}. 
+\end{url}
+<br/>
+<br/>
