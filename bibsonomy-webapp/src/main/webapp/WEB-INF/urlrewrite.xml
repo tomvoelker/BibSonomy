@@ -925,7 +925,7 @@
 	<!-- /activate/ACTIVATIONCODE -->
 	<rule>
 		<name>/activate/ACTIVATIONCODE</name>
-		<from>^/+activate/+([0-9a-fA-F]{32})</from>
+		<from>^/+activate/+([0-9a-fA-F]{32}).*</from>
 		<set type="parameter" name="activationCode">$1</set>
 		<to last="true">/activate</to>
 	</rule>
