@@ -62,7 +62,7 @@
 				</c:when>
 				<c:otherwise>
 					<!-- only show message "no posts available" when no artificial list items (e.g. discussions) are present -->
-					<c:if test="${empty addAsFirstItem and empty addAsLastItem}">
+					<c:if test="${empty addAsFirstItem}">
 						<span class="post none">
 							<fmt:message key="posts.no_matching_entries"/>
 						</span>
