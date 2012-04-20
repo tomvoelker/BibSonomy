@@ -5,7 +5,7 @@
 \format[HTMLChars]{\title}. 
 In 
 \begin{editor}
-\format[HTMLChars,AuthorFirstFirstAbbrCommas,AuthorAndsReplacer]{\editor}
+\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}
  (ed.), 
 \end{editor}
 <i> \format[HTMLChars]{\booktitle}</i>
