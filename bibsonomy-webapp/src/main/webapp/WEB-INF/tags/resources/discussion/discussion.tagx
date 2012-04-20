@@ -85,20 +85,26 @@
 		</div>
 
 		<!-- TODO: use spring security tags -->
-		<c:if test="${command.context.userLoggedIn}">
-			<div id="discussionTemplates" class="initiallyHidden">
-				<!-- create comment div structure -->
-				<div id="commentTemplate">
-				   	<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="false"/>
-				</div>
+		<c:choose>
+			<c:when test="${command.context.userLoggedIn}">
+				<div id="discussionTemplates" class="initiallyHidden">
+					<!-- create comment div structure -->
+					<div id="commentTemplate">
+				   		<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="false"/>
+					</div>
 			    
-				<ul>
-					<!-- create li, div structure for new review -->
-					<li id="newReview">
-						<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="false"/>
-					</li>
-		    	</ul>
-			</div>
-		</c:if>
+					<ul>
+						<!-- create li, div structure for new review -->
+						<li id="newReview">
+							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="false"/>
+						</li>
+		    		</ul>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<fmt:message key="post.resource.discussion.loginToDiscuss"/>
+			</c:otherwise>
+		</c:choose>
+		
 	</div>
 </jsp:root>
