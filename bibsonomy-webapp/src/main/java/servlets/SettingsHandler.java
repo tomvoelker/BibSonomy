@@ -38,6 +38,8 @@ import filters.ActionValidationFilter;
 @Deprecated
 public class SettingsHandler extends HttpServlet{
 
+	private static final String SETTINGS_URL = "/settings";
+	private static final String GROUP_SETTINGS_URL = SETTINGS_URL + "?selTab=3";
 	private static final long serialVersionUID = 4051324539558769200L;
 	private DataSource dataSource;
 	private static final Log log = LogFactory.getLog(SettingsHandler.class);
@@ -66,7 +68,9 @@ public class SettingsHandler extends HttpServlet{
 		PreparedStatement stmtP = null;
 		
 		final User user = AuthenticationUtils.getUser();
-		final String currUser = user.getName(); 
+		final String currUser = user.getName();
+		
+		String redirectOnSuccess = null;
 
 		/*
 		 * TODO: Fehlerbehandlung fehlt total (User existiert nicht, is schon in Gruppe/Freund, etc.
@@ -103,6 +107,7 @@ public class SettingsHandler extends HttpServlet{
 				final String addGroupUser = request.getParameter("add_group_user");
 				if (addGroupUser != null) {
 					addUserToGroup(addGroupUser, currUser, stmtP, rst, conn);
+					redirectOnSuccess = GROUP_SETTINGS_URL;
 				}
 
 				/*
@@ -172,12 +177,18 @@ public class SettingsHandler extends HttpServlet{
 						stmtP.setString(1, friend);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
+						redirectOnSuccess = GROUP_SETTINGS_URL;
 					}
 				}
 				
-				conn.commit();
-				final String referer = request.getHeader("Referer");
-				response.sendRedirect(referer != null ? referer : "/settings");
+				conn.commit();				
+				if (redirectOnSuccess != null) {
+					response.sendRedirect(redirectOnSuccess);	
+				}
+				else {
+					final String referer = request.getHeader("Referer");
+					response.sendRedirect(referer != null ? referer : SETTINGS_URL);
+				}
 
 			} catch(final SQLException e) {
 				conn.rollback();     // rollback all queries
