@@ -39,7 +39,7 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 	private static final Set<String> BIBTEX_RESOURCE_TYPES = new HashSet<String>(Arrays.asList(new String[] { "bibtex", "publication" }));
 
 	private static String BIBTEX = "bibtex";
-	private static String BOOKMARK = "bookmark";
+	private static String BOOKMARK = "url";
 
 	@Override
 	protected int doStartTagInternal() throws Exception {
