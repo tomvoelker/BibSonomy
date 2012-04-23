@@ -348,7 +348,7 @@ function updateReview() {
 						}
 						
 						// update values
-						updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
+						updateReviewView(reviewView, parseLinks(reviewText), reviewRating, abstractGrouping, groups);
 						highlight(reviewView);
 						
 		     			// update over all values
@@ -409,7 +409,7 @@ function updateReviewView(reviewView, text, rating, abstractGrouping, groups) {
 	var starWidth = getStarsWidth(rating);
 	var ratingView = reviewView.find('.rating');
 	ratingView.data("rating", rating);
-	reviewView.find('.review.text').text(text);
+	reviewView.find('.review.text').replaceWith(text);
 	ratingView.find('.stars-on-1').css('width', starWidth);
 	
 	// groups

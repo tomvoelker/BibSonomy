@@ -194,7 +194,7 @@ function updateCommentView(commentView, commentHash, commentText, anonymous, com
 	/*
 	 * update comment text
 	 */
-	commentView.find('.text:first').text(commentText);
+	commentView.find('.text:first').replaceWith(commentText);
 	
 	/*
 	 * update the hash of the discussion item
@@ -249,7 +249,7 @@ function updateComment() {
 		dataType:   "json",
 		data:		commentData,
 		success:	function(response) {
-						updateCommentView(commentView, response.hash, commentText, anonymous, commentAbstractGrouping, commentGroups);
+						updateCommentView(commentView, response.hash, parseLinks(commentText), anonymous, commentAbstractGrouping, commentGroups);
 						commentForm.parent().remove();
 						highlight(commentView);
 						showReviewForm();
