@@ -106,10 +106,7 @@ function submitUsername(textField) {
 		handleUserRelation("&action=addFriend", userName, "sys:network:bibsonomy-friend", 
 				function(relationName, element, action, data) {
 					if(data.statusText === "error") {
-						
-						//TODO Create a Method to parse the localized Messages and replace {0},{1} etc.
-						var errorString = getString("error.user.none_existing_user");
-						errorString = errorString.replace(/\{0\}/g, userName);
+						errorString = parseMessageProperties(getString("error.user.none_existing_user"), [userName]);
 						alert(errorString);
 					} else {
 						textField.val('');
@@ -122,5 +119,3 @@ function submitUsername(textField) {
 	}
 	return false;
 }
-
-

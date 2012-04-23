@@ -1050,3 +1050,24 @@ String.prototype.startsWith = function(s) {
 String.prototype.trim = function () {
 	return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
 };
+
+
+/**
+ * Function to parse and replace the variables of the Message.properties
+ * 
+ * @param messageString for Example getString("error.user.userError")
+ * @param replacement Array of the words to be replaced
+ * @returns
+ */
+parseMessageProperties = function (messageString, replacement) {
+	
+	var messageString = messageString;
+
+	for (var ar = 0; ar < replacement.length; ar++) {
+		var toreplace = '\\{' + ar + '\\}';
+		messageString = messageString.replace(new RegExp(toreplace, "g"), replacement[ar]);
+	}
+	
+	return messageString;
+}
+
