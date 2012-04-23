@@ -27,12 +27,15 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.client.AbstractSyncQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.util.StringUtils;
@@ -42,18 +45,21 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationPost>> {
+	private static final Log log = LogFactory.getLog(CreateSyncPlanQuery.class);
 
 	private final List<SynchronizationPost> posts;
-	
+
 	/**
 	 * creates a new sync plan query
+	 * 
 	 * @param serviceURI the uri of the service
 	 * @param posts the posts
 	 * @param resourceType the resource to use
 	 * @param strategy the sync strategy to use
-	 * @param direction the syn direction to use
+	 * @param direction the sync direction to use
 	 */
-	public CreateSyncPlanQuery(final String serviceURI, final List<SynchronizationPost> posts, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
+	public CreateSyncPlanQuery(final String serviceURI, final List<SynchronizationPost> posts, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy,
+			final SynchronizationDirection direction) {
 		super(serviceURI, resourceType, strategy, direction);
 		this.posts = posts;
 	}
@@ -63,9 +69,25 @@ public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationP
 		final StringWriter sw = new StringWriter();
 		final Renderer renderer = this.getRenderer();
 		renderer.serializeSynchronizationPosts(sw, posts);
-		
+
 		final String syncURL = getSyncURL();
 		final Reader reader = performRequest(HttpMethod.POST, syncURL, StringUtils.toDefaultCharset(sw.toString()));
-		return renderer.parseSynchronizationPostList(reader);
+		this.downloadedDocument = reader;
+
+		return null;
+
+	}
+
+	@Override
+	public List<SynchronizationPost> getResult() throws BadRequestOrResponseException, IllegalStateException {
+		if (isSuccess()) {
+			try {
+				return this.getRenderer().parseSynchronizationPostList(this.downloadedDocument);
+			} catch (final BadRequestOrResponseException ex) {
+				log.error(ex.getMessage());
+				throw ex;
+			}
+		}
+		throw new BadRequestOrResponseException("HTTP STATUS: " + this.getHttpStatusCode());
 	}
 }
