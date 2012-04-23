@@ -110,7 +110,7 @@ function showReviewForm() {
 function removeReviewActions() {
 	$(CREATE_REVIEW_LINKS_SELECTOR).parent().hide();
 	// create review form
-	$(REVIEW_CREATE_FORM_SELECTOR).parent().remove();
+	$(REVIEW_CREATE_FORM_SELECTOR).parent().hide();
 }
 
 function addReviewActions() {
