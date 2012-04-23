@@ -93,7 +93,7 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 		
 		// return error messages in case of errors
 		if (errors.hasErrors()) {
-			returnErrorView();
+			return returnErrorView();
 		}
 		
 		// forward to a certain page, if requested 
