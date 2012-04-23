@@ -1,7 +1,5 @@
 package org.bibsonomy.entity;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.IOException;
 import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
@@ -52,6 +50,9 @@ public class UserRealnameResolver {
 	 */
 	private Database userIndex; 
 	
+	/**
+	 * inits the user realname resolver by loading the duke index
+	 */
 	public void init() {
 		try {
 			config = ConfigLoader.load(CONFIG_PATH);
@@ -99,7 +100,7 @@ public class UserRealnameResolver {
 	 * @return
 	 */
 	public Map<String, Collection<User>> resolveUsers(final Collection<User> others)  {
-		if (!present(this.userIndex)) {
+		if (this.isDisabled()) {
 			return Collections.emptyMap();
 		}
 		/*
