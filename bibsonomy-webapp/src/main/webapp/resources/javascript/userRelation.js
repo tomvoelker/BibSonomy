@@ -82,26 +82,45 @@ function handleUserRelation(actionString, userName, relationName, callback, elem
 		type: "POST",  
 		url: "/ajax/handleUserRelation",  
 		data: "requestedUserName="+ encodeURIComponent(userName) + actionString + "&ckey=" + ckey,
-		complete: function success() {
-			callback(relationName, element, action);
+		complete: function success(data) {
+			callback(relationName, element, action, data);
 		}
 	});
 }
 
 
 /**
- * Validates the User Name before the Ajax Request
+ * Function, to submit and add a given User as Friend.
+ * It will be tested if Text-input is valid and then, 
+ * if the given User Name exists in the Database.
  * 
+ * @param textField
  * @returns {Boolean}
  */
-function checkUsername(userName) {
+function submitUsername(textField) {
+	
+	var userName = textField.val();	
 	var regExp = new RegExp("^[a-zA-Z0-9]+$");
 
-	if(regExp.test(userName)) {
-		return true;
+	if(regExp.test(userName)) {	
+		handleUserRelation("&action=addFriend", userName, "sys:network:bibsonomy-friend", 
+				function(relationName, element, action, data) {
+					if(data.statusText === "error") {
+						
+						//TODO Create a Method to parse the localized Messages and replace {0},{1} etc.
+						var errorString = getString("error.user.none_existing_user");
+						errorString = errorString.replace(/\{0\}/g, userName);
+						alert(errorString);
+					} else {
+						textField.val('');
+						location.reload();
+					}					
+				}, element, "add");
+		
 	} else {
 		alert(getString("error.user.no_valid_username"));
-		return false;
 	}
+	return false;
 }
+
 
