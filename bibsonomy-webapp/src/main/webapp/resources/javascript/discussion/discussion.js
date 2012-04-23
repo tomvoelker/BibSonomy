@@ -317,7 +317,7 @@ function parseLinks(reviewText) {
 			url = "/bibtex/";
 		}
 		url += match[2];
-		if(typeof match[3] != undefined) {
+		if(typeof match[3] != "undefined") {
 			url += "/" + match[3];
 		}
 		matches.push(match[0]);
