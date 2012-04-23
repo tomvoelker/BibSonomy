@@ -17,6 +17,7 @@ import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
 /**
  * @author wla
@@ -51,26 +52,31 @@ public class AutoSync {
 			
 			User clientUser = adminLogic.getUserDetails(syncService.getUserName());
 			log.info("Autosync for user:" + clientUser.getName() + " and service: " + syncService.getService().toString() + " api: " + syncService.getSecureAPI());
-			LogicInterface clientLogic = userLogicFactory.getLogicAccess(clientUser.getName(), clientUser.getApiKey());
-			
-			Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = syncClient.getSyncPlan(clientLogic, syncService);
-			if (!present(syncPlan)) {
-				log.info("no sync plan received");
-				continue;
-			}
-			
-			log.info("sync plan created");
-			/*
-			 * run sync plan
-			 */
 			try {
-				Map<Class<? extends Resource>, SynchronizationData> syncData = syncClient.synchronize(clientLogic, syncService, syncPlan);
-				for (Entry<Class<? extends Resource>, SynchronizationData> data : syncData.entrySet()) {
-					log.info(data.getValue().getInfo());
+				LogicInterface clientLogic = userLogicFactory.getLogicAccess(clientUser.getName(), clientUser.getApiKey());
+				
+				Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = syncClient.getSyncPlan(clientLogic, syncService);
+				if (!present(syncPlan)) {
+					log.info("no sync plan received");
+					continue;
 				}
-			} catch (final SynchronizationRunningException e) {
-				//FIXME handle this, i think it is nothing to do in this case
-				log.debug(e.getMessage());
+				
+				log.info("sync plan created");
+				/*
+				 * run sync plan
+				 */
+				try {
+					Map<Class<? extends Resource>, SynchronizationData> syncData = syncClient.synchronize(clientLogic, syncService, syncPlan);
+					for (Entry<Class<? extends Resource>, SynchronizationData> data : syncData.entrySet()) {
+						log.info(data.getValue().getInfo());
+					}
+				} catch (final SynchronizationRunningException e) {
+					//FIXME handle this, i think it is nothing to do in this case
+					log.debug(e.getMessage());
+				}
+			} catch (BadRequestOrResponseException ex) {
+				log.error(ex.getMessage());
+				continue;
 			}
 		}
 	}
