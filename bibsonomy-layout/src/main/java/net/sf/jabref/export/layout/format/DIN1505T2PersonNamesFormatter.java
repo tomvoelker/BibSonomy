@@ -34,10 +34,10 @@ public class DIN1505T2PersonNamesFormatter implements LayoutFormatter {
 
 	@Override
 	public String format(String arg0) {
-		arg0 = arg0.trim();
+		arg0 = arg0.trim().replaceAll("[\\{\\}]", ""); // we need to remove curly brackets, as they break the regex later
 		Matcher m = PERSON_NAMES_PATTERN.matcher(arg0);
 		while (m.find()) {
-			arg0 = arg0.replaceFirst(m.group(), m.group(1) + "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>" + m.group(3));
+			arg0 = arg0.replaceFirst(Matcher.quoteReplacement(m.group()), m.group(1) + "<span style=\"font-variant: small-caps\">" + m.group(2) + "</span>" + m.group(3));
 		}
 		return arg0;
 	}
