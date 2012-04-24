@@ -39,8 +39,9 @@ public class SystemTagsUtil {
 
 	/**
 	 * Used to remove the relevant for tag in {@link #removeSystemTag(String, String)}. FIXME: Workaround!
+	 * @see org.bibsonomy.webapp.validation.UserValidator.USERNAME_DISALLOWED_CHARACTERS_PATTERN
 	 */
-	private final static Pattern RELEVANT_FOR_PATTERN = Pattern.compile("sys:relevantFor:.+?\\b");
+	private final static Pattern RELEVANT_FOR_PATTERN = Pattern.compile("sys:relevantFor:[a-zA-Z0-9\\.\\-_]+\\b");
 	
 
 	/*

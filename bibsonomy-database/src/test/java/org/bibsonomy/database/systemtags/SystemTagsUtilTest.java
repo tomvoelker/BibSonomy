@@ -156,6 +156,7 @@ public class SystemTagsUtilTest {
 		assertEquals("", SystemTagsUtil.removeSystemTag("", RelevantForSystemTag.NAME));
 		assertEquals("", SystemTagsUtil.removeSystemTag("sys:relevantFor:kde", RelevantForSystemTag.NAME));
 		assertEquals("", SystemTagsUtil.removeSystemTag("sys:relevantFor:kde ", RelevantForSystemTag.NAME));
+		assertEquals("", SystemTagsUtil.removeSystemTag("sys:relevantFor:kde_ss2012_web2.0 ", RelevantForSystemTag.NAME));
 		assertEquals("analysis", SystemTagsUtil.removeSystemTag("sys:relevantFor:kde analysis", RelevantForSystemTag.NAME));
 		assertEquals("analysis web", SystemTagsUtil.removeSystemTag("sys:relevantFor:kde analysis web", RelevantForSystemTag.NAME));
 		assertEquals("tools  analysis web", SystemTagsUtil.removeSystemTag("tools sys:relevantFor:kde analysis web", RelevantForSystemTag.NAME));
