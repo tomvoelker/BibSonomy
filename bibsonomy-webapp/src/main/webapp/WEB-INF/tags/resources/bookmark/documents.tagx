@@ -5,17 +5,16 @@
 
 	<fmt:message var="altPreview" key="preview"/>
 
+	<span class="entrytype web"><!-- --></span>
+	
+	<!-- uncomment the span below, and delete the span above to enable previews for bookmarks -->
+	
 	<!-- 
-	<span class="entrytype web">COMMENT</span>
-	 -->
-	
-	<!-- enable the span below, replace COMMENT with an XML comment and delete the span above to enable previews for bookmarks -->
-	
 	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
 	<span class="">
-			<a class="preview" href="${bookUrl }"> 
+			<a class="preview" href="${bookUrl}"> 
 				<img class="pre_pic" src="/preview/bookmark/${post.resource.interHash}?preview=small" alt="${altPreview}"/>
 			</a>
-	</span>
+	</span> -->
 
 </jsp:root>
