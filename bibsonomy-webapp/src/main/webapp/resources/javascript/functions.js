@@ -626,7 +626,7 @@ function pickUnpickPublication(element) {
 	/*
 	 * pick/unpick publication
 	 */
-	return updateBasket(element.getAttribute("href").replace(/^.*?\?/, ""));
+	return updateBasket((element===null||element.getAttribute("href")===null)?"":element.getAttribute("href").replace(/^.*?\?/, ""));
 }
 
 
