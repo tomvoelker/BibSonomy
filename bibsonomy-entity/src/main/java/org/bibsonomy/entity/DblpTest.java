@@ -30,9 +30,14 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.util.StringUtils;
+import org.omg.CosNaming.NamingContextExtPackage.AddressHelper;
 
 public class DblpTest {
 	List<Map<String,ArrayList<String>>> authorIDNumberList = new ArrayList<Map<String,ArrayList<String>>>();
+	List<Map<String,String>> authorIDToBibtex = new ArrayList<Map<String,String>>();
+	//position 9 we use for 10 or more different ids
+	int[] averageCountOccurences = new int[9];
+	int[] averageCountAuthors = new int[9];
 	
 	public void preperations(SqlSession session, SqlSession sessionRkr) throws PersonListParserException {
 		List<String> authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP", 1);
@@ -93,8 +98,16 @@ public class DblpTest {
 						//add the new authorID to the already existing data
 						//System.out.println("reAdd: " + authorHashMap.get("authorNameAndNumber").get(0));
 						ArrayList<String> authorIDs = authorHashMap.get("authorIDs");
+						
+						Map<String,String>saveIDAndBibtex = new HashMap<String,String>();
+						saveIDAndBibtex.put("authorID",String.valueOf(lastInsertID.get(0)));
+						saveIDAndBibtex.put("bibtexAuthor", authors);
+						authorIDToBibtex.add(saveIDAndBibtex);
+						
 						authorIDs.add(String.valueOf(lastInsertID.get(0)));
 						authorHashMap.put("authorIDs",authorIDs);
+						//authors
+						
 						authorIDNumberList.set(k, authorHashMap);
 						found = true;
 						break;
@@ -113,6 +126,11 @@ public class DblpTest {
 					authorHashMap.put("authorNameAndNumber", authorNameAndNumber);
 					authorHashMap.put("authorIDs",authorID);
 					authorIDNumberList.add(authorHashMap);
+					
+					Map<String,String>saveIDAndBibtex = new HashMap<String,String>();
+					saveIDAndBibtex.put("authorID",String.valueOf(lastInsertID.get(0)));
+					saveIDAndBibtex.put("bibtexAuthor", authors);
+					authorIDToBibtex.add(saveIDAndBibtex);
 				}
 
 				for (PersonName coauthor: allAuthorNamesOfOnePublication) {
@@ -140,44 +158,66 @@ public class DblpTest {
 			catch (ParseException p) {}
 	 */	
 
-	public void compareResults(List<List<Integer>> authorIDsList) {
+	public void compareResults(List<List<Integer>> authorClusters) {
 		//compare the results
 		float avgClusters = 0;
 		int countAuthors = 0, countIDs = 0;
-		for (Map<String, ArrayList<String>> author: authorIDNumberList) { //every author where we know the correct IDs
-			if (author.get("authorIDs").size() < 2) continue;
+		for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
+			if (authorMap.get("authorIDs").size() < 2) continue; //ignore authors with only 1 ID
 
 			int countClusters = 0;
 			countAuthors++;
 			ArrayList<Integer> savePositions = new ArrayList<Integer>(); 
-			countIDs += author.get("authorIDs").size();
+			countIDs += authorMap.get("authorIDs").size();
 			System.out.println("this author has the following IDs:");
 
-			for (int k=0; k<author.get("authorIDs").size(); k++) { //every ID of this authors
-				System.out.println(author.get("authorIDs").get(k));
+			if (authorMap.get("authorIDs").size() < 10) averageCountAuthors[authorMap.get("authorIDs").size()-2]++;
+			else  averageCountAuthors[8]++;
+			
+			String bibtexAuthor="";
+			for (int k=0; k<authorMap.get("authorIDs").size(); k++) { //every ID of this authors
+				for (Map<String,String> singleAuthorIDToBibtex: authorIDToBibtex) {
+					if (singleAuthorIDToBibtex.get("authorID") == authorMap.get("authorIDs").get(k)) bibtexAuthor = singleAuthorIDToBibtex.get("bibtexAuthor");
+				}
+				System.out.println(authorMap.get("authorIDs").get(k) + " : " + bibtexAuthor);
 				//count the clusters this IDs are split into
-				boolean found = false;;
+				boolean found = false;
 				int m=0;
-				for (List<Integer> calculatedIDsList: authorIDsList) { //every cluster we want to compare
+				for (List<Integer> calculatedIDsList: authorClusters) { //every cluster we want to compare
 					for(Integer calculatedID: calculatedIDsList) { //every ID of this cluster
-						if (calculatedID == Integer.parseInt(author.get("authorIDs").get(k))) {
+						if (calculatedID == Integer.parseInt(authorMap.get("authorIDs").get(k))) {
+							System.out.println("ID: " + calculatedID);
 							found = true;
-							if (!savePositions.contains(m))  {
+							if (!savePositions.contains(m)) {
 								System.out.println("--split--");
 								//save the position
 								savePositions.add(m);
 								countClusters++;
+								if (authorMap.get("authorIDs").size() < 10) averageCountOccurences [authorMap.get("authorIDs").size()-2]++;
+								else  averageCountOccurences[8]++;
 								break;
 							}
 						}
 					}
 					m++;
 				}
-				if (!found) countClusters++;
+				if (!found) {
+					countClusters++;
+					System.out.println("--single split--");
+					if (authorMap.get("authorIDs").size() < 10) averageCountOccurences [authorMap.get("authorIDs").size()-2]++;
+					else  averageCountOccurences[8]++;
+				}
 			}
+						
 			System.out.println("this author is split into: " + countClusters + " clusters");
 			avgClusters += countClusters;
 		}
+		
+		for (int k=0; k < averageCountOccurences.length; k++) {
+			System.out.println("authors with " + (k+2) + " IDs are split into an average of: " + (float)averageCountOccurences[k]/(float)averageCountAuthors[k] +  " clusters (" + (1-((float)averageCountOccurences[k]/(float)averageCountAuthors[k])/(k+2)) + " correct)");
+			System.out.println("aO:" + averageCountOccurences[k] + " aA: " + averageCountAuthors[k]);
+		}
+		
 		//avgClusters
 		System.out.println("Each author with more then one ID has an average of " + (float)countIDs/(float)countAuthors + " IDs");
 		System.out.println("Each author is split into an average of " + (float)avgClusters/(float)countAuthors + " clusters");

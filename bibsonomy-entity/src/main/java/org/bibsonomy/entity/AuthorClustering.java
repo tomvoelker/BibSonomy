@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 
 public class AuthorClustering {
-	public static void authorClustering(SqlSession session, SqlSession sessionRkr) {
+	public static List<List<Integer>> authorClustering(SqlSession session, SqlSession sessionRkr) {
 
 		//clustering the authors with the coauthor relationship
 		int threshold = 2;
@@ -149,6 +149,7 @@ public class AuthorClustering {
 			}
 		}
 
+		return authorIDsList;
 		/*
 			//Soundex
 			Soundex soundex = new Soundex();

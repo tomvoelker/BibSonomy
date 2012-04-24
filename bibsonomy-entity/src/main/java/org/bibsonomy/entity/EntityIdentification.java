@@ -78,14 +78,14 @@ public class EntityIdentification {
 			SqlSession sessionRkr = sqlMapperRkr.openSession();
 
 			//run "myown" test
-			MyOwnTest.findSamePersonDifferentNames(session);
+			//MyOwnTest.findSamePersonDifferentNames(session);
 
 			//run dblp test
 			DblpTest dblpTest = new DblpTest();
 			dblpTest.preperations(session, sessionRkr);
 
-			AuthorClustering.authorClustering(session, sessionRkr);
-			//dblpTest.compareResults(authorIDsList);
+			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(session, sessionRkr);
+			dblpTest.compareResults(authorIDsList);
 			
 			System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
 
