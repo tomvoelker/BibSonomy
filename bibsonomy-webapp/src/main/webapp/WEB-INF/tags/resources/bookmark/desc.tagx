@@ -7,7 +7,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
 	<c:if test="${not empty post.description}">
-   		<c:out value="${post.description} "/>
+   		<c:out value="${post.description} "/>&#183;
    	</c:if>
 	<a rel="nofollow" href="${fn:escapeXml(post.resource.url)}"><c:out value="${post.resource.url}"/></a>
 	
