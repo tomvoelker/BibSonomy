@@ -36,8 +36,6 @@ public enum GroupUpdateOperation {
 	
 	/**
 	 * Adds new user to a group.
-	 * TODO: why do we need this operation? LogicInterface defines an
-	 * addUserToGroup method!
 	 */
 	ADD_NEW_USER,
 	
