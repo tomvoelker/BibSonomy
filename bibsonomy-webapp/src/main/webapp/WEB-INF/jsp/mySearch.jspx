@@ -115,11 +115,11 @@
 	* array containing bibtex hashes of each publication
 	**/
 	var contentIds = new Array(<c:forEach var='id' items='${command.bibtexHash}' varStatus="loopStatus">
-								"<c:out value='${id}'/>"<c:if test="${not loopStatus.last}">,</c:if>
+								"<c:out value='${mtl:quoteJSON(id)}'/>"<c:if test="${not loopStatus.last}">,</c:if>
 							</c:forEach>);	
 							
 	var titleUrls = new Array(<c:forEach var='id' items='${command.bibtexUrls}' varStatus="loopStatus">
-								"<c:out value='${id}'/>"<c:if test="${not loopStatus.last}">,</c:if>
+								"<c:out value='${mtl:quoteJSON(id)}'/>"<c:if test="${not loopStatus.last}">,</c:if>
 							</c:forEach>);				
 	var titleTag 	= new Array();
 	var titlesIdx	= new Array();
