@@ -24,6 +24,8 @@
 
 package org.bibsonomy.scrapingservice.writers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -90,6 +92,7 @@ public class JSONWriter {
 		}
 		write(depth, "]\n");
 	}
+	
 	/**
 	 * Quotes a String such that it is usable for JSON.
 	 * 
@@ -97,6 +100,9 @@ public class JSONWriter {
 	 * @return The quoted String.
 	 */
 	public static String quoteJSON(final Pattern value) {
+		if (!present(value)) {
+			return null;
+		}
 		return JSONUtils.quoteJSON(value.toString());
 	}
 
