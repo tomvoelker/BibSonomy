@@ -126,14 +126,14 @@ public class Post<T extends Resource> implements Serializable {
 	private List<Repository> repositorys;
 
 	/**
-	 * @return the repositorys
+	 * @return the repositories
 	 */
 	public List<Repository> getRepositorys() {
 		return this.repositorys;
 	}
 
 	/**
-	 * @param repositorys the repositorys to set
+	 * @param repositorys the repositories to set
 	 */
 	public void setRepositorys(List<Repository> repositorys) {
 		this.repositorys = repositorys;
