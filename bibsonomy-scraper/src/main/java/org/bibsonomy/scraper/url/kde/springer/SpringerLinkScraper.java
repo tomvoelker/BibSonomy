@@ -58,6 +58,8 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 
 	private static final Pattern VIEW_STATE_PATTERN = Pattern.compile("id=\"__VIEWSTATE\" value=\"(.+?)\"");
 	private static final Pattern EVENT_VALIDATION_PATTERN = Pattern.compile("id=\"__EVENTVALIDATION\" value=\"(.+?)\"");
+	
+	private static final Pattern SESSION_PATTERN = Pattern.compile("ASP\\.NET_SessionId=(\\w*+);");
 
 	
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
@@ -107,7 +109,11 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			 * entry.
 			 */
 
-			final String formPage = WebUtils.getContentAsString(SITE_URL + "content/" + docid + "/export-citation/");
+			Matcher sessionMatcher = SESSION_PATTERN.matcher(WebUtils.getCookies(new URL(url)));
+			if (!sessionMatcher.find()) throw new ScrapingException("No Session Cookie!");
+			final String cookies = "ASP.NET_SessionId=" + sessionMatcher.group(1) + "; CookiesSupported=True; highlighterEnabled=true; MUD=MP";
+			String exportURL = SITE_URL + "content/" + docid + "/export-citation/";
+			final String formPage = WebUtils.getContentAsString(exportURL, cookies);
 
 			final Matcher viewStateMatcher = VIEW_STATE_PATTERN.matcher(formPage);
 			final Matcher eventValidationMatcher = EVENT_VALIDATION_PATTERN.matcher(formPage);
@@ -117,18 +123,18 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				 */
 				final String postContent = 
 					"__VIEWSTATE=" + UrlUtils.safeURIEncode(viewStateMatcher.group(1)) + 
-					"&ctl00%24ctl19%24cultureList=en-us" +
-					"&ctl00%24ctl19%24SearchControl%24BasicSearchForTextBox=" +
-					"&ctl00%24ctl19%24SearchControl%24BasicAuthorOrEditorTextBox=" +
-					"&ctl00%24ctl19%24SearchControl%24BasicPublicationTextBox=" +
-					"&ctl00%24ctl19%24SearchControl%24BasicVolumeTextBox=" +
-					"&ctl00%24ctl19%24SearchControl%24BasicIssueTextBox=" +
-					"&ctl00%24ctl19%24SearchControl%24BasicPageTextBox=" +
-					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24Export=AbstractRadioButton" +
+					"&ctl00%24ctl14%24cultureList=de-de" +
+					"&ctl00%24ctl14%24SearchControl%24BasicSearchForTextBox=" +
+					"&ctl00%24ctl14%24SearchControl%24BasicAuthorOrEditorTextBox=" +
+					"&ctl00%24ctl14%24SearchControl%24BasicPublicationTextBox=" +
+					"&ctl00%24ctl14%24SearchControl%24BasicVolumeTextBox=" +
+					"&ctl00%24ctl14%24SearchControl%24BasicIssueTextBox=" +
+					"&ctl00%24ctl14%24SearchControl%24BasicPageTextBox=" +
+					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24Export=CitationOnlyRadioButton" +
 					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24CitationManagerDropDownList=BibTex" +
-					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24ExportCitationButton=Export+Citation" +
+					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24ExportCitationButton=Zitierung+exportieren+" +
 					"&__EVENTVALIDATION=" + UrlUtils.safeURIEncode(eventValidationMatcher.group(1));
-				final String bibtexEntry = WebUtils.getPostContentAsString(new URL(SITE_URL + "content/" + docid + "/export-citation/"), postContent);
+				final String bibtexEntry = WebUtils.getPostContentAsString(cookies ,new URL(exportURL), postContent);
 
 				/*
 				 * Job done
