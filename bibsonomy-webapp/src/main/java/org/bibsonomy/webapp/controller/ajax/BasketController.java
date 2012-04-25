@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.ajax;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-
 /**
  * @author Christian Kramer
  * @version $Id$
@@ -94,7 +95,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		final String hash = command.getHash();
 		
 		// if its bigger than 33 chars split it else easy handling
-		if (hash.length() > 33){
+		if (present(hash) && hash.length() > 33){
 			/*
 			 * add several posts - "pick all"
 			 */
