@@ -254,7 +254,7 @@ public class Functions  {
 	 * @param tagSizeMode  - which kind of tag cloud is to be done (the one for the popular tags page vs. standard)
 	 * @return font size for the tag cloud with the given parameters
 	 */
-	public static Integer computeTagFontsize(final Integer tagFrequency, Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
+	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
 			try {
 				Double size = ( (tagFrequency.doubleValue() - tagMinFrequency ) / (tagMaxFrequency - tagMinFrequency) ) * TAGCLOUD_SIZE_SCALING_FACTOR;
 				if ("popular".equals(tagSizeMode)) {
@@ -264,8 +264,7 @@ public class Functions  {
 				size = Math.log10(size); 
 				size *= 100;
 				return size.intValue() == 0 ? TAGCLOUD_SIZE_DEFAULT : size.intValue();
-			}
-			catch (Exception ex) {
+			} catch (final Exception ex) {
 				return TAGCLOUD_SIZE_DEFAULT;
 			}
 	}
@@ -501,6 +500,7 @@ public class Functions  {
 	}
 
 	/**
+	 * TODO: convert to tag to use the urlgenerator configured in bibsonomy2-servlet.xml
 	 * Access the built-in utility function for BibTeX export
 	 * 
 	 * @param post - a publication post
