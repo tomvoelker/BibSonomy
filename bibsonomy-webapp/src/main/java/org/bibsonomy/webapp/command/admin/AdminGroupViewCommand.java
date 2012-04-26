@@ -18,7 +18,13 @@ public class AdminGroupViewCommand extends BaseCommand {
 	
 	/** specific action for admin page */
 	private String action;
-	/** Privacy options for the group */
+	
+	/**
+	 * Privacy options for the group
+	 * FIXME: use generic handling to for localized messages
+	 * @see http://www.springjutsu.org/2011/03/binding-enums-with-i8n-localization-support/
+	 */
+	@Deprecated 
 	private final Map<String, Privlevel> privlevel;
 	
 	private String adminResponse = "";
@@ -26,15 +32,11 @@ public class AdminGroupViewCommand extends BaseCommand {
 	
 	
 	public AdminGroupViewCommand() {
-		/*
-		 * FIXME: use proper localized messages
-		 */
 		privlevel = new HashMap<String, Privlevel>();
 		privlevel.put("Member list hidden", Privlevel.HIDDEN);
 		privlevel.put("Member list public", Privlevel.PUBLIC);
 		privlevel.put("Members can list members", Privlevel.MEMBERS);
 	}
-
 
 	/**
 	 * @return the privlevels
@@ -42,6 +44,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	public Map<String, Privlevel> getPrivlevel() {
 		return this.privlevel;
 	}
+	
 	/**
 	 * @return the group
 	 */
@@ -52,7 +55,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	/**
 	 * @param group the group to set 
 	 */
-	public void setGroup(Group group) {
+	public void setGroup(final Group group) {
 		this.group = group;
 	}
 
@@ -66,14 +69,14 @@ public class AdminGroupViewCommand extends BaseCommand {
 	/**
 	 * @param action the action to set
 	 */
-	public void setAction(String action) {
+	public void setAction(final String action) {
 		this.action = action;
 	}
 
 	/**
 	 * @param adminResponse
 	 */
-	public void setAdminResponse(String adminResponse) {
+	public void setAdminResponse(final String adminResponse) {
 		this.adminResponse = adminResponse;
 	}
 
