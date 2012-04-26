@@ -4,7 +4,6 @@
  */
 
 package beans;
-import helpers.constants;
 import helpers.database.DBAdminManager;
 
 import java.io.Serializable;
@@ -19,24 +18,20 @@ public class AdminBean implements Serializable {
 	private String evaluator = ""; // evaluator for which the entry should take place
 	private String action = ""; // what this bean shall do, at the moment only "update" (i.e. write values to DB)
 	private String tag = ""; // tag to add or remove from spammertag list
-	private int privlevel = constants.SQL_CONST_PRIVLEVEL_MEMBERS;
 	private String currUser;
 	
-	private LinkedList<String> errors;
-	private LinkedList<String> infos;
+	private final LinkedList<String> errors;
+	private final LinkedList<String> infos;
 	
 	// inserts the data into the DB, if everything is valid
 	public void queryDB() {
-		if (action.equals("add_group") && isValidUser() && isValidPrivlevel()) {
-			// write data into database
-			DBAdminManager.addGroupToSystem (this);
-		}else if (action.equals("remove_user") && isValidUser()) {	
+		if (action.equals("remove_user") && isValidUser()) {	
 			DBAdminManager.removeUserFromSpammerlist(this);
-		}else if (action.equals("addtag") && isValidTag()) {
+		} else if (action.equals("addtag") && isValidTag()) {
 			DBAdminManager.flagSpammerTag(this, true, 1);
-		}else if (action.equals("rmvtag") && isValidTag()) {
+		} else if (action.equals("rmvtag") && isValidTag()) {
 			DBAdminManager.flagSpammerTag(this, false, 1);
-		}else if (action.equals("cleantag")) {
+		} else if (action.equals("cleantag")) {
 			DBAdminManager.flagSpammerTag(this, true, 0);
 		}
 	}
@@ -51,11 +46,6 @@ public class AdminBean implements Serializable {
 		return ! "".equals(tag);
 	}
 	
-	// checks, if privlevel is in range
-	private boolean isValidPrivlevel() {
-		return privlevel >= constants.SQL_CONST_GROUP_PUBLIC && privlevel <= constants.SQL_CONST_PRIVLEVEL_MEMBERS;
-	}
-	
 	public AdminBean() {
 		errors = new LinkedList<String>();
 		infos  = new LinkedList<String>();
@@ -65,7 +55,8 @@ public class AdminBean implements Serializable {
 	public LinkedList<String> getErrors() {
 		return errors;
 	}
-	public void addError (String error) {
+	
+	public void addError (final String error) {
 		errors.add(error);
 	}
 	
@@ -73,12 +64,13 @@ public class AdminBean implements Serializable {
 	public LinkedList<String> getInfos() {
 		return infos;
 	}
-	public void addInfo (String info) {
+	
+	public void addInfo (final String info) {
 		infos.add(info);
 	}
 		
 	// action
-	public void setAction(String action) {
+	public void setAction(final String action) {
 		this.action = action;
 	}
 
@@ -86,7 +78,7 @@ public class AdminBean implements Serializable {
 	public String getUser() {
 		return user;
 	}
-	public void setUser(String user) {
+	public void setUser(final String user) {
 		if (user != null) {
 			this.user = user.toLowerCase();
 		}
@@ -96,16 +88,8 @@ public class AdminBean implements Serializable {
 	public String getEvaluator() {
 		return evaluator;
 	}
-	public void setEvaluator(String evaluator) {
+	public void setEvaluator(final String evaluator) {
 		this.evaluator = evaluator;
-	}
-
-	public int getPrivlevel() {
-		return privlevel;
-	}
-
-	public void setPrivlevel(int privlevel) {
-		this.privlevel = privlevel;
 	}
 
 	// tag
@@ -113,7 +97,7 @@ public class AdminBean implements Serializable {
 		return tag;
 	}
 
-	public void setTag(String tag) {		
+	public void setTag(final String tag) {		
 			this.tag = tag;
 	}
 
@@ -121,10 +105,8 @@ public class AdminBean implements Serializable {
 		return this.currUser;
 	}
 
-	public void setCurrUser(String currUser) {
+	public void setCurrUser(final String currUser) {
 		this.currUser = currUser;
 	}
-	
-	
 }
 
