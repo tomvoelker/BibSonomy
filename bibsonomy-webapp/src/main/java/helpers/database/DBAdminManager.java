@@ -1,13 +1,9 @@
 package helpers.database;
 
-import helpers.constants;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import beans.AdminBean;
 
@@ -21,76 +17,12 @@ import beans.AdminBean;
 @Deprecated
 public class DBAdminManager extends DBManager {
 	
-	/*
-	 * gets settings for this user and saves them in bean
-	 */
-	public static void addGroupToSystem (AdminBean bean) {
-		final DBContext c = new DBContext();
-		try {
-			if (bean.getUser() != null && c.init()) { // initialize database
-				final String user = bean.getUser().trim();
-				// get next group id
-				c.conn.setAutoCommit(false); // we do this in a transaction
-				c.stmt = c.conn.prepareStatement("SELECT MAX(`group`) + 1 AS id FROM groupids");
-				c.rst  = c.stmt.executeQuery();
-				if (c.rst.next()) {
-					int next_groupid = c.rst.getInt("id");
-					// check, if user name exists
-					c.stmt = c.conn.prepareStatement("SELECT user_name FROM user WHERE user_name = ?");
-					c.stmt.setString(1, user);
-					c.rst  = c.stmt.executeQuery();
-					if (c.rst.next()) {
-						// user exists, check, if group exists
-						c.stmt = c.conn.prepareStatement("SELECT group_name FROM groupids WHERE group_name = ?");
-						c.stmt.setString(1, user);
-						c.rst  = c.stmt.executeQuery();
-						if (c.rst.next()) {
-							// group already exists --> do nothing
-							bean.addError("This group already exists.");
-						} else {
-							// group does not exists --> add it
-							c.stmt = c.conn.prepareStatement("INSERT INTO groupids (`group_name`, `group`, privlevel) VALUES (?,?,?)");
-							c.stmt.setString(1, user);
-							c.stmt.setInt(2, next_groupid);
-							c.stmt.setInt(3, bean.getPrivlevel());
-							c.stmt.executeUpdate();
-							c.stmt = c.conn.prepareStatement("INSERT INTO groups (`user_name`, `group`, `defaultgroup`) VALUES (?,?,?)");
-							c.stmt.setString(1, user);
-							c.stmt.setInt(2, next_groupid);
-							c.stmt.setInt(3, next_groupid);
-							c.stmt.executeUpdate();
-							bean.addInfo("Added group with id " + next_groupid + " to the system.");
-						}
-					} else {
-						bean.addError("This user does not exist.");
-					}
-				}
-				c.conn.commit(); // commit transaction
-			}
-		} catch (SQLException e) {
-			try {
-				c.conn.rollback();
-			} catch (SQLException f) {
-				/*
-				 * TODO: first attempt to do logging when exceptions are thrown - code "stolen" from Jens'
-				 * Database backend classes
-				 */
-				final Log log = LogFactory.getLog(DBAdminManager.class);
-				log.fatal("could not roll transaction back " + e.getMessage());
-			}
-			bean.addError("Sorry, an error occured: " + e);
-		} finally {
-			c.close(); // close database connection
-		}
-
-	}
-
 	/**
 	 * add a user to the negative spammerlist. So he is marked NOT as a spammer and will not appear longer in any suggestion list
 	 * @param bean the AdminBean reference
 	 */
-	public static void removeUserFromSpammerlist(AdminBean bean) {
-		DBContext c = new DBContext();
+	public static void removeUserFromSpammerlist(final AdminBean bean) {
+		final DBContext c = new DBContext();
 
 		try {
 			if (c.init()) {
@@ -99,7 +31,7 @@ public class DBAdminManager extends DBManager {
 						                         "    spammer_suggest = 0, " +
 						                         "    updated_by = ?, " +
 						                         "    updated_at = ?, " +
-						                         "    to_classify = " + constants.SQL_CONST_TO_CLASSIFY_FALSE + 						                         
+						                         "    to_classify = " + DBAdminManager.SQL_CONST_TO_CLASSIFY_FALSE + 						                         
 						                         "  WHERE user_name = ?");
 				c.stmt.setString(1, bean.getCurrUser());
 				c.stmt.setTimestamp(2, new Timestamp(new Date().getTime()));
@@ -111,7 +43,7 @@ public class DBAdminManager extends DBManager {
 					bean.addError("user '" + bean.getUser() + "' could not be removed from the list. The user was not found.");
 				}
 			}
-		} catch (SQLException e) {		
+		} catch (final SQLException e) {		
 			bean.addError("Sorry, an error occured: " + e);
 		}		
 	}
@@ -129,8 +61,8 @@ public class DBAdminManager extends DBManager {
 	 * 		if <code>0</code> tag is added to negative spammertag list so it is no longer in the suggestions lists
 	 * 		
 	 */
-	public static void flagSpammerTag(AdminBean bean, boolean flag, int type) {
-		DBContext c = new DBContext();
+	public static void flagSpammerTag(final AdminBean bean, final boolean flag, final int type) {
+		final DBContext c = new DBContext();
 
 		try {
 			if (c.init()) {
@@ -159,9 +91,12 @@ public class DBAdminManager extends DBManager {
 					}
 				}		
 			}
-		} catch (SQLException e) {			
+		} catch (final SQLException e) {			
 			bean.addError("Sorry, an error occured: " + e);
 		}
 	}
+
+
+	public static final int SQL_CONST_TO_CLASSIFY_FALSE = 0;
 
 }
