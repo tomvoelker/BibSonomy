@@ -7,7 +7,6 @@
  */
 package servlets;
 
-import helpers.constants;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -33,16 +32,20 @@ import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import filters.ActionValidationFilter;
 
 /**
+ * TODO: migrate remove user from group
+ * 
  * @author Serak
  */
 @Deprecated
 public class SettingsHandler extends HttpServlet{
+	private static final Log log = LogFactory.getLog(SettingsHandler.class);
 
 	private static final String SETTINGS_URL = "/settings";
 	private static final String GROUP_SETTINGS_URL = SETTINGS_URL + "?selTab=3";
 	private static final long serialVersionUID = 4051324539558769200L;
+	private static final int SQL_CONST_GROUP_PRIVATE = 1; // private group id
+	
 	private DataSource dataSource;
-	private static final Log log = LogFactory.getLog(SettingsHandler.class);
 
 	@Override
 	public void init(final ServletConfig config) throws ServletException{	
@@ -71,12 +74,7 @@ public class SettingsHandler extends HttpServlet{
 		final String currUser = user.getName();
 		
 		String redirectOnSuccess = null;
-
-		/*
-		 * TODO: Fehlerbehandlung fehlt total (User existiert nicht, is schon in Gruppe/Freund, etc.
-		 * 
-		 */
-
+		
 		// authenticate User
 		if (currUser == null) {
 			response.sendRedirect("/login?referer=/settings");
@@ -91,30 +89,16 @@ public class SettingsHandler extends HttpServlet{
 
 		try {
 			synchronized(dataSource) {
-				if(dataSource != null){
+				if (dataSource != null){
 					conn = dataSource.getConnection();
 				} else {
 					throw new Exception("No Datasource");
 				}
 			}
-			try{
+			try {
 				conn.setAutoCommit(false);    // deactivate auto-commit to enable transaction
-				String friend = null;
-
-				/*
-				 * add a user to users group
-				 */
-				final String addGroupUser = request.getParameter("add_group_user");
-				if (addGroupUser != null) {
-					addUserToGroup(addGroupUser, currUser, stmtP, rst, conn);
-					redirectOnSuccess = GROUP_SETTINGS_URL;
-				}
-
-				/*
-				 * del a user from users group
-				 */
-				friend = request.getParameter("del_group_user");
-				if (friend != null && !friend.equalsIgnoreCase(currUser)) {
+				final String userToDelete = request.getParameter("del_group_user");
+				if (userToDelete != null && !userToDelete.equalsIgnoreCase(currUser)) {
 					// check, if user is owner of group and get groupid 
 					stmtP = conn.prepareStatement("SELECT i.group FROM groups g, groupids i WHERE g.user_name = ? AND i.group_name = ? AND g.group = i.group");
 					stmtP.setString(1, currUser);
@@ -125,37 +109,37 @@ public class SettingsHandler extends HttpServlet{
 						final int groupid = rst.getInt(1);
 						// logging
 						stmtP = conn.prepareStatement("INSERT INTO log_groups (`user_name`, `group`, `defaultgroup`, `start_date`, `user_status`) SELECT g.user_name, g.group, g.defaultgroup, g.start_date, g.user_status FROM groups g WHERE g.user_name = ? AND g.group = ?");
-						stmtP.setString(1, friend);
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();						
 						// remove user from group
 						stmtP = conn.prepareStatement("DELETE FROM groups WHERE user_name = ? AND `group` = ?");
-						stmtP.setString(1, friend);
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
 						// update tas table
-						stmtP = conn.prepareStatement("UPDATE tas b SET b.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
-						stmtP.setString(1, friend);
+						stmtP = conn.prepareStatement("UPDATE tas b SET b.group = " + SettingsHandler.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
 						// log bibtex
 						stmtP = conn.prepareStatement("INSERT INTO log_bibtex (content_id, `group`, user_name) SELECT content_id, `group`, user_name FROM bibtex WHERE user_name = ? AND `group` = ?");
-						stmtP.setString(1, friend);
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();												
 						// update bibtex table
-						stmtP = conn.prepareStatement("UPDATE bibtex b SET b.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
-						stmtP.setString(1, friend);
+						stmtP = conn.prepareStatement("UPDATE bibtex b SET b.group = " + SettingsHandler.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();						
 						// log bookmark
 						stmtP = conn.prepareStatement("INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name, change_date, rating) SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, user_name, change_date, rating FROM bookmark WHERE user_name = ? AND `group` = ?");
-						stmtP.setString(1, friend);
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();												
 						// update bookmark table
-						stmtP = conn.prepareStatement("UPDATE bookmark b SET b.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
-						stmtP.setString(1, friend);
+						stmtP = conn.prepareStatement("UPDATE bookmark b SET b.group = " + SettingsHandler.SQL_CONST_GROUP_PRIVATE + " WHERE b.user_name = ? AND b.group = ?");
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
 						
@@ -164,7 +148,7 @@ public class SettingsHandler extends HttpServlet{
 						 */	
 						// log discussion
 						stmtP = conn.prepareStatement("INSERT INTO log_discussion (discussion_id, interHash, user_name, text, rating, date, change_date, anonymous, parent_hash, hash, type, `group`) SELECT discussion_id, interHash, user_name, text, rating, date, change_date, anonymous, parent_hash, hash, type, `group` FROM discussion WHERE user_name = ? AND `group` = ?");
-						stmtP.setString(1, friend);
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
 						/*
@@ -173,8 +157,8 @@ public class SettingsHandler extends HttpServlet{
 						 * don't support more than one group
 						 */
 						// update discussion table
-						stmtP = conn.prepareStatement("UPDATE discussion d SET d.group = " + constants.SQL_CONST_GROUP_PRIVATE + " WHERE d.user_name = ? AND d.group = ?");
-						stmtP.setString(1, friend);
+						stmtP = conn.prepareStatement("UPDATE discussion d SET d.group = " + SettingsHandler.SQL_CONST_GROUP_PRIVATE + " WHERE d.user_name = ? AND d.group = ?");
+						stmtP.setString(1, userToDelete);
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();
 						redirectOnSuccess = GROUP_SETTINGS_URL;
@@ -184,13 +168,11 @@ public class SettingsHandler extends HttpServlet{
 				conn.commit();				
 				if (redirectOnSuccess != null) {
 					response.sendRedirect(redirectOnSuccess);	
-				}
-				else {
+				} else {
 					final String referer = request.getHeader("Referer");
 					response.sendRedirect(referer != null ? referer : SETTINGS_URL);
 				}
-
-			} catch(final SQLException e) {
+			} catch (final SQLException e) {
 				conn.rollback();     // rollback all queries
 				log.fatal("Could not change settings for user " + currUser + ".", e);
 				getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
@@ -206,42 +188,4 @@ public class SettingsHandler extends HttpServlet{
 			if (conn  != null) { try {	conn.close();	} catch (final SQLException e) {}	conn  = null;}
 		}
 	}
-	
-	private static boolean addUserToGroup (String user, final String group, PreparedStatement stm, ResultSet rst, final Connection conn) throws SQLException {
-		// friend: user to be added
-		if (user != null) {
-			user = user.toLowerCase();
-			// check, if username exists
-			stm = conn.prepareStatement ("SELECT user_name FROM user WHERE user_name = ?");
-			stm.setString(1, user);
-			rst = stm.executeQuery();
-			if (rst.next()) {
-				// check, if user is owner of group and get groupid and default group to use for copying
-				stm = conn.prepareStatement("SELECT i.group,g.defaultgroup FROM groups g, groupids i WHERE g.user_name = ? AND i.group_name = ? AND g.group = i.group");
-				stm.setString(1, group);
-				stm.setString(2, group);
-				rst = stm.executeQuery();
-				if (rst.next()) {
-					final int groupid = rst.getInt(1);
-					final int defaultgroup = rst.getInt(2);
-					// user is admin of this group --> check, if group_user is already in group
-					stm = conn.prepareStatement ("SELECT g.user_name FROM groups g WHERE g.user_name = ? AND g.group = ?");
-					stm.setString(1, user);
-					stm.setInt(2, groupid);
-					rst = stm.executeQuery();
-					if (!rst.next()) {
-						// group_user is not in group --> add it
-						stm = conn.prepareStatement("INSERT INTO groups (user_name, `group`, defaultgroup) VALUES (?,?,?)");
-						stm.setString(1, user);
-						stm.setInt(2, groupid);
-						stm.setInt(3,defaultgroup);
-						return (stm.executeUpdate() == 1);
-						// send E-Mail to added user
-					}
-				} 
-			}
-		}
-		return false;
-	}
-
 }
