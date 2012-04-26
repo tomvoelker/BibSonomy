@@ -1,8 +1,6 @@
 package helpers.database;
 
 
-import helpers.constants;
-
 import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
@@ -21,22 +19,19 @@ public class DBPrivnoteManager extends DBManager {
 	 * @return <code>true</code> if exactly one database row got updated
 	 */
 	public static boolean setPrivnoteForUser (final String privnote, final String username, final String hash) {
-		DBContext c = new DBContext();
+		final DBContext c = new DBContext();
 		try {
 			if (c.init()) { // initialize database
 				// prepare Statement
-				c.stmt = c.conn.prepareStatement("UPDATE bibtex SET privnote = ? WHERE user_name = ? AND simhash" + constants.INTRA_HASH + " = ?");
+				// hash is intrahash (simhash2)
+				c.stmt = c.conn.prepareStatement("UPDATE bibtex SET privnote = ? WHERE user_name = ? AND simhash2 = ?");
 				c.stmt.setString(1, privnote);
 				c.stmt.setString(2, username);
 				c.stmt.setString(3, hash);
 				return c.stmt.executeUpdate() == 1; // return true, if exactly one row got updated 
 			}
-		} catch (SQLException e) {
-			/*
-			 * TODO: first attempt to do logging when exceptions are thrown - code "stolen" from Jens'
-			 * Database backend classes
-			 */
-			log.fatal("could not set the private not for the user " + e.getMessage());
+		} catch (final SQLException e) {
+			log.error("could not set the private not for the user " + username + " hash " + hash, e);
 		} finally {
 			c.close(); // close database connection
 		}

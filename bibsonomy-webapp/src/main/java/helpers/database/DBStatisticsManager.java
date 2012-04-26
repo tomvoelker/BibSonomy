@@ -1,8 +1,6 @@
 package helpers.database;
 
 
-import helpers.constants;
-
 import java.sql.SQLException;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -12,6 +10,9 @@ import org.apache.commons.logging.LogFactory;
 
 @Deprecated
 public class DBStatisticsManager extends DBManager {
+	
+	private static final int BOOKMARK_CONTENT_TYPE = 1;
+	private static final int BIBTEX_CONTENT_TYPE = 2;
 
 	private static final String DBLP = "dblp";
 	//private static final String userDBLP   = " user_name = '" + DBLP + "' ";
@@ -20,9 +21,9 @@ public class DBStatisticsManager extends DBManager {
 	private static final String date24    = " DATE_SUB(CURDATE(), INTERVAL 24 HOUR) <= date ";
 	private static final String dateM     = " DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <= date ";
 
-	private static final String interHash = " simhash" + constants.INTER_HASH + " ";
-	private static final String contentTypeBookmark    = "content_type = " + constants.BOOKMARK_CONTENT_TYPE;
-	private static final String contentTypePublication = "content_type = " + constants.BIBTEX_CONTENT_TYPE;
+	private static final String interHash = " simhash1 ";
+	private static final String contentTypeBookmark    = "content_type = " + BOOKMARK_CONTENT_TYPE;
+	private static final String contentTypePublication = "content_type = " + BIBTEX_CONTENT_TYPE;
 
 	private static final Log log = LogFactory.getLog(DBStatisticsManager.class);
 
@@ -33,48 +34,48 @@ public class DBStatisticsManager extends DBManager {
 	/* ******************************************************************************************
 	 * Misc
 	 */
-	public static int getTags(String showSpammer) {              
+	public static int getTags(final String showSpammer) {              
 		return getCtr("SELECT count(*) AS ctr FROM tags WHERE tag_ctr_public > 0");
 	}
-	public static int getPostsInBaskets(String showSpammer) {    
+	public static int getPostsInBaskets(final String showSpammer) {    
 		return getCtr("SELECT count(*) AS ctr FROM collector");
 	}
-	public static int getTagTagRelations(String showSpammer) {   
+	public static int getTagTagRelations(final String showSpammer) {   
 		return getCtr("SELECT count(*) AS ctr FROM tagtagrelations");
 	}
-	public static int getUploadedDocuments(String showSpammer) { 
+	public static int getUploadedDocuments(final String showSpammer) { 
 		return getCtr("SELECT count(*) AS ctr FROM document WHERE content_id > 0");
 	}
-	public static int getUsersWithOwnLayout(String showSpammer) {
+	public static int getUsersWithOwnLayout(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM (SELECT user_name FROM document WHERE content_id = 0 GROUP BY user_name) AS layouts");
 	}
 
 	/* ******************************************************************************************
 	 * users
 	 */
-	public static int getUsers(String showSpammer) {
+	public static int getUsers(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM user");
 	}
-	public static int getSpammers(String showSpammer) {
+	public static int getSpammers(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM user where spammer=1");
 	}
-	public static int getActiveUsers(String showSpammer) {
+	public static int getActiveUsers(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM (SELECT count(*) FROM tas " + getSpammer(showSpammer) + " GROUP BY user_name) AS users");
 	}
-	public static int getActiveUsersLastMonth(String showSpammer) {
+	public static int getActiveUsersLastMonth(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM (SELECT count(*) FROM tas " + getSpammer(showSpammer) + " AND " + dateM  + " GROUP BY user_name) AS users");
 	}
-	public static int getActiveUsersLast24(String showSpammer) {   
+	public static int getActiveUsersLast24(final String showSpammer) {   
 		return getCtr("SELECT count(*) AS ctr FROM (SELECT count(*) FROM tas " + getSpammer(showSpammer) + " AND " + date24 + " GROUP BY user_name) AS users");
 	}
 
 	/* ******************************************************************************************
 	 * user histograms
 	 */
-	public static SortedMap<Integer, Integer> getBookmarkUserHisto(String showSpammer) {
+	public static SortedMap<Integer, Integer> getBookmarkUserHisto(final String showSpammer) {
 		return getUserHistogram("SELECT count(ctr) AS uCtr, ctr FROM (SELECT COUNT(user_name) AS ctr FROM bibtex   " + getSpammer(showSpammer) + " AND " + nUserDBLP + " GROUP BY user_name) AS foo GROUP BY ctr ORDER BY ctr");
 	}
-	public static SortedMap<Integer, Integer> getPublicationUserHisto(String showSpammer) {
+	public static SortedMap<Integer, Integer> getPublicationUserHisto(final String showSpammer) {
 		return getUserHistogram("SELECT count(ctr) AS uCtr, ctr FROM (SELECT COUNT(user_name) AS ctr FROM bookmark " + getSpammer(showSpammer) + " AND " + nUserDBLP + " GROUP BY user_name) AS foo GROUP BY ctr ORDER BY ctr"); 
 	}
 
@@ -82,101 +83,101 @@ public class DBStatisticsManager extends DBManager {
 	/* ******************************************************************************************
 	 * Logged items
 	 */
-	public static int getLoggedBookmarkPosts(String showSpammer) {
+	public static int getLoggedBookmarkPosts(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM log_bookmark " + getSpammer(showSpammer));
 	}
 
-	public static int getLoggedPublicationPosts(String showSpammer) {
+	public static int getLoggedPublicationPosts(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM log_bibtex   " + getSpammer(showSpammer));
 	}
 
-	public static int getLoggedBookmarkPostsDBLP(String showSpammer) {
+	public static int getLoggedBookmarkPostsDBLP(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM log_bookmark " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
 
-	public static int getLoggedPublicationPostsDBLP(String showSpammer) {
+	public static int getLoggedPublicationPostsDBLP(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM log_bibtex   " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
 
-	public static int getLoggedPostsFromBaskets(String showSpammer) {
+	public static int getLoggedPostsFromBaskets(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM log_collector");
 	}
 
-	public static int getLoggedFriends(String showSpammer) {
+	public static int getLoggedFriends(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM log_friends");
 	}
 
-	public static int getLoggedGroups(String showSpammer) {
+	public static int getLoggedGroups(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM log_groups");
 	}
 
-	public static int getLoggedTagTagRelations(String showSpammer) {
+	public static int getLoggedTagTagRelations(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM log_tagtagrelations");
 	}
 
 	/* ******************************************************************************************
 	 * TAS
 	 */
-	public static int getTasBookmarks(String showSpammer) {       
+	public static int getTasBookmarks(final String showSpammer) {       
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypeBookmark);
 	}
-	public static int getTasPublications(String showSpammer) {    
+	public static int getTasPublications(final String showSpammer) {    
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypePublication);
 	}
-	public static int getTas(String showSpammer) {
+	public static int getTas(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer));
 	}
 
-	public static int getTasBookmarksDBLP(String showSpammer) {   
+	public static int getTasBookmarksDBLP(final String showSpammer) {   
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypeBookmark    + " AND " + nUserDBLP);
 	}
-	public static int getTasPublicationsDBLP(String showSpammer) {
+	public static int getTasPublicationsDBLP(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypePublication + " AND " + nUserDBLP);
 	}
-	public static int getTasDBLP(String showSpammer) {
+	public static int getTasDBLP(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
 
-	public static int getTasBookmarks24(String showSpammer) {     
+	public static int getTasBookmarks24(final String showSpammer) {     
 		return getCtr("SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypeBookmark    + " AND " + nUserDBLP + " AND " + date24);
 	}
-	public static int getTasPublications24(String showSpammer) {  
+	public static int getTasPublications24(final String showSpammer) {  
 		return getCtr( "SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + contentTypePublication + " AND " + nUserDBLP + " AND " + date24);
 	}
-	public static int getTas24(String showSpammer) {
+	public static int getTas24(final String showSpammer) {
 		return getCtr( "SELECT count(*) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + nUserDBLP + " AND " + date24);
 	}
 
 	/* ******************************************************************************************
 	 * Posts
 	 */
-	public static int getPostsBookmarks(String showSpammer) {       
+	public static int getPostsBookmarks(final String showSpammer) {       
 		return getCtr("SELECT count(*) AS ctr FROM bookmark " + getSpammer(showSpammer));
 	}
-	public static int getPostsPublications(String showSpammer) {    
+	public static int getPostsPublications(final String showSpammer) {    
 		return getCtr("SELECT count(*) AS ctr FROM bibtex "   + getSpammer(showSpammer));
 	}
-	public static int getPosts(String showSpammer) {
+	public static int getPosts(final String showSpammer) {
 		return getCtr("SELECT COUNT(DISTINCT content_id) AS ctr FROM tas " + getSpammer(showSpammer));
 	}
 
-	public static int getPostsBookmarksDBLP(String showSpammer) {   
+	public static int getPostsBookmarksDBLP(final String showSpammer) {   
 		return getCtr("SELECT count(*) AS ctr FROM bookmark " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
-	public static int getPostsPublicationsDBLP(String showSpammer) {
+	public static int getPostsPublicationsDBLP(final String showSpammer) {
 		return getCtr("SELECT count(*) AS ctr FROM bibtex   " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
-	public static int getPostsDBLP(String showSpammer) {
+	public static int getPostsDBLP(final String showSpammer) {
 		return getCtr("SELECT COUNT(DISTINCT content_id) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
 
-	public static int getPostsBookmarks24(String showSpammer) {     
+	public static int getPostsBookmarks24(final String showSpammer) {     
 		return getCtr("SELECT count(*) AS ctr FROM bookmark " + getSpammer(showSpammer) + " AND " + nUserDBLP + " AND " + date24);
 	}
-	public static int getPostsPublications24(String showSpammer) {  
+	public static int getPostsPublications24(final String showSpammer) {  
 		return getCtr("SELECT count(*) AS ctr FROM bibtex   " + getSpammer(showSpammer) + " AND " + nUserDBLP + " AND " + date24);
 	}
-	public static int getPosts24(String showSpammer) {
+	public static int getPosts24(final String showSpammer) {
 		return getCtr("SELECT COUNT(DISTINCT content_id) AS ctr FROM tas " + getSpammer(showSpammer) + " AND " + nUserDBLP + " AND " + date24);
 	}
 
@@ -184,35 +185,35 @@ public class DBStatisticsManager extends DBManager {
 	/* ******************************************************************************************
 	 * Resources
 	 */
-	public static int getBookmarks(String showSpammer) {       
+	public static int getBookmarks(final String showSpammer) {       
 		return getCtr("SELECT count(DISTINCT book_url_hash)     AS ctr FROM bookmark " + getSpammer(showSpammer));
 	}
-	public static int getPublications(String showSpammer) {    
+	public static int getPublications(final String showSpammer) {    
 		return getCtr("SELECT count(DISTINCT " + interHash + ") AS ctr FROM bibtex" + getSpammer(showSpammer));
 	}
-	public static int getResources(String showSpammer) {
+	public static int getResources(final String showSpammer) {
 		// TODO: this is stupid!
 		return getBookmarks(getSpammer(showSpammer)) + getPublications(getSpammer(showSpammer));
 	}
 
-	public static int getBookmarksDBLP(String showSpammer) {   
+	public static int getBookmarksDBLP(final String showSpammer) {   
 		return getCtr("SELECT count(DISTINCT book_url_hash)     AS ctr FROM bookmark " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
-	public static int getPublicationsDBLP(String showSpammer) {
+	public static int getPublicationsDBLP(final String showSpammer) {
 		return getCtr("SELECT count(DISTINCT " + interHash + ") AS ctr FROM bibtex   " + getSpammer(showSpammer) + " AND " + nUserDBLP);
 	}
-	public static int getResourcesDBLP(String showSpammer) {
+	public static int getResourcesDBLP(final String showSpammer) {
 		// TODO: this is stupid!
 		return getBookmarksDBLP(getSpammer(showSpammer)) + getPublicationsDBLP(getSpammer(showSpammer));
 	}
 
-	public static int getBookmarks24(String showSpammer) {     
+	public static int getBookmarks24(final String showSpammer) {     
 		return getCtr("SELECT count(DISTINCT book_url_hash)     AS ctr FROM bookmark " + getSpammer(showSpammer) + " AND " + nUserDBLP + " AND " + date24);
 	}
-	public static int getPublications24(String showSpammer) {  
+	public static int getPublications24(final String showSpammer) {  
 		return getCtr("SELECT count(DISTINCT " + interHash + ") AS ctr FROM bibtex   " + getSpammer(showSpammer) + " AND " + nUserDBLP + " AND " + date24);
 	}
-	public static int getResources24(String showSpammer) {
+	public static int getResources24(final String showSpammer) {
 		// TODO: this is stupid!
 		return getBookmarks24(getSpammer(showSpammer)) + getPublications24(getSpammer(showSpammer));
 	}
@@ -232,7 +233,7 @@ public class DBStatisticsManager extends DBManager {
 	 * @param showSpammer
 	 * @return
 	 */
-	private static String getSpammer(String showSpammer) {
+	private static String getSpammer(final String showSpammer) {
 		String spammer = " WHERE `group` >= 0 ";
 		if ("only".equals(showSpammer)) {
 			spammer = " WHERE `group` < 0 ";
@@ -242,8 +243,8 @@ public class DBStatisticsManager extends DBManager {
 		return spammer;
 	}
 
-	private static int getCtr (String query) {
-		DBContext c = new DBContext();
+	private static int getCtr (final String query) {
+		final DBContext c = new DBContext();
 		try {
 			if (c.initSlave()) { // initialize slave database
 				c.stmt = c.conn.prepareStatement(query);
@@ -252,7 +253,7 @@ public class DBStatisticsManager extends DBManager {
 					return c.rst.getInt("ctr");
 				}
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			log.fatal("could not get statistics: " + e);
 		} finally {
 			c.close(); // close database connection
@@ -260,9 +261,9 @@ public class DBStatisticsManager extends DBManager {
 		return 0;
 	}
 
-	private static SortedMap<Integer, Integer> getUserHistogram(String query) {
-		SortedMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
-		DBContext c = new DBContext();
+	private static SortedMap<Integer, Integer> getUserHistogram(final String query) {
+		final SortedMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
+		final DBContext c = new DBContext();
 		try {
 			if (c.initSlave()) { // initialize slave database
 				c.stmt = c.conn.prepareStatement(query);
@@ -271,7 +272,7 @@ public class DBStatisticsManager extends DBManager {
 					map.put(c.rst.getInt("ctr"), c.rst.getInt("uCtr"));
 				}
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			log.fatal("could not get statistics: " + e);
 		} finally {
 			c.close(); // close database connection
