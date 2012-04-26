@@ -21,7 +21,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	
 	/**
 	 * Privacy options for the group
-	 * FIXME: use generic handling to for localized messages
+	 * FIXME: use generic handling to localize messages
 	 * @see http://www.springjutsu.org/2011/03/binding-enums-with-i8n-localization-support/
 	 */
 	@Deprecated 
