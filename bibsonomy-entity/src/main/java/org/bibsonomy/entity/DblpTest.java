@@ -38,16 +38,68 @@ public class DblpTest {
 	//position 9 we use for 10 or more different ids
 	int[] averageCountOccurences = new int[9];
 	int[] averageCountAuthors = new int[9];
-	
-	public void preperations(SqlSession session, SqlSession sessionRkr) throws PersonListParserException {
-		List<String> authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP", 1);
+	boolean skipGatherFromDB = true;
 
+	public void preperations(SqlSession session, SqlSession sessionRkr) throws PersonListParserException {
+
+		List<Map<String,String>> dbAuthorIDNumberList= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPPreperation",1);
+
+		int z2=0;
+		boolean foundNoGather = false;
+		//search the list if there is already a person with this name
+		for (Map<String, String> dbAuthorHashMap: dbAuthorIDNumberList) {
+			System.out.println(z2);
+			z2++;
+			int k=0;
+			for (Map<String, ArrayList<String>>  arrayAuthorHashMap: authorIDNumberList) {
+				//the author already exists
+				if (dbAuthorHashMap.get("author_name_and_number").equals(arrayAuthorHashMap.get("authorNameAndNumber").get(0))) {
+					//add the new authorID to the already existing data
+					//System.out.println("reAdd: " + authorHashMap.get("authorNameAndNumber").get(0));
+					ArrayList<String> authorIDs = arrayAuthorHashMap.get("authorIDs");
+
+					authorIDs.add(String.valueOf(dbAuthorHashMap.get("author_id")));
+					arrayAuthorHashMap.put("authorIDs",authorIDs);
+
+					authorIDNumberList.set(k, arrayAuthorHashMap);
+					foundNoGather = true;
+					break;
+				}
+				k++;
+			}
+			//this author is new and we add this author to the list
+			if (!foundNoGather) {
+				Map<String,ArrayList<String>> arrayAuthorHashMap = new HashMap<String,ArrayList<String>>();
+				ArrayList<String> authorID = new ArrayList<String>();
+				ArrayList<String> authorNameAndNumber = new ArrayList<String>();
+				authorNameAndNumber.add(dbAuthorHashMap.get("author_name_and_number"));
+				authorID.add(String.valueOf(dbAuthorHashMap.get("author_id")));
+
+				//System.out.println("add: " + authorNameAndNumber.get(0));
+				arrayAuthorHashMap.put("authorNameAndNumber", authorNameAndNumber);
+				arrayAuthorHashMap.put("authorIDs",authorID);
+				authorIDNumberList.add(arrayAuthorHashMap);
+			}
+		}
+
+		if (skipGatherFromDB) return;
+
+		//List<String> authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP",1);
+		List<String> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
+		System.out.println("Datenbankabfrage erfolgreich");
+
+		int z=0;
 		//read all entries from bibtex and save it to author table
 		ArrayList<LinkedList<PersonName>> allAuthorsWithCoAuthors = new ArrayList<LinkedList<PersonName>>();
 		for (String authors: authorList) { //authorList for each publication
+			sessionRkr.commit();
+			float timeAtStart = System.nanoTime();
+			System.out.println("z: " + z);
+			z++;
 			//System.out.println("List of authors: " + authors);
 			ArrayList<String> authorNamesWhoHaveANumber = new ArrayList<String>();
 			ArrayList<Integer> authorNumbers = new ArrayList<Integer>();
+
 			//remove the dblp numbers from the authors e.g. Jürgen Müller 002
 			final Pattern p = Pattern.compile("\\s+([^\\s]+?)\\s+([0-9]{4})");
 			final Matcher matcher = p.matcher(authors);
@@ -65,7 +117,6 @@ public class DblpTest {
 			int countAuthors = 0;
 			for (PersonName author: allAuthorNamesOfOnePublication) { //each author in the list of authors
 				//System.out.println("Author as string: " + author.toString());
-				sessionRkr.commit();
 				HashMap<String, String> authorName = new HashMap<String, String>();
 
 				int authorNumber = 1;
@@ -98,35 +149,50 @@ public class DblpTest {
 						//add the new authorID to the already existing data
 						//System.out.println("reAdd: " + authorHashMap.get("authorNameAndNumber").get(0));
 						ArrayList<String> authorIDs = authorHashMap.get("authorIDs");
-						
+
 						Map<String,String>saveIDAndBibtex = new HashMap<String,String>();
 						saveIDAndBibtex.put("authorID",String.valueOf(lastInsertID.get(0)));
 						saveIDAndBibtex.put("bibtexAuthor", authors);
 						authorIDToBibtex.add(saveIDAndBibtex);
-						
+
+						String singleAuthorID = String.valueOf(lastInsertID.get(0));
+						HashMap<String,String> dbEntry = new HashMap<String,String>();
+						dbEntry.put("authorID", singleAuthorID);
+						dbEntry.put("authorNameAndNumber", EntityIdentification.normalizePerson(author) + authorNumber);
+						dbEntry.put("authorsString", authors);
+
+						sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
+
 						authorIDs.add(String.valueOf(lastInsertID.get(0)));
 						authorHashMap.put("authorIDs",authorIDs);
-						//authors
-						
+
 						authorIDNumberList.set(k, authorHashMap);
 						found = true;
 						break;
 					}
 					k++;
 				}
+				//this author is new and we add this author to the list
 				if (!found) {
-					//this author is new and we add this author to the list
 					Map<String,ArrayList<String>> authorHashMap = new HashMap<String,ArrayList<String>>();
 					ArrayList<String> authorID = new ArrayList<String>();
 					ArrayList<String> authorNameAndNumber = new ArrayList<String>();
 					authorNameAndNumber.add(EntityIdentification.normalizePerson(author) + authorNumber);
 					authorID.add(String.valueOf(lastInsertID.get(0)));
+					String singleAuthorID = String.valueOf(lastInsertID.get(0));
+
+					HashMap<String,String> dbEntry = new HashMap<String,String>();
+					dbEntry.put("authorID", singleAuthorID);
+					dbEntry.put("authorNameAndNumber", EntityIdentification.normalizePerson(author) + authorNumber);
+					dbEntry.put("authorsString", authors);
+
+					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
 
 					//System.out.println("add: " + authorNameAndNumber.get(0));
 					authorHashMap.put("authorNameAndNumber", authorNameAndNumber);
 					authorHashMap.put("authorIDs",authorID);
 					authorIDNumberList.add(authorHashMap);
-					
+
 					Map<String,String>saveIDAndBibtex = new HashMap<String,String>();
 					saveIDAndBibtex.put("authorID",String.valueOf(lastInsertID.get(0)));
 					saveIDAndBibtex.put("bibtexAuthor", authors);
@@ -139,6 +205,7 @@ public class DblpTest {
 					if (coauthor != author) sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", EntityIdentification.normalizePerson(coauthor));
 				}
 			}
+
 		}
 
 		for (Map<String, ArrayList<String>> test: authorIDNumberList) {
@@ -149,7 +216,7 @@ public class DblpTest {
 		}
 		sessionRkr.commit();
 	}
-	
+
 	/*
 			LuceneTest lucene =  new LuceneTest();
 			try {
@@ -173,20 +240,20 @@ public class DblpTest {
 
 			if (authorMap.get("authorIDs").size() < 10) averageCountAuthors[authorMap.get("authorIDs").size()-2]++;
 			else  averageCountAuthors[8]++;
-			
+
 			String bibtexAuthor="";
 			for (int k=0; k<authorMap.get("authorIDs").size(); k++) { //every ID of this authors
 				for (Map<String,String> singleAuthorIDToBibtex: authorIDToBibtex) {
 					if (singleAuthorIDToBibtex.get("authorID") == authorMap.get("authorIDs").get(k)) bibtexAuthor = singleAuthorIDToBibtex.get("bibtexAuthor");
 				}
-				System.out.println(authorMap.get("authorIDs").get(k) + " : " + bibtexAuthor);
+				System.out.println(authorMap.get("authorIDs").get(k) + "size: " + authorIDToBibtex.size());
+				System.out.println(bibtexAuthor);
 				//count the clusters this IDs are split into
 				boolean found = false;
 				int m=0;
 				for (List<Integer> calculatedIDsList: authorClusters) { //every cluster we want to compare
 					for(Integer calculatedID: calculatedIDsList) { //every ID of this cluster
 						if (calculatedID == Integer.parseInt(authorMap.get("authorIDs").get(k))) {
-							System.out.println("ID: " + calculatedID);
 							found = true;
 							if (!savePositions.contains(m)) {
 								System.out.println("--split--");
@@ -208,16 +275,16 @@ public class DblpTest {
 					else  averageCountOccurences[8]++;
 				}
 			}
-						
+
 			System.out.println("this author is split into: " + countClusters + " clusters");
 			avgClusters += countClusters;
 		}
-		
+
 		for (int k=0; k < averageCountOccurences.length; k++) {
 			System.out.println("authors with " + (k+2) + " IDs are split into an average of: " + (float)averageCountOccurences[k]/(float)averageCountAuthors[k] +  " clusters (" + (1-((float)averageCountOccurences[k]/(float)averageCountAuthors[k])/(k+2)) + " correct)");
 			System.out.println("aO:" + averageCountOccurences[k] + " aA: " + averageCountAuthors[k]);
 		}
-		
+
 		//avgClusters
 		System.out.println("Each author with more then one ID has an average of " + (float)countIDs/(float)countAuthors + " IDs");
 		System.out.println("Each author is split into an average of " + (float)avgClusters/(float)countAuthors + " clusters");

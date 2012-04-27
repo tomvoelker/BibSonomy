@@ -18,9 +18,17 @@ SELECT author FROM author
 SELECT tas.user_name, bibtex.author FROM tas INNER JOIN bibtex using(content_id) WHERE tag_name = 'myown' ORDER BY user_name
 </select>
 
+<select id="DBLPTest" parameterType="int" resultType="String">
+SELECT author FROM authors_dblp
+</select>
+
+<select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
+SELECT author_name_and_number, author_id, authors_string FROM author_id_number_list
+</select>
+
 <!-- bibsonomy_strudel DBLP Tests -->
 <select id="selectBibtexDBLP" parameterType="int" resultType="String">
-SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' LIMIT 100
+SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' LIMIT 500
 </select>
   
 <!-- database projekt_autoren_id -->
@@ -43,7 +51,11 @@ SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 100
 <select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
 SELECT author_id, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName}
 </select>
-			
+	
+<insert id="insertAuthorIDAndNumber" parameterType="HashMap">
+INSERT INTO author_id_number_list(author_name_and_number, author_id,authors_string) VALUES(#{authorNameAndNumber},#{authorID},#{authorsString});
+</insert>	
+
 <insert id="insertAuthor" parameterType="String">
 INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName}, #{lastName}, #{normalizedName});
 </insert>
