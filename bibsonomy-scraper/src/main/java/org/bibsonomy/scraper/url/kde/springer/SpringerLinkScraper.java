@@ -130,7 +130,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 					"&ctl00%24ctl14%24SearchControl%24BasicVolumeTextBox=" +
 					"&ctl00%24ctl14%24SearchControl%24BasicIssueTextBox=" +
 					"&ctl00%24ctl14%24SearchControl%24BasicPageTextBox=" +
-					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24Export=CitationOnlyRadioButton" +
+					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24Export=AbstractRadioButton" +
 					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24CitationManagerDropDownList=BibTex" +
 					"&ctl00%24ContentPrimary%24ctl00%24ctl00%24ExportCitationButton=Zitierung+exportieren+" +
 					"&__EVENTVALIDATION=" + UrlUtils.safeURIEncode(eventValidationMatcher.group(1));
