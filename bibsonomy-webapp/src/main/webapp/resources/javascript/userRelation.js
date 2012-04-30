@@ -106,8 +106,7 @@ function submitUsername(textField) {
 		handleUserRelation("&action=addFriend", userName, "sys:network:bibsonomy-friend", 
 				function(relationName, element, action, data) {
 					if(data.statusText === "error") {
-						errorString = parseMessageProperties(getString("error.user.none_existing_user"), [userName]);
-						alert(errorString);
+						alert(getStringReplace("error.user.none_existing_user", [userName]));
 					} else {
 						textField.val('');
 						location.reload();

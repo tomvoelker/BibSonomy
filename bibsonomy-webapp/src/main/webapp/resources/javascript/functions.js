@@ -1053,19 +1053,19 @@ String.prototype.trim = function () {
 
 
 /**
- * Function to parse and replace the variables of the Message.properties
+ * Function to get the Message and parse/replace the variables of the Message
  * 
- * @param messageString for Example getString("error.user.userError")
+ * @param key for Example getString("error.user.userError")
  * @param replacement Array of the words to be replaced
  * @returns
  */
-parseMessageProperties = function (messageString, replacement) {
+getStringReplace = function (key, replacement) {
 	
-	var messageString = messageString;
+	var messageString = getString(key);
 
-	for (var ar = 0; ar < replacement.length; ar++) {
-		var toreplace = '\\{' + ar + '\\}';
-		messageString = messageString.replace(new RegExp(toreplace, "g"), replacement[ar]);
+	for (var i = 0; i < replacement.length; i++) {
+		var toreplace = '\\{' + i + '\\}';
+		messageString = messageString.replace(new RegExp(toreplace, "g"), replacement[i]);
 	}
 	
 	return messageString;
