@@ -44,12 +44,9 @@ public class DblpTest {
 
 		List<Map<String,String>> dbAuthorIDNumberList= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPPreperation",1);
 
-		int z2=0;
 		boolean foundNoGather = false;
 		//search the list if there is already a person with this name
 		for (Map<String, String> dbAuthorHashMap: dbAuthorIDNumberList) {
-			System.out.println(z2);
-			z2++;
 			int k=0;
 			for (Map<String, ArrayList<String>>  arrayAuthorHashMap: authorIDNumberList) {
 				//the author already exists
@@ -88,14 +85,11 @@ public class DblpTest {
 		List<String> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
 		System.out.println("Datenbankabfrage erfolgreich");
 
-		int z=0;
 		//read all entries from bibtex and save it to author table
 		ArrayList<LinkedList<PersonName>> allAuthorsWithCoAuthors = new ArrayList<LinkedList<PersonName>>();
 		for (String authors: authorList) { //authorList for each publication
 			sessionRkr.commit();
 			float timeAtStart = System.nanoTime();
-			System.out.println("z: " + z);
-			z++;
 			//System.out.println("List of authors: " + authors);
 			ArrayList<String> authorNamesWhoHaveANumber = new ArrayList<String>();
 			ArrayList<Integer> authorNumbers = new ArrayList<Integer>();
@@ -217,19 +211,15 @@ public class DblpTest {
 		sessionRkr.commit();
 	}
 
-	/*
-			LuceneTest lucene =  new LuceneTest();
-			try {
-				1lucene.luceneSearch(allAuthorsWithCoAuthors);
-			} catch (IOException e) {}
-			catch (ParseException p) {}
-	 */	
-
 	public void compareResults(List<List<Integer>> authorClusters) {
 		//compare the results
 		float avgClusters = 0;
 		int countAuthors = 0, countIDs = 0;
+		int totalAuthorIDs = 0;
 		for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
+			System.out.println("test1");
+			int totalIDsInClusters = 0;
+			totalAuthorIDs += authorMap.get("authorIDs").size();
 			if (authorMap.get("authorIDs").size() < 2) continue; //ignore authors with only 1 ID
 
 			int countClusters = 0;
@@ -238,36 +228,47 @@ public class DblpTest {
 			countIDs += authorMap.get("authorIDs").size();
 			System.out.println("this author has the following IDs:");
 
-			if (authorMap.get("authorIDs").size() < 10) averageCountAuthors[authorMap.get("authorIDs").size()-2]++;
+			if (authorMap.get("authorIDs").size() < 10) {
+				System.out.println("add author to avg");
+				averageCountAuthors[authorMap.get("authorIDs").size()-2]++;
+			}
 			else  averageCountAuthors[8]++;
 
 			String bibtexAuthor="";
-			for (int k=0; k<authorMap.get("authorIDs").size(); k++) { //every ID of this authors
+			int countAuthorsInUsedClusters = 0;
+			
+			for (int k=0; k<authorMap.get("authorIDs").size(); k++) { //every ID of this author
 				for (Map<String,String> singleAuthorIDToBibtex: authorIDToBibtex) {
 					if (singleAuthorIDToBibtex.get("authorID") == authorMap.get("authorIDs").get(k)) bibtexAuthor = singleAuthorIDToBibtex.get("bibtexAuthor");
 				}
-				System.out.println(authorMap.get("authorIDs").get(k) + "size: " + authorIDToBibtex.size());
+				System.out.println(authorMap.get("authorIDs").get(k) + " size: " + authorIDToBibtex.size());
 				System.out.println(bibtexAuthor);
 				//count the clusters this IDs are split into
 				boolean found = false;
-				int m=0;
-				for (List<Integer> calculatedIDsList: authorClusters) { //every cluster we want to compare
-					for(Integer calculatedID: calculatedIDsList) { //every ID of this cluster
-						if (calculatedID == Integer.parseInt(authorMap.get("authorIDs").get(k))) {
+				int m=0; //each cluster has its own number
+				for (List<Integer> clusteredIDsList: authorClusters) { //every cluster we want to compare
+					for(Integer clusteredID: clusteredIDsList) { //every ID of this cluster
+						//the calculated cluster id is within the author id
+						if (clusteredID == Integer.parseInt(authorMap.get("authorIDs").get(k))) {
+							//TODO we can speed this up with deleting the already found IDs from calculatedIDsList
 							found = true;
+							//we found this in a new cluster
 							if (!savePositions.contains(m)) {
 								System.out.println("--split--");
 								//save the position
 								savePositions.add(m);
 								countClusters++;
 								if (authorMap.get("authorIDs").size() < 10) averageCountOccurences [authorMap.get("authorIDs").size()-2]++;
-								else  averageCountOccurences[8]++;
+								else averageCountOccurences[8]++;
+								//count the number of IDs that are in this cluster and not in the author IDs
+								countAuthorsInUsedClusters += clusteredID;
 								break;
 							}
 						}
 					}
 					m++;
 				}
+				//we havent merged this authorID with another one and this authorID has its own cluster 
 				if (!found) {
 					countClusters++;
 					System.out.println("--single split--");
@@ -275,9 +276,12 @@ public class DblpTest {
 					else  averageCountOccurences[8]++;
 				}
 			}
-
+			
+			System.out.println("ratio clustered IDs/real IDs: " + countAuthorsInUsedClusters/(float)authorMap.get("authorIDs").size());
+			//author IDs - IDs in all used clusters
 			System.out.println("this author is split into: " + countClusters + " clusters");
 			avgClusters += countClusters;
+			totalIDsInClusters += countAuthorsInUsedClusters;
 		}
 
 		for (int k=0; k < averageCountOccurences.length; k++) {
@@ -286,6 +290,7 @@ public class DblpTest {
 		}
 
 		//avgClusters
+		System.out.println("total authorIDs:total clusteredIDs " + totalAuthorIDs + ":" + totalAuthorIDs);
 		System.out.println("Each author with more then one ID has an average of " + (float)countIDs/(float)countAuthors + " IDs");
 		System.out.println("Each author is split into an average of " + (float)avgClusters/(float)countAuthors + " clusters");
 	}

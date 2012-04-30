@@ -77,13 +77,27 @@ public class EntityIdentification {
 			SqlSessionFactory sqlMapperRkr = new SqlSessionFactoryBuilder().build(readerRkr);
 			SqlSession sessionRkr = sqlMapperRkr.openSession();
 
+			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthor");
+			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorCoauthor");
+			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthor");
+			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthorCoauthor");
+			sessionRkr.commit();
+			
+			Lucene lucene =  new Lucene();
+			try {
+				lucene.createLuceneIndexForAllAuthors(sessionRkr);
+			} catch (IOException e) {}
+			catch (ParseException p) {}	
+
+			System.exit(1);
+			
 			//run "myown" test
 			//MyOwnTest.findSamePersonDifferentNames(session);
 
 			//run dblp test
 			DblpTest dblpTest = new DblpTest();
 			dblpTest.preperations(session, sessionRkr);
-
+			
 			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(session, sessionRkr);
 			dblpTest.compareResults(authorIDsList);
 			

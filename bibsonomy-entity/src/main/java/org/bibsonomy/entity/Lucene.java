@@ -1,5 +1,6 @@
 package org.bibsonomy.entity;
 
+import org.apache.ibatis.session.SqlSession;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -19,68 +20,92 @@ import org.bibsonomy.model.PersonName;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 class Lucene {
-	public void luceneSearch(ArrayList<LinkedList<PersonName>> allAuthorsWithCoAuthors) throws IOException, ParseException {
+	IndexWriter w = null;
+	StandardAnalyzer analyzer = null;
+	Directory index = null;
+	List<Map<Document,Integer>> docIDs = new ArrayList<Map<Document,Integer>>();
+
+	public void createLuceneIndexForAllAuthors(SqlSession sessionRkr) throws IOException, ParseException {
+		List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthorsLucene",1);
+
 		//0. Specify the analyzer for tokenizing text.
 		//The same analyzer should be used for indexing and searching
-		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
+		analyzer = new StandardAnalyzer(Version.LUCENE_35);
 
 		//1. create the index
-		Directory index = new RAMDirectory();
+		index = new RAMDirectory();
 
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
-		IndexWriter w = new IndexWriter(index, config);
-		
-		for (List<PersonName> allAuthorsOfOnePublication: allAuthorsWithCoAuthors) { //iterate every publication
-			for (PersonName author: allAuthorsOfOnePublication) { //iterate all authors
-				//add the author
-				Document doc = new Document();
-				doc.add(new Field("author", EntityIdentification.normalizePerson(author), Field.Store.YES, Field.Index.ANALYZED)); //add the normalized name to author field
-				for (PersonName coauthor: allAuthorsOfOnePublication) {
-					//add the coauthors as document
-					if (author != coauthor) {
-						//if (entityIdentification.normalizePerson(author).equals("b.ganter")) System.out.println("add: " + entityIdentification.normalizePerson(coauthor) + " to: " + entityIdentification.normalizePerson(author));
-						doc.add(new Field("coauthor", EntityIdentification.normalizePerson(coauthor), Field.Store.YES, Field.Index.ANALYZED)); //add normalized name to coauthor field
-					}
-				}
-			w.addDocument(doc);
-			}
-		}
-		
-		w.close();
+		w = new IndexWriter(index, config);
 
-		String querystr = "author:b.ganter~0.7 AND (coauthor:r.wille~0.7 OR coauthor:g.dorn~0.7)";
-		
+		int lastAuthorID = 0;
+		for (Map<String,String> singleAuthorWithCoauthors: authorList) { //iterate every publication
+			Document doc = new Document();
+			//every new author is a document
+			if (lastAuthorID != Integer.valueOf((singleAuthorWithCoauthors.get("author_id")))) {
+				Map<Document,Integer> docMap = new HashMap<Document,Integer>();
+				docMap.put(doc, Integer.valueOf((singleAuthorWithCoauthors.get("author_id"))));
+				docIDs.add(docMap);
+				doc = new Document();
+			}
+			doc.add(new Field("author", singleAuthorWithCoauthors.get("normalized_name"), Field.Store.YES, Field.Index.ANALYZED)); //add the normalized name to author field
+			//add the coauthors to the document
+			doc.add(new Field("coauthor", singleAuthorWithCoauthors.get("normalized_coauthor"), Field.Store.YES, Field.Index.ANALYZED)); //add normalized name to coauthor field
+			w.addDocument(doc);
+		}
+
+		w.close();
+	}
+
+	public int searchAuthor(String normalizedName, List<String> coauthors) throws IOException, ParseException {
+
+		//create the query string with fields author and coauthor
+		String querystr = "author:" + normalizedName + "~0.7 AND (coauthor:";
+		for (int k=0; k<coauthors.size()-1; k++) {
+			querystr += "~0.7" + coauthors.get(k) + " AND ";
+		}
+		querystr += "~0.7" + coauthors.get(coauthors.size());
+
 		Query q = new QueryParser(Version.LUCENE_35, "author", analyzer).parse(querystr);
-		int hitsPerPage = 50;
+		int hitsPerPage = 5;
 		IndexReader reader = IndexReader.open(index);
 		IndexSearcher searcher = new IndexSearcher(reader);
 		TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
 		searcher.search(q, collector);
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
-			   
+
 		System.out.println("Found " + hits.length + " hits.");
+		Integer authorID = null;
 		for(int i=0;i<hits.length;++i) {
 			int docId = hits[i].doc;
 			Document d = searcher.doc(docId);
+			//get the authorID connected with this document
+			for (int k=0; k<docIDs.size(); k++) {
+				authorID = docIDs.get(k).get(d);
+				if (authorID != null) break;
+			}
 			System.out.println((i + 1) + ". " + d.get("author") + " coauthors: " + d.get("coauthor"));
 		}
 
 		searcher.close();
+		return authorID;
 	}
-	
+
 	public static Directory createLuceneIndex(List<Map<Integer,String>> allAuthors) {
 		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
 		Directory index = new RAMDirectory();
-		
+
 		try {
 			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
 			IndexWriter w = new IndexWriter(index, config);
-		
+
 			for (Map<Integer,String> author: allAuthors) { //iterate every publication
 				Document doc = new Document();
 				doc.add(new Field("author", author.get("normalized_name"), Field.Store.YES, Field.Index.ANALYZED)); //add the normalized name to author field
@@ -92,5 +117,5 @@ class Lucene {
 		catch (IOException e) {}
 		return index;
 	}	
-	
+
 }
