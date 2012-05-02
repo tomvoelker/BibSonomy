@@ -92,7 +92,8 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	 * @throws ScrapingException
 	 */
 	public static String getBibtexByISBN(final String isbn) throws IOException, ScrapingException{
-		return getBibtex(new URL(WORLDCAT_URL + ISBNUtils.cleanISBN(isbn)), true);
+		String bibtex = getBibtex(new URL(WORLDCAT_URL + ISBNUtils.cleanISBN(isbn)), true);
+		return BibTexUtils.addFieldIfNotContained(bibtex, "isbn", isbn);
 	}
 	
 	/**
@@ -127,7 +128,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	 * before converting RIS to bibtex RIS gets equipped with specified replacementURL.
 	 * @param isbn
 	 * @param replacementURL
-	 * @return
+	 * @return bibtex string
 	 * @throws IOException
 	 * @throws ScrapingException
 	 */
@@ -141,7 +142,8 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		} else {
 			ris = ris.replaceFirst("ER\\s{2}-\\s[\\n.]*\\z", "UR  - " + replacementURL + "\nER  - ");
 		}
-		return converter.risToBibtex(ris);
+		String bibtex = converter.risToBibtex(ris);
+		return BibTexUtils.addFieldIfNotContained(bibtex, "isbn", isbn);
 	}
 	
 	private static String getRIS(final URL publPageURL, final boolean search) throws IOException {
