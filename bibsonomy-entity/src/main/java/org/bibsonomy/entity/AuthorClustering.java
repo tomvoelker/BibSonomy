@@ -20,7 +20,7 @@ public class AuthorClustering {
 		for(int m=0; m < authorNames.size(); m++) {
 			//do this as long there is something we can merge
 			while (true) {
-				//System.out.println("Author Clustering: " + m);
+				System.out.println("Author Clustering: " + m);
 				//merge authors who have the same coauthors
 				List<Map<Integer,String>> authorsWithNameX = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorNames.get(m));
 				if (authorsWithNameX.isEmpty()) {

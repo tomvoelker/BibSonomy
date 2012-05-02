@@ -43,7 +43,6 @@ public class DblpTest {
 	public void preperations(SqlSession session, SqlSession sessionRkr) throws PersonListParserException {
 
 		List<Map<String,String>> dbAuthorIDNumberList= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPPreperation",1);
-
 		boolean foundNoGather = false;
 		//search the list if there is already a person with this name
 		for (Map<String, String> dbAuthorHashMap: dbAuthorIDNumberList) {
@@ -54,9 +53,12 @@ public class DblpTest {
 					//add the new authorID to the already existing data
 					//System.out.println("reAdd: " + authorHashMap.get("authorNameAndNumber").get(0));
 					ArrayList<String> authorIDs = arrayAuthorHashMap.get("authorIDs");
+					ArrayList<String> contentIDs = arrayAuthorHashMap.get("contentIDs");
 
 					authorIDs.add(String.valueOf(dbAuthorHashMap.get("author_id")));
+					contentIDs.add(String.valueOf(dbAuthorHashMap.get("content_id")));
 					arrayAuthorHashMap.put("authorIDs",authorIDs);
+					arrayAuthorHashMap.put("conentIDs",contentIDs);
 
 					authorIDNumberList.set(k, arrayAuthorHashMap);
 					foundNoGather = true;
@@ -68,13 +70,16 @@ public class DblpTest {
 			if (!foundNoGather) {
 				Map<String,ArrayList<String>> arrayAuthorHashMap = new HashMap<String,ArrayList<String>>();
 				ArrayList<String> authorID = new ArrayList<String>();
+				ArrayList<String> contentID = new ArrayList<String>();
 				ArrayList<String> authorNameAndNumber = new ArrayList<String>();
 				authorNameAndNumber.add(dbAuthorHashMap.get("author_name_and_number"));
 				authorID.add(String.valueOf(dbAuthorHashMap.get("author_id")));
+				contentID.add(String.valueOf(dbAuthorHashMap.get("content_id")));
 
 				//System.out.println("add: " + authorNameAndNumber.get(0));
 				arrayAuthorHashMap.put("authorNameAndNumber", authorNameAndNumber);
 				arrayAuthorHashMap.put("authorIDs",authorID);
+				arrayAuthorHashMap.put("contentIDs",contentID);
 				authorIDNumberList.add(arrayAuthorHashMap);
 			}
 		}
@@ -82,12 +87,16 @@ public class DblpTest {
 		if (skipGatherFromDB) return;
 
 		//List<String> authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP",1);
-		List<String> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
+		List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
 		System.out.println("Datenbankabfrage erfolgreich");
 
 		//read all entries from bibtex and save it to author table
 		ArrayList<LinkedList<PersonName>> allAuthorsWithCoAuthors = new ArrayList<LinkedList<PersonName>>();
-		for (String authors: authorList) { //authorList for each publication
+		int z=0;
+		for (Map<String,String> authorsMap: authorList) { //authorList for each publication
+			System.out.println(z);
+			z++;
+			String authors = authorsMap.get("author");
 			sessionRkr.commit();
 			float timeAtStart = System.nanoTime();
 			//System.out.println("List of authors: " + authors);
@@ -154,6 +163,7 @@ public class DblpTest {
 						dbEntry.put("authorID", singleAuthorID);
 						dbEntry.put("authorNameAndNumber", EntityIdentification.normalizePerson(author) + authorNumber);
 						dbEntry.put("authorsString", authors);
+						dbEntry.put("contentID", String.valueOf(authorsMap.get("content_id")));
 
 						sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
 
@@ -179,6 +189,7 @@ public class DblpTest {
 					dbEntry.put("authorID", singleAuthorID);
 					dbEntry.put("authorNameAndNumber", EntityIdentification.normalizePerson(author) + authorNumber);
 					dbEntry.put("authorsString", authors);
+					dbEntry.put("contentID", String.valueOf(authorsMap.get("content_id")));
 
 					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
 
@@ -211,7 +222,127 @@ public class DblpTest {
 		sessionRkr.commit();
 	}
 
-	public void compareResults(List<List<Integer>> authorClusters) {
+	public void compareResults(List<List<Integer>> authorClusters, SqlSession sessionRkr) throws PersonListParserException {
+		int rightMatchesOverallLucene=0;
+		int rightMatchesOverallAuthorCLustering=0;
+		
+		for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
+			//we use one ID as reference and search authorIDs(contentIDs) that fit to this reference ID
+			int referenceAuthorID = Integer.valueOf(authorMap.get("authorIDs").get(0));
+			int referenceContentID = Integer.valueOf(authorMap.get("contentIDs").get(0));
+
+			int luceneResults=0;
+			int authorClusteringResults=0;
+
+			List<String> contentIDAuthorString= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPAuthor",referenceContentID);
+
+			String authorsString = contentIDAuthorString.get(0);
+
+			//TODO we need this already before and should maybe put this in a function
+			//remove the dblp numbers from the authors e.g. Jürgen Müller 002
+			final Pattern p = Pattern.compile("\\s+([^\\s]+?)\\s+([0-9]{4})");
+			final Matcher matcher = p.matcher(authorsString);
+
+			final Pattern p2 = Pattern.compile("[0-9]{4}");
+			final String cleanedAuthors = p2.matcher(authorsString).replaceAll("");
+
+			List<PersonName> allAuthorNamesOfOnePublication = PersonNameUtils.discoverPersonNames(cleanedAuthors);
+
+			//so far we only compare the first author in the text
+			String normalizedName = EntityIdentification.normalizePerson(allAuthorNamesOfOnePublication.get(0));
+			List<String> normalizedCoauthors = new ArrayList<String>();;
+
+			for(int k=1; k < allAuthorNamesOfOnePublication.size(); k++) {
+				normalizedCoauthors.add(EntityIdentification.normalizePerson(allAuthorNamesOfOnePublication.get(k)));
+			}
+
+			//lets see how lucene performed
+			try {
+				List<Integer> luceneResultIDs = Lucene.searchAuthor(normalizedName, normalizedCoauthors);
+
+				int underClustering = 0;
+				int rightMatches = 0;
+				boolean found = false;
+				System.out.println("real IDs: ");
+				for (String realAuthorID: authorMap.get("authorIDs")) {
+					System.out.println(realAuthorID);
+					found = false;
+					for (Integer luceneAuthorID: luceneResultIDs) {
+						if (luceneAuthorID == Integer.valueOf(realAuthorID)) {
+							found = true;
+							rightMatches++;
+							rightMatchesOverallLucene++;
+						}
+					}
+					if (!found) {
+						underClustering++;
+						System.out.println("not found: " + realAuthorID);
+					}
+				}
+
+				int overClustering = 0;
+				System.out.println("found IDs: ");
+				for (Integer luceneAuthorID: luceneResultIDs) {
+					System.out.println(luceneAuthorID);
+					found = false;
+					for (String realAuthorID: authorMap.get("authorIDs")) {	
+						if (luceneAuthorID == Integer.valueOf(realAuthorID)) found = true;
+					}
+					if (!found) {
+						overClustering++;
+						System.out.println("not found: " + luceneAuthorID);
+					}
+				}
+
+
+				System.out.println("rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			//lets see how author clustering performs
+			int rightMatches = 0;
+			int underClustering = 0;
+			int overClustering = 0;
+			boolean found = false;
+			for (String realAuthorID: authorMap.get("authorIDs")) {
+				found = false;
+				for (List<Integer> clusteredIDsList: authorClusters) { //every cluster we want to compare
+					for (int clusteredID: clusteredIDsList) {
+						if (clusteredID == Integer.valueOf(realAuthorID)) {
+							found = true;
+							rightMatches++;
+							rightMatchesOverallAuthorCLustering++;
+						}
+					}
+					//find the overClustering errors
+					if (found) {
+						boolean tmpFound = false;
+						//IDs saved in this cluster but not in the real IDs list
+						for (int clusteredID: clusteredIDsList) {
+							tmpFound = false;
+							for (String tmpRealAuthorID: authorMap.get("authorIDs")) {
+								if (Integer.valueOf(tmpRealAuthorID) == clusteredID) tmpFound = true;
+							}
+							if (!found) overClustering++;
+						}
+					}
+				}
+				if (!found) underClustering++;
+
+			}
+			
+			System.out.println("rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
+		}
+		
+		System.out.println("overall lucene: " + rightMatchesOverallLucene + " overall author clustering: " + rightMatchesOverallAuthorCLustering);
+	}
+
+	public void oldUnusedCompareResults(List<List<Integer>> authorClusters) {
 		//compare the results
 		float avgClusters = 0;
 		int countAuthors = 0, countIDs = 0;
@@ -236,7 +367,7 @@ public class DblpTest {
 
 			String bibtexAuthor="";
 			int countAuthorsInUsedClusters = 0;
-			
+
 			for (int k=0; k<authorMap.get("authorIDs").size(); k++) { //every ID of this author
 				for (Map<String,String> singleAuthorIDToBibtex: authorIDToBibtex) {
 					if (singleAuthorIDToBibtex.get("authorID") == authorMap.get("authorIDs").get(k)) bibtexAuthor = singleAuthorIDToBibtex.get("bibtexAuthor");
@@ -276,7 +407,7 @@ public class DblpTest {
 					else  averageCountOccurences[8]++;
 				}
 			}
-			
+
 			System.out.println("ratio clustered IDs/real IDs: " + countAuthorsInUsedClusters/(float)authorMap.get("authorIDs").size());
 			//author IDs - IDs in all used clusters
 			System.out.println("this author is split into: " + countClusters + " clusters");
@@ -293,6 +424,10 @@ public class DblpTest {
 		System.out.println("total authorIDs:total clusteredIDs " + totalAuthorIDs + ":" + totalAuthorIDs);
 		System.out.println("Each author with more then one ID has an average of " + (float)countIDs/(float)countAuthors + " IDs");
 		System.out.println("Each author is split into an average of " + (float)avgClusters/(float)countAuthors + " clusters");
+	}
+
+	public List<Map<String,ArrayList<String>>> getAuthorIDNumberList() {
+		return authorIDNumberList;
 	}
 
 	public static List<Map<String,String>> getAuthorsWithNameLikeX (String nameX, SqlSession sessionRkr) {

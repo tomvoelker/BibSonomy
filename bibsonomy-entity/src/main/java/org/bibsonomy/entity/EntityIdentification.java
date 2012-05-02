@@ -83,13 +83,12 @@ public class EntityIdentification {
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthorCoauthor");
 			sessionRkr.commit();
 			
+			
 			Lucene lucene =  new Lucene();
 			try {
 				lucene.createLuceneIndexForAllAuthors(sessionRkr);
 			} catch (IOException e) {}
 			catch (ParseException p) {}	
-
-			System.exit(1);
 			
 			//run "myown" test
 			//MyOwnTest.findSamePersonDifferentNames(session);
@@ -98,8 +97,16 @@ public class EntityIdentification {
 			DblpTest dblpTest = new DblpTest();
 			dblpTest.preperations(session, sessionRkr);
 			
+			/*
+			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.getAuthorIDNumberList();
+			//create the authorCluster we can compare then
+			for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
+				lucene.searchAuthor(normalizedName, coauthors)
+			}
+			*/
+			
 			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(session, sessionRkr);
-			dblpTest.compareResults(authorIDsList);
+			dblpTest.compareResults(authorIDsList, sessionRkr);
 			
 			System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
 

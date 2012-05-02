@@ -28,9 +28,9 @@ import java.util.Set;
 
 class Lucene {
 	IndexWriter w = null;
-	StandardAnalyzer analyzer = null;
-	Directory index = null;
-	List<Map<Document,Integer>> docIDs = new ArrayList<Map<Document,Integer>>();
+	static StandardAnalyzer analyzer = null;
+	static Directory index = null;
+	static List<Map<Document,Integer>> docIDs = new ArrayList<Map<Document,Integer>>();
 
 	public void createLuceneIndexForAllAuthors(SqlSession sessionRkr) throws IOException, ParseException {
 		List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthorsLucene",1);
@@ -55,6 +55,7 @@ class Lucene {
 				docIDs.add(docMap);
 				doc = new Document();
 			}
+			System.out.println("we add author: " + singleAuthorWithCoauthors.get("normalized_name") + " coauthor: " + singleAuthorWithCoauthors.get("normalized_coauthor"));
 			doc.add(new Field("author", singleAuthorWithCoauthors.get("normalized_name"), Field.Store.YES, Field.Index.ANALYZED)); //add the normalized name to author field
 			//add the coauthors to the document
 			doc.add(new Field("coauthor", singleAuthorWithCoauthors.get("normalized_coauthor"), Field.Store.YES, Field.Index.ANALYZED)); //add normalized name to coauthor field
@@ -62,17 +63,25 @@ class Lucene {
 		}
 
 		w.close();
+		System.exit(1);
 	}
 
-	public int searchAuthor(String normalizedName, List<String> coauthors) throws IOException, ParseException {
+	public static List<Integer> searchAuthor(String normalizedName, List<String> normalizedCoauthors) throws IOException, ParseException {
 
 		//create the query string with fields author and coauthor
-		String querystr = "author:" + normalizedName + "~0.7 AND (coauthor:";
-		for (int k=0; k<coauthors.size()-1; k++) {
-			querystr += "~0.7" + coauthors.get(k) + " AND ";
+		String querystr = "author:" + normalizedName + "~0.7";
+		if (normalizedCoauthors != null && normalizedCoauthors.size() > 0) {
+			querystr += " AND (coauthor:";
+			for (int k=0; k<normalizedCoauthors.size()-1; k++) {
+				querystr += normalizedCoauthors.get(k) + "~0.7 AND ";
+			}
+			int lastElement = normalizedCoauthors.size()-1;
+			if (lastElement > -1) querystr += normalizedCoauthors.get(lastElement) + "~0.7";
+			querystr += ")";
 		}
-		querystr += "~0.7" + coauthors.get(coauthors.size());
-
+		
+		System.out.println("query is: " + querystr);
+		
 		Query q = new QueryParser(Version.LUCENE_35, "author", analyzer).parse(querystr);
 		int hitsPerPage = 5;
 		IndexReader reader = IndexReader.open(index);
@@ -82,7 +91,8 @@ class Lucene {
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
 		System.out.println("Found " + hits.length + " hits.");
-		Integer authorID = null;
+		Integer authorID = 0;
+		List<Integer> saveAuthorIDs = new ArrayList<Integer>();
 		for(int i=0;i<hits.length;++i) {
 			int docId = hits[i].doc;
 			Document d = searcher.doc(docId);
@@ -95,7 +105,7 @@ class Lucene {
 		}
 
 		searcher.close();
-		return authorID;
+		return saveAuthorIDs;
 	}
 
 	public static Directory createLuceneIndex(List<Map<Integer,String>> allAuthors) {
