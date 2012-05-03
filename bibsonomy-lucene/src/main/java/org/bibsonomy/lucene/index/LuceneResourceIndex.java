@@ -136,6 +136,10 @@ public class LuceneResourceIndex<R extends Resource> {
 	 */
 	public LuceneIndexStatistics getStatistics() {
         final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
+        if (!this.isIndexEnabled()) {
+        	return statistics;
+        }
+        
 	    synchronized(this) {
     	    	this.ensureReadAccess();
                 
