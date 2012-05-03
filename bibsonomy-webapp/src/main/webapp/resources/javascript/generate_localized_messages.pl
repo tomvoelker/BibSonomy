@@ -39,7 +39,7 @@ foreach my $file (@jsFiles) {
     open (JS, "<$file") or die "could not open $file\n";
     while (<JS>) {
 	# extract all calls to the "getString" method
-	if (/getString\((.+?)\)/) {
+	if (/getString\((.+?)(,.+)?\)/) {
 	    # method arguments
 	    my $arg = $1;
 	    # check the method arguments
