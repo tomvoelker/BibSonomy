@@ -12,6 +12,32 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>2.0.25-SNAPSHOT</version>
 	</parent>
+	<repositories>
+		<repository>
+			<id>biblicious</id>
+			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
+			<url>http://www.biblicious.org:8088/artifactory/repo</url>
+		</repository>
+		<repository>
+			<id>dev.bibsonomy.org</id>
+			<name>Official Source Code Releases of selected BibSonomy Modules</name>
+			<url>http://dev.bibsonomy.org/maven2/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>biblicious</id>
+			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
+			<url>
+				http://www.biblicious.org:8088/artifactory/plugins-releases
+			</url>
+		</pluginRepository>
+    		<pluginRepository>
+		      <name>oss.sonatype.org</name>
+		      <id>oss.sonatype.org</id>
+		      <url>http://oss.sonatype.org/content/groups/public</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<build>
 		<plugins>
 			<plugin>
@@ -64,6 +90,13 @@
 			<scope>test</scope>
 			<type>test-jar</type>
 		</dependency>		
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-bibtex-parser</artifactId>
+			<version>2.0.25-SNAPSHOT</version>
+			<type>pom</type>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
