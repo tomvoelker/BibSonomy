@@ -11,9 +11,9 @@ function updateUserRelation(action, userName, relationName, ckey) {
 	var actionString;
 	if ('sys:network:bibsonomy-follower' == relationName) {
 		// FIXME: move follower-table to friends table
-		actionString = "&action="+action+"Follower";
+		actionString = "&action=" + action + "Follower";
 	} else {
-		actionString = "&action="+action+"Relation&relationTags="+encodeURIComponent(relationName);
+		actionString = "&action=" + action + "Relation&relationTags="+encodeURIComponent(relationName);
 	}
 	
 	handleUserRelation(actionString, userName, relationName, toggleSocializerButtons);
@@ -28,7 +28,7 @@ function updateUserRelation(action, userName, relationName, ckey) {
  * @return
  */
 function updateFollowerFollowerPage(action, userName, element, ckey){
-	handleUserRelation("&action="+action+"Follower", userName, "sys:network:bibsonomy-follower", moveFollwerLink, element, action);
+	handleUserRelation("&action=" + action + "Follower", userName, "sys:network:bibsonomy-follower", moveFollwerLink, element, action);
 }
 
 
@@ -39,8 +39,8 @@ function updateFollowerFollowerPage(action, userName, element, ckey){
  */
 function toggleSocializerButtons(relationName) {
 	var cleanedName = relationName.replace(/(:|\.)/g,'\\$1');
-	$('#'+cleanedName+"_followLink").toggle();
-	$('#'+cleanedName+"_removeLink").toggle();
+	$('#' + cleanedName + "_followLink").toggle();
+	$('#' + cleanedName + "_removeLink").toggle();
 }
 
 /**
@@ -98,15 +98,16 @@ function handleUserRelation(actionString, userName, relationName, callback, elem
  * @returns {Boolean}
  */
 function submitUsername(textField) {
-	
-	var userName = textField.val();	
+	var userName = textField.val();
+	// FIXME: wrong pattern UserValidator allows also _, ., -
+	// (and that pattern only covers 99% of the users)
 	var regExp = new RegExp("^[a-zA-Z0-9]+$");
 
-	if(regExp.test(userName)) {	
+	if (regExp.test(userName)) {	
 		handleUserRelation("&action=addFriend", userName, "sys:network:bibsonomy-friend", 
 				function(relationName, element, action, data) {
-					if(data.statusText === "error") {
-						alert(getStringReplace("error.user.none_existing_user", [userName]));
+					if (data.statusText === "error") {
+						alert(getString("error.user.none_existing_user", [userName]));
 					} else {
 						textField.val('');
 						location.reload();

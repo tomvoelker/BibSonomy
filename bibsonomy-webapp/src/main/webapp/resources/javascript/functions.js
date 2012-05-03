@@ -745,10 +745,17 @@ function editTags() {
  * call generate_localized_strings.pl afterwards.
  * 
  */
-function getString( key ) {
-	if ( typeof LocalizedStrings == "undefined" ) return "???"+key+"???"; 
+function getString(key, params) {
+	if (typeof LocalizedStrings == "undefined") return "???" + key + "???"; 
 	var s = LocalizedStrings[key];
-	if( !s ) return "???"+key+"???";
+	if (!s) return "???" + key + "???";
+	
+	if (params != undefined) {
+		for (var i = 0; i < params.length; i++) {
+			s = s.replace(new RegExp('\\{' + i + '\\}', "g"), params[i]);
+		}
+	}
+	
 	return s;
 }
 
@@ -1050,24 +1057,3 @@ String.prototype.startsWith = function(s) {
 String.prototype.trim = function () {
 	return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
 };
-
-
-/**
- * Function to get the Message and parse/replace the variables of the Message
- * 
- * @param key for Example getString("error.user.userError")
- * @param replacement Array of the words to be replaced
- * @returns
- */
-getStringReplace = function (key, replacement) {
-	
-	var messageString = getString(key);
-
-	for (var i = 0; i < replacement.length; i++) {
-		var toreplace = '\\{' + i + '\\}';
-		messageString = messageString.replace(new RegExp(toreplace, "g"), replacement[i]);
-	}
-	
-	return messageString;
-}
-
