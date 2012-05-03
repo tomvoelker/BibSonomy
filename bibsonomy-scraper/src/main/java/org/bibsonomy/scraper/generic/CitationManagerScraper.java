@@ -28,12 +28,15 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+
+import bibtex.parser.ParseException;
 
 /**
  * Superclass for scraping pages, using the same system like PNAS, RSOC or ScienceMag.
@@ -55,15 +58,16 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 			String downloadLink = buildDownloadLink(sc.getUrl(), WebUtils.getContentAsString(sc.getUrl()));
 			
 			// download bibtex directly
-			final String bibtex = WebUtils.getContentAsString(new URL(downloadLink));
-			if (bibtex != null) {
-				// clean up (whitespaces in bibtex key)
-				final int indexOfComma = bibtex.indexOf(",");
-				
-				final String key = bibtex.substring(0, indexOfComma).replaceAll("\\s", "");
-				final String rest = bibtex.substring(indexOfComma);				
-				sc.setBibtexResult(key + rest);
-				return true;
+			final String bibtexMessage = WebUtils.getContentAsString(new URL(downloadLink));
+			if (bibtexMessage != null) {
+				try {
+					String bibtex = BibTexUtils.addBibtexKeyIfNotPresent(bibtexMessage);
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toExternalForm());
+					sc.setBibtexResult(bibtex);
+					return true;
+				} catch (ParseException ex) {
+					throw new ScrapingException(ex);
+				}
 			}
 
 		} catch (IOException ex) {
