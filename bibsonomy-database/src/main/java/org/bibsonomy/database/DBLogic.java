@@ -1090,8 +1090,7 @@ public class DBLogic implements LogicInterface {
 	 * New users can be added to a group by using 
 	 * {@link GroupUpdateOperation#ADD_NEW_USER} and putting the new users only (!) 
 	 * into {@link Group#setUsers(List)}.
-	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#updateGroup(org.bibsonomy.model.Group)
+	 *
 	 */
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
@@ -1811,7 +1810,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.StatisticsConstraint)
 	 */
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, Date startDate, Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = openSession();
 
 		try {
@@ -2184,7 +2183,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.ConceptStatus, int, int)
 	 */
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Date startDate, Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = openSession();
 		try {
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, null, this.loginUser);
@@ -2217,11 +2216,11 @@ public class DBLogic implements LogicInterface {
 		 * like 'dblp' are disallowed)
 		 */
 		final DBSession session = openSession();
-		this.permissionDBManager.checkUserRelationship(loginUser, this.userDBManager.getUserDetails(targetUser, session), relation, tag);
 		/*
 		 * finally try to create relationship
 		 */
 		try {
+			this.permissionDBManager.checkUserRelationship(loginUser, this.userDBManager.getUserDetails(targetUser, session), relation, tag);
 			this.userDBManager.createUserRelation(sourceUser, targetUser, relation, tag, session);
 		} finally {
 			session.close();
@@ -2617,7 +2616,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		try {
 			// verify that there exists a gold standard
-			Post<? extends Resource> goldStandardPost = this.getPostDetails(interHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
+			final Post<? extends Resource> goldStandardPost = this.getPostDetails(interHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
 			if (!present(goldStandardPost)) {
 				throw new ResourceNotFoundException("To the discussion item no post could be found for interHash "+interHash+" and user "+username+".");
 			}
