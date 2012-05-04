@@ -25,9 +25,6 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
@@ -60,12 +57,6 @@ import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.tex.TexDecode;
-
-import bibtex.dom.BibtexAbstractEntry;
-import bibtex.dom.BibtexEntry;
-import bibtex.dom.BibtexFile;
-import bibtex.dom.BibtexString;
-import bibtex.parser.BibtexParser;
 
 /**
  * Some BibTex utility functions.
@@ -612,47 +603,6 @@ public class BibTexUtils {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_TIMESTAMP, DATE_FORMAT.format(post.getDate()));
 		}
 		return toBibtexString(bib, flags);
-	}
-	
-	private static BibtexFile parseBibtex(String bibtext, BibtexParser parser) throws IOException, bibtex.parser.ParseException {
-		BibtexFile file = new BibtexFile();
-		BufferedReader sr = new BufferedReader(new StringReader(bibtext));
-		// parse source
-		parser.parse(file, sr);
-		return file;
-	}
-	
-	/**
-	 * For each BibTeX entry generate and add a key if not present yet.
-	 * 
-	 * @param bibtex
-	 * @return the bibtex with generated keys where missing
-	 * @throws IOException
-	 * @throws bibtex.parser.ParseException 
-	 */
-	public static String addBibtexKeyIfNotPresent(String bibtex) throws IOException, bibtex.parser.ParseException {
-		BibtexFile bibFile = parseBibtex(bibtex, new BibtexParser(true));
-		@SuppressWarnings("unchecked")
-		List<BibtexAbstractEntry> entries = bibFile.getEntries();
-		for (BibtexAbstractEntry entry : entries) {
-			if (entry instanceof BibtexEntry) {
-				String key = ((BibtexEntry) entry).getEntryKey();
-				if (present(key)) continue;
-				@SuppressWarnings({ "rawtypes", "unchecked" })
-				Map fields = new HashMap(((BibtexEntry) entry).getFields());
-				BibtexString author = (BibtexString) fields.get("author");
-				BibtexString editor = (BibtexString)fields.get("editor");
-				BibtexString year = (BibtexString)fields.get("year");
-				BibtexString title = (BibtexString) fields.get("title");
-				key = generateBibtexKey(
-						author == null ? "" : author.getContent(),
-						editor == null ? "" : editor.getContent(),
-						year == null ? "" : year.getContent(),
-						title == null ? "" : title.getContent());
-				((BibtexEntry) entry).setEntryKey(key);
-			}
-		}
-		return bibFile.toString();
 	}
 
 	/**
