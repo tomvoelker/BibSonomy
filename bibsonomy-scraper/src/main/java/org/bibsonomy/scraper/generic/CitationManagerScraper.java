@@ -52,16 +52,8 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		try {
-			final String content = WebUtils.getContentAsString(sc.getUrl());
-
-			// get link to download page
-			final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
-			final String downloadLink;
-			if(downloadLinkMatcher.find()) // add type=bibtex to the end of the link
-				downloadLink = "http://" + sc.getUrl().getHost() + downloadLinkMatcher.group(1) + "&type=bibtex";
-			else
-				throw new ScrapingFailureException("Download link is not available");
-
+			String downloadLink = buildDownloadLink(sc.getUrl(), WebUtils.getContentAsString(sc.getUrl()));
+			
 			// download bibtex directly
 			final String bibtex = WebUtils.getContentAsString(new URL(downloadLink));
 			if (bibtex != null) {
@@ -79,6 +71,18 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 		}
 
 		return false;
+	}
+	
+	protected String buildDownloadLink(URL url, String content) throws ScrapingFailureException {
+
+		// get link to download page
+		final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
+		final String downloadLink;
+		if(downloadLinkMatcher.find()) // add type=bibtex to the end of the link
+			downloadLink = "http://" + url.getHost() + downloadLinkMatcher.group(1) + "&type=bibtex";
+		else
+			throw new ScrapingFailureException("Download link is not available");
+		return downloadLink;
 	}
 
 }
