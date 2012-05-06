@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -62,7 +63,9 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 				
 				final String key = bibtex.substring(0, indexOfComma).replaceAll("\\s", "");
 				final String rest = bibtex.substring(indexOfComma);				
-				sc.setBibtexResult(key + rest);
+				String bibtexResult = key + rest;
+				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "url", sc.getUrl().toExternalForm());
+				sc.setBibtexResult(bibtexResult);
 				return true;
 			}
 
