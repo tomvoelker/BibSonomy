@@ -23,11 +23,16 @@
 
 package org.bibsonomy.scraper.generic;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -35,6 +40,8 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+
+import bibtex.parser.ParseException;
 
 /**
  * Superclass for scraping pages, using the same system like PNAS, RSOC or ScienceMag.
@@ -58,14 +65,27 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 			// download bibtex directly
 			final String bibtex = WebUtils.getContentAsString(new URL(downloadLink));
 			if (bibtex != null) {
-				// clean up (whitespaces in bibtex key)
-				final int indexOfComma = bibtex.indexOf(",");
 				
-				final String key = bibtex.substring(0, indexOfComma).replaceAll("\\s", "");
-				final String rest = bibtex.substring(indexOfComma);				
-				String bibtexResult = key + rest;
-				bibtexResult = BibTexUtils.addFieldIfNotContained(bibtexResult, "url", sc.getUrl().toExternalForm());
-				sc.setBibtexResult(bibtexResult);
+				StringBuffer bibtexResult = new StringBuffer();
+				
+				//adding key and url to bibtex if not contained
+				try {
+					SimpleBibTeXParser parser = new SimpleBibTeXParser();
+					List<BibTex> bibtexs = parser.parseBibTeXs(bibtex);
+					for (BibTex bib : bibtexs) {
+						if (! present(bib.getBibtexKey()) || bib.getBibtexKey().contains("\\s")) {
+							bib.setBibtexKey(BibTexUtils.generateBibtexKey(bib));
+						}
+						if (! present(bib.getUrl())) {
+							bib.setUrl(sc.getUrl().toExternalForm());
+						}
+						bibtexResult.append(BibTexUtils.toBibtexString(bib));
+					}
+				} catch (ParseException ex) {
+					throw new ScrapingException("Cannot parse BibTex");
+				}
+				
+				sc.setBibtexResult(bibtexResult.toString());
 				return true;
 			}
 
