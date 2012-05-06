@@ -854,7 +854,7 @@ public class BibTexUtils {
 		/*
 		 * ignore empty bibtex and empty field values
 		 */
-		if (bibtex == null || fieldValue == null || fieldValue.trim().equals("")) return;
+		if (bibtex == null || !present(fieldValue)) return;
 
 		/*
 		 * remove last comma if there is one (before closing last curly bracket)
