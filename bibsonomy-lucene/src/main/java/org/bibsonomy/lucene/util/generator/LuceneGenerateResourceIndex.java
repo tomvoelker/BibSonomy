@@ -161,17 +161,16 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			log.info("Read " + skip + " entries.");
 
 			// cycle through all posts of currently read block
-			for (final LucenePost<R> postEntry : postList) {
-				// update management fields
-				postEntry.setLastLogDate(lastLogDate);
-				postEntry.setLastTasId(lastTasId);
-				
-				// create index document from post model
-				final Document post = this.resourceConverter.readPost(postEntry);
-
+			for (final LucenePost<R> postEntry : postList) {				
 				// add (non-spam) document to index
-				// FIXME: is this check necessary?
+				// FIXME: is this check necessary? query only retrieves post with groupid >= 0
 				if (isNotSpammer(postEntry)) {
+					// update management fields
+					postEntry.setLastLogDate(lastLogDate);
+					postEntry.setLastTasId(lastTasId);
+          
+					// create index document from post model
+					final Document post = this.resourceConverter.readPost(postEntry);
 					indexWriter.addDocument(post);
 					i++;
 				} else {
