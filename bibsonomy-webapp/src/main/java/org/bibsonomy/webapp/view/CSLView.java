@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.view;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +16,8 @@ import net.sf.json.processors.PropertyNameProcessor;
 import net.sf.json.util.PropertyFilter;
 
 import org.bibsonomy.layout.csl.CslModelConverter;
-import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Date;
+import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.layout.csl.model.RecordList;
 import org.bibsonomy.model.BibTex;
@@ -39,20 +41,16 @@ public class CSLView extends AbstractView {
 		 * get the data
 		 */
 		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
-		if (object instanceof SimpleResourceViewCommand) {
-			/*
-			 * we can only handle SimpleResourceViewCommands ...
-			 */
-			final SimpleResourceViewCommand command = (SimpleResourceViewCommand) object;
+		
+		final List<? extends Post<? extends BibTex>> publicationList = getPublicationList(object);
+		if(!present(publicationList)) {
+			return;
+		}
 
 			/*
 			 * set the content type headers
 			 */
-			response.setContentType("text/plain"); // FIXME: this is just for
-													// testing purposes; should
-													// be changed to
-													// "application/json" in
-													// real setting
+			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 
 			/*
@@ -61,20 +59,15 @@ public class CSLView extends AbstractView {
 			final ServletOutputStream outputStream = response.getOutputStream();
 			final OutputStreamWriter writer = new OutputStreamWriter(outputStream);
 
-			/*
-			 * loop over records, convert to CSL model and then to JSON
-			 */
-			final List<Post<BibTex>> publicationList = command.getBibtex().getList();
 			if (publicationList != null) {
 				RecordList recList = new RecordList();
-				for (final Post<BibTex> post : publicationList) {
+				for (final Post<? extends BibTex> post : publicationList) {
 					final Record rec = CslModelConverter.convertPost(post);
 					recList.add(rec);
 				}
 				writer.write(JSONSerializer.toJSON(recList, getJsonConfig()).toString());
 				writer.close();
 			}
-		}
 	}
 
 	private JsonConfig getJsonConfig() {
@@ -117,5 +110,18 @@ public class CSLView extends AbstractView {
 		});
 		return jsonConfig;
 	}
-
+	
+	/**
+	 * 
+	 * @param commandObject
+	 * @return List of publications if supported command is given, null otherwise
+	 */
+	private List<? extends Post<? extends BibTex>> getPublicationList (Object commandObject) {
+		if(commandObject instanceof SimpleResourceViewCommand) {
+			SimpleResourceViewCommand command = (SimpleResourceViewCommand)commandObject;
+			return command.getBibtex().getList();
+		}
+		return null;
+	}
+	
 }

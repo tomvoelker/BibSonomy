@@ -105,6 +105,8 @@
 				<fmt:message key="post.resource.discussion.loginToDiscuss"/>
 			</c:otherwise>
 		</c:choose>
-		
+	</div>
+	<div id="bibliography">
+		<!-- keep it -->
 	</div>
 </jsp:root>

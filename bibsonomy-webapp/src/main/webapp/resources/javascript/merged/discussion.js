@@ -13,3 +13,4 @@ includeJavaScript("/resources/jquery/plugins/flot/jquery.flot.stack.js")
 includeJavaScript("/resources/javascript/discussion/discussion.js");
 includeJavaScript("/resources/javascript/discussion/comments.js");
 includeJavaScript("/resources/javascript/discussion/reviews.js");
+includeJavaScript("/resources/javascript/discussion/csllinks.js");
