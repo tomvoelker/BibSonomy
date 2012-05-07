@@ -69,9 +69,9 @@ public class EntityIdentification {
 
 		//get the data from the database
 		try {
-			reader = Resources.getResourceAsReader(resource);
-			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
-			SqlSession session = sqlMapper.openSession();
+			//reader = Resources.getResourceAsReader(resource);
+			//SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+			//SqlSession session = sqlMapper.openSession();
 
 			readerRkr = Resources.getResourceAsReader(resourceRkr);
 			SqlSessionFactory sqlMapperRkr = new SqlSessionFactoryBuilder().build(readerRkr);
@@ -82,7 +82,6 @@ public class EntityIdentification {
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthor");
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthorCoauthor");
 			sessionRkr.commit();
-			
 			
 			Lucene lucene =  new Lucene();
 			try {
@@ -95,7 +94,7 @@ public class EntityIdentification {
 
 			//run dblp test
 			DblpTest dblpTest = new DblpTest();
-			dblpTest.preperations(session, sessionRkr);
+			dblpTest.preperations(sessionRkr);
 			
 			/*
 			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.getAuthorIDNumberList();
@@ -105,12 +104,12 @@ public class EntityIdentification {
 			}
 			*/
 			
-			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(session, sessionRkr);
+			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(sessionRkr);
 			dblpTest.compareResults(authorIDsList, sessionRkr);
 			
 			System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
 
-			session.close();
+			//session.close();
 			sessionRkr.close();
 			
 		} catch (IOException e) {

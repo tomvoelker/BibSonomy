@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
-	SELECT author_name_and_number, author_id, authors_string, content_id FROM author_id_number_list
+	SELECT author_name_and_number, author_id, authors_string, content_id FROM author_id_number_list LIMIT 1000
 </select>
 
 <!-- bibsonomy_strudel DBLP Tests -->
@@ -41,7 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="selectAuthorNames" parameterType="String" resultType="String">
-	SELECT normalized_name FROM author GROUP BY normalized_name LIMIT 30
+	SELECT normalized_name from (SELECT normalized_name from author LIMIT 1000) as limited_authors GROUP by normalized_name
 </select>
 
 <select id="selectRkrAuthor" parameterType="String" resultType="HashMap">
@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="selectCoAuthorsLucene" parameterType="String" resultType="java.util.Map">
-	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName} LIMIT 1000
+	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) LIMIT 1000
 </select>
 	
 <insert id="insertAuthorIDAndNumber" parameterType="HashMap">

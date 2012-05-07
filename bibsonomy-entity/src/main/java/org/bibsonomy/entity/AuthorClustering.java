@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 
 public class AuthorClustering {
-	public static List<List<Integer>> authorClustering(SqlSession session, SqlSession sessionRkr) {
+	public static List<List<Integer>> authorClustering(SqlSession sessionRkr) {
 
 		//clustering the authors with the coauthor relationship
 		int threshold = 2;
@@ -87,7 +87,7 @@ public class AuthorClustering {
 					}
 				}
 
-				//System.out.println("OuterMax: " + outerMax + " - Merge " + outerAuthorID + " with " + tmpInnerMaxAuthorID);
+				//System.out.println("OuterMax: " + outerMax + " - Merge " + outerAuthorID + " with " + tmpInnerMaxAuthorID + " name: " + authorNames.get(m));
 
 				//end when there are no more authors to merge
 				if (outerMax < threshold) {
@@ -115,13 +115,13 @@ public class AuthorClustering {
 				//search the list with the actual authorID and save the redundant ID
 				int n=0;
 				boolean found = false;
+			
 				for (List<Integer> authorIDs: authorIDsList) {
 					int authorIDsSize = authorIDs.size();
 					for (int k=0; k<authorIDsSize; k++) {
 						//System.out.println("outerAuthorID:" + outerAuthorID + " " + authorIDs.get(k));
-						if (outerAuthorID == authorIDs.get(k)) {
-							authorIDs.add(tmpInnerMaxAuthorID);
-							//TODO we cant merge the same author IDs if (tmpInnerMaxAuthorID != outerAuthorID) 
+						if (outerAuthorID+26989 == authorIDs.get(k)) {
+							authorIDs.add(tmpInnerMaxAuthorID+26989);
 							authorIDsList.set(n, authorIDs);
 							found = true;
 						}
@@ -130,8 +130,8 @@ public class AuthorClustering {
 				}
 				if (!found) {
 					List<Integer> authorIDs = new ArrayList<Integer>();
-					authorIDs.add(outerAuthorID);
-					authorIDs.add(tmpInnerMaxAuthorID);
+					authorIDs.add(outerAuthorID+26989);
+					if (outerAuthorID != tmpInnerMaxAuthorID) authorIDs.add(tmpInnerMaxAuthorID+26989);
 					authorIDsList.add(authorIDs);
 				}
 
@@ -142,12 +142,15 @@ public class AuthorClustering {
 		}
 		sessionRkr.commit();
 
+		/*
 		for (List<Integer> authorIDList: authorIDsList ) {
 			System.out.println("-----------------------------------------------");
 			for (int k=0; k < authorIDList.size(); k++) {
 				System.out.println(authorIDList.get(k)); 
 			}
 		}
+		*/
+		
 
 		return authorIDsList;
 		/*
@@ -158,8 +161,5 @@ public class AuthorClustering {
 			System.out.println("Soundex Code First Name: " + soundex.encode(personNames.get(0).getFirstName()));
 		 */
 
-		//compare the results
-		//create data for gnuplot to plot the results
 	}
-
 }
