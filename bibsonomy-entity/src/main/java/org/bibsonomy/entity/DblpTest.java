@@ -42,24 +42,26 @@ public class DblpTest {
 
 	public void preperations(SqlSession sessionRkr) throws PersonListParserException {
 
-		List<Map<String,String>> dbAuthorIDNumberList= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPPreperation",1);
+		List<Map<String,String>> dbAuthorIDNumberList= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPPreperation");
 		boolean foundNoGather = false;
 		//search the list if there is already a person with this name
 		for (Map<String, String> dbAuthorHashMap: dbAuthorIDNumberList) {
 			int k=0;
+			foundNoGather = false;
 			for (Map<String, ArrayList<String>>  arrayAuthorHashMap: authorIDNumberList) {
+				//System.out.println("inner: " + arrayAuthorHashMap.get("authorNameAndNumber").get(0));
 				//the author already exists
 				if (dbAuthorHashMap.get("author_name_and_number").equals(arrayAuthorHashMap.get("authorNameAndNumber").get(0))) {
 					//add the new authorID to the already existing data
-					//System.out.println("reAdd: " + authorHashMap.get("authorNameAndNumber").get(0));
+					//System.out.println("reAdd: " + arrayAuthorHashMap.get("authorNameAndNumber").get(0));
 					ArrayList<String> authorIDs = arrayAuthorHashMap.get("authorIDs");
 					ArrayList<String> contentIDs = arrayAuthorHashMap.get("contentIDs");
 					ArrayList<String> normalizedName = arrayAuthorHashMap.get("normalizedName");
 
 					authorIDs.add(String.valueOf(dbAuthorHashMap.get("author_id")));
 					contentIDs.add(String.valueOf(dbAuthorHashMap.get("content_id")));
-
 					normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
+					
 					arrayAuthorHashMap.put("authorIDs",authorIDs);
 					arrayAuthorHashMap.put("conentIDs",contentIDs);
 					arrayAuthorHashMap.put("normalizedName",normalizedName);
@@ -77,16 +79,18 @@ public class DblpTest {
 				ArrayList<String> contentID = new ArrayList<String>();
 				ArrayList<String> normalizedName = new ArrayList<String>();
 				ArrayList<String> authorNameAndNumber = new ArrayList<String>();
-				authorNameAndNumber.add(dbAuthorHashMap.get("author_name_and_number"));
+				
 				authorID.add(String.valueOf(dbAuthorHashMap.get("author_id")));
 				contentID.add(String.valueOf(dbAuthorHashMap.get("content_id")));
-				contentID.add(dbAuthorHashMap.get("author_name_and_number"));
+				normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
+				authorNameAndNumber.add(dbAuthorHashMap.get("author_name_and_number"));
 
 				//System.out.println("add: " + authorNameAndNumber.get(0));
-				arrayAuthorHashMap.put("authorNameAndNumber", authorNameAndNumber);
+				
 				arrayAuthorHashMap.put("authorIDs",authorID);
 				arrayAuthorHashMap.put("contentIDs",contentID);
 				arrayAuthorHashMap.put("normalizedName",normalizedName);
+				arrayAuthorHashMap.put("authorNameAndNumber", authorNameAndNumber);
 				authorIDNumberList.add(arrayAuthorHashMap);
 			}
 		}
