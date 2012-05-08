@@ -61,7 +61,7 @@ public class DblpTest {
 					authorIDs.add(String.valueOf(dbAuthorHashMap.get("author_id")));
 					contentIDs.add(String.valueOf(dbAuthorHashMap.get("content_id")));
 					normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
-					
+
 					arrayAuthorHashMap.put("authorIDs",authorIDs);
 					arrayAuthorHashMap.put("conentIDs",contentIDs);
 					arrayAuthorHashMap.put("normalizedName",normalizedName);
@@ -79,14 +79,14 @@ public class DblpTest {
 				ArrayList<String> contentID = new ArrayList<String>();
 				ArrayList<String> normalizedName = new ArrayList<String>();
 				ArrayList<String> authorNameAndNumber = new ArrayList<String>();
-				
+
 				authorID.add(String.valueOf(dbAuthorHashMap.get("author_id")));
 				contentID.add(String.valueOf(dbAuthorHashMap.get("content_id")));
 				normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
 				authorNameAndNumber.add(dbAuthorHashMap.get("author_name_and_number"));
 
 				//System.out.println("add: " + authorNameAndNumber.get(0));
-				
+
 				arrayAuthorHashMap.put("authorIDs",authorID);
 				arrayAuthorHashMap.put("contentIDs",contentID);
 				arrayAuthorHashMap.put("normalizedName",normalizedName);
@@ -329,40 +329,40 @@ public class DblpTest {
 			int overClustering = 0;
 			boolean found = false;
 			System.out.println("cluster IDs: ");
-			for (String realAuthorID: authorMap.get("authorIDs")) {
-				found = false;
-				for (List<Integer> clusteredIDsList: authorClusters) { //every cluster we want to compare
-					for (Integer clusteredID: clusteredIDsList) {
-						if (clusteredID.equals(Integer.valueOf(realAuthorID))) {
-							if (clusteredIDsList.size() > 1) {
-								System.out.println("found: " + clusteredID);
-								found = true;
-								rightMatches++;
-								rightMatchesOverallAuthorCLustering++;
-							}
-						}
-					}
-					//find the overClustering errors
-					if (found) {
-						boolean tmpFound = false;
-						//IDs saved in this cluster but not in the real IDs list
-						for (int clusteredID: clusteredIDsList) {
-							tmpFound = false;
-							for (String tmpRealAuthorID: authorMap.get("authorIDs")) {
-								if (Integer.valueOf(tmpRealAuthorID).equals(clusteredID)) tmpFound = true;
-							}
-							if (!found) {
-								overClustering++;
-								overallAuthorOverClustering++;
-							}
-						}
-					}
-				}
-				if (!found) {
-					underClustering++;
-					overallAuthorUnderClustering++;
-				}
 
+			//single ID cluster
+			/* get all clusters for this name
+			 * get the titles for this id
+			 * get the titles for all fitting clusters
+			 * test in which cluster we fit best
+			 */
+
+			//we use the first realAuthorID as example and search the cluster who contains this ID
+			Integer exampleContentID = Integer.valueOf(authorMap.get("authorIDs").get(0));
+			for (List<Integer> clusteredIDsList: authorClusters) { //every cluster we want to compare
+				if (clusteredIDsList.contains(exampleContentID)) {
+					//get all realAuthorIDs that are in this cluster
+					for (String realAuthorID: authorMap.get("authorIDs")) {
+						if (clusteredIDsList.contains(Integer.valueOf(realAuthorID))) {
+							System.out.println("found: " + realAuthorID);
+							found = true;
+							rightMatches++;
+							rightMatchesOverallAuthorCLustering++;
+						}
+						else {
+							underClustering++;
+							overallAuthorUnderClustering++;
+						}
+					}
+					//get overClusteringErrors
+					for (Integer clusteredID: clusteredIDsList) {
+						if (!authorMap.get("authorIDs").contains(String.valueOf(clusteredID))) {
+							overClustering++;
+							overallAuthorOverClustering++;
+						}
+					}
+					
+				}
 			}
 
 			System.out.println("Author clustering results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);

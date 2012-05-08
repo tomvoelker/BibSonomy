@@ -142,15 +142,16 @@ public class AuthorClustering {
 		}
 		sessionRkr.commit();
 
-		/*
+		int countSingleClusters = 0;
 		for (List<Integer> authorIDList: authorIDsList ) {
-			System.out.println("-----------------------------------------------");
-			for (int k=0; k < authorIDList.size(); k++) {
-				System.out.println(authorIDList.get(k)); 
-			}
+			if(authorIDList.size() == 1) countSingleClusters++;
+			//System.out.println("-----------------------------------------------");
+			//for (int k=0; k < authorIDList.size(); k++) {
+				//System.out.println(authorIDList.get(k)); 
+			//}
 		}
-		*/
 		
+		System.out.println("countSingleClusters " + countSingleClusters);
 
 		return authorIDsList;
 		/*
