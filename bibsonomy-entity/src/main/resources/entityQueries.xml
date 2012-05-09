@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
-	SELECT author_name_and_number, author_id, authors_string, content_id FROM author_id_number_list LIMIT 30
+	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) LIMIT 30
 </select>
 
 <!-- bibsonomy_strudel DBLP Tests -->

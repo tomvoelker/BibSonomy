@@ -94,7 +94,7 @@ public class EntityIdentification {
 
 			//run dblp test
 			DblpTest dblpTest = new DblpTest();
-			dblpTest.preperations(sessionRkr);
+			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.preperations(sessionRkr);
 			
 			/*
 			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.getAuthorIDNumberList();
@@ -105,6 +105,7 @@ public class EntityIdentification {
 			*/
 			
 			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(sessionRkr);
+			AuthorClustering.useTitleToMergeClusters(sessionRkr, authorIDNumberList);
 			dblpTest.compareResults(authorIDsList, sessionRkr);
 			
 			System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");

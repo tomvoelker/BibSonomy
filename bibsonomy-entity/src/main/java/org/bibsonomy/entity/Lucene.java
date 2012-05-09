@@ -34,11 +34,7 @@ class Lucene {
 	public void createLuceneIndexForAllAuthors(SqlSession sessionRkr) throws IOException, ParseException {
 		List<Map<Integer,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthorsLucene");
 
-		//0. Specify the analyzer for tokenizing text.
-		//The same analyzer should be used for indexing and searching
 		analyzer = new StandardAnalyzer(Version.LUCENE_35);
-
-		//1. create the index
 		index = new RAMDirectory();
 
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
