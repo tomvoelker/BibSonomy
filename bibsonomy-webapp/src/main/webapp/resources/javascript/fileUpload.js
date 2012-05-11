@@ -144,7 +144,12 @@ function uploadRequestSuccessful(data) {
 
 		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(fileName);
 		var documentHelp = getString("bibtex.actions.private_document.download");
-		var documentImg = "<img src='" + documentUploadSuccessIcon +"' style='float: left;'/>";
+		//var documentImg = "<img src='" + documentUploadSuccessIcon +"' style='float: left;'/>";
+		
+		var documentQRMessage = getString("qrcode.actions.download");
+		var params = [projectName];
+		
+		var documentQRHelp = getString("qrcode.info.embedderInfoMessage", params);
 		
 		/*
 		 * on /bibtex pages we have a DIV where we add links to the files
@@ -152,10 +157,11 @@ function uploadRequestSuccessful(data) {
 		var filesDiv = $("#files");
 
 		if (filesDiv.length) {
-			// TODO: remove document image
 			var div = "<div class='fsRow'>" + 
-			"<a class='documentFileName preview' href='" + documentUri + "' title='" + documentHelp + "''>" + documentImg + fileName + "</a> " + 
-			"(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
+			"<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>" + fileName + "</a> " +
+			"( <a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>" + documentQRMessage + "</a>" + 
+			"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
+			")(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
 			filesDiv.append(div);
 			$(".deleteDocument").click(deleteLinkClicked);
 		} else {
