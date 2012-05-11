@@ -152,8 +152,9 @@ function uploadRequestSuccessful(data) {
 		var filesDiv = $("#files");
 
 		if (filesDiv.length) {
+			// TODO: remove document image
 			var div = "<div class='fsRow'>" + 
-			"<a class='documentFileName preview' href='" + documentUri + " title='" + documentHelp + "''>" + documentImg + fileName + "</a> " + 
+			"<a class='documentFileName preview' href='" + documentUri + "' title='" + documentHelp + "''>" + documentImg + fileName + "</a> " + 
 			"(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
 			filesDiv.append(div);
 			$(".deleteDocument").click(deleteLinkClicked);
