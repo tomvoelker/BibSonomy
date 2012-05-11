@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <!-- database bibsonomy_strudel -->
 <select id="selectBibtex" parameterType="int" resultType="String">
-	SELECT author FROM bibtex LIMIT 30
+	SELECT author FROM bibtex LIMIT 500
 </select>
 
 <select id="selectAuthor" parameterType="String" resultType="String">
@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
-	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) LIMIT 30
+	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) LIMIT 500
 </select>
 
 <!-- bibsonomy_strudel DBLP Tests -->
@@ -41,7 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="selectAuthorNames" parameterType="String" resultType="String">
-	SELECT normalized_name from (SELECT normalized_name from author LIMIT 30) as limited_authors GROUP by normalized_name
+	SELECT normalized_name from (SELECT normalized_name from author LIMIT 500) as limited_authors GROUP by normalized_name
 </select>
 
 <select id="selectRkrAuthor" parameterType="String" resultType="HashMap">
@@ -49,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="countAuthorsByName" parameterType="String" resultType="int">
-	SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 30
+	SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 500
 </select>
 	
 <select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="selectCoAuthorsLucene" parameterType="String" resultType="java.util.Map">
-	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) LIMIT 30
+	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) LIMIT 500
 </select>
 	
 <insert id="insertAuthorIDAndNumber" parameterType="HashMap">

@@ -100,7 +100,7 @@ class Lucene {
 			Document d = searcher.doc(docId);
 			//get the authorID connected with this document
 			System.out.println((i + 1) + ". " + d.get("author") + " coauthors: " + d.get("coauthors") + " authorID: " + d.get("ID") + " score: " + hits[i].score);
-			saveAuthorIDs.add(Integer.valueOf(d.get("ID")) + 26989);
+			saveAuthorIDs.add(Integer.valueOf(d.get("ID")));
 		}
 
 		searcher.close();
