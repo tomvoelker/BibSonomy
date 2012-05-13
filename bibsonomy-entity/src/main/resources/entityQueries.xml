@@ -53,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 	
 <select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
-	SELECT author_id, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName}
+	SELECT author_id, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName} ORDER BY author_id ASC
 </select>
 
 <select id="selectCoAuthorsLucene" parameterType="String" resultType="java.util.Map">

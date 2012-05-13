@@ -32,28 +32,25 @@ public class AuthorClustering {
 
 		//clustering the authors with the coauthor relationship
 		int threshold = 2;
-		List<Integer> deletedIDs = new ArrayList<Integer>();
 		List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
 
-		//check the name for every author
-		for(int m=0; m < authorNames.size(); m++) {
-			//do this as long there is something we can merge
-			while (true) {
+		for(int m=0; m < authorNames.size(); m++) { //check the name for every author
+			System.out.println("new author: " + authorNames.get(m) + "-----------------------------------------------------");
+			while (true) { //do this as long there is something we can merge
 				System.out.println("Author Clustering: " + m);
 				//merge authors who have the same coauthors
 				List<Map<Integer,String>> coauthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorNames.get(m));
 				if (coauthors.isEmpty()) {
-					m++;
-					continue;
+					break;
 				}
 
 				//cluster the author table
 				Iterator outerItr = coauthors.iterator();
 
-				int innerAuthorID=0, maxAuthorID=0;
+				Integer innerAuthorID=0, maxAuthorID=0;
 				Integer outerAuthorID = 0, outerMaxAuthorID=0, tmpInnerMaxAuthorID=0;
 				int counter=0, max=0;
-				int outerMax = 0;
+				int outerMax=0; //number of same coauthors
 
 				//tmp lists to compare within the iterations
 				List<String> coAuthorNamesOuterIteration = new ArrayList<String>();		
@@ -63,39 +60,54 @@ public class AuthorClustering {
 				List<String> innerCoauthors = new ArrayList<String>();		
 				List<String> outerCoauthors = new ArrayList<String>();
 
-				while (outerItr.hasNext()) {
+				while (outerItr.hasNext()) { //compare every coauthor for this authorName
 					Map<String,String> outerCoAuthor = (Map)outerItr.next();
 					coAuthorNamesOuterIteration.add(outerCoAuthor.get("normalized_coauthor"));
-					if (!outerAuthorID.equals(Integer.parseInt(String.valueOf(outerCoAuthor.get("author_id"))))) {
-						outerAuthorID = Integer.parseInt(String.valueOf(outerCoAuthor.get("author_id")));
+
+					//System.out.println("outerCoAuthor: " + outerCoAuthor.get("normalized_coauthor") + " ID: " + String.valueOf(outerCoAuthor.get("author_id")));
+					//System.out.println("coAuthorNamesOuterIteration: ");
+					for (String test: coAuthorNamesOuterIteration) {
+						//System.out.print(test + " ");
+					}
+					//System.out.println(" ");
+
+					if (!outerAuthorID.equals(Integer.valueOf(String.valueOf(outerCoAuthor.get("author_id"))))) { //dont compare a cluster with itself
+						outerAuthorID = Integer.valueOf((String.valueOf(outerCoAuthor.get("author_id"))));
 
 						Iterator innerItr = coauthors.iterator();
 						while (innerItr.hasNext()) {
 							Map<String,String> innerCoAuthor = (Map)innerItr.next();
 
-							if (Integer.parseInt(String.valueOf(outerCoAuthor.get("author_id"))) == Integer.parseInt(String.valueOf(innerCoAuthor.get("author_id")))) continue;
+							//continue if outer and inner are coauthors of the same author
+							Integer outerCoauthorID = Integer.valueOf((String.valueOf(outerCoAuthor.get("author_id"))));
+							if (outerCoauthorID.equals(Integer.valueOf((String.valueOf(innerCoAuthor.get("author_id")))))) continue;
 
-							if (innerAuthorID != Integer.parseInt(String.valueOf(innerCoAuthor.get("author_id")))) {		
+							//gather the coauthorNames till we got a new author_id
+							if (!innerAuthorID.equals(Integer.valueOf(String.valueOf(innerCoAuthor.get("author_id"))))) {		
 								for (int k=0; k < coAuthorNamesOuterIteration.size(); k++) {
 									if (coAuthorNamesInnerIteration.contains(coAuthorNamesOuterIteration.get(k))) counter++;
 								}
 								coAuthorNamesInnerIteration.clear();
 
+								//check if the 2 clusters have the most similar coauthors
 								if (counter > max) {
 									max = counter;
+									//System.out.println("new inner max: " + max);
 									maxAuthorID = innerAuthorID;
 								}
 
-								innerAuthorID = Integer.parseInt(String.valueOf(innerCoAuthor.get("author_id")));
+								innerAuthorID = Integer.valueOf((String.valueOf(innerCoAuthor.get("author_id"))));
 								counter = 0;
 							}
 
 							coAuthorNamesInnerIteration.add(innerCoAuthor.get("normalized_coauthor"));	 
 						}
 						coAuthorNamesOuterIteration.clear();
+						//check if overall the 2 clusters have the most similar coauthors
 						if (max > outerMax) {
 							outerMax = max;
-							outerMaxAuthorID = Integer.parseInt(String.valueOf(outerCoAuthor.get("author_id")));
+							//System.out.println("new outer max: " + outerMax);
+							outerMaxAuthorID = Integer.valueOf(String.valueOf(outerCoAuthor.get("author_id")));
 							tmpInnerMaxAuthorID = innerAuthorID;
 							outerCoauthors = coAuthorNamesOuterIteration;
 							innerCoauthors = coAuthorNamesInnerIteration;
@@ -114,7 +126,7 @@ public class AuthorClustering {
 				List<String> coauthorsToAdd = new ArrayList<String>();
 				//calculate the authors we have to add		
 				for(int k=0; k<innerCoauthors.size(); k++) { 
-					if(!outerCoauthors.contains(innerCoauthors.get(k))) coauthorsToAdd.add(innerCoauthors.get(k));
+					if (!outerCoauthors.contains(innerCoauthors.get(k))) coauthorsToAdd.add(innerCoauthors.get(k));
 				}
 
 				for(int k=0;k < coauthorsToAdd.size(); k++) {
@@ -123,15 +135,17 @@ public class AuthorClustering {
 					coAuthorToAdd.put("normalizedCoauthor", coauthorsToAdd.get(k));
 					//System.out.println("We have to add: " + coAuthorToAdd.get("authorID") + " " + coAuthorToAdd.get("normalizedCoauthor"));
 
-					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedCoAuthor", coAuthorToAdd);			 
+					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedCoAuthor", coAuthorToAdd);	
+
+					//if (tmpInnerMaxAuthorID == 416) System.exit(1);
 				}
 
 				//System.out.println("we delete: " + tmpInnerMaxAuthorID);
 
-				//search the list with the actual authorID and save the redundant ID
 				int n=0;
 				boolean found = false;
 
+				//search the cluster with the actual authorID and add the new ID
 				for (List<Integer> authorIDs: clusterIDsList) {
 					int authorIDsSize = authorIDs.size();
 					for (int k=0; k<authorIDsSize; k++) {
@@ -144,6 +158,7 @@ public class AuthorClustering {
 					}
 					n++;
 				}
+				//create a new cluster with the ID that fits in no other cluster
 				if (!found) {
 					List<Integer> authorIDs = new ArrayList<Integer>();
 					authorIDs.add(outerAuthorID);
@@ -151,11 +166,9 @@ public class AuthorClustering {
 					clusterIDsList.add(authorIDs);
 				}
 
-
-				//delete the author we merged
+				//delete the author we merged from DB
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteCoAuthors", tmpInnerMaxAuthorID);
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteAuthor", tmpInnerMaxAuthorID);
-				deletedIDs.add(tmpInnerMaxAuthorID);
 			}
 		}
 		sessionRkr.commit();
