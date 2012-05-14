@@ -40,15 +40,25 @@
 
 			<div class="${class} details"  itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
 				<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
+				<div class="citeBox" style="display:none" >
+					<!-- keep it -->
+					<h3><fmt:message key="discussion.references" /></h3>
+				</div>
 			</div>
 		</c:when>
 		<c:otherwise>
 			<div class="${class} details">
 				<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
+					<div class="citeBox" style="display:none" >
+						<!-- keep it -->
+						<h3><fmt:message key="discussion.references" /></h3>
+					</div>
 			</div>
 		</c:otherwise>
 	</c:choose>	
 	
+
+		
 	<!-- actions -->
 	<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
 	

@@ -99,6 +99,12 @@
             					<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
             					<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
             					<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
+            					<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
+            					<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmle4x.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/styles.js</include>
             				</includes>
             			</aggregation>
           			</aggregations>

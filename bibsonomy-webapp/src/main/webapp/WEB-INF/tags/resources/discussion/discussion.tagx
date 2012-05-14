@@ -106,7 +106,4 @@
 			</c:otherwise>
 		</c:choose>
 	</div>
-	<div id="bibliography">
-		<!-- keep it -->
-	</div>
 </jsp:root>

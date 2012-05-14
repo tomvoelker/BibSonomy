@@ -13,7 +13,7 @@ var style;
 
 $(document).ready(function() {
 
-	style = harvard;
+	style = harvardStaffordshireUniversity;
 	var links = $(".postlink");
 	var size = links.size();
 	var i = 0;
@@ -37,13 +37,13 @@ $(document).ready(function() {
 
 function call(link, matches) {
 	$.get(link, function(data) {
-		proceed(data, matches);
+		proceed(data, matches, link);
 	}).error(function() {
 		alert("it's not possible that you see it!");
 	});
 }
 
-function proceed(data, matches) {
+function proceed(data, matches, link) {
 	var sys = new Sys(data);
 	var citeproc = new CSL.Engine(sys, style);
 
@@ -72,13 +72,17 @@ function proceed(data, matches) {
 
 	var newLink = $("#" + matches[hashindex] + matches[nameindex]);
 	var oldLink = newLink.clone();
-//	newLink.text($(renderedCitation[0][1]).text());
-//	alert(renderedCitation[0][1]);
+
 	newLink.text(renderedCitation[0][1]);
 	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
-
+	oldLink.html("<img src=\"/resources/image/wiki_link.png\">");
 	bibentry.append(oldLink);
-	$("#bibliography").append(bibentry);
+	
+	var parent = newLink.parent();
+	
+	var test = parent.siblings(".citeBox");
+	test.append(bibentry);	
+	test.show();
 	done = true;
 }
 
