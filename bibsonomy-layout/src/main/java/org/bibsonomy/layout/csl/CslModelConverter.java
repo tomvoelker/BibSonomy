@@ -23,6 +23,7 @@
 
 package org.bibsonomy.layout.csl;
 
+import static org.bibsonomy.model.util.BibTexUtils.cleanBibTex;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashMap;
@@ -38,8 +39,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
- * TENTATIVE implementation of a mapping of our bibtex model
- * to the CSL model, which we transform to JSON later on.
+ * TENTATIVE implementation of a mapping of our bibtex model to the CSL model,
+ * which we transform to JSON later on.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
  * @version $Id$
@@ -50,7 +51,8 @@ public class CslModelConverter {
 	private static Map<String, String> typemap;
 
 	static {
-		// see http://xbiblio-devel.2463403.n2.nabble.com/Citeproc-json-data-input-specs-td5135372.html
+		// see
+		// http://xbiblio-devel.2463403.n2.nabble.com/Citeproc-json-data-input-specs-td5135372.html
 		// FIXME: this is incomplete!
 		typemap = new HashMap<String, String>();
 		typemap.put("article", "article-journal");
@@ -82,7 +84,8 @@ public class CslModelConverter {
 	/**
 	 * Convert a bibtex post into a CSL record.
 	 * 
-	 * @param post - the bibtex post
+	 * @param post
+	 *            - the bibtex post
 	 * @return the corresponding CSL model
 	 */
 	public static Record convertPost(final Post<? extends Resource> post) {
@@ -97,34 +100,34 @@ public class CslModelConverter {
 		if (present(bib.getAuthor())) {
 			for (final PersonName author : bib.getAuthor()) {
 				final Person a = new Person();
-				a.setGiven(author.getFirstName());
-				a.setFamily(author.getLastName());
+				a.setGiven(cleanBibTex(author.getFirstName()));
+				a.setFamily(cleanBibTex(author.getLastName()));
 				rec.getAuthor().add(a);
 			}
 		}
 		if (present(bib.getEditor())) {
 			for (final PersonName author : bib.getEditor()) {
 				final Person a = new Person();
-				a.setGiven(author.getFirstName());
-				a.setFamily(author.getLastName());
+				a.setGiven(cleanBibTex(author.getFirstName()));
+				a.setFamily(cleanBibTex(author.getLastName()));
 				rec.getEditor().add(a);
 			}
 		}
 
 		// fields a-z (FIXME: this is a rather tentative mapping!)
-		rec.setAbstractt(bib.getAbstract());
-		rec.setCitation_label(bib.getBibtexKey());
-		rec.setCollection_title(bib.getBooktitle());
-		rec.setContainer_title(bib.getBooktitle());
-		rec.setDOI(bib.getMiscField("doi"));
-		rec.setEvent_place(bib.getAddress());
-		rec.setISBN(bib.getMiscField("isbn"));
-		rec.setNote(bib.getNote());
-		rec.setPage(bib.getPages());
-		rec.setPublisher(bib.getPublisher());
-		rec.setTitle(bib.getTitle());
-		rec.setURL(bib.getUrl());
-		rec.setVolume(bib.getVolume());
+		rec.setAbstractt(cleanBibTex(bib.getAbstract()));
+		rec.setCitation_label(cleanBibTex(bib.getBibtexKey()));
+		rec.setCollection_title(cleanBibTex(bib.getBooktitle()));
+		rec.setContainer_title(cleanBibTex(bib.getBooktitle()));
+		rec.setDOI(cleanBibTex(bib.getMiscField("doi")));
+		rec.setEvent_place(cleanBibTex(bib.getAddress()));
+		rec.setISBN(cleanBibTex(bib.getMiscField("isbn")));
+		rec.setNote(cleanBibTex(bib.getNote()));
+		rec.setPage(cleanBibTex(bib.getPages()));
+		rec.setPublisher(cleanBibTex(bib.getPublisher()));
+		rec.setTitle(cleanBibTex(bib.getTitle()));
+		rec.setURL(cleanBibTex(bib.getUrl()));
+		rec.setVolume(cleanBibTex(bib.getVolume()));
 
 		final Date date = new Date();
 		date.setLiteral(bib.getYear());
@@ -135,7 +138,9 @@ public class CslModelConverter {
 
 	/**
 	 * create ID for a post
-	 * @param post - the post
+	 * 
+	 * @param post
+	 *            - the post
 	 * @return the ID
 	 */
 	private static final String createId(final Post<? extends Resource> post) {
@@ -144,7 +149,9 @@ public class CslModelConverter {
 
 	/**
 	 * get the mapping of bibtex types to CSL types.
-	 * @param bibtexType - the bibtex entrytype
+	 * 
+	 * @param bibtexType
+	 *            - the bibtex entrytype
 	 * @return the corresponding csl type
 	 */
 	private static final String mapToCslType(final String bibtexType) {
