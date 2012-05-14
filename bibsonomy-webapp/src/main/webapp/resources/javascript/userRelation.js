@@ -99,9 +99,10 @@ function handleUserRelation(actionString, userName, relationName, callback, elem
  */
 function submitUsername(textField) {
 	var userName = textField.val();
-	// FIXME: wrong pattern UserValidator allows also _, ., -
-	// (and that pattern only covers 99% of the users)
-	var regExp = new RegExp("^[a-zA-Z0-9]+$");
+	// FIXME: this pattern is taken from the UserValidator, but 
+	// there exist a small nr. of users (~1% ) which don't conform to it
+	// (from the time before UserValidator existed)
+	var regExp = new RegExp("^[a-zA-Z0-9\.\-\_]+$");
 
 	if (regExp.test(userName)) {	
 		handleUserRelation("&action=addFriend", userName, "sys:network:bibsonomy-friend", 
