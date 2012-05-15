@@ -92,6 +92,23 @@
 			</ul>
 		</jsp:attribute>
 		
+			<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+		        	<!-- short info, what the basket is -->
+		            <fmt:message key="discussion.info"/>                 
+		
+					<!-- quick links on what you can do -->
+					
+					<p><fmt:message key="discussion.info.examples"/></p>
+					<ul class="news">
+						<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="discussion.publications"/></a></li>
+						<li><a href="/export/${fn:escapeXml(requPath)}${requQueryString}"><fmt:message key="discussion.bookmarks"/></a></li>
+					</ul>
+				</jsp:attribute>
+			</parts:infobox>
+         </jsp:attribute>
+		
 		<!-- 
 		<jsp:attribute name="customPageOptions">
 			FIXME: put custom page options (copy, add references, ...) here (will have to rework resourceLayout for that)

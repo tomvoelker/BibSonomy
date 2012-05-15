@@ -1,15 +1,11 @@
-//includeJavaScript("/resources/javascript/citeproc/csllocales.js");
-//
-//includeJavaScript("/resources/javascript/citeproc/xmldom.js");
-//includeJavaScript("/resources/javascript/citeproc/xmle4x.js");
-//includeJavaScript("/resources/javascript/citeproc/citeproc.js");
-//includeJavaScript("/resources/javascript/citeproc/styles.js");
-
 var typeindex = 2;
 var hashindex = 3;
 var nameindex = 4;
 
+var linkImage = "<img src=\"/resources/image/wiki_link.png\">";
+
 var style;
+
 
 $(document).ready(function() {
 	handleLinks();
@@ -65,22 +61,17 @@ function proceedBookmark(data, matches) {
 	var id = matches[hashindex] + matches[nameindex];
 	var bookmark = data.items[0];
 	
-	
-	
 	var newLink = $("#" + matches[hashindex] + matches[nameindex]);
 	var oldLink = newLink.clone();
 	
 	newLink.text("(" + bookmark.label + ")");
 	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
 	
-	
-//	var parent = newLink.parent();
 	var bookCit = $("<div class=\"book-cit\" id=\"div" + id + "\"></div)");
 	bookCit.append($("<b>" + bookmark.label + "</b> <i>" + bookmark.description + "</i>"));
-	oldLink.html("<img src=\"/resources/image/wiki_link.png\">");
+	oldLink.html(linkImage);
 	bookCit.append(oldLink);
 	bookCit.append($("<br/><a href=\"" + bookmark.url + "\">" + bookmark.url + "</a>"));
-	
 	
 	var bookmarkDiv = newLink.parent().siblings(".bookCiteBox");
 	bookmarkDiv.append(bookCit);	
@@ -120,19 +111,16 @@ function proceedCSL(data, matches, link) {
 
 	newLink.text(renderedCitation[0][1]);
 	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
-	oldLink.html("<img src=\"/resources/image/wiki_link.png\">");
+	oldLink.html(linkImage);
 	bibentry.append(oldLink);
 	
-	var parent = newLink.parent();
-	
-	var test = parent.siblings(".citeBox");
-	test.append(bibentry);	
-	test.show();
+	var citeDiv = newLink.parent().siblings(".citeBox");
+	citeDiv.append(bibentry);	
+	citeDiv.show();
 }
 
 
 function constructId(data, id) {
-
 	var counter = 0;
 	for ( var key in data) {
 		counter++;
