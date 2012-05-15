@@ -62,6 +62,7 @@
 				<value>userSimilarity</value>
 				<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
 				<value>ranking.*</value> <!-- ranking information -->
+				<value>styleSheet</value><!-- FIXME: remove -->
 			</list>
 		</constructor-arg>
 	</bean>

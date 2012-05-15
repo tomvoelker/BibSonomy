@@ -23,6 +23,8 @@ public class BaseCommand implements ContextCommand {
 	
 	private List<String> messageParams;
 	
+	@Deprecated
+	private String styleSheet = "style.css";
 
 	@Deprecated
 	private String pageTitle;
@@ -98,6 +100,14 @@ public class BaseCommand implements ContextCommand {
 	public void setMessage(String key, List<String> params) {
 		this.setMessageKey(key);
 		this.setMessageParams(params);
+	}
+
+	public String getStyleSheet() {
+		return this.styleSheet;
+	}
+
+	public void setStyleSheet(String styleSheet) {
+		this.styleSheet = styleSheet;
 	}
 	
 }

@@ -65,7 +65,7 @@
 					+-->
 				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
 									
-				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/${command.styleSheet}" />
 				<c:if test="${not empty personalized and personalized == true}">
 					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 				</c:if>
@@ -130,7 +130,6 @@
 
 			</head>
 			<body>
-
 				<c:if test="${not empty beforeMainContainer}">
 					<jsp:invoke fragment="beforeMainContainer"/>
 				</c:if>
