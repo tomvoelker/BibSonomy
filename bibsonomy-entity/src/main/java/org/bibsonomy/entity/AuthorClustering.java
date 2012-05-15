@@ -32,13 +32,14 @@ public class AuthorClustering {
 
 		//clustering the authors with the coauthor relationship
 		int threshold = 1;
-		List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
+		final List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
 
-		for(int m=0; m < authorNames.size(); m++) { //check the name for every author
+		for (final String authorName : authorNames) {
+			
 			while (true) { //do this as long there is something we can merge
-				System.out.println("Author Clustering: " + m);
+				System.out.println("Author Clustering: " + authorName);
 				//merge authors who have the same coauthors
-				List<Map<Integer,String>> coauthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorNames.get(m));
+				List<Map<Integer,String>> coauthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorName);
 				if (coauthors.isEmpty()) {
 					break;
 				}
@@ -52,8 +53,8 @@ public class AuthorClustering {
 				int outerMax=0; //number of same coauthors
 
 				//tmp lists to compare within the iterations
-				List<String> coAuthorNamesOuterIteration = new ArrayList<String>();		
-				List<String> coAuthorNamesInnerIteration = new ArrayList<String>();
+				final List<String> coAuthorNamesOuterIteration = new ArrayList<String>();		
+				final List<String> coAuthorNamesInnerIteration = new ArrayList<String>();
 
 				//here we save our tmp results we use later to merge the both authors 
 				List<String> innerCoauthors = new ArrayList<String>();		
@@ -108,7 +109,12 @@ public class AuthorClustering {
 							//System.out.println("new outer max: " + outerMax);
 							outerMaxAuthorID = Integer.valueOf(String.valueOf(outerCoAuthor.get("author_id")));
 							tmpInnerMaxAuthorID = innerAuthorID;
-							outerCoauthors = coAuthorNamesOuterIteration;
+							/*
+							 * FIXME: outerCoauthors will always be empty because
+							 * of coAuthorNamesOuterIteration.clear() in line 105 
+							 * above. 
+							 */
+							outerCoauthors = coAuthorNamesOuterIteration;  
 							innerCoauthors = coAuthorNamesInnerIteration;
 						}
 					}
