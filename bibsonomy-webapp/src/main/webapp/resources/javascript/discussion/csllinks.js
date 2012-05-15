@@ -8,16 +8,22 @@ var style;
 
 
 $(document).ready(function() {
-	handleLinks();
+	$('li.review' ).each(function(){handleLinks($(this))});
+	$('li.comment').each(function(){handleLinks($(this))});
 });
 
-function handleLinks() {
+function handleLinks(discussionItem) {
 	style = harvardStaffordshireUniversity;
-	var links = $(".postlink");
+	var links = discussionItem.find(".postlink");
 	var size = links.size();
+	var hanledLinks = new Array(size);
 	var i = 0;
 	for (i = 0; i < size; i++) {
 		var link = links[i].href;
+		if(containsLink(hanledLinks, link)) {
+			continue;
+		}
+		hanledLinks[i] = link;
 		var matches = link.match(/(.*?)\/{1}(bibtex|publication|url|bookmark)\/([0-9a-f]{32,33})(?:\/(.*))?/);
 		var bibtex = matches[typeindex] != "url" && matches[typeindex] != "bookmark";
 		
@@ -37,10 +43,18 @@ function handleLinks() {
 			link = link.replace(matches[typeindex], "json/" + matches[typeindex]);
 			callBack=proceedBookmark;
 		}
-		call(link, matches, callBack);
+		call(link, matches, callBack, discussionItem);
 		
 	}
-	
+}
+
+function containsLink(array, link) {
+	for (var i = 0; i < array.length; i++) {
+		if (array[i] == link) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
@@ -49,19 +63,19 @@ function handleLinks() {
  * @param matches split user link
  * @param callBack call back function to proceed bookmarks or bibtex
  */
-function call(link, matches, callBack) {
+function call(link, matches, callBack, discussionItem) {
 	$.get(link, function(data) {
-		callBack(data, matches);
+		callBack(data, matches, discussionItem);
 	}).error(function() {
 		alert("it's not possible that you see it!");
 	});
 }
 
-function proceedBookmark(data, matches) {
+function proceedBookmark(data, matches, discussionItem) {
 	var id = matches[hashindex] + matches[nameindex];
 	var bookmark = data.items[0];
 	
-	var newLink = $("#" + matches[hashindex] + matches[nameindex]);
+	var newLink = discussionItem.find("#" + matches[hashindex] + matches[nameindex]);
 	var oldLink = newLink.clone();
 	
 	newLink.text("(" + bookmark.label + ")");
@@ -79,7 +93,7 @@ function proceedBookmark(data, matches) {
 }
 
 
-function proceedCSL(data, matches, link) {
+function proceedCSL(data, matches, discussionItem) {
 	var sys = new Sys(data);
 	var citeproc = new CSL.Engine(sys, style);
 
@@ -106,15 +120,26 @@ function proceedCSL(data, matches, link) {
 	var bibentry = $("" + bibliographyEntry[1]);
 	bibentry.attr("id", "div" + matches[hashindex] + matches[nameindex]);
 
-	var newLink = $("#" + matches[hashindex] + matches[nameindex]);
-	var oldLink = newLink.clone();
+//	var newLink =  discussionItem.find("#" + matches[hashindex] + matches[nameindex]);
+//	var oldLink = newLink.clone();
 
-	newLink.text(renderedCitation[0][1]);
-	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
+	var oldLink = discussionItem.find("#" + matches[hashindex] + matches[nameindex]).clone();
+	var citeDiv = discussionItem.find("#" + matches[hashindex] + matches[nameindex]).parent().siblings(".citeBox");
+	
+	
+	discussionItem.find("#" + matches[hashindex] + matches[nameindex]).
+		each(function(){
+			var newLink = $(this);
+			newLink.text(renderedCitation[0][1]);
+			newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
+		});
+	
+	
+//	newLink.text(renderedCitation[0][1]);
+//	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
 	oldLink.html(linkImage);
 	bibentry.append(oldLink);
 	
-	var citeDiv = newLink.parent().siblings(".citeBox");
 	citeDiv.append(bibentry);	
 	citeDiv.show();
 }

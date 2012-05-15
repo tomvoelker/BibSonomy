@@ -253,6 +253,10 @@ function updateComment() {
 						commentForm.parent().remove();
 						highlight(commentView);
 						showReviewForm();
+						reviewForm.siblings(".citeBox").hide();
+		     			reviewForm.siblings(".bookCiteBox").children("div").remove();
+		     			reviewForm.siblings(".bookCiteBox").hide();
+		     			handleLinks(reviewForm.parent());
 					},
 		error:		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(commentForm, jQuery.parseJSON(jqXHR.responseText));

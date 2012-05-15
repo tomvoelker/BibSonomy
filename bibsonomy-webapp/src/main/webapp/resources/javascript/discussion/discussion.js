@@ -308,7 +308,7 @@ function parseLinks(reviewText) {
 	var matches = new Array();
 	var links = new Array();
 	var reg = /\[\[(?:(bookmark|url|bibtex|publication)(?:\/))?([0-9a-fA-F]{32,33})(?:\/(.*?))?\]\]/gi;
-	var match;// = reg.exec(reviewText);
+	var match;
 	while (match = reg.exec(reviewText)) {
 		var url;
 		if(match[1] == "url" || match[1] == "bookmark") {
@@ -317,15 +317,18 @@ function parseLinks(reviewText) {
 			url = "/bibtex/";
 		}
 		url += match[2];
-		if(typeof match[3] != "undefined") {
-			url += "/" + match[3];
+		var name = match[3];
+		if(typeof name == "undefined") {
+			name = "";
+		} else  {
+			name = "/" + name;
+			url += name;
 		}
 		matches.push(match[0]);
-		links.push("<a href=\"" + url + "\">" + match[0] + "</a>");
+		links.push("<a class=\"postlink\" id=\"" + match[2] + name + "\" href=\"" + url + "\">" + match[0] + "</a>");
 	}
 	for (var i = 0; i < matches.length; i++) {
 		reviewText = reviewText.replace(matches[i], links[i]);
 	}
-	//TODO handle csl
 	return $("<div class=\"review text\" itemprop=\"reviewBody\">" + reviewText + "<div>");
 }

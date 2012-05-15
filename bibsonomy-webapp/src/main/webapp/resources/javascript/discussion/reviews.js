@@ -358,6 +358,11 @@ function updateReview() {
 		     			setAvg(newAvg);
 		     			plotRatingDistribution();
 		     			reviewForm.submit(updateReview);
+		     			reviewForm.siblings(".citeBox").children("div").remove();
+		     			reviewForm.siblings(".citeBox").hide();
+		     			reviewForm.siblings(".bookCiteBox").children("div").remove();
+		     			reviewForm.siblings(".bookCiteBox").hide();
+		     			handleLinks(reviewForm.parent());
 					},
 		error:		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
