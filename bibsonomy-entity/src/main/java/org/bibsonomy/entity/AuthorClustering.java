@@ -31,11 +31,10 @@ public class AuthorClustering {
 	public static List<List<Integer>> authorClustering(SqlSession sessionRkr) {
 
 		//clustering the authors with the coauthor relationship
-		int threshold = 2;
+		int threshold = 1;
 		List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
 
 		for(int m=0; m < authorNames.size(); m++) { //check the name for every author
-			System.out.println("new author: " + authorNames.get(m) + "-----------------------------------------------------");
 			while (true) { //do this as long there is something we can merge
 				System.out.println("Author Clustering: " + m);
 				//merge authors who have the same coauthors
@@ -136,8 +135,6 @@ public class AuthorClustering {
 					//System.out.println("We have to add: " + coAuthorToAdd.get("authorID") + " " + coAuthorToAdd.get("normalizedCoauthor"));
 
 					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedCoAuthor", coAuthorToAdd);	
-
-					//if (tmpInnerMaxAuthorID == 416) System.exit(1);
 				}
 
 				//System.out.println("we delete: " + tmpInnerMaxAuthorID);
@@ -184,6 +181,20 @@ public class AuthorClustering {
 
 		System.out.println("countSingleClusters " + countSingleClusters);
 
+		List<Integer> authorsWithoutCoauthors = new ArrayList<Integer>();
+		//get the author ids that have no coauthor
+		List<Integer> authorIDs = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorIDs");
+		for(int k=1; k<authorIDs.get(authorIDs.size()-1); k++) {
+			if(!authorIDs.contains(k)) authorsWithoutCoauthors.add(k);
+		}
+		
+		for(Integer authorID: authorsWithoutCoauthors) {
+			System.out.println("This one has no coauthor: " + authorID);
+		}
+		System.out.println(authorIDs.get(authorIDs.size()-1));
+		System.exit(1);
+		
+		
 		return clusterIDsList;
 		/*
 			//Soundex
