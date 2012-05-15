@@ -64,21 +64,27 @@ function call(link, matches, callBack) {
 function proceedBookmark(data, matches) {
 	var id = matches[hashindex] + matches[nameindex];
 	var bookmark = data.items[0];
-	var bookCit = $("<div class=\"book-cit\" id=\"div" + id + "\"></div)");
+	
 	
 	
 	var newLink = $("#" + matches[hashindex] + matches[nameindex]);
 	var oldLink = newLink.clone();
-
+	
 	newLink.text("(" + bookmark.label + ")");
 	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
 	
-	var parent = newLink.parent();
-	bookCit.append(oldLink);
 	
-	var test = parent.siblings(".bookCiteBox");
-	test.append(bookCit);	
-	test.show();
+//	var parent = newLink.parent();
+	var bookCit = $("<div class=\"book-cit\" id=\"div" + id + "\"></div)");
+	bookCit.append($("<b>" + bookmark.label + "</b> <i>" + bookmark.description + "</i>"));
+	oldLink.html("<img src=\"/resources/image/wiki_link.png\">");
+	bookCit.append(oldLink);
+	bookCit.append($("<br/><a href=\"" + bookmark.url + "\">" + bookmark.url + "</a>"));
+	
+	
+	var bookmarkDiv = newLink.parent().siblings(".bookCiteBox");
+	bookmarkDiv.append(bookCit);	
+	bookmarkDiv.show();
 }
 
 
