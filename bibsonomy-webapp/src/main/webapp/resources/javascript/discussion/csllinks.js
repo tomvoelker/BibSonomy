@@ -1,9 +1,9 @@
-includeJavaScript("/resources/javascript/citeproc/csllocales.js");
-
-includeJavaScript("/resources/javascript/citeproc/xmldom.js");
-includeJavaScript("/resources/javascript/citeproc/xmle4x.js");
-includeJavaScript("/resources/javascript/citeproc/citeproc.js");
-includeJavaScript("/resources/javascript/citeproc/styles.js");
+//includeJavaScript("/resources/javascript/citeproc/csllocales.js");
+//
+//includeJavaScript("/resources/javascript/citeproc/xmldom.js");
+//includeJavaScript("/resources/javascript/citeproc/xmle4x.js");
+//includeJavaScript("/resources/javascript/citeproc/citeproc.js");
+//includeJavaScript("/resources/javascript/citeproc/styles.js");
 
 var typeindex = 2;
 var hashindex = 3;
@@ -12,7 +12,10 @@ var nameindex = 4;
 var style;
 
 $(document).ready(function() {
+	handleLinks();
+});
 
+function handleLinks() {
 	style = harvardStaffordshireUniversity;
 	var links = $(".postlink");
 	var size = links.size();
@@ -21,29 +24,65 @@ $(document).ready(function() {
 		var link = links[i].href;
 		var matches = link.match(/(.*?)\/{1}(bibtex|publication|url|bookmark)\/([0-9a-f]{32,33})(?:\/(.*))?/);
 		var bibtex = matches[typeindex] != "url" && matches[typeindex] != "bookmark";
-
-		if (bibtex) {
-			if (typeof matches[nameindex] == 'undefined') {
-				matches[nameindex] = ""
-			}
-			link = link.replace(matches[typeindex], "csl/" + matches[typeindex])
-			$(links[i]).attr("id", matches[hashindex] + matches[nameindex]);
-			call(link, matches);
+		
+		if (typeof matches[nameindex] == 'undefined') {
+			matches[nameindex] = ""
 		}
-
+		$(links[i]).attr("id", matches[hashindex] + matches[nameindex]);
+		
+		var callBack;
+		
+		if (bibtex) {
+			//handle bibtex
+			link = link.replace(matches[typeindex], "csl/" + matches[typeindex]);
+			callBack = proceedCSL;
+		} else {
+			//handle bookmarks
+			link = link.replace(matches[typeindex], "json/" + matches[typeindex]);
+			callBack=proceedBookmark;
+		}
+		call(link, matches, callBack);
+		
 	}
+	
+}
 
-});
-
-function call(link, matches) {
+/**
+ * performs ajax request
+ * @param link for request
+ * @param matches split user link
+ * @param callBack call back function to proceed bookmarks or bibtex
+ */
+function call(link, matches, callBack) {
 	$.get(link, function(data) {
-		proceed(data, matches, link);
+		callBack(data, matches);
 	}).error(function() {
 		alert("it's not possible that you see it!");
 	});
 }
 
-function proceed(data, matches, link) {
+function proceedBookmark(data, matches) {
+	var id = matches[hashindex] + matches[nameindex];
+	var bookmark = data.items[0];
+	var bookCit = $("<div class=\"book-cit\" id=\"div" + id + "\"></div)");
+	
+	
+	var newLink = $("#" + matches[hashindex] + matches[nameindex]);
+	var oldLink = newLink.clone();
+
+	newLink.text("(" + bookmark.label + ")");
+	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
+	
+	var parent = newLink.parent();
+	bookCit.append(oldLink);
+	
+	var test = parent.siblings(".bookCiteBox");
+	test.append(bookCit);	
+	test.show();
+}
+
+
+function proceedCSL(data, matches, link) {
 	var sys = new Sys(data);
 	var citeproc = new CSL.Engine(sys, style);
 
@@ -83,8 +122,8 @@ function proceed(data, matches, link) {
 	var test = parent.siblings(".citeBox");
 	test.append(bibentry);	
 	test.show();
-	done = true;
 }
+
 
 function constructId(data, id) {
 
