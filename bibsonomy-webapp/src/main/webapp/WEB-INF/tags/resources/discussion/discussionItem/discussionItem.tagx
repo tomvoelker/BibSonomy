@@ -44,6 +44,10 @@
 					<!-- keep it -->
 					<h3><fmt:message key="discussion.references" /></h3>
 				</div>
+				<div class="bookCiteBox" style="display:none" >
+						<!-- keep it -->
+						<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
+					</div>
 			</div>
 		</c:when>
 		<c:otherwise>
@@ -52,6 +56,10 @@
 					<div class="citeBox" style="display:none" >
 						<!-- keep it -->
 						<h3><fmt:message key="discussion.references" /></h3>
+					</div>
+					<div class="bookCiteBox" style="display:none" >
+						<!-- keep it -->
+						<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
 					</div>
 			</div>
 		</c:otherwise>
