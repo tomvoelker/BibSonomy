@@ -341,7 +341,7 @@ public class DBSessionImpl implements DBSession {
 	protected void finalize() throws Throwable {
 		// Try to take care of other peoples mistakes. It may take a while
 		// before this is called, but it's better than nothing.
-		if (this.closed == false) {
+		if (!this.closed) {
 			log.error(this.getClass().getName() + " not closed");
 			this.sqlMap.close();
 		}
@@ -371,7 +371,7 @@ public class DBSessionImpl implements DBSession {
 	 * @see org.bibsonomy.database.common.DBSession#queryForMap(java.lang.String, java.lang.Object, java.lang.String)
 	 */
 	@Override
-	public Map<?, ?> queryForMap(String query, Object param, String key) {
+	public Map<?, ?> queryForMap(final String query, final Object param, final String key) {
 	    try {
 		return this.sqlMap.queryForMap(query, param, key);
 	    } catch (final Exception e) {
@@ -385,7 +385,7 @@ public class DBSessionImpl implements DBSession {
 	 * @see org.bibsonomy.database.common.DBSession#queryForMap(java.lang.String, java.lang.Object, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Map<?, ?> queryForMap(String query, Object param, String key, String value) {
+	public Map<?, ?> queryForMap(final String query, final Object param, final String key, final String value) {
 	    try {
 		return this.sqlMap.queryForMap(query, param, key, value);
 	    } catch (final Exception e) {
