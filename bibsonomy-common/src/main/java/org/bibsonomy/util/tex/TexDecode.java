@@ -97,9 +97,7 @@ public class TexDecode {
 		if (s != null) {
 			final Matcher texRegexpMatcher = texRegexpPattern.matcher(s.trim().replaceAll(CURLY_BRACKETS, ""));
 			final StringBuffer sb = new StringBuffer();
-			int i = 0;
 			while (texRegexpMatcher.find()) {
-				i++;
 				texRegexpMatcher.appendReplacement(sb, texMap.get(texRegexpMatcher.group()));
 			}
 			texRegexpMatcher.appendTail(sb);
