@@ -96,15 +96,15 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		if (!present(user) || !present(user.getName())) {
 			return "Group-creation failed: Cannot create a group for nonexistent username \"" + groupName + "\"." ;
 		}
+		
 		// Check if the user is a spammer
-		else if (user.isSpammer()) {
+		if (user.isSpammer()) {
 			return "Group-creation failed: No groups allowed for users tagged as \"spammer\".";
-		} 
-		// Create the group, otherwise.
-		else {
-			logic.createGroup(group);
-			return "Successfully created new group!";
 		}
+		
+		// Create the group, otherwise.
+		logic.createGroup(group);
+		return "Successfully created new group!";
 	}
 
 	/** Update the settings of a group. */
