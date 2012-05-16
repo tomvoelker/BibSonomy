@@ -10,6 +10,7 @@
 	
 	<jsp:directive.attribute name="errorHeader" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="errorMessage" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="infoMessage" type="java.lang.String" required="true"/>
 	
 	<script src="/resources/javascript/swfobject.js" type="text/javascript"><!-- --></script>
 	
@@ -23,6 +24,7 @@
 			dynamicHeight: parseInt(height),
 			dynamicErrorHeader: "${errorHeader}",
 			dynamicErrorMessage: "${errorMessage}",
+			dynamicInfoMessage: "${infoMessage}"
 		};
 		
 		var params = {

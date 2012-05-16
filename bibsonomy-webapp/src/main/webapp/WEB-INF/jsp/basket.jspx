@@ -39,6 +39,10 @@
 				<jsp:attribute name="errorMessage">
 					<fmt:message key="qrcode.error.errorMessage" />
 				</jsp:attribute>
+				
+				<jsp:attribute name="infoMessage">
+					<fmt:message key="qrcode.info.readerInfoMessage" />
+				</jsp:attribute>
 			</parts:qrcode>
 			
 			<ul>			
@@ -69,7 +73,6 @@
 						<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.edit.tags"/></a></li>
 						<li><a href="/export/${fn:escapeXml(requPath)}${requQueryString}"><fmt:message key="basket.export"/></a></li>
 						<li><a href="/beditbib/${fn:escapeXml(requPath)}" title="${editPageTags}"><fmt:message key="basket.delete"/></a></li>
-						<li><fmt:message key="qrcode.info.readerInfoMessage" /></li>
 					</ul>
 				</jsp:attribute>
 			</parts:infobox>

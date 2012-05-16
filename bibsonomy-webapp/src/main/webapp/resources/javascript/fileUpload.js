@@ -158,10 +158,10 @@ function uploadRequestSuccessful(data) {
 
 		if (filesDiv.length) {
 			var div = "<div class='fsRow'>" + 
-			"<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>" + fileName + "</a> " +
-			"( <a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>" + documentQRMessage + "</a>" + 
+			"<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>" + fileName + "</a> " +
+			"( <a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>" + documentQRMessage + "</a>" + 
 			"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
-			")(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
+			") (<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
 			filesDiv.append(div);
 			$(".deleteDocument").click(deleteLinkClicked);
 		} else {
