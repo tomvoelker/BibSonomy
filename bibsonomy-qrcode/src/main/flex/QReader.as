@@ -6,6 +6,7 @@ import flash.geom.Rectangle;
 import flash.media.Camera;
 import flash.media.SoundChannel;
 import flash.media.Video;
+import flash.net.SharedObject;
 import flash.utils.Timer;
 import flash.text.TextField;
 import flash.text.TextFormat;
@@ -52,12 +53,20 @@ private var refreshTimer:Timer;
  */
 private var errorWindow:TitleWindow;
 
-private var errorGroup:HGroup;
-
 /**
  * error text
  */
 private var errorLabel:Text;
+
+/**
+ * the info window
+ */
+private var infoWindow:TitleWindow;
+
+/**
+ * info text
+ */
+private var infoLabel:Text;
 
 /**
  * channel to play sound effect
@@ -93,6 +102,13 @@ public var errorHeader:String;
 [Bindable]
 public var errorMessage:String;
 
+/**
+ * info message from javascript context
+ */		
+[Bindable]
+public var infoMessage:String;
+
+
 /**		
  * entry point for initialization of entities
  */
@@ -105,6 +121,7 @@ private function init():void {
 	camHeight = FlexGlobals.topLevelApplication.parameters.dynamicHeight;
 	errorHeader = FlexGlobals.topLevelApplication.parameters.dynamicErrorHeader;
 	errorMessage = FlexGlobals.topLevelApplication.parameters.dynamicErrorMessage;
+	infoMessage = FlexGlobals.topLevelApplication.parameters.dynamicInfoMessage;
 	
 	/*
 	 * initialize the webcam
@@ -135,7 +152,18 @@ private function init():void {
 		 * add camera picture to stage
 		 */
 		theCam.addChild(video);
+		
+		/*
+		 * check whether user has visited site for first time
+		 */
+		var cookie:SharedObject = SharedObject.getLocal('bibsonomyClipboardQReader', null, false);
 
+		
+		if(cookie.size == 0) {
+			cookie.data.firstVisit = true;
+			displayInfoMessage();
+		}
+		
 		/*
 		 * initialize the refresh timer
 		 */
@@ -149,6 +177,7 @@ private function init():void {
 		 * in error case disable camera and display error message
 		 */
 		theCam.visible = false;
+		
 		displayErrorMessage();	
 	}
 }
@@ -221,7 +250,7 @@ public function decodeBitmapData(bmpd:BitmapData, width:int, height:int):void {
 			/*
 			 * regex for a valid bibsonomy, biblicious, puma url
 			 */
-			var regex:RegExp = /^(((ht|f)tp(s?))\:\/\/)?(www.|[a-zA-Z].)[a-zA-Z0-9\-]+(\b|\.org)(\:[0-9]+)*\/+bibtex\/[a-fA-F0-9]*\/[a-zA-z0-9]+$/;
+			var regex:RegExp = /^(((ht|f)tp(s?))\:\/\/)?(www.|[a-zA-Z].)[a-zA-Z0-9\-]+(\b|\.org)(\:[0-9]+)*\/+bibtex\/[a-fA-F0-9]{32,33}\/[a-zA-z0-9]+$/;
 			
 			/*
 			 * is found url valid?
@@ -393,4 +422,95 @@ private function resizeErrorLabel(evt:FlexEvent):void {
  */
 private function createErrorMessage(evt:FlexEvent):void {
 	errorWindow.isPopUp = false;
+}
+
+/**
+ * method to display the info window
+ */
+private function displayInfoMessage():void {
+	
+	/*
+	 * create new window and disable close button.
+	 * gets error header and message from javascript context.
+	 * takes 90% of the screen and disables vertical and horizontal scrolling.
+	 * is added as a popup.
+	 */				
+	infoWindow = new TitleWindow();
+	infoWindow.title = "Information";
+	infoWindow.showCloseButton = true;
+	infoWindow.explicitWidth = camWidth * 0.9;
+	infoWindow.explicitHeight = camHeight * 0.9;
+	infoWindow.horizontalScrollPolicy = "off";
+	infoWindow.verticalScrollPolicy = "off";
+	
+	/*
+	 * window movement can only be disabled after initialize event is thrown.
+	 * therefor we register a listener to take care of that.
+	 */
+	infoWindow.addEventListener(FlexEvent.INITIALIZE, createInfoMessage);
+	infoWindow.addEventListener(CloseEvent.CLOSE, closeInfoMessage);
+	infoWindow.setStyle("backgroundColor", "0xeeeeee");	
+	
+	infoLabel = new Text();
+	infoLabel.text = infoMessage;
+	infoLabel.explicitWidth = infoWindow.explicitWidth * 0.95;
+	
+	/*
+	 * if text is to big for the window we have to resize it. can only be done
+	 * after creation_complete event is thrown. therefor we register a listener
+	 * for that.
+	 */
+	infoLabel.addEventListener(FlexEvent.CREATION_COMPLETE, resizeInfoLabel);
+	infoWindow.addChild(infoLabel);
+				
+	PopUpManager.addPopUp(infoWindow, this, true);
+	PopUpManager.centerPopUp(infoWindow);
+}
+
+/**
+ * method to resize text of info window
+ */
+private function resizeInfoLabel(evt:FlexEvent):void {
+	
+	/*
+	 * update error window properties
+	 */
+	infoLabel.validateNow();
+	
+	/*
+	 * set maximum height
+	 */
+	var maxTextHeight:int = infoWindow.explicitHeight * 0.8;
+	
+	if (maxTextHeight != 0) {
+		
+		/*
+		 * get internal text representation
+		 */
+		var text_field:TextField = infoLabel.mx_internal::getTextField();
+		var f:TextFormat = text_field.getTextFormat();
+		
+		/*
+		 * resize text until it fits
+		 */
+		while (text_field.textHeight > maxTextHeight) {
+			f.size = int(f.size) -1;
+			text_field.setTextFormat(f);
+		}
+	}
+	
+}
+
+/**
+ * method to disable window movement
+ */
+private function createInfoMessage(evt:FlexEvent):void {
+	infoWindow.isPopUp = false;
+}
+
+/**
+ * method to remove info message
+ */
+private function closeInfoMessage(evt:CloseEvent):void {
+	PopUpManager.removePopUp(infoWindow);
 }
