@@ -350,3 +350,6 @@ div.grippie {
 	display: none;
 }
 
+.socializer .addContainer {
+        position: static;
+}
