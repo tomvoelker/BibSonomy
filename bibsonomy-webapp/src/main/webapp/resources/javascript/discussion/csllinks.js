@@ -8,103 +8,104 @@ var style;
 
 
 $(document).ready(function() {
+	
+	var style=harvardStaffordshireUniversity;
+	
+	// handle all list elements with class review
 	$('li.review' ).each(function(){handleLinks($(this))});
+	
+	// handle all list elements with class review
 	$('li.comment').each(function(){handleLinks($(this))});
 });
 
+
+
 function handleLinks(discussionItem) {
+	
+	//find all required links:
 	style = harvardStaffordshireUniversity;
-	var links = discussionItem.find(".postlink");
-	var size = links.size();
-	var hanledLinks = new Array(size);
-	var i = 0;
-	for (i = 0; i < size; i++) {
-		var link = links[i].href;
-		if(containsLink(hanledLinks, link)) {
-			continue;
-		}
-		hanledLinks[i] = link;
-		var matches = link.match(/(.*?)\/{1}(bibtex|publication|url|bookmark)\/([0-9a-f]{32,33})(?:\/(.*))?/);
-		var bibtex = matches[typeindex] != "url" && matches[typeindex] != "bookmark";
-		
-		if (typeof matches[nameindex] == 'undefined') {
-			matches[nameindex] = ""
-		}
-		$(links[i]).attr("id", matches[hashindex] + matches[nameindex]);
-		
-		var callBack;
-		
-		if (bibtex) {
-			//handle bibtex
-			link = link.replace(matches[typeindex], "csl/" + matches[typeindex]);
-			callBack = proceedCSL;
+	var proceededLinks = new Array();
+	discussionItem.find("a.postlink").each(function(){
+		var matches = $(this).attr("href").match(/(.*?)\/{1}(bibtex|publication|url|bookmark)\/([0-9a-f]{32,33})(?:\/(.*))?/);
+		var name;
+		if(matches[nameindex] == undefined) {
+			name = "";
 		} else {
-			//handle bookmarks
-			link = link.replace(matches[typeindex], "json/" + matches[typeindex]);
-			callBack=proceedBookmark;
+			name = matches[nameindex];
 		}
-		call(link, matches, callBack, discussionItem);
 		
-	}
-}
-
-function containsLink(array, link) {
-	for (var i = 0; i < array.length; i++) {
-		if (array[i] == link) {
-			return true;
+		$(this).attr("class", matches[hashindex] + name + " postlink");
+		var publication = matches[typeindex] != "url" && matches[typeindex] != "bookmark";
+		
+		//create data object to store information
+		var postLinkData = new PostLinkResult(publication, matches[hashindex], name);
+		
+		var link;
+		if (publication) {
+			link = $(this).attr("href").replace(matches[typeindex], "csl/" + matches[typeindex]);
+		} else {
+			link = $(this).attr("href").replace(matches[typeindex], "json/" + matches[typeindex]);
+		}		
+		
+		//check that this is the first occurrence of this link
+		if(proceededLinks.indexOf(link) != -1) {
+			return;
+		} else {
+			proceededLinks.push(link);
 		}
-	}
-	return false;
-}
-
-/**
- * performs ajax request
- * @param link for request
- * @param matches split user link
- * @param callBack call back function to proceed bookmarks or bibtex
- */
-function call(link, matches, callBack, discussionItem) {
-	$.get(link, function(data) {
-		callBack(data, matches, discussionItem);
-	}).error(function() {
-		alert("it's not possible that you see it!");
+		
+		call(link, postLinkData, $(this));
 	});
 }
 
-function proceedBookmark(data, matches, discussionItem) {
-	var id = matches[hashindex] + matches[nameindex];
-	var bookmark = data.items[0];
-	
-	var newLink = discussionItem.find("#" + matches[hashindex] + matches[nameindex]);
-	var oldLink = newLink.clone();
-	
-	newLink.text("(" + bookmark.label + ")");
-	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
-	
-	var bookCit = $("<div class=\"book-cit\" id=\"div" + id + "\"></div)");
-	bookCit.append($("<b>" + bookmark.label + "</b> <i>" + bookmark.description + "</i>"));
-	oldLink.html(linkImage);
-	bookCit.append(oldLink);
-	bookCit.append($("<br/><a href=\"" + bookmark.url + "\">" + bookmark.url + "</a>"));
-	
-	var bookmarkDiv = newLink.parent().siblings(".bookCiteBox");
-	bookmarkDiv.append(bookCit);	
-	bookmarkDiv.show();
+
+function call(link, postLinkData, anchor) {
+	$.get(link, function(data) {
+		requestSuccessful(data, postLinkData, anchor);
+	}).error(function() {
+		alert("can't happen");
+	});
 }
 
+/**
+ * will be called if the request was successful
+ */
+function requestSuccessful(data, postLinkData, anchor) {
+	if(postLinkData.isPublication()) {
+		parsePublicationResult(data, postLinkData);
+	} else {
+		parseBookmarkResult(data, postLinkData);
+	}
+	
+	var referenceDiv = anchor.parent().siblings(postLinkData.getDivClassSelector());
+	
+	
+	referenceDiv.show();
+	var reference = $(postLinkData.getReference());
+	reference.attr("id", postLinkData.getClassId());
+	
+	var referenceAnchor = anchor.clone();
+	anchor.parent().find("." + postLinkData.getHash() + postLinkData.getName()).each(function () {
+		$(this).html(postLinkData.getCitation());
+		$(this).attr("href", "#" + postLinkData.getClassId());		
+	});
+	
+	reference.append(referenceAnchor);
+	referenceAnchor.html(linkImage);
+	referenceDiv.append(reference);
+}
 
-function proceedCSL(data, matches, discussionItem) {
+function parseBookmarkResult(data, postLinkData) {
+	var bookmark = data.items[0];
+	postLinkData.setCitation("(" + bookmark.label + ")");
+	postLinkData.setReference("<div class=\"book-cit\" id=\"" + postLinkData.getClassId() + "\"><b>" + bookmark.label + "</b> <i>" + bookmark.description + "</i></div)");
+}
+
+function parsePublicationResult(data, postLinkData) {
 	var sys = new Sys(data);
 	var citeproc = new CSL.Engine(sys, style);
-
-	var id = matches[hashindex];
-	if (id.length == 33) {
-		id = id.substr(1);
-	}
-	id += matches[nameindex];
-
-	id = constructId(data, id);
-
+	var id = constructId(data, postLinkData.getHash());
+	
 	var citation = {
 		"citationItems" : [ {
 			id : id
@@ -116,33 +117,11 @@ function proceedCSL(data, matches, discussionItem) {
 
 	var renderedCitation = citeproc.appendCitationCluster(citation);
 	var bibliographyEntry = citeproc.makeBibliography();
-
-	var bibentry = $("" + bibliographyEntry[1]);
-	bibentry.attr("id", "div" + matches[hashindex] + matches[nameindex]);
-
-//	var newLink =  discussionItem.find("#" + matches[hashindex] + matches[nameindex]);
-//	var oldLink = newLink.clone();
-
-	var oldLink = discussionItem.find("#" + matches[hashindex] + matches[nameindex]).clone();
-	var citeDiv = discussionItem.find("#" + matches[hashindex] + matches[nameindex]).parent().siblings(".citeBox");
 	
-	
-	discussionItem.find("#" + matches[hashindex] + matches[nameindex]).
-		each(function(){
-			var newLink = $(this);
-			newLink.text(renderedCitation[0][1]);
-			newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
-		});
-	
-	
-//	newLink.text(renderedCitation[0][1]);
-//	newLink.attr("href", "#div" + matches[hashindex] + matches[nameindex]);
-	oldLink.html(linkImage);
-	bibentry.append(oldLink);
-	
-	citeDiv.append(bibentry);	
-	citeDiv.show();
+	postLinkData.setCitation(renderedCitation[0][1]);
+	postLinkData.setReference($("" + bibliographyEntry[1]));
 }
+
 
 
 function constructId(data, id) {
@@ -167,6 +146,60 @@ function constructId(data, id) {
 		alert("an error is occured, expected count of posts is 1, but was" + counter);
 	}
 
+}
+
+function PostLinkResult(publication, hash, name) {
+	
+	this.publication = publication;
+	
+	if(publication) {
+		this.divClassSelector = ".citeBox";
+	} else {
+		this.divClassSelector = ".bookCiteBox";
+	}
+	
+	if (hash.length == 33) {
+		this.classId = hash.substr(1);
+	} else {
+		this.classId = hash;
+	}
+	this.classId += name;
+	
+	this.getCitation = function() {
+		return this.citation;
+	};
+	
+	this.setCitation = function(citation) {
+		this.citation = citation;
+	};
+	
+	this.getReference = function() {
+		return this.reference;
+	};
+	
+	this.setReference = function(reference) {
+		this.reference = reference;
+	}
+	
+	this.getDivClassSelector = function () {
+		return this.divClassSelector;
+	};
+	
+	this.isPublication = function() {
+		return this.publication;
+	};
+	
+	this.getClassId = function() {
+		return this.classId;
+	};
+	
+	this.getHash = function() {
+		return hash; 
+	};
+	
+	this.getName = function() {
+		return name;
+	}
 }
 
 function Sys(data) {
