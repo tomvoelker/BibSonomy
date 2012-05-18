@@ -310,6 +310,9 @@ function parseLinks(reviewText) {
 	var reg = /\[\[(?:(bookmark|url|bibtex|publication)(?:\/))?([0-9a-fA-F]{32,33})(?:\/(.*?))?\]\]/gi;
 	var match;
 	while (match = reg.exec(reviewText)) {
+		if(matches.indexOf(match[0]) != -1) {
+			continue;
+		}
 		var url;
 		if(match[1] == "url" || match[1] == "bookmark") {
 			url = "/url/"
@@ -328,7 +331,8 @@ function parseLinks(reviewText) {
 		links.push("<a class=\"postlink\" id=\"" + match[2] + name + "\" href=\"" + url + "\">" + match[0] + "</a>");
 	}
 	for (var i = 0; i < matches.length; i++) {
-		reviewText = reviewText.replace(matches[i], links[i]);
+		reviewText = reviewText.replaceAll(matches[i], links[i], true);
 	}
 	return $("<div class=\"review text\" itemprop=\"reviewBody\">" + reviewText + "<div>");
 }
+
