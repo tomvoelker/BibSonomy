@@ -40,8 +40,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	SELECT LAST_INSERT_ID()
 </select>
 
-<select id="selectAuthorNames" parameterType="String" resultType="String">
-	SELECT normalized_name from (SELECT normalized_name from author limit 30) as limited_authors GROUP by normalized_name
+<select id="selectAuthorNames" parameterType="String" resultType="java.util.Map">
+	Select * from author_coauthor INNER JOIN (SELECT author_id, normalized_name from author limit 30) as limited_authors USING(author_id)
 </select>
 
 <select id="selectAuthorIDs" parameterType="String" resultType="int">

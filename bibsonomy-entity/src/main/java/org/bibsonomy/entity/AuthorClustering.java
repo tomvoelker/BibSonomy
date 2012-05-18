@@ -32,14 +32,45 @@ public class AuthorClustering {
 
 		//clustering the authors with the coauthor relationship
 		int threshold = 1;
-		final List<String> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
+		//TODO we need a left join
+		final List<Map<String,String>> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
 
-		for (final String authorName : authorNames) {
-			
+		Map<String,List<Map<String,String>>> authorMap = new HashMap<String,List<Map<String,String>>>();
+
+		//build the datastructure
+		for (Map<String,String> tmpAuthor: authorNames) {
+			//add this anme first time 
+			if (authorMap.get(tmpAuthor.get("normalized_name")) == null) {
+				List tmpList = new ArrayList<Map<String,String>>();
+				Map tmpMap = new HashMap<String,String>();
+				tmpMap.put("author_id", String.valueOf(tmpAuthor.get("author_id")));
+				tmpMap.put("normalized_coauthor", tmpAuthor.get("normalized_coauthor"));
+				tmpList.add(tmpMap);
+				authorMap.put(tmpAuthor.get("normalized_name"), tmpList);
+			}
+			else {
+				List<Map<String,String>> tmpList = authorMap.get(tmpAuthor.get("normalized_name"));
+				Map<String,String> tmpMap = new HashMap<String,String>();
+				tmpMap.put("author_id", String.valueOf(tmpAuthor.get("author_id")));
+				tmpMap.put("normalized_coauthor", tmpAuthor.get("normalized_coauthor"));
+				tmpList.add(tmpMap);
+				authorMap.put(tmpAuthor.get("normalized_name"), tmpList);
+
+			}
+		}
+
+		int z=1;
+		for(Map.Entry authorSet : authorMap.entrySet()) {
+			//for (final Map<String,String> authorName : authorNames) {
+
+			System.out.println("Author Clustering: " + z + " " + authorSet.getKey());
+			z++;
+
 			while (true) { //do this as long there is something we can merge
-				System.out.println("Author Clustering: " + authorName);
 				//merge authors who have the same coauthors
-				List<Map<Integer,String>> coauthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorName);
+
+				List<Map<String,String>> coauthors = authorMap.get(authorSet.getKey());
+				//List<Map<Integer,String>> coauthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthors", authorName);				
 				if (coauthors.isEmpty()) {
 					break;
 				}
@@ -66,10 +97,6 @@ public class AuthorClustering {
 
 					//System.out.println("outerCoAuthor: " + outerCoAuthor.get("normalized_coauthor") + " ID: " + String.valueOf(outerCoAuthor.get("author_id")));
 					//System.out.println("coAuthorNamesOuterIteration: ");
-					for (String test: coAuthorNamesOuterIteration) {
-						//System.out.print(test + " ");
-					}
-					//System.out.println(" ");
 
 					if (!outerAuthorID.equals(Integer.valueOf(String.valueOf(outerCoAuthor.get("author_id"))))) { //dont compare a cluster with itself
 						outerAuthorID = Integer.valueOf((String.valueOf(outerCoAuthor.get("author_id"))));
@@ -114,6 +141,7 @@ public class AuthorClustering {
 							 * of coAuthorNamesOuterIteration.clear() in line 105 
 							 * above. 
 							 */
+
 							outerCoauthors = coAuthorNamesOuterIteration;  
 							innerCoauthors = coAuthorNamesInnerIteration;
 						}
@@ -140,7 +168,9 @@ public class AuthorClustering {
 					coAuthorToAdd.put("normalizedCoauthor", coauthorsToAdd.get(k));
 					//System.out.println("We have to add: " + coAuthorToAdd.get("authorID") + " " + coAuthorToAdd.get("normalizedCoauthor"));
 
-					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedCoAuthor", coAuthorToAdd);	
+					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedCoAuthor", coAuthorToAdd);
+					//TODO update in data structure too
+					//INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (#{authorID},#{normalizedCoauthor});
 				}
 
 				//System.out.println("we delete: " + tmpInnerMaxAuthorID);
@@ -172,6 +202,12 @@ public class AuthorClustering {
 				//delete the author we merged from DB
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteCoAuthors", tmpInnerMaxAuthorID);
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteAuthor", tmpInnerMaxAuthorID);
+
+				//remove the author we merged from the datastructure
+				for (int k=0; k<authorMap.get(authorSet.getKey()).size(); k++) {
+					if(Integer.valueOf(authorMap.get(authorSet.getKey()).get(k).get("author_id")) == tmpInnerMaxAuthorID) authorMap.get(authorSet.getKey()).remove(k);
+				}
+
 			}
 		}
 		sessionRkr.commit();
@@ -193,14 +229,12 @@ public class AuthorClustering {
 		for(int k=1; k<authorIDs.get(authorIDs.size()-1); k++) {
 			if(!authorIDs.contains(k)) authorsWithoutCoauthors.add(k);
 		}
-		
-		for(Integer authorID: authorsWithoutCoauthors) {
-			System.out.println("This one has no coauthor: " + authorID);
-		}
+
+		//for(Integer authorID: authorsWithoutCoauthors) {
+		//System.out.println("This one has no coauthor: " + authorID);
+		//}
 		System.out.println(authorIDs.get(authorIDs.size()-1));
-		System.exit(1);
-		
-		
+
 		return clusterIDsList;
 		/*
 			//Soundex
