@@ -84,7 +84,7 @@
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
 		        	<!-- short info, what the basket is -->
-		            <fmt:message key="discussion.info"/>                 
+		            <fmt:message key="discussion.info"><fmt:param><fmt:message key="discussion.info.bookmark"></fmt:message></fmt:param></fmt:message>                
 		
 					<!-- quick links on what you can do -->
 					
