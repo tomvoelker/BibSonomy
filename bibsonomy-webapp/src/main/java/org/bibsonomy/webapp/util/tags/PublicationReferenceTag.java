@@ -27,9 +27,10 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 	private String text;
 
 	/**
-	 * Matcher groups: 1: resource type (bookmark, url, bibtex, publication),
-	 * optional 2: intrahash 33 oder 32 characters, required 3: userName
-	 * optional, not required for gold standard posts
+	 * Matcher groups: 
+	 * 1: resource type (bookmark, url, bibtex, publication), optional 
+	 * 2: intrahash 33 oder 32 characters, required 
+	 * 3: userName, optional, not required for gold standard posts
 	 */
 	private static final Pattern linkPattern = Pattern.compile("\\[\\[(?:(bookmark|url|bibtex|publication)(?:\\/))?([0-9a-fA-F]{32,33})(?:\\/(.*?))?\\]\\]");
 	private static final int RES_TYPE_GROUP_ID = 1;
@@ -44,22 +45,35 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 	@Override
 	protected int doStartTagInternal() throws Exception {
 		Matcher matcher = linkPattern.matcher(text);
+		/*
+		 * Required to store proceeded links for prevent double creation of html
+		 * anchor. This can happen, if this discussion object has two or more
+		 * links to the same post. We need to store proceeded links because we
+		 * must use strig.replace method, which replaces all occurrences of the
+		 * pattern. We can't use replace first, because the replacement also 
+		 * contains the pattern
+		 */
+		HashSet<String> replacedLinks = new HashSet<String>();
+
 		while (matcher.find()) {
+			if(replacedLinks.contains(matcher.group(0))) {
+				continue;
+			}
 			StringBuilder url = new StringBuilder("<a class=\"postlink\"href=\"/");
-			
+
 			url.append(getResourceString(matcher.group(RES_TYPE_GROUP_ID)));
-			
+
 			url.append("/");
 			url.append(matcher.group(HASH_GROUP_ID));
-			
+
 			String userName = matcher.group(USER_NAME_GROUP_ID);
 			if (present(userName)) {
 				url.append("/");
 				url.append(userName);
 			}
-			
 			url.append("\">" + matcher.group(0) + "</a>");
 			text = text.replace(matcher.group(0), url);
+			replacedLinks.add(matcher.group(0));
 		}
 		try {
 			pageContext.getOut().print(text);
@@ -77,8 +91,7 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 	}
 
 	/**
-	 * @param text
-	 *            the text to set
+	 * @param text the text to set
 	 */
 	public void setText(String text) {
 		this.text = text;
