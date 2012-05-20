@@ -54,9 +54,12 @@ public class SpiresScraper extends AbstractUrlScraper{
 	private static final String info = "Gets publications from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
+	private static Pattern BRIEFBIBTEX_PATTERN = Pattern.compile("<a href=\"?(/spires/find/hep/www\\?.*?\\&FORMAT=WWWBRIEFBIBTEX)\"?>");
+	private static Pattern BIBTEX_PATTERN = Pattern.compile("<a href=\"(.*?)\".*?>BibTeX</a>");
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "slac.stanford.edu"), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "www-library.desy.de"), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "inspirehep.net"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
 	
@@ -68,9 +71,16 @@ public class SpiresScraper extends AbstractUrlScraper{
 				
 				URL bibtexUrl = url;
 				if (!url.getQuery().contains(FORMAT_WWWBRIEFBIBTEX)) { 
-					Matcher m = Pattern.compile("<a href=\"?(/spires/find/hep/www\\?.*?\\&FORMAT=WWWBRIEFBIBTEX)\"?>").matcher(sc.getPageContent());
-					if (!m.find()) throw new ScrapingFailureException("no download link found");
-					bibtexUrl = new URL(url.getProtocol() + "://" + url.getHost() + m.group(1));
+					//we are looking for some pattern in the source of the page
+					Matcher m = BRIEFBIBTEX_PATTERN.matcher(sc.getPageContent());
+					//if we do not find, we maybe find a link :-)
+					if (!m.find()) {
+						Matcher m2 = BIBTEX_PATTERN.matcher(sc.getPageContent());
+						if (!m2.find()) throw new ScrapingFailureException("no download link found");
+						bibtexUrl = new URL(m2.group(1));
+					} else {
+						bibtexUrl = new URL(url.getProtocol() + "://" + url.getHost() + m.group(1));
+					}
 				}
 				
 				final Document temp = XmlUtils.getDOM(bibtexUrl);
