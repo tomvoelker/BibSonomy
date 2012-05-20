@@ -180,7 +180,7 @@
 	</URLTest>
 	<URLTest id="url_29">
 		<TestDescription>URL scraping test with publication from slac spires</TestDescription>
-		<URL>http://www.slac.stanford.edu/spires/find/hep/www?r=DESY-THESIS-2007-018</URL>
+		<URL>http://inspirehep.net/search?p=find+r+desy-thesis-2007-018</URL>
 		<BibFile>SpiresScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.spires.SpiresScraper</Scraper>
 		<Enabled>true</Enabled>
@@ -1312,6 +1312,12 @@
 		<URL>http://www.bibsonomy.org/bibtex/29691ce71c1ad7bafafa63e301c4df140/maxirichter</URL>
 		<BibFile>BibtexScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.BibtexScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_217">
+		<TestDescription>URL scraping test with conference publications from ieeexlpore</TestDescription>
+		<URL>http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&amp;arnumber=6136685&amp;contentType=Conference+Publications&amp;searchField%3DSearch_All%26queryText%3DEnergy+efficient+hierarchical+epidemics+in+peer-to-peer+systems</URL>
+		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
 	</URLTest>
 	
 </test:Tests>
