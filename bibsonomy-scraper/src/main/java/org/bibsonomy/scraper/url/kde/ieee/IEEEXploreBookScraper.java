@@ -23,6 +23,7 @@
 
 package org.bibsonomy.scraper.url.kde.ieee;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -38,8 +39,11 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
+import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
+import org.bibsonomy.util.id.ISBNUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -121,6 +125,20 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 			return true;
 
 		}else{
+			
+			//let's try to scrape it by isbn
+			try {
+				String isbn = ISBNUtils.extractISBN(sc.getPageContent());
+				bibtex = WorldCatScraper.getBibtexByISBN(isbn);
+				if (present(bibtex)) {
+					sc.setBibtexResult(bibtex);
+					return true;
+				}
+			} catch (IOException ex) {
+				throw new ScrapingException(ex);
+			}
+			
+			
 			log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
 			sc.setBibtexResult(ieeeBookScrape(sc));
 			return true;
