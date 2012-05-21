@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- 
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
--->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans.xsd
-	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
-	                    
+	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
+	        
 	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
 		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
 		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>
@@ -20,8 +17,11 @@
     	<property name="ignoreUnresolvablePlaceholders" value ="true"/>
 	</bean>
 	
-	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
+	<!-- dummies for lucene index -->
+	<bean id="dummySearch" class="org.bibsonomy.testutil.DummyResourceSearch" />
+	<alias name="dummySearch" alias="luceneBookmarkSearch" />
+	<alias name="dummySearch" alias="lucenePublicationSearch" />
+	<alias name="dummySearch" alias="luceneGoldStandardPublicationSearch" />
 	
-	<import resource="classpath:systemtags-context.xml"/>
-	                    
-</beans>
+	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory" />
+</beans>	                    

@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -36,6 +37,7 @@ public abstract class AbstractDatabaseManagerTest {
 
 	protected static DBSessionFactory dbSessionFactory;
 	protected static DatabasePluginRegistry pluginRegistry;
+	protected static ApplicationContext testDatabaseContext;
 
 	protected DatabasePluginMock pluginMock;
 	protected DBSession dbSession;
@@ -54,8 +56,8 @@ public abstract class AbstractDatabaseManagerTest {
 
 		pluginRegistry = DatabasePluginRegistry.getInstance();
 
-		// init SystemTagFactory
-		new ClassPathXmlApplicationContext("test-systemTagContext.xml");
+		// init SystemTagFactory and chain config
+		testDatabaseContext = new ClassPathXmlApplicationContext("TestDatabaseContext.xml");
 
 		// init managers
 		GroupDatabaseManager.getInstance().setUserDb(UserDatabaseManager.getInstance());

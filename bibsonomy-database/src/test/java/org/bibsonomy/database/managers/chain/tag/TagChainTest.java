@@ -10,7 +10,8 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.managers.chain.AbstractChainTest;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.tag.get.GetAllTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetPopularTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByBibtexkey;
@@ -35,15 +36,16 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @version $Id$
  */
-public class TagChainTest extends AbstractChainTest {
-	protected static TagChain tagChain;
+public class TagChainTest extends AbstractDatabaseManagerTest {
+	protected static Chain<List<Tag>, TagParam> tagChain;
 	
 	/**
 	 * sets up the chain
 	 */
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpChain() {
-		tagChain = new TagChain();
+		tagChain = (Chain<List<Tag>, TagParam>) testDatabaseContext.getBean("tagChain");
 	}
 	
 	/**
@@ -51,13 +53,12 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetAllTags() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setGrouping(GroupingEntity.ALL);
 		param.setTagIndex(null);
 		param.setHash(null);
 		param.setContentTypeByClass(Resource.class);
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetAllTags.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetAllTags.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
@@ -65,15 +66,14 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void getPopularTags() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setGrouping(GroupingEntity.ALL);
 		param.setOrder(Order.POPULAR);
 		param.setTagIndex(null);
 		param.setHash(null);
 		param.setRegex(null);
 		param.setSearch(null);
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetPopularTags.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetPopularTags.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
@@ -108,13 +108,12 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsByAuthor() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setTagIndex(null);
 		param.setGrouping(GroupingEntity.ALL);
 		param.setAuthor("Stumme");
 		param.setContentTypeByClass(BibTex.class);
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetTagsByResourceSearch.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByResourceSearch.class, tagChain.getChainElement(param).getClass());
 	}
 	
 	/**
@@ -122,7 +121,7 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsBySearchString() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setGrouping(GroupingEntity.ALL);
 		param.setSearch("Test");
 		
@@ -131,8 +130,7 @@ public class TagChainTest extends AbstractChainTest {
 		param.setTagIndex(null);
 		param.setHash(null);
 		param.setBibtexKey(null);
-		tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetTagsByResourceSearch.class, this.chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByResourceSearch.class, tagChain.getChainElement(param).getClass());
 	}
 	
 	/**
@@ -154,8 +152,7 @@ public class TagChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.VIEWABLE);
 		param.setAuthor("Stumme");
 		param.setContentTypeByClass(BibTex.class);
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetTagsByResourceSearch.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByResourceSearch.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
@@ -163,13 +160,12 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsByBibtexKey() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setBibtexKey("test bibtexkey");
 		param.setGrouping(GroupingEntity.ALL);
 		param.setRequestedUserName(null);
 		param.addGroup(GroupID.PUBLIC.getId());
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetTagsByBibtexkey.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByBibtexkey.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
@@ -177,13 +173,12 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsByExpression() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setRegex("web");
 		param.setGrouping(GroupingEntity.USER);
 		param.setRequestedUserName("hotho");
 		param.setContentTypeByClass(Resource.class);
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetTagsByExpression.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByExpression.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
@@ -199,14 +194,13 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsByGroup() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setGrouping(GroupingEntity.GROUP);
 		param.setRegex(null);
 		param.getTagIndex().clear();
 		param.setRequestedGroupName("requestedGroup");
-		param.addGroup(GroupID.PUBLIC.getId());		
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetTagsByGroup.class, chainStatus.getChainElement().getClass());
+		param.addGroup(GroupID.PUBLIC.getId());
+		assertEquals(GetTagsByGroup.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
@@ -232,15 +226,14 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsByUser() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setGrouping(GroupingEntity.USER);
 		param.setRequestedUserName("hotho");
 		param.setUserName("hotho");
 		param.setRegex(null);
 		param.setTagIndex(null);
 		param.setContentTypeByClass(Resource.class);
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetTagsByUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByUser.class, tagChain.getChainElement(param).getClass());
 	}
 
 	/**
@@ -248,15 +241,14 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsViewable() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setGrouping(GroupingEntity.VIEWABLE);
 		param.setSearch(null);
 		param.setUserName("hotho");
 		param.setRegex(null);
 		param.setRequestedGroupName("kde");
 		param.setTagIndex(null);
-		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetTagsViewable.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsViewable.class, tagChain.getChainElement(param).getClass());
 	}
 
 }
