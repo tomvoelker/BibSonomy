@@ -1,13 +1,13 @@
 package org.bibsonomy.database.managers;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.FirstListChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
-import org.bibsonomy.model.Post;
 
 /**
+ * TODO: implement chain
+ * 
  * @author dzo
  * @version $Id$
  */
@@ -25,16 +25,10 @@ public class GoldStandardBookmarkDatabaseManager extends GoldStandardDatabaseMan
 	private GoldStandardBookmarkDatabaseManager() {
 		// noop
 	}
-	
-	@Override
-	protected FirstListChainElement<Post<GoldStandardBookmark>, BookmarkParam> getChain() {
-		// TODO: chain
-		return null;
-	}
 
 	@Override
 	protected void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session) {
-		// TODO
+		// TODO: implement reference model for bookmarks
 	}
 
 	@Override

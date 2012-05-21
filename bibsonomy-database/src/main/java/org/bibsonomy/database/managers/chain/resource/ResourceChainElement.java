@@ -1,16 +1,10 @@
 package org.bibsonomy.database.managers.chain.resource;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
-import org.bibsonomy.database.managers.BibTexDatabaseManager;
-import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.PostDatabaseManager;
-import org.bibsonomy.database.managers.chain.ListChainElement;
+import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -22,24 +16,14 @@ import org.bibsonomy.model.Resource;
  * @author dzo
  * @version $Id$
  */
-public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ListChainElement<Post<R>, P> {
+public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ChainElement<List<Post<R>>, P> {
+	
+	protected PostDatabaseManager<R, P> databaseManager;
 
-	// TODO: config via spring
-	private static final Map<Class<?>, PostDatabaseManager<?, ?>> dbs;
-	
-	static {
-		dbs = new HashMap<Class<?>, PostDatabaseManager<?, ?>>();
-		
-		dbs.put(Bookmark.class, BookmarkDatabaseManager.getInstance());
-		dbs.put(BibTex.class, BibTexDatabaseManager.getInstance());
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected PostDatabaseManager<R, P> getDatabaseManagerForType(final Class<?> clazz) {
-		if (dbs.containsKey(clazz)) {
-			return (PostDatabaseManager<R, P>) dbs.get(clazz);
-		}
-		
-		throw new UnsupportedResourceTypeException("resource " + clazz.getName() + " not supported");
+	/**
+	 * @param databaseManager the databaseManager to set
+	 */
+	public void setDatabaseManager(final PostDatabaseManager<R, P> databaseManager) {
+		this.databaseManager = databaseManager;
 	}
 }

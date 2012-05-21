@@ -11,8 +11,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.managers.chain.statistic.post.PostStatisticChain;
-import org.bibsonomy.database.managers.chain.statistic.tag.TagStatisticChain;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
@@ -30,15 +29,16 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
 	private static final StatisticsDatabaseManager singleton = new StatisticsDatabaseManager();
 
-	private static final PostStatisticChain postchain = new PostStatisticChain();
-	private static final TagStatisticChain tagChain = new TagStatisticChain();
-
 	/**
 	 * @return StatisticsDatabaseManager
 	 */
 	public static StatisticsDatabaseManager getInstance() {
 		return singleton;
 	}
+	
+	
+	private Chain<Statistics, StatisticsParam> postChain;
+	private Chain<Statistics, StatisticsParam> tagChain;
 
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
@@ -61,7 +61,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 */
 	public Statistics getPostStatistics(final StatisticsParam param, final DBSession session) {
-	    final Statistics statisticData = postchain.getFirstElement().perform(param, session);  
+	    final Statistics statisticData = postChain.perform(param, session);  
 		// to not get NPEs later
 		if (present(statisticData)) {
 			return statisticData ;    
@@ -75,7 +75,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return The number of tags matching the given params
 	 */
 	public int getTagStatistics(final StatisticsParam param, final DBSession session) {
-		final Integer count = tagChain.getFirstElement().perform(param, session).getCount();
+		final Integer count = tagChain.perform(param, session).getCount();
 		// to not get NPEs later
 		return count == null ? 0 : count;
 	}
@@ -264,5 +264,18 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public StatisticsValues getUserDiscussionsStatisticsForGroup(final StatisticsParam param, final DBSession session){
 		return this.queryForObject("userRatingStatisticForGroup", param, StatisticsValues.class, session);
 	}
-	
+
+	/**
+	 * @param postChain the postChain to set
+	 */
+	public void setPostChain(final Chain<Statistics, StatisticsParam> postChain) {
+		this.postChain = postChain;
+	}
+
+	/**
+	 * @param tagChain the tagChain to set
+	 */
+	public void setTagChain(final Chain<Statistics, StatisticsParam> tagChain) {
+		this.tagChain = tagChain;
+	}
 }
