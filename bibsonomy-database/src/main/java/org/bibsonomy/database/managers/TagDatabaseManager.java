@@ -19,7 +19,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.managers.chain.tag.TagChain;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
@@ -52,7 +52,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private static final int MAX_TAG_SIZE = 5;
 
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
-	private static final TagChain chain = new TagChain();
+	
 
 	/** database managers */
 	private final GeneralDatabaseManager generalDb;
@@ -62,6 +62,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	/** interface to a resource searcher for building an tag cloud */
 	private ResourceSearch<BibTex> publicationSearch;
 	private ResourceSearch<Bookmark> bookmarkSearch;
+	
+	private Chain<List<Tag>, TagParam> chain;
 
 	/**
 	 * @return a singleton instance of the TagDatabaseManager
@@ -746,7 +748,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTags(final TagParam param, final DBSession session) {
-		final List<Tag> tags = chain.getFirstElement().perform(param, session);
+		final List<Tag> tags = chain.perform(param, session);
 		SystemTagsExtractor.removeHiddenSystemTags(tags);
 		return this.setUsercountToGlobalCount(tags);
 	}
@@ -990,5 +992,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
+	}
+
+	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(final Chain<List<Tag>, TagParam> chain) {
+		this.chain = chain;
 	}
 }

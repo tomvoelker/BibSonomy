@@ -12,7 +12,7 @@ import org.bibsonomy.common.exceptions.UnsupportedRelationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.managers.chain.user.UserChain;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
@@ -39,7 +39,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Tag BIBSONOMY_FRIEND_SYSTEM_TAG = new Tag(NetworkRelationSystemTag.BibSonomyFriendSystemTag);
 	
 	private static final UserDatabaseManager singleton = new UserDatabaseManager();
-	private static final UserChain chain = new UserChain();
 	
 	/**
 	 * @return UserDatabaseManager
@@ -54,6 +53,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private final InboxDatabaseManager inboxDBManager;
 
 	private final DatabaseModelValidator<User> validator;
+	
+	private Chain<List<User>, UserParam> chain;
 
 	private UserDatabaseManager() {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
@@ -790,7 +791,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of user by given parameter
 	 */
 	public List<User> getUsers(final UserParam param, final DBSession session) {
-		return chain.getFirstElement().perform(param, session);
+		return chain.perform(param, session);
 	}
 	
 	/**
@@ -893,4 +894,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
     	param.setLimit(limit);
     	return this.queryForList("getUsersBySearch", param, User.class, session);
     }
+
+	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(final Chain<List<User>, UserParam> chain) {
+		this.chain = chain;
+	}
 }

@@ -29,7 +29,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
-import org.bibsonomy.database.managers.chain.FirstListChainElement;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -116,6 +116,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/** the validator for the posts*/
 	protected final DatabaseModelValidator<R> validator;
+
+	private Chain<List<Post<R>>, P> chain;
 
 
 	/**
@@ -531,7 +533,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsByHash(String loginUserName, final String requResource, final HashID simHash, final int groupId, Collection<Integer> groups, final int limit, final int offset, final DBSession session) {
+	public List<Post<R>> getPostsByHash(final String loginUserName, final String requResource, final HashID simHash, final int groupId, final Collection<Integer> groups, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setHash(requResource);
 		param.setSimHash(simHash);
@@ -539,7 +541,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setUserName(loginUserName);
 		if (present(loginUserName)) {
 			param.setGroups(groups);
-			List<Post<R>> list = this.postList("get" + this.resourceClassName + "ByHashVisibleForLoginUser", param, session);
+			final List<Post<R>> list = this.postList("get" + this.resourceClassName + "ByHashVisibleForLoginUser", param, session);
 			return list;
 		} else {
 			return this.postList("get" + this.resourceClassName + "ByHash", param, session);
@@ -849,7 +851,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
 		
-		List<Post<R>> list = this.getPostsForUser(param, session);
+		final List<Post<R>> list = this.getPostsForUser(param, session);
 		 return list;
 	}
 
@@ -1021,7 +1023,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	@Override
 	public List<Post<R>> getPosts(final P param, final DBSession session) {
-		return this.getChain().getFirstElement().perform(param, session);
+		return this.chain.perform(param, session);
 	}
 	
 	/*
@@ -1523,11 +1525,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected abstract void onPostDelete(Integer contentId, DBSession session);
 
 	/**
-	 * @return the chain
-	 */
-	protected abstract FirstListChainElement<Post<R>, P> getChain();
-
-	/**
 	 * @return the simple class name of the first generic param (<R>, Resource)
 	 */
 	protected String getResourceClassName() {
@@ -1657,5 +1654,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.addAllToSystemTags(systemTags);
 		return this.getPostsWithDiscussionsForGroup(param, session);
 	}
-	
+
+	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(final Chain<List<Post<R>>, P> chain) {
+		this.chain = chain;
+	}
 }
