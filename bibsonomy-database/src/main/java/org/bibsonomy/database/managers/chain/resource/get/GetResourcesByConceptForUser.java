@@ -38,7 +38,7 @@ public class GetResourcesByConceptForUser<R extends Resource, P extends Resource
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getTagIndex(), param.isCaseSensitiveTagNames(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getTagIndex(), param.isCaseSensitiveTagNames(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 }

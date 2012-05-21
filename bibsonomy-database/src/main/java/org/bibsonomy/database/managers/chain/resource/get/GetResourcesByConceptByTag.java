@@ -39,7 +39,7 @@ public class GetResourcesByConceptByTag<R extends Resource, P extends ResourcePa
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByConceptByTag(param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsByConceptByTag(param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 }

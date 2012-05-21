@@ -49,10 +49,10 @@ public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>
 		}
 
 		if (present(param.getTagIndex())) {
-			return this.getDatabaseManagerForType(param.getResourceClass()).getPostsViewableByTag(param.getRequestedGroupName(), param.getUserName(), param.getTagIndex(), groupId, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+			return this.databaseManager.getPostsViewableByTag(param.getRequestedGroupName(), param.getUserName(), param.getTagIndex(), groupId, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		}
 
-		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 }

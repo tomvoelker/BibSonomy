@@ -43,7 +43,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		}
 		
 		// query the resource searcher
-		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByResourceSearch(
+		return this.databaseManager.getPostsByResourceSearch(
 				param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), 
 				param.getGroupNames(), param.getRawSearch(), param.getTitle(), param.getAuthor(), tagIndex, 
 				year, firstYear, lastYear, 

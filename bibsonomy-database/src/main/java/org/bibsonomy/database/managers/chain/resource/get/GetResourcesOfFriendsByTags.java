@@ -56,8 +56,9 @@ public class GetResourcesOfFriendsByTags<R extends Resource, P extends ResourceP
 		 * see the posts
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
-			return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), GroupID.FRIENDS.getId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), session);
+			return this.databaseManager.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), GroupID.FRIENDS.getId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), session);
 		}
+		
 		return new ArrayList<Post<R>>();
 	}
 

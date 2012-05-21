@@ -47,10 +47,10 @@ public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceP
 				log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
 				return new ArrayList<Post<R>>();			
 			}
-			return this.getDatabaseManagerForType(param.getResourceClass()).getPostsWithDiscussionsForGroup(param.getUserName(), group.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+			return this.databaseManager.getPostsWithDiscussionsForGroup(param.getUserName(), group.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		}
 		// handle all other grouping Entities (USER and ALL)
-		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 }
