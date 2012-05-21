@@ -26,9 +26,4 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	public BibTex getResource() {
 		return super.getResource();
 	}
-	
-	@Override
-	public Class<BibTex> getResourceClass() {
-		return BibTex.class;
-	}
 }

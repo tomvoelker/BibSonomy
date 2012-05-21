@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.discussion.DiscussionChain;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.User;
@@ -22,9 +22,6 @@ import org.bibsonomy.model.util.UserUtils;
  */
 public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	private static final DiscussionDatabaseManager INSTANCE = new DiscussionDatabaseManager();
-
-
-	private static final DiscussionChain CHAIN = new DiscussionChain();
 	
 	/**
 	 * @return the @{link:DiscussionManager} instance
@@ -32,6 +29,9 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	public static DiscussionDatabaseManager getInstance() {
 		return INSTANCE;
 	}
+
+	
+	private Chain<List<DiscussionItem>, DiscussionItemParam<?>> chain;
 
 	private DiscussionDatabaseManager() {
 		// noop
@@ -52,7 +52,7 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * get the list of discussion items
 		 */
-		return CHAIN.getFirstElement().perform(param, session);
+		return this.chain.perform(param, session);
 	}
 	
 	/**
@@ -129,5 +129,12 @@ public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 		 */
 		Collections.reverse(rootItems);
 		return rootItems;
+	}
+
+	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(final Chain<List<DiscussionItem>, DiscussionItemParam<?>> chain) {
+		this.chain = chain;
 	}
 }

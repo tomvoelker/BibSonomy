@@ -1,7 +1,9 @@
 package org.bibsonomy.database.managers.chain.user;
 
+import java.util.List;
+
 import org.bibsonomy.database.managers.UserDatabaseManager;
-import org.bibsonomy.database.managers.chain.ListChainElement;
+import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.User;
 
@@ -11,7 +13,7 @@ import org.bibsonomy.model.User;
  * @author Dominik Benz
  * @version $Id$
  */
-public abstract class UserChainElement extends ListChainElement<User, UserParam> {
+public abstract class UserChainElement extends ChainElement<List<User>, UserParam> {
 
 	protected final UserDatabaseManager userDB;
 

@@ -17,15 +17,11 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class ChainElement<L, P> implements ChainPerform<P, L> {
+public abstract class ChainElement<L, P> {
 	protected static final Log log = LogFactory.getLog(ChainElement.class);
 	
 	protected final GeneralDatabaseManager generalDb;
-	
 	protected final GroupDatabaseManager groupDb;
-	
-	/** The next element of the chain */
-	protected ChainElement<L, P> next;
 
 	/**
 	 * Constructor
@@ -33,47 +29,6 @@ public abstract class ChainElement<L, P> implements ChainPerform<P, L> {
 	public ChainElement() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
-		this.next = null;
-	}
-
-	/**
-	 * Sets the next element in the chain.
-	 * 
-	 * @param nextElement
-	 *            the next element following this element
-	 */
-	public final void setNext(final ChainElement<L, P> nextElement) {
-		this.next = nextElement;
-	}
-
-	@Override
-	public final L perform(final P param, final DBSession session) {
-		return this.perform(param, session, null);
-	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @param chainStatus
-	 * @return list of L's
-	 * @see #perform(Object, DBSession)
-	 * @see ChainStatus
-	 * 
-	 * XXX: This method is only interesting for unit testing the chain, i.e. if
-	 * you want to know which element executed its <code>handle</code> method.
-	 */
-	public final L perform(final P param, final DBSession session, final ChainStatus chainStatus) {
-		if (this.canHandle(param)) {
-			if (chainStatus != null) {
-				chainStatus.setChainElement(this);
-			}
-			log.debug("Handling Chain element: " + this.getClass().getSimpleName());
-			return this.handle(param, session);
-		}
-		if (this.next != null) {
-			return this.next.perform(param, session, chainStatus);
-		}
-		throw new RuntimeException("Can't handle request for param object: " + param.toString());
 	}
 
 	/**

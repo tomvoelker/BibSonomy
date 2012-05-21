@@ -23,9 +23,4 @@ public class BookmarkParam extends ResourceParam<Bookmark> {
 	public Bookmark getResource() {
 	    return super.getResource();
 	}
-	
-	@Override
-	public Class<Bookmark> getResourceClass() {
-		return Bookmark.class;
-	}
 }

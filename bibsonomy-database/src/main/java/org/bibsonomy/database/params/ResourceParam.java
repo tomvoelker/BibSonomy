@@ -44,12 +44,4 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	public void setRatingAverage(final RatingAverage ratingAverage) {
 		this.ratingAverage = ratingAverage;
 	}
-	
-	/**
-	 * @return the resource class
-	 */
-	public Class<T> getResourceClass() {
-		throw new UnsupportedOperationException();
-	}
-
 }
