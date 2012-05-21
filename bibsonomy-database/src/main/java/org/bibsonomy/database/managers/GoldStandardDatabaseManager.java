@@ -18,7 +18,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.database.managers.chain.FirstListChainElement;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -51,7 +51,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	private ResourceSearch<R> search;
 
-	private FirstListChainElement<Post<R>, P> chain;
+	private Chain<List<Post<R>>, P> chain;
 
 	protected GoldStandardDatabaseManager() {
 		this.resourceClassName = this.getResourceClassName();
@@ -131,21 +131,14 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	@Override
 	public List<Post<R>> getPosts(final P param, final DBSession session) {
-		return this.getChain().getFirstElement().perform(param, session);
+		return this.chain.perform(param, session);
 	}
 
 	/**
 	 * @param chain the chain to set
 	 */
-	public void setChain(final FirstListChainElement<Post<R>, P> chain) {
+	public void setChain(final Chain<List<Post<R>>, P> chain) {
 		this.chain = chain;
-	}
-
-	/**
-	 * @return the chain
-	 */
-	protected FirstListChainElement<Post<R>, P> getChain() {
-		return this.chain;
 	}
 
 	@Override

@@ -5,8 +5,6 @@ import java.util.List;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.FirstListChainElement;
-import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -24,7 +22,6 @@ import org.bibsonomy.model.Post;
 public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, BookmarkParam> {
 	private static final BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
 	
-	private static final BookmarkChain chain = new BookmarkChain();
 	private static final HashID[] hashRange = { HashID.SIM_HASH0 };
 	
 	/**
@@ -75,15 +72,6 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	@Override
 	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
 		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getChain()
-	 */
-	@Override
-	protected FirstListChainElement<Post<Bookmark>, BookmarkParam> getChain() {
-		return chain;
 	}
 
 	/*

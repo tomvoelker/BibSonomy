@@ -11,7 +11,7 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.database.managers.chain.concept.ConceptChain;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -29,8 +29,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	private static final Log log = LogFactory.getLog(TagRelationDatabaseManager.class);
 
-	private final static TagRelationDatabaseManager singleton = new TagRelationDatabaseManager();
-	private static final ConceptChain chain = new ConceptChain();
+	private static final TagRelationDatabaseManager singleton = new TagRelationDatabaseManager();
 
 	/**
 	 * Defines relations for tags or concepts.
@@ -44,6 +43,8 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	
 	private final GeneralDatabaseManager generalDb;
 	private final DatabasePluginRegistry plugins;
+	
+	private Chain<List<Tag>, TagRelationParam> chain;
 
 	private TagRelationDatabaseManager() {
 		this.generalDb = GeneralDatabaseManager.getInstance();
@@ -65,7 +66,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of concepts
 	 */
 	public List<Tag> getConcepts(final TagRelationParam param, final DBSession session) {
-		return chain.getFirstElement().perform(param, session);
+		return chain.perform(param, session);
 	}
 	
 	/**
@@ -304,6 +305,12 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateLowerTagRelations", param, session);
 		this.update("deleteEqualConcepts", param, session);
 		this.update("deleteOldConcepts", param, session);
-		
+	}
+
+	/**
+	 * @param chain the chain to set
+	 */
+	public void setChain(final Chain<List<Tag>, TagRelationParam> chain) {
+		this.chain = chain;
 	}
 }
