@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	
+	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml"/>
+	<!-- import system tag context -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-systemtags-context.xml"/>
+
+	<!-- publication chain -->
+	<bean id="publicationChainElement" class="org.bibsonomy.database.managers.chain.resource.ResourceChainElement" abstract="true">
+		<property name="databaseManager" ref="publicationDatabaseManager" />
+	</bean>
+	
+	<bean id="publicationChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexWithRepository" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNames" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroup" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByUser" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByTags" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="publicationChainElement" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- bookmark chain -->
+	<bean id="bookmarkChainElement" class="org.bibsonomy.database.managers.chain.resource.ResourceChainElement" abstract="true">
+		<property name="databaseManager" ref="bookmarkDatabaseManager" />
+	</bean>
+	
+	<bean id="bookmarkChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNames" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroup" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByUser" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByTags" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="bookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="bookmarkChainElement" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- concept chain -->
+	<bean id="conceptChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.concept.get.GetAllConcepts" />
+				<bean class="org.bibsonomy.database.managers.chain.concept.get.GetAllConceptsForUser" />
+				<bean class="org.bibsonomy.database.managers.chain.concept.get.GetPickedConceptsForUser" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- discussion chain -->
+	<bean id="discussionChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.discussion.get.GetDiscussionSpaceByHash" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- tag chain -->
+	<bean id="tagChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByFriendOfUser" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetAllTags" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetSimilarTags" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetRelatedTags" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsForGroup" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByHash" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByHashForUser" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetPopularTags" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByBibtexkey" />
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByTaggedUserRelation" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- user chain -->
+	<bean id="userChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetUsersByGroup" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByUser" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByTags" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetFriendsOfUser" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetUserFriends" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetFollowersOfUser" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetUserFollowers" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetAllUsers" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetPendingUsers" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetPendingUserByUsername" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetPendingUserByActivationCode" />
+				<bean class="org.bibsonomy.database.managers.chain.user.get.GetUsersBySearch" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- post statistic chain -->
+	<bean id="postStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetUserDiscussionsStatistics" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForGroupCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesWithDiscussionsCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesAndUserCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesDuplicateCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.DefaultCatchAllCount" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- tag statistic chain -->
+	<bean id="tagStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.get.GetRelationCountByUser" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="statisticsDatabaseManager" class="org.bibsonomy.database.managers.StatisticsDatabaseManager" factory-method="getInstance">
+		<property name="postChain" ref="postStatisticChain" />
+		<property name="tagChain" ref="tagStatisticChain" />
+	</bean>
+		
+	<bean id="discussionDatabaseManager" class="org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager" factory-method="getInstance">
+		<property name="chain" ref="discussionChain" />
+	</bean>
+	
+	<bean id="userDatabaseManager" class="org.bibsonomy.database.managers.UserDatabaseManager" factory-method="getInstance">
+		<property name="chain" ref="userChain" />
+	</bean>
+	
+	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
+		<property name="userDb" ref="userDatabaseManager" />
+	</bean>
+	
+	<bean id="bookmarkDatabaseManager" class="org.bibsonomy.database.managers.BookmarkDatabaseManager" factory-method="getInstance">
+		<property name="resourceSearch" ref="luceneBookmarkSearch" />
+		<property name="chain" ref="bookmarkChain" />
+	</bean>
+	
+	<bean id="tagRelationDatabaseManager" class="org.bibsonomy.database.managers.TagRelationDatabaseManager" factory-method="getInstance">
+		<property name="chain" ref="conceptChain" />
+	</bean>
+	
+	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance">
+		<property name="resourceSearch" ref="lucenePublicationSearch" />
+		<property name="chain" ref="publicationChain" />
+	</bean>
+	
+	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
+		<property name="bookmarkSearch" ref="luceneBookmarkSearch" />
+		<property name="publicationSearch" ref="lucenePublicationSearch" />
+		<property name="chain" ref="tagChain" />
+	</bean>
+	
+	<bean id="goldStandardBookmarkDatabaseMananger" class="org.bibsonomy.database.managers.GoldStandardBookmarkDatabaseManager" factory-method="getInstance">
+		<property name="chain" ref="goldStandardBookmarkChain" />
+	</bean>
+	
+	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
+		<property name="search" ref="luceneGoldStandardPublicationSearch" />
+		<property name="chain" ref="goldStandardPublicationChain" />
+	</bean>	
+
+	<bean id="goldStandardBookmarkChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="goldStandardPublicationChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardBookmarkChainElement" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="abstractGoldStandardPublicationChainElement" class="org.bibsonomy.database.managers.chain.goldstandard.get.GoldStandardChainElement" abstract="true">
+		<property name="databaseManager" ref="goldStandardPublicationDatabaseManager" />
+	</bean>
+	
+	<bean id="abstractGoldStandardBookmarkChainElement" class="org.bibsonomy.database.managers.chain.goldstandard.get.GoldStandardChainElement" abstract="true">
+		<property name="databaseManager" ref="goldStandardBookmarkDatabaseMananger" />
+	</bean>
+</beans>
