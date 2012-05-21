@@ -2,13 +2,17 @@ package org.bibsonomy.database.managers.chain.concept;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.managers.chain.AbstractChainTest;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.concept.get.GetAllConcepts;
 import org.bibsonomy.database.managers.chain.concept.get.GetAllConceptsForUser;
 import org.bibsonomy.database.managers.chain.concept.get.GetPickedConceptsForUser;
 import org.bibsonomy.database.params.TagRelationParam;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -18,15 +22,16 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-public class ConceptChainTest extends AbstractChainTest {
-	protected static ConceptChain conceptChain;
+public class ConceptChainTest extends AbstractDatabaseManagerTest {
+	protected static Chain<List<Tag>, TagRelationParam> conceptChain;
 	
 	/**
 	 * sets up the chain
 	 */
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpChain() {
-		conceptChain = new ConceptChain();
+		conceptChain = (Chain<List<Tag>, TagRelationParam>) testDatabaseContext.getBean("conceptChain");
 	}
 	
 	
@@ -47,8 +52,7 @@ public class ConceptChainTest extends AbstractChainTest {
 	public void getAllConcepts() {
 		this.tagRelationParam.setGrouping(GroupingEntity.ALL);
 		this.tagRelationParam.setConceptStatus(ConceptStatus.ALL);
-		conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, chainStatus);
-		assertEquals(GetAllConcepts.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetAllConcepts.class, conceptChain.getChainElement(this.tagRelationParam).getClass());
 	}
 
 	/**
@@ -59,8 +63,7 @@ public class ConceptChainTest extends AbstractChainTest {
 		this.tagRelationParam.setGrouping(GroupingEntity.USER);
 		this.tagRelationParam.setConceptStatus(ConceptStatus.ALL);
 		this.tagRelationParam.setRequestedUserName("testuser1");
-		conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, chainStatus);
-		assertEquals(GetAllConceptsForUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetAllConceptsForUser.class, conceptChain.getChainElement(this.tagRelationParam).getClass());
 	}
 
 	/**
@@ -71,7 +74,6 @@ public class ConceptChainTest extends AbstractChainTest {
 		this.tagRelationParam.setGrouping(GroupingEntity.USER);
 		this.tagRelationParam.setConceptStatus(ConceptStatus.PICKED);
 		this.tagRelationParam.setRequestedUserName("testuser1");
-		conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, chainStatus);
-		assertEquals(GetPickedConceptsForUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetPickedConceptsForUser.class, conceptChain.getChainElement(this.tagRelationParam).getClass());
 	}
 }

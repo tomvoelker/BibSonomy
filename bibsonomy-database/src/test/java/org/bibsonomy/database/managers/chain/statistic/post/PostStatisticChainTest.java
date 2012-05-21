@@ -4,7 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.enums.ConstantID;
-import org.bibsonomy.database.managers.chain.AbstractChainTest;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.statistics.Statistics;
@@ -19,15 +20,16 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @version $Id$
  */
-public class PostStatisticChainTest extends AbstractChainTest {
-	protected static PostStatisticChain postStatisticsChain;
+public class PostStatisticChainTest extends AbstractDatabaseManagerTest {
+	protected static Chain<Statistics, StatisticsParam> postStatisticsChain;
 	
 	/**
 	 * sets up the chain
 	 */
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpChain() {
-		postStatisticsChain = new PostStatisticChain();
+		postStatisticsChain = (Chain<Statistics, StatisticsParam>) testDatabaseContext.getBean("postStatisticChain");
 	}
 
 	private StatisticsParam statisticsParam;
@@ -53,9 +55,9 @@ public class PostStatisticChainTest extends AbstractChainTest {
 		this.statisticsParam.setOrder(null);
 		this.statisticsParam.setSearch(null);
 		
-		final Statistics stats = postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, chainStatus);
+		final Statistics stats = postStatisticsChain.perform(this.statisticsParam, this.dbSession);
 		assertEquals(2, stats.getCount());
-		assertEquals(GetResourcesForHashCount.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesForHashCount.class, postStatisticsChain.getChainElement(this.statisticsParam).getClass());
 	}
 
 }
