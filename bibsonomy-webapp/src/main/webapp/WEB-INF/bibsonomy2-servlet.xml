@@ -877,6 +877,9 @@
 	</bean>
 
 	<!--  #################### imports #################### -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
+	
+	<!-- webapp -->
     <import resource="bibsonomy2-servlet-fields.xml"/>
     <import resource="bibsonomy2-servlet-recommender.xml"/>	
     <import resource="bibsonomy2-servlet-actions.xml"/>

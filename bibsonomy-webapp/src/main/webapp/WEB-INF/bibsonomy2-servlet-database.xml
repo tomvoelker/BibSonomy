@@ -10,58 +10,8 @@
 	                    http://www.springframework.org/schema/jee
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 	
-	<!-- configures given properties in all relevant database managers -->
-	<!-- TODO: add more config here -->	
-	<bean id="userDatabaseManager" class="org.bibsonomy.database.managers.UserDatabaseManager" factory-method="getInstance" />
-	
-	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
-		<property name="userDb" ref="userDatabaseManager" />
-	</bean>
-	
-	<bean id="bookmarkDatabaseManager" class="org.bibsonomy.database.managers.BookmarkDatabaseManager" factory-method="getInstance">
-		<property name="resourceSearch" ref="luceneBookmarkSearch" />
-	</bean>
-	
-	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance">
-		<property name="resourceSearch" ref="lucenePublicationSearch" />
-	</bean>
-	
-	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
-		<property name="bookmarkSearch" ref="luceneBookmarkSearch" />
-		<property name="publicationSearch" ref="lucenePublicationSearch" />
-	</bean>
-	
-	<bean id="goldStandardBookmarkDatabaseMananger" class="org.bibsonomy.database.managers.GoldStandardBookmarkDatabaseManager" factory-method="getInstance">
-		<property name="chain" ref="goldStandardChain" />
-	</bean>
-	
-	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
-		<property name="search" ref="luceneGoldStandardPublicationSearch" />
-		<property name="chain" ref="goldStandardChain" />
-	</bean>	
-
-	<bean id="goldStandardChain" class="org.bibsonomy.database.managers.chain.ListChain">
-		<property name="firstElement" ref="goldStandardSearch" />
-	</bean>
-	
-	<bean id="abstractGoldStandardChainElement" class="org.bibsonomy.database.managers.chain.goldstandard.get.GoldStandardChainElement" abstract="true">
-		<property name="dbs" ref="goldStandardDatabaseManagerMap" />
-	</bean>
-	
-	<util:map key-type="java.lang.Class" id="goldStandardDatabaseManagerMap">
-		<entry key-ref="bookmarkClass" value-ref="goldStandardBookmarkDatabaseMananger" />
-		<entry key-ref="publicationClass" value-ref="goldStandardPublicationDatabaseManager" />
-	</util:map>
-	
-	<bean id="bookmarkClass" class="java.lang.Class" factory-method="forName">
-		<constructor-arg value="org.bibsonomy.model.Bookmark" />
-	</bean>
-	
-	<bean id="publicationClass" class="java.lang.Class" factory-method="forName">
-		<constructor-arg value="org.bibsonomy.model.BibTex" />
-	</bean>
-	
-	<bean id="goldStandardSearch" class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardChainElement" />
+	<!-- import database context form submodule -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
 	
 	<!--+
 	    | As soon as we have migrated to myBatis, we should retrieve the 
@@ -84,6 +34,4 @@
 	<bean id="dbSchemaInformation" class="org.bibsonomy.database.util.DatabaseSchemaInformation" factory-method="getInstance" />
 	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
-	
-	<import resource="classpath:systemtags-context.xml"/>
 </beans>
