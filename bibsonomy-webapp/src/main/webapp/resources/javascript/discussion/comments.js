@@ -77,7 +77,11 @@ function showEditCommentForm() {
 	populateFormWithGroups(form, getAbstractGrouping(comment), getGroups(comment));
 	
 	// … text
-	var commentText = comment.find('.text:first').text();
+//	var commentText = comment.find('.text:first').text();
+	var ct = comment.find('.originalText').text();
+	var commentText = ct != "" ? ct : comment.find('.text:first').text();
+	
+	
 	form.find('textarea').attr('value', commentText);
 	if (comment.hasClass(ANONYMOUS_CLASS)) {
 		form.find(ANONYMOUS_SELECTOR).attr('checked', 'checked');
@@ -191,6 +195,8 @@ function createComment() {
 }
 
 function updateCommentView(commentView, commentHash, commentText, anonymous, commentAbstractGrouping, commentGroups) {
+	
+	commentView.find(".originalText").remove();
 	/*
 	 * update comment text
 	 */
@@ -253,10 +259,10 @@ function updateComment() {
 						commentForm.parent().remove();
 						highlight(commentView);
 						showReviewForm();
-						reviewForm.siblings(".citeBox").hide();
-		     			reviewForm.siblings(".bookCiteBox").children("div").remove();
-		     			reviewForm.siblings(".bookCiteBox").hide();
-		     			handleLinks(reviewForm.parent());
+						commentView.children(".details").find(".citeBox").hide();
+						commentView.children(".details").find(".bookCiteBox").children("div").remove();
+						commentView.children(".details").find(".bookCiteBox").hide();
+		     			handleLinks(commentView);
 					},
 		error:		function(jqXHR, data, errorThrown) {
 						handleAjaxErrors(commentForm, jQuery.parseJSON(jqXHR.responseText));

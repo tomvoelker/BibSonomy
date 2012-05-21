@@ -105,7 +105,6 @@ function parsePublicationResult(data, postLinkData) {
 	var sys = new Sys(data);
 	var citeproc = new CSL.Engine(sys, style);
 	var id = constructId(data, postLinkData.getHash());
-
 	var citation = {
 		"citationItems" : [ {
 			id : id

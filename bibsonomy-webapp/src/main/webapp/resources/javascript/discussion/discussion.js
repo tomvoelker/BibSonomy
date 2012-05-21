@@ -305,14 +305,17 @@ function scrollTo(id){
 }
 
 function parseLinks(reviewText) {
+	var originalText = reviewText;
 	var matches = new Array();
 	var links = new Array();
 	var reg = /\[\[(?:(bookmark|url|bibtex|publication)(?:\/))?([0-9a-fA-F]{32,33})(?:\/(.*?))?\]\]/gi;
 	var match;
+	var changed = false;
 	while (match = reg.exec(reviewText)) {
 		if(matches.indexOf(match[0]) != -1) {
 			continue;
 		}
+		changed = true;
 		var url;
 		if(match[1] == "url" || match[1] == "bookmark") {
 			url = "/url/"
@@ -333,6 +336,11 @@ function parseLinks(reviewText) {
 	for (var i = 0; i < matches.length; i++) {
 		reviewText = reviewText.replaceAll(matches[i], links[i], true);
 	}
-	return $("<div class=\"review text\" itemprop=\"reviewBody\">" + reviewText + "<div>");
+	
+	var ret =  "<div class=\"review text\" itemprop=\"reviewBody\">" + reviewText + "</div>\n";
+	if(changed) {
+		ret += "<div class=\"originalText\" style=\"display:none\">" + originalText + "</div>";
+	}
+	return ret;
 }
 
