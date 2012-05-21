@@ -45,6 +45,7 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 	@Override
 	protected int doStartTagInternal() throws Exception {
 		Matcher matcher = linkPattern.matcher(text);
+		String originalText = text;
 		/*
 		 * Required to store proceeded links for prevent double creation of html
 		 * anchor. This can happen, if this discussion object has two or more
@@ -55,10 +56,13 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 		 */
 		HashSet<String> replacedLinks = new HashSet<String>();
 
+		boolean changed = false;
+		
 		while (matcher.find()) {
 			if(replacedLinks.contains(matcher.group(0))) {
 				continue;
 			}
+			changed = true;
 			StringBuilder url = new StringBuilder("<a class=\"postlink\"href=\"/");
 
 			url.append(getResourceString(matcher.group(RES_TYPE_GROUP_ID)));
@@ -75,6 +79,11 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 			text = text.replace(matcher.group(0), url);
 			replacedLinks.add(matcher.group(0));
 		}
+		
+		if(changed) {
+			text += "<div class=\"originalText\" style=\"display:none\">" + originalText + "</div>";
+		}
+		
 		try {
 			pageContext.getOut().print(text);
 		} catch (final IOException ex) {

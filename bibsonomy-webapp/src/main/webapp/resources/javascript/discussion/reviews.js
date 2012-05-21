@@ -357,6 +357,7 @@ function updateReview() {
 		     			var newAvg = (oldAvg * count - oldReviewRating + reviewRating) / count;
 		     			setAvg(newAvg);
 		     			plotRatingDistribution();
+		     			reviewForm.siblings(".originalText").remove();
 		     			reviewForm.submit(updateReview);
 		     			reviewForm.siblings(".citeBox").children("div").remove();
 		     			reviewForm.siblings(".citeBox").hide();
