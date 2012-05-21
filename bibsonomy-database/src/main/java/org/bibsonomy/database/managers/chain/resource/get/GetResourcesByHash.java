@@ -37,10 +37,10 @@ public class GetResourcesByHash<R extends Resource, P extends ResourceParam<R>> 
 	protected List<Post<R>> handle(final P param, final DBSession session) {
 		if (present(param.getUserName())) {
 			// user is logged in => all posts visible for the loginUser
-			return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByHash(param.getUserName(), param.getHash(), HashID.getSimHash(param.getSimHash()), GroupID.INVALID.getId(), param.getGroups(), param.getLimit(), param.getOffset(), session);
+			return this.databaseManager.getPostsByHash(param.getUserName(), param.getHash(), HashID.getSimHash(param.getSimHash()), GroupID.INVALID.getId(), param.getGroups(), param.getLimit(), param.getOffset(), session);
 		} else {
 			// no loginUser => only public posts (GroupID.INVALID.getId())
-			return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByHash(null, param.getHash(), HashID.getSimHash(param.getSimHash()), GroupID.PUBLIC.getId(), null, param.getLimit(), param.getOffset(), session);
+			return this.databaseManager.getPostsByHash(null, param.getHash(), HashID.getSimHash(param.getSimHash()), GroupID.PUBLIC.getId(), null, param.getLimit(), param.getOffset(), session);
 		}
 	}
 

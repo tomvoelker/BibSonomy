@@ -40,7 +40,7 @@ public class GetResourcesByTagNames<R extends Resource, P extends ResourceParam<
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByTagNames(GroupID.PUBLIC.getId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
+		return this.databaseManager.getPostsByTagNames(GroupID.PUBLIC.getId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
 	}
 
 }

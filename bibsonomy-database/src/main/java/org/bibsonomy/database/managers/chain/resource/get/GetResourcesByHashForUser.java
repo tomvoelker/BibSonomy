@@ -34,7 +34,7 @@ public class GetResourcesByHashForUser<R extends Resource, P extends ResourcePar
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session);
+		return this.databaseManager.getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session);
 	}
 
 }

@@ -30,7 +30,7 @@ public class GetResourcesByFollowedUsers<R extends Resource, P extends ResourceP
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.getDatabaseManagerForType(param.getResourceClass()).getPostsByFollowedUsers(param.getUserName(), param.getGroups(), param.getLimit(), param.getOffset(), session);
+		return this.databaseManager.getPostsByFollowedUsers(param.getUserName(), param.getGroups(), param.getLimit(), param.getOffset(), session);
 	}
 
 }
