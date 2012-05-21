@@ -3,11 +3,17 @@ package org.bibsonomy.database.managers.chain.bibtex;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchEntity;
-import org.bibsonomy.database.managers.chain.AbstractChainTest;
+import org.bibsonomy.database.common.params.beans.TagIndex;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag;
@@ -28,6 +34,8 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsB
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
@@ -41,16 +49,17 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-public class BibTexChainTest extends AbstractChainTest {
+public class BibTexChainTest extends AbstractDatabaseManagerTest {
 	
-	protected static BibTexChain bibtexChain;
+	protected static Chain<List<BibTex>, BibTexParam> bibtexChain;
 	
 	/**
 	 * sets up the chain
 	 */
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpChain() {
-		bibtexChain = new BibTexChain();
+		bibtexChain = testDatabaseContext.getBean("publicationChain", Chain.class);
 	}
 	
 	private BibTexParam bibtexParam;
@@ -75,8 +84,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleTags(0);
 		this.bibtexParam.setNumTransitiveConcepts(0);
 		
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByConceptForUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesByConceptForUser.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -91,8 +99,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleTags(0);
 		this.bibtexParam.setNumTransitiveConcepts(0);
 		
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByConceptForGroup.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesByConceptForGroup.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -106,8 +113,8 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(3);
 		this.bibtexParam.setNumSimpleTags(0);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByConceptByTag.class, chainStatus.getChainElement().getClass());
+		
+		assertEquals(GetResourcesByConceptByTag.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -121,8 +128,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByFriends.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesByFriends.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -130,7 +136,7 @@ public class BibTexChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void getBibtexByHash() {
-		BibTexParam param = new BibTexParam();
+		final BibTexParam param = new BibTexParam();
 		param.setHash("I_am_a_hash");
 		param.setBibtexKey(null);
 		param.setGrouping(GroupingEntity.ALL);
@@ -138,8 +144,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		param.setTagIndex(null);
 		param.setOrder(null);
 		param.setSearch(null);
-		bibtexChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByHash.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesByHash.class, bibtexChain.getChainElement(param).getClass());
 	}
 
 	/**
@@ -150,8 +155,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setGrouping(GroupingEntity.USER);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByHashForUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesByHashForUser.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -164,8 +168,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(0);
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByTagNames.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesByTagNames.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -181,8 +184,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(0);
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByTagNamesAndUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesByTagNamesAndUser.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -195,8 +197,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setRequestedUserName(null);
 		this.bibtexParam.setTagIndex(null);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesForGroup.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesForGroup.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -211,8 +212,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(0);
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesForGroupAndTag.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesForGroupAndTag.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 
 	}
 
@@ -225,9 +225,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesForHomepage.class, chainStatus.getChainElement().getClass());
-
+		assertEquals(GetResourcesForHomepage.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -240,8 +238,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
 		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesForUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesForUser.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -252,8 +249,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setGrouping(GroupingEntity.FRIEND);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesOfFriendsByTags.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesOfFriendsByTags.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -268,8 +264,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setNumSimpleConcepts(0);
 		this.bibtexParam.setNumSimpleTags(3);
 		this.bibtexParam.setNumTransitiveConcepts(0);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesOfFriendsByUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesOfFriendsByUser.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -282,8 +277,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setOrder(Order.POPULAR);
 		this.bibtexParam.setTagIndex(null);
 		this.bibtexParam.setDays(0);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesPopular.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesPopular.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -294,8 +288,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setGrouping(GroupingEntity.VIEWABLE);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesViewable.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesViewable.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -311,8 +304,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setGroupId(-1);
 		this.bibtexParam.setSearch("Grahl");
 		this.bibtexParam.setSearchEntity(SearchEntity.AUTHOR);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetBibtexByResourceSearch.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -326,8 +318,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setRequestedGroupName(null);
 		this.bibtexParam.setSearch("Grahl");
 		this.bibtexParam.setSearchEntity(SearchEntity.AUTHOR);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetBibtexByResourceSearch.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**
@@ -341,8 +332,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setRequestedUserName(null);
 		this.bibtexParam.setLimit(350);
 		this.bibtexParam.setSearchEntity(SearchEntity.ALL);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetBibtexByResourceSearch.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 	/**
 	 * tests getBibtexFromBasketForUser
@@ -355,8 +345,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setSearch(null);
 		this.bibtexParam.setTagIndex(null);
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetBibtexFromBasketForUser.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetBibtexFromBasketForUser.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 	
 	/**
@@ -367,7 +356,43 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setGrouping(GroupingEntity.FOLLOWER);
 		this.bibtexParam.addGroups(new ArrayList<Integer>(0));
 		this.bibtexParam.setUserName("testuser2");
-		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetResourcesByFollowedUsers.class, chainStatus.getChainElement().getClass());		
+		assertEquals(GetResourcesByFollowedUsers.class, bibtexChain.getChainElement(this.bibtexParam).getClass());		
+	}
+	
+	/**
+	 * tests getBibtexForGroupAndTag
+	 * @author rja
+	 */
+	@Test
+	public void getBibtexForGroupAndTag2() {
+		final BibTexParam p = new BibTexParam();
+
+		final Set<Tag> tags = new HashSet<Tag>();
+		final List<TagIndex> tagIndex = new LinkedList<TagIndex>();
+
+		/*
+		 * change number of requested tags here
+		 */
+		final int numberOfTags = 15;
+
+		for (int i = 0; i < numberOfTags; i++) {
+			tags.add(new Tag("a" + i));
+			tagIndex.add(new TagIndex("a" + i, i + 1));
+		}
+		p.setTags(tags);
+		p.setTagIndex(tagIndex);
+
+		p.setGrouping(GroupingEntity.GROUP);
+		p.setRequestedGroupName("kde");
+		p.setRequestedUserName(null);
+		p.setHash(null);
+		p.setOrder(null);
+		p.setSearch("");
+		p.setNumSimpleConcepts(0);
+		p.setNumSimpleTags(numberOfTags);
+		p.setNumTransitiveConcepts(0);
+		p.addGroup(GroupID.PUBLIC.getId());
+		
+		bibtexChain.perform(p, dbSession);
 	}
 }

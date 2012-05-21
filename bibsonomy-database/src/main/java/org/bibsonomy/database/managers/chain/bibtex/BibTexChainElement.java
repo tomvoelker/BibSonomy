@@ -1,10 +1,9 @@
 package org.bibsonomy.database.managers.chain.bibtex;
 
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
-import org.bibsonomy.database.managers.chain.ListChainElement;
+import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 
 /**
  * All elements for the chain of responsibility for publications are derived
@@ -13,7 +12,7 @@ import org.bibsonomy.model.Post;
  * @author Miranda Grahl
  * @version $Id$
  */
-public abstract class BibTexChainElement extends ListChainElement<Post<BibTex>, BibTexParam> {
+public abstract class BibTexChainElement extends ResourceChainElement<BibTex, BibTexParam> {
 
 	protected final BibTexDatabaseManager db;
 
