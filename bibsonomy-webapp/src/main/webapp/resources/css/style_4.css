@@ -632,14 +632,14 @@ a img {
 
 /* --- side bar navigation  ------------------------------------------------*/
 #sidebarnavi {
-	height: 43px;
+	height: 38px;
 	background: url("/resources/image/sidebarnav_bg.png");
 	/*background-color: #e4e4e4;*/
 }
 
 .sidebarnavi_entry {
-    background: url("/resources/image/tabactions_1.png");
-    height: 43px; 
+    background: url("/resources/image/tabactions_2.png");
+    height: 38px; 
 	width: 42px;
     position: absolute;
     border-left: 1px solid #c6c6c6;
@@ -650,7 +650,7 @@ a img {
 }
 
 .sidebarnavi_entry a {
-    height: 43px; 
+    height: 38px; 
     display: block;
     outline: none;
     text-decoration: none;
@@ -671,111 +671,111 @@ a img {
 
 .sidebarnavi_entry_01 {
     border-left: 0;
-    background-position: -70px -133px;
+    background-position: -40px -89px;
     left: 0px;
 }
 
 .sidebarnavi_entry_01:hover {
     border-left: 0;
-    background-position: -70px -280px;
+    background-position: -40px -43px;
     left: 0px;
 }
 
 .sidebarnavi_entry_01_inactive {
     border-left: 0;
-    background-position: -70px -428px;
+    background-position: -40px 3px;
     left: 0px;
 }
 
 .inbox_full {
-    background-position: -8px -133px;
+    background-position: 2px -89px;
 }
 
 .inbox_full:hover {
-    background-position: -8px -280px;
+    background-position: 2px -43px;
 }
 
 .sidebarnavi_entry_02 {
-	background-position: -128px -133px;
+	background-position: -83px -89px;
 	left: 42px;
 }
 
 .sidebarnavi_entry_02:hover {
-	background-position: -128px -280px;
+	background-position: -83px -43px;
 }
 
 .sidebarnavi_entry_02_inactive {
-	background-position: -128px -428px;
+	background-position: -83px 3px;
 	left: 42px;
 }
 
 .sidebarnavi_entry_03 {
-    background-position: -184px -134px;
+    background-position: -119px -89px;
     left: 84px;
 }
 
 .sidebarnavi_entry_03:hover {
-    background-position: -184px -281px;
+    background-position: -119px -43px;
 }
 
 .sidebarnavi_entry_03_inactive {
-    background-position: -184px -429px;
-    left: 84px;
+	background-position: -119px 3px;
+	left: 84px;
 }
 
 .sidebarnavi_entry_04 {
-    background-position: -235px -135px;
+    background-position: -157px -89px;
     left: 42.8571%;
 }
 
 .sidebarnavi_entry_04:hover {
-    background-position: -235px -282px;
+    background-position: -157px -43px;
 }
 
 .sidebarnavi_entry_04_inactive {
-    background-position: -235px -430px;
+    background-position: -157px 3px;
     left: 42.8571%;
 }
 
 .sidebarnavi_entry_05 {
-	background-position: -290px -133px;
+	background-position: -195px -89px;
 	left: 57.1429%;
 }
 
 .sidebarnavi_entry_05:hover {
-	background-position: -290px -280px;
+	background-position: -195px -43px;
 }
 
 .sidebarnavi_entry_05_inactive {
-	background-position: -290px -428px;
+	background-position: -195px 3px;
 	left: 57.1429%;
 }
 
 .sidebarnavi_entry_06 {
-    background-position: -340px -137px;
+    background-position: -229px -89px;
 	left: 71.4286%;
 }
 
 .sidebarnavi_entry_06:hover {
-    background-position: -340px -284px;
+    background-position: -229px -43px;
 }
 
 .sidebarnavi_entry_06_inactive {
-    background-position: -340px -432px;
+    background-position: -318px -100px;
 	left: 71.4286%;
 }
 
 .sidebarnavi_entry_07 {
-    background-position: -386px -134px;
+    background-position: -263px -89px;
 	left: 85.7143%;
 }
 
 .sidebarnavi_entry_07:hover {
-    background-position: -386px -281px;
+    background-position: -263px -43px;
 }
 
 .sidebarnavi_entry_07_inactive {
-    background-position: -386px -429px;
+    background-position: -363px -100px;
 	left: 85.7143%;
 }
 
@@ -1170,7 +1170,6 @@ div.help>a,div.help>b {
 	width: 100px;
 	text-align: center;
 	padding-top: 15px;
-	background-color: white;
 	left: 3px;
 	bottom: 3px;
 	top: 3px;
@@ -1229,10 +1228,10 @@ div.help>a,div.help>b {
  */
 .headerLogo.image {border: 0}
 .headerLogo.image {background: url("/resources/image/icons_2.png") no-repeat;} 
-.headerLogo.image.bookmarks {background-position: 0px 4px; width: 30px; height: 30px; }
-.headerLogo.image.publications {background-position: 0px -55px; width: 30px; height: 30px; }
+.headerLogo.image.bookmarks {background-position: 0px 2px; width: 30px; height: 30px; }
+.headerLogo.image.publications {background-position: 0px -57px; width: 30px; height: 30px; }
 .headerLogo.image.tags {background-position: 4px -182px; width: 30px; height: 30px; }
-.headerLogo.image.spheresHeader {background: url("/resources/image/tabactions.png") no-repeat; background-position: -47px -95px; }
+.headerLogo.image.spheresHeader {background: url("/resources/image/tabactions_2.png") no-repeat; background-position: -47px -95px; }
 .headerLogo.image.cv {background-position: 4px -528px; width: 30px; height: 30px; }
 .headerLogo.image.settings {background-position: 4px -320px; width: 30px; height: 30px; }
 .headerLogo.image.editTags {background-position: 4px -414px; width: 30px; height: 30px; }
@@ -1390,6 +1389,12 @@ Most actions appear in three ways
 .post .action .icommunity, #pageOptions .icommunity{ background-position: 0 -723px; width: 19px; height: 16px; } 
 .post .action .community:hover, #pageOptions .community:hover{ background-position: 0 -754px; width: 19px; height: 16px; } 
 .post .action .community, #pageOptions .community{ background-position: 0 -785px; width: 19px; height: 16px; } 
+
+
+
+
+
+
 
 
 /***** POST RATINGS ****/
@@ -1603,8 +1608,8 @@ form.editTags input[type=text] {
 	font-weight: bold;
 	font-size: 120%;
 	padding-left: 128px;
-	height: 31px;
-    padding-top: 12px;
+	height: 28px;
+    padding-top: 10px;
     margin: 0;
 	background-color: #ffffff;
 }
@@ -1627,7 +1632,7 @@ form.editTags input[type=text] {
 	background: url("/resources/image/icons_2.png");
     background-repeat: no-repeat;
 	background-position: 0px -235px;
-	margin-top: 5px;
+	margin-top: 3px;
 	float: right;
 	cursor: pointer;
 }
@@ -1712,7 +1717,7 @@ form.editTags input[type=text] {
 .listOptions, .pageOptions { 
 	border:2px solid #c6c6c6; 
 	z-index:70;
- 	top:144px;
+ 	top:141px;
 	position:absolute;
   	background-color: #eee;
   	position: absolute;
@@ -1726,7 +1731,7 @@ form.editTags input[type=text] {
 	left: 0px;
 	right: 0px;
 	top: 125px;
-	height: 43px;
+	height: 38px;
 	padding-right: 300px;
 	background-color: #FFFFFF;
 	overflow:visible;
@@ -1782,8 +1787,8 @@ form.editTags input[type=text] {
 
 /** logo for page headings */
 #panelheader .headerLogo, #bookmarksheader .headerLogo, #publicationsheader .headerLogo {
-	width: 50px;
-	height: 43px;
+	width: 40px;
+	height: 38px;
 	float: left;
 	margin-left: 30px;
 }

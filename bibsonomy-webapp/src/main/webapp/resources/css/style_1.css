@@ -638,7 +638,7 @@ a img {
 }
 
 .sidebarnavi_entry {
-    background: url("/resources/image/tabactions.png");
+    background: url("/resources/image/tabactions_1.png");
     height: 43px; 
 	width: 42px;
     position: absolute;
@@ -663,119 +663,120 @@ a img {
 
 .sidebarnavi_info {
 	/** shows additional information in the side bar navigation */
-	margin-right: 5px;
 	position: absolute;
 	font-weight: bold;
-	right: 0px;
+	width: 100%;
+	text-align: center;
+	margin-top: 16px;
 }
 
 .sidebarnavi_entry_01 {
     border-left: 0;
-    background-position: -9px -99px;
-    left: 0px;
-}
-
-.sidebarnavi_entry_01_inactive {
-    border-left: 0;
-    background-position: -9px -203px;
+    background-position: -70px -133px;
     left: 0px;
 }
 
 .sidebarnavi_entry_01:hover {
     border-left: 0;
-    background-position: -9px 1px;
+    background-position: -70px -280px;
+    left: 0px;
+}
+
+.sidebarnavi_entry_01_inactive {
+    border-left: 0;
+    background-position: -70px -428px;
     left: 0px;
 }
 
 .inbox_full {
-    background-position: -8px -149px;
+    background-position: -8px -133px;
 }
 
 .inbox_full:hover {
-    background-position: -8px -49px;
+    background-position: -8px -280px;
 }
 
 .sidebarnavi_entry_02 {
-	background-position: -96px -104px;
+	background-position: -128px -133px;
 	left: 42px;
 }
 
 .sidebarnavi_entry_02:hover {
-	background-position: -96px -4px;
+	background-position: -128px -280px;
 }
 
 .sidebarnavi_entry_02_inactive {
-	background-position: -96px -209px;
+	background-position: -128px -428px;
 	left: 42px;
 }
 
 .sidebarnavi_entry_03 {
-    background-position: -50px -99px;
+    background-position: -184px -134px;
     left: 84px;
 }
 
 .sidebarnavi_entry_03:hover {
-    background-position: -50px 1px;
+    background-position: -184px -281px;
 }
 
 .sidebarnavi_entry_03_inactive {
-    background-position: -50px -203px;
+    background-position: -184px -429px;
     left: 84px;
 }
 
 .sidebarnavi_entry_04 {
-    background-position: -279px -99px;
+    background-position: -235px -135px;
     left: 42.8571%;
 }
 
 .sidebarnavi_entry_04:hover {
-    background-position: -279px -1px;
+    background-position: -235px -282px;
 }
 
 .sidebarnavi_entry_04_inactive {
-    background-position: -279px -203px;
+    background-position: -235px -430px;
     left: 42.8571%;
 }
 
 .sidebarnavi_entry_05 {
-	background-position: -236px -98px;
+	background-position: -290px -133px;
 	left: 57.1429%;
 }
 
 .sidebarnavi_entry_05:hover {
-	background-position: -236px 3px;
+	background-position: -290px -280px;
 }
 
 .sidebarnavi_entry_05_inactive {
-	background-position: -235px -202px;
+	background-position: -290px -428px;
 	left: 57.1429%;
 }
 
 .sidebarnavi_entry_06 {
-    background-position: -318px -98px;
+    background-position: -340px -137px;
 	left: 71.4286%;
 }
 
 .sidebarnavi_entry_06:hover {
-    background-position: -319px 1px;
+    background-position: -340px -284px;
 }
 
 .sidebarnavi_entry_06_inactive {
-    background-position: -318px -98px;
+    background-position: -340px -432px;
 	left: 71.4286%;
 }
 
 .sidebarnavi_entry_07 {
-    background-position: -363px -97px;
+    background-position: -386px -134px;
 	left: 85.7143%;
 }
 
 .sidebarnavi_entry_07:hover {
-    background-position: -363px 1px;
+    background-position: -386px -281px;
 }
 
 .sidebarnavi_entry_07_inactive {
-    background-position: -363px -97px;
+    background-position: -386px -429px;
 	left: 85.7143%;
 }
 
@@ -1228,9 +1229,9 @@ div.help>a,div.help>b {
  * header logos for all pages (FIXME: must be positioned correctly)
  */
 .headerLogo.image {border: 0}
-.headerLogo.image {background: url("/resources/image/icons.png") no-repeat;} 
-.headerLogo.image.bookmarks {background-position: -45px 2px; width: 30px; height: 30px; }
-.headerLogo.image.publications {background-position: -45px -68px; width: 30px; height: 30px; }
+.headerLogo.image {background: url("/resources/image/icons_2.png") no-repeat;} 
+.headerLogo.image.bookmarks {background-position: 0px 4px; width: 30px; height: 30px; }
+.headerLogo.image.publications {background-position: 0px -55px; width: 30px; height: 30px; }
 .headerLogo.image.tags {background-position: 4px -182px; width: 30px; height: 30px; }
 .headerLogo.image.spheresHeader {background: url("/resources/image/tabactions.png") no-repeat; background-position: -47px -95px; }
 .headerLogo.image.cv {background-position: 4px -528px; width: 30px; height: 30px; }
@@ -1336,7 +1337,7 @@ Most actions appear in three ways
 
 .post .action .item, #resultlist .item, #pageOptions .item {
     background-repeat: no-repeat;
-	background: url("/resources/image/post_actions.png");
+	background: url("/resources/image/post_actions_1.png");
     display: block;
     float: left;
     margin-right: 4px;
@@ -1375,8 +1376,8 @@ Most actions appear in three ways
 .post .action .edit, #pageOptions .edit{ background-position: 0 -159px; width: 21px; height: 18px; }
 
 /* Finde own icon vor remove */
-.post .action .idelete, #pageOptions .idelete, .post .action .iremove, #pageOptions .iremove{ background-position: 0 -197px; width: 16px; height: 20px; } 
-.post .action .delete:hover, #pageOptions .delete:hover, .post .action .remove:hover, #pageOptions .remove:hover { background-position: 0 -237px; width: 16px; height: 20px; } 
+.post .action .idelete, #pageOptions .idelete, .post .action .iremove, #pageOptions .iremove{ background-position: 0 -198px; width: 16px; height: 20px; } 
+.post .action .delete:hover, #pageOptions .delete:hover, .post .action .remove:hover, #pageOptions .remove:hover { background-position: 0 -238px; width: 16px; height: 20px; } 
 .post .action .delete, #pageOptions .delete, .post .action .remove, #pageOptions .remove{ background-position: 0 -277px; width: 16px; height: 20px; } 
 
 
@@ -1451,7 +1452,7 @@ Most actions appear in three ways
 .post .ptags span {
 	display: inline-block;
 	background-repeat: no-repeat;
-	background: url("/resources/image/post_actions.png");
+	background: url("/resources/image/post_actions_1.png");
     vertical-align: text-bottom;
     background-color: inherit;
     float:left;	
@@ -1631,7 +1632,7 @@ form.editTags input[type=text] {
 .config {
 	height: 30px;
 	width: 30px;
-	background: url("/resources/image/icons.png");
+	background: url("/resources/image/icons_2.png");
     background-repeat: no-repeat;
 	background-position: 0px -235px;
 	margin-top: 5px;
@@ -1640,7 +1641,7 @@ form.editTags input[type=text] {
 }
 
 .config.disabled {
-	background: url("/resources/image/icons.png");
+	background: url("/resources/image/icons_2.png");
 	background-position: -36px -235px;
 	float: right;
 	cursor: auto;

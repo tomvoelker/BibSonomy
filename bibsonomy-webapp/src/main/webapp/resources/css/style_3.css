@@ -638,7 +638,7 @@ a img {
 }
 
 .sidebarnavi_entry {
-    background: url("/resources/image/tabactions_1.png");
+    background: url("/resources/image/tabactions_2.png");
     height: 43px; 
 	width: 42px;
     position: absolute;
@@ -671,114 +671,113 @@ a img {
 
 .sidebarnavi_entry_01 {
     border-left: 0;
-    background-position: -70px -133px;
+    background-position: -40px -87px;
     left: 0px;
 }
 
 .sidebarnavi_entry_01:hover {
     border-left: 0;
-    background-position: -70px -280px;
+    background-position: -40px -41px;
     left: 0px;
 }
 
 .sidebarnavi_entry_01_inactive {
     border-left: 0;
-    background-position: -70px -428px;
+    background-position: -40px 5px;
     left: 0px;
 }
 
 .inbox_full {
-    background-position: -8px -133px;
+    background-position: 2px -87px;
 }
 
 .inbox_full:hover {
-    background-position: -8px -280px;
+    background-position: 2px -41px;
 }
 
 .sidebarnavi_entry_02 {
-	background-position: -128px -133px;
+	background-position: -83px -87px;
 	left: 42px;
 }
 
 .sidebarnavi_entry_02:hover {
-	background-position: -128px -280px;
+	background-position: -83px -41px;
 }
 
 .sidebarnavi_entry_02_inactive {
-	background-position: -128px -428px;
+	background-position: -83px 5px;
 	left: 42px;
 }
 
 .sidebarnavi_entry_03 {
-    background-position: -184px -134px;
+    background-position: -119px -87px;
     left: 84px;
 }
 
 .sidebarnavi_entry_03:hover {
-    background-position: -184px -281px;
+    background-position: -119px -41px;
 }
 
 .sidebarnavi_entry_03_inactive {
-    background-position: -184px -429px;
-    left: 84px;
+	background-position: -119px 5px;
+	left: 84px;
 }
 
 .sidebarnavi_entry_04 {
-    background-position: -235px -135px;
+    background-position: -157px -87px;
     left: 42.8571%;
 }
 
 .sidebarnavi_entry_04:hover {
-    background-position: -235px -282px;
+    background-position: -157px -41px;
 }
 
 .sidebarnavi_entry_04_inactive {
-    background-position: -235px -430px;
+    background-position: -157px 5px;
     left: 42.8571%;
 }
 
 .sidebarnavi_entry_05 {
-	background-position: -290px -133px;
+	background-position: -195px -87px;
 	left: 57.1429%;
 }
 
 .sidebarnavi_entry_05:hover {
-	background-position: -290px -280px;
+	background-position: -195px -41px;
 }
 
 .sidebarnavi_entry_05_inactive {
-	background-position: -290px -428px;
+	background-position: -195px 5px;
 	left: 57.1429%;
 }
 
 .sidebarnavi_entry_06 {
-    background-position: -340px -137px;
+    background-position: -229px -87px;
 	left: 71.4286%;
 }
 
 .sidebarnavi_entry_06:hover {
-    background-position: -340px -284px;
+    background-position: -229px -41px;
 }
 
 .sidebarnavi_entry_06_inactive {
-    background-position: -340px -432px;
+    background-position: -318px -98px;
 	left: 71.4286%;
 }
 
 .sidebarnavi_entry_07 {
-    background-position: -386px -134px;
+    background-position: -263px -87px;
 	left: 85.7143%;
 }
 
 .sidebarnavi_entry_07:hover {
-    background-position: -386px -281px;
+    background-position: -263px -41px;
 }
 
 .sidebarnavi_entry_07_inactive {
-    background-position: -386px -429px;
+    background-position: -363px -97px;
 	left: 85.7143%;
 }
-
 
 /* hack to fix IE/Win's broken rendering of block-level anchors in lists */
 #sidebar li {
@@ -1232,7 +1231,7 @@ div.help>a,div.help>b {
 .headerLogo.image.bookmarks {background-position: 0px 4px; width: 30px; height: 30px; }
 .headerLogo.image.publications {background-position: 0px -55px; width: 30px; height: 30px; }
 .headerLogo.image.tags {background-position: 4px -182px; width: 30px; height: 30px; }
-.headerLogo.image.spheresHeader {background: url("/resources/image/tabactions.png") no-repeat; background-position: -47px -95px; }
+.headerLogo.image.spheresHeader {background: url("/resources/image/tabactions_2.png") no-repeat; background-position: -47px -95px; }
 .headerLogo.image.cv {background-position: 4px -528px; width: 30px; height: 30px; }
 .headerLogo.image.settings {background-position: 4px -320px; width: 30px; height: 30px; }
 .headerLogo.image.editTags {background-position: 4px -414px; width: 30px; height: 30px; }
@@ -1390,6 +1389,12 @@ Most actions appear in three ways
 .post .action .icommunity, #pageOptions .icommunity{ background-position: 0 -723px; width: 19px; height: 16px; } 
 .post .action .community:hover, #pageOptions .community:hover{ background-position: 0 -754px; width: 19px; height: 16px; } 
 .post .action .community, #pageOptions .community{ background-position: 0 -785px; width: 19px; height: 16px; } 
+
+
+
+
+
+
 
 
 /***** POST RATINGS ****/
