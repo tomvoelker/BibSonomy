@@ -1535,6 +1535,7 @@ form.editTags input[type=text] {
 .post .pre_pic {
     border: 1px solid #DDDDDD;
     box-shadow: 0px 0px 6px #999999;
+    margin-top: -14px;    
 }
 
 #preview{
