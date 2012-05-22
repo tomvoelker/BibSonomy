@@ -259,6 +259,7 @@ function updateComment() {
 						commentForm.parent().remove();
 						highlight(commentView);
 						showReviewForm();
+						commentView.children(".details").find(".citeBox").children("div").remove();
 						commentView.children(".details").find(".citeBox").hide();
 						commentView.children(".details").find(".bookCiteBox").children("div").remove();
 						commentView.children(".details").find(".bookCiteBox").hide();
