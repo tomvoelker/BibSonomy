@@ -503,7 +503,7 @@ a img {
 #navigation2 .signoff {
 	background-image: url("/resources/image/signoff.png");
 	background-repeat: no-repeat;
-	background-position: 0 0.9ex;
+	background-position: 0 0.5ex;
 	padding-left: 3ex;
 	margin-left: 3ex;
 }
