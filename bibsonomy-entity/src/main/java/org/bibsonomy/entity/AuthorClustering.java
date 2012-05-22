@@ -22,6 +22,7 @@ import org.apache.lucene.util.Version;
 public class AuthorClustering {
 	List<Map<String,Document>> authorTitleMaps = new ArrayList<Map<String,Document>>();
 	static List<List<Integer>> clusterIDsList = new ArrayList<List<Integer>>();
+	static List<Map<String,List<String>>> clustersWithCoauthorNames = new ArrayList<Map<String,List<String>>>();
 
 	//Lucene globals
 	static IndexWriter w = null;
@@ -35,11 +36,12 @@ public class AuthorClustering {
 		//TODO we need a left join
 		final List<Map<String,String>> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
 
+		//authorName->List of coauthors
 		Map<String,List<Map<String,String>>> authorMap = new HashMap<String,List<Map<String,String>>>();
 
 		//build the datastructure
 		for (Map<String,String> tmpAuthor: authorNames) {
-			//add this anme first time 
+			//add this the first time 
 			if (authorMap.get(tmpAuthor.get("normalized_name")) == null) {
 				List tmpList = new ArrayList<Map<String,String>>();
 				Map tmpMap = new HashMap<String,String>();
@@ -211,7 +213,10 @@ public class AuthorClustering {
 			}
 		}
 		sessionRkr.commit();
-
+		
+		//my own test
+		MyOwnTest.test(authorMap);
+		
 		int countSingleClusters = 0;
 		for (List<Integer> authorIDList: clusterIDsList ) {
 			if(authorIDList.size() == 1) countSingleClusters++;

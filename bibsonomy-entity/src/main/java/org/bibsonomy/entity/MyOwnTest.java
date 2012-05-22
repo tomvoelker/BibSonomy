@@ -14,6 +14,11 @@ import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 
 public class MyOwnTest {
+	
+	public static void test(Map<String,List<Map<String,String>>> test) {
+		
+	}
+	
 	public static void findSamePersonDifferentNames(SqlSession session) {
 		 List<Map<String,String>> myOwnAuthorList = session.selectList("org.mybatis.example.Entity-Identification.selectMyOwn", 1);
 
