@@ -184,11 +184,10 @@ public class AuthorClustering {
 					int authorIDsSize = authorIDs.get("IDs").size();
 					for (int k=0; k<authorIDsSize; k++) {
 						if (outerAuthorID.equals(Integer.valueOf(authorIDs.get("IDs").get(k)))) {
-							System.out.println(outerAuthorID + " = " + authorIDs.get("IDs").get(k) + " -> "  + String.valueOf(tmpInnerMaxAuthorID));
 							List<String> tmpList = authorIDs.get("IDs"); 
 							tmpList.add(String.valueOf(tmpInnerMaxAuthorID));
-							//authorIDs.put("IDs", tmpList);
-							//clusterIDsList.set(n, authorIDs);
+							authorIDs.put("IDs", tmpList);
+							clusterIDsList.set(n, authorIDs);
 							found = true;
 						}
 					}
@@ -196,20 +195,17 @@ public class AuthorClustering {
 				}
 				//create a new cluster with the ID that fits in no other cluster
 				if (!found) {
-					System.out.println("not found -> " + tmpInnerMaxAuthorID);
 					Map<String,List<String>> tmpMap = new HashMap<String,List<String>>();
 					List<String> tmpList = new ArrayList<String>();
-					tmpList.add(String.valueOf(outerMaxAuthorID));
-					System.out.println("outer: " + outerMaxAuthorID);
+					tmpList.add(String.valueOf(outerAuthorID));
 					tmpMap.put("IDs",tmpList);
 					if (outerAuthorID != tmpInnerMaxAuthorID) {
 						tmpList.add(String.valueOf(tmpInnerMaxAuthorID));
 						tmpMap.put("IDs",tmpList);
 					}
-					System.out.println("map: " + tmpMap);
 					clusterIDsList.add(tmpMap);
 				}
-
+				
 				//delete the author we merged from DB
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteCoAuthors", tmpInnerMaxAuthorID);
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteAuthor", tmpInnerMaxAuthorID);
