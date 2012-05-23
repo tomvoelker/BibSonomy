@@ -21,15 +21,14 @@ import org.apache.lucene.util.Version;
 
 public class AuthorClustering {
 	List<Map<String,Document>> authorTitleMaps = new ArrayList<Map<String,Document>>();
-	static List<List<Integer>> clusterIDsList = new ArrayList<List<Integer>>();
-	static List<Map<String,List<String>>> clustersWithCoauthorNames = new ArrayList<Map<String,List<String>>>();
+	static List<Map<String,List<String>>> clusterIDsList = new ArrayList<Map<String,List<String>>>();
 
 	//Lucene globals
 	static IndexWriter w = null;
 	static StandardAnalyzer analyzer = null;
 	static Directory index = null;
 
-	public static List<List<Integer>> authorClustering(SqlSession sessionRkr) {
+	public static List<Map<String,List<String>>> authorClustering(SqlSession sessionRkr) {
 
 		//clustering the authors with the coauthor relationship
 		int threshold = 1;
@@ -181,13 +180,15 @@ public class AuthorClustering {
 				boolean found = false;
 
 				//search the cluster with the actual authorID and add the new ID
-				for (List<Integer> authorIDs: clusterIDsList) {
-					int authorIDsSize = authorIDs.size();
+				for (Map<String,List<String>> authorIDs: clusterIDsList) {
+					int authorIDsSize = authorIDs.get("IDs").size();
 					for (int k=0; k<authorIDsSize; k++) {
-						//System.out.println("outerAuthorID:" + outerAuthorID + " " + authorIDs.get(k));
-						if (outerAuthorID == authorIDs.get(k)) {
-							authorIDs.add(tmpInnerMaxAuthorID);
-							clusterIDsList.set(n, authorIDs);
+						if (outerAuthorID.equals(Integer.valueOf(authorIDs.get("IDs").get(k)))) {
+							System.out.println(outerAuthorID + " = " + authorIDs.get("IDs").get(k) + " -> "  + String.valueOf(tmpInnerMaxAuthorID));
+							List<String> tmpList = authorIDs.get("IDs"); 
+							tmpList.add(String.valueOf(tmpInnerMaxAuthorID));
+							//authorIDs.put("IDs", tmpList);
+							//clusterIDsList.set(n, authorIDs);
 							found = true;
 						}
 					}
@@ -195,10 +196,18 @@ public class AuthorClustering {
 				}
 				//create a new cluster with the ID that fits in no other cluster
 				if (!found) {
-					List<Integer> authorIDs = new ArrayList<Integer>();
-					authorIDs.add(outerAuthorID);
-					if (outerAuthorID != tmpInnerMaxAuthorID) authorIDs.add(tmpInnerMaxAuthorID);
-					clusterIDsList.add(authorIDs);
+					System.out.println("not found -> " + tmpInnerMaxAuthorID);
+					Map<String,List<String>> tmpMap = new HashMap<String,List<String>>();
+					List<String> tmpList = new ArrayList<String>();
+					tmpList.add(String.valueOf(outerMaxAuthorID));
+					System.out.println("outer: " + outerMaxAuthorID);
+					tmpMap.put("IDs",tmpList);
+					if (outerAuthorID != tmpInnerMaxAuthorID) {
+						tmpList.add(String.valueOf(tmpInnerMaxAuthorID));
+						tmpMap.put("IDs",tmpList);
+					}
+					System.out.println("map: " + tmpMap);
+					clusterIDsList.add(tmpMap);
 				}
 
 				//delete the author we merged from DB
@@ -218,12 +227,12 @@ public class AuthorClustering {
 		MyOwnTest.test(authorMap);
 		
 		int countSingleClusters = 0;
-		for (List<Integer> authorIDList: clusterIDsList ) {
-			if(authorIDList.size() == 1) countSingleClusters++;
-			//System.out.println("-----------------------------------------------");
-			//for (int k=0; k < authorIDList.size(); k++) {
-			//System.out.println(authorIDList.get(k)); 
-			//}
+		for (Map<String,List<String>> authorIDList: clusterIDsList ) {
+			if(authorIDList.get("IDs").size() == 1) countSingleClusters++;
+			System.out.println("-----------------------------------------------");
+			for (int k=0; k<authorIDList.get("IDs").size(); k++) {
+				System.out.println(authorIDList.get("IDs").get(k) + " -> " + authorIDList.get("IDs").size()); 
+			}
 		}
 
 		System.out.println("countSingleClusters " + countSingleClusters);
@@ -266,11 +275,11 @@ public class AuthorClustering {
 		int lastAuthorID = 0;
 		String titles = "";
 		Document doc = new Document();
-		for (List<Integer> clusterIDs: clusterIDsList) { //one document for each cluster
+		for (Map<String,List<String>> clusterIDs: clusterIDsList) { //one document for each cluster
 			doc = new Document();
-			for (Integer authorID: clusterIDs) {
+			for (String authorID: clusterIDs.get("IDs")) {
 				for (Map<String, ArrayList<String>> authorHashMap: authorIDNumberList) { //get all titles for this cluster
-					if (authorID.equals(Integer.valueOf(authorHashMap.get("authorIDs").get(0)))) {
+					if (authorID.equals(authorHashMap.get("authorIDs").get(0))) {
 						titles += authorHashMap.get("title").get(0) + " ";
 						break;
 					}

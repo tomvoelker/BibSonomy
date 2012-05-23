@@ -242,7 +242,7 @@ public class DblpTest {
 		return authorIDNumberList;
 	}
 
-	public void compareResults(List<List<Integer>> authorClusters, SqlSession sessionRkr) throws PersonListParserException {
+	public void compareResults(List<Map<String,List<String>>> authorClusters, SqlSession sessionRkr) throws PersonListParserException {
 		int rightMatchesOverallLucene=0;
 		int overallLuceneUnderClustering=0;
 		int overallLuceneOverClustering=0;
@@ -325,7 +325,7 @@ public class DblpTest {
 				}
 
 
-				System.out.println("Lucene results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
+				//System.out.println("Lucene results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -350,14 +350,14 @@ public class DblpTest {
 			 */
 
 			//we use the first realAuthorID as example and search the cluster who contains this ID
-			Integer exampleContentID = Integer.valueOf(authorMap.get("authorIDs").get(0));
+			String exampleContentID = authorMap.get("authorIDs").get(0);
 			System.out.println("search for ID: " + authorMap.get("authorIDs").get(0));
-			for (List<Integer> clusteredIDsList: authorClusters) { //every cluster we want to compare^
-				if (clusteredIDsList.contains(exampleContentID)) {
+			for (Map<String,List<String>> clusteredIDsList: authorClusters) { //every cluster we want to compare
+				if (clusteredIDsList.get("IDs").contains(exampleContentID)) {
 					//get all realAuthorIDs that are in this cluster
 					for (String realAuthorID: authorMap.get("authorIDs")) {
 						System.out.println("real ID:" + realAuthorID);
-						if (clusteredIDsList.contains(Integer.valueOf(realAuthorID))) { //we found the right cluster
+						if (clusteredIDsList.get("IDs").contains(realAuthorID)) { //we found the right cluster
 							System.out.println("found: " + realAuthorID);
 							found = true;
 							rightMatches++;
@@ -370,9 +370,9 @@ public class DblpTest {
 						}
 					}
 					//get overClusteringErrors
-					for (Integer clusteredID: clusteredIDsList) {
+					for (String clusteredID: clusteredIDsList.get("IDs")) {
 						if (!authorMap.get("authorIDs").contains(String.valueOf(clusteredID))) {
-							if (clusteredID < 100) { //TODO only used for faster debugging
+							if ((Integer.valueOf(clusteredID)) < 100) { //TODO only used for faster debugging
 								System.out.println("this is too much: " + clusteredID);
 								overClustering++;
 								overallAuthorOverClustering++;

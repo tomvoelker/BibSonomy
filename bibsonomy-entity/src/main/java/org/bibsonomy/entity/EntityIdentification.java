@@ -104,7 +104,7 @@ public class EntityIdentification {
 			}
 			*/
 			
-			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(sessionRkr);
+			List<Map<String,List<String>>> authorIDsList = AuthorClustering.authorClustering(sessionRkr);
 			AuthorClustering.useTitleToMergeClusters(sessionRkr, authorIDNumberList);
 			dblpTest.compareResults(authorIDsList, sessionRkr);
 			
