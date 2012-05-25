@@ -45,65 +45,68 @@ public class DblpTest {
 		List<Map<String,String>> dbAuthorIDNumberList= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPPreperation");
 		boolean foundNoGather = false;
 		//search the list if there is already a person with this name
-		for (Map<String, String> dbAuthorHashMap: dbAuthorIDNumberList) {
-			int k=0;
-			foundNoGather = false;
-			for (Map<String, ArrayList<String>>  arrayAuthorHashMap: authorIDNumberList) {
-				if (dbAuthorHashMap.get("author_name_and_number").equals(arrayAuthorHashMap.get("authorNameAndNumber").get(0))) { //the author already exists
-					//TODO authorNameAndNumber and normalizedName is the same
-					//add the new authorID to the already existing data
-					//System.out.println("reAdd: " + arrayAuthorHashMap.get("authorNameAndNumber").get(0));
-					ArrayList<String> authorIDs = arrayAuthorHashMap.get("authorIDs");
-					ArrayList<String> contentIDs = arrayAuthorHashMap.get("contentIDs");
-					ArrayList<String> title = arrayAuthorHashMap.get("title");
-					//ArrayList<String> normalizedName = arrayAuthorHashMap.get("normalizedName");
+		if (skipGatherFromDB)  {
+			for (Map<String, String> dbAuthorHashMap: dbAuthorIDNumberList) {
+				int k=0;
+				foundNoGather = false;
+				for (Map<String, ArrayList<String>>  arrayAuthorHashMap: authorIDNumberList) {
+					if (dbAuthorHashMap.get("author_name_and_number").equals(arrayAuthorHashMap.get("authorNameAndNumber").get(0))) { //the author already exists
+						//TODO authorNameAndNumber and normalizedName is the same
+						//add the new authorID to the already existing data
+						//System.out.println("reAdd: " + arrayAuthorHashMap.get("authorNameAndNumber").get(0));
+						ArrayList<String> authorIDs = arrayAuthorHashMap.get("authorIDs");
+						ArrayList<String> contentIDs = arrayAuthorHashMap.get("contentIDs");
+						ArrayList<String> title = arrayAuthorHashMap.get("title");
+						//ArrayList<String> normalizedName = arrayAuthorHashMap.get("normalizedName");
 
-					authorIDs.add(String.valueOf(dbAuthorHashMap.get("author_id")));
-					contentIDs.add(String.valueOf(dbAuthorHashMap.get("content_id")));
-					title.add(dbAuthorHashMap.get("title"));
-					//normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
+						authorIDs.add(String.valueOf(dbAuthorHashMap.get("author_id")));
+						contentIDs.add(String.valueOf(dbAuthorHashMap.get("content_id")));
+						title.add(dbAuthorHashMap.get("title"));
+						//normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
 
-					arrayAuthorHashMap.put("authorIDs",authorIDs);
-					arrayAuthorHashMap.put("conentIDs",contentIDs);
-					arrayAuthorHashMap.put("title",title);
-					//arrayAuthorHashMap.put("normalizedName",normalizedName);
+						arrayAuthorHashMap.put("authorIDs",authorIDs);
+						arrayAuthorHashMap.put("conentIDs",contentIDs);
+						arrayAuthorHashMap.put("title",title);
+						//arrayAuthorHashMap.put("normalizedName",normalizedName);
 
-					authorIDNumberList.set(k, arrayAuthorHashMap);
-					foundNoGather = true;
-					break;
+						authorIDNumberList.set(k, arrayAuthorHashMap);
+						foundNoGather = true;
+						break;
+					}
+					k++;
 				}
-				k++;
+				//this author is new and we add this author to the list
+				if (!foundNoGather) {
+					Map<String,ArrayList<String>> arrayAuthorHashMap = new HashMap<String,ArrayList<String>>();
+					ArrayList<String> authorID = new ArrayList<String>();
+					ArrayList<String> contentID = new ArrayList<String>();
+					ArrayList<String> title = new ArrayList<String>();
+					ArrayList<String> normalizedName = new ArrayList<String>();
+					ArrayList<String> authorNameAndNumber = new ArrayList<String>();
+
+					authorID.add(String.valueOf(dbAuthorHashMap.get("author_id")));
+					contentID.add(String.valueOf(dbAuthorHashMap.get("content_id")));
+					title.add(dbAuthorHashMap.get("title"));
+					normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
+					authorNameAndNumber.add(dbAuthorHashMap.get("author_name_and_number"));
+
+					//System.out.println("add: " + authorNameAndNumber.get(0));
+
+					arrayAuthorHashMap.put("authorIDs",authorID);
+					arrayAuthorHashMap.put("contentIDs",contentID);
+					arrayAuthorHashMap.put("title",title);
+					arrayAuthorHashMap.put("normalizedName",normalizedName);
+					arrayAuthorHashMap.put("authorNameAndNumber", authorNameAndNumber);
+					authorIDNumberList.add(arrayAuthorHashMap);
+				}
 			}
-			//this author is new and we add this author to the list
-			if (!foundNoGather) {
-				Map<String,ArrayList<String>> arrayAuthorHashMap = new HashMap<String,ArrayList<String>>();
-				ArrayList<String> authorID = new ArrayList<String>();
-				ArrayList<String> contentID = new ArrayList<String>();
-				ArrayList<String> title = new ArrayList<String>();
-				ArrayList<String> normalizedName = new ArrayList<String>();
-				ArrayList<String> authorNameAndNumber = new ArrayList<String>();
+			return authorIDNumberList;
 
-				authorID.add(String.valueOf(dbAuthorHashMap.get("author_id")));
-				contentID.add(String.valueOf(dbAuthorHashMap.get("content_id")));
-				title.add(dbAuthorHashMap.get("title"));
-				normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
-				authorNameAndNumber.add(dbAuthorHashMap.get("author_name_and_number"));
-
-				//System.out.println("add: " + authorNameAndNumber.get(0));
-
-				arrayAuthorHashMap.put("authorIDs",authorID);
-				arrayAuthorHashMap.put("contentIDs",contentID);
-				arrayAuthorHashMap.put("title",title);
-				arrayAuthorHashMap.put("normalizedName",normalizedName);
-				arrayAuthorHashMap.put("authorNameAndNumber", authorNameAndNumber);
-				authorIDNumberList.add(arrayAuthorHashMap);
-			}
 		}
 
-		if (skipGatherFromDB) return authorIDNumberList;
-
 		//List<String> authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP",1);
-		List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
+		//List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
+		List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.MYOWNTest",1);
 		System.out.println("Datenbankabfrage erfolgreich");
 
 		//read all entries from bibtex and save it to author table
@@ -181,7 +184,7 @@ public class DblpTest {
 						dbEntry.put("authorsString", authors);
 						dbEntry.put("contentID", String.valueOf(authorsMap.get("content_id")));
 
-						//sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
+						sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
 
 						authorIDs.add(String.valueOf(lastInsertID.get(0)));
 						authorHashMap.put("authorIDs",authorIDs);
@@ -207,7 +210,7 @@ public class DblpTest {
 					dbEntry.put("authorsString", authors);
 					dbEntry.put("contentID", String.valueOf(authorsMap.get("content_id")));
 
-					//sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
+					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
 
 					//System.out.println("add: " + authorNameAndNumber.get(0));
 					authorHashMap.put("authorNameAndNumber", authorNameAndNumber);
@@ -242,16 +245,13 @@ public class DblpTest {
 		return authorIDNumberList;
 	}
 
-	public void compareResults(List<Map<String,List<String>>> authorClusters, SqlSession sessionRkr) throws PersonListParserException {
+	public void compareResults(List<List<Integer>> authorClusters, SqlSession sessionRkr) throws PersonListParserException {
 		int rightMatchesOverallLucene=0;
 		int overallLuceneUnderClustering=0;
 		int overallLuceneOverClustering=0;
 		int rightMatchesOverallAuthorCLustering=0;
 		int overallAuthorUnderClustering=0;
 		int overallAuthorOverClustering=0;
-		int overallRealIDs=0;
-		int overallOneClusterErrors=0;
-		int test=0;
 
 		for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
 			//we use one ID as reference and search authorIDs/contentIDs that fit to this reference ID
@@ -325,7 +325,7 @@ public class DblpTest {
 				}
 
 
-				//System.out.println("Lucene results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
+				System.out.println("Lucene results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -350,29 +350,27 @@ public class DblpTest {
 			 */
 
 			//we use the first realAuthorID as example and search the cluster who contains this ID
-			String exampleContentID = authorMap.get("authorIDs").get(0);
-			System.out.println("search for ID: " + authorMap.get("authorIDs").get(0));
-			for (Map<String,List<String>> clusteredIDsList: authorClusters) { //every cluster we want to compare
-				if (clusteredIDsList.get("IDs").contains(exampleContentID)) {
+			Integer exampleContentID = Integer.valueOf(authorMap.get("authorIDs").get(0));
+			for (List<Integer> clusteredIDsList: authorClusters) { //every cluster we want to compare^
+				if (clusteredIDsList.contains(exampleContentID)) {
 					//get all realAuthorIDs that are in this cluster
 					for (String realAuthorID: authorMap.get("authorIDs")) {
 						System.out.println("real ID:" + realAuthorID);
-						if (clusteredIDsList.get("IDs").contains(realAuthorID)) { //we found the right cluster
+						if (clusteredIDsList.contains(Integer.valueOf(realAuthorID))) { //we found the right cluster
 							System.out.println("found: " + realAuthorID);
 							found = true;
 							rightMatches++;
 							rightMatchesOverallAuthorCLustering++;
 						}
 						else {
-							System.out.println("underclustering");
 							underClustering++;
 							overallAuthorUnderClustering++;
 						}
 					}
 					//get overClusteringErrors
-					for (String clusteredID: clusteredIDsList.get("IDs")) {
+					for (Integer clusteredID: clusteredIDsList) {
 						if (!authorMap.get("authorIDs").contains(String.valueOf(clusteredID))) {
-							if ((Integer.valueOf(clusteredID)) < 100) { //TODO only used for faster debugging
+							if (clusteredID < 500) { //TODO only used for faster debugging
 								System.out.println("this is too much: " + clusteredID);
 								overClustering++;
 								overallAuthorOverClustering++;
@@ -383,23 +381,13 @@ public class DblpTest {
 				}
 			}
 
-			if (rightMatches == 0 && underClustering == 0) {
-				if (authorMap.get("authorIDs").size() == 1) test++;
-				if (authorMap.get("authorIDs").size() > 1) System.out.println("single author cluster error");
-				overallOneClusterErrors += authorMap.get("authorIDs").size();
-			}
 			System.out.println("Author clustering results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
-			System.out.println("Real IDs: " + authorMap.get("authorIDs").size());
-			overallRealIDs +=  authorMap.get("authorIDs").size();
-			
 		}
 
 		System.out.println("\n\nOverall:");
 		System.out.println("-------------------------------------------------");
 		System.out.println("overall lucene - right: " + rightMatchesOverallLucene + " under: " + overallLuceneUnderClustering + " over: " + overallLuceneOverClustering);
 		System.out.println("overall author clustering - right: " + rightMatchesOverallAuthorCLustering + " under: " + overallAuthorUnderClustering + " over: " + overallAuthorOverClustering);
-		System.out.println("overall real IDs: " + overallRealIDs + " single author cluster errors: " + overallOneClusterErrors);
-		System.out.println("test: " + test);
 	}
 
 	public List<Map<String,ArrayList<String>>> getAuthorIDNumberList() {

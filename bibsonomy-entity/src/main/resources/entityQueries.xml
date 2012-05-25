@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <!-- database bibsonomy_strudel -->
 <select id="selectBibtex" parameterType="int" resultType="String">
-	SELECT author FROM bibtex limit 30
+	SELECT author FROM bibtex LIMIT 5000
 </select>
 
 <select id="selectAuthor" parameterType="String" resultType="String">
@@ -18,6 +18,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	SELECT tas.user_name, bibtex.author FROM tas INNER JOIN bibtex using(content_id) WHERE tag_name = 'myown' ORDER BY user_name
 </select>
 
+<!--  MyOwn test -->
+<select id="MYOWNTest" parameterType="String" resultType="java.util.Map">
+	SELECT * FROM myown ORDER BY user_name
+</select>
+
 <select id="DBLPTest" parameterType="int" resultType="java.util.Map">
 	SELECT author, content_id FROM authors_dblp
 </select>
@@ -26,13 +31,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	SELECT author FROM authors_dblp WHERE content_id = #{contentID}
 </select>
 
+<!--
 <select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
-	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) limit 30
+	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) LIMIT 5000
+</select>
+-->
+
+<select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
+	SELECT author_name_and_number, author_id, authors_string, content_id FROM author_id_number_list LIMIT 5000
 </select>
 
 <!-- bibsonomy_strudel DBLP Tests -->
 <select id="selectBibtexDBLP" parameterType="int" resultType="String">
-	SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' limit 30
+	SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' LIMIT 5000
 </select>
   
 <!-- database projekt_autoren_id -->
@@ -41,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="selectAuthorNames" parameterType="String" resultType="java.util.Map">
-	Select * from author_coauthor INNER JOIN (SELECT author_id, normalized_name from author limit 30) as limited_authors USING(author_id)
+	SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name from author LIMIT 5000) as limited_authors USING(author_id)
 </select>
 
 <select id="selectAuthorIDs" parameterType="String" resultType="int">
@@ -54,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="countAuthorsByName" parameterType="String" resultType="int">
-	SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} limit 30
+	SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 5000
 </select>
 	
 <select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
@@ -62,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="selectCoAuthorsLucene" parameterType="String" resultType="java.util.Map">
-	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) limit 30
+	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) LIMIT 5000
 </select>
 	
 <insert id="insertAuthorIDAndNumber" parameterType="HashMap">

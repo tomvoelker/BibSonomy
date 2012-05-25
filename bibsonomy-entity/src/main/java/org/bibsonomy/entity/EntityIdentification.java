@@ -5,6 +5,7 @@ import java.util.jar.Attributes.Name;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.text.Normalizer;
@@ -69,9 +70,11 @@ public class EntityIdentification {
 
 		//get the data from the database
 		try {
-			//reader = Resources.getResourceAsReader(resource);
-			//SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
-			//SqlSession session = sqlMapper.openSession();
+			/*
+			reader = Resources.getResourceAsReader(resource);
+			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+			SqlSession session = sqlMapper.openSession();
+			*/
 
 			readerRkr = Resources.getResourceAsReader(resourceRkr);
 			SqlSessionFactory sqlMapperRkr = new SqlSessionFactoryBuilder().build(readerRkr);
@@ -82,37 +85,39 @@ public class EntityIdentification {
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthor");
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthorCoauthor");
 			sessionRkr.commit();
-			
+
 			Lucene lucene =  new Lucene();
 			try {
 				lucene.createLuceneIndexForAllAuthors(sessionRkr);
 			} catch (IOException e) {}
 			catch (ParseException p) {}	
-			
+
 			//run "myown" test
-			//MyOwnTest.findSamePersonDifferentNames(session);
+			//MyOwnTest.findSamePersonDifferentNames(sessionRkr);
 
 			//run dblp test
 			DblpTest dblpTest = new DblpTest();
 			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.preperations(sessionRkr);
-			
+
 			/*
+			//Lucene compare
 			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.getAuthorIDNumberList();
 			//create the authorCluster we can compare then
 			for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
 				lucene.searchAuthor(normalizedName, coauthors)
 			}
-			*/
-			
-			List<Map<String,List<String>>> authorIDsList = AuthorClustering.authorClustering(sessionRkr);
+			 */
+
+			//author clustering compare
+			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(sessionRkr);
 			AuthorClustering.useTitleToMergeClusters(sessionRkr, authorIDNumberList);
 			dblpTest.compareResults(authorIDsList, sessionRkr);
-			
+
 			System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
 
 			//session.close();
 			sessionRkr.close();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
