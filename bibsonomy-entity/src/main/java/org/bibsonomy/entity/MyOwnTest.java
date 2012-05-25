@@ -105,7 +105,7 @@ public class MyOwnTest {
 							lastNameTest = true;
 						}
 						else realName = firstNameWithMostCounts;
-						//System.out.println("realName: " + realName);
+						System.out.println("realName: " + realName);
 
 						HashMap<String,Integer> otherNamesOfThisAuthor = new HashMap<String,Integer>();
 						List<PersonName> tempAuthorNames = null;
@@ -152,5 +152,6 @@ public class MyOwnTest {
 				e1.printStackTrace();
 			}
 		}
+		System.exit(1);
 	}
 }
