@@ -160,7 +160,7 @@
 	</URLTest>
 	<URLTest id="url_26">
 		<TestDescription>URL scraping test with publication from pubmedcentral</TestDescription>
-		<URL>http://www.pubmedcentral.nih.gov/articlerender.fcgi?tool=pmcentrez&amp;artid=1770189&amp;rendertype=abstract</URL>
+		<URL>http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1770189/?tool=pmcentrez&amp;rendertype=abstract</URL>
 		<BibFile>PubMedCentralScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper</Scraper>
 	</URLTest>
