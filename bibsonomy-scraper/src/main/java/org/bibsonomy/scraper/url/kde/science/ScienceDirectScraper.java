@@ -147,7 +147,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 				final String postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&_eidkey=" + eidkey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=Y&format=cite-abs&citation-type=BIBTEX&Export=Export&RETURN_URL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Fhome";
 				
 				// merge multiple keyword fields
-				final String bibtexContent = WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1");
+				final String bibtexContent = WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent);
 				String _bibtex = bibtexContent;
 				final StringBuilder _keywords = new StringBuilder();
 				
