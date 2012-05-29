@@ -92,7 +92,7 @@
 }
 
 .addContainer {
-	position: fixed;
+	position: absolute;
 	z-index: 70;
 }
 
