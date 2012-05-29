@@ -92,7 +92,8 @@
 }
 
 .addContainer {
-	position: absolute;
+	position: fixed;
+	z-index: 70;
 }
 
 .addSpheres {
@@ -147,6 +148,7 @@
 	color: #2F3321;
 	background-color: #C6C6C6;
 	border: 1px solid #006699;
+	cursor: pointer;
 	
 	-khtml-border-top-left-radius: 4px;
     -khtml-border-top-right-radius: 4px;

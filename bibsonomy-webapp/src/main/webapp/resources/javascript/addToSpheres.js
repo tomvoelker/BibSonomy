@@ -327,7 +327,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 			xleft		+= p.left;
 			currentTag 	 = currentTag.offsetParent();
 		}
-		
+
 		/**
 		 * Function to check which Browser is used.
 		 */
@@ -351,8 +351,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	            }; break;
 	            
 	            case "position2": 	{
-	            	$(".addContainer").css("left", -224);		
-					$(".addContainer").css("top",  23);
+					$(".addContainer").css("top",  214);
 					$(".addContainer").css("width",  282);
 	            }; break;
 	            
@@ -371,8 +370,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	            }; break;
 	            
 	            case "position2": 	{
-	            	$(".addContainer").css("left", -212);		
-					$(".addContainer").css("top",  23);
+					$(".addContainer").css("top",  214);
 					$(".addContainer").css("width",  270);
 	            }; break;
 	            
@@ -390,9 +388,8 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
             }; break;
             
             case "position2": 	{
-            	$(".addContainer").css("left", -172);		
-				$(".addContainer").css("top",  37);
-				$(".addContainer").css("width",  272);
+				$(".addContainer").css("top",  214);
+				$(".addContainer").css("width",  282);
             }; break;
             
             default: console.error("No or bad Parameter for Sphere Dialog Position.");
@@ -446,7 +443,8 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	 * - load the Spheres via AJAX and call the buildSpheres Function one Time
 	 */
 	if(singleButton) {
-		friendshipButton.append(addContainerHTML);
+//		friendshipButton.parent().append(addContainerHTML);
+		$("#sidebox").append(addContainerHTML);
 		pulsate();	
 		pulsateID = setInterval(pulsate,1999);
 		list 			= $("#sphereList");
