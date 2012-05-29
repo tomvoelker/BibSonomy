@@ -33,6 +33,7 @@ import org.bibsonomy.util.StringUtils;
 import org.omg.CosNaming.NamingContextExtPackage.AddressHelper;
 
 public class DblpTest {
+	//authorname->IDs
 	List<Map<String,ArrayList<String>>> authorIDNumberList = new ArrayList<Map<String,ArrayList<String>>>();
 	List<Map<String,String>> authorIDToBibtex = new ArrayList<Map<String,String>>();
 	//position 9 we use for 10 or more different ids
@@ -242,6 +243,7 @@ public class DblpTest {
 		}
 		sessionRkr.commit();
 
+		System.exit(1);
 		return authorIDNumberList;
 	}
 

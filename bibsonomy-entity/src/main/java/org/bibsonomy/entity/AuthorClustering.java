@@ -44,10 +44,11 @@ public class AuthorClustering {
 		Map<String,List<Map<String,String>>> authorMap = new HashMap<String,List<Map<String,String>>>();
 		//authorID -> all coauthors
 		Map<Integer,Set<String>> mapOfcoauthorsSets = new HashMap<Integer,Set<String>>();
-		//authorID -> authorName
-		Map<Integer,String> authorIDName = new HashMap<Integer,String>();
+		//authorID -> authorName,firstName,lastName
+		Map<Integer,List<String>> authorIDName = new HashMap<Integer,List<String>>();
 
 		//build the datastructure
+		int test = 0;
 		for (Map<String,String> tmpAuthor: authorNames) {
 			//order with authorIDs
 			int tmpAuthorID = Integer.valueOf(String.valueOf(tmpAuthor.get("author_id")));
@@ -59,7 +60,13 @@ public class AuthorClustering {
 			}
 
 			//order authorIDs to Name
-			if (!authorIDName.containsKey(tmpAuthorID)) authorIDName.put(tmpAuthorID, tmpAuthor.get("normalized_name"));
+			if (!authorIDName.containsKey(tmpAuthorID)) {
+				List<String> tmpList = new ArrayList<String>();
+				tmpList.add(tmpAuthor.get("normalized_name"));
+				tmpList.add(tmpAuthor.get("first_name"));
+				tmpList.add(tmpAuthor.get("last_name"));
+				authorIDName.put(tmpAuthorID, tmpList);
+			}
 
 			//order with authorNames 
 			if (authorMap.get(tmpAuthor.get("normalized_name")) == null) {
@@ -79,6 +86,7 @@ public class AuthorClustering {
 				authorMap.put(tmpAuthor.get("normalized_name"), tmpList);
 
 			}
+			System.out.println(tmpAuthor.get("normalized_coauthor"));
 		}
 
 		int z=1;
@@ -249,6 +257,7 @@ public class AuthorClustering {
 		System.out.println("countSingleClusters " + countSingleClusters);
 
 		//"myOwn" clustering
+		//check how much same coauthors two clusters have. This can be an indicator for the same person with different names
 		int outer = 0;
 		for (List<Integer> outerClusterIDs: clusterIDsList) {
 			outer++;
@@ -259,7 +268,7 @@ public class AuthorClustering {
 			}
 
 			//inner iterations
-			int inner = 0;
+			List<List<String>> test2 = new ArrayList<List<String>>();
 			for (int k=outer+1; k < clusterIDsList.size(); k++) {
 				Set tmpSet = new HashSet(outerSet);
 				Set innerSet = new HashSet<String>(); //set of all coauthors for the inner cluster
@@ -267,17 +276,27 @@ public class AuthorClustering {
 					innerSet.addAll(mapOfcoauthorsSets.get(innerClusterID));
 				}
 				tmpSet.retainAll(innerSet);
-				String outerAuthorName = authorIDName.get(clusterIDsList.get(outer).get(0));
-				String innerAuthorName =  authorIDName.get(clusterIDsList.get(k).get(0));
-				if (tmpSet.size() > 3) { //check if there enough same coauthors
-					if (!innerSet.contains(outerAuthorName) && !outerSet.contains(innerAuthorName)) { //the name shouldnt be in the others coauthor list
-						if (!outerAuthorName.equals(innerAuthorName)) { //the names shouldnt be the same
-							if((float)tmpSet.size()/((innerSet.size() + outerSet.size())-tmpSet.size()) > 0.7) { //check if we are sure enough
-								//compare both sets
-								System.out.println("outerSet: " + outerSet + " name: " + outerAuthorName);
-								System.out.println("innerSet: " + innerSet + " name: " + innerAuthorName);
-								System.out.println("results: " + ((innerSet.size() + outerSet.size())-tmpSet.size()) + " / " + tmpSet.size() + " resultSet: " + tmpSet);
-								System.out.println("end-----------------------------------------------");
+				List<String> outerAuthorName = authorIDName.get(clusterIDsList.get(outer).get(0));
+				List<String> innerAuthorName =  authorIDName.get(clusterIDsList.get(k).get(0));
+				if (outerAuthorName.get(1) != null && innerAuthorName.get(1) != null && outerAuthorName.get(2) != null && innerAuthorName.get(2) != null) {
+					if (tmpSet.size() > 2) { //check if there enough same coauthors
+						if (!innerSet.contains(outerAuthorName.get(0)) && !outerSet.contains(innerAuthorName.get(0))) { //the name shouldnt be in the others coauthor list
+							if (!outerAuthorName.get(0).equals(innerAuthorName.get(0))) { //the names shouldnt be the same
+								if ((outerAuthorName.get(1).equals(innerAuthorName.get(1))) || (outerAuthorName.get(2).equals(innerAuthorName.get(2)))) { //but first names should be the same
+									if((float)tmpSet.size()/((innerSet.size() + outerSet.size())-tmpSet.size()) > 0.2) { //check if we are sure enough
+										List<String>tmpList = new ArrayList<String>();
+										tmpList.add(outerAuthorName.get(0));
+										tmpList.add(innerAuthorName.get(0));
+										if (!test2.contains(tmpList)) {
+											//compare both sets
+											test2.add(tmpList);
+											System.out.println("outerSet: " + outerSet + " name: " + outerAuthorName);
+											System.out.println("innerSet: " + innerSet + " name: " + innerAuthorName);
+											System.out.println("results: " + ((innerSet.size() + outerSet.size())-tmpSet.size()) + " / " + tmpSet.size() + " resultSet: " + tmpSet);
+											System.out.println("end-----------------------------------------------");
+										}
+									}
+								}
 							}
 						}
 					}

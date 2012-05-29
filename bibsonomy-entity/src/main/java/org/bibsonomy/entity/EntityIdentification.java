@@ -82,8 +82,10 @@ public class EntityIdentification {
 
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthor");
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorCoauthor");
-			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthor");
-			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthorCoauthor");
+			//sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthor");
+			//sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthorCoauthor");
+			sessionRkr.insert("org.mybatis.example.Entity-Identification.myownBackupAuthor");
+			sessionRkr.insert("org.mybatis.example.Entity-Identification.myownBackupAuthorCoauthor");
 			sessionRkr.commit();
 
 			Lucene lucene =  new Lucene();

@@ -52,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="selectAuthorNames" parameterType="String" resultType="java.util.Map">
-	SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name from author LIMIT 5000) as limited_authors USING(author_id)
+	SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name, first_name, last_name from author LIMIT 5000) as limited_authors USING(author_id)
 </select>
 
 <select id="selectAuthorIDs" parameterType="String" resultType="int">
@@ -109,11 +109,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </insert>
 
 <insert id="backupAuthor" parameterType="int">
-	INSERT INTO author SELECT * from author_backup
+	INSERT INTO author SELECT * FROM author_backup
 </insert>
 
 <insert id="backupAuthorCoauthor" parameterType="int">
-	INSERT INTO author_coauthor SELECT * from author_coauthor_backup
+	INSERT INTO author_coauthor SELECT * ^FROM author_coauthor_backup
+</insert>
+
+<insert id="myownBackupAuthor" parameterType="int">
+	INSERT INTO author SELECT * FROM myown_author_backup
+</insert>
+
+<insert id="myownBackupAuthorCoauthor" parameterType="int">
+	INSERT INTO author_coauthor SELECT * FROM myown_author_coauthor_backup
 </insert>
 
 </mapper>
