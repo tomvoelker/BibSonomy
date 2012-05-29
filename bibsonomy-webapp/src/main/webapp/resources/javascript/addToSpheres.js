@@ -138,7 +138,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	var createChkBox = function(sphereName) {
 		return $("<input></input>")
 					.attr("type","checkbox")
-					.attr("style","position: absolute; right: 13px;")
+					.attr("style","position: absolute; right: 13px; margin-top: -2px;")
 					.change(function(){callbackCheckbox(this, sphereName);});
 	};
 	
@@ -340,18 +340,20 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 		}  
 			
 		//TODO: Browserswitcher for Internet Explorer
-				
+		
 		//SAFARI and CHROME
 		if(checkBrowserName("safari" || "chrome")) {
 			switch(dialogPosition) {
 	            case "position1": 	{
 	           		$(".addContainer").css("left", xleft - 280);		
 					$(".addContainer").css("top",  xtop);
+					$(".addContainer").css("width",  282);
 	            }; break;
 	            
 	            case "position2": 	{
-	            	$(".addContainer").css("left", -222);		
-					$(".addContainer").css("top",  29);
+	            	$(".addContainer").css("left", -224);		
+					$(".addContainer").css("top",  23);
+					$(".addContainer").css("width",  282);
 	            }; break;
 	            
 	            default: console.error("No or bad Parameter for Sphere Dialog Position.");
@@ -365,11 +367,13 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	            case "position1": 	{
 	           		$(".addContainer").css("left", xleft - 260);		
 					$(".addContainer").css("top",  xtop);
+					$(".addContainer").css("width",  270);
 	            }; break;
 	            
 	            case "position2": 	{
-	            	$(".addContainer").css("left", -204);		
-					$(".addContainer").css("top",  29);
+	            	$(".addContainer").css("left", -212);		
+					$(".addContainer").css("top",  23);
+					$(".addContainer").css("width",  270);
 	            }; break;
 	            
 	            default: console.error("No or bad Parameter for Sphere Dialog Position.");
@@ -382,11 +386,13 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
             case "position1": 	{
            		$(".addContainer").css("left", xleft - 260);		
 				$(".addContainer").css("top",  xtop);
+				$(".addContainer").css("width",  272);
             }; break;
             
             case "position2": 	{
             	$(".addContainer").css("left", -172);		
 				$(".addContainer").css("top",  37);
+				$(".addContainer").css("width",  272);
             }; break;
             
             default: console.error("No or bad Parameter for Sphere Dialog Position.");
@@ -440,7 +446,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	 * - load the Spheres via AJAX and call the buildSpheres Function one Time
 	 */
 	if(singleButton) {
-		friendshipButton.parent().parent().append(addContainerHTML);
+		friendshipButton.append(addContainerHTML);
 		pulsate();	
 		pulsateID = setInterval(pulsate,1999);
 		list 			= $("#sphereList");
