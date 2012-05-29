@@ -8,8 +8,7 @@ var style;
 
 $(document).ready(function() {
 
-	//	var style=harvardStaffordshireUniversity;
-	var style = harvardEducationalReview;
+	var style = elsevierHarvard;
 
 	// handle all list elements with class review
 	$('li.review').each(function() {
@@ -25,7 +24,7 @@ $(document).ready(function() {
 function handleLinks(discussionItem) {
 
 	//find all required links:
-	style = harvardStaffordshireUniversity;
+	style = elsevierHarvard;
 	var proceededLinks = new Array();
 	discussionItem.find("a.postlink").each(function() {
 		var matches = $(this).attr("href").match(/(.*?)\/{1}(bibtex|publication|url|bookmark)\/([0-9a-f]{32,33})(?:\/(.*))?/);
