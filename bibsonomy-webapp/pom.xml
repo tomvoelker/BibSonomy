@@ -19,7 +19,7 @@
 				<version>2.1.1</version>
 				<configuration>
 					<!-- 
-						otherwise the javascript files compressed by
+						otherwise the javascript/css files compressed by
 						yuicompressor-maven-plugin are overwritten by this plugin 
 					-->
 					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
