@@ -1,84 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-
-
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+	                    
 	<!-- 
 		 Lists all fields which are allowed to be set by the user in the request.
 	 
 	     This list is also a good starting point to enhance the documentation and 
 	     the help pages with supported parameters.
 	-->
-	<bean id="allowedFields" class="java.util.LinkedList">
-		<constructor-arg>
-			<list>
-				<!-- for normal resource view pages -->
-				<value>requestedTags</value>
-				<value>requestedAuthor</value>
-				<value>requestedUser</value>
-				<value>requestedUserRelation</value>
-				<value>requestedGroup</value>
-				<value>requestedSearch</value>
-				<value>requestedKey</value>
-				<value>requBibtex</value>
-				<value>requestedHash</value>
-				<value>postOwner</value>
-				<value>intraHash</value>
-				<value>requSim</value>
-				<value>requUrl</value>
-				<value>requUrlHash</value>
-				<value>tagcloud.*</value>
-				<!-- TODO: missing:  Tab(s)Command, TagCloudCommand -->
-				<!-- 
-					to not be dependent on bookmark or bibtex resource types, 
-					we use wildcards here ... which is a little insecure, because
-					it might affect other properties which should not be set.   
-				-->
-				<value>*.entriesPerPage</value>
-				<value>*.start</value>
-				<value>startDate</value>
-				<value>endDate</value>
-				<!-- further general parameters for resource view pages -->
-				<!-- TODO: check, which are really neccessary to be set via parameters -->
-				<value>filter</value>
-				<value>showPDF</value>
-				<value>resourcetype</value>
-				<value>tagstype</value>
-				<value>userRelation</value>
-				<value>sortPage</value>
-				<value>sortPageOrder</value>
-				<value>duplicates</value>
-				<value>restrictToTags</value>
-				<value>callback</value><!-- for JSONP -->
-				<value>format</value><!-- html, bib, publ, etc. -->
-				<value>layout</value>
-				<value>referer</value>
-				<value>formatEmbedded</value><!-- boolean! -->
-				<value>order</value><!-- folkrank, date, etc. -->
-				<value>personalized</value>
-				<value>userSimilarity</value>
-				<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
-				<value>ranking.*</value> <!-- ranking information -->
-				<value>styleSheet</value><!-- FIXME: remove -->
-			</list>
-		</constructor-arg>
-	</bean>
+	
+	<util:list id="allowedFields">
+		<!-- for normal resource view pages -->
+		<value>requestedTags</value>
+		<value>requestedAuthor</value>
+		<value>requestedUser</value>
+		<value>requestedUserRelation</value>
+		<value>requestedGroup</value>
+		<value>requestedSearch</value>
+		<value>requestedKey</value>
+		<value>requBibtex</value>
+		<value>requestedHash</value>
+		<value>postOwner</value>
+		<value>intraHash</value>
+		<value>requSim</value>
+		<value>requUrl</value>
+		<value>requUrlHash</value>
+		<value>tagcloud.*</value>
+		<!-- TODO: missing:  Tab(s)Command, TagCloudCommand -->
+		<!-- 
+			to not be dependent on bookmark or bibtex resource types, 
+			we use wildcards here ... which is a little insecure, because
+			it might affect other properties which should not be set.   
+		-->
+		<value>*.entriesPerPage</value>
+		<value>*.start</value>
+		<value>startDate</value>
+		<value>endDate</value>
+		<!-- further general parameters for resource view pages -->
+		<!-- TODO: check, which are really neccessary to be set via parameters -->
+		<value>filter</value>
+		<value>showPDF</value>
+		<value>resourcetype</value>
+		<value>tagstype</value>
+		<value>userRelation</value>
+		<value>sortPage</value>
+		<value>sortPageOrder</value>
+		<value>duplicates</value>
+		<value>restrictToTags</value>
+		<value>callback</value><!-- for JSONP -->
+		<value>format</value><!-- html, bib, publ, etc. -->
+		<value>layout</value>
+		<value>referer</value>
+		<value>formatEmbedded</value><!-- boolean! -->
+		<value>order</value><!-- folkrank, date, etc. -->
+		<value>personalized</value>
+		<value>userSimilarity</value>
+		<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
+		<value>ranking.*</value> <!-- ranking information -->
+		<value>styleSheet</value><!-- FIXME: remove -->
+	</util:list>
 	
 	<!-- all fields which are NEVER allowed to be set by the user -->
-	<bean id="disallowedFields" class="java.util.LinkedList">
-		<constructor-arg>
-			<list>
-				<!-- changing the context from the outside is ALWAYS disallowed! -->
-				<value>context*</value>
-				<!-- the HTML is generated by reCaptcha and not by the user! -->
-				<value>reCaptchaHTML</value>
-			</list>
-		</constructor-arg>
-	</bean>
-	
-
+	<util:list id="disallowedFields">
+		<!-- changing the context from the outside is ALWAYS disallowed! -->
+		<value>context*</value>
+		<!-- the HTML is generated by reCaptcha and not by the user! -->
+		<value>reCaptchaHTML</value>
+	</util:list>
 </beans>
 
