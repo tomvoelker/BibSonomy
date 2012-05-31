@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.Chain;
@@ -303,7 +302,6 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 		this.bibtexParam.setTagIndex(null);
 		this.bibtexParam.setGroupId(-1);
 		this.bibtexParam.setSearch("Grahl");
-		this.bibtexParam.setSearchEntity(SearchEntity.AUTHOR);
 		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
@@ -317,7 +315,6 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setRequestedGroupName(null);
 		this.bibtexParam.setSearch("Grahl");
-		this.bibtexParam.setSearchEntity(SearchEntity.AUTHOR);
 		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
@@ -331,7 +328,6 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 		this.bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 		this.bibtexParam.setRequestedUserName(null);
 		this.bibtexParam.setLimit(350);
-		this.bibtexParam.setSearchEntity(SearchEntity.ALL);
 		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 	/**

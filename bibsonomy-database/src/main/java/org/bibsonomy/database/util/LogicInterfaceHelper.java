@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -117,7 +116,6 @@ public class LogicInterfaceHelper {
 		// default search searches over all possible fields
 		if (search != null) {
 			param.setSearch(search);
-			param.setSearchEntity(SearchEntity.ALL);
 		}
 		
 		if (grouping != GroupingEntity.GROUP) {

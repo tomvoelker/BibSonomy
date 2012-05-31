@@ -18,7 +18,6 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -133,14 +132,18 @@ public abstract class GenericParam {
 	 * default this is false, i.e. tagnames aren't case sensitive.
 	 */
 	private boolean caseSensitiveTagNames;
+	
 	/** creation-date */
 	private Date date;
-	/** change-date*/
+	
+	/** change-date */
 	private Date changeDate;
+	
 	/** If a contentId is updated or deleted we need this as reference */
 	private int requestedContentId;
+	
 	/**
-	 * The hash of a post, e.g. a bookmark or a BibTex TODO: really of the post
+	 * The hash of a post, e.g. a bookmark or a publication TODO: really of the post
 	 * and not of the resource? and for what kind of hash is this used? isn't it
 	 * resource-specific and shouldn't it be set in the resource-field?
 	 */
@@ -196,7 +199,7 @@ public abstract class GenericParam {
 	private Order order;
 	private GroupingEntity grouping;
 	private FilterEntity filter;
-	private SearchEntity searchEntity;
+	
 	/*
      * the days of a popular resource
      * TODO: please document use better. This are not really
@@ -952,20 +955,6 @@ public abstract class GenericParam {
 	public void addGroups(final Collection<Integer> groups) {
 		this.groups.addAll(groups);
 	}
-	
-	/**
-	 * @return the searchEntity
-	 */
-	public SearchEntity getSearchEntity() {
-		return this.searchEntity;
-	}
-
-	/**
-	 * @param searchEntity the searchEntity to set
-	 */
-	public void setSearchEntity(final SearchEntity searchEntity) {
-		this.searchEntity = searchEntity;
-	}
 
 	/**
 	 * @return the days
@@ -1056,7 +1045,35 @@ public abstract class GenericParam {
 	public Map<String, SystemTag> getSystemTags() {
 		return Collections.unmodifiableMap(this.systemTags);
 	}
-	
+
+	/**
+	 * @return the startDate
+	 */
+	public Date getStartDate() {
+		return this.startDate;
+	}
+
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(final Date startDate) {
+		this.startDate = startDate;
+	}
+
+	/**
+	 * @return the endDate
+	 */
+	public Date getEndDate() {
+		return this.endDate;
+	}
+
+	/**
+	 * @param endDate the endDate to set
+	 */
+	public void setEndDate(final Date endDate) {
+		this.endDate = endDate;
+	}
+
 	/**
 	 * Introspect the current param object and return a string representation of the form attribute = value
 	 * for all attributes of this object.
@@ -1066,21 +1083,5 @@ public abstract class GenericParam {
 	@Override
 	public String toString() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
-	}
-
-	public Date getStartDate() {
-		return this.startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getEndDate() {
-		return this.endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
 	}
 }
