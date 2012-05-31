@@ -125,7 +125,6 @@ public class TagChainTest extends AbstractDatabaseManagerTest {
 		param.setGrouping(GroupingEntity.ALL);
 		param.setSearch("Test");
 		
-		param.setSearchEntity(null);
 		param.setRegex(null);
 		param.setTagIndex(null);
 		param.setHash(null);

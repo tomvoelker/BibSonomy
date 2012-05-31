@@ -27,7 +27,6 @@ public class GetAllTags extends TagChainElement {
 	protected boolean canHandle(final TagParam param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
 				param.getOrder() != Order.POPULAR &&
-				!present(param.getSearchEntity()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				!present(param.getBibtexKey()) &&
