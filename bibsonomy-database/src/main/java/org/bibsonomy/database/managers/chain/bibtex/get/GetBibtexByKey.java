@@ -6,7 +6,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
+import org.bibsonomy.database.managers.BibTexDatabaseManager;
+import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -18,11 +19,11 @@ import org.bibsonomy.model.enums.Order;
  * @author Florian Bachmann
  * @version $Id$
  */
-public class GetBibtexByKey extends BibTexChainElement {
+public class GetBibtexByKey extends ResourceChainElement<BibTex, BibTexParam> {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getPostsByBibTeXKey(
+		return ((BibTexDatabaseManager) this.databaseManager).getPostsByBibTeXKey(
 				param.getBibtexKey(), 
 				param.getRequestedUserName(), 
 				param.getGroupId(), 

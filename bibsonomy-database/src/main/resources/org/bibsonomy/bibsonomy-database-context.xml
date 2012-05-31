@@ -21,8 +21,8 @@
 		<property name="elements">
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexWithRepository" />
-				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexWithRepository" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser" parent="publicationChainElement" />
@@ -41,7 +41,7 @@
 				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="publicationChainElement" />
 			</list>
