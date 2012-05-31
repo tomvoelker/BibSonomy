@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
+import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -17,11 +17,11 @@ import org.bibsonomy.model.Post;
  * @author Dominik Benz
  * @version $Id$
  */
-public class GetBibtexFromBasketForUser extends BibTexChainElement {
+public class GetBibtexFromBasketForUser extends ResourceChainElement<BibTex, BibTexParam> {
 	
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getPostsFromBasketForUser(param.getUserName(), param.getLimit(), param.getOffset(), session);
+		return this.databaseManager.getPostsFromBasketForUser(param.getUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override
