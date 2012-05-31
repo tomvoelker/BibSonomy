@@ -55,7 +55,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	/**
 	 * @param tag the tag to set
 	 */
-	public void setTag(Tag tag) {
+	public void setTag(final Tag tag) {
 		this.tag = tag;
 	}
 
@@ -65,12 +65,12 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	}
 
 	@Override
-	public <T extends Resource> void performBeforeUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
+	public <T extends Resource> void performBeforeUpdate(final Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
 		// nothing is performed
 	}
 
 	@Override
-	public <T extends Resource> void performAfterUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
+	public <T extends Resource> void performAfterUpdate(final Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
 		// do exactly the same as in a Creation of a post (i. e. ignore which operation)
 		this.performAfterCreate(newPost, session);
 	}
@@ -78,10 +78,11 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 
 	@Override
 	public <T extends Resource> void performAfterCreate(final Post<T> post, final DBSession session) {
+		// TODO: document why we insert inbox message after the creating of the post
 		log.debug("performing after access");
-		String receiver = this.getArgument().toLowerCase();
-		String sender = post.getUser().getName();
-		String intraHash = post.getResource().getIntraHash();
+		final String receiver = this.getArgument().toLowerCase();
+		final String sender = post.getUser().getName();
+		final String intraHash = post.getResource().getIntraHash();
 		/*
 		 * Check permissions
 		 */
@@ -100,12 +101,13 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		// 2. rename this tag for the receiver (store senderName)
 		this.tag.setName("from:" + sender);	
 		try {
+		  // FIXME: move permission checks to inbox manager
 			// 3. store the inboxMessage with tag from:senderName 
 			InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session);
 			log.debug("message was created");
 			// 4. rename this tag for the sender (store receiverName)
 			this.tag.setName(SentSystemTag.NAME + SystemTagsUtil.DELIM + receiver);	
-		} catch (UnsupportedResourceTypeException urte) {
+		} catch (final UnsupportedResourceTypeException urte) {
 			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
 			log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
 		}
@@ -128,17 +130,22 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
 		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 		final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
-
+		
+		/*
+		 * user can't send inbox messages to himself
+		 */
+		if (sender.equals(receiver)) {
+			return false;
+		}
+		
 		/*
 		 *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
 		 *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
 		 */
-		if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
+		if (!(generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size() > 0)) {
 			return false;
 		}
-		if (sender.equals(receiver)) {
-			return false;
-		}
+		
 		return true;
 	}
 
@@ -148,13 +155,13 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	 * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#isInstance(java.lang.String)
 	 */
 	@Override
-	public boolean isInstance(String tagName) {
+	public boolean isInstance(final String tagName) {
 		// the send tag must have an argument, the prefix is not required
 		return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
 	}
 
 	@Override
-	public <T extends Resource> void performDocuments(String resourceHash, List<Document> documents, DBSession session) {
+	public <T extends Resource> void performDocuments(final String resourceHash, final List<Document> documents, final DBSession session) {
 		// nop
 	}
 	
@@ -162,8 +169,8 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	public ExecutableSystemTag clone() {
 		try {
 			return (ExecutableSystemTag) super.clone();
-		} catch (CloneNotSupportedException ex) {
-			ex.printStackTrace();
+		} catch (final CloneNotSupportedException ex) {
+			// never ever reached
 			return null;
 		}
 	}
