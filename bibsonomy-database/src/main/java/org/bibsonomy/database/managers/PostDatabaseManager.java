@@ -136,13 +136,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 * @return the lucene search instance to use
-	 */
-	protected ResourceSearch<R> getResourceSearch() {
-		return resourceSearch;
-	}
-
-	/**
 	 * @param resourceSearch
 	 */
 	public void setResourceSearch(final ResourceSearch<R> resourceSearch) {
@@ -493,6 +486,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * public posts are shown.
 	 * 
 	 * @param filter
+	 * @param startDate 
+	 * @param endDate 
 	 * @param limit
 	 * @param offset 
 	 * @param systemTags
@@ -883,7 +878,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param requestedUserName 
 	 * @param loginUserName 
-	 * @param groupId 
 	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return the number of posts with discussions of the requested User which the logged in user is allowed to see
@@ -905,7 +899,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param groupId 
 	 * @param loginUserName 
-	 * @param groupId 
 	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return the number of posts with discussions of the requested User which the logged in user is allowed to see
@@ -1015,6 +1008,74 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(HashID.INTER_HASH);
 
 		return this.postList("get" + this.resourceClassName + "FromBasketForUser", param, session);
+	}
+	
+	/** 
+	 * <em>/discussions/MaxMustermann</em><br/><br/>
+	 * 
+	 * This method prepares queries which retrieve all posts with discussions by user with
+	 * user name (requestedUserName). Additionally the group to be shown can be
+	 * restricted. The queries are built in a way, that not only public posts
+	 * are retrieved, but also friends or private or other groups, depending
+	 * upon if userName is allowed to see them.
+	 * 
+	 * ATTENTION! in case of a given groupId it is NOT checked if the user
+	 * actually belongs to this group.
+	 * 
+	 * @param loginUserName
+	 * @param requestedUserName
+	 * @param visibleGroupIDs 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session
+	 * @return list of posts
+	 */
+	public List<Post<R>> getPostsWithDiscussions(final String loginUserName, final String requestedUserName, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param;
+		// user param or general param
+		param = this.createParam(loginUserName, requestedUserName, limit, offset);
+		param.setGroups(visibleGroupIDs);
+		param.setFilter(filter);
+		param.addAllToSystemTags(systemTags);
+		
+		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		return this.postList("get" + this.resourceClassName + "WithDiscussions", param, session);
+	}
+	
+	/** 
+	 * <em>/discussions/MaxMustermann</em><br/><br/>
+	 * 
+	 * This method prepares queries which retrieve all posts with discussions by user with
+	 * user name (requestedUserName). Additionally the group to be shown can be
+	 * restricted. The queries are built in a way, that not only public posts
+	 * are retrieved, but also friends or private or other groups, depending
+	 * upon if userName is allowed to see them.
+	 * 
+	 * ATTENTION! in case of a given groupId it is NOT checked if the user
+	 * actually belongs to this group.
+	 * 
+	 * @param loginUserName
+	 * @param requestedGroupId 
+	 * @param visibleGroupIDs 
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session
+	 * @return list of posts
+	 */
+	public List<Post<R>> getPostsWithDiscussionsForGroup(final String loginUserName, final int requestedGroupId, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param;
+		//group param
+		param = this.createParam(limit, offset);
+		param.setUserName(loginUserName);
+		param.setGroupId(requestedGroupId);
+		param.setGroups(visibleGroupIDs);
+		param.setFilter(filter);
+		param.addAllToSystemTags(systemTags);
+		return this.postList("get" + this.resourceClassName + "WithDiscussionsForGroup", param, session);
 	}
 
 	/*
@@ -1376,7 +1437,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param post		the post to insert
 	 * @param session
 	 */
-	protected void insertPost(final Post<R> post, final DBSession session) {
+	private void insertPost(final Post<R> post, final DBSession session) {
 		boolean errors = false;
 		if (!present(post.getResource())) {
 			final ErrorMessage errorMessage = new MissingFieldErrorMessage("Resource");
@@ -1412,7 +1473,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			// Insert resource
 			this.insert("insert" + this.resourceClassName, param, session);
 			// Insert/Update SimHashes
-			this.insertOrUpdatePostHash(param, session, false);
+			this.insertOrUpdatePostHash(param, false, session);
 
 			session.commitTransaction();
 		} finally {
@@ -1425,10 +1486,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * inserts or updates the post hashes for the given resource (in param)
 	 * 
 	 * @param param
-	 * @param session
 	 * @param delete
+	 * @param session
 	 */
-	protected void insertOrUpdatePostHash(final P param, final DBSession session, final boolean delete) {
+	private void insertOrUpdatePostHash(final P param, final boolean delete, final DBSession session) {
 		for (final HashID hashId : this.getHashRange()) {
 			final String hash = SimHash.getSimHash(param.getResource(), hashId);
 			// no action on an empty hash
@@ -1483,7 +1544,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return <code>true</code> iff the post was deleted successfully
 	 */
-	protected boolean deletePost(final Post<? extends R> post, final boolean update, final DBSession session) {
+	private boolean deletePost(final Post<? extends R> post, final boolean update, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String userName = post.getUser().getName();
@@ -1503,7 +1564,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 			this.tagDb.deleteTags(post, session);
 
-			this.insertOrUpdatePostHash(param, session, true);
+			this.insertOrUpdatePostHash(param, true, session);
 
 			this.delete("delete" + this.resourceClassName, param, session);
 
@@ -1545,7 +1606,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return param;
 	}
 
-	protected P createParam(final int limit, final int offset) {
+	private P createParam(final int limit, final int offset) {
 		final P param = this.getNewParam();
 
 		param.setLimit(limit);
@@ -1568,92 +1629,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return new param for insert a resource
 	 */
 	protected abstract P getInsertParam(final Post<? extends R> post, final DBSession session);
-
-
-	
-	protected List<Post<R>> getPostsWithDiscussions(final P param, final DBSession session) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.postList("get" + this.resourceClassName + "WithDiscussions", param, session);
-	}
-
-	protected List<Post<R>> getPostsWithDiscussionsForGroup(final P param, final DBSession session) {
-		return this.postList("get" + this.resourceClassName + "WithDiscussionsForGroup", param, session);
-	}
-	
-	/** 
-	 * <em>/discussions/MaxMustermann</em><br/><br/>
-	 * 
-	 * This method prepares queries which retrieve all posts with discussions by user with
-	 * user name (requestedUserName). Additionally the group to be shown can be
-	 * restricted. The queries are built in a way, that not only public posts
-	 * are retrieved, but also friends or private or other groups, depending
-	 * upon if userName is allowed to see them.
-	 * 
-	 * ATTENTION! in case of a given groupId it is NOT checked if the user
-	 * actually belongs to this group.
-	 * 
-	 * @param loginUserName
-	 * @param groupingEntity TODO
-	 * @param requestedUserName
-	 * @param requestedGroupName TODO
-	 * @param visibleGroupIDs 
-	 * @param filter
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @param simHash
-	 * @param groupId
-	 * @return list of posts
-	 */
-	public List<Post<R>> getPostsWithDiscussions(final String loginUserName, final String requestedUserName, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		final P param;
-		// user param or general param
-		param = this.createParam(loginUserName, requestedUserName, limit, offset);
-		param.setGroups(visibleGroupIDs);
-		param.setFilter(filter);
-		param.addAllToSystemTags(systemTags);
-		return this.getPostsWithDiscussions(param, session);
-	}
-	
-	
-	/** 
-	 * <em>/discussions/MaxMustermann</em><br/><br/>
-	 * 
-	 * This method prepares queries which retrieve all posts with discussions by user with
-	 * user name (requestedUserName). Additionally the group to be shown can be
-	 * restricted. The queries are built in a way, that not only public posts
-	 * are retrieved, but also friends or private or other groups, depending
-	 * upon if userName is allowed to see them.
-	 * 
-	 * ATTENTION! in case of a given groupId it is NOT checked if the user
-	 * actually belongs to this group.
-	 * 
-	 * @param loginUserName
-	 * @param groupingEntity TODO
-	 * @param requestedUserName
-	 * @param requestedGroupName TODO
-	 * @param visibleGroupIDs 
-	 * @param filter
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @param simHash
-	 * @param groupId
-	 * @return list of posts
-	 */
-	public List<Post<R>> getPostsWithDiscussionsForGroup(final String loginUserName, final int requestedGroupId, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		final P param;
-		//group param
-		param = this.createParam(limit, offset);
-		param.setUserName(loginUserName);
-		param.setGroupId(requestedGroupId);
-		param.setGroups(visibleGroupIDs);
-		param.setFilter(filter);
-		param.addAllToSystemTags(systemTags);
-		return this.getPostsWithDiscussionsForGroup(param, session);
-	}
 
 	/**
 	 * @param chain the chain to set
