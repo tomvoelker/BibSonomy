@@ -62,6 +62,11 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	
 	@Override
 	public View workOn(final JoinGroupCommand command) {
+		// user logged in? 
+		if (!command.getContext().isUserLoggedIn()) {
+			throw new org.springframework.security.access.AccessDeniedException("please log in");
+		}
+		
 		/*
 		 * The user has three options and needs:
 		 * * see join site: loginUser, group
@@ -69,13 +74,8 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		 * * denyUser: loginUser = group, reason, denyUser
 		 */
 		final User loginUser = command.getContext().getLoginUser();
-
-		// user logged in? 
-		if (!command.getContext().isUserLoggedIn()) {
-			throw new org.springframework.security.access.AccessDeniedException("please log in");
-		}
 		
-		// get Group-Details and check if present
+		// get group details and check if present
 		final String groupName = command.getGroup();
 		final Group group = logic.getGroupDetails(command.getGroup());
 		if (!present(group)) {
@@ -107,7 +107,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			 * We have a deny Request
 			 */
 			// check if loginUser is the group
-			if (!groupName.equals( command.getContext().getLoginUser().getName() )) {
+			if (!groupName.equals(command.getContext().getLoginUser().getName())) {
 				throw new AccessDeniedException("This action is only possible for a group. Please log in as a group!");
 			}
 			final User deniedUser = adminLogic.getUserDetails(deniedUserName);
@@ -141,8 +141,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		/*
 		 * check captacha; an error is added if it fails.
 		 */
-		CaptchaUtil.checkCaptcha(this.captcha, this.errors, this.log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
-
+		CaptchaUtil.checkCaptcha(this.captcha, this.errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
 		
 		if (errors.hasErrors()) {
 			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
