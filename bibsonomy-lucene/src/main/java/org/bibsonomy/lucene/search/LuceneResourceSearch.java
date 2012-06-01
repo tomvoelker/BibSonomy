@@ -28,6 +28,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -367,34 +368,43 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @return search query for restricting posts to given tag assignments
 	 */
 	protected Query buildTagSearchQuery(Collection<String> tagIndex) {
+		final BooleanQuery tagQuery = new BooleanQuery();
 		//--------------------------------------------------------------------
 		// prepare input parameters
 		//--------------------------------------------------------------------
-		final List<String> tags = new LinkedList<String>();
-		if (present(tagIndex)) {
+		if (present(tagIndex)) {			
 			for (final String tag : tagIndex) {
-				try {
-					tags.add(parseToken(LuceneFieldNames.TAS, tag));
-				} catch (final IOException e) {
-					log.error("Error parsing input tag " + tag + " ("+e.getMessage()+")");
-					tags.add(tag);
+				// Is the tag string a concept name?
+				if (tag.startsWith("->")) {
+					String conceptTag = parseTag(tag.substring(2));
+					// Get related tags:
+					System.out.println(conceptTag+" is related to:");
+					BooleanQuery conceptTags = new BooleanQuery();
+					for (String t: this.dbLogic.getSubTagsForConceptTag(conceptTag)) {						
+						conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, t)), Occur.SHOULD);
+						System.out.print(" "+t);
+					}
+					System.out.println();
+					System.out.println("SubQuery for concept tags: "+conceptTags.toString());
+					tagQuery.add(conceptTags, Occur.MUST);
 				}
-			}
-			tagIndex = tags;
-		}
-		
-		//--------------------------------------------------------------------
-		// restrict to given tags
-		//--------------------------------------------------------------------
-		final BooleanQuery tagQuery = new BooleanQuery();
-		if (present(tags)) {
-			for (final String tagItem : tags) {
-				tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, tagItem)), Occur.MUST);
+				else {
+					tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(tag))), Occur.MUST);	
+				}				
 			}
 		}
-		
+				
 		// all done
 		return tagQuery;
+	}
+
+	private String parseTag(final String tag) {
+		try {
+			return parseToken(LuceneFieldNames.TAS, tag);
+		} catch (final IOException e) {
+			log.error("Error parsing input tag " + tag + " ("+e.getMessage()+")");
+			return tag;
+		}
 	}
 	
 	/**
@@ -527,6 +537,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @return overall lucene search query
 	 */
 	protected QuerySortContainer buildQuery(final String userName, final String requestedUserName, final String requestedGroupName,  final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear) {		
+
 		//--------------------------------------------------------------------
 		// build the query
 		//--------------------------------------------------------------------
@@ -565,6 +576,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		
 		// all done
 		log.debug("[Full text] Search query: " + mainQuery.toString());
+		System.out.println("[Full text] Search query: " + mainQuery.toString());
 		
 		final QuerySortContainer qf = new QuerySortContainer();
 		qf.setQuery(makeTimeRangeQuery(mainQuery, year, firstYear, lastYear));

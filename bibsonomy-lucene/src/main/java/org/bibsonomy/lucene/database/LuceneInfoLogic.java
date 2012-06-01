@@ -3,6 +3,8 @@ package org.bibsonomy.lucene.database;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.model.Tag;
+
 /**
  * used by the search to retrieve friends and group members
  * @author dzo
@@ -25,4 +27,6 @@ public interface LuceneInfoLogic {
 	 * @return the members of the group
 	 */
 	public List<String> getGroupMembersByGroupName(String groupName);
+	
+	public List<String> getSubTagsForConceptTag(String tag);
 }

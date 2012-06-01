@@ -9,6 +9,7 @@ import java.util.List;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.model.Tag;
 
 /**
  * 
@@ -59,5 +60,15 @@ public class LuceneInfoDBLogic extends AbstractDatabaseManager implements Lucene
 	 */
 	public void setSessionFactory(final DBSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+	@Override
+	public List<String> getSubTagsForConceptTag(String tag) {
+		final DBSession session = this.openSession();
+		try {
+			return this.queryForList("getGlobalConceptByName", tag.toLowerCase(), String.class, session);
+		} finally {
+			session.close();
+		}
 	}
 }

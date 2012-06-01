@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="Lucene">
+
+	<select id="getGlobalConceptByName" parameterClass="string"
+		resultClass="string">
+		SELECT DISTINCT(lower_lcase)
+		  FROM tagtagrelations JOIN user u USING (user_name)
+		  WHERE upper_lcase = #conceptName#
+			AND u.spammer = 0
+	</select>
 	
 	<!-- get given group's members -->
 	<select id="getGroupMembersByGroupName" resultClass="string" parameterClass="string">
