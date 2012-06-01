@@ -4,7 +4,10 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.params.beans.TagIndex;
+import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.search.YearSystemTag;
@@ -21,11 +24,24 @@ import org.bibsonomy.model.Resource;
 public abstract class GetResourcesByResourceSearch<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
 	@Override
-	protected List<Post<R>> handle(final P param, final DBSession session) {
+	protected boolean canHandle(final P param) {
+		PermissionDatabaseManager pdm = PermissionDatabaseManager.getInstance();
+		List<TagIndex> tagIndex = param.getTagIndex();
+		if (present(tagIndex) && pdm.useResourceSearchForTagQuery(tagIndex.size())) {
+			return true;
+		}
+		if (param.getGrouping() == GroupingEntity.ALL && param.getNumSimpleConcepts() > 0) {
+			return true;
+		}
+		else return false;
+	}
+	
+	@Override
+	protected List<Post<R>> handle(final P param, final DBSession session) {	
 		// convert tag index to tag list
 		List<String> tagIndex = null;
 		if (present(param.getTagIndex())) {
-			tagIndex = DatabaseUtils.extractTagNames(param.getTagIndex());
+			tagIndex = DatabaseUtils.extractTagNames(param);
 		}
 		
 		/*

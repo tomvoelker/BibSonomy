@@ -94,11 +94,16 @@ public final class DatabaseUtils {
 	 * @param tagIndex
 	 * @return a list of tag names
 	 */
-	public static List<String> extractTagNames(final List<TagIndex> tagIndex) {
+	public static List<String> extractTagNames(final GenericParam param) {
 		final List<String> retVal = new LinkedList<String>();
 		
-		for (final TagIndex tagIdx : tagIndex) {
-			retVal.add(tagIdx.getTagName());
+		for (final TagIndex tagIdx : param.getTagIndex()) {
+			if (param.getNumSimpleConcepts() > 0) {
+				retVal.add("->" + tagIdx.getTagName());
+			} else {
+				retVal.add(tagIdx.getTagName());	
+			}
+			
 		}
 		
 		return retVal;

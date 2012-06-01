@@ -11,7 +11,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch;
-import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers;
@@ -287,7 +286,7 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 		this.bookmarkParam.setNumSimpleConcepts(3);
 		this.bookmarkParam.setNumSimpleTags(0);
 		this.bookmarkParam.setNumTransitiveConcepts(0);
-		assertEquals(GetResourcesByConceptByTag.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
+		assertEquals(GetBookmarksByResourceSearch.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
 	
 }

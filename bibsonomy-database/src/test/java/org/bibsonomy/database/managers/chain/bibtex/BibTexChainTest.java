@@ -15,7 +15,6 @@ import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
-import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers;
@@ -113,7 +112,7 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 		this.bibtexParam.setNumSimpleTags(0);
 		this.bibtexParam.setNumTransitiveConcepts(0);
 		
-		assertEquals(GetResourcesByConceptByTag.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
+		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 
 	/**

@@ -609,10 +609,6 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
 		}
 
-		// check maximum number of allowed tags
-		if (this.permissionDBManager.exceedsMaxmimumSize(tags)) {
-			return new ArrayList<Post<T>>();
-		}
 		// check for systemTags disabling this resourceType
 		if (!this.systemTagsAllowResourceType(tags, resourceType)) {
 			return new ArrayList<Post<T>>();
