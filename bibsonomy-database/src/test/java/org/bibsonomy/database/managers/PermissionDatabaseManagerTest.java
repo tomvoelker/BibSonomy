@@ -159,11 +159,11 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<String> tags = new ArrayList<String>();
 		for (int i = 0; i < 9; i++) {
 			tags.add("tag" + i);
-			assertFalse(permissionDb.exceedsMaxmimumSize(tags));
+			assertFalse(permissionDb.useResourceSearchForTagQuery(tags.size()));
 		}
 		for (int i = 10; i < 42; i++) {
 			tags.add("tag" + i);
-			assertTrue(permissionDb.exceedsMaxmimumSize(tags));
+			assertTrue(permissionDb.useResourceSearchForTagQuery(tags.size()));
 		}
 	}
 
