@@ -24,6 +24,7 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -78,10 +79,13 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 			
 			Matcher matcher = pattern.matcher(sc.getUrl().toString());
 			if(matcher.find()){
-				String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations?citations-format=citation-abstract&download-format=download-bibtex&fromPageName=abstract&recordIds=" + matcher.group(1);
+				String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations";
+				String postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + matcher.group(1);
 				String bibtex = null;
 				try {
-					bibtex = WebUtils.getContentAsString(new URL(downUrl));
+					bibtex = WebUtils.getPostContentAsString(new URL(downUrl), postContent);
+				} catch (MalformedURLException ex) {
+					throw new InternalFailureException(ex);
 				} catch (IOException ex) {
 					throw new InternalFailureException(ex);
 				}
