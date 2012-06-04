@@ -346,7 +346,7 @@
 	function filter(str) {
 		var filterstring = document.searchform.filter.value.toLowerCase();
 	
-		if (filterstring == "" || filterstring == "<enter title, authors or tags>") {
+		if (filterstring == "" || filterstring == getString("mysearch.option.filter.text").toLowerCase()) {
 			return true;
 		}
 	
