@@ -176,3 +176,12 @@ ul.newMenu li a:hover {
 h3 {
 	font-size: 90%
 }
+
+#linkBox {
+	position: absolute;
+}
+
+#referenceLinkContainer {
+		position: relative;
+		padding-bottom: 10px;
+}

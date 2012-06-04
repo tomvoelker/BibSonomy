@@ -28,7 +28,6 @@
     <c:if test="${empty discussionItems}">
    		<c:set var="discussionItems" value="${resource.discussionItems}" />
    	</c:if>
-   	
  	<div class="discussion_all">  	
    		
    		<!-- The three Buttons -->
@@ -59,7 +58,33 @@
 		
 		<!-- Aggregated RatingInfo -->
     	<review:reviewRatingsInfo resource="${resource}" />
-    	
+		
+		<!-- Publication reference link -->	
+		<div id="referenceLinkContainer">
+			<fmt:message var="linkType" key="discussion.info.resource"/>
+			<div >
+				<a href="javascript:linkBox(true);">
+					<fmt:message key="discussion.resourceLink">
+						<fmt:param value="${linkType}"/> 
+					</fmt:message>
+				</a>
+				<div class="help">
+					<b class="smalltext" style="">?</b>
+					<div>
+						<fmt:message key="discussion.resourceLink.help">
+							<fmt:param value="${linkType}" />
+						</fmt:message>
+					</div>
+				</div>
+			</div>
+			<c:set var="linkText" value="[[bibtex/${hash.inter.id}${resource.interHash}]]" />
+			<fmt:message var="alternateClose" key="close" />
+			<div id="linkBox" style="display:none">
+				<input type="text" value="${linkText}" size="${fn:length(linkText)}"/>
+				<a href="javascript:linkBox(false);"><img src="${resdir}/image/icon_close.png" alt="${alternateClose}"/></a>
+			</div>
+			<script type="text/javascript" src="${resdir}/javascript/discussion/linkbox.js"><!-- keep me --></script>
+  		</div>
     		
 		<div cssClass="fsRow">
 			<c:if test="${not fn:contains(resource.class.simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
