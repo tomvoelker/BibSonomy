@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.util.UserUtils;
 
 @Deprecated
 public class DBStatisticsManager extends DBManager {
@@ -14,9 +15,7 @@ public class DBStatisticsManager extends DBManager {
 	private static final int BOOKMARK_CONTENT_TYPE = 1;
 	private static final int BIBTEX_CONTENT_TYPE = 2;
 
-	private static final String DBLP = "dblp";
-	//private static final String userDBLP   = " user_name = '" + DBLP + "' ";
-	private static final String nUserDBLP  = " user_name != '" + DBLP + "' ";
+	private static final String nUserDBLP  = " user_name != '" + UserUtils.DBLP_USER_NAME + "' ";
 
 	private static final String date24    = " DATE_SUB(CURDATE(), INTERVAL 24 HOUR) <= date ";
 	private static final String dateM     = " DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <= date ";
