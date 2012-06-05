@@ -4,28 +4,25 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
- * TODO: some check methods were copied from the UserValidator!
  * 
  * @author cvo
  * @version $Id$
  */
 public class UserUpdateProfileValidator implements Validator<SettingsViewCommand> {
-
-	private static final List<String> ALLOWED_GENDERS = Arrays.asList("f", "m");
+	private static final Set<String> ALLOWED_GENDERS = Sets.asSet("f", "m");
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return SettingsViewCommand.class.equals(clazz);
 	}
 
@@ -42,8 +39,6 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 
 		this.checkUserRealName(user.getRealname(), errors);
 		this.checkUserGender(user.getGender(), errors);
-		this.checkUserEmailAdress(user.getEmail(), errors);
-		this.checkUserHomepage(user.getHomepage(), errors);
 		this.checkUserOpenURL(user.getOpenURL(), errors);
 
 		// do not have to be checked
@@ -54,6 +49,10 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 		// check place
 
 		// birthday will be checked automatically
+		
+		errors.pushNestedPath("user");
+		UserValidator.validateUser(user, errors);
+		errors.popNestedPath();
 	}
 
 	private void checkUserGender(String gender, final Errors errors) {
@@ -78,27 +77,10 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 		}
 	}
 
-	private void checkUserEmailAdress(String email, final Errors errors) {
-		if (present(email)) { // email address is optional
-			email = email.trim();
-			if (email.indexOf(' ') != -1 || email.indexOf('@') == -1 || email.length() > 255 || email.lastIndexOf(".") < email.lastIndexOf("@") || email.lastIndexOf("@") != email.indexOf("@") || email.length() - email.lastIndexOf(".") < 2) {
-				errors.rejectValue("user.email", "error.field.valid.user.email");
-			}
-		}
-	}
-
 	private void checkUserRealName(final String realname, final Errors errors) {
 		if (present(realname)) { // real name is optional
 			if (realname.length() > 255) { 
 				errors.rejectValue("user.realname", "error.field.valid.user.realname.length");
-			}
-		}
-	}
-
-	private void checkUserHomepage(final URL homepage, final Errors errors) {
-		if (present(homepage)) {
-			if (!("http".equals(homepage.getProtocol()) || "https".equals(homepage.getProtocol()))) {
-				errors.rejectValue("user.homepage", "error.field.valid.user.homepage");
 			}
 		}
 	}

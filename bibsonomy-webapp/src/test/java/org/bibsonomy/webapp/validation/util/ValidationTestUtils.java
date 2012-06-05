@@ -1,10 +1,8 @@
 package org.bibsonomy.webapp.validation.util;
 
-import java.util.HashMap;
-
 import org.bibsonomy.webapp.util.Validator;
+import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
-import org.springframework.validation.MapBindingResult;
 
 /**
  * @author dzo
@@ -13,8 +11,7 @@ import org.springframework.validation.MapBindingResult;
 public class ValidationTestUtils {
 
 	public static Errors validate(final Validator<?> validator, final Object command) {
-		@SuppressWarnings("rawtypes")
-		final Errors errors = new MapBindingResult(new HashMap(), "review");
+		final Errors errors = new BindException(command, "command");
 		validator.validate(command, errors);
 		return errors;
 	}

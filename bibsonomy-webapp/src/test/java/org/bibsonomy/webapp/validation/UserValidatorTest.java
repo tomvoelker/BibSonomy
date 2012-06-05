@@ -1,8 +1,11 @@
 package org.bibsonomy.webapp.validation;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.webapp.validation.util.ValidationTestUtils;
 import org.junit.Test;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -12,20 +15,38 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UserValidatorTest {
+	private static final UserValidator VALIDATOR = new UserValidator();
 
 	/**
 	 * Tests, if the UserValidator's support() method returns <code>true</code>
 	 * only, if User.class is given.
 	 */
 	@Test
-	public void testSupports() {
-		final UserValidator validator = new UserValidator();
+	public void testSupports() {		
+		assertFalse(VALIDATOR.supports(String.class));
+		assertFalse(VALIDATOR.supports(null));
+		assertTrue(VALIDATOR.supports(User.class));
+	}
+	
+	/**
+	 * Tests, if the user has a valid 
+	 */
+	@Test
+	public void testValidateEmail() {
+		final User user = new User();
+		user.setName("testuser");
 		
-		Assert.assertFalse(validator.supports(String.class));
+		Errors errors = ValidationTestUtils.validate(VALIDATOR, user);
+		assertTrue(errors.hasErrors()); // no mail
 		
-		Assert.assertFalse(validator.supports(null));
+		user.setEmail("thisisnotanemail");
+		errors = ValidationTestUtils.validate(VALIDATOR, user);
+		assertTrue(errors.hasErrors());
 		
-		Assert.assertTrue(validator.supports(User.class));
+		user.setEmail("testuser1@bibsonomy.org");
+		errors = ValidationTestUtils.validate(VALIDATOR, user);
+		
+		assertFalse(errors.hasErrors());
 	}
 	
 	/**
@@ -33,13 +54,12 @@ public class UserValidatorTest {
 	 */
 	@Test
 	public void testValidateNullArgument() {
-		final UserValidator validator = new UserValidator();
 		final Errors errors = new BindException(new User(), "registerUser");
 		
 		try {
-			validator.validate(null, errors);
-			Assert.fail("Should raise an IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			VALIDATOR.validate(null, errors);
+			fail("Should raise an IllegalArgumentException");
+		} catch (final IllegalArgumentException e) {
 			// ok
 		}
 	}
@@ -49,17 +69,16 @@ public class UserValidatorTest {
 	 */
 	@Test
 	public void testValidateFails() {
-		final UserValidator validator = new UserValidator();
 		final Errors errors = new BindException(new User(), "registerUser");
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * should produce some errors
 		 */
-		validator.validate(new User(), errors);
+		VALIDATOR.validate(new User(), errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -67,7 +86,6 @@ public class UserValidatorTest {
 	 */
 	@Test
 	public void testValidatePasses() {
-		final UserValidator validator = new UserValidator();
 		final User user = new User();
 		final Errors errors = new BindException(user, "registerUser");
 		
@@ -80,14 +98,14 @@ public class UserValidatorTest {
 		user.setPassword("password");
 		
 
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 
 		/*
 		 * should produce no errors
 		 */
-		validator.validate(user, errors);
+		VALIDATOR.validate(user, errors);
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 	}
 	
 	/**
@@ -95,7 +113,6 @@ public class UserValidatorTest {
 	 */
 	@Test
 	public void testValidateFails2() {
-		final UserValidator validator = new UserValidator();
 		final User user = new User();
 		final Errors errors = new BindException(user, "registerUser");
 		
@@ -108,24 +125,21 @@ public class UserValidatorTest {
 		user.setPassword("password");
 		
 
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 
 		/*
 		 * should produce no errors
 		 */
-		validator.validate(user, errors);
+		VALIDATOR.validate(user, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
-	
-	
 	
 	/**
 	 * Linebreak in user name
 	 */
 	@Test
 	public void testValidateFails4() {
-		final UserValidator validator = new UserValidator();
 		final User user = new User();
 		final Errors errors = new BindException(user, "registerUser");
 		
@@ -138,14 +152,14 @@ public class UserValidatorTest {
 		user.setPassword("password");
 		
 
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 
 		/*
 		 * should produce no errors
 		 */
-		validator.validate(user, errors);
+		VALIDATOR.validate(user, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -153,7 +167,6 @@ public class UserValidatorTest {
 	 */
 	@Test
 	public void testValidateFails5() {
-		final UserValidator validator = new UserValidator();
 		final User user = new User();
 		final Errors errors = new BindException(user, "registerUser");
 		
@@ -166,14 +179,14 @@ public class UserValidatorTest {
 		user.setPassword("password");
 		
 
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 
 		/*
 		 * should produce no errors
 		 */
-		validator.validate(user, errors);
+		VALIDATOR.validate(user, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -181,7 +194,6 @@ public class UserValidatorTest {
 	 */
 	@Test
 	public void testValidateFails3() {
-		final UserValidator validator = new UserValidator();
 		final User user = new User();
 		final Errors errors = new BindException(user, "registerUser");
 		
@@ -192,13 +204,12 @@ public class UserValidatorTest {
 		user.setPassword("password");
 		
 
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 
 		/*
 		 * should produce no errors
 		 */
-		validator.validate(user, errors);
-		
-		Assert.assertTrue(errors.hasErrors());
+		VALIDATOR.validate(user, errors);
+		assertTrue(errors.hasErrors());
 	}
 }

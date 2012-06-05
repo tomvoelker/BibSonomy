@@ -1,9 +1,9 @@
 package org.bibsonomy.webapp.validation;
 
-import java.net.URL;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -15,6 +15,7 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserValidator implements Validator<User> {
 
+	
 	private static final int USERNAME_MAX_LENGTH = 15;
 	/**
 	 * We allow only a..z A..Z 0..9 - . _ 
@@ -23,14 +24,39 @@ public class UserValidator implements Validator<User> {
 	 */
 	public static final Pattern USERNAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9\\.\\-_]");
 
+	/**
+	 * @param user
+	 * @param errors
+	 */
+	public static void validateUser(final User user, final Errors errors) {
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", ERROR_FIELD_REQUIRED_KEY);
+		if (!errors.hasFieldErrors("email") && !UserUtils.isValidMailAddress(user.getEmail())) {
+			errors.rejectValue("email","error.field.valid.user.email");
+		}
+		
+		/*
+		 * FIXME: if the homepage is already a URL in the bean (command, model),
+		 * and the user enters a non-valid URL, an exception is thrown. How can
+		 * we catch this exception and instead here care for a correct URL?
+		 * <br/>
+		 * Not a real solution, but a workaround: 
+		 *   set <code>typeMismatch.java.net.URL</code> in messages.properties
+		 * <br/>  
+		 * Note, that changing values inside <code>errors</code> is no possible, 
+		 * hence, we can not just remove the error there.
+		 */
+		if (!UserUtils.isValidHomePage(user.getHomepage())) {
+			errors.rejectValue("homepage", "error.field.valid.user.homepage");
+		}
+	}
+	
 	/** 
 	 * Validates {@link User} and also subclasses of {@link User}. 
 	 *  
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		if (clazz != null) {
 			return User.class.isAssignableFrom(clazz);
 		}
@@ -55,63 +81,14 @@ public class UserValidator implements Validator<User> {
 		 * Before we make a detailed check on correctness, we look,
 		 * if required attributes are set. 
 		 */
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "error.field.required");
-
-		/*
-		 * detailed checks
-		 */
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", ERROR_FIELD_REQUIRED_KEY);
 		if (!errors.hasFieldErrors("name")) validateName(user.getName(), errors); 
-		if (!errors.hasFieldErrors("email")) validateEmail(user.getEmail(), errors);
-		validateHomepage(user.getHomepage(), errors);
+		
+		validateUser(user, errors);
 	}
 
-
-	/** Validates the correctness of the email-address. This is done by 
-	 * some simple tests, e.g., if the address contains whitespace, an '@'
-	 * or a '.'.
-	 * 
-	 * @param email
-	 * @param errors
-	 */
-	private void validateEmail (final String email, final Errors errors) {
-		if (email == null ||
-				"".equals(email.trim()) || 
-				email.indexOf(' ') != -1 ||
-				email.indexOf('@') == -1 || 
-				email.length() > 255 ||
-				email.lastIndexOf(".") < email.lastIndexOf("@") ||
-				email.lastIndexOf("@") != email.indexOf("@") ||
-				email.length() - email.lastIndexOf(".") < 2	) {
-			errors.rejectValue("email","error.field.valid.user.email");
-		}
-	}
-
-	/** Checks the validity of the homepage. The homepage might either be NULL 
-	 * or a http (or https) address.
-	 * <br/>
-	 * FIXME: if the homepage is already a URL in the bean (command, model),
-	 * and the user enters a non-valid URL, an exception is thrown. How can
-	 * we catch this exception and instead here care for a correct URL?
-	 * <br/>
-	 * Not a real solution, but a workaround: 
-	 *   set <code>typeMismatch.java.net.URL</code> in messages.properties
-	 * <br/>  
-	 * Note, that changing values inside <code>errors</code> is no possible, 
-	 * hence, we can not just remove the error there.
-	 * 
-	 * @param homepage
-	 * @param errors
-	 */
-	private void validateHomepage(final URL homepage, final Errors errors) {
-		if (homepage != null) {
-			if (!("http".equals(homepage.getProtocol()) || "https".equals(homepage.getProtocol()))) {
-				errors.rejectValue("homepage", "error.field.valid.user.homepage");
-			}
-		}
-	}
-
-	/** Checks the validity of the user name. There are some user names which are 
+	/**
+	 * Checks the validity of the user name. There are some user names which are 
 	 * reserved (public, private, friends, null) and some characters which are not
 	 * allowed (whitespace, -, +, /, &, ?, ", \, >, <, %).
 	 * 
