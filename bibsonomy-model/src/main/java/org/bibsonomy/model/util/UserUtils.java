@@ -25,6 +25,7 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,6 +42,35 @@ import org.bibsonomy.util.HashUtils;
  * @version $Id$
  */
 public class UserUtils {
+	
+	/**
+	 * Validates the correctness of the email-address. This is done by 
+	 * some simple tests, e.g., if the address contains whitespace, an '@'
+	 * or a '.'.
+	 * 
+	 * @param email
+	 * @return <code>true</code> if email is a valid email
+	 */
+	public static boolean isValidMailAddress (final String email) {
+		return present(email) &&
+				email.indexOf(' ') == -1 && // white space
+				email.indexOf('@') != -1 && // no @
+				email.length() <= 255 &&  // to long
+				email.lastIndexOf(".") > email.lastIndexOf("@") && // no domain specified
+				email.lastIndexOf("@") == email.indexOf("@") && // more than one @
+				email.length() - email.lastIndexOf(".") > 2;
+	}
+	
+	/**
+	 * Checks the validity of the homepage. The homepage might either be NULL 
+	 * or a http (or https) address.
+	 * 
+	 * @param homepage
+	 * @return <code>true</code> iff homepage is valid
+	 */
+	public static boolean isValidHomePage(final URL homepage) {
+		return !present(homepage) || "http".equals(homepage.getProtocol()) || "https".equals(homepage.getProtocol());
+	}
 
 
 	/** Checks, if the given user is the special DBLP user 
@@ -215,5 +245,4 @@ public class UserUtils {
 		existingUser.setReminderPassword(!present(updatedUser.getReminderPassword()) ? existingUser.getReminderPassword() : updatedUser.getReminderPassword());
 		existingUser.setReminderPasswordRequestDate(!present(updatedUser.getReminderPasswordRequestDate()) 	? existingUser.getReminderPasswordRequestDate() : updatedUser.getReminderPasswordRequestDate());
 	}
-
 }
