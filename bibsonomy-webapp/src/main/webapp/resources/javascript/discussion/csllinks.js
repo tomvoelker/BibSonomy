@@ -127,8 +127,6 @@ function constructId(data, id) {
 		if (key == id) {
 			console.log("id found: " + id);
 			return id;
-		} else if (false) {
-
 		}
 	}
 
