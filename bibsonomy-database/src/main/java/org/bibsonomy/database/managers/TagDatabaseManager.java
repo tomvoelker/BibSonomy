@@ -35,6 +35,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -106,7 +107,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.bookmarkSearch = bookmarkSearch;
 	}
 
-	/** 
+	/**
+	 * TODO: remove unused method
+	 * 
 	 * Return tag for given tagId
 	 *  
 	 * @param tagId 
@@ -118,6 +121,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * TODO: unused
+	 * 
 	 * Return all tags for a given tag count
 	 * @param param 
 	 * @param session 
@@ -267,7 +272,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.insertTags(tagParam, session);
 	}
 
-	/** Updates the posts by replacing all tags as described in {@link LogicInterface#updateTags(User, List, List, boolean)}.
+	/**
+	 * Updates the posts by replacing all tags as described in {@link LogicInterface#updateTags(User, List, List, boolean)}.
 	 * 
 	 * TODO: This method hasn't been tested, yet - it has been written
 	 * from scratch to migrate the functionality of the /edittags-page.
@@ -567,17 +573,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		/* 
 		 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
 		 * will be returned anyways), but return that directly
-		 *
-		 * TODO: maybe we put all the DBLP stuff into one class?
-		 * Then we could do here:
-		 * if (DBLP.isDBLPUser(param.getRequestedUserName()) {
-		 *    return DBLP.getDBLPTag();
-		 * }
 		 */
-		if ("dblp".equalsIgnoreCase(param.getRequestedUserName())) {
+		if (UserUtils.isDBLPUser(param.getRequestedUserName())) {
 			final List<Tag> tags = new ArrayList<Tag>();
 			final Tag dblp = new Tag();
-			dblp.setName("dblp");
+			dblp.setName(UserUtils.DBLP_USER_NAME);
 			dblp.setGlobalcount(1000000);
 			dblp.setUsercount(1000000);
 			tags.add(dblp);
