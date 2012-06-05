@@ -39,7 +39,6 @@
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByTags" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="publicationChainElement" />
@@ -73,7 +72,6 @@
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByTags" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="bookmarkChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="bookmarkChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="bookmarkChainElement" />

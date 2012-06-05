@@ -196,24 +196,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 
 	/**
-	 * <em>/concept/tag/TAGNAME</em>
-	 * 
-	 * @param tagIndex
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session
-	 * @return a list of posts
-	 */
-	public List<Post<R>> getPostsByConceptByTag(final List<TagIndex> tagIndex, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		final P param = this.createParam(limit, offset);
-		param.setTagIndex(tagIndex);
-		param.addAllToSystemTags(systemTags);
-
-		return this.postList("get" + this.resourceClassName + "ByConceptByTag", param, session);
-	}
-
-	/**
 	 * <em>/concept/group/GruppenName/EinTag</em><br/><br/>
 	 * 
 	 * This method retrieves all posts of all group members of the given
