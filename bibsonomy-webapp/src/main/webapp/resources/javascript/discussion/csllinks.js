@@ -134,12 +134,12 @@ function constructId(data, id) {
 	 * no id found => link should be [[bibtex/hash]].
 	 * Check in this case the size of the map, if more then one post is available it's must be an error
 	 */
-	if (counter == 1) {
+	if (counter >= 1) {
 		for ( var key in data) {
 			return key;
 		}
 	} else {
-		alert("an error is occured, expected count of posts is 1, but was" + counter);
+		alert("an error is occured, expected count of posts is more then 1, but was" + counter);
 	}
 
 };
