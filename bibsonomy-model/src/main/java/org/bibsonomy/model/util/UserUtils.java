@@ -44,6 +44,12 @@ import org.bibsonomy.util.HashUtils;
 public class UserUtils {
 	
 	/**
+	 * the name of the dblp user
+	 */
+	public static final String DBLP_USER_NAME = "dblp";
+
+
+	/**
 	 * Validates the correctness of the email-address. This is done by 
 	 * some simple tests, e.g., if the address contains whitespace, an '@'
 	 * or a '.'.
@@ -73,14 +79,15 @@ public class UserUtils {
 	}
 
 
-	/** Checks, if the given user is the special DBLP user 
+	/**
+	 * Checks, if the given user is the special DBLP user 
 	 * (which has some special rights).
 	 *  
 	 * @param user
 	 * @return <code>true</code>, if <code>user</code> is the DBLP user.
 	 */
 	public static boolean isDBLPUser(final User user) {
-		return isDBLPUser(user.getName());
+		return present(user) && isDBLPUser(user.getName());
 	}
 
 
@@ -91,7 +98,7 @@ public class UserUtils {
 	 * @return <code>true</code>, if <code>user</code> is the DBLP user.
 	 */
 	public static boolean isDBLPUser(final String userName) {
-		return "dblp".equalsIgnoreCase(userName);
+		return DBLP_USER_NAME.equalsIgnoreCase(userName);
 	}
 
 	/**
