@@ -2207,15 +2207,16 @@ public class DBLogic implements LogicInterface {
 		 * relationships can only be created by the logged-in user or admins
 		 */
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, sourceUser);
-		/*
-		 * check if relationship may be created (e.g. some special users
-		 * like 'dblp' are disallowed)
-		 */
+		
 		final DBSession session = openSession();
 		/*
 		 * finally try to create relationship
 		 */
 		try {
+			/*
+			 * check if relationship may be created (e.g. some special users
+			 * like 'dblp' are disallowed)
+			 */
 			this.permissionDBManager.checkUserRelationship(loginUser, this.userDBManager.getUserDetails(targetUser, session), relation, tag);
 			this.userDBManager.createUserRelation(sourceUser, targetUser, relation, tag, session);
 		} finally {
