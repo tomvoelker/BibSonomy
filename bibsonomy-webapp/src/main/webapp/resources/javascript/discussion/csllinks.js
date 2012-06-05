@@ -127,19 +127,22 @@ function constructId(data, id) {
 		if (key == id) {
 			console.log("id found: " + id);
 			return id;
+		} else if (false) {
+
 		}
 	}
 
 	/*
-	 * no id found => link should be [[bibtex/hash]].
-	 * Check in this case the size of the map, if more then one post is available it's must be an error
+	 * no id found => link should be [[bibtex/hash]]. The map can contain more then one post, 
+	 * if more than one user has referenced post in his repository. Check in this case then 
+	 * at least one post is present and use the first one. If the result map is empty, no reference will be created.
 	 */
 	if (counter >= 1) {
 		for ( var key in data) {
 			return key;
 		}
 	} else {
-		alert("an error is occured, expected count of posts is more then 1, but was" + counter);
+		console.log("an error is occured, expected at least one post, but was " + counter);
 	}
 
 };
