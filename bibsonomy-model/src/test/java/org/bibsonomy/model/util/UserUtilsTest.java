@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
 
 /**
@@ -66,7 +67,6 @@ public class UserUtilsTest {
 			}
 		}
 	}
-	
 
 	/**
 	 * tests generateActivationKey
@@ -124,5 +124,31 @@ public class UserUtilsTest {
 		assertNotNull(UserUtils.getListOfGroupIDs(null));
 		// every user is in the "public" group
 		assertEquals(1, UserUtils.getListOfGroupIDs(null).size());
+	}
+
+	/**
+	 * tests {@link UserUtils#isValidMailAddress(String)}
+	 */
+	@Test
+	public void testIsValidMailAddress() {
+		assertTrue(UserUtils.isValidMailAddress("testuser1@bibsonomy.org"));
+		assertFalse(UserUtils.isValidMailAddress("bib@bib@bib.com"));
+		assertFalse(UserUtils.isValidMailAddress("aa bb@ccc.com"));
+		assertFalse(UserUtils.isValidMailAddress("test@bbcom"));
+		assertFalse(UserUtils.isValidMailAddress("     "));
+		assertFalse(UserUtils.isValidMailAddress("asdasdasdasd"));
+		assertTrue(UserUtils.isValidMailAddress("a@b.com"));
+		assertFalse(UserUtils.isValidMailAddress("a.b@ccom"));
+	}
+	
+	/**
+	 * tests {@link UserUtils#isValidHomePage(java.net.URL)}
+	 */
+	@Test
+	public void testIsValidHomePage() {
+		assertTrue(UserUtils.isValidHomePage(null));
+		assertTrue(UserUtils.isValidHomePage(TestUtils.createURL("http://bibsonomy.org")));
+		assertTrue(UserUtils.isValidHomePage(TestUtils.createURL("https://bibsonomy.org")));
+		assertFalse(UserUtils.isValidHomePage(TestUtils.createURL("ftp://bibsonomy.org")));
 	}
 }
