@@ -39,15 +39,6 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	public abstract void testGetPostsFromInboxByHash();
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByConceptByTag(java.util.List, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
-	 */
-	@Test
-	public void testGetPostsByConceptByTag() {
-		// TODO: placeholder to execute the sql statement please add a test to all post resource dm's
-		resourceDB.getPostsByConceptByTag(Collections.singletonList(new TagIndex("google", 0)), 10, 0, Collections.<SystemTag>emptyList(), this.dbSession);
-	}
-
-	/**
 	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByConceptForGroup(java.lang.String, java.util.List, java.lang.String, java.util.List, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test

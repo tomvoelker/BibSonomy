@@ -569,35 +569,6 @@
 		SELECT content_id FROM bookmark WHERE book_url_hash = #hash# AND user_name = #requestedUserName#
 	</select>
 	
-	<select id="getBookmarkByConceptByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-			SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
-		       a.date, a.book_url_ctr AS count, t.user_name, NULL AS `group`, NULL AS group_name, a.change_date, <include refid="reviewRatingsRows" />
-			   FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
-		                      b.date, u.book_url_ctr, t.change_date,
-							<iterate property="tagIndex" conjunction=",">
-								MAX(IF (LCASE(upper) = LCASE(#tagIndex[].tagName#), 1, 0)) AS s$tagIndex[].index$
-							</iterate>
-					 FROM(
-							<iterate property="tagIndex" conjunction="UNION">
-								SELECT LCASE(upper) AS upper, LCASE(lower) AS lower, user_name FROM tagtagrelations t WHERE LCASE(upper) = LCASE(#tagIndex[].tagName#) UNION SELECT LCASE(#tagIndex[].tagName#),LCASE(#tagIndex[].tagName#),NULL
-							</iterate>
-					 ) AS tags JOIN tas t FORCE INDEX (tag_lower_idx) 
-					   		   ON (t.tag_lower = tags.lower
-					 			   AND (t.user_name = tags.user_name OR ISNULL(tags.user_name))
-					 			   AND t.content_type = 1
-					 			   AND t.group = 0)
-					 JOIN bookmark b USING(content_id) JOIN urls u USING(book_url_hash)
-					 GROUP BY t.content_id HAVING 
-					 <iterate property="tagIndex" conjunction="AND">
-								s$tagIndex[].index$ > 0
-					 </iterate>
-			   		 ORDER BY t.date DESC
-			   		 LIMIT #limit# OFFSET #offset# ) AS a 
-			   JOIN tas t ON a.content_id = t.content_id
-			   <!--  TODO: rename unify a use bb or b2 -->
-			   LEFT JOIN review_ratings_cache c ON c.interHash = a.book_url_hash
-			   ORDER BY a.date DESC;
-	</select>
 	
 	<select id="getBookmarkByConceptForGroup" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interhash, a.book_url_hash AS intrahash, title, description,
