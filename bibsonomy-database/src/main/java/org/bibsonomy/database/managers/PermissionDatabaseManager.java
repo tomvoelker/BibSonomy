@@ -425,7 +425,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			if (!present(targetUser.getName())) {
 				throw new ValidationException("Relationship with non-existing user cannot be established.");
 			}
-			if ("dblp".equalsIgnoreCase(targetUser.getName())) {
+			if (UserUtils.isDBLPUser(targetUser)) {
 				throw new ValidationException("error.relationship_with_dblp");
 			}
 		}
