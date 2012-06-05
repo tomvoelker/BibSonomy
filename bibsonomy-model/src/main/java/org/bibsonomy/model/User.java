@@ -109,8 +109,10 @@ public class User implements Serializable {
 	 * Location of this user
 	 */
 	private String place;
+	
 	/**
 	 * OpenURL url
+	 * TODO: should be of type url
 	 */
 	private String openURL;
 
