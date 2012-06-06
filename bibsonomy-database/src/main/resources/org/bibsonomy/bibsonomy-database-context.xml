@@ -219,7 +219,7 @@
 	<bean id="goldStandardBookmarkChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
-				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardBookmarkChainElement" />
 			</list>
 		</property>
 	</bean>
@@ -227,7 +227,7 @@
 	<bean id="goldStandardPublicationChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
-				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardBookmarkChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
 			</list>
 		</property>
 	</bean>
