@@ -495,7 +495,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		this.luceneUpdaterEnabled = luceneUpdaterEnabled;
 		// TODO: remove TODODZ
 		if (!this.luceneUpdaterEnabled) {
-			log.info("updater disabled for " + this.getResourceName() + " by project settings");
+			log.info("updater disabled by project settings");
 		}
 	}
 	
