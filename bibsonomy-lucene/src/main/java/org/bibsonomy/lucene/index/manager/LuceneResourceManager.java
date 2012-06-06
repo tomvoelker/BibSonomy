@@ -50,10 +50,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	/** flag indicating that an index-generation is currently running */
 	private boolean generatingIndex = false;
 	
-	// TODO: doc the difference between this field and luceneUpdaterEnabled
-	// TODO: set in the init method to true and nowhere changed
-	private boolean useUpdater = false;
-	
 	protected int alreadyRunning = 0; // das geht bestimmt irgendwie besser
 	private final int maxAlreadyRunningTrys = 20;
 
@@ -79,13 +75,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	protected LuceneResourceConverter<R> resourceConverter;
 	
 	private LuceneGenerateResourceIndex<R> generator;
-
-	/**
-	 * constructor
-	 */
-	public LuceneResourceManager() {
-		this.useUpdater = true;
-	}
 
 	/**
 	 * triggers index optimization during next update
@@ -239,12 +228,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		alreadyRunning = 1;
 		log.debug("reloadIndex - run and reset alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
 
-		if (!this.useUpdater) {
-			log.error("reloadIndex - LuceneUpdater deactivated!");
-			this.alreadyRunning = 0;
-			return;	
-		}
-
 		// do the actual work
 		if (this.updatingIndex != null) {
 			log.debug("switching from index " + this.activeIndex + " to index " + this.updatingIndex);
@@ -266,7 +249,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	protected void updateIndex() {
 		// if lucene updater is disabled, return without doing something
 		if (!luceneUpdaterEnabled) {
-			log.debug("reloadIndex - lucene updater is disabled");
+			log.debug("updateIndex - lucene updater is disabled");
 			alreadyRunning = 0;
 			return;
 		}
@@ -274,18 +257,11 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		// don't run twice at the same time  - if something went wrong, delete alreadyRunning
 		if ((alreadyRunning > 0) && (alreadyRunning<maxAlreadyRunningTrys) ) {
 			alreadyRunning++;
-			log.warn("reloadIndex - alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
+			log.warn("updateIndex - alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
 			return;	
 		}
 		alreadyRunning = 1;
-		log.debug("reloadIndex - run and reset alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
-
-		// check if the updater successfully initialized
-		if (!useUpdater) {
-			log.warn("updateIndex - LuceneUpdater deactivated!");
-			alreadyRunning = 0;
-			return;	
-		}
+		log.debug("updateIndex - run and reset alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
 
 		// do the actual work
 		log.debug("update indexes");
@@ -517,6 +493,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	public void setLuceneUpdaterEnabled(final boolean luceneUpdaterEnabled) {
 		this.luceneUpdaterEnabled = luceneUpdaterEnabled;
+		// TODO: remove TODODZ
+		if (!this.luceneUpdaterEnabled) {
+			log.info("updater disabled for " + this.getResourceName() + " by project settings");
+		}
 	}
 	
 	/**
