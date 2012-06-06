@@ -378,14 +378,11 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				if (tag.startsWith("->")) {
 					String conceptTag = parseTag(tag.substring(2));
 					// Get related tags:
-					System.out.println(conceptTag+" is related to:");
 					BooleanQuery conceptTags = new BooleanQuery();
+					conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(conceptTag))), Occur.SHOULD);
 					for (String t: this.dbLogic.getSubTagsForConceptTag(conceptTag)) {						
-						conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, t)), Occur.SHOULD);
-						System.out.print(" "+t);
+						conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(t))), Occur.SHOULD);
 					}
-					System.out.println();
-					System.out.println("SubQuery for concept tags: "+conceptTags.toString());
 					tagQuery.add(conceptTags, Occur.MUST);
 				}
 				else {

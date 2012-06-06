@@ -24,7 +24,6 @@ public class LuceneResourceSearchTest {
 		testTags.add("uni");
 		testTags.add("laptop");
 		Query q = lsr.buildSearchQuery("testuser1", null, null, null, testTags);
-		System.out.println(q.toString());
-
+		assertEquals("+(+tas:bibtex +tas:1999 +(tas:suchmaschine tas:fireball tas:google tas:yahoo) +(tas:linux tas:debian tas:opensuse tas:ubuntu) +tas:uni +tas:laptop)", q.toString());
 	}
 }
