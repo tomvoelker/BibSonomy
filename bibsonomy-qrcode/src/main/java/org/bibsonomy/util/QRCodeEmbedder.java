@@ -95,6 +95,7 @@ public class QRCodeEmbedder implements Callable<String> {
 				 * convert to image
 				 */
 				BufferedImage renderPage = renderPage(pageAt, 1);
+				
 
 				if(renderPage != null) {
 
@@ -106,7 +107,7 @@ public class QRCodeEmbedder implements Callable<String> {
 					float x = (float) freeSquare.getX();
 					float y = (float) pageAt.getCropBox().toNormalizedRectangle().getHeight() - (float) freeSquare.getY();
 					int size = freeSquare.getSize();
-
+					
 					if(size > MINIMUM_SIZE) {		
 						
 						/*
