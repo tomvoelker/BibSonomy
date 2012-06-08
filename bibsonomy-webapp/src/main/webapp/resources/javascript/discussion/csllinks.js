@@ -89,8 +89,9 @@ function requestSuccessful(data, postLinkData, anchor) {
 		$(this).attr("href", "#" + postLinkData.getClassId());
 		$(this).click(function() {
 			$(".csl-entry").css("background", "white");
-			$("#" + postLinkData.getClassId()).css("background", "#EEEEEE")
-		})
+			$(".book-cit").css("background", "white");
+			$(this).parent().siblings().find("#" + postLinkData.getClassId()).css("background", "#EEEEEE");
+		});
 	});
 
 	reference.append(referenceAnchor);
