@@ -86,9 +86,15 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 
 		final String reason = command.getReason();
 		final String deniedUserName = command.getDeniedUser();
+		boolean joinRequest = command.isJoinRequest();
 		
-		if (!present(reason) && ! present(deniedUserName)) {
-			// no deniedUser, no reason => probably wants to see the join_group page
+		if(joinRequest && !present(reason)) {
+			errors.rejectValue("reason", "error.field.required");
+			return Views.JOIN_GROUP;
+		}
+		
+		if (!joinRequest && !present(deniedUserName)) {
+			// no deniedUser, and no join request => probably wants to see the join_group page
 			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
 			return Views.JOIN_GROUP;
 		}

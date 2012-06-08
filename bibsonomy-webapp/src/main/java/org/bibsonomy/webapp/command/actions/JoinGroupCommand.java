@@ -37,6 +37,11 @@ public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	 * user to be denied for joining group
 	 */
 	private String deniedUser;
+	
+	/**
+	 * true if the request comes form join group page
+	 */
+	private boolean joinRequest;
 
 	/**
 	 * @param reasonMaxLen
@@ -142,4 +147,21 @@ public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	public int getReasonMaxLen() {
 		return reasonMaxLen;
 	}
+
+
+	/**
+	 * @return true if the request come from join group page, false if user will see the join group page
+	 */
+	public boolean isJoinRequest() {
+		return joinRequest;
+	}
+
+
+	/**
+	 * @param joinRequest the joinRequest to set
+	 */
+	public void setJoinRequest(boolean joinRequest) {
+		this.joinRequest = joinRequest;
+	}
+
 }
