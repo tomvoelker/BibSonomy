@@ -51,14 +51,49 @@ function getRequiredFieldsForType(type) {
 }	
 
 /* update view when user selects another type of publication in list */
-function changeView() {		
+function changeView() {	
 	if (hide == false)
 		return;
-
+	
 	var requiredFields = getRequiredFieldsForType(document.getElementById('post.resource.entrytype').value);
 
+	/*
+	 * are all entries empty?
+	 * remove this for new tab layout
+	 */
+	var allEntriesEmpty = true;
+	
 	for (var i=0; i<fields.length; i++) {
+		
+		/*
+		 * value of field
+		 * remove this for new tab layout
+		 */
+		var fieldValue = document.getElementById("post.resource." + fields[i]).value;
+		
 		showHideElement(fields[i], in_array(requiredFields,fields[i]) ? '' : 'none');
+		
+		/*
+		 * look for entry values
+		 * remove this for new tab layout
+		 */
+		if(in_array(requiredFields,fields[i]) && fieldValue != '') {
+			allEntriesEmpty = false;
+		}
+	}
+		
+	/*
+	 * if all entries are empty click uncollapse
+	 * remove this for new tab layout
+	 */
+	if(allEntriesEmpty) {
+		var detailsString = getString("post.resource.fields.detailed");
+		
+		var legend = $('legend').filter(function(index) {
+			return $(this).text().indexOf(detailsString) >= 0;
+		});
+		
+		$('img', legend).click();
 	}
 }	
 
