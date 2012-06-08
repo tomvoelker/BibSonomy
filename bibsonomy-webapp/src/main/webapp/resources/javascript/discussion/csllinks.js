@@ -15,7 +15,7 @@ $(document).ready(function() {
 		handleLinks($(this))
 	});
 
-	// handle all list elements with class review
+	// handle all list elements with class comment
 	$('li.comment').each(function() {
 		handleLinks($(this))
 	});
@@ -87,6 +87,10 @@ function requestSuccessful(data, postLinkData, anchor) {
 	anchor.parent().find("." + postLinkData.getHash() + postLinkData.getName()).each(function() {
 		$(this).html(postLinkData.getCitation());
 		$(this).attr("href", "#" + postLinkData.getClassId());
+		$(this).click(function() {
+			$(".csl-entry").css("background", "white");
+			$("#" + postLinkData.getClassId()).css("background", "#EEEEEE")
+		})
 	});
 
 	reference.append(referenceAnchor);
