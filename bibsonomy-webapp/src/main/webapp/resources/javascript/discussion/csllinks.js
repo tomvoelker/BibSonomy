@@ -90,7 +90,7 @@ function requestSuccessful(data, postLinkData, anchor) {
 		$(this).click(function() {
 			$(".csl-entry").css("background", "white");
 			$(".book-cit").css("background", "white");
-			$(this).parent().siblings().find("#" + postLinkData.getClassId()).css("background", "#EEEEEE");
+			$(this).parent().siblings().find("#" + postLinkData.getClassId()).css("background", "#E5F3FA");
 		});
 	});
 
