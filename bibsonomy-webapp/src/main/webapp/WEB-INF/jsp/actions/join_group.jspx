@@ -63,7 +63,7 @@
   		           			<div class="fsRow">
 	    	       				<div class="fsLabel">${mtl:ch('nbsp')}</div>
 	        	   				<div class="help"><b style="" class="smalltext">${mtl:ch('nbsp')}</b></div>
-								<form:hidden path="ckey" value="${ckey}" />
+								<input type="hidden" name="ckey" value="${ckey}"/>
 	      			            <form:hidden path="joinRequest" value="true" />
 	      			            <input type="submit"/>
 	            			</div>
