@@ -24,6 +24,7 @@
 package org.bibsonomy.scraper.url.kde.aanda;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -33,8 +34,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -71,16 +71,13 @@ public class AandAScraper extends AbstractUrlScraper{
 			// if the doi is present
 			if (doi != null){
 	
-				// get the bibtexcontent
-				String bibtexContent = WebUtils.getContentAsString(downloadUrl + doi);
-			
-				// and return it
-				if(bibtexContent != null){
-					sc.setBibtexResult(bibtexContent);
+				//BibtexScraper will extract the bibtex from the download location
+				ScrapingContext scForBibtexScraper = new ScrapingContext(new URL(downloadUrl + doi));
+				if (new BibtexScraper().scrape(scForBibtexScraper)) {
+					sc.setBibtexResult(scForBibtexScraper.getBibtexResult());
 					return true;
-				}else {
-					throw new ScrapingFailureException("failure during download");
 				}
+				
 			}
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
