@@ -224,6 +224,9 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 			
 			result = DOIUtils.cleanDOI(result);
 			
+			//remove <ce:title> tags
+			result = result.replace("</ce:title> <ce:title>", "; ").replace("<ce:title>", "").replace("</ce:title>", "");
+			
 			return result;
 		}
 		return null;
