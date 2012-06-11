@@ -87,13 +87,16 @@ function changeView() {
 	 * remove this for new tab layout
 	 */
 	if(allEntriesEmpty) {
+		
 		var detailsString = getString("post.resource.fields.detailed");
 		
 		var legend = $('legend').filter(function(index) {
 			return $(this).text().indexOf(detailsString) >= 0;
 		});
 		
-		$('img', legend).click();
+		if(legend.parent().hasClass("fsHidden")) {
+			$("img", legend).click();
+		}
 	}
 }	
 
