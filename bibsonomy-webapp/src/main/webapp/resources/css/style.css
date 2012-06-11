@@ -2720,8 +2720,9 @@ table.report td.value {
 		padding-bottom: 2em;
 	}
 	
-	
-	#search .smallform #inpf {
+/*
+	TODO seems to be obsolete, but it make the searchbox on goldstandard page lower (wla 11.06.2012)  
+ 	#search .smallform #inpf {
 		margin-bottom: 0;
 		vertical-align: top;
 		height: 16px;
@@ -2731,7 +2732,7 @@ table.report td.value {
 		margin-bottom: 0;
 		vertical-align: top;
 		height: 23px;
-	}
+	} */
 	
 	#search > ul li ul {
 		margin-top: 0;
