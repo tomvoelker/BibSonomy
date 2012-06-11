@@ -184,4 +184,5 @@ h3 {
 #referenceLinkContainer {
 		position: relative;
 		padding-bottom: 10px;
+		z-index: 100;
 }
