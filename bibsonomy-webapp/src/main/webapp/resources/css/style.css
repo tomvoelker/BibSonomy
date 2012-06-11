@@ -771,7 +771,7 @@ a img {
 }
 
 .sidebarnavi_entry_07:hover {
-    background-position: -363px 9px;
+    background-position: -363px 9px; 
 }
 
 .sidebarnavi_entry_07_inactive {
@@ -1734,19 +1734,18 @@ form.editTags input[type=text] {
 	right: 0px;
 	top: 125px;
 	height: 60px;
-	padding-right: 300px;
+	margin-right: 303px;
 	background-color: #FFFFFF;
 	overflow:visible;
 }
 
 #sidebarheader {
 	position: absolute;
-	width: 300px;
+	min-width: 300px;	
 	right: 0px;
 	top: 0px;
 	z-index: 9;
 	background-color: #e4e4e4;
-	padding-right: 0;
 }
 
 
@@ -1845,7 +1844,7 @@ form.editTags input[type=text] {
 	left: 0px;
 	bottom: 10px;
 	top: 185px;
-	padding-right: 300px;
+	margin-right: 303px;
 	overflow: scroll;
 	overflow-x:hidden;
 	background-color: #fff;
