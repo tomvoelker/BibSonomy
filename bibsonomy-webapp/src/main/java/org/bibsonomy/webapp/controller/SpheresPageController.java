@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -210,13 +210,15 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			spheresPBPosts.put(sphere.getKey(), pbListCommand);
 
 			// set tag cloud
-			final List<Tag> aspectTagCloud= logic.getTags(Resource.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, null, null, null, Order.FREQUENCY, command.getStartDate(), command.getEndDate(), 0, 25);
-			final TagCloudCommand tagCloudCommand = new TagCloudCommand();
-			tagCloudCommand.setMaxCount(TAG_CLOUD_SIZE);
-			tagCloudCommand.setMinFreq(TAG_CLOUD_MINFREQ);
-			tagCloudCommand.setSort(TAG_CLOUD_SORT);
-			tagCloudCommand.setTags(aspectTagCloud);
-			spheresTagClouds.put(sphere.getKey(), tagCloudCommand);
+			if (!command.isNotags()) {
+				final List<Tag> aspectTagCloud= logic.getTags(Resource.class, GroupingEntity.FRIEND, loginUser.getName(), sphereTags, null, null, null, null, Order.FREQUENCY, command.getStartDate(), command.getEndDate(), 0, 25);
+				final TagCloudCommand tagCloudCommand = new TagCloudCommand();
+				tagCloudCommand.setMaxCount(TAG_CLOUD_SIZE);
+				tagCloudCommand.setMinFreq(TAG_CLOUD_MINFREQ);
+				tagCloudCommand.setSort(TAG_CLOUD_SORT);
+				tagCloudCommand.setTags(aspectTagCloud);
+				spheresTagClouds.put(sphere.getKey(), tagCloudCommand);
+			}
 			
 		}
 		
