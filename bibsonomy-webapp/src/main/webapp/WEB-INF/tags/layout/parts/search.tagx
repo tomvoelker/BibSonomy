@@ -44,7 +44,7 @@
 					<c:if test="${command.context.userLoggedIn and empty requestedUser}">
 						<li onclick="return switchNavi('user:${fn:escapeXml(command.context.loginUser.name)}', this);"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></li>
 					</c:if>
-					<c:if test="${command.context.userLoggedIn}">
+					<c:if test="${command.context.userLoggedIn and not empty command.context.loginUser.groups}">
 						<li class="pdSubHeader"><fmt:message key="navi.search.in_group"/></li>
 						<c:forEach var="grp" items="${command.context.loginUser.groups}">
 							<li class="pdSubitems" onclick="return switchNavi('group:${fn:escapeXml(grp.name)}', this);">- <c:out value='${fn:escapeXml(grp.name)}'/></li>
