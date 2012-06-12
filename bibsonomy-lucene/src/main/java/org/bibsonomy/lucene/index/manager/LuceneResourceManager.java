@@ -50,7 +50,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	/** flag indicating that an index-generation is currently running */
 	private boolean generatingIndex = false;
 	
-	protected int alreadyRunning = 0; // das geht bestimmt irgendwie besser
+	private int alreadyRunning = 0; // FIXME: das geht bestimmt irgendwie besser
 	private final int maxAlreadyRunningTrys = 20;
 
 	/** all known redundant resource indeces */ 

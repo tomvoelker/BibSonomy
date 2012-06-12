@@ -69,10 +69,10 @@ public class LuceneResourceIndex<R extends Resource> {
 	private AccessMode accessMode;
 
 	/** gives read only access to the lucene index */
-	protected IndexReader indexReader;
+	private IndexReader indexReader;
 
 	/** gives write access to the lucene index */
-	protected IndexWriter indexWriter;
+	private IndexWriter indexWriter;
 	
 	/** the base path of the index*/
 	private String baseIndexPath;
@@ -90,7 +90,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	private final List<Integer> contentIdsToDelete;
 
 	/** list posts to insert into index */
-	protected Set<Document> postsToInsert;
+	private final Set<Document> postsToInsert;
 	
 	/** 
 	 * set of usernames which where flagged as spammers since last update
