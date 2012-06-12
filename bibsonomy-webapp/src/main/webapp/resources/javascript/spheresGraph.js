@@ -28,7 +28,10 @@ function SphereDisplay() {
     	.linkDistance(this.linkDistanceMap)
     	.size([backref.w, backref.h]);
     
-    this.vis = d3.select("#spheresGraph").append("svg");
+    this.vis = d3.select("#spheresGraph")
+    	.append("svg")
+    	.attr("width", this.w)
+    	.attr("height", this.h);
     
     this.start();
 };
