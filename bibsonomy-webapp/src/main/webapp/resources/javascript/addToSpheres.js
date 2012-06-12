@@ -494,7 +494,7 @@ SphereControl.prototype.renderSpheres = function() {
  * @return JSONized user recommendations 
  */
 SphereControl.prototype.getSpheres = function(callBack, callError) {
-	this.fetchData(this.projectHome + 'json/spheres', null, callBack, callError);
+	this.fetchData(this.projectHome + 'json/spheres', {notags: true}, callBack, callError);
 };
 
 /**

@@ -442,6 +442,7 @@
 								<value>requestedTags</value>
 								<value>callback</value>
 								<value>userSimilarity</value>
+								<value>notags</value>
 								<value>*.entriesPerPage</value>
 								<value>*.start</value>
 							</list>
