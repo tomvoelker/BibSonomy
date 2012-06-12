@@ -11,6 +11,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
+import org.bibsonomy.model.Tag;
 
 /**
  * Methods concerning the database.
@@ -87,25 +88,25 @@ public final class DatabaseUtils {
 	}
 
 	/**
-	 * extracts list of tag names from given list of TagIndex instances
+	 * extracts list of tag names from given list of TagIndex instances 
 	 * 
-	 * TODO: could we fill and use Generic.tags instead? 
-	 * 
-	 * @param tagIndex
+	 * @param param
 	 * @return a list of tag names
 	 */
 	public static List<String> extractTagNames(final GenericParam param) {
 		final List<String> retVal = new LinkedList<String>();
 		
 		for (final TagIndex tagIdx : param.getTagIndex()) {
+			/*
+			 * FIXME: LogicInterfaceHelper inserts the concept in the tagindex
+			 * here we convert them again to concepts :(
+			 */
 			if (param.getNumSimpleConcepts() > 0) {
-				retVal.add("->" + tagIdx.getTagName());
+				retVal.add(Tag.CONCEPT_PREFIX + tagIdx.getTagName());
 			} else {
 				retVal.add(tagIdx.getTagName());	
 			}
-			
 		}
-		
 		return retVal;
 	}
 }
