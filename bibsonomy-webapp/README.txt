@@ -5,7 +5,7 @@
   
   This is the BibSonomy webapp.
     
-  The mpdulöe is part of the BibSonomy social bookmarking system 
+  The module is part of the BibSonomy social bookmarking system 
   <http://www.bibsonomy.org> and is maintained by the Knowledge & 
   Data Engineering Group at the University of Kassel, Germany 
   <http://www.kde.cs.uni-kassel.de/>.
