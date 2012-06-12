@@ -28,7 +28,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -367,7 +366,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @param tagIndex list of tags 
 	 * @return search query for restricting posts to given tag assignments
 	 */
-	protected Query buildTagSearchQuery(Collection<String> tagIndex) {
+	protected Query buildTagSearchQuery(final Collection<String> tagIndex) {
 		final BooleanQuery tagQuery = new BooleanQuery();
 		//--------------------------------------------------------------------
 		// prepare input parameters
@@ -375,17 +374,16 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		if (present(tagIndex)) {			
 			for (final String tag : tagIndex) {
 				// Is the tag string a concept name?
-				if (tag.startsWith("->")) {
-					String conceptTag = parseTag(tag.substring(2));
-					// Get related tags:
-					BooleanQuery conceptTags = new BooleanQuery();
+				if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
+					final String conceptTag = parseTag(tag.substring(2));
+					// get related tags:
+					final BooleanQuery conceptTags = new BooleanQuery();
 					conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(conceptTag))), Occur.SHOULD);
-					for (String t: this.dbLogic.getSubTagsForConceptTag(conceptTag)) {						
+					for (final String t : this.dbLogic.getSubTagsForConceptTag(conceptTag)) {						
 						conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(t))), Occur.SHOULD);
 					}
 					tagQuery.add(conceptTags, Occur.MUST);
-				}
-				else {
+				} else {
 					tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(tag))), Occur.MUST);	
 				}				
 			}
@@ -573,8 +571,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		
 		// all done
 		log.debug("[Full text] Search query: " + mainQuery.toString());
-		System.out.println("[Full text] Search query: " + mainQuery.toString());
-		
+				
 		final QuerySortContainer qf = new QuerySortContainer();
 		qf.setQuery(makeTimeRangeQuery(mainQuery, year, firstYear, lastYear));
 		qf.setSort(sort);
@@ -734,7 +731,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	protected String parseToken(final String fieldName, final String param) throws IOException {
 	    if (present(param)) {
 		// use lucene's new token stream api (see org.apache.lucene.analysis' javadoc at package level)
-		final TokenStream ts = this.getAnalyzer().tokenStream(fieldName, new StringReader(param));
+		final TokenStream ts = this.analyzer.tokenStream(fieldName, new StringReader(param));
 		final TermAttribute termAtt = ts.addAttribute(TermAttribute.class);
 		ts.reset();
 
@@ -759,7 +756,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	protected Query parseSearchQuery(final String fieldName, String searchTerms) {
 		// parse search terms for handling phrase search
-		final QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, getAnalyzer());
+		final QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, this.analyzer);
 		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
 		Query searchTermQuery = null;
 		try {
@@ -786,13 +783,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public void setIndex(final LuceneResourceIndex<R> index) {
 		this.index = index;
 		this.reloadIndex();
-	}
-
-	/**
-	 * @return the analyzer
-	 */
-	public Analyzer getAnalyzer() {
-		return analyzer;
 	}
 
 	/**
