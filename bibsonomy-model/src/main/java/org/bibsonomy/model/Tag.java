@@ -37,9 +37,6 @@ import org.bibsonomy.model.util.TagUtils;
  * @version $Id$
  */
 public class Tag implements Comparable<Tag>, Serializable {
-	/**
-	 * For persistency (Serializable)
-	 */
 	private static final long serialVersionUID = 1634496749338156864L;
 
 	/**
@@ -51,6 +48,22 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 */
 	public static final int MAX_TAGS_ALLOWED = 100; // more tags are not allowed (they get lost)
 
+	/**
+	 * correlated concept prefix
+	 */
+	public static final String CORRELATED_CONCEPT_PREFIX = "<->";
+
+	/**
+	 * transitive concept prefix
+	 */
+	public static final String TRANSITIVE_CONCEPT_PREFIX = "-->";
+
+	/**
+	 * concept prefix
+	 */
+	public static final String CONCEPT_PREFIX = "->";
+	
+	
 	/**
 	 * The id of this tag.
 	 */
@@ -99,6 +112,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 */
 	private List<Post<? extends Resource>> posts;
 
+	
 	/**
 	 * Zero argument constructor.
 	 */
