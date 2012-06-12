@@ -62,8 +62,11 @@ public class ConceptPageController extends SingleResourceListController implemen
 			command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
 		}
 		
+		/*
+		 * "convert" tags to concepts
+		 */
 		for (int i = 0; i < requTags.size(); i++){
-			requTags.set(i, "->" + requTags.get(i));
+			requTags.set(i, Tag.CONCEPT_PREFIX + requTags.get(i));
 		}
 		
 		/* 
@@ -112,7 +115,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			if(groupingEntity != GroupingEntity.ALL) {
+			if (groupingEntity != GroupingEntity.ALL) {
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 1000, null);
 			}
 			
