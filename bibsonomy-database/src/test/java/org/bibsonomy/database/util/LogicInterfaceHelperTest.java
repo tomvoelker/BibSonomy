@@ -36,7 +36,6 @@ public class LogicInterfaceHelperTest extends AbstractDatabaseTest {
 			assertEquals(" +search-string", param.getSearch());
 			assertEquals("hash", param.getHash());
 
-			// TODO: do we want the LIMIT to be 0?
 			param = LogicInterfaceHelper.buildParam(paramClass, null, "", null, "", null, 12, 10, null, null, null, null, new User());
 			assertEquals(LogicInterfaceHelper.DEFAULT_LIST_LIMIT, param.getLimit());
 
