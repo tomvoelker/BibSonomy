@@ -3,7 +3,11 @@ package org.bibsonomy.database.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.database.AbstractDatabaseTest;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -19,17 +23,15 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-public class LogicInterfaceHelperTest {
+public class LogicInterfaceHelperTest extends AbstractDatabaseTest {
 
 	/**
 	 * tests buildParam
 	 */
 	@Test
 	public void buildParam() {
-		GenericParam param;
-
 		for (final Class<? extends GenericParam> paramClass : new Class[] { BookmarkParam.class, BibTexParam.class, TagParam.class, TagRelationParam.class, UserParam.class, GroupParam.class }) {
-			param = LogicInterfaceHelper.buildParam(paramClass, null, "", null, "hash", null, 0, 10, null, null, "search-string", null, new User());
+			GenericParam param = LogicInterfaceHelper.buildParam(paramClass, null, "", null, "hash", null, 0, 10, null, null, "search-string", null, new User());
 			assertEquals(paramClass, param.getClass());
 			assertEquals(" +search-string", param.getSearch());
 			assertEquals("hash", param.getHash());
@@ -52,10 +54,19 @@ public class LogicInterfaceHelperTest {
 				try {
 					param = LogicInterfaceHelper.buildParam(paramClass, null, "", null, hashId + testHash, null, 12, 10, null, null, null, null, new User());
 					fail("Expected exception");
-				} catch (RuntimeException ignore) {
+				} catch (final RuntimeException ignore) {
 				}
 			}
 		}
-
+	}
+	
+	@Test
+	public void testBuilding() {
+		final GenericParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Arrays.asList("test", "->test", "<->test2", "test3->", "-->test4", "test5-->"), "thisisastrangehash", null, 0, 10, null, null, "", null, new User());
+		assertEquals(1, param.getNumTransitiveConcepts());
+		assertEquals(1, param.getNumSimpleConcepts());
+		assertEquals(1, param.getNumSimpleTags());
+		assertEquals(2, param.getNumSimpleConceptsWithParent());
+		assertEquals(1, param.getNumCorrelatedConcepts());
 	}
 }

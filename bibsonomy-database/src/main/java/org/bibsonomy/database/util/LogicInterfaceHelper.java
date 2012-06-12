@@ -20,6 +20,7 @@ import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
@@ -34,7 +35,8 @@ import org.bibsonomy.model.util.UserUtils;
  */
 public class LogicInterfaceHelper {	
 	private static final Log logger = LogFactory.getLog(LogicInterfaceHelper.class);
-
+	private static final int DEFAULT_LIST_LIMIT = 10;
+	
 	/**
 	 * 
 	 * Builds a parameter object for the given parameters from the LogicInterface.
@@ -55,7 +57,7 @@ public class LogicInterfaceHelper {
 		param.setOrder(order);
 		param.setOffset(start);
 		if (end - start < 0) {
-			param.setLimit(0);
+			param.setLimit(DEFAULT_LIST_LIMIT);
 		} else {
 			param.setLimit(end - start);
 		}
@@ -134,12 +136,15 @@ public class LogicInterfaceHelper {
 		//  - private / friends groups are set later on 
 		//    (@see org.bibsonomy.database.util.DatabaseUtils.prepareGetPostForUser)
 
-		if (tags != null) {
+		if (present(tags)) {
 			for (String tag : tags) {
 				tag = tag.trim();
 				logger.debug("working on input tag: " + tag);
 
 				if (tag.length() > 2) {
+					/*
+					 * is tag a system tag?
+					 */
 					final SearchSystemTag searchTag = SystemTagsUtil.createSearchSystemTag(tag);
 					if (present(searchTag)) {
 						searchTag.handleParam(param);
@@ -150,33 +155,43 @@ public class LogicInterfaceHelper {
 						param.addTagName(tag);
 						continue;
 					}
-					if (tag.startsWith("->")) {
-						param.addSimpleConceptName(tag.substring(2).trim());
+					
+					// match tags like "->tag"
+					if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
+						param.addSimpleConceptName(tag.substring(Tag.CONCEPT_PREFIX.length()).trim());
 						continue;
 					}
-					if (tag.startsWith("-->")) {
-						if (tag.length() > 3) {
-							param.addTransitiveConceptName(tag.substring(3).trim());
+					
+					// match tags like "-->tag"
+					if (tag.startsWith(Tag.TRANSITIVE_CONCEPT_PREFIX)) {
+						if (tag.length() > Tag.TRANSITIVE_CONCEPT_PREFIX.length()) {
+							param.addTransitiveConceptName(tag.substring(Tag.TRANSITIVE_CONCEPT_PREFIX.length()).trim());
 						} else {
 							param.addTagName(tag);
 						}
 						continue;
 					}
-					if (tag.substring(tag.length() - 3, tag.length()).equals("-->")) {
-						if (tag.length() > 3) {
-							param.addSimpleConceptWithParentName(tag.substring(0, tag.length() - 3).trim());
+					
+					// match tags like "tag-->"
+					if (tag.endsWith(Tag.TRANSITIVE_CONCEPT_PREFIX)) {
+						if (tag.length() > Tag.TRANSITIVE_CONCEPT_PREFIX.length()) {
+							param.addSimpleConceptWithParentName(tag.substring(0, tag.length() - Tag.TRANSITIVE_CONCEPT_PREFIX.length()).trim());
 						} else {
 							param.addTagName(tag);
 						}
 						continue;
 					}
-					if (tag.substring(tag.length() - 2, tag.length()).equals("->")) {
-						param.addSimpleConceptWithParentName(tag.substring(0, tag.length() - 2).trim());
+					
+					// match tags like "tag->"
+					if (tag.endsWith(Tag.CONCEPT_PREFIX)) {
+						param.addSimpleConceptWithParentName(tag.substring(0, tag.length() - Tag.CONCEPT_PREFIX.length()).trim());
 						continue;
 					}
-					if (tag.startsWith("<->")) {
-						if (tag.length() > 3) {
-							param.addCorrelatedConceptName(tag.substring(3).trim());
+					
+					// match tags like "<->tag"
+					if (tag.startsWith(Tag.CORRELATED_CONCEPT_PREFIX)) {
+						if (tag.length() > Tag.CORRELATED_CONCEPT_PREFIX.length()) {
+							param.addCorrelatedConceptName(tag.substring(Tag.CORRELATED_CONCEPT_PREFIX.length()).trim());
 						} else {
 							param.addTagName(tag);
 						}
@@ -186,9 +201,7 @@ public class LogicInterfaceHelper {
 
 				// if none of the above was applicable, we add a simple tag
 				param.addTagName(tag);
-
 			} // end for
-
 		} // end if (tags != null)
 		else {
 			logger.debug("input tags are null");

@@ -1,20 +1,17 @@
 package org.bibsonomy.database.managers;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.database.AbstractDatabaseTest;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.testutil.JNDIBinder;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * This class provides a connection to the database. Every class that implements
@@ -25,7 +22,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class AbstractDatabaseManagerTest {	
+public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {	
 	// TODO: move to a TestUtilClass
 	protected static final int PUBLIC_GROUP_ID = GroupID.PUBLIC.getId();
 	protected static final int PRIVATE_GROUP_ID = GroupID.PRIVATE.getId();
@@ -37,7 +34,6 @@ public abstract class AbstractDatabaseManagerTest {
 
 	protected static DBSessionFactory dbSessionFactory;
 	protected static DatabasePluginRegistry pluginRegistry;
-	protected static ApplicationContext testDatabaseContext;
 
 	protected DatabasePluginMock pluginMock;
 	protected DBSession dbSession;
@@ -47,28 +43,11 @@ public abstract class AbstractDatabaseManagerTest {
 	 */
 	@BeforeClass
 	public static void initDatabase() {
-		// bind datasource access via JNDI
-		JNDIBinder.bind();
-
 		TestDatabaseLoader.getInstance().load();
 
 		dbSessionFactory = new IbatisDBSessionFactory();
 
 		pluginRegistry = DatabasePluginRegistry.getInstance();
-
-		// init SystemTagFactory and chain config
-		testDatabaseContext = new ClassPathXmlApplicationContext("TestDatabaseContext.xml");
-
-		// init managers
-		GroupDatabaseManager.getInstance().setUserDb(UserDatabaseManager.getInstance());
-	}
-
-	/**
-	 * unbinds jndi
-	 */
-	@AfterClass
-	public static void unbind() {
-		JNDIBinder.unbind();
 	}
 
 	/**
