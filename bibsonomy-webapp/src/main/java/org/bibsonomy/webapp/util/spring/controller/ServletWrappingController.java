@@ -123,9 +123,10 @@ public class ServletWrappingController extends AbstractController implements Bea
 		public String getInitParameter(final String paramName) {
 			return initParameters.getProperty(paramName);
 		}
-
+		
+		@SuppressWarnings( { "unchecked", "rawtypes" }) // XXX: to be compatible with servlet-api 2 and 3
 		@Override
-		public Enumeration<?> getInitParameterNames() {
+		public Enumeration getInitParameterNames() {
 			return initParameters.keys();
 		}
 	}
