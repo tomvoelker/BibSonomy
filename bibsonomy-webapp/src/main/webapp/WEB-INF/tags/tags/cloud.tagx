@@ -50,27 +50,24 @@
 	
 
 	<ul class="${style} tagbox">
-	
+		<c:choose>
+			<c:when test="${tagSizeMode eq 'user'}">
+				<c:set var="maxTagFrequency" value="${cmd.maxUserTagCount}" />
+				<c:set var="minTagFrequency" value="${cmd.minUserTagCount}" />	
+			</c:when>		
+			<c:otherwise>
+				<c:set var="maxTagFrequency" value="${cmd.maxTagCount}" />
+				<c:set var="minTagFrequency" value="${cmd.minTagCount}" />
+			</c:otherwise>
+		</c:choose>
 		<!-- loop over tags -->
 		<c:forEach var="tag" items="${cmd.tags}">
-		    
-
 			<fmt:message var="posts" key="posts" /> <!-- plural -->
 			<!-- determine tag css depending on its frequency -->
 			<c:if test="${tag.usercount == 1}">
 				<fmt:message var="posts" key="post" /> <!-- singular -->
 			</c:if>	
 			
-			<c:choose>	
-				<c:when test="${tagSizeMode eq 'user'}">
-					<c:set var="maxTagFrequency" value="${cmd.maxUserTagCount}" />
-					<c:set var="minTagFrequency" value="${cmd.minUserTagCount}" />	
-				</c:when>		
-				<c:otherwise>
-					<c:set var="maxTagFrequency" value="${cmd.maxTagCount}" />
-					<c:set var="minTagFrequency" value="${cmd.minTagCount}" />
-				</c:otherwise>
-			</c:choose>
 			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, maxTagFrequency)}" />
 			
 			<!-- display the tag -->						
@@ -94,7 +91,7 @@
 					</jspx:element>
 				</li>
 				<c:out value=" "/>						
-			</c:if>			
+			</c:if>
 		</c:forEach>		
 	</ul>
 </div>
