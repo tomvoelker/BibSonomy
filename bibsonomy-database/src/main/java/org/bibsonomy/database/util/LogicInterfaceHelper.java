@@ -35,7 +35,8 @@ import org.bibsonomy.model.util.UserUtils;
  */
 public class LogicInterfaceHelper {	
 	private static final Log logger = LogFactory.getLog(LogicInterfaceHelper.class);
-	private static final int DEFAULT_LIST_LIMIT = 10;
+	
+	protected static final int DEFAULT_LIST_LIMIT = 10;
 	
 	/**
 	 * 
