@@ -66,11 +66,10 @@ public class QRCodeEmbedder implements Callable<String> {
 	 * @param inFile input path
 	 * @param encodee URL to encode
 	 */
-	public QRCodeEmbedder(String inFile, String encodee) {
+	public QRCodeEmbedder(final String inFile, final String encodee) {
 		this.setInFile(inFile);
 		this.setOutFile(inFile.concat(".qr"));
 		this.setEncodee(encodee);
-
 	}
 
 	/*
@@ -83,48 +82,48 @@ public class QRCodeEmbedder implements Callable<String> {
 			/*
 			 * check if file already exists
 			 */
-			if(new File(this.outFile).createNewFile()) {
+			if (new File(this.outFile).createNewFile()) {
 				
 				/*
 				 * read input file and get first page
 				 */
-				PDDocument createFromLocator = PDDocument.createFromLocator(new FileLocator(this.getInFile()));
-				PDPage pageAt = createFromLocator.getPageTree().getFirstPage();
+				final PDDocument createFromLocator = PDDocument.createFromLocator(new FileLocator(this.getInFile()));
+				final PDPage pageAt = createFromLocator.getPageTree().getFirstPage();
 
 				/*
 				 * convert to image
 				 */
-				BufferedImage renderPage = renderPage(pageAt, 1);
+				final BufferedImage renderPage = renderPage(pageAt, 1);
 				
 
-				if(renderPage != null) {
+				if (renderPage != null) {
 
 					/*
 					 * find coordinates to put qr code to
 					 */
-					Point freeSquare = SquareFinder.getFreeSquare(renderPage, SquareFinder.WHITE);
+					final Point freeSquare = SquareFinder.getFreeSquare(renderPage, SquareFinder.WHITE);
 
-					float x = (float) freeSquare.getX();
-					float y = (float) pageAt.getCropBox().toNormalizedRectangle().getHeight() - (float) freeSquare.getY();
-					int size = freeSquare.getSize();
+					final float x = freeSquare.getX();
+					final float y = (float) pageAt.getCropBox().toNormalizedRectangle().getHeight() - freeSquare.getY();
+					final int size = freeSquare.getSize();
 					
-					if(size > MINIMUM_SIZE) {		
+					if (size > MINIMUM_SIZE) {		
 						
 						/*
 						 * generate qr code
 						 */
-						BufferedImage qrCode = QRCodeCreator.createQRCode(this.encodee, size);
+						final BufferedImage qrCode = QRCodeCreator.createQRCode(this.encodee, size);
 
 						/*
 						 * convert qr code image to internal pdf representation
 						 */
-						ImageConverterAwt2Pdf converter2 = new ImageConverterAwt2Pdf(qrCode);
-						PDImage pdImage = converter2.getPDImage();
+						final ImageConverterAwt2Pdf converter2 = new ImageConverterAwt2Pdf(qrCode);
+						final PDImage pdImage = converter2.getPDImage();
 
 						/*
 						 * get pdf page coordinate system offset and correct it
 						 */
-						AffineTransform pageTx = new AffineTransform();
+						final AffineTransform pageTx = new AffineTransform();
 						PDFGeometryTools.adjustTransform(pageTx, pageAt);
 
 						/*
@@ -136,12 +135,12 @@ public class QRCodeEmbedder implements Callable<String> {
 						 * this is necessary because else image positioning and scaling 
 						 * is incorrect.
 						 */
-						PDForm form = (PDForm) PDForm.META.createNew();
-						CSContent content = pageAt.getContentStream();
+						final PDForm form = (PDForm) PDForm.META.createNew();
+						final CSContent content = pageAt.getContentStream();
 
 						if(pageAt.getResources() != null) {
-							COSObject cosResourcesCopy = pageAt.getResources().cosGetObject().copyDeep();
-							PDResources pdResourcesCopy = (PDResources) PDResources.META.createFromCos(cosResourcesCopy);
+							final COSObject cosResourcesCopy = pageAt.getResources().cosGetObject().copyDeep();
+							final PDResources pdResourcesCopy = (PDResources) PDResources.META.createFromCos(cosResourcesCopy);
 							form.setResources(pdResourcesCopy);
 						}
 
@@ -151,7 +150,7 @@ public class QRCodeEmbedder implements Callable<String> {
 						/*
 						 * open device to content stream
 						 */
-						CSCreator creator = CSCreator.createNew(pageAt);
+						final CSCreator creator = CSCreator.createNew(pageAt);
 
 						creator.saveState();
 
@@ -160,9 +159,9 @@ public class QRCodeEmbedder implements Callable<String> {
 						 */
 						creator.doXObject(null, form);
 
-						float newSize = (float) size - (float) pageTx.getScaleX();
-						float newX = x - (float) pageTx.getTranslateX();
-						float newY = y - (float) pageTx.getTranslateY();
+						final float newSize = size - (float) pageTx.getScaleX();
+						final float newX = x - (float) pageTx.getTranslateX();
+						final float newY = y - (float) pageTx.getTranslateY();
 
 						/*
 						 * apply qr code image
@@ -175,10 +174,7 @@ public class QRCodeEmbedder implements Callable<String> {
 						 */
 						creator.close();
 
-					}
-
-					else {
-						
+					} else {	
 						/*
 						 * if minimum requirements are not met throw exception
 						 */
@@ -198,7 +194,7 @@ public class QRCodeEmbedder implements Callable<String> {
 			 */
 			return this.outFile;
 
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			/*
 			 * if we get here something went wrong during conversion/manipulation.
 			 * therefore output file can already exist an be corrupt so we have to delete it.
@@ -217,12 +213,12 @@ public class QRCodeEmbedder implements Callable<String> {
 	 * @return the converted image
 	 * @throws CSException if page could not be converted
 	 */
-	private BufferedImage renderPage(final PDPage page, int scale) throws CSException {
+	private BufferedImage renderPage(final PDPage page, final int scale) throws CSException {
 		
 		/*
 		 * get page dimensions
 		 */
-		Rectangle2D rect = page.getCropBox().toNormalizedRectangle();
+		final Rectangle2D rect = page.getCropBox().toNormalizedRectangle();
 		
 		BufferedImage image = null;
 		IGraphicsContext graphics = null;
@@ -240,14 +236,14 @@ public class QRCodeEmbedder implements Callable<String> {
 			/*
 			 * get graphics from scaled image
 			 */
-			Graphics2D g2 = (Graphics2D) image.getGraphics();
+			final Graphics2D g2 = (Graphics2D) image.getGraphics();
 			
 			graphics = new CwtAwtGraphicsContext(g2);
 			
 			/*
 			 * setup affine transform and background color
 			 */
-			AffineTransform imgTransform = graphics.getTransform();
+			final AffineTransform imgTransform = graphics.getTransform();
 			imgTransform.scale(scale, -scale);
 			imgTransform.translate(-rect.getMinX(), -rect.getMaxY());
 			graphics.setTransform(imgTransform);
@@ -257,14 +253,14 @@ public class QRCodeEmbedder implements Callable<String> {
 			/*
 			 * get content stream of pdf page
 			 */
-			CSContent content = page.getContentStream();
+			final CSContent content = page.getContentStream();
 			
 			if (content != null) {
 				
 				/*
 				 * render pdf page
 				 */
-				CSPlatformRenderer renderer = new CSPlatformRenderer(null, graphics);
+				final CSPlatformRenderer renderer = new CSPlatformRenderer(null, graphics);
 				renderer.process(content, page.getResources());
 			}   
 			
@@ -294,7 +290,7 @@ public class QRCodeEmbedder implements Callable<String> {
 	/**
 	 * @param inFile the inFile to set
 	 */
-	public void setInFile(String inFile) {
+	public void setInFile(final String inFile) {
 		this.inFile = inFile;
 	}
 
@@ -308,7 +304,7 @@ public class QRCodeEmbedder implements Callable<String> {
 	/**
 	 * @param outFile the outFile to set
 	 */
-	public void setOutFile(String outFile) {
+	public void setOutFile(final String outFile) {
 		this.outFile = outFile;
 	}
 
@@ -322,7 +318,7 @@ public class QRCodeEmbedder implements Callable<String> {
 	/**
 	 * @param encodee the encodee to set
 	 */
-	public void setEncodee(String encodee) {
+	public void setEncodee(final String encodee) {
 		this.encodee = encodee;
 	}
 		
