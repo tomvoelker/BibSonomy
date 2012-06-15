@@ -2516,14 +2516,23 @@ public class DBLogic implements LogicInterface {
 
 		try {
 			final Wiki actual = this.wikiDBManager.getActualWiki(userName, session);
+			
 			/*
-			 * Check, if the wiki has changed (otherwise we don't update it).
+			 * Check if the wiki even exists (actual == null)!
 			 */
-			String actualWikiText = actual.getWikiText();
-			if (actualWikiText == null) actualWikiText = "";
-			if (!actualWikiText.equals(wiki.getWikiText())) {
-				this.wikiDBManager.updateWiki(userName, wiki, session);
-				this.wikiDBManager.logWiki(userName, actual, session);
+			if (actual != null) {
+				
+				/*
+				 * Check, if the wiki has changed (otherwise we don't update it).
+				 */
+				String actualWikiText = actual.getWikiText();
+				if (actualWikiText == null) actualWikiText = "";
+				if (!actualWikiText.equals(wiki.getWikiText())) {
+					this.wikiDBManager.updateWiki(userName, wiki, session);
+					this.wikiDBManager.logWiki(userName, actual, session);
+				}
+			} else {
+				this.createWiki(userName, wiki);
 			}
 		} finally {
 			session.close();
