@@ -35,12 +35,11 @@ use namespace mx_internal;
 /**
  * detection rate. 10Hz in this case.
  */
-private var detectionRate:int = 10;
+private const DETECTION_RATE:int = 10;
 
 /**		
- * containers for camera 
+ * container for camera 
  */
-private var cam:Camera;
 private var video:Video;
 
 /**
@@ -126,7 +125,7 @@ private function init():void {
 	/*
 	 * initialize the webcam
 	 */ 			
-	cam = Camera.getCamera();
+	var cam:Camera = Camera.getCamera();
 	
 	myReader = new QRCodeMultiReader();
 			
@@ -167,7 +166,7 @@ private function init():void {
 		/*
 		 * initialize the refresh timer
 		 */
-		refreshTimer = new Timer(1000/detectionRate);
+		refreshTimer = new Timer(1000/DETECTION_RATE);
 		refreshTimer.addEventListener(TimerEvent.TIMER, decodeSnapshot);
 		refreshTimer.start();
 		
@@ -320,7 +319,9 @@ public function decodeBitmapData(bmpd:BitmapData, width:int, height:int):void {
 			}
 		}
 	} catch(e:*) {
-		trace("no code detected");
+		/*
+		 * do nothing here because of performance enhancement
+		 */
 	}
 }
 

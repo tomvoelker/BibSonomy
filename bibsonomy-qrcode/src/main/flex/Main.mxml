@@ -31,7 +31,6 @@
 	<s:VGroup horizontalCenter="0" verticalCenter="0">
 		<!-- camera display -->
 		<s:Group id="videoArea">
-				
 			<s:SpriteVisualElement id="theCam" width="{camWidth}" height="{camHeight}" />
 			
 			<!-- overlay that is displayed when qr code is recognized -->
@@ -46,10 +45,8 @@
 					hideEffect="{flashFX}"  
 					backgroundColor="white" 
 					backgroundAlpha="0.8"/>
-				
 			</s:Group>		
-		</s:Group>		
-		
+		</s:Group>				
 	</s:VGroup>
 	
 </s:Application>
