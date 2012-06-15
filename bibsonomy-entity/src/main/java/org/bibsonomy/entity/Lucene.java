@@ -82,7 +82,7 @@ class Lucene {
 			querystr += ")";
 		}
 
-		System.out.println("query is: " + querystr);
+		//System.out.println("query is: " + querystr);
 
 		Query q = new QueryParser(Version.LUCENE_35, "author", analyzer).parse(querystr);
 		int hitsPerPage = 100;
@@ -92,21 +92,21 @@ class Lucene {
 		searcher.search(q, collector);
 		ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-		System.out.println("Found " + hits.length + " hits.");
+		//System.out.println("Found " + hits.length + " hits.");
 		Integer authorID = 0;
 		List<Integer> saveAuthorIDs = new ArrayList<Integer>();
 		for(int i=0;i<hits.length;++i) {
 			int docId = hits[i].doc;
 			Document d = searcher.doc(docId);
 			//get the authorID connected with this document
-			System.out.println((i + 1) + ". " + d.get("author") + " coauthors: " + d.get("coauthors") + " authorID: " + d.get("ID") + " score: " + hits[i].score);
+			//System.out.println((i + 1) + ". " + d.get("author") + " coauthors: " + d.get("coauthors") + " authorID: " + d.get("ID") + " score: " + hits[i].score);
 			saveAuthorIDs.add(Integer.valueOf(d.get("ID")));
 		}
 
 		searcher.close();
-		System.out.println("we compare this lucene IDs: ");
+		//System.out.println("we compare this lucene IDs: ");
 		for (int id: saveAuthorIDs) {
-			System.out.println(id);
+			//System.out.println(id);
 		}
 		return saveAuthorIDs;
 	}
