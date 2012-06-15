@@ -80,7 +80,7 @@ public class PublicationListTag extends SharedResourceTag {
 
 		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/").append(requestType.getType()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(requestType.getType()).append("\")'>");
 		renderedHTML.append("<option value='plain'>plain</option><option value='harvardhtml'>harvard</option><option value='din1505'>DIN1505</option><option value='simplehtml'>simpleHTML</option>");
-		renderedHTML.append("</select><input type='hidden' value='").append(tags).append("' /></form></span></div>");
+		renderedHTML.append("</select><input id='reqUser' type='hidden' value='").append(requestedName).append("' /><input id='reqTags' type='hidden' value='").append(tags).append("' /></form></span></div>");
 
 		/*
 		 * get the publications
