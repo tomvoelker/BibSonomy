@@ -16,7 +16,7 @@ import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.SortUtils;
-import org.bibsonomy.wiki.tags.SharedResourceTag;
+import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
  * TODO: abstract resource tag
@@ -27,7 +27,7 @@ import org.bibsonomy.wiki.tags.SharedResourceTag;
  * @author Bernd Terbrack
  * @version $Id$
  */
-public class PublicationListTag extends SharedResourceTag {
+public class PublicationListTag extends SharedTag {
 
 	private static final String DEFAULT_LAYOUT = "plain";
 
@@ -63,7 +63,7 @@ public class PublicationListTag extends SharedResourceTag {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	protected String renderSharedTag(final RequestType requestType) {
+	protected String renderSharedTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
 		final Map<String, String> tagAtttributes = this.getAttributes();
 		final Set<String> keysSet = tagAtttributes.keySet();
@@ -76,16 +76,16 @@ public class PublicationListTag extends SharedResourceTag {
 			tags = tagAtttributes.get(TAGS);
 		}
 
-		final String requestedName = this.getRequestedName(requestType);
+		final String requestedName = this.getRequestedName();
 
-		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/").append(requestType.getType()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(requestType.getType()).append("\")'>");
+		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/").append(this.getGroupingEntity().toString()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(this.getGroupingEntity().toString()).append("\")'>");
 		renderedHTML.append("<option value='plain'>plain</option><option value='harvardhtml'>harvard</option><option value='din1505'>DIN1505</option><option value='simplehtml'>simpleHTML</option>");
 		renderedHTML.append("</select><input id='reqUser' type='hidden' value='").append(requestedName).append("' /><input id='reqTags' type='hidden' value='").append(tags).append("' /></form></span></div>");
 
 		/*
 		 * get the publications
 		 */
-		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, requestType.getGroupingEntity(), requestedName, Collections.singletonList(tags), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
+		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Collections.singletonList(tags), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
 		BibTexUtils.removeDuplicates(posts);
 
 		/*

@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.wiki.tags.SharedResourceTag;
+import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
  * TODO: abstract resource tag
@@ -22,7 +22,7 @@ import org.bibsonomy.wiki.tags.SharedResourceTag;
  * @author Bernd Terbrack
  * @version $Id$
  */
-public class BookmarkListTag extends SharedResourceTag {
+public class BookmarkListTag extends SharedTag {
 	private static final String NAME = "tags";
 	private static final String TAG_NAME = "bookmarks";
 
@@ -41,7 +41,7 @@ public class BookmarkListTag extends SharedResourceTag {
 	}
 
 	@Override
-	protected String renderSharedTag(final RequestType requestType) {
+	protected String renderSharedTag() {
  		final StringBuilder renderedHTML = new StringBuilder();
  		
         final Map<String, String> tagAtttributes = this.getAttributes();
@@ -56,7 +56,7 @@ public class BookmarkListTag extends SharedResourceTag {
  			tags = tagAtttributes.get(NAME);
  		}
  		final List<Post<Bookmark>> posts;
- 		posts = this.logic.getPosts(Bookmark.class, requestType.getGroupingEntity(), this.getRequestedName(requestType), Collections.singletonList(tags), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
+ 		posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Collections.singletonList(tags), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
 		
  		
         renderedHTML.append("<div class='align'>");
