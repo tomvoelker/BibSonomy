@@ -21,8 +21,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
-import org.bibsonomy.wiki.enums.GroupLayout;
-import org.bibsonomy.wiki.enums.UserLayout;
+import org.bibsonomy.wiki.enums.DefaultLayout;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
@@ -126,7 +125,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		 * if no renderOption is given try to set a layout
 		 */
 		try {
-			return getLayout(command, locale, isGroup);
+			return getLayout(command, locale);
 		} catch (final Exception e) {
 			return handleError("error.405");
 		}
@@ -147,14 +146,15 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * @return
 	 * @throws Exception
 	 */
-	private View getLayout(final AjaxCvCommand command, final Locale locale, final boolean isGroup) throws Exception {
+	private View getLayout(final AjaxCvCommand command, final Locale locale) throws Exception {
 		log.debug("ajax -> getLayout");
-		final String layoutName = command.getLayout();
-		if (!UserLayout.LAYOUT_CURRENT.name().equals(layoutName)) {
-			final String layoutRef = isGroup ?  GroupLayout.valueOf(layoutName).getRef() : UserLayout.valueOf(layoutName).getRef();
-			final String wikiText = messageSource.getMessage(layoutRef, null, locale);
+		if ( ! DefaultLayout.LAYOUT_CURRENT.equals(command.getLayout()) ) {
+			// fetch default wiki text from messages.properties
+			final String wikiText = messageSource.getMessage(command.getLayout().getRef(), null, locale);
 			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
-		} else {
+		} 
+		else {
+			// fetch current user wiki text from database
 			String wikiText;
 			if (present(wikiRenderer.getRequestedUser())) {
 				wikiText = logic.getWiki(wikiRenderer.getRequestedUser().getName(), null).getWikiText();

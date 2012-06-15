@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.command.ajax;
 
+import org.bibsonomy.wiki.enums.DefaultLayout;
+
 /**
  * @author Bernd
  * @version $Id$
@@ -7,10 +9,9 @@ package org.bibsonomy.webapp.command.ajax;
 public class AjaxCvCommand extends AjaxCommand {
 	
 	/**
-	 * TODO: change type to UserLayout after it is merged with GroupLayout
-	 * Name of the design
+	 * default layout
 	 */
-	private String layout;
+	private DefaultLayout layout;
 	
 	/**
 	 * renderOptions
@@ -25,14 +26,14 @@ public class AjaxCvCommand extends AjaxCommand {
 	/**
 	 * @return the layout
 	 */
-	public String getLayout() {
+	public DefaultLayout getLayout() {
 		return layout;
 	}
 
 	/**
 	 * @param layout the layout to set
 	 */
-	public void setLayout(final String layout) {
+	public void setLayout(final DefaultLayout layout) {
 		this.layout = layout;
 	}
 
