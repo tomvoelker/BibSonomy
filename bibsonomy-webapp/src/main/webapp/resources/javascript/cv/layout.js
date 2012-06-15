@@ -87,7 +87,7 @@ function submitWiki(renderOptions){
  */
 function formatPublications(self, type){
     var layout = $(self).val();
-    var tags = $(self).next().val();
+    var tags = $('#reqTags').val();
     var reqUser = $('#reqUser').val();
     $(self).parent().parent().parent().next().empty();
     $.get("/layout/" + layout + "/" + type + "/" + reqUser + "/" + tags, function(data){
