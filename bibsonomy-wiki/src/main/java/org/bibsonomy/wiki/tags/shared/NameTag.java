@@ -27,8 +27,8 @@ public class NameTag extends SharedTag {
 	}
 
 	@Override
-	protected String renderSharedTag(final RequestType requestType) {
-		final String name = this.getRequestedRealName(requestType);
+	protected String renderSharedTag() {
+		final String name = this.getRequestedRealName();
 		if (present(name)) {
 			return this.renderString(name);
 		}
