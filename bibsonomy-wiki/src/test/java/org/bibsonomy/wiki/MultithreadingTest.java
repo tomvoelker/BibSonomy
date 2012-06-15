@@ -39,7 +39,7 @@ public class MultithreadingTest extends Thread {
     }
 	 
 	@Test
-	//Ignore
+	@Ignore
 	 public void main() throws InterruptedException {
 		 ArrayList<MultithreadingTest> list = new ArrayList<MultithreadingTest>();
 		 
