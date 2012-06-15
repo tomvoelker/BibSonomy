@@ -106,8 +106,8 @@ public class DblpTest {
 		}
 
 		//List<String> authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP",1);
-		//List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
-		List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.MYOWNTest",1);
+		List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
+		//List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.MYOWNTest",1);
 		System.out.println("Datenbankabfrage erfolgreich");
 
 		//read all entries from bibtex and save it to author table
@@ -161,6 +161,13 @@ public class DblpTest {
 				sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
 
 				List<Integer> lastInsertID = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectLastInsertID");
+
+				String userName = authorsMap.get("user_name");
+				HashMap<String,String> userNameEntry = new HashMap<String,String>();
+				userNameEntry.put("authorID", String.valueOf(lastInsertID.get(0)));
+				userNameEntry.put("userName", userName);
+				sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorUsername", userNameEntry);
+
 				List<PersonName> allAuthorsOfOnePublicationDBLP = null;
 
 				int k=0;
@@ -251,9 +258,10 @@ public class DblpTest {
 		int rightMatchesOverallLucene=0;
 		int overallLuceneUnderClustering=0;
 		int overallLuceneOverClustering=0;
-		int rightMatchesOverallAuthorCLustering=0;
+		int rightMatchesOverallAuthorClustering=0;
 		int overallAuthorUnderClustering=0;
 		int overallAuthorOverClustering=0;
+		int sumAuthors = 0;
 
 		for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
 			//we use one ID as reference and search authorIDs/contentIDs that fit to this reference ID
@@ -264,6 +272,7 @@ public class DblpTest {
 			int luceneResults=0;
 			int authorClusteringResults=0;
 
+			//System.out.println("reference: " + referenceContentID);
 			List<String> contentIDAuthorString= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPAuthor",referenceContentID);
 
 			String authorsString = contentIDAuthorString.get(0);
@@ -287,6 +296,7 @@ public class DblpTest {
 				normalizedCoauthors.add(EntityIdentification.normalizePerson(allAuthorNamesOfOnePublication.get(k)));
 			}
 
+			/*
 			//lets see how lucene performed
 			try {
 				List<Integer> luceneResultIDs = Lucene.searchAuthor(normalizedName, normalizedCoauthors);
@@ -294,7 +304,7 @@ public class DblpTest {
 				int underClustering = 0;
 				int rightMatches = 0;
 				boolean found = false;
-				System.out.println("real IDs: ");
+				//System.out.println("real IDs: ");
 				for (String realAuthorID: authorMap.get("authorIDs")) {
 					System.out.println("real ID: " + Integer.valueOf(realAuthorID));
 					found = false;
@@ -312,9 +322,9 @@ public class DblpTest {
 				}
 
 				int overClustering = 0;
-				System.out.println("found IDs: ");
-				for (Integer luceneAuthorID: luceneResultIDs) {
-					System.out.println(luceneAuthorID);
+				//System.out.println("found IDs: ");
+				for(Integer luceneAuthorID: luceneResultIDs) {
+					//System.out.println(luceneAuthorID);
 					found = false;
 					for (String realAuthorID: authorMap.get("authorIDs")) {	
 						if (luceneAuthorID.equals(Integer.valueOf(realAuthorID))) found = true;
@@ -322,12 +332,12 @@ public class DblpTest {
 					if (!found) {
 						overClustering++;
 						overallLuceneOverClustering++;
-						System.out.println("not found: " + luceneAuthorID);
+						//System.out.println("not found: " + luceneAuthorID);
 					}
 				}
 
 
-				System.out.println("Lucene results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
+				//System.out.println("Lucene results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -335,14 +345,15 @@ public class DblpTest {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			 */
 
 			//lets see how author clustering performs
 			int rightMatches = 0;
 			int underClustering = 0;
 			int overClustering = 0;
 			boolean found = false;
-			System.out.println("-------------------");
-			System.out.println("authorClustering IDs: ");
+			//System.out.println("-------------------");
+			//System.out.println("authorClustering IDs: ");
 
 			//single ID cluster
 			/* get all clusters for this name
@@ -351,45 +362,58 @@ public class DblpTest {
 			 * test in which cluster we fit best
 			 */
 
+			//if (authorMap.get("authorIDs").size() > 10) continue;
+			if (authorMap.get("authorIDs").size() > 1) sumAuthors += authorMap.get("authorIDs").size(); 
+			
 			//we use the first realAuthorID as example and search the cluster who contains this ID
 			Integer exampleContentID = Integer.valueOf(authorMap.get("authorIDs").get(0));
-			for (List<Integer> clusteredIDsList: authorClusters) { //every cluster we want to compare^
-				if (clusteredIDsList.contains(exampleContentID)) {
-					//get all realAuthorIDs that are in this cluster
-					for (String realAuthorID: authorMap.get("authorIDs")) {
-						System.out.println("real ID:" + realAuthorID);
+			//System.out.println("exampleID: " + exampleContentID);
+			for (List<Integer> clusteredIDsList: authorClusters) { //every cluster we want to compare
+				for(String realAuthorID: authorMap.get("authorIDs")) {
+					if (clusteredIDsList.contains(exampleContentID)) {
+						//System.out.println("testCluster: " + clusteredIDsList);
+						//get all realAuthorIDs that are in this cluster
+						//System.out.println("real ID:" + realAuthorID);
 						if (clusteredIDsList.contains(Integer.valueOf(realAuthorID))) { //we found the right cluster
-							System.out.println("found: " + realAuthorID);
+							//System.out.println("found: " + realAuthorID);
 							found = true;
 							rightMatches++;
-							rightMatchesOverallAuthorCLustering++;
+							rightMatchesOverallAuthorClustering++;
 						}
 						else {
 							underClustering++;
 							overallAuthorUnderClustering++;
 						}
-					}
-					//get overClusteringErrors
-					for (Integer clusteredID: clusteredIDsList) {
-						if (!authorMap.get("authorIDs").contains(String.valueOf(clusteredID))) {
-							if (clusteredID < 500) { //TODO only used for faster debugging
-								System.out.println("this is too much: " + clusteredID);
-								overClustering++;
-								overallAuthorOverClustering++;
+						//get overClusteringErrors
+						for (Integer clusteredID: clusteredIDsList) {
+							if (!authorMap.get("authorIDs").contains(String.valueOf(clusteredID))) {
+								if (clusteredID < 10000) { //TODO only used for faster debugging
+									//System.out.println("this is too much: " + clusteredID);
+									overClustering++;
+									overallAuthorOverClustering++;
+								}
 							}
 						}
 					}
-
+				}
+				if(found) break;
+			}
+			if (!found) {
+				if (authorMap.get("authorIDs").size() > 1) {
+					underClustering += authorMap.get("authorIDs").size();
+					overallAuthorUnderClustering += authorMap.get("authorIDs").size();
 				}
 			}
 
-			System.out.println("Author clustering results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
+			System.out.println("Author clustering results for " + exampleContentID + " - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
 		}
 
+
 		System.out.println("\n\nOverall:");
+		System.out.println(sumAuthors);
 		System.out.println("-------------------------------------------------");
 		System.out.println("overall lucene - right: " + rightMatchesOverallLucene + " under: " + overallLuceneUnderClustering + " over: " + overallLuceneOverClustering);
-		System.out.println("overall author clustering - right: " + rightMatchesOverallAuthorCLustering + " under: " + overallAuthorUnderClustering + " over: " + overallAuthorOverClustering);
+		System.out.println("overall author clustering - true: " + rightMatchesOverallAuthorClustering + " under: " + overallAuthorUnderClustering + " over: " + overallAuthorOverClustering);
 	}
 
 	public List<Map<String,ArrayList<String>>> getAuthorIDNumberList() {
