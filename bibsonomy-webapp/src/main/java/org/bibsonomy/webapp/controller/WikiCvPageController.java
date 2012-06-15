@@ -109,7 +109,8 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		final Wiki wiki = this.logic.getWiki(userName, null);
 		final String wikiText;
 
-		if (present(wiki)) {
+		if (present(wiki) && (requestedUser.equals(command.getContext().getLoginUser())
+				|| !requestedUser.isSpammer() && requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1)) {
 			wikiText = wiki.getWikiText();
 		} else {
 			wikiText = "";
