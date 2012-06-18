@@ -62,15 +62,15 @@
 				  				<div class="dissError"><form:errors path="passwordCheck" /></div>
 	            			</div>
 	            		
-	            			<bform:input path="registerUser.email" labelMessageKey="user.settings.email" noHelp="${true}" required="${true}"/>;
+	            			<bform:input path="registerUser.email" labelMessageKey="user.settings.email" noHelp="${true}" required="${true}"/>
             			</jsp:attribute>
             		</bform:fieldset>
             		
             		
             		<bform:fieldset maximized="${true}" legendKey="register.additional">
               			<jsp:attribute name="content">  
-              				<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>;
-   	          				<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>;
+              				<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>
+   	          				<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>
 	            		</jsp:attribute>
             		</bform:fieldset>
             		
