@@ -302,21 +302,23 @@
 				</entry>
 				<entry key="/user">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="userPageController"/>
+						<property name="controllerBeanName" value="userPageController" />
 					</bean>
 				</entry>
 				<entry key="/discussed">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="discussedPageController"/>
+						<property name="controllerBeanName" value="discussedPageController" />
 					</bean>
 				</entry>
 				<entry key="/userinfo">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="userInfoController"/>
+						<property name="controllerBeanName" value="userInfoController" />
 						<property name="allowedFields">
 							<list>
 								<value>requestedUser</value>
 								<value>format</value>
+								<value>shareInformation</value>
+								<value>ckey</value>
 							</list>
 						</property>
 					</bean>
@@ -669,6 +671,7 @@
 
 	<bean id="userInfoController" class="org.bibsonomy.webapp.controller.UserInfoController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="urlScheme" value="${project.urlScheme}" />
 	</bean>
 	<!-- Wiki Config -->
 	<!-- -->
