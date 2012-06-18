@@ -12,30 +12,34 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author Christian Kramer
- * @version $Id$
+ * @version $Id: ViewablePageController.java,v 1.25 2012-02-08 16:19:15 rja Exp
+ *          $
  */
-public class ViewablePageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand>{
+public class ViewablePageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(ViewablePageController.class);
-	
+
 	@Override
 	public View workOn(GroupResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
+		final RequestWrapperContext context = command.getContext();
 		
 		// we need to be logged in, and a group needs to be present
-		if (!command.getContext().isUserLoggedIn()) {
-			throw new MalformedURLSchemeException("error.viewable_page_not_logged_in");
-		}				
+		if (!context.isUserLoggedIn()){
+			throw new AccessDeniedException("please log in");
+		}
 		
 		if (!present(command.getRequestedGroup())) {
 			throw new MalformedURLSchemeException("error.viewable_page_without_group");
-		}		
+		}
 						
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;
@@ -77,10 +81,13 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 	}
 
 	/**
-	 * Retrieve all members of the given group in dependence of the group privacy level
-	 * FIXME: duplicated in GroupPageController!
-	 * @param cmd the command
-	 * @param groupName the name of the group
+	 * Retrieve all members of the given group in dependence of the group
+	 * privacy level FIXME: duplicated in GroupPageController!
+	 * 
+	 * @param cmd
+	 *            the command
+	 * @param groupName
+	 *            the name of the group
 	 */
 	private void setGroupDetails(final GroupResourceViewCommand cmd, String groupName) {
 		final Group group = this.logic.getGroupDetails(groupName);
@@ -89,10 +96,10 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		}
 		cmd.setGroup(group);
 	}
-	
+
 	@Override
 	public GroupResourceViewCommand instantiateCommand() {
 		return new GroupResourceViewCommand();
-	}	
-	
+	}
+
 }
