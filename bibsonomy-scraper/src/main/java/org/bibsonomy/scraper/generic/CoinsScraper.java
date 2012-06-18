@@ -53,7 +53,7 @@ public class CoinsScraper implements Scraper {
 	private static final String INFO = "<a href=\"http://ocoins.info/\">COinS</a> Scraper: Scraper for Metadata in COinS format.";
 
 	private static final Pattern patternCoins = Pattern.compile("<span class=\"Z3988\" title=\"([^\\\"]*)\"");
-	private static final Pattern patternKeyValue = Pattern.compile("([^=]*)=([^&]*)&amp;?");
+	private static final Pattern patternKeyValue = Pattern.compile("([^=]*)=([^&]*)(&amp;)?");
 	private static final Pattern datePattern = Pattern.compile("(\\d{4})");
 
 
@@ -91,8 +91,13 @@ public class CoinsScraper implements Scraper {
 				}
 
 				// store only values which are not null and not empty
-				if(key != null && value != null && !key.equals("") && !value.equals(""))
+				if(key != null && value != null && !key.equals("") && !value.equals("")) {
+					// rft.au is repeatable
+					if (key.equals("rft.au") && tuples.containsKey("rft.au")) {
+						value = tuples.get("rft.au") + " and " + value;
+					}
 					tuples.put(key, value);
+				}
 			}
 
 			/*

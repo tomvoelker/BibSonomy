@@ -46,5 +46,15 @@ public class CoinsScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_130"));
 	}
+	
+	/**
+	 * starts URL test with id url_218
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_218"));
+	}
 
 }

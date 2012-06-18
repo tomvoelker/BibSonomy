@@ -1319,5 +1319,11 @@
 		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_218">
+		<TestDescription>test for pages with coins (multiple authors)</TestDescription>
+		<URL>http://www.mendeley.com/research/twitter-sentiment-analysis/</URL>
+		<BibFile>CoinsScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
