@@ -90,7 +90,7 @@
 			<!--+
 				| these navigation elements are also active for not logged in users
 				+-->
-			<fmt:message var="titleBlog" key="navi.news" />
+			<fmt:message var="titleBlog" key="navi.blog" />
 			<fmt:message var="titleHelp" key="navi.help"/>
 				
 			<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
