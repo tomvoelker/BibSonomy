@@ -39,71 +39,9 @@ public class DblpTest {
 	//position 9 we use for 10 or more different ids
 	int[] averageCountOccurences = new int[9];
 	int[] averageCountAuthors = new int[9];
-	boolean skipGatherFromDB = true;
+	boolean skipGatherFromDB = false;
 
 	public List<Map<String,ArrayList<String>>> preperations(SqlSession sessionRkr) throws PersonListParserException {
-
-		List<Map<String,String>> dbAuthorIDNumberList= sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPPreperation");
-		boolean foundNoGather = false;
-		//search the list if there is already a person with this name
-		if (skipGatherFromDB)  {
-			for (Map<String, String> dbAuthorHashMap: dbAuthorIDNumberList) {
-				int k=0;
-				foundNoGather = false;
-				for (Map<String, ArrayList<String>>  arrayAuthorHashMap: authorIDNumberList) {
-					if (dbAuthorHashMap.get("author_name_and_number").equals(arrayAuthorHashMap.get("authorNameAndNumber").get(0))) { //the author already exists
-						//TODO authorNameAndNumber and normalizedName is the same
-						//add the new authorID to the already existing data
-						//System.out.println("reAdd: " + arrayAuthorHashMap.get("authorNameAndNumber").get(0));
-						ArrayList<String> authorIDs = arrayAuthorHashMap.get("authorIDs");
-						ArrayList<String> contentIDs = arrayAuthorHashMap.get("contentIDs");
-						ArrayList<String> title = arrayAuthorHashMap.get("title");
-						//ArrayList<String> normalizedName = arrayAuthorHashMap.get("normalizedName");
-
-						authorIDs.add(String.valueOf(dbAuthorHashMap.get("author_id")));
-						contentIDs.add(String.valueOf(dbAuthorHashMap.get("content_id")));
-						title.add(dbAuthorHashMap.get("title"));
-						//normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
-
-						arrayAuthorHashMap.put("authorIDs",authorIDs);
-						arrayAuthorHashMap.put("conentIDs",contentIDs);
-						arrayAuthorHashMap.put("title",title);
-						//arrayAuthorHashMap.put("normalizedName",normalizedName);
-
-						authorIDNumberList.set(k, arrayAuthorHashMap);
-						foundNoGather = true;
-						break;
-					}
-					k++;
-				}
-				//this author is new and we add this author to the list
-				if (!foundNoGather) {
-					Map<String,ArrayList<String>> arrayAuthorHashMap = new HashMap<String,ArrayList<String>>();
-					ArrayList<String> authorID = new ArrayList<String>();
-					ArrayList<String> contentID = new ArrayList<String>();
-					ArrayList<String> title = new ArrayList<String>();
-					ArrayList<String> normalizedName = new ArrayList<String>();
-					ArrayList<String> authorNameAndNumber = new ArrayList<String>();
-
-					authorID.add(String.valueOf(dbAuthorHashMap.get("author_id")));
-					contentID.add(String.valueOf(dbAuthorHashMap.get("content_id")));
-					title.add(dbAuthorHashMap.get("title"));
-					normalizedName.add(dbAuthorHashMap.get("author_name_and_number"));
-					authorNameAndNumber.add(dbAuthorHashMap.get("author_name_and_number"));
-
-					//System.out.println("add: " + authorNameAndNumber.get(0));
-
-					arrayAuthorHashMap.put("authorIDs",authorID);
-					arrayAuthorHashMap.put("contentIDs",contentID);
-					arrayAuthorHashMap.put("title",title);
-					arrayAuthorHashMap.put("normalizedName",normalizedName);
-					arrayAuthorHashMap.put("authorNameAndNumber", authorNameAndNumber);
-					authorIDNumberList.add(arrayAuthorHashMap);
-				}
-			}
-			return authorIDNumberList;
-
-		}
 
 		//List<String> authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexDBLP",1);
 		List<Map<String,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.DBLPTest",1);
@@ -155,18 +93,14 @@ public class DblpTest {
 				authorName.put("lastName", StringUtil.foldToASCII(author.getLastName()));
 				authorName.put("normalizedName", EntityIdentification.normalizePerson(author));	
 
-				//TODO String test = org.bibsonomy.model.util.PersonNameUtils.discoverPersonNames(persons);
 
 				//TODO insert
-				sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", authorName);
+				sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", 1);
 
 				List<Integer> lastInsertID = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectLastInsertID");
 
-				String userName = authorsMap.get("user_name");
-				HashMap<String,String> userNameEntry = new HashMap<String,String>();
-				userNameEntry.put("authorID", String.valueOf(lastInsertID.get(0)));
-				userNameEntry.put("userName", userName);
-				sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorUsername", userNameEntry);
+				authorName.put("authorID", String.valueOf(lastInsertID));
+				sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorName", authorName);
 
 				List<PersonName> allAuthorsOfOnePublicationDBLP = null;
 
@@ -185,14 +119,6 @@ public class DblpTest {
 						saveIDAndBibtex.put("bibtexAuthor", authors);
 						authorIDToBibtex.add(saveIDAndBibtex);
 
-						String singleAuthorID = String.valueOf(lastInsertID.get(0));
-						HashMap<String,String> dbEntry = new HashMap<String,String>();
-						dbEntry.put("authorID", singleAuthorID);
-						dbEntry.put("authorNameAndNumber", EntityIdentification.normalizePerson(author) + authorNumber);
-						dbEntry.put("authorsString", authors);
-						dbEntry.put("contentID", String.valueOf(authorsMap.get("content_id")));
-
-						sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
 
 						authorIDs.add(String.valueOf(lastInsertID.get(0)));
 						authorHashMap.put("authorIDs",authorIDs);
@@ -208,21 +134,16 @@ public class DblpTest {
 					Map<String,ArrayList<String>> authorHashMap = new HashMap<String,ArrayList<String>>();
 					ArrayList<String> authorID = new ArrayList<String>();
 					ArrayList<String> authorNameAndNumber = new ArrayList<String>();
+					ArrayList<String> contentID = new ArrayList<String>();
 					authorNameAndNumber.add(EntityIdentification.normalizePerson(author) + authorNumber);
 					authorID.add(String.valueOf(lastInsertID.get(0)));
+					contentID.add(String.valueOf(authorsMap.get("content_id")));
 					String singleAuthorID = String.valueOf(lastInsertID.get(0));
-
-					HashMap<String,String> dbEntry = new HashMap<String,String>();
-					dbEntry.put("authorID", singleAuthorID);
-					dbEntry.put("authorNameAndNumber", EntityIdentification.normalizePerson(author) + authorNumber);
-					dbEntry.put("authorsString", authors);
-					dbEntry.put("contentID", String.valueOf(authorsMap.get("content_id")));
-
-					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorIDAndNumber", dbEntry);
 
 					//System.out.println("add: " + authorNameAndNumber.get(0));
 					authorHashMap.put("authorNameAndNumber", authorNameAndNumber);
 					authorHashMap.put("authorIDs",authorID);
+					authorHashMap.put("contentIDs",contentID);
 					authorIDNumberList.add(authorHashMap);
 
 					Map<String,String>saveIDAndBibtex = new HashMap<String,String>();
@@ -250,7 +171,6 @@ public class DblpTest {
 		}
 		sessionRkr.commit();
 
-		System.exit(1);
 		return authorIDNumberList;
 	}
 
@@ -265,9 +185,9 @@ public class DblpTest {
 
 		for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
 			//we use one ID as reference and search authorIDs/contentIDs that fit to this reference ID
-			int referenceContentID = Integer.valueOf(authorMap.get("contentIDs").get(0));
+			int referenceContentID = Integer.valueOf(authorMap.get("contentIDs").get(0)); //contentIDs
 			//the last char is the number we have to remove
-			String normalizedName = authorMap.get("normalizedName").get(0).substring(0,authorMap.get("normalizedName").get(0).length()-1);
+			String normalizedName = authorMap.get("authorNameAndNumber").get(0).substring(0,authorMap.get("authorNameAndNumber").get(0).length()-1);
 
 			int luceneResults=0;
 			int authorClusteringResults=0;

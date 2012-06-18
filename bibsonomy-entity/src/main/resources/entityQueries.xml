@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <!-- database bibsonomy_strudel -->
 <select id="selectBibtex" parameterType="int" resultType="String">
-	SELECT author FROM bibtex LIMIT 7000
+	SELECT author FROM bibtex limit 300
 </select>
 
 <select id="selectAuthor" parameterType="String" resultType="String">
@@ -32,18 +32,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
-	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) LIMIT 7000
+	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) limit 300
 </select>
-
-<!--
-<select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
-SELECT author_name_and_number, author_id, authors_string, content_id, title from (SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) LIMIT 7000) as test INNER JOIN author_coauthor_backup using(author_id) GROUP BY author_id
-</select>
--->
 
 <!-- bibsonomy_strudel DBLP Tests -->
 <select id="selectBibtexDBLP" parameterType="int" resultType="String">
-	SELECT author FROM bibtex WHERE user_name = 'dblp' AND author like '%00%' LIMIT 7000
+	SELECT author FROM bibtex limit 300
 </select>
   
 <!-- database projekt_autoren_id -->
@@ -51,14 +45,9 @@ SELECT author_name_and_number, author_id, authors_string, content_id, title from
 	SELECT LAST_INSERT_ID()
 </select>
 
-<!--
-<select id="selectAuthorNames" parameterType="String" resultType="java.util.Map">
-SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name, first_name, last_name from author LIMIT 7000) as limited_authors USING(author_id) INNER JOIN author_username USING(author_id)
-</select>
--->
 
 <select id="selectAuthorNames" parameterType="String" resultType="java.util.Map">
-SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name, first_name, last_name from author LIMIT 7000) as limited_authors USING(author_id)
+	SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name, first_name, last_name from author_name limit 300) as limited_authors USING(author_id)
 </select>
 
 <select id="selectAuthorIDs" parameterType="String" resultType="int">
@@ -70,7 +59,7 @@ SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name, fir
 </select>
 
 <select id="countAuthorsByName" parameterType="String" resultType="int">
-	SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} LIMIT 7000
+	SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} limit 300
 </select>
 	
 <select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
@@ -78,19 +67,15 @@ SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name, fir
 </select>
 
 <select id="selectCoAuthorsLucene" parameterType="String" resultType="java.util.Map">
-	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) LIMIT 7000
+	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) limit 300
 </select>
 	
-<insert id="insertAuthorIDAndNumber" parameterType="HashMap">
-	INSERT INTO author_id_number_list(author_name_and_number,  author_id, authors_string, content_id) VALUES(#{authorNameAndNumber},#{authorID},#{authorsString},#{contentID});
+<insert id="insertAuthor" parameterType="String">
+	INSERT INTO author() values()
 </insert>
 
-<insert id="insertAuthorUsername" parameterType="HashMap">
-	INSERT INTO author_username(author_id,  user_name) VALUES(#{authorID},#{userName});
-</insert>	
-
-<insert id="insertAuthor" parameterType="String">
-	INSERT INTO author(first_name, last_name, normalized_name) VALUES (#{firstName}, #{lastName}, #{normalizedName});
+<insert id="insertAuthorName" parameterType="String">
+	INSERT INTO author_name(author_id, first_name, last_name, normalized_name) VALUES (LAST_INSERT_ID(), #{firstName}, #{lastName}, #{normalizedName});
 </insert>
 
 <insert id="insertCoAuthors" parameterType="String">
@@ -117,20 +102,12 @@ SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name, fir
 	TRUNCATE TABLE author_coauthor
 </insert>
 
-<insert id="backupAuthor" parameterType="int">
-	INSERT INTO author SELECT * FROM author_backup
+<insert id="truncateAuthorName" parameterType="int">
+	TRUNCATE TABLE author_name
 </insert>
 
-<insert id="backupAuthorCoauthor" parameterType="int">
-	INSERT INTO author_coauthor SELECT * FROM author_coauthor_backup
-</insert>
-
-<insert id="myownBackupAuthor" parameterType="int">
-	INSERT INTO author SELECT * FROM myown_author_backup
-</insert>
-
-<insert id="myownBackupAuthorCoauthor" parameterType="int">
-	INSERT INTO author_coauthor SELECT * FROM myown_author_coauthor_backup
+<insert id="truncateAuthorContent" parameterType="int">
+	TRUNCATE TABLE author_content
 </insert>
 
 </mapper>

@@ -56,6 +56,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.StringUtils;
 
 public class EntityIdentification {
+	final boolean testsEnabled = false;
 
 	public static void main(String[] args) throws PersonListParserException {
 
@@ -82,17 +83,17 @@ public class EntityIdentification {
 
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthor");
 			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorCoauthor");
-			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthor");
-			sessionRkr.insert("org.mybatis.example.Entity-Identification.backupAuthorCoauthor");
-			//sessionRkr.insert("org.mybatis.example.Entity-Identification.myownBackupAuthor");
-			//sessionRkr.insert("org.mybatis.example.Entity-Identification.myownBackupAuthorCoauthor");
+			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorContent");
+			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorName");
 			sessionRkr.commit();
 
+			/*
 			Lucene lucene =  new Lucene();
 			try {
 				lucene.createLuceneIndexForAllAuthors(sessionRkr);
 			} catch (IOException e) {}
-			catch (ParseException p) {}	
+			catch (ParseException p) {}
+			*/
 
 			//run "myown" test
 			//MyOwnTest.findSamePersonDifferentNames(sessionRkr);
@@ -101,18 +102,8 @@ public class EntityIdentification {
 			DblpTest dblpTest = new DblpTest();
 			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.preperations(sessionRkr);
 
-			/*
-			//Lucene compare
-			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.getAuthorIDNumberList();
-			//create the authorCluster we can compare then
-			for (Map<String, ArrayList<String>> authorMap: authorIDNumberList) { //every author where we know the correct IDs
-				lucene.searchAuthor(normalizedName, coauthors)
-			}
-			 */
-
 			//author clustering compare
 			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(sessionRkr);
-			//AuthorClustering.useTitleToMergeClusters(sessionRkr, authorIDNumberList);
 			dblpTest.compareResults(authorIDsList, sessionRkr);
 
 			System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
