@@ -14,8 +14,8 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author Christian Kramer
@@ -34,7 +34,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		
 		// we need to be logged in, and a group needs to be present
 		if (!context.isUserLoggedIn()){
-			throw new AccessDeniedException("please log in");
+			throw new AccessDeniedNoticeException("please log in", "error.viewable_page_not_logged_in");
 		}
 		
 		if (!present(command.getRequestedGroup())) {
