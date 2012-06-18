@@ -12,11 +12,6 @@ public enum MobileViews implements View {
 	 * the first page you see when entering the application
 	 */
 	HOMEPAGE("mobile/home"),
-	
-	/**
-	 * the first page you see when entering the application
-	 */
-	PUMAHOMEPAGE("mobile/home"),
 
 	/**
 	 * user page displaying the resources of a single user
@@ -86,7 +81,22 @@ public enum MobileViews implements View {
 	/**
 	 * 
 	 */
-	LOGIN("mobile/login");
+	LOGIN("mobile/login"),
+	
+	/**
+	 * device authorize
+	 */
+	DEVICE_AUTHORIZE("mobile/actions/user/allowDeviceSupport"),
+	
+	/**
+	 * register page for new users
+	 */
+	REGISTER_USER("mobile/actions/user/register"),
+	
+	/**
+	 * register success (activation required)
+	 */
+	REGISTER_USER_TO_BE_ACTIVATED("mobile/actions/user/register_success_activate");
 		
 	private String name;
 	

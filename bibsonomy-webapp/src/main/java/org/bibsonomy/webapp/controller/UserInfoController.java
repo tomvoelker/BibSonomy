@@ -28,6 +28,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class UserInfoController implements MinimalisticController<UserInfoCommand> {
 	private LogicInterface logic;
+	private String urlScheme;
 	
 	@Override
 	public UserInfoCommand instantiateCommand() {
@@ -46,9 +47,15 @@ public class UserInfoController implements MinimalisticController<UserInfoComman
 		 * the url contains the name of the logged-in user and his/her api key
 		 */
 		if ("devicesupport".equals(command.getFormat())) {
+			if (!command.getContext().isValidCkey()) {
+				return Views.DEVICE_AUTHORIZE;
+			}
+			if (!command.isShareInformation()) {
+				return new ExtendedRedirectView("/");
+			}
+			
 			final User loginUser = command.getContext().getLoginUser();
-			// TODO: config scheme via project.properties?
-			String url = UrlUtils.setParam("bibsonomy://settings", "username",  UrlUtils.safeURIEncode(loginUser.getName()));
+			String url = UrlUtils.setParam(this.urlScheme + "://settings", "username",  UrlUtils.safeURIEncode(loginUser.getName()));
 			url = UrlUtils.setParam(url, "apiKey", loginUser.getApiKey());
 			return new ExtendedRedirectView(url);
 		}
@@ -94,5 +101,12 @@ public class UserInfoController implements MinimalisticController<UserInfoComman
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
+	}
+
+	/**
+	 * @param urlScheme the urlSchema to set
+	 */
+	public void setUrlScheme(String urlScheme) {
+		this.urlScheme = urlScheme;
 	}
 }

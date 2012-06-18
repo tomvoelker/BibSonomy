@@ -10,6 +10,7 @@ public class UserInfoCommand extends BaseCommand {
 	
 	private String requestedUser;
 	private String format;
+	private boolean shareInformation;
 
 	private User user;
 
@@ -53,6 +54,19 @@ public class UserInfoCommand extends BaseCommand {
 	 */
 	public User getUser() {
 		return user;
-	}	
-	
+	}
+
+	/**
+	 * @return the shareInformation
+	 */
+	public boolean isShareInformation() {
+		return this.shareInformation;
+	}
+
+	/**
+	 * @param shareInformation the shareInformation to set
+	 */
+	public void setShareInformation(boolean shareInformation) {
+		this.shareInformation = shareInformation;
+	}
 }

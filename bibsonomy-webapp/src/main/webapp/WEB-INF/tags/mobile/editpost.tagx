@@ -22,7 +22,7 @@
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/jquery/plugins/jquery.form.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me --></script>
 			<jsp:invoke fragment="headerExt" />
 		</jsp:attribute>
 		
@@ -108,7 +108,6 @@
 			        	 <fmt:message key="save" var="save" />
 			        	 <fmt:message key="resetbutton" var="reset" />
 			        	 <form:hidden path="intraHashToUpdate"/>
-			        	 <input type="reset" value="${reset}" tabindex="2"/>
 			        	 <input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
 					</div>
 				</form:form>

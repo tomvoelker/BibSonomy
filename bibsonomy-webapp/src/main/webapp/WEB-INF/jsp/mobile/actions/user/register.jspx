@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:formMobile="urn:jsptagdir:/WEB-INF/tags/mobile/form"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
+	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<mobile:simple command="${command}" selected="">
+		<jsp:attribute name="content">
+			<div class="container">
+				<form:form id="userForm" action="/register" method="post">
+					<div class="generalInformation">
+					 	<h3><fmt:message key="register.personal"/></h3>
+					 	<formMobile:input path="registerUser.name" labelMessageKey="navi.username" required="${true}" />
+					 	
+					 	<formMobile:password path="registerUser.password" labelMessageKey="navi.password" required="${true}" />
+					 	
+					 	<formMobile:password path="passwordCheck" labelMessageKey="user.settings.passwordCheck" required="${true}" />
+					 	
+					 	<formMobile:input path="registerUser.email" labelMessageKey="user.settings.email" required="${true}"/>
+	   		        </div>
+	   		        <div>
+	   		        	<h3><fmt:message key="register.additional" /></h3>
+	   		        	<formMobile:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" />
+   	          			<formMobile:input path="registerUser.realname" labelMessageKey="user.settings.realname" />
+	   		        </div>
+	   		        <div>
+	   		        	<h3><fmt:message key="register.captchaAndPrivacy" /></h3>
+	   		        	<formMobile:captcha />
+	             		
+             			<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="acceptPrivacy" ><fmt:message key="register.acceptPrivacy"/>*</form:label>
+			  				<form:checkbox path="acceptPrivacy" value="yes"/>
+			  				<div class="dissError"><form:errors path="acceptPrivacy" /></div>
+            			</div>
+	   		        </div>
+	   		        <formMobile:submit messageKey="register.send" />
+				</form:form>
+			</div>
+      	</jsp:attribute>      	
+	</mobile:simple>
+</jsp:root>

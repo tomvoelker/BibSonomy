@@ -16,22 +16,25 @@ public abstract class MobileViewNameResolver {
 	 * currently supported pages by mobile site
 	 */
 	private static View[][] viewsArray = new View[][] {
-		{Views.HOMEPAGE, MobileViews.HOMEPAGE},
-		{Views.PUMAHOMEPAGE, MobileViews.PUMAHOMEPAGE},
-		{Views.USERPAGE, MobileViews.USERPAGE},
-		{Views.TAGPAGE, MobileViews.TAGPAGE},
-		{Views.SEARCHPAGE, MobileViews.SEARCHPAGE},
-		{Views.POST_BOOKMARK, MobileViews.POST_BOOKMARK},
-		{Views.POST_PUBLICATION, MobileViews.POST_PUBLICATION},
-		{Views.BIBTEXDETAILS, MobileViews.BIBTEXDETAILS},
-		{Views.GROUPPAGE, MobileViews.GROUPPAGE},
-		{Views.LOGIN, MobileViews.LOGIN},
-		{Views.USERTAGPAGE, MobileViews.USERTAGPAGE},
-		{Views.EDIT_BOOKMARK, MobileViews.EDIT_BOOKMARK},
-		{Views.EDIT_PUBLICATION, MobileViews.EDIT_PUBLICATION},
-		{Views.AUTHORPAGE, MobileViews.AUTHORPAGE},
-		{Views.URLPAGE, MobileViews.URLPAGE},
-		{Views.POPULAR_TAGS, MobileViews.POPULAR_TAGS}
+		{ Views.HOMEPAGE,			MobileViews.HOMEPAGE },
+		{ Views.PUMAHOMEPAGE,		MobileViews.HOMEPAGE },
+		{ Views.USERPAGE,			MobileViews.USERPAGE },
+		{ Views.TAGPAGE,			MobileViews.TAGPAGE },
+		{ Views.SEARCHPAGE,			MobileViews.SEARCHPAGE },
+		{ Views.POST_BOOKMARK, 		MobileViews.POST_BOOKMARK },
+		{ Views.POST_PUBLICATION, 	MobileViews.POST_PUBLICATION },
+		{ Views.BIBTEXDETAILS, 		MobileViews.BIBTEXDETAILS },
+		{ Views.GROUPPAGE, 			MobileViews.GROUPPAGE },
+		{ Views.LOGIN, 				MobileViews.LOGIN },
+		{ Views.USERTAGPAGE, 		MobileViews.USERTAGPAGE },
+		{ Views.EDIT_BOOKMARK, 		MobileViews.EDIT_BOOKMARK },
+		{ Views.EDIT_PUBLICATION, 	MobileViews.EDIT_PUBLICATION },
+		{ Views.AUTHORPAGE, 		MobileViews.AUTHORPAGE },
+		{ Views.URLPAGE, 			MobileViews.URLPAGE },
+		{ Views.POPULAR_TAGS, 		MobileViews.POPULAR_TAGS },
+		{ Views.DEVICE_AUTHORIZE, 	MobileViews.DEVICE_AUTHORIZE },
+		{ Views.REGISTER_USER, 		MobileViews.REGISTER_USER },
+		{ Views.REGISTER_USER_TO_BE_ACTIVATED, MobileViews.REGISTER_USER_TO_BE_ACTIVATED }
 	};
 	
 	private static final Map<String, String> views;

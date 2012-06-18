@@ -6,6 +6,7 @@
 	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:formMobile="urn:jsptagdir:/WEB-INF/tags/mobile/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -15,55 +16,35 @@
 			<script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
 		</jsp:attribute>
 		<jsp:attribute name="general">
-					<p>
-						<form:label path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label>
-            			<form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
-            			<div class="dissError"><form:errors path="post.resource.entrytype" /></div>
-					</p>
-					<p>
-		  				<form:label cssStyle="float: left; width: 70%;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/></form:label>
-		  				<fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
-            			<a style="cursor:pointer; float: right;">
-              				<img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
-            			</a>
-            			<div style="clear: both; height: 0;">&amp;nbsp;</div>
-		  				<form:input path="post.resource.bibtexKey" tabindex="2"/>
-		  				<!-- reload button for BibTeX key -->
-           	 			
-            			<div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
-		  			</p>
-		  			<p>
-		  				<form:label path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label>
-            			<form:textarea path="post.resource.title" tabindex="2" rows="2"/>
-		  				<div class="dissError"><form:errors path="post.resource.title" /></div>
-         			</p>
-         			<p>
-            			<form:label path="post.resource.author" ><fmt:message key="post.resource.author"/>* </form:label>
-            			<form:textarea path="post.resource.author" tabindex="2" rows="2"/>
-            			<div class="dissError"><form:errors path="post.resource.author" /></div>
-          			</p>
-          			<p>
-            			<form:label path="post.resource.editor" ><fmt:message key="post.resource.editor"/>* </form:label>
-            			<form:textarea path="post.resource.editor" tabindex="2" rows="2"/>
-            			<div class="dissError"><form:errors path="post.resource.editor" /></div>
-          			</p>
-          
-		  			<p>
-            			<form:label path="post.resource.year" ><fmt:message key="post.resource.year"/>* </form:label>
-            			<form:input path="post.resource.year" tabindex="2"/>
-            			<div class="dissError"><form:errors path="post.resource.year" /></div>    
-          			</p>
- 
+			<formMobile:select path="post.resource.entrytype" multiple="${false}" required="${true}" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();" />
+			
+			<p>
+  				<form:label cssStyle="float: left; width: 70%;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/></form:label>
+  				<fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
+          		<a style="cursor:pointer; float: right;">
+            		<img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
+          		</a>
+          		<div style="clear: both; height: 0;">&amp;nbsp;</div>
+  				<form:input path="post.resource.bibtexKey" tabindex="2"/>
+  				<!-- reload button for BibTeX key -->
+         	 			
+          		<div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
+  			</p>
+		  			
+  			<formMobile:textarea path="post.resource.title" required="${true}" rows="2" />
+  			<formMobile:textarea path="post.resource.author" required="${true}" rows="2" />
+  			<formMobile:textarea path="post.resource.editor" required="${true}" rows="2" />
+  			<formMobile:input path="post.resource.year" required="${true}" />
 
-				<c:if test="${autocompletion}">
-					<script type="text/javascript">
-            			//<mtl:cdata>
-            			<![CDATA[
-							$(function(){$('#post\\.resource\\.title').keyup(function (e) {getKey(e);});});
-	     				]]> 
-            			//</mtl:cdata>
-     				</script>
-				</c:if>
+			<c:if test="${autocompletion}">
+				<script type="text/javascript">
+           			//<mtl:cdata>
+           			<![CDATA[
+						$(function(){$('#post\\.resource\\.title').keyup(function (e) {getKey(e);});});
+     				]]> 
+           			//</mtl:cdata>
+    				</script>
+			</c:if>
 		</jsp:attribute>
 	</mobile:editpost>
 </jsp:root>

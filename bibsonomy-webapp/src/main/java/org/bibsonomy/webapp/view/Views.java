@@ -49,6 +49,11 @@ public enum Views implements View {
 	 * the user specific friend-of-a-friend (FOAF) project output
 	 */
 	FOAF("foaf"),
+	
+	/** 
+	 * before we share api key and user name the user must allow it
+	 */
+	DEVICE_AUTHORIZE("actions/user/allowDeviceSupport"),
 
 	/**
 	 * the user specific curriculum vitae page

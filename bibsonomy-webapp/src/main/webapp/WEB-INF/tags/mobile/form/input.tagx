@@ -1,0 +1,36 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<jsp:directive.tag description="Render a form input field in the way it should typically be done in the mobile view." body-content="empty"/>
+
+	<jsp:directive.attribute name="path" type="java.lang.String" required="true" description="Path to property for data binding (e.g., post.resource.journal), labels, and the help message (.help is appended)"/>
+	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Should the form field be smaller than normal (e.g., having CSS class 'fsSmall')?"/>
+	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
+	<jsp:directive.attribute name="showHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>
+	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="A link to a help page."/>
+	<jsp:directive.attribute name="labelMessageKey" type="java.lang.String" required="false" description="An alternative message key for the label, if it is different from the path (which is used by default)."/>
+	<jsp:directive.attribute name="additionalContent" required="false"  fragment="true"/>
+	
+	<p>
+		<!-- label -->
+		<form:label cssClass="fsLabel" path="${path}"><fmt:message key="${empty labelMessageKey ? path : labelMessageKey}"/>${required ? '* ' : ''}</form:label>
+		
+		<!-- help -->
+		<c:if test="${showHelp}"><buttons:help message="${path}.help" helpPage="${helpPage}"/></c:if>
+		
+		<!-- input -->
+		<form:input cssClass="fsInput${small ? ' fsSmall' : ''}${required ? ' reqinput' : ''}" path="${path}" tabindex="2"/>
+		
+		<!-- errors -->
+		<div class="dissError"><form:errors path="${path}" /></div>
+		
+		<c:if test="${not empty additionalContent}">
+			<jsp:invoke fragment="additionalContent" />
+		</c:if>
+	</p>
+</jsp:root>
