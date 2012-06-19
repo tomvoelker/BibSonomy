@@ -70,7 +70,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		final List<User> groupUsers = this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000);
 		requestedGroup.setUsers(groupUsers);
 
-		this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
+		//this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
 
 		final Wiki wiki = this.logic.getWiki(groupName, null);
 		final String wikiText;
@@ -80,11 +80,11 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		} else {
 			wikiText = "";
 		}
-
+		
 		/*
 		 * set the group to render
 		 */
-		this.wikiRenderer.setRequestedGroup(requestedGroup); //FIXME: not thread-safe!
+		this.wikiRenderer.setRequestedGroup(requestedGroup);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 
@@ -119,7 +119,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		/*
 		 * set the user to render
 		 */
-		this.wikiRenderer.setRequestedUser(requestedUser); // FIXME: not thread-safe!
+		this.wikiRenderer.setRequestedUser(requestedUser);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 
