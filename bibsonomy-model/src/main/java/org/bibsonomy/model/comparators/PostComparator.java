@@ -96,7 +96,7 @@ public abstract class PostComparator implements Serializable {
 	 * @return an int comparison value
 	 * @throws SortKeyIsEqualException 
 	 */
-	protected int nomalizeAndCompare(String s1, String s2, final SortOrder order) throws SortKeyIsEqualException {
+	protected int normalizeAndCompare(String s1, String s2, final SortOrder order) throws SortKeyIsEqualException {
 		// normalization
 		if (present(s1)) s1 = BibTexUtils.cleanBibTex(s1).trim();
 		if (present(s2)) s2 = BibTexUtils.cleanBibTex(s2).trim();
