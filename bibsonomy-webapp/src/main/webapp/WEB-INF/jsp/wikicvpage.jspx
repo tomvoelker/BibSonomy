@@ -106,6 +106,7 @@
 		<div>
 		<div id="general_100">
 			<!-- CV admin panel. Does show if you are the requested user -->
+			<!--  I guess, this isn't needed anymore, because we moved that panel to the settings page.
 			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
 		<form:form><div id="fsform">
 		<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
@@ -169,7 +170,7 @@
 		</div>
 		<div id="showAdminField" style="display:none;"><input type="button" value="${show}" id="showAdmin"/></div>
 		</form:form>
-	</c:if>
+	</c:if> -->
 	
 			<div id="wikiArea">
 			<c:if test="${not empty command.wikiText}">
