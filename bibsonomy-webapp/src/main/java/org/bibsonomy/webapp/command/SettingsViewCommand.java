@@ -26,6 +26,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int IMPORTS_IDX = 2;
 	public final static int GROUP_IDX = 3;
 	public final static int SYNC_IDX = 4;
+	public final static int CV_IDX = 5;
 	
 	private static final String TAB_URL = "/settings";
 	
@@ -141,6 +142,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private String importUsername;
 	private String importPassword;
+	
+	/* Stuff for CVWiki settings */
+	private boolean isGroup = false;
+	private String wikiText;
+	private String renderedWikiText;
 
 	/**
 	 * Constructor.
@@ -149,6 +155,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.addTab(MY_PROFILE_IDX, "navi.myprofile");
 		this.addTab(SETTINGS_IDX, "navi.settings");
 		this.addTab(IMPORTS_IDX, "navi.imports");	
+		this.addTab(CV_IDX, "navi.cvedit");
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
 	}
@@ -588,5 +595,47 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setImportPassword(String importPassword) {
 		this.importPassword = importPassword;
+	}
+	
+	/**
+	 * @return the wikiText
+	 */
+	public String getWikiText() {
+		return this.wikiText;
+	}
+
+	/**
+	 * @param wikiText the wikiText to set
+	 */
+	public void setWikiText(String wikiText) {
+		this.wikiText = wikiText;
+	}
+
+	/**
+	 * @return the renderedWikiText
+	 */
+	public String getRenderedWikiText() {
+		return renderedWikiText;
+	}
+
+	/**
+	 * @param renderedWikiText the renderedWikiText to set
+	 */
+	public void setRenderedWikiText(String renderedWikiText) {
+		this.renderedWikiText = renderedWikiText;
+	}
+
+	/**
+	 * @return the isGroup
+	 */
+	public boolean getIsGroup() {
+		return isGroup;
+	}
+
+	/**
+	 * @param isGroup the isGroup to set
+	 */
+	public void setIsGroup(boolean isGroup) {
+		this.isGroup = isGroup;
 	}
 }
