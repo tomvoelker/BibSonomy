@@ -296,6 +296,7 @@
 								<value>file</value> 
 								<value>group</value>
 								<value>delete</value>
+								<value>wikiRenderer</value>
 							</list>
 						</property>
 					</bean>
@@ -648,6 +649,7 @@
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="requestLogic" ref="requestLogic"/>
+		<property name="wikiRenderer" ref="wikiRenderer" />
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
