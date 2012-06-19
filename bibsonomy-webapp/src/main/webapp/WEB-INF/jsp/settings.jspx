@@ -22,6 +22,12 @@
 	
 	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="my">
 			
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
+	    	<script type="text/javascript" src="${resdir}/javascript/cv/layout.js"><!--  --></script>
+	    	<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
+	    </jsp:attribute>
+	
 		<!--+
 			| page content
 			+-->	
@@ -43,6 +49,9 @@
 				</c:when>
 				<c:when test="${command.selTab == 4 and not command.user.spammer}">
 					<settings:sync command="${command}"/>
+				</c:when>
+				<c:when test="${command.selTab == 5}">
+					<settings:cv command="${command}"/>
 				</c:when>
 			</c:choose>
 			
