@@ -68,7 +68,7 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 				}
 				// title 
 				else if (SortKey.TITLE.equals(crit.sortKey)) {
-					return this.nomalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
+					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
 				}				
 				// ranking
 				else if (SortKey.RANKING.equals(crit.sortKey)) {
