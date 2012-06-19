@@ -79,11 +79,11 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 					// if author not present, take editor
 					final List<PersonName> personList1 = (present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor());
 					final List<PersonName> personList2 = (present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor());
-					return this.nomalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(personList1), PersonNameUtils.getFirstPersonsLastName(personList2), crit.sortOrder);
+					return this.compareAuthor(personList1, personList2, crit.sortOrder);					
 				}
 				// year
 				else if (SortKey.YEAR.equals(crit.sortKey)) {
-					return this.compare(BibTexUtils.getYear(post1.getResource().getYear()), BibTexUtils.getYear(post2.getResource().getYear()), crit.sortOrder);
+					return this.compareYear(post1.getResource().getYear(), post2.getResource().getYear(), crit.sortOrder);
 				}
 				// month
 				else if (SortKey.MONTH.equals(crit.sortKey)) {
@@ -95,23 +95,23 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 				}
 				// editor
 				else if (SortKey.EDITOR.equals(crit.sortKey)) {
-					return this.nomalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(post1.getResource().getEditor()), PersonNameUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.sortOrder);
+					return this.normalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(post1.getResource().getEditor()), PersonNameUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.sortOrder);
 				}
 				// entrytype
 				else if (SortKey.ENTRYTYPE.equals(crit.sortKey)) {
-					return this.nomalizeAndCompare(post1.getResource().getEntrytype(), post2.getResource().getEntrytype(), crit.sortOrder);
+					return this.normalizeAndCompare(post1.getResource().getEntrytype(), post2.getResource().getEntrytype(), crit.sortOrder);
 				}
 				// title
 				else if (SortKey.TITLE.equals(crit.sortKey)) {
-					return this.nomalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
+					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
 				}
 				// booktitle
 				else if (SortKey.BOOKTITLE.equals(crit.sortKey)) {
-					return this.nomalizeAndCompare(post1.getResource().getBooktitle(), post2.getResource().getBooktitle(), crit.sortOrder);
+					return this.normalizeAndCompare(post1.getResource().getBooktitle(), post2.getResource().getBooktitle(), crit.sortOrder);
 				}
 				// school
 				else if (SortKey.SCHOOL.equals(crit.sortKey)) {
-					return this.nomalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.sortOrder);
+					return this.normalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.sortOrder);
 				}
 				// posting date
 				else if (SortKey.DATE.equals(crit.sortKey)) {
@@ -119,7 +119,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 				}
 				// note
 				else if (SortKey.NOTE.equals(crit.sortKey)) {
-					return this.nomalizeAndCompare(post1.getResource().getNote(), post2.getResource().getNote(), crit.sortOrder);
+					return this.normalizeAndCompare(post1.getResource().getNote(), post2.getResource().getNote(), crit.sortOrder);
 				}
 				// ranking
 				else if (SortKey.RANKING.equals(crit.sortKey)) {
@@ -135,6 +135,36 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 		return 0;
 	}
 
+	
+	/**
+	 * Compare two author / editor lists of a bibtex entry
+	 * 
+	 * @param personList1
+	 * 				- first person list
+	 * @param personList2
+	 * 				- second person list
+	 * @param order
+	 * 				- sort order
+	 * @return an integer representing the sorted order between both day
+	 *         arguments.
+	 * @throws SortKeyIsEqualException
+	 */
+	private int compareAuthor(final List<PersonName> personList1, final List<PersonName> personList2, final SortOrder order) throws SortKeyIsEqualException {
+		/*
+		 * first try: compare last name of first author
+		 */
+		try {
+			return this.normalizeAndCompare(PersonNameUtils.getFirstPersonsLastName(personList1), PersonNameUtils.getFirstPersonsLastName(personList2), order);
+		}
+		/*
+		 * If last names are equal, compare first names
+		 */		
+		catch (SortKeyIsEqualException sqe) {
+			final String firstPersonFirstName1 = present(personList1) ? personList1.get(0).getFirstName() : null;
+			final String firstPersonFirstName2 = present(personList2) ? personList2.get(0).getFirstName() : null;
+			return this.normalizeAndCompare(firstPersonFirstName1, firstPersonFirstName2, order);
+		}
+	}
 	
 	/**
 	 * Compare two day parts of a bibtex entry.
@@ -173,7 +203,49 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 			/*
 			 * fallback: perform string comparison
 			 */
-			return this.nomalizeAndCompare(day1, day2, order);
+			return this.normalizeAndCompare(day1, day2, order);
+		}
+	}
+	
+	
+	
+	/**
+	 * compare two years of a bibtex entry
+	 * 
+	 * @param year1
+	 * 			- first year
+	 * @param year2
+	 * 			- second yearr
+	 * @param order
+	 * 			- sort order
+	 * @return an integer representing the sorted order between both day
+	 *         arguments.
+	 * @throws SortKeyIsEqualException
+	 */
+	private int compareYear(final String year1, final String year2, final SortOrder order) throws SortKeyIsEqualException {
+		/*
+		 * first try: successful if both arguments are integers (e.g. 2011 and 2012)
+		 */
+		try {
+			return this.compare(Integer.valueOf(year1), Integer.valueOf(year2), order);
+		}
+		/*
+		 * second try: extract numbers contained in year field (e.g. "2012 (to appear)")
+		 */
+		catch (final NumberFormatException nfe1) {
+			final int year1Int = BibTexUtils.getYear(year1);
+			final int year2Int = BibTexUtils.getYear(year2);
+			/*
+			 * if both extracted numbers are equal, or if we cannot extract an Integer from one
+			 * or both (signalized by Integer.MAX_VALUE) we fall back to lexicographic comparison
+			 */
+			if (year1Int == year2Int || year1Int == Integer.MAX_VALUE || year2Int == Integer.MAX_VALUE) {
+				return this.normalizeAndCompare(year1, year2, order);
+			}
+			/*
+			 * otherwise, we compare both extracted numbers by their integer value
+			 */
+			return this.compare(year1Int, year2Int, order);			
 		}
 	}
 
@@ -199,7 +271,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 			return this.compare(Integer.parseInt(month1number), Integer.parseInt(month2number), order);
 		} catch (final NumberFormatException ex) {
 			// otherwise compare them lexicographically
-			return this.nomalizeAndCompare(month1number, month2number, order);
+			return this.normalizeAndCompare(month1number, month2number, order);
 		}
 	}
 

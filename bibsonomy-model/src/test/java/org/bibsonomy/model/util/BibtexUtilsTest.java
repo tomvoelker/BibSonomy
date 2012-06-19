@@ -41,7 +41,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -293,9 +292,11 @@ public class BibtexUtilsTest {
 	 * @throws PersonListParserException 
 	 */
 	@Test
-	@Ignore // TODO: sort authors with first name if last name is equal
 	public void sortBibTexList() throws PersonListParserException {
-		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+		/*
+		 * first test: sort by author
+		 */
+		final List<Post<BibTex>> posts1 = new ArrayList<Post<BibTex>>();
 		final Post<BibTex> post1 = new Post<BibTex>();
 		final Post<BibTex> post2 = new Post<BibTex>();
 		final BibTex p1 = new BibTex();
@@ -304,16 +305,60 @@ public class BibtexUtilsTest {
 		final BibTex p2 = new BibTex();
 		p2.setAuthor(PersonNameUtils.discoverPersonNames("B. Test"));
 		post2.setResource(p2);
-		posts.add(post1);
-		posts.add(post2);
-		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts.get(0).getResource().getAuthor());
-		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts.get(1).getResource().getAuthor());
-		BibTexUtils.sortBibTexList(posts, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.ASC));
-		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts.get(0).getResource().getAuthor());
-		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts.get(1).getResource().getAuthor());
-		BibTexUtils.sortBibTexList(posts, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.DESC));
-		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts.get(0).getResource().getAuthor());
-		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts.get(1).getResource().getAuthor());
+		posts1.add(post1);
+		posts1.add(post2);
+		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts1.get(0).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts1.get(1).getResource().getAuthor());
+		BibTexUtils.sortBibTexList(posts1, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.ASC));
+		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts1.get(0).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts1.get(1).getResource().getAuthor());
+		BibTexUtils.sortBibTexList(posts1, Arrays.asList(SortKey.AUTHOR), Arrays.asList(SortOrder.DESC));
+		assertEquals(PersonNameUtils.discoverPersonNames("B. Test"), posts1.get(0).getResource().getAuthor());
+		assertEquals(PersonNameUtils.discoverPersonNames("A. Test"), posts1.get(1).getResource().getAuthor());
+		/*
+		 * second test: sort by year
+		 */		
+		// post3
+		final Post<BibTex> post3 = new Post<BibTex>();
+		final BibTex p3 = new BibTex();
+		p3.setYear("2011");
+		post3.setResource(p3);
+		// post4
+		final Post<BibTex> post4 = new Post<BibTex>();
+		final BibTex p4 = new BibTex();
+		p4.setYear("2012");
+		post4.setResource(p4);
+		// post5
+		final Post<BibTex> post5 = new Post<BibTex>();
+		final BibTex p5 = new BibTex();
+		p5.setYear("2011 (to appear)");
+		post5.setResource(p5);
+		// post6
+		final Post<BibTex> post6 = new Post<BibTex>();
+		final BibTex p6 = new BibTex();
+		p6.setYear("2011");
+		post6.setResource(p6);
+		// post list
+		final List<Post<BibTex>> posts2 = new ArrayList<Post<BibTex>>();		
+		posts2.add(post3);
+		posts2.add(post4);
+		posts2.add(post5);
+		posts2.add(post6);
+		// sort by year, ascending
+		assertEquals("2011", posts2.get(0).getResource().getYear());
+		assertEquals("2012", posts2.get(1).getResource().getYear());
+		assertEquals("2011 (to appear)", posts2.get(2).getResource().getYear());
+		assertEquals("2011", posts2.get(3).getResource().getYear());
+		BibTexUtils.sortBibTexList(posts2, Arrays.asList(SortKey.YEAR), Arrays.asList(SortOrder.DESC));
+		assertEquals("2012", posts2.get(0).getResource().getYear());
+		assertEquals("2011 (to appear)", posts2.get(1).getResource().getYear());
+		assertEquals("2011", posts2.get(2).getResource().getYear());
+		assertEquals("2011", posts2.get(3).getResource().getYear());
+		BibTexUtils.sortBibTexList(posts2, Arrays.asList(SortKey.YEAR), Arrays.asList(SortOrder.ASC));
+		assertEquals("2011", posts2.get(0).getResource().getYear());
+		assertEquals("2011", posts2.get(1).getResource().getYear());
+		assertEquals("2011 (to appear)", posts2.get(2).getResource().getYear());
+		assertEquals("2012", posts2.get(3).getResource().getYear());		
 	}
 	
 	
