@@ -281,6 +281,11 @@ function switchNavi(scope, element) {
 	window.setTimeout(function() {ul.css("visibility", "visible");}, 10);
 
 	/*
+	 * remove old scope inputs
+	 */
+	$("input[name='scope']").remove();
+	
+	/*
 	 * change form action to redirect with the given scope
 	 */
 	var form = $("#search form").attr("action", "/redirect").append("<input type='hidden' name='scope' value='" + scope + "'/>");
