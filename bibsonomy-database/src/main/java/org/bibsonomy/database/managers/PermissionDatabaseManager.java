@@ -31,7 +31,10 @@ import org.bibsonomy.model.util.UserUtils;
  *          doerfel Exp $
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
-	private static final int MAX_TAG_SIZE = 10;
+	/**
+	 * the number of tags allowed for querying the db
+	 */
+	public static final int MAX_TAG_SIZE = 10;
 	private static final int END_MAX = 1000;
 
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
@@ -61,7 +64,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
-		if (!isAdmin(loginUser) && end > END_MAX) {
+		if (!this.isAdmin(loginUser) && (end > END_MAX)) {
 			throw new AccessDeniedException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
 		}
 	}
@@ -92,7 +95,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param userName
 	 */
 	public void ensureWriteAccess(final User loginUser, final String userName) {
-		if (loginUser.getName() == null || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())) {
+		if ((loginUser.getName() == null) || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())) {
 			throw new AccessDeniedException();
 		}
 	}
@@ -129,7 +132,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * if userName = postUserName, return true
 		 */
-		if ((userName != null && userName.equalsIgnoreCase(postUserName))) return true;
+		if (((userName != null) && userName.equalsIgnoreCase(postUserName))) {
+			return true;
+		}
 		/*
 		 * else: check groups stuff ....
 		 */
@@ -203,7 +208,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				 * check group membership and if the group allows shared
 				 * documents
 				 */
-				isAllowed = group != null && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
+				isAllowed = (group != null) && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
 				if (!isAllowed && FilterEntity.JUST_PDF.equals(filter)) {
 					throw new AccessDeniedException("error.pdf_only_not_authorized_for_group");
 				}
@@ -274,9 +279,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void ensureMemberOfNonSpecialGroup(final String userName, final String groupName, final DBSession session) {
-		if (GroupID.isSpecialGroup(groupName)) throw new ValidationException("Special groups not allowed for this system tag.");
+		if (GroupID.isSpecialGroup(groupName)) {
+			throw new ValidationException("Special groups not allowed for this system tag.");
+		}
 		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
-		if (groupID == GroupID.INVALID.getId()) throw new AccessDeniedException();
+		if (groupID == GroupID.INVALID.getId()) {
+			throw new AccessDeniedException();
+		}
 	}
 
 	/**
@@ -307,7 +316,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	public void ensureAdminAccess(final User loginUser) {
-		if (!present(loginUser.getName()) || !isAdmin(loginUser)) {
+		if (!present(loginUser.getName()) || !this.isAdmin(loginUser)) {
 			throw new AccessDeniedException();
 		}
 	}
@@ -334,9 +343,11 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 *         specific filter
 	 */
 	public boolean checkFilterPermissions(final FilterEntity filter, final User loginUser) {
-		if (filter == null) return false;
+		if (filter == null) {
+			return false;
+		}
 
-		if (FilterEntity.ADMIN_SPAM_POSTS.equals(filter) && isAdmin(loginUser)) {
+		if (FilterEntity.ADMIN_SPAM_POSTS.equals(filter) && this.isAdmin(loginUser)) {
 			return true;
 		}
 		return false;
@@ -356,7 +367,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		return ((present(loginUser.getName()) && loginUser.getName().equals(userName)) // loginUser
 																						// =
 																						// userName
-		|| isAdmin(loginUser) // loginUser is admin
+		|| this.isAdmin(loginUser) // loginUser is admin
 		);
 	}
 
