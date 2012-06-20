@@ -12,6 +12,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
@@ -388,6 +389,19 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 		p.setNumTransitiveConcepts(0);
 		p.addGroup(GroupID.PUBLIC.getId());
 		
-		bibtexChain.perform(p, dbSession);
+		bibtexChain.perform(p, this.dbSession);
+	}
+	
+	/**
+	 * test if long tag queries are handled by the resource search
+	 */
+	@Test
+	public void longTagQueries() {
+		final BibTexParam param = new BibTexParam();
+		for (int i = 0; i < PermissionDatabaseManager.MAX_TAG_SIZE; i++) {
+			param.addTagName("test" + i);
+		}
+		
+		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(param).getClass());
 	}
 }

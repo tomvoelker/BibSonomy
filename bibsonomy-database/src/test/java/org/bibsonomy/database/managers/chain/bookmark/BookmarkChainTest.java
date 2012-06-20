@@ -9,6 +9,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup;
@@ -289,4 +290,16 @@ public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 		assertEquals(GetBookmarksByResourceSearch.class, bookmarkChain.getChainElement(this.bookmarkParam).getClass());
 	}
 	
+	/**
+	 * test if long tag queries are handled by the resource search
+	 */
+	@Test
+	public void longTagQueries() {
+		final BookmarkParam param = new BookmarkParam();
+		for (int i = 0; i < PermissionDatabaseManager.MAX_TAG_SIZE; i++) {
+			param.addTagName("test" + i);
+		}
+		
+		assertEquals(GetBookmarksByResourceSearch.class, bookmarkChain.getChainElement(param).getClass());
+	}
 }
