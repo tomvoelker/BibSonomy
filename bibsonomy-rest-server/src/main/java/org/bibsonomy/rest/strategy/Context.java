@@ -31,7 +31,7 @@ import org.bibsonomy.rest.validation.ServersideModelValidator;
  * @version $Id$
  */
 public final class Context {
-	
+
 	private static final Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();
 
 	static {
@@ -41,22 +41,17 @@ public final class Context {
 		Context.urlHandlers.put(RESTConfig.POSTS_URL, new PostsHandler());
 		Context.urlHandlers.put(RESTConfig.CONCEPTS_URL, new ConceptsHandler());
 		Context.urlHandlers.put(RESTConfig.SYNC_URL, new SynchronizationHandler());
-		
+
 		RESTConfig.MODEL_VALIDATOR = ServersideModelValidator.getInstance();
 	}
 
 	private final Reader doc;
-	
+
 	/**
 	 * the logic
 	 */
 	private final LogicInterface logic;
-	
-	/**
-	 * the renderer to build URLs
-	 */
-	private final UrlRenderer urlRenderer;
-	
+
 	/**
 	 * the factory that provides instances of the renderer
 	 */
@@ -72,14 +67,13 @@ public final class Context {
 	 */
 	private final Strategy strategy;
 
-	
 	private final Map<?, ?> parameterMap;
 
 	/**
 	 * the list with all items out of the http request
 	 */
 	private final List<FileItem> items;
-	
+
 	/**
 	 * this should hold all additional infos of the webservice or request
 	 * i.e. the documents path
@@ -103,26 +97,33 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final UrlRenderer urlRenderer, final Reader doc, final List<FileItem> items, final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
+	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final List<FileItem> items,
+			final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
-		this.urlRenderer = urlRenderer;
-		this.rendererFactory = new RendererFactory(urlRenderer);
-		
-		if (parameterMap == null) throw new RuntimeException("Parameter map is null");
+
+		this.rendererFactory = rendererFactory;
+
+		if (parameterMap == null) {
+			throw new RuntimeException("Parameter map is null");
+		}
 		this.parameterMap = parameterMap;
-		
+
 		this.items = items;
 		this.additionalInfos = additionalInfos;
 
-		if (url == null || "/".equals(url)) throw new AccessDeniedException("It is forbidden to access '/'.");
-		
+		if (url == null || "/".equals(url)) {
+			throw new AccessDeniedException("It is forbidden to access '/'.");
+		}
+
 		// choose rendering format (defaults to xml)
 		this.renderingFormat = renderingFormat;
 
 		// choose the strategy
 		this.strategy = this.chooseStrategy(httpMethod, url);
-		if (this.strategy == null) throw new NoSuchResourceException("The requested resource does not exist: " + url);
+		if (this.strategy == null) {
+			throw new NoSuchResourceException("The requested resource does not exist: " + url);
+		}
 	}
 
 	private Strategy chooseStrategy(final HttpMethod httpMethod, final String url) {
@@ -160,7 +161,6 @@ public final class Context {
 		this.strategy.initWriter(outStream);
 		this.strategy.perform(outStream);
 	}
-
 
 	/**
 	 * @param userAgent
@@ -249,17 +249,17 @@ public final class Context {
 	/**
 	 * @return TODO: improve documentation
 	 */
-	public Reader getDocument()  {
+	public Reader getDocument() {
 		return this.doc;
 	}
-	
+
 	/**
 	 * @return the renderingFormat
 	 */
 	public RenderingFormat getRenderingFormat() {
 		return this.renderingFormat;
 	}
-	
+
 	/**
 	 * 
 	 * @return additionalInfos
@@ -267,12 +267,12 @@ public final class Context {
 	public Map<String, String> getAdditionalInfos() {
 		return this.additionalInfos;
 	}
-	
+
 	/**
 	 * 
 	 * @return the previously committed item list parsed out of a http request object
 	 */
-	public List<FileItem> getItemList(){
+	public List<FileItem> getItemList() {
 		return this.items;
 	}
 
@@ -280,7 +280,7 @@ public final class Context {
 	 * @return The renderer for URLs
 	 */
 	public UrlRenderer getUrlRenderer() {
-		return this.urlRenderer;
+		return this.rendererFactory.getUrlRenderer();
 	}
 
 	/**

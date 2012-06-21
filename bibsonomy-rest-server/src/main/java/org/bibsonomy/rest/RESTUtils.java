@@ -39,7 +39,8 @@ public class RESTUtils {
 	private static final List<RenderingFormat> SUPPORTED_RENDERING_FORMAT = Collections.unmodifiableList(Arrays.asList(
 			RenderingFormat.XML,
 			RenderingFormat.APP_XML,
-			RenderingFormat.JSON
+			RenderingFormat.JSON,
+			RenderingFormat.CSL
 //			,RenderingFormat.LAYOUT
 	));
 
