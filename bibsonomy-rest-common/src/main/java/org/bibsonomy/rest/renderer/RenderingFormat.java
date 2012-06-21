@@ -34,87 +34,100 @@ import org.bibsonomy.common.exceptions.InternServerException;
  * @version $Id$
  */
 public class RenderingFormat {
-	
+
 	/**
 	 * the media wildcard
 	 */
 	public static final String TYPE_WILDCARD = "*";
-	
+
 	/**
 	 * anything
 	 */
 	public static final RenderingFormat WILDCARD = new RenderingFormat(TYPE_WILDCARD, TYPE_WILDCARD);
-	
+
 	/**
 	 * text xml format
 	 */
-	public static final RenderingFormat XML = new RenderingFormat("text", "xml");	
-	
+	public static final RenderingFormat XML = new RenderingFormat("text", "xml");
+
 	/**
 	 * application xml format
 	 */
 	public static final RenderingFormat APP_XML = new RenderingFormat("application", "xml");
-	
+
 	/**
 	 * json format
 	 */
 	public static final RenderingFormat JSON = new RenderingFormat("application", "json");
-	
+
+	/**
+	 * csl format
+	 */
+	public static final RenderingFormat CSL = new RenderingFormat("text", "csl");
+
 	/**
 	 * pdf format for documents
 	 */
 	public static final RenderingFormat PDF = new RenderingFormat("application", "pdf");
-	
 
 	/**
-	 * @param string like <CODE>application/json</CODE> or
-	 * <CODE>application/xml; charset=UTF8</CODE>
-	 * 			
+	 * @param string
+	 *            like <CODE>application/json</CODE> or
+	 *            <CODE>application/xml; charset=UTF8</CODE>
+	 * 
 	 * @return the mediaType for the string
 	 */
 	public static RenderingFormat getMediaType(final String string) {
-		if (!present(string)) return null;
-		
+		if (!present(string)) {
+			return null;
+		}
+
 		// check if there is a charset given
 		final String[] mediaTypeEncoding = string.split(";");
-		
+
 		String mediaType = string;
 		if (mediaTypeEncoding.length > 1) {
 			mediaType = mediaTypeEncoding[0];
 		}
-		
+
 		final String[] typeSubType = mediaType.split("/");
-		
+
 		if (typeSubType.length != 2) {
 			throw new IllegalArgumentException(string + " is not a mediaType string representation");
 		}
-		
+
 		return new RenderingFormat(typeSubType[0], typeSubType[1]);
 	}
 
 	/**
-	 * @param renderingFormat 
+	 * @param renderingFormat
 	 * @return the rendering format to the given string.
 	 */
 	public static RenderingFormat getMediaTypeByFormat(final String renderingFormat) {
-		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
+		if (renderingFormat == null) {
+			throw new InternServerException("RenderingFormat is null");
+		}
 
 		final String format = renderingFormat.toLowerCase().trim();
 		if ("xml".equals(format)) {
 			return XML;
 		}
-		
+
 		if ("json".equals(format)) {
 			return JSON;
 		}
-		
-		if ("pdf".equals(format)){
+
+		if ("pdf".equals(format)) {
 			return PDF;
 		}
-		
+
+		if ("csl".equals(format)) {
+			return CSL;
+		}
+
 		return null;
 	}
-	
+
 	private final String type;
 	private final String subtype;
 
@@ -127,14 +140,14 @@ public class RenderingFormat {
 		this.type = type;
 		this.subtype = subtype;
 	}
-	
+
 	/**
 	 * @return the mimeType
 	 */
 	public String getMimeType() {
 		return this.type + "/" + this.subtype;
 	}
-	
+
 	/**
 	 * @return the type
 	 */
@@ -148,36 +161,44 @@ public class RenderingFormat {
 	public String getSubtype() {
 		return this.subtype;
 	}
-	
+
 	/**
 	 * checks if both renderingformats are compatible
-	 * @param other the other renderer
+	 * 
+	 * @param other
+	 *            the other renderer
 	 * @return <true> iff renderingformat is compatible
 	 */
 	public boolean isCompatible(final RenderingFormat other) {
-        if (other == null)
-            return false;
-        // both wildcard?
-        if (type.equals(TYPE_WILDCARD) || other.type.equals(TYPE_WILDCARD))
-            return true;
-        
-        // type and subtype wildcard?
-        if (type.equalsIgnoreCase(other.type) && (subtype.equals(TYPE_WILDCARD) || other.subtype.equals(TYPE_WILDCARD)))
-            return true;
-        
-        // type and subtype?
-        return this.type.equalsIgnoreCase(other.type) && this.subtype.equalsIgnoreCase(other.subtype);
-    }
-	
-	/**
-     * Checks if the subtype is a wildcard
-     * @return true if the subtype is a wildcard  
-     */
-    public boolean isWildcardSubtype() {
-        return TYPE_WILDCARD.equals(this.getSubtype());
-    }
+		if (other == null) {
+			return false;
+		}
+		// both wildcard?
+		if (type.equals(TYPE_WILDCARD) || other.type.equals(TYPE_WILDCARD)) {
+			return true;
+		}
 
-	/* (non-Javadoc)
+		// type and subtype wildcard?
+		if (type.equalsIgnoreCase(other.type) && (subtype.equals(TYPE_WILDCARD) || other.subtype.equals(TYPE_WILDCARD))) {
+			return true;
+		}
+
+		// type and subtype?
+		return this.type.equalsIgnoreCase(other.type) && this.subtype.equalsIgnoreCase(other.subtype);
+	}
+
+	/**
+	 * Checks if the subtype is a wildcard
+	 * 
+	 * @return true if the subtype is a wildcard
+	 */
+	public boolean isWildcardSubtype() {
+		return TYPE_WILDCARD.equals(this.getSubtype());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -189,11 +210,13 @@ public class RenderingFormat {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -203,7 +226,7 @@ public class RenderingFormat {
 		if (!(obj instanceof RenderingFormat)) {
 			return false;
 		}
-		RenderingFormat other = (RenderingFormat) obj;
+		final RenderingFormat other = (RenderingFormat) obj;
 		if (this.subtype == null) {
 			if (other.subtype != null) {
 				return false;
@@ -220,7 +243,7 @@ public class RenderingFormat {
 		}
 		return true;
 	}
-	
+
 	@Override
 	@Deprecated
 	public String toString() {
