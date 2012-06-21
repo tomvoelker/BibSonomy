@@ -55,6 +55,7 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
+import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -135,6 +136,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			
 			final RestServlet restServlet = new RestServlet();
 			restServlet.setUrlRenderer(new UrlRenderer(apiUrl));
+			restServlet.setRendererFactory(new RendererFactory(new UrlRenderer(apiUrl)));
 			
 			try {
 				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
