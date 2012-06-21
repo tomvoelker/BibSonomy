@@ -38,19 +38,26 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
  * @version $Id$
  */
 public class RendererFactory {
-	
+
 	/**
-	 * Holds the available renderers. New renderers can be added using 
+	 * Holds the available renderers. New renderers can be added using
 	 */
-	private final Map<RenderingFormat,Renderer> renderers = new HashMap<RenderingFormat, Renderer>();
-	
+	private Map<RenderingFormat, Renderer> renderers;
+
+	private UrlRenderer urlRenderer;
+
+	public RendererFactory() {
+	}
+
 	public RendererFactory(final UrlRenderer urlRenderer) {
+		this.urlRenderer = urlRenderer;
+		renderers = new HashMap<RenderingFormat, Renderer>();
 		renderers.put(RenderingFormat.JSON, new JSONRenderer(urlRenderer));
 		renderers.put(RenderingFormat.XML, new XMLRenderer(urlRenderer));
 	}
-	
+
 	/**
-	 * Registers the provided renderer with the given renderingFormat. 
+	 * Registers the provided renderer with the given renderingFormat.
 	 * 
 	 * @param renderingFormat
 	 * @param renderer
@@ -60,18 +67,46 @@ public class RendererFactory {
 	}
 
 	/**
-	 * Returns the renderer for the given format; it defaults to the XML renderer.
-	 * @param renderingFormat 
+	 * Returns the renderer for the given format; it defaults to the XML
+	 * renderer.
+	 * 
+	 * @param renderingFormat
 	 * @return the renderer
 	 */
 	public Renderer getRenderer(final RenderingFormat renderingFormat) {
-		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");
-		
+		if (renderingFormat == null) {
+			throw new InternServerException("RenderingFormat is null");
+		}
+
 		if (renderers.containsKey(renderingFormat)) {
 			return renderers.get(renderingFormat);
 		}
-		
+
 		// the default is the XML renderer
 		return renderers.get(RenderingFormat.XML);
 	}
+
+	/**
+	 * @param renderers
+	 *            the renderer to set
+	 */
+	public void setRenderers(final Map<RenderingFormat, Renderer> renderers) {
+		this.renderers = renderers;
+	}
+
+	/**
+	 * @return the urlRenderer
+	 */
+	public UrlRenderer getUrlRenderer() {
+		return urlRenderer;
+	}
+
+	/**
+	 * @param urlRenderer
+	 *            the urlRenderer to set
+	 */
+	public void setUrlRenderer(final UrlRenderer urlRenderer) {
+		this.urlRenderer = urlRenderer;
+	}
+
 }
