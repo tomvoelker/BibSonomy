@@ -70,7 +70,7 @@ public final class RestServlet extends HttpServlet {
 	 * the key for the project home
 	 */
 	public static final String PROJECT_HOME_KEY = "projectHome";
-	
+
 	private static final String PROJECT_NAME_KEY = "projectName";
 
 	/**
@@ -97,8 +97,6 @@ public final class RestServlet extends HttpServlet {
 	 * Distinguish name of the client
 	 */
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
-	
-
 
 	private LogicInterfaceFactory logicFactory;
 
@@ -130,7 +128,7 @@ public final class RestServlet extends HttpServlet {
 	public void setProjectHome(final String projectHome) {
 		additionalInfos.put(PROJECT_HOME_KEY, projectHome);
 	}
-	
+
 	/**
 	 * @param projectName the name of the project
 	 */
@@ -145,7 +143,13 @@ public final class RestServlet extends HttpServlet {
 	@Required
 	public void setUrlRenderer(final UrlRenderer urlRenderer) {
 		this.urlRenderer = urlRenderer;
-		this.rendererFactory = new RendererFactory(urlRenderer);
+	}
+
+	/**
+	 * @param rendererFactory the rendererFactory to set
+	 */
+	public void setRendererFactory(final RendererFactory rendererFactory) {
+		this.rendererFactory = rendererFactory;
 	}
 
 	/**
@@ -154,7 +158,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	@Required
 	public void setDocumentPath(final String documentPath) {
-		additionalInfos.put(DOCUMENTS_PATH_KEY, documentPath); 
+		additionalInfos.put(DOCUMENTS_PATH_KEY, documentPath);
 	}
 
 	/**
@@ -237,7 +241,7 @@ public final class RestServlet extends HttpServlet {
 
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, this.urlRenderer, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
@@ -298,8 +302,8 @@ public final class RestServlet extends HttpServlet {
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
 		} catch (final DatabaseException e) {
 			final StringBuilder returnMessage = new StringBuilder("");
-			for (final String hash: e.getErrorMessages().keySet()) {
-				for (final ErrorMessage em: e.getErrorMessages(hash)) {
+			for (final String hash : e.getErrorMessages().keySet()) {
+				for (final ErrorMessage em : e.getErrorMessages(hash)) {
 					log.error(em.toString());
 					returnMessage.append(em.toString() + "\n ");
 				}
@@ -307,7 +311,7 @@ public final class RestServlet extends HttpServlet {
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage.toString());
 
 		} catch (final Exception e) {
-			log.error(e,e);
+			log.error(e, e);
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
@@ -432,7 +436,7 @@ public final class RestServlet extends HttpServlet {
 
 		final String basicCookie;
 		try {
-			basicCookie = new String(Base64.decodeBase64(authentication.substring(HTTP_AUTH_BASIC_IDENTIFIER.length()).getBytes()),RESPONSE_ENCODING);
+			basicCookie = new String(Base64.decodeBase64(authentication.substring(HTTP_AUTH_BASIC_IDENTIFIER.length()).getBytes()), RESPONSE_ENCODING);
 		} catch (final IOException e) {
 			throw new BadRequestOrResponseException("error decoding authorization header: " + e.toString());
 		}
@@ -443,7 +447,7 @@ public final class RestServlet extends HttpServlet {
 		}
 
 		// check username and password
-		final String username = basicCookie.substring(0, i);		
+		final String username = basicCookie.substring(0, i);
 		final String apiKey = basicCookie.substring(i + 1);
 		log.debug("Username/API-key: " + username + " / " + apiKey);
 		try {
