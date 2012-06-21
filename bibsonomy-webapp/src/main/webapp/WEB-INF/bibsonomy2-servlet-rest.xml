@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd
 	                    http://www.springframework.org/schema/util 
@@ -10,14 +10,14 @@
 		|
 		| REST servlet config
 		|
-		+-->
+		+ -->
 	<bean id="restUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
 				<entry key="/api/**">
 					<bean id="ApiServlet" class="org.bibsonomy.webapp.util.spring.controller.ServletWrappingController">
-						<property name="servletInstance" ref="restServletInstance"/>
-						<property name="requireSession" value="false"/>
+						<property name="servletInstance" ref="restServletInstance" />
+						<property name="requireSession" value="false" />
 						<property name="supportedMethods">
 							<array>
 								<value>GET</value>
@@ -31,27 +31,62 @@
 			</map>
 		</property>
 	</bean>
-	
+
 	<!-- provides access to the database REST servlet -->
 	<bean id="restLogicFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory">
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
-	
+
 	<!-- renders all API URLs -->
 	<bean id="restUrlRenderer" class="org.bibsonomy.rest.renderer.UrlRenderer">
-		<constructor-arg name="apiUrl" value="${project.home}api/"/>
+		<constructor-arg name="apiUrl" value="${project.home}api/" />
 	</bean>
-	
+
+	<bean id="rendererFactory" class="org.bibsonomy.rest.renderer.RendererFactory">
+		<property name="urlRenderer" ref="restUrlRenderer" />
+		<property name="renderers">
+			<map merge="true">
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.JSON" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.JSONRenderer">
+						<constructor-arg name="urlRenderer">
+							<ref bean="restUrlRenderer" />
+						</constructor-arg>
+					</bean>
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.XML" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.XMLRenderer">
+						<constructor-arg name="urlRenderer">
+							<ref bean="restUrlRenderer" />
+						</constructor-arg>
+					</bean>
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.CSL" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.CSLRenderer" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
 	<bean id="restServletInstance" class="org.bibsonomy.rest.RestServlet">
-		<property name="projectHome" value="${project.home}"/>
+		<property name="projectHome" value="${project.home}" />
 		<property name="projectName" value="${project.name}" />
-		<property name="documentPath" value="${project.document.path}"/>
-		<property name="logicInterfaceFactory" ref="restLogicFactory"/>
-		<property name="urlRenderer" ref="restUrlRenderer"/>
-		
+		<property name="documentPath" value="${project.document.path}" />
+		<property name="logicInterfaceFactory" ref="restLogicFactory" />
+		<property name="urlRenderer" ref="restUrlRenderer" />
+		<property name="rendererFactory" ref="rendererFactory" />
+
 		<!-- open social stuff -->
 		<property name="oauthValidator" ref="oauthRequestValidator" />
 		<property name="oauthLogicFactory" ref="oauthLogicFactory" />
 	</bean>
-	
+
 </beans>

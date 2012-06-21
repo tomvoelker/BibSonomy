@@ -11,13 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONSerializer;
-import net.sf.json.JsonConfig;
-import net.sf.json.processors.PropertyNameProcessor;
-import net.sf.json.util.PropertyFilter;
 
 import org.bibsonomy.layout.csl.CslModelConverter;
-import org.bibsonomy.layout.csl.model.Date;
-import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.layout.csl.model.RecordList;
 import org.bibsonomy.model.BibTex;
@@ -65,50 +60,9 @@ public class CSLView extends AbstractView {
 					final Record rec = CslModelConverter.convertPost(post);
 					recList.add(rec);
 				}
-				writer.write(JSONSerializer.toJSON(recList, getJsonConfig()).toString());
+				writer.write(JSONSerializer.toJSON(recList, CslModelConverter.getJsonConfig()).toString());
 				writer.close();
 			}
-	}
-
-	private JsonConfig getJsonConfig() {
-		JsonConfig jsonConfig = new JsonConfig();
-		// output only not-null fields
-		jsonConfig.setJsonPropertyFilter(new PropertyFilter() {
-			@Override
-			public boolean apply(Object source, String name, Object value) {
-				if (value == null) {
-					return true;
-				}
-				return false;
-			}
-		});
-		// transform underscores into "-"
-		jsonConfig.registerJsonPropertyNameProcessor(Person.class, new PropertyNameProcessor() {
-
-			@Override
-			public String processPropertyName(Class arg0, String arg1) {
-				return arg1.replace("_", "-");
-			}
-		});
-		jsonConfig.registerJsonPropertyNameProcessor(Record.class, new PropertyNameProcessor() {
-
-			@Override
-			public String processPropertyName(Class arg0, String arg1) {
-				// special handling for abstract field
-				if ("abstractt".equals(arg1)) {
-					return "abstract";
-				}
-				return arg1.replace("_", "-");
-			}
-		});
-		jsonConfig.registerJsonPropertyNameProcessor(Date.class, new PropertyNameProcessor() {
-
-			@Override
-			public String processPropertyName(Class arg0, String arg1) {
-				return arg1.replace("_", "-");
-			}
-		});
-		return jsonConfig;
 	}
 	
 	/**
