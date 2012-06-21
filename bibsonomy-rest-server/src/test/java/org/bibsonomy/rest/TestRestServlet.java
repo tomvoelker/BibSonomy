@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.bibsonomy.rest.database.TestDBLogic;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.testutil.TestRequest;
 import org.bibsonomy.rest.testutil.TestResponse;
@@ -27,13 +28,14 @@ public class TestRestServlet {
 	private RestServlet servlet;
 	private TestRequest request;
 	private TestResponse response;
-	
+
 	@Before
 	public void setUp() {
 		this.servlet = new RestServlet();
 		this.servlet.setLogicInterfaceFactory(TestDBLogic.factory);
 		this.servlet.setUrlRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
-		
+		this.servlet.setRendererFactory(new RendererFactory(new UrlRenderer("http://www.bibsonomy.org/api/")));
+
 		this.request = new TestRequest();
 		this.response = new TestResponse();
 	}
@@ -57,7 +59,7 @@ public class TestRestServlet {
 
 		assertEquals("error decoding string", "asdf", this.servlet.validateHttpBasicAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser().getName());
 	}
-	
+
 	@Test
 	public void testUnauthorized() throws Exception {
 		this.servlet.doGet(this.request, this.response);
@@ -80,33 +82,34 @@ public class TestRestServlet {
 		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
 		this.request.getHeaders().put("User-Agent", RESTConfig.API_USER_AGENT);
 		this.request.setRequestURI("/api/users");
-		
+
 		this.servlet.doGet(this.request, this.response);
 		compareWithFile(this.response.getContent(), "exampleComplexResult1.txt");
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 
 	@Test
-	@Ignore // FIXME: do we want this to work?
+	@Ignore
+	// FIXME: do we want this to work?
 	public void testUTF8() throws Exception {
-//		final TestRequest request = new TestRequest();
-//		request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
-//		request.getHeaders().put("User-Agent", RestProperties.getInstance().getApiUserAgent());
-//		final TestResponse response = new TestResponse();
-//
-//		final RestServlet servlet = new RestServlet();
-//		servlet.setLogicInterface(new TestDBLogic());
-//		final LogicInterface logic = servlet.getLogic();
-//		final User user = new User();
-//		user.setName("üöäßéèê");
-//		logic.storeUser(user, false);
-//		request.setPathInfo("/users");
-//
-//		servlet.doGet(request, response);
-//		compareWithFile(response.getContent(), "UTF8TestResult.txt");
-//		assertEquals(813, response.getContentLength()); // 813 vs 799
+		//		final TestRequest request = new TestRequest();
+		//		request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
+		//		request.getHeaders().put("User-Agent", RestProperties.getInstance().getApiUserAgent());
+		//		final TestResponse response = new TestResponse();
+		//
+		//		final RestServlet servlet = new RestServlet();
+		//		servlet.setLogicInterface(new TestDBLogic());
+		//		final LogicInterface logic = servlet.getLogic();
+		//		final User user = new User();
+		//		user.setName("üöäßéèê");
+		//		logic.storeUser(user, false);
+		//		request.setPathInfo("/users");
+		//
+		//		servlet.doGet(request, response);
+		//		compareWithFile(response.getContent(), "UTF8TestResult.txt");
+		//		assertEquals(813, response.getContentLength()); // 813 vs 799
 	}
-	
+
 	// TODO: duplicate code @see 
 	private void compareWithFile(final String sw, final String filename) throws IOException {
 		final StringBuilder sb = new StringBuilder(200);
