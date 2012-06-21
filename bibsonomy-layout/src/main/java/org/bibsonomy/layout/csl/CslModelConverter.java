@@ -30,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JsonConfig;
+import net.sf.json.processors.PropertyNameProcessor;
+import net.sf.json.util.PropertyFilter;
+
 import org.bibsonomy.layout.csl.model.Date;
 import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Record;
@@ -156,6 +160,47 @@ public class CslModelConverter {
 	 */
 	private static final String mapToCslType(final String bibtexType) {
 		return typemap.get(bibtexType);
+	}
+
+	public static JsonConfig getJsonConfig() {
+		final JsonConfig jsonConfig = new JsonConfig();
+		// output only not-null fields
+		jsonConfig.setJsonPropertyFilter(new PropertyFilter() {
+			@Override
+			public boolean apply(final Object source, final String name, final Object value) {
+				if (value == null) {
+					return true;
+				}
+				return false;
+			}
+		});
+		// transform underscores into "-"
+		jsonConfig.registerJsonPropertyNameProcessor(Person.class, new PropertyNameProcessor() {
+
+			@Override
+			public String processPropertyName(final Class arg0, final String arg1) {
+				return arg1.replace("_", "-");
+			}
+		});
+		jsonConfig.registerJsonPropertyNameProcessor(Record.class, new PropertyNameProcessor() {
+
+			@Override
+			public String processPropertyName(final Class arg0, final String arg1) {
+				// special handling for abstract field
+				if ("abstractt".equals(arg1)) {
+					return "abstract";
+				}
+				return arg1.replace("_", "-");
+			}
+		});
+		jsonConfig.registerJsonPropertyNameProcessor(Date.class, new PropertyNameProcessor() {
+
+			@Override
+			public String processPropertyName(final Class arg0, final String arg1) {
+				return arg1.replace("_", "-");
+			}
+		});
+		return jsonConfig;
 	}
 
 }
