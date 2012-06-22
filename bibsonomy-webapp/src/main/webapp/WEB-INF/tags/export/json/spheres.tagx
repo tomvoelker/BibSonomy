@@ -17,7 +17,10 @@
             <!-- sphere -->
             {  
                 "type" : "Sphere",
-                "name" : "${mtl:quoteJSON(entry.key)}",
+                "name" : <c:choose>
+                			<c:when test="${mtl:quoteJSON(entry.key) eq 'Bibsonomy-Follower'}">"${properties['project.name']}-Follower"</c:when>
+                			<c:otherwise>"${mtl:quoteJSON(entry.key)}"</c:otherwise>
+                		</c:choose>,
                 "members" : [
                     <json:users users="${entry.value}" />
                 ]		
