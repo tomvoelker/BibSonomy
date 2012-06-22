@@ -28,6 +28,21 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.sync"/>
     	</jsp:attribute>
+    	
+    	<!--+
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+		  		<fmt:message key="synchronization.info" />
+		  		<ul>
+		  			<li><fmt:message key="synchronization.info.plan" /></li>
+		  			<li><fmt:message key="synchronization.info.reset" /></li>
+		  		</ul>
+				</jsp:attribute>
+			</parts:infobox>
+         </jsp:attribute>
 		
 		<jsp:attribute name="content">
 			
