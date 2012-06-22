@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -212,6 +213,17 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final User user = new User();
 		command.setUser(user);
 		user.setSettings(new UserSettings());
+		
+		/*
+		 * instantiate empty server user, this seems to be required since spring update
+		 */
+		Properties serverUser = new Properties();
+		serverUser.setProperty("userName", "");
+		serverUser.setProperty("apiKey", "");
+		SyncService newSyncServer = new SyncService();
+		newSyncServer.setServerUser(serverUser);
+		command.setNewSyncServer(newSyncServer);
+		
 		return command;
 	}
 
