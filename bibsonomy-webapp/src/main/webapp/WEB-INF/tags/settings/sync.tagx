@@ -51,6 +51,7 @@
 			<form:form method="post" action="/updateSyncSettings" modelAttribute="command.syncServer[${status.index}]">
 				<div class="fsRow">
 					<form:label cssClass="fsLabel" path="service"><fmt:message key="synchronization.server" /></form:label>
+					<buttons:help message="synchronization.help.server"/>
 					<form:input cssClass="fsInput serviceName" path="service" disabled="true"/>
 					<div class="dissError"><form:errors path="service" /></div>
 				</div>
@@ -78,6 +79,7 @@
 	        
 	        	<div class="fsRow">
 					<form:label cssClass="fsLabel" path="service"><fmt:message key="synchronization.server" /></form:label>
+					<buttons:help message="synchronization.help.server"/>
 					<form:select cssClass="fsInput" path="service" items="${command.availableSyncServers}"/>
       				<div class="dissError"><form:errors path="service" /></div>
       			</div>
@@ -103,6 +105,7 @@
 			<form method="post" action="" onsubmit="changeClient(this)">			
 	        	<div class="fsRow">
 					<label class="fsLabel" for="newSyncClient"><fmt:message key="synchronization.client" /></label>
+					<buttons:help message="synchronization.help.client"/>
 					<select class="fsInput" name="newSyncClient">
 						<c:forEach varStatus="status" var="syncService" items="${command.availableSyncClients}">
 							<option value="${fn:escapeXml(syncService)}"><c:out value="${syncService}"/></option>
@@ -111,6 +114,7 @@
 				</div>
 				<div class="fsRow">
 					<label class="fsLabel" for="newSyncServer.direction" ><fmt:message key="synchronization.direction"/></label>
+					<buttons:help message="synchronization.help.directions"/>
 					<select class="fsInput fsSmall" name="newSyncServer.direction">
 						<option value="BOTH"><fmt:message key="synchronization.direction.both"/></option>
 						<option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server.on_server"/></option>
@@ -119,6 +123,7 @@
 				</div>
 				<div class="fsRow">
 					<label class="fsLabel" for="newSyncServer.resourceType" ><fmt:message key="synchronization.resourceType"/></label>
+					<buttons:help message="synchronization.help.resourceTypes"/>
 					<select class="fsInput fsSmall" name="newSyncServer.resourceType">
 						<option value="org.bibsonomy.model.Resource"><fmt:message key="resourceType.Resource.plural"/></option>
 						<option value="org.bibsonomy.model.BibTex"><fmt:message key="resourceType.BibTex.plural"/></option>

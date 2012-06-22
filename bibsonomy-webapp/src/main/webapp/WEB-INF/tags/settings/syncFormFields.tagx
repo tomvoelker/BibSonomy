@@ -15,16 +15,19 @@
   
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="serverUser['userName']" ><fmt:message key="navi.username"/></form:label>
+		 <buttons:help message="synchronization.help.serverUserName"/>
 		<form:input cssClass="fsInput" path="serverUser['userName']"/>
 		<div class="dissError"><form:errors path="serverUser['userName']" /></div>
 	</div>
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="serverUser['apiKey']" ><fmt:message key="navi.apikey"/></form:label>
+		<buttons:help message="synchronization.help.serverApiKey"/>
 		<form:input cssClass="fsInput" path="serverUser['apiKey']"/>
 		<div class="dissError"><form:errors path="serverUser['apiKey']" /></div>
 	</div>
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="resourceType" ><fmt:message key="synchronization.resourceType"/></form:label>
+		<buttons:help message="synchronization.help.resourceTypes"/>
 		<form:select cssClass="fsInput fsSmall" path="resourceType">
 			<form:option value="org.bibsonomy.model.Resource"><fmt:message key="resourceType.Resource.plural"/></form:option>
 			<form:option value="org.bibsonomy.model.BibTex"><fmt:message key="resourceType.BibTex.plural"/></form:option>
@@ -34,6 +37,7 @@
 	</div>
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="strategy"><fmt:message key="synchronization.conflictResolution"/></form:label>
+		<buttons:help message="synchronization.help.conflictResolution"/>
 		<form:select cssClass="fsInput fsSmall" path="strategy">
 			<form:option value="LAST_WINS"><fmt:message key="synchronization.lastWins"/></form:option>
 			<form:option value="FIRST_WINS"><fmt:message key="synchronization.firstWins"/></form:option>
@@ -43,6 +47,7 @@
 	</div>
 	<div class="fsRow">
 		<form:label cssClass="fsLabel" path="direction" ><fmt:message key="synchronization.direction"/></form:label>
+		<buttons:help message="synchronization.help.directions"/>
 		<form:select cssClass="fsInput fsSmall dirselect" path="direction">
 			<form:option value="BOTH"><fmt:message key="synchronization.direction.both"/></form:option>
 			<form:option value="CLIENT_TO_SERVER"><fmt:message key="synchronization.direction.client_to_server.on_client"/></form:option>
@@ -52,6 +57,7 @@
 	</div>
 	<div class="fsRow autosyncDiv" >
 		<form:label cssClass="fsLabel" path="autosync"><fmt:message key="synchronization.autosync"/></form:label>
+		<buttons:help message="synchronization.help.autoSync"/>
 		<form:checkbox path="autosync" value="true" />
 	</div>	
 	
