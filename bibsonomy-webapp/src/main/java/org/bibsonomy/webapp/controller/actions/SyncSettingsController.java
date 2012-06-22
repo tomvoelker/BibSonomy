@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -35,10 +33,7 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 		return command;
 	}
 
-	/**
-	 * FIXME remove casts to {@link SyncLogicInterface} after integration of 
-	 * {@link SyncLogicInterface} into {@link LogicInterface}
-	 * 
+	/** 
 	 * @see org.bibsonomy.webapp.controller.SettingsPageController#workOn(org.bibsonomy.webapp.command.SettingsViewCommand)
 	 */
 	@Override
