@@ -327,22 +327,11 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 			xleft		+= p.left;
 			currentTag 	 = currentTag.offsetParent();
 		}
-
-		/**
-		 * Function to check which Browser is used.
-		 */
-		function checkBrowserName(name){  
-			var agent = navigator.userAgent.toLowerCase();  
-				if (agent.indexOf(name.toLowerCase()) > -1) {  
-				return true;  
-			}  
-			return false;  
-		}  
 			
 		//TODO: Browserswitcher for Internet Explorer
 		
 		//SAFARI and CHROME
-		if(checkBrowserName("safari" || "chrome")) {
+		if($.browser.safari || $.browser.webkit) {
 			switch(dialogPosition) {
 	            case "position1": 	{
 	           		$(".addContainer").css("left", xleft - 280);		
@@ -361,7 +350,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 		}
 		
 		//FIREFOX and OPERA
-		if(checkBrowserName("firefox" || "opera")) {
+		if($.browser.mozilla || $.browser.opera) {
 			switch(dialogPosition) {
 	            case "position1": 	{
 	           		$(".addContainer").css("left", xleft - 260);		
