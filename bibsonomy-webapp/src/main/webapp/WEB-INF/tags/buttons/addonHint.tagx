@@ -1,0 +1,33 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"	
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+    <fmt:message key="navi.postBookmark" var="postBookmark"/>
+    <fmt:message key="image.button.postBookmark" var="buttonImage"/>
+    <script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
+    <script type="text/javascript">
+    	$(document).ready(function(){
+    		installBookmarkletButton(
+    			{
+    				textElementId:"post\\.resource\\.hint", 
+    				buttonElementId:"post\\.resource\\.hint\\.buttons",
+    				sidebarInlay:true,
+    				emptyParent:true
+    			}
+    		);
+    	});
+    </script>
+    <ul>
+		<li id="post.resource.hint"><fmt:message key="post.resource.hint"/></li>
+	    <ul id="post.resource.hint.buttons">
+		  	<li><buttons:postPublication/></li>
+			<li><buttons:postPublicationPopUp/></li>
+		</ul>
+		<li><fmt:message key="post.resource.hint1"/></li>
+	</ul>
+</jsp:root>

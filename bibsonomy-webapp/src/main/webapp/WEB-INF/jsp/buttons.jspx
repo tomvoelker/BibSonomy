@@ -11,7 +11,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	<fmt:message var="exampleString" key="example" />
 	<fmt:message key="navi.buttons" var="buttonsPageTitle"/>
 	<layout:paneLayout pageTitle="${buttonsPageTitle}" headerMessageKey="buttons.bookmarklet"  command="${command}" requPath="${requPath}">
 		
@@ -20,9 +20,40 @@
 		</jsp:attribute>
 	
 		<jsp:attribute name="content">
-		
+			<!--+ 
+                |              Chrome / Firefox Bookmarklet Addon 
+                +-->			
+    		<script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
+            <script type="text/javascript">
+		    	$(document).ready(function(){
+		    		var browser = "";
+		    		if((browser=installBookmarkletButton(
+		    			{
+		    				buttonElementId:"post\\.resource\\.bookmarklet\\.installButton"
+		    			}
+		    		)).length > 0) {
+		    			$("#post\\.resource\\.bookmarklet\\.screenshot").attr("src", "/resources/image/bookmarklet_screenshot_example_"+browser.toLowerCase()+".png").show();
+		    		}
+		    		
+		    	});
+		    </script>
+		    
+           	<label id="post.resource.bookmarklet.installInfo" style="border-left: 3px solid #888; padding-left: 5px; display:block;">
+           		<h2><fmt:message key="bookmarklet.versionNotice"/></h2>
+           		<h3><fmt:message key="bookmarklet.addon.headline"/></h3>
+           		<p><fmt:message key="bookmarklet.addon.text1"/></p>
+           		<h3>Firefox</h3>
+           		<img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/>
+           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
+           		<h3>Chrome</h3>
+           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
+           		<p><fmt:message key="bookmarklet.addon.text3"/></p>
+           		<p id="post.resource.bookmarklet.installButton"><!-- keep --></p>
+           	</label>
+          	
 			<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
-    
+    		<label style="border-left: 3px solid #888; padding-left: 5px; display:block;">
+    		<h2><fmt:message key="buttons.bookmarklet"/></h2>
             <!--+ 
                 |              myBibSonomy 
                 +-->	
@@ -81,14 +112,15 @@
 					<fmt:message key="buttons.shortcut_bibtex_end"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
 				</p>
 			</c:if>
-			      
+			</label>
             <!-- 
                |              JavaScript code snippets 
                -->  
-			<h3><fmt:message key="buttons.javascript_snippets"/></h3>
+            <label class="labelFrameLeft">
+			<h2><fmt:message key="buttons.javascript_snippets"/></h2>
 			<p><fmt:message key="buttons.javascript_snippets_text"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></p>
 			<buttons:snippets/>
-		
+			</label>
 	</jsp:attribute>
 
 </layout:paneLayout>

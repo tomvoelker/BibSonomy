@@ -121,18 +121,7 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-					<ul>
-						<li>
-							<fmt:message key="post.resource.hint"/>
-						</li>
-						<ul>
-							<li><buttons:postPublication/></li>
-							<li><buttons:postPublicationPopUp/></li>
-						</ul>
-						<li>
-							<fmt:message key="post.resource.hint1"/>
-						</li>
-					</ul>
+					<buttons:addonHint/>
 				</jsp:attribute>
 			</parts:infobox>
          </jsp:attribute>
