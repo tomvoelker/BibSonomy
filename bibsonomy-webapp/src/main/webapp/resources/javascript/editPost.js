@@ -48,7 +48,7 @@ function enableHandler() {
 }
 
 function disableHandler() {
-	if (checkBrowser() == "ie" || checkBrowser() == "opera") {
+	if ($.browser.msie || $.browser.opera) {
 		document.onkeydown = document.onkeypress = document.onkeyup;
 	} else {
 		document.onkeydown = document.onkeypress = document.onkeyup = disHandler;

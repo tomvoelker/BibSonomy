@@ -458,22 +458,6 @@ function toggle_required_author_editor () {
 }
 
 /**
- * FIXME: legacy code
- * 
- * @return
- */
-function checkBrowser() {
-	if (navigator.appName.indexOf("Opera") != -1)	{
-		return "opera";
-	} else if (navigator.appName.indexOf("Explorer") != -1)	{
-		return "ie";
-	} else if (navigator.appName.indexOf("Netscape") != -1)	{
-		return "ns";
-	} 
-	return "undefined";
-} 
-
-/**
  * Sorts two values
  * 
  * @param ersterWert
