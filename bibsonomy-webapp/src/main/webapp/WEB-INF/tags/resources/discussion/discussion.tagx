@@ -6,7 +6,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
     
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
     <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
@@ -59,32 +60,8 @@
 		<!-- Aggregated RatingInfo -->
     	<review:reviewRatingsInfo resource="${resource}" />
 		
-		<!-- Publication reference link -->	
-		<div id="referenceLinkContainer">
-			<fmt:message var="linkType" key="discussion.info.resource"/>
-			<div >
-				<a href="javascript:linkBox(true);">
-					<fmt:message key="discussion.resourceLink">
-						<fmt:param value="${linkType}"/> 
-					</fmt:message>
-				</a>
-				<div class="help">
-					<b class="smalltext" style="">?</b>
-					<div>
-						<fmt:message key="discussion.resourceLink.help">
-							<fmt:param value="${linkType}" />
-						</fmt:message>
-					</div>
-				</div>
-			</div>
-			<c:set var="linkText" value="[[bibtex/${hash.inter.id}${resource.interHash}]]" />
-			<fmt:message var="alternateClose" key="close" />
-			<div id="linkBox" style="display:none">
-				<input type="text" value="${linkText}" size="${fn:length(linkText)}"/>
-				<a href="javascript:linkBox(false);"><img src="${resdir}/image/icon_close.png" alt="${alternateClose}"/></a>
-			</div>
-			<script type="text/javascript" src="${resdir}/javascript/discussion/linkbox.js"><!-- keep me --></script>
-  		</div>
+		<!-- Publication reference link -->		
+		<discussion:linkBox resource="${resource}"/>
     		
 		<div cssClass="fsRow">
 			<c:if test="${not fn:contains(resource.class.simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
