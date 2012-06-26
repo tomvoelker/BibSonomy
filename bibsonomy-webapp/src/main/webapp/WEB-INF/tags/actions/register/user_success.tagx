@@ -76,8 +76,8 @@
 		    				buttonElementId:"post\\.resource\\.bookmarklet\\.installButton",
 	    					textElementId:"post\\.resource\\.bookmarklet\\.text"
 		    			}
-		    		)).length > 0) {
-		    			$("#post\\.resource\\.bookmarklet\\.screenshot").attr("src", "/resources/image/bookmarklet_screenshot_"+browser.toLowerCase()+"_${fn:toLowerCase(exampleString)}.png").show();
+		    		))) {
+		    			$("#post\\.resource\\.bookmarklet\\.screenshot").attr("src", "/resources/image/bookmarklet_screenshot_"+browser.name.toLowerCase()+"_${fn:toLowerCase(exampleString)}.png").show();
 		    			$("#post\\.resource\\.bookmarklet\\.installInfo").show();
 		    			$("#post\\.resource\\.bookmarklet\\.howto").hide();
 		    		}
