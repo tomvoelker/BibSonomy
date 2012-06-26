@@ -2806,8 +2806,9 @@ table.report td.value {
     min-width: 170px;
 }
 
-.post\.resource\.firefox\.installButton{
+.post\.resource\.firefox\.installButton {
 	background: -moz-linear-gradient(#84C63C, #489615) repeat scroll 0 0 #489615;
+	background-image: -webkit-linear-gradient(#84C63C, #489615 100%);
     border: 0 none;
     border-radius: 6px 6px 6px 6px;
     box-shadow: 0 3px rgba(0, 0, 0, 0.1), 0 -4px rgba(0, 0, 0, 0.1) inset;
@@ -2821,25 +2822,26 @@ table.report td.value {
     text-decoration: none!important;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     margin: 0;
+    margin-bottom:3px;
     padding: 8px 16px 12px;
 	vertical-align: baseline;
 }
 
-#post\.resource\.bookmarklet\.installButton{
+#post\.resource\.bookmarklet\.installButton {
 	display:block;
 	padding-bottom:10px;
 }
-.post\.resource\.iconPlus {
+
+.post\.resource\.iconPlusChrome, .post\.resource\.iconPlusFirefox {
 	background: url("/resources/image/plus_icon.png") no-repeat scroll 0 3px transparent;
 	background-position: 0 -189px!important;
     display:inline-block;
 	padding-left: 24px;
+	padding-top:5px;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
     word-wrap: break-word;
 }
 
-.labelFrameLeft {
-	border-left: 3px solid #888;
-	display:block;
-	padding-left: 5px;
+.post\.resource\.iconPlusChrome {
+	padding-top: 5px;
 }
