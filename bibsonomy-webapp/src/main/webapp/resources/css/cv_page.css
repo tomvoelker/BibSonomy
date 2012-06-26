@@ -40,6 +40,10 @@ h2 {
 	vertical-align: top;
 }
 
+#wikiArea p, dl {
+    padding-left: 1.2em;
+}
+
 .align {
 	margin-left: 25px;
 }	
