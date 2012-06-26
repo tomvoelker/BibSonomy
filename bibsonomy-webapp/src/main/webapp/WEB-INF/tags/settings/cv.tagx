@@ -29,7 +29,9 @@
 		   <div>
 		    <div class="fsRow">
 		    	<div class="fsLabel"><fmt:message key = "cv.admin.topic"/></div>
+		    	<c:if test="${command.wikiText eq command.wikiText}">
 		      	<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
+		      	</c:if>
 		    </div>
 			<div class="fsRow" style="clear:both;">
 			<fmt:message key="cv.admin.layout" var="layout"/>
@@ -83,9 +85,23 @@
 	<!-- /c:if -->
 	
 			<div id="wikiArea">
-			<c:if test="${not empty command.wikiText}">
-				<c:out value="${command.renderedWikiText}" escapeXml="false" />
-			</c:if>
+			<c:choose>
+				<c:when test="${not empty command.wikiText}">
+					<c:out value="${command.renderedWikiText}" escapeXml="false" />
+				</c:when>
+				<c:otherwise>
+				   	<fmt:message key="cv.layout.user.def1en" var="def1en"/>
+				   	<fmt:message key="cv.layout.user.def1ger" var="def1ger"/>
+					<c:choose>
+						<c:when test="${command.user.settings.defaultLanguage=='de'}">
+							<c:out value="${def1ger}" escapeXml="false" />
+						</c:when>
+						<c:otherwise>
+							<c:out value="${def1en}" escapeXml="false" />
+						</c:otherwise>
+					</c:choose>
+				</c:otherwise>
+			</c:choose>
 			</div>
 			</div>
 			</div>

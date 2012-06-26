@@ -20,7 +20,12 @@
 
 	<fmt:message key="navi.cv" var="cvPageTitle" />
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${cvPageTitle}">
+	<layout:paneLayout requPath="${requPath}" 
+		command="${command}" 
+		pageTitle="${cvPageTitle}" 
+		headerMessageKey="navi.cv${command.context.loginUser.name eq command.requestedUser ? '.my' : ''}" 
+		headerLogoClass="cv" 
+		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
 			
 		<!--+
     	 	| html header extension: page specific stylesheet
@@ -72,114 +77,18 @@
     	</jsp:attribute>
 		
 		<!--+
-			| page content header
-			+-->
-		<jsp:attribute name="headerContainer">
-			<parts:panelheader>
-				<jsp:attribute name="headerLogo">
-					<img src="${resdir}/image/cv_header.png"/>
-				</jsp:attribute>
-				<jsp:attribute name="headerContent">
-					<h2 class="header">
-						<c:choose>
-							<c:when test="${command.context.loginUser.name eq command.requestedUser}">
-								<fmt:message key="navi.cv.my" />
-							</c:when>
-							<c:when test="${command.isGroup}">
-								<fmt:message key="group.cv.headline"></fmt:message>
-								${mtl:ch('nbsp')}
-								<c:out value="${fn:escapeXml(command.group.realname)}" />
-							</c:when>
-							<c:otherwise>
-								<fmt:message key="navi.cv" />
-							</c:otherwise>
-						</c:choose>
-					</h2>
-				</jsp:attribute>
-			</parts:panelheader>
-		</jsp:attribute>
-		
-		<!--+
 			| page content 
 			+-->
 		<jsp:attribute name="content">
 		<div>
-		<div id="general_100">
-			<!-- CV admin panel. Does show if you are the requested user -->
-			<!--  I guess, this isn't needed anymore, because we moved that panel to the settings page.
-			<c:if test="${command.context.loginUser.name eq command.requestedUser}">
-		<form:form><div id="fsform">
-		<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
-    	  <fieldset class="fsInner">
-    	  <fieldset class="fsVisible">
-    	  <legend>
-			<img src="/resources/image/icon_collapse.png" onclick="toggleFieldsetVisibility(this)" alt="toggle visibility" class="" />
-			<fmt:message key = "cv.legend.admin.main"/>
-		   </legend>
-		   <div>
-		    <div class="fsRow">
-		    	<div class="fsLabel"><fmt:message key = "cv.admin.topic"/></div>
-		      	<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
-		    </div>
-			<div class="fsRow" style="clear:both;">
-			<fmt:message key="cv.admin.layout" var="layout"/>
-		   	<fmt:message key="cv.admin.preview" var="preview"/>
-		   	<fmt:message key="cv.admin.preview_pub" var="pPrev"/>
-		   	<fmt:message key="cv.admin.save" var="save"/>
-		   	<fmt:message key="cv.admin.hide" var="hide"/>
-		   	<fmt:message key="cv.admin.show" var="show"/>
-			 	<span style="float:right;">
-		     	<input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
-		     	<input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
-		     	<input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
-		      	</span>
-		    </div>
-		     </div>
-		     </fieldset>
-		     <fieldset class="fsVisible">
-    	 		<legend>
-					<img src="/resources/image/icon_collapse.png" onclick="toggleFieldsetVisibility(this)" alt="toggle visibility" />
-					<fmt:message key = "cv.legend.admin.layouts"/>
-		   		</legend>
-		   	<fmt:message key="cv.layout.name.def1en" var="def1en"/>
-		   	<fmt:message key="cv.layout.name.def1ger" var="def1ger"/>
-		   	<fmt:message key="cv.layout.name.def2en" var="def2en"/>
-		   	<fmt:message key="cv.layout.name.def2ger" var="def2ger"/>
-		   	<fmt:message key="cv.layout.name.curr" var="curr"/>
-		   	<fmt:message key="cv.layout.name.clear" var="clear"/>
-		      	<div>   
-		      	<c:choose>	
-		      	<c:when test="${command.isGroup}">
-		      		<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN' class='changeLayout' value="${def1en}" />
-		      		<input type="button" data-layout='LAYOUT_G_DEFAULT_I_GER' class='changeLayout' value="${def1ger}" />
-				</c:when>
-				<c:otherwise>
-					<input type="button" data-layout='LAYOUT_DEFAULT_I_EN' class='changeLayout' value="${def1en}" />
-		      		<input type="button" data-layout='LAYOUT_DEFAULT_I_GER' class='changeLayout' value="${def1ger}" />
-		      		<input type="button" data-layout='LAYOUT_DEFAULT_II_EN' class='changeLayout' value="${def2en}" />
-		      		<input type="button" data-layout='LAYOUT_DEFAULT_II_GER' class='changeLayout' value="${def2ger}" />
-				</c:otherwise>
-		      	</c:choose>  	
-		      		<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />
-		      		<input type="button" onclick="return clearCVTextField();" value="${clear}" />
-		      </div>
-		      </fieldset>
-  		  </fieldset>
-  		  <div id='errorField' style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'><p id="errorText"></p></div>
-		<div id='loadingDiv' style='width: 100%;display:none'><img src="${resdir}/image/ajax_loader.gif" alt="wait" /></div>
-		</div>
-		<div id="showAdminField" style="display:none;"><input type="button" value="${show}" id="showAdmin"/></div>
-		</form:form>
-	</c:if> -->
 	
 			<div id="wikiArea">
 			<c:if test="${not empty command.wikiText}">
 				<c:out value="${command.renderedWikiText}" escapeXml="false" />
 			</c:if>
 			</div>
-			</div>
-			</div>
+		</div>
 </jsp:attribute>
-</layout:layout>
+</layout:paneLayout>
 	
 </jsp:root>
