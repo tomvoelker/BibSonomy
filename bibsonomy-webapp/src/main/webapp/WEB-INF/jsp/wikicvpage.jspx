@@ -75,6 +75,11 @@
 				</jsp:attribute>
 			</parts:search>	
     	</jsp:attribute>
+    	
+    	<jsp:attribute name="pageOptions">
+    		<a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a><BR />
+    		<a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a>
+    	</jsp:attribute>
 		
 		<!--+
 			| page content 
