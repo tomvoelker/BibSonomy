@@ -1,110 +1,109 @@
- <jsp:root version="2.0"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:jsp="http://java.sun.com/JSP/Page"
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  xmlns:form="http://www.springframework.org/tags/form"
-  xmlns:spring="http://www.springframework.org/tags"
-  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
-  
-	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 
-<!--		<jsp:attribute name="content"> -->
-		<div>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute name="command"
+		type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
+
+	<div>
 		<div id="general_100">
-			<!-- CV admin panel. Does show if you are the requested user -->
-			<!--<c:if test="${command.context.loginUser.name eq command.requestedUser}"> -->
-		<form:form><div id="fsform">
-		<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}"/>
-    	  <fieldset class="fsInner">
-    	  <fieldset class="fsVisible">
-    	  <legend>
-			<img src="/resources/image/icon_collapse.png" onclick="toggleFieldsetVisibility(this)" alt="toggle visibility" class="" />
-			<fmt:message key = "cv.legend.admin.main"/>
-		   </legend>
-		   <div>
-		    <div class="fsRow">
-		    	<div class="fsLabel"><fmt:message key = "cv.admin.topic"/></div>
-		    	<c:if test="${command.wikiText eq command.wikiText}">
-		      	<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
-		      	</c:if>
-		    </div>
-			<div class="fsRow" style="clear:both;">
-			<fmt:message key="cv.admin.layout" var="layout"/>
-		   	<fmt:message key="cv.admin.preview" var="preview"/>
-		   	<fmt:message key="cv.admin.preview_pub" var="pPrev"/>
-		   	<fmt:message key="cv.admin.save" var="save"/>
-		   	<fmt:message key="cv.admin.hide" var="hide"/>
-		   	<fmt:message key="cv.admin.show" var="show"/>
-			 	<span style="float:right;">
-		     	<input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
-		     	<input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
-		     	<input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
-		      	</span>
-		    </div>
-		     </div>
-		     </fieldset>
-		     <fieldset class="fsVisible">
-    	 		<legend>
-					<img src="/resources/image/icon_collapse.png" onclick="toggleFieldsetVisibility(this)" alt="toggle visibility" />
-					<fmt:message key = "cv.legend.admin.layouts"/>
-		   		</legend>
-		   	<fmt:message key="cv.layout.name.def1en" var="def1en"/>
-		   	<fmt:message key="cv.layout.name.def1ger" var="def1ger"/>
-		   	<fmt:message key="cv.layout.name.def2en" var="def2en"/>
-		   	<fmt:message key="cv.layout.name.def2ger" var="def2ger"/>
-		   	<fmt:message key="cv.layout.name.curr" var="curr"/>
-		   	<fmt:message key="cv.layout.name.clear" var="clear"/>
-		      	<div>   
-		      	<c:choose>	
-		      	<c:when test="${command.isGroup}">
-		      		<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN' class='changeLayout' value="${def1en}" />
-		      		<input type="button" data-layout='LAYOUT_G_DEFAULT_I_GER' class='changeLayout' value="${def1ger}" />
-				</c:when>
-				<c:otherwise>
-					<input type="button" data-layout='LAYOUT_DEFAULT_I_EN' class='changeLayout' value="${def1en}" />
-		      		<input type="button" data-layout='LAYOUT_DEFAULT_I_GER' class='changeLayout' value="${def1ger}" />
-		      		<input type="button" data-layout='LAYOUT_DEFAULT_II_EN' class='changeLayout' value="${def2en}" />
-		      		<input type="button" data-layout='LAYOUT_DEFAULT_II_GER' class='changeLayout' value="${def2ger}" />
-				</c:otherwise>
-		      	</c:choose>  	
-		      		<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />
-		      		<input type="button" onclick="return clearCVTextField();" value="${clear}" />
-		      </div>
-		      </fieldset>
-  		  </fieldset>
-  		  <div id='errorField' style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'><p id="errorText"></p></div>
-		<div id='loadingDiv' style='width: 100%;display:none'><img src="${resdir}/image/ajax_loader.gif" alt="wait" /></div>
-		</div>
-		<div id="showAdminField" style="display:none;"><input type="button" value="${show}" id="showAdmin"/></div>
-		</form:form>
-	<!-- /c:if -->
-	
+			<form:form>
+				<div id="fsform">
+					<input type='hidden' name='ckey' id='ckey'
+						value="${fn:escapeXml(command.context.ckey)}" />
+					<fieldset class="fsInner">
+						<div>
+							<div class="fsRow">
+								<div class="fsLabel">
+									<fmt:message key="cv.admin.topic" />
+								</div>
+								<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput"
+									path="wikiText" />
+							</div>
+							<div class="fsRow" style="clear: both;">
+								<fmt:message key="cv.admin.layout" var="layout" />
+								<fmt:message key="cv.admin.preview" var="preview" />
+								<fmt:message key="cv.admin.preview_pub" var="pPrev" />
+								<fmt:message key="cv.admin.save" var="save" />
+								<fmt:message key="cv.admin.hide" var="hide" />
+								<fmt:message key="cv.admin.show" var="show" />
+								<span style="float: right;"> <input type="button"
+									href='#' onclick="return submitWiki('preview');"
+									value="${preview}" /> <input type="button" href='#'
+									onclick="return submitWiki('publicPreview');" value="${pPrev}" />
+									<input type="button" href='#'
+									onclick="return submitWiki('save');" value="${save}" />
+								</span>
+							</div>
+						</div>
+						<fmt:message key="cv.layout.name.def1en" var="def1en" />
+						<fmt:message key="cv.layout.name.def1ger" var="def1ger" />
+						<fmt:message key="cv.layout.name.def2en" var="def2en" />
+						<fmt:message key="cv.layout.name.def2ger" var="def2ger" />
+						<fmt:message key="cv.layout.name.curr" var="curr" />
+						<fmt:message key="cv.layout.name.clear" var="clear" />
+						<div>
+							<c:choose>
+								<c:when test="${command.isGroup}">
+									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN'
+										class='changeLayout' value="${def1en}" />
+									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_GER'
+										class='changeLayout' value="${def1ger}" />
+								</c:when>
+								<c:otherwise>
+									<input type="button" data-layout='LAYOUT_DEFAULT_II_EN'
+										class='changeLayout' value="${def2en}" />
+									<input type="button" data-layout='LAYOUT_DEFAULT_II_GER'
+										class='changeLayout' value="${def2ger}" />
+								</c:otherwise>
+							</c:choose>
+							<input type="button" data-layout='LAYOUT_CURRENT'
+								class='changeLayout' value="${curr}" /> <input type="button"
+								onclick="return clearCVTextField();" value="${clear}" />
+						</div>
+					</fieldset>
+					<div id='errorField'
+						style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'>
+						<p id="errorText"></p>
+					</div>
+					<div id='loadingDiv' style='width: 100%; display: none'>
+						<img src="${resdir}/image/ajax_loader.gif" alt="wait" />
+					</div>
+				</div>
+				<div id="showAdminField" style="display: none;">
+					<input type="button" value="${show}" id="showAdmin" />
+				</div>
+			</form:form>
+
 			<div id="wikiArea">
-			<c:choose>
-				<c:when test="${not empty command.wikiText}">
-					<c:out value="${command.renderedWikiText}" escapeXml="false" />
-				</c:when>
-				<c:otherwise>
-				   	<fmt:message key="cv.layout.user.def1en" var="def1en"/>
-				   	<fmt:message key="cv.layout.user.def1ger" var="def1ger"/>
-					<c:choose>
-						<c:when test="${command.user.settings.defaultLanguage=='de'}">
-							<c:out value="${def1ger}" escapeXml="false" />
-						</c:when>
-						<c:otherwise>
-							<c:out value="${def1en}" escapeXml="false" />
-						</c:otherwise>
-					</c:choose>
-				</c:otherwise>
-			</c:choose>
+				<c:choose>
+					<c:when test="${not empty command.wikiText}">
+						<c:out value="${command.renderedWikiText}" escapeXml="false" />
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="cv.layout.user.def1en" var="def1en" />
+						<fmt:message key="cv.layout.user.def1ger" var="def1ger" />
+						<c:choose>
+							<c:when test="${command.user.settings.defaultLanguage=='de'}">
+								<c:out value="${def1ger}" escapeXml="false" />
+							</c:when>
+							<c:otherwise>
+								<c:out value="${def1en}" escapeXml="false" />
+							</c:otherwise>
+						</c:choose>
+					</c:otherwise>
+				</c:choose>
 			</div>
-			</div>
-			</div>
-	<!--</jsp:attribute>-->
- 
- </jsp:root>
+		</div>
+	</div>
+
+</jsp:root>
