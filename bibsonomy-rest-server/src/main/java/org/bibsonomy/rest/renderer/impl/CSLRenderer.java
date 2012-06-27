@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
 import net.sf.json.JSONSerializer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.layout.csl.CslModelConverter;
 import org.bibsonomy.layout.csl.model.Record;
@@ -30,6 +33,10 @@ import org.bibsonomy.rest.renderer.Renderer;
  * @version $Id$
  */
 public class CSLRenderer implements Renderer {
+	
+	private static final Log LOGGER = LogFactory.getLog(CSLRenderer.class);
+	/** used for sending errors via "error : ..." */
+	public static final String ERROR_MESSAGE_KEY = "error";
 
 	@Override
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
@@ -40,14 +47,13 @@ public class CSLRenderer implements Renderer {
 
 	@Override
 	public void serializePost(final Writer writer, final Post<? extends Resource> post, final ViewModel model) {
-		// TODO implement this
 		final Record record = CslModelConverter.convertPost(post);
 		try {
 			final String string = JSONSerializer.toJSON(record, CslModelConverter.getJsonConfig()).toString();
 			writer.append(string);
 			writer.flush();
 		} catch (final IOException ex) {
-			ex.printStackTrace();
+			LOGGER.error(ex);
 		}
 
 	}
@@ -94,7 +100,15 @@ public class CSLRenderer implements Renderer {
 
 	@Override
 	public void serializeError(final Writer writer, final String errorMessage) {
-		throw new UnsupportedOperationException();
+		final HashMap<String, String> errorMsg = new HashMap<String, String>();
+		errorMsg.put(ERROR_MESSAGE_KEY, errorMessage);
+		try {
+			final String string = JSONSerializer.toJSON(errorMsg, CslModelConverter.getJsonConfig()).toString();
+			writer.append(string);
+			writer.flush();
+		} catch (final IOException ex) {
+			LOGGER.error(ex);
+		}		
 	}
 
 	@Override
