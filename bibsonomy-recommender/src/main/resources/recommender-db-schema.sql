@@ -71,6 +71,7 @@ CREATE TABLE `recommender_status` (
   `setting_id` bigint(20) unsigned NOT NULL,
   `url` varchar(255) default NULL,
   `status` int(1) default NULL,
+  `type` int(1) NOT NULL default '0',
   PRIMARY KEY  (`setting_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
