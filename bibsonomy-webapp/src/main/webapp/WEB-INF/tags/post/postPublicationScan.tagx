@@ -1,0 +1,27 @@
+<jsp:root version="2.0" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+
+    <!-- 
+    	the form for posting using the code scanner on /postPublication
+     -->
+
+	<h2><fmt:message key="post_bibtex.scan.title" /></h2>
+	<div style="max-width:35%;">
+		<parts:qrcode>
+			<jsp:attribute name="errorHeader">
+				<fmt:message key="qrcode.error.errorHeader" />
+			</jsp:attribute>
+					
+			<jsp:attribute name="errorMessage">
+				<fmt:message key="qrcode.error.errorMessage" />
+			</jsp:attribute>
+					
+			<jsp:attribute name="infoMessage">
+				<fmt:message key="qrcode.info.postPublication.readerInfoMessage" />
+			</jsp:attribute>
+		</parts:qrcode>
+	</div>
+	
+</jsp:root>
