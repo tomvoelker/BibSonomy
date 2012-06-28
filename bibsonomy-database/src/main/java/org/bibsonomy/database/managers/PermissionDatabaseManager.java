@@ -410,7 +410,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * FIXME: Why do we need loginUser and relation?
+	 * FIXME: Why do we need relation?
 	 * 
 	 * Checks if a user relationship between the logged-in user and a requested
 	 * user may be created.
@@ -423,7 +423,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 *            TODO
 	 * @param targetUser
 	 *            - the target user
-	 * @return true if everyhing is OK and the relationship may be created
+	 * @return true if everything is OK and the relationship may be created
 	 * 
 	 * 
 	 */
@@ -434,10 +434,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 */
 		if (relation.isInternal()) {
 			if (!present(targetUser.getName())) {
-				throw new ValidationException("Relationship with non-existing user cannot be established.");
+				throw new ValidationException("error.relationship_with_nonexisting_user");
 			}
 			if (UserUtils.isDBLPUser(targetUser)) {
 				throw new ValidationException("error.relationship_with_dblp");
+			}
+			if(loginUser.isSpammer()) {
+				throw new ValidationException("error.relationship_from_spammer");
 			}
 		}
 		return true;
