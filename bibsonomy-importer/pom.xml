@@ -4,11 +4,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-importer</artifactId>
 	<packaging>jar</packaging>
 	<name>BibSonomy-Importer</name>
-	<version>2.0.27-SNAPSHOT</version>
 	<description>Various importers for bookmarks and publications.</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
@@ -31,7 +29,6 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.2</version>
 		</dependency>
 	</dependencies>
 	<build>
