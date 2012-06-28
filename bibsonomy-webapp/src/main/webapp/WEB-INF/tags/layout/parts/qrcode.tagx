@@ -15,13 +15,13 @@
 	<script src="/resources/javascript/swfobject.js" type="text/javascript"><!-- --></script>
 	
 	<script type="text/javascript">
-		
-		var width = $("#sidebox").width();
-		var height = 0.75 * width;
 	
+		function debugOutput (output) {
+			alert(output);
+		}
+		
 		var flashvars = {
-			dynamicWidth: parseInt(width),
-			dynamicHeight: parseInt(height),
+			dynamicURL: document.URL,
 			dynamicErrorHeader: "${errorHeader}",
 			dynamicErrorMessage: "${errorMessage}",
 			dynamicInfoMessage: "${infoMessage}"
@@ -41,13 +41,16 @@
 		
 		swfobject.embedSWF(
 			"/resources/qrcode/QReader.swf", 
-			"qrcode", width, height, "10.0.0", 
+			"qrcode", "100%", "100%", "10.0.0", 
 			"expressInstall.swf", 
 			flashvars, params, attributes);
+		
 	</script>
 	
-	<div id="qrcode" align="center">
-		<h3><a href="http://www.adobe.com/go/getflashplayer"><fmt:message key="qrcode.error.flashMissing"/></a></h3>
+	<div class="qrcode_container">
+		<div id="qrcode" align="center">
+			<h3><a href="http://www.adobe.com/go/getflashplayer"><fmt:message key="qrcode.error.flashMissing"/></a></h3>
+		</div>
 	</div>
 	
 </jsp:root>
