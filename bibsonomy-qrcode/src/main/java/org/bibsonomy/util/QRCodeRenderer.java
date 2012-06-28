@@ -49,7 +49,7 @@ public class QRCodeRenderer {
 		
 		try {
 			manipulatedFilePath = embedderFuture.get(QRCodeEmbedder.WAIT_TIME, TimeUnit.MILLISECONDS);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			
 			/*
 			 * if embedding fails, safely shutdown executor and delete output file

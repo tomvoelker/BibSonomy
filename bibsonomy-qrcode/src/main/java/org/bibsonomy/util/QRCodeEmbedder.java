@@ -37,6 +37,11 @@ import de.intarsys.tools.locator.FileLocator;
 public class QRCodeEmbedder implements Callable<String> {
 	
 	/**
+	 * scale factor for the picture to render from the first pdf page
+	 */
+	private static final int SCALE_FACTOR = 1;
+
+	/**
 	 * maximum wait time -> here 5 seconds
 	 */
 	public static final int WAIT_TIME = 5000;
@@ -93,7 +98,7 @@ public class QRCodeEmbedder implements Callable<String> {
 				/*
 				 * convert to image
 				 */
-				final BufferedImage renderPage = renderPage(pageAt, 1);
+				final BufferedImage renderPage = renderPage(pageAt, SCALE_FACTOR);
 				
 
 				if (renderPage != null) {
