@@ -620,6 +620,20 @@ a img {
 	background-color: #D8EBAE;
 }
 
+.qrcode_container {
+	position: relative;
+	padding-bottom: 75%;
+	height: 0;
+}
+
+#QReader {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
 #sidebar ul {
 	list-style: none;
 	margin: 3px 0;
@@ -2460,20 +2474,6 @@ div.fsRow div.resizable-textarea textarea {
 	display: inline;
 	cursor: pointer;
 	color: #006699;		
-}
-
-.qrcode_container {
-	position: relative;
-	padding-bottom: 75%;
-	height: 0;
-}
-
-#QReader {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
 }
 
 .fsSmall {
