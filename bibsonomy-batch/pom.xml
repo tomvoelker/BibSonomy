@@ -4,9 +4,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>BibSonomy-Batch</name>
-	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-batch</artifactId>
-	<version>2.0.27-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<description>Batch scripts running in the background and supporting BibSonomy.</description>
 	<parent>
