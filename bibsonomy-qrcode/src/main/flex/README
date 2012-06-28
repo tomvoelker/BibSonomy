@@ -4,7 +4,7 @@
 On Mac or Linux:
 
 $ export FLEX_HOME=/specify-full-path-to/flex4_sdk
-(in ~/.bash_profile e.g.)
+(in etc/profile.d/*.sh e.g.)
 
 on Win:
 

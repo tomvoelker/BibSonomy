@@ -1,4 +1,6 @@
 import flash.display.BitmapData;
+import flash.display.StageAlign;
+import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.events.TimerEvent;
 import flash.external.ExternalInterface;
@@ -14,8 +16,9 @@ import flash.text.TextFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.BufferedImageLuminanceSource;
 import com.google.zxing.client.result.ParsedResult;
+import com.google.zxing.client.result.ParsedResultType;
 import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.multi.qrcode.QRCodeMultiReader;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.Result;
 import com.google.zxing.client.result.ResultParser;
 
@@ -33,14 +36,26 @@ import spark.components.HGroup;
 use namespace mx_internal;
 
 /**
- * detection rate. 10Hz in this case.
+ * detection rate. 10Hz in this case
  */
-private const DETECTION_RATE:int = 10;
+private const DETECTION_RATE:int = 2;
+
+/**
+ * constant capture width and height of camera
+ */
+private const CAPTURE_WIDTH:int = 640;
+private const CAPTURE_HEIGHT:int = 480;
+
+/**
+ * chars to remove from cookiename
+ */
+private const FORBIDDEN_CHARS:Array = new Array("~", "/", "%", "&", "\\", ";", ":", "'", ",", "<", ">", "?", "#");
 
 /**		
  * container for camera 
  */
 private var video:Video;
+private var cam:Camera;
 
 /**
  * timer for repetitive calling of qr code recognizing method
@@ -75,19 +90,13 @@ private var channel:SoundChannel;
 /**
  * zxing qr code reader
  */
-private var myReader:QRCodeMultiReader;
+private var myReader:MultiFormatReader;
 
 /**
- * camera width from javascript context
- */
-[Bindable]
-public var camWidth:int;
-
-/**
- * camera height from javascript context
+ * cookie name for site we are currently on
  */		
 [Bindable]
-public var camHeight:int;
+public var cookieName:String;
 
 /**
  * error header from javascript context
@@ -107,36 +116,111 @@ public var errorMessage:String;
 [Bindable]
 public var infoMessage:String;
 
+/**
+ * method to be called after resize event happened
+ */
+private function onStageResize(e:Event):void {
+	
+	/*
+	 * resize video element
+	 */
+	if(video != null) {
+		
+		theCam.removeChild(video);
+		
+		video = new Video(stage.stageWidth, stage.stageHeight);
+		video.attachCamera(cam);
+		
+		/*
+		 * mirror the camera picture
+		 */
+		var matrix:Matrix = new Matrix();
+		matrix.a = -1;
+		matrix.tx = video.width;
+		video.transform.matrix = matrix;
+		
+		/*
+		 * add camera picture to stage
+		 */
+		theCam.addChild(video);
+	}
+	
+	/*
+	 * resize error message
+	 */
+	if(errorWindow != null) {
+        errorWindow.explicitWidth = stage.stageWidth * 0.9;
+        errorWindow.explicitHeight = stage.stageHeight * 0.9;
+        
+        if(errorLabel != null) {
+        	errorLabel.explicitWidth = infoWindow.explicitWidth * 0.95;
+        }
+	}
+	
+	/*
+	 * resize info message
+	 */
+	if(infoWindow != null) {
+        infoWindow.explicitWidth = stage.stageWidth * 0.9;
+        infoWindow.explicitHeight = stage.stageHeight * 0.9;
+
+        if(infoLabel != null) {
+        	infoLabel.explicitWidth = infoWindow.explicitWidth * 0.95;
+        }
+	}
+}
 
 /**		
  * entry point for initialization of entities
  */
-private function init():void {	
+private final function init():void {	
+	
+	/*
+	 * set stage behaviour
+	 */
+	stage.align = StageAlign.TOP_LEFT;
+	stage.scaleMode = StageScaleMode.EXACT_FIT;
+	
+	/*
+	 * add listener for resize event
+	 */
+	stage.addEventListener(Event.RESIZE, onStageResize);
+	
+	/*
+	 * this has to be done once, so that a first resize event will be fired
+	 */
+	stage.scaleMode = StageScaleMode.NO_SCALE;
 	
 	/*
 	 * get javascript variables
 	 */
-	camWidth = FlexGlobals.topLevelApplication.parameters.dynamicWidth;
-	camHeight = FlexGlobals.topLevelApplication.parameters.dynamicHeight;
+	cookieName = FlexGlobals.topLevelApplication.parameters.dynamicURL;	
 	errorHeader = FlexGlobals.topLevelApplication.parameters.dynamicErrorHeader;
 	errorMessage = FlexGlobals.topLevelApplication.parameters.dynamicErrorMessage;
 	infoMessage = FlexGlobals.topLevelApplication.parameters.dynamicInfoMessage;
 	
 	/*
+	 * remove forbidden chars from cookiename
+	 */
+	for(var forbiddenChar:String in FORBIDDEN_CHARS) {
+		cookieName = cookieName.split(FORBIDDEN_CHARS[forbiddenChar]).join("");
+	}
+	
+	/*
 	 * initialize the webcam
 	 */ 			
-	var cam:Camera = Camera.getCamera();
+	cam = Camera.getCamera();
 	
-	myReader = new QRCodeMultiReader();
+	myReader = new MultiFormatReader();
 			
 	if(cam != null) {		
 		
 		/*		
 		 * set camera mode
 		 */
-		cam.setMode(camWidth,camHeight,25);
+		cam.setMode(CAPTURE_WIDTH, CAPTURE_HEIGHT, 25);
 		
-		video = new Video(cam.width, cam.height);
+		video = new Video(stage.stageWidth, stage.stageHeight);
 		video.attachCamera(cam);
 		
 		/*
@@ -155,21 +239,19 @@ private function init():void {
 		/*
 		 * check whether user has visited site for first time
 		 */
-		var cookie:SharedObject = SharedObject.getLocal('bibsonomyClipboardQReader', null, false);
-
+		var cookie:SharedObject = SharedObject.getLocal(cookieName, null, false);
 		
 		if(cookie.size == 0) {
 			cookie.data.firstVisit = true;
 			displayInfoMessage();
+		} else {
+			/*
+			 * initialize the refresh timer
+			 */
+			refreshTimer = new Timer(1000/DETECTION_RATE);
+			refreshTimer.addEventListener(TimerEvent.TIMER, decodeSnapshot);
+			refreshTimer.start();
 		}
-		
-		/*
-		 * initialize the refresh timer
-		 */
-		refreshTimer = new Timer(1000/DETECTION_RATE);
-		refreshTimer.addEventListener(TimerEvent.TIMER, decodeSnapshot);
-		refreshTimer.start();
-		
 	} else {
 		
 		/*
@@ -185,7 +267,7 @@ private function init():void {
  * gets the unmirrored picture of the camera and calls the decode method.
  * is called periodically from timer context.
  */
-private function decodeSnapshot(evt:TimerEvent):void {
+private final function decodeSnapshot(evt:TimerEvent):void {
 	
 	/*
 	 * temp store of video matrix
@@ -217,7 +299,7 @@ private function decodeSnapshot(evt:TimerEvent):void {
  * decodes the given bitmap data and tries to find a qr code
  * to decode
  */
-public function decodeBitmapData(bmpd:BitmapData, width:int, height:int):void {
+public final function decodeBitmapData(bmpd:BitmapData, width:int, height:int):void {
 	
 	/*
 	 * create the container to store the image width and height in
@@ -245,16 +327,21 @@ public function decodeBitmapData(bmpd:BitmapData, width:int, height:int):void {
 			 * parse the result
 			 */
 			var parsedResult:ParsedResult = ResultParser.parseResult(res);
-			
+		
 			/*
 			 * regex for a valid bibsonomy, biblicious, puma url
 			 */
 			var regex:RegExp = /^(((ht|f)tp(s?))\:\/\/)?(www.|[a-zA-Z].)[a-zA-Z0-9\-]+(\b|\.org)(\:[0-9]+)*\/+bibtex\/[a-fA-F0-9]{32,33}\/[a-zA-z0-9]+$/;
 			
 			/*
-			 * is found url valid?
+			 * check if info is isbn
 			 */
-			if (regex.test( parsedResult.getDisplayResult())) {
+			var isISBN:Boolean = (parsedResult.getType() == ParsedResultType.ISBN);
+			
+			/*
+			 * is found url valid or is it an isbn?
+			 */
+			if (regex.test( parsedResult.getDisplayResult()) || isISBN) {
 				
 				/*
 				 * stop refresh timer
@@ -270,13 +357,13 @@ public function decodeBitmapData(bmpd:BitmapData, width:int, height:int):void {
 					 * call javascript method
 					 */			
 					if (ExternalInterface.available) {
-						ExternalInterface.call("urlFromFlash",  parsedResult.getDisplayResult());
+						ExternalInterface.call("urlFromFlash",  parsedResult.getDisplayResult(), parsedResult.getType().toString());
 					}
 					
 					/*	
 					 * get bitmapdata
 					 */
-					var picture:BitmapData = new BitmapData(theCam.width, theCam.height);
+					var picture:BitmapData = new BitmapData(width, height);
 				
 					/*
 					 * draw it from stage
@@ -329,7 +416,7 @@ public function decodeBitmapData(bmpd:BitmapData, width:int, height:int):void {
  * restart method to disable still image and restart decoding
  * process
  */
-private function restart(evt:TimerEvent):void {
+private final function restart(evt:TimerEvent):void {
 	
 	previewBox.visible = false;
 	refreshTimer.start();
@@ -338,14 +425,14 @@ private function restart(evt:TimerEvent):void {
 /**		
  * method to stop the sound effects
  */
-private function stopSnap(evt:Event):void {
+private final function stopSnap(evt:Event):void {
 	channel.stop();
 }
 
 /**
  * method to display the error window
  */
-private function displayErrorMessage():void {
+private final function displayErrorMessage():void {
 	
 	/*
 	 * create new window and disable close button.
@@ -356,8 +443,9 @@ private function displayErrorMessage():void {
 	errorWindow = new TitleWindow();
 	errorWindow.title = errorHeader;
 	errorWindow.showCloseButton = false;
-	errorWindow.explicitWidth = camWidth * 0.9;
-	errorWindow.explicitHeight = camHeight * 0.9;
+	errorWindow.explicitWidth = stage.stageWidth * 0.9;
+	errorWindow.explicitHeight = stage.stageHeight * 0.9;
+	
 	errorWindow.horizontalScrollPolicy = "off";
 	errorWindow.verticalScrollPolicy = "off";
 	
@@ -381,13 +469,12 @@ private function displayErrorMessage():void {
 	errorWindow.addChild(errorLabel);
 				
 	PopUpManager.addPopUp(errorWindow, this, true);
-	PopUpManager.centerPopUp(errorWindow);
 }
 
 /**
  * method to resize text of error window
  */
-private function resizeErrorLabel(evt:FlexEvent):void {
+private final function resizeErrorLabel(evt:FlexEvent):void {
 	
 	/*
 	 * update error window properties
@@ -416,31 +503,33 @@ private function resizeErrorLabel(evt:FlexEvent):void {
 		}
 	}
 	
+	PopUpManager.centerPopUp(errorWindow);
 }
 
 /**
  * method to disable window movement
  */
-private function createErrorMessage(evt:FlexEvent):void {
+private final function createErrorMessage(evt:FlexEvent):void {
 	errorWindow.isPopUp = false;
 }
 
 /**
  * method to display the info window
  */
-private function displayInfoMessage():void {
+private final function displayInfoMessage():void {
 	
 	/*
 	 * create new window and disable close button.
 	 * gets error header and message from javascript context.
 	 * takes 90% of the screen and disables vertical and horizontal scrolling.
 	 * is added as a popup.
-	 */				
+	 */
 	infoWindow = new TitleWindow();
 	infoWindow.title = "Information";
 	infoWindow.showCloseButton = true;
-	infoWindow.explicitWidth = camWidth * 0.9;
-	infoWindow.explicitHeight = camHeight * 0.9;
+	infoWindow.explicitWidth = stage.width * 0.9;
+	infoWindow.explicitHeight = stage.height * 0.9;
+	
 	infoWindow.horizontalScrollPolicy = "off";
 	infoWindow.verticalScrollPolicy = "off";
 	
@@ -465,13 +554,12 @@ private function displayInfoMessage():void {
 	infoWindow.addChild(infoLabel);
 				
 	PopUpManager.addPopUp(infoWindow, this, true);
-	PopUpManager.centerPopUp(infoWindow);
 }
 
 /**
  * method to resize text of info window
  */
-private function resizeInfoLabel(evt:FlexEvent):void {
+private final function resizeInfoLabel(evt:FlexEvent):void {
 	
 	/*
 	 * update error window properties
@@ -500,18 +588,26 @@ private function resizeInfoLabel(evt:FlexEvent):void {
 		}
 	}
 	
+	PopUpManager.centerPopUp(infoWindow);	
 }
 
 /**
  * method to disable window movement
  */
-private function createInfoMessage(evt:FlexEvent):void {
+private final function createInfoMessage(evt:FlexEvent):void {
 	infoWindow.isPopUp = false;
 }
 
 /**
  * method to remove info message
  */
-private function closeInfoMessage(evt:CloseEvent):void {
+private final function closeInfoMessage(evt:CloseEvent):void {
 	PopUpManager.removePopUp(infoWindow);
+	
+	/*
+	 * initialize the refresh timer
+	 */
+	refreshTimer = new Timer(1000/DETECTION_RATE);
+	refreshTimer.addEventListener(TimerEvent.TIMER, decodeSnapshot);
+	refreshTimer.start();
 }

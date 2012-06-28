@@ -59,7 +59,7 @@ public class SquareFinder {
 		int[][] counts = new int[nrOfRows][nrOfCols];
 
 		for(int i = 0; i < nrOfRows; i++) {
-			for(int j = nrOfCols-1; j >= 0; j--) {	
+			for(int j = nrOfCols-1; j >= nrOfCols / 10; j--) {	
 				/*
 				 * check for color
 				 */
