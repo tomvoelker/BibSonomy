@@ -32,7 +32,7 @@
 			scale: "exactfit",
 			allowFullscreen: "false",
 			allowScriptAccess: "samedomain",
-			wmode: "direct" 
+			wmode: "transparent" 
 		};
 		
 		var attributes = {
