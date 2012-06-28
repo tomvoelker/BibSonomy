@@ -82,8 +82,11 @@ function handleUserRelation(actionString, userName, relationName, callback, elem
 		type: "POST",  
 		url: "/ajax/handleUserRelation",  
 		data: "requestedUserName="+ encodeURIComponent(userName) + actionString + "&ckey=" + ckey,
-		complete: function success(data) {
+		success: function success(data) {
 			callback(relationName, element, action, data);
+		},
+		error: function(jqXHR, data, errorThrown) {
+			alert(jQuery.parseJSON(jqXHR.responseText).globalErrors[0].message);
 		}
 	});
 }
