@@ -202,7 +202,10 @@
 
 	<!-- get all users u, which have user in their friend list (user, u)\in FRIEND_OF-->
 	<select id="getRelation_FRIEND_OF" resultMap="UserCommon.userWithTags"	parameterClass="userParam">
-		SELECT user_name, tag_name FROM friends WHERE f_user_name = #userName# <include refid="matchTaggedRelation"/>
+		SELECT user_name, tag_name
+		FROM friends 
+		JOIN user USING (user_name) 
+		WHERE f_user_name = #userName# AND user.spammer = 0<include refid="matchTaggedRelation"/>
 	</select>
 	
 	<!-- get all users, which user has in his friend list (user, u)\in OF_FRIEND-->
