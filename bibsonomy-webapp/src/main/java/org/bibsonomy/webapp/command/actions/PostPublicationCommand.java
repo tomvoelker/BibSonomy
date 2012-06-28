@@ -38,7 +38,8 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		"post_bibtex.manual.title", 
 		"post_bibtex.pub_snippet.title", 
 		"post_bibtex.upload.title", 
-		"post_bibtex.doi_isbn.title"
+		"post_bibtex.doi_isbn.title",
+		"post_bibtex.scan.title"
 	};
 	
 	/**

@@ -64,6 +64,13 @@
 					 -->
 					<post:postPublicationID/>
 				</c:when>
+				
+				<c:when test="${command.selTab == 4}">
+					<!-- 
+						automatically by scanned codes (ISBN/QR)
+					 -->
+					<post:postPublicationScan/>
+				</c:when>
 			</c:choose>
 			
 			<!-- 
