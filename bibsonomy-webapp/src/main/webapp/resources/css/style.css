@@ -2462,6 +2462,20 @@ div.fsRow div.resizable-textarea textarea {
 	color: #006699;		
 }
 
+.qrcode_container {
+	position: relative;
+	padding-bottom: 75%;
+	height: 0;
+}
+
+#QReader {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
 .fsSmall {
   max-width: 15em;
 }

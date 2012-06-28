@@ -125,61 +125,114 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 }
 
 /**
- * Adds read entry from qr reader app to the basket.
+ * Method to delegate processing of codes depending on code type.
+ * 
+ * @param text The code.
+ * @param type The code type.
+ */
+function urlFromFlash(text, type) {
+	
+	//alert(text);
+	
+	if(type == "ISBN") {
+		processISBN(text)
+	} else if( type == "URI" ) {
+		alert("here");
+		processQRCode(text);
+	}
+}
+
+/**
+ * Reads ISBN from reader app and automatically posts publication.
+ * 
+ * @param text The ISBN
+ */
+function processISBN(text) {
+	
+	/*
+	 * check that we are on post publication site
+	 */
+	if(document.URL.indexOf("/postPublication") != -1) {
+		document.location.href = "/editPublication?selection=" + text;
+	}
+}
+
+/**
+ * Adds read entry from reader app to the basket or to post it automatically.
  * Entry is only added if it has a pick link. Afterwards the pick link is clicked.
  * Entry is pulled via ajax one more time to get the actual entry with unpick link.
  * 
  * @param text The query link.
  */
-function urlFromFlash(text) {
+function processQRCode(text) {
 	
 	var query = text.substring(text.indexOf("/bibtex"));
 	
-	$.ajax({
-		url : "/posts" + query,
-		dataType : "html",
-		success : function(data) {
-			
-			var found = false;
-			
-			if($(data).find('a').is('.unpick'))
-			{
-				found = true;
-			}
-			
-			if(!found) {
+	/*
+	 * check that we are on post publication site
+	 */
+	if(document.URL.indexOf("/postPublication") != -1) {
+		
+		var split = query.split("/");
+		
+		alert(split);
+		
+		/*
+		 * get second to the last and last entry of split URL.
+		 * should be hash and user.
+		 */
+		document.location.href = "/editPublication?hash=" + split[split.length - 2] + "&user=" + split[split.length - 1];
+	
+	/*
+	 * we should be on clipboard site
+	 */
+	} else {
+		$.ajax({
+			url : "/posts" + query,
+			dataType : "html",
+			success : function(data) {
 				
-				$(data).find('a.pick').click();
-				$(document).ajaxStop(function() {
-
-					$.ajax({
-						url : "/posts" + query,
-						dataType : "html",
-						success : function(actData) {
-							
-							/*
-							 * remove no entry message
-							 */
-							$('span.post, span.none').remove();
-							
-							$("#publications_0 ul.posts").prepend($(actData));
-							
-							/*
-							 * FIXME: does this really always work? 
-							 * What about posts that have already been prepared?
-							 * Are there any methods missing?
-							 */
-							$(".editTags").click(editTags);
-							imagePreview();
-						}
+				var found = false;
+				
+				if($(data).find('a').is('.unpick')) {
+					found = true;
+				}
+				
+				if(!found) {
+					
+					$(data).find('a.pick').click();
+					$(document).ajaxStop(function() {
+	
+						$.ajax({
+							url : "/posts" + query,
+							dataType : "html",
+							success : function(actData) {
+								
+								/*
+								 * remove no entry message
+								 */
+								$('span.post, span.none').remove();
+								
+								$("#publications_0 ul.posts").prepend($(actData));
+								
+								/*
+								 * FIXME: does this really always work? 
+								 * What about posts that have already been prepared?
+								 * Are there any methods missing?
+								 */
+								$(".editTags").click(editTags);
+								imagePreview();
+							}
+						});
+						$(this).unbind('ajaxStop');
 					});
-					$(this).unbind('ajaxStop');
-				});
-
+	
+				}
 			}
-		}
-	});	
+		});	
+	}
 }
+
 
 /**
  * Retrieves the posts for the given query and appends them to the given list. 

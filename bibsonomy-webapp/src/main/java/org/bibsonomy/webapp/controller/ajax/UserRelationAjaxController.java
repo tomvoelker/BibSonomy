@@ -88,7 +88,7 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 			}
 		} catch (org.bibsonomy.common.exceptions.ValidationException e) {
 			log.error("Error establishing a connection for '"+command.getContext().getLoginUser().getName()+"' to user '"+command.getRequestedUserName()+"': " + e.getMessage());
-			this.errors.reject("error.user.relation.update");
+			this.errors.reject(e.getMessage());
 		}
 		
 		// return error messages in case of errors
