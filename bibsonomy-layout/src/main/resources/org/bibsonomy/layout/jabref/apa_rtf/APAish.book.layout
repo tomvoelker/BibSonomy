@@ -13,12 +13,7 @@
 \format[RTFChars]{\publisher}
 \end{publisher}. }
 {\begin{isbn}
- (ISBN: \format[RTFChars]{\isbn}.) 
-\end{isbn}
-\begin{url}
- Retrieved 
-\format[RTFChars]{\lastchecked} 
-from \format[RTFChars]{\url}. 
-\end{url}}{
+ISBN: \format[RTFChars]{\isbn} 
+\end{isbn}}{
 \\par
 \\par

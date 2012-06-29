@@ -1,7 +1,7 @@
 \format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,RTFChars]{\author}
  (\year). }{
 {\\i \format[RTFChars]{\title}}
- (\type \number). 
+ (\type\number). 
 \begin{organization}
 \organization
 \end{organization}
@@ -14,10 +14,5 @@
 \begin{note}
  (\note) 
 \end{note}}{
-\begin{url}
- Retrieved 
-\format[RTFChars]{\lastchecked} 
-from \format[RTFChars]{\url}. 
-\end{url}}{
 \\par
 \\par

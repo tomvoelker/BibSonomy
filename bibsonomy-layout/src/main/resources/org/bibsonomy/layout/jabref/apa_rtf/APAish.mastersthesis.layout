@@ -1,16 +1,11 @@
 \format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\year). 
-{\\i \format[RTFChars]{\title}.}
+{\\i \format[RTFChars]{\title}.} 
 \begin{type}
 \format[RTFChars]{\type}
 \end{type}
 Unpublished master's thesis
 \begin{school}
 , \school
-\end{school}. }{
-\begin{url}
- Retrieved 
-\format[RTFChars]{\lastchecked} 
-from \format[RTFChars]{\url}. 
-\end{url}}{
+\end{school}.}{
 \\par
 \\par

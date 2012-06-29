@@ -11,12 +11,7 @@
 , \pages
 \end{pages}. }{
 \begin{doi}
- (Doi: \format[RTFChars]{\doi}.) 
-\end{doi}
-\begin{url}
- Retrieved 
-\format[RTFChars]{\lastchecked} 
-from \format[RTFChars]{\url}. 
-\end{url}}{
+ doi: \format[RTFChars]{\doi}
+\end{doi}}{
 \\par
 \\par

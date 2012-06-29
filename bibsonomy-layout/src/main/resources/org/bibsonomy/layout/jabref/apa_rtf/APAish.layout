@@ -25,21 +25,16 @@
 (Technical report, \institution) 
 \end{institution}
 \begin{publisher}
-\format[RTFChars]{\publisher}.  
-\end{publisher} 
+\format[RTFChars]{\publisher}. 
+\end{publisher}
 \begin{howpublished}
 \howpublished . 
 \end{howpublished}
 \begin{note}
-(\note) 
+(\note)
 \end{note}
 \begin{pages}
 , \pages .
-\end{pages} 
-\begin{url}
-Retrieved 
-\format[RTFChars]{\lastchecked} 
-from \format[RTFChars]{\url}. 
-\end{url}
+\end{pages}
 \\par
 \\par

@@ -1,15 +1,15 @@
 \begin{author}
 \format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
-\end{author} 
+\end{author}
  (\year). 
 }{\format[RTFChars]{\title}. }{
 In 
 \begin{editor}
-\format[RTFChars,AuthorFirstAbbrLastCommas,AuthorAndsReplacer]{\editor} (ed.),
+\format[RTFChars,AuthorFirstAbbrLastCommas,AuthorAndsReplacer]{\editor} (ed.), 
 \end{editor}
 }{\\i \format[RTFChars]{\booktitle}
 \begin{volume}
-, Vol. \volume
+, Vol. \volume 
 \end{volume}}{
 \begin{pages}
  (pp. \pages)
@@ -18,12 +18,7 @@ In
 \format[RTFChars]{\publisher}
 \end{publisher}. }{
 \begin{isbn}
- (ISBN: \format[RTFChars]{\isbn}.) 
-\end{isbn}
-\begin{url}
- Retrieved 
-\format[RTFChars]{\lastchecked} 
-from \format[RTFChars]{\url}. 
-\end{url}}{
+ISBN: \format[RTFChars]{\isbn} 
+\end{isbn}}{
 \\par
 \\par
