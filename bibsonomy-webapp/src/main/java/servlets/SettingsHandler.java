@@ -14,15 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,7 +31,7 @@ import filters.ActionValidationFilter;
  * @author Serak
  */
 @Deprecated
-public class SettingsHandler extends HttpServlet{
+public class SettingsHandler extends AbstractServlet {
 	private static final Log log = LogFactory.getLog(SettingsHandler.class);
 
 	private static final String SETTINGS_URL = "/settings";
@@ -45,23 +39,9 @@ public class SettingsHandler extends HttpServlet{
 	private static final long serialVersionUID = 4051324539558769200L;
 	private static final int SQL_CONST_GROUP_PRIVATE = 1; // private group id
 	
-	private DataSource dataSource;
-
-	@Override
-	public void init(final ServletConfig config) throws ServletException{	
-		super.init(config); 
-		try{
-			final Context initContext = new InitialContext();
-			final Context envContext = (Context) initContext.lookup("java:/comp/env");
-			dataSource = (DataSource) envContext.lookup("jdbc/bibsonomy");
-		} catch (final NamingException ex) {
-			throw new ServletException("Cannot retrieve java:/comp/env/bibsonomy",ex);
-		}
-	}
-
 	@Override
 	public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-		doPost(request, response);
+		this.doPost(request, response);
 	}
 
 	@Override
@@ -88,9 +68,9 @@ public class SettingsHandler extends HttpServlet{
 		}
 
 		try {
-			synchronized(dataSource) {
-				if (dataSource != null){
-					conn = dataSource.getConnection();
+			synchronized(this.dataSource) {
+				if (this.dataSource != null){
+					conn = this.dataSource.getConnection();
 				} else {
 					throw new Exception("No Datasource");
 				}
@@ -98,7 +78,7 @@ public class SettingsHandler extends HttpServlet{
 			try {
 				conn.setAutoCommit(false);    // deactivate auto-commit to enable transaction
 				final String userToDelete = request.getParameter("del_group_user");
-				if (userToDelete != null && !userToDelete.equalsIgnoreCase(currUser)) {
+				if ((userToDelete != null) && !userToDelete.equalsIgnoreCase(currUser)) {
 					// check, if user is owner of group and get groupid 
 					stmtP = conn.prepareStatement("SELECT i.group FROM groups g, groupids i WHERE g.user_name = ? AND i.group_name = ? AND g.group = i.group");
 					stmtP.setString(1, currUser);
@@ -175,7 +155,7 @@ public class SettingsHandler extends HttpServlet{
 			} catch (final SQLException e) {
 				conn.rollback();     // rollback all queries
 				log.fatal("Could not change settings for user " + currUser + ".", e);
-				getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
+				this.getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
 			}       
 		} catch (final Exception e) {
 			log.fatal(e);
