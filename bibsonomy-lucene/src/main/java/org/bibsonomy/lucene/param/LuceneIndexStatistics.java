@@ -17,7 +17,13 @@ public class LuceneIndexStatistics {
 	private Date lastModified;
 	private long currentVersion = 0;
 	private boolean isCurrent = true;
+	private int indexId;
 	
+	public LuceneIndexStatistics() {
+		this.indexId = -1;
+	}
+
+
 	/**
 	 * @return the currentVersion
 	 */
@@ -100,5 +106,14 @@ public class LuceneIndexStatistics {
 	 */
 	public void setCurrent(final boolean isCurrent) {
 		this.isCurrent = isCurrent;
+	}
+
+	public void setIndexId(int indexId) {
+		this.indexId = indexId;
+		
 	}	
+	
+	public int getIndexId() {
+		return indexId;
+	}
 }
