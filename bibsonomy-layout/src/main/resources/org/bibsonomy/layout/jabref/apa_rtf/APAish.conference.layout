@@ -5,7 +5,7 @@
 }{\format[RTFChars]{\title}. }{
 In 
 \begin{editor}
-\format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}
+\format[RTFChars,AuthorFirstFirstAbbrCommas,AuthorAndsReplacer]{\editor}
  (ed.), 
 \end{editor}
 {\\i \format[RTFChars]{\booktitle}
@@ -16,15 +16,10 @@ In
  (pp. \pages)
 \end{pages}. 
 \begin{publisher}
-\format[RTFChars]{\publisher}
-\end{publisher}. }{
+\format[RTFChars]{\publisher}.
+\end{publisher}}{
 \begin{isbn}
- (ISBN: \format[RTFChars]{\isbn}.) 
-\end{isbn}
-\begin{url}
- Retrieved 
-\format[RTFChars]{\lastchecked} 
-from \format[RTFChars]{\url}. 
-\end{url}}{
+ISBN: \format[RTFChars]{\isbn}
+\end{isbn}}{
 \\par
 \\par
