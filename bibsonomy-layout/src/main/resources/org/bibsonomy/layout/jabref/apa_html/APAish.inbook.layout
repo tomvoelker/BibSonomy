@@ -18,12 +18,7 @@ In
 \format[HTMLChars]{\publisher}
 \end{publisher}. 
 \begin{isbn}
- (ISBN: \format[HTMLChars]{\isbn}.) 
+ISBN: \format[HTMLChars]{\isbn}
 \end{isbn}
-\begin{url}
- Retrieved 
-\format[HTMLChars]{\lastchecked} 
-from \format[HTMLChars]{\url}. 
-\end{url}
 <br/>
 <br/>

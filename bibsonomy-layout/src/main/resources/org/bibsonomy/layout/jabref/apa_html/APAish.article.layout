@@ -1,8 +1,8 @@
 \format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
  (\year). 
-\format[HTMLChars]{\title}. <i> \format[HTMLChars]{\journal}</i>
+\format[HTMLChars]{\title}. <i>\format[HTMLChars]{\journal}</i>
 \begin{volume}
- <b> \volume</b>
+<b> \volume</b>
 \end{volume}
 \begin{number}
  (\number)
@@ -11,12 +11,7 @@
 , \pages
 \end{pages}. 
 \begin{doi}
- (Doi: \format[HTMLChars]{\doi}.) 
+ doi: \format[HTMLChars]{\doi}
 \end{doi}
-\begin{url}
- Retrieved 
-\format[HTMLChars]{\lastchecked} 
-from \format[HTMLChars]{\url}. 
-\end{url}
 <br/>
 <br/>

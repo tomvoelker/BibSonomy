@@ -1,15 +1,15 @@
 \begin{author}
 \format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
-\end{author} 
+\end{author}
  (\year). 
 \format[HTMLChars]{\title}. 
 In 
 \begin{editor}
-\format[HTMLChars,AuthorFirstAbbrLastCommas,AuthorAndsReplacer]{\editor} (ed.),
+\format[HTMLChars,AuthorFirstAbbrLastCommas,AuthorAndsReplacer]{\editor} (ed.), 
 \end{editor}
 <i> \format[HTMLChars]{\booktitle}</i>
 \begin{volume}
-, Vol. \volume
+, Vol. \volume 
 \end{volume}
 \begin{pages}
  (pp. \pages)
@@ -18,12 +18,7 @@ In
 \format[HTMLChars]{\publisher}
 \end{publisher}. 
 \begin{isbn}
- (ISBN: \format[HTMLChars]{\isbn}.) 
+ISBN: \format[HTMLChars]{\isbn} 
 \end{isbn}
-\begin{url}
- Retrieved 
-\format[HTMLChars]{\lastchecked} 
-from \format[HTMLChars]{\url}. 
-\end{url}
 <br/>
 <br/>
