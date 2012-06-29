@@ -67,11 +67,6 @@ public class SyncPageController implements MinimalisticController<AjaxSynchroniz
 			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
-		// TODO: remove?
-//		if (!context.isValidCkey()) {
-//			this.errors.reject("error.field.valid.ckey");
-//		}
-
 		if (!present(syncClient)) {
 			errors.reject("error.synchronization.noclient");
 			return Views.ERROR;
