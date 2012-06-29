@@ -89,6 +89,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		// Allow only one index-generation at a time.
 		if (this.isRunning) return;
 		
+		
 		this.isRunning = true;
 		
 		// delete the old index, if exists
@@ -266,5 +267,9 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	 */
 	public void setResourceIndex(final LuceneResourceIndex<R> resourceIndex) {
 		this.resourceIndex = resourceIndex;
+	}
+
+	public int getGeneratingIndexId() {
+		return resourceIndex.getIndexId();
 	}
 }
