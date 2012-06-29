@@ -326,8 +326,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			this.setLuceneUpdaterEnabled(false);
 			LuceneResourceIndex<R> indexToGenerate = null;
 			for (LuceneResourceIndex<R> index : this.getResourceIndeces()) {
-				if (index.getStatistics().getIndexId() == id) {
+				if (index.getIndexId() == id) {
 					indexToGenerate = index;
+					break;
 				}
 			}
 			if (activeIndex.getStatistics().getIndexId() == id) {
@@ -355,7 +356,8 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 					generator.run();
 				}
 			} else {
-				log.error("There was no index with id " + id + " found.");
+				log.warn("There was no index with id " + id + " found.");
+			
 				this.generatingIndex = false;
 				/* Should it be created? */
 			}

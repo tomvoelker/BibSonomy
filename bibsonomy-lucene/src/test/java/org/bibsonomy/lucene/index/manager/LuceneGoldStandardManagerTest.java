@@ -67,7 +67,10 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		initDatabase();
 		
 		// create index
-		manager.generateIndex(false);
+		for (int i = 0; i < manager.getIndicesInfos().size(); ++i) {
+			manager.regenerateIndex(i, false);	
+		}
+		
     }
     
     @Test
