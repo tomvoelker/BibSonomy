@@ -37,6 +37,7 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -309,7 +310,9 @@ public final class RestServlet extends HttpServlet {
 				}
 			}
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage.toString());
-
+		} catch (final UnsupportedMediaTypeException e) {
+			log.error(e.getMessage());
+			sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
 		} catch (final Exception e) {
 			log.error(e, e);
 			// well, lets fetch each and every error...
