@@ -4,11 +4,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-scraper</artifactId>
 	<packaging>jar</packaging>
 	<name>BibSonomy-Scraper</name>
-	<version>2.0.27-SNAPSHOT</version>
 	<description>
 		Web page scrapers returning BibTeX for BibSonomy.
 	</description>
@@ -63,18 +61,6 @@
 						<exclude>src/test/resources/**</exclude>
 						<exclude>src/main/java/edu/**</exclude>
 					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0</version>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-					<compilerArguments>
-						<encoding>UTF-8</encoding>
-					</compilerArguments>
 				</configuration>
 			</plugin>
 			<plugin>
