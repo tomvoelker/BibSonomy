@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -108,26 +107,26 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 	}
 
 	@Override
-	public View workOn(OAuthCommand command) {
+	public View workOn(final OAuthCommand command) {
 		if (!present(this.getDataStore())) {
 			throw new RuntimeException("OAuth not enables.");
 		}
 
 		// retrieve the log in user
-		User loginUser = AuthenticationUtils.getUser();
+		final User loginUser = command.getContext().getLoginUser();
 
 		// dispatch
 		View view = null;
 		try {
-			view = doWorkOn(command, loginUser);
-		} catch (IOException e) {
-			throw new RuntimeException("Error processing OAuth request '"+getRequestAction()+"'", e);
-		} catch (OAuthException e) {
+			view = this.doWorkOn(command, loginUser);
+		} catch (final IOException e) {
+			throw new RuntimeException("Error processing OAuth request '"+this.getRequestAction()+"'", e);
+		} catch (final OAuthException e) {
 			this.handleException(e);
 			command.setResponseString(e.getMessage());
 			return Views.OAUTH_RESPONSE;
-		} catch (URISyntaxException e) {
-			throw new RuntimeException("Error processing OAuth request '"+getRequestAction()+"'", e);
+		} catch (final URISyntaxException e) {
+			throw new RuntimeException("Error processing OAuth request '"+this.getRequestAction()+"'", e);
 		}
 		if (!present(view) ){
 			throw new RuntimeException("Invalid OAuth action requested");
@@ -171,9 +170,9 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 	 * @throws OAuthException
 	 * @throws URISyntaxException
 	 */
-	protected OAuthEntry getValidatedEntry(OAuthMessage requestMessage) throws IOException, OAuthException, URISyntaxException {
+	protected OAuthEntry getValidatedEntry(final OAuthMessage requestMessage) throws IOException, OAuthException, URISyntaxException {
 
-		OAuthEntry entry = getDataStore().getEntry(requestMessage.getToken());
+		final OAuthEntry entry = this.getDataStore().getEntry(requestMessage.getToken());
 		if (!present(entry)) {
 			throw new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
 		}
@@ -190,24 +189,24 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 		// find consumer key, compare with supplied value, if present.
 
 		if  (!present(requestMessage.getConsumerKey())) {
-			OAuthProblemException e = new OAuthProblemException(OAuth.Problems.PARAMETER_ABSENT);
+			final OAuthProblemException e = new OAuthProblemException(OAuth.Problems.PARAMETER_ABSENT);
 			e.setParameter(OAuth.Problems.OAUTH_PARAMETERS_ABSENT, OAuth.OAUTH_CONSUMER_KEY);
 			throw e;
 		}
 
 		// check whether the shared secrect between the client and the server match
-		String consumerKey = entry.getConsumerKey();
+		final String consumerKey = entry.getConsumerKey();
 		if (!consumerKey.equals(requestMessage.getConsumerKey())) {
 			throw new OAuthProblemException(OAuth.Problems.CONSUMER_KEY_REFUSED);
 		}
 
-		OAuthConsumer consumer = getDataStore().getConsumer(consumerKey);
+		final OAuthConsumer consumer = this.getDataStore().getConsumer(consumerKey);
 
 		if (!present(consumer)) {
 			throw new OAuthProblemException(OAuth.Problems.CONSUMER_KEY_UNKNOWN);
 		}
 
-		OAuthAccessor accessor = new OAuthAccessor(consumer);
+		final OAuthAccessor accessor = new OAuthAccessor(consumer);
 
 		accessor.requestToken = entry.getToken();
 		accessor.tokenSecret  = entry.getTokenSecret();
@@ -226,13 +225,13 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 	 * @throws IOException
 	 * @throws ServletException
 	 */
-    public void handleException(Exception e) {
+    public void handleException(final Exception e) {
    		try {
-   			String realm = present(this.projectHome)?this.projectHome:this.requestLogic.getHostInetAddress();
+   			final String realm = present(this.projectHome)?this.projectHome:this.requestLogic.getHostInetAddress();
 			this.responseLogic.handleOAuthException(e, realm, false);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			log.error("Error handling OAuth exception.", e);
-		} catch (ServletException ex) {
+		} catch (final ServletException ex) {
 			log.error("Error handling OAuth exception.", e);
 		}
     }
@@ -240,36 +239,36 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 	//------------------------------------------------------------------------
 	// getter/setter
 	//------------------------------------------------------------------------
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
 	public RequestLogic getRequestLogic() {
-		return requestLogic;
+		return this.requestLogic;
 	}
 
-	public void setResponseLogic(ResponseLogic responseLogic) {
+	public void setResponseLogic(final ResponseLogic responseLogic) {
 		this.responseLogic = responseLogic;
 	}
 
 	public ResponseLogic getResponseLogic() {
-		return responseLogic;
+		return this.responseLogic;
 	}
 
-	public void setProjectHome(String projectHome) {
+	public void setProjectHome(final String projectHome) {
 		this.projectHome = projectHome;
 	}
 
 	public String getProjectHome() {
-		return projectHome;
+		return this.projectHome;
 	}
 
-	public void setDataStore(OAuthDataStore dataStore) {
+	public void setDataStore(final OAuthDataStore dataStore) {
 		this.dataStore = dataStore;
 	}
 
 	public OAuthDataStore getDataStore() {
-		return dataStore;
+		return this.dataStore;
 	}
 
 }
