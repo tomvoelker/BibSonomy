@@ -34,11 +34,18 @@
 		<jsp:attribute name="content">
 		<script language="javascript">
 		function generateIndex(resource) { 
-			var box = window.confirm("This will generate a new " + resource +"Index. Are you sure?");
+			var box = window.confirm("This will (re)-generate the active and inactive " + resource +"Index. Are you sure?");
 			if (box == true) { 
 			    window.location.href="?action=generateIndex&amp;resource=" + resource; 
 			}
 		} 
+		
+		function generateOneIndex(resource, id) { 
+			var box = window.confirm("This will (re)-generate the " + resource +"Index with id "+ id +". Are you sure?");
+			if (box == true) { 
+			    window.location.href="?action=generateOneIndex&amp;id="+id+"&amp;resource=" + resource; 
+			}
+		}
 		</script>
 
 	<div id="outerBox">
@@ -49,63 +56,106 @@
 	  
     <c:forEach var="index" items="${command.indices}">
 	    <div class="indexProperties">
-		<h3><c:out value="${index.resourceName}" /> Index</h3>
+		<h3>
+		<c:out value="${index.resourceName}" /> Index</h3>
 		<c:choose>
-			<c:when test="${!index.generatingIndex}">
+			<!--<c:when test="${!index.generatingIndex}">-->
+			<c:when test="TRUE">
+				
 				<c:choose>
-			    <c:when test="${index.enabled}">
+				<!-- Do we have indices for that resource type? -->
+			    <c:when test="${fn:length(index.indicesInfos) > 0}">
+			    	<!-- the old regeneration method 
 			    	<a onclick="javascript:generateIndex('${index.resourceName}')" href="#generateIndex">
 						<span style="width: 200px; height: 10px; border: 1px;">re-generate index</span>
 			  		</a>
+			  		--> 
 			    	<table>
 			    		<tr>
 			    			<th>Index</th>
-			    			<th>active</th>
-			    			<th>inactive</th>			    			
+			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
+			    				<c:choose>
+			    					<c:when test="${resIndex.active}" >
+										<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+										<th><emph>ACTIVE</emph> index [ID: ${resIndex.id}]
+										<a onclick="javascript:generateOneIndex('${index.resourceName}', '${resIndex.id}')" href="#generateIndex">
+										<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
+			  							</a>
+										</th>
+										</c:if>
+									</c:when>
+									<c:otherwise>
+										<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+										<th>index [ID: ${resIndex.id}]
+										<a onclick="javascript:generateOneIndex('${index.resourceName}', '${resIndex.id}')" href="#generateIndex">
+										<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
+			  							</a>
+										</th>
+										</c:if>
+									</c:otherwise>
+								</c:choose>
+			    			</c:forEach>		    						    						    			
 			    		</tr>
 			    		<tr>
 			    			<td>containing docs</td>
-			    			<td>${index.statistics.numDocs}</td>
-			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
-			    				<td>${inactiveIndexStatistics.numDocs}</td>
+			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
+			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+			    					<td>[id ${resIndex.id}] ${resIndex.indexStatistics.numDocs}</td>
+			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
 			    		<tr>
 			    			<td>deleted docs</td>
-			    			<td>${index.statistics.numDeletedDocs}</td>
-			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
-			    				<td>${inactiveIndexStatistics.numDeletedDocs}</td>
+			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
+			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+			    					<td>[id ${resIndex.id}] ${resIndex.indexStatistics.numDeletedDocs}</td>
+			    					</c:if>
 			    			</c:forEach>
 			    		</tr>
 			    		<tr>
 			    			<td>newest date</td>
-			    			<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${index.statistics.newestRecordDate}" /></td>
-			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
-			    				<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${inactiveIndexStatistics.newestRecordDate}" /></td>
+			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
+			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+			    					<td>[id ${resIndex.id}] <fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
+			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
 			    		<tr>
 			    			<td>last modified date</td>
-			    			<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${index.statistics.lastModified}" /></td>
-			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
-			    				<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${inactiveIndexStatistics.lastModified}" /></td>
+			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
+			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+			    					<td>[id ${resIndex.id}] <fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.lastModified}" /></td>
+			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
 			    		<tr>
 			    			<td>current version</td>
-			    			<td>${index.statistics.currentVersion}</td>
-			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
-			    				<td>${inactiveIndexStatistics.numDocs}</td>
+			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
+			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+			    					<td>[id ${resIndex.id}] ${resIndex.indexStatistics.currentVersion}</td>
+			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
 			    		<tr>
 			    			<td>isCurrent</td>
-			    			<td>${index.statistics.current}</td>
-			    			<c:forEach var="inactiveIndexStatistics" items="${index.inactiveIndecesStatistics}">
-			    				<td>${inactiveIndexStatistics.current}</td>
+							<c:forEach var="resIndex" items="${index.indicesInfos}">
+			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+			    					<td>[id ${resIndex.id}] ${resIndex.indexStatistics.current}</td>
+			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
 			    	</table>
+			    	<c:if test="${index.generatingIndex}">
+			    		<p>Currently index[${index.generator.generatingIndexId}] is regenerating:</p>
+			    		<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
+  							<div style="width: ${index.generator.progressPercentage * 2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244">
+								<!-- placeholder -->
+							</div>
+						</div>
+						<div>
+								<span>${index.generator.progressPercentage} % done.</span>
+						</div>			    		
+			    	</c:if>
 			    </c:when>
 		 		<c:otherwise>
 		       		Seems to be properly configured but could not physically be found. <br />
@@ -113,19 +163,19 @@
 			   	</c:otherwise>
 			</c:choose>
 		</c:when>				
-		<c:otherwise>
+		<!-- <c:otherwise>
 			<div>
 				Currently generating new index.
 			</div>    
 			<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
   					<div style="width: ${index.indexGenerationProgress * 2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244">
-						<!-- placeholder -->
+			
 					</div>
 			</div>
 			<div>
 				<span>${index.indexGenerationProgress} % done.</span>
 			</div>
-		</c:otherwise>
+		</c:otherwise> -->
    	</c:choose>
 	</div>
    </c:forEach>

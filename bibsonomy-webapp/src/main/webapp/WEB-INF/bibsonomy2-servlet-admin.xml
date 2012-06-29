@@ -63,6 +63,7 @@
 							<list>
 								<value>action</value>
 								<value>resource</value>
+								<value>id</value>
 							</list>
 						</property>
 					</bean>

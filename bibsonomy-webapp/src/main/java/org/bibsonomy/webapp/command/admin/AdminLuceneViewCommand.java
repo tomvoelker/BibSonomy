@@ -3,6 +3,8 @@ package org.bibsonomy.webapp.command.admin;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -17,6 +19,10 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	/** specific action for admin page */
 	private String action;
 	
+	/** the specific index id for the indexd to be updated **/
+	private int id;
+	
+	
 	/** the resource class to handle */
 	// TODO: should be Class<? extends Resource>
 	private String resource;
@@ -24,13 +30,27 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	/** the string response for the admin */
 	private String adminResponse = "";
 	
-	private final List<LuceneIndexInfo> indices = new LinkedList<LuceneIndexInfo>();
+	private final List<LuceneResourceManager<? extends Resource>> indices = new LinkedList<LuceneResourceManager<? extends Resource>>();
 
 	/**
 	 * @return the action
 	 */
 	public String getAction() {
 		return this.action;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return this.id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	/**
@@ -43,7 +63,7 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	/**
 	 * @return the list of indices
 	 */
-	public List<LuceneIndexInfo> getIndices() {
+	public List<LuceneResourceManager<? extends Resource>> getIndices() {
 		return indices;
 	}
 

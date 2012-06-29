@@ -9,10 +9,10 @@ import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
-import org.bibsonomy.webapp.command.admin.LuceneIndexInfo;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -26,6 +26,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	private static final Log log = LogFactory.getLog(AdminLuceneController.class);
 	
 	private static final String GENERATE_INDEX = "generateIndex";
+	private static final String GENERATE_ONE_INDEX = "generateOneIndex";
 	
 	
 	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
@@ -43,42 +44,33 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			throw new AccessDeniedException("please log in as admin");
 		}	
 		
-		if (GENERATE_INDEX.equals(command.getAction())) {
+		if (GENERATE_INDEX.equals(command.getAction()) 
+				|| (GENERATE_ONE_INDEX.equals(command.getAction()))) {
 			final LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource());
 			if (mng != null) {
 				if (!mng.isGeneratingIndex()) {
-					mng.generateIndex();
+					if (GENERATE_INDEX.equals(command.getAction())) {
+						mng.generateIndex();	
+					}
+					if (GENERATE_ONE_INDEX.equals(command.getAction())) {
+						mng.regenerateIndex(command.getId());
+					}
+					
 				} else {
 					command.setAdminResponse("Already building lucene-index for resource \"" + command.getResource() + "\".");
 				}
 			} else {
 				command.setAdminResponse("Cannot build new index because there exists no manager for resource \"" + command.getResource() + "\".");
 			}
+			
+			return new ExtendedRedirectView("/admin/lucene");
 		}
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
-		final List<LuceneIndexInfo> indices = command.getIndices();
+		final List<LuceneResourceManager<? extends Resource>> indices = command.getIndices();
 		
 		for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
-			final boolean isIndexEnabled = manager.isIndexEnabled();
-			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
-			
-			indexInfo.setEnabled(isIndexEnabled);
-			indexInfo.setResourceName(manager.getResourceName());
-			
-			//TODO: show index-ids
-			//indexCmd.setId(...);
-			if (manager.isGeneratingIndex()) {
-				indexInfo.setGeneratingIndex(true);
-				indexInfo.setIndexGenerationProgress(manager.getGenerator().getProgressPercentage());
-			}
-			
-			if (isIndexEnabled) {
-				indexInfo.setIndexStatistics(manager.getStatistics());
-				indexInfo.setInactiveIndecesStatistics(manager.getInactiveIndecesStatistics());
-			}
-			
-			indices.add(indexInfo);
+			indices.add(manager);
 		}
 		
 		
