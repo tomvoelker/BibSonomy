@@ -63,7 +63,7 @@ public class RenderingFormat {
 	/**
 	 * csl format
 	 */
-	public static final RenderingFormat CSL = new RenderingFormat("text", "csl");
+	public static final RenderingFormat CSL = new RenderingFormat("application", "json");
 
 	/**
 	 * pdf format for documents
