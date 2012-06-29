@@ -142,6 +142,9 @@ public class LuceneResourceIndex<R extends Resource> {
         
 	    synchronized(this) {
     	    	this.ensureReadAccess();
+    	    	
+    	    	// Get the ID of this index 
+    	    	statistics.setIndexId(this.indexId);
                 
                 statistics.setNumDocs(this.indexReader.numDocs());
                 statistics.setNumDeletedDocs(this.indexReader.numDeletedDocs());
@@ -719,6 +722,13 @@ public class LuceneResourceIndex<R extends Resource> {
 	 */
 	public IndexSearcher createIndexSearcher() throws IOException {
 		return new IndexSearcher(FSDirectory.open(new File(this.getIndexPath())));
+	}
+	
+	/**
+	 * @return the indexId
+	 */
+	public int getIndexId() {
+		return indexId;
 	}
 	
 	/**
