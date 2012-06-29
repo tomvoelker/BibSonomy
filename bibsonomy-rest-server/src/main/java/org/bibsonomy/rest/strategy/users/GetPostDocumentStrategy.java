@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -26,7 +27,7 @@ import org.bibsonomy.util.upload.impl.HandleFileDownload;
  * @author Christian Kramer
  */
 public class GetPostDocumentStrategy extends Strategy {
-	private static final MimetypesFileTypeMap MIME_TYPES_FILE_TYPE_MAP = new MimetypesFileTypeMap();
+	private static final FileTypeMap MIME_TYPES_FILE_TYPE_MAP = new MimetypesFileTypeMap();
 	
 	private final String userName;
 	private final Document document;
@@ -59,7 +60,9 @@ public class GetPostDocumentStrategy extends Strategy {
 	
 	@Override
 	public void canAccess() {
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
+		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) {
+			throw new AccessDeniedException();
+		}
 	}
 	
 	@Override
