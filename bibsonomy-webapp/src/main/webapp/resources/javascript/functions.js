@@ -131,13 +131,9 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
  * @param type The code type.
  */
 function urlFromFlash(text, type) {
-	
-	//alert(text);
-	
 	if(type == "ISBN") {
 		processISBN(text)
 	} else if( type == "URI" ) {
-		alert("here");
 		processQRCode(text);
 	}
 }
@@ -153,7 +149,7 @@ function processISBN(text) {
 	 * check that we are on post publication site
 	 */
 	if(document.URL.indexOf("/postPublication") != -1) {
-		document.location.href = "/editPublication?selection=" + text;
+		document.location.href = "/editPublication?selection=" + escape(text);
 	}
 }
 
@@ -175,20 +171,18 @@ function processQRCode(text) {
 		
 		var split = query.split("/");
 		
-		alert(split);
-		
 		/*
 		 * get second to the last and last entry of split URL.
 		 * should be hash and user.
 		 */
-		document.location.href = "/editPublication?hash=" + split[split.length - 2] + "&user=" + split[split.length - 1];
+		document.location.href = "/editPublication?hash=" + split[split.length - 2] + escape("&user=") + split[split.length - 1];
 	
 	/*
 	 * we should be on clipboard site
 	 */
 	} else {
 		$.ajax({
-			url : "/posts" + query,
+			url : "/posts" + escape(query),
 			dataType : "html",
 			success : function(data) {
 				
@@ -204,7 +198,7 @@ function processQRCode(text) {
 					$(document).ajaxStop(function() {
 	
 						$.ajax({
-							url : "/posts" + query,
+							url : "/posts" + escape(query),
 							dataType : "html",
 							success : function(actData) {
 								
