@@ -205,7 +205,7 @@
 		SELECT user_name, tag_name
 		FROM friends 
 		JOIN user USING (user_name) 
-		WHERE f_user_name = #userName# AND user.spammer = 0<include refid="matchTaggedRelation"/>
+		WHERE f_user_name = #userName# AND user.spammer = 0 <include refid="matchTaggedRelation"/>
 	</select>
 	
 	<!-- get all users, which user has in his friend list (user, u)\in OF_FRIEND-->
