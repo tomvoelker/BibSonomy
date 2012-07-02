@@ -57,7 +57,7 @@ public class QRCodeRenderer {
 			pool.shutdownNow();
 			new File(filePath.concat(".qr")).delete();
 			
-			throw new Exception();
+			throw new Exception(e.getMessage());
 		}
 
 		pool.shutdownNow();

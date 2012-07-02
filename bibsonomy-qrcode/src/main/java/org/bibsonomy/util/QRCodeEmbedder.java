@@ -67,6 +67,21 @@ public class QRCodeEmbedder implements Callable<String> {
 	private String encodee;
 
 	/**
+	 * the x coordinate of the QR code
+	 */
+	private float x;
+
+	/**
+	 * the y coordinate of the QR code
+	 */
+	private float y;
+
+	/**
+	 * the size of the QR code
+	 */
+	private int size;
+
+	/**
 	 * 
 	 * @param inFile input path
 	 * @param encodee URL to encode
@@ -108,16 +123,16 @@ public class QRCodeEmbedder implements Callable<String> {
 					 */
 					final Point freeSquare = SquareFinder.getFreeSquare(renderPage, SquareFinder.WHITE);
 
-					final float x = freeSquare.getX();
-					final float y = (float) pageAt.getCropBox().toNormalizedRectangle().getHeight() - freeSquare.getY();
-					final int size = freeSquare.getSize();
+					this.setX(freeSquare.getX());
+					this.setY((float) pageAt.getCropBox().toNormalizedRectangle().getHeight() - freeSquare.getY());
+					this.setSize(freeSquare.getSize());
 					
-					if (size > MINIMUM_SIZE) {		
+					if (this.getSize() > MINIMUM_SIZE) {		
 						
 						/*
 						 * generate qr code
 						 */
-						final BufferedImage qrCode = QRCodeCreator.createQRCode(this.encodee, size);
+						final BufferedImage qrCode = QRCodeCreator.createQRCode(this.encodee, this.getSize());
 
 						/*
 						 * convert qr code image to internal pdf representation
@@ -164,9 +179,9 @@ public class QRCodeEmbedder implements Callable<String> {
 						 */
 						creator.doXObject(null, form);
 
-						final float newSize = size - (float) pageTx.getScaleX();
-						final float newX = x - (float) pageTx.getTranslateX();
-						final float newY = y - (float) pageTx.getTranslateY();
+						final float newSize = this.getSize() - (float) pageTx.getScaleX();
+						final float newX = this.getX() - (float) pageTx.getTranslateX();
+						final float newY = this.getY() - (float) pageTx.getTranslateY();
 
 						/*
 						 * apply qr code image
@@ -205,7 +220,8 @@ public class QRCodeEmbedder implements Callable<String> {
 			 * therefore output file can already exist an be corrupt so we have to delete it.
 			 */
 			new File(this.getOutFile()).delete();
-			throw new Exception();
+			
+			throw new Exception(e.getMessage());
 		}
 
 	}
@@ -325,6 +341,48 @@ public class QRCodeEmbedder implements Callable<String> {
 	 */
 	public void setEncodee(final String encodee) {
 		this.encodee = encodee;
+	}
+
+	/**
+	 * @return the x coordinate of the QR code
+	 */
+	public float getX() {
+		return x;
+	}
+
+	/**
+	 * @param x the x coordinate to set
+	 */
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	/**
+	 * @return the y coordinate of the QR code
+	 */
+	public float getY() {
+		return y;
+	}
+
+	/**
+	 * @param y the y coordinate to set
+	 */
+	public void setY(float y) {
+		this.y = y;
+	}
+
+	/**
+	 * @return the size of the QR code
+	 */
+	public int getSize() {
+		return size;
+	}
+
+	/**
+	 * @param size the size to set
+	 */
+	public void setSize(int size) {
+		this.size = size;
 	}
 		
 }
