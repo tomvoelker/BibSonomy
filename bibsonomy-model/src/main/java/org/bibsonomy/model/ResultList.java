@@ -23,7 +23,7 @@
 
 package org.bibsonomy.model;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Extended List with aditional properties
@@ -32,13 +32,7 @@ import java.util.ArrayList;
  * @param <T>
  *            resource type
  */
-
-public class ResultList<T> extends ArrayList<T> {
-
-
-	/**
-	 * serialVersionUID
-	 */
+public class ResultList<T> extends LinkedList<T> {
 	private static final long serialVersionUID = -5889003340930421319L;
 	
 	
@@ -60,7 +54,5 @@ public class ResultList<T> extends ArrayList<T> {
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
 		
-	}
-	
-	
+	}	
 }
