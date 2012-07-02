@@ -1,9 +1,9 @@
 \format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
  (\year). 
-\format[HTMLChars]{\title} 
+\format[HTMLChars]{\title}
 \begin{type}
-[\format[HTMLChars]{\type}]
-\end{type}. 
+[\format[HTMLChars]{\type}].
+\end{type}
 \begin{journal}
 <i>\format[HTMLChars]{\journal}</i> <b>\volume</b>
 \end{journal}
@@ -25,7 +25,7 @@
 (Technical report, \institution) 
 \end{institution}
 \begin{publisher}
-\format[HTMLChars]{\publisher}. 
+\format[HTMLChars]. {\publisher}
 \end{publisher}
 \begin{howpublished}
 \howpublished . 
