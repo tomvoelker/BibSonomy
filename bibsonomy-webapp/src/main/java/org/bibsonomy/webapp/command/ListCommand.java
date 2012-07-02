@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResultList;
 
 /**
  * bean for listviews across multiple browsable pages 
@@ -57,8 +58,11 @@ public class ListCommand<T> {
 	/**
 	 * @param list the sublistlist on the current page
 	 */
-	public void setList(List<T> list) {
+	public void setList(final List<T> list) {
 		this.list = list;
+		if (list instanceof ResultList<?>) {
+			this.setTotalCount(((ResultList<?>) list).getTotalCount());
+		}
 	}
 	
 	/**
@@ -70,7 +74,7 @@ public class ListCommand<T> {
 	/**
 	 * @param start inclusive start index of the current page
 	 */
-	public void setStart(int start) {
+	public void setStart(final int start) {
 		this.curPage.setStart(start);
 		this.curPage.setNumber(null);
 		this.previousPages = null;
@@ -80,7 +84,7 @@ public class ListCommand<T> {
 	/**
 	 * @param totalCount size of the list without window limits or offsets
 	 */
-	public void setTotalCount(int totalCount) {
+	public void setTotalCount(final int totalCount) {
 		this.totalCount = totalCount;
 		this.previousPages = null;
 		this.nextPages = null;
@@ -103,7 +107,7 @@ public class ListCommand<T> {
 		if (this.entriesPerPage == 0) {
 			return 1;
 		}
-		if (this.totalCount % this.entriesPerPage == 0) {
+		if ((this.totalCount % this.entriesPerPage) == 0) {
 			return this.totalCount - this.entriesPerPage;
 		}		
 		return this.totalCount - (this.totalCount % this.entriesPerPage);
@@ -135,8 +139,8 @@ public class ListCommand<T> {
 		if (this.nextPages == null) {
 			this.nextPages = new ArrayList<PageCommand>();
 			for (int i = 1; i <= this.numNextPages; ++i) {
-				final int start = this.curPage.getStart() + i * this.entriesPerPage;
-				if (start < this.totalCount || this.totalCount == 0) {
+				final int start = this.curPage.getStart() + (i * this.entriesPerPage);
+				if ((start < this.totalCount) || (this.totalCount == 0)) {
 					this.nextPages.add(new PageCommand(this.getCurPage().getNumber() + i, start));
 				}
 			}
@@ -171,21 +175,21 @@ public class ListCommand<T> {
 	 * @param numNextPages an upper limit for the size of the list returned
 	 *        by {@link #getNextPages()}
 	 */
-	public void setNumNextPages(int numNextPages) {
+	public void setNumNextPages(final int numNextPages) {
 		this.numNextPages = numNextPages;
 	}
 	/**
 	 * @param numPreviousPages an upper limit for the size of the list returned
 	 *        by {@link #getPreviousPages()}
 	 */
-	public void setNumPreviousPages(int numPreviousPages) {
+	public void setNumPreviousPages(final int numPreviousPages) {
 		this.numPreviousPages = numPreviousPages;
 	}
 	
 	/**
 	 * @param entriesPerPage number of entities to be diplayed on one page
 	 */
-	public void setEntriesPerPage(int entriesPerPage) {
+	public void setEntriesPerPage(final int entriesPerPage) {
 		this.entriesPerPage = entriesPerPage;
 		this.curPage.setNumber(null);
 		this.previousPages = null;
@@ -201,7 +205,7 @@ public class ListCommand<T> {
 				this.curPage.setNumber(1);
 			}
 			else {
-				this.curPage.setNumber( (this.curPage.getStart() + this.entriesPerPage - 1) / this.entriesPerPage + 1);
+				this.curPage.setNumber( (((this.curPage.getStart() + this.entriesPerPage) - 1) / this.entriesPerPage) + 1);
 			}
 		}
 		return this.curPage;
@@ -223,8 +227,8 @@ public class ListCommand<T> {
 	 */
 	public String getResourcetype() {
 		try {
-			if (list.get(0) != null) {
-				final T item = list.get(0);
+			if (this.list.get(0) != null) {
+				final T item = this.list.get(0);
 				if (item instanceof Post<?>) {
 					final Post<?> postItem = (Post<?>) item;
 					final Object resource = postItem.getResource();
@@ -242,7 +246,7 @@ public class ListCommand<T> {
 					}
 				}
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			// ignore it
 		}
 		return null;

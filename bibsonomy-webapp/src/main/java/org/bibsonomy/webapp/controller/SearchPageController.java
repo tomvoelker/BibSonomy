@@ -8,10 +8,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResultList;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -62,7 +59,7 @@ public class SearchPageController extends SingleResourceListController implement
 				groupingEntity = groupingEnt;
 				
 				// extract name of grouping entity
-				int start = search.indexOf(groupingEntString + ":");
+				final int start = search.indexOf(groupingEntString + ":");
 				int end  = search.indexOf(" ", start);
 				if (end == -1) {
 					end = search.length();
@@ -93,16 +90,6 @@ public class SearchPageController extends SingleResourceListController implement
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			this.setList(command, resourceType, groupingEntity, groupingName, requestedTags, null, search, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
-
-			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			final List<?> list = listCommand.getList();
-
-			if (list instanceof ResultList<?>) {
-				@SuppressWarnings("unchecked")
-				final ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
-				listCommand.setTotalCount(resultList.getTotalCount()); 
-				log.debug("resultList.getTotalCount() = " + resultList.getTotalCount());
-			}			
 			
 			this.postProcessAndSortList(command, resourceType);
 		}
@@ -117,8 +104,6 @@ public class SearchPageController extends SingleResourceListController implement
 		}
 		
 		this.endTiming();
-		
-		// export - return the appropriate view
 		return Views.getViewByFormat(format);		
 	}
 

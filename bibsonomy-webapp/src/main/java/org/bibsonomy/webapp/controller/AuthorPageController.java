@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -9,13 +11,9 @@ import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -29,7 +27,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 	private static final Log log = LogFactory.getLog(AuthorPageController.class);
 
 	@Override
-	public View workOn(AuthorResourceCommand command) {
+	public View workOn(final AuthorResourceCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
@@ -38,16 +36,13 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		String authorQuery = command.getRequestedAuthor();
 
 		// if no author given throw error 		
-		if (!ValidationUtils.present(authorQuery)) {
+		if (!present(authorQuery)) {
 			throw new MalformedURLSchemeException("error.author_page_without_authorname");
 		}
 						
 		// set grouping entity = ALL
 		final GroupingEntity groupingEntity = GroupingEntity.ALL;
 		
-		/*
-		 * FIXME: the query supports only ONE tag!
-		 */
 		final List<String> requTags = command.getRequestedTagsList();
 		/*
 		 * remember if tags were given by user - if so, forward to special page
@@ -60,14 +55,14 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		final List<String> sysTags = SystemTagsExtractor.extractSearchSystemTagsFromString(authorQuery, " ");
 		if (sysTags.size() > 0) {
 			// remove them from the query
-			authorQuery = removeSystemtagsFromQuery(authorQuery, sysTags);
+			authorQuery = this.removeSystemtagsFromQuery(authorQuery, sysTags);
 			// add them to the tags list
 			requTags.addAll(sysTags);
 		}
 		sysTags.addAll(SystemTagsExtractor.extractSystemTags(requTags));
 				
 		// add the requested author as a system tag
-		String sysAuthor = SystemTagsUtil.buildSystemTagString(AuthorSystemTag.NAME, authorQuery);
+		final String sysAuthor = SystemTagsUtil.buildSystemTagString(AuthorSystemTag.NAME, authorQuery);
 		requTags.add(sysAuthor);
 		sysTags.add(sysAuthor);
 		
@@ -78,16 +73,6 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 
-			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			final List<?> list = listCommand.getList();
-
-			if (list instanceof ResultList<?>) {
-				@SuppressWarnings("unchecked")
-				final ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
-				listCommand.setTotalCount(resultList.getTotalCount()); 
-				log.debug("AuthorPageController: resultList.getTotalCount()=" + resultList.getTotalCount());
-			}			
-			
 			this.postProcessAndSortList(command, resourceType);
 		}		
 		
@@ -114,9 +99,8 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		return new AuthorResourceCommand();
 	}
 	
-	
-	private String removeSystemtagsFromQuery(String authorQuery, List<String> sysTags) {
-		for (String sysTag : sysTags) {
+	private String removeSystemtagsFromQuery(String authorQuery, final List<String> sysTags) {
+		for (final String sysTag : sysTags) {
 			// remove them from author query string
 			authorQuery = authorQuery.replace(sysTag, "");
 		}
