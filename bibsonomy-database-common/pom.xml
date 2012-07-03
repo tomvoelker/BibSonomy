@@ -1,30 +1,26 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <name>BibSonomy-Database-Common</name>
-  <parent>
-    <artifactId>bibsonomy</artifactId>
-    <groupId>org.bibsonomy</groupId>
-    <version>2.0.27-SNAPSHOT</version>
-  </parent>
-  <groupId>org.bibsonomy</groupId>
-  <artifactId>bibsonomy-database-common</artifactId>
-  <version>2.0.27-SNAPSHOT</version>
-  <packaging>jar</packaging>
-  
-  <properties>
-  </properties>
-  <dependencies>
-    <dependency>
-    	<groupId>org.bibsonomy</groupId>
-    	<artifactId>bibsonomy-model</artifactId>
-    </dependency>
-    <dependency>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<name>BibSonomy-Database-Common</name>
+	<parent>
+		<artifactId>bibsonomy</artifactId>
+		<groupId>org.bibsonomy</groupId>
+		<version>2.0.27-SNAPSHOT</version>
+	</parent>
+	<artifactId>bibsonomy-database-common</artifactId>
+	<packaging>jar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.ibatis</groupId>
 			<artifactId>ibatis-sqlmap</artifactId>
 			<version>SNAPSHOT</version>
-		<classifier>r737724</classifier>
+			<classifier>r737724</classifier>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -37,5 +33,11 @@
 			<version>0.6-beta2</version>
 			<scope>test</scope>
 		</dependency>
-  </dependencies>
+		<!-- every database module needs the factory bean for creating a sqlmapclient -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+	</dependencies>
 </project>
