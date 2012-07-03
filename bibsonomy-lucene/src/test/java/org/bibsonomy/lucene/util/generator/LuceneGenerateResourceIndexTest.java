@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.bibsonomy.database.testutil.JNDIBinder;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
@@ -25,7 +24,6 @@ public class LuceneGenerateResourceIndexTest {
     @SuppressWarnings("unchecked")
 	@BeforeClass
     public static void initLucene() throws Exception {
-    	JNDIBinder.bind();
 		manager = (LuceneGoldStandardManager<GoldStandardPublication>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneGoldStandardPublicationManager");
 
 		// initialize test database
@@ -44,7 +42,7 @@ public class LuceneGenerateResourceIndexTest {
      */
     @Test
     public void generateIndex() throws Exception {
-    	manager.generateIndex(false);
+    	manager.generateIndex(false, 1);
 
 		assertEquals(2, manager.getStatistics().getNumDocs());
     }
