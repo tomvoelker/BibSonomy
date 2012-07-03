@@ -2,21 +2,25 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd
-	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+	                    http://www.springframework.org/schema/util
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd
+	                    http://www.springframework.org/schema/jee
+	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
+	<jee:jndi-lookup id="recommenderDataSource" jndi-name="jdbc/bibsonomy_recommender"/>
+	
+	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-context.xml" />
+	
 	<!-- 
 		configuration file for BibSonomy's (tag) recommendation services
 	 -->
-	 
-
 	<!-- 
 		Simple tag recommender
 	 -->
 	<bean id="tagRecommender" class="org.bibsonomy.recommender.tags.DefaultTagRecommender" scope="singleton"/>
-	
-	<bean id="recoDBLogic" class="org.bibsonomy.recommender.tags.database.DBAccess" factory-method="getInstance"/>
 	
 	<!--+
 	    | Multiplexing tag recommender
@@ -26,14 +30,11 @@
 		<property name="postModifiers" ref="postModifierList"/>
 		<property name="tagModifiers" ref="tagFilterList"/>
 		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
-		<property name="dbLogic" ref="recoDBLogic"/>
+		<property name="dbLogic" ref="recommenderLogic"/>
 	    <property name="localRecommenders" ref="localRecommenderList"/>
 	</bean>	  
 
-	<util:list id="localRecommenderList" list-class="java.util.ArrayList">
-<!--  		<ref bean="tagRecommender"/>-->
-<!-- 
- -->  		
+	<util:list id="localRecommenderList" list-class="java.util.ArrayList"> 		
   		<ref bean="mostPopularMixRecommender"/>
   		<ref bean="jensRecommender"/>
 	</util:list>
@@ -54,7 +55,7 @@
 	    | name mapper
 	    +-->
 	<bean id="dc09NameToIDMapper" class="org.bibsonomy.recommender.tags.multiplexer.modifiers.DC09NameToIDMapping">
-		<property name="dbLogic" ref="recoDBLogic"/>
+		<property name="dbLogic" ref="recommenderLogic"/>
 	</bean>	    
 	
 	<!--+
@@ -69,12 +70,12 @@
 	<bean id="mostPopularByUserRecommender" class="org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender">
 		<property name="numberOfTagsToRecommend" value="5"/>
 		<property name="cleanTags" value="true"/>
-		<property name="dbLogic" ref="recoDBLogic"/>
+		<property name="dbLogic" ref="recommenderLogic"/>
 	</bean>
 	<bean id="mostPopularByResourceRecommender" class="org.bibsonomy.recommender.tags.popular.MostPopularByResourceTagRecommender">
 		<property name="numberOfTagsToRecommend" value="5"/>
 		<property name="cleanTags" value="true"/>
-		<property name="dbLogic" ref="recoDBLogic"/>
+		<property name="dbLogic" ref="recommenderLogic"/>
 	</bean>	
 	<!--+
 	    | merges both into the 0.6 mix 
@@ -95,17 +96,17 @@
 		</property>
 	</bean>
 	
-	
-	
 	<bean id="titleRecommender" class="org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender">
 		<property name="cleanTags" value="true"/>
 	</bean>
+	
 	<bean id="allTagsOfUserRecommender"  class="org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender">
 		<!-- to get "almost all" tags of the user -->
 		<property name="numberOfTagsToRecommend" value="10000"/>
 		<property name="cleanTags" value="true"/>
-		<property name="dbLogic" ref="recoDBLogic"/>
+		<property name="dbLogic" ref="recommenderLogic"/>
 	</bean>
+	
 	<!--+ 
 	    | comes pretty close to our 'old' recommender from Jens, sorts title tags by their usage count 
 	    +-->
@@ -114,8 +115,6 @@
 		<property name="secondTagRecommender" ref="allTagsOfUserRecommender"/>
 		<property name="numberOfTagsToRecommend" value="5"/>
 	</bean>
-	
-	
 	
 	<!--+
 		| A tag recommender which uses html meta informations for bookmarks
@@ -134,13 +133,6 @@
 	<!--+
 		| A tag recommender mockup
 		+-->
-	<!-- 
-	<bean id="distRecommender2" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://localhost:8080/bibsonomy-recommender-servlet/DummyRecommenderServlet</value>
-		</property>
-	</bean>	 
-	-->
 	 <!--+ 
 	     | recommendation selector mockup
 	     +-->
@@ -149,14 +141,14 @@
 	     | strategy for uniform random recommender selection
 	     +-->
 	 <bean id="uniformRandomSelection" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOne" scope="singleton">
-	 	<property name="dbLogic" ref="recoDBLogic"/>
+	 	<property name="dbLogic" ref="recommenderLogic"/>
 	 </bean>
 
 	 <!--+ 
 	     | strategy for uniform random recommender selection
 	     +-->
 	 <bean id="selectOneWithoutReplacement" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOneWithoutReplacement" scope="singleton">
-	 	<property name="dbLogic" ref="recoDBLogic"/>
+	 	<property name="dbLogic" ref="recommenderLogic"/>
 	 </bean>
 	 
 	<!--  #################### imports #################### -->

@@ -79,7 +79,7 @@
 		<property name="dataStore" ref="oauthDataStore"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="responseLogic" ref="responseLogic"/>
-		<property name="projectHome"><value>${project.home}</value></property>
+		<property name="projectHome" value="${project.home}" />
 	</bean>
 	
 	<bean id="oAuthAccessTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAccessTokenController" scope="request" parent="oAuthController" />

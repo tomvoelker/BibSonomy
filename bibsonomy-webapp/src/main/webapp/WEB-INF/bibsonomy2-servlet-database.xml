@@ -10,28 +10,8 @@
 	                    http://www.springframework.org/schema/jee
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 	
+	<jee:jndi-lookup id="mainDataSource" jndi-name="jdbc/bibsonomy"/>
+	
 	<!-- import database context form submodule -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
-	
-	<!--+
-	    | As soon as we have migrated to myBatis, we should retrieve the 
-	    | datasource here from JNDI and give it to the dbSessionFactory. 
-	    | We then wouldn't need to bind datasources in database tests using 
-	    | JNDI but could just hand them over to the dbSessionFactory.
-	    | When activating this, the <datasource> element must be removed from
-	    | the SqlMapConfig.xml.
-	    | CONTACT: Robert Jäschke 
-	    |
-	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-        <property name="configLocation" value="classpath:SqlMapConfig.xml"/>
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-	
-	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/bibsonomy"/>
-	 -->
-	
-	<!-- holdes schema informations from the database -->
-	<bean id="dbSchemaInformation" class="org.bibsonomy.database.util.DatabaseSchemaInformation" factory-method="getInstance" />
-	
-	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 </beans>

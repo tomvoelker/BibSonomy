@@ -176,6 +176,7 @@
 	
 	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" init-method="init" scope="singleton">
 	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender" />
+	    <property name="db" ref="recommenderLogic" />
 	</bean>
 	
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
