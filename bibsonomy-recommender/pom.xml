@@ -4,11 +4,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy-recommender</artifactId>
 	<packaging>jar</packaging>
 	<name>BibSonomy-Recommender</name>
-	<version>2.0.27-SNAPSHOT</version>
 	<description>
 		Various methods to provide recommendations for BibSonomy
 	</description>
@@ -42,6 +40,13 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
@@ -50,18 +55,6 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ibatis</groupId>
-			<artifactId>ibatis-sqlmap</artifactId>
-			<version>SNAPSHOT</version>
-			<classifier>r737724</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.mockejb</groupId>
-			<artifactId>mockejb</artifactId>
-			<version>0.6-beta2</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
