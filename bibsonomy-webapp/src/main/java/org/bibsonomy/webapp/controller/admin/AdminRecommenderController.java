@@ -4,7 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
@@ -40,8 +38,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private static final String CMD_REMOVERECOMMENDER = "removerecommender";
 	private static final String CMD_ADDRECOMMENDER = "addrecommender";
 	
-	// TODO: config via spring
-	private final DBLogic db = DBAccess.getInstance();
+	private DBLogic db;
 	
 	private MultiplexingTagRecommender mp;
 	
@@ -49,13 +46,9 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	 * Initialize Controller and multiplexer
 	 **/
 	public void init() {
-		List<Long> recs = null;
-		try {
-			recs = db.getActiveRecommenderSettingIds();
-			for (final Long sid : recs)
-				mp.enableRecommender(sid);
-		} catch (final SQLException e) {
-			log.debug("Couldn't initialize multiplexer! ", e);
+		final List<Long> recs = db.getActiveRecommenderSettingIds();
+		for (final Long sid : recs) {
+			mp.enableRecommender(sid);
 		}
 	}
 
@@ -109,14 +102,9 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	 * Remove/add recommender page. 
 	 */
 	private void showAddTab(final AdminRecommenderViewCommand command) {
-		try {
-			final List<Long> recs = db.getDistantRecommenderSettingIds();
-			final Map<Long, String> recMap = db.getRecommenderIdsForSettingIds(recs);
-
-			command.setActiveRecommenders(recMap);
-		} catch (final SQLException e) {
-			log.debug(e);
-		}
+		final List<Long> recs = db.getDistantRecommenderSettingIds();
+		final Map<Long, String> recMap = db.getRecommenderIdsForSettingIds(recs);
+		command.setActiveRecommenders(recMap);
 	}
 
 	/**
@@ -125,16 +113,11 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	 * command.activeRecs/command.disabledRecs
 	 */
 	private void showActivationTab(final AdminRecommenderViewCommand command) {
-		try {
-			final Map<Long, String> activeRecs = db.getRecommenderIdsForSettingIds(db.getActiveRecommenderSettingIds());
-			final Map<Long, String> disabledRecs = db.getRecommenderIdsForSettingIds(db.getDisabledRecommenderSettingIds());
+		final Map<Long, String> activeRecs = db.getRecommenderIdsForSettingIds(db.getActiveRecommenderSettingIds());
+		final Map<Long, String> disabledRecs = db.getRecommenderIdsForSettingIds(db.getDisabledRecommenderSettingIds());
 
-			command.setActiveRecommenders(activeRecs);
-			command.setDisabledRecommenders(disabledRecs);
-
-		} catch (final SQLException e) {
-			log.debug(e);
-		}
+		command.setActiveRecommenders(activeRecs);
+		command.setDisabledRecommenders(disabledRecs);
 	}
 
 	/**
@@ -149,14 +132,11 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		recommenderList.addAll(mp.getDistRecommenders());
 
 		for (final TagRecommender p : recommenderList) {
-			try {
-				final RecAdminOverview current = db.getRecommenderAdminOverview(RecommenderUtil.getRecommenderId(p));
-				current.setLatency(db.getAverageLatencyForRecommender(current.getSettingID(), command.getQueriesPerLatency()));
-				recommenderInfoList.add(current);
-			} catch (final SQLException e) {
-				log.debug(e.toString());
-			}
+			final RecAdminOverview current = db.getRecommenderAdminOverview(RecommenderUtil.getRecommenderId(p));
+			current.setLatency(db.getAverageLatencyForRecommender(current.getSettingID(), command.getQueriesPerLatency()));
+			recommenderInfoList.add(current);
 		}
+		
 		/* Store info */
 		command.setRecOverview(recommenderInfoList);
 	}
@@ -175,9 +155,6 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			command.setAdminResponse("Changed url of recommender #" + command.getEditSid() + " to " + command.getNewrecurl() + ".");
 		} catch (final MalformedURLException ex) {
 			command.setAdminResponse("Could not edit recommender. Please check if '" + command.getNewrecurl() + "' is a valid url.");
-		} catch (final SQLException e) {
-			log.warn("SQLException while editing recommender", e);
-			command.setAdminResponse(e.getMessage());
 		}
 		command.setNewrecurl(null);
 		command.setTab(Tab.ADD);
@@ -252,4 +229,10 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		this.mp = mp;
 	}
 
+	/**
+	 * @param db the db to set
+	 */
+	public void setDb(DBLogic db) {
+		this.db = db;
+	}
 }
