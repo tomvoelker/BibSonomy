@@ -6,7 +6,6 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
@@ -45,7 +44,7 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	public static void initDatabase() {
 		TestDatabaseLoader.getInstance().load();
 
-		dbSessionFactory = new IbatisDBSessionFactory();
+		dbSessionFactory = testDatabaseContext.getBean(DBSessionFactory.class);
 
 		pluginRegistry = DatabasePluginRegistry.getInstance();
 	}
@@ -61,7 +60,7 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 		this.pluginMock = new DatabasePluginMock();
 		pluginRegistry.clearPlugins();
 
-		pluginRegistry.add(pluginMock);
+		pluginRegistry.add(this.pluginMock);
 		for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
 			pluginRegistry.add(plugin);
 		}

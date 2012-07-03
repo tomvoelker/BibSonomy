@@ -3,6 +3,7 @@ package org.bibsonomy.database.util;
 
 import org.bibsonomy.database.common.util.AbstractDatabaseSchemaInformation;
 
+import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
@@ -41,19 +42,13 @@ public class DatabaseSchemaInformation extends AbstractDatabaseSchemaInformation
 	 */
 	public static final String DISCUSSION_TABLE = "discussion";
 	
+	private SqlMapClient client;
 	
-	private static final DatabaseSchemaInformation INSTANCE = new DatabaseSchemaInformation();
-
 	/**
-	 * @return the @{link:DatabaseSchemaInformationImpl} instance
+	 * inits max fields and so on
 	 */
-	public static DatabaseSchemaInformation getInstance() {
-		return INSTANCE;
-	}
-	
-	
-	private DatabaseSchemaInformation() {
-		final SqlMapSession sqlMap = IbatisDBSessionFactory.getSqlMapClient().openSession();
+	public void init() {
+		final SqlMapSession sqlMap = this.client.openSession();
 		/*
 		 * we provide the database table name to make the getMaxFieldLengths call faster!
 		 */
@@ -63,5 +58,12 @@ public class DatabaseSchemaInformation extends AbstractDatabaseSchemaInformation
 		} finally {
 			sqlMap.close();
 		}
+	}
+	
+	/**
+	 * @param client the client to set
+	 */
+	public void setClient(final SqlMapClient client) {
+		this.client = client;
 	}
 }

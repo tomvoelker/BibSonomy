@@ -834,7 +834,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	 * @throws PersonListParserException 
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void storePostWrongUsage() throws PersonListParserException {
+	public void updatePostWrongUsage() throws PersonListParserException {
 		printMethod("storePostWrongUsage");
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 

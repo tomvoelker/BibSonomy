@@ -15,7 +15,6 @@ import java.util.Scanner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.DBLogic;
-import org.bibsonomy.database.testutil.JNDIBinder;
 import org.junit.Ignore;
 
 /**
@@ -61,7 +60,7 @@ public class TestDatabaseLoader {
 	 */
 	private TestDatabaseLoader() {
 		// parse all sql scripts
-		long start = System.currentTimeMillis();
+		final long start = System.currentTimeMillis();
 		log.debug("parsing create statements");
 		this.tableNames = new LinkedList<String>();
 		this.createStatements = this.parseInputStream(DBLogic.class.getClassLoader().getResourceAsStream(SCHEMA_FILENAME));
@@ -71,7 +70,7 @@ public class TestDatabaseLoader {
 		
 		log.debug("parsing delete statements");
 		this.deleteStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(DELETE_FILENAME));
-		long elapsed = (System.currentTimeMillis() - start ) / 1000;
+		final long elapsed = (System.currentTimeMillis() - start ) / 1000;
 		log.debug("Done; took " + elapsed + " seconds.");
 	}
 	
@@ -82,9 +81,11 @@ public class TestDatabaseLoader {
 	 * @param scriptStream
 	 * @return
 	 */
-	private List<String> parseInputStream(InputStream scriptStream) {
+	private List<String> parseInputStream(final InputStream scriptStream) {
 		final List<String> statements = new LinkedList<String>();
-		if (scriptStream == null) throw new RuntimeException("Can't get SQL script.");
+		if (scriptStream == null) {
+			throw new RuntimeException("Can't get SQL script.");
+		}
 				
 		/*
 		 * We read every single line and skip it if it's empty or a comment
@@ -100,10 +101,21 @@ public class TestDatabaseLoader {
 		final StringBuilder spanningLineBuf = new StringBuilder();
 		while (scan.hasNext()) {
 			final String currentLine = scan.nextLine();
-			if ("".equals(currentLine.trim())) continue;       // skip empty lines
-			if (currentLine.startsWith("--")) continue;        // skip comments				
-			if (currentLine.startsWith("DELIMITER")) continue; // exclude trigger-related statements
-			if (currentLine.startsWith("/*!50003")) continue;  
+			if ("".equals(currentLine.trim()))
+			 {
+				continue;       // skip empty lines
+			}
+			if (currentLine.startsWith("--"))
+			 {
+				continue;        // skip comments				
+			}
+			if (currentLine.startsWith("DELIMITER"))
+			 {
+				continue; // exclude trigger-related statements
+			}
+			if (currentLine.startsWith("/*!50003")) {
+				continue;
+			}  
 			if (currentLine.startsWith("CREATE TABLE")) {
 				final String[] split = currentLine.split("`");
 				if (split.length != 3) {
@@ -116,7 +128,9 @@ public class TestDatabaseLoader {
 
 			spanningLineBuf.append(" " + currentLine);
 			final String wholeLine = spanningLineBuf.toString().trim();
-			if (!wholeLine.endsWith(";")) continue;
+			if (!wholeLine.endsWith(";")) {
+				continue;
+			}
 			log.debug("Read: " + wholeLine);
 			statements.add(wholeLine);
 			spanningLineBuf.delete(0, spanningLineBuf.length());
@@ -143,7 +157,7 @@ public class TestDatabaseLoader {
 			 */
 			final String database = jdbc.getDatabaseConfig().getDatabase();
 			
-			if (firstRun) {
+			if (this.firstRun) {
 				if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
 					log.debug("Starting to drop + create database" + database);
 					start = System.currentTimeMillis();
@@ -163,7 +177,7 @@ public class TestDatabaseLoader {
 			/*
 			 * execute statements from script
 			 */
-			if (firstRun) {				
+			if (this.firstRun) {				
 				final List<String> statements = new LinkedList<String>();
 				
 				if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
@@ -205,7 +219,7 @@ public class TestDatabaseLoader {
 			jdbc.execute("SET FOREIGN_KEY_CHECKS = 1;");
 			
 			jdbc.close();
-			firstRun = false;
+			this.firstRun = false;
 		} catch (final IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -217,7 +231,7 @@ public class TestDatabaseLoader {
  * @author Christian Schenk
  */
 final class SimpleJDBCHelper implements Closeable {
-	private final String configFile = "bibsonomy_database.properties";
+	private final String configFile = "database-test.properties";
 	private Connection connection;
 	private final DatabaseConfig cfg;
 	
@@ -257,7 +271,7 @@ final class SimpleJDBCHelper implements Closeable {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			this.cfg = this.getConfig();
-			this.connection = DriverManager.getConnection(cfg.getUrl(), cfg.getUsername(), cfg.getPassword());
+			this.connection = DriverManager.getConnection(this.cfg.getUrl(), this.cfg.getUsername(), this.cfg.getPassword());
 			
 		} catch (final Exception ex) {
 			throw new RuntimeException(ex);
@@ -273,37 +287,43 @@ final class SimpleJDBCHelper implements Closeable {
 	    final Properties prop = new Properties();
 	    try {
 	        prop.load(SimpleJDBCHelper.class.getClassLoader().getResourceAsStream(this.configFile));
-	    } catch (IOException e) {
+	    } catch (final IOException e) {
 	    	throw new RuntimeException("Can't get config file '" + this.configFile + "'");
-	    }		
-	    // six properties need to be set
-	    if (prop.keySet().size() != 6) {
-	    	throw new RuntimeException("Error while reading config file '" + this.configFile + "'; expected 6 values, found " + prop.keySet().size()); 
 	    }
-
+	    
 		return new DatabaseConfig() {
+			@Override
 			public String getUrl() {
-				return JNDIBinder.JDBC_URL_START + prop.getProperty(JNDIBinder.HOST_KEY) + prop.getProperty(JNDIBinder.OPTIONS_KEY);
+				return prop.getProperty("database.main.url");
 			}
 			
-			/** Extracts the name of the database from the URL. 
+			/**
+			 * Extracts the name of the database from the URL. 
 			 * The name is the string between the last "/" and before
 			 * the first "?".
 			 * 
 			 * @return The name of the database.
 			 */
+			@Override
 			public String getDatabase() {
-				return prop.getProperty(JNDIBinder.DATABASE_KEY);
+				String url = this.getUrl();
+				// remove everything behind first '?'
+				url = url.substring(0, url.indexOf('?'));
+				// remove everything before last '/'
+				return url.substring(url.lastIndexOf('/') + 1);
 			}
 
+			@Override
 			public String getUsername() {
-				return prop.getProperty(JNDIBinder.USERNAME_KEY);
+				return prop.getProperty("database.main.username");
 			}
 
+			@Override
 			public String getPassword() {
-				return prop.getProperty(JNDIBinder.PASSWORD_KEY);
+				return prop.getProperty("database.main.password");
 			}
 			
+			@Override
 			public boolean createDatabaseBeforeLoading() {
 				return prop.getProperty("createDatabaseBeforeLoading", "true").equals("true");
 			}
@@ -326,10 +346,15 @@ final class SimpleJDBCHelper implements Closeable {
 		}
 	}
 
+	@Override
 	public void close() throws IOException {
-		if (this.connection == null) return;
+		if (this.connection == null) {
+			return;
+		}
 		try {
-			if (this.connection.isClosed()) return;
+			if (this.connection.isClosed()) {
+				return;
+			}
 			this.connection.close();
 		} catch (final SQLException ex) {
 			throw new RuntimeException(ex);

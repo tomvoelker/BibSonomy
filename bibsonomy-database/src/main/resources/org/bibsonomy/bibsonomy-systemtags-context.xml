@@ -35,7 +35,7 @@
 	    +-->
 	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag">
 		<property name="docPath" value="${project.document.path}"/>
-		<property name="DBSessionFactory" ref="dbSessionFactory"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>
 	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag"/>
 	

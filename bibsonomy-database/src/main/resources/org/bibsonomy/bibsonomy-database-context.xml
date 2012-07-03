@@ -170,6 +170,10 @@
 		</property>
 	</bean>
 	
+	<bean id="databaseValidator" class="org.bibsonomy.database.validation.DatabaseModelValidator">
+		<property name="databaseSchemaInformation" ref="dbSchemaInformation" />
+	</bean>
+	
 	<bean id="statisticsDatabaseManager" class="org.bibsonomy.database.managers.StatisticsDatabaseManager" factory-method="getInstance">
 		<property name="postChain" ref="postStatisticChain" />
 		<property name="tagChain" ref="tagStatisticChain" />
@@ -181,24 +185,29 @@
 	
 	<bean id="userDatabaseManager" class="org.bibsonomy.database.managers.UserDatabaseManager" factory-method="getInstance">
 		<property name="chain" ref="userChain" />
+		<property name="validator" ref="databaseValidator" />
 	</bean>
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">
 		<property name="userDb" ref="userDatabaseManager" />
 	</bean>
 	
-	<bean id="bookmarkDatabaseManager" class="org.bibsonomy.database.managers.BookmarkDatabaseManager" factory-method="getInstance">
+	<bean id="postDatabaseManager" class="org.bibsonomy.database.managers.PostDatabaseManager" abstract="true">
+		<property name="validator" ref="databaseValidator" />
+	</bean>
+	
+	<bean id="bookmarkDatabaseManager" class="org.bibsonomy.database.managers.BookmarkDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
 		<property name="resourceSearch" ref="luceneBookmarkSearch" />
 		<property name="chain" ref="bookmarkChain" />
 	</bean>
 	
-	<bean id="tagRelationDatabaseManager" class="org.bibsonomy.database.managers.TagRelationDatabaseManager" factory-method="getInstance">
-		<property name="chain" ref="conceptChain" />
-	</bean>
-	
-	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance">
+	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
 		<property name="resourceSearch" ref="lucenePublicationSearch" />
 		<property name="chain" ref="publicationChain" />
+	</bean>
+	
+	<bean id="tagRelationDatabaseManager" class="org.bibsonomy.database.managers.TagRelationDatabaseManager" factory-method="getInstance">
+		<property name="chain" ref="conceptChain" />
 	</bean>
 	
 	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
@@ -239,4 +248,21 @@
 	<bean id="abstractGoldStandardBookmarkChainElement" class="org.bibsonomy.database.managers.chain.goldstandard.get.GoldStandardChainElement" abstract="true">
 		<property name="databaseManager" ref="goldStandardBookmarkDatabaseMananger" />
 	</bean>
+	
+	<bean id="mainSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="classpath:SqlMapConfig.xml" />
+        <!-- defined in webapp module using jndi -->
+        <property name="dataSource" ref="mainDataSource" />
+        <property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+    </bean>
+    
+    <!-- holdes schema informations from the database -->
+	<bean id="dbSchemaInformation" class="org.bibsonomy.database.util.DatabaseSchemaInformation" init-method="init">
+		<property name="client" ref="mainSqlMapClient" />
+	</bean>
+	
+	<bean id="dbSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="mainSqlMapClient" />
+	</bean>
+    
 </beans>
