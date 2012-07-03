@@ -12,56 +12,62 @@ import javax.xml.bind.Unmarshaller;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.util.UrlUtils;
+
 import de.unikassel.puma.openaccess.sherparomeo.model.Condition;
 import de.unikassel.puma.openaccess.sherparomeo.model.Publisher;
 import de.unikassel.puma.openaccess.sherparomeo.model.Romeoapi;
 
 /**
- * @version $Id$
+ * TODO: working but ugly code.
+ * 
  * @author rja
- *
+ * @version $Id$
  */
 public class SherpaRomeoImpl implements SherpaRomeoInterface {
+	private static final Log log = LogFactory.getLog(SherpaRomeoImpl.class);
 
-    /*
-     * TODO: working but ugly code.
-     */
-
+	private static final String SHERPA_API_URL = "http://www.sherpa.ac.uk/romeo/api24.php";
+    
     private JAXBContext context;
 
     public SherpaRomeoImpl() {
         try {
             this.context = JAXBContext.newInstance(Condition.class.getPackage().getName());
-        } catch (JAXBException e) {
-            e.printStackTrace();
+        } catch (final JAXBException e) {
+           	log.error("error while loading JAXB context", e);
         }
     }
 
     @Override
-    public String getPolicyForPublisher(String publisher, String qtype) {
+    public String getPolicyForPublisher(final String publisher, final String qtype) {
         try {
-            String url = "http://www.sherpa.ac.uk/romeo/api24.php?pub=" + URLEncoder.encode(publisher, "UTF-8");
-            if (present(qtype))
-                url += "&qtype=" + URLEncoder.encode(qtype, "UTF-8");
+            String url = SHERPA_API_URL + "?pub=" + UrlUtils.safeURIEncode(publisher);
+            if (present(qtype)) {
+				url += "&qtype=" + UrlUtils.safeURIEncode(qtype);
+			}
 
             return this.doRequest(new URL(url));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            log.error("error while getting policy for publisher", e);
         }
         return null;
     }
 
     @Override
-    public String getPolicyForJournal(String jtitle, String qtype) {
+    public String getPolicyForJournal(final String jtitle, final String qtype) {
         try {
-            String url = "http://www.sherpa.ac.uk/romeo/api24.php?jtitle=" + URLEncoder.encode(jtitle, "UTF-8");
-            if (present(qtype))
-                url += "&qtype=" + URLEncoder.encode(qtype, "UTF-8");
+            String url = SHERPA_API_URL + "?jtitle=" + UrlUtils.safeURIEncode(jtitle);
+            if (present(qtype)) {
+				url += "&qtype=" + URLEncoder.encode(qtype, "UTF-8");
+			}
 
             return this.doRequest(new URL(url));
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (final Exception e) {
+            log.error("error while getting policy for journal", e);
         }
         return null;
     }
@@ -69,19 +75,14 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
     /**
      * Sending request to sherparomeo.
      * 
-     * FIXME: conditions for pre-/postprints missing!
-     * 
-     * 
+     * FIXME: conditions for pre-/postprints missing
      * @param url
      * @return
      */
-    @SuppressWarnings("unchecked")
     private String doRequest(final URL url) {
         try {
             final Unmarshaller unmarshaller = this.context.createUnmarshaller();
             final Romeoapi rp = (Romeoapi) unmarshaller.unmarshal(url);
-
-            // log.debug("Checking Open Access: \t" + url);
 
             final List<Publisher> publishers = rp.getPublishers().getPublisher();
             final JSONObject result = new JSONObject();
@@ -95,21 +96,18 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
                 publishersJson.add(publisherJson);
             }
             result.put("publishers", publishersJson);
-
             return result.toString();
-
-        } catch (JAXBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (final JAXBException e) {
+            log.error("error unmarshalling response", e);
         }
         return "";
     }
 
-	@SuppressWarnings("unchecked")
-	private JSONArray renderConditions(final List<Condition> conditions) {
+	private static JSONArray renderConditions(final List<Condition> conditions) {
 		final JSONArray conditionsJson = new JSONArray();
-		for (final Condition condition : conditions)
-		    conditionsJson.add(condition.getvalue());
+		for (final Condition condition : conditions) {
+			conditionsJson.add(condition.getvalue());
+		}
 		return conditionsJson;
 	}
 }
