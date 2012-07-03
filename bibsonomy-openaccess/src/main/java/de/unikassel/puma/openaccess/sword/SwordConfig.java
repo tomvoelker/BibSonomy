@@ -1,12 +1,12 @@
 package de.unikassel.puma.openaccess.sword;
 
 /**
- * bean for configuring sword via JNDI
+ * bean for configuring sword
  * 
- * @author
- * @version
+ * @author sven
+ * @version $Id$
  */
-
+@Deprecated // TODO: move into swordSerice
 public class SwordConfig {
 	/** temp directory to build zip-file for sword-deposit */
 	private String dirTemp;
@@ -15,7 +15,7 @@ public class SwordConfig {
 	private String httpServer;
 	
 	/** port number of sword server */
-	private Integer httpPort = 80;
+	private int httpPort = 80;
 	
 	/** user agent to send to sword server */
 	private String httpUserAgent = "PUMA";
@@ -36,13 +36,13 @@ public class SwordConfig {
 	 * @return the dirTemp
 	 */
 	public String getDirTemp() {
-		return dirTemp;
+		return this.dirTemp;
 	}
 
 	/**
 	 * @param dirTemp the dirTemp to set
 	 */
-	public void setDirTemp(String dirTemp) {
+	public void setDirTemp(final String dirTemp) {
 		this.dirTemp = dirTemp;
 	}
 
@@ -50,27 +50,27 @@ public class SwordConfig {
 	 * @return the httpServer
 	 */
 	public String getHttpServer() {
-		return httpServer;
+		return this.httpServer;
 	}
 
 	/**
 	 * @param httpServer the httpServer to set
 	 */
-	public void setHttpServer(String httpServer) {
+	public void setHttpServer(final String httpServer) {
 		this.httpServer = httpServer;
 	}
 
 	/**
 	 * @return the httpPort
 	 */
-	public Integer getHttpPort() {
-		return httpPort;
+	public int getHttpPort() {
+		return this.httpPort;
 	}
 
 	/**
 	 * @param httpPort the httpPort to set
 	 */
-	public void setHttpPort(Integer httpPort) {
+	public void setHttpPort(final int httpPort) {
 		this.httpPort = httpPort;
 	}
 
@@ -78,13 +78,13 @@ public class SwordConfig {
 	 * @return the httpUserAgent
 	 */
 	public String getHttpUserAgent() {
-		return httpUserAgent;
+		return this.httpUserAgent;
 	}
 
 	/**
 	 * @param httpUserAgent the httpUserAgent to set
 	 */
-	public void setHttpUserAgent(String httpUserAgent) {
+	public void setHttpUserAgent(final String httpUserAgent) {
 		this.httpUserAgent = httpUserAgent;
 	}
 
@@ -92,13 +92,13 @@ public class SwordConfig {
 	 * @return the httpServicedocumentUrl
 	 */
 	public String getHttpServicedocumentUrl() {
-		return httpServicedocumentUrl;
+		return this.httpServicedocumentUrl;
 	}
 
 	/**
 	 * @param httpServicedocumentUrl the httpServicedocumentUrl to set
 	 */
-	public void setHttpServicedocumentUrl(String httpServicedocumentUrl) {
+	public void setHttpServicedocumentUrl(final String httpServicedocumentUrl) {
 		this.httpServicedocumentUrl = httpServicedocumentUrl;
 	}
 
@@ -106,13 +106,13 @@ public class SwordConfig {
 	 * @return the httpDepositUrl
 	 */
 	public String getHttpDepositUrl() {
-		return httpDepositUrl;
+		return this.httpDepositUrl;
 	}
 
 	/**
 	 * @param httpDepositUrl the httpDepositUrl to set
 	 */
-	public void setHttpDepositUrl(String httpDepositUrl) {
+	public void setHttpDepositUrl(final String httpDepositUrl) {
 		this.httpDepositUrl = httpDepositUrl;
 	}
 
@@ -120,13 +120,13 @@ public class SwordConfig {
 	 * @return the authUsername
 	 */
 	public String getAuthUsername() {
-		return authUsername;
+		return this.authUsername;
 	}
 
 	/**
 	 * @param authUsername the authUsername to set
 	 */
-	public void setAuthUsername(String authUsername) {
+	public void setAuthUsername(final String authUsername) {
 		this.authUsername = authUsername;
 	}
 
@@ -134,13 +134,13 @@ public class SwordConfig {
 	 * @return the authPassword
 	 */
 	public String getAuthPassword() {
-		return authPassword;
+		return this.authPassword;
 	}
 
 	/**
 	 * @param authPassword the authPassword to set
 	 */
-	public void setAuthPassword(String authPassword) {
+	public void setAuthPassword(final String authPassword) {
 		this.authPassword = authPassword;
 	}
 
