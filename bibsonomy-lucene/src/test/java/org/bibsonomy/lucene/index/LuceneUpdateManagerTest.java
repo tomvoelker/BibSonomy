@@ -30,8 +30,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -130,10 +130,10 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		publicationDb.createPost(toInsert, this.dbSession);
 
 		// update index
-		updateResourceIndices();
+		this.updateResourceIndices();
 		
 		// search for all relevant fields
-		for( final String term : bibtexSearchTerms ) {
+		for( final String term : this.bibtexSearchTerms ) {
 			log.info("Searching for " + term);
 			final ResultList<Post<BibTex>> resultList = 
 				bibtexSearcher.getPosts(toInsert.getUser().getName(), toInsert.getUser().getName()+"noIse", null, allowedGroups, term, null, null, null, null, null, null, 10, 0);
@@ -144,7 +144,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// TEST 2: search for the same post as the owner 
 		//--------------------------------------------------------------------
 		// search for all relevant fields
-		for( final String term : bibtexSearchTerms ) {
+		for( final String term : this.bibtexSearchTerms ) {
 			log.error("[PrivatePost] Searching for " + term);
 			final ResultList<Post<BibTex>> resultList = 
 				bibtexSearcher.getPosts(toInsert.getUser().getName(), null, null, allowedGroups, term, null, null, null, null, null, null, 1000, 0);
@@ -186,7 +186,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.updateResourceIndices();
 		
 		// search for all relevant fields
-		for( final String term : bibtexSearchTerms ) {
+		for( final String term : this.bibtexSearchTerms ) {
 			log.info("Searching for " + term);
 			final ResultList<Post<BibTex>> resultList = 
 				bibtexSearcher.getPosts(bibtexPost.getUser().getName(), null, null, allowedGroups, term, null, null, null, null, null, null, 10, 0);
@@ -206,10 +206,10 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		publicationDb.createPost(workaroundInsert, this.dbSession);
 		
 		// update index
-		updateResourceIndices();
+		this.updateResourceIndices();
 		
 		// search again
-		for( final String term : bibtexSearchTerms ) {
+		for( final String term : this.bibtexSearchTerms ) {
 			log.info("Searching for " + term);
 			final ResultList<Post<BibTex>> resultList = 
 				bibtexSearcher.getPosts(bibtexPost.getUser().getName(), null, null, allowedGroups, term, null, null, null, null, null, null, 1000, 0);
@@ -236,17 +236,17 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		publicationDb.createPost(bibtexPost, this.dbSession);
 		
 		// update index
-		updateResourceIndices();
+		this.updateResourceIndices();
 		
 		// search for bibtex posts
-		for( final String term : bibtexSearchTerms ) {
+		for( final String term : this.bibtexSearchTerms ) {
 			log.debug("Searching for " + term);
 			final ResultList<Post<BibTex>> bibtexList = 
 				bibtexSearcher.getPosts(bibtexPost.getUser().getName(), null, null, allowedGroups, term, null, null, null, null, null, null, 1000, 0);
 			assertEquals(2, bibtexList.size());
 		}
 		// search for bookmark posts
-		for( final String term : bookmarkSearchTerms ) {
+		for( final String term : this.bookmarkSearchTerms ) {
 			log.debug("Searching for " + term);
 			final ResultList<Post<Bookmark>> bookmarkList = 
 				bookmarkSearcher.getPosts(bookmarkPost.getUser().getName(), null, null, allowedGroups, term, null, null, null, null, null, null, 1000, 0);
@@ -287,7 +287,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
 		
-		updateResourceIndices();
+		this.updateResourceIndices();
 		
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1, 0);
@@ -295,20 +295,21 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bmResultList  = bookmarkSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1, 0);
 		assertEquals(0, bmResultList.size());
 
-		waitForDB();
+		this.waitForDB();
 		
 		user.setPrediction(0);
 		user.setSpammer(false);
 		user.setAlgorithm("admin");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
 		
-		updateResourceIndices();
+		this.updateResourceIndices();
 		
 		// search
 		final int groupId = -1;
 		final List<Integer> groups = new ArrayList<Integer>();
-		for( int i=0; i<10; i++ ) 
+		for( int i=0; i<10; i++ ) {
 			groups.add(i);
+		}
 		
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1000, 0);
 		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
@@ -323,23 +324,23 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		
 		
 		// test multiple flagging/unflagging operations
-		waitForDB();
+		this.waitForDB();
 		user.setPrediction(1);
 		user.setSpammer(true);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		waitForDB();
+		this.waitForDB();
 		user.setPrediction(0);
 		user.setSpammer(false);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		waitForDB();
+		this.waitForDB();
 		user.setPrediction(1);
 		user.setSpammer(true);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
 		
-		updateResourceIndices();
+		this.updateResourceIndices();
 		
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1000, 0);
@@ -348,22 +349,22 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(0, bmResultList.size());
 		
 		// test multiple flagging/unflagging operations
-		waitForDB();
+		this.waitForDB();
 		user.setPrediction(0);
 		user.setSpammer(false);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		waitForDB();
+		this.waitForDB();
 		user.setPrediction(1);
 		user.setSpammer(true);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		waitForDB();
+		this.waitForDB();
 		user.setPrediction(0);
 		user.setSpammer(false);
 		user.setAlgorithm("luceneTest");
 		adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
-		updateResourceIndices();
+		this.updateResourceIndices();
 
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, allowedGroups, userName, null, null, null, null, null, null, 1000, 0);
@@ -414,7 +415,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bookmarkDb.createPost(bookmarkPost, this.dbSession);
 
 		// update index
-		updateResourceIndices();
+		this.updateResourceIndices();
 		
 		// search for publications
 		ResultList<Post<BibTex>> bibResultList = 
@@ -475,8 +476,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	private static void generateIndex() throws IOException, ClassNotFoundException, SQLException {
-		luceneBibTexUpdater.generateIndex(false);
-		luceneBookmarkUpdater.generateIndex(false);
+		luceneBibTexUpdater.generateIndex(false, 1);
+		luceneBookmarkUpdater.generateIndex(false, 1);
 	}
 	
 	/**

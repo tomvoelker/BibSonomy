@@ -7,7 +7,6 @@ import java.util.Date;
 import org.apache.lucene.document.Document;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.database.testutil.JNDIBinder;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
@@ -18,8 +17,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
@@ -36,7 +35,6 @@ public class LucenePostConverterTest {
 	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
-		JNDIBinder.bind();
 		// use the configurated converters
 		bibTexConverter = (LuceneResourceConverter<BibTex>) LuceneSpringContextWrapper.getBeanFactory().getBean("lucenePublicationConverter");
 		bookmarkConverter = (LuceneResourceConverter<Bookmark>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneBookmarkConverter");

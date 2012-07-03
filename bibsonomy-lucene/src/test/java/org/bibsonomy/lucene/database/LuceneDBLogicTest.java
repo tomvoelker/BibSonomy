@@ -14,15 +14,13 @@ import java.util.Map;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
-import org.bibsonomy.database.testutil.JNDIBinder;
-import org.bibsonomy.lucene.database.util.LuceneDatabaseSessionFactory;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -30,10 +28,9 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -51,7 +48,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String LUCENE_MAGIC_TITLE  = "luceneTitle";
 
 	/** constant for querying for all posts which have been deleted since the last index update */
-	private static final long QUERY_TIME_OFFSET_MS = 60*1000;
+	private static final long QUERY_TIME_OFFSET_MS = 60 * 1000;
 
 	private static BookmarkDatabaseManager bookmarkDb;
 	private static BibTexDatabaseManager bibTexDb;
@@ -71,23 +68,11 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		bibTexDb = BibTexDatabaseManager.getInstance();
 	}
 
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUpLucene() {
-		// bind datasource access via JNDI
-		JNDIBinder.bind();
-		final DBSessionFactory factory = new LuceneDatabaseSessionFactory();
-		luceneBookmarkLogic = new LuceneDBLogic<Bookmark>();
-		luceneBookmarkLogic.setResourceClass(Bookmark.class);
-		luceneBookmarkLogic.setSessionFactory(factory);
-		
-		luceneBibTexLogic = new LuceneDBLogic<BibTex>();
-		luceneBibTexLogic.setResourceClass(BibTex.class);
-		luceneBibTexLogic.setSessionFactory(factory);
-	}
-
-	@AfterClass
-	public static void unbindJNDI() {
-		JNDIBinder.unbind();
+		luceneBookmarkLogic = (LuceneDBLogic<Bookmark>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneBookmarkLogic");
+		luceneBibTexLogic = (LuceneDBLogic<BibTex>) LuceneSpringContextWrapper.getBeanFactory().getBean("lucenePublicationLogic");
 	}
 
 	/**
@@ -164,7 +149,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// start time - we ignore milliseconds
 		final long start    = System.currentTimeMillis();
-		final long fromDate = start - start % 1000;
+		final long fromDate = start - (start % 1000);
 
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
@@ -195,13 +180,13 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 
 		Date postDate = luceneBibTexLogic.getNewestRecordDateFromTas();
 		// compare modulo milliseconds 
-		assertEquals(bibtexPost.getDate().getTime() - bibtexPost.getDate().getTime() % 100000, postDate.getTime()-postDate.getTime() % 100000);
+		assertEquals(bibtexPost.getDate().getTime() - (bibtexPost.getDate().getTime() % 100000), postDate.getTime()-(postDate.getTime() % 100000));
 
 		final Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
 		bookmarkDb.createPost(bookmarkPost, this.dbSession);
 
 		postDate = luceneBookmarkLogic.getNewestRecordDateFromTas();
-		assertEquals(bookmarkPost.getDate().getTime() - bookmarkPost.getDate().getTime() % 100000, postDate.getTime()-postDate.getTime() % 100000);
+		assertEquals(bookmarkPost.getDate().getTime() - (bookmarkPost.getDate().getTime() % 100000), postDate.getTime()-(postDate.getTime() % 100000));
 	}
 
 	/**
@@ -311,8 +296,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	 * generate a Bookmark Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method
 	 */
-	private Post <Bookmark> generateBookmarkDatabaseManagerTestPost() {
-
+	private Post<Bookmark> generateBookmarkDatabaseManagerTestPost() {
 		final Post<Bookmark> post = new Post<Bookmark>();
 
 		final Group group = new Group();
@@ -341,7 +325,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setCount(0);
-		bookmark.setTitle("test"+(Math.round(Math.random()*Integer.MAX_VALUE))+" "+LUCENE_MAGIC_TITLE);
+		bookmark.setTitle("test" + (Math.round(Math.random() * Integer.MAX_VALUE)) + " " + LUCENE_MAGIC_TITLE);
 		bookmark.setUrl("http://www.testurl.orgg");
 		bookmark.recalculateHashes();
 		resource = bookmark;
