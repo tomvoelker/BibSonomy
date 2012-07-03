@@ -1,5 +1,6 @@
 package de.unikassel.puma.openaccess.sword;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,30 +22,34 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
-
-public class PumaData<T extends Resource> extends PumaPost<T> {
-	private static final Log log = LogFactory.getLog(PumaData.class);
-	/**
-	 * 
-	 */
+/**
+ * 
+ * @author sven
+ * @version $Id$
+ *
+ * @param <T>
+ */
+public class PumaData<T extends Resource> implements Serializable {
 	private static final long serialVersionUID = -4560925709698323262L;
+	
+	private static final Log log = LogFactory.getLog(PumaData.class);
 	
 	private Post<T> post = new Post<T>();
     /**
 	 * @return the post
 	 */
 	public Post<T> getPost() {
-		return post;
+		return this.post;
 	}
 
 	/**
 	 * @param post the post to set
 	 */
-	public void setPost(Post<T> post) {
+	public void setPost(final Post<T> post) {
 		this.post = post;
 		if (post.getResource() instanceof BibTex) {
 			final BibTex resource = (BibTex) post.getResource(); 
-			setAuthor(resource.getAuthor());		
+			this.setAuthor(resource.getAuthor());		
 		}
 	}
 	
@@ -62,13 +67,13 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	 * @return the list of authors
 	 */
 	public List<PersonName> getAuthor() {
-		return author;
+		return this.author;
 	}
 
 	/**
 	 * @param author list of authors to set
 	 */
-	public void setAuthor(List<PersonName> authors) {
+	public void setAuthor(final List<PersonName> authors) {
 		this.author = authors;
 	}	
 
@@ -77,11 +82,11 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 		return this.classification;
 	}
 
-	public void setClassification(Map<String, List<String>> classification) {
+	public void setClassification(final Map<String, List<String>> classification) {
 		this.classification = classification;
 	}
 
-	public void addClassification (String key, String value) {
+	public void addClassification (final String key, final String value) {
 		if (this.classification.containsKey(key)) {
 			this.classification.get(key).add(value);
 		} else {
@@ -90,13 +95,15 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 		}
 	}
 
-	public void addClassification (String key, List<String> values) {
-		if (null==this.classification) classification = new HashMap<String, List<String>>();
+	public void addClassification (final String key, final List<String> values) {
+		if (null==this.classification) {
+			this.classification = new HashMap<String, List<String>>();
+		}
 		if (!this.classification.containsKey(key)) {
 			this.classification.put(key, new ArrayList<String>());
 		}
 		
-		for ( String value : values ) {
+		for ( final String value : values ) {
 			this.classification.get(key).add(value);
 		}
 
@@ -107,13 +114,13 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	 * @return the examinstitution
 	 */
 	public String getExaminstitution() {
-		return examinstitution;
+		return this.examinstitution;
 	}
 
 	/**
 	 * @param examinstitution the examinstitution to set
 	 */
-	public void setExaminstitution(String examinstitution) {
+	public void setExaminstitution(final String examinstitution) {
 		this.examinstitution = examinstitution;
 	}
 
@@ -121,20 +128,20 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	 * @return the examreferee
 	 */
 	public List<String> getExamreferee() {
-		return examreferee;
+		return this.examreferee;
 	}
 
 	/**
 	 * @param examreferee the examreferee to set
 	 */
-	public void setExamreferee(List<String> examreferee) {
+	public void setExamreferee(final List<String> examreferee) {
 		this.examreferee = examreferee;
 	}
 
 	/**
 	 * @param examreferee add examreferee to list
 	 */
-	public void addExamreferee(String examreferee) {
+	public void addExamreferee(final String examreferee) {
 		this.examreferee.add(examreferee);
 	}
 
@@ -142,36 +149,36 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	 * @return the phdoralexam
 	 */
 	public XMLGregorianCalendar getPhdoralexam() {
-		return phdoralexam;
+		return this.phdoralexam;
 	}
 
 	/**
 	 * @param phdoralexam the phdoralexam to set
 	 */
-	public void setPhdoralexam(XMLGregorianCalendar phdoralexam) {
+	public void setPhdoralexam(final XMLGregorianCalendar phdoralexam) {
 		this.phdoralexam = phdoralexam;
 	}
 
 	/**
-	 * @param phdoralexam the phdoralexam to set
+	 * @param phdoralexamString the phdoralexam to set
 	 */
-	public void setPhdoralexam(String phdoralexamString) {
+	public void setPhdoralexam(final String phdoralexamString) {
 		// convert string to date
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Date phdoralexamDate = null;
 		XMLGregorianCalendar phdoralexamXMLDate=null;
 		
 		try {
 			phdoralexamDate = sdf.parse(phdoralexamString);
-			GregorianCalendar c = new GregorianCalendar();
+			final GregorianCalendar c = new GregorianCalendar();
 			c.setTime(phdoralexamDate);
 			try {
 				phdoralexamXMLDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-			} catch (DatatypeConfigurationException e) {
+			} catch (final DatatypeConfigurationException e) {
 				log.warn("DatatypeConfigurationException");
 			}
-		} catch(ParseException e) {
+		} catch(final ParseException e) {
 			// Quellzeit hat ein falsches Format
 		}
 		
@@ -184,27 +191,27 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	 * @return the sponsors
 	 */
 	public List<String> getSponsors() {
-		return sponsors;
+		return this.sponsors;
 	}
 
 	/**
 	 * @param sponsors the sponsors to set
 	 */
-	public void setSponsors(List<String> sponsors) {
+	public void setSponsors(final List<String> sponsors) {
 		this.sponsors = sponsors;
 	}
 
 	/**
 	 * @param sponsor add sponsor to list
 	 */
-	public void addSponsor(String sponsor) {
+	public void addSponsor(final String sponsor) {
 		this.sponsors.add(sponsor);
 	}
 
 	/**
 	 * @param title add additional title list
 	 */
-	public void addAdditionaltitle(String title) {
+	public void addAdditionaltitle(final String title) {
 		this.additionaltitle.add(title);
 	}
 
@@ -212,13 +219,13 @@ public class PumaData<T extends Resource> extends PumaPost<T> {
 	 * @return the additionaltitle
 	 */
 	public List<String> getAdditionaltitle() {
-		return additionaltitle;
+		return this.additionaltitle;
 	}
 
 	/**
 	 * @param additionaltitle the additionaltitle list to set
 	 */
-	public void setAdditionaltitle(List<String> additionaltitle) {
+	public void setAdditionaltitle(final List<String> additionaltitle) {
 		this.additionaltitle = additionaltitle;
 	}
 	
