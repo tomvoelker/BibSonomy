@@ -13,7 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 /**
- * TODO: document me
+ * an userpassword authentication filter with brute force protection
+ * @see TeerGrube
  * 
  * @author dzo
  * @version $Id$
