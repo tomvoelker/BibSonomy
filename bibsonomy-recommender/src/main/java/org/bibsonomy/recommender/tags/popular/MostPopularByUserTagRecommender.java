@@ -1,11 +1,8 @@
 package org.bibsonomy.recommender.tags.popular;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -21,7 +18,6 @@ import org.bibsonomy.recommender.tags.database.DBLogic;
  * @version $Id$
  */
 public class MostPopularByUserTagRecommender extends AbstractTagRecommender {
-	private static final Log log = LogFactory.getLog(MostPopularByUserTagRecommender.class);
 	
 	private DBLogic dbLogic;
 	
@@ -29,21 +25,18 @@ public class MostPopularByUserTagRecommender extends AbstractTagRecommender {
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		final String username = post.getUser().getName();
 		if (username != null) {
-			try {
-				/*
-				 * we get the count to normalize the score
-				 */
-				final int count = dbLogic.getNumberOfTasForUser(username);
-				
-				final List<Pair<String, Integer>> tagsWithCount = dbLogic.getMostPopularTagsForUser(username, numberOfTagsToRecommend);
-				for (final Pair<String, Integer> tagWithCount : tagsWithCount) {
-					final String tag = getCleanedTag(tagWithCount.getFirst());
-					if (tag != null) {
-						recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond()) / count), 0.5));
-					}
+			
+			/*
+			 * we get the count to normalize the score
+			 */
+			final int count = this.dbLogic.getNumberOfTasForUser(username);
+			
+			final List<Pair<String, Integer>> tagsWithCount = this.dbLogic.getMostPopularTagsForUser(username, this.numberOfTagsToRecommend);
+			for (final Pair<String, Integer> tagWithCount : tagsWithCount) {
+				final String tag = this.getCleanedTag(tagWithCount.getFirst());
+				if (tag != null) {
+					recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond()) / count), 0.5));
 				}
-			} catch (final SQLException ex) {
-				log.error("Error getting recommendations for user " + username, ex);
 			}
 		}
 	}

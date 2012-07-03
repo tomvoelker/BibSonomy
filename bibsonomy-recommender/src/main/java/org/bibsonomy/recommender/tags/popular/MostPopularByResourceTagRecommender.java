@@ -2,7 +2,6 @@ package org.bibsonomy.recommender.tags.popular;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,27 +38,23 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 
 		final String intraHash = resource.getIntraHash();
 		if (present(intraHash)) {
-			try {
-				/*
-				 * we get the count to normalize the score
-				 */
-				final int count = dbLogic.getNumberOfTasForResource(resource.getClass(), intraHash);
-				log.debug("Resource has " + count + " TAS.");
+			/*
+			 * we get the count to normalize the score
+			 */
+			final int count = this.dbLogic.getNumberOfTasForResource(resource.getClass(), intraHash);
+			log.debug("Resource has " + count + " TAS.");
 
-				final List<Pair<String,Integer>> tagsWithCount = dbLogic.getMostPopularTagsForResource(resource.getClass(), intraHash, numberOfTagsToRecommend);
-				if (present(tagsWithCount)) {
-					for (final Pair<String,Integer> tagWithCount : tagsWithCount) {
-						final String tag = getCleanedTag(tagWithCount.getFirst());
-						if (tag != null) {
-							recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond()) / count), 0.5));
-						}
+			final List<Pair<String,Integer>> tagsWithCount = this.dbLogic.getMostPopularTagsForResource(resource.getClass(), intraHash, this.numberOfTagsToRecommend);
+			if (present(tagsWithCount)) {
+				for (final Pair<String,Integer> tagWithCount : tagsWithCount) {
+					final String tag = this.getCleanedTag(tagWithCount.getFirst());
+					if (tag != null) {
+						recommendedTags.add(new RecommendedTag(tag, ((1.0 * tagWithCount.getSecond()) / count), 0.5));
 					}
-					log.debug("Returning the tags " + recommendedTags);
-				} else {
-					log.debug("Resource not found or no tags available.");
 				}
-			} catch (final SQLException ex) {
-				log.error("Error getting recommendations for resource " + resource, ex);
+				log.debug("Returning the tags " + recommendedTags);
+			} else {
+				log.debug("Resource not found or no tags available.");
 			}
 		} else {
 			log.debug("Could not get recommendations, because no intraHash was given.");

@@ -36,12 +36,6 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 
 	<typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 
-	<transactionManager type="JDBC">
-		<dataSource type="JNDI">
-			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_recommender"/>
-		</dataSource>
-	</transactionManager>
-	
 	<sqlMap resource="common/RecommendationLogCommon.xml" />
 	<sqlMap resource="RecommendationLog.xml" />
 </sqlMapConfig>

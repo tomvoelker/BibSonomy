@@ -14,12 +14,6 @@
 	<typeAlias alias="timestamp"  type="java.sql.Timestamp" />
 	<typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.tags.database.params.PostRecParam" />
 	
-	<transactionManager type="JDBC">
-		<dataSource type="JNDI">
-			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy"/>
-		</dataSource>
-	</transactionManager>
-	
 	<sqlMap resource="common/RecommendationBibCommon.xml" />	
 	<sqlMap resource="RecommendationResolver.xml" /> 
 </sqlMapConfig>
