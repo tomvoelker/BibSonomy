@@ -19,7 +19,6 @@ import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -76,7 +75,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	protected static void wait(final int seconds) {
 		try {
 			Thread.sleep(1000 * seconds);
-		} catch (InterruptedException ex) {
+		} catch (final InterruptedException ex) {
 			// ignore
 		}
 	}
@@ -86,9 +85,9 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	@SuppressWarnings("javadoc")
 	@BeforeClass
 	public static void initRestServer() throws Exception {
-		DBLogicApiInterfaceFactory dbLogicFactory = new DBLogicApiInterfaceFactory();
-		dbLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
-		TestServerBuilder buildServer = new TestServerBuilder(dbLogicFactory, PORT);
+		final DBLogicApiInterfaceFactory dbLogicFactory = new DBLogicApiInterfaceFactory();
+		dbLogicFactory.setDbSessionFactory(dbSessionFactory);
+		final TestServerBuilder buildServer = new TestServerBuilder(dbLogicFactory, PORT);
 		restServer = buildServer.buildServer();
 		restServer.start();
 	}
@@ -119,25 +118,25 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		/*
 		 * create server user
 		 */
-		serverUser = new User();
-		serverUser.setName(SERVER_USER_NAME);
-		serverUser.setRole(Role.SYNC);
-		serverUser.setGroups(new ArrayList<Group>());
-		serverUser.getGroups().add(new Group("jbhj"));
-		serverUser.setApiKey(SERVER_USER_APIKEY);
+		this.serverUser = new User();
+		this.serverUser.setName(SERVER_USER_NAME);
+		this.serverUser.setRole(Role.SYNC);
+		this.serverUser.setGroups(new ArrayList<Group>());
+		this.serverUser.getGroups().add(new Group("jbhj"));
+		this.serverUser.setApiKey(SERVER_USER_APIKEY);
 
 		/*
 		 * create client user
 		 */
-		clientUser = new User();
-		clientUser.setName(CLIENT_USER_NAME);
-		clientUser.setRole(Role.SYNC);
+		this.clientUser = new User();
+		this.clientUser.setName(CLIENT_USER_NAME);
+		this.clientUser.setRole(Role.SYNC);
 
 		/*
 		 * create the logic interfaces
 		 */
-		clientLogic = new SyncDBLogic(clientUser, new IbatisDBSessionFactory());
-		serverLogic = new SyncDBLogic(serverUser, new IbatisDBSessionFactory());
+		this.clientLogic = new SyncDBLogic(this.clientUser, dbSessionFactory);
+		this.serverLogic = new SyncDBLogic(this.serverUser, dbSessionFactory);
 
 		/*
 		 * iterate over all resource types
@@ -152,29 +151,29 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 
 			// post 1 "no changes" created and modified before last
 			// synchronization
-			serverPosts.add(createPost("no changes", "2011-01-10 14:32:00", "2011-01-31 14:32:00", serverUser, clazz));
+			serverPosts.add(this.createPost("no changes", "2011-01-10 14:32:00", "2011-01-31 14:32:00", this.serverUser, clazz));
 
 			// post 2 "deleted on server" is not in the server database
 
 			// post 3 "deleted on client" created and modified before last
 			// synchronization
-			serverPosts.add(createPost("deleted on client", "2011-01-10 14:55:00", "2011-01-15 14:33:00", serverUser, clazz));
+			serverPosts.add(this.createPost("deleted on client", "2011-01-10 14:55:00", "2011-01-15 14:33:00", this.serverUser, clazz));
 
 			// post 4 "changed on server" created before, changed after the last
 			// synchronization
-			serverPosts.add(createPost("changed on server", "2010-09-16 14:35:00", "2011-03-16 17:30:00", serverUser, clazz));
+			serverPosts.add(this.createPost("changed on server", "2010-09-16 14:35:00", "2011-03-16 17:30:00", this.serverUser, clazz));
 
 			// post 5 "changed on client" created and modified before last
 			// synchronization
-			serverPosts.add(createPost("changed on client", "2009-12-31 23:59:00", "2010-02-01 17:23:00", serverUser, clazz));
+			serverPosts.add(this.createPost("changed on client", "2009-12-31 23:59:00", "2010-02-01 17:23:00", this.serverUser, clazz));
 
 			// post 6 "created on server" created and modified after last
 			// synchronization
-			serverPosts.add(createPost("created on server", "2011-03-18 11:20:00", "2011-03-18 11:20:00", serverUser, clazz));
+			serverPosts.add(this.createPost("created on server", "2011-03-18 11:20:00", "2011-03-18 11:20:00", this.serverUser, clazz));
 
 			// post 7 "created on client" is not in the server database*
 
-			serverLogic.createPosts(serverPosts);
+			this.serverLogic.createPosts(serverPosts);
 
 			/*
 			 * create client posts
@@ -182,43 +181,43 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			final List<Post<?>> clientPosts = new ArrayList<Post<?>>();
 
 			// post 1: "post without changes" is the same post as in database
-			clientPosts.add(createPost("no changes", "2011-01-10 14:32:00", "2011-01-31 14:32:00", clientUser, clazz));
+			clientPosts.add(this.createPost("no changes", "2011-01-10 14:32:00", "2011-01-31 14:32:00", this.clientUser, clazz));
 
 			// post 2: "post deleted on server" here created and modified before
 			// last synchronization
-			clientPosts.add(createPost("post deleted on server", "2009-11-02 12:20:00", "2009-11-02 12:23:00", clientUser, clazz));
+			clientPosts.add(this.createPost("post deleted on server", "2009-11-02 12:20:00", "2009-11-02 12:23:00", this.clientUser, clazz));
 
 			// post 3: "post deleted on client" is not in the client list
 
 			// post 4: "post changed on server" same hashes and create date as
 			// in database, but change date is before last synchronization
-			clientPosts.add(createPost("changed on server", "2010-09-16 14:35:00", "2011-01-16 17:58:00", clientUser, clazz));
+			clientPosts.add(this.createPost("changed on server", "2010-09-16 14:35:00", "2011-01-16 17:58:00", this.clientUser, clazz));
 
 			// post 5: "post changed on client" same hashes and create date as
 			// in database, but change date is after the last synchronization
 			// date
-			clientPosts.add(createPost("changed on client", "2009-12-31 23:59:00", "2011-03-25 10:59:00", clientUser, clazz));
+			clientPosts.add(this.createPost("changed on client", "2009-12-31 23:59:00", "2011-03-25 10:59:00", this.clientUser, clazz));
 
 			// post 6: "post created on server" is not in the client list
 
 			// post 7: "post created on client" created and modified after last
 			// synchronization
-			clientPosts.add(createPost("created on client", "2011-03-18 14:13:00", "2011-03-18 14:13:00", clientUser, clazz));
+			clientPosts.add(this.createPost("created on client", "2011-03-18 14:13:00", "2011-03-18 14:13:00", this.clientUser, clazz));
 
-			clientLogic.createPosts(clientPosts);
+			this.clientLogic.createPosts(clientPosts);
 			
-			sync = new SynchronizationClient();
+			this.sync = new SynchronizationClient();
 
 			/*
 			 * setup server and client
 			 */
-			syncServer = TestUtils.createURI(SYNC_SERVER_URI);
-			sync.setOwnUri(TestUtils.createURI(SYNC_CLIENT_URI));
+			this.syncServer = TestUtils.createURI(SYNC_SERVER_URI);
+			this.sync.setOwnUri(TestUtils.createURI(SYNC_CLIENT_URI));
 
 			/*
 			 * check that synchronization is enabled
 			 */
-			assertEquals(SYNC_SERVER_URI, clientLogic.getSyncService(clientUser.getName(), null, true).get(0).getService().toString());
+			assertEquals(SYNC_SERVER_URI, this.clientLogic.getSyncService(this.clientUser.getName(), null, true).get(0).getService().toString());
 		}
 	}
 	
@@ -234,7 +233,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	 * @param resourceType
 	 * @return
 	 */
-	protected <T extends Resource> Post<T> createPost(String title, String createDate, String changeDate, User user, Class<T> resourceType) {
+	protected <T extends Resource> Post<T> createPost(String title, final String createDate, final String changeDate, final User user, final Class<T> resourceType) {
 		final Post<T> post = ModelUtils.generatePost(resourceType);
 		post.setUser(user);
 		try {
@@ -245,7 +244,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 				title = title.replace(" ", "-");
 				bookmark.setUrl("http://www." + title + ".com");
 			}
-		} catch (ParseException ex) {
+		} catch (final ParseException ex) {
 			// ignore
 		}
 		post.getResource().setTitle(title);
@@ -266,7 +265,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		return map;
 	}
 	
-	protected void checkKeys(Class<? extends Resource> resourceType, Map<String, SynchronizationPost> posts, String serviceType) {
+	protected void checkKeys(final Class<? extends Resource> resourceType, final Map<String, SynchronizationPost> posts, final String serviceType) {
 		final String[] keys;
 		if (Bookmark.class.equals(resourceType)) {
 			keys = BOOKMARK_KEYS;
@@ -279,12 +278,12 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		}
 	}
 	
-	protected void checkModifiedKeys(Class<? extends Resource> resourceType, Map<String, SynchronizationPost> posts, String serviceType) {
+	protected void checkModifiedKeys(final Class<? extends Resource> resourceType, final Map<String, SynchronizationPost> posts, final String serviceType) {
 		final String[] clientKeys;
 		if (Bookmark.class.equals(resourceType)) {
-			clientKeys = modifiedBookmarkKeys;
+			clientKeys = this.modifiedBookmarkKeys;
 		} else {
-			clientKeys = modifiedPublicationKeys;
+			clientKeys = this.modifiedPublicationKeys;
 		}
 		
 		for (final String key : clientKeys) {
@@ -292,11 +291,11 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 		}
 	}
 
-	protected void setModifiedBookmarkKeys(String[] modifiedBookmarkKeys) {
+	protected void setModifiedBookmarkKeys(final String[] modifiedBookmarkKeys) {
 		this.modifiedBookmarkKeys = modifiedBookmarkKeys;
 	}
 	
-	protected void setModifiedPublicationKeys(String[] modifiedPublicationKeys) {
+	protected void setModifiedPublicationKeys(final String[] modifiedPublicationKeys) {
 		this.modifiedPublicationKeys = modifiedPublicationKeys;
 	}
 
@@ -308,7 +307,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	 */
 	protected SyncService createServerService(final ConflictResolutionStrategy strategy, final Properties userCredentials, final SynchronizationDirection direction) {
 		final SyncService service = new SyncService();
-		service.setService(syncServer);
+		service.setService(this.syncServer);
 		service.setResourceType(Resource.class);
 		service.setDirection(direction);
 		service.setStrategy(strategy);
