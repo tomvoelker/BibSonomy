@@ -1,16 +1,20 @@
 package org.bibsonomy.testutil;
 
+import javax.sql.DataSource;
+
+import org.bibsonomy.database.AbstractDatabaseTest;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.impl.AbstractDBSessionFactory;
-import org.bibsonomy.database.common.util.IbatisUtils;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.junit.Ignore;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
@@ -21,7 +25,20 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  */
 @Ignore
 public class TestDatabaseManager extends AbstractDatabaseManager {
-	private static final SqlMapClient SQL_MAP = IbatisUtils.loadSqlMap("TestSqlMapConfig.xml");
+	private static SqlMapClient SQL_MAP = null;
+	
+	static {
+		final SqlMapClientFactoryBean factoryBean = new SqlMapClientFactoryBean();
+		factoryBean.setConfigLocation(new ClassPathResource("TestSqlMapConfig.xml"));
+		factoryBean.setDataSource(AbstractDatabaseTest.testDatabaseContext.getBean(DataSource.class));
+		try {
+			factoryBean.afterPropertiesSet();
+		} catch (final Exception ex) {
+			throw new RuntimeException(ex);
+		}
+		
+		SQL_MAP = factoryBean.getObject();
+	}
 	
 	private static final TestSessionFactory TESTSESSION_FACTORY = new TestSessionFactory();
 	
