@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,6 +46,8 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	/** writes the resource index */
 	private IndexWriter indexWriter;
 	
+	private int numberOfThreads = 1;
+	
 	/** converts post model objects to lucene documents */
 	private LuceneResourceConverter<R> resourceConverter;
 	
@@ -50,17 +55,11 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	
 	private GenerateIndexCallback<R> callback = null;
 	
-	/** the progress-percentage if index-generation is running */
-	private int progressPercentage;
-	
 	/** set to true if the generator is currently generating an index */
 	private boolean isRunning;
-	
-	/**
-	 * constructor
-	 */
-	public LuceneGenerateResourceIndex() {
-	}
+
+	private int numberOfPosts;
+	private int numberOfPostsImported;
 
 	/**
 	 * frees allocated resources and closes all files
@@ -87,8 +86,9 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	 */
 	public void generateIndex() throws CorruptIndexException, IOException, ClassNotFoundException, SQLException {
 		// Allow only one index-generation at a time.
-		if (this.isRunning) return;
-		
+		if (this.isRunning) {
+			return;
+		}
 		
 		this.isRunning = true;
 		
@@ -130,10 +130,11 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	protected void createIndexFromDatabase() throws CorruptIndexException, IOException {
 		log.info("Filling index with database post entries.");
 		
+		final ExecutorService executor = Executors.newFixedThreadPool(this.numberOfThreads);
+		
 		// number of post entries to calculate progress
 		// FIXME: the number of posts is wrong
-		final int numberOfPosts = this.dbLogic.getNumberOfPosts();
-		this.progressPercentage = 0;
+		this.numberOfPosts = this.dbLogic.getNumberOfPosts();
 		log.info("Number of post entries: "+  this.dbLogic.getNumberOfPosts());
 		
 		// initialize variables
@@ -143,10 +144,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		if (lastLogDate == null) {
 		    lastLogDate = new Date(System.currentTimeMillis() - 1000);
 		}
-		
-		// get all relevant resources from corresponding resource table
-		int i = 0;		// number of evaluated entries 
-		int is = 0;		// number of spam entries 
 
 		log.info("Start writing data to lucene index (with duplicate detection)");
 		
@@ -162,65 +159,54 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			log.info("Read " + skip + " entries.");
 
 			// cycle through all posts of currently read block
-			for (final LucenePost<R> postEntry : postList) {				
-				// add (non-spam) document to index
-				// FIXME: is this check necessary? query only retrieves post with groupid >= 0
-				if (isNotSpammer(postEntry)) {
-					// update management fields
-					postEntry.setLastLogDate(lastLogDate);
-					postEntry.setLastTasId(lastTasId);
-          
-					// create index document from post model
-					final Document post = this.resourceConverter.readPost(postEntry);
-					indexWriter.addDocument(post);
-					i++;
-				} else {
-					is++;
-				}
-				
-				if (postListSize > 0) {
-					lastContenId = postList.get(postListSize - 1).getContentId();
-				}
+			for (final LucenePost<R> post : postList) {
+				post.setLastLogDate(lastLogDate);
+				post.setLastTasId(lastTasId);
+				executor.execute(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {  
+							// create index document from post model
+							final Document doc = LuceneGenerateResourceIndex.this.resourceConverter.readPost(post);
+							try {
+								LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
+								LuceneGenerateResourceIndex.this.importedPost(post);
+							} catch (final IOException e) {
+								log.error("error while inserting post " + post.getUser().getName() + "/" + post.getResource().getIntraHash(), e);
+							}
+						}
+					}
+				});
 			}
 			
-			this.progressPercentage = (int) Math.round(100 * ((double) skip / numberOfPosts));
-			log.info(this.progressPercentage + "% of index-generation done!");
-		} while (postListSize == SQL_BLOCKSIZE);
-
-		// optimize index
-		log.info("optimizing index " + this.resourceIndex);
-		indexWriter.optimize();
-		
-		// close resource indexWriter
-		log.info("closing index " + this.resourceIndex);
-		indexWriter.close();
-
-		// all done
-		log.info("(" + i + " indexed entries, " + is + " not indexed spam entries)");
-	}
-	
-	/**
-	 * Get the progress-percentage
-	 * @return the progressPercentage
-	 */
-	public int getProgressPercentage() {
-		return progressPercentage;
-	}
-	
-	/** Run the index-generation in a thread. */
-	@Override
-	public void run() {
-        try {
-			this.generateIndex();
-		} catch (final Exception e) {
-			log.error("Failed to generate " + this.resourceIndex + "-index!", e);
-		} finally {
-			try {
-				this.shutdown();
-			} catch (final Exception e) {
-				log.error("Failed to close index-writer!", e);
+			if (postListSize > 0) {
+				lastContenId = postList.get(postListSize - 1).getContentId();
 			}
+		} while (postListSize == SQL_BLOCKSIZE);
+		
+		try {
+			executor.shutdown();
+			executor.awaitTermination(18, TimeUnit.HOURS);
+			
+			// optimize index
+			log.info("optimizing index " + this.resourceIndex);
+			this.indexWriter.optimize();
+			
+			// close resource indexWriter
+			log.info("closing index " + this.resourceIndex);
+			this.indexWriter.close();
+			
+			// all done
+			// log.info("(" + i + " indexed entries, " + is + " not indexed spam entries)");
+		} catch (final InterruptedException e) {
+			log.error("lucene finished not in 18 hours", e);
 		}
+	}
+	
+	protected synchronized void importedPost(final LucenePost<R> post) {
+		// update counter
+		this.numberOfPostsImported++;
 	}
 
 	/**
@@ -239,6 +225,30 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Get the progress-percentage
+	 * @return the progressPercentage
+	 */
+	public int getProgressPercentage() {
+		return (int) Math.round(100 * ((double) this.numberOfPostsImported / this.numberOfPosts));
+	}
+	
+	/** Run the index-generation in a thread. */
+	@Override
+	public void run() {
+        try {
+			this.generateIndex();
+		} catch (final Exception e) {
+			log.error("Failed to generate " + this.resourceIndex + "-index!", e);
+		} finally {
+			try {
+				this.shutdown();
+			} catch (final Exception e) {
+				log.error("Failed to close index-writer!", e);
+			}
+		}
 	}
 
 	/**
@@ -269,7 +279,17 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		this.resourceIndex = resourceIndex;
 	}
 
+	/**
+	 * @param numberOfThreads the numberOfThreads to set
+	 */
+	public void setNumberOfThreads(final int numberOfThreads) {
+		this.numberOfThreads = numberOfThreads;
+	}
+
+	/**
+	 * @return the id of the index currently generating
+	 */
 	public int getGeneratingIndexId() {
-		return resourceIndex.getIndexId();
+		return this.resourceIndex.getIndexId();
 	}
 }

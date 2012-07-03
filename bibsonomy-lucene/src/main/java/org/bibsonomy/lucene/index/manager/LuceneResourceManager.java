@@ -2,8 +2,6 @@ package org.bibsonomy.lucene.index.manager;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -14,15 +12,12 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
-import org.bibsonomy.lucene.param.LuceneResourceIndexInfo;
-import org.bibsonomy.lucene.param.LuceneResourceIndices;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.lucene.param.LuceneResourceIndexInfo;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
@@ -161,7 +156,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// keeps track of the newest log_date during last index update
 			final long lastLogDate = this.updatingIndex.getLastLogDate();
 
-			lastTasId = updateIndex(currentLogDate, lastTasId, lastLogDate);
+			lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate);
 
 			/*
 			 * commit changes
@@ -223,20 +218,20 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	public void reloadIndex() {
 		// if lucene updater is disabled or index-generation running, return
 		// without doing something
-		if (!luceneUpdaterEnabled || generatingIndex) {
+		if (!this.luceneUpdaterEnabled || this.generatingIndex) {
 			log.debug("lucene updater is disabled by user");
 			return;
 		}
 
 		// don't run twice at the same time - if something went wrong, delete
 		// alreadyRunning
-		if ((alreadyRunning > 0) && (alreadyRunning < maxAlreadyRunningTrys)) {
-			alreadyRunning++;
-			log.warn("reloadIndex - alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
+		if ((this.alreadyRunning > 0) && (this.alreadyRunning < this.maxAlreadyRunningTrys)) {
+			this.alreadyRunning++;
+			log.warn("reloadIndex - alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
 			return;
 		}
-		alreadyRunning = 1;
-		log.debug("reloadIndex - run and reset alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
+		this.alreadyRunning = 1;
+		log.debug("reloadIndex - run and reset alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
 
 		// do the actual work
 		if (this.updatingIndex != null) {
@@ -258,25 +253,25 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	protected void updateIndex() {
 		// if lucene updater is disabled, return without doing something
-		if (!luceneUpdaterEnabled) {
+		if (!this.luceneUpdaterEnabled) {
 			log.debug("updateIndex - lucene updater is disabled");
-			alreadyRunning = 0;
+			this.alreadyRunning = 0;
 			return;
 		}
 
 		// don't run twice at the same time - if something went wrong, delete
 		// alreadyRunning
-		if ((alreadyRunning > 0) && (alreadyRunning < maxAlreadyRunningTrys)) {
-			alreadyRunning++;
-			log.warn("updateIndex - alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
+		if ((this.alreadyRunning > 0) && (this.alreadyRunning < this.maxAlreadyRunningTrys)) {
+			this.alreadyRunning++;
+			log.warn("updateIndex - alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
 			return;
 		}
-		alreadyRunning = 1;
-		log.debug("updateIndex - run and reset alreadyRunning (" + alreadyRunning + "/" + maxAlreadyRunningTrys + ")");
+		this.alreadyRunning = 1;
+		log.debug("updateIndex - run and reset alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
 
 		// do the actual work
 		log.debug("update indexes");
-		updateIndexes();
+		this.updateIndexes();
 		log.debug("update indexes done");
 	}
 
@@ -290,21 +285,21 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		}
 
 		// update passive index
-		updateIndex();
+		this.updateIndex();
 
 		// make tell searcher to use the updated index
-		reloadIndex();
+		this.reloadIndex();
 	}
 
 	/**
 	 * 
 	 */
 	public void generateIndex() {
-		this.generateIndex(true);
+		this.generateIndex(true, 1);
 	}
 
-	public void regenerateIndex(int id) {
-		regenerateIndex(id, true);
+	public void regenerateIndex(final int id) {
+		this.regenerateIndex(id, true);
 	}
 
 	/**
@@ -314,7 +309,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @param id
 	 * 
 	 */
-	public void regenerateIndex(int id, boolean async) {
+	public void regenerateIndex(final int id, final boolean async) {
 		// allow only one index-generation at a time
 		if (this.generatingIndex) {
 			return;
@@ -325,13 +320,13 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// Stop the updating process
 			this.setLuceneUpdaterEnabled(false);
 			LuceneResourceIndex<R> indexToGenerate = null;
-			for (LuceneResourceIndex<R> index : this.getResourceIndeces()) {
+			for (final LuceneResourceIndex<R> index : this.getResourceIndeces()) {
 				if (index.getIndexId() == id) {
 					indexToGenerate = index;
 					break;
 				}
 			}
-			if (activeIndex.getStatistics().getIndexId() == id) {
+			if (this.activeIndex.getStatistics().getIndexId() == id) {
 				this.setActiveIndex(this.updateQueue.poll());
 			} 
 			if (indexToGenerate != null) {
@@ -340,7 +335,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				 * cause that we have a third index after regenerating
 				 * a new active one, since the old active one is
 				 * added to the queue too */
-				updateQueue.remove(indexToGenerate);
+				this.updateQueue.remove(indexToGenerate);
 				final LuceneGenerateResourceIndex<R> generator = new LuceneGenerateResourceIndex<R>();
 				generator.setResourceIndex(indexToGenerate);
 				generator.setLogic(this.dbLogic);
@@ -359,7 +354,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				log.warn("There was no index with id " + id + " found.");
 			
 				this.generatingIndex = false;
-				/* Should it be created? */
 			}
 		}
 	}
@@ -369,8 +363,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * index.
 	 * 
 	 * @param assync
+	 * @param numberOfThreads 
 	 */
-	public void generateIndex(final boolean assync) {
+	public void generateIndex(final boolean assync, final int numberOfThreads) {
 		// allow only one index-generation at a time
 		if (this.generatingIndex) {
 			return;
@@ -396,6 +391,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			generator.setLogic(this.dbLogic);
 			generator.setResourceConverter(this.resourceConverter);
 			generator.setCallback(this);
+			generator.setNumberOfThreads(numberOfThreads);
 
 			this.generator = generator;
 
@@ -413,7 +409,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 *         index
 	 */
 	public boolean isGeneratingIndex() {
-		return generatingIndex;
+		return this.generatingIndex;
 	}
 
 	/**
@@ -485,7 +481,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @return the dbLogic
 	 */
 	public LuceneDBInterface<R> getDbLogic() {
-		return dbLogic;
+		return this.dbLogic;
 	}
 
 	/**
@@ -503,11 +499,13 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 *         otherwise (e.g. if no lucene-index has been generated yet)
 	 */
 	public boolean isIndexEnabled() {
-		if (this.activeIndex.isIndexEnabled())
+		if (this.activeIndex.isIndexEnabled()) {
 			return true;
-		for (LuceneResourceIndex<R> indices: this.resourceIndices) {
-			if (indices.isIndexEnabled())
+		}
+		for (final LuceneResourceIndex<R> indices: this.resourceIndices) {
+			if (indices.isIndexEnabled()) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -516,7 +514,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @return the searcher
 	 */
 	public LuceneResourceSearch<R> getSearcher() {
-		return searcher;
+		return this.searcher;
 	}
 
 	/**
@@ -531,7 +529,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @return the generator
 	 */
 	public LuceneGenerateResourceIndex<R> getGenerator() {
-		return generator;
+		return this.generator;
 	}
 
 	/**
@@ -546,7 +544,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @return the resourceConverter
 	 */
 	public LuceneResourceConverter<R> getResourceConverter() {
-		return resourceConverter;
+		return this.resourceConverter;
 	}
 
 	/**
@@ -578,10 +576,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	public void setLuceneUpdaterEnabled(final boolean luceneUpdaterEnabled) {
 		this.luceneUpdaterEnabled = luceneUpdaterEnabled;
-		// TODO: remove TODODZ
-		if (!this.luceneUpdaterEnabled) {
-			log.info("updater disabled by project settings");
-		}
 	}
 
 	/**
@@ -609,7 +603,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	public String getResourceName() {
 		// all resource indices have the same resource name (they should!)
-		return resourceIndices.get(0).getResourceClass().getSimpleName();
+		return this.resourceIndices.get(0).getResourceClass().getSimpleName();
 	}
 
 	/**
@@ -647,23 +641,24 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	}
 
 	public List<LuceneResourceIndexInfo> getIndicesInfos() {
-		List<LuceneResourceIndexInfo> lrii = new LinkedList<LuceneResourceIndexInfo>();
+		final List<LuceneResourceIndexInfo> lrii = new LinkedList<LuceneResourceIndexInfo>();
 		
 		// First put the active index in the list if it exists
-		LuceneResourceIndexInfo indexInfo = getActiveIndexInfo();
+		LuceneResourceIndexInfo indexInfo = this.getActiveIndexInfo();
 		lrii.add(indexInfo);
 		// put the inactive indices to the list
-		for (LuceneResourceIndex<R> resourceIndex: this.resourceIndices) {
-			if (resourceIndex.equals(activeIndex))
+		for (final LuceneResourceIndex<R> resourceIndex: this.resourceIndices) {
+			if (resourceIndex.equals(this.activeIndex)) {
 				continue;
-			boolean isIndexEnabled = resourceIndex.isIndexEnabled();
+			}
+			final boolean isIndexEnabled = resourceIndex.isIndexEnabled();
 			indexInfo = new LuceneResourceIndexInfo();
 			
 			indexInfo.setEnabled(isIndexEnabled);
 			indexInfo.setId(resourceIndex.getIndexId());
 			
 			if (this.isGeneratingIndex() && 
-					this.generator != null &&
+					(this.generator != null) &&
 					(resourceIndex.getIndexId() == this.generator.getGeneratingIndexId())) {
 				indexInfo.setGeneratingIndex(true);
 				indexInfo.setIndexGenerationProgress(this.getGenerator().getProgressPercentage());
@@ -688,8 +683,8 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		indexInfo.setActive(true);
 
 		if (this.isGeneratingIndex() && 
-				this.generator != null &&
-				(activeIndex.getIndexId() == this.generator.getGeneratingIndexId())) {
+				(this.generator != null) &&
+				(this.activeIndex.getIndexId() == this.generator.getGeneratingIndexId())) {
 			indexInfo.setGeneratingIndex(true);
 			indexInfo.setIndexGenerationProgress(this.getGenerator().getProgressPercentage());
 		}
