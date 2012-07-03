@@ -31,6 +31,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
  * @author dzo
  * @version $Id$
  */
+@Deprecated
 public final class JNDIBinder {
 	private static final Log log = LogFactory.getLog(JNDIBinder.class);
 	
@@ -128,10 +129,20 @@ public final class JNDIBinder {
 	
 	private static void bindDataSource(final String propFile, final InitialContext ctx) throws IOException, NamingException {
 		log.debug("loading properties " + propFile);
-		final Properties properties = getPropertiesFromFile(propFile);
-		
+		final String jdbcKey = propFile.substring(0, propFile.lastIndexOf("_"));		
+		bindDataSource(ctx, jdbcKey, propFile);
+	}
+
+	/**
+	 * @param ctx
+	 * @param databaseName
+	 * @param propFile
+	 * @throws NamingException
+	 * @throws IOException 
+	 */
+	public static void bindDataSource(final InitialContext ctx, final String databaseName, final String propFile) throws NamingException, IOException {
 		final MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
-		
+		final Properties properties = getPropertiesFromFile(propFile);
 		final String database = properties.getProperty(DATABASE_KEY);
 		final String host = properties.getProperty(HOST_KEY);
 		final String options = properties.getProperty(OPTIONS_KEY);
@@ -142,9 +153,7 @@ public final class JNDIBinder {
 		dataSource.setUser(username);
 		dataSource.setPassword(password);
 		
-		final String jdbcKey = propFile.substring(0, propFile.lastIndexOf("_"));
-		
-		ctx.bind("java:comp/env/jdbc/" + jdbcKey, dataSource);
+		ctx.bind("java:comp/env/jdbc/" + databaseName, dataSource);
 	}
 
 	private static Properties getPropertiesFromFile(final String filename) throws IOException {
