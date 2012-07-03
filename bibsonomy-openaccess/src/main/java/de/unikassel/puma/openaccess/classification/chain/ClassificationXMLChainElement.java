@@ -1,6 +1,5 @@
 package de.unikassel.puma.openaccess.classification.chain;
 
-
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
@@ -14,51 +13,51 @@ import de.unikassel.puma.openaccess.classification.Classification;
 import de.unikassel.puma.openaccess.classification.ClassificationSource;
 import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
+/**
+ * @author philipp
+ * @version $Id$
+ */
 public class ClassificationXMLChainElement implements ClassificationSource {
 
 	private final ClassificationXMLParser classificationParser;
 	
 	private ClassificationSource next = null;
 	
-	public ClassificationXMLChainElement(ClassificationXMLParser classParser) {
+	public ClassificationXMLChainElement(final ClassificationXMLParser classParser) {
 		this.classificationParser = classParser;
 	}
 	
-	public void setNext(ClassificationSource next) {
+	public void setNext(final ClassificationSource next) {
 		this.next = next;
-	}
-	
-	public ClassificationSource getNext() {
-		return this.next;
 	}
 
 	@Override
-	public Classification getClassification(URL url) throws IOException {
+	public Classification getClassification(final URL url) throws IOException {
 		try  {
 			final XMLReader xr = XMLReaderFactory.createXMLReader();
 			/*
 			 * SAX callback handler
 			 */
-			xr.setContentHandler(classificationParser);
-			xr.setErrorHandler(classificationParser);
+			xr.setContentHandler(this.classificationParser);
+			xr.setErrorHandler(this.classificationParser);
 			xr.parse(url.getPath());
 			
-			if(!present(classificationParser.getList())) {
-				if(!present(next)) {
+			if (!present(this.classificationParser.getList())) {
+				if (!present(this.next)) {
 					return null;
-				} else {
-					return next.getClassification(url);
 				}
+				
+				return this.next.getClassification(url);
 			}
 			
-			return new Classification(classificationParser.getName(), classificationParser.getList(), classificationParser.getDelimiter());
-		} catch (SAXException e) {
+			return new Classification(this.classificationParser.getName(), this.classificationParser.getList(), this.classificationParser.getDelimiter());
+		} catch (final SAXException e) {
 			//unable to parse
-			if(!present(next)) {
+			if (!present(this.next)) {
 				return null;
-			} else {
-				return next.getClassification(url);
 			}
+			
+			return this.next.getClassification(url);
 		}
 	}
 }

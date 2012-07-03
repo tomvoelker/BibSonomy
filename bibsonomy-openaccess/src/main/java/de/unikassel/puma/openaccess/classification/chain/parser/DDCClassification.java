@@ -5,77 +5,84 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import de.unikassel.puma.openaccess.classification.ClassificationObject;
 import de.unikassel.puma.openaccess.classification.ClassificationTextParser;
 
+/**
+ * @author philipp
+ * @version $Id$
+ */
 public class DDCClassification extends ClassificationTextParser {
 
 	private static final String NAME = "DDC";
 	
 	private int currentDepth = 0;
 	
-	public void parse(BufferedReader bf) throws IOException {
-		classifications = new LinkedHashMap<String, ClassificationObject>();
+	@Override
+	public void parse(final BufferedReader bf) throws IOException {
+		this.classifications = new LinkedHashMap<String, ClassificationObject>();
 		
 		while(bf.ready()) {
 			
 			String line = bf.readLine();
 			
 			if(!present(line)) {
-				currentDepth++;
+				this.currentDepth++;
 				continue;
 			}
 			
 			line = line.trim();
-			String [] lineArray = line.split(" ", 2);
+			final String [] lineArray = line.split(" ", 2);
 			try {
-				classificate(lineArray[0], lineArray[1]);
-			} catch (ArrayIndexOutOfBoundsException e) {
+				this.classificate(lineArray[0], lineArray[1]);
+			} catch (final ArrayIndexOutOfBoundsException e) {
 				//unable to parse
-				classifications = null;
+				this.classifications = null;
 				return;
 			}
 		}
 	}
 	
-	private void requClassificate(String name, String description, ClassificationObject object, int current) {
-		if(!present(name))
+	private void requClassificate(String name, final String description, final ClassificationObject object, final int current) {
+		if(!present(name)) {
 			return;
+		}
 		
-		String actual = name.charAt(0) +"";
+		final String actual = name.charAt(0) +"";
 		name = name.substring(1);
 		
-		if(current >= currentDepth) {
+		if(current >= this.currentDepth) {
 			if(object.getChildren().containsKey(actual)) {
 				object.getChildren().get(actual).setDescription(description);
-				requClassificate(name, description, object.getChildren().get(actual), current +1);
+				this.requClassificate(name, description, object.getChildren().get(actual), current +1);
 			
 			} else {
 				if(name.isEmpty()) {
-					ClassificationObject co = new ClassificationObject(actual, description);
+					final ClassificationObject co = new ClassificationObject(actual, description);
 					object.addChild(actual, co);
 					
 				} else {
-					ClassificationObject co = new ClassificationObject(actual, description);
+					final ClassificationObject co = new ClassificationObject(actual, description);
 					object.addChild(actual, co);
-					requClassificate(name, description, co, current +1);
+					this.requClassificate(name, description, co, current +1);
 				}
 			}
 		} else {
 			
 			if(object.getChildren().containsKey(actual)) {
-				requClassificate(name, description, object.getChildren().get(actual), current +1);
+				this.requClassificate(name, description, object.getChildren().get(actual), current +1);
 			
 			} else {
 				if(name.isEmpty()) {
-					ClassificationObject co = new ClassificationObject(actual, description);
+					final ClassificationObject co = new ClassificationObject(actual, description);
 					object.addChild(actual, co);
 					
 				} else {
-					ClassificationObject co = new ClassificationObject(actual, description);
+					final ClassificationObject co = new ClassificationObject(actual, description);
 					object.addChild(actual, co);
-					requClassificate(name, description, co, current +1);
+					this.requClassificate(name, description, co, current +1);
 				}
 			}
 			
@@ -84,15 +91,15 @@ public class DDCClassification extends ClassificationTextParser {
 	
 
 	private void classificate(String name, final String description) {
-		String actual = name.charAt(0) +"";
+		final String actual = name.charAt(0) +"";
 		name = name.substring(1);
 	
-		if(classifications.containsKey(actual)) {
-			requClassificate(name, description, classifications.get(actual), 1);
+		if(this.classifications.containsKey(actual)) {
+			this.requClassificate(name, description, this.classifications.get(actual), 1);
 		} else {
-			ClassificationObject co = new ClassificationObject(actual, description);
-			classifications.put(actual, co);
-			requClassificate(name, description, co, 1);
+			final ClassificationObject co = new ClassificationObject(actual, description);
+			this.classifications.put(actual, co);
+			this.requClassificate(name, description, co, 1);
 		}
 	}
 	
@@ -108,8 +115,8 @@ public class DDCClassification extends ClassificationTextParser {
 	}
 
 	@Override
-	public LinkedHashMap<String, ClassificationObject> getList() {
-		return classifications;
+	public Map<String, ClassificationObject> getList() {
+		return this.classifications;
 	}
 
 }

@@ -2,10 +2,8 @@ package de.unikassel.puma.openaccess.classification;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,98 +22,101 @@ import de.unikassel.puma.openaccess.classification.chain.parser.ACMClassificatio
 import de.unikassel.puma.openaccess.classification.chain.parser.DDCClassification;
 import de.unikassel.puma.openaccess.classification.chain.parser.JELClassification;
 
+/**
+ * @author philipp
+ * @version $Id$
+ */
 public class PublicationClassificator {
 	
 	private static final Log log = LogFactory.getLog(PublicationClassificator.class);
 	
 	private final String xmlPath;
 	
-	private HashMap<org.bibsonomy.model.Classification, Classification> classifications = new HashMap<org.bibsonomy.model.Classification, Classification>();
+	private final HashMap<org.bibsonomy.model.Classification, Classification> classifications = new HashMap<org.bibsonomy.model.Classification, Classification>();
 	
-	private Classification getClassificationByName(String name) {
-		for(org.bibsonomy.model.Classification c : classifications.keySet()) {
-			if(c.getName().equals(name))
-				return classifications.get(c);
+	private Classification getClassificationByName(final String name) {
+		for(final org.bibsonomy.model.Classification c : this.classifications.keySet()) {
+			if(c.getName().equals(name)) {
+				return this.classifications.get(c);
+			}
 		}
 		
 		return null;
 	}
 	
-	public PublicationClassificator(String xmlPath) {
+	public PublicationClassificator(final String xmlPath) {
 		this.xmlPath = xmlPath;
-		initialise();
+		this.initialise();
 	}
 	
-	public final List<PublicationClassification> getChildren(String classification, String name) {
-		Classification c = getClassificationByName(classification);
+	public final List<PublicationClassification> getChildren(final String classification, final String name) {
+		final Classification c = this.getClassificationByName(classification);
 		
-		if(present(c)) {
+		if (present(c)) {
 			return c.getChildren(name);
-		} else {
-			return new ArrayList<PublicationClassification>();
 		}
+		return new ArrayList<PublicationClassification>();
 	}
 	
 	public Set<org.bibsonomy.model.Classification> getAvailableClassifications() {
-		return classifications.keySet();
+		return this.classifications.keySet();
 	}
 	
-	public String getDescription(String classification, String name) {
-		Classification c = getClassificationByName(classification);
+	public String getDescription(final String classification, final String name) {
+		final Classification c = this.getClassificationByName(classification);
 		
-		if(present(c)) {
+		if (present(c)) {
 			return c.getDescription(name);
-		} else {
-			return "";
-		}	
+		}
+		
+		return "";
 	}
 	
 	private void initialise() {
-		ArrayList<ClassificationSource> cceList = new ArrayList<ClassificationSource>();
+		final List<ClassificationSource> cceList = new ArrayList<ClassificationSource>();
 		cceList.add(new ClassificationXMLChainElement(new JELClassification()));
 		cceList.add(new ClassificationXMLChainElement(new ACMClassification()));
 		cceList.add(new ClassificationTextChainElement(new DDCClassification()));
 		
 		
-		File path = new File(xmlPath);
+		final File path = new File(this.xmlPath);
 		
-		if(path.isDirectory()) {
-			
-			File[] files = path.listFiles(new FileFilter() {
+		if (path.isDirectory()) {
+			final File[] files = path.listFiles(new FileFilter() {
 				
 				@Override
-				public boolean accept(File file) {
-					if(file.isDirectory()) {
+				public boolean accept(final File file) {
+					if (file.isDirectory()) {
 						return false;
 					}
 					
-					if(!file.toString().endsWith(".properties")) {
+					if (!file.toString().endsWith(".properties")) {
 						return true;
 					}
 					
 					return false;
 				}
 			});
-			
-			for(File f : files) {
+
+			for (final File f : files) {
 				try {
 					Classification c = null;
 					
-					for(int i = 0; i < cceList.size() && !present(c); ++i) {
+					for (int i = 0; (i < cceList.size()) && !present(c); ++i) {
 						c = cceList.get(i).getClassification(f.toURI().toURL());
 					}
 					
-					if(!present(c)) {
-						log.error("Unable to parse " +f.getName());
+					if (!present(c)) {
+						log.error("Unable to parse " + f.getName());
 						continue;
 					}
 					
-					log.info("Found Classification " +c.getClassName());
+					log.info("Found Classification " + c.getClassName());
 					
 					//try to read values from .properties file
 					try {
-						Properties properties = new Properties();
-						org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
+						final Properties properties = new Properties();
+						final org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
 						
 						properties.load(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length()-4) +".properties"));
 
@@ -123,27 +124,25 @@ public class PublicationClassificator {
 						classification.setDesc(properties.getProperty("desc"));
 						classification.setUrl(properties.getProperty("url"));
 						
-						classifications.put(classification, c);
+						this.classifications.put(classification, c);
 						
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						//no .properties file found, use the file name						
-						org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
+						final org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
 						classification.setName(f.getName().substring(0,f.getName().length()-4));
-						classifications.put(classification, c);
+						this.classifications.put(classification, c);
 					}
-				} catch (MalformedURLException e) {
-					
-					e.printStackTrace();
-				} catch (IOException e) {
-					
-					e.printStackTrace();
+				} catch (final MalformedURLException e) {
+					log.error("error converting file url", e);
+				} catch (final IOException e) {
+					log.error("error loading classification", e);
 				}
 			}
 		}
 	}
 	
 	public int getNumberOfClassifications() {
-		return classifications.size();
+		return this.classifications.size();
 	}
 
 }

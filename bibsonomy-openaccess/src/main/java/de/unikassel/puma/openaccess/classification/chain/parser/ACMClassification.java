@@ -1,6 +1,5 @@
 package de.unikassel.puma.openaccess.classification.chain.parser;
 
-
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.LinkedHashMap;
@@ -11,7 +10,10 @@ import org.xml.sax.SAXException;
 import de.unikassel.puma.openaccess.classification.ClassificationObject;
 import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
-
+/**
+ * @author philipp
+ * @version $Id$
+ */
 public class ACMClassification extends ClassificationXMLParser {
 
 	private static final String NAME = "ACM";
@@ -29,44 +31,47 @@ public class ACMClassification extends ClassificationXMLParser {
 	
 	@Override
 	public void startDocument() {
-		classifications = new LinkedHashMap<String, ClassificationObject>();
-		buf = new StringBuffer();
+		this.classifications = new LinkedHashMap<String, ClassificationObject>();
+		this.buf = new StringBuffer();
 	}
 
 	@Override
 	public void endDocument() {
+		// noop
 	}
 
 	@Override
 	public void startElement (final String uri, final String name, final String qName, final Attributes atts) throws SAXException {
 		
-		if(skip)
+		if(this.skip) {
 			return;
+		}
 
 		if ("node".equals(qName)) {
 
 			if(atts.getLength() == 2) {
 				
 				if(atts.getLocalName(0).equals("id") && atts.getLocalName(1).equals("label")) {
-					String id = atts.getValue(0);
+					final String id = atts.getValue(0);
 					
-					if(id.equals("acmccs98"))
+					if(id.equals("acmccs98")) {
 						return;
+					}
 					
-					if(id.length() < 4 && !id.endsWith(".")) {
-						startNode = id;
-						startDescription = atts.getValue(1);
+					if((id.length() < 4) && !id.endsWith(".")) {
+						this.startNode = id;
+						this.startDescription = atts.getValue(1);
 					} else {
 //						 += ".";
 						
-						if(present(startNode)) {
-							startNode += ".";
-							classificate(startNode, startDescription);
+						if(present(this.startNode)) {
+							this.startNode += ".";
+							this.classificate(this.startNode, this.startDescription);
 							
-							startDescription = startNode = "";
+							this.startDescription = this.startNode = "";
 						}
 						
-						classificate(id, atts.getValue(1));
+						this.classificate(id, atts.getValue(1));
 					}
 				}
 			}
@@ -74,17 +79,17 @@ public class ACMClassification extends ClassificationXMLParser {
 		} else if("isComposedBy".equals(qName)) {
 
 		} else if("isRelatedTo".equals(qName)) {
-			skip = true;
-			skipElement = "isRelatedTo";
+			this.skip = true;
+			this.skipElement = "isRelatedTo";
 				
 		} else if("hasNote".equals(qName)) {
-			skip = true;
-			skipElement = "hasNote";
+			this.skip = true;
+			this.skipElement = "hasNote";
 			
 		} else {
 			throw new SAXException("Unable to parse");
 		}
-		buf = new StringBuffer();
+		this.buf = new StringBuffer();
 	}
 
 	/** Collect characters.
@@ -93,30 +98,31 @@ public class ACMClassification extends ClassificationXMLParser {
 	 */
 	@Override
 	public void characters (final char ch[], final int start, final int length) {
-		buf.append(ch, start, length);
+		this.buf.append(ch, start, length);
 	}
 	
 	@Override
 	public void endElement (final String uri, final String name, final String qName) throws SAXException {
-		if(skip) {
+		if(this.skip) {
 			
-			if(qName.equals(skipElement)) {
-				skip = false;
-				skipElement = "";
+			if(qName.equals(this.skipElement)) {
+				this.skip = false;
+				this.skipElement = "";
 			}
 			
-		} else if(present(startNode)) {
-			classificate(startNode, startDescription);
-			startNode = startDescription = "";
+		} else if(present(this.startNode)) {
+			this.classificate(this.startNode, this.startDescription);
+			this.startNode = this.startDescription = "";
 		}
 		
 	}
 	
-	private void requClassificate(String name, String description, ClassificationObject object) {
-		if(name.isEmpty())
+	private void requClassificate(String name, final String description, final ClassificationObject object) {
+		if(name.isEmpty()) {
 			return;
+		}
 		
-		int delimiter = name.indexOf('.') +1;
+		final int delimiter = name.indexOf('.') +1;
 		String actual;
 		
 		if(delimiter != 0) {
@@ -128,18 +134,18 @@ public class ACMClassification extends ClassificationXMLParser {
 		}
 	
 		if(object.getChildren().containsKey(actual)) {
-			requClassificate(name, description, object.getChildren().get(actual));
+			this.requClassificate(name, description, object.getChildren().get(actual));
 		
 		} else {
 
 			if(name.isEmpty()) {
-				ClassificationObject co = new ClassificationObject(actual, description);
+				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
 				
 			} else {
-				ClassificationObject co = new ClassificationObject(actual, description);
+				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
-				requClassificate(name, description, co);
+				this.requClassificate(name, description, co);
 			}
 		}
 	}
@@ -161,8 +167,8 @@ public class ACMClassification extends ClassificationXMLParser {
 	}
 	*/
 	
-	private void classificate(String name, String description) {
-		int delimiter = name.indexOf('.') +1;
+	private void classificate(String name, final String description) {
+		final int delimiter = name.indexOf('.') +1;
 		String actual;
 		
 		if(delimiter != 0) {
@@ -173,16 +179,17 @@ public class ACMClassification extends ClassificationXMLParser {
 			name = "";
 		}
 	
-		if(classifications.containsKey(actual)) {
-			requClassificate(name, description, classifications.get(actual));
+		if(this.classifications.containsKey(actual)) {
+			this.requClassificate(name, description, this.classifications.get(actual));
 		} else {
 			
-			ClassificationObject co = new ClassificationObject(actual, description);
-			classifications.put(actual, co);
-			requClassificate(name, description, co);
+			final ClassificationObject co = new ClassificationObject(actual, description);
+			this.classifications.put(actual, co);
+			this.requClassificate(name, description, co);
 		}
 	}
 	
+	@Override
 	public String getName() {
 		return NAME;
 	}

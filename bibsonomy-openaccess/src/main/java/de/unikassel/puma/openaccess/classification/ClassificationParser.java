@@ -1,10 +1,14 @@
 package de.unikassel.puma.openaccess.classification;
 
-import java.util.LinkedHashMap;
+import java.util.Map;
 
+/**
+ * @author philipp
+ * @version $Id$
+ */
 public interface ClassificationParser {
 	
-	public LinkedHashMap<String, ClassificationObject> getList();
+	public Map<String, ClassificationObject> getList();
 	
 	public abstract String getName();
 	

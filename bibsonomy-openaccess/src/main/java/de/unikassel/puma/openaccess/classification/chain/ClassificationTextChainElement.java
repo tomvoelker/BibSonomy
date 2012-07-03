@@ -11,39 +11,46 @@ import de.unikassel.puma.openaccess.classification.Classification;
 import de.unikassel.puma.openaccess.classification.ClassificationSource;
 import de.unikassel.puma.openaccess.classification.ClassificationTextParser;
 
+/**
+ * @author philipp
+ * @version $Id$
+ */
 public class ClassificationTextChainElement implements ClassificationSource {
 
 	private final ClassificationTextParser classificationParser;
 	
 	private ClassificationSource next = null;
 
-	public ClassificationTextChainElement(ClassificationTextParser cParser) {
+	/**
+	 * constructor to set the parser
+	 * @param cParser
+	 */
+	public ClassificationTextChainElement(final ClassificationTextParser cParser) {
 		this.classificationParser = cParser;
 	}
-
-	public void setNext(ClassificationSource next) {
+	
+	/**
+	 * @param next the next classification source to set
+	 */
+	public void setNext(final ClassificationSource next) {
 		this.next = next;
 	}
 	
-	public ClassificationSource getNext() {
-		return this.next;
-	}
-	
 	@Override
-	public Classification getClassification(URL url) throws IOException {
-		BufferedReader in =
+	public Classification getClassification(final URL url) throws IOException {
+		final BufferedReader in =
 			new BufferedReader(new FileReader(url.getPath()));
 		
-		classificationParser.parse(in);
+		this.classificationParser.parse(in);
 		
-		if(!present(classificationParser.getList())) {
-			if(!present(next)) {
+		if (!present(this.classificationParser.getList())) {
+			if (!present(this.next)) {
 				return null;
-			} else {
-				return next.getClassification(url);
 			}
+			
+			return this.next.getClassification(url);
 		}
 		
-		return new Classification(classificationParser.getName(), classificationParser.getList(), classificationParser.getDelimiter());
+		return new Classification(this.classificationParser.getName(), this.classificationParser.getList(), this.classificationParser.getDelimiter());
 	}
 }

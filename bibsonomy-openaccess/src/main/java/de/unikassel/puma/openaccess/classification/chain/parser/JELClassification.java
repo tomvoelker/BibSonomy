@@ -8,6 +8,10 @@ import org.xml.sax.SAXException;
 import de.unikassel.puma.openaccess.classification.ClassificationObject;
 import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
+/**
+ * @author philipp
+ * @version $Id$
+ */
 public class JELClassification extends ClassificationXMLParser {
 
 	private static final String NAME = "JEL";
@@ -19,28 +23,23 @@ public class JELClassification extends ClassificationXMLParser {
 	
 	@Override
 	public void startDocument() {
-		classifications = new LinkedHashMap<String, ClassificationObject>();
-		buf = new StringBuffer();
-		code = "";
-		description = "";
+		this.classifications = new LinkedHashMap<String, ClassificationObject>();
+		this.buf = new StringBuffer();
+		this.code = "";
+		this.description = "";
 	}
 
 	@Override
 	public void endDocument() {
+		// noop
 	}
 
 	@Override
 	public void startElement (final String uri, final String name, final String qName, final Attributes atts) throws SAXException {
-		if ("code".equals(qName)) {
-
-		} else if("description".equals(qName)) {
-
-		} else if("data".equals(qName) || "classification".equals(qName)) {
-			//no op
-		} else {
+		if (!("code".equals(qName) || "description".equals(qName) || "data".equals(qName) || "classification".equals(qName))) {
 			throw new SAXException("Unable to parse");
 		}
-		buf = new StringBuffer();
+		this.buf = new StringBuffer();
 	}
 
 	/** Collect characters.
@@ -49,18 +48,18 @@ public class JELClassification extends ClassificationXMLParser {
 	 */
 	@Override
 	public void characters (final char ch[], final int start, final int length) {
-		buf.append(ch, start, length);
+		this.buf.append(ch, start, length);
 	}
 
 	@Override
 	public void endElement (final String uri, final String name, final String qName) throws SAXException {
 		if ("code".equals(qName)) {
-			this.code = buf.toString();
+			this.code = this.buf.toString();
 		} else if("description".equals(qName)) {
-			this.description = buf.toString();
-			classificate(code, description);
-			code = "";
-			description = "";
+			this.description = this.buf.toString();
+			this.classificate(this.code, this.description);
+			this.code = "";
+			this.description = "";
 			
 		} else if("data".equals(qName) || "classification".equals(qName)) {
 			//no op
@@ -69,40 +68,41 @@ public class JELClassification extends ClassificationXMLParser {
 		}
 	}
 	
-	private void requClassificate(String name, String description, ClassificationObject object) {
-		String actual = name.charAt(0) +"";
+	private void requClassificate(String name, final String description, final ClassificationObject object) {
+		final String actual = name.charAt(0) +"";
 		name = name.substring(1);
 	
 		if(object.getChildren().containsKey(actual)) {
-			requClassificate(name, description, object.getChildren().get(actual));
+			this.requClassificate(name, description, object.getChildren().get(actual));
 		
 		} else {
 			if(name.isEmpty()) {
-				ClassificationObject co = new ClassificationObject(actual, description);
+				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
 				
 			} else {
-				ClassificationObject co = new ClassificationObject(actual, description);
+				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
-				requClassificate(name, description, co);
+				this.requClassificate(name, description, co);
 			}
 		}
 	}
 	
 
-	private void classificate(String name, String description) {
-		String actual = name.charAt(0) +"";
+	private void classificate(String name, final String description) {
+		final String actual = name.charAt(0) +"";
 		name = name.substring(1);
 	
-		if(classifications.containsKey(actual)) {
-			requClassificate(name, description, classifications.get(actual));
+		if(this.classifications.containsKey(actual)) {
+			this.requClassificate(name, description, this.classifications.get(actual));
 		} else {
-			ClassificationObject co = new ClassificationObject(actual, description);
-			classifications.put(actual, co);
-			requClassificate(name, description, co);
+			final ClassificationObject co = new ClassificationObject(actual, description);
+			this.classifications.put(actual, co);
+			this.requClassificate(name, description, co);
 		}
 	}
 	
+	@Override
 	public String getName() {
 		return NAME;
 	}
@@ -111,5 +111,4 @@ public class JELClassification extends ClassificationXMLParser {
 	public String getDelimiter() {
 		return null;
 	}
-
 }

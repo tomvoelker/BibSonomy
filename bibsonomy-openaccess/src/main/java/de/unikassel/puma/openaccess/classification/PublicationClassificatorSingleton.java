@@ -2,6 +2,11 @@ package de.unikassel.puma.openaccess.classification;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+/**
+ * @author philipp
+ * @version $Id$
+ */
+@Deprecated // TODO remove and config 
 public class PublicationClassificatorSingleton {
 	
 	private String classificationFilePath;
@@ -15,15 +20,15 @@ public class PublicationClassificatorSingleton {
      */
     public PublicationClassificator getInstance(){
         
-    	if(!present(singleton)) {
-    		singleton = new PublicationClassificator(classificationFilePath);
+    	if (!present(this.singleton)) {
+    		this.singleton = new PublicationClassificator(this.classificationFilePath);
     	}
     	
-    	return singleton;
+    	return this.singleton;
     }
     
-    public void setClassificationFilePath(String classPath) {
-    	classificationFilePath = classPath;
+    public void setClassificationFilePath(final String classPath) {
+    	this.classificationFilePath = classPath;
     }
 
 
