@@ -25,7 +25,6 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.bibsonomy.database.testutil.JNDIBinder;
 import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 
 /**
@@ -43,7 +42,6 @@ public class LuceneCommandLine {
 	 * @throws Exception
 	 */
 	public static void main(final String[] args) throws Exception {
-		JNDIBinder.bind();
 		final LuceneCommandLine lcml = new LuceneCommandLine();
 		lcml.doQuerying();
 	}
@@ -65,17 +63,17 @@ public class LuceneCommandLine {
 		String searchTerms = null; 
 		while( !"!quit".equals(searchTerms) ) {
 			System.out.print("Query: ");
-			searchTerms = readStdIn();
+			searchTerms = this.readStdIn();
 			
-			doSearching(bookmarkSearcher, sort, searchTerms);
-			doSearching(bibTexSearcher, sort, searchTerms);
+			this.doSearching(bookmarkSearcher, sort, searchTerms);
+			this.doSearching(bibTexSearcher, sort, searchTerms);
 		}
 	}
 	
 	private void doSearching(final IndexSearcher searcher, final Sort sort, final String searchTerms) {
 		if( !"!quit".equals(searchTerms) ) {
 			long queryTimeMs = System.currentTimeMillis();
-			final Query searchQuery = parseSearchQuery(searchTerms);
+			final Query searchQuery = this.parseSearchQuery(searchTerms);
 			queryTimeMs = System.currentTimeMillis() - queryTimeMs;
 			//------------------------------------------------------------
 			// query the index
@@ -130,7 +128,7 @@ public class LuceneCommandLine {
 	 */
 	private Query parseSearchQuery(final String searchTerms) {
 		// parse search terms for handling phrase search
-		final QueryParser searchTermParser = new QueryParser(LUCENE_24, "mergedfields", analyzer);
+		final QueryParser searchTermParser = new QueryParser(LUCENE_24, "mergedfields", this.analyzer);
 		// FIXME: configure default operator via spring
 		Query searchTermQuery = null;
 		try {
