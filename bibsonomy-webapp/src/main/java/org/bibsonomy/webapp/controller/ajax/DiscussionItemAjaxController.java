@@ -68,7 +68,6 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		final String interHash = command.getHash();
 		final String postUserName = command.getPostUserName();
 		final String intraHash = command.getIntraHash();
-		System.out.println(postUserName);
 		
 		/*
 		 * resource hash must be specified
