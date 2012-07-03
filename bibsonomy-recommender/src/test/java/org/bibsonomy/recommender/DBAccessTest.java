@@ -3,7 +3,6 @@ package org.bibsonomy.recommender;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -17,14 +16,12 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
-import org.bibsonomy.recommender.testutil.JNDITestDatabaseBinder;
-import org.junit.AfterClass;
+import org.bibsonomy.recommender.testutil.RecommenderTestContext;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,30 +35,16 @@ public class DBAccessTest {
 
 	private static DBLogic dbLogic;
 	
-	/**
-	 * binds jndi and sets the dbLogic
-	 */
 	@BeforeClass
 	public static void setUp() {
-		// bind datasource access via JNDI
-		JNDITestDatabaseBinder.bind();
-		dbLogic = DBAccess.getInstance();
-	}
-	
-	/**
-	 * unbins jndi
-	 */
-	@AfterClass
-	public static void tearDown() {
-		JNDITestDatabaseBinder.unbind();
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogic.class);
 	}
 	
 	/**
 	 * Test registering a new recommender
-	 * @throws SQLException 
 	 */
 	@Test
-	public void testAddQuery() throws SQLException {
+	public void testAddQuery() {
 		final Post<? extends Resource> post = createPost();
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
@@ -75,10 +58,9 @@ public class DBAccessTest {
 	
 	/**
 	 * Test registering a new recommender
-	 * @throws SQLException 
 	 */
 	@Test
-	public void testAddNewRecommender() throws SQLException  {
+	public void testAddNewRecommender()  {
 		final Long qid = Long.valueOf(0);
 		final String recInfo = "TestCase-non-Recommender";
 		final String recMeta = "NON-NULL-META";
@@ -94,28 +76,24 @@ public class DBAccessTest {
 
 	/**
 	 * Test registering a new selector
-	 * @throws SQLException 
 	 */
 	@Test
-	public void testAddNewSelector() throws SQLException  {
+	public void testAddNewSelector()  {
 		final Long qid = Long.valueOf(0);
 		final String selectorInfo = "TestCase-non-Selector";
 		final String selectorMeta = "NON-NULL-META";
 		// store and retrieve recommender informations
-		Long sid = null;
-		SelectorSettingParam retVal = null;
-		sid = dbLogic.addResultSelector(qid, selectorInfo, selectorMeta.getBytes());
-		retVal = dbLogic.getSelector(sid);
+		final Long sid = dbLogic.addResultSelector(qid, selectorInfo, selectorMeta.getBytes());
+		final SelectorSettingParam retVal = dbLogic.getSelector(sid);
 		assertEquals(selectorInfo, retVal.getInfo());
 		assertArrayEquals(selectorMeta.getBytes(), retVal.getMeta());
 	}	
 	
 	/**
-	 * Test registering a new selector
-	 * @throws SQLException 
+	 * Test registering a new selector 
 	 */
 	@Test
-	public void testAddNewSelector2() throws SQLException  {
+	public void testAddNewSelector2()  {
 		final Long qid = Long.valueOf(0);
 		final String selectorInfo = "TestCase-non-Selector";
 		final byte[] selectorMeta = null;
@@ -126,19 +104,19 @@ public class DBAccessTest {
 		retVal = dbLogic.getSelector(sid);
 		assertEquals(selectorInfo, retVal.getInfo());
 		assertArrayEquals(null, retVal.getMeta());
-	}		
+	}	
+	
 	/**
 	 * Test adding selected tags.
-	 * @throws SQLException 
 	 */
 	@Test
-	public void testAddSelectedTags() throws SQLException  {
+	public void testAddSelectedTags()  {
 		final Long qid = Long.valueOf(0);
 		final Long rid = Long.valueOf(0);
 		final int nr = 5;
 		
 		// create tags
-		final SortedSet<RecommendedTag> tags = createRecommendedTags(nr);
+		final SortedSet<RecommendedTag> tags = this.createRecommendedTags(nr);
 		// store tags
 		final int count = dbLogic.storeRecommendation(qid, rid, tags);
 		// fetch tags
@@ -158,11 +136,10 @@ public class DBAccessTest {
 	
 	/**
 	 * Test adding recommender response
-	 * @throws SQLException 
 	 */
 	@Test
 	@Ignore
-	public void testAddRecommenderResult() throws SQLException  {
+	public void testAddRecommenderResult()  {
 		// TODO: implement a test
 	}	
 	
@@ -177,10 +154,9 @@ public class DBAccessTest {
 	
 	/**
 	 * Test mapping post to recommendation
-	 * @throws SQLException 
 	 */
 	@Test
-	public void testGetQueryForPost() throws SQLException {
+	public void testGetQueryForPost() {
 		/*
 		 *  add query
 		 */
@@ -197,11 +173,10 @@ public class DBAccessTest {
 
 	/**
 	 * Test getting post data for recommender query
-	 * @throws SQLException 
 	 */
 	@Test
 	@Ignore
-	public void testGetPostDataForQuery() throws SQLException {
+	public void testGetPostDataForQuery() {
 	}
 
 	
@@ -244,9 +219,9 @@ public class DBAccessTest {
 		final TreeSet<RecommendedTag> extracted = new TreeSet<RecommendedTag>();
 
 		// create informative recommendation:
-		for( int i=0; i<nr; i++) {
-			final double score = (1.0*i)/nr;
-			final double confidence = 1.0/nr;
+		for (int i = 0; i < nr; i++) {
+			final double score = (1.0 * i) / nr;
+			final double confidence = 1.0 / nr;
 			final String re = "Tag" + String.valueOf(i);
 			extracted.add(new RecommendedTag(re, score, confidence));
 		}

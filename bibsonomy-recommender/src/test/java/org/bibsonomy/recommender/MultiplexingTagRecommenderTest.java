@@ -24,14 +24,12 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
-import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 import org.bibsonomy.recommender.tags.simple.DummyTagRecommender;
-import org.bibsonomy.recommender.testutil.JNDITestDatabaseBinder;
+import org.bibsonomy.recommender.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.testutil.SelectCounter;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -53,14 +51,7 @@ public class MultiplexingTagRecommenderTest {
 
 	@BeforeClass
 	public static void setUp() {
-		// bind datasource access via JNDI
-		JNDITestDatabaseBinder.bind();
-		dbLogic = DBAccess.getInstance();
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		JNDITestDatabaseBinder.unbind();
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogic.class);
 	}
 
 	//------------------------------------------------------------------------
@@ -85,16 +76,16 @@ public class MultiplexingTagRecommenderTest {
 		public void run() {
 			final SortedSet<RecommendedTag> result = 
 				new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-			for( int i = 0; i < nrOfTags; i++ ) {
-				result.add(new RecommendedTag("TAG_"+ i, 1.0*i/(nrOfTags+1), 0.5));
+			for( int i = 0; i < this.nrOfTags; i++ ) {
+				result.add(new RecommendedTag("TAG_"+ i, (1.0*i)/(this.nrOfTags+1), 0.5));
 			}
 
 			try {
-				Thread.sleep(timeout);
+				Thread.sleep(this.timeout);
 			} catch (final Exception ex) {
 			}
 
-			store.addResult(qid, sid, result);
+			this.store.addResult(this.qid, this.sid, result);
 		}
 	}
 
