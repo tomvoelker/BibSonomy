@@ -1,6 +1,5 @@
 package de.unikassel.puma.openaccess.sword;
 
-
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
@@ -10,7 +9,6 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
@@ -43,21 +41,21 @@ import org.xml.sax.SAXParseException;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
 import de.unikassel.puma.openaccess.sword.renderer.xml.DivType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.DivType.Fptr;
 import de.unikassel.puma.openaccess.sword.renderer.xml.FileType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.FileType.FLocat;
 import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap.XmlData;
 import de.unikassel.puma.openaccess.sword.renderer.xml.Mets;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec.FileGrp;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr;
+import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr.Agent;
 import de.unikassel.puma.openaccess.sword.renderer.xml.ObjectFactory;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPost;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaUserType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.StructMapType;
-import de.unikassel.puma.openaccess.sword.renderer.xml.DivType.Fptr;
-import de.unikassel.puma.openaccess.sword.renderer.xml.FileType.FLocat;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MdSecType.MdWrap.XmlData;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.FileSec.FileGrp;
-import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr.Agent;
 
 
 /**
@@ -69,7 +67,6 @@ import de.unikassel.puma.openaccess.sword.renderer.xml.MetsType.MetsHdr.Agent;
  * @author:  sven
  * @version: $Id$
  * $Author$
- * 
  */
 public class MetsBibTexMLGenerator {
 	private static final Log log = LogFactory.getLog(MetsBibTexMLGenerator.class);
@@ -77,11 +74,10 @@ public class MetsBibTexMLGenerator {
 	/*
 	 * FIXME: Check if this class should be thread-safe. If so, don't use 
 	 * object attributes to store data.
-	 * 
 	 */
-	private PumaData<BibTex> _post = null;
-	private ArrayList<String> _filenameList = null; 
-	private User _user = null; 
+	private PumaData<BibTex> post = null;
+	private List<String> filenameList = null; 
+	private User user = null; 
 
 	private final PumaRenderer xmlRenderer;
 
@@ -89,67 +85,60 @@ public class MetsBibTexMLGenerator {
 	 * @return the _user
 	 */
 	public User getUser() {
-		return _user;
+		return this.user;
 	}
 
 	/**
 	 * @param user the _user to set
 	 */
-	public void setUser(User user) {
-		_user = user;
+	public void setUser(final User user) {
+		this.user = user;
 	}
-
-	// contains special characters, symbols, etc...
-	private static Properties chars = new Properties();
-
-
-
 
 	public MetsBibTexMLGenerator(final UrlRenderer urlRenderer) {
 		this.xmlRenderer = new PumaRenderer(urlRenderer);
-		this._post = new PumaData<BibTex>();
+		this.post = new PumaData<BibTex>();
 	}
 
-	public String getFilename(int elementnumber) {
-		if (_filenameList.size() > elementnumber) {
-			return _filenameList.get(elementnumber);
-		} else {
-			return null;
+	public String getFilename(final int elementnumber) {
+		if (this.filenameList.size() > elementnumber) {
+			return this.filenameList.get(elementnumber);
 		}
+		
+		return null;
 	}
-
-
-	public void setFilenameList(ArrayList<String> filenameList) {
-		_filenameList = filenameList;
-	}
-
 
 	/**
-	 * Fills url and title of bookmark.
-	 * 
-	 * @param url
-	 * @return
+	 * @param filenameList the filenameList to set
 	 */
+	public void setFilenameList(final List<String> filenameList) {
+		this.filenameList = filenameList;
+	}
 
-	public void setMetadata(PumaData<BibTex> pumaData) {
-		_post.getPost().setDescription(pumaData.getPost().getDescription());
-		_post.getPost().setContentId(pumaData.getPost().getContentId());
-		_post.getPost().setDate(pumaData.getPost().getDate());
-		_post.getPost().setGroups(pumaData.getPost().getGroups());
-		_post.getPost().setRanking(pumaData.getPost().getRanking());
-		_post.getPost().setResource(pumaData.getPost().getResource());
-		_post.getPost().setTags(pumaData.getPost().getTags());
-		_post.getPost().setUser(pumaData.getPost().getUser());
+	/**
+	 * sets metadata
+	 * 
+	 * @param pumaData
+	 */
+	public void setMetadata(final PumaData<BibTex> pumaData) {
+		this.post.getPost().setDescription(pumaData.getPost().getDescription());
+		this.post.getPost().setContentId(pumaData.getPost().getContentId());
+		this.post.getPost().setDate(pumaData.getPost().getDate());
+		this.post.getPost().setGroups(pumaData.getPost().getGroups());
+		this.post.getPost().setRanking(pumaData.getPost().getRanking());
+		this.post.getPost().setResource(pumaData.getPost().getResource());
+		this.post.getPost().setTags(pumaData.getPost().getTags());
+		this.post.getPost().setUser(pumaData.getPost().getUser());
 
-		_post.setClassification(pumaData.getClassification());
+		this.post.setClassification(pumaData.getClassification());
 
-		_post.setAuthor(pumaData.getAuthor());
-		_post.setExaminstitution(pumaData.getExaminstitution());
-		_post.setAdditionaltitle(pumaData.getAdditionaltitle());
-		_post.setExamreferee(pumaData.getExamreferee());
-		_post.setPhdoralexam(pumaData.getPhdoralexam());
-		_post.setSponsors(pumaData.getSponsors());
-		_post.setAdditionaltitle(pumaData.getAdditionaltitle());	
+		this.post.setAuthor(pumaData.getAuthor());
+		this.post.setExaminstitution(pumaData.getExaminstitution());
+		this.post.setAdditionaltitle(pumaData.getAdditionaltitle());
+		this.post.setExamreferee(pumaData.getExamreferee());
+		this.post.setPhdoralexam(pumaData.getPhdoralexam());
+		this.post.setSponsors(pumaData.getSponsors());
+		this.post.setAdditionaltitle(pumaData.getAdditionaltitle());	
 
 	}
 
@@ -161,54 +150,37 @@ public class MetsBibTexMLGenerator {
 			super(urlRenderer);
 		}
 
-		protected PumaPost createPumaPost(final PumaData<? extends Resource> pumaData, User userData)	throws InternServerException {
-
+		protected PumaPost createPumaPost(final PumaData<? extends Resource> pumaData, final User userData)	throws InternServerException {
 			final PumaPost myPost = new PumaPost();
-
-			fillXmlPost(myPost, pumaData.getPost());
-
+			this.fillXmlPost(myPost, pumaData.getPost());
 
 			/*
 			 * delete unwanted data from post
+			 * - remove all system tags. they should not be sent to repository
 			 */
-
-			/*
-			 * remove from post
-			 */
-
-			/*
-			 *  remove all system tags. they should not be sent to repository
-			 */
-
-			Iterator<TagType> tagIterator = myPost.getTag().iterator();
+			final Iterator<TagType> tagIterator = myPost.getTag().iterator();
 			while (tagIterator.hasNext()) {
-				TagType tag = tagIterator.next();
+				final TagType tag = tagIterator.next();
 
 				if (SystemTagsUtil.isSystemTag(tag.getName())) {
 					tagIterator.remove();
 				}
 			}
-
-
-			/*
-			 * remove from bibtex 
-			 */
-
+			
 			/*
 			 * remove url. there is no need for this url to be present in repository
 			 */
 			final BibtexType bibtex = myPost.getBibtex();
 			bibtex.setUrl(null);
-
 			myPost.setBibtex(bibtex);
-
-
 
 			/*
 			 * add more user informations
 			 */
 			if (null != userData) {
-				if (null == myPost.getUser()) myPost.setUser(new PumaUserType());
+				if (null == myPost.getUser()) {
+					myPost.setUser(new PumaUserType());
+				}
 				myPost.getUser().setName(userData.getName());
 				myPost.getUser().setRealname(userData.getRealname());
 				myPost.getUser().setEmail(userData.getEmail());
@@ -223,13 +195,22 @@ public class MetsBibTexMLGenerator {
 				final BibTex bibtexResource = (BibTex) resource;
 				bibtexResource.parseMiscField();
 				if (null != myPost.getBibtex()) {
-					if (null != bibtexResource.getMiscField("isbn")) 		myPost.setISBN(bibtexResource.getMiscField("isbn")); 
-					if (null != bibtexResource.getMiscField("issn"))		myPost.setISSN(bibtexResource.getMiscField("issn")); 
-					if (null != bibtexResource.getMiscField("doi")) 		myPost.setDOI(bibtexResource.getMiscField("doi")); 
-					if (null != bibtexResource.getMiscField("location"))	myPost.setLocation(bibtexResource.getMiscField("location")); 
-					if (null != bibtexResource.getMiscField("dcc"))			myPost.setDCC(bibtexResource.getMiscField("dcc")); 
+					if (null != bibtexResource.getMiscField("isbn")) {
+						myPost.setISBN(bibtexResource.getMiscField("isbn"));
+					} 
+					if (null != bibtexResource.getMiscField("issn")) {
+						myPost.setISSN(bibtexResource.getMiscField("issn"));
+					} 
+					if (null != bibtexResource.getMiscField("doi")) {
+						myPost.setDOI(bibtexResource.getMiscField("doi"));
+					} 
+					if (null != bibtexResource.getMiscField("location")) {
+						myPost.setLocation(bibtexResource.getMiscField("location"));
+					} 
+					if (null != bibtexResource.getMiscField("dcc")) {
+						myPost.setDCC(bibtexResource.getMiscField("dcc"));
+					} 
 				}
-
 
 				if (present(pumaData.getAuthor())) {
 					for (final PersonName personName : pumaData.getAuthor()) {
@@ -242,7 +223,7 @@ public class MetsBibTexMLGenerator {
 				}
 
 				if (null != pumaData.getExamreferee()) {
-					for (String item : pumaData.getExamreferee()) {
+					for (final String item : pumaData.getExamreferee()) {
 						myPost.getExamreferee().add(item);
 					}
 				}
@@ -252,21 +233,21 @@ public class MetsBibTexMLGenerator {
 				}
 
 				if (null != pumaData.getSponsors()) {
-					for (String item : pumaData.getSponsors()) {
+					for (final String item : pumaData.getSponsors()) {
 						myPost.getSponsors().add(item);
 					}
 				}
 
 				if (null != pumaData.getAdditionaltitle()) {
-					for (String item : pumaData.getAdditionaltitle()) {
+					for (final String item : pumaData.getAdditionaltitle()) {
 						myPost.getAdditionaltitle().add(item);
 					}
 				}
 
 				if (null != pumaData.getClassification()) {					
-					for (Entry<String, List<String>> entry : pumaData.getClassification().entrySet()) {
-						for (String listValue : entry.getValue() ) {
-							PumaPost.Classification pptClassification = new PumaPost.Classification();
+					for (final Entry<String, List<String>> entry : pumaData.getClassification().entrySet()) {
+						for (final String listValue : entry.getValue() ) {
+							final PumaPost.Classification pptClassification = new PumaPost.Classification();
 							pptClassification.setName(entry.getKey().toLowerCase(Locale.getDefault()).replaceAll("/ /",""));
 							pptClassification.setValue(listValue);
 							myPost.getClassification().add(pptClassification);
@@ -277,12 +258,8 @@ public class MetsBibTexMLGenerator {
 				/*
 				 * add publisher info / romeo sherpa 
 				 */
-
-				// publisher oder journal
-				// get info from romeo/sherpa
+				// TODO: get info from romeo/sherpa
 				//myPost.setPublisherinfo("");
-
-
 			}
 			return myPost;
 		}
@@ -295,6 +272,8 @@ public class MetsBibTexMLGenerator {
 		/**
 		 * Initializes java xml bindings, builds the document and then marshalls
 		 * it to the writer.
+		 * @param writer 
+		 * @param mets 
 		 * 
 		 * @throws InternServerException
 		 *             if the document can't be marshalled
@@ -311,10 +290,7 @@ public class MetsBibTexMLGenerator {
 				final Marshaller marshaller = jc.createMarshaller();
 				marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 				marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd");
-
-
-				//xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd";>
-
+				
 				/*
 				 * configure namespace
 				 */
@@ -328,29 +304,19 @@ public class MetsBibTexMLGenerator {
 							"xlink", "http://www.w3.org/1999/xlink"
 					};
 
-
 					@Override
-					public String getPreferredPrefix(String arg0, String arg1, boolean arg2) {
-
-						//return "mets";
-
-
-						// TODO Auto-generated method stub
+					public String getPreferredPrefix(final String arg0, final String arg1, final boolean arg2) {
 						return null;
 					}
 
 					@Override
 					public String[] getContextualNamespaceDecls() {
-						return namespace_decls;
+						return this.namespace_decls;
 					}
 
 					@Override
 					public String[] getPreDeclaredNamespaceUris2() {
-
-						//return new String[] { "mets", "http://www.loc.gov/METS/" };
-						return namespace_decls;
-
-						//return null;
+						return this.namespace_decls;
 					}
 
 				};
@@ -363,17 +329,13 @@ public class MetsBibTexMLGenerator {
 
 				// marshal to the writer
 				marshaller.marshal(webserviceElement, writer);
-				// TODO log
-				// log.debug("");
 			} catch (final JAXBException e) {
 				final Throwable linkedException = e.getLinkedException();
-				if (present(linkedException) && linkedException.getClass() == SAXParseException.class) {
+				if (present(linkedException) && (linkedException.getClass() == SAXParseException.class)) {
 					final SAXParseException ex = (SAXParseException) linkedException;
 					throw new BadRequestOrResponseException(
-							"Error while parsing XML (Line " 
-							+ ex.getLineNumber() + ", Column "
-							+ ex.getColumnNumber() + ": "
-							+ ex.getMessage()
+							"Error while parsing XML (Line " + ex.getLineNumber() + ", Column "
+							+ ex.getColumnNumber() + ": " + ex.getMessage()
 					);				
 				}						
 				throw new InternServerException(e.toString());
@@ -386,10 +348,8 @@ public class MetsBibTexMLGenerator {
 		/*
 		 * Helfer
 		 */
-
 		final StringWriter sw = new StringWriter();
 		final ObjectFactory objectFactory = new ObjectFactory();
-
 
 		/*
 		 * METS
@@ -401,21 +361,18 @@ public class MetsBibTexMLGenerator {
 		mets.setPROFILE("DSpace METS SIP Profile 1.0");
 
 
-		//mets xmlns=\"http://www.loc.gov/METS/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd\">\n";
-
 		/*
 		 * METS Hdr
 		 */
-
 		final MetsHdr metsHdr = objectFactory.createMetsTypeMetsHdr();
 
 
-		GregorianCalendar c = new GregorianCalendar();
+		final GregorianCalendar c = new GregorianCalendar();
 		XMLGregorianCalendar currentDate;
 		try {
 			currentDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
 			metsHdr.setCREATEDATE(currentDate);
-		} catch (DatatypeConfigurationException e) {
+		} catch (final DatatypeConfigurationException e) {
 			log.warn("DatatypeConfigurationException");
 		}
 
@@ -454,19 +411,19 @@ public class MetsBibTexMLGenerator {
 		mets.setFileSec(metsFileSec);
 
 		final FileGrp metsFileSecFileGrp = objectFactory.createMetsTypeFileSecFileGrp();
-		List<FileType> fileItemList = new ArrayList<FileType>(); 
+		final List<FileType> fileItemList = new ArrayList<FileType>(); 
 
 		metsFileSecFileGrp.setID("sword-mets-fgrp-1");
 		metsFileSecFileGrp.setUSE("CONTENT");
 		Integer filenumber = 0;
-		for(Document doc : _post.getPost().getResource().getDocuments()) {
-			FileType fileItem = new FileType();
+		for(final Document doc : this.post.getPost().getResource().getDocuments()) {
+			final FileType fileItem = new FileType();
 			//			fileItem.setGROUPID("sword-mets-fgid-0");
 			fileItem.setID("sword-mets-file-".concat(filenumber.toString()));
 			// TODO: if file is not pdf, set MIMEtype to something like binary data
 			fileItem.setMIMETYPE("application/pdf");
 
-			FLocat fileLocat = new FLocat();
+			final FLocat fileLocat = new FLocat();
 			fileLocat.setLOCTYPE("URL");
 			fileLocat.setHref(doc.getFileName());
 			fileItem.getFLocat().add(fileLocat);
@@ -476,8 +433,7 @@ public class MetsBibTexMLGenerator {
 
 			metsFileSecFileGrp.getFile().add(fileItem);
 			filenumber++;
-		}		
-
+		}
 
 		metsFileSec.getFileGrp().add(metsFileSecFileGrp);
 
@@ -500,41 +456,27 @@ public class MetsBibTexMLGenerator {
 		div2.setID("sword-mets-div-2");
 		div2.setTYPE("File");
 
-		for(FileType fItem : fileItemList) {
-			Fptr fptr = new Fptr();
+		for (final FileType fItem : fileItemList) {
+			final Fptr fptr = new Fptr();
 			fptr.setFILEID(fItem);
-
 			div2.getFptr().add(fptr);
-		}		
-		//xmlDocument += "<div ID=\"sword-mets-div-1\" DMDID=\"sword-mets-dmd-1\" TYPE=\"SWORD Object\">\n";
-		// fptr
-		//xmlDocument += "<fptr FILEID=\"sword-mets-file-1\"/>\n";
+		}	
 
 		div1.getDiv().add(div2);
-
 		structMap.setDiv(div1);
-
 		mets.getStructMap().add(structMap);
-
 
 		/*
 		 * unser Post
 		 */
-		final PumaPost pumaPost = xmlRenderer.createPumaPost(_post, _user);
-
-
-		//derPost.set
-		//"puma", "http://puma.uni-kassel.de/2010/11/PUMA-SWORD"
+		final PumaPost pumaPost = this.xmlRenderer.createPumaPost(this.post, this.user);
 
 		xmlData.getAny().add(pumaPost);
 
-		xmlRenderer.serializeMets(sw, mets);
+		this.xmlRenderer.serializeMets(sw, mets);
 
-		// DEBUG
 		log.debug(sw.toString());
-
 		return XmlUtils.removeXmlControlCharacters(sw.toString());
-
 	}	
 
 }
