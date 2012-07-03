@@ -34,6 +34,9 @@ public class PumaData<T extends Resource> implements Serializable {
 	
 	private static final Log log = LogFactory.getLog(PumaData.class);
 	
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+
+	
 	private Post<T> post = new Post<T>();
     /**
 	 * @return the post
@@ -164,13 +167,11 @@ public class PumaData<T extends Resource> implements Serializable {
 	 */
 	public void setPhdoralexam(final String phdoralexamString) {
 		// convert string to date
-
-		final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 		Date phdoralexamDate = null;
 		XMLGregorianCalendar phdoralexamXMLDate=null;
 		
 		try {
-			phdoralexamDate = sdf.parse(phdoralexamString);
+			phdoralexamDate = DATE_FORMAT.parse(phdoralexamString);
 			final GregorianCalendar c = new GregorianCalendar();
 			c.setTime(phdoralexamDate);
 			try {
@@ -178,11 +179,9 @@ public class PumaData<T extends Resource> implements Serializable {
 			} catch (final DatatypeConfigurationException e) {
 				log.warn("DatatypeConfigurationException");
 			}
-		} catch(final ParseException e) {
+		} catch (final ParseException e) {
 			// Quellzeit hat ein falsches Format
 		}
-		
-
 		
 		this.phdoralexam = phdoralexamXMLDate;
 	}
