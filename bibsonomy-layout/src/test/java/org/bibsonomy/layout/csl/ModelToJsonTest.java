@@ -23,95 +23,59 @@
 
 package org.bibsonomy.layout.csl;
 
-import org.bibsonomy.layout.csl.model.Person;
-import org.bibsonomy.layout.csl.model.Date;
-import org.bibsonomy.layout.csl.model.DateParts;
-import org.bibsonomy.layout.csl.model.Record;
-import org.bibsonomy.layout.csl.model.RecordList;
-
+import static org.junit.Assert.assertEquals;
 import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
-import net.sf.json.JsonConfig;
-import net.sf.json.processors.PropertyNameProcessor;
-import net.sf.json.util.PropertyFilter;
 
+import org.bibsonomy.layout.csl.model.Date;
+import org.bibsonomy.layout.csl.model.DateParts;
+import org.bibsonomy.layout.csl.model.Person;
+import org.bibsonomy.layout.csl.model.Record;
+import org.bibsonomy.layout.csl.model.RecordList;
 import org.junit.Test;
 
+/**
+ * 
+ * @author dbe
+ * @version $Id$
+ */
 public class ModelToJsonTest {
 
-    @Test
-    public void testToJSon() {
-    
-	Record rec = new Record();
-	
-	/*
-	 * author 
-	 */
-	Person auth1 = new Person();
-	auth1.setGiven("Dominik");
-	auth1.setFamily("Benz");
-	Person auth2 = new Person();
-	auth2.setGiven("Peter");
-	auth2.setFamily("Jackson");	
-	
-	/*
-	 * date
-	 */	
-	Date date = new Date();
-	date.getDate_parts().add(new DateParts("2010", "10", "14"));
-	date.getDate_parts().add(new DateParts("2011", "11"));
-	
-	/*
-	 * fields
-	 */
-	rec.setTitle("Test title!");
-	rec.getAuthor().add(auth1);
-	rec.getAuthor().add(auth2);
-	rec.setEdition("3");
-	rec.setCall_number("4");
-	rec.setIssued(date);
-	rec.setId("keyhere");
-		
-	
-		
-	JsonConfig jsonConfig = new JsonConfig();
-	// output only not-null fields
-	jsonConfig.setJsonPropertyFilter( new PropertyFilter() {
-	   @Override
-	   public boolean apply( Object source, String name, Object value ) {  
-	      if( value == null){  
-	         return true;  
-	      }
-	      return false;  
-	   }  
-	});
-	// transform underscores into "-"
-	jsonConfig.registerJsonPropertyNameProcessor(Person.class, new PropertyNameProcessor() {
-	    
-	    @Override
-	    public String processPropertyName(Class arg0, String arg1) {
-		return arg1.replace("_", "-");
-	    }
-	});
-	jsonConfig.registerJsonPropertyNameProcessor(Record.class, new PropertyNameProcessor() {
-	    
-	    @Override
-	    public String processPropertyName(Class arg0, String arg1) {
-		return arg1.replace("_", "-");
-	    }
-	}); 	
-	jsonConfig.registerJsonPropertyNameProcessor(Date.class, new PropertyNameProcessor() {
-	    
-	    @Override
-	    public String processPropertyName(Class arg0, String arg1) {
-		return arg1.replace("_", "-");
-	    }
-	}); 	
-	
-	
-	RecordList list = new RecordList();
-	list.add(rec);	
-	JSON json = JSONSerializer.toJSON(list, jsonConfig);	
-	System.out.println(json.toString());
-    }    
+	@Test
+	public void testToJSon() {
+		final Record rec = new Record();
+
+		/*
+		 * author
+		 */
+		final Person auth1 = new Person();
+		auth1.setGiven("Dominik");
+		auth1.setFamily("Benz");
+		final Person auth2 = new Person();
+		auth2.setGiven("Peter");
+		auth2.setFamily("Jackson");
+
+		/*
+		 * date
+		 */
+		final Date date = new Date();
+		date.getDate_parts().add(new DateParts("2010", "10", "14"));
+		date.getDate_parts().add(new DateParts("2011", "11"));
+
+		/*
+		 * fields
+		 */
+		rec.setTitle("Test title!");
+		rec.getAuthor().add(auth1);
+		rec.getAuthor().add(auth2);
+		rec.setEdition("3");
+		rec.setCall_number("4");
+		rec.setIssued(date);
+		rec.setId("keyhere");
+
+		final RecordList list = new RecordList();
+		list.add(rec);
+		final JSON json = JSONSerializer.toJSON(list, CslModelConverter.getJsonConfig());
+		assertEquals("{\"keyhere\":{\"author\":[{\"family\":\"Benz\",\"given\":\"Dominik\"},{\"family\":\"Jackson\",\"given\":\"Peter\"}],\"call-number\":\"4\",\"edition\":\"3\",\"editor\":[],\"id\":\"keyhere\",\"issued\":{\"date-parts\":[[\"2010\",\"10\",\"14\"],[\"2011\",\"11\"]]},\"title\":\"Test title!\"}}", json.toString());
+	}
 }
