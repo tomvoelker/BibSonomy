@@ -39,6 +39,16 @@ public interface DBSession {
 	 * sometimes (in case of an exception) without.
 	 */
 	public void endTransaction();
+	
+	/**
+	 * start a batch insert
+	 */
+	public void startBatch();
+	
+	/**
+	 * executes the batch
+	 */
+	public void executeBatch();
 
 	/**
 	 * MUST be called to release the db-connection

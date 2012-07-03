@@ -143,6 +143,24 @@ public class DBSessionImpl implements DBSession {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No transaction open");
 		}
 	}
+	
+	@Override
+	public void startBatch() {
+		try {
+			this.sqlMap.startBatch();
+		} catch (final SQLException e) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, e, "Couldn't start batch");
+		}
+	}
+
+	@Override
+	public void executeBatch() {
+		try {
+			this.sqlMap.executeBatch();
+		} catch (final SQLException e) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, e, "Couldn't execute batch");
+		}
+	}
 
 	/**
 	 * MUST be called to release the db-connection
@@ -267,7 +285,7 @@ public class DBSessionImpl implements DBSession {
 		}
 
 		final Throwable cause = ex.getCause();
-		if (cause != null && SQLException.class.equals(cause.getClass())) {
+		if ((cause != null) && SQLException.class.equals(cause.getClass())) {
 			/*
 			 * catch exceptions that happens because of
 			 * query interruption due to time limits
@@ -307,7 +325,7 @@ public class DBSessionImpl implements DBSession {
 		 * MySQL. Therefore, the check is now against the class name - 
 		 * which brings problems, if it should change ... 
 		 */
-		if (cause != null && cause.getClass().getSimpleName().equals("MySQLTimeoutException")) {
+		if ((cause != null) && cause.getClass().getSimpleName().equals("MySQLTimeoutException")) {
 			log.info("MySQL Query timeout for query " + query);
 			throw new QueryTimeoutException(ex, query);
 		}
@@ -375,7 +393,7 @@ public class DBSessionImpl implements DBSession {
 	    try {
 		return this.sqlMap.queryForMap(query, param, key);
 	    } catch (final Exception e) {
-		handleException(e, query);
+		this.handleException(e, query);
 	    }
 	    return null;
 	}
@@ -389,7 +407,7 @@ public class DBSessionImpl implements DBSession {
 	    try {
 		return this.sqlMap.queryForMap(query, param, key, value);
 	    } catch (final Exception e) {
-		handleException(e, query);
+		this.handleException(e, query);
 	    }
 	    return null;
 	}
