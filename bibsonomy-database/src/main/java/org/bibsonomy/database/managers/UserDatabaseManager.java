@@ -52,7 +52,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private final BasketDatabaseManager basketDBManager;
 	private final InboxDatabaseManager inboxDBManager;
 
-	private final DatabaseModelValidator<User> validator;
+	private DatabaseModelValidator<User> validator;
 	
 	private Chain<List<User>, UserParam> chain;
 
@@ -61,8 +61,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
-		
-		this.validator = new DatabaseModelValidator<User>();
 	}
 
 	/**
@@ -463,7 +461,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 * flag user as spammer & all his posts as spam
 			 */
 			user.setAlgorithm("self_deleted");
-			adminDBManager.flagSpammer(user, "on_delete", session);
+			this.adminDBManager.flagSpammer(user, "on_delete", session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -493,7 +491,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User foundUser = this.getUserDetails(username, session);
 
 		// user exists and api key is correct and user is no spammer
-		if (foundUser.getName() != null && !foundUser.isSpammer() && foundUser.getApiKey() != null && foundUser.getApiKey().equals(apiKey)) {
+		if ((foundUser.getName() != null) && !foundUser.isSpammer() && (foundUser.getApiKey() != null) && foundUser.getApiKey().equals(apiKey)) {
 			return foundUser;
 		}
 
@@ -669,7 +667,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * get all users, that have sourceUser in their friends list
 			 */
-			handleTaggedRelationship(tag, param);
+			this.handleTaggedRelationship(tag, param);
 			break;
 		default:
 			/*
@@ -721,7 +719,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				 * delete (sourceUser, targetUser) from  OF_FRIEND
 				 * = targetUser is no longer a friend of sourceUser = targetUser is no longer in sourceUser's friendsList
 				 */
-				handleTaggedRelationship(tag, param);
+				this.handleTaggedRelationship(tag, param);
 				this.plugins.onDeleteFriendship(param, session);
 				break;
 			default:
@@ -791,7 +789,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of user by given parameter
 	 */
 	public List<User> getUsers(final UserParam param, final DBSession session) {
-		return chain.perform(param, session);
+		return this.chain.perform(param, session);
 	}
 	
 	/**
@@ -900,5 +898,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setChain(final Chain<List<User>, UserParam> chain) {
 		this.chain = chain;
+	}
+
+	/**
+	 * @param validator the validator to set
+	 */
+	public void setValidator(final DatabaseModelValidator<User> validator) {
+		this.validator = validator;
 	}
 }

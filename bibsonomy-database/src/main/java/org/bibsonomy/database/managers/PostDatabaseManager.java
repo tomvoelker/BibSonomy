@@ -115,7 +115,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	private ResourceSearch<R> resourceSearch;
 
 	/** the validator for the posts*/
-	protected final DatabaseModelValidator<R> validator;
+	protected DatabaseModelValidator<R> validator;
 
 	private Chain<List<Post<R>>, P> chain;
 
@@ -131,8 +131,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.groupDb = GroupDatabaseManager.getInstance();
 
 		this.resourceClassName = this.getResourceClassName();
-
-		this.validator = new DatabaseModelValidator<R>();
 	}
 
 	/**
@@ -783,7 +781,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
 
-		return getPostsForGroupByTag(param, session);
+		return this.getPostsForGroupByTag(param, session);
 	}
 
 	protected List<Post<R>> getPostsForGroupByTag(final P param, final DBSession session) {
@@ -1617,5 +1615,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public void setChain(final Chain<List<Post<R>>, P> chain) {
 		this.chain = chain;
+	}
+
+	/**
+	 * @param validator the validator to set
+	 */
+	public void setValidator(final DatabaseModelValidator<R> validator) {
+		this.validator = validator;
 	}
 }

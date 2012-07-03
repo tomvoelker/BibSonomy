@@ -62,16 +62,18 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	public boolean isToHide() {
 		return toHide;
 	}
-	
 
-	public void setDocPath(String docPath) {
+	/**
+	 * @param docPath the docPath to set
+	 */
+	public void setDocPath(final String docPath) {
 		this.docPath = docPath;
 	}
 
 	/**
 	 * @param dbSessionFactory the dbSessionFactory to set
 	 */
-	public void setDBSessionFactory(final DBSessionFactory dbSessionFactory) {
+	public void setdbSessionFactory(final DBSessionFactory dbSessionFactory) {
 		this.dbSessionFactory = dbSessionFactory;
 	}
 
@@ -142,7 +144,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		/*
 		 * Make a DBLogic for the group
 		 */
-		LogicInterface groupDBLogic = this.getGroupDbLogic();
+		final LogicInterface groupDBLogic = this.getGroupDbLogic();
 		/*
 		 *  Check if the group exists and whether it owns the post already
 		 */
@@ -251,7 +253,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	 * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#isInstance(java.lang.String)
 	 */
 	@Override
-	public boolean isInstance(String tagName) {
+	public boolean isInstance(final String tagName) {
 		// the send tag must have an argument, the prefix is not required
 		return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
 	}
@@ -306,7 +308,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	public ExecutableSystemTag clone() {
 		try {
 			return (ExecutableSystemTag) super.clone();
-		} catch (CloneNotSupportedException ex) {
+		} catch (final CloneNotSupportedException ex) {
 			ex.printStackTrace();
 			return null;
 		}

@@ -3,12 +3,6 @@
 
 <sqlMapConfig>
 	
-	<transactionManager type="JDBC">
-		<dataSource type="JNDI">
-			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy"/>
-		</dataSource>
-	</transactionManager>
-	
 	<sqlMap resource="common/TypeAliases.xml" />
 	
 	<sqlMap resource="TestLogging.xml" />

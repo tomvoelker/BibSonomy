@@ -2,7 +2,7 @@ package org.bibsonomy.database.util;
 
 import static org.junit.Assert.assertEquals;
 
-import org.bibsonomy.database.testutil.JNDIBinder;
+import org.bibsonomy.database.AbstractDatabaseTest;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.User;
@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author dzo
  * @version $Id$
  */
-public class DatabaseSchemaInformationTest {
+public class DatabaseSchemaInformationTest extends AbstractDatabaseTest {
 	private static DatabaseSchemaInformation dBSchemaInformation;
 	
 	/**
@@ -22,8 +22,7 @@ public class DatabaseSchemaInformationTest {
 	 */
 	@BeforeClass
 	public static void setup() {
-		JNDIBinder.bind();
-		dBSchemaInformation = DatabaseSchemaInformation.getInstance();
+		dBSchemaInformation = testDatabaseContext.getBean(DatabaseSchemaInformation.class);
 	}
 	
 	/**

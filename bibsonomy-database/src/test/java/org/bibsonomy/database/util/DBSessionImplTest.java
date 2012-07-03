@@ -5,8 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.bibsonomy.database.AbstractDatabaseTest;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.common.impl.DBSessionImpl;
-import org.bibsonomy.database.testutil.JNDIBinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,9 +15,10 @@ import org.junit.Test;
 /**
  * @author Jens Illig
  * @author Christian Schenk
+ * 
  * @version $Id$
  */
-public class DBSessionImplTest {
+public class DBSessionImplTest extends AbstractDatabaseTest {
 
 	private DBSessionImpl session;
 
@@ -25,8 +27,7 @@ public class DBSessionImplTest {
 	 */
 	@Before
 	public void setUp() {
-		JNDIBinder.bind();
-		this.session = (DBSessionImpl) new IbatisDBSessionFactory().getDatabaseSession();
+		this.session = (DBSessionImpl) testDatabaseContext.getBean(DBSessionFactory.class).getDatabaseSession();
 	}
 
 	/**
@@ -35,7 +36,6 @@ public class DBSessionImplTest {
 	@After
 	public void tearDown() {
 		this.session.close();
-		JNDIBinder.unbind();
 	}
 
 	/**

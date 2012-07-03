@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.util.DatabaseSchemaInformation;
+import org.bibsonomy.services.database.DatabaseSchemaInformation;
 
 /**
  * @author dzo
@@ -20,6 +20,8 @@ import org.bibsonomy.database.util.DatabaseSchemaInformation;
  */
 public class DatabaseModelValidator<T> {
 	private static final Log log = LogFactory.getLog(DatabaseModelValidator.class);
+	
+	private DatabaseSchemaInformation databaseSchemaInformation;
 	
 	/**
 	 * checks if the string attributes of the model respect the field lengths of
@@ -37,7 +39,6 @@ public class DatabaseModelValidator<T> {
 			
 			/*
 			 * loop through all properties
-			 * if there are any performance issues, their cause might be here
 			 */
 			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {			
 				final Method getter = d.getReadMethod();
@@ -53,7 +54,7 @@ public class DatabaseModelValidator<T> {
 
 						final int length = stringValue.length();
 						final String propertyName = d.getName();
-						final int maxLength = DatabaseSchemaInformation.getInstance().getMaxColumnLengthForProperty(clazz, propertyName);
+						final int maxLength = this.databaseSchemaInformation.getMaxColumnLengthForProperty(clazz, propertyName);
 
 						if ((maxLength > 0) && (length > maxLength)) {
 							fieldLengthError.addToFields(propertyName, maxLength);
@@ -69,5 +70,12 @@ public class DatabaseModelValidator<T> {
 		} catch (final Exception ex) {
 			log.error("could not introspect object of class 'user'", ex);
 		}
+	}
+
+	/**
+	 * @param databaseSchemaInformation the databaseSchemaInformation to set
+	 */
+	public void setDatabaseSchemaInformation(final DatabaseSchemaInformation databaseSchemaInformation) {
+		this.databaseSchemaInformation = databaseSchemaInformation;
 	}
 }

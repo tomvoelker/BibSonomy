@@ -5,15 +5,22 @@
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
-	        
+	
+	<bean id="mainDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${database.main.driverClassName}" />
+		<property name="url" value="${database.main.url}" />
+		<property name="username" value="${database.main.username}" />
+		<property name="password" value="${database.main.password}" />
+	</bean>
+	
 	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
 		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
 		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>
 		<property name="markUpSystemTagMap" ref="markUpSystemTagSet"/>
 	</bean>
 	
-	<bean id="propertyConfigurer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-<!--     	<property name="locations" value="classpath:systemTags.properties" /> -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="classpath:database-test.properties" />
     	<property name="ignoreUnresolvablePlaceholders" value ="true"/>
 	</bean>
 	
@@ -23,5 +30,4 @@
 	<alias name="dummySearch" alias="lucenePublicationSearch" />
 	<alias name="dummySearch" alias="luceneGoldStandardPublicationSearch" />
 	
-	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory" />
-</beans>	                    
+</beans>        

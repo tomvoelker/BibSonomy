@@ -24,13 +24,6 @@
     <typeHandler javaType="syncDirection"		callback="org.bibsonomy.database.common.typehandler.SyncDirectionTypeHandlerCallback" />
     <typeHandler javaType="conflictStrategy"	callback="org.bibsonomy.database.common.typehandler.ConflictResolutionStrategyTypeHandlerCallback" />
     <typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
-
-	<transactionManager type="JDBC">
-		<dataSource type="JNDI">
-			<property name="DataSource" value="${JNDIDataSource}"/>
-		</dataSource>
-	</transactionManager>
-
 	
 	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />
