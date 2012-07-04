@@ -135,7 +135,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		// number of post entries to calculate progress
 		// FIXME: the number of posts is wrong
 		this.numberOfPosts = this.dbLogic.getNumberOfPosts();
-		log.info("Number of post entries: "+  this.dbLogic.getNumberOfPosts());
+		log.info("Number of post entries: "+  this.numberOfPosts);
 		
 		// initialize variables
 		final Integer lastTasId = this.dbLogic.getLastTasId();
