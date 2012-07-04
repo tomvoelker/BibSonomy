@@ -233,7 +233,7 @@ public class UrlUtils {
 	public static String safeURIEncode(final String s) {
 		try {
 			return URLEncoder.encode(s, "UTF-8");
-		} catch (Exception ex) {
+		} catch (UnsupportedEncodingException ex) {
 			return s;
 		}
 	}
