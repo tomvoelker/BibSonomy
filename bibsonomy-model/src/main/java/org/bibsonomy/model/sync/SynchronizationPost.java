@@ -36,15 +36,6 @@ public class SynchronizationPost extends SynchronizationResource {
 	 * interHash of this post
 	 */
 	private String intraHash;
-	/**
-	 * intraHash of this post
-	 */
-	private String interHash;
-
-	/**
-	 * class of this post, e. g. Bibtex or Bookmark
-	 */
-	private Class<? extends Resource> resourceType;
 
 	/**
 	 * resource attached from server
@@ -78,38 +69,12 @@ public class SynchronizationPost extends SynchronizationResource {
 	public void setIntraHash(String intraHash) {
 		this.intraHash = intraHash;
 	}
+	
 	/**
 	 * @return the intraHash
 	 */
 	public String getIntraHash() {
 		return intraHash;
-	}
-	/**
-	 * @param interHash the interHash to set
-	 */
-	public void setInterHash(String interHash) {
-		this.interHash = interHash;
-	}
-	/**
-	 * @return the interHash
-	 */
-	public String getInterHash() {
-		return interHash;
-	}
-
-	/**
-	 * @param resourceType to set
-	 */
-	public void setResourceType(Class<? extends Resource> resourceType) {
-		this.resourceType = resourceType;
-	}
-
-	/**
-	 * 
-	 * @return the resourceType
-	 */
-	public Class<? extends Resource> getResourceType() {
-		return resourceType;
 	}
 
 	/**
