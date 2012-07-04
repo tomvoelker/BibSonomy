@@ -25,12 +25,10 @@ package org.bibsonomy.scraper.converter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
 
 /**
@@ -43,81 +41,58 @@ public class ToBibtexConverterTest {
 
 	/**
 	 * Test RIS to BibTeX Conversion
+	 * @throws IOException 
 	 */
 	@Test
-	public void testRisToBibtex() {
-		try {
-			String ris = this.readEntryFromFile("test1.ris");
+	public void testRisToBibtex() throws IOException {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1.ris");
 
-			// test the canHandle heuristic
-			assertTrue(RisToBibtexConverter.canHandle(ris));
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
 
-			// test the conversion
-			final String expectedBibTeX = this.readEntryFromFile("test1_risBibtex.bib");
-			final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-			final String bibTeX = ris2bConverter.risToBibtex(ris);
-			assertEquals (expectedBibTeX, bibTeX);
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}
-
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1_risBibtex.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		assertEquals (expectedBibTeX, bibTeX);
 	}
 	
 	@Test
-	public void testRisToBibtex2() {
-		try {
-			String ris = this.readEntryFromFile("WorldCat_53972111.ris");
+	public void testRisToBibtex2() throws IOException {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "WorldCat_53972111.ris");
 
-			// test the canHandle heuristic
-			assertTrue(RisToBibtexConverter.canHandle(ris));
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
 
-			// test the conversion
-			final String expectedBibTeX = this.readEntryFromFile("WorldCat_53972111.bib");
-			final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-			final String bibTeX = ris2bConverter.risToBibtex(ris);
-			assertEquals (expectedBibTeX, bibTeX);
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}
-
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "WorldCat_53972111.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		assertEquals (expectedBibTeX, bibTeX);
 	}
 	
 
 	/**
 	 * Test Endnote to BibTeX Conversion
+	 * @throws IOException 
 	 */
 	@Test
-	public void testEndnoteToBibtex() {
+	public void testEndnoteToBibtex() throws IOException {
 		/*
 		 * Note that in the testfile 2 endnote entries are given
 		 * the first is a regular endnote (like it is exported by BibSonomy)
 		 * the second contains only authors to test the correct conversion of
 		 * the author field to bibtex!
 		 */
-		try {
-			String endnote = this.readEntryFromFile("test1.endnote");
+		final String endnote = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1.endnote");
 
-			// test the canHandle heuristic
-			assertTrue(EndnoteToBibtexConverter.canHandle(endnote));
+		// test the canHandle heuristic
+		assertTrue(EndnoteToBibtexConverter.canHandle(endnote));
 
-			// test the conversion
-			final String expectedBibTeX = this.readEntryFromFile("test1_endnoteBibtex.bib");
-			final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
-			final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
-			assertEquals(expectedBibTeX.trim(), bibTeX.trim());
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-
-	}
-
-	private String readEntryFromFile(final String fileName) throws IOException {
-		final StringBuffer resultString = new StringBuffer();
-		final BufferedReader in = new BufferedReader(new InputStreamReader(ToBibtexConverterTest.class.getClassLoader().getResourceAsStream(PATH_TO_FILES + fileName), "UTF-8"));
-		String line = null;
-		while ((line = in.readLine()) != null) {
-			resultString.append(line + "\n");
-		}
-		return resultString.toString();
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1_endnoteBibtex.bib");
+		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
+		final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
+		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
 	}
 }
