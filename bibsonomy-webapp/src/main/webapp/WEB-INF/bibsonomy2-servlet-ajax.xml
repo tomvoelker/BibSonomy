@@ -191,14 +191,14 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/ajax/updateprivnote">
+				<entry key="/ajax/updateprivatenote">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="privnoteController" />
+						<property name="controllerBeanName" value="privatenoteController" />
 						<property name="allowedFields">
 							<list>
 								<value>intraHash</value>
 								<value>ckey</value>
-								<value>privNote</value>
+								<value>privateNote</value>
 							</list>
 						</property>
 					</bean>
@@ -256,5 +256,5 @@
 	<bean id="userRelationAjaxController" class="org.bibsonomy.webapp.controller.ajax.UserRelationAjaxController" scope="request" parent="ajaxController" />
 	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request" parent="ajaxController" />
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request" parent="ajaxController" />
-	<bean id="privnoteController" class="org.bibsonomy.webapp.controller.ajax.PrivNoteAjaxController" scope="request" parent="ajaxController" />
+	<bean id="privatenoteController" class="org.bibsonomy.webapp.controller.ajax.PrivateNoteAjaxController" scope="request" parent="ajaxController" />
 </beans>
