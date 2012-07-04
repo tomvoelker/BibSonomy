@@ -21,14 +21,12 @@
 <%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp"%>
 
-<jsp:useBean id="stats" class="beans.StatisticsBean" scope="request">
-  <jsp:setProperty name="stats" property="*"/>
-</jsp:useBean>
+<jsp:useBean id="today" class="java.util.Date" />
 
 <div style="margin: 5px 10px 2% 10px;">
 <%@include file="/boxes/admin/navi.jsp"%>
 
-<h2>Statistics for ${stats.today} (showSpammer:<c:out value='${param.showSpammer}'/>)</h2>
+<h2>Statistics for ${today} (showSpammer:<c:out value='${param.showSpammer}'/>)</h2>
 
 <p style="font-weight: bold; 
           background: #eee; 
