@@ -45,21 +45,16 @@ public class ReplaceBibtexFile {
 	private static final String PATH_TO_BIBS = "src/test/resources/org/bibsonomy/scraper/data/";
 	
 	private static Log log = LogFactory.getLog(ReplaceBibtexFile.class);
-
-	/**
-	 * enter test ids here
-	 */
-	private static final String[] TEST_ID = {"url_20", "url_115"};
 	
 	/**
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(final String[] args) throws IOException {
 		// update bibtex file for every given test
-		for(String testID: TEST_ID)
+		for (final String testID: args) {
 			replaceBibtex(testID);
-
+		}
 	}
 	
 	/**
@@ -67,22 +62,22 @@ public class ReplaceBibtexFile {
 	 * @param id
 	 * @throws IOException
 	 */
-	public static void replaceBibtex(String id) throws IOException{
+	public static void replaceBibtex(final String id) throws IOException {
 		System.out.println("Test: " + id);
 		System.out.println("running test");
 		final UnitTestRunner runner = new UnitTestRunner();
 		final URLScraperUnitTest test = runner.getUrlUnitTest(id);
-		if(test != null){
+		if (test != null){
 			System.out.println("test finished");
-			String bibFile = test.getBibFile();
-			String scrapedBibtex = test.getScrapedReference();
+			final String bibFile = test.getBibFile();
+			final String scrapedBibtex = test.getScrapedReference();
 			System.out.println("scraped bibtex:");
 			System.out.println(scrapedBibtex);
 			 
-			if(bibFile != null && scrapedBibtex != null){
+			if ((bibFile != null) && (scrapedBibtex != null)) {
 				// override bibtex file
-				OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(PATH_TO_BIBS + bibFile), "UTF-8");
-				StringReader reader = new StringReader(scrapedBibtex);
+				final OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(PATH_TO_BIBS + bibFile), "UTF-8");
+				final StringReader reader = new StringReader(scrapedBibtex);
 					
 				int read = reader.read();
 				while(read != -1){
@@ -97,10 +92,12 @@ public class ReplaceBibtexFile {
 				
 				System.out.println("old bibtex replaced");
 				System.out.println("**********************************************");
-			}else
+			} else {
 				log.error("bibfile(" + bibFile + ") and scraped bibtex(" + scrapedBibtex + ") is not available");
-		}else
-			log.error("Scraping failed", test.getException());
+			}
+		} else {
+			log.error("Scraping failed");
+		}
 	}
 
 }
