@@ -82,7 +82,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testDatabase() {
-		Map<String, SynchronizationPost> posts = bibTexDb.getSyncPostsMapForUser("syncuser1", dbSession);
+		Map<String, SynchronizationPost> posts = bibTexDb.getSyncPostsMapForUser("syncuser1", this.dbSession);
 
 		assertEquals("wrong amount of bibtex in map", 5, posts.size());
 		assertTrue(posts.containsKey("6a486c3b5cf17466f984f8090077274c"));
@@ -91,7 +91,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		assertTrue(posts.containsKey("133de67269c9bfa71bde2b7615f0c1b3"));
 		assertTrue(posts.containsKey("08cdf0d0dcce9d07fd8d41ac6267cadf"));
 
-		posts = bookmarkDb.getSyncPostsMapForUser("Syncuser1", dbSession);
+		posts = bookmarkDb.getSyncPostsMapForUser("Syncuser1", this.dbSession);
 		assertEquals("wrong amount of bookmarks in map", 5, posts.size());
 		assertTrue(posts.containsKey("6232752de0376fb6692917faf2e0a41e"));
 		assertTrue(posts.containsKey("35b3ed178e437da1e93e2cac75333c67"));
@@ -99,17 +99,17 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		assertTrue(posts.containsKey("c4bb293ee64fecf340db99b39f401008"));
 		assertTrue(posts.containsKey("c7c8d5f682a6f32b7b3be9f3986a1cba"));
 		
-		testURI = TestUtils.createURI("http://www.bibsonomy.org/");
+		this.testURI = TestUtils.createURI("http://www.bibsonomy.org/");
 
 		final Date date = parse("2011-02-02 23:00:00");
-		final Date lastSyncDate = syncDb.getLastSyncData(userName, testURI, BibTex.class, null, dbSession).getLastSyncDate();
+		final Date lastSyncDate = syncDb.getLastSyncData(userName, this.testURI, BibTex.class, null, this.dbSession).getLastSyncDate();
 		assertNotNull("no last sync date received from db", lastSyncDate);
 		assertEquals(date, lastSyncDate);
 
-		List<SynchronizationPost> list = bibTexDb.getSyncPostsListForUser(userName, dbSession);
+		List<SynchronizationPost> list = bibTexDb.getSyncPostsListForUser(userName, this.dbSession);
 		assertEquals("wrong amount of bibtex in list", 5, list.size());
 
-		list = bookmarkDb.getSyncPostsListForUser(userName, dbSession);
+		list = bookmarkDb.getSyncPostsListForUser(userName, this.dbSession);
 		assertEquals("wrong amount of bookmarks in list", 5, list.size());
 	}
 
@@ -118,7 +118,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		final Class<? extends Resource> resourceType = BibTex.class;
 		final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.LAST_WINS;
 
-		testURI = TestUtils.createURI("http://www.bibsonomy.org/");
+		this.testURI = TestUtils.createURI("http://www.bibsonomy.org/");
 
 		final List<SynchronizationPost> clientPosts = new LinkedList<SynchronizationPost>();
 
@@ -129,7 +129,6 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 * post 1: "post without changes" is the same post as in database
 		 */
 		post = new SynchronizationPost();
-		post.setInterHash("69f46427bfed611701eef5aed85f3a28");
 		post.setIntraHash("6a486c3b5cf17466f984f8090077274c");
 		post.setChangeDate(parse("2011-01-31 14:32:00"));
 		post.setCreateDate(parse("2011-01-10 14:32:00"));
@@ -140,7 +139,6 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 * last synchronization
 		 */
 		post = new SynchronizationPost();
-		post.setInterHash("0cabab7456df24ce9111c8960af42c5d");
 		post.setIntraHash("167b670252215232dc59829364e361a2");
 		post.setChangeDate(parse("2009-11-02 12:23:00"));
 		post.setCreateDate(parse("2009-11-02 12:20:00"));
@@ -155,7 +153,6 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 * in database, but change date is before last synchronization
 		 */
 		post = new SynchronizationPost();
-		post.setInterHash("319872adc49bfeae3f799d29a18b0634");
 		post.setIntraHash("11db3d75b9e07960658984f9b012d6d7");
 		post.setChangeDate(parse("2011-01-16 17:58:00"));
 		post.setCreateDate(parse("2010-09-16 14:35:00"));
@@ -167,7 +164,6 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 * date
 		 */
 		post = new SynchronizationPost();
-		post.setInterHash("2f0fc12a47ba98a11a2746376b118e48");
 		post.setIntraHash("133de67269c9bfa71bde2b7615f0c1b3");
 		post.setChangeDate(parse("2011-03-25 10:59:00"));
 		post.setCreateDate(parse("2009-12-31 23:59:00"));
@@ -182,7 +178,6 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		 * synchronization
 		 */
 		post = new SynchronizationPost();
-		post.setInterHash("66665c7e236f5e7111f6699fbd4015a2");
 		post.setIntraHash("418397b6f507faffe6f9b02569ffbc9e");
 		post.setChangeDate(parse("2011-03-18 14:13:00"));
 		post.setCreateDate(parse("2011-03-18 14:13:00"));
@@ -190,10 +185,10 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 		
 		assertEquals(5, clientPosts.size());
 
-		final List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, testURI, resourceType, clientPosts, strategy, SynchronizationDirection.BOTH);
+		final List<SynchronizationPost> synchronizedPosts = dbLogic.getSyncPlan(userName, this.testURI, resourceType, clientPosts, strategy, SynchronizationDirection.BOTH);
 		assertNotNull("no synchronized posts returned", synchronizedPosts);
 
-		final HashMap<String, SynchronizationPost> map = listToMap(synchronizedPosts);
+		final HashMap<String, SynchronizationPost> map = this.listToMap(synchronizedPosts);
 		String hash;
 		/*
 		 * test post 1 "post without changes"

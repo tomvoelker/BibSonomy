@@ -7,7 +7,6 @@
 	</resultMap>
 	
 	<resultMap id="syncPost" class="syncPost" extends="syncResource">
-		<result property="interHash"	column="interHash"		javaType="string"	/>
 		<result property="intraHash"	column="intraHash"		javaType="string"	/>
 	</resultMap>
 	
