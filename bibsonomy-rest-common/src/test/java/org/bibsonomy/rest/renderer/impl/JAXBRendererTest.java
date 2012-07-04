@@ -27,7 +27,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -71,6 +70,7 @@ import org.bibsonomy.rest.renderer.xml.ReferenceType;
 import org.bibsonomy.rest.renderer.xml.ReferencesType;
 import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.UserType;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
 
 /**
@@ -103,19 +103,11 @@ public abstract class JAXBRendererTest {
 	
 	// TODO: move to a util class and replace writer with a string
 	private static void assertWithFile(final Writer sw, final String filename) {
-		final StringBuilder sb = new StringBuilder(200);
-		final File file = new File(filename);
 		try {
-			final BufferedReader br = new BufferedReader(new FileReader(file));
-			String s;
-			while ((s = br.readLine()) != null) {						
-				sb.append(s + "\n");
-			}
-			
-			br.close();
-			assertEquals("output not as expected", sb.toString().trim(), sw.toString().trim());
-		} catch (final IOException ex) {
-			fail(ex.getMessage());
+			final String fileContents = TestUtils.readEntryFromFile(filename);
+			assertEquals("output not as expected", fileContents.trim(), sw.toString().trim());
+		} catch (final IOException ex1) {
+			fail(ex1.getMessage());
 		}
 	}
 
@@ -131,7 +123,7 @@ public abstract class JAXBRendererTest {
 		// check empty/ wrong document
 		BibsonomyXML bibXML = new BibsonomyXML();
 		File tmpFile = File.createTempFile("bibsonomy", "junit");
-		marshalToFile(bibXML, tmpFile);
+		this.marshalToFile(bibXML, tmpFile);
 
 		try {
 			this.getRenderer().parseUser(new FileReader(tmpFile));
@@ -146,7 +138,7 @@ public abstract class JAXBRendererTest {
 		xmlUser.setName("test");
 		bibXML.setUser(xmlUser);
 		tmpFile = File.createTempFile("bibsonomy", "junit");
-		marshalToFile(bibXML, tmpFile);
+		this.marshalToFile(bibXML, tmpFile);
 		final User user = this.getRenderer().parseUser(new FileReader(tmpFile));
 		assertEquals("model not correctly initialized", "test", user.getName());
 	}
@@ -163,7 +155,7 @@ public abstract class JAXBRendererTest {
 		// check empty/ wrong document
 		BibsonomyXML bibXML = new BibsonomyXML();
 		File tmpFile = File.createTempFile("bibsonomy", "junit");
-		marshalToFile(bibXML, tmpFile);
+		this.marshalToFile(bibXML, tmpFile);
 
 		try {
 			this.getRenderer().parseGroup(new FileReader(tmpFile));
@@ -180,7 +172,7 @@ public abstract class JAXBRendererTest {
 		xmlGroup.setHomepage("http://www.example.com/");
 		bibXML.setGroup(xmlGroup);
 		tmpFile = File.createTempFile("bibsonomy", "junit");
-		marshalToFile(bibXML, tmpFile);
+		this.marshalToFile(bibXML, tmpFile);
 		final Group group = this.getRenderer().parseGroup(new FileReader(tmpFile));
 		assertEquals("model not correctly initialized", "test", group.getName());
 		assertEquals("model not correctly initialized", "TestGroup", group.getRealname());
@@ -205,7 +197,7 @@ public abstract class JAXBRendererTest {
 		// check empty/ wrong document
 		BibsonomyXML bibXML = new BibsonomyXML();
 		File tmpFile = File.createTempFile("bibsonomy", "junit");
-		marshalToFile(bibXML, tmpFile);
+		this.marshalToFile(bibXML, tmpFile);
 
 		try {
 			this.getRenderer().parsePost(new FileReader(tmpFile));
@@ -232,7 +224,7 @@ public abstract class JAXBRendererTest {
 		xmlBookmark.setTitle("Google Search engine");
 		bibXML.setPost(xmlPost);
 		tmpFile = File.createTempFile("bibsonomy", this.getFileExt());
-		marshalToFile(bibXML, tmpFile);
+		this.marshalToFile(bibXML, tmpFile);
 		this.getRenderer().parsePost(new FileReader(tmpFile));
 	}
 	
@@ -259,7 +251,7 @@ public abstract class JAXBRendererTest {
 		
 		// save it to file
 		final File tmpFile = File.createTempFile("parseReferences", this.getFileExt());
-		marshalToFile(xml, tmpFile);
+		this.marshalToFile(xml, tmpFile);
 		
 		// parse from file
 		final Set<String> actual = this.getRenderer().parseReferences(new FileReader(tmpFile));
@@ -290,7 +282,7 @@ public abstract class JAXBRendererTest {
 		
 		// save it to file
 		final File tmpFile = File.createTempFile("parseStandardPost", this.getFileExt());
-		marshalToFile(xml, tmpFile);
+		this.marshalToFile(xml, tmpFile);
 		
 		final Post<? extends Resource> communityPost = this.getRenderer().parseCommunityPost(new FileReader(tmpFile));
 		

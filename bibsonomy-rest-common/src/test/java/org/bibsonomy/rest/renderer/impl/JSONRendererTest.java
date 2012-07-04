@@ -51,7 +51,7 @@ public class JSONRendererTest extends JAXBRendererTest {
 
 	@Override
 	public String getPathToTestFiles() {
-		return "src/test/resources/jsonrenderer/";
+		return "jsonrenderer/";
 	}
 
 	@Override

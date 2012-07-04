@@ -48,7 +48,7 @@ public class XMLRendererTest extends JAXBRendererTest {
 
 	@Override
 	public String getPathToTestFiles() {
-		return "src/test/resources/xmlrenderer/";
+		return "xmlrenderer/";
 	}
 
 	@Override
