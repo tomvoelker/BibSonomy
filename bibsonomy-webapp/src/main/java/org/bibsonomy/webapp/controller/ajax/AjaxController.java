@@ -54,7 +54,7 @@ public abstract class AjaxController implements RequestAware, ResponseAware {
 		this.responseLogic = responseLogic;
 	}
 
-	protected View returnErrorView() {
+	protected View getErrorView() {
 		this.responseLogic.setHttpStatus(HttpServletResponse.SC_BAD_REQUEST);
 		return Views.AJAX_ERRORS;
 	}

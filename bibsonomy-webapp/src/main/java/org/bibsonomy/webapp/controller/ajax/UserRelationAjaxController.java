@@ -56,7 +56,7 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	}
 
 	@Override
-	public View workOn(UserRelationAjaxCommand command) {
+	public View workOn(final UserRelationAjaxCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		
 		if (!context.isUserLoggedIn()) {
@@ -65,35 +65,35 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 
 		// check if ckey is valid
 		if (!command.getContext().isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-			returnErrorView();
+			this.errors.reject("error.field.valid.ckey");
+			return this.getErrorView();
 		}
 		
 		//
 		// switch between add or remove and call the right method
 		//
 		try {
-			if (ADD_FOLLOWER.equals(command.getAction()) && command.getRequestedUserName() != null) {
+			if (ADD_FOLLOWER.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
 				this.addFollower(command);
-			} else if (REMOVE_FOLLOWER.equals(command.getAction()) && command.getRequestedUserName() != null) {
+			} else if (REMOVE_FOLLOWER.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
 				this.removeFollower(command);
-			} else if (ADD_FRIEND.equals(command.getAction()) && command.getRequestedUserName() != null) {
+			} else if (ADD_FRIEND.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
 				this.addFriend(command);
-			} else if (REMOVE_FRIEND.equals(command.getAction()) && command.getRequestedUserName() != null) {
+			} else if (REMOVE_FRIEND.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
 				this.removeFriend(command);
-			} else if (ADD_RELATION.equals(command.getAction()) && command.getRequestedUserName() != null) {
+			} else if (ADD_RELATION.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
 				this.addRelation(command);
-			} else if (REMOVE_RELATION.equals(command.getAction()) && command.getRequestedUserName() != null) {
+			} else if (REMOVE_RELATION.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
 				this.removeRelation(command);
 			}
-		} catch (org.bibsonomy.common.exceptions.ValidationException e) {
+		} catch (final org.bibsonomy.common.exceptions.ValidationException e) {
 			log.error("Error establishing a connection for '"+command.getContext().getLoginUser().getName()+"' to user '"+command.getRequestedUserName()+"': " + e.getMessage());
 			this.errors.reject(e.getMessage());
 		}
 		
 		// return error messages in case of errors
-		if (errors.hasErrors()) {
-			return returnErrorView();
+		if (this.errors.hasErrors()) {
+			return this.getErrorView();
 		}
 		
 		// forward to a certain page, if requested 
@@ -111,9 +111,9 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 * 
 	 * @param command
 	 */
-	private void addFollower(UserRelationAjaxCommand command){
-		User user = new User(command.getRequestedUserName());
-		logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.FOLLOWER_OF, null);
+	private void addFollower(final UserRelationAjaxCommand command){
+		final User user = new User(command.getRequestedUserName());
+		this.logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.FOLLOWER_OF, null);
 	}
 	
 	/**
@@ -121,9 +121,9 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 * 
 	 * @param command
 	 */
-	private void removeFollower(UserRelationAjaxCommand command){
-		User user = new User(command.getRequestedUserName());
-		logic.deleteUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.FOLLOWER_OF, null);
+	private void removeFollower(final UserRelationAjaxCommand command){
+		final User user = new User(command.getRequestedUserName());
+		this.logic.deleteUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.FOLLOWER_OF, null);
 	}
 
 	/**
@@ -131,23 +131,23 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 * 
 	 * @param command
 	 */
-	private void addRelation(UserRelationAjaxCommand command) {
-		if (!present(command.getRelationTags()) || command.getRelationTags().size()>1) {
-			errors.reject("error.field.valid.sphere.name");
+	private void addRelation(final UserRelationAjaxCommand command) {
+		if (!present(command.getRelationTags()) || (command.getRelationTags().size()>1)) {
+			this.errors.reject("error.field.valid.sphere.name");
 			return;
 		}
 		
-		User user = new User(command.getRequestedUserName());
-		String requestedRelation = command.getRelationTags().get(0);
+		final User user = new User(command.getRequestedUserName());
+		final String requestedRelation = command.getRelationTags().get(0);
 		
 		// TODO: create a validator for sphere name validation
 		if ( !present(requestedRelation) ||
-				requestedRelation.length() > SPHERENAME_MAX_LENGTH ||
+				(requestedRelation.length() > SPHERENAME_MAX_LENGTH) ||
 				SPHERENAME_DISALLOWED_CHARACTERS_PATTERN.matcher(requestedRelation).find())
 		{
-			errors.rejectValue("relationTags","error.field.valid.sphere.name");
+			this.errors.rejectValue("relationTags","error.field.valid.sphere.name");
 		} else {
-			logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, requestedRelation);
+			this.logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, requestedRelation);
 		}
 	}
 	
@@ -156,14 +156,14 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 * 
 	 * @param command
 	 */
-	private void removeRelation(UserRelationAjaxCommand command) {
-		if (!present(command.getRelationTags()) || command.getRelationTags().size()>1) {
+	private void removeRelation(final UserRelationAjaxCommand command) {
+		if (!present(command.getRelationTags()) || (command.getRelationTags().size()>1)) {
 			throw new IllegalArgumentException("Invalid number of relation names given ("+command.getRelationTags().size()+")");
 		}
-		User user = new User(command.getRequestedUserName());
-		String requestedRelation = command.getRelationTags().get(0);
+		final User user = new User(command.getRequestedUserName());
+		final String requestedRelation = command.getRelationTags().get(0);
 		
-		logic.deleteUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, requestedRelation);
+		this.logic.deleteUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, requestedRelation);
 	}
 
 	/**
@@ -171,9 +171,9 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 * 
 	 * @param command
 	 */
-	private void addFriend(UserRelationAjaxCommand command) {
-		User user = new User(command.getRequestedUserName());
-		logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, null);
+	private void addFriend(final UserRelationAjaxCommand command) {
+		final User user = new User(command.getRequestedUserName());
+		this.logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, null);
 	}
 
 	/**
@@ -181,9 +181,9 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 * 
 	 * @param command
 	 */
-	private void removeFriend(UserRelationAjaxCommand command) {
-		User user = new User(command.getRequestedUserName());
-		logic.deleteUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, null);
+	private void removeFriend(final UserRelationAjaxCommand command) {
+		final User user = new User(command.getRequestedUserName());
+		this.logic.deleteUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, null);
 	}
 
 

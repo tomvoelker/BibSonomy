@@ -62,7 +62,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		}
 		
 		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
+			this.errors.reject("error.field.valid.ckey");
 		}
 		
 		final String interHash = command.getHash();
@@ -73,8 +73,8 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		 * resource hash must be specified
 		 */
 		if (!present(interHash)) {
-			errors.rejectValue("hash", "error.field.valid.hash");
-			return returnErrorView();
+			this.errors.rejectValue("hash", "error.field.valid.hash");
+			return this.getErrorView();
 		}
 		
 		final String userName = command.getContext().getLoginUser().getName();
@@ -96,7 +96,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		 * if validation failed return to the ajax error view
 		 */
 		if (this.errors.hasErrors()) {
-			return returnErrorView();
+			return this.getErrorView();
 		}
 		
 		final D discussionItem = command.getDiscussionItem();
@@ -122,7 +122,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			}
 		} catch (final ValidationException ex) {
 			log.warn("couldn't complete controller", ex);
-			return returnErrorView();
+			return this.getErrorView();
 		}
 		
 		/*
@@ -141,10 +141,8 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		return Views.AJAX_JSON;
 	}
 	
-
-	
 	@SuppressWarnings("null") // the originalPost could be null, but this is caught using present
-	private boolean createDiscussionItem(final String interHash, final String userName, final String postUserName, final String intraHash, DiscussionItem discussionItem) {
+	private boolean createDiscussionItem(final String interHash, final String userName, final String postUserName, final String intraHash, final DiscussionItem discussionItem) {
 		boolean reloadPage = false;
 		
 		/*
@@ -213,7 +211,7 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			}
 			this.logic.createPosts(Collections.<Post<? extends Resource>>singletonList(newGoldStandardPost));
 		} else {
-			reloadPage = firstCommentInPreprint(goldStandardPost, postUserName); 
+			reloadPage = this.firstCommentInPreprint(goldStandardPost, postUserName); 
 		}
 		this.logic.createDiscussionItem(interHash, userName, discussionItem);
 		
@@ -226,11 +224,11 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	 * @param userName
 	 * @return <code>true</code> if given post is a publication with entry type preprint <code>false</code> otherwise
 	 */
-	private boolean firstCommentInPreprint(Post<? extends Resource> goldStandard, String userName) {
-		Resource res = goldStandard.getResource();
+	private boolean firstCommentInPreprint(final Post<? extends Resource> goldStandard, final String userName) {
+		final Resource res = goldStandard.getResource();
 		if(res.getClass().equals(BibTex.class)) {
 			if(((BibTex)res).getEntrytype().equals(PREPRINT)) {
-				for (DiscussionItem item : res.getDiscussionItems()) {
+				for (final DiscussionItem item : res.getDiscussionItems()) {
 					if(item.getUser().getName().equals(userName)) {
 						return false;
 					}
