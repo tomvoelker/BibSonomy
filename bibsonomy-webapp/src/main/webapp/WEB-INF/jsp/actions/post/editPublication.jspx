@@ -30,9 +30,9 @@
 	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" activeTab="post">
 
 		<jsp:attribute name="generalInformation">
-        	<editpub:required post="${post}" autocompletion="$(false)"/>
+        	<editpub:required command="${command}" post="${post}" autocompletion="$(false)"/>
 		</jsp:attribute>
-		
+				
         <jsp:attribute name="detailedInformation">
 			<editpub:files post="${post}" />
 			<editpub:details post="${post}" />
