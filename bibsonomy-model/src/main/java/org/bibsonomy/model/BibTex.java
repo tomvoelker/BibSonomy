@@ -65,11 +65,13 @@ public class BibTex extends Resource {
 	private String entrytype;
 	private String address;
 	private String annote;
+	// TODO: rename to authors
 	private List<PersonName> author;
 	private String booktitle;
 	private String chapter;
 	private String crossref;
 	private String edition;
+	// TODO: rename to editors
 	private List<PersonName> editor;
 	private String howpublished;
 	private String institution;
@@ -88,6 +90,8 @@ public class BibTex extends Resource {
 	private String type;
 	private int scraperId;
 	private String url;
+	// TODO: rename to privateNote
+	// TODO: this is user specific and should be moved to the post
 	private String privnote;
 	private Map<String, String> miscFields;
 	// this field holds the description part of an openURL to this bibtex object
