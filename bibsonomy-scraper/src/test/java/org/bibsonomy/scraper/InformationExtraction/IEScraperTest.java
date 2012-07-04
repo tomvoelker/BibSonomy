@@ -23,15 +23,11 @@
 
 package org.bibsonomy.scraper.InformationExtraction;
 
-import static org.junit.Assert.fail;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import junit.framework.Assert;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
 
 /**
@@ -49,28 +45,16 @@ public class IEScraperTest {
 		"}";
 
 	@Test
-	public void testScrape() {
+	public void testScrape() throws ScrapingException {
 		final ScrapingContext sc = IEScraper.getTestContext();
-		try {
-			sc.setUrl(new URL("http://www.example.com/reasearch_challenges.html"));
-		} catch (MalformedURLException ex) {
-			fail(ex.getMessage());
-		}
-
+		sc.setUrl(TestUtils.createURL("http://www.example.com/reasearch_challenges.html"));
+		
 		final IEScraper scraper = new IEScraper();
-
-		try {
-			final boolean scrape = scraper.scrape(sc);
-			Assert.assertTrue(scrape);
-		} catch (final ScrapingException ex) {
-			ex.printStackTrace();
-			fail(ex.getMessage());
-		}
+		final boolean scrape = scraper.scrape(sc);
+		Assert.assertTrue(scrape);
 
 		final String bibtex = sc.getBibtexResult();
-
-		Assert.assertEquals(expectedBibtex, bibtex);
-
+		Assert.assertEquals(this.expectedBibtex, bibtex);
 	}
 
 }
