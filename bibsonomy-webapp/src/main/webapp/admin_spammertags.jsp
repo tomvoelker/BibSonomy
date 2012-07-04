@@ -16,7 +16,7 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1 id="path"><a href="/"> ${properties[project.name]} </a> :: <a rel="path_menu" href="/admin"><img src="/resources/image/box_arrow.png">&nbsp;admin</a></h1>
+<h1 id="path"><a href="/"> ${properties['project.name']} </a> :: <a rel="path_menu" href="/admin"><img src="/resources/image/box_arrow.png">admin</a></h1>
 
 <%-------------------------- Path Navigation -----------------------%>
 <%@include file="/boxes/path_navi.jsp" %>
@@ -55,28 +55,6 @@
 			  new Ajax.Autocompleter("acl_spamtag2","autocomplete_spammertag2","admin_tag_suggest.jsp?type=2");
 			</script>	
 		</td>
-		<td>
-			<h2>flag/unflag a spammer</h2>	
-			<%-- spammer form  --%>
-			<form action="/admin_spammertags.jsp">
-			  <b>spammer:</b> user name <input type="text" name="user" id="acl_spam" />			  
-			  <input type="button" value=" OK " onclick="addSpammer(document.getElementsByName('user')[0].value,null,null);clearFields();"/>
-			</form>			
-			<div id="autocomplete_spam" class="autocomplete"></div>
-			<script type="text/javascript">
-			  new Ajax.Autocompleter("acl_spam","autocomplete_spam","admin_suggest.jsp?type=0");
-			</script>
-			
-			<form action="/admin_spammertags.jsp">
-			  <b style="text-decoration:line-through;">spammer:</b> user name <input type="text" name="user" id="acl_unspam"/>			  
-			  <input type="button" value=" OK " onclick="unflagSpammer(document.getElementsByName('user')[1].value,null,null);clearFields();"/>
-			</form>
-			
-			<div id="autocomplete_unspam" class="autocomplete"></div>
-			<script type="text/javascript">
-			  new Ajax.Autocompleter("acl_unspam","autocomplete_unspam","admin_suggest.jsp?type=1");
-			</script>
-		</td>		
 		<td>			
 			<div class="logbox">			
 				<ul id="log">
@@ -223,11 +201,11 @@
 	<tbody id="spammerlist">
 	<c:forEach var="rows" items="${spammers.rows}" varStatus="status">		
 		<tr id="sl<c:out value='${status.count}'/>">
-			<c:url var="userHome" value="/user/${rows.user}" />
-			<td><a href="${userName}"><c:out value="${rows.user}"/></a></td>
-			<td><c:out value="${rows.tag}"/></td>
+			<c:url var="userHome" value="/user/${rows.user_name}" />
+			<td><a href="${userName}"><c:out value="${rows.user_name}"/></a></td>
+			<td><c:out value="${rows.tag_name}"/></td>
 			<td>
-				<c:set var="encodedUserName" value="${mtl:encodeURI(rows.user)}" />
+				<c:set var="encodedUserName" value="${mtl:encodeURI(rows.user_name)}" />
 				<a href="javascript:addSpammer('${encodedUserName}','spammerlist','sl<c:out value="${status.count}"/>')" title="flag this user as spammer">
     	 			[+]
     	 		</a>    	 		
