@@ -23,6 +23,7 @@
 
 package org.bibsonomy.scraper.importer.xml;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.bibsonomy.scraper.ScraperUnitTest;
@@ -53,10 +54,19 @@ public class XMLUnitTestImporter implements IUnitTestImporter {
 		xmlreader.setEntityResolver(handler);
 		xmlreader.setErrorHandler(handler);
 
-		final InputSource is = new InputSource(this.getClass().getResourceAsStream(UNIT_TEST_DATA_XML_FILE_NAME));
-		
-		xmlreader.parse(is);
-		
+		InputStream in = null;
+		try {
+			in = this.getClass().getResourceAsStream(UNIT_TEST_DATA_XML_FILE_NAME);
+			final InputSource is = new InputSource(in);
+			
+			xmlreader.parse(is);
+		} finally {
+			try {
+				if (in != null) in.close();
+			} catch (Exception e) {
+				
+			}
+		}
 		return handler.getTests();
 	}
 	
