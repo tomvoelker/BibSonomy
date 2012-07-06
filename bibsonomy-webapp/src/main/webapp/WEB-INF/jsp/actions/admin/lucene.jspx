@@ -100,7 +100,7 @@
 			    			<td>containing docs</td>
 			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
 			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>[id ${resIndex.id}] ${resIndex.indexStatistics.numDocs}</td>
+			    					<td>${resIndex.indexStatistics.numDocs}</td>
 			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
@@ -108,7 +108,7 @@
 			    			<td>deleted docs</td>
 			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
 			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>[id ${resIndex.id}] ${resIndex.indexStatistics.numDeletedDocs}</td>
+			    					<td>${resIndex.indexStatistics.numDeletedDocs}</td>
 			    					</c:if>
 			    			</c:forEach>
 			    		</tr>
@@ -116,7 +116,7 @@
 			    			<td>newest date</td>
 			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
 			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>[id ${resIndex.id}] <fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
+			    					<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
 			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
@@ -124,7 +124,7 @@
 			    			<td>last modified date</td>
 			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
 			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>[id ${resIndex.id}] <fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.lastModified}" /></td>
+			    					<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.lastModified}" /></td>
 			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
@@ -132,7 +132,7 @@
 			    			<td>current version</td>
 			    			<c:forEach var="resIndex" items="${index.indicesInfos}">
 			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>[id ${resIndex.id}] ${resIndex.indexStatistics.currentVersion}</td>
+			    					<td>${resIndex.indexStatistics.currentVersion}</td>
 			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
@@ -140,7 +140,7 @@
 			    			<td>isCurrent</td>
 							<c:forEach var="resIndex" items="${index.indicesInfos}">
 			    				<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-			    					<td>[id ${resIndex.id}] ${resIndex.indexStatistics.current}</td>
+			    					<td>${resIndex.indexStatistics.current}</td>
 			    				</c:if>
 			    			</c:forEach>
 			    		</tr>
