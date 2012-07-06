@@ -18,10 +18,10 @@ import org.junit.Test;
 public class QRCodeRendererTest {
 
 	@Test
-	public void testTemplatePDF() throws IOException {
+	public void testTemplatePDF() {
 		File template = new File("src/test/resources/template.pdf");
 		
-		if(!template.createNewFile()) {
+		if(template.exists()) {
 			
 			final String encodee = "http://localhost:8080/bibtex/2dfac402f7dac97c1b303bb53764ace82/derbeukatt";
 
@@ -59,8 +59,6 @@ public class QRCodeRendererTest {
 			Assert.assertEquals(495.0f, embedder.getX());
 			Assert.assertEquals(570.0f, embedder.getY());
 			Assert.assertEquals(117, embedder.getSize());
-		} else {
-			template.delete();
 		}
 	}
 	
@@ -70,10 +68,10 @@ public class QRCodeRendererTest {
 	 * @throws IOException 
 	 */
 	@Test
-	public void errorPDF() throws IOException {
+	public void errorPDF() {
 		File error = new File("src/test/resources/error.pdf");
 		
-		if(!error.createNewFile()) {
+		if(error.exists()) {
 			
 			final String encodee = "http://localhost:8080/bibtex/2dfac402f7dac97c1b303bb53764ace82/derbeukatt";
 
@@ -104,9 +102,7 @@ public class QRCodeRendererTest {
 			pool.shutdownNow();
 			
 			new File(error.getPath().concat(".qr")).delete();
-		} else {
-			error.delete();
-		}
+		} 
 	}
 	
 }
