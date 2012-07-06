@@ -377,54 +377,6 @@
 			</extension>
 		</extensions>
 	</build>
-	<profiles>
-		<profile>
-		<id>copy-classes-to-webapp-profile</id>
-				<!-- 
-				    When in development mode, we use the resources plugin to copy all compiled classes (e.g. 
-					the content of /target/classes for each module) into the webapp-directory 
-					of bibsonomy-webapp. This is mainy intended to ease the development process 
-					using the Sysdeo Eclipse plugin - when a module class is modified, it is 
-					(after mvn compile) directly available in the running webapp via hot code 
-					replacement (assuming the webapp root is set to /src/main/webapp in the 
-					bibsononomy-webapp project). -->
-		<activation>
-			<property>
-				<name>mode</name>
-				<value>development</value>
-			</property>
-		</activation>
-		<build>
-			<plugins>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
-				<executions>
-					<execution>
-						<id>copy-classes-to-webapp</id>
-						<!-- execute copy after compilation -->
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								<!-- the root directory of the running webapp -->
-								${basedir}/../bibsonomy-webapp/src/main/webapp/WEB-INF/classes
-							</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${basedir}/target/classes</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-		</build>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
