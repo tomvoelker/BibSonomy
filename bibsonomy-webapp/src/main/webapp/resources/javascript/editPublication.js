@@ -214,7 +214,7 @@ $(function() {
 	if (document.getElementById("post.resource.publisher")) changeView();
 	
 	var hash = $("#post\\.resource\\.interHash").val();
-	if(hash == -1)
+	if(hash == -1 || hash == undefined)
 		return;
 	$.ajax({
 		url: '/json/bibtex/1' + hash + "?items=100",
