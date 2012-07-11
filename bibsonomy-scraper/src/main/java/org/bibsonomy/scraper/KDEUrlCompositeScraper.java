@@ -93,6 +93,7 @@ import org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
+import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
 import org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper;
 import org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper;
@@ -107,12 +108,11 @@ import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
 
-
 /**
- * Contains all active UrlScrapers. 
+ * Contains all active UrlScrapers.
  * 
  * @author rja
- *
+ * 
  */
 public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 
@@ -130,7 +130,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new SpiresScraper());
 		addScraper(new L3SScraper());
 		addScraper(new ACMBasicScraper());
-		// addScraper(new CiteseerBasicScraper()); old citeseer scraper removed from chain 
+		// addScraper(new CiteseerBasicScraper()); old citeseer scraper removed
+		// from chain
 		addScraper(new AIFBScraper());
 		addScraper(new UBKAScraper());
 		addScraper(new ArxivScraper());
@@ -201,6 +202,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new JAPScraper());
 		addScraper(new ATSScraper());
 		addScraper(new NEJMScraper());
+		addScraper(new SageJournalScraper());
 	}
 
 }

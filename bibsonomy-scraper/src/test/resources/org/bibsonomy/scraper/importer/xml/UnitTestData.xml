@@ -1325,5 +1325,11 @@
 		<BibFile>CoinsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_219">
+		<TestDescription>test for http://http://jis.sagepub.com/</TestDescription>
+		<URL>http://jis.sagepub.com/content/38/3/297.abstract</URL>
+		<BibFile>sagepubUnitTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.sage.SageJournalScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
