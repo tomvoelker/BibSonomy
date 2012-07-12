@@ -1331,5 +1331,11 @@
 		<BibFile>sagepubUnitTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.sage.SageJournalScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_220">
+		<TestDescription>test for http://www.jci.org/</TestDescription>
+		<URL>http://www.jci.org/articles/view/19670</URL>
+		<BibFile>JCIScraperUnitTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jci.JCIScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
