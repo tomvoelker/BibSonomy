@@ -1,0 +1,69 @@
+package org.bibsonomy.scraper.url.kde.jci;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
+
+/**
+ * @author wla
+ * @version $Id$
+ */
+public class JCIScraper extends AbstractUrlScraper {
+
+	private static final String SITE_NAME = "The Journal of Clinical Investigation";
+
+	private static final String SITE_URL = "www.jci.org";
+
+	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME) + ".";
+
+	private static final String BIBTEX_URL = "/cite/bibtex";
+
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(SITE_URL), AbstractUrlScraper.EMPTY_PATTERN));
+
+	@Override
+	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
+		try {
+			final String bibTex = WebUtils.getContentAsString(scrapingContext.getUrl() + BIBTEX_URL);
+			if (present(bibTex)) {
+				scrapingContext.setBibtexResult(bibTex);
+				return true;
+			} else {
+				throw new ScrapingFailureException("getting bibtex failed");
+			}
+		} catch (final Exception e) {
+			throw new InternalFailureException(e);
+		}
+
+	}
+
+	@Override
+	public String getSupportedSiteName() {
+		return SITE_NAME;
+	}
+
+	@Override
+	public String getSupportedSiteURL() {
+		return SITE_URL;
+	}
+
+	@Override
+	public String getInfo() {
+		return INFO;
+	}
+
+	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return patterns;
+	}
+
+}
