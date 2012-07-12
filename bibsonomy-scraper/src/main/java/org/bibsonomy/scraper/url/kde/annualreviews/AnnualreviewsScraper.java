@@ -40,19 +40,21 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for arjournals.annualreviews.org
+ * 
  * @author tst
- * @version $Id$
+ * @version $Id: AnnualreviewsScraper.java,v 1.13 2012-04-11 13:54:05 bibsonomy
+ *          Exp $
  */
 public class AnnualreviewsScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Annual Reviews";
-	private static final String SITE_URL = "http://arjournals.annualreviews.org/";
+	private static final String SITE_URL = "http://www.annualreviews.org/";
 	private static final String INFO = "Supports journals from " + href(SITE_URL, SITE_NAME);
 
 	/**
 	 * HOST from anualreviews
 	 */
-	private static final String HOST = "arjournals.annualreviews.org";
+	private static final String HOST = "www.annualreviews.org";
 
 	/**
 	 * path and query for download url
@@ -61,15 +63,16 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 
 	private static final Pattern doiPattern = Pattern.compile("/doi/abs/(.*)");
 	private static final Pattern doiPatternQuery = Pattern.compile("doi=([^&]*)");
-	
+
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
-	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
+	@Override
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		String doi = null;
@@ -77,63 +80,71 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 
 		// get doi from path
 		Matcher doiMatcher = doiPattern.matcher(sc.getUrl().getPath());
-		if(doiMatcher.find())
+		if (doiMatcher.find()) {
 			doi = doiMatcher.group(1);
-
-		// check if doi is in path
-		if(doi != null)
-			bibtex = download(doi, sc);
-		else{
-
-			// get doi from query
-			
-			doiMatcher = doiPatternQuery.matcher(sc.getUrl().getQuery());
-			if(doiMatcher.find())
-				doi = doiMatcher.group(1);
-
-			if(doi != null)
-				bibtex = download(doi, sc);
-			else // no doi available
-				throw new PageNotSupportedException("This page arjournals.annualreviews.org is not supported.");
 		}
 
-		if(bibtex != null){
+		// check if doi is in path
+		if (doi != null) {
+			bibtex = download(doi, sc);
+		} else {
+
+			// get doi from query
+
+			doiMatcher = doiPatternQuery.matcher(sc.getUrl().getQuery());
+			if (doiMatcher.find()) {
+				doi = doiMatcher.group(1);
+			}
+
+			if (doi != null) {
+				bibtex = download(doi, sc);
+			} else {
+				throw new PageNotSupportedException("This page arjournals.annualreviews.org is not supported.");
+			}
+		}
+
+		if (bibtex != null) {
 			sc.setBibtexResult(bibtex);
 			return true;
-		}else
+		} else {
 			throw new ScrapingFailureException("Bibtex download failed. Can't scrape any bibtex.");
+		}
 
 	}
 
 	/**
 	 * Get a bibtex reference by its doi from arjournals.annualreviews.org
+	 * 
 	 * @param doi
 	 * @return reference as bibtex
 	 * @throws ScrapingException
 	 */
-	private String download(String doi, ScrapingContext sc)throws ScrapingException{
+	private String download(final String doi, final ScrapingContext sc) throws ScrapingException {
 		String bibtex = null;
-		String downloadUrl = "http://" + HOST + DOWNLOAD_PATH_AND_QUERY + doi;
-		
+		final String downloadUrl = "http://" + HOST + DOWNLOAD_PATH_AND_QUERY + doi;
+
 		try {
 			bibtex = WebUtils.getContentAsString(downloadUrl);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 
 		return bibtex;
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
-		return "http://arjournals.annualreviews.org";
+		return "http://www.annualreviews.org";
 	}
 
 }
