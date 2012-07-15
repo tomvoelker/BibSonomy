@@ -1,0 +1,13 @@
+@techreport{ilprints1015,
+            type = {Technical Report},
+           title = {Deco: Declarative Crowdsourcing},
+          author = {Aditya Parameswaran and Hyunjung Park and Hector Garcia-Molina and Neoklis Polyzotis and Jennifer Widom},
+       publisher = {Stanford InfoLab},
+     institution = {Stanford University},
+        keywords = {declarative, crowdsourcing, data model, query language, query processing, semantics},
+             url = {http://ilpubs.stanford.edu:8090/1015/},
+        abstract = {Crowdsourcing enables programmers to incorporate ``human computation'' as a building block in algorithms that cannot be fully automated, such as text analysis and image recognition. Similarly, humans can be used as a building block in data-intensive applications --- providing, comparing, and verifying data used by applications. Building upon the decades-long success of declarative approaches to conventional data management, we use a similar approach for data-intensive applications that incorporate humans. Specifically, declarative queries are posed over stored relational data as well as data computed on-demand from the crowd, and the underlying system orchestrates the computation of query answers.
+
+We present Deco, a database system for declarative crowdsourcing. We describe Deco's data model, query language, and our initial prototype. Deco's data model was designed to be general (it can be instantiated to other proposed models), flexible (it allows methods for uncertainty resolution and external access to be plugged in), and principled (it has a precisely-defined semantics). Syntactically, Deco's query language is a simple extension to SQL. Based on Deco's data model, we define a precise semantics for arbitrary queries involving both stored data and data obtained from the crowd. We then describe the Deco query processor, which respects our semantics while coping with the unique combination of latency, monetary cost, and uncertainty introduced in the crowdsourcing environment. Finally, we describe our current system implementation, and we discuss the novel query optimization challenges that form the core of our ongoing work.}
+}
+
