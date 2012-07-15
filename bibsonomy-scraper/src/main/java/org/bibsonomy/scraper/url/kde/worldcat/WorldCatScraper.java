@@ -146,13 +146,17 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		return BibTexUtils.addFieldIfNotContained(bibtex, "isbn", isbn);
 	}
 	
-	private static String getRIS(final URL publPageURL, final boolean search) throws IOException {
-		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(WebUtils.getContentAsString(publPageURL));
+	private static String getRIS(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
+		String publPageContent = WebUtils.getContentAsString(publPageURL);
+		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(publPageContent);
 		
 		final URL publUrl;
 		if (matcherFirstSearchResult.find())
 			publUrl = new URL(publPageURL.getProtocol() + "://" + publPageURL.getHost() + matcherFirstSearchResult.group(1));
-		else
+		//search not successful
+		else if (search && publPageContent.contains("div class=\"error-results\" id=\"div-results-none\"")) {
+			throw new ScrapingException("Content not available.");
+		} else
 			publUrl = publPageURL;
 		
 		
