@@ -1337,5 +1337,11 @@
 		<BibFile>JCIScraperUnitTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jci.JCIScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_221">
+		<TestDescription>test for http://ilpubs.stanford.edu</TestDescription>
+		<URL>http://ilpubs.stanford.edu:8090/1015/</URL>
+		<BibFile>StanfordInfoLabScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.stanford.StanfordInfoLabScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
