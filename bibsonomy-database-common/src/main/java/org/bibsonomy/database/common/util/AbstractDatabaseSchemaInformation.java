@@ -42,6 +42,7 @@ public class AbstractDatabaseSchemaInformation implements DatabaseSchemaInformat
      * @param tableNamePattern
      * @param columnNamePattern
      * @param columnLabel
+     * @param sqlMapSession 
      * 
      * @return the schema information of the column of the table
      */
