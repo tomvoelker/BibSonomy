@@ -20,8 +20,10 @@ public class LuceneParam {
 	
 	/** newest tas_id during last index update */
 	private Integer lastTasId;
-	
+		
 	private int lastContentId;
+	
+	private int lastOffset; // TODO or just use offset?
 
 	/** newest change_date during last index update */
 	private Date lastLogDate;
@@ -124,5 +126,19 @@ public class LuceneParam {
 	 */
 	public void setLastContentId(final int lastContentId) {
 		this.lastContentId = lastContentId;
+	}
+	
+	/**
+	 * @return the lastOffset
+	 */
+	public int getLastOffset() {
+		return lastOffset;
+	}
+	
+	/**
+	 * @param lastOffset the lastOffset to set
+	 */
+	public void setLastOffset(final int lastOffset) {
+		this.lastOffset = lastOffset;
 	}
 }
