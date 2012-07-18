@@ -384,7 +384,12 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 					}
 					tagQuery.add(conceptTags, Occur.MUST);
 				} else {
-					tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(tag))), Occur.MUST);	
+					if (tag.startsWith(Tag.NEGATION_PREFIX)) {
+						final String negatedTag = parseTag(tag.substring(1));
+						tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(negatedTag))), Occur.MUST_NOT);	
+					}
+					else
+						tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(tag))), Occur.MUST);	
 				}				
 			}
 		}
@@ -539,6 +544,9 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// the resulting main query
 		final BooleanQuery mainQuery = new BooleanQuery();
 		final BooleanQuery searchQuery = this.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex);
+		
+		// for debuging TO BE REMOVED
+//		System.out.println(searchQuery.toString());
 		
 		// restrict result to given group
 		if (present(requestedGroupName)) {
