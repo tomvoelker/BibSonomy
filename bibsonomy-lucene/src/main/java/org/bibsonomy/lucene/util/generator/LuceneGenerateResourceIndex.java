@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -12,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.Directory;
@@ -21,6 +24,9 @@ import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.lucene.ranking.FileFolkRankDao;
+import org.bibsonomy.lucene.ranking.FolkRankDao;
+import org.bibsonomy.lucene.ranking.FolkRankInfo;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -60,6 +66,12 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 
 	private int numberOfPosts;
 	private int numberOfPostsImported;
+	
+	// FolkRank caches
+	private String lastHash = "";
+	private Map<Character, String> tagFieldValues = new HashMap<Character, String>();
+	private Map<Character, String> userFieldValues = new HashMap<Character, String>();
+	
 
 	/**
 	 * frees allocated resources and closes all files
@@ -202,6 +214,172 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		} catch (final InterruptedException e) {
 			log.error("lucene finished not in 18 hours", e);
 		}
+	}
+	
+	/**
+	 * creates index of resource entries and adds FolkRanks to posts
+	 * (experimental purpose)
+	 * 
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	protected void createIndexFromDatabaseWithFolkRanks() throws CorruptIndexException, IOException {
+		log.info("Filling index with database post entries.");
+		
+		final ExecutorService executor = Executors.newFixedThreadPool(this.numberOfThreads);
+		
+		// number of post entries to calculate progress
+		// FIXME: the number of posts is wrong
+		this.numberOfPosts = this.dbLogic.getNumberOfPosts();
+		log.info("Number of post entries: "+  this.numberOfPosts);
+		
+		// initialize variables
+		final Integer lastTasId = this.dbLogic.getLastTasId();
+		Date lastLogDate  = this.dbLogic.getLastLogDate();
+		
+		if (lastLogDate == null) {
+		    lastLogDate = new Date(System.currentTimeMillis() - 1000);
+		}
+
+		log.info("Start writing data to lucene index (with duplicate detection)");
+		
+		// TODO configure FolkRank file location (Spring?)
+		String folkRankFile = this.resourceIndex.getResourceClass().getSimpleName();
+		FolkRankDao folkRankDao = new FileFolkRankDao(folkRankFile);
+		
+		// read block wise all posts
+		List<LucenePost<R>> postList = null;
+		int skip = 0;
+		//int lastContenId = -1;
+		int lastOffset = 0;
+		int postListSize = 0;
+		do {
+			postList = this.dbLogic.getPostEntriesOrderedByHash(lastOffset, SQL_BLOCKSIZE);
+			postListSize = postList.size();
+			skip += postListSize;
+			log.info("Read " + skip + " entries.");
+
+			// cycle through all posts of currently read block
+			for (final LucenePost<R> post : postList) {
+				post.setLastLogDate(lastLogDate);
+				post.setLastTasId(lastTasId);
+				//executor.execute(new Runnable() {
+					
+				// FIXME had to remove Thread creation because reading FolkRank values is not thread safe.
+					//@Override
+					//public void run() {
+						if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {  
+							// create index document from post model
+							final Document doc = LuceneGenerateResourceIndex.this.resourceConverter.readPost(post);
+							
+							// FolkRanks
+							String hash = post.getResource().getInterHash();
+							addFolkRanksAsFullTextFields(doc, hash, folkRankDao);
+							try {
+								LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
+								LuceneGenerateResourceIndex.this.importedPost(post);
+							} catch (final IOException e) {
+								log.error("error while inserting post " + post.getUser().getName() + "/" + post.getResource().getIntraHash(), e);
+							}
+						}
+					//}
+				//});
+			}
+			
+			if (postListSize > 0) {
+				//lastContenId = postList.get(postListSize - 1).getContentId();
+				lastOffset += postListSize;
+			}
+		} while (postListSize == SQL_BLOCKSIZE);
+		
+		try {
+			executor.shutdown();
+			executor.awaitTermination(18, TimeUnit.HOURS);
+			
+			// optimize index
+			log.info("optimizing index " + this.resourceIndex);
+			this.indexWriter.optimize();
+			
+			// close resource indexWriter
+			log.info("closing index " + this.resourceIndex);
+			this.indexWriter.close();
+			
+			// all done
+			// log.info("(" + i + " indexed entries, " + is + " not indexed spam entries)");
+		} catch (final InterruptedException e) {
+			log.error("lucene finished not in 18 hours", e);
+		}
+	}
+	
+	/**
+	 * 
+	 * Adds available tag/user FolkRanks to given post.
+	 * 
+	 * @param doc
+	 * @param hash
+	 * @param folkRankDao
+	 * @return
+	 */
+	protected int addFolkRanksAsFullTextFields(Document doc, String hash, FolkRankDao folkRankDao) {
+		
+		List<FolkRankInfo> folkRanks = folkRankDao.getTagUserFolkRanks(hash);
+		
+		if (folkRanks.size() == 0) {
+			return 0; // no FolkRanks for this item
+		}
+		
+		if (!hash.equals(lastHash)) {
+			
+			lastHash = hash;
+			
+			tagFieldValues.clear();
+			userFieldValues.clear();
+			
+			for (FolkRankInfo folkRank : folkRanks) {
+				
+				String item = folkRank.getItem().toLowerCase();
+				String dim = Integer.toString(folkRank.getDim());
+				String weight = Float.toString(folkRank.getWeight());
+				
+				if (item.length() == 0 || item.length() > 50 || item.contains(" ")) {
+					continue;
+				}
+				
+				Map<Character, String> usedHashMap;
+				if (dim.equals("0")) {
+					usedHashMap = tagFieldValues;
+				} else if (dim.equals("1")) {
+					usedHashMap = userFieldValues;
+				} else {
+					continue;
+				}
+				
+				char firstCharacter = item.charAt(0);
+				
+				if (!Character.isLetter(firstCharacter)) {
+					firstCharacter = '#';
+				}
+				
+				if (!usedHashMap.containsKey(firstCharacter)) {
+					usedHashMap.put(firstCharacter, "");
+				}
+				
+				usedHashMap.put(firstCharacter, usedHashMap.get(firstCharacter) + item + " " + weight + " ");			
+			}
+			
+		} 
+		
+		for (char key : tagFieldValues.keySet()) {
+			//addStoreField(doc, "frtag" + key, tagFieldValues.get(key).trim());
+			doc.add(new Field("frtag" + key, tagFieldValues.get(key).trim(), Field.Store.YES, Field.Index.NO));
+		}
+		
+		for (char key : userFieldValues.keySet()) {
+			//addStoreField(doc, "fruser" + key, userFieldValues.get(key).trim());
+			doc.add(new Field("fruser" + key, userFieldValues.get(key).trim(), Field.Store.YES, Field.Index.NO));
+		}
+		
+		return folkRanks.size();
 	}
 	
 	protected synchronized void importedPost(final LucenePost<R> post) {
