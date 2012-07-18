@@ -47,6 +47,11 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 * dieser XML-Datei konfigurieren (aehnlich dem Captcha). 
 	 */
 	public static final int MAX_TAGS_ALLOWED = 100; // more tags are not allowed (they get lost)
+	
+	/**
+	 * Negation prefix
+	 */
+	public static final String NEGATION_PREFIX = "!";
 
 	/**
 	 * correlated concept prefix
