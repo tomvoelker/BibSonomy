@@ -143,6 +143,24 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			session.close();
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostEntriesOrderedByHash(java.lang.Integer, java.lang.Integer)
+	 */
+	@Override
+	public List<LucenePost<R>> getPostEntriesOrderedByHash(int lastOffset, int max) {
+		final LuceneParam param = new LuceneParam();
+		param.setLastOffset(lastOffset);
+		param.setLimit(max);
+		
+		final DBSession session = this.openSession();
+		try {
+			return this.queryForLucenePosts("get" + this.getResourceName() + "ForIndexOrderedByHash", param, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -161,7 +179,7 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		}
 	}
 	
-	protected String getResourceName() {
+	public String getResourceName() {
 		return this.resourceClass.getSimpleName();
 	}
 

@@ -75,4 +75,12 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return get post entries for index creation
 	 */
 	public List<LucenePost<R>> getPostEntries(int lastContentId, int max);
+	
+	/**
+	 * 
+	 * @param lastOffset the last offset (i.e. the number of posts indexed so far)
+	 * @param max size
+	 * @return post entries for index creation
+	 */
+	public List<LucenePost<R>> getPostEntriesOrderedByHash(int lastOffset, int max);
 }
