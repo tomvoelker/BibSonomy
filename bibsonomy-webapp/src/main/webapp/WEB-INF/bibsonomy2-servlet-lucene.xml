@@ -15,7 +15,7 @@
 	
 	<jee:jndi-lookup id="luceneDataSource" jndi-name="jdbc/bibsonomy_lucene"/>
 	
-	<!-- TODO: alias for lucene managers -->
+	<!-- a list of all resource managers -->
 	<util:list id="luceneResourceManagers">
 		<ref bean="lucenePublicationManager" />
 		<ref bean="luceneBookmarkManager" />
