@@ -14,6 +14,7 @@ import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 
 /**
  * @author claus
@@ -28,23 +29,28 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 
 	@Override
 	protected boolean canHandle(final P param) {
-		PermissionDatabaseManager pdm = PermissionDatabaseManager.getInstance();
-		List<TagIndex> tagIndex = param.getTagIndex();
-		// TODO should we check the present of negated tag here? / Would it be
-		// better of have a boolean param that indicates
-		// whether there are negated tags in the list?
+		final PermissionDatabaseManager pdm = PermissionDatabaseManager.getInstance();
+		final List<TagIndex> tagIndex = param.getTagIndex();
+		/*
+		 * TODO should we check the present of negated tag here? / Would it be
+		 * better of have a boolean param that indicates
+		 * whether there are negated tags in the list?
+		 */
 		if (present(tagIndex) && (pdm.useResourceSearchForTagQuery(tagIndex.size()) || hasNegatedTags(tagIndex))) {
 			return true;
 		}
-		if (param.getGrouping() == GroupingEntity.ALL && param.getNumSimpleConcepts() > 0) {
+		if ((param.getGrouping() == GroupingEntity.ALL) && (param.getNumSimpleConcepts() > 0)) {
 			return true;
-		} else
-			return false;
+		}
+		
+		return false;
 	}
 
-	private boolean hasNegatedTags(List<TagIndex> tagIndex) {
-		for (TagIndex tag : tagIndex) {
-			if (tag.getTagName().startsWith("!")) return true;
+	private static boolean hasNegatedTags(final List<TagIndex> tagIndex) {
+		for (final TagIndex tag : tagIndex) {
+			if (tag.getTagName().startsWith(Tag.NEGATION_PREFIX)) {
+				return true;
+			}
 		}
 		return false;
 	}
