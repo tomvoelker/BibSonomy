@@ -63,7 +63,12 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		/*
 		 * handle case when only tags are requested
 		 */
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
+		if (present(command.getRequestedTags())) {
+			String regex = command.getRequestedTags() + "%";
+			this.handleTagsOnly(command, groupingEntity, groupingName, regex, requTags, null, Integer.MAX_VALUE, null);
+		} else {
+			this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
+		}
 		
 		/*
 		 * if user is logged in, check if the logged in user follows the requested user
