@@ -48,9 +48,10 @@
 		FROM tas t
 		WHERE t.user_name=#requestedUserName# 
 			  AND
-			  t.tag_name REGEXP #regex#
+			  t.tag_name LIKE #regex#
 			  <include refid="getTagsByResourceType"/>
 		GROUP BY t.tag_name
+	  	ORDER BY tag_ctr DESC
 		LIMIT #limit# OFFSET #offset#		
 	</select>
 
