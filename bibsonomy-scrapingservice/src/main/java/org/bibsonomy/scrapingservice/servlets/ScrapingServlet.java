@@ -33,6 +33,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
@@ -49,6 +50,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -77,6 +79,9 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class ScrapingServlet extends HttpServlet {
+	
+	
+	private static final String APPLICATION_RDF_XML_MIME_TYPE = "application/rdf+xml";
 	private static final long serialVersionUID = -5145534846771334947L;
 	private static final Log log = LogFactory.getLog(ScrapingServlet.class);
 
@@ -85,9 +90,11 @@ public class ScrapingServlet extends HttpServlet {
 	private static final String FORMAT_RDF = "rdf+xml";
 	private static final String FORMAT_BIBTEX = "bibtex";
 	private static final String FORMAT_XML = "xml";
+	private static final String FORMAT_JSON = "json";
+	
+	private static final String APPLICATION_JSON_MIME_TYPE = RenderingFormat.JSON.getMimeType();
 	private static final String APPLICATION_XML_MIME_TYPE = RenderingFormat.APP_XML.getMimeType();
 
-	
 	private static final User XML_DUMMY_USER = new User("scrapingService");
 	private static final XMLRenderer XML_RENDERER = new XMLRenderer(new UrlRenderer(""));
 	
@@ -111,18 +118,16 @@ public class ScrapingServlet extends HttpServlet {
 
 		log.info("Scraping service called with url " + urlString);
 
-		if (present(urlString)) {
+		if (present(urlString) || present(selection)) {
 			/*
-			 * url given -> try to scrape
+			 * url or selection given -> try to scrape
 			 */
-		
 			try {
-				final URL url = new URL(urlString);
+				final URL url = convertToUrl(urlString);
 				bean.setUrl(url);
 				bean.setSelection(selection);
 
-				final ScrapingContext context = new ScrapingContext(url);
-				context.setSelectedText(selection);
+				final ScrapingContext context = new ScrapingContext(url, selection);
 
 				/*
 				 * Do IE only, if neccessary (i.e., compositeScraper can't handle it) and 
@@ -149,7 +154,7 @@ public class ScrapingServlet extends HttpServlet {
 						/* *******************************************
 						 * application/rdf+xml
 						 * *******************************************/
-						response.setContentType("application/rdf+xml");
+						response.setContentType(APPLICATION_RDF_XML_MIME_TYPE);
 						/*
 						 * BibTeX -> model
 						 */
@@ -159,6 +164,7 @@ public class ScrapingServlet extends HttpServlet {
 						 * model -> RDF
 						 */
 						final RDFWriter writer = new RDFWriter(response.getOutputStream());
+						// FIXME: url could be null if only selection present
 						writer.write(url.toURI(), bibtex);
 						return;
 					} else if (FORMAT_XML.equals(format)) {
@@ -171,7 +177,8 @@ public class ScrapingServlet extends HttpServlet {
 						final Post<? extends Resource> post = new PostBibTeXParser().parseBibTeXPost(bibtexString);
 						post.getResource().recalculateHashes();
 						post.setUser(XML_DUMMY_USER);
-						if (!present(post.getTags())) {
+						final Set<Tag> tags = post.getTags();
+						if (!present(tags)) {
 							post.getTags().add(TagUtils.getEmptyTag());
 						}
 						
@@ -245,13 +252,13 @@ public class ScrapingServlet extends HttpServlet {
 			 * TODO: use better parameter names 
 			 */
 			final List<Pair<Pattern, Pattern>> urlPatterns = urlCompositeScraper.getUrlPatterns();
-			if ("json".equals(format)) {
+			if (FORMAT_JSON.equals(format)) {
 				log.info("format = json");
 				/*
 				 * only supported format currently
 				 */
 				final JSONWriter writer = new JSONWriter(response.getOutputStream());
-				response.setContentType("application/json");
+				response.setContentType(APPLICATION_JSON_MIME_TYPE);
 				writer.write(0, "{\n");
 				writer.write(1, "\"patterns\" : ");
 				writer.write(1, urlPatterns);
@@ -262,8 +269,13 @@ public class ScrapingServlet extends HttpServlet {
 			bean.setErrorMessage("Requested format '" + format + "' not supported.");
 		}
 
+		this.getServletConfig().getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+	}
 
-
-		getServletConfig().getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+	private static URL convertToUrl(final String urlString) throws MalformedURLException {
+		if (present(urlString)) {
+			return new URL(urlString);
+		}
+		return null;
 	}   	  	    
 }
