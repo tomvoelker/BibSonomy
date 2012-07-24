@@ -59,10 +59,11 @@
 			
 			<c:if test="${goldstandardPresent}">
 				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
-			
+				
 				<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
 			</c:if>
 			
+
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/discussion.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
@@ -119,10 +120,41 @@
 			| discussion
 		 	+-->		
 		 	
-		<jsp:attribute name="addAsFirstBookmarksListItem">
+		<jsp:attribute name="discussion">
 			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
 		</jsp:attribute>
 
 	</layout:resourceLayout>
+		
+		<!-- FIXME move to discussion.js -->
+		<script type="text/javascript">
+			$(function(){
+				var hash = window.location.hash;
+				if(hash=="#discussionbox") {
+					$("#publications_0").hide();
+					$("#imgExpandDsicussion").hide();
+					$("#imgCollapseDiscussion").show();
+				} else {
+					$("div#discussion").hide();
+					$("#imgExpandDiscussion").show();
+					$("#imgCollapseDiscussion").hide();
+					
+				}
+			});
+			
+			function foldUnfold(selector) {
+				var resource = $(selector);
+				if(resource.is(":visible")) {
+					resource.hide();
+					resource.siblings().find(".imgCollapse").hide();
+					resource.siblings().find(".imgExpand").show();
+					return;
+				}
+				resource.show();
+				resource.siblings().find(".imgCollapse").show();
+				resource.siblings().find(".imgExpand").hide();
+			}
+		</script>
+	
 
 </jsp:root>
