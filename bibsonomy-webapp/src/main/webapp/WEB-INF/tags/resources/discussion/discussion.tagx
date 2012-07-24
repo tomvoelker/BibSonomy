@@ -52,15 +52,19 @@
    		
    		<!-- Headline -->
 	   	<h2>
-	   		<fmt:message key="post.resource.discussion.headline.title">
-	   			<fmt:param value="${mtl:cleanBibtex(resource.title)}"/>
-	   		</fmt:message>
+	   		<a href="javascript:foldUnfold('div#discussion');">
+	   			<img id="imgCollapseDiscussion" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
+		   		<img id="imgExpandDiscussion" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
+		   		<fmt:message key="post.resource.discussion.headline.title">
+	   				<fmt:param value="${mtl:cleanBibtex(resource.title)}"/>
+	   			</fmt:message>
+	   		</a>
 	   	</h2>
 		
 		<!-- Aggregated RatingInfo -->
     	<review:reviewRatingsInfo resource="${resource}" />
 		
-		<!-- Publication reference link -->		
+		<!-- Publication reference link -->
 		<discussion:linkBox resource="${resource}"/>
     		
 		<div cssClass="fsRow">
