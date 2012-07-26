@@ -39,12 +39,6 @@
 			</c:if>
         	<editpub:required post="${post}" autocompletion="$(false)"/>
 		</jsp:attribute>
-		
-		<c:if test="${not empty command.scrapingContext}">
-			<c:if test="${not empty command.scrapingContext.selectedText}">
-				<span><fmt:message key="post.resource.fields.scraper.selectedText" /><c:out value=": ${command.scrapingContext.selectedText}" /></span>
-			</c:if>
-		</c:if>
 				
         <jsp:attribute name="detailedInformation">
 			<editpub:files post="${post}" />
