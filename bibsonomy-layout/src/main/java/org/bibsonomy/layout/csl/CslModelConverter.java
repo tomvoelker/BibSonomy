@@ -26,6 +26,7 @@ package org.bibsonomy.layout.csl;
 import static org.bibsonomy.model.util.BibTexUtils.cleanBibTex;
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import net.sf.json.processors.PropertyNameProcessor;
 import net.sf.json.util.PropertyFilter;
 
 import org.bibsonomy.layout.csl.model.Date;
+import org.bibsonomy.layout.csl.model.DateParts;
 import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.model.BibTex;
@@ -135,6 +137,7 @@ public class CslModelConverter {
 
 		final Date date = new Date();
 		date.setLiteral(bib.getYear());
+		date.setDate_parts(Collections.singletonList(new DateParts(bib.getYear())));
 		rec.setIssued(date);
 
 		return rec;
