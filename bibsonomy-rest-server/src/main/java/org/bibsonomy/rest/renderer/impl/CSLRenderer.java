@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -16,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.layout.csl.CslModelConverter;
 import org.bibsonomy.layout.csl.model.Record;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -39,10 +41,31 @@ public class CSLRenderer implements Renderer {
 	/** used for sending errors via "error : ..." */
 	public static final String ERROR_MESSAGE_KEY = "error";
 
+	private static final String BEGIN = "{\n";
+	private static final String END = "\n}";
+	private static final String DELIMITER = ",\n";
+
 	@Override
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
-		for (final Post<? extends Resource> post : posts) {
-			serializePost(writer, post, viewModel);
+
+		final ListIterator<? extends Post<? extends Resource>> iter = posts.listIterator();
+		try {
+			writer.append(BEGIN);
+
+			while (iter.hasNext()) {
+				final Post<? extends Resource> post = iter.next();
+				writer.append("\"" + ((BibTex) post.getResource()).getIntraHash() + post.getUser().getName() + "\":");
+				serializePost(writer, post, viewModel);
+				if (iter.hasNext()) {
+					writer.append(DELIMITER);
+				}
+			}
+
+			writer.append(END);
+			writer.flush();
+
+		} catch (final IOException ex) {
+			LOGGER.error(ex);
 		}
 	}
 
