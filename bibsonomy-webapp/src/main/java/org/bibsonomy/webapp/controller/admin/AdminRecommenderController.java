@@ -43,12 +43,18 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private MultiplexingTagRecommender mp;
 	
 	/**
+	 * FIXME: why isn't this done by the {@link MultiplexingTagRecommender#init()} method?
 	 * Initialize Controller and multiplexer
 	 **/
 	public void init() {
-		final List<Long> recs = db.getActiveRecommenderSettingIds();
-		for (final Long sid : recs) {
-			mp.enableRecommender(sid);
+		try {
+			final List<Long> recs = this.db.getActiveRecommenderSettingIds();
+			for (final Long sid : recs) {
+				this.mp.enableRecommender(sid);
+			}
+		} catch (final Exception e) {
+			// currently catched for the slaves
+			log.warn("coundn't enable recommeder");
 		}
 	}
 
@@ -74,13 +80,13 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		if (!present(command.getAction())) {
 			// Do nothing
 		} else if (CMD_ADDRECOMMENDER.equals(command.getAction())) {
-			handleAddRecommender(command);
+			this.handleAddRecommender(command);
 		} else if (CMD_REMOVERECOMMENDER.equals(command.getAction())) {
-			handleRemoveRecommender(command);
+			this.handleRemoveRecommender(command);
 		} else if (CMD_UPDATE_RECOMMENDERSTATUS.equals(command.getAction())) {
-			handleUpdateRecommenderStatus(command);
+			this.handleUpdateRecommenderStatus(command);
 		} else if (CMD_EDITRECOMMENDER.equals(command.getAction())) {
-			handleEditRecommender(command);
+			this.handleEditRecommender(command);
 		}
 
 		command.setAction(null);
@@ -88,11 +94,11 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		/* ---------------------- Tabs ---------------------------- */
 
 		if (command.getTab() == Tab.STATUS.ordinal()) {
-			showStatusTab(command);
+			this.showStatusTab(command);
 		} else if (command.getTab() == Tab.ACTIVATE.ordinal()) {
-			showActivationTab(command);
+			this.showActivationTab(command);
 		} else if (command.getTab() == Tab.ADD.ordinal()) {
-			showAddTab(command);
+			this.showAddTab(command);
 		}
 
 		return Views.ADMIN_RECOMMENDER;
@@ -102,8 +108,8 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	 * Remove/add recommender page. 
 	 */
 	private void showAddTab(final AdminRecommenderViewCommand command) {
-		final List<Long> recs = db.getDistantRecommenderSettingIds();
-		final Map<Long, String> recMap = db.getRecommenderIdsForSettingIds(recs);
+		final List<Long> recs = this.db.getDistantRecommenderSettingIds();
+		final Map<Long, String> recMap = this.db.getRecommenderIdsForSettingIds(recs);
 		command.setActiveRecommenders(recMap);
 	}
 
@@ -113,8 +119,8 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	 * command.activeRecs/command.disabledRecs
 	 */
 	private void showActivationTab(final AdminRecommenderViewCommand command) {
-		final Map<Long, String> activeRecs = db.getRecommenderIdsForSettingIds(db.getActiveRecommenderSettingIds());
-		final Map<Long, String> disabledRecs = db.getRecommenderIdsForSettingIds(db.getDisabledRecommenderSettingIds());
+		final Map<Long, String> activeRecs = this.db.getRecommenderIdsForSettingIds(this.db.getActiveRecommenderSettingIds());
+		final Map<Long, String> disabledRecs = this.db.getRecommenderIdsForSettingIds(this.db.getDisabledRecommenderSettingIds());
 
 		command.setActiveRecommenders(activeRecs);
 		command.setDisabledRecommenders(disabledRecs);
@@ -128,12 +134,12 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private void showStatusTab(final AdminRecommenderViewCommand command) {
 		final List<TagRecommender> recommenderList = new ArrayList<TagRecommender>();
 		final List<RecAdminOverview> recommenderInfoList = new ArrayList<RecAdminOverview>();
-		recommenderList.addAll(mp.getLocalRecommenders());
-		recommenderList.addAll(mp.getDistRecommenders());
+		recommenderList.addAll(this.mp.getLocalRecommenders());
+		recommenderList.addAll(this.mp.getDistRecommenders());
 
 		for (final TagRecommender p : recommenderList) {
-			final RecAdminOverview current = db.getRecommenderAdminOverview(RecommenderUtil.getRecommenderId(p));
-			current.setLatency(db.getAverageLatencyForRecommender(current.getSettingID(), command.getQueriesPerLatency()));
+			final RecAdminOverview current = this.db.getRecommenderAdminOverview(RecommenderUtil.getRecommenderId(p));
+			current.setLatency(this.db.getAverageLatencyForRecommender(current.getSettingID(), command.getQueriesPerLatency()));
 			recommenderInfoList.add(current);
 		}
 		
@@ -144,13 +150,17 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private void handleEditRecommender(final AdminRecommenderViewCommand command) {
 		try {
 			// TODO: add a validator?
-			if (!UrlUtils.isValid(command.getNewrecurl())) throw new MalformedURLException();
+			if (!UrlUtils.isValid(command.getNewrecurl())) {
+				throw new MalformedURLException();
+			}
 			final URL newRecurl = new URL(command.getNewrecurl());
 
 			final long sid = command.getEditSid();
-			final boolean recommenderEnabled = mp.disableRecommender(sid);
-			db.updateRecommenderUrl(command.getEditSid(), newRecurl);
-			if (recommenderEnabled) mp.enableRecommender(sid);
+			final boolean recommenderEnabled = this.mp.disableRecommender(sid);
+			this.db.updateRecommenderUrl(command.getEditSid(), newRecurl);
+			if (recommenderEnabled) {
+				this.mp.enableRecommender(sid);
+			}
 
 			command.setAdminResponse("Changed url of recommender #" + command.getEditSid() + " to " + command.getNewrecurl() + ".");
 		} catch (final MalformedURLException ex) {
@@ -163,12 +173,12 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private void handleUpdateRecommenderStatus(final AdminRecommenderViewCommand command) {
 		if (command.getActiveRecs() != null) {
 			for (final Long sid : command.getActiveRecs()) {
-				mp.enableRecommender(sid);
+				this.mp.enableRecommender(sid);
 			}
 		}
 		if (command.getDisabledRecs() != null) {
 			for (final Long sid : command.getDisabledRecs()) {
-				mp.disableRecommender(sid);
+				this.mp.disableRecommender(sid);
 			}
 		}
 		command.setTab(Tab.ACTIVATE);
@@ -179,13 +189,15 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		try {
 			int failures = 0;
 			
-			if(command.getDeleteRecIds() == null || command.getDeleteRecIds().isEmpty()) {
+			if((command.getDeleteRecIds() == null) || command.getDeleteRecIds().isEmpty()) {
 				command.setAdminResponse("Please select a recommender first!");
 			} else {
 				for(final String urlString : command.getDeleteRecIds()) {
 					final URL url = new URL(urlString);
-					final boolean success = mp.removeRecommender(url);
-					if(!success) failures++;
+					final boolean success = this.mp.removeRecommender(url);
+					if(!success) {
+						failures++;
+					}
 				}
 				if (failures == 0) {
 					command.setAdminResponse("Successfully removed all selected recommenders.");
@@ -206,7 +218,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 				throw new MalformedURLException();
 			}
 
-			mp.addRecommender(new URL(command.getNewrecurl()));
+			this.mp.addRecommender(new URL(command.getNewrecurl()));
 			command.setAdminResponse("Successfully added and activated new recommender!");
 
 		} catch (final MalformedURLException e) {
@@ -232,7 +244,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	/**
 	 * @param db the db to set
 	 */
-	public void setDb(DBLogic db) {
+	public void setDb(final DBLogic db) {
 		this.db = db;
 	}
 }
