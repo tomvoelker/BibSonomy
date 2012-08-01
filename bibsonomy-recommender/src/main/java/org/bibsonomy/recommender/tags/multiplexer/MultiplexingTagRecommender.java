@@ -43,6 +43,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * class DBAccess.
  *   
  * @author fei
+ * @version $Id$
  */
 public class MultiplexingTagRecommender implements TagRecommender {
 	private static final Log log = LogFactory.getLog(MultiplexingTagRecommender.class);
@@ -136,66 +137,71 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * <bean id="..." class="..." init-method="init"/>
 	 */
 	public void init() {
-		//
-		// Initialize local recommender map
-		//
-		if ((this.localRecommenderAccessMap == null) || this.localRecommenderAccessMap.isEmpty()) {
-			this.localRecommenderAccessMap = new ConcurrentHashMap<Long, TagRecommender>();
-			
-			for (final TagRecommender rec : this.localRecommenders) {
-				Long sid = null;
-				final String recId = rec.getClass().getCanonicalName();
-					
-				// Add recommender to database and retrieve settingId
-				try {
-					sid = this.dbLogic.insertRecommenderSetting(recId, rec.getInfo(), null);
-				} finally {
-					//On success save recommender in local backup-map so it can be accessed by its settingId
-					if (sid != null) {
-					    this.localRecommenderAccessMap.put(sid, rec);
-					} else {
-						log.warn("Could not retrieve settingId for local recommender " + recId);
-					}
-			    }
+		try {
+			//
+			// Initialize local recommender map
+			//
+			if ((this.localRecommenderAccessMap == null) || this.localRecommenderAccessMap.isEmpty()) {
+				this.localRecommenderAccessMap = new ConcurrentHashMap<Long, TagRecommender>();
+				
+				for (final TagRecommender rec : this.localRecommenders) {
+					Long sid = null;
+					final String recId = rec.getClass().getCanonicalName();
+						
+					// Add recommender to database and retrieve settingId
+					try {
+						sid = this.dbLogic.insertRecommenderSetting(recId, rec.getInfo(), null);
+					} finally {
+						//On success save recommender in local backup-map so it can be accessed by its settingId
+						if (sid != null) {
+						    this.localRecommenderAccessMap.put(sid, rec);
+						} else {
+							log.warn("Could not retrieve settingId for local recommender " + recId);
+						}
+				    }
+				}
 			}
+	
+			// Reset local recommender list so only those which are activated will be contained
+			// after the initializing-process.
+			this.localRecommenders = new ArrayList<TagRecommender>();
+			
+			//
+			// 0. Initialize data structures 
+			//
+			this.activeRecommenders = new ConcurrentHashMap<TagRecommender, Long>();
+			
+			//
+			// 1. Store all registered recommender systems in the db
+			//    and add their setting ids to the recommender lookup table
+			//
+			for( final TagRecommenderConnector con: this.getDistRecommenders() ) {
+				// each recommender is identified by an unique id:
+				this.registerRecommender(con, RecommenderUtil.getRecommenderId(con), con.getInfo(), con.getMeta());
+			}
+			/*
+			*/
+			for( final TagRecommender rec: this.getLocalRecommenders() ) {
+				// TODO: remove? if(activeLocalRecommenderMap.containsValue(rec.getClass().getCanonicalName()))
+				// each recommender is identified by an unique id
+				this.registerRecommender(
+						rec, 
+						RecommenderUtil.getRecommenderId(rec), 
+						rec.getInfo(), 
+						null);
+			}
+			
+			//
+			// 2. Store the result selection strategy
+			//
+			this.registerResultSelector(this.getResultSelector());
+			
+			// all done.
+			this.initialized = true;
+		} catch (final Exception e) {
+			// currently catched for the slaves
+			log.warn("initializing multiplexing recommender failed");
 		}
-
-		// Reset local recommender list so only those which are activated will be contained
-		// after the initializing-process.
-		this.localRecommenders = new ArrayList<TagRecommender>();
-		
-		//
-		// 0. Initialize data structures 
-		//
-		this.activeRecommenders = new ConcurrentHashMap<TagRecommender, Long>();
-		
-		//
-		// 1. Store all registered recommender systems in the db
-		//    and add their setting ids to the recommender lookup table
-		//
-		for( final TagRecommenderConnector con: this.getDistRecommenders() ) {
-			// each recommender is identified by an unique id:
-			this.registerRecommender(con, RecommenderUtil.getRecommenderId(con), con.getInfo(), con.getMeta());
-		}
-		/*
-		*/
-		for( final TagRecommender rec: this.getLocalRecommenders() ) {
-			//if(activeLocalRecommenderMap.containsValue(rec.getClass().getCanonicalName()))
-			// each recommender is identified by an unique id
-			this.registerRecommender(
-					rec, 
-					RecommenderUtil.getRecommenderId(rec), 
-					rec.getInfo(), 
-					null);
-		}
-		
-		//
-		// 2. Store the result selection strategy
-		//
-		this.registerResultSelector(this.getResultSelector());
-		
-		// all done.
-		this.initialized = true;
 	}
 	
 	/**
@@ -307,18 +313,18 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @param sid
 	 * @return true on success
 	 */
-	public boolean enableRecommender(final Long sid){
+	public boolean enableRecommender(final Long sid) {
 		if (sid == null) {
 			return false;
 		}
 		
 		// Local Setting
 		if (this.localRecommenderAccessMap.containsKey(sid)) {
-			if(!this.activeRecommenders.containsValue(sid)) {
+			if (!this.activeRecommenders.containsValue(sid)) {
 				return this.enableLocalRecommender(this.localRecommenderAccessMap.get(sid));
-			} else {
-				return false;
 			}
+			
+			return false;
 		}
 		
 		// Distant Setting 
