@@ -24,22 +24,36 @@
 package org.bibsonomy.scraper.url.kde.jstor;
 
 import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
+
+import bibtex.parser.ParseException;
 
 /**
  * @author wbi
@@ -54,7 +68,15 @@ public class JStorScraper extends AbstractUrlScraper {
 	private static final String JSTOR_ABSTRACT_PATH = "/pss/";
 	private static final String JSTOR_EXPORT_PATH = "/action/exportSingleCitation";
 	private static final String JSTOR_EXPORT_PATH_AND_QUERY = "/action/exportSingleCitation?singleCitation=true&suffix=";
+	private static final String JSTOR_STABLE_PATH = "/stable/";
 	private static final String JSTOR_DOWNLOAD_PATH = "/action/downloadSingleCitation?format=bibtex&include=abs&singleCitation=true&noDoi=yesDoi&suffix={id}&downloadFileName={id}";
+	private static final String JSTOR_DOWNLOAD_SUBMIT_ACTION_YESDOI = "https://www.jstor.org/action/downloadSingleCitationSec?format=bibtex&include=abs&singleCitation=true";
+	
+	private static final Pattern EXPORT_LINK_PATTERN = Pattern.compile("href=\"([^\"]++).*?id=\"export\"");
+	private static final Pattern SUBMIT_ACTION_NODOI_PATTERN = Pattern.compile("<input.*?id=\"noDoi\".*?value=\"([^\"]++)\"");
+	private static final Pattern SUBMIT_ACTION_SUFFIX_PATTERN = Pattern.compile("<input.*?name=\"suffix\".*?value=\"([^\"]++)\"");
+	private static final Pattern SUBMIT_ACTION_FILENAME_PATTERN = Pattern.compile("<input.*?name=\"downloadFileName\".*?value=\"([^\"]++)\"");
+	private static final Pattern NUMBER_CITS_EXPORTED_PATTERN = Pattern.compile("NUMBER OF CITATIONS : (\\d++)");
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
@@ -62,6 +84,7 @@ public class JStorScraper extends AbstractUrlScraper {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_ABSTRACT_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_EXPORT_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_STABLE_PATH + ".*")));
 	}
 	
 	public String getInfo() {
@@ -73,6 +96,22 @@ public class JStorScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		String url = sc.getUrl().toString();
+		
+		//Stable URL
+		if (url.contains(JSTOR_STABLE_PATH)) {
+			//keeping cookies around
+			HashMap<String, String> cookies = new HashMap<String, String>();
+			
+			URL exportURL = getExportLinkAsURL(sc.getUrl(), cookies);
+			String bibtexResult = submitExportPage(exportURL, cookies);
+			
+			Matcher numberOfCitMatcher = NUMBER_CITS_EXPORTED_PATTERN.matcher(bibtexResult);
+			if (!numberOfCitMatcher.find()) throw new ScrapingException("no citations received");
+			int numberOfCit = Integer.parseInt(numberOfCitMatcher.group(1));
+			if (numberOfCit < 1) throw new ScrapingException("received " + numberOfCit + " citations");
+			sc.setBibtexResult(bibtexResult);
+			return true;
+		}
 
 		String id = null;
 		if(url.startsWith(JSTOR_HOST_NAME + JSTOR_ABSTRACT_PATH)) {
@@ -209,6 +248,163 @@ public class JStorScraper extends AbstractUrlScraper {
 		urlConn.disconnect();
 
 		return cookieString.toString();
+	}
+	
+	private static String cookiesMap2String(Map<String, String> cookies) {
+		StringBuffer cookiesBuffer = new StringBuffer();
+		for (String key : cookies.keySet()) {
+			cookiesBuffer.append(key);
+			cookiesBuffer.append('=');
+			cookiesBuffer.append(cookies.get(key));
+			cookiesBuffer.append("; ");
+		}
+		return cookiesBuffer.toString();
+	}
+	
+	private static String submitExportPage(URL exportURL, Map<String, String> cookies) throws ScrapingException {
+		InputStream in = null;
+		InputStream in2 = null;
+		HttpURLConnection c3 = null;
+		HttpURLConnection c6 = null;
+		try {
+			c3 = (HttpURLConnection) exportURL.openConnection();
+			c3.setInstanceFollowRedirects(false);
+			c3.addRequestProperty("Cookie", cookiesMap2String(cookies));
+			c3.connect();
+			for (String cookie : c3.getHeaderFields().get("Set-Cookie")) {
+				String[] keyval = cookie.substring(0, cookie.indexOf(';')).split("=");
+				cookies.put(keyval[0], keyval[1]);
+			}
+			in = c3.getInputStream();
+			BufferedInputStream bin = new BufferedInputStream(in);
+			int b;
+			StringWriter out = new StringWriter();
+			while ((b = bin.read()) >= 0) {
+				out.write(b);
+			}
+			String exportPage = out.toString();
+			Matcher noDoiMatcher = SUBMIT_ACTION_NODOI_PATTERN.matcher(exportPage);
+			Matcher suffixMatcher = SUBMIT_ACTION_SUFFIX_PATTERN.matcher(exportPage);
+			Matcher fileNameMatcher = SUBMIT_ACTION_FILENAME_PATTERN.matcher(exportPage);
+			if (!noDoiMatcher.find() || !suffixMatcher.find() || !fileNameMatcher.find()) throw new ScrapingException("noDoi flag not found");
+			URL actionURL;
+			String noDoi = noDoiMatcher.group(1);
+			if ("noDoi".equalsIgnoreCase(noDoi)) {
+				actionURL = exportURL;
+			} else {
+				actionURL = new URL(JSTOR_DOWNLOAD_SUBMIT_ACTION_YESDOI);
+			}
+			String postContent = "redirectUri=" + URLEncoder.encode(exportURL.getFile(), "UTF-8")
+					+ "&noDoi=" + noDoi
+					+ "&suffix=" + suffixMatcher.group(1)
+					+ "&downloadFileName=" + fileNameMatcher.group(1);
+			c6 = (HttpURLConnection) actionURL.openConnection();
+			c6.setInstanceFollowRedirects(false);
+			c6.addRequestProperty("Cookie", cookiesMap2String(cookies));
+			c6.setRequestMethod("POST");
+			c6.setDoOutput(true);
+			c6.connect();
+			OutputStream postOut = null;
+			try {
+				postOut = c6.getOutputStream();
+				DataOutputStream postStream = new DataOutputStream(postOut);
+				postStream.writeBytes(postContent);
+			} finally {
+				if (postOut != null) try {
+					postOut.close();
+				} catch (IOException e) {}
+			}
+			in2 = c6.getInputStream();
+			bin = new BufferedInputStream(in2);
+			out = new StringWriter();
+			while ((b = bin.read()) >= 0) {
+				out.write(b);
+			}
+			return out.toString();
+		} catch (IOException ex) {
+			throw new ScrapingException(ex);
+		} finally {
+			if (in != null) try {
+				in.close();
+			} catch (IOException ex) {
+			}
+			if (in2 != null) try {
+				in2.close();
+			} catch (IOException ex) {
+			}
+			if (c3 != null) c3.disconnect();
+			if (c6 != null) c6.disconnect();
+		}
+	}
+	
+	private static URL getExportLinkAsURL(URL pageURL, Map<String, String> cookies) throws ScrapingException {
+		//first request to get a cookie and a redirect
+		HttpURLConnection c = null;
+		//second request to get redirected back and maybe a cookie
+		HttpURLConnection c5 = null;
+		//third request to get page content and some cookies
+		HttpURLConnection c7 = null;
+		//page content streaming
+		InputStream in = null;
+		try {
+			
+			//get a cookie and a redirect
+			c = (HttpURLConnection) pageURL.openConnection();
+			c.setInstanceFollowRedirects(false);
+			c.connect();
+			for (String cookie : c.getHeaderFields().get("Set-Cookie")) {
+				String[] keyval = cookie.substring(0, cookie.indexOf(';')).split("=");
+				cookies.put(keyval[0], keyval[1]);
+			}
+			String redirectLocation = c.getHeaderFields().get("Location").get(0);
+			
+			//get another redirect and maybe a new cookie
+			URL redirectURL = new URL(redirectLocation);
+			c5 = (HttpURLConnection) redirectURL.openConnection();
+			c5.setInstanceFollowRedirects(false);
+			c5.addRequestProperty("Cookie", cookiesMap2String(cookies));
+			c5.connect();
+			for (String cookie : c5.getHeaderFields().get("Set-Cookie")) {
+				String[] keyval = cookie.substring(0, cookie.indexOf(';')).split("=");
+				cookies.put(keyval[0], keyval[1]);
+			}
+			redirectLocation = c5.getHeaderFields().get("Location").get(0);
+			
+			//now getting page content and some cookies
+			redirectURL = new URL(redirectLocation);
+			c7 = (HttpURLConnection) redirectURL.openConnection();
+			c7.setInstanceFollowRedirects(false);
+			c7.addRequestProperty("Cookie", cookiesMap2String(cookies));
+			c7.connect();
+			for (String cookie : c7.getHeaderFields().get("Set-Cookie")) {
+				String[] keyval = cookie.substring(0, cookie.indexOf(';')).split("=");
+				cookies.put(keyval[0], keyval[1]);
+			}
+			StringWriter out = new StringWriter();
+			in = new BufferedInputStream(c7.getInputStream());
+			int b;
+			while ((b = in.read()) >= 0) {
+				out.write(b);
+			}
+			
+			//find export link
+			Matcher exportLinkMatcher = EXPORT_LINK_PATTERN.matcher(out.toString());
+			if (!exportLinkMatcher.find()) throw new ScrapingException("Exportlink not found");
+			String exportLink = exportLinkMatcher.group(1);
+			
+			//return export link as URL
+			return new URL(exportLink.replace("&amp;", "&"));
+		} catch (IOException ex) {
+			throw new ScrapingException(ex);
+		} finally {
+			if (in != null) try {
+				in.close();
+			} catch (IOException ex) {
+			}
+			if (c != null) c.disconnect();
+			if (c5 != null) c5.disconnect();
+			if (c7 != null) c7.disconnect();
+		}
 	}
 
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
