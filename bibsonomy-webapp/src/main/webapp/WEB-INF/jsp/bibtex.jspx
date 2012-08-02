@@ -119,42 +119,14 @@
 		<!--+
 			| discussion
 		 	+-->		
-		 	
+	 	
 		<jsp:attribute name="discussion">
-			<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
+			<c:if test="${not goldstandardPresent}">
+				<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
+			</c:if>
+			<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
 		</jsp:attribute>
-
-	</layout:resourceLayout>
 		
-		<!-- FIXME move to discussion.js -->
-		<script type="text/javascript">
-			$(function(){
-				var hash = window.location.hash;
-				if(hash=="#discussionbox") {
-					$("#publications_0").hide();
-					$("#imgExpandDsicussion").hide();
-					$("#imgCollapseDiscussion").show();
-				} else {
-					$("div#discussion").hide();
-					$("#imgExpandDiscussion").show();
-					$("#imgCollapseDiscussion").hide();
-					
-				}
-			});
-			
-			function foldUnfold(selector) {
-				var resource = $(selector);
-				if(resource.is(":visible")) {
-					resource.hide();
-					resource.siblings().find(".imgCollapse").hide();
-					resource.siblings().find(".imgExpand").show();
-					return;
-				}
-				resource.show();
-				resource.siblings().find(".imgCollapse").show();
-				resource.siblings().find(".imgExpand").hide();
-			}
-		</script>
-	
+	</layout:resourceLayout>
 
 </jsp:root>

@@ -49,6 +49,7 @@ function reply() {
 	form.submit(createComment);
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	
+	
 	if (parentHash != undefined) {
 		parent.append(clone);
 	} else {
@@ -56,6 +57,7 @@ function reply() {
 	}
 	
 	clone.show();
+	bindReferences();
 	form.find('textarea').TextAreaResizer();
 	
 	scrollTo(REPLY_FORM_ID);

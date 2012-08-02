@@ -344,3 +344,150 @@ function parseLinks(reviewText) {
 	return ret;
 }
 
+
+//functions for redesigned page  
+$(function(){
+	var hash = window.location.hash;
+	var gsPresent = ($("#gs_present").val()=="true");
+	if(hash=="#discussionbox" && !gsPresent) {
+		$("#hideableContent").hide();
+		$("#imgExpandDsicussion").hide();
+		$("#imgCollapseDiscussion").show();		
+		
+		$(".imgCollapse").each(function(){
+			if($(this).attr("id") == "imgCollapseContent") {
+				$(this).hide();
+			}
+		});
+		
+		$(".imgExpand").each(function(){
+			if($(this).attr("id") == "imgExpandContent") {
+				$(this).show();
+			}
+		});
+		
+	} else if (!gsPresent){
+		$("div#discussion").hide();
+		$("#imgExpandDiscussion").show();
+		$("#imgCollapseDiscussion").hide();
+		$("#imgExpandContent").hide();
+		$("#imgCollapseContent").show();
+		
+	}
+});
+
+
+$(document).ready(function() {
+
+	$("a.foldUnfold").click(function(){
+		var selector = $(this).attr("href");
+		var resource = $(selector);
+		if(resource.is(":visible")) {
+			resource.hide();
+			$(this).find(".imgCollapse").hide();
+			$(this).find(".imgExpand").show();
+			return false;
+		}
+		resource.show();
+		$(this).find(".imgCollapse").show();
+		$(this).find(".imgExpand").hide();
+		
+		return false;
+	});
+	
+	bindReferences();
+	
+	initCSLSugestions($("input.referenceAutocompletion"));
+
+});
+
+
+function bindReferences(){
+	$("a.addReference").click(function() {
+		var box= $(this).siblings("#linkbox");
+		box.show();
+		var input = box.find("input");
+		input.val("");
+		input.focus();
+		return false;
+	});
+
+	$("a.closeReference").click(function(){
+		var box= $(this).parent("#linkbox");
+		box.hide();
+		return false;
+	});
+	
+	$("input.referenceAutocompletion").keydown(function(event){
+		if(event.which == 27){
+			$(this).parent("#linkbox").hide();
+		};
+	});
+
+}
+
+$(document).ready(function(){
+
+});
+
+function initCSLSugestions(el) {
+	el.each(function(index){ $(this).autocomplete({
+		source: function( request, response ) {
+
+			$.ajax({
+				url: "/json/tag/" + createParameters(request.term),
+				data: {items: 10,resourcetype: 'publication', duplicates: 'no'},
+				dataType: "jsonp",
+				success: function( data ) {
+					response( $.map( data.items, function( item ) {
+						return {
+							label: (highlightMatches(item.label, request.term)+' ('+item.year+')'),
+							value: item.interHash,
+							url: 'hash='+item.intraHash+'&user='+item.user+'&copytag='+item.tags,
+							author: (concatArray(item.author, 40, ' '+getString('and')+' ')),
+							user: item.user,
+							tags: item.tags
+						};
+					}));
+				}
+			});
+		},
+		minLength: 3,
+		select: function( event, ui ) {
+			var item = ui.item;
+			var textArea = $(event.target);
+			var text = "[[publication/" + item.value + "/" + item.user + "]]";
+			textArea.val(text);
+			textArea.select();
+			return false;
+		},
+		focus: function( event, ui ) {
+			return false;
+		}
+	})
+	.data( 'autocomplete' )._renderItem = function( ul, item ) {
+		return $('<li></li>')
+		.data( 'item.autocomplete', item )
+		.append(
+				$('<a></a>')
+				.html(	item.label+'<br><span class="ui-autocomplete-subtext">' 
+						+item.author+' '+getString('by')+' '
+						+item.user+'</span>'))
+						.appendTo( ul );
+	};
+	});
+};
+
+
+function highlightMatches(text, input) {
+	var terms = input.split(" ");
+	for ( var i = 0; i < terms.length; i++) {
+		text = highlightMatch(text, terms[i]);
+	}
+	return text;
+};
+
+function highlightMatch(text, term) {
+	return text.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
+};
+
