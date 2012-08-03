@@ -54,4 +54,13 @@ public class JStorScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_98"));
 	}
+	
+	/**
+	 * starts URL test with id url_223
+	 */
+	@Test
+	public void urlTest3Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_223"));
+	}
 }

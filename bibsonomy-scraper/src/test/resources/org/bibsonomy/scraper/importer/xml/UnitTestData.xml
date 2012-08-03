@@ -1343,5 +1343,18 @@
 		<BibFile>StanfordInfoLabScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.stanford.StanfordInfoLabScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_222">
+		<TestDescription>Basic URL unit test for ACMBasicScraper.</TestDescription>
+		<URL>http://dl.acm.org/citation.cfm?doid=2160718.2160731</URL>
+		<BibFile>ACMBasicScraperUnitURLTest8.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
+	<URLTest id="url_223">
+		<TestDescription>JStor Scraper url test 3</TestDescription>
+		<URL>http://www.jstor.org/stable/20569359</URL>
+		<BibFile>JStorScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
