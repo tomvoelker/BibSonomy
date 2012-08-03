@@ -41,6 +41,7 @@ public class JStorScraperTest {
 	 * starts URL test with id url_97
 	 */
 	@Test
+	@Ignore
 	public void urlTest1Run(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_97"));
@@ -50,17 +51,19 @@ public class JStorScraperTest {
 	 * starts URL test with id url_98
 	 */
 	@Test
+	@Ignore
 	public void urlTest2Run(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_98"));
 	}
 	
 	/**
-	 * starts URL test with id url_223
+	 * starts URL test with id url_22
 	 */
 	@Test
+	@Ignore
 	public void urlTest3Run(){
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_223"));
+		assertTrue(runner.runSingleTest("url_22"));
 	}
 }
