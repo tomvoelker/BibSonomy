@@ -58,12 +58,12 @@ public class JStorScraperTest {
 	}
 	
 	/**
-	 * starts URL test with id url_22
+	 * starts URL test with id url_222
 	 */
 	@Test
 	@Ignore
 	public void urlTest3Run(){
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_22"));
+		assertTrue(runner.runSingleTest("url_222"));
 	}
 }
