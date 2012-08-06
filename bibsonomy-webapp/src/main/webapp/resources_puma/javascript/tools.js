@@ -1,5 +1,5 @@
 /*
-	replaces content of first text child node of given element 
+ * replaces content of first text child node of given element 
  */
 function replaceElementsTextnode(elname, t, color) {
 	
@@ -11,20 +11,8 @@ function replaceElementsTextnode(elname, t, color) {
 		e.firstChild.nodeValue = t;
 		if (color && (color.length==7 || color.length==4)) {
 			e.setAttribute("style", "color:"+color+";");
-		}
-		else
-		{
+		} else {
 			e.removeAttribute("style");
 		}
-	}
-	
+	}	
 }
-
-
-function pumainit(){
-	
-}
-	
-$(pumainit);    
-
-
