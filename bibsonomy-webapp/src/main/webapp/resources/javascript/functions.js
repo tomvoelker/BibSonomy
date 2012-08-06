@@ -1054,7 +1054,7 @@ this.imagePreview = function(){
 		 * determine correct offset for bookmark / publication previews
 		 */
 		if ( $(this).hasClass("bookmark") ) {
-			yOff = 250;
+			yOff = 350;
 		}
 		/*
 		 * build preview image URL by fetching URL from small preview pic
