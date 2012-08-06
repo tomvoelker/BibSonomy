@@ -1045,15 +1045,23 @@ function createParameters(title) {
  */
 this.imagePreview = function(){	
 	var xOff = 400;
-	var yOff = 450; // must be a bit more that the height of the preview
+	var yOff = 450; // must be a bit more that the height of the (publication) preview; value is overwritten later for bookmark previews (see below)
 	$("a.preview").hover(function(e){
 		this.t = this.title;
-		this.title = "";	
+		this.title = "";
 		var c = (this.t != "") ? "<br/>" + this.t : "";
 		/*
-		 * build preview image URL by appending "?preview=LARGE"
+		 * determine correct offset for bookmark / publication previews
 		 */
-		$("body").append("<p id='preview'><img src='"+ this.href + (this.href.indexOf("?") > 0 ? "&" : "?") + "preview=LARGE'/>"+ c +"</p>");		
+		if ( $(this).hasClass("bookmark") ) {
+			yOff = 250;
+		}
+		/*
+		 * build preview image URL by fetching URL from small preview pic
+		 * (insde the current <a href...></a>) and replacing the preview param
+		 */
+		var largePreviewImgUrl = $(this).children("img.pre_pic").first().attr("src").replace("preview\=SMALL", "preview=LARGE");		
+		$("body").append("<p id='preview'><img src='" + largePreviewImgUrl + "'/>"+ c +"</p>");
 		$("#preview")
 		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
 		.css("left", (e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px")
