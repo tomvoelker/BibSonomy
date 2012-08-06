@@ -19,6 +19,7 @@ public class GroupReportingCommand extends BaseCommand {
 	private String requestedGroup = "";
 
 	/** transposes displayed matrix if is set to 1 */
+	// TODO: boolean as type
 	private String transposeMatrix = "1";
 
 	private String requestedTags;
@@ -33,7 +34,7 @@ public class GroupReportingCommand extends BaseCommand {
 	/**
 	 * @param requestedGroup the requestedGroup to set
 	 */
-	public void setRequestedGroup(String requestedGroup) {
+	public void setRequestedGroup(final String requestedGroup) {
 		this.requestedGroup = requestedGroup;
 	}
 
@@ -47,7 +48,7 @@ public class GroupReportingCommand extends BaseCommand {
 	/**
 	 * @param transposeMatrix the transposeMatrix to set
 	 */
-	public void setTransposeMatrix(String transposeMatrix) {
+	public void setTransposeMatrix(final String transposeMatrix) {
 		this.transposeMatrix = transposeMatrix;
 	}
 
@@ -61,7 +62,7 @@ public class GroupReportingCommand extends BaseCommand {
 	/**
 	 * @param requestedTags the requestedTags to set
 	 */
-	public void setRequestedTags(String requestedTags) {
+	public void setRequestedTags(final String requestedTags) {
 		this.requestedTags = requestedTags;
 	}
 
