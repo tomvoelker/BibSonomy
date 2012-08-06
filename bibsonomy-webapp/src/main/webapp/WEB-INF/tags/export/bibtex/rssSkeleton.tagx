@@ -62,7 +62,7 @@
       <channel rdf:about="${properties['project.home']}${fn:escapeXml(requPath)}">
         <!-- title, link, description -->
         <title>${properties['project.name']} publications for /<c:out value="${requPath}"/></title>
-        <link>${properties['project.name']}<c:out value="${format}"/>/<c:out value='${requPath}'/></link>
+        <link>${properties['project.home']}<c:out value='${requPath}'/></link>
         <description>${properties['project.name']} RSS feed for /<c:out value='${requPath}'/></description>
         <dc:date>${mtl:formatDateISO8601(now)}</dc:date>
          

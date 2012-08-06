@@ -11,6 +11,7 @@
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 
 <!-- rss output for bookmarks -->
+<!-- TODO: merge with publication version of rssfeed.jspx -->
 
 <jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>	
 
@@ -23,7 +24,7 @@
 
 <channel rdf:about="${properties['project.home']}${fn:escapeXml(requPath)}">
   <title>${properties['project.name']} bookmarks for /<c:out value='${requPath}'/></title>
-  <link>${properties['project.home']}rss/<c:out value="${requPath}"/></link>
+  <link>${properties['project.home']}<c:out value="${requPath}"/></link>
   <description>${properties['project.name']} RSS Feed for /<c:out value='${requPath}'/></description>
 
   <items>
