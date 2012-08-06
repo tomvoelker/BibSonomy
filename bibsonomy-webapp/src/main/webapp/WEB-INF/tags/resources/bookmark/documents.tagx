@@ -4,17 +4,21 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
 	<fmt:message var="altPreview" key="preview"/>
-
-	<span class="entrytype web"><!-- --></span>
 	
-	<!-- uncomment the span below, and delete the span above to enable previews for bookmarks -->
-	
-	<!-- 
-	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-	<span class="">
-			<a class="preview" href="${bookUrl}"> 
-				<img class="pre_pic" src="/preview/bookmark/${post.resource.interHash}?preview=small" alt="${altPreview}"/>
-			</a>
-	</span> -->
+	<c:choose>
+		<!-- enable bookmark previews for admins only -->
+		<c:when test="${command.context.userLoggedIn and command.context.loginUser.role == 'ADMIN'}">  
+			<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
+			<span class="">
+					<a class="preview bookmark" href="${bookUrl}">
+						<!-- FIXME: add configuration option for image server --> 
+						<img class="pre_pic" src="http://141.51.167.70/preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
+					</a>
+			</span>
+		</c:when> 
+		<c:otherwise>
+			<span class="entrytype web"><!-- --></span>
+		</c:otherwise>
+	</c:choose>	
 
 </jsp:root>
