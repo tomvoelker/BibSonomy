@@ -23,76 +23,65 @@
 		    <script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
             <script type="text/javascript">
             <![CDATA[
-				function showSection(id) {
-                   	$("#buttons\\."+id).next('span').show();
-                 	$("#buttons\\."+id).children("img")[0].src="${resdir}/image/icon_collapse.png";
-				}
 		    	$(document).ready(function(){
+		    		var index=-1;
 		    		var url = window.location.href;
-		    		var browser = "";
+		    		var browser = BookmarkletButton.getButtonForAgent();
 		    		var addonSection = $("#buttons\\.Addon");
 		    		var bookmarkletSection = $("#buttons\\.Bookmarklets");
 		    		var callback = function(e){
-		    			var status = "collapse"; var target = $(this).next("span");
+		    			var status = "collapse"; 
+		    			var target = $(this).next("span");
 
-		    			if(target.css("display")!='none' && this.className.indexOf("expandingHeadline")==-1) { 
+		    			if(target.css("display")!='none') { 
 		    				target.hide();
 		    				status = "expand";
 		    			} else 
 		    				target.show(); 
 		    			$(this).children("img")[0].src="${resdir}/image/icon_"+status+".png";
 		    		};
-		    		var index=-1;
-		    		
-		    		addonSection.click(callback);
-		    		bookmarkletSection.click(callback);
-		    		
-		    		if((index=window.location.href.indexOf("#buttons"))>-1) { 
-		    			$(window.location.href.substring(index,window.location.href.length-1).replace(".","\\.")).trigger("click");
-		    		} else if(BookmarkletButton.getButtonForAgent()) {
+		    		var sections=$(".expandableSection").click(callback);
+		    		if((index=window.location.href.indexOf("#buttons"))>-1)
+		    			$(window.location.href.substring(index,window.location.href.length).replace(".","\\.")).trigger("click");
+		    		else if(browser)
 						addonSection.trigger("click");
-						bookmarkletSection.trigger("click");
-					}		    		
+		    		else
+		    			bookmarkletSection.trigger("click");
+		    		console.log(browser);
+		    		if(browser.name=="Chrome") 
+						index=1;
+					else if(browser.name=="Firefox"&&browser.version>=4)
+						index=0;
+					$(sections[index+1]).trigger("click");
 		    	});
 		    ]]>
 		    </script>
 			<!--+ 
-                |              list of content (300k)
-                +-->
-			<p>
-				<ol>
-					<li>
-						<h2>
-							<a href="#buttons.Addon" class="expandingHeadline" onclick="showSection('Addon');"><fmt:message key="bookmarklet.addon.headline"/> </a>
-								<![CDATA[&nbsp;]]><fmt:message key="and"/><![CDATA[&nbsp;]]>
-							<a href="#buttons.Bookmarklets" class="expandingHeadline" onclick="showSection('Bookmarklets');"> <fmt:message key="buttons.bookmarklet1"/></a>
-						</h2>
-					</li>
-					<li><h2><a href="#buttons.Snippets"><fmt:message key="buttons.javascript_snippets"/></a></h2></li>
-				</ol>
-			</p>
-			<!--+ 
                 |              Chrome / Firefox Bookmarklet Addon 
                 +-->			
-		    <ol>
+		    <ul>
 	           	<li>
-	           		<h2 id="buttons.Addon" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="bookmarklet.addon.headline"/></h2>
+	           		<h2 id="buttons.Addon" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="bookmarklet.addon.headline"/></h2>
 	           		<span style="display:none">
-		           		<h3><fmt:message key="bookmarklet.versionNotice"/></h3>
+						<h3><fmt:message key="bookmarklet.versionNotice"/></h3>
 		           		<p><fmt:message key="bookmarklet.addon.text1"/></p>
-		           		<h3>Firefox</h3>
-		           		<img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/>
-		           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
-		           		<p><a href="#" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
-		           		<h3>Chrome</h3>
-		           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
-		           		<p><fmt:message key="bookmarklet.addon.text3"/></p>
-		           		<p><a href="#" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
-		           		<p><i><fmt:message key="note"/>:<fmt:message key="bookmarklet.legacyNotice"/></i></p>
+		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Firefox</h3>
+		           		<span style="display:none">
+			           		<p><img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/></p>
+			           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
+			           		<p><a href="#" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
+		           		</span>
+		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Chrome</h3>
+		           		<span style="display:none">
+			           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
+			           		<p><fmt:message key="bookmarklet.addon.text3"/></p>
+			           		<p><a href="#" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
+			           		<p><i><fmt:message key="note"/>:<fmt:message key="bookmarklet.legacyNotice"/></i></p>
+		           		</span>
 	           		</span>
 					<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
-	    			<h2 id="buttons.Bookmarklets" style="cursor:pointer"><img src="${resdir}/image/icon_collapse.png"/><![CDATA[&nbsp;]]><fmt:message key="buttons.bookmarklet1"/></h2>
-	    			<span>		    		
+	    			<h2 id="buttons.Bookmarklets" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="buttons.bookmarklet1"/></h2>
+	    			<span style="display:none">		    		
 			            <!--+ 
 			                |              myBibSonomy 
 			                +-->	
@@ -160,7 +149,7 @@
 					<p><fmt:message key="buttons.javascript_snippets_text"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></p>
 					<buttons:snippets/>
 				</li>
-			</ol>
+			</ul>
 	</jsp:attribute>
 
 </layout:paneLayout>
