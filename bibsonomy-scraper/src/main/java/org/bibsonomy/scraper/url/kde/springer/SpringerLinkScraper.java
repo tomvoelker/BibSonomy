@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -61,6 +62,8 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	
 	private static final Pattern SESSION_PATTERN = Pattern.compile("ASP\\.NET_SessionId=(\\w*+);");
 
+	private static final Pattern YEAR_PATTERN_FOR_BIBTEX = Pattern.compile("(year[^\\{]*+(.*?)\\})");
+	private static final Pattern YEAR_PATTERN_FOR_PAGE = Pattern.compile("(?s)<div class=\"secondary\">.*?((20|19)\\d{2}+).*?</div>");
 	
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
@@ -140,7 +143,9 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				 * Job done
 				 */
 				if (present(bibtexEntry)) {
-					sc.setBibtexResult(cleanEntry(bibtexEntry));
+					String cleanEntry = cleanEntry(bibtexEntry);
+					cleanEntry = insertYearIfNotContained(cleanEntry, sc);
+					sc.setBibtexResult(cleanEntry);
 					return true;
 				} 
 			}
@@ -150,6 +155,35 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		} catch (IOException e) {
 			throw new InternalFailureException(e);
 		}
+	}
+	
+	private static String insertYearIfNotContained(String bibtex, ScrapingContext sc) throws ScrapingException {
+		if (!bibtexContainsYear(bibtex)) {
+			String page = sc.getPageContent();
+			Matcher m = YEAR_PATTERN_FOR_PAGE.matcher(page);
+			if (m.find()) {
+				return insertYear(bibtex, m.group(1));
+			}
+		}
+		return bibtex;
+	}
+	
+	private static boolean bibtexContainsYear(String bibtex) {
+		Matcher yearMatcher = YEAR_PATTERN_FOR_BIBTEX.matcher(bibtex);
+		if (yearMatcher.find()) {
+			String year = yearMatcher.group(2).trim();
+			if (year.length() == 4) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private static String insertYear(String bibtex, String year) {
+		Matcher m = YEAR_PATTERN_FOR_BIBTEX.matcher(bibtex);
+		if (!m.find()) return BibTexUtils.addFieldIfNotContained(bibtex, "year", year);
+		String emptyYear = m.group(1);
+		return bibtex.replace(emptyYear, "year={" + year + "}");
 	}
 
 	/**
