@@ -108,11 +108,24 @@ public class CoinsScraper implements Scraper {
 			String author = null;
 			if(tuples.containsKey("rft.au"))
 				author = tuples.get("rft.au");
+			else {
+				String aufirst = tuples.get("rft.aufirst");
+				String aulast = tuples.get("rft.aulast");
+				if (aufirst != null) {
+					if (aulast != null) author = aufirst + " " + aulast;
+					else author = aufirst;
+				} else if (aulast != null) {
+					author = aulast;
+				}
+			}
 
 			// get title
 			String atitle = null;
 			if(tuples.containsKey("rft.atitle"))
 				atitle = tuples.get("rft.atitle");
+			else {
+				atitle = tuples.get("rft.title");
+			}
 
 			// get year
 			String year = null;
