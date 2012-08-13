@@ -9,6 +9,7 @@ import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
+import org.bibsonomy.webapp.command.admin.LuceneResourceIndicesInfoContainer;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -67,12 +68,14 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		}
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
-		final List<LuceneResourceManager<? extends Resource>> indices = command.getIndices();
+		final List<LuceneResourceIndicesInfoContainer> resIndexInfo = command.getIndicesInfos();
 		
 		for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
-			indices.add(manager);
+			LuceneResourceIndicesInfoContainer lriic = new LuceneResourceIndicesInfoContainer();
+			lriic.setResourceName(manager.getResourceName());
+			lriic.getLuceneResoruceIndicesInfos().addAll(manager.getIndicesInfos());
+			resIndexInfo.add(lriic);
 		}
-		
 		
 		return Views.ADMIN_LUCENE;
 	}

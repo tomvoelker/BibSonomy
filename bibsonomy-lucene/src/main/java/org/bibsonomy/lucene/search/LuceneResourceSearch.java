@@ -372,26 +372,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// prepare input parameters
 		//--------------------------------------------------------------------
 		if (present(tagIndex)) {			
-			for (final String tag : tagIndex) {
-				// Is the tag string a concept name?
-				if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
-					final String conceptTag = parseTag(tag.substring(2));
-					// get related tags:
-					final BooleanQuery conceptTags = new BooleanQuery();
-					conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(conceptTag))), Occur.SHOULD);
-					for (final String t : this.dbLogic.getSubTagsForConceptTag(conceptTag)) {						
-						conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(t))), Occur.SHOULD);
-					}
-					tagQuery.add(conceptTags, Occur.MUST);
-				} else {
-					if (tag.startsWith(Tag.NEGATION_PREFIX)) {
-						final String negatedTag = parseTag(tag.substring(1));
-						tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(negatedTag))), Occur.MUST_NOT);	
-					}
-					else
-						tagQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(tag))), Occur.MUST);	
-				}				
-			}
+			addTagQuerries(tagIndex, tagQuery);
 		}
 				
 		// all done
@@ -543,11 +524,16 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		//--------------------------------------------------------------------
 		// the resulting main query
 		final BooleanQuery mainQuery = new BooleanQuery();
-		final BooleanQuery searchQuery = this.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex);
+		if (present(searchTerms) || present(titleSearchTerms)) {
+			final BooleanQuery searchQuery = this.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms);
+			mainQuery.add(searchQuery, Occur.MUST);
+		}		
 		
-		// for debuging TO BE REMOVED
-//		System.out.println(searchQuery.toString());
-		
+		// Add the requested tags
+		if (present(tagIndex)) {
+			addTagQuerries(tagIndex, mainQuery);
+		}
+			
 		// restrict result to given group
 		if (present(requestedGroupName)) {
 			final BooleanQuery groupQuery = this.buildGroupSearchQuery(requestedGroupName);
@@ -571,7 +557,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		//--------------------------------------------------------------------
 
 		// combine query terms
-		mainQuery.add(searchQuery, Occur.MUST);
+		
 		mainQuery.add(accessModeQuery, Occur.MUST);
 
 		// set ordering
@@ -588,6 +574,29 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		return qf;
 	}
 
+	private void addTagQuerries(final Collection<String> tagIndex, final BooleanQuery mainQuery) {
+		for (final String tag : tagIndex) {
+			// Is the tag string a concept name?
+			if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
+				final String conceptTag = parseTag(tag.substring(2));
+				// get related tags:
+				final BooleanQuery conceptTags = new BooleanQuery();
+				conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(conceptTag))), Occur.SHOULD);
+				for (final String t : this.dbLogic.getSubTagsForConceptTag(conceptTag)) {						
+					conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(t))), Occur.SHOULD);
+				}
+				mainQuery.add(conceptTags, Occur.MUST);
+			} else {
+				if (tag.startsWith(Tag.NEGATION_PREFIX)) {
+					final String negatedTag = parseTag(tag.substring(1));
+					mainQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(negatedTag))), Occur.MUST_NOT);	
+				}
+				else
+					mainQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(tag))), Occur.MUST);	
+			}				
+		}
+	}
+
 	/**
 	 * 
 	 * @param userName
@@ -597,7 +606,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @param tagIndex
 	 * @return a search query for the search terms
 	 */
-	protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex) {
+	protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms) {
 		final BooleanQuery searchQuery = new BooleanQuery();
 		
 		// search full text 
@@ -616,12 +625,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		if( present(titleSearchTerms) ) {
 			final Query titleQuery = this.buildTitleSearchQuery(titleSearchTerms);
 			searchQuery.add(titleQuery, Occur.MUST);
-		}
-		
-		// search tag assignments
-		if( present(tagIndex) ) {
-			final Query tagQuery = this.buildTagSearchQuery(tagIndex);
-			searchQuery.add(tagQuery, Occur.MUST);
 		}
 		
 		return searchQuery;

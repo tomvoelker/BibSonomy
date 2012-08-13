@@ -47,6 +47,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	private static final String INDEX_PREFIX = "lucene_";
 	private static final String INDEX_ID_DELIMITER = "-";
 	
+	
 	/** coding whether index is opened for writing or reading */
 	public static enum AccessMode {
 		/**
@@ -118,6 +119,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	
 	/** the maximum field length */
 	private IndexWriter.MaxFieldLength maxFieldLength;
+
 	
 	/**
 	 * constructor disabled
@@ -714,6 +716,8 @@ public class LuceneResourceIndex<R extends Resource> {
 			log.error("Could not delete directory-content before index-generation or index-copy.", e);
 		}
 	}
+	
+	
 	
 	/**
 	 * 

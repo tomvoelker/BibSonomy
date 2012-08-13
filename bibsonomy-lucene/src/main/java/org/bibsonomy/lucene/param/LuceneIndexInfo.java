@@ -1,0 +1,142 @@
+package org.bibsonomy.lucene.param;
+
+public class LuceneIndexInfo {
+	
+	/**
+	 * The FSPath for this index
+	 */
+	private String basePath;
+
+	/**
+	 * @return the basePath
+	 */
+	public String getBasePath() {
+		return basePath;
+	}
+
+	/**
+	 * @param basePath the basePath to set
+	 */
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
+
+	/**
+	 * The id of the index represented by this object
+	 */
+	private int id;
+	
+	/**
+	 * statistics
+	 */
+	private LuceneIndexStatistics statistics;
+	
+	/** 
+	 * indicates if the index is in sync with the DB
+	 */
+	private boolean correct;
+	
+
+	public boolean isCorrect() {
+		return correct;
+	}
+
+	/**
+	 * @param correct the correct to set
+	 */
+	public void setCorrect(boolean correct) {
+		this.correct = correct;
+	}
+
+	private boolean generatingIndex;
+	private int indexGenerationProgress;
+	private boolean isEnabled;
+	private boolean isActive;
+	
+
+	/**
+	 * @return the isActive
+	 */
+	public boolean isActive() {
+		return isActive;
+	}
+
+	/**
+	 * @param isActive the isActive to set
+	 */
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	/**
+	 * @param isEnabled the isEnabled to set
+	 */
+	public void setEnabled(final boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
+
+	/**
+	 * @return the isEnabled
+	 */
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	/**
+	 * @param indexGenerationProgress
+	 *            the progress of the index-generation
+	 */
+	public void setIndexGenerationProgress(final int indexGenerationProgress) {
+		this.indexGenerationProgress = indexGenerationProgress;
+	}
+
+	/**
+	 * @return the progress of the index-generation
+	 */
+	public int getIndexGenerationProgress() {
+		return indexGenerationProgress;
+	}
+	
+	/**
+	 * @return the statistics
+	 */
+	public LuceneIndexStatistics getIndexStatistics() {
+		return this.statistics;
+	}
+
+	/**
+	 * @param statistics the statistics to set
+	 */
+	public void setIndexStatistics(final LuceneIndexStatistics statistics) {
+		this.statistics = statistics;
+	}
+    /**
+     * @param generatingIndex isGeneratingIndex
+     */
+	public void setGeneratingIndex(final boolean generatingIndex) {
+		this.generatingIndex = generatingIndex;
+	}
+	
+	/**
+	 * @return isGeneratingIndex
+	 */
+	public boolean isGeneratingIndex() {
+		return generatingIndex;
+	}
+	
+
+}

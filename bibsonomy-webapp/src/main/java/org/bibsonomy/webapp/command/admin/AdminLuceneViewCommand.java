@@ -3,8 +3,6 @@ package org.bibsonomy.webapp.command.admin;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -30,7 +28,7 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	/** the string response for the admin */
 	private String adminResponse = "";
 	
-	private final List<LuceneResourceManager<? extends Resource>> indices = new LinkedList<LuceneResourceManager<? extends Resource>>();
+	private final List<LuceneResourceIndicesInfoContainer> indices = new LinkedList<LuceneResourceIndicesInfoContainer>();
 
 	/**
 	 * @return the action
@@ -63,7 +61,7 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	/**
 	 * @return the list of indices
 	 */
-	public List<LuceneResourceManager<? extends Resource>> getIndices() {
+	public List<LuceneResourceIndicesInfoContainer> getIndicesInfos() {
 		return indices;
 	}
 

@@ -19,8 +19,8 @@ import org.bibsonomy.model.BibTex;
 public class LucenePublicationSearch<P extends BibTex> extends LuceneResourceSearch<P> {
 
     @Override
-    protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex) {
-		final BooleanQuery searchQuery = super.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex);
+    protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms) {
+		final BooleanQuery searchQuery = super.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms);
 			
 		// search author
 		if (present(authorSearchTerms)) {
