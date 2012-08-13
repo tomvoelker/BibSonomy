@@ -207,15 +207,16 @@
 	</bean>
 
 	<!-- to resolve messages -->  
-	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<!-- matches messages.properties, messages_de.properties, ... -->   
 		<property name="basenames">
 			<list>
-				<value>projects/${project.name}_messages</value>
-				<value>themes/${project.theme}_messages</value>
-				<value>messages</value>
+				<value>classpath:/projects/${project.name}_messages</value>
+				<value>classpath:/themes/${project.theme}_messages</value>
+				<value>classpath:/messages</value>
 			</list>
-		</property> 
+		</property>
+		<property name="cacheSeconds" value="${dev.messagesource.cache}" />
 	</bean>
 
 	<!--  #################### view resolver #################### -->
