@@ -17,7 +17,7 @@ import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.lucene.param.LuceneResourceIndexInfo;
+import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
@@ -38,6 +38,13 @@ import org.bibsonomy.model.User;
  *            the resource to manage
  */
 public class LuceneResourceManager<R extends Resource> implements GenerateIndexCallback<R> {
+	
+	/**
+	 * this constant determines the difference of docs between the lucene index and the DB that will be tolerated
+	 * until the index is handled as incorrect.
+	 */
+	private static final int DOC_TOLERANCE = 1000;
+
 	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/**
@@ -116,6 +123,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		return inactiveIndecesStatistics;
 	}
 
+	
 	/**
 	 * updates the index, that is - adds new posts - updates posts, where tag
 	 * assignments have changed - removes deleted posts
@@ -233,8 +241,8 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		this.alreadyRunning = 1;
 		log.debug("reloadIndex - run and reset alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
 
-		// do the actual work
-		if (this.updatingIndex != null) {
+		// do the actual work, check if there IS a index to switch and if it is correct
+		if (this.updatingIndex != null && isIndexCorrect(this.updatingIndex)) {
 			log.debug("switching from index " + this.activeIndex + " to index " + this.updatingIndex);
 
 			this.setActiveIndex(this.updatingIndex);
@@ -300,6 +308,27 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 
 	public void regenerateIndex(final int id) {
 		this.regenerateIndex(id, true);
+	}
+	
+	/**
+	 * This method determines if a given index isn't broken, i.e. that its documents are up to date
+	 * and that no documents are missing.
+	 * The main purpose of this method is in the updating process to prevent switching to a incomplete
+	 * or corrupted index
+	 * @param index
+	 * @return
+	 */
+	private boolean isIndexCorrect(LuceneResourceIndex<R> index) {
+		int noDocsInLucene = index.getStatistics().getNumDocs();
+		int noPostInDB = dbLogic.getNumberOfPosts();
+		// First check if there ARE documents
+		if (noDocsInLucene < 1) {
+			return false;
+		}
+		if (noDocsInLucene > (noPostInDB + DOC_TOLERANCE) || noDocsInLucene < (noPostInDB - DOC_TOLERANCE)) {
+			return false;
+		}		
+		return true;
 	}
 
 	/**
@@ -640,22 +669,31 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		this.generator = null;
 	}
 
-	public List<LuceneResourceIndexInfo> getIndicesInfos() {
-		final List<LuceneResourceIndexInfo> lrii = new LinkedList<LuceneResourceIndexInfo>();
+	public List<LuceneIndexInfo> getIndicesInfos() {
+		final List<LuceneIndexInfo> lrii = new LinkedList<LuceneIndexInfo>();
 		
 		// First put the active index in the list if it exists
-		LuceneResourceIndexInfo indexInfo = this.getActiveIndexInfo();
-		lrii.add(indexInfo);
+		LuceneIndexInfo indexInfo;
+		
 		// put the inactive indices to the list
 		for (final LuceneResourceIndex<R> resourceIndex: this.resourceIndices) {
-			if (resourceIndex.equals(this.activeIndex)) {
-				continue;
-			}
+			indexInfo = new LuceneIndexInfo();
 			final boolean isIndexEnabled = resourceIndex.isIndexEnabled();
-			indexInfo = new LuceneResourceIndexInfo();
-			
+			indexInfo.setCorrect(isIndexCorrect(resourceIndex));
+			indexInfo.setBasePath(resourceIndex.getIndexPath());
 			indexInfo.setEnabled(isIndexEnabled);
 			indexInfo.setId(resourceIndex.getIndexId());
+			if (resourceIndex.equals(this.activeIndex)) {
+				indexInfo.setActive(true);
+				if (isIndexEnabled) {
+					indexInfo.setIndexStatistics(this.getStatistics());
+				}
+			}
+			else {
+				if (resourceIndex.isIndexEnabled()) {
+					indexInfo.setIndexStatistics(resourceIndex.getStatistics());
+				}
+			}
 			
 			if (this.isGeneratingIndex() && 
 					(this.generator != null) &&
@@ -663,36 +701,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				indexInfo.setGeneratingIndex(true);
 				indexInfo.setIndexGenerationProgress(this.getGenerator().getProgressPercentage());
 			}
-			
-			if (resourceIndex.isIndexEnabled()) {
-				indexInfo.setIndexStatistics(resourceIndex.getStatistics());
-			}
 			lrii.add(indexInfo);
 		}
 		return lrii;
-	}
-	
-	
-
-	private LuceneResourceIndexInfo getActiveIndexInfo() {
-		final boolean isIndexEnabled = this.isIndexEnabled();
-		final LuceneResourceIndexInfo indexInfo = new LuceneResourceIndexInfo();
-
-		indexInfo.setEnabled(isIndexEnabled);
-		indexInfo.setId(this.activeIndex.getIndexId());
-		indexInfo.setActive(true);
-
-		if (this.isGeneratingIndex() && 
-				(this.generator != null) &&
-				(this.activeIndex.getIndexId() == this.generator.getGeneratingIndexId())) {
-			indexInfo.setGeneratingIndex(true);
-			indexInfo.setIndexGenerationProgress(this.getGenerator().getProgressPercentage());
-		}
-
-		if (isIndexEnabled) {
-			indexInfo.setIndexStatistics(this.getStatistics());
-		}
-		return indexInfo;
 	}
 
 }

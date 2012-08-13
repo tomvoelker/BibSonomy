@@ -17,9 +17,11 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.TieredMergePolicy;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.apache.lucene.store.NoSuchDirectoryException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
@@ -41,6 +43,9 @@ import org.bibsonomy.model.Resource;
  * @param <R> the resource of the index to generate
  */
 public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable {
+	
+	private static final String TMP_INDEX_SUFFIX = ".tmp";
+	
 	protected static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
 
 	/** TODO: improve documentation */
@@ -104,19 +109,67 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		
 		this.isRunning = true;
 		
-		// delete the old index, if exists
-    	this.resourceIndex.deleteIndex();
-    	
-		// open index
+		// create a new, yet temporally index
 		this.createEmptyIndex();
-
+		
 		// generate index
 		this.createIndexFromDatabase();
+		
+		// delete the old index, if exists
+//    	this.resourceIndex.deleteIndex();
+		
+		// Hope that works
+		this.replaceIndex();
 		
 		// activate the index
 		this.resourceIndex.reset();
 		
 		this.isRunning = false;
+	}
+	
+	/**
+	 * deletes the old index and replaces it with the new one
+	 */
+	public void replaceIndex() {
+		try {
+			resourceIndex.close();
+			final File indexPath = new File(resourceIndex.getIndexPath());
+			final File tmpIndexPath = new File(resourceIndex.getIndexPath()+TMP_INDEX_SUFFIX);
+			final Directory indexDirectory = FSDirectory.open(indexPath);
+			final Directory tmpIndexDirectory = FSDirectory.open(tmpIndexPath);
+			
+			log.info("Deleting index " + indexPath.getAbsolutePath() + "...");
+			for (final String filename: indexDirectory.listAll()) {
+			    indexDirectory.deleteFile(filename);
+			    log.debug("Deleted " + filename);
+			}
+			log.info("Success.");
+			log.info("Coping new index files from " + tmpIndexPath.getName());
+			boolean movedIndexSuccessful = true;
+			for (final String filename: tmpIndexDirectory.listAll()) {
+				File file = new File(tmpIndexPath.getAbsolutePath()+"/"+filename);
+				// Move file to new directory
+				log.debug("Move " + filename + " to " + indexPath.getName());
+				File file2 = new File(indexPath, file.getName());
+				boolean success = file.renameTo(file2);
+				if (!success) {
+					movedIndexSuccessful = false;
+					log.error(filename + " was not successfully moved");
+				}
+			}
+			/* If the new regenerated index files were successfully moved to
+			 * the index directory remove the temporary index directory */
+			if (movedIndexSuccessful) {
+				boolean success = (new File(tmpIndexPath.getAbsolutePath())).delete();
+				if (success) 
+					log.info("Temporary index directory successfully deleted.");
+			}
+		} catch (final NoSuchDirectoryException e) {
+			log.warn("Tried to delete the lucene-index-directory but it could not be found.", e);
+		} catch (final IOException e) {
+			e.printStackTrace();
+			log.error("Could not delete directory-content before index-generation or index-copy.", e);
+		}
 	}
 	
 	/**
@@ -129,7 +182,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	protected void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
 		// create index, possibly overwriting existing index files
 		log.info("Creating empty lucene index...");
-		final Directory indexDirectory = FSDirectory.open(new File(this.resourceIndex.getIndexPath()));
+		final Directory indexDirectory = FSDirectory.open(new File(this.resourceIndex.getIndexPath()+TMP_INDEX_SUFFIX));
 		this.indexWriter = new IndexWriter(indexDirectory, this.resourceIndex.getAnalyzer(), true, this.resourceIndex.getMaxFieldLength()); 
 	}
 	
