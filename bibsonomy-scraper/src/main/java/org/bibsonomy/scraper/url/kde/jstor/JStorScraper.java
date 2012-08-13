@@ -63,7 +63,9 @@ public class JStorScraper extends AbstractUrlScraper {
 	private static final String JSTOR_EXPORT_PATH = "/action/exportSingleCitation";
 	private static final String JSTOR_STABLE_PATH = "/stable/";
 	private static final String JSTOR_DOWNLOAD_SUBMIT_ACTION_YESDOI = "https://www.jstor.org/action/downloadSingleCitationSec?format=bibtex&include=abs&singleCitation=true";
+	private static final String EXPORT_PAGE_URL = "https://www.jstor.org/action/exportSingleCitation?singleCitation=true&suffix=";
 	
+	private static final Pattern INDEX_PATTERN_FOR_STABLE_PATH = Pattern.compile("/stable/((\\d{2}+\\.\\d++/)?\\d++)");
 	private static final Pattern INDEX_PATTERN_FOR_ABSTRACT_PATH = Pattern.compile("/pss/(\\d++)"); 
 	private static final Pattern EXPORT_LINK_PATTERN = Pattern.compile("href=\"([^\"]++).*?id=\"export\"");
 	private static final Pattern SUBMIT_ACTION_NODOI_PATTERN = Pattern.compile("<input.*?id=\"noDoi\".*?value=\"([^\"]++)\"");
@@ -95,14 +97,15 @@ public class JStorScraper extends AbstractUrlScraper {
 		
 		URL exportURL = null;
 		
-		//Stable URL
 		if (url.contains(JSTOR_STABLE_PATH)) {
-			Matcher m = Pattern.compile("/stable/(\\d++)").matcher(url);
-			if (!m.find()) throw new ScrapingException("/pss/ path without id");
+			Matcher m = INDEX_PATTERN_FOR_STABLE_PATH.matcher(url);
+			if (!m.find()) throw new ScrapingException("/stable/ path without id");
 			try {
-				exportURL = new URL("https://www.jstor.org/action/exportSingleCitation?singleCitation=true&suffix=" + m.group(1));
+				exportURL = new URL(EXPORT_PAGE_URL + URLEncoder.encode(m.group(1), "UTF-8"));
 				startSessionForURL(exportURL, cookies);
 			} catch (MalformedURLException ex) {
+			} catch (UnsupportedEncodingException ex) {
+				throw new ScrapingException(ex);
 			}
 		}
 		
@@ -111,7 +114,7 @@ public class JStorScraper extends AbstractUrlScraper {
 			Matcher m = INDEX_PATTERN_FOR_ABSTRACT_PATH.matcher(url);
 			if (!m.find()) throw new ScrapingException("/pss/ path without id");
 			try {
-				exportURL = new URL("https://www.jstor.org/action/exportSingleCitation?singleCitation=true&suffix=" + m.group(1));
+				exportURL = new URL(EXPORT_PAGE_URL + m.group(1));
 				startSessionForURL(exportURL, cookies);
 			} catch (MalformedURLException ex) {
 			}
