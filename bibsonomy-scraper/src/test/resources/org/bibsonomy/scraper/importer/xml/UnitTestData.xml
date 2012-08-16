@@ -1349,5 +1349,11 @@
 		<BibFile>JStorScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_223">
+		<TestDescription>RSC Scraper test</TestDescription>
+		<URL>http://pubs.rsc.org/en/content/articlelanding/2012/lc/c2lc21117c</URL>
+		<BibFile>RSCScraperUnitTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.rsc.RSCScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
