@@ -156,12 +156,30 @@ function uploadRequestSuccessful(data) {
 		 */
 		var filesDiv = $("#files");
 
+		/*
+		 * file extension for qr code embedding
+		 */
+		var suffix = ".pdf";
+		
 		if (filesDiv.length) {
-			var div = "<div class='fsRow'>" + 
-			"<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>" + fileName + "</a> " +
-			"( <a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>" + documentQRMessage + "</a>" + 
-			"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
-			") (<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
+			
+			var div = "";
+			
+			/*
+			 * check if file ends with '.pdf'
+			 */			
+			if(fileName.indexOf(suffix, fileName.length - suffix.length) != -1) {
+				div = "<div class='fsRow'>" + 
+				"<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>" + fileName + "</a> " +
+				"( <a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>" + documentQRMessage + "</a>" + 
+				"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
+				") (<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
+			} else {
+				div = "<div class='fsRow'>" + 
+				"<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>" + fileName + "</a> " +
+				"(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
+			}
+			
 			filesDiv.append(div);
 			$(".deleteDocument").click(deleteLinkClicked);
 		} else {
