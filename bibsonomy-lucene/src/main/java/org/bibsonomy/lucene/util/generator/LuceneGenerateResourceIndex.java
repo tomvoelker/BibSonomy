@@ -44,7 +44,7 @@ import org.bibsonomy.model.Resource;
  */
 public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable {
 	
-	private static final String TMP_INDEX_SUFFIX = ".tmp";
+	public static final String TMP_INDEX_SUFFIX = ".tmp";
 	
 	protected static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
 
@@ -77,7 +77,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	private Map<Character, String> tagFieldValues = new HashMap<Character, String>();
 	private Map<Character, String> userFieldValues = new HashMap<Character, String>();
 	
-
 	/**
 	 * frees allocated resources and closes all files
 	 * @throws IOException 

@@ -2,6 +2,7 @@ package org.bibsonomy.lucene.index.manager;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -651,6 +652,18 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		 */
 		for (int i = 1; i < this.resourceIndices.size(); i++) {
 			this.updateQueue.add(this.resourceIndices.get(i));
+		}
+		
+		/*
+		 * Check if there old is an tmp folder from an previous
+		 * index generation left
+		 */
+		File tmpIndexPath = new File(activeIndex.getIndexPath()+LuceneGenerateResourceIndex.TMP_INDEX_SUFFIX);
+		if (tmpIndexPath.exists()) {
+			for (File file: tmpIndexPath.listFiles()) {
+				file.delete();
+			}
+			tmpIndexPath.delete();
 		}
 	}
 
