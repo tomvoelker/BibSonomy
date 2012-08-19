@@ -25,11 +25,11 @@ package org.bibsonomy.scraper.url.kde.acm;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,13 +62,19 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	private static final String SITE_URL  = "http://portal.acm.org/";
 	private static final String info      = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
-			Pattern.compile("(/beta)?/citation.cfm.*")
-	));
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
+
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(
+				Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
+				Pattern.compile("(/beta)?/citation.cfm.*")
+		));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?" + "doi.acm.org"), EMPTY_PATTERN));
+	}
 
 	private static final String BROKEN_END = new String("},\n}");
 	private static final Pattern URL_PARAM_ID_PATTERN = Pattern.compile("id=([0-9\\.]+)");
+	private static final Pattern DOI_URL_ID_PATTERN = Pattern.compile("(?:/\\d+\\.(\\d+))++");
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div style=\"display:inline\">(\\s*<p>\\s*)?(.+?)(\\s*<\\/p>\\s*)?<\\/div>", Pattern.MULTILINE);
 
 	@Override
@@ -76,93 +82,105 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		try {
+			
 			/*
 			 * extract the id from the URL
 			 */
-			final Matcher matcher = URL_PARAM_ID_PATTERN.matcher(sc.getUrl().getQuery());
-			if (matcher.find()) {
-				String id = matcher.group(1);
-				/*
-				 * If the id contains a dot ".", we use the part after the dot.
-				 * TODO: Can we do this nicer? 
-				 */
-				final int indexOfDot = id.indexOf(".");
-				if (indexOfDot > -1) {
-					id = id.substring(indexOfDot + 1);
+			String id = null;
+			String query = sc.getUrl().getQuery();
+			if (query == null) {
+				Matcher m = DOI_URL_ID_PATTERN.matcher(sc.getUrl().getPath());
+				if (m.find()) {
+					id = m.group(1);
 				}
-				/*
-				 * Scrape entries from popup BibTeX site. BibTeX entry on these
-				 * pages looks like this: <PRE id="155273">@article{155273,
-				 * author = {The Author}, title = {This is the title}...}</pre>
-				 */
-				final StringBuffer bibtexEntries = extractBibtexEntries(SITE_URL, "exportformats.cfm?expformat=bibtex&id=" + id);
+			} else {
+				Matcher matcher = URL_PARAM_ID_PATTERN.matcher(query);
+				if (matcher.find()) {
+					id = matcher.group(1);
+				}
+			}
+			
+			if (id == null) return false;
+			
+			/*
+			 * If the id contains a dot ".", we use the part after the dot.
+			 * TODO: Can we do this nicer? 
+			 */
+			final int indexOfDot = id.indexOf(".");
+			if (indexOfDot > -1) {
+				id = id.substring(indexOfDot + 1);
+			}
+			/*
+			 * Scrape entries from popup BibTeX site. BibTeX entry on these
+			 * pages looks like this: <PRE id="155273">@article{155273,
+			 * author = {The Author}, title = {This is the title}...}</pre>
+			 */
+			final StringBuffer bibtexEntries = extractBibtexEntries(SITE_URL, "exportformats.cfm?expformat=bibtex&id=" + id);
 
+			/*
+			 * download the abstract
+			 * FIXME: 
+			 * 
+			 * IDs with a "dot" (e.g., 1082036.1082037 seem to have no abstract:
+			 * 
+			 * http://portal.acm.org/tab_abstract.cfm?id=1082036.1082037&usebody=tabbody
+			 * 
+			 * We must use only the part after the dot to get it:
+			 * 
+			 * http://portal.acm.org/tab_abstract.cfm?id=1082037&usebody=tabbody
+			 * 
+			 * This must be done!
+			 * 
+			 */
+			final String abstrct = WebUtils.getContentAsString(SITE_URL + "/tab_abstract.cfm?usebody=tabbody&id=" + id);
+			if (present(abstrct)) {
 				/*
-				 * download the abstract
-				 * FIXME: 
-				 * 
-				 * IDs with a "dot" (e.g., 1082036.1082037 seem to have no abstract:
-				 * 
-				 * http://portal.acm.org/tab_abstract.cfm?id=1082036.1082037&usebody=tabbody
-				 * 
-				 * We must use only the part after the dot to get it:
-				 * 
-				 * http://portal.acm.org/tab_abstract.cfm?id=1082037&usebody=tabbody
-				 * 
-				 * This must be done!
-				 * 
+				 * extract abstract from HTML
 				 */
-				final String abstrct = WebUtils.getContentAsString(SITE_URL + "/tab_abstract.cfm?usebody=tabbody&id=" + id);
-				if (present(abstrct)) {
+				final Matcher matcher2 = ABSTRACT_PATTERN.matcher(abstrct);
+				if (matcher2.find()) {
 					/*
-					 * extract abstract from HTML
+					 * FIXME: we don't get here for URL 
+					 * 
+					 * http://doi.acm.org/10.1145/1105664.1105676
+					 *  
+					 * Thus, the pattern fails for that abstract at
+					 * 
+					 * http://portal.acm.org/tab_abstract.cfm?id=1105676&usebody=tabbody
 					 */
-					final Matcher matcher2 = ABSTRACT_PATTERN.matcher(abstrct);
-					if (matcher2.find()) {
-						/*
-						 * FIXME: we don't get here for URL 
-						 * 
-						 * http://doi.acm.org/10.1145/1105664.1105676
-						 *  
-						 * Thus, the pattern fails for that abstract at
-						 * 
-						 * http://portal.acm.org/tab_abstract.cfm?id=1105676&usebody=tabbody
-						 */
-						final String extractedAbstract = matcher2.group(2);
-						BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", extractedAbstract);
+					final String extractedAbstract = matcher2.group(2);
+					BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", extractedAbstract);
 
-					} else {
-						// log if abstract is not available
-						log.info("ACMBasicScraper: Abstract not available");
-					}
 				} else {
 					// log if abstract is not available
 					log.info("ACMBasicScraper: Abstract not available");
 				}
-
-				/*
-				 * Some entries (e.g., http://portal.acm.org/citation.cfm?id=500737.500755) seem
-				 * to have broken BibTeX entries with a "," too much at the end. We remove this
-				 * here.
-				 *
-				 * Some entries have the following end: "},\n} \n" instead of the BROKEN_END String.
-				 * So we have to adjust the starting index by the additional 2 symbols.
-				 */
-				final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 2);
-				if (indexOf > 0) {
-					bibtexEntries.replace(indexOf, bibtexEntries.length(), "}\n}");
-				}
-
-				final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
-				//final String result = bibtexEntries.toString().trim();
-
-				if (!"".equals(result)) {
-					sc.setBibtexResult(result);
-					return true;
-				} else
-					throw new ScrapingFailureException("getting bibtex failed");
+			} else {
+				// log if abstract is not available
+				log.info("ACMBasicScraper: Abstract not available");
 			}
-			return false;
+
+			/*
+			 * Some entries (e.g., http://portal.acm.org/citation.cfm?id=500737.500755) seem
+			 * to have broken BibTeX entries with a "," too much at the end. We remove this
+			 * here.
+			 *
+			 * Some entries have the following end: "},\n} \n" instead of the BROKEN_END String.
+			 * So we have to adjust the starting index by the additional 2 symbols.
+			 */
+			final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 2);
+			if (indexOf > 0) {
+				bibtexEntries.replace(indexOf, bibtexEntries.length(), "}\n}");
+			}
+
+			final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
+			//final String result = bibtexEntries.toString().trim();
+
+			if (present(result)) {
+				sc.setBibtexResult(result);
+				return true;
+			} else
+				throw new ScrapingFailureException("getting bibtex failed");
 
 		} catch (Exception e) {
 			throw new InternalFailureException(e);
