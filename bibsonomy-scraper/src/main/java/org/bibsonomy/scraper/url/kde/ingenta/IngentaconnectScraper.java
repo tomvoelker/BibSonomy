@@ -53,7 +53,7 @@ public class IngentaconnectScraper extends AbstractUrlScraper{
 	private static final String INGENTA_HOST = "ingentaconnect.com";
 
 
-	private static final Pattern exportPattern = Pattern.compile("BibText Export\" href=\"(.*)\"");
+	private static final Pattern exportPattern = Pattern.compile("BibText Export\" href=\"([^\"]++)\"");
 
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + INGENTA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
