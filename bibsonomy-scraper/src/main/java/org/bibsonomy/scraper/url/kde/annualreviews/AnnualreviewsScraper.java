@@ -61,7 +61,7 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 	 */
 	private static final String DOWNLOAD_PATH_AND_QUERY = "/action/downloadCitation?format=bibtex&include=cit&doi=";
 
-	private static final Pattern doiPattern = Pattern.compile("/doi/abs/(.*)");
+	private static final Pattern doiPattern = Pattern.compile("/doi/(?:(?:abs)|(?:full))/(.*)");
 	private static final Pattern doiPatternQuery = Pattern.compile("doi=([^&]*)");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
