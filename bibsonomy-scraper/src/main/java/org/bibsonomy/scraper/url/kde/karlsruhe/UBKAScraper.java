@@ -159,6 +159,15 @@ public class UBKAScraper extends AbstractUrlScraper {
 				if (m.matches()){
 					bib = m.group(1) + m.group(2).replaceAll(",", " ") + m.group(3);	        
 				}
+				
+				//Umlaute fixen
+				bib = bib
+						.replaceAll("\\{\\\\\"u\\}", "ü")
+						.replaceAll("\\{\\\\\"a\\}", "ä")
+						.replaceAll("\\{\\\\\"o\\}", "ö")
+						.replaceAll("\\{\\\\\"U\\}", "Ü")
+						.replaceAll("\\{\\\\\"A\\}", "Ä")
+						.replaceAll("\\{\\\\\"O\\}", "Ö");
 
 				// old fix, ubka fixed the missing "," after key in bibtex
 				//bib = bib.replaceFirst("\n", ",\n");
