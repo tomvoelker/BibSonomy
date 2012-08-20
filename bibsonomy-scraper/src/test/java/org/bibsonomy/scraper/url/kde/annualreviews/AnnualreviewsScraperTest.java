@@ -47,13 +47,23 @@ public class AnnualreviewsScraperTest {
 	}
 
 	/**
-	 * starts URL test with id url_107
+	 * 
 	 */
 	@Test
 	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_107"));
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
+	@Ignore	
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_228"));
 	}
 	
 }

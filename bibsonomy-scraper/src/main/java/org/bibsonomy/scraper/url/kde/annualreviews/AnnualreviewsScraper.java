@@ -59,7 +59,7 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 	/**
 	 * path and query for download url
 	 */
-	private static final String DOWNLOAD_PATH_AND_QUERY = "/action/downloadCitation?format=bibtex&include=cit&doi=";
+	private static final String DOWNLOAD_PATH_AND_QUERY = "/action/downloadCitation?format=bibtex&include=abs&doi=";
 
 	private static final Pattern doiPattern = Pattern.compile("/doi/(?:(?:abs)|(?:full))/(.*)");
 	private static final Pattern doiPatternQuery = Pattern.compile("doi=([^&]*)");
