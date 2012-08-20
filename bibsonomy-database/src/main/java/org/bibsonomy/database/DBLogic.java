@@ -1713,8 +1713,9 @@ public class DBLogic implements LogicInterface {
 					 * the given resource hash belongs to a post of the user ->
 					 * delete the corresponding document
 					 */
-					if (this.docDBManager.checkForExistingDocuments(userName, resourceHash, document.getFileName(), session)) {
-						this.docDBManager.deleteDocument(post.getContentId(), userName, document.getFileName(), session);
+					Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, document.getFileName(), session);
+					if (present(existingDocument)) {
+						this.docDBManager.deleteDocument(post.getContentId(), existingDocument, session);
 					}
 				} else {
 					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
@@ -2320,8 +2321,6 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-
-//		return 0;
 	}
 
 	/*
