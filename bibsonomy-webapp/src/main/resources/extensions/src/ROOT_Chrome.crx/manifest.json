@@ -1,0 +1,27 @@
+{
+  "name": "$PROJECT_NAME$ Bookmarklets",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "$PROJECT_NAME$ Bookmarklets Plugin",
+  "default_locale": "en",
+  "background": {
+    "scripts": ["scripts/background.js"]
+  },
+  "minimum_chrome_version": "20",
+  "icons": { 
+	"48":"images/icon_48.png",
+	"128":"images/icon_128.png"
+  },
+  "browser_action": {
+    "default_icon": "images/icon.png",
+    "default_popup": "ui/popup.html"
+  },"content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["scripts/content_script.js"]
+    }
+  ],"permissions": [
+    "$PROJECT_HOME$*", "tabs"
+  ],
+  "update_url": "updates.xml"
+}

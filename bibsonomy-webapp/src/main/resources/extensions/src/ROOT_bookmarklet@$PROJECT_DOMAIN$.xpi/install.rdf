@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+		<!-- BibLicious Bookmarklet GUID properties -->
+		<em:id>bookmarklet@biblicious.org</em:id>
+		<em:version>1.1</em:version>
+		<em:name>BibLicious Bookmarklet</em:name>
+		<em:type>2</em:type>
+		<em:bootstrap>true</em:bootstrap>
+		<em:updateURL></em:updateURL>
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> 
+				<em:minVersion>4.*</em:minVersion>
+				<em:maxVersion>16.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+	    <em:localized>
+	      <Description>
+	        <em:locale>de</em:locale>
+	        <em:name>BibLicious Bookmarklet</em:name>
+	        <em:description>Stellt die Funktionalität der BibLicious Bookmarklet-Schaltflächen zur Verfügung.</em:description>
+	      </Description>
+	    </em:localized>
+	    <em:localized>
+	      <Description>
+	        <em:locale>en</em:locale>
+	        <em:name>BibLicious Bookmarklet</em:name>
+	        <em:description>Provides BibLicious's bookmarklet buttons functionality.</em:description>
+	      </Description>
+	    </em:localized>
+	</Description>
+</RDF>

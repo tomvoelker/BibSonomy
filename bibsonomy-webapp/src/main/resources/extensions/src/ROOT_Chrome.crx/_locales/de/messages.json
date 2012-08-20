@@ -1,0 +1,22 @@
+{
+  "optionTitleOpenNewTab": {"message": "in neuem Tab öffnen"},
+  "optionDescrOpenNewTab": {"message": "Öffnet für jede Aktion ein neues Tab."},
+  "optionTitleHotkeyHome": {"message": "Tastaturkürzel für mein$PORJECT_NAME$"},
+  "saveButtonLabel":{"message": "speichern"},
+  "showOptionsLabel": {"message": "Optionen einblenden"},
+  "hideOptionsLabel": {"message": "Optionen ausblenden"},
+  "optionsLabel": {"message": "Optionen"}, 
+  "bookmarkButtonTitle": {"message":"Bookmark in $PORJECT_NAME$ speichern"}, 
+  "publicationButtonTitle": {"message":"Publikation in $PORJECT_NAME$ speichern"}, 
+  "homeButtonTitle": {"message":"zu mein$PORJECT_NAME$ navigieren"},
+  "CTRL":{"message": "STRG"},
+  "ALT":{"message": "ALT"},
+  "SPACE":{"message": "LEER"},
+  "BACKSPACE":{"message": "ENTF"},
+  "DEL":{"message": "ENTF"},
+  "SHIFT":{"message": "UMSCHALT"},
+  "shortcutHomeDescr":{"message": "Tastaturkürzel für das Aufrufen Ihrer my$PORJECT_NAME$-Seite"},
+  "shortcutBookmarkDescr":{"message": "Tastaturkürzel für das Speichern eines Bookmarks"},
+  "shortcutPublicationDescr":{"message": "Tastaturkürzel für das Speichern einer Publikation"},
+  "shortcutsDescr":{"message": "Tragen Sie hier ein Tastaturkürzel durch das Drücken und Festhalten eines oder mehrerer Modifikatoren (STRG, ALT, UMSCHALT) und Zeichen"}
+}

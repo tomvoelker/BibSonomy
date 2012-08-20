@@ -1,0 +1,16 @@
+<!ENTITY shortcutHomeEnabled.title "Shortcut to open my$PROJECT_NAME$">
+<!ENTITY shortcutBookmarkEnabled.title "Shortcut for saving a bookmark to $PROJECT_NAME$">
+<!ENTITY shortcutPublicationEnabled.title "Shortcut for saving a publication to $PROJECT_NAME$">
+<!ENTITY shortcutHomeEnabled.desc "Enables the use of a shortcut to navigate directly to your my$PROJECT_NAME$ page. ">
+<!ENTITY shortcutBookmarkEnabled.desc "Enables the saving of the currently viewed website to your $PROJECT_NAME$ account using a shortcut.">
+<!ENTITY shortcutPublicationEnabled.desc "Enables the saving of the currently viewed publication to your $PROJECT_NAME$ account via a shortcut.">
+<!ENTITY toolbarButtons.title "Show $PROJECT_NAME$ buttons">
+<!ENTITY toolbarButtons.desc "Adds a my$PROJECT_NAME$, a save bookmark and respectively save publication button to your navigation bar if enabled.">
+<!ENTITY openNewTab.title "Open in new tab">
+<!ENTITY openNewTab.desc "Open a new tab for each action. If disabled, the current tab is used.">
+<!ENTITY shortcutHome.title "Shortcut 'my$PROJECT_NAME$'">
+<!ENTITY shortcutBookmark.title "Shortcut 'save bookmark'">
+<!ENTITY shortcutPublication.title "Shortcut 'save publication'">
+<!ENTITY shortcutHome.desc "Enter here your 'my$PROJECT_NAME$' shortcut">
+<!ENTITY shortcutBookmark.desc "Enter your 'save bookmark' shortcut here">
+<!ENTITY shortcutPublication.desc "Enter your 'save publication' shortcut here">
