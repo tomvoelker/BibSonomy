@@ -26,6 +26,8 @@ package org.bibsonomy.scraper.generic;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
@@ -246,7 +248,14 @@ public class CoinsScraper implements Scraper {
 		return SITE_NAME;
 	}
 
-
+	public static ScrapingContext getTestContext(){
+		ScrapingContext context = new ScrapingContext(null);
+		try {
+			context.setUrl(new URL("http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm"));
+		} catch (MalformedURLException ex) {
+		}
+		return context;
+	}
 	/**
 	 * @return site url
 	 */
