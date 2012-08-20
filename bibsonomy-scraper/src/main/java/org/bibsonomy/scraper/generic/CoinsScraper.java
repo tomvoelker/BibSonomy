@@ -26,8 +26,6 @@ package org.bibsonomy.scraper.generic;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
@@ -66,12 +64,12 @@ public class CoinsScraper implements Scraper {
 
 	public boolean scrape(ScrapingContext sc)throws ScrapingException {
 		if (sc == null || sc.getUrl() == null) return false;
-		
+
 		final String page = sc.getPageContent();
 		final StringBuffer bibtex = new StringBuffer();
 
 		final Matcher matcherCoins = PATTERN_COINS.matcher(page);
-		
+
 		if (matcherCoins.find()) {
 			// span found, this scraper is responsible
 			sc.setScraper(this);
@@ -137,102 +135,78 @@ public class CoinsScraper implements Scraper {
 			// get year
 			String year = null;
 			if (tuples.containsKey("rft.date")){
-				final String date = tuples.get("rft.date");
 				// get year from date
-				final Matcher dateMatcher = PATTERN_DATE.matcher(date);
+				final Matcher dateMatcher = PATTERN_DATE.matcher(tuples.get("rft.date"));
 				if (dateMatcher.find())
 					year = dateMatcher.group(1);
 			}
 
 			// get pages
 			String pages = null;
-			if(tuples.containsKey("rft.pages"))
+			if (tuples.containsKey("rft.pages")) {
 				pages = tuples.get("rft.pages");
-			else if(tuples.containsKey("rft.spage") && tuples.containsKey("rft.epage")){
+			} else if(tuples.containsKey("rft.spage") && tuples.containsKey("rft.epage")){
 				// build pages with spage and epage
 				String spage = tuples.get("rft.spage");
 				String epage = tuples.get("rft.epage");
-				pages = spage + "-" + epage;
+				pages = spage + "--" + epage;
 			}
-
-			final String issn = get(tuples, "rft.issn");
-			final String isbn = get(tuples, "rft.isbn");
-
-			
 
 			/*
-			 * book and journal specific behaviour
+			 * check different entry types
 			 */
+			if (tuples.containsKey("rft_val_fmt")) {
+				final String entryType = tuples.get("rft_val_fmt");
+				if (entryType.contains(":journal")) {
+					final String journal = get(tuples, "rft.title");
+					/*
+					 * build BibTeX
+					 */
+					bibtex.append("@article{").append(BibTexUtils.generateBibtexKey(author, null, year, atitle)).append(",\n");
 
-			// check for journal
-			if (tuples.containsKey("rft_val_fmt") && tuples.get("rft_val_fmt").contains(":journal")){
+					append("journal", journal, bibtex);
+				} else if (entryType.contains(":book")) {
+					final String btitle = get(tuples, "rft.btitle");
+					/*
+					 * build BibTeX
+					 */
+					bibtex.append("@book{").append(BibTexUtils.generateBibtexKey(author, null, year, btitle)).append(",\n");
 
-				final String title = get(tuples, "rft.title"); // FIXME: rename variable to journal!?
-				final String volume = get(tuples, "rft.volume");
-				final String issue = get(tuples, "rft.issue");
-				final String eissn = get(tuples, "rft.eissn");
-				final String coden = get(tuples, "rft.coden");
-				final String sici = get(tuples, "rft.sici");
-
-				/*
-				 * build BibTeX
-				 */
-				bibtex.append("@article{").append(BibTexUtils.generateBibtexKey(author, null, year, title)).append(",\n");
-
+					append("booktitle", btitle, bibtex);
+				} else {
+					bibtex.append("@misc{").append(BibTexUtils.generateBibtexKey(author, null, year, atitle)).append(",\n");
+				}
+				
 				append("title", atitle, bibtex);
 				append("author", author, bibtex);
-				append("journal", title, bibtex); // journal FIXME: rename "title" to "journal"?
 				append("year", year, bibtex);
-				append("volume", volume, bibtex);
-				append("number", issue, bibtex);
+				append("volume", get(tuples, "rft.volume"), bibtex);
+				append("number", get(tuples, "rft.issue"), bibtex);
 				append("pages", pages, bibtex);
-				append("issn", issn, bibtex);
-				append("eissn", eissn, bibtex);
-				append("coden", coden, bibtex);
-				append("sici", sici, bibtex);
-				append("isbn", isbn, bibtex);
-
-				bibtex.append("\n}\n");
-
-				// check for book
-			} else if(tuples.containsKey("rft_val_fmt") && tuples.get("rft_val_fmt").contains(":book")){
-
-				final String btitle = get(tuples, "rft.btitle");
-				final String address = get(tuples, "rft.place");
-				final String publisher = get(tuples, "rft.pub");
-				final String edition = get(tuples, "rft.edition");
-				final String series = get(tuples, "rft.series");
-				final String bici = get(tuples, "bici");
-
-				/*
-				 * build BibTeX
-				 */
-				bibtex.append("@book{").append(BibTexUtils.generateBibtexKey(author, null, year, atitle)).append(",\n");
-
-				append("title", atitle, bibtex);
-				append("booktitle", btitle, bibtex);
-				append("author", author, bibtex);
-				append("isbn", isbn, bibtex);
-				append("address", address, bibtex);
-				append("publisher", publisher, bibtex);
-				append("year", year, bibtex);
-				append("edition", edition, bibtex);
-				append("series", series, bibtex);
-				append("pages", pages, bibtex);
-				append("issn", issn, bibtex);
-				append("bici", bici, bibtex);
+				append("publisher", get(tuples, "rft.pub"), bibtex);
+				append("address", get(tuples, "rft.place"), bibtex);
+				append("edition", get(tuples, "rft.edition"), bibtex);
+				append("series", get(tuples, "rft.series"), bibtex);
+				append("issn", get(tuples, "rft.issn"), bibtex);
+				append("eissn", get(tuples, "rft.eissn"), bibtex);
+				append("isbn", get(tuples, "rft.isbn"), bibtex);
+				append("sici", get(tuples, "rft.sici"), bibtex);
+				append("bici", get(tuples, "rft.bici"), bibtex);
+				append("coden", get(tuples, "rft.coden"), bibtex);
 
 				bibtex.append("\n}\n");
 			}
 
-			// return bibtex
+			/*
+			 * return BibTeX
+			 */
 			if (present(bibtex)) {
 				// append url
 				BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-				
+
 				// add downloaded bibtex to result 
 				sc.setBibtexResult(bibtex.toString());
-				
+
 				return true;
 			} else
 				throw new ScrapingFailureException("span not contains a book or journal");
@@ -243,24 +217,21 @@ public class CoinsScraper implements Scraper {
 	private static void append(final String fieldName, final String fieldValue, final StringBuffer bibtex) {
 		if (present(fieldValue))  bibtex.append(fieldName + " = {").append(fieldValue).append("},\n");
 	}
-	
+
 	private static String get(final Map<String, String> tuples, final String key) {
 		if (tuples.containsKey(key))
 			return tuples.get(key);
 		return null;
 	}
-	
+
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singleton(this);
 	}
 
 	public boolean supportsScrapingContext(ScrapingContext sc) {
-		if(sc.getUrl() != null){
-			Matcher matcherCoins;
+		if (present(sc.getUrl())) {
 			try {
-				matcherCoins = PATTERN_COINS.matcher(sc.getPageContent());
-				if(matcherCoins.find())
-					return true;
+				return PATTERN_COINS.matcher(sc.getPageContent()).find();
 			} catch (ScrapingException ex) {
 				return false;
 			}
@@ -268,23 +239,14 @@ public class CoinsScraper implements Scraper {
 		return false;
 	}
 
-	public static ScrapingContext getTestContext(){
-		ScrapingContext context = new ScrapingContext(null);
-		try {
-			context.setUrl(new URL("http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm"));
-		} catch (MalformedURLException ex) {
-		}
-		return context;
-	}
-	
 	/**
 	 * @return site name
 	 */
 	public String getSupportedSiteName(){
 		return SITE_NAME;
 	}
-	
-	
+
+
 	/**
 	 * @return site url
 	 */
