@@ -1379,5 +1379,11 @@
 		<BibFile>FASEBJournalScraperUnitTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_228">
+		<TestDescription>URL test for AnnualreviewsScraper</TestDescription>
+		<URL>http://www.annualreviews.org/doi/full/10.1146/annurev-bioeng-071811-150124</URL>
+		<BibFile>AnnualreviewsScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
+	</URLTest>	
 	
 </test:Tests>
