@@ -74,14 +74,15 @@ public class UBKAScraper extends AbstractUrlScraper {
 	//query id (user dependent value)
 	private static final String UBKA_PARAM_ND    	= "nd";
 
-	private static final String  UBKA_BIB_PATTERN   = ".*<td valign=\"top\"\\s*>\\s*(@[A-Za-z]+&nbsp;\\s*\\{.+}\\s).*";
-	private static final String  UBKA_COMMA_PATTERN = "(.*keywords\\s*=\\s*\\{)(.*?)(\\},?<br>.*)";	
-	private static final String  UBKA_SPACE_PATTERN = "&nbsp;";
-	private static final String  UBKA_BREAK_PATTERN = "<br>";
+	private static final Pattern UBKA_BIB_PATTERN   = Pattern.compile(".*<td valign=\"top\"\\s*>\\s*(@[A-Za-z]+&nbsp;\\s*\\{.+}\\s).*", Pattern.MULTILINE | Pattern.DOTALL);
+	private static final Pattern UBKA_COMMA_PATTERN = Pattern.compile("(.*keywords\\s*=\\s*\\{)(.*?)(\\},?<br>.*)", Pattern.MULTILINE | Pattern.DOTALL);	
+	private static final Pattern UBKA_SPACE_PATTERN = Pattern.compile("&nbsp;");
+	private static final Pattern UBKA_BREAK_PATTERN = Pattern.compile("<br>");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
-	
+
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
@@ -112,10 +113,10 @@ public class UBKAScraper extends AbstractUrlScraper {
 			if(result != null){
 				// append url
 				result = BibTexUtils.addFieldIfNotContained(result, "url", sc.getUrl().toString());
-				
+
 				// add downloaded bibtex to result 
 				sc.setBibtexResult(result);
-				
+
 				/*
 				 * returns itself to know, which scraper scraped this
 				 */
@@ -136,46 +137,30 @@ public class UBKAScraper extends AbstractUrlScraper {
 	 * @return Extracted bibtex entry as a string.
 	 * @throws ScrapingException
 	 */
-	private String extractBibtexFromUBKA(String pageContent) throws ScrapingException{
+	private String extractBibtexFromUBKA(final String pageContent) throws ScrapingException{
 		try{
-			//replace <br>
-			Pattern p = Pattern.compile(UBKA_BREAK_PATTERN);
-			Matcher m = p.matcher(pageContent);
-			pageContent = m.replaceAll("");
+			// replace all <br>
+			final Matcher m = UBKA_BIB_PATTERN.matcher(UBKA_BREAK_PATTERN.matcher(pageContent).replaceAll(""));	
+			if (m.matches()) { // we got the entry
+				// replace &nbsp; spaces and umlauts
+				final String bib = UBKA_SPACE_PATTERN.matcher(m.group(1)).replaceAll(" ")
+				.replaceAll("\\{\\\\\"u\\}", "Ã¼")
+				.replaceAll("\\{\\\\\"a\\}", "Ã¤")
+				.replaceAll("\\{\\\\\"o\\}", "Ã¶")
+				.replaceAll("\\{\\\\\"U\\}", "Ãœ")
+				.replaceAll("\\{\\\\\"A\\}", "Ã„")
+				.replaceAll("\\{\\\\\"O\\}", "Ã–");
 
-			p = Pattern.compile(UBKA_BIB_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
-			m = p.matcher(pageContent);	
-			if (m.matches()) {//we got the entry
-				String bib = m.group(1);
 
-				//replace spaces &nbsp;
-				p = Pattern.compile(UBKA_SPACE_PATTERN);
-				m = p.matcher(bib);
-				bib = m.replaceAll(" ");
-
-				//replace comma in keywords={bla, bla, bla bla}
-				p = Pattern.compile(UBKA_COMMA_PATTERN, Pattern.MULTILINE | Pattern.DOTALL);
-				m = p.matcher(bib);
-				if (m.matches()){
-					bib = m.group(1) + m.group(2).replaceAll(",", " ") + m.group(3);	        
+				// replace comma in keywords={bla, bla, bla bla}
+				final Matcher m2 = UBKA_COMMA_PATTERN.matcher(bib);
+				if (m2.matches()){
+					return m2.group(1) + m2.group(2).replaceAll(",", " ") + m2.group(3);	        
 				}
-				
-				//Umlaute fixen
-				bib = bib
-						.replaceAll("\\{\\\\\"u\\}", "ü")
-						.replaceAll("\\{\\\\\"a\\}", "ä")
-						.replaceAll("\\{\\\\\"o\\}", "ö")
-						.replaceAll("\\{\\\\\"U\\}", "Ü")
-						.replaceAll("\\{\\\\\"A\\}", "Ä")
-						.replaceAll("\\{\\\\\"O\\}", "Ö");
-
-				// old fix, ubka fixed the missing "," after key in bibtex
-				//bib = bib.replaceFirst("\n", ",\n");
-
 
 				return bib;			
 			}
-		}catch(PatternSyntaxException pse){
+		} catch (PatternSyntaxException pse) {
 			throw new InternalFailureException(pse);
 		}
 		return null;		
@@ -217,6 +202,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 	public String getInfo() {
 		return info;
 	}
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
