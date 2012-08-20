@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.generic;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +32,7 @@ import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,9 +55,9 @@ public class CoinsScraper implements Scraper {
 	private static final String SITE_URL = "http://ocoins.info/";
 	private static final String INFO = "<a href=\"http://ocoins.info/\">COinS</a> Scraper: Scraper for Metadata in COinS format.";
 
-	private static final Pattern patternCoins = Pattern.compile("<span class=\"Z3988\" title=\"([^\\\"]*)\"");
-	private static final Pattern patternKeyValue = Pattern.compile("([^=]*)=([^&]*)(&amp;)?");
-	private static final Pattern datePattern = Pattern.compile("(\\d{4})");
+	private static final Pattern PATTERN_COINS = Pattern.compile("<span class=\"Z3988\" title=\"([^\\\"]*)\"");
+	private static final Pattern PATTERN_KEY_VALUE = Pattern.compile("([^=]*)=([^&]*)(&amp;)?");
+	private static final Pattern PATTERN_DATE = Pattern.compile("(\\d{4})");
 
 
 	public String getInfo() {
@@ -65,33 +68,34 @@ public class CoinsScraper implements Scraper {
 		if (sc == null || sc.getUrl() == null) return false;
 		
 		final String page = sc.getPageContent();
-		StringBuffer bibtex = null;
+		final StringBuffer bibtex = new StringBuffer();
 
-		final Matcher matcherCoins = patternCoins.matcher(page);
-		if(matcherCoins.find()){
+		final Matcher matcherCoins = PATTERN_COINS.matcher(page);
+		
+		if (matcherCoins.find()) {
 			// span found, this scraper is responsible
 			sc.setScraper(this);
 
 			String titleValue = matcherCoins.group(1);
 
 			// store all key/value tuples
-			HashMap<String, String> tuples = new HashMap<String, String>();
+			final HashMap<String, String> tuples = new HashMap<String, String>();
 
-			final Matcher matcherKeyValue = patternKeyValue.matcher(titleValue);
+			final Matcher m = PATTERN_KEY_VALUE.matcher(titleValue);
 
 			// search tuples and store it in map
-			while(matcherKeyValue.find()){
-				String key;
+			while (m.find()) {
+				final String key;
 				String value;
 				try {
-					key = URLDecoder.decode(matcherKeyValue.group(1), "UTF-8");
-					value = URLDecoder.decode(matcherKeyValue.group(2), "UTF-8");
+					key = URLDecoder.decode(m.group(1), "UTF-8");
+					value = URLDecoder.decode(m.group(2), "UTF-8");
 				} catch (UnsupportedEncodingException ex) {
 					throw new InternalFailureException(ex);
 				}
 
 				// store only values which are not null and not empty
-				if(key != null && value != null && !key.equals("") && !value.equals("")) {
+				if (present(key) && present(value)) {
 					// rft.au is repeatable
 					if (key.equals("rft.au") && tuples.containsKey("rft.au")) {
 						value = tuples.get("rft.au") + " and " + value;
@@ -106,34 +110,37 @@ public class CoinsScraper implements Scraper {
 
 			// get author
 			String author = null;
-			if(tuples.containsKey("rft.au"))
+			if (tuples.containsKey("rft.au")) {
 				author = tuples.get("rft.au");
-			else {
-				String aufirst = tuples.get("rft.aufirst");
-				String aulast = tuples.get("rft.aulast");
-				if (aufirst != null) {
-					if (aulast != null) author = aufirst + " " + aulast;
-					else author = aufirst;
-				} else if (aulast != null) {
+			} else {
+				final String aufirst = tuples.get("rft.aufirst");
+				final String aulast = tuples.get("rft.aulast");
+				if (present(aufirst)) {
+					if (present(aulast)) {
+						author = aulast + ", " + aufirst;
+					} else {
+						author = aufirst;
+					}
+				} else if (present(aulast)) {
 					author = aulast;
 				}
 			}
 
 			// get title
-			String atitle = null;
-			if(tuples.containsKey("rft.atitle"))
+			final String atitle;
+			if (tuples.containsKey("rft.atitle")) {
 				atitle = tuples.get("rft.atitle");
-			else {
+			} else {
 				atitle = tuples.get("rft.title");
 			}
 
 			// get year
 			String year = null;
-			if(tuples.containsKey("rft.date")){
-				String date = tuples.get("rft.date");
+			if (tuples.containsKey("rft.date")){
+				final String date = tuples.get("rft.date");
 				// get year from date
-				final Matcher dateMatcher = datePattern.matcher(date);
-				if(dateMatcher.find())
+				final Matcher dateMatcher = PATTERN_DATE.matcher(date);
+				if (dateMatcher.find())
 					year = dateMatcher.group(1);
 			}
 
@@ -148,310 +155,78 @@ public class CoinsScraper implements Scraper {
 				pages = spage + "-" + epage;
 			}
 
-			// get issn
-			String issn = null;
-			if(tuples.containsKey("rft.issn"))
-				issn = tuples.get("rft.issn");
+			final String issn = get(tuples, "rft.issn");
+			final String isbn = get(tuples, "rft.isbn");
 
-			// get isbn
-			String isbn = null;
-			if(tuples.containsKey("rft.isbn"))
-				isbn = tuples.get("rft.isbn");
-
+			
 
 			/*
 			 * book and journal specific behaviour
 			 */
 
 			// check for journal
-			if(tuples.containsKey("rft_val_fmt") && tuples.get("rft_val_fmt").contains(":journal")){
+			if (tuples.containsKey("rft_val_fmt") && tuples.get("rft_val_fmt").contains(":journal")){
 
-				// get title
-				String title = null;
-				if(tuples.containsKey("rft.title"))
-					title = tuples.get("rft.title");
-
-				// get volume
-				String volume = null;
-				if(tuples.containsKey("rft.volume"))
-					volume = tuples.get("rft.volume");
-
-				// get issue 
-				String issue = null;
-				if(tuples.containsKey("rft.issue"))
-					issue = tuples.get("rft.issue");
-
-				// get eissn
-				String eissn = null;
-				if(tuples.containsKey("rft.eissn"))
-					eissn = tuples.get("rft.eissn");
-
-				// get coden
-				String coden = null;
-				if(tuples.containsKey("rft.coden"))
-					coden = tuples.get("rft.coden");
-
-				// get sici
-				String sici = null;
-				if(tuples.containsKey("rft.sici"))
-					sici = tuples.get("rft.sici");
+				final String title = get(tuples, "rft.title"); // FIXME: rename variable to journal!?
+				final String volume = get(tuples, "rft.volume");
+				final String issue = get(tuples, "rft.issue");
+				final String eissn = get(tuples, "rft.eissn");
+				final String coden = get(tuples, "rft.coden");
+				final String sici = get(tuples, "rft.sici");
 
 				/*
-				 * build bibtex
+				 * build BibTeX
 				 */
+				bibtex.append("@article{").append(BibTexUtils.generateBibtexKey(author, null, year, title)).append(",\n");
 
-				// beginning part
-				bibtex = new StringBuffer();
-				bibtex.append("@inproceedings{");
+				append("title", atitle, bibtex);
+				append("author", author, bibtex);
+				append("journal", title, bibtex); // journal FIXME: rename "title" to "journal"?
+				append("year", year, bibtex);
+				append("volume", volume, bibtex);
+				append("number", issue, bibtex);
+				append("pages", pages, bibtex);
+				append("issn", issn, bibtex);
+				append("eissn", eissn, bibtex);
+				append("coden", coden, bibtex);
+				append("sici", sici, bibtex);
+				append("isbn", isbn, bibtex);
 
-				// get and set bibkey
-				if(tuples.containsKey("rft.artnum"))
-					bibtex.append(tuples.get("rft.artnum"));
-				else if(tuples.containsKey("rft.aufirst ") && year != null)
-					bibtex.append(tuples.get("rft.artnum"));
-				else
-					bibtex.append("default");
-				bibtex.append(",\n");
-
-				// build title
-				if(atitle != null){
-					bibtex.append("title = {");
-					bibtex.append(atitle);
-					bibtex.append("},\n");
-				}
-
-				// build author
-				if(author != null){
-					bibtex.append("author = {");
-					bibtex.append(author);
-					bibtex.append("},\n");
-				}
-
-				// build journal
-				if(title != null){
-					bibtex.append("journal = {");
-					bibtex.append(title);
-					bibtex.append("},\n");
-				}
-
-				// build year
-				if(year != null){
-					bibtex.append("year = {");
-					bibtex.append(year);
-					bibtex.append("},\n");
-				}
-
-				// build volume
-				if(volume != null){
-					bibtex.append("volume = {");
-					bibtex.append(volume);
-					bibtex.append("},\n");
-				}
-
-				// build issue
-				if(issue != null){
-					bibtex.append("issue = {");
-					bibtex.append(issue);
-					bibtex.append("},\n");
-				}
-
-				// build pages
-				if(pages != null){
-					bibtex.append("pages = {");
-					bibtex.append(pages);
-					bibtex.append("},\n");
-				}
-
-				// build issn
-				if(issn != null){
-					bibtex.append("issn = {");
-					bibtex.append(issn);
-					bibtex.append("},\n");
-				}
-
-				// build eissn
-				if(eissn != null){
-					bibtex.append("eissn = {");
-					bibtex.append(eissn);
-					bibtex.append("},\n");
-				}
-
-				// build isbn
-				if(isbn != null){
-					bibtex.append("isbn = {");
-					bibtex.append(isbn);
-					bibtex.append("},\n");
-				}
-
-				// build coden
-				if(coden != null){
-					bibtex.append("coden = {");
-					bibtex.append(coden);
-					bibtex.append("},\n");
-				}
-
-				// build sici
-				if(sici != null){
-					bibtex.append("sici = {");
-					bibtex.append(sici);
-					bibtex.append("},\n");
-				}
-
-				// remove last ","
-				bibtex = new StringBuffer(bibtex.subSequence(0, bibtex.lastIndexOf(",")));
-
-				// finish bibtex
 				bibtex.append("\n}\n");
 
 				// check for book
 			} else if(tuples.containsKey("rft_val_fmt") && tuples.get("rft_val_fmt").contains(":book")){
 
-				// get btitle (booktitle)
-				String btitle = null;
-				if(tuples.containsKey("rft.btitle"))
-					btitle = tuples.get("rft.btitle");
-
-				// get address
-				String address = null;
-				if(tuples.containsKey("rft.place"))
-					address = tuples.get("rft.place");
-
-				// get publisher
-				String publisher = null;
-				if(tuples.containsKey("rft.pub"))
-					publisher = tuples.get("rft.pub");
-
-				// get edition
-				String edition = null;
-				if(tuples.containsKey("rft.edition"))
-					edition = tuples.get("rft.edition");
-
-				// get series
-				String series = null;
-				if(tuples.containsKey("rft.series"))
-					series = tuples.get("rft.series");
-
-				// get 
-				String bici = null;
-				if(tuples.containsKey("bici"))
-					bici = tuples.get("bici");
+				final String btitle = get(tuples, "rft.btitle");
+				final String address = get(tuples, "rft.place");
+				final String publisher = get(tuples, "rft.pub");
+				final String edition = get(tuples, "rft.edition");
+				final String series = get(tuples, "rft.series");
+				final String bici = get(tuples, "bici");
 
 				/*
-				 * build bibtex
+				 * build BibTeX
 				 */
+				bibtex.append("@book{").append(BibTexUtils.generateBibtexKey(author, null, year, atitle)).append(",\n");
 
-				// beginning part
-				bibtex = new StringBuffer();
-				bibtex.append("@book{");
+				append("title", atitle, bibtex);
+				append("booktitle", btitle, bibtex);
+				append("author", author, bibtex);
+				append("isbn", isbn, bibtex);
+				append("address", address, bibtex);
+				append("publisher", publisher, bibtex);
+				append("year", year, bibtex);
+				append("edition", edition, bibtex);
+				append("series", series, bibtex);
+				append("pages", pages, bibtex);
+				append("issn", issn, bibtex);
+				append("bici", bici, bibtex);
 
-				// get and set bibkey
-				if(tuples.containsKey("rft.artnum"))
-					bibtex.append(tuples.get("rft.artnum"));
-				else if(tuples.containsKey("rft.aufirst ") && year != null)
-					bibtex.append(tuples.get("rft.artnum"));
-				else
-					bibtex.append("default");
-				bibtex.append(",\n");
-
-				// build title
-				if(atitle != null){
-					bibtex.append("title = {");
-					bibtex.append(atitle);
-					bibtex.append("},\n");
-				}
-
-				// build booktitle (if atitle empty then use btitle as title)
-				if(btitle != null){
-					if(atitle == null){
-						bibtex.append("title = {");
-						bibtex.append(btitle);
-						bibtex.append("},\n");
-					}else{
-						bibtex.append("booktitle = {");
-						bibtex.append(btitle);
-						bibtex.append("},\n");
-					}
-				}
-
-				// build author
-				if(author != null){
-					bibtex.append("author = {");
-					bibtex.append(author);
-					bibtex.append("},\n");
-				}
-
-				// build isbn
-				if(isbn != null){
-					bibtex.append("isbn = {");
-					bibtex.append(isbn);
-					bibtex.append("},\n");
-				}
-
-				// build address
-				if(address != null){
-					bibtex.append("address = {");
-					bibtex.append(address);
-					bibtex.append("},\n");
-				}
-
-				// build publisher
-				if(publisher != null){
-					bibtex.append("publisher = {");
-					bibtex.append(publisher);
-					bibtex.append("},\n");
-				}
-
-				// build year 
-				if(year != null){
-					bibtex.append("year = {");
-					bibtex.append(year);
-					bibtex.append("},\n");
-				}
-
-				// build edition
-				if(edition != null){
-					bibtex.append("edition = {");
-					bibtex.append(edition);
-					bibtex.append("},\n");
-				}
-
-				// build series
-				if(series != null){
-					bibtex.append("series = {");
-					bibtex.append(series);
-					bibtex.append("},\n");
-				}
-
-				// build pages
-				if(pages != null){
-					bibtex.append("pages = {");
-					bibtex.append(pages);
-					bibtex.append("},\n");
-				}
-
-				// build issn
-				if(issn != null){
-					bibtex.append("issn = {");
-					bibtex.append(issn);
-					bibtex.append("},\n");
-				}
-
-				// build bici
-				if(bici != null){
-					bibtex.append("bici = {");
-					bibtex.append(bici);
-					bibtex.append("},\n");
-				}
-
-				// remove last ","
-				bibtex = new StringBuffer(bibtex.subSequence(0, bibtex.lastIndexOf(",")));
-
-				// finish bibtex
 				bibtex.append("\n}\n");
 			}
 
 			// return bibtex
-			if(bibtex != null){
+			if (present(bibtex)) {
 				// append url
 				BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
 				
@@ -459,12 +234,22 @@ public class CoinsScraper implements Scraper {
 				sc.setBibtexResult(bibtex.toString());
 				
 				return true;
-			}else
+			} else
 				throw new ScrapingFailureException("span not contains a book or journal");
 		}
 		return false;
 	}
 
+	private static void append(final String fieldName, final String fieldValue, final StringBuffer bibtex) {
+		if (present(fieldValue))  bibtex.append(fieldName + " = {").append(fieldValue).append("},\n");
+	}
+	
+	private static String get(final Map<String, String> tuples, final String key) {
+		if (tuples.containsKey(key))
+			return tuples.get(key);
+		return null;
+	}
+	
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singleton(this);
 	}
@@ -473,7 +258,7 @@ public class CoinsScraper implements Scraper {
 		if(sc.getUrl() != null){
 			Matcher matcherCoins;
 			try {
-				matcherCoins = patternCoins.matcher(sc.getPageContent());
+				matcherCoins = PATTERN_COINS.matcher(sc.getPageContent());
 				if(matcherCoins.find())
 					return true;
 			} catch (ScrapingException ex) {
