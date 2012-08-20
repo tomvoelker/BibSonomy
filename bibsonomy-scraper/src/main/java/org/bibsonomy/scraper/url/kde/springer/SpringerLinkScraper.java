@@ -112,10 +112,10 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			 * entry.
 			 */
 
-			Matcher sessionMatcher = SESSION_PATTERN.matcher(WebUtils.getCookies(new URL(url)));
+			final Matcher sessionMatcher = SESSION_PATTERN.matcher(WebUtils.getCookies(new URL(url)));
 			if (!sessionMatcher.find()) throw new ScrapingException("No Session Cookie!");
 			final String cookies = "ASP.NET_SessionId=" + sessionMatcher.group(1) + "; CookiesSupported=True; highlighterEnabled=true; MUD=MP";
-			String exportURL = SITE_URL + "content/" + docid + "/export-citation/";
+			final String exportURL = SITE_URL + "content/" + docid + "/export-citation/";
 			final String formPage = WebUtils.getContentAsString(exportURL, cookies);
 
 			final Matcher viewStateMatcher = VIEW_STATE_PATTERN.matcher(formPage);
@@ -179,7 +179,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		return false;
 	}
 	
-	private static String insertYear(String bibtex, String year) {
+	private static String insertYear(final String bibtex, final String year) {
 		Matcher m = YEAR_PATTERN_FOR_BIBTEX.matcher(bibtex);
 		if (!m.find()) return BibTexUtils.addFieldIfNotContained(bibtex, "year", year);
 		String emptyYear = m.group(1);
