@@ -28,7 +28,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -69,7 +68,10 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
 				Pattern.compile("(/beta)?/citation.cfm.*")
 		));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?" + "doi.acm.org"), EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(
+				Pattern.compile(".*" + "doi.acm.org"),
+				EMPTY_PATTERN
+		));
 	}
 
 	private static final String BROKEN_END = new String("},\n}");
@@ -82,26 +84,26 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		try {
-			
+
 			/*
 			 * extract the id from the URL
 			 */
 			String id = null;
 			String query = sc.getUrl().getQuery();
 			if (query == null) {
-				Matcher m = DOI_URL_ID_PATTERN.matcher(sc.getUrl().getPath());
+				final Matcher m = DOI_URL_ID_PATTERN.matcher(sc.getUrl().getPath());
 				if (m.find()) {
 					id = m.group(1);
 				}
 			} else {
-				Matcher matcher = URL_PARAM_ID_PATTERN.matcher(query);
+				final Matcher matcher = URL_PARAM_ID_PATTERN.matcher(query);
 				if (matcher.find()) {
 					id = matcher.group(1);
 				}
 			}
-			
+
 			if (id == null) return false;
-			
+
 			/*
 			 * If the id contains a dot ".", we use the part after the dot.
 			 * TODO: Can we do this nicer? 
@@ -263,7 +265,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			System.out.println("\n----------------------------------------\n");
 			System.out.println(sc.getBibtexResult());
 			System.out.println("----------------------------------------\n");
-			
+
 		}
 
 	}

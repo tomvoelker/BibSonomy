@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.acm;
 
+import static org.junit.Assert.assertTrue;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -33,8 +35,6 @@ import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Scraper URL tests #1 #134 #153 for ACMBasicSCraper  
@@ -123,5 +123,22 @@ public class ACMBasicScraperTest {
 		} catch (ScrapingException ex) {
 			Assert.fail(ex.getMessage());
 		}
+	}
+	
+	/**
+	 * Test the URL patterns that this scraper shall support.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testSupportsUrl() throws Exception {
+		
+		final ACMBasicScraper a = new ACMBasicScraper();
+		
+		assertTrue(a.supportsUrl(new URL("http://portal.acm.org/citation.cfm?id=1559845.1559994")));
+		assertTrue(a.supportsUrl(new URL("http://portal.acm.org/citation.cfm?id=1547343")));
+		assertTrue(a.supportsUrl(new URL("http://doi.acm.org/10.1145/1105664.1105676")));
+		
+		
 	}
 }
