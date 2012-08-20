@@ -124,4 +124,10 @@
 				FROM discussion d
 			WHERE d.discussion_id = #id#
 	</insert>
+	
+	<!-- document logs -->
+	<insert id="logDocument" parameterClass="documentParam">
+		INSERT INTO log_document (hash, content_id, name, user_name, date, md5hash, log_date)
+		  VALUES (#fileHash#, #contentId#, #fileName#, #userName#, #date#, #md5hash#, NOW())
+	</insert>
 </sqlMap>

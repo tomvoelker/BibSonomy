@@ -2,6 +2,7 @@ package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 
@@ -248,4 +249,15 @@ public interface DatabasePlugin {
 	 * @return runnable
 	 */
 	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session);
+	
+	/**
+	 * called when a document will be deleted
+	 * 
+	 * @param deletedDocument
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session);
+	
+	
 }

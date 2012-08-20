@@ -4,6 +4,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.LoggingParam;
@@ -267,4 +268,17 @@ public class Logging extends AbstractDatabasePlugin {
 			}
 		};
 	}
+	
+	@Override
+	public Runnable onDocumentDelete (final DocumentParam deletedDocumentParam, final DBSession session) {
+		return new Runnable() {
+			@
+			Override
+			public void run() {
+				insert("logDocument", deletedDocumentParam, session);
+			}
+		};
+	}
+	
+	
 }

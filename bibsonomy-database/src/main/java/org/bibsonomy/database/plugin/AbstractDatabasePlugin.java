@@ -3,6 +3,7 @@ package org.bibsonomy.database.plugin;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 
@@ -136,6 +137,11 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session) {
+		return null;
+	}
+
+	@Override
+	public Runnable onDocumentDelete(DocumentParam deletedDocumentParam, DBSession session) {
 		return null;
 	}
 }

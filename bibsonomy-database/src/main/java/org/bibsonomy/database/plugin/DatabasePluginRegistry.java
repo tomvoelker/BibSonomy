@@ -7,12 +7,13 @@ import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.plugins.BasketPlugin;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
+import org.bibsonomy.database.plugin.plugins.DiscussionPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
 import org.bibsonomy.database.plugin.plugins.Logging;
-import org.bibsonomy.database.plugin.plugins.DiscussionPlugin;
 import org.bibsonomy.model.DiscussionItem;
 
 /**
@@ -303,6 +304,15 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedDiscussionItem, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
 			this.executeRunnable(plugin.onDiscussionItemDelete(interHash, deletedDiscussionItem, session));
+		}
+
+		return null;
+	}
+
+	@Override
+	public Runnable onDocumentDelete(DocumentParam deletedDocumentParam, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			this.executeRunnable(plugin.onDocumentDelete(deletedDocumentParam, session));
 		}
 
 		return null;

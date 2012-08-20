@@ -7,6 +7,7 @@ import java.util.List;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.DocumentParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.Document;
 
 /**
@@ -22,6 +23,8 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	
 	private static final DocumentDatabaseManager singleton = new DocumentDatabaseManager();
 	
+	private final DatabasePluginRegistry plugins;
+	
 	/**
 	 * @return DocumentDatabaseManager
 	 */
@@ -29,7 +32,9 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
 
-	private DocumentDatabaseManager() {}
+	private DocumentDatabaseManager() {
+		this.plugins = DatabasePluginRegistry.getInstance();
+	}
 
 	/**
 	 * Checks, if the post has already a document with that name attached.
@@ -221,6 +226,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private void deleteDocumentForPost(final DocumentParam docParam, final DBSession session) {
+		this.onDocumentDelete(docParam, session);
 		this.delete("deleteDoc", docParam, session);
 	}
 
@@ -232,13 +238,26 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param fileName
 	 * @param session
 	 */
-	public void deleteDocument(final int contentId, final String userName, final String fileName, final DBSession session) {
+	public void deleteDocument(final int contentId, final Document document, final DBSession session) {
 		// create a DocumentParam object
 		final DocumentParam docParam = new DocumentParam();
-		docParam.setFileName(fileName);
-		docParam.setUserName(userName);
+		docParam.setFileName(document.getFileName());
+		docParam.setUserName(document.getUserName());
+		docParam.setFileHash(document.getFileHash());
+		docParam.setMd5hash(document.getMd5hash());
 		docParam.setContentId(contentId);
+		docParam.setDate(document.getDate());
 		// finally delete the document
 		deleteDocumentForPost(docParam, session);
+	}
+	
+	/**
+	 * called on a document will be deleted
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void onDocumentDelete(final DocumentParam param,  final DBSession session) {
+		this.plugins.onDocumentDelete(param, session);
 	}
 }
