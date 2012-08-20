@@ -15,89 +15,31 @@ import no.priv.garshol.duke.matchers.AbstractMatchListener;
  * @author fei
  */
 public class UserEntityMatcher extends AbstractMatchListener {
-	/**
-	 * store a single user matching
-	 */
-	public class UserMatch implements Comparable<UserMatch> {
-		private String id;
-		private Record obj;
-		private double confidence;
-		
-		public UserMatch(String id, Record obj, double confidence) {
-			this.id = id;
-			this.obj = obj;
-			this.confidence = confidence;
-		}
-
-		@Override
-		public boolean equals(Object other) {
-			if (this.id==null || other==null) {
-				return false;
-			}
-			return this.getId().equals(((UserMatch) other).getId());
-		}
-		
-		@Override
-		public int compareTo(UserMatch o) {
-			if (this.id == null) return -1;
-			if (o == null || o.id == null ) return 1;
-
-			return this.id.compareToIgnoreCase(o.id);
-		}
-		
-		/**
-		 * gets property from stored object
-		 *  
-		 * @param key name of the property
-		 * @return the property value, if exists - null otherwise
-		 */
-		public String getProperty(String key) {
-			if (obj!=null) {
-				return obj.getValue(key);
-			} else {
-				return null;
-			}
-		}
-		
-		public void setId(String id) {
-			this.id = id;
-		}
-		public String getId() {
-			return id;
-		}
-		public void setConfidence(double confidence) {
-			this.confidence = confidence;
-		}
-		public double getConfidence() {
-			return confidence;
-		}
-
-		public void setObj(Record obj) {
-			this.obj = obj;
-		}
-
-		public Record getObj() {
-			return obj;
-		}
-
-	}
 	
-	public class MatchingComparator implements Comparator<UserMatch> {
+	private class MatchingComparator implements Comparator<UserMatch> {
 
 		@Override
-		public int compare(UserMatch o1, UserMatch o2) {
-			if (o1 == null) return -1;
-			if (o2 == null) return 1;
+		public int compare(final UserMatch o1, final UserMatch o2) {
+			if (o1 == null) {
+				return -1;
+			}
+			if (o2 == null) {
+				return 1;
+			}
 			/*
 			 * names equal: regard them as equal
 			 */
-			if (o1.equals(o2)) return 0;
+			if (o1.equals(o2)) {
+				return 0;
+			}
 			/*
 			 * the highest score should come first (in the set) - hence, 
 			 * do o2 - o1 
 			 */
-			int signum = new Double(Math.signum(o2.getConfidence() - o1.getConfidence())).intValue();
-			if (signum != 0) return signum;
+			final int signum = new Double(Math.signum(o2.getConfidence() - o1.getConfidence())).intValue();
+			if (signum != 0) {
+				return signum;
+			}
 			/*
 			 * scores and confidence equal (but tag names not): return using compareTo from Tag.
 			 */
@@ -107,33 +49,32 @@ public class UserEntityMatcher extends AbstractMatchListener {
 	}
 	
 	/** map external user names to BibSonomy user names */
-	private Map<String, SortedSet<UserMatch>> backend = new HashMap<String, SortedSet<UserMatch>>(); 
+	private final Map<String, SortedSet<UserMatch>> backend = new HashMap<String, SortedSet<UserMatch>>(); 
 
 	@Override
-	public void matches(Record r1, Record r2, double confidence) {
+	public void matches(final Record r1, final Record r2, final double confidence) {
 		// r2...BibSonomy user r1...External user
-		String bibID = r2.getValue("user_realname");
-		String extID = r1.getValue("user_realname");
+		final String bibID = r2.getValue("user_realname");
+		final String extID = r1.getValue("user_realname");
 		
 		// get matching
 		SortedSet<UserMatch> matching;
-		if (!getMatching().containsKey(extID)) {
+		if (!this.getMatching().containsKey(extID)) {
 			matching = new TreeSet<UserMatch>(new MatchingComparator());
-			getMatching().put(extID, matching);
+			this.getMatching().put(extID, matching);
 		} else {
-			matching = getMatching().get(extID);
+			matching = this.getMatching().get(extID);
 		}
 		
 		// store back matching
 		matching.add(new UserMatch(bibID, r2, confidence));
 	}
 
-	public void setMatching(Map<String, SortedSet<UserMatch>> backend) {
-		this.backend = backend;
-	}
-
+	/**
+	 * @return the matching
+	 */
 	public Map<String, SortedSet<UserMatch>> getMatching() {
-		return backend;
+		return this.backend;
 	}
 
 }
