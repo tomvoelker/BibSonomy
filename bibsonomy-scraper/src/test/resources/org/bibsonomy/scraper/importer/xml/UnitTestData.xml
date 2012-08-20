@@ -1355,5 +1355,29 @@
 		<BibFile>RSCScraperUnitTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsc.RSCScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_224">
+		<TestDescription>FASEB Journal Scraper test</TestDescription>
+		<URL>http://www.fasebj.org/content/early/2012/06/15/fj.12-211441.short</URL>
+		<BibFile>FASEBJournalScraperUnitTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_225">
+		<TestDescription>FASEB Journal Scraper test</TestDescription>
+		<URL>http://www.fasebj.org/content/26/8/3100.full</URL>
+		<BibFile>FASEBJournalScraperUnitTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_226">
+		<TestDescription>FASEB Journal Scraper test</TestDescription>
+		<URL>http://www.fasebj.org/content/26/8/3100.short</URL>
+		<BibFile>FASEBJournalScraperUnitTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper</Scraper>
+	</URLTest>
+		<URLTest id="url_227">
+		<TestDescription>FASEB Journal Scraper test</TestDescription>
+		<URL>http://www.fasebj.org/content/15/14/2565.abstract</URL>
+		<BibFile>FASEBJournalScraperUnitTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
