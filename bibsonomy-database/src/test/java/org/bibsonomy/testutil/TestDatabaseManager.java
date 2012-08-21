@@ -160,5 +160,14 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	public int getReviewCount(final String interHash) {
 		final Integer result = this.queryForObject("getReviewCount", interHash, Integer.class, this.createDBSession());
 		return this.checkResult(result);
-	}	
+	}
+	
+	/**
+	 * 
+	 * @param receiverName optional
+	 * @return count of logged messages for receiver, or global count if receiverName is null  
+	 */
+	public int getLogInboxCount(String receiverName) {
+		return this.queryForObject("inboxLogCount", receiverName, Integer.class, this.createDBSession());
+	}
 }
