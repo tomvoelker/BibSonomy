@@ -182,6 +182,7 @@
 			Handles /tags as modifier and rewrites it as a parameter
 		</note>
 		<from>^/+tags/+(.+)$</from>
+		<!-- TOOD: document why we set tagstype to default -->
 		<set type="parameter" name="tagstype">default</set>
 		<to>/$1</to>
 	</rule>
@@ -195,6 +196,17 @@
 		<set type="parameter" name="tagstype">related</set>
 		<to>/$1</to>
 	</rule>
+	
+	<rule>
+		<name>/prefixtags/</name>
+		<note>
+			Handles /tags as modifier and rewrites it as a parameter
+		</note>
+		<from>^/+prefixtags/+(.+)$</from>
+		<set type="parameter" name="tagstype">prefix</set>
+		<to>/$1</to>
+	</rule>
+	
 
 	<!--  store requested path for each query -->
 	<!-- 

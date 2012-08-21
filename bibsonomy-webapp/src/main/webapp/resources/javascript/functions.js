@@ -1096,3 +1096,55 @@ String.prototype.startsWith = function(s) {
 String.prototype.trim = function () {
 	return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
 };
+
+
+/**
+ * Function to start the tag autocompletion.
+ * 
+ * @param textfield - the textfield for the autocompletion - e.g. $("#inpf")
+ */
+function startTagAutocompletion (textfield) {
+	textfield.autocomplete({
+		source: function( request, response ) {
+			$.ajax({
+				url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + textfield.val(),
+				dataType: "jsonp",
+				success: function( data ) {
+					response( $.map( data.items, function( item ) {
+						return {
+							value: item.label,
+						};
+					}));
+				}
+			});
+		},
+		minLength: 3,
+		select: function( event, ui ) {
+			var item = ui.item;
+			var textArea = $(event.target);
+			var text = item.value;
+			textArea.val(text);
+			textArea.select();
+			return false;
+		},
+		focus: function( event, ui ) {
+			return false;
+		},
+		open: function(){
+	        $(this).autocomplete('widget').css('z-index', 999);
+	        return false;
+	    }
+	});
+	textfield.autocomplete('enable');
+};
+
+/**
+ * Function to finish the tag autocompletion.
+ * 
+ * @param textfield - the textfield for the autocompletion - e.g. $("#inpf")
+ */
+function endTagAutocompletion (textfield) {
+	textfield.autocomplete('disable');
+	console.log("ending");
+};
+

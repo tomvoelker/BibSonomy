@@ -322,6 +322,16 @@ function switchNavi(scope, element) {
 	.addClass('descriptiveLabel') // add class
 	.descrInputLabel({}); // make the label disappear on click/submit
 	$("#inpf").parents("li").removeClass("hidden"); // show form
+	
+	/**
+	 * Start autocompletion if 'tag' in Search-navibar is chosen, otherwise quit autocompletion
+	 */
+	if(scope == "tag"){
+		startTagAutocompletion($("#inpf"));
+	} else {
+		endTagAutocompletion($("#inpf"));
+	}
+	
 	return false;
 }
 
