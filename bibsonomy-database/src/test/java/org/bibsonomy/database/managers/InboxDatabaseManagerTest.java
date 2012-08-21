@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.testutil.ModelUtils;
+import org.bibsonomy.testutil.TestDatabaseManager;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,11 +41,16 @@ public class InboxDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void createAndDeleteInboxItem(){
+		TestDatabaseManager testDatabaseManager = new TestDatabaseManager();
+		
 		int inboxSize = 0;
 		
 		// get actual inbox size
 		inboxSize = inboxDb.getNumInboxMessages("testuser2", this.dbSession);
 		assertEquals(3, inboxSize);
+
+		//ensure log_inboxMail is empty
+		assertEquals(0, testDatabaseManager.getLogInboxCount(null));
 		
 		// create a bookmarkPost that can be linked by an inboxMessage
 		
@@ -65,12 +71,21 @@ public class InboxDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// delete the inboxMessage we created
 		inboxDb.deleteInboxMessage("testuser3", "testuser2", bookmarkPost.getResource().getIntraHash(), this.dbSession);
 		
+		//get actual log size for testuser2
+		assertEquals(1, testDatabaseManager.getLogInboxCount("testuser2"));
+		
 		// get actual inbox size
 		inboxSize = inboxDb.getNumInboxMessages("testuser2", this.dbSession);
 		assertEquals(3, inboxSize);
 		
+		
 		// delete ALL messages of testuser2's inbox
 		inboxDb.deleteAllInboxMessages("testuser2", this.dbSession);
+		
+		//now all 4 messages must be logged
+		assertEquals(4, testDatabaseManager.getLogInboxCount("testuser2"));
+		//and must be only messages of testuser2
+		assertEquals(testDatabaseManager.getLogInboxCount("testuser2"), testDatabaseManager.getLogInboxCount(null));
 		
 		// get actual inbox size
 		inboxSize = inboxDb.getNumInboxMessages("testuser2", this.dbSession);
