@@ -378,7 +378,7 @@ public abstract class GenericParam {
 	 * @return the relation tags
 	 */
 	public List<String> getRelationTags() {
-		return relationTags;
+		return this.relationTags;
 	}
 
 	/**
@@ -386,7 +386,7 @@ public abstract class GenericParam {
 	 * @return the relation tag index
 	 */
 	public List<TagIndex> getRelationTagIndex() {
-		return relationTagIndex;
+		return this.relationTagIndex;
 	}
 	
 	/**
@@ -440,7 +440,7 @@ public abstract class GenericParam {
 	 * @return the changeDate
 	 */
 	public Date getChangeDate() {
-	    return changeDate;
+	    return this.changeDate;
 	}
 
 	/**
@@ -776,15 +776,15 @@ public abstract class GenericParam {
 	 * @param resourceType
 	 */
 	public void setContentTypeByClass(final Class<? extends Resource> resourceType) {
-		setContentType(ConstantID.getContentTypeByClass(resourceType));
+		this.setContentType(ConstantID.getContentTypeByClass(resourceType));
 	}
 
 	/**
 	 * @return if the tag is not null the name of the tag else the tagName
 	 */
 	public String getTagName() {
-		if (tag != null) {
-			return tag.getName();
+		if (this.tag != null) {
+			return this.tag.getName();
 		}
 		return this.tagName;
 	}
@@ -880,14 +880,14 @@ public abstract class GenericParam {
 	/**
 	 * @return the numSimpleConcepts
 	 */
-	public Integer getNumSimpleConcepts() {
+	public int getNumSimpleConcepts() {
 		return this.numSimpleConcepts;
 	}
 
 	/**
 	 * @return the numSimpleTags
 	 */
-	public Integer getNumSimpleTags() {
+	public int getNumSimpleTags() {
 		return this.numSimpleTags;
 	}
 	
@@ -901,7 +901,7 @@ public abstract class GenericParam {
 	/**
 	 * @return numTransitiveConcepts
 	 */
-	public Integer getNumTransitiveConcepts() {
+	public int getNumTransitiveConcepts() {
 		return this.numTransitiveConcepts;
 	}
 
