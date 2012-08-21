@@ -168,7 +168,7 @@ function uploadRequestSuccessful(data) {
 			/*
 			 * check if file ends with '.pdf'
 			 */			
-			if(fileName.indexOf(suffix, fileName.length - suffix.length) != -1) {
+			if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) != -1) {
 				div = "<div class='fsRow'>" + 
 				"<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>" + fileName + "</a> " +
 				"( <a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>" + documentQRMessage + "</a>" + 
