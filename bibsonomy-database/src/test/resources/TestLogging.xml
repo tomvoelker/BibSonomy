@@ -41,4 +41,9 @@
 		SELECT COUNT(*) FROM log_discussion
 	</select>
 	
+	<select id="inboxLogCount" resultClass="int" parameterClass="String">
+		SELECT COUNT(*) FROM log_inboxMail <isNotNull> WHERE receiver_user=#test#</isNotNull>
+	</select>
+	
+	
 </sqlMap>

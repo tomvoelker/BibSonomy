@@ -7,6 +7,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.InboxParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -23,6 +24,8 @@ import org.bibsonomy.model.Tag;
 public class InboxDatabaseManager extends AbstractDatabaseManager {
 	private final static InboxDatabaseManager singleton = new InboxDatabaseManager(); 
 	
+	private final DatabasePluginRegistry plugins;
+	
 	/**
 	 * @return a singleton instance of this InboxDatabaseManager
 	 */
@@ -35,6 +38,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	
 	private InboxDatabaseManager(){
 		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 	
 	/**
@@ -126,13 +130,29 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		param.setSender(sender);
 		param.setReceiver(receiver);
 		param.setIntraHash(intraHash);
+		
 		final int messageId = this.getMessageId(param, session);
+		param.setMessageId(messageId);
+		
 		//TODO: What happens if no MessageId can be found?
 		/*
 		 * delete all entries (message and tags) with the now known message_id
 		 */
+		session.beginTransaction();
+		this.onDelete(param, session);
 		this.delete("deleteInboxMessage", messageId, session);
 		this.delete("deleteInboxMessageTags", messageId, session);
+		session.commitTransaction();
+		session.endTransaction();
+	}
+	
+	/**
+	 * call this on delete of inbox message to log it
+	 * @param deletedInboxMessageParam
+	 * @param session
+	 */
+	private void onDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
+		this.plugins.onInboxMailDelete(deletedInboxMessageParam, session);
 	}
 	
 	private int getMessageId(final InboxParam param, final DBSession session) {
@@ -150,9 +170,15 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	public void deleteAllInboxMessages(final String receiver, final DBSession session){
 		// get all messageIds, that are to be deleted and erase their tags first
 		final List<Integer> messageIds = getInboxMessageIds(receiver, session);
+		session.beginTransaction();
 		for (final Integer messageId : messageIds) {
 			this.delete("deleteInboxMessageTags", messageId, session);
 		}
+		InboxParam param = new InboxParam();
+		param.setReceiver(receiver);
+		this.onDelete(param, session);
 		this.delete("deleteAllInboxMessages", receiver, session);
+		session.commitTransaction();
+		session.endTransaction();
 	}
 }

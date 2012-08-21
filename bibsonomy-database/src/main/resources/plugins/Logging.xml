@@ -130,4 +130,18 @@
 		INSERT INTO log_document (hash, content_id, name, user_name, date, md5hash, log_date)
 		  VALUES (#fileHash#, #contentId#, #fileName#, #userName#, #date#, #md5hash#, NOW())
 	</insert>
+	
+	<!-- inbox logs -->
+	<insert id="logInboxMessages" parameterClass="inboxParam">
+		INSERT INTO log_inboxMail (message_id, content_id, intraHash, sender_user, receiver_user, date, content_type, log_date)
+ 		  SELECT message_id, content_id, intraHash, sender_user, receiver_user, date, content_type, NOW() as log_date 
+ 		  FROM inboxMail WHERE 
+ 		  <isGreaterThan property="messageId" compareValue="0">
+ 		  	inboxMail.message_id = #messageId#
+ 		  </isGreaterThan>
+ 		  <isLessEqual property="messageId" compareValue="0">
+ 		  	inboxMail.receiver_user = #receiver#;
+ 		  </isLessEqual> 
+	</insert>
+	
 </sqlMap>

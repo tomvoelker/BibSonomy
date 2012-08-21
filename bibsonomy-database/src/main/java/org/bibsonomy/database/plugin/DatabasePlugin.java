@@ -3,6 +3,7 @@ package org.bibsonomy.database.plugin;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.DocumentParam;
+import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
 
@@ -259,5 +260,9 @@ public interface DatabasePlugin {
 	 */
 	public Runnable onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session);
 	
-	
+	/**
+	 * TODO javadoc, params
+	 * @return
+	 */
+	public Runnable onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session);
 }
