@@ -23,8 +23,8 @@
 	<jsp:directive.attribute name="formInputName" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formInputValue" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="formExtra" fragment="true" required="false" description="Any extra form input fields you want to add."/>
-	
-
+		
+		
 	<div id="search">
 		<ul>
 			<li>
@@ -73,5 +73,8 @@
 			</c:if>
 		</ul>
 	</div>
-
+		
+	<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
+	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
+	
 </jsp:root>
