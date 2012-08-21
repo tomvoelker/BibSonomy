@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Bookmark;
@@ -63,7 +64,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		/*
 		 * handle case when only tags are requested
 		 */
-		if (present(command.getRequestedTags())) {
+		if (TagsType.PREFIX.equals(command.getTagstype())) {
 			String regex = command.getRequestedTags() + "%";
 			this.handleTagsOnly(command, groupingEntity, groupingName, regex, requTags, null, Integer.MAX_VALUE, null);
 		} else {
@@ -121,7 +122,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				totalNumPosts += listCommand.getTotalCount();
 			}
 		}
-
+		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
