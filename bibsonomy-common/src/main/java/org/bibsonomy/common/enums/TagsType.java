@@ -36,7 +36,9 @@ public enum TagsType {
 	/** related tags, i.e., tags which co-occur with a given tag */
 	RELATED,
 	/** similar tags, i.e., tags which are semantically similar to a given tag */
-	SIMILAR;
+	SIMILAR,
+	/** prefix tags, i.e., tags which are needed for auto-completion*/
+	PREFIX;
 
 	/**
 	 * Returns the name for this kind of tags, i.e.:
@@ -45,6 +47,7 @@ public enum TagsType {
 	 *  DEFAULT  - default
 	 *  REALTED  - related
 	 *  SIMILAR  - similar
+	 *  PREFIX	 - prefix
 	 * </pre>
 	 * 
 	 * @return an all lowercase string for this kind of tag
