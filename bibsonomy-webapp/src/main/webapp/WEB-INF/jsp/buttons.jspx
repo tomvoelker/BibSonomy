@@ -47,7 +47,6 @@
 						addonSection.trigger("click");
 		    		else
 		    			bookmarkletSection.trigger("click");
-		    		console.log(browser);
 		    		if(browser.name=="Chrome") 
 						index=1;
 					else if(browser.name=="Firefox"&&browser.version>=4)
@@ -76,8 +75,8 @@
 			           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
 			           		<p><fmt:message key="bookmarklet.addon.text3"/></p>
 			           		<p><a href="#" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
-			           		<p><i><fmt:message key="note"/>:<fmt:message key="bookmarklet.legacyNotice"/></i></p>
 		           		</span>
+		           		<p><i><fmt:message key="note"/>:<fmt:message key="bookmarklet.legacyNotice"/></i></p>
 	           		</span>
 					<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
 	    			<h2 id="buttons.Bookmarklets" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="buttons.bookmarklet1"/></h2>
