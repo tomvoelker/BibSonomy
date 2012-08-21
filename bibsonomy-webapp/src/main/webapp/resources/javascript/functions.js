@@ -1145,6 +1145,5 @@ function startTagAutocompletion (textfield) {
  */
 function endTagAutocompletion (textfield) {
 	textfield.autocomplete('disable');
-	console.log("ending");
 };
 
