@@ -1,5 +1,7 @@
 package org.bibsonomy.entity;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -29,22 +32,22 @@ public class AuthorClustering {
 	static List<List<Integer>> clusterIDsList = new ArrayList<List<Integer>>();
 	static List<Map<String,List<String>>> clustersWithCoauthorNames = new ArrayList<Map<String,List<String>>>();
 
-	//Lucene globals
-	static IndexWriter w = null;
-	static StandardAnalyzer analyzer = null;
-	static Directory index = null;
+	public static List<List<Integer>> authorClustering(SqlSession sessionRkr, Map<Integer,Integer> authorToContent, ArrayList<HashMap<String,String>> authorNames) {
 
-	public static List<List<Integer>> authorClustering(SqlSession sessionRkr) {
-
+		clusterIDsList.clear();
+		clustersWithCoauthorNames.clear();
+		
+		//the authorID that describes a cluster
+		HashSet<Integer> uniqueClusterAuthorID = new HashSet<Integer>();
 		//for time measurements
-		float timeAuthorStart = 0;
+		float timeAuthorStart = System.nanoTime();
 		float last10Authors[] = {0,0,0,0,0,0,0,0,0,0};
 		int replaceAuthor = 0;
 
 		//clustering the authors with the coauthor relationship
 		int threshold = 3;
 
-		final List<Map<String,String>> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
+		//final List<Map<String,String>> authorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames");
 
 		Map<String,Map<Integer,Set<String>>> authorMap = new HashMap<String,Map<Integer,Set<String>>>(); //authorName->Map with ID->set of coauthors
 		Map<Integer,Set<String>> mapOfCoauthorsSets = new HashMap<Integer,Set<String>>(); //authorID -> all coauthors
@@ -52,6 +55,7 @@ public class AuthorClustering {
 
 		//build the datastructure
 		for (Map<String,String> tmpAuthor: authorNames) {
+
 			//order with authorIDs
 			int tmpAuthorID = Integer.valueOf(String.valueOf(tmpAuthor.get("author_id")));
 			//fill mapOfCoauthorsSets
@@ -61,7 +65,7 @@ public class AuthorClustering {
 				tmpSet.add(tmpAuthor.get("normalized_coauthor"));
 				mapOfCoauthorsSets.put(tmpAuthorID,tmpSet);
 			}
-			
+
 			if (authorMap.containsKey(tmpAuthor.get("normalized_name"))) {
 				if (authorMap.get(tmpAuthor.get("normalized_name")).get(tmpAuthorID) == null) {
 					Set tmpSet = new HashSet<String>();
@@ -93,7 +97,6 @@ public class AuthorClustering {
 		}
 
 		int z=1;
-		int endless = 0;
 		for(Map.Entry authorSet : authorMap.entrySet()) {
 
 			if (replaceAuthor == 10) {
@@ -102,14 +105,19 @@ public class AuthorClustering {
 				for (float value: last10Authors) {
 					sum += value;
 				}
-				System.out.println("Elapsed time for last 10 authors: " + sum);
 			}
 			last10Authors[replaceAuthor] = ((System.nanoTime() - timeAuthorStart)/1000000000);
 			replaceAuthor++;
 
 			timeAuthorStart = System.nanoTime();
 
-			System.out.println("Author Clustering: " + z + " " + authorSet.getKey() + " endless: " + endless);
+			//System.out.println("Author Clustering: " + z + " " + authorSet.getKey());
+
+			if (z % 10000 == 0) {
+				System.out.println("Author Clustering: " + z + " " + authorSet.getKey());
+				sessionRkr.commit();
+			}
+
 			z++;
 
 			Set<String> outerSet = new HashSet<String>();
@@ -119,8 +127,6 @@ public class AuthorClustering {
 			Map<Integer,Set<String>> authorNameMap = (Map<Integer, Set<String>>) authorSet.getValue();
 
 			while (true) { //do this as long there is something we can merge
-
-				endless++;
 				innerMaxID = 0;
 				outerMaxID = 0;
 				Set<String> innerSetBackup = new HashSet<String>();
@@ -176,9 +182,14 @@ public class AuthorClustering {
 					HashMap<String, String> coAuthorToAdd = new HashMap<String, String>();
 					coAuthorToAdd.put("authorID", outerMaxID + "");
 					coAuthorToAdd.put("normalizedCoauthor", stringToAdd);
+
+					HashMap<String, Integer> contentToAdd = new HashMap<String, Integer>();
+					contentToAdd.put("authorID", outerMaxID);
+					contentToAdd.put("contentID", authorToContent.get(outerMaxID));
 					//System.out.println("We have to add: " + coAuthorToAdd.get("authorID") + " " + coAuthorToAdd.get("normalizedCoauthor"));
 
 					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedCoAuthor", coAuthorToAdd);
+					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedContent", contentToAdd);
 					//update in data structure too
 					//System.out.println("before: " + authorNameMap.get(outerMaxID));
 					authorNameMap.get(outerMaxID).addAll(innerSetBackup);
@@ -192,14 +203,13 @@ public class AuthorClustering {
 
 				//search the cluster with the actual authorID and add the new ID
 				for (List<Integer> authorIDs: clusterIDsList) {
-					int authorIDsSize = authorIDs.size();
-					//there cant be more then 1 ID to add
 					for (Integer authorID: authorIDs) {
 						//System.out.println("outerAuthorID:" + authorID);
 						int idToAdd = 0;
 						if (outerMaxID == authorID) idToAdd = innerMaxID;
 						if (innerMaxID == authorID) idToAdd = outerMaxID;
 						if (idToAdd > 0) {
+							uniqueClusterAuthorID.add(idToAdd);
 							authorIDs.add(idToAdd);
 							//System.out.println("add new ID to cluster");
 							//System.out.println(authorIDs);
@@ -215,6 +225,7 @@ public class AuthorClustering {
 					//System.out.println("create a new cluster - outer: " + outerMaxID + " inner: " + innerMaxID);
 					List<Integer> authorIDs = new ArrayList<Integer>();
 					authorIDs.add(outerMaxID);
+					uniqueClusterAuthorID.add(outerMaxID);
 					if (outerMaxID != innerMaxID) authorIDs.add(innerMaxID);
 					//System.out.println("the new cluster:" + authorIDs);
 					clusterIDsList.add(authorIDs);
@@ -222,89 +233,113 @@ public class AuthorClustering {
 
 				//delete the author we merged from DB
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteCoAuthors", innerMaxID);
+				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteAuthorContent", innerMaxID);
 				sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteAuthor", innerMaxID);
+				uniqueClusterAuthorID.remove(innerMaxID);
 
-				//remove the author we merged from the datastructure
+				//remove the author we merged from the tmp datastructure
 				authorNameMap.remove(innerMaxID);
 			}
 		}
 
-		float sum = 0;
-		for (float value: last10Authors) {
-			sum += value;
-		}
-		System.out.println("Elapsed time for last author: " + ((System.nanoTime() - timeAuthorStart)/1000000000) + "s");
-		System.out.println("Elapsed time for last 10 authors: " + sum);
 		sessionRkr.commit();
 
-		//my own test
-		//MyOwnTest.test(authorMap);
+		int rightMatches = 0;
+		int wrongMatches = 0;
 
-		int countSingleClusters = 0;
-		for (List<Integer> authorIDList: clusterIDsList ) {
-			if(authorIDList.size() == 1) countSingleClusters++;
-			//System.out.println("-----------------------------------------------");
-			//for (int k=0; k < authorIDList.size(); k++) {
-			//System.out.println(authorIDList.get(k)); 
-			//}
-		}
+		//"myOwn" clustering
+		//check how much same coauthors two clusters have. This can be an indicator for the same person with different names
+		int outer = 0;
+		Set<Integer> blacklist = new HashSet<Integer>();
+		for (List<Integer> outerClusterIDs: clusterIDsList) {
+			outer++;
+			Set outerSet = new HashSet<String>(); //set of all coauthors for the outer cluster
+			//all coauthors in this cluster
+			for (Integer outerClusterID: outerClusterIDs) {
+				outerSet.addAll(mapOfCoauthorsSets.get(outerClusterID));
+			}
 
-
-		/*
-		for (float alpha=(float)0.2; alpha<1; alpha += 1) {
-			System.out.println("countSingleClusters " + countSingleClusters);
-			int rightMatches = 0;
-			int wrongMatches = 0;
-
-			//"myOwn" clustering
-			//check how much same coauthors two clusters have. This can be an indicator for the same person with different names
-			int outer = 0;
-			Set<Integer> blacklist = new HashSet<Integer>();
-			for (List<Integer> outerClusterIDs: clusterIDsList) {
-				outer++;
-				Set outerSet = new HashSet<String>(); //set of all coauthors for the outer cluster
-				//all coauthors in this cluster
-				for (Integer outerClusterID: outerClusterIDs) {
-					outerSet.addAll(mapOfCoauthorsSets.get(outerClusterID));
+			//inner iterations
+			for (int k=outer+1; k < clusterIDsList.size(); k++) {
+				Set tmpSet = new HashSet(outerSet);
+				Set innerSet = new HashSet<String>(); //set of all coauthors for the inner cluster
+				for (Integer innerClusterID: clusterIDsList.get(k)) {
+					innerSet.addAll(mapOfCoauthorsSets.get(innerClusterID));
 				}
+				tmpSet.retainAll(innerSet);
+				List<String> outerAuthorName = authorIDName.get(clusterIDsList.get(outer).get(0));
+				List<String> innerAuthorName =  authorIDName.get(clusterIDsList.get(k).get(0));
 
-				//inner iterations
-				for (int k=outer+1; k < clusterIDsList.size(); k++) {
-					Set tmpSet = new HashSet(outerSet);
-					Set innerSet = new HashSet<String>(); //set of all coauthors for the inner cluster
-					for (Integer innerClusterID: clusterIDsList.get(k)) {
-						innerSet.addAll(mapOfCoauthorsSets.get(innerClusterID));
-					}
-					tmpSet.retainAll(innerSet);
-					List<String> outerAuthorName = authorIDName.get(clusterIDsList.get(outer).get(0));
-					List<String> innerAuthorName =  authorIDName.get(clusterIDsList.get(k).get(0));
+				int outerID = clusterIDsList.get(outer).get(0);
+				int innerID = clusterIDsList.get(k).get(0);
 
-					int outerID = clusterIDsList.get(outer).get(0);
-					int innerID = clusterIDsList.get(k).get(0);
-
-					if (outerAuthorName.get(1) != null && innerAuthorName.get(1) != null && outerAuthorName.get(2) != null && innerAuthorName.get(2) != null) {
-						if (tmpSet.size() > 2) { //check if there enough same coauthors
-							if (!innerSet.contains(outerAuthorName.get(0)) && !outerSet.contains(innerAuthorName.get(0))) { //the name shouldnt be in the others coauthor list
-								if (!outerAuthorName.get(0).equals(innerAuthorName.get(0))) { //the names shouldnt be the same
-									if ((outerAuthorName.get(1).equals(innerAuthorName.get(1))) || (outerAuthorName.get(2).equals(innerAuthorName.get(2)))) { //but first names should be the same
-										if((float)tmpSet.size()/((innerSet.size() + outerSet.size())-tmpSet.size()) > alpha) { //check if we are sure enough
-											if (!blacklist.contains(outerID) && !blacklist.contains(innerID)) {
-												blacklist.clear();
-												blacklist.add(outerID);
-												blacklist.add(innerID);
-												if (outerAuthorName.get(3) != null && innerAuthorName.get(3) != null) {
-													if (outerAuthorName.get(3).equals(innerAuthorName.get(3))) rightMatches++;
-													else wrongMatches++;
-												}
-
-												//compare both sets
-												System.out.println("outerUserName: " + outerAuthorName.get(3) + " innerUserName: " + innerAuthorName.get(3));
-												System.out.println("outerID: " + clusterIDsList.get(outer) + " innerID: " + clusterIDsList.get(k));
-												System.out.println("outerSet: " + outerSet + " name: " + outerAuthorName);
-												System.out.println("innerSet: " + innerSet + " name: " + innerAuthorName);
-												System.out.println("results: " + ((innerSet.size() + outerSet.size())-tmpSet.size()) + " / " + tmpSet.size() + " resultSet: " + tmpSet);
-												System.out.println("end-----------------------------------------------");
+				if (outerAuthorName.get(1) != null && innerAuthorName.get(1) != null && outerAuthorName.get(2) != null && innerAuthorName.get(2) != null) {
+					if (tmpSet.size() > 2) { //check if there enough same coauthors
+						if (!innerSet.contains(outerAuthorName.get(0)) && !outerSet.contains(innerAuthorName.get(0))) { //the name shouldnt be in the others coauthor list
+							if (!outerAuthorName.get(0).equals(innerAuthorName.get(0))) { //the names shouldnt be the same
+								if ((outerAuthorName.get(1).equals(innerAuthorName.get(1))) || (outerAuthorName.get(2).equals(innerAuthorName.get(2)))) { //but first names should be the same
+									if((float)tmpSet.size()/((innerSet.size() + outerSet.size())-tmpSet.size()) >= 0.4) { //check if we are sure enough
+										if (!blacklist.contains(outerID) && !blacklist.contains(innerID)) {
+											blacklist.clear();
+											blacklist.add(outerID);
+											blacklist.add(innerID);
+											if (outerAuthorName.get(3) != null && innerAuthorName.get(3) != null) {
+												if (outerAuthorName.get(3).equals(innerAuthorName.get(3))) rightMatches++;
+												else wrongMatches++;
 											}
+
+											//merge both clusters
+											//add outer to inner and delete outer
+											Map<String,String> tmpMap = new HashMap<String,String>();
+											tmpMap.put("authorID", String.valueOf(outerID));
+											tmpMap.put("firstName", outerAuthorName.get(1));
+											tmpMap.put("lastName", outerAuthorName.get(2));
+											tmpMap.put("normalizedName", outerAuthorName.get(0));
+											sessionRkr.insert("org.mybatis.example.Entity-Identification.insertMergedAuthorName", tmpMap);
+
+											sessionRkr.delete("org.mybatis.example.Entity-Identification.deleteAuthorName", outerID);
+
+											//get the authorID that discriminates the cluster
+											HashSet<Integer> tmpSet1 = new HashSet(clusterIDsList.get(outer));
+											HashSet<Integer> tmpSet2 = new HashSet(clusterIDsList.get(k));
+
+											tmpSet1.retainAll(uniqueClusterAuthorID);
+											tmpSet2.retainAll(uniqueClusterAuthorID);
+
+											Integer[] tmpArray1 = tmpSet1.toArray(new Integer[1]);
+											Integer[] tmpArray2 = tmpSet2.toArray(new Integer[1]);
+
+											Map<String,Float> tmpIDs = new HashMap<String,Float>();
+											tmpIDs.put("id1", (float)tmpArray1[0]);
+											tmpIDs.put("id2", (float)tmpArray2[0]);
+											float precision = ((float)(tmpSet.size()) / ((innerSet.size() + outerSet.size())-(float)tmpSet.size()));
+											tmpIDs.put("precision", precision);
+
+											sessionRkr.insert("org.mybatis.example.Entity-Identification.insertSimilarCluster", tmpIDs);
+
+											FileWriter writer;
+											File ausgabe;
+											ausgabe = new File("clustering2.txt");
+											try {
+												writer = new FileWriter(ausgabe ,true);
+												writer.write("name: " + outerAuthorName + "\n");
+												writer.write("name: " + innerAuthorName + "\n");
+												writer.write("--------------------------\n");
+												writer.flush();
+												writer.close();
+											} catch (IOException e1) {
+												//TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+											
+											//compare both sets
+
+
+											//System.out.println("outerUserName: " + outerAuthorName.get(3) + " innerUserName: " + innerAuthorName.get(3));
+											//System.out.println("outerID: " + clusterIDsList.get(outer) + " innerID: " + clusterIDsList.get(k));
+											System.out.println("outerSet: " + outerSet + " name: " + outerAuthorName);
+											System.out.println("innerSet: " + innerSet + " name: " + innerAuthorName);
+											System.out.println("results: " + ((innerSet.size() + outerSet.size())-tmpSet.size()) + " / " + tmpSet.size() + " resultSet: " + tmpSet);
 										}
 									}
 								}
@@ -313,12 +348,8 @@ public class AuthorClustering {
 					}
 				}
 			}
-			System.out.println("alpha: " + alpha);
-			System.out.println("rightMatches: " + rightMatches);
-			System.out.println("missMatches: " + wrongMatches);
 		}
-*/
-		//System.exit(1);
+		sessionRkr.commit();
 
 		List<Integer> authorsWithoutCoauthors = new ArrayList<Integer>();
 		//get the author ids that have no coauthor
@@ -332,42 +363,8 @@ public class AuthorClustering {
 		//}
 		System.out.println(authorIDs.get(authorIDs.size()-1));
 
-
 		return clusterIDsList;
 
 	}
-
-	public static void useTitleToMergeClustersTest(SqlSession sessionRkr, List<Map<String, ArrayList<String>>> authorIDNumberList) throws CorruptIndexException, LockObtainFailedException, IOException {
-		//create a document with the titles of the publications for every cluster
-		//we use this to find cluster which maybe can be linked
-
-		List<Map<Integer,String>> authorList = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectCoAuthorsLucene");
-
-		analyzer = new StandardAnalyzer(Version.LUCENE_35);
-		index = new RAMDirectory();
-
-		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_35, analyzer);
-		w = new IndexWriter(index, config);
-
-		int lastAuthorID = 0;
-		String titles = "";
-		Document doc = new Document();
-		for (List<Integer> clusterIDs: clusterIDsList) { //one document for each cluster
-			doc = new Document();
-			for (Integer authorID: clusterIDs) {
-				for (Map<String, ArrayList<String>> authorHashMap: authorIDNumberList) { //get all titles for this cluster
-					if (authorID.equals(Integer.valueOf(authorHashMap.get("authorIDs").get(0)))) {
-						titles += authorHashMap.get("title").get(0) + " ";
-						break;
-					}
-				}
-				doc.add(new Field("titles", titles, Field.Store.YES, Field.Index.ANALYZED)); //add normalized name to coauthor field
-				w.addDocument(doc);
-			}
-		}
-
-		w.close();
-	}
-
 }
 

@@ -5,12 +5,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="org.mybatis.example.Entity-Identification">
 
 <!-- database bibsonomy_strudel -->
-<select id="selectBibtex" parameterType="int" resultType="String">
-	SELECT author FROM bibtex limit 300
+<select id="selectBibtex" parameterType="HashMap" resultType="java.util.Map">
+	SELECT author, CAST(content_id as char) as content_id FROM bibtex WHERE content_id > #{minContentID} ORDER BY content_id ASC LIMIT #{limit}
+</select>
+
+<select id="selectBibtexMinContentID" parameterType="String" resultType="int">
+	select content_id from bibtex ORDER BY content_id ASC LIMIT 1
+</select>
+
+<select id="selectBibtexCount" parameterType="HashMap" resultType="int">
+	select count(*) from bibtex
 </select>
 
 <select id="selectAuthor" parameterType="String" resultType="String">
 	SELECT author FROM author
+</select>
+
+<select id="selectAuthorNames" parameterType="String" resultType="java.util.Map">
+	SELECT * FROM author_name INNER join author_coauthor USING(author_id) LIMIT #{limit}
 </select>
  
 <!--  MyOwn test -->
@@ -32,12 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="DBLPPreperation" parameterType="int" resultType="java.util.Map">
-	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id) limit 300
-</select>
-
-<!-- bibsonomy_strudel DBLP Tests -->
-<select id="selectBibtexDBLP" parameterType="int" resultType="String">
-	SELECT author FROM bibtex limit 300
+	SELECT author_name_and_number, author_id, authors_string, content_id, title FROM author_id_number_list INNER JOIN authors_dblp USING(content_id)
 </select>
   
 <!-- database projekt_autoren_id -->
@@ -45,45 +52,57 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	SELECT LAST_INSERT_ID()
 </select>
 
-
-<select id="selectAuthorNames" parameterType="String" resultType="java.util.Map">
-	SELECT * from author_coauthor INNER JOIN (SELECT author_id, normalized_name, first_name, last_name from author_name limit 300) as limited_authors USING(author_id)
+<select id="selectMaxAuthorID" parameterType="int" resultType="int">
+	select author_id from author order by author_id desc limit 1
 </select>
 
+
 <select id="selectAuthorIDs" parameterType="String" resultType="int">
-	SELECT author_id FROM author_coauthor_backup GROUP BY author_id ORDER BY author_id ASC
+	SELECT author_id FROM author_coauthor GROUP BY author_id ORDER BY author_id ASC
 </select>
 
 <select id="selectRkrAuthor" parameterType="String" resultType="HashMap">
 	SELECT author_id, normalized_name FROM author
 </select>
 
-<select id="countAuthorsByName" parameterType="String" resultType="int">
-	SELECT count(*) FROM author WHERE normalized_name = #{normalizedName} limit 300
-</select>
-	
 <select id="selectCoAuthors" parameterType="String" resultType="java.util.Map">
 	SELECT author_id, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) where author.normalized_name = #{normalizedName} ORDER BY author_id ASC
 </select>
 
 <select id="selectCoAuthorsLucene" parameterType="String" resultType="java.util.Map">
-	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id) limit 300
+	SELECT author_id, author.normalized_name, normalized_coauthor FROM author INNER JOIN author_coauthor USING (author_id)
 </select>
 	
-<insert id="insertAuthor" parameterType="String">
-	INSERT INTO author() values()
+<insert id="insertAuthor" parameterType="int">
+	INSERT INTO author(author_id) values(#{lastInsertID})
 </insert>
 
-<insert id="insertAuthorName" parameterType="String">
-	INSERT INTO author_name(author_id, first_name, last_name, normalized_name) VALUES (LAST_INSERT_ID(), #{firstName}, #{lastName}, #{normalizedName});
+<insert id="insertAuthorContent" parameterType="java.util.Map">
+	INSERT INTO author_content(author_id, content_id) values(#{lastInsertID},#{contentID})
 </insert>
 
-<insert id="insertCoAuthors" parameterType="String">
-	INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (LAST_INSERT_ID(),#{normalizedName});
+<insert id="insertAuthorName" parameterType="java.util.Map">
+	INSERT INTO author_name(author_id, first_name, last_name, normalized_name) VALUES (#{author_id}, #{first_name}, #{last_name}, #{normalized_name});
+</insert>
+
+<insert id="insertMergedAuthorName" parameterType="String">
+	INSERT INTO author_name(author_id, first_name, last_name, normalized_name) VALUES (#{authorID}, #{firstName}, #{lastName}, #{normalizedName});
+</insert>
+
+<insert id="insertCoAuthors" parameterType="java.util.Map">
+	INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (#{lastInsertID},#{normalizedName});
 </insert>
 
 <insert id="insertMergedCoAuthor" parameterType="HashMap">
 	INSERT INTO author_coauthor(author_id, normalized_coauthor) VALUES (#{authorID},#{normalizedCoauthor});
+</insert>
+
+<insert id="insertMergedContent" parameterType="HashMap">
+	INSERT INTO author_content(author_id, content_id) VALUES (#{authorID},#{contentID});
+</insert>
+
+<insert id="insertSimilarCluster" parameterType="HashMap">
+	INSERT INTO similar_cluster(cluster_id1, cluster_id2, p) VALUES (#{id1},#{id2}, #{precision});
 </insert>
 
 <delete id="deleteCoAuthors" parameterType="int">
@@ -92,6 +111,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <delete id="deleteAuthor" parameterType="int">
 	DELETE FROM author WHERE author_id = #{tmpInnerMaxAuthorID};
+</delete>
+
+<delete id="deleteAuthorContent" parameterType="int">
+	DELETE FROM author_content WHERE author_id = #{tmpInnerMaxAuthorID};
+</delete>
+
+<delete id="deleteAuthorName" parameterType="int">
+	DELETE FROM author_name WHERE author_id = #{authorID};
 </delete>
 
 <insert id="truncateAuthor" parameterType="int">
@@ -108,6 +135,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <insert id="truncateAuthorContent" parameterType="int">
 	TRUNCATE TABLE author_content
+</insert>
+
+<insert id="truncateSimilarCluster" parameterType="int">
+	TRUNCATE TABLE similar_cluster
 </insert>
 
 </mapper>

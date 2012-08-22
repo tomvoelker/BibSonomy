@@ -1,54 +1,21 @@
 package org.bibsonomy.entity;
 
-import java.util.jar.Attributes;
-import java.util.jar.Attributes.Name;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.io.File;
+import java.io.FileWriter;
 
-import javax.sql.DataSource;
-import javax.swing.plaf.metal.MetalIconFactory.FolderIcon16;
-
-import org.apache.ibatis.builder.xml.XMLConfigBuilder;
-import org.apache.ibatis.datasource.jndi.JndiDataSourceFactory;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.apache.ibatis.annotations.Param;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.Version;
 
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
@@ -57,10 +24,55 @@ import org.bibsonomy.util.StringUtils;
 
 public class EntityIdentification {
 	final boolean testsEnabled = false;
+	static Integer maxContentID = 0;
 
-	public static void main(String[] args) throws PersonListParserException {
+	public static void main(String[] args) throws PersonListParserException, IOException {
+		float timeAtStart = System.nanoTime();
+		File file = new File("authorClustering.txt");
+		//write results to file
+		FileWriter writer;
+		writer = new FileWriter(file ,true);
+
+		//database configs
+		String resource = "config.xml";
+		Reader reader;
+
+		int minContentID = 0;
+		int bibtexCount = 0;
+		try {
+			reader = Resources.getResourceAsReader(resource);
+			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+			SqlSession session = sqlMapper.openSession();
+
+			List<Integer> tmpConentIDList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexMinContentID",1);
+			List<Integer> tmpBibtexCount = session.selectList("org.mybatis.example.Entity-Identification.selectBibtexCount",1);
+			minContentID = tmpConentIDList.get(0);
+			bibtexCount = tmpBibtexCount.get(0);
+			session.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		int limit = 50000;
+		int iterations = (bibtexCount/limit) + 1;
+
+		for (int k=0; k <= iterations; k++) {
+			System.out.println("run: " + k + " after: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
+
+			writer.write("run: " + k + " after: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
+			writer.flush();
+			preperations(minContentID,k,limit);
+		}
+		writer.close();
+	}
+
+
+	public static void preperations(int minContentID, int k, int limit) {
+		if (maxContentID > 0) minContentID = maxContentID+1;
+		Runtime rt = Runtime.getRuntime();
 
 		float timeAtStart = System.nanoTime();
+		Map<Integer, Integer> authorToContent = new HashMap<Integer,Integer>();
 
 		//database configs
 		String resource = "config.xml";
@@ -71,44 +83,119 @@ public class EntityIdentification {
 
 		//get the data from the database
 		try {
-			/*
 			reader = Resources.getResourceAsReader(resource);
 			SqlSessionFactory sqlMapper = new SqlSessionFactoryBuilder().build(reader);
 			SqlSession session = sqlMapper.openSession();
-			*/
 
 			readerRkr = Resources.getResourceAsReader(resourceRkr);
 			SqlSessionFactory sqlMapperRkr = new SqlSessionFactoryBuilder().build(readerRkr);
 			SqlSession sessionRkr = sqlMapperRkr.openSession();
 
-			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthor");
-			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorCoauthor");
-			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorContent");
-			sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorName");
+			if (k == 0) {
+				sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthor");
+				sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorCoauthor");
+				sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorContent");
+				sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateAuthorName");
+				sessionRkr.insert("org.mybatis.example.Entity-Identification.truncateSimilarCluster");
+				sessionRkr.commit();
+			}
+
+			ArrayList<HashMap<String, String>> authorNameListMap = new ArrayList<HashMap<String,String>>();
+
+			if (k > 0) {
+				List<HashMap<String,String>> alreadyClusteredAuthorNames = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectAuthorNames",limit);
+				for (HashMap<String,String> authorMap: alreadyClusteredAuthorNames) {
+					authorNameListMap.add(authorMap);
+				}
+			}
+
+			HashMap<String, Integer> bibtexParameter = new HashMap<String,Integer>();
+			bibtexParameter.put("minContentID", minContentID);
+			bibtexParameter.put("limit", limit);
+
+			List<Map<String,String>> authorList = session.selectList("org.mybatis.example.Entity-Identification.selectBibtex",bibtexParameter);
+			System.out.println("SELECT author, CAST(content_id as char) as content_id FROM bibtex WHERE content_id > " + bibtexParameter.get("minContentID") + " LIMIT " + bibtexParameter.get("limit"));
+			
+			Map<String,String> test = authorList.get(authorList.size() - 1);
+			maxContentID =  Integer.valueOf(authorList.get(authorList.size() - 1).get("content_id"));
+
+			List<Integer> maxInsertID = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectMaxAuthorID");
+			int lastInsertID = 0;
+			if (!maxInsertID.isEmpty()) lastInsertID = maxInsertID.get(0);
+
+			
+			for (Map<String,String> authorsMap: authorList) { //authorList for each publication
+				//System.out.println(rt.totalMemory() - rt.freeMemory());
+
+				List<PersonName> allAuthorNamesOfOnePublication = new ArrayList<PersonName>();
+				Integer contentID = Integer.valueOf(String.valueOf(authorsMap.get("content_id")));
+				try {
+					allAuthorNamesOfOnePublication = PersonNameUtils.discoverPersonNames(authorsMap.get("author"));
+				}
+				catch (PersonListParserException e) {
+					continue;
+				}
+
+				for(PersonName person: allAuthorNamesOfOnePublication) {
+
+					//System.out.println(person.getFirstName() + " : " + person.getLastName());
+					if ((person.getFirstName() == null) || (person.getLastName()== null)) continue;
+					if ((person.getFirstName().length() > 255) || (person.getLastName().length() > 255)) continue;
+					lastInsertID++;
+
+					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthor", lastInsertID);
+
+					Map<String,String> authorName = new HashMap<String,String>();
+					authorName.put("author_id", String.valueOf(lastInsertID));
+					authorName.put("first_name", person.getFirstName());
+					authorName.put("last_name", person.getLastName());
+					authorName.put("normalized_name", normalizePerson(person));
+
+					Map<String,String> tmpMapContent = new HashMap<String,String>();
+					tmpMapContent.put("contentID", String.valueOf(contentID));
+					tmpMapContent.put("lastInserID", String.valueOf(lastInsertID));
+
+					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorContent", contentID);
+					authorToContent.put(lastInsertID, contentID);
+					sessionRkr.insert("org.mybatis.example.Entity-Identification.insertAuthorName", authorName);
+
+					for(PersonName coauthor: allAuthorNamesOfOnePublication) {
+						HashMap<String,String> tmpMap = new HashMap(authorName);
+						if (!coauthor.toString().equals(person.toString())) {
+							String normalizedName = normalizePerson(coauthor);
+							tmpMap.put("normalized_coauthor", normalizedName);
+							authorNameListMap.add(tmpMap);
+
+							Map<String,String> tmpMapCoauthor = new HashMap<String,String>();
+							tmpMapCoauthor.put("normalizedName", normalizedName);
+							tmpMapCoauthor.put("lastInsertID", String.valueOf(lastInsertID));
+							
+
+							sessionRkr.insert("org.mybatis.example.Entity-Identification.insertCoAuthors", tmpMapCoauthor);		
+						}
+					}
+				}
+
+			}
+
+			System.out.println("Build new database entries after: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
+
 			sessionRkr.commit();
+			System.out.println("starting clustering");
 
-			/*
-			Lucene lucene =  new Lucene();
-			try {
-				lucene.createLuceneIndexForAllAuthors(sessionRkr);
-			} catch (IOException e) {}
-			catch (ParseException p) {}
-			*/
+			//start the clustering
+			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(sessionRkr, authorToContent, authorNameListMap);
+			System.out.println("Clustered after: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
 
-			//run "myown" test
-			//MyOwnTest.findSamePersonDifferentNames(sessionRkr);
+			//write results to file
+			FileWriter writer;
+			File ausgabe;
+			ausgabe = new File("authorClustering.txt");
+			writer = new FileWriter(ausgabe ,true);
+			writer.write("run " + (minContentID/limit) + "finished after: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
+			writer.flush();
+			writer.close();
 
-			//run dblp test
-			DblpTest dblpTest = new DblpTest();
-			List<Map<String,ArrayList<String>>> authorIDNumberList = dblpTest.preperations(sessionRkr);
-
-			//author clustering compare
-			List<List<Integer>> authorIDsList = AuthorClustering.authorClustering(sessionRkr);
-			dblpTest.compareResults(authorIDsList, sessionRkr);
-
-			System.out.println("Elapsed time: " + ((System.nanoTime() - timeAtStart)/1000000000) + "s");
-
-			//session.close();
 			sessionRkr.close();
 
 		} catch (IOException e) {

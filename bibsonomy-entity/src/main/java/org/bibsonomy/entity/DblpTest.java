@@ -216,57 +216,6 @@ public class DblpTest {
 				normalizedCoauthors.add(EntityIdentification.normalizePerson(allAuthorNamesOfOnePublication.get(k)));
 			}
 
-			/*
-			//lets see how lucene performed
-			try {
-				List<Integer> luceneResultIDs = Lucene.searchAuthor(normalizedName, normalizedCoauthors);
-
-				int underClustering = 0;
-				int rightMatches = 0;
-				boolean found = false;
-				//System.out.println("real IDs: ");
-				for (String realAuthorID: authorMap.get("authorIDs")) {
-					System.out.println("real ID: " + Integer.valueOf(realAuthorID));
-					found = false;
-					for (Integer luceneAuthorID: luceneResultIDs) {
-						if (Integer.valueOf(luceneAuthorID).equals(Integer.valueOf(realAuthorID))) {
-							found = true;
-							rightMatches++;
-							rightMatchesOverallLucene++;
-						}
-					}
-					if (!found) {
-						underClustering++;
-						overallLuceneUnderClustering++;
-					}
-				}
-
-				int overClustering = 0;
-				//System.out.println("found IDs: ");
-				for(Integer luceneAuthorID: luceneResultIDs) {
-					//System.out.println(luceneAuthorID);
-					found = false;
-					for (String realAuthorID: authorMap.get("authorIDs")) {	
-						if (luceneAuthorID.equals(Integer.valueOf(realAuthorID))) found = true;
-					}
-					if (!found) {
-						overClustering++;
-						overallLuceneOverClustering++;
-						//System.out.println("not found: " + luceneAuthorID);
-					}
-				}
-
-
-				//System.out.println("Lucene results - rightMatches: " + rightMatches + " underClustering: " + underClustering + " overClustering: " + overClustering);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			 */
-
 			//lets see how author clustering performs
 			int rightMatches = 0;
 			int underClustering = 0;
@@ -338,44 +287,6 @@ public class DblpTest {
 
 	public List<Map<String,ArrayList<String>>> getAuthorIDNumberList() {
 		return authorIDNumberList;
-	}
-
-	public static List<Map<String,String>> getAuthorsWithNameLikeX (String nameX, SqlSession sessionRkr) {
-		List<Map<Integer,String>> allAuthors = sessionRkr.selectList("org.mybatis.example.Entity-Identification.selectRkrAuthor");
-		Directory index = Lucene.createLuceneIndex(allAuthors);
-		StandardAnalyzer analyzer = new StandardAnalyzer(Version.LUCENE_35);
-
-		String query = "author:" + nameX + "~0.8";
-		List<Map<String,String>> listOfAuthorsWithNameLikeX = new ArrayList<Map<String,String>>();
-
-		try {
-			Query q = new QueryParser(Version.LUCENE_35, "author", analyzer).parse(query);
-
-			int hitsPerPage = 50;
-			IndexReader luceneReader = IndexReader.open(index);
-			IndexSearcher searcher = new IndexSearcher(luceneReader);
-			TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage, true);
-			searcher.search(q, collector);
-			ScoreDoc[] hits = collector.topDocs().scoreDocs;
-
-			System.out.println("Found " + hits.length + " hits.");
-			for(int i=0;i<hits.length;++i) {
-				Map<String,String> authorMap = new HashMap<String, String>();
-				int docId = hits[i].doc;
-				Document d = searcher.doc(docId);
-				System.out.println((i + 1) + ". " + d.get("author") + " author_id: " + d.get("author_id"));
-				authorMap.put("author_id", d.get("author_id"));
-				authorMap.put("normalized_name", d.get("author"));
-				listOfAuthorsWithNameLikeX.add(authorMap);
-			}
-
-			searcher.close();
-
-		}
-		catch (IOException e) {}
-		catch (ParseException p) {}
-
-		return listOfAuthorsWithNameLikeX;
 	}
 
 	private static PersonName removeNumberFromAuthor(PersonName author) {

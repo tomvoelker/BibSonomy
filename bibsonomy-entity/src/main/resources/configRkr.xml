@@ -20,7 +20,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 <property name="username" value="rkr"/>
 <property name="password" value="puuphifi"/>
 
-
 </dataSource>
 </environment>
 </environments>
