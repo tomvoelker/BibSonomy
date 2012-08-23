@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
 
@@ -20,24 +20,26 @@ import org.springframework.core.convert.converter.ConditionalGenericConverter;
 public class StringToPersonListConverter implements ConditionalGenericConverter {
 
 	@Override
-	public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {
+	public boolean matches(final TypeDescriptor sourceType, final TypeDescriptor targetType) {
 		final boolean a = String.class.equals(sourceType.getObjectType());
 		final boolean b = Collection.class.isAssignableFrom(targetType.getObjectType());
-		final boolean c = PersonName.class.equals(targetType.getElementType());
+		final boolean c = PersonName.class.equals(targetType.getElementTypeDescriptor().getType());
 		return a && b && c;
 	}
 
 	@Override
-	public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
-		if (!present(source)) return null;
-		/*
-		 * In the webapp, newline is/can be used as person name delimiter. 
-		 * Thus, we substitute it with the default delimiter (" and ").
-		 */
+	public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
+		if (!present(source)) {
+			return null;
+			/*
+			 * In the webapp, newline is/can be used as person name delimiter. 
+			 * Thus, we substitute it with the default delimiter (" and ").
+			 */
+		}
 		
 		try {
 			return PersonNameUtils.discoverPersonNames(((String)source).replaceAll("[\n\r]+", PersonNameUtils.PERSON_NAME_DELIMITER));
-		} catch (PersonListParserException e) {
+		} catch (final PersonListParserException e) {
 			// FIXME: is this the best solution?
 			return Collections.emptyList();
 		}
