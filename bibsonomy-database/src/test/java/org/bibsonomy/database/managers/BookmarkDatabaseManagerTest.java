@@ -1,8 +1,10 @@
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.testutil.Assert.assertTagsByName;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -66,7 +68,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Override
 	public void setMananger() {
-		resourceDB = BookmarkDatabaseManager.getInstance();
+		this.resourceDB = BookmarkDatabaseManager.getInstance();
 	}
 	
 
@@ -227,14 +229,14 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		/*
 		 * Logged in user
 		 */
-		Collection<Integer> groupsPublic = new ArrayList<Integer>();
+		final Collection<Integer> groupsPublic = new ArrayList<Integer>();
 		groupsPublic.add(PUBLIC_GROUP_ID); // everybody has public group
-		Collection<Integer> groups1 = new ArrayList<Integer>();
+		final Collection<Integer> groups1 = new ArrayList<Integer>();
 		groups1.add(PUBLIC_GROUP_ID); // everybody has public group
 		groups1.add(3);
 		groups1.add(4);
 		groups1.add(5);
-		Collection<Integer> groups2 = new ArrayList<Integer>();
+		final Collection<Integer> groups2 = new ArrayList<Integer>();
 		groups2.add(PUBLIC_GROUP_ID); // everybody has public group
 		groups2.add(3);
 		
@@ -569,7 +571,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Test
 	public void getContentIDForBookmark() {
-		assertEquals(6, bookmarkDb.getContentIdForPost("20592a292e53843965c1bb42bfd51876", TESTUSER2_NAME, this.dbSession));
+		assertThat(bookmarkDb.getContentIdForPost("20592a292e53843965c1bb42bfd51876", TESTUSER2_NAME, this.dbSession), equalTo(6));
 	}
 	
 	/**

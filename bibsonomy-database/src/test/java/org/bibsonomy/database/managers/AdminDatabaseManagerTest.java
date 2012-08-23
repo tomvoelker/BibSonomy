@@ -1,6 +1,8 @@
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
@@ -271,8 +273,8 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals("spamming, flaming", user.getHobbies());
 		// assertEquals(true, user.isSpammer());
 		// assertEquals(0, user.getToClassify());
-		assertEquals(1, user.getPrediction());
-		assertEquals(0.2, user.getConfidence());
+		assertThat(user.getPrediction(), equalTo(1));
+		assertEquals(0.2, user.getConfidence(), 0.001);
 		assertEquals("D", user.getMode());
 		assertEquals("testlogging", user.getAlgorithm());
 	}

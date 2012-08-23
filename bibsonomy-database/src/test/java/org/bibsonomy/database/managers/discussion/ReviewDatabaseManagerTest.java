@@ -1,9 +1,11 @@
 package org.bibsonomy.database.managers.discussion;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -111,7 +113,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(reviewHash);
 		final double afterInsert = testManager.getReviewRatingsArithmeticMean(interHash);
 		
-		assertEquals(currentRating, afterInsert);
+		assertThat(currentRating, is(afterInsert));
 		
 		this.deleteReview(username, BibTex.class, interHash, reviewHash, true);
 	}
@@ -184,14 +186,14 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		int numberOfReviews = testManager.getReviewCount(HASH);
 		final double rating1 = 4.5;
 		final String reviewHashUser2 = this.insertReview(USERNAME_2, BibTex.class, HASH, rating1, "Great job!", null);
-		final double average2 = calcNewAvarage(average, rating1, numberOfReviews);
+		final double average2 = this.calcNewAvarage(average, rating1, numberOfReviews);
 		numberOfReviews++;
 		assertEquals(average2, testManager.getReviewRatingsArithmeticMean(HASH), 0.000000001);
 
 		final int rating2 = 4;
 		final String reviewHashUser3 = this.insertReview(USERNAME_3, BibTex.class, HASH, rating2, "Great job! You're awesome!", null);
 
-		final double average3 = calcNewAvarage(average2, rating2, numberOfReviews);
+		final double average3 = this.calcNewAvarage(average2, rating2, numberOfReviews);
 		numberOfReviews++;
 
 		assertEquals(average3, testManager.getReviewRatingsArithmeticMean(HASH), 0.000000001);
@@ -205,11 +207,11 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	private double calcNewAvarage(final double old, final double newValue, final int count) {
-		return (old * count + newValue) / (count + 1);
+		return ((old * count) + newValue) / (count + 1);
 	}
 	
 	private void deleteReview(final String username, final Class<? extends Resource> resourceType, final String interHash, final String hash) {
-		deleteReview(username, BibTex.class, interHash, hash, false);
+		this.deleteReview(username, BibTex.class, interHash, hash, false);
 	}
 
 	private void deleteReview(final String username, final Class<? extends Resource> resourceType, final String interHash, final String hash, final boolean spammer) {
@@ -235,7 +237,7 @@ public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	private String insertReview(final String username, final Class<? extends Resource> resourceType, final String interHash, final double rating, final String text, final Set<Group> groups) {
-		return insertReview(username, false, resourceType, interHash, rating, text, groups);
+		return this.insertReview(username, false, resourceType, interHash, rating, text, groups);
 	}
 	
 	private String insertReview(final String username, final boolean spammer, final Class<? extends Resource> resourceType, final String interHash, final double rating, final String text, final Set<Group> groups) {

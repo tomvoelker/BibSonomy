@@ -1,8 +1,10 @@
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -10,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ParamUtils;
@@ -168,8 +169,6 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groups = groupDb.getGroupsForUser("testuser1", true, this.dbSession);
 		assertEquals(3, groups.size());
 	}
-
-	
 
 	/**
 	 * tests storeGroup
@@ -332,15 +331,15 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getGroupIdByGroupNameAndUserName() {
 		// group exists
-		assertEquals(ParamUtils.TESTGROUP1, groupDb.getGroupIdByGroupNameAndUserName("testgroup1", null, this.dbSession));
-		assertEquals(ParamUtils.TESTGROUP1, groupDb.getGroupIdByGroupNameAndUserName("testgroup1", "testuser1", this.dbSession));
-		assertEquals(ParamUtils.TESTGROUP1, groupDb.getGroupIdByGroupName("testgroup1", this.dbSession));
+		assertThat(groupDb.getGroupIdByGroupNameAndUserName("testgroup1", null, this.dbSession), equalTo(ParamUtils.TESTGROUP1));
+		assertThat(groupDb.getGroupIdByGroupNameAndUserName("testgroup1", "testuser1", this.dbSession), equalTo(ParamUtils.TESTGROUP1));
+		assertThat(groupDb.getGroupIdByGroupName("testgroup1", this.dbSession), equalTo(ParamUtils.TESTGROUP1));
 		// "testuser3" isn't a member of "testgroup1" and can't get the id
-		assertEquals(GroupID.INVALID.getId(), groupDb.getGroupIdByGroupNameAndUserName("testgroup1", "testuser3", this.dbSession));
+		assertThat(groupDb.getGroupIdByGroupNameAndUserName("testgroup1", "testuser3", this.dbSession), equalTo(INVALID_GROUP_ID));
 
 		// group doesn't exist
-		assertEquals(INVALID_GROUP_ID, groupDb.getGroupIdByGroupNameAndUserName(ParamUtils.NOGROUP_NAME, null, this.dbSession));
-		assertEquals(INVALID_GROUP_ID, groupDb.getGroupIdByGroupName(ParamUtils.NOGROUP_NAME, this.dbSession));
+		assertThat(groupDb.getGroupIdByGroupNameAndUserName(ParamUtils.NOGROUP_NAME, null, this.dbSession), equalTo(INVALID_GROUP_ID));
+		assertThat(groupDb.getGroupIdByGroupName(ParamUtils.NOGROUP_NAME, this.dbSession), equalTo(INVALID_GROUP_ID));
 
 		// groupname is null
 		for (final String groupname : new String[] { "", " ", null }) {
@@ -348,14 +347,14 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				try {
 					groupDb.getGroupIdByGroupNameAndUserName(groupname, username, this.dbSession);
 					fail("expected exception");
-				} catch (Exception ignored) {
+				} catch (final Exception ignored) {
 				}
 			}
 
 			try {
 				groupDb.getGroupIdByGroupName(groupname, this.dbSession);
 				fail("expected exception");
-			} catch (Exception ignored) {
+			} catch (final Exception ignored) {
 			}
 		}
 	}
