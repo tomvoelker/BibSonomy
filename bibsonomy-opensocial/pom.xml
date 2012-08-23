@@ -211,7 +211,7 @@
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
-			<version>${collections.version}</version>
+			<version>3.2</version>
 		</dependency>
 
 		<!-- Servlet and JSP dependencies -->
@@ -242,13 +242,13 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>${slf.version}</version>
+			<version>1.6.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>${json.version}</version>
+			<version>20070829</version>
 		</dependency>
 
 		<dependency>
@@ -258,22 +258,10 @@
 			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
-	<!-- dependency versions -->
 	<properties>
-		<json.version>20070829</json.version>
-		<slf.version>1.6.0</slf.version>
 		<shindig.version>2.0.2</shindig.version>
-		<collections.version>3.2</collections.version>
-		<junit.version>4.7</junit.version>
 		<wtpversion>1.5</wtpversion>
 	</properties>
 
