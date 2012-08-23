@@ -20,22 +20,24 @@ public class PersonListToStringConverter implements ConditionalGenericConverter 
 
 
 	@Override
-	public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {
+	public boolean matches(final TypeDescriptor sourceType, final TypeDescriptor targetType) {
 		final boolean a = String.class.equals(targetType.getObjectType());
 		final boolean b = Collection.class.isAssignableFrom(sourceType.getObjectType());
-		final boolean c = PersonName.class.equals(sourceType.getElementType());
+		final boolean c = PersonName.class.equals(sourceType.getElementTypeDescriptor().getType());
 		return a && b && c;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
-		if (!present(source)) return null;
+	public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
+		if (!present(source)) {
+			return null;
+		}
 		/*
 		 * In the webapp, newline is used as person name delimiter. 
 		 * Thus, we substitute the default delimiter (" and ") with "\n"
 		 */
-		return PersonNameUtils.serializePersonNames((List)source, "\n");
+		return PersonNameUtils.serializePersonNames((List<PersonName>)source, "\n");
 	}
 
 	@Override

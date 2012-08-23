@@ -31,12 +31,11 @@ public class StringToPersonListConverter implements ConditionalGenericConverter 
 	public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
 		if (!present(source)) {
 			return null;
-			/*
-			 * In the webapp, newline is/can be used as person name delimiter. 
-			 * Thus, we substitute it with the default delimiter (" and ").
-			 */
 		}
-		
+		/*
+		 * In the webapp, newline is/can be used as person name delimiter. 
+		 * Thus, we substitute it with the default delimiter (" and ").
+		 */
 		try {
 			return PersonNameUtils.discoverPersonNames(((String)source).replaceAll("[\n\r]+", PersonNameUtils.PERSON_NAME_DELIMITER));
 		} catch (final PersonListParserException e) {
