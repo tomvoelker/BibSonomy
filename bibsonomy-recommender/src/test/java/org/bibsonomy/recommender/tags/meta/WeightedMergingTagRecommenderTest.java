@@ -27,22 +27,22 @@ public class WeightedMergingTagRecommenderTest {
 
 		recommender.setTagRecommenders(new TagRecommender[] 
 		                                                  {
-				new FixedTagsTagRecommender(getTags1()),
-				new FixedTagsTagRecommender(getTags2())
+				new FixedTagsTagRecommender(this.getTags1()),
+				new FixedTagsTagRecommender(this.getTags2())
 		                                                  }
 		);
 
 		recommender.setWeights(new double[] { 0.4, 0.6 });
 
 
-		final SortedSet<RecommendedTag> recommendedTags = recommender.getRecommendedTags(getPost());
+		final SortedSet<RecommendedTag> recommendedTags = recommender.getRecommendedTags(this.getPost());
 
 		assertEquals(recommender.getNumberOfTagsToRecommend(), recommendedTags.size());
 
 		/*
 		 * for tag 'web': 0.4 * 0.4 + 0.3 * 0.6 = 0.34
 		 */
-		assertEquals(0.34, recommendedTags.first().getScore());
+		assertEquals(0.34, recommendedTags.first().getScore(), 0.001);
 	}
 
 
