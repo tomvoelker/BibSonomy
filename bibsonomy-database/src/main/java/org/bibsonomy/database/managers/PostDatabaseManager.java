@@ -338,7 +338,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param groupId is the group id
 	 * @return the number of visible posts
 	 */
-	public Integer getPostsByTagNamesCount(final List<TagIndex> tagIndex, final int groupId, final DBSession session) {
+	public int getPostsByTagNamesCount(final List<TagIndex> tagIndex, final int groupId, final DBSession session) {
 		final P param = this.getNewParam();
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
