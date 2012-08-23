@@ -1,9 +1,11 @@
 package org.bibsonomy.database;
 
 import static org.bibsonomy.testutil.Assert.assertTagsByName;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -42,8 +44,8 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -59,7 +61,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_SPAMMER_EMAIL = "testspammer@bibsonomy.org";
 	private static final String TEST_SPAMMER_ALGORITHM = "testlogging";
 	private static final int    TEST_SPAMMER_PREDICTION = 1;
-	private static final double TEST_SPAMMER_CONFIDENCE = 0.23;
+	private static final double TEST_SPAMMER_CONFIDENCE = 0.42;
 	
 	private static final String TEST_REQUEST_USER_NAME = "jaeschke";
 	private static final String TEST_REQUEST_HASH = "7d85e1092613fd7c91d6ba5dfcf4a044";
@@ -147,7 +149,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertEquals(5, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
 		
-		anonymousAccess = getDbLogic("");
+		anonymousAccess = this.getDbLogic("");
 		bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", DEFAULT_TAG_LIST, null, null, null, null, null, null, 5, 9);
 		assertEquals(4, bibTexPostsList.size());
 		assertList(bibTexPostsList, null, null, DEFAULT_TAG_SET, null, null, null);
@@ -260,7 +262,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getPostsForGroupByTag() {
-		final LogicInterface anonymousAccess = getDbLogic("");
+		final LogicInterface anonymousAccess = this.getDbLogic("");
 		final Set<String> usersInGroup = new HashSet<String>();
 		usersInGroup.addAll(getUserNamesByGroupId(TESTGROUP1_ID, this.dbSession) );
 		
@@ -279,7 +281,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexOfFriendByTags() {
-		final LogicInterface buzzsAccess = getDbLogic("buzz");
+		final LogicInterface buzzsAccess = this.getDbLogic("buzz");
 		final List<String> tags = Arrays.asList("java");
 		List<Post<BibTex>> bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, null, Order.ADDED, null, null, 0, 19);
 		assertEquals(1, bibTexPostsList.size());
@@ -296,7 +298,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		mustNotGroups.add(PUBLIC_GROUP_ID);
 		assertList(bibTexPostsList, userSet, Order.ADDED, tagsSet, null, mustGroupIds, mustNotGroups);
 
-		bibTexPostsList = getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, null, null, null, null, 0, 19);
+		bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", tags, null, null, null, null, null, null, 0, 19);
 		assertEquals(0, bibTexPostsList.size());
 	}
 
@@ -306,7 +308,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexOfFriendByUser() {
-		final LogicInterface buzzsAccess = getDbLogic("buzz");
+		final LogicInterface buzzsAccess = this.getDbLogic("buzz");
 		final Set<Integer> mustGroupIds = new HashSet<Integer>();
 		mustGroupIds.add(FRIENDS_GROUP_ID);
 		final Set<Integer> mustNotGroups = new HashSet<Integer>();
@@ -334,10 +336,10 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// create some test users and create some test relations among them
 		//--------------------------------------------------------------------
-		final User srcUser = createUser("buzz");
-		final User dstUser1 = createUser("duzz");
-		final User dstUser2 = createUser("fuzz");
-		final User dstUser3 = createUser("suzz");
+		final User srcUser = this.createUser("buzz");
+		final User dstUser1 = this.createUser("duzz");
+		final User dstUser2 = this.createUser("fuzz");
+		final User dstUser3 = this.createUser("suzz");
 
 		final String relationName1 = "football";
 		final String relationTag1 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName1);
@@ -346,8 +348,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final String relationName3 = "tv";
 		final String relationTag3 = SystemTagsUtil.buildSystemTagString(UserRelationSystemTag.NAME, relationName3);
 		
-		String sharedTag1 = "sharedTag1";
-		String sharedTag2 = "sharedTag2";
+		final String sharedTag1 = "sharedTag1";
+		final String sharedTag2 = "sharedTag2";
 		
 		final LogicInterface admLogic  = this.getAdminDbLogic(admUser.getName());
 		final LogicInterface srcLogic  = this.getDbLogic(srcUser.getName());
@@ -475,7 +477,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		// retrieve tag cloud
 		tags2.clear();
 		tags2.add(relationTag2);
-		List<Tag> aspectTagCloud= srcLogic.getTags(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null, null, null, Order.FREQUENCY, null, null, 0, 25);
+		final List<Tag> aspectTagCloud= srcLogic.getTags(BibTex.class, GroupingEntity.FRIEND, srcUser.getName(), tags1, null, null, null, null, Order.FREQUENCY, null, null, 0, 25);
 		assertEquals(6, aspectTagCloud.size());
 		assertTrue(aspectTagCloud.contains(new Tag(sharedTag1)));
 		assertTrue(aspectTagCloud.contains(new Tag(sharedTag2)));
@@ -504,7 +506,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getBibtexByFriends() {
-		final LogicInterface mwkustersAccess = getDbLogic("mwkuster");
+		final LogicInterface mwkustersAccess = this.getDbLogic("mwkuster");
 		final Set<Integer> mustGroups = new HashSet<Integer>();
 		mustGroups.add(FRIENDS_GROUP_ID);
 		final Set<Integer> mustNotGroups = new HashSet<Integer>();
@@ -652,8 +654,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		User spammer        = dbl.getUserDetails(TEST_SPAMMER_NAME);
 		assertEquals(TEST_SPAMMER_NAME, spammer.getName());
 		assertEquals(TEST_SPAMMER_ALGORITHM, spammer.getAlgorithm());
-		assertEquals(TEST_SPAMMER_PREDICTION, spammer.getPrediction());
-		assertEquals(TEST_SPAMMER_CONFIDENCE, spammer.getConfidence());
+		assertThat(spammer.getPrediction(), equalTo(TEST_SPAMMER_PREDICTION));
+		assertEquals(TEST_SPAMMER_CONFIDENCE, spammer.getConfidence(), 0.0001);
 		assertEquals(TEST_SPAMMER_EMAIL, spammer.getEmail());
 		
 		// one can not read spam informations about other users
@@ -767,7 +769,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertNotNull(updatedResource);
 		
 		// check content id
-		assertEquals(contentId, updatedResource.getContentId());
+		assertThat(updatedResource.getContentId(), equalTo(contentId));
 		
 		// check tags
 		assertTagsByName(ModelUtils.getTagSet("org.bibsonomy.testutil.ModelUtils", "hurz", "secondTag", "newTag"), updatedResource.getTags());
@@ -831,7 +833,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertNotNull(updatedResource);
 		
 		// check content id
-		assertEquals(contentId, updatedResource.getContentId());
+		assertThat(updatedResource.getContentId(), equalTo(contentId));
 		
 		// check tags
 		assertTagsByName(ModelUtils.getTagSet("org.bibsonomy.testutil.ModelUtils", "hurz", "secondTag", "newTag"), updatedResource.getTags());

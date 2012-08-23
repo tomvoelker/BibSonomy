@@ -62,29 +62,29 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void testInsertNewRelations() {
-		final Integer newId1 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
-		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
-		final Integer newId2 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		final int newId1 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		tagRelDb.insertRelations(this.tag, "test-user", this.dbSession);
+		final int newId2 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
 
 	/**
 	 * tests insertRelations (existing relations)
 	 */
-	@Ignore
+	@Ignore // TODO: document FIXME: fix test
 	@Test
 	public void testInsertExistingRelations() {
-		final Integer newId1 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
-		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
-		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
-		final Integer newId2 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		final int newId1 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		tagRelDb.insertRelations(this.tag, "test-user", this.dbSession);
+		tagRelDb.insertRelations(this.tag, "test-user", this.dbSession);
+		final int newId2 = generalDb.getNewId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
 
 	/**
 	 * tests deleteRelation
 	 */
-	@Ignore
+	@Ignore // TODO: document FIXME: fix test
 	@Test
 	public void testDeleteRelation() {
 		assertFalse(this.pluginMock.isOnTagRelationDelete());
@@ -185,7 +185,6 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		
 		assertFalse(tagRelDb.isRelationPresent(before, this.dbSession));
 		assertTrue(tagRelDb.isRelationPresent(after, this.dbSession));
-		
 
 		a = new Tag("java");
 		b = new Tag("haskel");
@@ -216,7 +215,5 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		assertFalse(tagRelDb.isRelationPresent(before, this.dbSession));
 		assertTrue(tagRelDb.isRelationPresent(after, this.dbSession));
 		assertTrue(tagRelDb.isRelationPresent(otherUser, this.dbSession));
-		
-		
 	}
 }

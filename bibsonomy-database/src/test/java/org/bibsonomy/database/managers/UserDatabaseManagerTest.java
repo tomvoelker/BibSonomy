@@ -1,9 +1,11 @@
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -28,7 +30,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
-import org.bibsonomy.testutil.TestDatabaseManager;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -48,7 +49,6 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static UserDatabaseManager userDb;
 	private static GroupDatabaseManager groupDb;
 	private static BibTexDatabaseManager bibTexDb;
-	private static TestDatabaseManager testDb;
 	
 
 	/**
@@ -60,7 +60,6 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		userDb = UserDatabaseManager.getInstance();
 		bibTexDb = BibTexDatabaseManager.getInstance();
 		groupDb = GroupDatabaseManager.getInstance();
-		testDb = new TestDatabaseManager();
 	}
 
 	
@@ -86,7 +85,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
     /**
      * tests getPendingUsers
      */
-	@Ignore
+	@Ignore  // TODO: document FIXME: fix me
     @Test
     public void getPendingUsers() {
         final List<User> users = userDb.getPendingUsers(0, Integer.MAX_VALUE, this.dbSession);
@@ -105,7 +104,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
     /**
      * tests getPendingUserByUsername
      */
-    @Ignore
+    @Ignore // TODO: document FIXME: fix me
     @Test
     public void getPendingUserByUsername() {
         final List<User> users = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession);
@@ -115,7 +114,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getAllUsers
 	 */
-    @Ignore
+    @Ignore // TODO: document FIXME: fix me
 	@Test
 	public void getAllUsers() {
         List<User> users = userDb.getAllUsers(0, 10, this.dbSession);
@@ -368,15 +367,14 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		List<User> users = userDb.getRelatedUsersBySimilarity(requestedUserName, null, UserRelation.JACCARD, 0, 10, this.dbSession);
 		assertEquals(2, users.size());
 		assertEquals("testuser2", users.get(0).getName());
-		assertEquals(5, users.get(0).getPrediction());
+		assertThat(users.get(0).getPrediction(), equalTo(5));
 		assertEquals("testuser3", users.get(1).getName());
-		assertEquals(2, users.get(1).getPrediction());
+		assertThat(users.get(1).getPrediction(), equalTo(2));
 		/*
 		 * we don't have data for cosine similarity in the DB
 		 */
 		users = userDb.getRelatedUsersBySimilarity(requestedUserName, null, UserRelation.COSINE, 0, 10, this.dbSession);
 		assertEquals(0, users.size());
-		
 	}
 	
 	/**
@@ -527,7 +525,6 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(2, friendsOfUser.get(0).getTags().size());
 	}
 	
-	
 	@Test
 	public void testMaxFieldLength() {
 		final User user = userDb.getUserDetails("testuser1", this.dbSession);
@@ -542,5 +539,4 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertNotNull(errorMessage.getMaxLengthForField("hobbies"));
 		}
 	}
-	
 }
