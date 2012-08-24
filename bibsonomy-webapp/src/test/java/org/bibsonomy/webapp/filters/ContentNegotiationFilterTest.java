@@ -5,7 +5,9 @@ import static org.junit.Assert.assertArrayEquals;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.EnumSet;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mortbay.jetty.testing.ServletTester;
 
 /**
  * @author rja
@@ -25,7 +28,10 @@ import org.mortbay.jetty.testing.ServletTester;
  */
 public class ContentNegotiationFilterTest {
 
-	private ServletTester tester;
+	private static final int PORT = 31416;
+	
+	
+	private Server tester;
 	private String baseUrl;
 	private HttpClient client;
 
@@ -37,11 +43,14 @@ public class ContentNegotiationFilterTest {
 	 */
 	@Before
 	public void initServletContainer () throws Exception {
-		tester = new ServletTester();
-		tester.setContextPath("/");
-		tester.addFilter(ContentNegotiationFilter.class, "/*", 1);
-		tester.addServlet(TestServlet.class, "/*");
-		baseUrl = tester.createSocketConnector(true);
+		tester = new Server(PORT);
+		final ServletContextHandler handler = new ServletContextHandler();
+		handler.setContextPath("/");
+		handler.addFilter(ContentNegotiationFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
+		handler.addServlet(TestServlet.class, "/*");
+		
+		tester.setHandler(handler);
+		baseUrl = "http://localhost:" + PORT;
 		tester.start();
 		client = new HttpClient();
 	}
@@ -137,7 +146,7 @@ public class ContentNegotiationFilterTest {
 			}
 			get.releaseConnection();
 			return result;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new Exception("request failed", e);
 		} 
 	}
@@ -159,7 +168,7 @@ public class ContentNegotiationFilterTest {
 		private static final long serialVersionUID = 8692283813700271210L;
 
 		@Override
-		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 			new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(), "UTF-8")).write("Hello World!");
 		}
 	}
