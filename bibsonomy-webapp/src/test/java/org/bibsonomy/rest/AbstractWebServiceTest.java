@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
+ * TODO: remove?
  * Blackbox tests for the REST-API.
  * 
  * @author Christian Schenk
@@ -41,7 +42,7 @@ public abstract class AbstractWebServiceTest {
 	@BeforeClass
 	public static void classSetUp() throws ConfigurationException {
 		// Load configuration
-		final Configuration config = new PropertiesConfiguration("src/test/resources/rest-api.properties");
+		final Configuration config = new PropertiesConfiguration("rest-api.properties");
 		final String host = config.getString("host");
 		final Integer port = config.getInt("port");
 		final String realm = config.getString("realm");

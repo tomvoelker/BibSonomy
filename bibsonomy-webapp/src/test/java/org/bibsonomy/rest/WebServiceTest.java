@@ -13,6 +13,7 @@ import org.junit.Test;
 
 /**
  * Blackbox tests for the REST-API.
+ * TODO: remove? tests disabled for 3 years
  * 
  * @author Christian Schenk
  * @version $Id$
@@ -57,6 +58,4 @@ public class WebServiceTest extends AbstractWebServiceTest {
 		assertEquals(25, numPosts.intValue());
 		assertEquals(30, Integer.parseInt(posts.valueOf("@end")));
 	}
-	
-	
 }
