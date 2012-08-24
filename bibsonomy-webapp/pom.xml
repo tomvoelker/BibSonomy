@@ -10,18 +10,26 @@
 	<artifactId>bibsonomy-webapp</artifactId>
 	<packaging>war</packaging>
 	<name>BibSonomy-Webapp</name>
-	<description>The webapplication for Bibsonomy.</description>
+	<description>The web application for BibSonomy.</description>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.2</version>
+				<!-- the surefire plugin does strange things with the classpath,
+					to run the webapp in the tests we need to use the forkmode never-->
+				<configuration>
+					<forkMode>never</forkMode>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
-					<!-- 
-						otherwise the javascript/css files compressed by
-						yuicompressor-maven-plugin are overwritten by this plugin 
-					-->
+					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
+						are overwritten by this plugin -->
 					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
 				</configuration>
 			</plugin>
@@ -30,17 +38,13 @@
 				<version>1.4</version>
 				<executions>
 					<execution>
-						<!--
-							download the latest WURLF specs each time a war file is created.
-							if this is too frequent for any reason, check the version history
-							of this file for rev. 1.86 which checks if the file already
-							exists.
-						-->
+						<!-- download the latest WURLF specs each time a war file is created. -->
 						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
 								<mkdir dir="${project.downloaded-resources.directory}" />
-								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
+								<get
+									src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
 									dest="${project.downloaded-resources.directory}/wurfl.zip" />
 							</tasks>
 						</configuration>
@@ -70,43 +74,43 @@
 					<disableOptimizations>true</disableOptimizations>
 					<aggregations>
 						<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
-		            	<aggregation>
-              				<insertNewLine>true</insertNewLine>
-              				<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
-              				<includes>
-                				<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
-                				<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
-                				<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
-                				<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
-                				<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
-                				<include>${project.build.webapp.resourcedir}/jquery/plugins/textarearesizer/jquery.textarearesizer.js</include>
-                				<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
-                				<include>${project.build.webapp.resourcedir}/jquery/plugins/hoverIntent/jquery.hoverIntent.js</include>
-                				<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js</include>                				
-              					<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
-              					<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/textarearesizer/jquery.textarearesizer.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/hoverIntent/jquery.hoverIntent.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui-1.8.16.custom.min.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
-              				</includes>
-            			</aggregation>
-            			<aggregation>
-            				<insertNewLine>true</insertNewLine>
-            				<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
-            				<includes>
-            					<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
-            					<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
-            					<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
-            					<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
-            					<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
-            					<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
-            					<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
-            					<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
-            					<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
+							</includes>
+						</aggregation>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
+							<includes>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/styles.js</include>
-            				</includes>
-            			</aggregation>
-          			</aggregations>
+							</includes>
+						</aggregation>
+					</aggregations>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -136,9 +140,18 @@
 				<directory>${project.downloaded-resources.directory}</directory>
 			</resource>
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>src/main/webapp</directory>
+			</testResource>
+		</testResources>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -182,10 +195,8 @@
 	<profiles>
 		<profile>
 			<id>deploy-to-puma</id>
-			<!--
-				change tomcat deploy destination when -Ddeploy-to=puma is given as
-				parameter.
-			-->
+			<!-- change tomcat deploy destination when -Ddeploy-to=puma is given as 
+				parameter. -->
 			<activation>
 				<property>
 					<name>deploy-to</name>
@@ -207,10 +218,8 @@
 		</profile>
 		<profile>
 			<id>deploy-to-wuerzburg</id>
-			<!--
-				change tomcat deploy destination when -Ddeploy-to=wuerzburg is given
-				as parameter.
-			-->
+			<!-- change tomcat deploy destination when -Ddeploy-to=wuerzburg is given 
+				as parameter. -->
 			<activation>
 				<property>
 					<name>deploy-to</name>
@@ -272,6 +281,13 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-openaccess</artifactId>
+			<exclusions>
+				<!-- the embedded tomcat 7 requires servlet-api 3 -->
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -283,7 +299,7 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-pingback</artifactId>
 			<scope>runtime</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
@@ -305,6 +321,13 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-opensocial</artifactId>
+			<exclusions>
+				<!-- not compatible with selenium --> 
+				<exclusion>
+					<groupId>org.apache.tomcat</groupId>
+					<artifactId>el-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -315,9 +338,9 @@
 			<artifactId>bibsonomy-web-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-embedded</artifactId>
-			<version>6.1.10</version>
+			<groupId>org.eclipse.jetty.aggregate</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>8.1.3.v20120416</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -340,24 +363,6 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>el-api</artifactId>
-			<version>6.0.29</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jsp-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>taglibs</groupId>
@@ -403,6 +408,13 @@
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
 			<version>3.2.0_jaeschke</version>
+			<!-- embedded tomcat requires servlet-api 3 (which has a different artifact-id) -->
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.openid4java</groupId>
@@ -418,19 +430,18 @@
 					<groupId>org.springframework</groupId>
 				</exclusion>
 				<exclusion>
-					<!--
-						the version required by openid4java is broken (kills Tomcat on
-						some OpenIDs)
-					-->
+					<!-- the version required by openid4java is broken (kills Tomcat on 
+						some OpenIDs) -->
 					<artifactId>nekohtml</artifactId>
 					<groupId>net.sourceforge.nekohtml</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- TODO: update available -->
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.14</version>
+			<version>1.9.15</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -445,11 +456,9 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-lucene</artifactId>
 		</dependency>
-		<!--
-			*** beanutils 1.7.0 contain a memory leak *** we don't have a direct
-			dependency to beanutils, but some lib needs it so we override here to
-			the leak-free version 1.8.0
-		-->
+		<!-- *** beanutils 1.7.0 contain a memory leak *** we don't have a direct 
+			dependency to beanutils, but some lib needs it so we override here to the 
+			leak-free version 1.8.0 -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -518,12 +527,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-servlet-tester</artifactId>
-			<version>6.1.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
@@ -533,16 +536,85 @@
 			<artifactId>bibsonomy-synchronization</artifactId>
 		</dependency>
 		<dependency>
-      		<groupId>com.restfb</groupId>
-      		<artifactId>restfb</artifactId>
-      		<version>1.6.9</version>
-    	</dependency>
+			<groupId>com.restfb</groupId>
+			<artifactId>restfb</artifactId>
+			<version>1.6.9</version>
+		</dependency>
+		<!-- for web testing -->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-core</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-logging-juli</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- jsp support -->
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jdt.core.compiler</groupId>
+			<artifactId>ecj</artifactId>
+			<version>3.7.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>2.24.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- http unit needs a newer version of these dependencies -->
+		<!-- TODO: still needs an update -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<!-- TODO: shinding not compatible with newer version -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>12.0</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
 		<wurfl.version>2.3.1</wurfl.version>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
+		<tomcat.version>7.0.29</tomcat.version>
 	</properties>
 	<distributionManagement>
 		<site>

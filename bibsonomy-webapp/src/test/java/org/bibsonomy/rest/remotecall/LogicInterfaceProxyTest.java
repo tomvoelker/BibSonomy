@@ -61,15 +61,15 @@ import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
+import org.eclipse.jetty.server.AbstractConnector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.bio.SocketConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mortbay.jetty.AbstractConnector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.bio.SocketConnector;
-import org.mortbay.jetty.servlet.Context;
 
 /**
  * Tests remote calls via an LogicInterface remote proxy.
@@ -131,12 +131,13 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			
 			apiUrl = "http://localhost:" + PORT + "/api";
 			server.addConnector(connector);
-			final Context servletContext = new Context();
+			final ServletContextHandler servletContext = new ServletContextHandler();
 			servletContext.setContextPath("/api");
 			
 			final RestServlet restServlet = new RestServlet();
-			restServlet.setUrlRenderer(new UrlRenderer(apiUrl));
-			restServlet.setRendererFactory(new RendererFactory(new UrlRenderer(apiUrl)));
+			final UrlRenderer urlRenderer = new UrlRenderer(apiUrl);
+			restServlet.setUrlRenderer(urlRenderer);
+			restServlet.setRendererFactory(new RendererFactory(urlRenderer));
 			
 			try {
 				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
@@ -146,7 +147,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			
 			servletContext.addServlet(RestServlet.class, "/*").setServlet(restServlet);
 			
-			server.addHandler(servletContext);
+			server.setHandler(servletContext);
 			server.start();
 			connector.start();
 			
@@ -528,7 +529,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, Date startDate, Date endDate, final int start, final int end) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -581,7 +582,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 	
 	@Override
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
 		EasyMock.expect(serverLogic.getTags(resourceType, grouping, groupingName, tags, null, null, regex, null, order, null, null, start, end)).andReturn(expected);
 		EasyMock.replay(serverLogic);
@@ -881,7 +882,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, StatisticsConstraint constraint, Order order, Date startDate, Date endDate, int start, int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -899,7 +900,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Date startDate, Date endDate, int start, int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
