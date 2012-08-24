@@ -198,7 +198,7 @@ public class DblpTest {
 			String authorsString = contentIDAuthorString.get(0);
 
 			//TODO we need this already somewhere else and should maybe put this in a function
-			//remove the dblp numbers from the authors e.g. Jürgen Müller 002
+			//remove the dblp numbers from the authors e.g. JÃ¼rgen MÃ¼ller 002
 			final Pattern p = Pattern.compile("\\s+([^\\s]+?)\\s+([0-9]{4})");
 			final Matcher matcher = p.matcher(authorsString);
 
