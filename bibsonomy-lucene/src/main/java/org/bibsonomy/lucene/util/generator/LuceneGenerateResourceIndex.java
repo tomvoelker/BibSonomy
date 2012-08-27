@@ -138,6 +138,10 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			resourceIndex.close();
 			final File indexPath = new File(resourceIndex.getIndexPath());
 			final File tmpIndexPath = new File(resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX);
+			// If there was no index directory create one
+			if (!indexPath.exists()) {
+				indexPath.mkdirs();
+			}
 			final Directory indexDirectory = FSDirectory.open(indexPath);
 			final Directory tmpIndexDirectory = FSDirectory.open(tmpIndexPath);
 
