@@ -2,7 +2,6 @@ package org.bibsonomy.webapp;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
@@ -19,7 +18,6 @@ public class UserLoginTest extends WebappTest {
 	}
 	
 	@Test
-	@Ignore // TODO: remove
 	public void quickLoginInternal() {
 		// open homepage
 		this.selenium.open("/");
