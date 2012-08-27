@@ -17,7 +17,6 @@
      -->
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
-	
 	<div id="groupBoxleft">
 		<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.viewablefor">
 		<!-- fieldset id="fsgroupBoxleft"-->
@@ -25,15 +24,17 @@
 	
 				<div style="float: left; margin-right: 1ex;">
 	           		<!-- radio buttons for public, private, other -->
-	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="public" tabindex="2" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
-	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" tabindex="2" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
-	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" tabindex="2" id="post.groups.other" />  <span class="expl"><fmt:message key="post.resource.other"/></span>
+	           		<form:radiobutton path="abstractGrouping" value="public" tabindex="2" />  <span class="expl"><fmt:message key="post.resource.public"/></span>
+	           		<form:radiobutton path="abstractGrouping" value="private" tabindex="2" /> <span class="expl"><fmt:message key="post.resource.private"/></span>
+	           		<form:radiobutton path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" />  <span class="expl"><fmt:message key="post.resource.other"/></span>
 				</div>	
 	            <!-- select box for "other" groups TODO: allow multiple groups-->
-	            <form:select multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
+	            <p>
+	            <form:select class="initiallyHidden" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
 	            	<form:option label="friends" value="friends"/>
 	              	<form:options items="${groups}" itemValue="name" itemLabel="name"/>
 	            </form:select>
+	            </p>
 	            <div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 	            
 	    	</jsp:attribute>
@@ -42,10 +43,40 @@
 	
 	<script type="text/javascript">
 	<![CDATA[
-      function toggleGroupBox() {
-        document.getElementById("post.groups.other2").disabled = !document.getElementById("post.groups.other").checked;
-      }
-      toggleGroupBox();
+	/* 	
+		this script controls the visibility of the group select field.
+		if the 'other' radio button is checked or hovered show the select field, otherwise hide it
+	*/
+	  var selectOther = document.getElementById("post.groups.other2");
+	  var radiobuttonOther = document.getElementById("post.groups.other");
+	  var siblings = $(radiobuttonOther).siblings("input:radio");
+      var timeout = null;
+      
+	  var hideSelectBox = function(el) {
+		  clearTimeout(timeout);
+		  if(el.id=="post.groups.other" && el.checked) $(selectOther).show(); 
+		  else $(selectOther).hide();
+	  };
+
+	  var callback = function(e) {
+		  selectOther.disabled = !radiobuttonOther.checked;
+		  hideSelectBox(e.target);
+	  };
+	  
+	  var smoothHide = function() {
+		  timeout=setTimeout(function() {hideSelectBox(radiobuttonOther);},1200);
+	  };
+	  
+	  $(document).ready(function() {
+    	  $(radiobuttonOther)
+    	  .click(callback)
+    	  .mouseover(function() {clearTimeout(timeout);$(selectOther).show();}).mouseout(smoothHide)
+    	  .next(".expl")
+    	  .mouseover(function() {clearTimeout(timeout);$(selectOther).show();}).mouseout(smoothHide);
+    	  $(siblings[0]).click(callback);
+    	  $(siblings[1]).click(callback);
+    	  hideSelectBox(radiobuttonOther);
+		});
 	]]>
 	</script>
 </jsp:root>
