@@ -31,7 +31,7 @@
 		    		var bookmarkletSection = $("#buttons\\.Bookmarklets");
 		    		var callback = function(e){
 		    			var status = "collapse"; 
-		    			var target = $(this).next("span");
+		    			var target = $(this).next("div");
 
 		    			if(target.css("display")!='none') { 
 		    				target.hide();
@@ -60,27 +60,27 @@
                 +-->			
 		    <ul>
 	           	<li>
-	           		<h2 id="buttons.Addon" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="bookmarklet.addon.headline"/></h2>
-	           		<span style="display:none">
-						<h3><fmt:message key="bookmarklet.versionNotice"/></h3>
-		           		<p><fmt:message key="bookmarklet.addon.text1"/></p>
+	           		<p><fmt:message key="buttons.page.introduction"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
+	           		<h2 id="buttons.Addon" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="bookmarklet.addon.headline"><fmt:param value="${properties['project.name']}"/></fmt:message></h2>
+	           		<div style="display:none;margin-left:20px;">
+		           		<p><fmt:message key="bookmarklet.addon.text1"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
 		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Firefox</h3>
-		           		<span style="display:none">
+		           		<div style="margin-left:15px;display:none">
 			           		<p><img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/></p>
 			           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
 			           		<p><a href="#" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
-		           		</span>
+		           		</div>
 		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Chrome</h3>
-		           		<span style="display:none">
+		           		<div style="margin-left:15px;display:none">
 			           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
-			           		<p><fmt:message key="bookmarklet.addon.text3"/></p>
+			           		<p><fmt:message key="bookmarklet.addon.text3"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
 			           		<p><a href="#" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
-		           		</span>
-		           		<p><i><fmt:message key="note"/>:<fmt:message key="bookmarklet.legacyNotice"/></i></p>
-	           		</span>
+		           		</div>
+		           		<p><i><fmt:message key="note"/>:<fmt:message key="bookmarklet.legacyNotice"/><fmt:message key="bookmarklet.legacyNotice.further1"/></i></p>
+	           		</div>
 					<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
 	    			<h2 id="buttons.Bookmarklets" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="buttons.bookmarklet1"/></h2>
-	    			<span style="display:none">		    		
+	    			<div style="display:none;margin-left:20px;">		    		
 			            <!--+ 
 			                |              myBibSonomy 
 			                +-->	
@@ -138,15 +138,17 @@
 								<fmt:message key="buttons.shortcut_bibtex_end"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message>
 							</p>
 						</c:if>
-					</span>
+					</div>
 	           	</li>
 	            <!-- 
 	               |              JavaScript code snippets 
 	               -->  
-	            <li>
-					<h2 id="buttons.Snippets"><fmt:message key="buttons.javascript_snippets"/></h2>
-					<p><fmt:message key="buttons.javascript_snippets_text"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></p>
-					<buttons:snippets/>
+	            <li style="margin-left:15px;">
+	            	<h2 id="buttons.Snippets"><fmt:message key="buttons.javascript_snippets"/></h2>
+	            	<div style="margin-left:5px;">
+						<p><fmt:message key="buttons.javascript_snippets_text"><fmt:param value="${properties['project.name']}"></fmt:param></fmt:message></p>
+						<buttons:snippets/>
+					</div>
 				</li>
 			</ul>
 	</jsp:attribute>

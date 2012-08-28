@@ -64,7 +64,7 @@
        			<p id="post.resource.bookmarklet.text"><!-- keep --></p>     
 				<img id="post.resource.bookmarklet.screenshot"/>
             	<p id="post.resource.bookmarklet.installButton"><!-- keep --></p>
-            	<p><fmt:message key="bookmarklet.legacyNotice"/></p>
+            	<p><fmt:message key="bookmarklet.legacyNotice"/><fmt:message key="bookmarklet.legacyNotice.further2"/></p>
             </span>
             <script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
             <script type="text/javascript">

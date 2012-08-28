@@ -52,7 +52,7 @@ var BookmarkletButton = {
 						"class":"post.resource."+browser.name.toLowerCase()+".installButton",
 						"href":browser.url
 					}
-				).html("<span class='post.resource.iconPlus'>"+getString("bookmarklet.buttonText"+browser.name)+"</span>")
+				).html("<span>"+getString("bookmarklet.buttonText"+browser.name)+"</span>")
 			};
 		}
 }
