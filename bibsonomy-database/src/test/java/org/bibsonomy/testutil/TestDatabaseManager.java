@@ -69,7 +69,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return count requested contentID from BibTeX
 	 */
 	public int countRequestedContentIdFromBibTex(final BibTexParam param) {
-		return this.queryForObject("countRequestedContentIdFromBibTex", param, Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForObject("countRequestedContentIdFromBibTex", param, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	/** 
@@ -77,7 +82,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return current contentID
 	 */
 	public int getCurrentContentId(final ConstantID idsType) {
-		return this.queryForObject("getCurrentContentId", idsType.getId(), Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForObject("getCurrentContentId", idsType.getId(), Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	/**
@@ -85,7 +95,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return count logged tasIDs
 	 */
 	public int countLoggedTasIds(final TagParam param) {
-		return this.queryForObject("countLoggedTasIds", param, Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForObject("countLoggedTasIds", param, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	/**
@@ -93,7 +108,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return count new contentID from BibTeX
 	 */
 	public int countNewContentIdFromBibTex(final BibTexParam param) {
-		return this.queryForObject("countNewContentIdFromBibTex", param, Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForObject("countNewContentIdFromBibTex", param, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -101,7 +121,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return count new contentID from Bookmark
 	 */
 	public int countNewContentIdFromBookmark(final BookmarkParam param) {
-		return this.queryForObject("countNewContentIdFromBookmark", param, Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForObject("countNewContentIdFromBookmark", param, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -109,7 +134,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return count requested contentID from Bookmark
 	 */
 	public int countRequestedContentIdFromBookmark(final BookmarkParam param) {
-		return this.queryForObject("countRequestedContentIdFromBookmark", param, Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForObject("countRequestedContentIdFromBookmark", param, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -117,7 +147,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return count tasIDs
 	 */
 	public int countTasIds(final TagParam param) {
-		return this.queryForObject("countTasIds", param, Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {			
+			return this.queryForObject("countTasIds", param, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -125,7 +160,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return count tag relation
 	 */
 	public int countTagRelation(final TagRelationParam param) {
-		return this.queryForObject("countTagRelation", param, Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForObject("countTagRelation", param, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -133,15 +173,25 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return count group
 	 */
 	public int countGroup(final GroupParam param) {
-		return this.queryForObject("countGroup", param, Integer.class, this.createDBSession());
+		final DBSession session = this.createDBSession();
+		try {
+			return this.queryForObject("countGroup", param, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	/**
 	 * @return number of all review log entries
 	 */
 	public int countReviewLogs() {
-		final Integer result = this.queryForObject("countReviewLogs", Integer.class, this.createDBSession());
-		return this.checkResult(result);
+		final DBSession session = this.createDBSession();
+		try {
+			final Integer result = this.queryForObject("countReviewLogs", Integer.class, session);
+			return this.checkResult(result);
+		} finally {
+			session.close();
+		}
 	}
 	
 	/**
@@ -149,8 +199,13 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return the average ratings (of reviews)
 	 */
 	public double getReviewRatingsArithmeticMean(final String interHash) {
-		final Double result = this.queryForObject("getReviewRatingsArithmeticMean", interHash, Double.class, this.createDBSession());
-		return this.checkResult(result);
+		final DBSession session = this.createDBSession();
+		try {
+			final Double result = this.queryForObject("getReviewRatingsArithmeticMean", interHash, Double.class, session);
+			return this.checkResult(result);
+		} finally {
+			session.close();
+		}
 	}
 	
 	/**
@@ -158,8 +213,13 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @return the number of reviews for the interHash
 	 */
 	public int getReviewCount(final String interHash) {
-		final Integer result = this.queryForObject("getReviewCount", interHash, Integer.class, this.createDBSession());
-		return this.checkResult(result);
+		final DBSession session = this.createDBSession();
+		try {
+			final Integer result = this.queryForObject("getReviewCount", interHash, Integer.class, session);
+			return this.checkResult(result);			
+		} finally {
+			session.close();
+		}
 	}
 	
 	/**
@@ -167,7 +227,12 @@ public class TestDatabaseManager extends AbstractDatabaseManager {
 	 * @param receiverName optional
 	 * @return count of logged messages for receiver, or global count if receiverName is null  
 	 */
-	public int getLogInboxCount(String receiverName) {
-		return this.queryForObject("inboxLogCount", receiverName, Integer.class, this.createDBSession());
+	public int getLogInboxCount(final String receiverName) {
+		final DBSession session = this.createDBSession();
+		try {			
+			return this.queryForObject("inboxLogCount", receiverName, Integer.class, session);
+		} finally {
+			session.close();
+		}
 	}
 }
