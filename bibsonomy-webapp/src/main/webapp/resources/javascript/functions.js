@@ -3,7 +3,7 @@ var tagbox      = null; // used in style.js!
 var ckey        = null;
 var currUser    = null;
 var requUser	= null;
-var projectName = null;
+// var projectName = null; TODO: remove
 var pwd_id_postfix = "_form_copy"; // id of password input field copy
 
 /*
@@ -35,7 +35,8 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	if (lrequUser != "") {
 		requUser = lrequUser;
 	}
-	projectName = lprojectName;	
+	// TODO: remove
+	// projectName = lprojectName;	
 	ckey = lckey;
 	currUser = lcurrUser;
 	
