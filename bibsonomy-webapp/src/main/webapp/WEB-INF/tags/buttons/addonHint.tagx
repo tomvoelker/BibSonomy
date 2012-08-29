@@ -12,14 +12,15 @@
     <script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
     <script type="text/javascript">
     	$(document).ready(function(){
-    		installBookmarkletButton(
+    		var result=null;
+    		if((result=installBookmarkletButton(
     			{
     				textElementId:"post\\.resource\\.hint", 
     				buttonElementId:"post\\.resource\\.hint\\.buttons",
     				sidebarInlay:true,
     				emptyParent:true
     			}
-    		);
+    		))!=null) $("#post\\.resource\\.hint1").html(getString("bookmarklet.legacyNotice")+" "+getString("bookmarklet.legacyNotice.further2"));
     	});
     </script>
     <ul>
@@ -28,6 +29,6 @@
 		  	<li><buttons:postPublication/></li>
 			<li><buttons:postPublicationPopUp/></li>
 		</ul>
-		<li><fmt:message key="post.resource.hint1"/></li>
+		<li id="post.resource.hint1"><fmt:message key="post.resource.hint1"/></li>
 	</ul>
 </jsp:root>

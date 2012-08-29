@@ -71,11 +71,19 @@ function installBookmarkletButton (options){
 		button = $("<li></li>").append($("<p></p>").html(result.button));
 
     $("#"+options.buttonElementId).append(result.button);
-   	if(options.textElementId!=undefined)
+   	if(options.textElementId!=undefined) {
+   		var param = new Array(projectName);
   		$("#"+options.textElementId).append(
 			"<h3>"
-			+getString("bookmarklet.title"+result.browser.name)
+			+getString("bookmarklet.title"+result.browser.name, param)
 			+"</h3>"
-			+getString("bookmarklet.sidebarNotice"));
+			+getString("bookmarklet.sidebarNotice", param));
+   	}
    	return result.browser;
 }
+
+/* FIXME: pseudo call for getString to include messages bookmarklet.legacyNotice(.further2) by generate_localized_messages.pl
+ * getString("bookmarklet.legacyNotice")
+ * getString("bookmarklet.legacyNotice.further2")
+ */
+	
