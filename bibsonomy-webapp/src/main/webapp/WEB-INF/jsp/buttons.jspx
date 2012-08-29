@@ -76,7 +76,7 @@
 			           		<p><fmt:message key="bookmarklet.addon.text3"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
 			           		<p><a href="#" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
 		           		</div>
-		           		<p><i><fmt:message key="note"/>:<fmt:message key="bookmarklet.legacyNotice"/><fmt:message key="bookmarklet.legacyNotice.further1"/></i></p>
+		           		<p><i><fmt:message key="note"/>: <fmt:message key="bookmarklet.legacyNotice"/><fmt:message key="bookmarklet.legacyNotice.further1"/></i></p>
 	           		</div>
 					<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
 	    			<h2 id="buttons.Bookmarklets" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="buttons.bookmarklet1"/></h2>
