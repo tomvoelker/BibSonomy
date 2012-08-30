@@ -524,7 +524,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		//--------------------------------------------------------------------
 		// the resulting main query
 		final BooleanQuery mainQuery = new BooleanQuery();
-		if (present(searchTerms) || present(titleSearchTerms)) {
+		if (present(searchTerms) || present(titleSearchTerms) || present(authorSearchTerms)) {
 			final BooleanQuery searchQuery = this.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms);
 			mainQuery.add(searchQuery, Occur.MUST);
 		}		
