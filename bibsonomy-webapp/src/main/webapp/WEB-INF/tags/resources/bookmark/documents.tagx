@@ -12,7 +12,7 @@
 			<span class="">
 					<a class="preview bookmark" href="${bookUrl}">
 						<!-- FIXME: add configuration option for image server --> 
-						<img class="pre_pic" src="http://141.51.167.70/preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
+						<img class="pre_pic" src="${project.img}preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
 					</a>
 			</span>
 		</c:when> 
