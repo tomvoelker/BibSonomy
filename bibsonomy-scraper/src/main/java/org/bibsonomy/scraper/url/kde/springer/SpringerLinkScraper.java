@@ -62,7 +62,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	
 	private static final Pattern SESSION_PATTERN = Pattern.compile("ASP\\.NET_SessionId=(\\w*+);");
 
-	private static final Pattern YEAR_PATTERN_FOR_BIBTEX = Pattern.compile("(year[^\\{]*+(.*?)\\})");
+	private static final Pattern YEAR_PATTERN_FOR_BIBTEX = Pattern.compile("(year[^\\{]*+\\{(.*?)\\})");
 	private static final Pattern YEAR_PATTERN_FOR_PAGE = Pattern.compile("(?s)<div class=\"secondary\">.*?((20|19)\\d{2}+).*?</div>");
 	
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
