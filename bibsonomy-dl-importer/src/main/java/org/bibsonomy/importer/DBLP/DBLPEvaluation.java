@@ -73,13 +73,7 @@ public class DBLPEvaluation{
 
 	private int insert_bookmark_empty_url_count;
 
-	private int insert_warning_count;
-
 	private int insert_duplicate_count;
-
-	private int insert_incomplete_count;
-
-	private int upload_error_count;
 
 	private int exception_count;
 	
@@ -111,10 +105,7 @@ public class DBLPEvaluation{
 		insert_www_count = 0;
 		insert_incomplete_author_editor_count = 0;
 		insert_bookmark_empty_url_count = 0;
-		insert_warning_count = 0;
 		insert_duplicate_count = 0;
-		insert_incomplete_count = 0;
-		upload_error_count = 0;
 		exception_count = 0;
 		insert_publications = 0; 
 		insert_bookmarks = 0;
@@ -194,28 +185,12 @@ public class DBLPEvaluation{
 		this.insert_incomplete_author_editor_count = insert_incomplete_author_editor_count;
 	}
 
-	public int incInsert_incomplete_count() {
-		return insert_incomplete_count++;
-	}
-
-	public void setInsert_incomplete_count(int insert_incomplete_count) {
-		this.insert_incomplete_count = insert_incomplete_count;
-	}
-
 	public int incInsert_publications() {
 		return insert_publications++;
 	}
 
 	public void setInsert_publications(int insert_publications) {
 		this.insert_publications = insert_publications;
-	}
-
-	public int incInsert_warning_count() {
-		return insert_warning_count++;
-	}
-
-	public void setInsert_warning_count(int insert_warning_count) {
-		this.insert_warning_count = insert_warning_count;
 	}
 
 	public int incMastersthesis_count() {
@@ -240,14 +215,6 @@ public class DBLPEvaluation{
 
 	public void setProceedings_count(int proceedings_count) {
 		this.proceedings_count = proceedings_count;
-	}
-
-	public int incUpload_error_count() {
-		return upload_error_count++;
-	}
-
-	public void setUpload_error_count(int upload_error_count) {
-		this.upload_error_count = upload_error_count;
 	}
 
 	public int incWww_count() {
@@ -294,16 +261,8 @@ public class DBLPEvaluation{
 		return insert_incomplete_author_editor_count;
 	}
 
-	public int getInsert_incomplete_count() {
-		return insert_incomplete_count;
-	}
-
 	public int getInsert_publications() {
 		return insert_publications;
-	}
-
-	public int getInsert_warning_count() {
-		return insert_warning_count;
 	}
 
 	public int getMastersthesis_count() {
@@ -316,10 +275,6 @@ public class DBLPEvaluation{
 
 	public int getProceedings_count() {
 		return proceedings_count;
-	}
-
-	public int getUpload_error_count() {
-		return upload_error_count;
 	}
 
 	public int getWww_count() {
@@ -626,9 +581,7 @@ public class DBLPEvaluation{
 		buffer.append("failures: \n");
 		buffer.append("\n");
 		buffer.append("bookmarks with empty url field=" + insert_bookmark_empty_url_count + "\n");
-		buffer.append("bibtex insert warnings=" + insert_warning_count + "\n");
 		buffer.append("bibtex insert duplicate failures=" + insert_duplicate_count + "\n");
-		buffer.append("bibtex insert incomplete failures=" + insert_incomplete_count + "\n");
 		buffer.append("bibtex insert incomplete(author/editor) failures(insert as bookmarks)=" + insert_incomplete_author_editor_count + "\n");
 		buffer.append("exceptions=" + exception_count + "\n");
 		return buffer.toString();

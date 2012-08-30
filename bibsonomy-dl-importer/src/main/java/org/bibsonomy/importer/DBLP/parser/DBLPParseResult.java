@@ -66,16 +66,6 @@ public class DBLPParseResult {
 
 	private LinkedList<DBLPEntry> insert_bookmark_empty_url;
 
-	private LinkedList<String> insert_warning;
-
-	private LinkedList<String> insert_duplicate;
-
-	private LinkedList<String> insert_incomplete;
-
-	private LinkedList<String> upload_error;
-	
-//	private LinkedList<String> exception;
-
 	public DBLPParseResult() {
 		articlelist = new LinkedList<DBLPEntry>();
 		inproceedingslist = new LinkedList<DBLPEntry>();
@@ -87,24 +77,11 @@ public class DBLPParseResult {
 		crossreflist = new LinkedList<DBLPEntry>();
 		wwwlist = new LinkedList<DBLPEntry>();
 		insert_incomplete_author_editor = new LinkedList<DBLPEntry>();
-		insert_warning = new LinkedList<String>();
-		insert_duplicate = new LinkedList<String>();
-		insert_incomplete = new LinkedList<String>();
 		insert_bookmark_empty_url = new LinkedList<DBLPEntry>();
-		upload_error = new LinkedList<String>();
-//		exception = new LinkedList<String>();
 		crossrefEntries = new HashMap<String, HashMap<String, DBLPEntry>>();
 		allKeys = new HashSet<String>();
 		eval = new DBLPEvaluation();
 	}
-//	
-//	public LinkedList<String> getException() {
-//		return exception;
-//	}
-//
-//	public void setException(LinkedList<String> exception) {
-//		this.exception = exception;
-//	}
 
 	public HashSet<String> getAllKeys() {
 		return allKeys;
@@ -208,30 +185,6 @@ public class DBLPParseResult {
 		this.insert_incomplete_author_editor = author_editor_failure;
 	}
 
-	public LinkedList<String> getInsert_duplicate() {
-		return insert_duplicate;
-	}
-
-	public void setInsert_duplicate(LinkedList<String> insert_duplicate) {
-		this.insert_duplicate = insert_duplicate;
-	}
-
-	public LinkedList<String> getInsert_incomplete() {
-		return insert_incomplete;
-	}
-
-	public void setInsert_incomplete(LinkedList<String> insert_incomplete) {
-		this.insert_incomplete = insert_incomplete;
-	}
-
-	public LinkedList<String> getInsert_warning() {
-		return insert_warning;
-	}
-
-	public void setInsert_warning(LinkedList<String> insert_warning) {
-		this.insert_warning = insert_warning;
-	}
-
 	public LinkedList<DBLPEntry> getInsert_bookmark_empty_url() {
 		return insert_bookmark_empty_url;
 	}
@@ -239,14 +192,6 @@ public class DBLPParseResult {
 	public void setInsert_bookmark_empty_url(
 			LinkedList<DBLPEntry> insert_bookmark_url) {
 		this.insert_bookmark_empty_url = insert_bookmark_url;
-	}
-
-	public LinkedList<String> getUpload_error() {
-		return upload_error;
-	}
-
-	public void setUpload_error(LinkedList<String> upload_error) {
-		this.upload_error = upload_error;
 	}
 
 	public HashMap<String, HashMap<String, DBLPEntry>> getCrossrefEntries() {

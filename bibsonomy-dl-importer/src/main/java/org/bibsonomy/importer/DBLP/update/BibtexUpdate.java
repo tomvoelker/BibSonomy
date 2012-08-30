@@ -11,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.importer.DBLP.db.DBHandler;
 import org.bibsonomy.importer.DBLP.parser.DBLPEntry;
 import org.bibsonomy.importer.DBLP.parser.DBLPParseResult;
-import org.w3c.dom.Document;
 
 
 public class BibtexUpdate{
@@ -152,18 +151,13 @@ public class BibtexUpdate{
 			// delete
 			httpBibUpdate.deleteOldBibtexByEntry(list, handler, db_bibtex_keys);
 			// insert
-			final Document insertNewBibtexDocument = httpBibUpdate.insertNewBibtex(list, presult.getEval());
-			/*
-			 * FIXME: rja, 2010-03-29; disabled - does not work after new release
-			 */
-			if (insertNewBibtexDocument != null) {
-				HTMLResultHandler.searchFailureMessage(list, presult, insertNewBibtexDocument);
-			}
+			httpBibUpdate.insertNewBibtex(list, presult.getEval());
+
 		} catch(Exception e) {
 			/*
 			 * error handling
 			 */
-			log.fatal("BibtexUpdate: ", e);
+			log.fatal("deleteAndInsertEntries()", e);
 			handler.close();
 		}
 	}

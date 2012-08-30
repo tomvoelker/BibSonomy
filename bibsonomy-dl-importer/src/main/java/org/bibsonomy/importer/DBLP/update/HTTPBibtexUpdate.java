@@ -25,8 +25,6 @@ import org.bibsonomy.importer.DBLP.DBLPEvaluation;
 import org.bibsonomy.importer.DBLP.DBLPException;
 import org.bibsonomy.importer.DBLP.db.DBHandler;
 import org.bibsonomy.importer.DBLP.parser.DBLPEntry;
-import org.w3c.dom.Document;
-import org.w3c.tidy.Tidy;
 
 
 /*
@@ -38,13 +36,8 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 
 	private static final Log log = LogFactory.getLog(HTTPBibtexUpdate.class);
 
-	private final Tidy tidy;
-
 	public HTTPBibtexUpdate (String baseURL, String user, String passhash) throws MalformedURLException, IOException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		super (baseURL, user, passhash);
-		this.tidy = new Tidy();
-		this.tidy.setQuiet(true);
-		this.tidy.setShowWarnings(false);
 	}
 
 	private final Map<String, Integer> httpStatusCounts = new HashMap<String, Integer>();
@@ -119,7 +112,7 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 	/*
 	 * insert the given snippet
 	 */
-	private Document uploadBibTeXSnippet(final String snippet) throws IOException, DBLPException {
+	private void uploadBibTeXSnippet(final String snippet) throws IOException, DBLPException {
 		log.debug("inserting entry");
 
 		final HttpURLConnection conn = (HttpURLConnection) new URL(baseURL + "import/publications?abstractGrouping=public&overwrite=true&editBeforeImport=false&ckey=" + cKey).openConnection();
@@ -134,7 +127,6 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 		out.print("selection=" + URLEncoder.encode(snippet, "UTF-8"));
 		out.close();
 
-		Document document = null;
 		try {
 			/*
 			 * parse response
@@ -143,14 +135,11 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 			countResponseStatus(responseStatus + "");
 			if (!(responseStatus > 0 && responseStatus < 400)) throw new DBLPException("got " + responseStatus + " when trying to insert bibtex " + snippet);
 
-			final InputStream inputStream = conn.getInputStream();
-			document = tidy.parseDOM(inputStream, null);
-			conn.disconnect();
-
 		} catch (final Exception e) {
 			log.fatal("Could not parse response document");
+		} finally {
+			conn.disconnect();
 		}
-		return document;
 	}
 	
 	private void countResponseStatus(final String code) {
@@ -191,15 +180,15 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 	/*
 	 * insert all given bibtex-entries
 	 */
-	public Document insertNewBibtex(final LinkedList<DBLPEntry> presult, final DBLPEvaluation eval) throws IOException, DBLPException {
-		final StringBuffer snippets = new StringBuffer();
+	public void insertNewBibtex(final LinkedList<DBLPEntry> presult, final DBLPEvaluation eval) throws IOException, DBLPException {
+		final StringBuilder snippets = new StringBuilder();
 		for (final DBLPEntry entry: presult) {
 			if (entry.getDblpKey() != null) {
 				eval.incrementUpdate(entry);
 				snippets.append(entry.generateSnippet());
 			}
 		}
-		return uploadBibTeXSnippet(snippets.toString());
+		uploadBibTeXSnippet(snippets.toString());
 	}
 
 
