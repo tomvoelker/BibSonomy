@@ -55,10 +55,6 @@
 		UPDATE document SET content_id = #newContentId# WHERE content_id = #requestedContentId#
 	</update>
 
-	<delete id="deleteDocument" parameterClass="int">
-		DELETE FROM document WHERE content_id = #requestedContentId#
-	</delete>
-	
 	<insert id="insertExtendedBibtex" parameterClass="bibtexExtendedParam">
 		INSERT INTO extended_fields_data (`key`, `value`, `content_id`, `date_of_create`)
 		VALUES (#extendedField.key#, #extendedField.value#, #requestedContentId#, #extendedField.created#)

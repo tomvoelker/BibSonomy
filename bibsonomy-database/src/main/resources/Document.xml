@@ -52,4 +52,15 @@
 		AND user_name = #userName#
 		AND hash = #fileHash#
 	</delete>
+	
+	<delete id="deleteAllDocumentForContentId" parameterClass="int">
+		DELETE FROM document WHERE content_id = #requestedContentId#
+	</delete>
+	
+	<select id="getDocumentsForDelete" resultMap="DocumentCommon.document" parameterClass="int">
+		SELECT <include refid="allDocumentAttributes"/>
+		FROM document d
+		WHERE content_id = #requestedContentId#	
+	</select>
+	
 </sqlMap>

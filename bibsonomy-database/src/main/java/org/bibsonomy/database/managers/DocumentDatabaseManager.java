@@ -240,15 +240,26 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void deleteDocument(final int contentId, final Document document, final DBSession session) {
 		// create a DocumentParam object
+		DocumentParam docParam = documentToParam(document);
+		docParam.setContentId(contentId);
+		
+		// finally delete the document
+		deleteDocumentForPost(docParam, session);
+	}
+	
+	/**
+	 * Creates DocumentParam from Document. Note you must set the contentId manually
+	 * @param document
+	 * @return corresponding DocumentParam
+	 */
+	private DocumentParam documentToParam(Document document) {
 		final DocumentParam docParam = new DocumentParam();
 		docParam.setFileName(document.getFileName());
 		docParam.setUserName(document.getUserName());
 		docParam.setFileHash(document.getFileHash());
 		docParam.setMd5hash(document.getMd5hash());
-		docParam.setContentId(contentId);
 		docParam.setDate(document.getDate());
-		// finally delete the document
-		deleteDocumentForPost(docParam, session);
+		return docParam;
 	}
 	
 	/**
@@ -259,5 +270,21 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void onDocumentDelete(final DocumentParam param,  final DBSession session) {
 		this.plugins.onDocumentDelete(param, session);
+	}
+
+	/**
+	 * deletes all documents for a post (with logging)
+	 * @param contentId
+	 * @param session
+	 */
+	public void deleteAllDocumentsForPost(int contentId, DBSession session) {
+		List<Document> documents = this.queryForList("getDocumentsForDelete", contentId, Document.class, session);
+		for (Document document : documents) {
+			DocumentParam docParam = documentToParam(document);
+			docParam.setContentId(contentId);
+			this.onDocumentDelete(docParam, session);
+		}
+		
+		this.delete("deleteAllDocumentForContentId", contentId, session);
 	}
 }

@@ -3,6 +3,7 @@ package org.bibsonomy.database.plugin.plugins;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
 import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
+import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 
 /**
@@ -24,8 +25,11 @@ public class BibTexExtraPlugin extends AbstractDatabasePlugin {
 			@Override
 			public void run() {
 				final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
-				// Delete link to related document
-				bibtexExtraDb.deleteDocument(contentId, session);
+				
+				//delete related documents
+				DocumentDatabaseManager documentsManager = DocumentDatabaseManager.getInstance();
+				documentsManager.deleteAllDocumentsForPost(contentId, session);
+				
 				// Delete id in extended fields table
 				bibtexExtraDb.deleteAllExtendedFieldsData(contentId, session);
 				// Delete id in bibtexturl table
