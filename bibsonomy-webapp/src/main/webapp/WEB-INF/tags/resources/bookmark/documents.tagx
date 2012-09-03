@@ -6,7 +6,6 @@
 	<fmt:message var="altPreview" key="preview"/>
 	
 	<c:choose>
-		<!-- enable bookmark previews for admins only -->
 		<c:when test="${properties['project.preview.bookmark'] == 'enable'}">  
 			<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
 			<span class="">
