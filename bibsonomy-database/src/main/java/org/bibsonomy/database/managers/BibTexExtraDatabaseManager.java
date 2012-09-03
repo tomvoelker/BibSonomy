@@ -145,16 +145,6 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Deletes the document.
-	 * 
-	 * @param contentId
-	 * @param session
-	 */
-	public void deleteDocument(final int contentId, final DBSession session) {
-		this.delete("deleteDocument", contentId, session);
-	}
-
-	/**
 	 * Migrates the document for a given contentId to its new contentId.
 	 * 
 	 * @param contentId
