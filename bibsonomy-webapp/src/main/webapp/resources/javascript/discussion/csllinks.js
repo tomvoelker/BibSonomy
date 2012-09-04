@@ -46,6 +46,9 @@ function handleLinks(discussionItem) {
 			link = $(this).attr("href").replace(matches[typeindex], "csl/" + matches[typeindex]);
 		} else {
 			link = $(this).attr("href").replace(matches[typeindex], "json/" + matches[typeindex]);
+			if(matches[hashindex].length == 33) {
+				link = link.replace(matches[hashindex], matches[hashindex].substring(1, 33));
+			}
 		}
 
 		//check that this is the first occurrence of this link
@@ -63,7 +66,7 @@ function call(link, postLinkData, anchor) {
 	$.get(link, function(data) {
 		requestSuccessful(data, postLinkData, anchor);
 	}).error(function() {
-		alert("can't happen");
+		console.log("unexpected error");
 	});
 }
 
