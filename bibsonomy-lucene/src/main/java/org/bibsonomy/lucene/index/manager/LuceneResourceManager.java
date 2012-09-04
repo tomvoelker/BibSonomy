@@ -301,10 +301,13 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	}
 
 	/**
-	 * 
+	 * Generates all Indices for this resource, sigle threaded
 	 */
 	public void generateIndex() {
-		this.generateIndex(true, 1);
+//		this.generateIndex(true, 1);
+		for (int i = 0; i < this.resourceIndices.size(); ++i) {
+			this.regenerateIndex(i, false);
+		}
 	}
 
 	public void regenerateIndex(final int id) {
