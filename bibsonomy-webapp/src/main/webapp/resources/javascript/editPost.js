@@ -220,7 +220,8 @@ function handleRecommendedTags(xml) {
 	var root = xml.getElementsByTagName('tags').item(0);
 	if (root == null) {
 		// FIXME: DEBUG
-		alert("Invalid Ajax response: <tags/> not found.");
+		//alert("Invalid Ajax response: <tags/> not found.");
+		return;
 	}
 	// append each tag to target field
 	for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
