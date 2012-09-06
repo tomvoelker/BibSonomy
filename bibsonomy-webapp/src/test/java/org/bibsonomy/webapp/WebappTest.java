@@ -14,6 +14,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -56,7 +57,7 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 * start the server
 	 * @throws Exception
 	 */
-	// @BeforeClass TODO: enable
+	@BeforeClass
 	public static final void startServer() throws Exception {
 		JNDIBinder.bind();
 		if (tomcat == null) {

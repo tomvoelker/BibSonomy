@@ -10,6 +10,7 @@ import org.openqa.selenium.WebDriver;
  * @author dzo
  * @version $Id$
  */
+@Ignore // TODO: reactivate it
 public class UserLoginTest extends WebappTest {
 
 	private static final String INTERNAL_COOKIE_NAME = "db_user";
@@ -19,7 +20,6 @@ public class UserLoginTest extends WebappTest {
 	}
 	
 	@Test
-	@Ignore // TODO: reactivate it
 	public void quickLoginInternal() {
 		// open homepage
 		this.selenium.open("/");
