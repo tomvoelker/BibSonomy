@@ -43,5 +43,7 @@ POST www.bibsonomy.org/api/groups/group1/users
 
 ---
 <?xml version="1.0"?>
-<bibsonomy stat="ok"/>
+<bibsonomy stat="ok">
+  <groupid>group1</groupid>
+</bibsonomy>
 ---
