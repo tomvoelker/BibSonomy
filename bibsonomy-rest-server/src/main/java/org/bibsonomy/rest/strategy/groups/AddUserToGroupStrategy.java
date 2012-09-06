@@ -31,11 +31,26 @@ public class AddUserToGroupStrategy extends Strategy {
 
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
+		/*
+		 * parse users
+		 */
 		final List<User> users = this.getRenderer().parseUserList(this.doc);
-		final Group group = new Group(this.groupName);
+		/*
+		 * fetch group
+		 */
+		final Group group = this.getLogic().getGroupDetails(this.groupName);
+		/*
+		 * all users which are written here into the group are ADDED to the group - i.e., existing
+		 * users within the group are not touched. 
+		 */ 
 		group.setUsers(users);
+		/*
+		 * add users to group
+		 */
 		this.getLogic().updateGroup(group, GroupUpdateOperation.ADD_NEW_USER);
-		// no exception -> assume success
+		/*
+		 * no exception -> assume success
+		 */
 		this.getRenderer().serializeOK(this.writer);
 	}
 }
