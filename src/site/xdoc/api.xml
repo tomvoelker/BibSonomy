@@ -304,7 +304,7 @@
 							<td>POST</td>
 							<td>/groups/[groupname]/users</td>
 							<td>
-								<img src="images/icon_error_sml.gif" />
+								<img src="images/icon_success_sml.gif" />
 							</td>
 						</tr>
 						<tr>

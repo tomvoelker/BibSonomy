@@ -6,7 +6,7 @@
 
 Add a user to a group
 
-  Adds an <<existing>> user to a group.
+  Adds one or more <<existing>> users to a group.
 
 *--+--+
 | <<URL:>> | www.bibsonomy.org/api/groups/[groupname]/users |
@@ -33,7 +33,9 @@ POST www.bibsonomy.org/api/groups/group1/users
 
 <?xml version="1.0"?>
 <bibsonomy>
-  <user name="hotho"/>
+  <users>
+    <user name="hotho"/>
+  </users>
 </bibsonomy>
 ---
 
@@ -41,7 +43,5 @@ POST www.bibsonomy.org/api/groups/group1/users
 
 ---
 <?xml version="1.0"?>
-<bibsonomy stat="ok">
-  <groupid>group1</groupid>
-</bibsonomy>
+<bibsonomy stat="ok"/>
 ---
