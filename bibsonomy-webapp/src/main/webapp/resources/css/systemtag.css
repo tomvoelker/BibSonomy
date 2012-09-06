@@ -1,0 +1,71 @@
+
+@CHARSET "UTF-8";
+
+.systemTagTooltip {
+	background: transparent url(/resources/image/systemTag/blue_arrow.png);
+	font-size: 12px;
+	height: 210px;
+	width: 350px;
+	color: #111;
+	text-align: center;
+	z-index: 99999;
+	
+}
+.systemTagTooltip h1 {
+	padding-top:15px;
+	font-size: 16px;
+	font-weight: bold;
+}
+.systemTagTooltip table {
+	width: 270px;
+}
+.systemTagTooltip table th, .systemTagTooltip table td {
+	width: 90px;
+}
+.systemTagTooltip a {
+	color: #111;
+	text-decoration: none;
+}
+.systemTagTooltip a:hover {
+	text-decoration: underline;
+}
+
+.tag_tooltip {
+	position: relative;
+	border-bottom: 1px dotted #C20;
+}
+
+.tag_tooltip em {
+	display: none;
+	text-align: left;
+	background: transparent;
+}
+
+.tag_tooltip em span {
+	position: relative;
+	left: -175px;
+	display: block;
+	font-size: 14px;
+	line-height: 16px;
+	font-weight: normal;
+	width: 350px;
+}
+
+.tag_tooltip:hover {
+	color: #CC2200;
+	z-index: 1;
+}
+
+.tag_tooltip:hover em {
+	display: block;
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	width: 1px;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.systemTag_table a {
+	color: #006699;
+}

@@ -1,0 +1,171 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
+
+	<link rel="stylesheet" href="${resdir}/css/systemtag.css"
+			type="text/css" media="all" />
+
+	<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
+	<!-- <script type="text/javascript" src="${resdir}/javascript/systemtag.js"></script> -->
+	
+	<fmt:message key="systemtag.helper" var="systemTag_helper"/>
+	
+	<fmt:message key="systemtag.dialog.send.title" var="systemTag_dialog_send_title"/>
+	<fmt:message key="systemtag.dialog.send.text" var="systemTag_dialog_send_text"/>
+	<fmt:message key="systemtag.dialog.send.input.text" var="systemTag_dialog_send_input_text"/>
+	<fmt:message key="systemtag.dialog.send.description" var="systemTag_dialog_send_description"/>
+	<fmt:message key="systemtag.dialog.forgroup.title" var="systemTag_dialog_forgroup_title"/>
+	<fmt:message key="systemtag.dialog.forgroup.text" var="systemTag_dialog_forgroup_text"/>
+	<fmt:message key="systemtag.dialog.forgroup.input.text" var="systemTag_dialog_forgroup_input_text"/>
+	<fmt:message key="systemtag.dialog.forgroup.description" var="systemTag_dialog_forgroup_description"/>
+	<fmt:message key="systemtag.dialog.relevantfor.title" var="systemTag_dialog_relevantfor_title"/>
+	<fmt:message key="systemtag.dialog.relevantfor.text" var="systemTag_dialog_relevantfor_text"/>
+	<fmt:message key="systemtag.dialog.relevantfor.input.text" var="systemTag_dialog_relevantfor_input_text"/>
+	<fmt:message key="systemtag.dialog.relevantfor.description" var="systemTag_dialog_relevantfor_description"/>
+	<fmt:message key="systemtag.dialog.hidden.title" var="systemTag_dialog_hidden_title"/>
+	<fmt:message key="systemtag.dialog.hidden.text" var="systemTag_dialog_hidden_text"/>
+	<fmt:message key="systemtag.dialog.hidden.input.text" var="systemTag_dialog_hidden_input_text"/>
+	<fmt:message key="systemtag.dialog.hidden.description" var="systemTag_dialog_hidden_description"/>
+	
+	<fmt:message key="systemtag.send.title" var="systemTag_send_title"/>
+	<fmt:message key="systemtag.forgroup.title" var="systemTag_forgroup_title"/>
+	<fmt:message key="systemtag.hidden.title" var="systemTag_hidden_title"/>
+	<fmt:message key="systemtag.jabref.title" var="systemTag_jabref_title"/>
+	<fmt:message key="systemtag.myown.title" var="systemTag_myown_title"/>
+	<fmt:message key="systemtag.relevantfor.title" var="systemTag_relevantfor_title"/>
+	<fmt:message key="systemtag.unfieled.title" var="systemTag_unfieled_title"/>
+	
+	
+	<script type="text/javascript">
+		<![CDATA[
+			$(function() {
+				// a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
+				$( "#dialog:ui-dialog" ).dialog( "destroy" );
+				
+				function createDialog(title, text, input_text, description, tag, pageX, pageY) {
+					var tagDialog = $(generateHTML(title, text, input_text, description)).dialog({
+						/* autoOpen: false, */
+						modal: true,
+						resizable: false,
+						draggable: false,
+						position: [pageX, pageY],
+						buttons: {
+							"OK": function() {
+		 						$("#inpf_tags").val($("#inpf_tags").val() + tag + $("#systemTagForm_name").val());
+								$( this ).dialog( "close" );
+							},
+							"Cancel": function() {
+								$( this ).dialog( "close" );							
+							}
+						},
+						Close: function() {
+							allFields.val( "" ).removeClass( "ui-state-error" );
+						}
+					})
+						
+						$('#systemTagForm_name').keypress(function(event) {
+						var event = event || window.event;  // get event object
+						var key = event.keyCode || event.which; // get key cross-browser
+						if (key == 32 || event.metaKey==true) { //Space bar key code
+					  		//Prevent default action, which is inserting space
+					  		if (event.preventDefault) event.preventDefault(); //normal browsers
+					  		event.returnValue = false; //IE
+						}							
+					});
+					return tagDialog;
+				};	
+			
+				function stripspaces(input)
+				{
+				  input.value = input.value.replace(/\s/gi,"");
+				  return true;
+				}
+				
+				function generateHTML(title, text, input_text, description){
+					return "<div id='dialog-form' title='" + title + "'>" +
+						"<form>" +
+							"<label id='' for='name'>" + text + "</label>" +
+							"<input type='text' name='name' id='systemTagForm_name' oncontextmenu='return false;' placeholder='" + input_text + "'/>" +
+							"<p>" + description + "</p>" +
+						"</form>" +
+					"<div>";
+				}
+				
+				$( ".send-tag" ).click(function(e) {
+					createDialog('${systemTag_dialog_send_title}', '${systemTag_dialog_send_text}', '${systemTag_dialog_send_input_text}', '${systemTag_dialog_send_description}', " send:", e.pageX, e.pageY);
+					e.preventDefault();
+				});
+				
+				$( ".forgroup-tag" ).click(function(e) {
+					createDialog('${systemTag_dialog_forgroup_title}', '${systemTag_dialog_forgroup_text}', '${systemTag_dialog_forgroup_input_text}', '${systemTag_dialog_forgroup_description}', " for:", e.pageX, e.pageY);
+					e.preventDefault();
+				});
+				
+				$( ".hidden-tag" ).click(function(e) {
+					createDialog('${systemTag_dialog_hidden_title}', '${systemTag_dialog_hidden_text}', '${systemTag_dialog_hidden_input_text}', '${systemTag_dialog_hidden_description}', " sys:hidden", e.pageX, e.pageY);			
+					e.preventDefault();
+				});
+				
+				$( ".myown-tag" ).click(function(e) {
+					$("#inpf_tags").val($("#inpf_tags").val() + " myown");
+					e.preventDefault();
+				});
+				
+				$( ".relevantfor-tag" ).click(function(e) {
+					createDialog('${systemTag_dialog_relevantfor_title}', '${systemTag_dialog_relevantfor_text}', '${systemTag_dialog_relevantfor_input_text}', '${systemTag_dialog_relevantfor_description}', " relevantFor:", e.pageX, e.pageY);
+					e.preventDefault();
+				});
+			});
+		]]>
+	</script>	
+	
+	<div class="fsRow">
+		<div class="fsLabel">${mtl:ch('nbsp')}</div>
+		<!-- we assign post's id to div's class for accessing clicklog data -->
+
+		<div>
+			<span style="float: left;">
+				<div style="width: auto;" class="tag_tooltip">
+				<img src="${resdir}/image/systemTag/gear.png" width="16px" style="float:left;"/>
+					${systemTag_helper}
+					<em>
+					<span>
+						<div class="systemTagTooltip" align="center">
+						<center>
+						<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+							<h1>${systemTag_helper}</h1><a href="${helpLangUrl}/SystemTags"><img src="${resdir}/image/systemTag/info.png" style="width: 20px; position: absolute; right: 15px; top: 15px;"></img></a>
+
+							<table class="systemTag_table" style="margin: 0; text-align: center;" >
+								<tr>
+									<th colspan="3">Tags</th>
+								</tr>
+								<tr>
+									<td><a href="" title="${systemTag_send_title}" class="send-tag">#Send-Tag</a></td>
+									<td><a href="" title="${systemTag_forgroup_title}" class="forgroup-tag">#ForGroup-Tag</a></td>
+									<td><a href="" title="${systemTag_hidden_title}" class="hidden-tag">#Hidden-Tag</a></td>
+								</tr>
+								<tr>
+									<td><a href="" title="${systemTag_myown_title}" class="myown-tag">#MyOwn-Tag</a></td>
+									<td></td>
+									<td><a href="" title="${systemTag_relevantfor_title}" class="relevantfor-tag">#RelevantFor-Tag</a></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</table>
+							</center>
+						</div>
+						</span>
+					</em>
+				</div>
+			</span>
+		</div>
+	</div>
+
+</jsp:root>
