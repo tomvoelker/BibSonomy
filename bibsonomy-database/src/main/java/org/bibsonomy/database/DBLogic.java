@@ -1090,9 +1090,16 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
-		this.ensureLoggedIn();
-
 		final String groupName = group.getName();
+		/*
+		 * only logged-in group owners and admins are allowed to perform update operations 
+		 */
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupName);
+		/*
+		 * some sanity checks on group itself (FIXME: Are these checks prerequisites
+		 * for ALL operations (UPDATE_SETTINGS, ADD_USER, ...) ? )
+		 */
 		if (!(present(groupName) && present(group.getGroupId()) && present(group.getPrivlevel()) && present(group.isSharedDocuments()))) {
 			throw new ValidationException("The given group is not valid.");
 		}
