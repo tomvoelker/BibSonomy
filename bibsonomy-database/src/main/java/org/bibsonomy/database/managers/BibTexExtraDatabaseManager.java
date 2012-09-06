@@ -145,6 +145,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * TODO: move to documents manager
 	 * Migrates the document for a given contentId to its new contentId.
 	 * 
 	 * @param contentId
@@ -253,7 +254,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteExtendedFieldsByKey(final String userName, final String hash, final String key, final DBSession session) {
-	    final BibtexExtendedParam param = buildExtendedParam(userName, hash, key, null);
+	    final BibtexExtendedParam param = this.buildExtendedParam(userName, hash, key, null);
 
 	    this.delete("deleteExtendedFieldByKey", param, session);
 	}
@@ -268,7 +269,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteExtendedFieldByKeyValue(final String userName, final String hash, final String key, final String value, final DBSession session) {
-	    final BibtexExtendedParam param = buildExtendedParam(userName, hash, key, value);
+	    final BibtexExtendedParam param = this.buildExtendedParam(userName, hash, key, value);
 	    
 	    this.delete("deleteExtendedFieldByKeyValue", param, session);
 	}
