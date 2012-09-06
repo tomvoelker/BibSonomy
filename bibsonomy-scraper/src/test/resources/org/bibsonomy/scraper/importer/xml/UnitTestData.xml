@@ -79,7 +79,7 @@
 	</URLTest>
 	<URLTest id="url_13">
 		<TestDescription>URL scraping test with journals and proceedings from ieeexlpore</TestDescription>
-		<URL>http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?isnumber=26129&amp;arnumber=1163019&amp;count=14&amp;index=0</URL>
+		<URL>http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&amp;arnumber=6136685&amp;contentType=Conference+Publications&amp;searchField%3DSearch_All%26queryText%3DEnergy+efficient+hierarchical+epidemics+in+peer-to-peer+systems</URL>
 		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
 	</URLTest>
