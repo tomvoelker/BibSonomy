@@ -1091,28 +1091,23 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		final String groupName = group.getName();
+		if (! present(groupName) ) {
+			throw new ValidationException("No group name given.");
+		}		
 		/*
 		 * only logged-in group owners and admins are allowed to perform update operations 
 		 */
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupName);
+
 		/*
-		 * some sanity checks on group itself (FIXME: Are these checks prerequisites
-		 * for ALL operations (UPDATE_SETTINGS, ADD_USER, ...) ? )
+		 * peform operations
 		 */
-		if (!(present(groupName) && present(group.getGroupId()) && present(group.getPrivlevel()) && present(group.isSharedDocuments()))) {
-			throw new ValidationException("The given group is not valid.");
-		}
-
 		final DBSession session = this.openSession();
-
 		try	{
 			switch(operation) {
 			case UPDATE_ALL:
-				//					this.groupDBManager.updateGroupSettings(group, session);
-				//handle users
 				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
-
 			case UPDATE_SETTINGS:
 				this.groupDBManager.updateGroupSettings(group, session);
 				break;
