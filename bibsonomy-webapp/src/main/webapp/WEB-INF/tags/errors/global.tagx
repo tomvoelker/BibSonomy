@@ -18,7 +18,7 @@
 			<div class="errorcontainer">
 				<h3><fmt:message key="error"/></h3>
 
-				<fmt:message key="error.report"/>${mtl:ch('nbsp')}:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}" subject="[${command.context.loginUser.name}] error on /${requPath}" body="${errors.globalErrors}"/>
+				<fmt:message key="error.report"/>${mtl:ch('nbsp')}:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}" subject="[${command.context.loginUser.name}] error on /${fn:escapeXml(requPath)}" body="${fn:escapeXml(errors.globalErrors)}"/>
 
 				<c:forEach var="error" items="${errors.globalErrors}">
 					<c:if test="${empty cssClass}"><c:set var="cssClass" value="error"/></c:if>
