@@ -6,7 +6,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-	xmlns:form="http://www.springframework.org/tags/form">
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/systemtags">
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
@@ -17,7 +18,9 @@
 
 	        <span class="fsLabel"> (<fmt:message key="post.resource.spaceseparated"/>) *</span>
     	    <form:input cssClass="tagInput reqinput" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
-        
+    	    
+        	<post:systemTagPopUp/>
+        	
         	<!-- name="tags"  -->
 			<div class="dissError"><form:errors path="tags" /></div>
 
