@@ -41,7 +41,10 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 * hashes of the resources which will be deleted (hash as key and "on" as value (checkbox))
 	 */
 	private Map<String, Boolean> delete;
-	
+	/**
+	 * hashes of the resources which will be normalized (hash as key and "on" as value (checkbox))
+	 */
+	private Map<String, Boolean> normalize;
 	/**
 	 * @return the flag that determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
@@ -93,7 +96,7 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	public void setOldTags(final Map<String, String> oldTags) {
 		this.oldTags = oldTags;
 	}
-
+	
 	/**
 	 * @return the newTags
 	 */
@@ -120,6 +123,20 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 */
 	public void setDelete(final Map<String, Boolean> delete) {
 		this.delete = delete;
+	}
+	
+	/**
+	 * @return the normalize
+	 */
+	public Map<String, Boolean> getNormalize() {
+		return this.normalize;
+	}
+
+	/**
+	 * @param normalize the normalize to set
+	 */
+	public void setNormalize(final Map<String, Boolean> normalize) {
+		this.normalize = normalize;
 	}
 
 	/**
