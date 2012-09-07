@@ -29,6 +29,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -99,6 +100,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		command.setOldTags(new HashMap<String, String>());
 		command.setNewTags(new HashMap<String, String>());
 		command.setDelete(new HashMap<String, Boolean>());
+		command.setNormalize(new HashMap<String, Boolean>());
 
 		command.getBibtex().setList(new LinkedList<Post<BibTex>>());
 		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
@@ -178,6 +180,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * posts that are flagged are either deleted or ignored 
 		 */
 		final Map<String, Boolean> postFlags = command.getDelete();
+		final Map<String, Boolean> postNormalizeFlags = command.getNormalize();
+	
 		/*
 		 * put the posts from the session into a hash map (for faster access)
 		 */
@@ -191,7 +195,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
-
+		
 		log.debug("#postFlags: " + postFlags.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
 
 		/* *******************************************************
@@ -202,6 +206,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		final List<String> postsToDelete = new LinkedList<String>();   // delete
 		final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>(); // update/store
+		final List<Post<?>> postsToNormalize = new LinkedList<Post<?>>();
 		/*
 		 * All posts will get the same date.
 		 */
@@ -246,6 +251,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 */
 				continue;
 			}
+			
+			boolean normalizePost = false;
+			
+			if(present(postNormalizeFlags)) {
+				normalizePost = postNormalizeFlags.containsKey(intraHash) && postNormalizeFlags.get(intraHash);
+			}
+			
 			/*
 			 * We must store/update the post, thus we parse and check its tags
 			 */
@@ -260,9 +272,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 * if we want to update the posts, we only need to update posts
 				 * where the tags have changed
 				 */
-				if (updatePosts && oldTags.equals(newTags)) {
+				if (updatePosts && oldTags.equals(newTags) && !normalizePost) {
 					/*
-					 * tags haven't changed, nothing to do
+					 * tags haven't changed and bibtex keys should not be changed, nothing to do
 					 */
 					continue;
 				}
@@ -270,7 +282,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 * For the create/update methods we need a post -> 
 				 * create/get one.
 				 */
-				final Post<?> post;
+				Post<?> post;
 				if (updatePosts) {
 					/*
 					 * we need only a "mock" posts containing the hash, the date
@@ -298,9 +310,22 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					 * set the date and the tags for this post 
 					 * (everything else should already be set or not be changed)
 					 */
-					post.setDate(now);
-					post.setTags(newTags);
-					postsToUpdate.add(post);
+					if(normalizePost) {
+						post = this.logic.getPostDetails(intraHash, loginUserName);
+						
+						BibTex bibtex = (BibTex) post.getResource();
+						final String oldBibtexKey = bibtex.getBibtexKey();
+						final String newBibtexKey = BibTexUtils.generateBibtexKey(bibtex);
+						
+						if(!oldBibtexKey.equals(newBibtexKey)) {
+							((BibTex) post.getResource()).setBibtexKey(newBibtexKey);
+							postsToNormalize.add(post);
+						}
+					} else {
+						post.setDate(now);
+						post.setTags(newTags);
+						postsToUpdate.add(post);
+					}
 				}
 
 			} catch (final RecognitionException ex) {
@@ -339,6 +364,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		if (updatePosts) {
 			log.debug("updating " + postsToUpdate.size() + " posts for user " + loginUserName);
 			updatePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
+			updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
 		} else {
 			log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);
 			storePosts(postsToUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
