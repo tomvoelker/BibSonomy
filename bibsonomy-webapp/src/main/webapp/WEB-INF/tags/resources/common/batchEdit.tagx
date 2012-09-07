@@ -11,12 +11,13 @@
 	
 	<!--+
 		+ batch edit
+		+ requPathAndQuery already contains "/"
 		+-->	
  	<c:if test="${isPublication}">
-		<c:url var="editUrl"   value="/beditbib/${requPathAndQuery}" />
+		<c:url var="editUrl"   value="/beditbib${requPathAndQuery}" />
 	</c:if>
 	<c:if test="${isBookmark}">
-		<c:url var="editUrl" value="/bediturl/${requPathAndQuery}"/>
+		<c:url var="editUrl" value="/bediturl${requPathAndQuery}"/>
 	</c:if>
 	<fmt:message var="editPageTags" key="post.meta.edit.title"/>
 	<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.batch_edit"/>...</a>
