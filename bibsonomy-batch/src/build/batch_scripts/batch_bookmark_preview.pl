@@ -54,8 +54,10 @@ $stm_select_recent_urls->{"mysql_use_result"} = 1;
 #
 $stm_select_recent_urls->execute();
 my $filename = $ENV{'TMP'} . get_filename();
-open OUT, "> $filename"; 
+open OUT, "> $filename";
+my $count = 0; 
 while (my @row = $stm_select_recent_urls->fetchrow_array ) {
+    $count++;
     my $hash = $row[0];
     my $url = $row[1];
     print OUT $hash . $delim . $url . "\n";
@@ -64,9 +66,9 @@ close(OUT);
 $slave->disconnect;
 
 #
-# scp the file to webthumb
+# scp the file to webthumb, if new urls were added
 #
-system("scp $filename $webthumb_destination");
+system("scp $filename $webthumb_destination") if ($count > 0);
 
 
 #######################################################
