@@ -779,6 +779,7 @@
 		<URL>http://citeulike.org/tag/bibsonomy</URL>
 		<BibFile>CiteulikeScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_133">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
