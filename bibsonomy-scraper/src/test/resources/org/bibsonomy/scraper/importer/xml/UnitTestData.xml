@@ -731,6 +731,8 @@
 		<URL>http://prod.informaworld.com/smpp/title~content=t748423783~db=all</URL>
 		<BibFile>InformaworldUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper</Scraper>
+		<!-- Page not found -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_124">
 		<TestDescription>Test for liinwww.ira.uka.de/bibliography</TestDescription>
