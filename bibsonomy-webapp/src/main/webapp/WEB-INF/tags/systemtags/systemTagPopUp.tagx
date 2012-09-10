@@ -4,6 +4,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
 
 	<link rel="stylesheet" href="${resdir}/css/systemtag.css"
@@ -134,38 +135,27 @@
 					${systemTag_helper}
 					<em>
 					<span>
-						<div class="systemTagTooltip" align="center">
-						<center>
+						<div class="systemTagTooltip">
 						<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-							<h1>${systemTag_helper}</h1><a href="${helpLangUrl}/SystemTags"><img src="${resdir}/image/systemTag/info.png" style="width: 20px; position: absolute; right: 15px; top: 15px;"></img></a>
-
-							<table class="systemTag_table" style="margin: 0; text-align: center;" >
-								<tr>
-									<th colspan="3">Tags</th>
-								</tr>
-								<tr>
-									<td><a href="" title="${systemTag_send_title}" class="send-tag">#Send-Tag</a></td>
-									<td><a href="" title="${systemTag_forgroup_title}" class="forgroup-tag">#ForGroup-Tag</a></td>
-									<td><a href="" title="${systemTag_hidden_title}" class="hidden-tag">#Hidden-Tag</a></td>
-								</tr>
-								<tr>
-									<td><a href="" title="${systemTag_myown_title}" class="myown-tag">#MyOwn-Tag</a></td>
-									<td></td>
-									<td><a href="" title="${systemTag_relevantfor_title}" class="relevantfor-tag">#RelevantFor-Tag</a></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-							</table>
-							</center>
+							<div style="padding-left: 15px; padding-right: 15px;">
+								<h1>${systemTag_helper}</h1><a href="${helpLangUrl}/SystemTags"><img src="${resdir}/image/systemTag/info.png" style="width: 20px; position: absolute; right: 10px; top: 10px;"></img></a>
+	
+								<ul class="systemTag_ul">
+									<li><a href="" class="send-tag">Send-Tag</a>${mtl:ch('nbsp')}<buttons:help message="systemtag.send.title" cssClass="widehelp" cssStyle="position: absolute;"/></li>
+									<li><a href="" class="hidden-tag">Hidden-Tag</a>${mtl:ch('nbsp')}<buttons:help message="systemtag.hidden.title" cssClass="widehelp" cssStyle="position: absolute;"/></li>
+									<li><a href="" class="relevantfor-tag">RelevantFor-Tag</a>${mtl:ch('nbsp')}<buttons:help message="systemtag.relevantfor.title" cssClass="widehelp" cssStyle="position: absolute;"/></li>
+								</ul>
+								<ul class="systemTag_ul">
+									<li><a href="" class="forgroup-tag">ForGroup-Tag</a>${mtl:ch('nbsp')}<buttons:help message="systemtag.forgroup.title" cssClass="widehelp" cssStyle="position: absolute;"/></li>
+									<li><a href="" class="myown-tag">MyOwn-Tag</a>${mtl:ch('nbsp')}<buttons:help message="systemtag.myown.title" cssClass="widehelp" cssStyle="position: absolute;"/></li>
+								</ul>
+							</div>
 						</div>
-						</span>
-					</em>
-				</div>
-			</span>
-		</div>
+					</span>
+				</em>
+			</div>
+		</span>
 	</div>
+</div>
 
 </jsp:root>

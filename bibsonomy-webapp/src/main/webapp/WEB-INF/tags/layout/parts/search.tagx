@@ -77,4 +77,105 @@
 	<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 	
+	<script type="text/javascript"><![CDATA[
+			function setSelectionRange(input, selectionStart, selectionEnd) {
+  				if (input.setSelectionRange) {
+    				input.focus();
+    				input.setSelectionRange(selectionStart, selectionEnd);
+  				}
+  				else if (input.createTextRange) {
+    				var range = input.createTextRange();
+    				range.collapse(true);
+    				range.moveEnd('character', selectionEnd);
+    				range.moveStart('character', selectionStart);
+    				range.select();
+  				}
+			}
+
+			function setCaretToPos (input, pos) {
+  				setSelectionRange(input, pos, pos);
+			}
+			
+	
+			$(function() {
+				var availableTags = [
+				"year",
+				"author",
+				"user"
+			];
+		
+			function split( val ) {
+				return val.split( / \s*/ );
+			}
+		
+			function extractLast( term ) {
+				var lastWord = split( term ).pop().toLowerCase();
+				
+				if(!String.prototype.startsWith) {
+					String.prototype.startsWith = function(str) {
+						return !this.indexOf(str);
+					}
+				}
+				
+				if(lastWord.startsWith("sys:") || lastWord.startsWith("system:")) {
+					return lastWord.substring(lastWord.indexOf(":") + 1);
+				}
+				return "-";
+			}
+
+			$( "#inpf" )
+				// don't navigate away from the field on tab when selecting an item
+				.bind( "keydown", function( event ) {
+					if ( event.keyCode === $.ui.keyCode.TAB &&
+						$( this ).data( "autocomplete" ).menu.active ) {
+						
+						event.preventDefault();
+					}
+				})
+				.autocomplete({
+					source: function( request, response ) {
+						response( $.ui.autocomplete.filter(
+							availableTags, extractLast( request.term ) ) );
+					},
+					focus: function() {
+						return false;
+					},
+					select: function( event, ui ) {
+						var terms = split( this.value );
+						terms.pop();
+						terms.push( "system:" + ui.item.value + ":" );
+						terms.push( "" );
+						
+						this.value = "";
+						for(i = 0; i < terms.length - 1; i++) {
+							this.value = this.value + terms[i];
+							if(i != terms.length - 2) {
+								this.value = this.value + ' ';
+							}
+						}
+						
+						
+						//this.value = terms.join( "" );
+						return false;
+					}
+				})
+				.data( "autocomplete" )._renderItem = function( ul, item ) {
+					return $( "<li></li>" )
+						.data( "item.autocomplete", item )
+						.append( "<a>system:" + item.label + "</a>" )
+						.appendTo( ul );
+		};
+			});
+		]]>
+	</script>
+	
+	<style>
+	.ui-autocomplete {
+		max-height: 45px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-right: 20px;
+	}
+	</style>
+	
 </jsp:root>
