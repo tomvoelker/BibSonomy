@@ -1,9 +1,5 @@
 var activeField = null;
 var tagbox      = null; // used in style.js!
-var ckey        = null;
-var currUser    = null;
-var requUser	= null;
-// var projectName = null; TODO: remove
 var pwd_id_postfix = "_form_copy"; // id of password input field copy
 
 /*
@@ -22,25 +18,9 @@ var getSetPos = 0;
  * @param tagbox_style
  * @param tagbox_sort
  * @param tagbox_minfreq
- * @param lrequUser
- * @param lcurrUser
- * @param lckey
- * @param lprojectName
  * @return
  */
-function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, lckey, lprojectName) {
-	/*
-	 * assign global variables
-	 */
-	if (lrequUser != "") {
-		requUser = lrequUser;
-	}
-	// TODO: remove
-	// projectName = lprojectName;	
-	ckey = lckey;
-	currUser = lcurrUser;
-	
-	tagbox = $(".tagbox");
+function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
 	
 	/*
 	 * assign functions for cursor position; FIXME: why here?
@@ -53,10 +33,6 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	getPos = function() {
 		return setPos(null);
 	};
-
-	/* *************************************************************************
-	 * scope: global (or hard to define)
-	 */
 	
 	/* scope: text input fields
 	 * 
@@ -91,6 +67,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	/*
 	 * initialize the tag box
 	 */
+	tagbox = $(".tagbox");
 	$(tagbox).each(function(index, item) {
 		init_tagbox(item, tagbox_style, tagbox_sort, tagbox_minfreq);
 	});
@@ -121,8 +98,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
 	}, function(event){
 		var infoBox = $('div', this);
 		infoBox.hide("fade", {}, 500);
-	});		
-
+	});
 }
 
 /**
