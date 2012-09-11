@@ -58,6 +58,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		}
 		/*
 		 * append percent sign to bibkey for fuzzy matching
+		 * TODO: % is mysql specific and should be moved to the logic
 		 */
 		final String requestedBibTexKey = command.getQ().trim() + "%";
 		final String requestedUserName   = command.getRequestedUser();
