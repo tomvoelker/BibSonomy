@@ -24,6 +24,8 @@ import org.springframework.context.MessageSource;
  * Handles document upload for publication posts.
  * 
  * FIXME: proper XML escaping missing
+ * TODO: instead of xml return json and use the provided generic method to handle
+ * errors
  * 
  * @author wla
  * @version $Id$
@@ -148,7 +150,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	}
 
 	/**
-	 * This method handles file upload to a temporary directory 
+	 * This method handles the file upload to the server 
 	 * @param command
 	 * @return
 	 */
