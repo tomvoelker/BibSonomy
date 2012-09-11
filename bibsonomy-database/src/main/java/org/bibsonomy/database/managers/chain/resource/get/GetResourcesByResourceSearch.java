@@ -10,6 +10,7 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
+import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Post;
@@ -70,11 +71,13 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		String firstYear = null;
 		String lastYear = null;
 
-		final YearSystemTag yearTag = (YearSystemTag) param.getSystemTags().get(YearSystemTag.NAME);
-		if (present(yearTag)) {
-			year = yearTag.getYear();
-			firstYear = yearTag.getFirstYear();
-			lastYear = yearTag.getLastYear();
+		for (final SystemTag systemTag : param.getSystemTags()) {
+			if (systemTag instanceof YearSystemTag) {
+				final YearSystemTag yearTag = (YearSystemTag) systemTag;
+				year = yearTag.getYear();
+				firstYear = yearTag.getFirstYear();
+				lastYear = yearTag.getLastYear();
+			}
 		}
 
 		// query the resource searcher
