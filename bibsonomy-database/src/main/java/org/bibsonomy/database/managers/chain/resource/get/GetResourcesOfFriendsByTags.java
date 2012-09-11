@@ -32,16 +32,16 @@ public class GetResourcesOfFriendsByTags<R extends Resource, P extends ResourceP
 	@Override
 	protected boolean canHandle(final P param) {
 		return (present(param.getUserName()) &&
-				param.getGrouping() == GroupingEntity.FRIEND &&
+				(param.getGrouping() == GroupingEntity.FRIEND) &&
 				present(param.getRequestedUserName()) &&
 				present(param.getTagIndex()) &&
-				param.getNumSimpleConcepts() == 0 &&
-				param.getNumSimpleTags() > 0 &&
-				param.getNumTransitiveConcepts() == 0 &&
+				(param.getNumSimpleConcepts() == 0) &&
+				(param.getNumSimpleTags() > 0) &&
+				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
 				// discriminate from the tagged user relation queries
 				( !present(param.getRelationTags()) || 
-					param.getRelationTags().size()==1 && (NetworkRelationSystemTag.BibSonomyFriendSystemTag.equals(param.getRelationTags().get(0)))
+					((param.getRelationTags().size()==1) && (NetworkRelationSystemTag.BibSonomyFriendSystemTag.equals(param.getRelationTags().get(0))))
 				) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()) && 
@@ -56,7 +56,7 @@ public class GetResourcesOfFriendsByTags<R extends Resource, P extends ResourceP
 		 * see the posts
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
-			return this.databaseManager.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), GroupID.FRIENDS.getId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), session);
+			return this.databaseManager.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), GroupID.FRIENDS.getId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags(), session);
 		}
 		
 		return new ArrayList<Post<R>>();

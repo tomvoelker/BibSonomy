@@ -27,11 +27,11 @@ public class GetResourcesByTagNamesAndUser<R extends Resource, P extends Resourc
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getGrouping() == GroupingEntity.USER &&
+		return ((param.getGrouping() == GroupingEntity.USER) &&
 				present(param.getTagIndex())&&
-				param.getNumSimpleConcepts() == 0 &&
-				param.getNumSimpleTags() > 0 &&
-				param.getNumTransitiveConcepts() == 0 &&
+				(param.getNumSimpleConcepts() == 0) &&
+				(param.getNumSimpleTags() > 0) &&
+				(param.getNumTransitiveConcepts() == 0) &&
 				present(param.getRequestedUserName()) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
@@ -40,7 +40,7 @@ public class GetResourcesByTagNamesAndUser<R extends Resource, P extends Resourc
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags(), session);
 	}
 
 }

@@ -33,10 +33,10 @@ public class GetResourcesByFriends<R extends Resource, P extends ResourceParam<R
 	@Override
 	protected boolean canHandle(final P param) {
 		return (present(param.getUserName()) &&
-				param.getGrouping() == GroupingEntity.FRIEND &&
+				(param.getGrouping() == GroupingEntity.FRIEND) &&
 				// discriminate from the tagged user relation queries
 				( !present(param.getRelationTags()) || 
-					param.getRelationTags().size()==1 && (NetworkRelationSystemTag.BibSonomyFriendSystemTag.equals(param.getRelationTags().get(0)))
+					((param.getRelationTags().size()==1) && (NetworkRelationSystemTag.BibSonomyFriendSystemTag.equals(param.getRelationTags().get(0))))
 				) &&
 				!present(param.getRequestedGroupName()) &&
 				!present(param.getRequestedUserName()) &&
@@ -48,7 +48,7 @@ public class GetResourcesByFriends<R extends Resource, P extends ResourceParam<R
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsByUserFriends(param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsByUserFriends(param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

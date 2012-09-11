@@ -25,12 +25,12 @@ public class GetResourcesByConceptForUser<R extends Resource, P extends Resource
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getGrouping() == GroupingEntity.USER &&
+		return ((param.getGrouping() == GroupingEntity.USER) &&
 				present(param.getRequestedUserName()) &&
 				present(param.getTagIndex()) &&
-				param.getNumSimpleConcepts() > 0 &&
-				param.getNumSimpleTags() == 0 &&
-				param.getNumTransitiveConcepts() == 0 &&
+				(param.getNumSimpleConcepts() > 0) &&
+				(param.getNumSimpleTags() == 0) &&
+				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()));
@@ -38,7 +38,7 @@ public class GetResourcesByConceptForUser<R extends Resource, P extends Resource
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getTagIndex(), param.isCaseSensitiveTagNames(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getTagIndex(), param.isCaseSensitiveTagNames(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

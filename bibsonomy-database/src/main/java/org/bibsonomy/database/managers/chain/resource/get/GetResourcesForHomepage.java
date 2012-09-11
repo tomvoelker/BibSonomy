@@ -25,7 +25,7 @@ public class GetResourcesForHomepage<R extends Resource, P extends ResourceParam
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getGrouping() == GroupingEntity.ALL &&
+		return ((param.getGrouping() == GroupingEntity.ALL) &&
 				!present(param.getTagIndex()) &&
 				!(present(param.getHash())) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
@@ -36,7 +36,7 @@ public class GetResourcesForHomepage<R extends Resource, P extends ResourceParam
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsForHomepage(param.getFilter(), param.getStartDate(), param.getEndDate(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsForHomepage(param.getFilter(), param.getStartDate(), param.getEndDate(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

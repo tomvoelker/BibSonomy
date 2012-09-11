@@ -27,7 +27,7 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getGrouping() == GroupingEntity.USER &&
+		return ((param.getGrouping() == GroupingEntity.USER) &&
 				present(param.getRequestedUserName()) &&
 				!presentValidGroupId(param.getGroupId()) &&
 				!present(param.getTagIndex()) &&
@@ -40,7 +40,7 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

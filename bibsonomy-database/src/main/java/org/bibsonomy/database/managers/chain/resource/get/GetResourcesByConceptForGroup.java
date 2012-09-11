@@ -24,12 +24,12 @@ public class GetResourcesByConceptForGroup<R extends Resource, P extends Resourc
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getGrouping() == GroupingEntity.GROUP &&
+		return ((param.getGrouping() == GroupingEntity.GROUP) &&
 				present(param.getRequestedGroupName()) &&
 				present(param.getTagIndex()) &&
-				param.getNumSimpleConcepts() > 0 &&
-				param.getNumSimpleTags() == 0 &&
-				param.getNumTransitiveConcepts() == 0 &&
+				(param.getNumSimpleConcepts() > 0) &&
+				(param.getNumSimpleTags() == 0) &&
+				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()));
@@ -37,7 +37,7 @@ public class GetResourcesByConceptForGroup<R extends Resource, P extends Resourc
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsByConceptForGroup(param.getUserName(), param.getGroups(), param.getRequestedGroupName(), param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsByConceptForGroup(param.getUserName(), param.getGroups(), param.getRequestedGroupName(), param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

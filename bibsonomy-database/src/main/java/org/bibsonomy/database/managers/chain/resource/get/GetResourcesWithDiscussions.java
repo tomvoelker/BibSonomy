@@ -43,14 +43,14 @@ public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceP
 		 */
 		if (GroupingEntity.GROUP.equals(param.getGrouping())) {
 			final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
-			if (!present(group) || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
+			if (!present(group) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
 				log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
 				return new ArrayList<Post<R>>();			
 			}
-			return this.databaseManager.getPostsWithDiscussionsForGroup(param.getUserName(), group.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+			return this.databaseManager.getPostsWithDiscussionsForGroup(param.getUserName(), group.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 		}
 		// handle all other grouping Entities (USER and ALL)
-		return this.databaseManager.getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

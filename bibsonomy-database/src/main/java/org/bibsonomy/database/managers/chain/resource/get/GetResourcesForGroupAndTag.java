@@ -26,13 +26,13 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getGrouping() == GroupingEntity.GROUP &&
+		return ((param.getGrouping() == GroupingEntity.GROUP) &&
 				present(param.getRequestedGroupName()) &&
 				!present(param.getRequestedUserName()) &&
 				present(param.getTagIndex()) &&
-				param.getNumSimpleConcepts() == 0 &&
-				param.getNumSimpleTags() > 0 &&
-				param.getNumTransitiveConcepts() == 0 &&
+				(param.getNumSimpleConcepts() == 0) &&
+				(param.getNumSimpleTags() > 0) &&
+				(param.getNumTransitiveConcepts() == 0) &&
 				!present(param.getHash()) &&
 				!present(param.getOrder()) &&
 				!present(param.getSearch()) &&
@@ -43,11 +43,11 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
-		if (group == null || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
+		if ((group == null) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
 			return new ArrayList<Post<R>>();
 		}
-		return this.databaseManager.getPostsForGroupByTag(group.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsForGroupByTag(group.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

@@ -29,7 +29,7 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getGrouping() == GroupingEntity.GROUP &&
+		return ((param.getGrouping() == GroupingEntity.GROUP) &&
 				present(param.getRequestedGroupName()) &&
 				!present(param.getRequestedUserName()) &&
 				!present(param.getTagIndex()) &&
@@ -43,12 +43,12 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
-		if (!present(group) || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
+		if (!present(group) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
 			return new ArrayList<Post<R>>();			
 		}
 
-		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getGroups(), param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getGroups(), param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }
