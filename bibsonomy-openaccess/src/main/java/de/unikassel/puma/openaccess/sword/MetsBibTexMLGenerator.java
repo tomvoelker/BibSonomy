@@ -138,10 +138,8 @@ public class MetsBibTexMLGenerator {
 		this.post.setExamreferee(pumaData.getExamreferee());
 		this.post.setPhdoralexam(pumaData.getPhdoralexam());
 		this.post.setSponsors(pumaData.getSponsors());
-		this.post.setAdditionaltitle(pumaData.getAdditionaltitle());	
-
+		this.post.setAdditionaltitle(pumaData.getAdditionaltitle());
 	}
-
 
 
 	private class PumaRenderer extends JAXBRenderer {
@@ -402,11 +400,9 @@ public class MetsBibTexMLGenerator {
 		final XmlData xmlData = objectFactory.createMdSecTypeMdWrapXmlData();
 		mdWrap.setXmlData(xmlData);
 
-
 		/*
 		 * METS FileSec
 		 */
-
 		final FileSec metsFileSec = objectFactory.createMetsTypeFileSec();
 		mets.setFileSec(metsFileSec);
 
@@ -415,11 +411,11 @@ public class MetsBibTexMLGenerator {
 
 		metsFileSecFileGrp.setID("sword-mets-fgrp-1");
 		metsFileSecFileGrp.setUSE("CONTENT");
-		Integer filenumber = 0;
-		for(final Document doc : this.post.getPost().getResource().getDocuments()) {
+		int filenumber = 0;
+		for (final Document doc : this.post.getPost().getResource().getDocuments()) {
 			final FileType fileItem = new FileType();
 			//			fileItem.setGROUPID("sword-mets-fgid-0");
-			fileItem.setID("sword-mets-file-".concat(filenumber.toString()));
+			fileItem.setID("sword-mets-file-".concat(String.valueOf(filenumber)));
 			// TODO: if file is not pdf, set MIMEtype to something like binary data
 			fileItem.setMIMETYPE("application/pdf");
 
@@ -440,7 +436,6 @@ public class MetsBibTexMLGenerator {
 		/*
 		 * METS structMap
 		 */
-
 		final StructMapType structMap = new StructMapType();
 
 		structMap.setID("sword-mets-struct-1");
