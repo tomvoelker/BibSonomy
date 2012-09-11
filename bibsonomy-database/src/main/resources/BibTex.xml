@@ -469,11 +469,11 @@
 		      WHERE b2.group = #groupId#
 		            AND <include refid="bibtexSimHash2"/>
 		            <dynamic prepend="AND">
-		            	<isNotNull property="systemTags.EntryType">
-							<isNotNull property="systemTags.EntryType.entryType">		
-								b2.entrytype = #systemTags.EntryType.entryType#
-							</isNotNull>
-						</isNotNull>
+		            	<iterate property="systemTags">
+							<isEqual property="systemTags[].name" compareValue="entrytype" prepend="AND">
+								b2.entrytype = #systemTags[].argument#
+							</isEqual>
+						</iterate>
 					</dynamic>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
@@ -884,11 +884,11 @@
 		) AS b 
 		JOIN tas t ON b.content_id = t.content_id
 		LEFT JOIN review_ratings_cache c ON c.interHash = b.interHash
-		<isNotNull property="systemTags.EntryType">
-			<isNotNull property="systemTags.EntryType.entryType">		
-				WHERE b.entrytype = #systemTags.EntryType.entryType#
-			</isNotNull>
-		</isNotNull>
+		<iterate property="systemTags">
+			<isEqual property="systemTags[].name" compareValue="entrytype" prepend="AND">
+				WHERE entrytype = #systemTags[].argument#
+			</isEqual>
+		</iterate>
 		ORDER BY b.date DESC;	
 	</select>
 	
