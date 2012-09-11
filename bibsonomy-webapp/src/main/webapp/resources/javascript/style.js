@@ -323,10 +323,10 @@ function switchNavi(scope, element) {
 	.descrInputLabel({}); // make the label disappear on click/submit
 	$("#inpf").parents("li").removeClass("hidden"); // show form
 	
-	/**
+	/*
 	 * Start autocompletion if 'tag' in Search-navibar is chosen, otherwise quit autocompletion
 	 */
-	if(scope == "tag"){
+	if (scope == "tag"){
 		startTagAutocompletion($("#inpf"));
 	} else {
 		endTagAutocompletion($("#inpf"));
@@ -335,6 +335,8 @@ function switchNavi(scope, element) {
 	return false;
 }
 
+
+// TODO: cleanup functions below; check for unused methods
 $(function() { 
 	//initSidebarHeader();
 	// FIXME: to ensure that the method is called after "most" other methods, we add a timeout ...
