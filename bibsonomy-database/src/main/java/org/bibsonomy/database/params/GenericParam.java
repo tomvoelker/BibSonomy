@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -213,7 +212,7 @@ public abstract class GenericParam {
 	 */
 	private String bibtexKey;
 	
-	private final Map<String, SystemTag> systemTags;
+	private final List<SystemTag> systemTags;
 	
 
 	/**
@@ -245,7 +244,7 @@ public abstract class GenericParam {
 		//when using this field the value of days must be greater 0 
 		this.days = -1;
 		
-		this.systemTags = new HashMap<String, SystemTag>();
+		this.systemTags = new LinkedList<SystemTag>();
 		
 		this.relationTags = new ArrayList<String>();
 		this.relationTagIndex = new ArrayList<TagIndex>();
@@ -1022,7 +1021,8 @@ public abstract class GenericParam {
 	 */
 	public void addToSystemTags(final SystemTag tag) {
 		if (tag != null) {
-			this.systemTags.put(tag.getName(), tag);
+			// FIXME: some tags can't be added twice
+			this.systemTags.add(tag);
 		}
 	}
 	
@@ -1042,8 +1042,8 @@ public abstract class GenericParam {
 	/**
 	 * @return a map of system tags [tag name => systemTag, …]
 	 */
-	public Map<String, SystemTag> getSystemTags() {
-		return Collections.unmodifiableMap(this.systemTags);
+	public List<SystemTag> getSystemTags() {
+		return Collections.unmodifiableList(this.systemTags);
 	}
 
 	/**

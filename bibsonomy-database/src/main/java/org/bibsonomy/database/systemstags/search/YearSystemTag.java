@@ -1,5 +1,7 @@
 package org.bibsonomy.database.systemstags.search;
 
+import java.util.regex.Pattern;
+
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.Resource;
@@ -14,6 +16,15 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl {
 	 * the name of the year system tag
 	 */
 	public static final String NAME = "year";
+	
+	/** year explicitly given (eg. 2006) */
+	private static final Pattern SINGLE_YEAR = Pattern.compile("[12]{1}[0-9]{3}");
+	/** range (e.g. 2001-2006) */
+	private static final Pattern START_END_YEAR = Pattern.compile("[12]{1}[0-9]{3}-[12]{1}[0-9]{3}");
+	/** upper bound (e.g -2005) means all years before 2005  */
+	private static final Pattern END_YEAR = Pattern.compile("-[12]{1}[0-9]{3}");
+	/** lower bound (e.g 1998-) means all years since 1998  */
+	private static final Pattern START_YEAR = Pattern.compile("[12]{1}[0-9]{3}-");
 
 	/**
 	 * It is necessary to distinguish between the 4 types of legal arguments for the YearSystemTag.
@@ -87,36 +98,31 @@ public class YearSystemTag extends AbstractSearchSystemTagImpl {
 			/*
 			 * extract first-, last- and year from the argument
 			 */
-			// 1st case: year explicitly given (eg. 2006)
-			if (this.getArgument().matches("[12]{1}[0-9]{3}")) {
+			if (SINGLE_YEAR.matcher(this.getArgument()).matches()) {
 				this.year = this.getArgument();
 				log.debug("Set year to " + this.getArgument() + " after matching year system tag");
-			} 
-			// 2nd case: range (e.g. 2001-2006)
-			else if (this.getArgument().matches("[12]{1}[0-9]{3}-[12]{1}[0-9]{3}")) {
+			} else if (START_END_YEAR.matcher(this.getArgument()).matches()) {
 				final String[] years = this.getArgument().split("-");
 				this.firstYear = years[0];
 				this.lastYear = years[1];
-				log.debug("Set firstyear/lastyear to " + years[0] + "/" + years[1] + "after matching year system tag");
-			}
-			// 3rd case: upper bound (e.g -2005) means all years before 2005 
-			else if(this.getArgument().matches("-[12]{1}[0-9]{3}")) {
+				log.debug("Set firstyear/lastyear to " + this.firstYear + "/" + this.lastYear + "after matching year system tag");
+			} else if (END_YEAR.matcher(this.getArgument()).matches()) {
 				// cut off the "-" at the beginning
 				this.lastYear = this.getArgument().substring(1);
-				log.debug("Set lastyear to " + this.getArgument() + "after matching year system tag");
-			}
-			// 4th case: lower bound (e.g 1998-) means all years since 1998 
-			else if(this.getArgument().matches("[12]{1}[0-9]{3}-")) {
+				log.debug("Set lastyear to " + this.lastYear + "after matching year system tag");
+			} else if (START_YEAR.matcher(this.getArgument()).matches()) {
 				// cut off the "-" at the end
-				this.firstYear = this.getArgument().substring(0, this.getArgument().length()-1);
-				log.debug("Set firstyear to " + this.getArgument() + "after matching year system tag");
+				this.firstYear = this.getArgument().substring(0, this.getArgument().length() - 1);
+				log.debug("Set firstyear to " + this.firstYear + "after matching year system tag");
 			}
-		} // for Bookmarks do nothing
+		}
+		/*
+		 * for Bookmarks do nothing
+		 */
 	}
 
 	@Override
 	public boolean allowsResource(final Class<? extends Resource> resourceType) {
 		return isPublicationClass(resourceType);
 	}
-
 }

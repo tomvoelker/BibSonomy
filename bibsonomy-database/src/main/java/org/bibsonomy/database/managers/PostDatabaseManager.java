@@ -826,8 +826,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
 		
-		final List<Post<R>> list = this.getPostsForUser(param, session);
-		 return list;
+		return this.getPostsForUser(param, session);
 	}
 
 	/**

@@ -115,7 +115,9 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 				// measure that. Even though this isn't correct after the first
 				// run for the following methods, we leave it in and execute
 				// one unnecessary call for every method.
-				if (i == 0) continue;
+				if (i == 0) {
+					continue;
+				}
 
 				all += (end - start);
 			}
@@ -123,7 +125,7 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 			log.debug("Executed " + (totalQueries - 5) + " queries of " + methodname + " in: " + all + " ms");
 			log.debug("5 queries of " + methodname + " took: " + (all / 20) + " ms");
 			log.debug("1 query   of " + methodname + " took: " + ((all / 20) / 5) + " ms");
-			log.debug("Under this circumstances " + 1000 / ((all / 20) / 5) + " queries could be executed in one second");
+			log.debug("Under this circumstances " + (1000 / ((all / 20) / 5)) + " queries could be executed in one second");
 		} catch (final Throwable ex) {
 			// ex.printStackTrace();
 			fail("Exception: " + ex.getMessage());
@@ -139,16 +141,16 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 			bookmarkDb.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), this.dbSession);
 			break;
 		case getBookmarkByTagNamesForUser:
-			bookmarkDb.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), this.dbSession);
+			bookmarkDb.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkByConceptForUser:
-			bookmarkDb.getPostsByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getTagIndex(), param.isCaseSensitiveTagNames(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), this.dbSession);
+			bookmarkDb.getPostsByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getTagIndex(), param.isCaseSensitiveTagNames(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkByUserFriends:
-			bookmarkDb.getPostsByUserFriends(param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), this.dbSession);
+			bookmarkDb.getPostsByUserFriends(param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForHomepage:
-			bookmarkDb.getPostsForHomepage(param.getFilter(), param.getStartDate(), param.getEndDate(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), this.dbSession);
+			bookmarkDb.getPostsForHomepage(param.getFilter(), param.getStartDate(), param.getEndDate(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkPopular:
 			bookmarkDb.getPostsPopular(param.getDays(), param.getLimit(), param.getOffset(), HashID.getSimHash(param.getSimHash()), this.dbSession);
@@ -163,19 +165,19 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 			bookmarkDb.getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession);
 			break;
 		case getBookmarkViewable:
-			bookmarkDb.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), param.getGroupId(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), this.dbSession);
+			bookmarkDb.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), param.getGroupId(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForGroup:
-			bookmarkDb.getPostsForGroup(param.getGroupId(), param.getGroups(), param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), this.dbSession);
+			bookmarkDb.getPostsForGroup(param.getGroupId(), param.getGroups(), param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForGroupCount:
 			bookmarkDb.getPostsForGroupCount(param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), this.dbSession);
 			break;
 		case getBookmarkForGroupByTag:
-			bookmarkDb.getPostsForGroupByTag(param.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), this.dbSession);	
+			bookmarkDb.getPostsForGroupByTag(param.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);	
 			break;
 		case getBookmarkForUser:
-			bookmarkDb.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), this.dbSession);
+			bookmarkDb.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForUserCount:
 			bookmarkDb.getPostsForUserCount(param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), this.dbSession);
