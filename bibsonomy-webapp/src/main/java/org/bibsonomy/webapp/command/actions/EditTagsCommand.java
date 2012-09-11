@@ -8,8 +8,10 @@ package org.bibsonomy.webapp.command.actions;
  */
 public class EditTagsCommand {
 	
+	// TODO: Set<Tag>
 	private String delTags = "";
 	
+	// TODO: Set<Tag>
 	private String addTags = "";
 	
 	private boolean updateRelations = false;
@@ -17,7 +19,7 @@ public class EditTagsCommand {
 	/**
 	 * @param delTags the delTags to set
 	 */
-	public void setDelTags(String delTags) {
+	public void setDelTags(final String delTags) {
 		this.delTags = delTags;
 	}
 
@@ -25,13 +27,13 @@ public class EditTagsCommand {
 	 * @return the delTags
 	 */
 	public String getDelTags() {
-		return delTags;
+		return this.delTags;
 	}
 
 	/**
 	 * @param addTags the addTags to set
 	 */
-	public void setAddTags(String addTags) {
+	public void setAddTags(final String addTags) {
 		this.addTags = addTags;
 	}
 
@@ -39,13 +41,13 @@ public class EditTagsCommand {
 	 * @return the addTags
 	 */
 	public String getAddTags() {
-		return addTags;
+		return this.addTags;
 	}
 
 	/**
 	 * @param updateRelations the updateRelations to set
 	 */
-	public void setUpdateRelations(boolean updateRelations) {
+	public void setUpdateRelations(final boolean updateRelations) {
 		this.updateRelations = updateRelations;
 	}
 
@@ -53,7 +55,7 @@ public class EditTagsCommand {
 	 * @return the updateRelations
 	 */
 	public boolean isUpdateRelations() {
-		return updateRelations;
+		return this.updateRelations;
 	}
 
 }
