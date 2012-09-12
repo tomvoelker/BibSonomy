@@ -54,6 +54,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
+	 * @param negatedTags TODO
 	 * @param limit
 	 * @param offset
 	 * @return a list of posts containing the search result
@@ -62,7 +63,7 @@ public interface ResourceSearch<R extends Resource> {
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final Collection<String> allowedGroups,
 			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-			final String year, final String firstYear, final String lastYear, int limit, int offset);
+			final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
 	
 
 	/**

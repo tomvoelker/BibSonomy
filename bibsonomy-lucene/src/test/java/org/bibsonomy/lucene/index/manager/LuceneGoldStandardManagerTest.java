@@ -85,7 +85,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		updateIndex();
 		
 		assertEquals(docCountBefore + 1,  manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		final ResultList<Post<GoldStandardPublication>> posts = searcher.getPosts("", "", "", allowedGroups, "Chuck*", "","", new LinkedList<String>(), null, null, null, 10, 0);
+		final ResultList<Post<GoldStandardPublication>> posts = searcher.getPosts("", "", "", allowedGroups, "Chuck*", "","", new LinkedList<String>(), null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 		
 		updateIndex();
@@ -120,7 +120,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		// update index
 		updateIndex();
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		ResultList<Post<GoldStandardPublication>> posts = searcher.getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, 10, 0);
+		ResultList<Post<GoldStandardPublication>> posts = searcher.getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 	
 		post.getResource().setAbstract("Lorem ipsum dolor logos mundus novus");
@@ -129,7 +129,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		// update index
 		updateIndex();
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
-		posts = searcher.getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, 10, 0);
+		posts = searcher.getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 	
 		// update index second call
@@ -138,7 +138,7 @@ public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(docCountBefore, manager.getResourceIndeces().get(0).getStatistics().getNumDocs());
 		
 		// check if the new post is in the lucene index
-		posts = searcher.getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, 10, 0);
+		posts = searcher.getPosts("", "", "", allowedGroups, "", "","lucene*", new LinkedList<String>(), null, null, null, null, 10, 0);
 		assertEquals(1, posts.size());
 		
 		updateIndex();

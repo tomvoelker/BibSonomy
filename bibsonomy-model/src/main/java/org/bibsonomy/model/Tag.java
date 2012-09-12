@@ -49,11 +49,6 @@ public class Tag implements Comparable<Tag>, Serializable {
 	public static final int MAX_TAGS_ALLOWED = 100; // more tags are not allowed (they get lost)
 	
 	/**
-	 * Negation prefix
-	 */
-	public static final String NEGATION_PREFIX = "!";
-
-	/**
 	 * correlated concept prefix
 	 */
 	public static final String CORRELATED_CONCEPT_PREFIX = "<->";

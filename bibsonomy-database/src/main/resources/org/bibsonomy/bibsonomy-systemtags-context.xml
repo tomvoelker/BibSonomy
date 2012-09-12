@@ -51,6 +51,7 @@
 		<ref bean="titleTag"/>
 		<ref bean="userTag"/>
 		<ref bean="yearTag"/>
+		<ref bean="notTag"/>
 		<ref bean="userRelationSystemTag"/>
 		<ref bean="networkRelationSystemTag"/>
 	</util:set>
@@ -69,6 +70,7 @@
 	<bean id="yearTag" class="org.bibsonomy.database.systemstags.search.YearSystemTag"/>
 	<bean id="userRelationSystemTag" class="org.bibsonomy.database.systemstags.search.UserRelationSystemTag"/>
 	<bean id="networkRelationSystemTag" class="org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag"/>
+	<bean id="notTag" class="org.bibsonomy.database.systemstags.search.NotTagSystemTag"/>
 
 	<!--+
 	    |MARKUP SYSTEMTAGS
