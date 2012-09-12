@@ -67,41 +67,34 @@ public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 	@Test
 	public void test() {
 		final List<String> testTags = new LinkedList<String>();
+		final List<String> negatedTags = new LinkedList<String>();
 		// We have only one document in the test index that contains at most two tags
 		// TODO To make this test more meaningful we need more tags in the test documents
-		// Check the only avaible document with two tags.
+		// Check the only available document with two tags.
 		// These are: "testbibtex" and "testtag"
 		testTags.add("testbibtex");
 		testTags.add("testtag");
 		ResultList<Post<BibTex>> resList;
-		resList = query(searcher, testTags);
+		resList = query(searcher, testTags, negatedTags);
 		assertEquals(1, resList.size());
 		testTags.remove("testtag");
-		resList = query(searcher, testTags);
+		resList = query(searcher, testTags, negatedTags);
 		assertEquals(1, resList.size());
-		testTags.add("!testtag");
-		resList = query(searcher, testTags);
+		negatedTags.add("testtag");
+		resList = query(searcher, testTags, negatedTags);
 		assertEquals(0, resList.size());
-		testTags.remove("!testtag");
-		resList = query(searcher, testTags);
+		negatedTags.remove("testtag");
+		resList = query(searcher, testTags, negatedTags);
 		assertEquals(1, resList.size());
-		testTags.add("!google");
-		resList = query(searcher, testTags);
+		negatedTags.add("google");
+		resList = query(searcher, testTags, negatedTags);
 		assertEquals(1, resList.size());
 	}
 
-	private ResultList<Post<BibTex>> query(final LuceneResourceSearch<BibTex> lsr, final List<String> testTags) {
+	private ResultList<Post<BibTex>> query(final LuceneResourceSearch<BibTex> lsr, final List<String> testTags, final List<String> negatedTags) {
 		ResultList<Post<BibTex>> resList;
-		resList = lsr.getPosts(null, null, null, Collections.singletonList("public"), null, null, null, testTags, null, null, null, 100, 0);
+		resList = lsr.getPosts(null, null, null, Collections.singletonList("public"), null, null, null, testTags, null, null, null, negatedTags, 100, 0);
 		return resList;
 	}
-
-//	private void printResList(ResultList<Post<BibTex>> resList) {
-//		int res = 1;
-//		for (Post<BibTex> post : resList) {
-//			System.out.println("Result " + res + ": " + post.getTags().toString());
-//			++res;
-//		}
-//	}
 
 }

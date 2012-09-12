@@ -20,7 +20,7 @@ public class GetGoldStandardsByResourceSearch<RR extends Resource, R extends Res
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getSearch().getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, param.getLimit(), param.getOffset());
+		return this.databaseManager.getSearch().getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, null, param.getLimit(), param.getOffset());
 	}
 
 	@Override
