@@ -301,7 +301,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	}
 
 	/**
-	 * Generates all Indices for this resource, sigle threaded
+	 * Generates all Indices for this resource, single threaded
 	 */
 	public void generateIndex() {
 //		this.generateIndex(true, 1);
