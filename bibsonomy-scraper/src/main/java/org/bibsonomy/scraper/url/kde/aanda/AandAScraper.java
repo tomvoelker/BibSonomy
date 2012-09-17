@@ -74,7 +74,16 @@ public class AandAScraper extends AbstractUrlScraper{
 				//BibtexScraper will extract the bibtex from the download location
 				ScrapingContext scForBibtexScraper = new ScrapingContext(new URL(downloadUrl + doi));
 				if (new BibtexScraper().scrape(scForBibtexScraper)) {
-					sc.setBibtexResult(scForBibtexScraper.getBibtexResult());
+					String bibtexResult = scForBibtexScraper.getBibtexResult();
+					//Umlaute convertieren
+					bibtexResult = bibtexResult
+							.replace("\\\"u", "ü")
+							.replace("\\\"a", "ä")
+							.replace("\\\"o", "ö")
+							.replace("\\\"U", "Ü")
+							.replace("\\\"A", "Ä")
+							.replace("\\\"O", "Ö");
+					sc.setBibtexResult(bibtexResult);
 					return true;
 				}
 				
