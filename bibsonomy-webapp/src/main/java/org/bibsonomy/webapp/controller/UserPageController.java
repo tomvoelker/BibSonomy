@@ -65,7 +65,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		 * handle case when only tags are requested
 		 */
 		if (TagsType.PREFIX.equals(command.getTagstype())) {
-			String regex = command.getRequestedTags() + "%";
+			// TODO: "%" is MySQL specific and should be moved to the database logic implementation
+			final String regex = command.getRequestedTags() + "%";
 			this.handleTagsOnly(command, groupingEntity, groupingName, regex, requTags, null, Integer.MAX_VALUE, null);
 		} else {
 			this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
@@ -88,7 +89,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		/*
 		 * extract filter
 		 */
-		final boolean publicationFilter = isPublicationFilter(command.getFilter());
+		final boolean publicationFilter = this.isPublicationFilter(command.getFilter());
 		if (publicationFilter) {
 			this.supportedResources.remove(Bookmark.class);
 		}
@@ -181,13 +182,13 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				 * The DBLogic checks, if the login user may see the user's 
 				 * details. 
 				 */
-				final User requestedUser = logic.getUserDetails(groupingName);
+				final User requestedUser = this.logic.getUserDetails(groupingName);
 				command.setUser(requestedUser);
 				/*
 				 * Has loginUser this user set as friend?
 				 */
-				command.setOfFriendUser(logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
-				command.setFriendOfUser(logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
+				command.setOfFriendUser(this.logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
+				command.setFriendOfUser(this.logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
 				/*
 				 * TODO: we need an adminLogic to access the requested user's groups ...
 				 */
