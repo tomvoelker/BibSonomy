@@ -14,6 +14,7 @@ import org.jasypt.util.text.TextEncryptor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
@@ -27,8 +28,16 @@ public class LDAPRememberMeServices extends AbstractRememberMeServices {
 	
 	private TextEncryptor encryptor;
 	
+	/** 
+	 * @param key
+	 * @param userDetailsService
+	 */
+	public LDAPRememberMeServices(final String key, final UserDetailsService userDetailsService) {
+		super(key, userDetailsService);
+	}
+
 	@Override
-	protected UserDetails processAutoLoginCookie(String[] cookieTokens, HttpServletRequest request, HttpServletResponse response) throws RememberMeAuthenticationException, UsernameNotFoundException {
+	protected UserDetails processAutoLoginCookie(final String[] cookieTokens, final HttpServletRequest request, final HttpServletResponse response) throws RememberMeAuthenticationException, UsernameNotFoundException {
 		if (cookieTokens.length != 5) {
             throw new InvalidCookieException("Cookie token did not contain 5 tokens, but contained '" + Arrays.asList(cookieTokens) + "'");
         }
@@ -36,7 +45,7 @@ public class LDAPRememberMeServices extends AbstractRememberMeServices {
 		final String username = cookieTokens[0];
         
         
-		long tokenExpiryTime = this.getExpiryTime(cookieTokens[3]);
+		final long tokenExpiryTime = this.getExpiryTime(cookieTokens[3]);
 		
 		final UserDetails loadUserByUsername = this.getUserDetailsService().loadUserByUsername(username);
 		if (loadUserByUsername instanceof UserAdapter) {
@@ -60,7 +69,7 @@ public class LDAPRememberMeServices extends AbstractRememberMeServices {
 	}
 	
 	@Override
-	protected Authentication createSuccessfulAuthentication(HttpServletRequest request, UserDetails userDetails) {
+	protected Authentication createSuccessfulAuthentication(final HttpServletRequest request, final UserDetails userDetails) {
 		final User user = ((UserAdapter) userDetails).getUser();
 		
 		// return an usernamePasswordAuthenticationToken that the ldap authentication provider can handle the token
@@ -95,12 +104,12 @@ public class LDAPRememberMeServices extends AbstractRememberMeServices {
 	}
 	
 	@Override
-	protected String encodeCookie(String[] cookieTokens) {
+	protected String encodeCookie(final String[] cookieTokens) {
 		return this.encryptor.encrypt(super.encodeCookie(cookieTokens));
 	}
 
 	@Override
-	protected String[] decodeCookie(String cookieValue) throws InvalidCookieException {
+	protected String[] decodeCookie(final String cookieValue) throws InvalidCookieException {
 		return super.decodeCookie(this.encryptor.decrypt(cookieValue));
 	}
 

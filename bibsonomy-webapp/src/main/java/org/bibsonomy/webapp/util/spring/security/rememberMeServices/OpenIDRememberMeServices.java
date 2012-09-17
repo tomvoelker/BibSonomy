@@ -21,6 +21,7 @@ import org.bibsonomy.util.spring.security.UserAdapter;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.openid.OpenIDAuthenticationToken;
 import org.springframework.security.openid.OpenIDConsumer;
@@ -56,6 +57,15 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 	
 	private RequestCache requestCache = new HttpSessionRequestCache();
 	
+	
+	/**
+	 * @param key
+	 * @param userDetailsService
+	 */
+	public OpenIDRememberMeServices(final String key, final UserDetailsService userDetailsService) {
+		super(key, userDetailsService);
+	}
+
 	@Override
 	protected void onLoginSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication successfulAuthentication) {
 		if (successfulAuthentication instanceof OpenIDAuthenticationToken) {
@@ -153,7 +163,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 	protected String buildReturnToUrl(final HttpServletRequest request) {
 		final StringBuilder sb = new StringBuilder(this.projectRoot);
 		sb.append(this.filterUrl.replaceFirst("\\/", "")); // TODO: document or remove?!
-		final Iterator<String> iterator = returnToUrlParameters.iterator();
+		final Iterator<String> iterator = this.returnToUrlParameters.iterator();
         boolean isFirst = true;
 
         while (iterator.hasNext()) {
@@ -180,7 +190,7 @@ public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 	}
 
 	protected String lookupRealm(final String returnToUrl) {
-        String mapping = realmMapping.get(returnToUrl);
+        String mapping = this.realmMapping.get(returnToUrl);
 
         if (mapping == null) {
             try {

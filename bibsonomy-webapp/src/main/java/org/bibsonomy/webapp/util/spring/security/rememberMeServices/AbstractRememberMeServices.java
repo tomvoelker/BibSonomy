@@ -4,17 +4,29 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-import org.springframework.security.core.codec.Hex;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.codec.Hex;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 
 
 /**
+ * abstract remember me service
+ * 
  * @author dzo
  * @version $Id$
  */
 public abstract class AbstractRememberMeServices extends org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices implements CookieBasedRememberMeServices {
 	private static final String TOKEN_SIGNATURE_SEPERATOR = ":";
 	
+	/**
+	 * default constructor
+	 * @param key
+	 * @param userDetailsService
+	 */
+	public AbstractRememberMeServices(final String key, final UserDetailsService userDetailsService) {
+		super(key, userDetailsService);
+	}
+
 	protected String makeTokenSignature(final String[] values) {
 		final StringBuilder sb = new StringBuilder();
 		for (final String string : values) {
@@ -23,11 +35,12 @@ public abstract class AbstractRememberMeServices extends org.springframework.sec
 		}
 		sb.append(this.getKey());
 		
+		// TODO: equals HashUtils.md5?
 		final String data = sb.toString();
 	    MessageDigest digest;
 	    try {
 	        digest = MessageDigest.getInstance("MD5");
-	    } catch (NoSuchAlgorithmException e) {
+	    } catch (final NoSuchAlgorithmException e) {
 	        throw new IllegalStateException("No MD5 algorithm available!");
 	    }
 
@@ -38,17 +51,17 @@ public abstract class AbstractRememberMeServices extends org.springframework.sec
 		long tokenExpiryTime;
 		try {
 	        tokenExpiryTime = new Long(cookieString).longValue();
-	    } catch (NumberFormatException nfe) {
+	    } catch (final NumberFormatException nfe) {
 	        throw new InvalidCookieException("Cookie token did not contain a valid number (contained '" + cookieString + "')");
 	    }
 	
-	    if (isTokenExpired(tokenExpiryTime)) {
+	    if (this.isTokenExpired(tokenExpiryTime)) {
 	        throw new InvalidCookieException("Cookie token has expired (expired on '"  + new Date(tokenExpiryTime) + "'; current time is '" + new Date() + "')");
 	    }
 		return tokenExpiryTime;
 	}
 
-	protected boolean isTokenExpired(long tokenExpiryTime) {
+	protected boolean isTokenExpired(final long tokenExpiryTime) {
 		return tokenExpiryTime < System.currentTimeMillis();
 	}
 

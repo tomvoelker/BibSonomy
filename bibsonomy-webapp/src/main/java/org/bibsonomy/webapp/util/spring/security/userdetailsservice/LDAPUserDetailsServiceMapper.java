@@ -28,7 +28,7 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	 * @see org.springframework.security.ldap.userdetails.UserDetailsContextMapper#mapUserFromContext(org.springframework.ldap.core.DirContextOperations, java.lang.String, java.util.Collection)
 	 */
 	@Override
-	public UserDetails mapUserFromContext(final DirContextOperations ctx, final String username, final Collection<GrantedAuthority> authority) {
+	public UserDetails mapUserFromContext(final DirContextOperations ctx, final String username, final Collection<? extends GrantedAuthority> authorities) {
 		final String systemName = this.adminLogic.getUsernameByLdapUserId(username);
 		if (systemName == null) {
 			throw new LdapUsernameNotFoundException("LDAP id not found in database", ctx);
@@ -66,5 +66,4 @@ public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	public void setUserDetailsService(final UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
-
 }
