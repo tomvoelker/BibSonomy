@@ -14,8 +14,9 @@ import org.springframework.security.core.AuthenticationException;
  * @version $Id$
  */
 public class ServiceUnavailableException extends AuthenticationException {
-
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -526729562785871024L;
+	
+	
 	private final long retryAfter;
 
 	/**
