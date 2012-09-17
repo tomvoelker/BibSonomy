@@ -9,6 +9,7 @@ import org.bibsonomy.util.spring.security.UserAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.util.WebUtils;
 
 /**
  * @author dzo
@@ -24,16 +25,14 @@ public class SecurityContextAwareSessionLocaleResolver extends SessionLocaleReso
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {
 			final Object principal = authentication.getPrincipal();
-			if (principal != null && principal instanceof UserAdapter) {
+			if ((principal != null) && (principal instanceof UserAdapter)) {
 				final User user = ((UserAdapter) principal).getUser();
 				final String lang = user.getSettings().getDefaultLanguage();
 				final Locale locale = new Locale(lang);
 				/*
 				 * save it in the session
-				 * NOTE: it's ok to call set locale with response = null
-				 * setLocale doesn't use the response parameter
 				 */
-				this.setLocale(request, null, locale);
+				WebUtils.setSessionAttribute(request, LOCALE_SESSION_ATTRIBUTE_NAME, locale);
 				return locale;
 			}
 		}
