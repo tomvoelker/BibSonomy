@@ -2,9 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +21,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.entity.UserRealnameResolver;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.webapp.command.actions.FacebookAccessCommand;
 import org.bibsonomy.webapp.command.actions.OAuthAccessCommand;
 import org.bibsonomy.webapp.command.actions.OAuthAccessCommand.State;
@@ -30,8 +29,8 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.importer.FacebookFriendsImporter;
 import org.bibsonomy.webapp.util.importer.AbstractFriendsImporter.UserAdapter;
+import org.bibsonomy.webapp.util.importer.FacebookFriendsImporter;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.json.JSONException;
@@ -79,15 +78,11 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	}
 
 	@Override
-	public View workOn(FacebookAccessCommand command) {
+	public View workOn(final FacebookAccessCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		if (!context.isUserLoggedIn()) {
-			throw new AccessDeniedException();
+			throw new AccessDeniedException("please log in");
 		}
-
-		//if (!context.isValidCkey()) {
-		//errors.reject("error.field.valid.ckey");
-		//}
 		
 		//
 		// perform administrative tasks (if requested)
@@ -116,16 +111,17 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	 * @param user
 	 * @return
 	 */
-	private View oAuthRequestToken(OAuthAccessCommand command, User user) {
+	private View oAuthRequestToken(final OAuthAccessCommand command, final User user) {
 		log.debug("obtaining a request token for user '"+user.getName()+"' from facebook");
 
 		// url to call when authorization dialog finished
-		String callbackURI = this.getProjectHome()+CALL_BACK+"/"+UrlUtils.safeURIEncode(State.ACCESS.name());
-
+		final String callbackURI = this.projectHome + CALL_BACK + "/" + UrlUtils.safeURIEncode(State.ACCESS.name());
+		
+		// TODO use URLBuilder
 		// url for obtaining the request token
-		String redirectURI =  UrlUtils.setParam(FB_OAUTH_REQUEST_URL, "client_id", UrlUtils.safeURIEncode(this.getFbApiKey()));
-		redirectURI =  UrlUtils.setParam(redirectURI, "redirect_uri", UrlUtils.safeURIEncode(callbackURI));
-		redirectURI =  UrlUtils.setParam(redirectURI, "scope", UrlUtils.safeURIEncode(FB_OAUTH_SCOPE));
+		String redirectURI =  UrlUtils.setParam(FB_OAUTH_REQUEST_URL, "client_id", UrlUtils.safeURIEncode(this.fbApiKey));
+		redirectURI = UrlUtils.setParam(redirectURI, "redirect_uri", UrlUtils.safeURIEncode(callbackURI));
+		redirectURI = UrlUtils.setParam(redirectURI, "scope", UrlUtils.safeURIEncode(FB_OAUTH_SCOPE));
 
 		// redirect
 		return new ExtendedRedirectView(redirectURI);
@@ -138,26 +134,26 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	 * @param user the login user
 	 * @return
 	 */
-	private View oAuthAccessToken(FacebookAccessCommand command, User user) {
+	private View oAuthAccessToken(final FacebookAccessCommand command, final User user) {
 		if (present(command.getError())) {
 			return Views.FACEBOOK_IMPORT;
 		}
 
 		// url to call when authorization dialog finished
-		String callbackURI = this.getProjectHome()+CALL_BACK+"/"+UrlUtils.safeURIEncode(State.ACCESS.name());
+		final String callbackURI = this.projectHome + CALL_BACK + "/" + UrlUtils.safeURIEncode(State.ACCESS.name());
 
 		// url for authorizing the request token
-		String redirectURI =  UrlUtils.setParam(FB_OAUTH_ACCESSS_URL, "client_id", UrlUtils.safeURIEncode(this.getFbApiKey()));
-		redirectURI =  UrlUtils.setParam(redirectURI, "redirect_uri", UrlUtils.safeURIEncode(callbackURI));
-		redirectURI =  UrlUtils.setParam(redirectURI, "client_secret", UrlUtils.safeURIEncode(this.getFbSecret()));
-		redirectURI =  UrlUtils.setParam(redirectURI, "code", UrlUtils.safeURIEncode(command.getCode()));
+		String redirectURI =  UrlUtils.setParam(FB_OAUTH_ACCESSS_URL, "client_id", UrlUtils.safeURIEncode(this.fbApiKey));
+		redirectURI = UrlUtils.setParam(redirectURI, "redirect_uri", UrlUtils.safeURIEncode(callbackURI));
+		redirectURI = UrlUtils.setParam(redirectURI, "client_secret", UrlUtils.safeURIEncode(this.fbSecret));
+		redirectURI = UrlUtils.setParam(redirectURI, "code", UrlUtils.safeURIEncode(command.getCode()));
 		
-		String accessToken = this.getAccessToken(redirectURI, command);
+		final String accessToken = this.getAccessToken(redirectURI, command);
 		command.setAccessToken(accessToken);
 		
 		if (present(accessToken)) {
-			Collection<User> facebookFriends = this.importFacebookFriends(command, user);
-			Map<String, Collection<User>> userMapping = this.friendsResolver.resolveUsers(facebookFriends);
+			final Collection<User> facebookFriends = this.importFacebookFriends(command, user);
+			final Map<String, Collection<User>> userMapping = this.friendsResolver.resolveUsers(facebookFriends);
 			command.setFriends(facebookFriends);
 			command.setUserMapping(userMapping);
 		}
@@ -172,18 +168,18 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	 * @param loginUser
 	 * @return
 	 */
-	private Collection<User> importFacebookFriends(FacebookAccessCommand command, User loginUser) {
-		FacebookFriendsImporter friendsImporter = new FacebookFriendsImporter();
-		UserAdapter<com.restfb.types.User> userAdapter = friendsImporter.getUserAdapter();
+	private Collection<User> importFacebookFriends(final FacebookAccessCommand command, final User loginUser) {
+		final FacebookFriendsImporter friendsImporter = new FacebookFriendsImporter();
+		final UserAdapter<com.restfb.types.User> userAdapter = friendsImporter.getUserAdapter();
 		
 		// retrieve list of friends from facebook
 		loginUser.setApiKey(command.getAccessToken());
-		Collection<com.restfb.types.User> facebookFriends = friendsImporter.getFriends(loginUser);
+		final Collection<com.restfb.types.User> facebookFriends = friendsImporter.getFriends(loginUser);
 		
 		// map facebook users to bibsonomy users
-		Collection<User> bibsonomyFriends = new ArrayList<User>();
+		final Collection<User> bibsonomyFriends = new ArrayList<User>();
 		if (present(facebookFriends)) {
-			for (com.restfb.types.User facebookUser : facebookFriends ) {
+			for (final com.restfb.types.User facebookUser : facebookFriends ) {
 				bibsonomyFriends.add(userAdapter.getUser(facebookUser));
 			}
 		}
@@ -199,11 +195,11 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	 * @param command the model object
 	 * @return the obtained access token on success, null otherwise
 	 */
-    public String getAccessToken(String url, OAuthAccessCommand command) {
-		HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
+    public String getAccessToken(final String url, final OAuthAccessCommand command) {
+		final HttpClient client = new HttpClient(new MultiThreadedHttpConnectionManager());
 
 		// Create a method instance.
-		GetMethod method = new GetMethod(url);
+		final GetMethod method = new GetMethod(url);
 
 		// Provide custom retry handler is necessary
 		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
@@ -214,26 +210,25 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 		String accessToken = null;
 		try {
 			// Execute the method.
-			int statusCode = client.executeMethod(method);
+			final int statusCode = client.executeMethod(method);
 
 			if (statusCode != HttpStatus.SC_OK) {
-				System.err.println("Method failed: " + method.getStatusLine());
+				log.error("Method failed: " + method.getStatusLine());
 			}
 			
 			// the raw response string
-			InputStreamReader input = new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8");
 			
-			responseString = convertStreamToString(input);
+			responseString = WebUtils.inputStreamToStringBuilder(method.getResponseBodyAsStream(), "UTF-8").toString();
 			
 			if (present(responseString) && responseString.startsWith(OAUTH_ACCESS_TOKEN)) {
 				// accessToken = responseString.split("=", 2)[1];
-				Map<String,String> response = parseQueryString(responseString);
+				final Map<String,String> response = parseQueryString(responseString);
 				accessToken = response.get(OAUTH_ACCESS_TOKEN);
 				// TODO: also get "expires" and store both in the database
 			} else {
 				this.parseOAuthError(responseString, command);
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			log.error("Error reading OAuth response.", e);
 		} finally {
 			// Release the connection.
@@ -250,10 +245,10 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
      * @param context
      * @return
      */
-	private View performSocialAction(FacebookAccessCommand command, RequestWrapperContext context) {
-		FacebookFriendsImporter friendsImporter = new FacebookFriendsImporter();
-		String bibUser = (present(context.getLoginUser().getRealname()))?context.getLoginUser().getRealname():context.getLoginUser().getName();
-		String postId = friendsImporter.sendFacebookMessage(command.getRequestedUser(), context.getLoginUser(), bibUser + " invides you to join the blue social bookmark and publication sharing system BibSonomy.", command.getAccessToken());
+	private View performSocialAction(final FacebookAccessCommand command, final RequestWrapperContext context) {
+		final FacebookFriendsImporter friendsImporter = new FacebookFriendsImporter();
+		final String bibUser = (present(context.getLoginUser().getRealname()))?context.getLoginUser().getRealname():context.getLoginUser().getName();
+		final String postId = friendsImporter.sendFacebookMessage(command.getRequestedUser(), context.getLoginUser(), bibUser + " invides you to join the blue social bookmark and publication sharing system BibSonomy.", command.getAccessToken());
 		command.setMessageKey(postId);
 		return Views.FACEBOOK_IMPORT;
 	}
@@ -265,7 +260,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
      * @param context
      * @return
      */
-	private View performAdminAction(FacebookAccessCommand command, RequestWrapperContext context) {
+	private View performAdminAction(final FacebookAccessCommand command, final RequestWrapperContext context) {
 		final User loginUser = context.getLoginUser();
 
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
@@ -280,7 +275,7 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 			this.friendsResolver.buildIndex();
 			return Views.FACEBOOK_IMPORT;
 		default:
-			throw new RuntimeException("Unsupported admin action: '"+command.getAdminAction()+"'");
+			throw new RuntimeException("Unsupported admin action: '" + command.getAdminAction() + "'");
 		}
 	}
 
@@ -291,47 +286,17 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	 * @param response
 	 * @param command
 	 */
-	private void parseOAuthError(String response, OAuthAccessCommand command) {
-		// the parsed response object
-		JSONObject jsonResponse;
+	private void parseOAuthError(final String response, final OAuthAccessCommand command) {
 		try {
-			jsonResponse = new JSONObject(response);
+			// the parsed response object
+			final JSONObject jsonResponse = new JSONObject(response);
 			final JSONObject errorObject = jsonResponse.getJSONObject(OAUTH_ERROR_KEY);
 			command.setErrorType(OAuthAccessCommand.ErrorType.valueOf(errorObject.getString(OAUTH_ERROR_TYPE)));
 			command.setErrorMessage(errorObject.getString(OAUTH_ERROR_MESSAGE));
-		} catch (JSONException e) {
-			log.error("Error parsing json response string '"+response+"'", e);
+		} catch (final JSONException e) {
+			log.error("Error parsing json response string '" + response + "'", e);
 		}
 	}
-	
-	/**
-	 * convert InputStream to String object
-	 * 
-	 * @param is
-	 * @return
-	 */
-	private static String convertStreamToString(InputStreamReader is) {
-        BufferedReader reader = new BufferedReader(is);
-        StringBuilder sb = new StringBuilder();
-
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-        } catch (IOException e) {
-            log.error("Error reading OAuth response.", e);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                log.error("Error closing connection while reading OAuth response", e);
-            }
-        }
-
-        return sb.toString();
-    }
-	
 	
 	/**
 	 * parse a query string into a key value map
@@ -341,12 +306,13 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	 * @param query the query string
 	 * @return key value map 
 	 */
-	public static Map<String, String> parseQueryString(String query) {  
-	    String[] params = query.split("&");  
-	    Map<String, String> map = new HashMap<String, String>();  
-	    for (String param : params) {  
-	        String name = param.split("=")[0];  
-	        String value = param.split("=")[1];  
+	public static Map<String, String> parseQueryString(final String query) {  
+	    final String[] params = query.split("&");  
+	    final Map<String, String> map = new HashMap<String, String>();  
+	    for (final String param : params) {  
+	        final String[] nameValue = param.split("=");
+			final String name = nameValue[0];
+	        final String value = nameValue[1];  // TODO: missing URLUtils.saveURIDecode?
 	        map.put(name, value);  
 	    }  
 	    return map;  
@@ -365,57 +331,28 @@ public class FacebookFriendsImportController implements ErrorAware, Minimalistic
 	/**
 	 * @param fbApiKey
 	 */
-	public void setFbApiKey(String fbApiKey) {
+	public void setFbApiKey(final String fbApiKey) {
 		this.fbApiKey = fbApiKey;
-	}
-
-	/**
-	 * @return the facebook api key
-	 */
-	public String getFbApiKey() {
-		return fbApiKey;
 	}
 
 	/**
 	 * @param fbSecret
 	 */
-	public void setFbSecret(String fbSecret) {
+	public void setFbSecret(final String fbSecret) {
 		this.fbSecret = fbSecret;
-	}
-
-	/**
-	 * @return the facebook api secret key
-	 */
-	public String getFbSecret() {
-		return fbSecret;
-	}
+	} 
 
 	/**
 	 * @param projectHome
 	 */
-	public void setProjectHome(String projectHome) {
+	public void setProjectHome(final String projectHome) {
 		this.projectHome = projectHome;
-	}
-
-	/**
-	 * @return project home
-	 */
-	public String getProjectHome() {
-		return projectHome;
 	}
 
 	/**
 	 * @param friendsResolver
 	 */
-	public void setFriendsResolver(UserRealnameResolver friendsResolver) {
+	public void setFriendsResolver(final UserRealnameResolver friendsResolver) {
 		this.friendsResolver = friendsResolver;
 	}
-
-	/**
-	 * @return the applied imported friends resolver
-	 */
-	public UserRealnameResolver getFriendsResolver() {
-		return friendsResolver;
-	}	
-
 }
