@@ -4,11 +4,11 @@
 	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 						http://www.springframework.org/schema/security 
-						http://www.springframework.org/schema/security/spring-security-3.0.4.xsd
+						http://www.springframework.org/schema/security/spring-security-3.1.xsd
 						http://www.springframework.org/schema/util 
-	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	                    http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 	
 	<security:global-method-security pre-post-annotations="enabled" />
 	
@@ -16,14 +16,45 @@
 		<constructor-arg value="/login" />
 	</bean>
 	
-	<security:http use-expressions="true" entry-point-ref="entryPoint" auto-config="false" security-context-repository-ref="contextRepository">
-		<!-- no filtering for css and js -->
-		<security:intercept-url pattern="/resources/**" filters="none" />
-		<security:intercept-url pattern="/logging**" filters="none" />
-		<!-- api uses own authentication handling -->
-		<security:intercept-url pattern="/api/**" filters="none" />
-		<!-- OAuth temporary tokens may be requested without authentication -->
-		<security:intercept-url pattern="/oauth/requestToken" filters="none" />
+	<bean id="authConfig" class="org.bibsonomy.webapp.util.spring.security.AuthMethodListFactoryBean">
+		<property name="authConfig" value="${auth.order}" />
+	</bean>
+	
+	<!-- here we config by hand a filter proxy chain (normally done by the namespacehandler of spring security) -->
+	<util:list id="org.springframework.security.filterChains" />
+	<alias name="org.springframework.security.filterChainProxy" alias="springSecurityFilterChain"/>
+	<bean id="org.springframework.security.filterChainProxy" class="org.bibsonomy.webapp.util.spring.security.FilterChainProxyFactoryBean">
+		<property name="config" ref="authConfig" />
+		<property name="authFilterMap">
+			<map key-type="org.bibsonomy.common.enums.AuthMethod">
+				<entry key="INTERNAL" value-ref="internalUsernamePasswordFilter" />
+				<entry key="LDAP" value-ref="ldapUsernamePasswordFilter" />
+				<entry key="OPENID" value-ref="openidFilter" />
+				<entry key="HTTPBASIC" value-ref="httpBasicAuthenticationFilter" />
+			</map>
+		</property>
+		<property name="authRememberMeFilterMap">
+			<map key-type="org.bibsonomy.common.enums.AuthMethod">
+				<entry key="INTERNAL" value-ref="internalRememberMeFilter" />
+				<entry key="LDAP" value-ref="ldapRememberMeFilter" />
+				<entry key="OPENID" value-ref="openidRememberMeFilter" />
+				<entry key="HTTPBASIC" value-ref="internalRememberMeFilter" /><!-- FIXME: does it make sense to use this filter for HTTP Basic Auth? -->
+			</map>
+		</property>
+	</bean>
+	
+	<!-- no filtering for css and js -->
+	<security:http pattern="/resources/**" security="none" />
+	<security:http pattern="/logging**" security="none" />
+	
+	<!-- api uses own authentication handling -->
+	<security:http pattern="/api/**" security="none" />
+	
+	<!-- OAuth temporary tokens may be requested without authentication -->
+	<security:http pattern="/oauth/requestToken" security="none" />
+	
+	<!-- all other sites -->
+	<security:http use-expressions="true" entry-point-ref="entryPoint" auto-config="false" security-context-repository-ref="contextRepository">		
 		<!-- login -->
 		<security:intercept-url pattern="/login" access="isAnonymous()" />
 		<!-- restrict admin pages to admins -->
@@ -31,6 +62,7 @@
 		<!-- everything else -->
 		<security:intercept-url pattern="/**" access="permitAll" />
 		
+		<!-- logout filter (deletes cookies, destroys session) -->
 		<security:custom-filter position="LOGOUT_FILTER" ref="logoutFilter" />
 		
 		<!--
@@ -135,8 +167,8 @@
 	
 	<!-- sets a remember me cookie for the database -->
 	<bean id="internalRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.TokenBasedRememberMeServices">
-  		<property name="userDetailsService" ref="databaseUserService"/>
-  		<property name="key" ref="cookieKey"/>
+  		<constructor-arg ref="cookieKey" />
+  		<constructor-arg ref="databaseUserService" />
   		<property name="parameter" ref="rememberMeParameter"/>
   		<property name="cookieName" value="db_user" />
   		<property name="tokenValiditySeconds" ref="cookieAge" /> <!-- found in main servlet xml -->
@@ -286,8 +318,8 @@
 	
 	<!-- open id remember me service -->
 	<bean id="openidRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeServices">
-		<property name="userDetailsService" ref="databaseUserService"/>
-  		<property name="key" ref="cookieKey" />
+  		<constructor-arg ref="cookieKey" />
+		<constructor-arg ref="databaseUserService" />
   		<property name="parameter" ref="rememberMeParameter" />
   		<property name="cookieName" value="openID_user" />
   		<property name="filterUrl" ref="openidLoginUrl" />
@@ -322,7 +354,7 @@
 	<bean id="ldapAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
-				<ref bean="ldapAuthProvider"/> 
+				<ref bean="ldapAuthProvider" /> 
 			</list>
 		</property>
 	</bean>
@@ -335,8 +367,8 @@
 	
 	<!-- ldap remember me service -->
 	<bean id="ldapRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.LDAPRememberMeServices">
-		<property name="userDetailsService" ref="databaseUserService"/>
-  		<property name="key" ref="cookieKey"/>
+  		<constructor-arg ref="cookieKey" />
+		<constructor-arg ref="databaseUserService" />
   		<property name="parameter" ref="rememberMeParameter" />
   		<property name="cookieName" value="ldap_user" />
   		<property name="encryptor" ref="encryptor"/>
@@ -388,28 +420,5 @@
 	<bean id="ldapUserDetailsMapper" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LDAPUserDetailsServiceMapper">
 		<property name="userDetailsService" ref="databaseUserService" />
 		<property name="adminLogic" ref="adminLogic" />
-	</bean>
-	
-	<!-- using property path to get a list of AuthMethods -->
-	<util:property-path id="authConfig" path="authFilterConfig.config"/>
-	
-	<bean id="authFilterConfig" class="org.bibsonomy.webapp.config.AuthenticationFilterConfigurator">
-		<property name="config" value="${auth.order}" />
-		<property name="authFilterMap">
-			<map key-type="org.bibsonomy.common.enums.AuthMethod">
-				<entry key="INTERNAL" value-ref="internalUsernamePasswordFilter" />
-				<entry key="LDAP" value-ref="ldapUsernamePasswordFilter" />
-				<entry key="OPENID" value-ref="openidFilter" />
-				<entry key="HTTPBASIC" value-ref="httpBasicAuthenticationFilter" />
-			</map>
-		</property>
-		<property name="authRememberMeFilterMap">
-			<map key-type="org.bibsonomy.common.enums.AuthMethod">
-				<entry key="INTERNAL" value-ref="internalRememberMeFilter" />
-				<entry key="LDAP" value-ref="ldapRememberMeFilter" />
-				<entry key="OPENID" value-ref="openidRememberMeFilter" />
-				<entry key="HTTPBASIC" value-ref="internalRememberMeFilter" /><!-- FIXME: does it make sense to use this filter for HTTP Basic Auth? -->
-			</map>
-		</property>
 	</bean>
 </beans>
