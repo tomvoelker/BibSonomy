@@ -816,6 +816,22 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no  defined.");
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.rest.renderer.Renderer#serializeReference(java.io.Writer, java.lang.String)
+	 */
+	@Override
+	public void serializeReference(final Writer writer, final String referenceHash) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		final ReferencesType refsType = new ReferencesType();
+		final ReferenceType type = new ReferenceType();
+		type.setInterhash(referenceHash);
+		refsType.getReference().add(type);
+		xmlDoc.setReferences(refsType);
+		serialize(writer, xmlDoc);
+	};
 
 	@Override
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {

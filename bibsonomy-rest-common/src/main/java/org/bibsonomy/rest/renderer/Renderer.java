@@ -63,7 +63,7 @@ public interface Renderer {
 	 *            a {@link List} of {@link Post} objects.
 	 * @param viewModel
 	 *            the {@link ViewModel} encapsulates additional information,
-	 * @throws InternServerException 
+	 * @throws InternServerException
 	 */
 	public void serializePosts(Writer writer, List<? extends Post<? extends Resource>> posts, ViewModel viewModel) throws InternServerException;
 
@@ -137,7 +137,7 @@ public interface Renderer {
 	 *            a {@link List} of {@link Tag} objects.
 	 */
 	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags);
-	
+
 	/**
 	 * Serializes a {@link RecommendedTag}'s details
 	 * 
@@ -147,7 +147,7 @@ public interface Renderer {
 	 *            one {@link RecommendedTag} object.
 	 */
 	public void serializeRecommendedTag(Writer writer, RecommendedTag tag);
-	
+
 	/**
 	 * Serializes a list of {@link Group}s.
 	 * 
@@ -181,7 +181,7 @@ public interface Renderer {
 	 *            the error message to send.
 	 */
 	public void serializeError(Writer writer, String errorMessage);
-	
+
 	/**
 	 * Serializes a plain OK.
 	 * 
@@ -189,15 +189,15 @@ public interface Renderer {
 	 *            the {@link Writer} to use.
 	 */
 	public void serializeOK(Writer writer);
-	
+
 	/**
 	 * Serializes a failure status.
 	 * 
 	 * @param writer
 	 *            the {@link Writer} to use.
 	 */
-	public void serializeFail(Writer writer);		
-	
+	public void serializeFail(Writer writer);
+
 	/**
 	 * Serializes a resourcehash.
 	 * 
@@ -207,7 +207,7 @@ public interface Renderer {
 	 *            the hash to send.
 	 */
 	public void serializeResourceHash(Writer writer, String hash);
-	
+
 	/**
 	 * Serializes a userid.
 	 * 
@@ -217,7 +217,7 @@ public interface Renderer {
 	 *            the userId to send.
 	 */
 	public void serializeUserId(Writer writer, String userId);
-	
+
 	/**
 	 * Serializes an uri of an resource
 	 * 
@@ -225,7 +225,7 @@ public interface Renderer {
 	 * @param uri
 	 */
 	public void serializeURI(Writer writer, String uri);
-	
+
 	/**
 	 * Serializes a groupid.
 	 * 
@@ -234,29 +234,36 @@ public interface Renderer {
 	 * @param groupId
 	 *            the groupId to send.
 	 */
-	public void serializeGroupId(Writer writer, String groupId);	
-	
+	public void serializeGroupId(Writer writer, String groupId);
+
 	/**
 	 * Serializes a list of synchronization posts
 	 * @param writer
 	 * @param posts
 	 */
 	public void serializeSynchronizationPosts(Writer writer, List<? extends SynchronizationPost> posts);
-	
+
 	/**
 	 * Serializes Map of synchronization data
 	 * @param writer
 	 * @param syncData
 	 */
 	public void serializeSynchronizationData(Writer writer, SynchronizationData syncData);
-	
+
+	/**
+	 * Serializes reference
+	 * @param writer
+	 * @param referenceHash
+	 */
+	public void serializeReference(Writer writer, String referenceHash);
+
 	/**
 	 * @param reader
 	 * @return
 	 * @throws BadRequestOrResponseException
 	 */
 	public SynchronizationData parseSynchronizationData(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * Reads list of synchronization posts
 	 * @param reader
@@ -264,7 +271,7 @@ public interface Renderer {
 	 * @throws BadRequestOrResponseException TODO
 	 */
 	public List<SynchronizationPost> parseSynchronizationPostList(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * Reads an errormessage from a {@link Reader}
 	 * 
@@ -275,7 +282,7 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public String parseError(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * Reads an resource hash from a {@link Reader}
 	 * 
@@ -286,7 +293,7 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public String parseResourceHash(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * Reads an user id from a {@link Reader}
 	 * 
@@ -297,7 +304,7 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public String parseUserId(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * Reads a group id from a {@link Reader}
 	 * 
@@ -307,8 +314,8 @@ public interface Renderer {
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	public String parseGroupId(Reader reader) throws BadRequestOrResponseException;	
-	
+	public String parseGroupId(Reader reader) throws BadRequestOrResponseException;
+
 	/**
 	 * Reads the status from a {@link Reader}
 	 * 
@@ -318,8 +325,8 @@ public interface Renderer {
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	public String parseStat(Reader reader) throws BadRequestOrResponseException;	
-	
+	public String parseStat(Reader reader) throws BadRequestOrResponseException;
+
 	/**
 	 * Reads a List of {@link User}s from a {@link Reader}.
 	 * 
@@ -363,7 +370,7 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Post<? extends Resource> parsePost(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * Reads one standard {@link Post} from a {@link Reader}.
 	 * 
@@ -407,7 +414,7 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public List<Tag> parseTagList(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * Reads one {@link Tag} from a {@link Reader}.
 	 * 
@@ -429,7 +436,7 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * Reads one {@link RecommendedTag} from a {@link Reader}.
 	 * 
@@ -440,10 +447,10 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException;
-	
+
 	/**
 	 * @param reader the reader to use
-	 * @return  a list of references (their interhashes) from the reader
+	 * @return a list of references (their interhashes) from the reader
 	 */
 	public Set<String> parseReferences(Reader reader);
 }
