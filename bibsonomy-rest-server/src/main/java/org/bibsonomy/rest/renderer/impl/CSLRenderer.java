@@ -270,4 +270,9 @@ public class CSLRenderer implements Renderer {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void serializeReference(final Writer writer, final String referenceHash) {
+		throw new UnsupportedOperationException();
+	}
+
 }
