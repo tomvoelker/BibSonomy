@@ -90,6 +90,7 @@ import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
 import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
+import org.bibsonomy.rest.client.queries.post.CreateReferenceQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
@@ -512,7 +513,14 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void createReferences(final String postHash, final Set<String> references) {
-		throw new UnsupportedOperationException();
+		if (!present(postHash) || !present(references)) {
+			log.error("can't create reference");
+			return;
+		}
+		for (final String referenceHash : references) {
+			final CreateReferenceQuery query = new CreateReferenceQuery(postHash, referenceHash);
+			execute(query);
+		}
 	}
 
 	@Override
