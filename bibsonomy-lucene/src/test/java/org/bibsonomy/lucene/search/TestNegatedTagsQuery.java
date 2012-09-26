@@ -93,7 +93,7 @@ public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 
 	private ResultList<Post<BibTex>> query(final LuceneResourceSearch<BibTex> lsr, final List<String> testTags, final List<String> negatedTags) {
 		ResultList<Post<BibTex>> resList;
-		resList = lsr.getPosts(null, null, null, Collections.singletonList("public"), null, null, null, testTags, null, null, null, negatedTags, 100, 0);
+		resList = lsr.getPosts(null, null, null, null, Collections.singletonList("public"), null, null, null, testTags, null, null, null, negatedTags, 100, 0);
 		return resList;
 	}
 

@@ -29,6 +29,8 @@ public class LuceneParam {
 	private Date lastLogDate;
 	
 	private Date lastDate;
+	
+	private String userRelation;
 
 	/**
 	 * @return the lastTasId
@@ -140,5 +142,19 @@ public class LuceneParam {
 	 */
 	public void setLastOffset(final int lastOffset) {
 		this.lastOffset = lastOffset;
+	}
+
+	/**
+	 * @return the userRelation
+	 */
+	public String getUserRelation() {
+		return userRelation;
+	}
+
+	/**
+	 * @param userRelation the userRelation to set
+	 */
+	public void setUserRelation(String userRelation) {
+		this.userRelation = userRelation;
 	}
 }

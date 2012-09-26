@@ -9,6 +9,13 @@
 			AND u.spammer = 0
 	</select>
 	
+	<select id="getUsersByUserRelation" resultClass="string">
+	    SELECT f_user_name 
+	    	FROM bibsonomy.friends 
+	    	WHERE tag_name = #userRelation# 
+	    		AND user_name = #userName#;
+	</select>
+	
 	<!-- get given group's members -->
 	<select id="getGroupMembersByGroupName" resultClass="string" parameterClass="string">
 		SELECT g.user_name 
