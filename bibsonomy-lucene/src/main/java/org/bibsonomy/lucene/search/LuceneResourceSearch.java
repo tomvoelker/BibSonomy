@@ -125,9 +125,9 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * java.lang.String, int, int)
 	 */
 	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
 		// build query
-		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
 		// perform search query
 		return this.searchLucene(query, limit, offset);
 	}
@@ -145,7 +145,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	@Override
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset) {
 		// build query
-		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, null);
+		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, null);
 		// limit number of posts to consider for building the tag cloud
 		qf.setLimit(this.tagCloudLimit);
 		// query index
@@ -545,11 +545,15 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @param requestedGroupName
 	 *            restrict the resulting posts to those which are owned this
 	 *            group
+	 * @param requestedRelationNames
+	 * 				expand the search in the post of users which are defined by the given 
+	 * 				relation names
+	 * @param requestedRelationNames TODO
 	 * @param searchTerms
 	 * @param negatedTags
 	 * @return overall lucene search query
 	 */
-	protected QuerySortContainer buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected QuerySortContainer buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 
 		// --------------------------------------------------------------------
 		// build the query
@@ -578,10 +582,18 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		final Query accessModeQuery = buildAccessModeQuery(userName, allowedGroups);
 
 		// --------------------------------------------------------------------
-		// post owned by user
+		// post owned by user 
+		// Use this restriction iff there is no user relation
 		// --------------------------------------------------------------------
-		if (present(requestedUserName)) {
+		if (present(requestedUserName) && !present(requestedRelationNames)) {
 			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, requestedUserName)), Occur.MUST);
+		}
+		// If there is at once one relation then restrict the results only 
+		// to the users in the given relations (inclduing posts of the logged in users)
+		else if (present(requestedRelationNames)) {
+			// for all relations: 
+			BooleanQuery relationsQuery = buildUserRelationQuery(userName, requestedRelationNames);	
+			mainQuery.add(relationsQuery, Occur.MUST);
 		}
 
 		// --------------------------------------------------------------------
@@ -604,6 +616,20 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		qf.setTagCountCollector(new TagCountCollector());
 
 		return qf;
+	}
+
+	private BooleanQuery buildUserRelationQuery(final String userName, final List<String> requestedRelationNames) {
+		BooleanQuery relationsQuery = new BooleanQuery();
+		for (String relation: requestedRelationNames) {
+			// Get all users in this relation:
+			Collection<String> userInRelation = dbLogic.getUsersByUserRelation(userName, relation);
+			BooleanQuery userInRelationQuery = new BooleanQuery();
+			for (String user: userInRelation) {
+				userInRelationQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, user)), Occur.SHOULD);
+			}
+			relationsQuery.add(userInRelationQuery, Occur.MUST);
+		}
+		return relationsQuery;
 	}
 
 	private void addTagQuerries(final Collection<String> tagIndex, final Collection<String> negatedTags, final BooleanQuery mainQuery) {
