@@ -31,20 +31,13 @@ public enum PreviewSize {
 	/**
 	 * 
 	 */
-	SMALL("small"),
+	SMALL,
 	/**
 	 * 
 	 */
-	MEDIUM("medium"),
+	MEDIUM,
 	/**
 	 * 
 	 */
-	LARGE("large");
-	
-	final String id;
-	
-	private PreviewSize(final String id) {
-		this.id = id;
-	}
-	
+	LARGE;
 }
