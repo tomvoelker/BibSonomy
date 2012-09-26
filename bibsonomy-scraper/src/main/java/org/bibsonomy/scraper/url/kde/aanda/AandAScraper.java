@@ -59,7 +59,7 @@ public class AandAScraper extends AbstractUrlScraper{
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		
 		try {
@@ -70,25 +70,26 @@ public class AandAScraper extends AbstractUrlScraper{
 
 			// if the doi is present
 			if (doi != null){
-	
-				//BibtexScraper will extract the bibtex from the download location
-				ScrapingContext scForBibtexScraper = new ScrapingContext(new URL(downloadUrl + doi));
+				// BibtexScraper will extract the bibtex from the download location
+				final ScrapingContext scForBibtexScraper = new ScrapingContext(new URL(downloadUrl + doi));
 				if (new BibtexScraper().scrape(scForBibtexScraper)) {
 					String bibtexResult = scForBibtexScraper.getBibtexResult();
-					//Umlaute convertieren
+					// Umlaute convertieren
+					// TODO: duplicate code @see UBKAScraper
+					// TODO: can't Texdecode#decode handle this?
 					bibtexResult = bibtexResult
-							.replace("\\\"u", "ü")
-							.replace("\\\"a", "ä")
-							.replace("\\\"o", "ö")
-							.replace("\\\"U", "Ü")
-							.replace("\\\"A", "Ä")
-							.replace("\\\"O", "Ö");
+							.replace("\\\"u", "Ã¼")
+							.replace("\\\"a", "Ã¤")
+							.replace("\\\"o", "Ã¶")
+							.replace("\\\"U", "Ãœ")
+							.replace("\\\"A", "Ã„")
+							.replace("\\\"O", "Ã–");
 					sc.setBibtexResult(bibtexResult);
 					return true;
 				}
 				
 			}
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 		
@@ -111,13 +112,13 @@ public class AandAScraper extends AbstractUrlScraper{
 	private String extractDOI(final Document document){
 		String doi = null;
 		
-		NodeList tdS = document.getElementsByTagName("td");
+		final NodeList tdS = document.getElementsByTagName("td");
 		for(int i = 0; i < tdS.getLength(); i++){
-			Node node = tdS.item(i);
+			final Node node = tdS.item(i);
 			if(node.hasChildNodes()){
 				if("DOI".equals(node.getFirstChild().getNodeValue())){
-					Node parent = node.getParentNode();
-					Node doiNode = parent.getLastChild();
+					final Node parent = node.getParentNode();
+					final Node doiNode = parent.getLastChild();
 					doi = doiNode.getFirstChild().getFirstChild().getNodeValue();
 					// remove http://dx.doi.org/ part
 					doi = doi.replaceFirst("http:\\/\\/dx\\.doi\\.org\\/", "");
@@ -128,14 +129,17 @@ public class AandAScraper extends AbstractUrlScraper{
 		return doi;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}

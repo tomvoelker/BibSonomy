@@ -83,7 +83,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		if(UBKA_SEARCH_PATH.equals(sc.getUrl().getPath())){
@@ -95,18 +95,18 @@ public class UBKAScraper extends AbstractUrlScraper {
 
 			if(sc.getUrl().getQuery().contains(UBKA_PARAM_BIBTEX)){
 				//current publication must be published as bibtex
-				result = extractBibtexFromUBKA(sc.getPageContent());
+				result = this.extractBibtexFromUBKA(sc.getPageContent());
 			}else{
 				//publication is not published as bibtex
 				try {
-					URL expURL = new URL(UBKA_SEARCH_NAME + "?" +  
+					final URL expURL = new URL(UBKA_SEARCH_NAME + "?" +  
 							UBKA_PARAM_OPACDB + "&" +
-							UBKA_PARAM_ND + "=" + extractQueryParamValue(sc.getUrl().getQuery(),UBKA_PARAM_ND) + "&" +
+							UBKA_PARAM_ND + "=" + this.extractQueryParamValue(sc.getUrl().getQuery(),UBKA_PARAM_ND) + "&" +
 							UBKA_PARAM_PRINTMAB + "&" + 
 							UBKA_PARAM_BIBTEX);
 					//download page and extract bibtex
-					result = extractBibtexFromUBKA(WebUtils.getContentAsString(expURL));
-				} catch (IOException me) {
+					result = this.extractBibtexFromUBKA(WebUtils.getContentAsString(expURL));
+				} catch (final IOException me) {
 					throw new InternalFailureException(me);
 				}
 			}
@@ -123,11 +123,13 @@ public class UBKAScraper extends AbstractUrlScraper {
 				sc.setScraper(this);
 
 				return true;
-			}else
+			} else {
 				throw new ScrapingFailureException("getting bibtex failed");
+			}
 
-		}else
+		} else {
 			throw new PageNotSupportedException("This UBKA URL is not supported!");
+		}
 
 	}
 
@@ -143,6 +145,8 @@ public class UBKAScraper extends AbstractUrlScraper {
 			final Matcher m = UBKA_BIB_PATTERN.matcher(UBKA_BREAK_PATTERN.matcher(pageContent).replaceAll(""));	
 			if (m.matches()) { // we got the entry
 				// replace &nbsp; spaces and umlauts
+				// TODO: duplicate code @see AandAScraper (for umlauts)
+				// TODO: can't Texdecode#decode handle this?
 				final String bib = UBKA_SPACE_PATTERN.matcher(m.group(1)).replaceAll(" ")
 				.replaceAll("\\{\\\\\"u\\}", "ü")
 				.replaceAll("\\{\\\\\"a\\}", "ä")
@@ -160,7 +164,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 
 				return bib;			
 			}
-		} catch (PatternSyntaxException pse) {
+		} catch (final PatternSyntaxException pse) {
 			throw new InternalFailureException(pse);
 		}
 		return null;		
@@ -173,14 +177,14 @@ public class UBKAScraper extends AbstractUrlScraper {
 	 * @param name Name of param to extract the value from.
 	 * @return extracted value
 	 */
-	private String extractQueryParamValue(String query, String name) throws ScrapingException{
+	private String extractQueryParamValue(final String query, final String name) throws ScrapingException{
 
-		StringTokenizer st = new StringTokenizer(query,"&=",true);
-		Properties params = new Properties();
+		final StringTokenizer st = new StringTokenizer(query,"&=",true);
+		final Properties params = new Properties();
 		String previous = null;
 		while (st.hasMoreTokens())
 		{
-			String currToken = st.nextToken();
+			final String currToken = st.nextToken();
 			if ("?".equals(currToken) || "&".equals(currToken))
 			{
 				//ignore
@@ -188,7 +192,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 			{
 				try {
 					params.setProperty(URLDecoder.decode(previous, "UTF-8"),URLDecoder.decode(st.nextToken(), "UTF-8"));
-				} catch (UnsupportedEncodingException e) {
+				} catch (final UnsupportedEncodingException e) {
 					throw new InternalFailureException(e);
 				}
 			}else{
@@ -199,6 +203,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 		return (String) params.get(name);
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
@@ -207,10 +212,12 @@ public class UBKAScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
