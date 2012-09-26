@@ -19,6 +19,6 @@ public class GetBibtexByResourceSearch extends GetResourcesByResourceSearch<BibT
 		if (super.canHandle(param)) {
 			return true;
 		}
-		return (!present(param.getBibtexKey()) && (present(param.getSearch()) || present(param.getAuthor()) || present(param.getTitle()) || (present(param.getTagIndex()) && (param.getTagIndex().size() >= 10))));
+		return (!present(param.getBibtexKey()) && (present(param.getSearch()) || present(param.getAuthor()) || present(param.getTitle())));
 	}
 }
