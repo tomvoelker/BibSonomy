@@ -79,9 +79,9 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		String lastYear = null;
 		
 		/*
-		 * Get the negated Tags
+		 * Check Systen tags for negated and year tags
 		 */
-		List<String> negatedTags = new LinkedList<String>();;
+		List<String> negatedTags = new LinkedList<String>();
 
 		for (final SystemTag systemTag : param.getSystemTags()) {
 			if (systemTag instanceof YearSystemTag) {
@@ -94,8 +94,8 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 				negatedTags.add(((NotTagSystemTag) systemTag).getTagName());
 			}
 		}
-
+		
 		// query the resource searcher
-		return this.databaseManager.getPostsByResourceSearch(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getGroupNames(), param.getRawSearch(), param.getTitle(), param.getAuthor(), tagIndex, year, firstYear, lastYear, negatedTags, param.getLimit(), param.getOffset());
+		return this.databaseManager.getPostsByResourceSearch(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getRelationTags(), param.getGroupNames(), param.getRawSearch(), param.getTitle(), param.getAuthor(), tagIndex, year, firstYear, lastYear, negatedTags, param.getLimit(), param.getOffset());
 	}
 }
