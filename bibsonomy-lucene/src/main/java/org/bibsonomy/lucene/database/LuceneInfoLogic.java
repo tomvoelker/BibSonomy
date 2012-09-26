@@ -32,4 +32,6 @@ public interface LuceneInfoLogic {
 	 * @return a list of sub tags
 	 */
 	public List<String> getSubTagsForConceptTag(String concept);
+
+	public abstract Collection<String> getUsersByUserRelation(String userName, String userRelation);
 }

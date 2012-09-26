@@ -9,6 +9,7 @@ import java.util.List;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.lucene.database.params.LuceneParam;
 
 /**
  * 
@@ -35,6 +36,23 @@ public class LuceneInfoDBLogic extends AbstractDatabaseManager implements Lucene
 		final DBSession session = this.openSession();
 		try {
 			return this.queryForList("getFriendsForUser", userName, String.class, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	@Override
+	public Collection<String> getUsersByUserRelation (String userName, String userRelation) {
+		if (!present(userName) || !present(userRelation)) {
+			return Collections.emptySet();
+		}
+		
+		final DBSession session = this.openSession();
+		try {
+			LuceneParam lp = new LuceneParam();
+			lp.setUserName(userName);
+			lp.setUserRelation(userRelation);
+			return this.queryForList("getUsersByUserRelation", lp, String.class, session);
 		} finally {
 			session.close();
 		}
