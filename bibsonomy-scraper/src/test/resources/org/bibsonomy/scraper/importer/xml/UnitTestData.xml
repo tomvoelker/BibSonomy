@@ -1388,5 +1388,12 @@
 		<BibFile>AnnualreviewsScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
 	</URLTest>	
+	<URLTest id="url_229">
+		<TestDescription>test for ScienceMagScraper</TestDescription>
+		<URL>http://www.sciencemag.org/content/276/5317/1425.full</URL>
+		<BibFile>ScienceMagScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
 	
 </test:Tests>
