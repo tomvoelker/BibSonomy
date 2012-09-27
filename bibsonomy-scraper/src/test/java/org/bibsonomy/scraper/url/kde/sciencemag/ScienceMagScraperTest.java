@@ -46,4 +46,14 @@ public class ScienceMagScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_192"));
 	}
+
+	/**
+	 * starts URL test with id url_229
+	 */
+	@Test
+	@Ignore
+	public void urlTest2Run() {
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_229"));
+	}
 }
