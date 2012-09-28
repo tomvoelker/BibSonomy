@@ -85,7 +85,7 @@ public class AandAScraper extends AbstractUrlScraper{
 
 					// decode Tex macros
 					/* 
-					 * TODO: duplicate code @see AandAScraper (for umlauts)
+					 * TODO: duplicate code @see UBKAScraper
 					 * FIXME: Why is there not a single call of BibTexUtils.cleanBibTex(String) in bibsonomy-scraper?
 					 * FIXME: Is it really necessary to decode the macros here inside the scraper?
 					 */
