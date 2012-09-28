@@ -27,6 +27,7 @@
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -47,6 +48,13 @@ import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.tex.TexDecode;
+
+import bibtex.dom.BibtexEntry;
+import bibtex.dom.BibtexFile;
+import bibtex.dom.BibtexString;
+import bibtex.parser.BibtexParser;
+import bibtex.parser.ParseException;
 
 
 /**
@@ -144,17 +152,28 @@ public class UBKAScraper extends AbstractUrlScraper {
 			// replace all <br>
 			final Matcher m = UBKA_BIB_PATTERN.matcher(UBKA_BREAK_PATTERN.matcher(pageContent).replaceAll(""));	
 			if (m.matches()) { // we got the entry
-				// replace &nbsp; spaces and umlauts
-				// TODO: duplicate code @see AandAScraper (for umlauts)
-				// TODO: can't Texdecode#decode handle this?
-				final String bib = UBKA_SPACE_PATTERN.matcher(m.group(1)).replaceAll(" ")
-				.replaceAll("\\{\\\\\"u\\}", "ü")
-				.replaceAll("\\{\\\\\"a\\}", "ä")
-				.replaceAll("\\{\\\\\"o\\}", "ö")
-				.replaceAll("\\{\\\\\"U\\}", "Ü")
-				.replaceAll("\\{\\\\\"A\\}", "Ä")
-				.replaceAll("\\{\\\\\"O\\}", "Ö");
+				// replace &nbsp; spaces
+				String bib = UBKA_SPACE_PATTERN.matcher(m.group(1)).replaceAll(" ");
 
+				// decode Tex macros
+				/* 
+				 * TODO: duplicate code @see AandAScraper (for umlauts)
+				 * FIXME: Why is there not a single call of BibTexUtils.cleanBibTex(String) in bibsonomy-scraper?
+				 * FIXME: Is it really necessary to decode the macros here inside the scraper?
+				 */
+				BibtexFile bibFile = new BibtexFile();
+				BibtexParser bibParser = new BibtexParser(true);
+				bibParser.parse(bibFile, new StringReader(bib));
+				for (Object entry : bibFile.getEntries()) {
+					if (entry instanceof BibtexEntry) {
+						BibtexEntry bibtexEntry = (BibtexEntry) entry;
+						for (Object key : bibtexEntry.getFields().keySet()) {
+							BibtexString value = bibFile.makeString(TexDecode.decode(bibtexEntry.getFieldValue(key.toString()).toString()));
+							bibtexEntry.setField(key.toString(), value);
+						}
+					}
+				}
+				bib = bibFile.toString();
 
 				// replace comma in keywords={bla, bla, bla bla}
 				final Matcher m2 = UBKA_COMMA_PATTERN.matcher(bib);
@@ -166,6 +185,10 @@ public class UBKAScraper extends AbstractUrlScraper {
 			}
 		} catch (final PatternSyntaxException pse) {
 			throw new InternalFailureException(pse);
+		} catch (ParseException ex) {
+			throw new ScrapingException("Received invalid BibTex file");
+		} catch (IOException ex) {
+			//currently unreachable
 		}
 		return null;		
 	}
