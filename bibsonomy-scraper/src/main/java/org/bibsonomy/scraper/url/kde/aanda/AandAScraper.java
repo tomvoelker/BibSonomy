@@ -24,6 +24,7 @@
 package org.bibsonomy.scraper.url.kde.aanda;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -36,9 +37,16 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.util.XmlUtils;
+import org.bibsonomy.util.tex.TexDecode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import bibtex.dom.BibtexEntry;
+import bibtex.dom.BibtexFile;
+import bibtex.dom.BibtexString;
+import bibtex.parser.BibtexParser;
+import bibtex.parser.ParseException;
 
 /**
  * @author Christian Kramer
@@ -74,16 +82,27 @@ public class AandAScraper extends AbstractUrlScraper{
 				final ScrapingContext scForBibtexScraper = new ScrapingContext(new URL(downloadUrl + doi));
 				if (new BibtexScraper().scrape(scForBibtexScraper)) {
 					String bibtexResult = scForBibtexScraper.getBibtexResult();
-					// Umlaute convertieren
-					// TODO: duplicate code @see UBKAScraper
-					// TODO: can't Texdecode#decode handle this?
-					bibtexResult = bibtexResult
-							.replace("\\\"u", "ü")
-							.replace("\\\"a", "ä")
-							.replace("\\\"o", "ö")
-							.replace("\\\"U", "Ü")
-							.replace("\\\"A", "Ä")
-							.replace("\\\"O", "Ö");
+
+					// decode Tex macros
+					/* 
+					 * TODO: duplicate code @see AandAScraper (for umlauts)
+					 * FIXME: Why is there not a single call of BibTexUtils.cleanBibTex(String) in bibsonomy-scraper?
+					 * FIXME: Is it really necessary to decode the macros here inside the scraper?
+					 */
+					BibtexFile bibFile = new BibtexFile();
+					BibtexParser bibParser = new BibtexParser(true);
+					bibParser.parse(bibFile, new StringReader(bibtexResult));
+					for (Object entry : bibFile.getEntries()) {
+						if (entry instanceof BibtexEntry) {
+							BibtexEntry bibtexEntry = (BibtexEntry) entry;
+							for (Object key : bibtexEntry.getFields().keySet()) {
+								BibtexString value = bibFile.makeString(TexDecode.decode(bibtexEntry.getFieldValue(key.toString()).toString()));
+								bibtexEntry.setField(key.toString(), value);
+							}
+						}
+					}
+					bibtexResult = bibFile.toString();
+					
 					sc.setBibtexResult(bibtexResult);
 					return true;
 				}
@@ -91,6 +110,8 @@ public class AandAScraper extends AbstractUrlScraper{
 			}
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
+		} catch (ParseException ex) {
+			throw new ScrapingException("Received invalid BibTex file");
 		}
 		
 		return false;
