@@ -514,6 +514,7 @@
 	</rule>
 	
 	<!-- download a thumbnail of a web page -->
+	<!-- TODO: remove? -->
 	<rule>
 		<name>/preview/(bookmark|publication)/INTRAHASH</name>
 		<from>^/+preview/+(bookmark|publication)/+([0-9a-fA-F]+)</from>
@@ -825,8 +826,15 @@
 
 	<!-- ############## search pages ############### -->
 	<rule>
+		<name>/search/SEARCH/TAG</name>
+		<from>^/+search/+([^/]+?)/(.+)$</from>
+		<set type="parameter" name="requestedSearch">$1</set>
+		<set type="parameter" name="requestedTags">$2</set>		
+		<to last="true">/search</to>
+	</rule>
+	<rule>
 		<name>/search/SEARCH</name>
-		<from>^/+search/(.+)$</from>
+		<from>^/+search/+([^/]+)$</from>
 		<set type="parameter" name="requestedSearch">$1</set>
 		<to last="true">/search</to>
 	</rule>
