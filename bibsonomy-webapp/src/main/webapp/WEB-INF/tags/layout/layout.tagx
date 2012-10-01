@@ -65,7 +65,7 @@
 					+-->
 				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
 									
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/${command.styleSheet}" />
+				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
 				<c:if test="${not empty personalized and personalized == true}">
 					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 				</c:if>

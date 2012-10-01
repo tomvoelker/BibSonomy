@@ -62,7 +62,6 @@
 		<value>userSimilarity</value>
 		<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
 		<value>ranking.*</value> <!-- ranking information -->
-		<value>styleSheet</value><!-- FIXME: remove -->
 	</util:list>
 	
 	<!-- all fields which are NEVER allowed to be set by the user -->
