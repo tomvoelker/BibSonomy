@@ -55,8 +55,8 @@ public class CoinsScraper implements Scraper {
 	private static final String SITE_URL = "http://ocoins.info/";
 	private static final String INFO = "<a href=\"http://ocoins.info/\">COinS</a> Scraper: Scraper for Metadata in COinS format.";
 
-	private static final Pattern PATTERN_COINS = Pattern.compile("<span class=\"Z3988\" title=\"([^\\\"]*)\"");
-	private static final Pattern PATTERN_KEY_VALUE = Pattern.compile("([^=]*)=([^&]*)(&amp;)?");
+	private static final Pattern PATTERN_COINS = Pattern.compile("<span class=\"Z3988\" title=\"([^\"]*)\"");
+	private static final Pattern PATTERN_KEY_VALUE = Pattern.compile("([^=]*)=([^&]*)(&amp;|&)?");
 	private static final Pattern PATTERN_DATE = Pattern.compile("(\\d{4})");
 
 
