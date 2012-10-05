@@ -1395,5 +1395,11 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
+	<URLTest id="url_230">
+		<TestDescription>test for pages with emeraldinsight</TestDescription>
+		<URL>http://www.emeraldinsight.com/books.htm?chapterid=1838910&amp;show=pdf</URL>
+		<BibFile>CoinsScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
