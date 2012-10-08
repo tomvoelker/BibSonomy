@@ -25,10 +25,8 @@ package org.bibsonomy.scraper.generic;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,9 +37,9 @@ import java.util.regex.Pattern;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.UrlUtils;
 
 /**
  * Scraper for Pages with a span element which matches to the COinS specification.
@@ -60,12 +58,16 @@ public class CoinsScraper implements Scraper {
 	private static final Pattern PATTERN_DATE = Pattern.compile("(\\d{4})");
 
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if (sc == null || sc.getUrl() == null) return false;
+	@Override
+	public boolean scrape(final ScrapingContext sc)throws ScrapingException {
+		if ((sc == null) || (sc.getUrl() == null)) {
+			return false;
+		}
 
 		final String page = sc.getPageContent();
 		final StringBuffer bibtex = new StringBuffer();
@@ -76,7 +78,7 @@ public class CoinsScraper implements Scraper {
 			// span found, this scraper is responsible
 			sc.setScraper(this);
 
-			String titleValue = matcherCoins.group(1);
+			final String titleValue = matcherCoins.group(1);
 
 			// store all key/value tuples
 			final HashMap<String, String> tuples = new HashMap<String, String>();
@@ -85,14 +87,8 @@ public class CoinsScraper implements Scraper {
 
 			// search tuples and store it in map
 			while (m.find()) {
-				final String key;
-				String value;
-				try {
-					key = URLDecoder.decode(m.group(1), "UTF-8");
-					value = URLDecoder.decode(m.group(2), "UTF-8");
-				} catch (UnsupportedEncodingException ex) {
-					throw new InternalFailureException(ex);
-				}
+				final String key = UrlUtils.safeURIDecode(m.group(1));
+				String value = UrlUtils.safeURIDecode(m.group(2));
 
 				// store only values which are not null and not empty
 				if (present(key) && present(value)) {
@@ -139,8 +135,9 @@ public class CoinsScraper implements Scraper {
 			if (tuples.containsKey("rft.date")){
 				// get year from date
 				final Matcher dateMatcher = PATTERN_DATE.matcher(tuples.get("rft.date"));
-				if (dateMatcher.find())
+				if (dateMatcher.find()) {
 					year = dateMatcher.group(1);
+				}
 			}
 
 			// get pages
@@ -149,8 +146,8 @@ public class CoinsScraper implements Scraper {
 				pages = tuples.get("rft.pages");
 			} else if(tuples.containsKey("rft.spage") && tuples.containsKey("rft.epage")){
 				// build pages with spage and epage
-				String spage = tuples.get("rft.spage");
-				String epage = tuples.get("rft.epage");
+				final String spage = tuples.get("rft.spage");
+				final String epage = tuples.get("rft.epage");
 				pages = spage + "--" + epage;
 			}
 
@@ -210,31 +207,37 @@ public class CoinsScraper implements Scraper {
 				sc.setBibtexResult(bibtex.toString());
 
 				return true;
-			} else
+			} else {
 				throw new ScrapingFailureException("span not contains a book or journal");
+			}
 		}
 		return false;
 	}
 
 	private static void append(final String fieldName, final String fieldValue, final StringBuffer bibtex) {
-		if (present(fieldValue))  bibtex.append(fieldName + " = {").append(fieldValue).append("},\n");
+		if (present(fieldValue)) {
+			bibtex.append(fieldName + " = {").append(fieldValue).append("},\n");
+		}
 	}
 
 	private static String get(final Map<String, String> tuples, final String key) {
-		if (tuples.containsKey(key))
+		if (tuples.containsKey(key)) {
 			return tuples.get(key);
+		}
 		return null;
 	}
 
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singleton(this);
 	}
 
-	public boolean supportsScrapingContext(ScrapingContext sc) {
+	@Override
+	public boolean supportsScrapingContext(final ScrapingContext sc) {
 		if (present(sc.getUrl())) {
 			try {
 				return PATTERN_COINS.matcher(sc.getPageContent()).find();
-			} catch (ScrapingException ex) {
+			} catch (final ScrapingException ex) {
 				return false;
 			}
 		}
@@ -249,10 +252,10 @@ public class CoinsScraper implements Scraper {
 	}
 
 	public static ScrapingContext getTestContext(){
-		ScrapingContext context = new ScrapingContext(null);
+		final ScrapingContext context = new ScrapingContext(null);
 		try {
 			context.setUrl(new URL("http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm"));
-		} catch (MalformedURLException ex) {
+		} catch (final MalformedURLException ex) {
 		}
 		return context;
 	}
