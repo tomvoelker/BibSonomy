@@ -31,11 +31,11 @@ public class LoggingServlet extends HttpServlet {
 
 	private static final Log log = LogFactory.getLog(LoggingServlet.class);
 
-	public static List<String> getMatches(final Pattern pattern, final String text, final int splitAtSpace) {
+	private static List<String> getMatches(final Pattern pattern, final String text, final boolean splitAtSpace) {
 		final List<String> matches = new ArrayList<String>();
 		final Matcher m = pattern.matcher(text);
 		while (m.find()) {
-			if (m.group(1).contains(" ") && (splitAtSpace == 1)) {
+			if (m.group(1).contains(" ") && (splitAtSpace)) {
 				final String[] tempMatchesM = m.group(1).split(" ");
 				for (final String s : tempMatchesM) {
 					matches.add(s);
@@ -47,8 +47,8 @@ public class LoggingServlet extends HttpServlet {
 		return matches;
 	}
 
-	public static List<String> getMatches(final Pattern pattern, final String text) {
-		return getMatches(pattern, text, 0);
+	private static List<String> getMatches(final Pattern pattern, final String text) {
+		return getMatches(pattern, text, false);
 	}
 	
 	private LoggingDatabaseManager loggingDatabaseManager;
@@ -56,24 +56,17 @@ public class LoggingServlet extends HttpServlet {
 	@Override
 	public void doGet(final HttpServletRequest req, final HttpServletResponse response) throws ServletException, IOException {
 		/*
-		 * Antwort am Anfang senden, damit Browser nicht warten muss
+		 * send response immediately -> no wait time on the client side
 		 */
 		response.setContentType("text/html");
 		final PrintWriter pw = new PrintWriter(response.getOutputStream());
 		pw.close();
 
-		int dompath_length = 0;
-
-		try {
-			dompath_length = req.getParameter("dompath").length();
-		} catch (final NullPointerException e) {
-			// kein dompath angegeben
-		}
-
-		log.debug("dompath_lenght = " + dompath_length);
-
-		// if dompath is empty
-		if (dompath_length > 0) {
+		/*
+		 * extract informations from the request
+		 */
+		final String domPath = req.getParameter("dompath");
+		if (present(domPath)) {
 			// schreibe Cookies in Cookie-Array cookie
 			final Cookie[] cookies = req.getCookies();
 
@@ -92,7 +85,7 @@ public class LoggingServlet extends HttpServlet {
 
 			if (cookies != null) {
 				for (final Cookie cookie : cookies) {
-					// FIXME: cookie name changed!! and content has changed too
+					// FIXME: cookie name has changed!! and content has changed too
 					if (cookie.getName().equals("_currUser")) {
 						separatorIndex = cookie.getValue().indexOf("%20");
 						cookieUsername = cookie.getValue().substring(0, separatorIndex);
@@ -104,50 +97,56 @@ public class LoggingServlet extends HttpServlet {
 				}
 			}
 
-			// build an array for used ids with all char strings, beginning with
-			// # and ending with / or .
-			// (ending with non a-z, A-Z, 0-9 or -)
-			// regular expression: /#([A-Za-z0-9\-]+)/
+			/*
+			 * build an array for used ids with all char strings, beginning with
+			 * # and ending with / or .
+			 * (ending with non a-z, A-Z, 0-9 or -)
+			 * regular expression: /#([A-Za-z0-9\-]+)/
+			 */
 			Pattern p = Pattern.compile("#([a-zA-Z0-9-_]+)");
 			String text = req.getParameter("dompath2");
 			// TODO: id array unused
 			final List<String> idArray = getMatches(p, text);
 			
-			// then build another array for used classes with all char strings,
-			// beginning with . and ending with / or .
-			// if class contains spaces, split it to multiple classes
-
-			// regular expression: /\.[A-Za-z0-9\- ]+/
-
+			/*
+			 * then build another array for used classes with all char strings,
+			 * beginning with . and ending with / or .
+			 * if class contains spaces, split it to multiple classes
+			 * regular expression: /\.[A-Za-z0-9\- ]+/
+			 */
 			p = Pattern.compile("\\.([a-zA-Z0-9- _]+)");
 			text = req.getParameter("dompath2");
-			final List<String> classArray = getMatches(p, text, 1);
+			final List<String> classArray = getMatches(p, text, true);
 
-			// System.out.println (classArray.toString());
-
-			// logType is the type of logging information
-			// where in page has user clicked? Bookmark area,...
-			logType = req.getParameter("dompath").replaceFirst("^[^#]+#", "");
+			/*
+			 * logType is the type of logging information
+			 * where in page has user clicked? Bookmark area,...
+			 */
+			logType = domPath.replaceFirst("^[^#]+#", "");
 			logType = logType.replaceFirst("/.*$", "");
 
-			// if class tagcloud exists, add to type with blank inbetween
-			// if class bmown set bmown-value to 1 otherwise to 0
-
+			/*
+			 * if class tagcloud exists, add to type with blank in between
+			 * if class bmown set bmown-value to 1 otherwise to 0
+			 */
 			String abmown = "0";
-			// if classArray contains class bmown, then link is users own
-			// bookmark
+			
+			/* 
+			 * FIXME: does not work with the current layout
+			 * if classArray contains class bmown, then link is users own
+			 * bookmark
+			 */
 			if (classArray.contains("bmown")) {
 				abmown = "1";
 			} else {
 				abmown = "0";
 			}
 
-			final LogData logData = new org.bibsonomy.logging.LogData();
-
+			final LogData logData = new LogData();
 			logData.setAhref(req.getParameter("ahref"));
 			logData.setAcontent(req.getParameter("acontent"));
 			logData.setAnumberofposts(req.getParameter("numberofposts"));
-			logData.setDompath(req.getParameter("dompath"));
+			logData.setDompath(domPath);
 			logData.setDompath2(req.getParameter("dompath2"));
 			logData.setType(logType);
 			logData.setPageurl(req.getParameter("pageurl"));
