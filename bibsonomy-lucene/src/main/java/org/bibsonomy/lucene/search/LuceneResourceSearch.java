@@ -72,10 +72,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
 	/** write lock, used for blocking index searcher */
-	private final Lock w = lock.writeLock();
+	private final Lock w = this.lock.writeLock();
 
 	/** read lock, used for blocking the index update */
-	private final Lock r = lock.readLock();
+	private final Lock r = this.lock.readLock();
 
 	/**
 	 * logic interface for retrieving data from bibsonomy (friends, groups
@@ -125,7 +125,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * java.lang.String, int, int)
 	 */
 	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 		// build query
 		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
 		// perform search query
@@ -144,35 +144,39 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	@Override
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset) {
-		// build query
-		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, null);
-		// limit number of posts to consider for building the tag cloud
-		qf.setLimit(this.tagCloudLimit);
-		// query index
-		if (!isEnabled() || !this.tagCloudEnabled) {
+		if (!this.isEnabled() || !this.tagCloudEnabled) {
 			return new LinkedList<Tag>();
 		}
 		
+		// build query
+		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, null);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
-		r.lock();
+		this.r.lock();
 		try {
-			// gather tags used by the author's posts
 			log.debug("Starting tag collection");
-			final TopDocs topDocs = searcher.search(qf.getQuery(), null, qf.getLimit(), qf.getSort());
+			final TopDocs topDocs = this.searcher.search(qf.getQuery(), null, this.tagCloudLimit, qf.getSort());
 			log.debug("Done collecting tags");
-			// ----------------------------------------------------------------
-			// extract tags from top n documents
-			// ----------------------------------------------------------------
-			final int hitsLimit = ((qf.getLimit() < topDocs.totalHits) ? (qf.getLimit()) : topDocs.totalHits);
+			/*
+			 * extract tags from top n documents
+			 * number of posts to consider for building the tag cloud are configurated
+			 * by the tagCloudLimit property
+			 */
+			final int hitsLimit = ((this.tagCloudLimit < topDocs.totalHits) ? (this.tagCloudLimit) : topDocs.totalHits);
 			for (int i = 0; i < hitsLimit; i++) {
-				// get document from index
-				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
-				// convert document to bibsonomy post model
+				/*
+				 * get document from index and
+				 * convert document to bibsonomy post model	
+				 */
+				final Document doc = this.searcher.doc(topDocs.scoreDocs[i].doc); 
 				final Post<R> post = this.resourceConverter.writePost(doc);
 		
 				// set tag count
 				if (present(post.getTags())) {
 					for (final Tag tag : post.getTags()) {
+						/*
+						 * we remove the requested tags because we assume
+						 * that related tags are requested
+						 */
 						if (tagIndex.contains(tag.getName())) {
 							continue;
 						}
@@ -189,7 +193,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		} catch (final IOException e) {
 			log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
 		} finally {
-			r.unlock();
+			this.r.unlock();
 		}
 		
 		final List<Tag> tags = new LinkedList<Tag>();
@@ -197,8 +201,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
 			final Tag tag = entry.getKey();
 			tag.setUsercount(entry.getValue());
-			tag.setGlobalcount(entry.getValue()); // FIXME: we set user==global
-													// count
+			tag.setGlobalcount(entry.getValue()); // FIXME: we set user==global count
 			tags.add(tag);
 		}
 		log.debug("Done calculating tag statistics");
@@ -227,24 +230,26 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		 * switch searcher
 		 */
 		IndexSearcher oldSearcher = null;
-		w.lock();
+		this.w.lock();
 		try {
 			if (newSearcher == null) {
-				disableIndex();
+				this.disableIndex();
 			} else {
 				oldSearcher = this.searcher;
 				this.searcher = newSearcher;
-				enableIndex();
+				this.enableIndex();
 			}
 		} finally {
-			w.unlock();
+			this.w.unlock();
 		}
 
 		/*
 		 * close old searcher
 		 */
 		try {
-			if (oldSearcher != null) oldSearcher.close();
+			if (oldSearcher != null) {
+				oldSearcher.close();
+			}
 		} catch (final IOException e) {
 			log.debug("Error closing searcher.", e);
 		}
@@ -254,11 +259,11 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * query index for documents and create result list of post models
 	 */
 	private ResultList<Post<R>> searchLucene(final QuerySortContainer qf, final int limit, final int offset) {
-		if (!isEnabled()) {
+		if (!this.isEnabled()) {
 			return new ResultList<Post<R>>();
 		}
 
-		r.lock();
+		this.r.lock();
 
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
@@ -270,7 +275,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			 * querying the index
 			 */
 			long starttimeQuery = System.currentTimeMillis();
-			final TopDocs topDocs = searcher.search(query, null, offset + limit, sort);
+			final TopDocs topDocs = this.searcher.search(query, null, offset + limit, sort);
 
 			// determine number of posts to display
 			final int hitslimit = (((offset + limit) < topDocs.totalHits) ? (offset + limit) : topDocs.totalHits);
@@ -284,7 +289,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			 */
 			for (int i = offset; i < hitslimit; i++) {
 				// get document from index
-				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
+				final Document doc = this.searcher.doc(topDocs.scoreDocs[i].doc);
 				// convert document to bibsonomy model
 				final Post<R> post = this.resourceConverter.writePost(doc);
 
@@ -304,7 +309,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		} catch (final IOException e) {
 			log.debug("LuceneResourceSearch: IOException: " + e.getMessage());
 		} finally {
-			r.unlock();
+			this.r.unlock();
 		}
 
 		return postList;
@@ -365,7 +370,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		final BooleanQuery privateSearchQuery = new BooleanQuery();
 
 		if (present(userName)) {
-			final Query privateSearchTermQuery = parseSearchQuery(LuceneFieldNames.PRIVATE_FIELDS, searchTerms);
+			final Query privateSearchTermQuery = this.parseSearchQuery(LuceneFieldNames.PRIVATE_FIELDS, searchTerms);
 			privateSearchQuery.add(privateSearchTermQuery, Occur.MUST);
 			privateSearchQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, userName)), Occur.MUST);
 		}
@@ -386,7 +391,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// prepare input parameters
 		// --------------------------------------------------------------------
 		if (present(tagIndex)) {
-			addTagQuerries(tagIndex, null, tagQuery);
+			this.addTagQuerries(tagIndex, null, tagQuery);
 		}
 
 		// all done
@@ -395,7 +400,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 	private String parseTag(final String tag) {
 		try {
-			return parseToken(LuceneFieldNames.TAS, tag);
+			return this.parseToken(LuceneFieldNames.TAS, tag);
 		} catch (final IOException e) {
 			log.error("Error parsing input tag " + tag + " (" + e.getMessage() + ")");
 			return tag;
@@ -559,7 +564,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 		// Add the requested tags
 		if (present(tagIndex) || present(negatedTags)) {
-			addTagQuerries(tagIndex, negatedTags, mainQuery);
+			this.addTagQuerries(tagIndex, negatedTags, mainQuery);
 		}
 
 		// restrict result to given group
@@ -571,7 +576,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		}
 
 		// restricting access to posts visible to the user
-		final Query accessModeQuery = buildAccessModeQuery(userName, allowedGroups);
+		final Query accessModeQuery = this.buildAccessModeQuery(userName, allowedGroups);
 
 		// --------------------------------------------------------------------
 		// post owned by user 
@@ -584,7 +589,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// to the users in the given relations (inclduing posts of the logged in users)
 		else if (present(requestedRelationNames)) {
 			// for all relations: 
-			BooleanQuery relationsQuery = buildUserRelationQuery(userName, requestedRelationNames);	
+			final BooleanQuery relationsQuery = this.buildUserRelationQuery(userName, requestedRelationNames);	
 			mainQuery.add(relationsQuery, Occur.MUST);
 		}
 
@@ -603,20 +608,19 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		log.debug("[Full text] Search query: " + mainQuery.toString());
 
 		final QuerySortContainer qf = new QuerySortContainer();
-		qf.setQuery(makeTimeRangeQuery(mainQuery, year, firstYear, lastYear));
+		qf.setQuery(this.makeTimeRangeQuery(mainQuery, year, firstYear, lastYear));
 		qf.setSort(sort);
 		qf.setTagCountCollector(new TagCountCollector());
-
 		return qf;
 	}
 
 	private BooleanQuery buildUserRelationQuery(final String userName, final List<String> requestedRelationNames) {
-		BooleanQuery relationsQuery = new BooleanQuery();
-		for (String relation: requestedRelationNames) {
+		final BooleanQuery relationsQuery = new BooleanQuery();
+		for (final String relation: requestedRelationNames) {
 			// Get all users in this relation:
-			Collection<String> userInRelation = dbLogic.getUsersByUserRelation(userName, relation);
-			BooleanQuery userInRelationQuery = new BooleanQuery();
-			for (String user: userInRelation) {
+			final Collection<String> userInRelation = this.dbLogic.getUsersByUserRelation(userName, relation);
+			final BooleanQuery userInRelationQuery = new BooleanQuery();
+			for (final String user: userInRelation) {
 				userInRelationQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, user)), Occur.SHOULD);
 			}
 			relationsQuery.add(userInRelationQuery, Occur.MUST);
@@ -632,16 +636,16 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			for (final String tag : tagIndex) {
 				// Is the tag string a concept name?
 				if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
-					final String conceptTag = parseTag(tag.substring(2));
+					final String conceptTag = this.parseTag(tag.substring(2));
 					// get related tags:
 					final BooleanQuery conceptTags = new BooleanQuery();
-					conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(conceptTag))), Occur.SHOULD);
+					conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, this.parseTag(conceptTag))), Occur.SHOULD);
 					for (final String t : this.dbLogic.getSubTagsForConceptTag(conceptTag)) {
-						conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(t))), Occur.SHOULD);
+						conceptTags.add(new TermQuery(new Term(LuceneFieldNames.TAS, this.parseTag(t))), Occur.SHOULD);
 					}
 					mainQuery.add(conceptTags, Occur.MUST);
 				} else {
-					mainQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(tag))), Occur.MUST);
+					mainQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, this.parseTag(tag))), Occur.MUST);
 				}
 			}
 		}
@@ -651,7 +655,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		
 		if (present(negatedTags)) {
 			for (final String negatedTag : negatedTags) {
-				mainQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, parseTag(negatedTag))), Occur.MUST_NOT);
+				mainQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, this.parseTag(negatedTag))), Occur.MUST_NOT);
 			}
 		}
 
@@ -725,7 +729,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// --------------------------------------------------------------------
 		// search terms
 		// --------------------------------------------------------------------
-		final Query searchTermQuery = parseSearchQuery(LuceneFieldNames.TITLE, searchTerms);
+		final Query searchTermQuery = this.parseSearchQuery(LuceneFieldNames.TITLE, searchTerms);
 		searchQuery.add(searchTermQuery, Occur.SHOULD);
 
 		// --------------------------------------------------------------------
