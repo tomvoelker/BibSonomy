@@ -177,7 +177,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 						 * we remove the requested tags because we assume
 						 * that related tags are requested
 						 */
-						if (tagIndex.contains(tag.getName())) {
+						if (present(tagIndex) && tagIndex.contains(tag.getName())) {
 							continue;
 						}
 						Integer oldCnt = tagCounter.get(tag);
