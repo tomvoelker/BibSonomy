@@ -149,7 +149,62 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// limit number of posts to consider for building the tag cloud
 		qf.setLimit(this.tagCloudLimit);
 		// query index
-		return doTagSearch(qf);
+		if (!isEnabled() || !this.tagCloudEnabled) {
+			return new LinkedList<Tag>();
+		}
+		
+		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
+		r.lock();
+		try {
+			// gather tags used by the author's posts
+			log.debug("Starting tag collection");
+			final TopDocs topDocs = searcher.search(qf.getQuery(), null, qf.getLimit(), qf.getSort());
+			log.debug("Done collecting tags");
+			// ----------------------------------------------------------------
+			// extract tags from top n documents
+			// ----------------------------------------------------------------
+			final int hitsLimit = ((qf.getLimit() < topDocs.totalHits) ? (qf.getLimit()) : topDocs.totalHits);
+			for (int i = 0; i < hitsLimit; i++) {
+				// get document from index
+				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
+				// convert document to bibsonomy post model
+				final Post<R> post = this.resourceConverter.writePost(doc);
+		
+				// set tag count
+				if (present(post.getTags())) {
+					for (final Tag tag : post.getTags()) {
+						if (tagIndex.contains(tag.getName())) {
+							continue;
+						}
+						Integer oldCnt = tagCounter.get(tag);
+						if (!present(oldCnt)) {
+							oldCnt = 1;
+						} else {
+							oldCnt += 1;
+						}
+						tagCounter.put(tag, oldCnt);							
+					}
+				}
+			}
+		} catch (final IOException e) {
+			log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
+		} finally {
+			r.unlock();
+		}
+		
+		final List<Tag> tags = new LinkedList<Tag>();
+		// extract all tags
+		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
+			final Tag tag = entry.getKey();
+			tag.setUsercount(entry.getValue());
+			tag.setGlobalcount(entry.getValue()); // FIXME: we set user==global
+													// count
+			tags.add(tag);
+		}
+		log.debug("Done calculating tag statistics");
+		
+		// all done.
+		return tags;
 	}
 
 	/**
@@ -253,69 +308,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		}
 
 		return postList;
-	}
-
-	/**
-	 * get tag assignments of top n relevant documents
-	 * 
-	 * @param qf
-	 * @return
-	 */
-	private List<Tag> doTagSearch(final QuerySortContainer qf) {
-		if (!isEnabled() || !this.tagCloudEnabled) {
-			return new LinkedList<Tag>();
-		}
-
-		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
-		r.lock();
-		try {
-			// gather tags used by the author's posts
-			log.debug("Starting tag collection");
-			final TopDocs topDocs = searcher.search(qf.getQuery(), null, qf.getLimit(), qf.getSort());
-			log.debug("Done collecting tags");
-			// ----------------------------------------------------------------
-			// extract tags from top n documents
-			// ----------------------------------------------------------------
-			final int hitsLimit = ((qf.getLimit() < topDocs.totalHits) ? (qf.getLimit()) : topDocs.totalHits);
-			for (int i = 0; i < hitsLimit; i++) {
-				// get document from index
-				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
-				// convert document to bibsonomy post model
-				final Post<R> post = this.resourceConverter.writePost(doc);
-
-				// set tag count
-				if (present(post.getTags())) {
-					for (final Tag tag : post.getTags()) {
-						Integer oldCnt = tagCounter.get(tag);
-						if (!present(oldCnt)) {
-							oldCnt = 1;
-						} else {
-							oldCnt += 1;
-						}
-
-						tagCounter.put(tag, oldCnt);
-					}
-				}
-			}
-		} catch (final IOException e) {
-			log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
-		} finally {
-			r.unlock();
-		}
-
-		final List<Tag> tags = new LinkedList<Tag>();
-		// extract all tags
-		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
-			final Tag tag = entry.getKey();
-			tag.setUsercount(entry.getValue());
-			tag.setGlobalcount(entry.getValue()); // FIXME: we set user==global
-													// count
-			tags.add(tag);
-		}
-		log.debug("Done calculating tag statistics");
-
-		// all done.
-		return tags;
 	}
 
 	/**
