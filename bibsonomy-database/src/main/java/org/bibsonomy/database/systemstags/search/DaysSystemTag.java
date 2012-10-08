@@ -27,7 +27,7 @@ public class DaysSystemTag extends AbstractSearchSystemTagImpl {
 	@Override
 	public void handleParam(final GenericParam param) {
 		/*
-		 * FIXME: What do we clear the TagIndex for, What is the TagIndes
+		 * FIXME: Why do we clear the TagIndex for?
 		 */
 		param.getTagIndex().clear();
 		/*
