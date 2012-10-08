@@ -388,10 +388,10 @@ a img {
 }
 
 #navigation * {
-	z-index: 50;
+	z-index: 105;
 }
 #search * {
-	z-index: 51;	
+	z-index: 106;	
 }
 
 #navigation > ul ul li, #search > ul ul li {
