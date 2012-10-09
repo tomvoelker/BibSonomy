@@ -181,6 +181,7 @@ public class _SSRNScraper implements Scraper {
 			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
 		}
 		
+		//the login data is encrypted now.
 		cookieString.append("SSRN_LOGIN=wbi%40cs%2Euni%2Dkassel%2Ede; ");
 		cookieString.append("SSRN_PW=Walde209; ");
 		

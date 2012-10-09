@@ -90,6 +90,7 @@ public class SSRNScraper extends AbstractUrlScraper {
 				String downloadLink = SSRN_HOST_NAME + SSRN_BIBTEX_PATH + SSRN_BIBTEX_PARAMS + id;
 				String cookies = null;
 				
+				
 				try {
 					cookies = getCookies(sc.getUrl());
 				} catch (IOException ex) {
@@ -170,8 +171,9 @@ public class SSRNScraper extends AbstractUrlScraper {
 		StringBuffer cookieString = new StringBuffer(WebUtils.getCookies(queryURL));
 		
 		cookieString.append(" ; CFCLIENT_SSRN=loginexpire%3D%7Bts%20%272009%2D12%2D12%2012%3A35%3A00%27%7D%23blnlogedin%3D1401777%23;domain=hq.ssrn.com;path=/; ");
-		cookieString.append("SSRN_LOGIN=wbi%40cs%2Euni%2Dkassel%2Ede;domain=.ssrn.com;path=/; ");
-		cookieString.append("SSRN_PW=Walde209;domain=.ssrn.com;path=/; ");
+		//login: wbi@cs.uni-kassel.de
+		cookieString.append("SSRN_LOGIN=092026079048019002070010027035037114047052089011063088001026083003082103106066127064089084103; ");
+		cookieString.append("SSRN_PW=002008020074048016097064090009116110016084070087029069024; ");
 		
 		return cookieString.toString();
 	}
