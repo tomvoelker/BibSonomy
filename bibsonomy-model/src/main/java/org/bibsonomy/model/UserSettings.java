@@ -100,6 +100,7 @@ public class UserSettings implements Serializable {
 	private final TimeZone timeZone = TimeZone.getDefault();
 	
 	/**
+	 * TODO: change type to boolean
 	 * How much data about the user behavior (clicking, etc.) is logged.
 	 * 
 	 * 0 = yes (log clicks to external pages)
