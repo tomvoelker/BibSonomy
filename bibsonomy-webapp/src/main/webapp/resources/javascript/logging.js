@@ -1,24 +1,7 @@
 //for comments, see CVS version 1.12
 
-var server	= null;
-var path	= null;
-var port     = 0;
-var mostInnerLi = true;
-var logUsername = "";
-
-var serverurl = "/logging";
-
-function log_init () {
-	log_register_events();
-}
-
-function log_setUsername(username) {
-	logUsername = username;	
-}
-
-function log_getUsername() {
-	return logUsername;
-}
+// FIXME: see LoggingServlet for fixmes
+var LOGGING_SERVICE = "/logging";
 
 function log_register_events() {
 	if (document.addEventListener) { // Mozilla, Safari,...
@@ -39,7 +22,6 @@ function log_register_events() {
 }
 
 function log_sendRequest(e) {
-
 	if (document.addEventListener) { // Mozilla, Safari,...
 		element = e.target;
 	} else if (document.attachEvent) { // IE
@@ -61,21 +43,22 @@ function log_sendRequest(e) {
 	function Fensterweite () {
 		if (window.innerWidth) {
 			return window.innerWidth;
-		} else if (document.body && document.body.offsetWidth) {
-			return document.body.offsetWidth;
-		} else {
-			return 0;
 		}
+		if (document.body && document.body.offsetWidth) {
+			return document.body.offsetWidth;
+		}
+		return 0;
 	}
 
 	function Fensterhoehe () {
 		if (window.innerHeight) {
 			return window.innerHeight;
-		} else if (document.body && document.body.offsetHeight) {
-			return document.body.offsetHeight;
-		} else {
-			return 0;
 		}
+		if (document.body && document.body.offsetHeight) {
+			return document.body.offsetHeight;
+		}
+		
+		return 0;
 	}
 
 	function mouseposition(e){
@@ -118,11 +101,9 @@ function log_sendRequest(e) {
 	}
 
 
-	mostInnerLi = true;
+	var mostInnerLi = true;
 
-	do
-	{
-
+	do {
 		welementattrs = welement.attributes;
 		welementattrs_id	= "";
 		welementattrs_class = "";
@@ -131,46 +112,33 @@ function log_sendRequest(e) {
 
 		try {
 			welementattrs_id = welementattrs.getNamedItem('id').value;
-		}
-		catch(err)
-		{
+		} catch(err) {
 		}
 
 		try	{
 			welementattrs_class = welementattrs.getNamedItem('class').value;
-		}
-		catch(err)
-		{
+		} catch(err) {
 		}
 
 		try	{
 			welementattrs_ahref = welementattrs.getNamedItem('href').value;
-		}
-		catch(err)
-		{
+		} catch(err) {
 		}
 
 		try	{
 			welementattrs_title = welementattrs.getNamedItem('title').value;
-		}
-		catch(err)
-		{
+		} catch(err) {
 		}
 		if (welement.nodeName == "A") {
 			childNodesA = [];
 			childNodesA = welement.childNodes;
 
 			dom_acontent = "";
-			for (var cc=0; cc< childNodesA.length; cc++)
-			{
+			for (var cc = 0; cc < childNodesA.length; cc++) {
 				var childNode = childNodesA[cc];
-
-				if (childNode.nodeName=="#text")
-				{
+				if (childNode.nodeName=="#text") {
 					dom_acontent += " " + childNode.nodeValue; // can be empty, if other elements are inside node. every whitespace before and after other elements result in a text node 
-				}
-				else if (childNode.nodeName=="IMG")
-				{
+				} else if (childNode.nodeName=="IMG") {
 					var attributelistforimages = [ "id", "title", "alt" ];
 					for (element in attributelistforimages) {
 						if ((childNode.getAttribute(attributelistforimages[element]) != null) && (childNode.getAttribute(attributelistforimages[element])!=""))
@@ -181,27 +149,22 @@ function log_sendRequest(e) {
 
 					}
 				}
-
 			}
-
 
 			// trim(dom_acontent)
 			if (dom_acontent) {
 				dom_acontent = dom_acontent.replace (/^\s+/, '').replace (/\s+$/, '');
 			}
-			dom_ahref=welementattrs_ahref;
-			numberofposts=welementattrs_title.split(" ")[0];
+			dom_ahref = welementattrs_ahref;
+			numberofposts = welementattrs_title.split(" ")[0];
 			a_node_present = true;	
 
-			if ( welementattrs_id.substr(0,5) == "spam_")
-			{
-				welement.setAttribute("id", "no"+welement.getAttribute("id"));
+			if (welementattrs_id.substr(0,5) == "spam_") {
+				welement.setAttribute("id", "no" + welement.getAttribute("id"));
 				welement.setAttribute("title", getString("post.meta.unflag_as_spam.title"));
 				welement.firstChild.nodeValue = getString("post.meta.unflag_as_spam");
 
-			}
-			else if ( welementattrs_id.substr(0,7) == "nospam_")
-			{
+			} else if (welementattrs_id.substr(0,7) == "nospam_") {
 				welement.setAttribute("id", welementattrs_id.substr(2));
 				welement.setAttribute("title", getString("post.meta.flag_as_spam.title"));
 				welement.firstChild.nodeValue = getString("post.meta.flag_as_spam");
@@ -209,46 +172,44 @@ function log_sendRequest(e) {
 		}  
 
 		dom_path += welement.nodeName;
-		if (welementattrs_id != "") dom_path += "#"+welementattrs_id;
+		if (welementattrs_id != "") {
+			dom_path += "#" + welementattrs_id;
+		}
 		dom_path += "/";
 
 		dom_path2 += welement.nodeName;
-		if (welementattrs_id != "") dom_path2 += "#"+welementattrs_id;
-		if (welementattrs_class != "") dom_path2 += "."+welementattrs_class;
+		if (welementattrs_id != "") {
+			dom_path2 += "#" + welementattrs_id;
+		}
+		if (welementattrs_class != "") {
+			dom_path2 += "." + welementattrs_class;
+		}
+		
 		dom_path2 += "/";
 
 		sibling_count = 0;
 
-		if (welement.nodeName == "LI" && mostInnerLi)
-		{
+		if (welement.nodeName == "LI" && mostInnerLi) {
 			mostInnerLi = false;
 
 			siblingnode = welement;
 			sibling_count = 1;
-			while (siblingnode.previousSibling)
-			{
+			while (siblingnode.previousSibling) {
 				siblingnode = siblingnode.previousSibling;
-
-				if (siblingnode.nodeName == "LI") 
-				{
+				if (siblingnode.nodeName == "LI") {
 					sibling_count += 1;
-
 				}
-			} 
-
+			}
 		}
 		welement = welement.parentNode;
 
 	} while (welement.parentNode);
-
-
-	http_request = false;
+	
+	var http_request = false;
 
 	// if user clicked a a-node, then post data to logging-server
-
-	//  create http_request-object
-	if (a_node_present) {	
-
+	// create http_request-object
+	if (a_node_present) {
 		if (window.XMLHttpRequest) { // Mozilla, Safari,...
 			http_request = new XMLHttpRequest();
 			if (http_request.overrideMimeType) {
@@ -265,32 +226,28 @@ function log_sendRequest(e) {
 			}
 		}
 
-
 		if (!http_request) {
 			return false;
 		}
 
-
 		// collect data to send
-		senddata = 	'dompath='+dom_path+
-		'&dompath2='+dom_path2+
-		'&pageurl='+document.location.href+
-		'&numberofposts='+	numberofposts+
-		'&acontent='+dom_acontent+
-		'&ahref='+dom_ahref+
-		'&windowsize='+Fensterweite()+" "+Fensterhoehe()+
-		'&mousedocumentpos='+mouseposition(e)+
-		'&mouseclientpos='+absolutemouseposition(e)+
-		'&listpos='+sibling_count+
-		'&referer='+document.referrer+
-		'&username='+log_getUsername();
+		senddata = 'dompath=' + encodeURIComponent(dom_path) +
+		'&dompath2=' + encodeURIComponent(dom_path2) +
+		'&pageurl=' + encodeURIComponent(document.location.href) +
+		'&numberofposts=' +	numberofposts +
+		'&acontent=' + encodeURIComponent(dom_acontent) +
+		'&ahref=' + encodeURIComponent(dom_ahref) +
+		'&windowsize=' + encodeURIComponent(Fensterweite() + " " + Fensterhoehe()) +
+		'&mousedocumentpos=' + encodeURIComponent(mouseposition(e)) +
+		'&mouseclientpos=' + encodeURIComponent(absolutemouseposition(e)) +
+		'&listpos=' + sibling_count + 
+		'&referer=' + encodeURIComponent(document.referrer) + 
+		'&username=' + encodeURIComponent(currUser);
 
 		// post data
-		http_request.open('POST', serverurl, true);
+		http_request.open('POST', LOGGING_SERVICE, true);
 		http_request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		http_request.send(senddata);
-
-	}  
-
+	}
 }
-log_init();
+log_register_events();
