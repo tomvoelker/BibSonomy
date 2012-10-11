@@ -108,14 +108,21 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		 */
 		final Wiki wiki = this.logic.getWiki(userName, null);
 		final String wikiText;
-
+		
+		boolean bool1 = !requestedUser.isSpammer();
+		// If that is null, then the requestedUser is no registered user, as should be the case with any unregistered user.
+		boolean bool2 = requestedUser.getToClassify() != null;
+		Integer bool3 = requestedUser.getToClassify();
+		
 		if (present(wiki) && (requestedUser.equals(command.getContext().getLoginUser())
-				|| !requestedUser.isSpammer() && requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1)) {
+				|| bool1 && (!bool2 || bool2 && bool3 != 1))) {
 			wikiText = wiki.getWikiText();
+		} else if (!present(wiki)) {
+			wikiText = "";
 		} else {
 			wikiText = "";
 		}
-
+		
 		/*
 		 * set the user to render
 		 */
