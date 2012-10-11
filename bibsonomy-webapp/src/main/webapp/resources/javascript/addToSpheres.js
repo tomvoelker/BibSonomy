@@ -340,7 +340,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	            }; break;
 	            
 	            case "position2": 	{
-					$(".addContainer").css("top",  214);
+					$(".addContainer").css("top",  181);
 					$(".addContainer").css("width",  282);
 	            }; break;
 	            
@@ -359,7 +359,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
 	            }; break;
 	            
 	            case "position2": 	{
-					$(".addContainer").css("top",  214);
+					$(".addContainer").css("top",  181);
 					$(".addContainer").css("width",  270);
 	            }; break;
 	            
@@ -377,7 +377,7 @@ function generateSphereDialog(requestedUser, ckey, button, singleButton, rowCoun
             }; break;
             
             case "position2": 	{
-				$(".addContainer").css("top",  214);
+				$(".addContainer").css("top",  181);
 				$(".addContainer").css("width",  282);
             }; break;
             
