@@ -36,7 +36,7 @@
 					| only for logged in users: followers, friends, groups, etc.
 			 		-->
 			
-				<c:if test="${command.context.userLoggedIn and command.context.loginUser.name ne command.requestedUser}">
+				<c:if test="${command.context.userLoggedIn}"> <!--   and command.context.loginUser.name ne command.requestedUser -->
 					<li>
 						<users:socializer 
 							loginUser="${command.context.loginUser}" 
@@ -52,7 +52,21 @@
 					<span class="sidebar_h">
 						<fmt:message key="tags"/> 
 					</span>
-					<tags:cloud requPath="user/${command.requestedUser}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+					<tags:cloud
+						requPath="user/${command.requestedUser}"
+						cmd="${command.tagcloud}"
+						tagboxMinfreqStyle="user"
+						tagSizeMode="user"
+						showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+						
+				</li>
+				
+				<li>
+					<span class="sidebar_h">
+						<fmt:message key="cv.info.title" /> 
+					</span>
+					
+					<fmt:message key="cv.info.desc" />
 				</li>
 			</ul>
 		</jsp:attribute>
@@ -85,15 +99,15 @@
 			| page content 
 			+-->
 		<jsp:attribute name="content">
-		<div>
-	
-			<div id="wikiArea">
-			<c:if test="${not empty command.wikiText}">
-				<c:out value="${command.renderedWikiText}" escapeXml="false" />
-			</c:if>
+			<div>
+		
+				<div id="wikiArea">
+					<c:if test="${not empty command.wikiText}">
+						<c:out value="${command.renderedWikiText}" escapeXml="false" />
+					</c:if>
+				</div>
 			</div>
-		</div>
-</jsp:attribute>
+		</jsp:attribute>
 </layout:paneLayout>
 	
 </jsp:root>
