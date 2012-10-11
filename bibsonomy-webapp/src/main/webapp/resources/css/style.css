@@ -1242,19 +1242,15 @@ div.help>a,div.help>b {
  */
 .headerLogo.image {border: 0}
 .headerLogo.image {background: url("/resources/image/icons.png") no-repeat;} 
-.headerLogo.image.bookmarks {background-position: 0px 2px; width: 30px; height: 30px; }
-.headerLogo.image.publications {background-position: 0px -57px; width: 30px; height: 30px; }
-.headerLogo.image.tags {background-position: 4px -182px; width: 30px; height: 30px; }
-.headerLogo.image.spheresHeader {background: url("/resources/image/tabactions.png") no-repeat; background-position: -47px -95px; }
-.headerLogo.image.cv {background-position: 4px -528px; width: 30px; height: 30px; }
-.headerLogo.image.settings {background-position: 4px -320px; width: 30px; height: 30px; }
-.headerLogo.image.editTags {background-position: 4px -414px; width: 30px; height: 30px; }
-.headerLogo.image.search {background-position: 4px -367px; width: 30px; height: 25px; }
-
-/*
- * FIXME: logo isn't shown
- */
-.headerLogo.image.relations {background-position: 4px -278px; width: 30px; height: 30px; }
+.headerLogo.image.bookmarks {background-position: 0px 2px; }
+.headerLogo.image.publications {background-position: 0px -57px;}
+.headerLogo.image.tags {background-position: -3px -189px;}
+.headerLogo.image.spheresHeader {background-position: -2px -278px;}
+.headerLogo.image.cv {background-position: -5px -535px;}
+.headerLogo.image.settings {background-position: -4px -329px;}
+.headerLogo.image.editTags {background-position: 4px -414px;}
+.headerLogo.image.search {background-position: 4px -367px;}
+.headerLogo.image.relations {background-position: -2px -278px;}
 
 /*
  * FIXME: fix logo position
@@ -1801,7 +1797,7 @@ form.editTags input[type=text] {
 
 /** logo for page headings */
 #panelheader .headerLogo, #bookmarksheader .headerLogo, #publicationsheader .headerLogo {
-	width: 40px;
+	width: 44px;
 	height: 38px;
 	float: left;
 	margin-left: 30px;
