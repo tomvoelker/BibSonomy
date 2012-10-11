@@ -11,24 +11,33 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<jsp:directive.attribute name="command"
-		type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
 
 	<div>
 		<div id="general_100">
 			<form:form>
-				<div id="fsform">
-					<input type='hidden' name='ckey' id='ckey'
-						value="${fn:escapeXml(command.context.ckey)}" />
+				<div id="fsform"  style="display: none">
+					<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
 					<fieldset class="fsInner">
+						<!-- This is just the div with that entering stuff, where you choose the way
+							 the CV looks. And THIS is the div where we give the users the ways to choose
+							 their design :) -->
 						<div>
-							<div class="fsRow">
+						    <div class="fsCol">
+						        <fmt:message key="cv.funnyTest2" />
+						    </div>
+							<div class="fsRow" id="design1">
+								<fmt:message key="cv.funnyTest" />
+							</div>
+						
+							<!-- This is the div with the textArea in it. We gonna hide this for once. -->
+							<div class="fsRow" id="customdesign">
 								<div class="fsLabel">
 									<fmt:message key="cv.admin.topic" />
 								</div>
-								<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput"
-									path="wikiText" />
+								<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
 							</div>
+							<!-- This is the div with the submitting buttons in it. -->							
 							<div class="fsRow" style="clear: both;">
 								<fmt:message key="cv.admin.layout" var="layout" />
 								<fmt:message key="cv.admin.preview" var="preview" />
@@ -36,12 +45,11 @@
 								<fmt:message key="cv.admin.save" var="save" />
 								<fmt:message key="cv.admin.hide" var="hide" />
 								<fmt:message key="cv.admin.show" var="show" />
-								<span style="float: right;"> <input type="button"
-									href='#' onclick="return submitWiki('preview');"
-									value="${preview}" /> <input type="button" href='#'
-									onclick="return submitWiki('publicPreview');" value="${pPrev}" />
-									<input type="button" href='#'
-									onclick="return submitWiki('save');" value="${save}" />
+								<span style="float: right;">
+								    <input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
+								    <input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
+								    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
+								    <input type="button" value="${hide}" id="hideAdmin" />
 								</span>
 							</div>
 						</div>
@@ -83,7 +91,7 @@
 						<img src="${resdir}/image/ajax_loader.gif" alt="wait" />
 					</div>
 				</div>
-				<div id="showAdminField" style="display: none;">
+				<div id="showAdminField"> <!--  style="display: none;" -->
 					<input type="button" value="${show}" id="showAdmin" />
 				</div>
 			</form:form>
