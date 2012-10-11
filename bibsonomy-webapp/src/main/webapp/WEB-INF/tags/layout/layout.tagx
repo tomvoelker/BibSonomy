@@ -27,7 +27,8 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
 	
 	
 
@@ -258,21 +259,44 @@
 						| main content box
 						|
 						+-->
+								
 					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>							
 
-					<div id="postcontainer">
+					<c:if test="${not empty minimizedContentWidth and minimizedContentWidth == true}">
+						<div id="minimizedPostcontainer" style="margin-right: 300px; background: white;">
+							<div id="postcontainer" style="max-width: 900px; min-width: 590px; margin-left: auto; margin-right: auto;">
+								<c:if test="${not empty contentIntro}">
+									<div id="intro">
+										<jsp:invoke fragment="contentIntro"/>
+									</div>
+								</c:if>
+	
+								<jsp:invoke fragment="content"/>
 						
-						<c:if test="${not empty contentIntro}">
-							<div id="intro">
-								<jsp:invoke fragment="contentIntro"/>
+								<div class="floatclear"></div>
 							</div>
-						</c:if>
+						</div><!-- #postcontainer -->
+						
+					</c:if>
+					
+					<!--  
+					 <c:if test="${not empty minimizedContentWidth and minimizedContentWidth == false}">
+					 -->
+					 
+					<c:if test="${empty minimizedContentWidth or minimizedContentWidth == false}">
+						<div id="postcontainer">
+							<c:if test="${not empty contentIntro}">
+								<div id="intro">
+									<jsp:invoke fragment="contentIntro"/>
+								</div>
+							</c:if>
 
-						<jsp:invoke fragment="content"/>
+							<jsp:invoke fragment="content"/>
 					
-						<div class="floatclear"></div>
-					</div><!-- #postcontainer -->
-					
+							<div class="floatclear"></div>
+						</div><!-- #postcontainer -->
+						
+					</c:if>
 
 <!--					<div id="footercontainer">-->
 <!--						<c:choose>-->

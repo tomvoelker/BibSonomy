@@ -34,6 +34,8 @@
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	
 
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
@@ -46,7 +48,8 @@
 		requPath="${requPath}"
 		noLoginBox="${noLoginBox}"
 		hideFooterContainer="true"
-		activeTab="${activeTab}">
+		activeTab="${activeTab}"
+		minimizedContentWidth="${minimizedContentWidth}">
 	
 			
 		<!--+

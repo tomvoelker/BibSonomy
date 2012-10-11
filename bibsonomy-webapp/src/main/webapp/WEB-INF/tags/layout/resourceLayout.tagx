@@ -34,6 +34,8 @@
 	<jsp:directive.attribute name="addAsFirstPublicationsListItem" fragment="true" required="false"/>
 	<jsp:directive.attribute name="addAsFirstBookmarksListItem" fragment="true" required="false"/>
 	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	
 	
 	<!--+	
 		+ variables & messages
@@ -67,8 +69,7 @@
 			personalized="${command.personalized}"
 			hideFooterContainer="${hideFooterContainer}"
 			beforeMainContainer="${beforeMainContainer}"
-			
-			>
+			minimizedContentWidth="${minimizedContentWidth}" >
 			
 		<!--+
 			+ HTML header extension
