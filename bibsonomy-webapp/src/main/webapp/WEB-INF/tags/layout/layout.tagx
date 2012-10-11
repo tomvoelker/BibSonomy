@@ -77,6 +77,15 @@
 					| JavaScript files 
 					| 
 				 	+-->
+				<!--+ 
+				 	| merged jquery.js, functions.js, style.js
+				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js
+					| 
+					| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
+				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
+				 	+-->
+				<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
+				
 				<!-- some global vars; can be used in every js file -->
 				<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
 				<script type="text/javascript">
@@ -92,14 +101,6 @@
 				</script>
 				<!-- localized JavaScript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
-				<!--+ 
-				 	| merged jquery.js, functions.js, style.js
-				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js
-					| 
-					| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
-				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
-				 	+-->
-				<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
 <!--				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js"> keep me </script>-->
 				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
