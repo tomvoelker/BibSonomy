@@ -56,6 +56,7 @@ $(function(){
     $('#hideAdmin').click(function(){
         $('#fsform').hide('blind',function() {
 			$('#showAdminField').show('blind');
+			$('#hideAdminField').hide('blind');
 		});
     });
     
@@ -69,6 +70,7 @@ $(function(){
 	$('#showAdmin').click(function() {
 		$('#fsform').show('blind',function() {
 			$('#showAdminField').hide('blind');
+			$('#hideAdminField').show('blind');
 		});
 	});
 	
