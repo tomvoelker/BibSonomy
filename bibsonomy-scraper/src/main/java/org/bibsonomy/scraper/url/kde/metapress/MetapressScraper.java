@@ -27,14 +27,19 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.CookieManager;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpConnection;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -82,8 +87,10 @@ public class MetapressScraper extends AbstractUrlScraper {
 			
 			try {
 				URL downloadUrl = new URL(url);
-				String cookie = WebUtils.getCookies(sc.getUrl());
-				ris = WebUtils.getContentAsString(downloadUrl, cookie);
+				CookieManager cookieManager = new CookieManager();
+				getCookies(downloadUrl, cookieManager);
+//				String cookie = WebUtils.getCookies(sc.getUrl());
+				ris = WebUtils.getContentAsString(downloadUrl, cookieList2String(cookieManager.getCookieStore().get(downloadUrl.toURI())));
 				
 				if(ris!=null){
 					RisToBibtexConverter converter = new RisToBibtexConverter();
@@ -104,9 +111,41 @@ public class MetapressScraper extends AbstractUrlScraper {
 				throw new InternalFailureException(ex);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
+			} catch (URISyntaxException ex) {
+				throw new InternalFailureException(ex);
 			}
 		}else
 			throw new PageNotSupportedException("no RIS download available");
+	}
+	
+	private static String cookieList2String(List<HttpCookie> cookies) {
+		StringBuffer sb = new StringBuffer();
+		for (HttpCookie cookie : cookies) {
+			sb.append(cookie);
+			sb.append("; ");
+		}
+		return sb.toString();
+	}
+	
+	private static void getCookies(URL url, CookieManager cookieManager) throws IOException, URISyntaxException {
+		HttpURLConnection con;
+		while (true) {
+			con = (HttpURLConnection) url.openConnection();
+			con.setInstanceFollowRedirects(false);
+			con.addRequestProperty("User-Agent", "Opera/9.80 (Windows NT 6.1; U; Edition Campaign 21; de) Presto/2.10.289 Version/12.02");
+			con.addRequestProperty("Cookie", cookieList2String(cookieManager.getCookieStore().get(url.toURI())));
+			try {
+				con.connect();
+				cookieManager.put(con.getURL().toURI(), con.getHeaderFields());
+			} finally {
+				con.disconnect();
+			}
+			if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+				url = new URL(con.getHeaderField("Location"));
+			} else {
+				break;
+			}
+		}
 	}
 
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
