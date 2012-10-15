@@ -13,25 +13,28 @@
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
 
+	<fmt:message key="cv.layout.name.def1en" var="def1en" />
+	<fmt:message key="cv.layout.name.def1ger" var="def1ger" />
+	<fmt:message key="cv.layout.name.def2en" var="def2en" />
+	<fmt:message key="cv.layout.name.def2ger" var="def2ger" />
+	<fmt:message key="cv.layout.name.curr" var="curr" />
+	<fmt:message key="cv.layout.name.clear" var="clear" />
+	<fmt:message key="cv.customlayout" var="customlayout" />
+	<fmt:message key="cv.defaultlayout" var="defaultlayouts" />
+	<fmt:message key="cv.admin.layout" var="layout" />
+	<fmt:message key="cv.admin.preview" var="preview" />
+	<fmt:message key="cv.admin.preview_pub" var="pPrev" />
+	<fmt:message key="cv.admin.save" var="save" />
+	<fmt:message key="cv.admin.hide" var="hide" />
+	<fmt:message key="cv.admin.show" var="show" />
+
 	<div>
 		<div id="general_100">
 			<form:form>
 				<div id="defaultLayoutForm">
 				    <fieldset class="fsInner">
-				    	<legend>Default Layouts</legend>
+				    	<legend>${defaultlayouts}</legend>
 				    	
-						<fmt:message key="cv.layout.name.def1en" var="def1en" />
-						<fmt:message key="cv.layout.name.def1ger" var="def1ger" />
-						<fmt:message key="cv.layout.name.def2en" var="def2en" />
-						<fmt:message key="cv.layout.name.def2ger" var="def2ger" />
-						<fmt:message key="cv.layout.name.curr" var="curr" />
-						<fmt:message key="cv.layout.name.clear" var="clear" />
-						<fmt:message key="cv.admin.layout" var="layout" />
-						<fmt:message key="cv.admin.preview" var="preview" />
-						<fmt:message key="cv.admin.preview_pub" var="pPrev" />
-						<fmt:message key="cv.admin.save" var="save" />
-						<fmt:message key="cv.admin.hide" var="hide" />
-						<fmt:message key="cv.admin.show" var="show" />
 							<c:choose>
 								<c:when test="${command.isGroup}">
 									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN'
@@ -72,7 +75,7 @@
 				<div id="fsform"  style="display: none">
 					<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
 					<fieldset class="fsInner">
-						<legend>Custom Layout</legend>
+						<legend>${customlayout}</legend>
 						<!-- This is just the div with that entering stuff, where you choose the way
 							 the CV looks. And THIS is the div where we give the users the ways to choose
 							 their design :) -->
