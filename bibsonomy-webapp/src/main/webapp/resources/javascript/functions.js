@@ -707,6 +707,10 @@ function editTags() {
 				var submit = $("<input type='submit' value='" + getString("post.meta.edit") + "'/>");
 				form.append(input).append(submit);
 				/*
+				 * start the tag autocompletion
+				 */
+				startTagAutocompletion(input, true);
+				/*
 				 * resize input field
 				 */
 //				input.width(parseInt(ptags.width()) + "px");
@@ -738,6 +742,11 @@ function editTags() {
 						ul.append("<li><a href='/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(tags[t]) + "'>" + tags[t] + "</a></li>");
 					}
 					ptags.show();
+					
+					/*
+					 * close the autocompletion
+					 */
+					endTagAutocompletion(input);
 				});
 			}
 	);
@@ -1079,12 +1088,18 @@ String.prototype.trim = function () {
  * Function to start the tag autocompletion.
  * 
  * @param textfield - the textfield for the autocompletion - e.g. $("#inpf")
+ * @param isPost 	- true if the autocomplete is started in the post list, false if it is started in the search bar
  */
-function startTagAutocompletion (textfield) {
-	textfield.autocomplete({
+function startTagAutocompletion (textfield, isPost) {
+	
+	var autocompleteObj = textfield.autocomplete({
 		source: function( request, response ) {
+			
+			var value = textfield.val();
+			var valueArray = value.split(" ");
+			
 			$.ajax({
-				url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + textfield.val(),
+				url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + valueArray[valueArray.length - 1],
 				dataType: "jsonp",
 				success: function( data ) {
 					response( $.map( data.items, function( item ) {
@@ -1100,7 +1115,11 @@ function startTagAutocompletion (textfield) {
 			var item = ui.item;
 			var textArea = $(event.target);
 			var text = item.value;
-			textArea.val(text);
+			if(isPost) {
+				textArea.val(value + text);
+			} else {
+				textArea.val(text);
+			}
 			textArea.select();
 			return false;
 		},
@@ -1112,7 +1131,12 @@ function startTagAutocompletion (textfield) {
 	        return false;
 	    }
 	});
-	textfield.autocomplete('enable');
+	
+	if(isPost) {
+		autocompleteObj.autocomplete( "option", "appendTo", textfield.parent() );
+	}
+	
+	autocompleteObj.autocomplete('enable');
 };
 
 /**
