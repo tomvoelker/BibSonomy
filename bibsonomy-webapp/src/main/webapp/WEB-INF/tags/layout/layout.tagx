@@ -267,7 +267,7 @@
 					<c:choose>
 						<c:when test="${not empty minimizedContentWidth and minimizedContentWidth == true}">
 							<div id="minimizedPostcontainer" style="background: white;"> <!-- margin-right: 300px;  -->
-								<div id="postcontainer" style="max-width: 800px; min-width: 590px;"> <!-- margin-left: auto; margin-right: auto; -->
+								<div id="postcontainer" style="max-width: 800px; min-width: 590px; background: white;"> <!-- margin-left: auto; margin-right: auto; -->
 									<c:if test="${not empty contentIntro}">
 										<div id="intro">
 											<jsp:invoke fragment="contentIntro"/>
