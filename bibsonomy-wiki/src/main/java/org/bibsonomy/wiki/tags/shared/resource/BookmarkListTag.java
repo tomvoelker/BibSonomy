@@ -46,7 +46,7 @@ public class BookmarkListTag extends SharedTag {
  		
         final Map<String, String> tagAtttributes = this.getAttributes();
         final Set<String> keysSet = tagAtttributes.keySet();
-         
+
  		final String tags;
  		if (!keysSet.contains(NAME)) {
  			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
@@ -56,7 +56,7 @@ public class BookmarkListTag extends SharedTag {
  			tags = tagAtttributes.get(NAME);
  		}
  		final List<Post<Bookmark>> posts;
- 		posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Collections.singletonList(tags), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
+ 		posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
 		
  		
         renderedHTML.append("<div class='align'>");

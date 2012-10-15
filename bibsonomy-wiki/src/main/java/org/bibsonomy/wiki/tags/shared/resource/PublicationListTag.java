@@ -85,7 +85,7 @@ public class PublicationListTag extends SharedTag {
 		/*
 		 * get the publications
 		 */
-		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Collections.singletonList(tags), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
+		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
 		BibTexUtils.removeDuplicates(posts);
 
 		/*

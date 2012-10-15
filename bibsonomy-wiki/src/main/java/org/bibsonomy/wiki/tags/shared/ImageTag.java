@@ -25,9 +25,9 @@ import org.bibsonomy.wiki.tags.SharedTag;
  */
 public class ImageTag extends SharedTag {
 	private static final String TAG_NAME = "image";
-	private static final String STYLE = "style";
+	//private static final String STYLE = "style";
 
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(STYLE));
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>();
 
 	/**
 	 * set name of tag
@@ -46,10 +46,10 @@ public class ImageTag extends SharedTag {
 	 */
 	@Override
 	protected String renderSharedTag() {
-		final Map<String, String> tagAtttributes = this.getAttributes();
+//		final Map<String, String> tagAtttributes = this.getAttributes();
 		final StringBuilder renderedHTML = new StringBuilder();
 		final String name = this.getRequestedName();
-		renderedHTML.append("<img src='/picture/user/").append(this.renderString(name)).append("' style='").append(tagAtttributes.get(STYLE)).append("'>");
+		renderedHTML.append("<img src='/picture/user/").append(this.renderString(name)).append("'>"); //.append("' style='").append(tagAtttributes.get(STYLE)).append("'>");
 		return renderedHTML.toString();
 	}
 
