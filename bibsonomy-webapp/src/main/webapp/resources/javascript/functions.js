@@ -1092,11 +1092,14 @@ String.prototype.trim = function () {
  */
 function startTagAutocompletion (textfield, isPost) {
 	
+	var textfieldValue;
+	var valueArray;
+	
 	var autocompleteObj = textfield.autocomplete({
 		source: function( request, response ) {
 			
-			var value = textfield.val();
-			var valueArray = value.split(" ");
+			textfieldValue = textfield.val();
+			valueArray = textfieldValue.split(" ");
 			
 			$.ajax({
 				url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + valueArray[valueArray.length - 1],
@@ -1115,11 +1118,14 @@ function startTagAutocompletion (textfield, isPost) {
 			var item = ui.item;
 			var textArea = $(event.target);
 			var text = item.value;
+			
 			if(isPost) {
-				textArea.val(value + text);
+				var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length))
+				textArea.val(substring + text);
 			} else {
 				textArea.val(text);
 			}
+			
 			textArea.select();
 			return false;
 		},
