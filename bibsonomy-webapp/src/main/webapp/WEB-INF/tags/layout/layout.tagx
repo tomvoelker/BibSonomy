@@ -262,10 +262,26 @@
 						+-->
 								
 					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>							
-
-					<c:if test="${not empty minimizedContentWidth and minimizedContentWidth == true}">
-						<div id="minimizedPostcontainer" style="margin-right: 300px; background: white;">
-							<div id="postcontainer" style="max-width: 900px; min-width: 590px; margin-left: auto; margin-right: auto;">
+					
+					<!-- choose the layout: the minimized layout or the full screen layout -->
+					<c:choose>
+						<c:when test="${not empty minimizedContentWidth and minimizedContentWidth == true}">
+							<div id="minimizedPostcontainer" style="background: white;"> <!-- margin-right: 300px;  -->
+								<div id="postcontainer" style="max-width: 800px; min-width: 590px;"> <!-- margin-left: auto; margin-right: auto; -->
+									<c:if test="${not empty contentIntro}">
+										<div id="intro">
+											<jsp:invoke fragment="contentIntro"/>
+										</div>
+									</c:if>
+		
+									<jsp:invoke fragment="content"/>
+							
+									<div class="floatclear"></div>
+								</div> <!-- #postcontainer -->
+							</div>
+						</c:when>
+						<c:otherwise>						
+							<div id="postcontainer">
 								<c:if test="${not empty contentIntro}">
 									<div id="intro">
 										<jsp:invoke fragment="contentIntro"/>
@@ -275,30 +291,11 @@
 								<jsp:invoke fragment="content"/>
 						
 								<div class="floatclear"></div>
-							</div>
-						</div><!-- #postcontainer -->
-						
-					</c:if>
-					
-					<!--  
-					 <c:if test="${not empty minimizedContentWidth and minimizedContentWidth == false}">
-					 -->
-					 
-					<c:if test="${empty minimizedContentWidth or minimizedContentWidth == false}">
-						<div id="postcontainer">
-							<c:if test="${not empty contentIntro}">
-								<div id="intro">
-									<jsp:invoke fragment="contentIntro"/>
-								</div>
-							</c:if>
+							</div><!-- #postcontainer -->
+						</c:otherwise>
+					</c:choose>
 
-							<jsp:invoke fragment="content"/>
 					
-							<div class="floatclear"></div>
-						</div><!-- #postcontainer -->
-						
-					</c:if>
-
 <!--					<div id="footercontainer">-->
 <!--						<c:choose>-->
 <!--							<c:when test="${not empty footerContainer}">-->
