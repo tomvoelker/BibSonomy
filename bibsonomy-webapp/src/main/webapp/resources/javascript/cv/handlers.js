@@ -5,16 +5,20 @@
  * Handlers
  */
 $(function(){
-    /**
+
+	/**
      * Handler for the layout-links
      */
-    $('.changeLayout').click(function(e){
+    $('.changeLayout').change(function(e){
+    	
+    	
         e.preventDefault();
+        
         $.ajax({
             type: "GET",
             url: "/ajax/cv",
             data: {
-                layout: this.dataset.layout,
+                layout: $(this).find("option:selected").attr("data-layout"),
                 ckey: $('#ckey').val()
             },
             success: function(data){

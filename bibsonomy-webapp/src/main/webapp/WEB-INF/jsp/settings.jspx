@@ -26,7 +26,7 @@
 	    	<script type="text/javascript" src="${resdir}/javascript/cv/layout.js"><!--  --></script>
 	    	<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 	    </jsp:attribute>
-	
+	    
 		<!--+
 			| page content
 			+-->	
@@ -62,11 +62,26 @@
 			<parts:search pathMessageKey="navi.settings"/>
         </jsp:attribute>
 	
-		
+		<!--+
+			| infobox
+			+-->
+		<jsp:attribute name="infobox">
+			<c:choose>
+				<c:when test="${command.selTab == 5}">
+					<parts:infobox>
+						<jsp:attribute name="infoTextBody">
+							<fmt:message key="cv.admin.topic" />
+						</jsp:attribute>
+					</parts:infobox>
+				</c:when>
+			</c:choose>
+         </jsp:attribute>
+	
 		<!--+
 			| sidebar
 			+-->
         <jsp:attribute name="sidebar">
+        
 	        <ul>
 				<!-- loginUser.groups -->
 				<li>    

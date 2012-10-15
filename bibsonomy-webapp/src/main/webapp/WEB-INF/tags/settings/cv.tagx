@@ -32,71 +32,41 @@
 						<fmt:message key="cv.admin.save" var="save" />
 						<fmt:message key="cv.admin.hide" var="hide" />
 						<fmt:message key="cv.admin.show" var="show" />
-						<table width="100%" border="0">
 							<c:choose>
 								<c:when test="${command.isGroup}">
-								    <tr>
-								        <td width="50%">
-											<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN'
-												class='changeLayout' value="${def1en}" />
-										</td>
-										<td width="50%">
-											<input type="button" data-layout='LAYOUT_G_DEFAULT_I_GER'
-												class='changeLayout' value="${def1ger}" />
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-											<img height="200" width="400" src="test" />
-										</td>
-									</tr>
-									<tr>
-										<td width="50%">
-											<div id="showAdminField" width="100%"> <!--  style="display: none;" -->
-												<input type="button" value="${show}" id="showAdmin" />
-											</div>
-										</td>
-										<td width="50%"></td>
-									</tr>
+									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN'
+										class='changeLayout' value="${def1en}" />
+									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_GER'
+										class='changeLayout' value="${def1ger}" />
+									<img height="200" width="400" src="test" />
+									<div id="showAdminField" width="100%"> <!--  style="display: none;" -->
+										<input type="button" value="${show}" id="showAdmin" />
+									</div>
 								</c:when>
 								<c:otherwise>
-								    <tr>
-								        <td width="25%">
-											<input type="button" data-layout='LAYOUT_DEFAULT_I_EN'
-												class='changeLayout' value="${def1en}" />
-										</td>
-										<td width="25%">
-											<input type="button" data-layout='LAYOUT_DEFAULT_I_GER'
-												class='changeLayout' value="${def1ger}" />
-										</td>
-										<td width="25%">
-											<input type="button" data-layout='LAYOUT_DEFAULT_II_EN'
-												class='changeLayout' value="${def2en}" />
-										</td>
-										<td width="25%">
-											<input type="button" data-layout='LAYOUT_DEFAULT_II_GER'
-												class='changeLayout' value="${def2ger}" />
-										</td>
-									</tr>
-									<tr>
-										<td colspan="4" style="text-align: center;">
-											<img id="layoutPreview" height="200" width="400" src="test" />
-										</td>
-									</tr>
-									<tr>
-										<td width="25%">
-											<div id="showAdminField"> <!--  style="display: none;" -->
-												<input type="button" value="${show}" id="showAdmin" />
-											</div>
-											<div id="hideAdminField" style="display: none;">
-										    	<input type="button" value="${hide}" id="hideAdmin" />
-										    </div>
-										</td>
-										<td colspan="3"></td>
-									</tr>
+									<select class="changeLayout">
+										<option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</option>
+										<option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</option>
+										<option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</option>
+										<option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</option>
+									</select>
+<!-- 									<input type="button" data-layout='LAYOUT_DEFAULT_I_EN'
+										class='changeLayout' value="${def1en}" />
+									<input type="button" data-layout='LAYOUT_DEFAULT_I_GER'
+										class='changeLayout' value="${def1ger}" />
+									<input type="button" data-layout='LAYOUT_DEFAULT_II_EN'
+										class='changeLayout' value="${def2en}" />
+									<input type="button" data-layout='LAYOUT_DEFAULT_II_GER'
+										class='changeLayout' value="${def2ger}" />
+									<img id="layoutPreview" height="200" width="400" src="test" /> -->
+									<div id="showAdminField"> <!--  style="display: none;" -->
+										<input type="button" value="${show}" id="showAdmin" />
+									</div>
+									<div id="hideAdminField" style="display: none;">
+								    	<input type="button" value="${hide}" id="hideAdmin" />
+								    </div>
 								</c:otherwise>
 							</c:choose>
-						</table>
 				    </fieldset>
 				</div>
 				<div id="fsform"  style="display: none">
@@ -109,9 +79,8 @@
 						<div>
 							<!-- This is the div with the textArea in it. We gonna hide this for once. -->
 							<div class="fsRow" id="customdesign">
-								<div class="fsLabel">
-									<fmt:message key="cv.admin.topic" />
-								</div>
+<!-- 								<div class="fsLabel"> -->
+<!-- 								</div> -->
 								<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
 							</div>
 							<!-- This is the div with the submitting buttons in it. -->							
@@ -129,13 +98,13 @@
 								onclick="return clearCVTextField();" value="${clear}" />
 						</div>
 					</fieldset>
-					<div id='errorField'
-						style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'>
-						<p id="errorText"></p>
-					</div>
-					<div id='loadingDiv' style='width: 100%; display: none'>
-						<img src="${resdir}/image/ajax_loader.gif" alt="wait" />
-					</div>
+				</div>
+				<div id='errorField'
+					style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'>
+					<p id="errorText"></p>
+				</div>
+				<div id='loadingDiv' style='width: 100%; display: none'>
+					<img src="${resdir}/image/ajax_loader.gif" alt="wait" />
 				</div>
 			</form:form>
 
