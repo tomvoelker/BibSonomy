@@ -114,11 +114,11 @@
 							</buttons:help>			
 						<div class="fsRow">
 					      <form:label cssClass="fsLabel" path="editTags.delTags"><fmt:message key="edittags.main.replace" />:</form:label><buttons:help message="edittags.help.delTags" />
-					      <form:input cssClass="fsInput" path="editTags.delTags" onclick="setActiveInputField(this.id)" />		        
+					      <form:input cssClass="fsInput" id="delTags" path="editTags.delTags" onclick="setActiveInputField(this.id)" />		        
 					    </div>
 						<div class="fsRow">
 					      <form:label cssClass="fsLabel" path="editTags.addTags"><fmt:message key="edittags.main.newtags" />:</form:label><buttons:help message="edittags.help.addTags" />
-					      <form:input cssClass="fsInput" path="editTags.addTags" onclick="setActiveInputField(this.id)" />		        
+					      <form:input cssClass="fsInput" id="addTags" path="editTags.addTags" onclick="setActiveInputField(this.id)" />		        
 					    </div>
 						<div class="fsRow">
 		        			<form:label cssClass="fsLabel" path="editTags.updateRelations"><fmt:message key="edittags.main.updaterelations" />:</form:label><buttons:help message="edittags.help.updateRelations" />
@@ -216,12 +216,24 @@
 
 			<script type="text/javascript">
             <![CDATA[
-                     // vanishing error boxes
-                     $(function() {
+					// vanishing error boxes
+					$(function() {
         	  			disableHandler();
         	  			add_toggle_relations();
         	  			collectTags();
-                     });
+                    });
+                      
+					
+					// start tag autocompletion for the input fields
+					$(function() {
+                		startTagAutocompletion($("#delTags"), false);
+                		startTagAutocompletion($("#addTags"), false);
+                		startTagAutocompletion($("#insert_up"), false);
+                		startTagAutocompletion($("#insert_lo"), false);
+                		startTagAutocompletion($("#delete_up"), false);
+                		startTagAutocompletion($("#delete_lo"), false);
+					});
+                	
                   ]]> 			
 	 		</script>
 
