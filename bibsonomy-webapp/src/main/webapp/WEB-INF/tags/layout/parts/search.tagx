@@ -4,10 +4,8 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:post="urn:jsptagdir:/WEB-INF/tags/systemtags">
+	xmlns:spring="http://www.springframework.org/tags">
 	
     <!-- 
       set theme variables    
@@ -66,7 +64,6 @@
 		  			</c:if>
 		  			<fmt:message key="navi.search" var="searchButton"/>
 		  			<input type="submit" value="${searchButton}"/>
-		  			<post:searchSystemTagPopUp/>
 				</form>
 			</li>
 			<c:if test="${not empty afterInput}"><!-- FIXME: wird noch nicht angezeigt -->
@@ -76,4 +73,8 @@
 			</c:if>
 		</ul>
 	</div>
+		
+	<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
+	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
+	
 </jsp:root>
