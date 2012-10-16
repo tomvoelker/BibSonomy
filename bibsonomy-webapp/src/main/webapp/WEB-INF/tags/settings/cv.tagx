@@ -34,17 +34,18 @@
 				<div id="defaultLayoutForm">
 				    <fieldset class="fsInner">
 				    	<legend>${defaultlayouts}</legend>
-				    	
+			    		<div class="fsRow">
 							<c:choose>
 								<c:when test="${command.isGroup}">
-									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN'
-										class='changeLayout' value="${def1en}" />
+									<select class="changeLayout">
+										<option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</option>
+										<option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</option>
+									</select>
+<!-- 									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN' 
+	 										class='changeLayout' value="${def1en}" />
 									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_GER'
 										class='changeLayout' value="${def1ger}" />
-									<img height="200" width="400" src="test" />
-									<div id="showAdminField" width="100%"> <!--  style="display: none;" -->
-										<input type="button" value="${show}" id="showAdmin" />
-									</div>
+									<img height="200" width="400" src="test" /> -->
 								</c:when>
 								<c:otherwise>
 									<select class="changeLayout">
@@ -62,45 +63,52 @@
 									<input type="button" data-layout='LAYOUT_DEFAULT_II_GER'
 										class='changeLayout' value="${def2ger}" />
 									<img id="layoutPreview" height="200" width="400" src="test" /> -->
-									<div id="showAdminField"> <!--  style="display: none;" -->
-										<input type="button" value="${show}" id="showAdmin" />
-									</div>
-									<div id="hideAdminField" style="display: none;">
-								    	<input type="button" value="${hide}" id="hideAdmin" />
-								    </div>
 								</c:otherwise>
 							</c:choose>
+						</div>
+						<div style="float: left;">
+							<div id="showAdminField"> <!--  style="display: none;" -->
+								<input type="button" value="${show}" id="showAdmin" />
+							</div>
+							<div id="hideAdminField" style="display: none;">
+						    	<input type="button" value="${hide}" id="hideAdmin" />
+						    </div>
+					    </div>
+					    <div style="float: right;">
+						    <span>
+								<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />
+							    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
+						    </span>
+					    </div>
+						<div class="fsRow" id="fsform"  style="display: none">
+							<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
+							<fieldset class="fsInner">
+								<legend>${customlayout}</legend>
+								<!-- This is just the div with that entering stuff, where you choose the way
+									 the CV looks. And THIS is the div where we give the users the ways to choose
+									 their design :) -->
+								<div>
+									<!-- This is the div with the textArea in it. We gonna hide this for once. -->
+									<div class="fsRow" id="customdesign">
+		<!-- 								<div class="fsLabel"> -->
+		<!-- 								</div> -->
+										<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
+									</div>
+									<!-- This is the div with the submitting buttons in it. -->							
+									<div class="fsRow" style="clear: both;">
+										<span style="float: right;">
+										    <input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
+										    <input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
+										</span>
+									</div>
+								</div>
+								<div>
+<!--									<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />-->
+									<input type="button" onclick="return clearCVTextField();" value="${clear}" />
+								</div>
+							</fieldset>
+						</div>
 				    </fieldset>
-				</div>
-				<div id="fsform"  style="display: none">
-					<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
-					<fieldset class="fsInner">
-						<legend>${customlayout}</legend>
-						<!-- This is just the div with that entering stuff, where you choose the way
-							 the CV looks. And THIS is the div where we give the users the ways to choose
-							 their design :) -->
-						<div>
-							<!-- This is the div with the textArea in it. We gonna hide this for once. -->
-							<div class="fsRow" id="customdesign">
-<!-- 								<div class="fsLabel"> -->
-<!-- 								</div> -->
-								<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
-							</div>
-							<!-- This is the div with the submitting buttons in it. -->							
-							<div class="fsRow" style="clear: both;">
-								<span style="float: right;">
-								    <input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
-								    <input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
-								    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
-								</span>
-							</div>
-						</div>
-						<div>
-							<input type="button" data-layout='LAYOUT_CURRENT'
-								class='changeLayout' value="${curr}" /> <input type="button"
-								onclick="return clearCVTextField();" value="${clear}" />
-						</div>
-					</fieldset>
 				</div>
 				<div id='errorField'
 					style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'>
