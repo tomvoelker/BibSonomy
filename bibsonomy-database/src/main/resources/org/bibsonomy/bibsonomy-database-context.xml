@@ -103,13 +103,13 @@
 	<bean id="tagChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByFriendOfUser" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetAllTags" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetSimilarTags" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetRelatedTags" />
-				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression" />
 				<bean class="org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsForGroup" />
@@ -264,7 +264,5 @@
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
 		<property name="client" ref="mainSqlMapClient" />
 	</bean>
-	
-	<bean id="scheduledTagsManager" class="org.bibsonomy.database.systemstags.ScheduledTagsManager" />
     
 </beans>

@@ -21,7 +21,6 @@ public class GetTagsByUser extends TagChainElement {
 
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
-		// TODO get related tags for a query with negated tags as well
 		if (param.getTagIndex() != null && param.getTagIndex().size() > 0) {
 			// retrieve related tags
 			return this.db.getRelatedTagsForUser(param.getUserName(),

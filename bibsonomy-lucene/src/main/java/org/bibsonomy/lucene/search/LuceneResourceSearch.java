@@ -134,7 +134,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *  
 	 * @see
 	 * org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String,
 	 * java.lang.String, java.lang.String, java.util.Collection,
@@ -143,13 +143,13 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * java.lang.String, int, int)
 	 */
 	@Override
-	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset) {
+	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
 		if (!this.isEnabled() || !this.tagCloudEnabled) {
 			return new LinkedList<Tag>();
 		}
 		
 		// build query
-		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, null);
+		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 		this.r.lock();
 		try {

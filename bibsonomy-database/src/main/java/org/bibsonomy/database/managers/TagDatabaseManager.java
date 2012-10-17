@@ -602,6 +602,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
+	 * @param negatedTags TODO
 	 * @param limit
 	 * @param offset
 	 * @return a list of tags
@@ -610,13 +611,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			final String userName, final String requestedUserName, final String requestedGroupName, 
 			final Collection<String> allowedGroups,
 			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-			final String year, final String firstYear, final String lastYear, final int limit, final int offset) {
+			final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
 		
 		if (present(this.publicationSearch) && present(this.bookmarkSearch) ) {
 			final List<Tag> bookmarkTags = 
-				bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
+				bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> publicationTags =
-				publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
+				publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 			return retVal;
 		}
