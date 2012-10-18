@@ -20,7 +20,7 @@
 		 	| myProjectName
 		 	+-->
 		<c:if test="${not empty loginUserName}">
-			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}">
+			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}" id="mySystem" touch="false">
 				<a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a>
 				<ul>
 					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
@@ -57,7 +57,7 @@
 			<!--+
 				| post a post
 				+-->
-			<li class="pulldown ${activeTab eq 'post' ? 'active' : ''}">
+			<li class="pulldown ${activeTab eq 'post' ? 'active' : ''}" id="addPost">
 				<span><fmt:message key="navi.postPost"/></span>
 				<ul>
 					<li><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
@@ -102,7 +102,7 @@
 		<!--+
 			| popular
 			+-->
-		<li class="pulldown ${activeTab eq 'popular' ? 'active' : ''}">
+		<li class="pulldown ${activeTab eq 'popular' ? 'active' : ''}" id="popular">
 			<span><fmt:message key="navi.popular" /></span>
 			<ul>
 				<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
@@ -113,5 +113,11 @@
 			</ul>
 		</li>
 	</ul>
-    
+	
+	<!-- Function, to fix the functionality of the  menubar if the user is a touchable device -->	
+	<script type="text/javascript">
+			<![CDATA[
+				touchableMenubar();
+			]]>
+	</script>    
 </jsp:root>

@@ -419,3 +419,35 @@ function initSidebarHeader() {
 	
 	
 }
+
+
+/**
+ * Function to check if the user is a touchable device.
+ * If the user is a touchable device, we fix the functionality of the menubar for the touchable device. 
+ */
+function touchableMenubar() {
+
+	var touchOS = ('ontouchstart' in document.documentElement) ? true : false;
+	
+		if(touchOS) {
+			$("#mySystem").click(function() {
+				
+				var touch = $("#mySystem").attr('touch');	
+				
+				if(touch == "true") {
+					return true;
+				} else {
+					$("#mySystem").attr("touch","true");
+					return false;
+				}							
+			});
+			
+			$("#addPost").click(function(){
+				$("#mySystem").attr("touch","false");
+			});		
+	
+			$("#popular").click(function(){
+				$("#mySystem").attr("touch","false");
+			});					
+		}
+}
