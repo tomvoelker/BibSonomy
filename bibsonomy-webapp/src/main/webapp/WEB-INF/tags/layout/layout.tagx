@@ -108,7 +108,7 @@
 				</c:if>
 				<!-- enable logging with user permission -->
 				<c:if test="${loginUser.settings.logLevel != 1}">
-				  <script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- keep me --></script>
+				 <!--  <script type="text/javascript" src="${resdir}/javascript/logging.js"></script> -->
 				</c:if>
 				<!-- enable on-site spammer killing when user is admin -->
 				<c:if test="${loginUser.role eq 'ADMIN'}">
@@ -266,8 +266,8 @@
 					<!-- choose the layout: the minimized layout or the full screen layout -->
 					<c:choose>
 						<c:when test="${not empty minimizedContentWidth and minimizedContentWidth == true}">
-							<div id="minimizedPostcontainer" style="background: white;"> <!-- margin-right: 300px;  -->
-								<div id="postcontainer" style="max-width: 800px; min-width: 590px; background: white;"> <!-- margin-left: auto; margin-right: auto; -->
+							<div class="upperMinimizedPostcontainer"> 
+								<div id="postcontainer" class="lowerMinimizedPostcontainer">
 									<c:if test="${not empty contentIntro}">
 										<div id="intro">
 											<jsp:invoke fragment="contentIntro"/>
@@ -327,8 +327,7 @@
 						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
 					</c:if>
 				</div>
-			</body>
+			</body>			
 		</jsp:body>
 	</jsp:element>
-
 </jsp:root>
