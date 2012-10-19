@@ -929,28 +929,20 @@ function addListOptions() {
 		/*
 		 * Function to hide the list options
 		 */
-		var callbackHide = function() {
-		    
-			setTo(setTimeout(function(){optBox.hide("fade", {}, 500);}, 400));
-			
-			if (! optBoxAnchor.hasClass("disabled") ) {
-				optBoxAnchor.css("background-position", "0px -235px");
-			}
+		var callbackHide = function() {		    
+			setTo(setTimeout(function(){ optBox.hide("fade", {}, 500); optBoxAnchor.css("background-position", "0px -235px");}, 400));
 		};
 		
 		/*
 		 * Function to show the list options
 		 */
-		var callbackShow = function() {		
-			
+		var callbackShow = function() {
 			if( ! optBox.is(":visible")) {
 
 				optBox.show("fade", {}, 500);
 				
-				if (! optBoxAnchor.hasClass("disabled") ) {
-					optBoxAnchor.css("background-position", "-61px -236px");
-				}
-				
+				optBoxAnchor.css("background-position", "-61px -236px");
+
 				// hide extended bibtex export options each time when opening the menu
 				$("#bibtexListExportOptions").hide();
 								
@@ -959,7 +951,7 @@ function addListOptions() {
 		};	
 		
 		if ( optBoxAnchor.length ) {
-			optBoxAnchor.mouseover(function() {callbackShow();}).mouseleave(function() {callbackHide();});
+			optBoxAnchor.mousemove(function() {callbackShow();}).mouseover(function() {callbackShow();}).mouseleave(function() {callbackHide();});
 		}
 		
 	});
