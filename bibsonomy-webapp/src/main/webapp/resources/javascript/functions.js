@@ -931,7 +931,6 @@ function addListOptions() {
 		 */
 		var callbackHide = function() {
 		    
-			tO = getTo();
 			setTo(setTimeout(function(){optBox.hide("fade", {}, 500);}, 400));
 			
 			if (! optBoxAnchor.hasClass("disabled") ) {
