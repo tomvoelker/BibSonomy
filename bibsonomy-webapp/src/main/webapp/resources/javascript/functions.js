@@ -902,36 +902,69 @@ function addBibtexExportOptions() {
  * list action options (export, basket, sort, ...)
  */
 function addListOptions() {
+	
 	/*
 	 * show and hide list actions when clicking on the div
 	 */
 	$.each(["bookmarkList", "publicationList", "page"], function(index, value) {
+		
 		var optBoxAnchor = $("#" + value + "Config");
-			if ( optBoxAnchor.length ) {
-				var optBox =  $("#" + value + "Options");
-				optBox.mouseleave(function(event) {
-					$(this).hide("fade", {}, 500);
-			});				
-			optBoxAnchor.hoverIntent(function(event) {			
+		var optBox 		 = $("#" + value + "Options");
+		var timeout;
+		
+		/*
+		 * Getter for the timeout
+		 */
+		var getTo = function() {
+			return timeout;
+		};
+		
+		/*
+		 * Setter for the timeout
+		 */
+		var setTo = function(t) {
+			timeout = t;
+		};
+		
+		/*
+		 * Function to hide the list options
+		 */
+		var callbackHide = function() {
+		    
+			tO = getTo();
+			setTo(setTimeout(function(){optBox.hide("fade", {}, 500);}, 400));
+			
+			if (! optBoxAnchor.hasClass("disabled") ) {
+				optBoxAnchor.css("background-position", "0px -235px");
+			}
+		};
+		
+		/*
+		 * Function to show the list options
+		 */
+		var callbackShow = function() {		
+			
+			if( ! optBox.is(":visible")) {
+
 				optBox.show("fade", {}, 500);
+				
 				if (! optBoxAnchor.hasClass("disabled") ) {
 					optBoxAnchor.css("background-position", "-61px -236px");
 				}
+				
 				// hide extended bibtex export options each time when opening the menu
 				$("#bibtexListExportOptions").hide();
-			}, function(event){
-				optBox.hide("fade", {}, 500);
-				if (! optBoxAnchor.hasClass("disabled") ) {
-					optBoxAnchor.css("background-position", "0px -235px");
-				}
-			});						
-//			optBoxAnchor.click(function(event) {			
-//				optBox.show("fade", {}, 500);
-//				// hide extended bibtex export options each time when opening/closing the menu
-//				$("#bibtexListExportOptions").hide();
-//			});
+								
+			}
+			window.clearTimeout(getTo());
+		};	
+		
+		if ( optBoxAnchor.length ) {
+			optBoxAnchor.mouseover(function() {callbackShow();}).mouseleave(function() {callbackHide();});
 		}
+		
 	});
+	
 	/*
 	 * add mouseover to "BibTeX" link (publications only) to display extended options
 	 */
