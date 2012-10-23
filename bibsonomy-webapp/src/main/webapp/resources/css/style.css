@@ -2512,6 +2512,11 @@ div.fsRow div.resizable-textarea textarea {
 	font-size:10px;
 }
 
+.ui-autocomplete { 
+	height: 150px; 
+	overflow-y: scroll; 
+}
+
 .ui-menu-item{
 	font-size:11px;
 }
