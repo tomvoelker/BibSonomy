@@ -2513,7 +2513,7 @@ div.fsRow div.resizable-textarea textarea {
 }
 
 .ui-autocomplete { 
-	height: 150px; 
+	max-height: 150px; 
 	overflow-y: scroll; 
 }
 
