@@ -83,25 +83,7 @@ public class AandAScraper extends AbstractUrlScraper{
 				if (new BibtexScraper().scrape(scForBibtexScraper)) {
 					String bibtexResult = scForBibtexScraper.getBibtexResult();
 
-					// decode Tex macros
-					/* 
-					 * TODO: duplicate code @see UBKAScraper
-					 * FIXME: Why is there not a single call of BibTexUtils.cleanBibTex(String) in bibsonomy-scraper?
-					 * FIXME: Is it really necessary to decode the macros here inside the scraper?
-					 */
-					BibtexFile bibFile = new BibtexFile();
-					BibtexParser bibParser = new BibtexParser(true);
-					bibParser.parse(bibFile, new StringReader(bibtexResult));
-					for (Object entry : bibFile.getEntries()) {
-						if (entry instanceof BibtexEntry) {
-							BibtexEntry bibtexEntry = (BibtexEntry) entry;
-							for (Object key : bibtexEntry.getFields().keySet()) {
-								BibtexString value = bibFile.makeString(TexDecode.decode(bibtexEntry.getFieldValue(key.toString()).toString()));
-								bibtexEntry.setField(key.toString(), value);
-							}
-						}
-					}
-					bibtexResult = bibFile.toString();
+					//TODO: decode Tex Macros, Tex Entities. Also @see UBKAScraper.
 					
 					sc.setBibtexResult(bibtexResult);
 					return true;
@@ -110,8 +92,6 @@ public class AandAScraper extends AbstractUrlScraper{
 			}
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
-		} catch (ParseException ex) {
-			throw new ScrapingException("Received invalid BibTex file");
 		}
 		
 		return false;

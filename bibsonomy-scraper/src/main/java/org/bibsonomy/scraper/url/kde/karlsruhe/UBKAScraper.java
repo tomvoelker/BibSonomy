@@ -155,25 +155,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 				// replace &nbsp; spaces
 				String bib = UBKA_SPACE_PATTERN.matcher(m.group(1)).replaceAll(" ");
 
-				// decode Tex macros
-				/* 
-				 * TODO: duplicate code @see AandAScraper (for umlauts)
-				 * FIXME: Why is there not a single call of BibTexUtils.cleanBibTex(String) in bibsonomy-scraper?
-				 * FIXME: Is it really necessary to decode the macros here inside the scraper?
-				 */
-				BibtexFile bibFile = new BibtexFile();
-				BibtexParser bibParser = new BibtexParser(true);
-				bibParser.parse(bibFile, new StringReader(bib));
-				for (Object entry : bibFile.getEntries()) {
-					if (entry instanceof BibtexEntry) {
-						BibtexEntry bibtexEntry = (BibtexEntry) entry;
-						for (Object key : bibtexEntry.getFields().keySet()) {
-							BibtexString value = bibFile.makeString(TexDecode.decode(bibtexEntry.getFieldValue(key.toString()).toString()));
-							bibtexEntry.setField(key.toString(), value);
-						}
-					}
-				}
-				bib = bibFile.toString();
+				//TODO: decode Tex Macros, Tex Entities. Also @see AandAScraper.
 
 				// replace comma in keywords={bla, bla, bla bla}
 				final Matcher m2 = UBKA_COMMA_PATTERN.matcher(bib);
@@ -185,10 +167,6 @@ public class UBKAScraper extends AbstractUrlScraper {
 			}
 		} catch (final PatternSyntaxException pse) {
 			throw new InternalFailureException(pse);
-		} catch (ParseException ex) {
-			throw new ScrapingException("Received invalid BibTex file");
-		} catch (IOException ex) {
-			//currently unreachable
 		}
 		return null;		
 	}
