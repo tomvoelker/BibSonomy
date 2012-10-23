@@ -1137,19 +1137,13 @@ function startTagAutocompletion (textfield, isPost) {
 				}
 			});
 		},
-		minLength: 3,
+		minLength: 1,
 		select: function( event, ui ) {
 			var item = ui.item;
 			var textArea = $(event.target);
 			var text = item.value;
-			
-			if(isPost) {
-				var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length))
-				textArea.val(substring + text);
-			} else {
-				textArea.val(text);
-			}
-			
+			var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length))
+			textArea.val(substring + text);
 			textArea.select();
 			return false;
 		},
