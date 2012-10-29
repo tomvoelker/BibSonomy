@@ -18,12 +18,9 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author claus
- * @version $Id: GetResourcesByResourceSearch.java,v 1.7 2012-06-01 14:03:27
- *          telekoma Exp $
- * @param <R>
- *            the resource
- * @param <P>
- *            the param
+ * @version $Id$
+ * @param <R>  the resource
+ * @param <P>  the param
  */
 public abstract class GetResourcesByResourceSearch<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 
@@ -35,10 +32,7 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
 		// convert tag index to tag list
-		List<String> tagIndex = null;
-		if (present(param.getTagIndex())) {
-			tagIndex = DatabaseUtils.extractTagNames(param);
-		}
+		final List<String> tagIndex = present(param.getTagIndex()) ? DatabaseUtils.extractTagNames(param) : null;
 
 		/*
 		 * extract first-, last- and year from the system tag if present
@@ -50,16 +44,16 @@ public abstract class GetResourcesByResourceSearch<R extends Resource, P extends
 		/*
 		 * Check Systen tags for negated and year tags
 		 */
-		List<String> negatedTags = new LinkedList<String>();
+		final List<String> negatedTags = new LinkedList<String>();
 
 		for (final SystemTag systemTag : param.getSystemTags()) {
 			if (systemTag instanceof YearSystemTag) {
+				// this means, the last year system tag is taken
 				final YearSystemTag yearTag = (YearSystemTag) systemTag;
 				year = yearTag.getYear();
 				firstYear = yearTag.getFirstYear();
 				lastYear = yearTag.getLastYear();
-			}
-			else if (systemTag instanceof NotTagSystemTag) {
+			} else if (systemTag instanceof NotTagSystemTag) {
 				negatedTags.add(((NotTagSystemTag) systemTag).getTagName());
 			}
 		}
