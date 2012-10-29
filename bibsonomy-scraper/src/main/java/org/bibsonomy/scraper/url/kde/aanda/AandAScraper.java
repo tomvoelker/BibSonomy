@@ -23,8 +23,9 @@
 
 package org.bibsonomy.scraper.url.kde.aanda;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -37,16 +38,9 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.util.XmlUtils;
-import org.bibsonomy.util.tex.TexDecode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import bibtex.dom.BibtexEntry;
-import bibtex.dom.BibtexFile;
-import bibtex.dom.BibtexString;
-import bibtex.parser.BibtexParser;
-import bibtex.parser.ParseException;
 
 /**
  * @author Christian Kramer
@@ -71,21 +65,16 @@ public class AandAScraper extends AbstractUrlScraper{
 		sc.setScraper(this);
 		
 		try {
-			String doi = null;
-			
 			// need to filter the DOI out of the context, because the DOI is a common but not constant finding in the URL
-			doi = this.extractDOI(XmlUtils.getDOM(sc.getPageContent()));
+			final String doi = this.extractDOI(XmlUtils.getDOM(sc.getPageContent()));
 
 			// if the doi is present
-			if (doi != null){
+			if (present(doi)) {
 				// BibtexScraper will extract the bibtex from the download location
 				final ScrapingContext scForBibtexScraper = new ScrapingContext(new URL(downloadUrl + doi));
 				if (new BibtexScraper().scrape(scForBibtexScraper)) {
-					String bibtexResult = scForBibtexScraper.getBibtexResult();
-
-					//TODO: decode Tex Macros, Tex Entities. Also @see UBKAScraper.
-					
-					sc.setBibtexResult(bibtexResult);
+					// TODO: decode Tex Macros, Tex Entities. Also @see UBKAScraper.
+					sc.setBibtexResult(scForBibtexScraper.getBibtexResult());
 					return true;
 				}
 				
@@ -111,23 +100,16 @@ public class AandAScraper extends AbstractUrlScraper{
 	 * @return
 	 */
 	private String extractDOI(final Document document){
-		String doi = null;
-		
 		final NodeList tdS = document.getElementsByTagName("td");
-		for(int i = 0; i < tdS.getLength(); i++){
+		for (int i = 0; i < tdS.getLength(); i++) {
 			final Node node = tdS.item(i);
-			if(node.hasChildNodes()){
-				if("DOI".equals(node.getFirstChild().getNodeValue())){
-					final Node parent = node.getParentNode();
-					final Node doiNode = parent.getLastChild();
-					doi = doiNode.getFirstChild().getFirstChild().getNodeValue();
-					// remove http://dx.doi.org/ part
-					doi = doi.replaceFirst("http:\\/\\/dx\\.doi\\.org\\/", "");
+			if (node.hasChildNodes()){
+				if ("DOI".equals(node.getFirstChild().getNodeValue())) {
+					return node.getParentNode().getLastChild().getFirstChild().getFirstChild().getNodeValue().replaceFirst("http:\\/\\/dx\\.doi\\.org\\/", "");
 				}
 			}
 		}
-		
-		return doi;
+		return null;
 	}
 
 	@Override
