@@ -13,6 +13,7 @@ var BookmarkletButton = {
 		},
 		browsers: [
 		           {
+		        	   // TODO: put URL into configuration or elsewhere
 		        	   	name: "Chrome",
 		        	   	url:	"http://",
 		        	   	satisfies: function(){
@@ -20,6 +21,7 @@ var BookmarkletButton = {
 		        	   	}
 		           },
 			       {
+		        	   	// TODO: put URL into configuration or elsewhere
 		        	   	name: "Firefox",
 			        	url:	"https://addons.mozilla.org/de/firefox/addon/bibsonomy-buttons/",
 			        	version: "4",
