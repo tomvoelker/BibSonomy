@@ -220,8 +220,7 @@ public class QRCodeEmbedder implements Callable<String> {
 			 * therefore output file can already exist an be corrupt so we have to delete it.
 			 */
 			new File(this.getOutFile()).delete();
-			
-			throw new Exception(e.getMessage());
+			throw new Exception(e);
 		}
 
 	}
