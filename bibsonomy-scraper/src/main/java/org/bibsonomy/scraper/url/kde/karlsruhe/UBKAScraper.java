@@ -26,8 +26,9 @@
  */
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -48,13 +49,6 @@ import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.tex.TexDecode;
-
-import bibtex.dom.BibtexEntry;
-import bibtex.dom.BibtexFile;
-import bibtex.dom.BibtexString;
-import bibtex.parser.BibtexParser;
-import bibtex.parser.ParseException;
 
 
 /**
@@ -94,17 +88,17 @@ public class UBKAScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
-		if(UBKA_SEARCH_PATH.equals(sc.getUrl().getPath())){
+		if (UBKA_SEARCH_PATH.equals(sc.getUrl().getPath())) {
 			/* URL looks some like this:
 			 * http://www.ubka.uni-karlsruhe.de/hylib-bin/suche.cgi?opacdb=UBKA_OPAC&nd=256943346
 			 * &session=1147556008&use_cookie_session=1&returnTo=http%3A%2F%2Fwww.ubka.uni-karlsruhe.de%2Fhylib%2Fka_opac.html
 			 */	
-			String result = null;
+			final String result;
 
 			if(sc.getUrl().getQuery().contains(UBKA_PARAM_BIBTEX)){
 				//current publication must be published as bibtex
 				result = this.extractBibtexFromUBKA(sc.getPageContent());
-			}else{
+			} else {
 				//publication is not published as bibtex
 				try {
 					final URL expURL = new URL(UBKA_SEARCH_NAME + "?" +  
@@ -118,12 +112,12 @@ public class UBKAScraper extends AbstractUrlScraper {
 					throw new InternalFailureException(me);
 				}
 			}
-			if(result != null){
-				// append url
-				result = BibTexUtils.addFieldIfNotContained(result, "url", sc.getUrl().toString());
-
-				// add downloaded bibtex to result 
-				sc.setBibtexResult(result);
+			if (present(result)) {
+				/*
+				 * append URL and
+				 * add downloaded BibTeX to result 
+				 */
+				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(result, "url", sc.getUrl().toString()));
 
 				/*
 				 * returns itself to know, which scraper scraped this
