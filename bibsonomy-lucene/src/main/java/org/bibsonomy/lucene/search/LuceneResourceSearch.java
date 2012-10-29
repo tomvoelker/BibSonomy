@@ -27,7 +27,6 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -38,6 +37,7 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeFilter;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
@@ -55,8 +55,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  * abstract parent class for lucene search
  * 
  * @author fei
- * @version $Id: LuceneResourceSearch.java,v 1.56 2012-08-13 12:22:22 telekoma
- *          Exp $
+ * @version $Id$
  * 
  * @param <R>
  *            resource type
@@ -440,7 +439,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @param lastYear
 	 * @return time range query
 	 */
-	protected Query makeTimeRangeQuery(final BooleanQuery mainQuery, String year, String firstYear, String lastYear) {
+	protected Query makeTimeRangeQuery(final BooleanQuery mainQuery, final String year, String firstYear, String lastYear) {
 		/*
 		 * exact year query
 		 */
@@ -448,8 +447,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		boolean includeUpperBound = false;
 
 		if (present(year)) {
-			year = year.replaceAll("\\D", "");
-			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, year)), Occur.MUST);
+			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.YEAR, year.replaceAll("\\D", ""))), Occur.MUST);
 		} else {
 			/*
 			 * range query
