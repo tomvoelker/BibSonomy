@@ -11,7 +11,9 @@
 # You can select another server by just giving its name,
 # e.g., "maven gromit" deploys to gromit.
 #
-# Changes: 
+# Changes:
+# 2011-12-06 (dbe):
+# - added deploy locations slave_kassel, slave_wuerzburg 
 # 2009-07-30 (rja):
 # - initial vesion
 #
@@ -50,7 +52,8 @@ gandalf: mvn_deploy
 
 gromit: mvn_deploy 
 
-odie: mvn_deploy
+slave_kassel: mvn_deploy
+slave_wuerzburg: mvn_deploy
 
 mvn_deploy:
 	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip war:inplace tomcat:undeploy tomcat:deploy
