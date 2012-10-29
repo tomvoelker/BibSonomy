@@ -514,7 +514,8 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void createReferences(final String postHash, final Set<String> references) {
 		if (!present(postHash) || !present(references)) {
-			log.error("can't create reference");
+			// FIXME: who needs/reads this warning? 
+			log.warn("can't create references because no post hash or no references given");
 			return;
 		}
 		for (final String referenceHash : references) {
