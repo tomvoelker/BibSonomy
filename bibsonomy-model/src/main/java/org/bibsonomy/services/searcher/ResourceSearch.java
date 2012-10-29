@@ -62,9 +62,9 @@ public interface ResourceSearch<R extends Resource> {
 	 */
 	public List<Post<R>> getPosts(
 			final String userName, final String requestedUserName, String requestedGroupName, 
-			List<String> requestedRelationNames,
+			final List<String> requestedRelationNames,
 			final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
-			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
+			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset);
 	
 
 	/**
