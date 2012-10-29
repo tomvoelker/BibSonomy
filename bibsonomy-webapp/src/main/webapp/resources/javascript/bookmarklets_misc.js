@@ -15,7 +15,7 @@ var BookmarkletButton = {
 		           {
 		        	   // TODO: put URL into configuration or elsewhere
 		        	   	name: "Chrome",
-		        	   	url:	"http://",
+		        	   	url:	"https://chrome.google.com/webstore/detail/bibsonomy-buttons/lbbnooihfnhphbgeajgmpmaedkdjgeid",
 		        	   	satisfies: function(){
 		        	   		return $.browser.webkit&&navigator!=undefined&&navigator.userAgent.indexOf("Chrome")!=-1;
 		        	   	}
