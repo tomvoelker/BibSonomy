@@ -28,8 +28,10 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
-					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
-						are overwritten by this plugin -->
+					<!-- 
+						otherwise the javascript/css files compressed by
+						yuicompressor-maven-plugin are overwritten by this plugin 
+					-->
 					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
 				</configuration>
 			</plugin>
@@ -38,13 +40,17 @@
 				<version>1.4</version>
 				<executions>
 					<execution>
-						<!-- download the latest WURLF specs each time a war file is created. -->
+						<!--
+							download the latest WURLF specs each time a war file is created.
+							if this is too frequent for any reason, check the version history
+							of this file for rev. 1.86 which checks if the file already
+							exists.
+						-->
 						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
 								<mkdir dir="${project.downloaded-resources.directory}" />
-								<get
-									src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
+								<get src="http://surfnet.dl.sourceforge.net/project/wurfl/WURFL/${wurfl.version}/wurfl-${wurfl.version}.zip"
 									dest="${project.downloaded-resources.directory}/wurfl.zip" />
 							</tasks>
 						</configuration>
@@ -150,8 +156,7 @@
 		</testResources>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -195,8 +200,10 @@
 	<profiles>
 		<profile>
 			<id>deploy-to-puma</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=puma is given as 
-				parameter. -->
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=puma is given as
+				parameter.
+			-->
 			<activation>
 				<property>
 					<name>deploy-to</name>
@@ -218,8 +225,10 @@
 		</profile>
 		<profile>
 			<id>deploy-to-wuerzburg</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=wuerzburg is given 
-				as parameter. -->
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=wuerzburg is given
+				as parameter.
+			-->
 			<activation>
 				<property>
 					<name>deploy-to</name>
@@ -281,13 +290,6 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-openaccess</artifactId>
-			<exclusions>
-				<!-- the embedded tomcat 7 requires servlet-api 3 -->
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -430,8 +432,10 @@
 					<groupId>org.springframework</groupId>
 				</exclusion>
 				<exclusion>
-					<!-- the version required by openid4java is broken (kills Tomcat on 
-						some OpenIDs) -->
+					<!--
+						the version required by openid4java is broken (kills Tomcat on
+						some OpenIDs)
+					-->
 					<artifactId>nekohtml</artifactId>
 					<groupId>net.sourceforge.nekohtml</groupId>
 				</exclusion>
@@ -456,9 +460,11 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-lucene</artifactId>
 		</dependency>
-		<!-- *** beanutils 1.7.0 contain a memory leak *** we don't have a direct 
-			dependency to beanutils, but some lib needs it so we override here to the 
-			leak-free version 1.8.0 -->
+		<!--
+			*** beanutils 1.7.0 contain a memory leak *** we don't have a direct
+			dependency to beanutils, but some lib needs it so we override here to
+			the leak-free version 1.8.0
+		-->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
