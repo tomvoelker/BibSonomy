@@ -7,7 +7,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 
 /**
- * Returns a list of BibTex's for a given search.
+ * Returns a list of publications for a given search string
  * 
  * @author fei
  * @version $Id$
@@ -19,6 +19,7 @@ public class GetBibtexByResourceSearch extends GetResourcesByResourceSearch<BibT
 		if (super.canHandle(param)) {
 			return true;
 		}
-		return (!present(param.getBibtexKey()) && (present(param.getSearch()) || present(param.getAuthor()) || present(param.getTitle())));
+		return (!present(param.getBibtexKey()) && 
+				(present(param.getSearch()) || present(param.getAuthor()) || present(param.getTitle())));
 	}
 }
