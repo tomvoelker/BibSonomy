@@ -290,6 +290,13 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-openaccess</artifactId>
+			<exclusions>
+				<!-- the embedded tomcat 7 requires servlet-api 3 -->
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
