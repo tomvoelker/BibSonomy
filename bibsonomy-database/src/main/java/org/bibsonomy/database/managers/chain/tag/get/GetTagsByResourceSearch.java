@@ -20,21 +20,17 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Dominik Benz
  * @author Miranda Grahl
- * @version $Id: GetTagsByResourceSearch.java,v 1.7 2012-06-01 14:03:27 telekoma
- *          Exp $
+ * @version $Id$
  */
 public class GetTagsByResourceSearch extends TagChainElement {
 
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
-		Collection<String> tags = null;
-		if (present(param.getTagIndex())) {
-			tags = DatabaseUtils.extractTagNames(param);
-		}
+		final Collection<String> tags = present(param.getTagIndex()) ? DatabaseUtils.extractTagNames(param) : null;
 		/*
 		 * Check System tags for negated and year tags
 		 */
-		List<String> negatedTags = new LinkedList<String>();
+		final List<String> negatedTags = new LinkedList<String>();
 		if (present(param.getSystemTags())) {
 			for (final SystemTag systemTag : param.getSystemTags()) {
 				if (systemTag instanceof NotTagSystemTag) {
@@ -47,6 +43,10 @@ public class GetTagsByResourceSearch extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return (!present(param.getBibtexKey()) && !present(param.getRegex()) && !present(param.getHash()) && !present(param.getTagRelationType()) && (present(param.getSearch()) || present(param.getTitle()) || present(param.getAuthor()) || ChainUtils.useResourceSearch(param)));
+		return (!present(param.getBibtexKey()) && 
+				!present(param.getRegex()) && 
+				!present(param.getHash()) && 
+				!present(param.getTagRelationType()) && 
+				(present(param.getSearch()) || present(param.getTitle()) || present(param.getAuthor()) || ChainUtils.useResourceSearch(param)));
 	}
 }
