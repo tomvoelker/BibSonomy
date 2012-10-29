@@ -2,6 +2,8 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -23,6 +25,8 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class DownloadFileController implements MinimalisticController<DownloadFileCommand>, ErrorAware {
+	Log log = LogFactory.getLog(DownloadFileController.class);
+	
 	/**
 	 * logical interface to BibSonomy's core functionality
 	 */
@@ -94,6 +98,7 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 				try {
 					qrFilePath = qrCodeRenderer.manipulate(filePath, command.getRequestedUser(), command.getIntrahash());
 				} catch (final Exception e) {
+					log.error("Error rendering QR-code in document", e);
 					errors.reject("error.document_not_converted");
 					return Views.ERROR;
 				}
