@@ -26,7 +26,7 @@ public class ChainUtils {
 		 * Are there Negation tags?
 		 */
 		boolean existsNegatedTags = false;
-		for (SystemTag sysTag: param.getSystemTags()) {
+		for (final SystemTag sysTag: param.getSystemTags()) {
 			if (sysTag instanceof NotTagSystemTag) {
 				existsNegatedTags = true;
 				break;
@@ -39,8 +39,7 @@ public class ChainUtils {
 		 * OR
 		 * 2. There are negated tags
 		 */
-		if ((present(tagIndex) && pdm.useResourceSearchForTagQuery(tagIndex.size())) ||
-			existsNegatedTags) {
+		if ((present(tagIndex) && pdm.useResourceSearchForTagQuery(tagIndex.size())) ||	existsNegatedTags) {
 			return true;
 		}
 		if ((param.getGrouping() == GroupingEntity.ALL) && (param.getNumSimpleConcepts() > 0)) {
