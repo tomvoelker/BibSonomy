@@ -1704,18 +1704,18 @@ public class DBLogic implements LogicInterface {
 				 */
 				Post<BibTex> post = null;
 				try {
-					post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				} catch (final ResourceMovedException ex) {
 					//ignore
 				} catch (final ResourceNotFoundException ex) {
 					// ignore
 				}
-				if (post != null) {
+				if (present(post)) {
 					/*
 					 * the given resource hash belongs to a post of the user ->
 					 * delete the corresponding document
 					 */
-					Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, document.getFileName(), session);
+					final Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, document.getFileName(), session);
 					if (present(existingDocument)) {
 						this.docDBManager.deleteDocument(post.getContentId(), existingDocument, session);
 					}
