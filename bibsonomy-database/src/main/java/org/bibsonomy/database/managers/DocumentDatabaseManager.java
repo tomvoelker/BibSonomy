@@ -173,35 +173,12 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		final List<Document> doc = getDocumentsForPost(docParam, session);
 		
 		if (doc == null) {
-			throw new IllegalStateException("No documents for this BibTeX entry");
+			throw new IllegalStateException("No documents for this publication.");
 		}
 		
 		return doc;
 	}
 
-	/**
-	 * Returns the named document for the given user name and hash.
-	 * 
-	 * @param userName
-	 * @param resourceHash
-	 * @param session
-	 * @return A document.
-	 */
-	public List<Document> getDocuments(final String userName, final String resourceHash, final DBSession session) {
-		// create the docParam object
-		final DocumentParam docParam = new DocumentParam();
-
-		// fill the docParam object
-		docParam.setResourceHash(resourceHash);
-		docParam.setUserName(userName);
-
-		// get the requested document
-		final List<Document> doc = getDocumentsForPost(docParam, session);
-		if (doc == null) {
-			throw new IllegalStateException("No documents for this BibTeX entry");
-		}
-		return doc;
-	}
 
 	private void deleteDocumentLayout(final DocumentParam docParam, final DBSession session) {
 		this.delete("deleteDocWithNoPost", docParam, session);
@@ -240,7 +217,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void deleteDocument(final int contentId, final Document document, final DBSession session) {
 		// create a DocumentParam object
-		DocumentParam docParam = documentToParam(document);
+		final DocumentParam docParam = documentToParam(document);
 		docParam.setContentId(contentId);
 		
 		// finally delete the document
@@ -278,9 +255,9 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteAllDocumentsForPost(int contentId, DBSession session) {
-		List<Document> documents = this.queryForList("getDocumentsForDelete", contentId, Document.class, session);
-		for (Document document : documents) {
-			DocumentParam docParam = documentToParam(document);
+		final List<Document> documents = this.queryForList("getDocumentsForDelete", contentId, Document.class, session);
+		for (final Document document : documents) {
+			final DocumentParam docParam = documentToParam(document);
 			docParam.setContentId(contentId);
 			this.onDocumentDelete(docParam, session);
 		}
