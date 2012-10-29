@@ -21,7 +21,7 @@ var BookmarkletButton = {
 		           },
 			       {
 		        	   	name: "Firefox",
-			        	url:	"http://",
+			        	url:	"https://addons.mozilla.org/de/firefox/addon/bibsonomy-buttons/",
 			        	version: "4",
 			        	satisfies: function(){
 			        		return $.browser.mozilla&&parseInt($.browser.version, 10);
