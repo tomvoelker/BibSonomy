@@ -80,7 +80,7 @@
 			           		<!-- 
 			           			TODO: put URL into configuration or elsewhere
 			           		 -->
-			           		<p><a href="#" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
+			           		<p><a href="https://chrome.google.com/webstore/detail/bibsonomy-buttons/lbbnooihfnhphbgeajgmpmaedkdjgeid" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
 		           		</div>
 		           		<p><i><fmt:message key="note"/>: <fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;<fmt:message key="bookmarklet.legacyNotice.further1"/></i></p>
 	           		</div>
