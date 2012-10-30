@@ -1144,7 +1144,6 @@ function startTagAutocompletion (textfield, isPost) {
 			var text = item.value;
 			var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length))
 			textArea.val(substring + text);
-			textArea.select();
 			return false;
 		},
 		focus: function( event, ui ) {
