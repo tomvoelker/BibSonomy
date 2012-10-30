@@ -17,16 +17,19 @@ var BookmarkletButton = {
 		        	   	name: "Chrome",
 		        	   	url:	"https://chrome.google.com/webstore/detail/bibsonomy-buttons/lbbnooihfnhphbgeajgmpmaedkdjgeid",
 		        	   	satisfies: function(){
-		        	   		return $.browser.webkit&&navigator!=undefined&&navigator.userAgent.indexOf("Chrome")!=-1;
+		        	   		return $.browser.webkit&&navigator!=undefined
+		        	   		&&navigator.userAgent.indexOf("Epiphany")==-1
+		        	   		&&navigator.userAgent.indexOf("Chrome")!=-1;
 		        	   	}
 		           },
 			       {
 		        	   	// TODO: put URL into configuration or elsewhere
 		        	   	name: "Firefox",
 			        	url:	"https://addons.mozilla.org/de/firefox/addon/bibsonomy-buttons/",
-			        	version: "4",
+			        	version: "8",
 			        	satisfies: function(){
-			        		return $.browser.mozilla&&parseInt($.browser.version, 10);
+			        		return $.browser.mozilla
+			        		&&parseInt($.browser.version, 10)>=this.version;
 			        	}
 			       }
 		],
