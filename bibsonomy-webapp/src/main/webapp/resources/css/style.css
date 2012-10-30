@@ -1213,6 +1213,10 @@ div.help>a,div.help>b {
 	margin-top: -2px;
 }
 
+.postTagInput {
+	height: 10px;
+}
+
 .post:hover .editTags, .post:hover .ieditTags, .post:hover .action {
 	visibility: visible;
 }

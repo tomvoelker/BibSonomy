@@ -703,7 +703,7 @@ function editTags() {
 				 * add form to edit the tags
 				 */
 				var form = $("<form method='post' action='/batchEdit?deleteCheckedPosts=true&format=ajax&resourcetype=" + type + "' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
-				var input = $("<input type='text' name=\"newTags['" + hash + "']\" value='" + tagString + "'/>");
+				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\" value='" + tagString + "'/>");
 				var submit = $("<input type='submit' value='" + getString("post.meta.edit") + "'/>");
 				form.append(input).append(submit);
 				/*
