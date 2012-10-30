@@ -1209,6 +1209,10 @@ div.help>a,div.help>b {
 	visibility: hidden;	
 }
 
+.editTags {
+	margin-top: -2px;
+}
+
 .post:hover .editTags, .post:hover .ieditTags, .post:hover .action {
 	visibility: visible;
 }
