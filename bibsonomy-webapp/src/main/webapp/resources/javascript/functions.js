@@ -152,7 +152,7 @@ function processQRCode(text) {
 		 * get second to the last and last entry of split URL.
 		 * should be hash and user.
 		 */
-		document.location.href = "/editPublication?hash=" + split[split.length - 2] + escape("&user=") + split[split.length - 1];
+		document.location.href = "/editPublication?hash=" + escape(split[split.length - 2]) + "&user=" + escape(split[split.length - 1]);
 	
 	/*
 	 * we should be on clipboard site
