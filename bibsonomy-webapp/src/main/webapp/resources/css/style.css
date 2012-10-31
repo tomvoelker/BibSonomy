@@ -1210,11 +1210,16 @@ div.help>a,div.help>b {
 }
 
 .editTags {
-	margin-top: -2px;
+	margin-top: -1px;
 }
 
 .postTagInput {
-	height: 10px;
+	padding: 1px !important;
+	font-size: 10px;
+}
+
+.postTagButton {
+	font-size: 9px;
 }
 
 .post:hover .editTags, .post:hover .ieditTags, .post:hover .action {

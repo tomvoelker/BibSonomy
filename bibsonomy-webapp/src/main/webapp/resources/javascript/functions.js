@@ -704,7 +704,7 @@ function editTags() {
 				 */
 				var form = $("<form method='post' action='/batchEdit?deleteCheckedPosts=true&format=ajax&resourcetype=" + type + "' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
 				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\" value='" + tagString + "'/>");
-				var submit = $("<input type='submit' value='" + getString("post.meta.edit") + "'/>");
+				var submit = $("<input type='submit' class='postTagButton' value='" + getString("post.meta.edit") + "'/>");
 				form.append(input).append(submit);
 				/*
 				 * start the tag autocompletion
@@ -1142,8 +1142,8 @@ function startTagAutocompletion (textfield, isPost) {
 			var item = ui.item;
 			var textArea = $(event.target);
 			var text = item.value;
-			var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length))
-			textArea.val(substring + text);
+			var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length));
+			textArea.val(substring + text + " ");
 			return false;
 		},
 		focus: function( event, ui ) {
