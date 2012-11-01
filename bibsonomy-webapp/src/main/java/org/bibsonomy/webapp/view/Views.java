@@ -355,11 +355,6 @@ public enum Views implements View {
 	REGISTER_USER_SUCCESS("actions/register/user_success"),
 
 	/**
-	 * After a user has been successfully activated, he will see this view.
-	 */
-	ACTIVATE_USER_SUCCESS("actions/register/user_activated"),
-
-	/**
 	 * When admins successfully register a user, this page shows them the
 	 * details.
 	 */
