@@ -357,6 +357,8 @@
 				<ref bean="ldapAuthProvider" /> 
 			</list>
 		</property>
+		<!-- we need the password for the rememeber me cookie (the coookie is encrypted) -->
+		<property name="eraseCredentialsAfterAuthentication" value="false" />
 	</bean>
 	
 	<!-- filter for the ldap remember me cookie -->
