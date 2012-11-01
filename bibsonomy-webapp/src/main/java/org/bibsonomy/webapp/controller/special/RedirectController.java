@@ -8,7 +8,6 @@ import java.net.URLEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.special.RedirectCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.HeaderUtils;
@@ -37,8 +36,9 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class RedirectController implements MinimalisticController<RedirectCommand>, RequestAware, ErrorAware {
-	private RequestLogic requestLogic;
 	private static final Log log = LogFactory.getLog(RedirectController.class);
+  
+	private RequestLogic requestLogic;
 	private Errors errors;
 
 	@Override
@@ -57,14 +57,14 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			/*
 			 * handle /my* pages
 			 */
-			redirectUrl = getMyPageRedirect(myPage, user.getName());
+			redirectUrl = this.getMyPageRedirect(myPage, user.getName());
 		} else if (present(search) && present(scope)) {
 			/*
 			 * handle main page search form
 			 */
 			try {
-				redirectUrl = getSearchPageRedirect(search, scope, command.getRequUser());
-			} catch (UnsupportedEncodingException e) {
+				redirectUrl = this.getSearchPageRedirect(search, scope, command.getRequUser());
+			} catch (final UnsupportedEncodingException e) {
 				log.error("Could not search form redirect URL.", e);
 			}
 
@@ -73,7 +73,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			 * Handle /uri/ content negotiating using the Accept: header.
 			 */
 			log.debug("doing content negotiation for URL " + url);
-			redirectUrl = getContentNegotiationRedirect(url, requestLogic.getAccept());
+			redirectUrl = this.getContentNegotiationRedirect(url, this.requestLogic.getAccept());
 		}
 		log.debug("finally redirecting to " + redirectUrl);
 		return new ExtendedRedirectView(redirectUrl);
@@ -93,7 +93,9 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		 * determine relevant resource type
 		 */
 		int resourceType = 2;
-		if (url.startsWith("url")) resourceType = 1;
+		if (url.startsWith("url")) {
+			resourceType = 1;
+		}
 
 		/*
 		 * build redirectUrl
@@ -102,7 +104,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		/*
 		 * check, if specific format returned
 		 */
-		if (ValidationUtils.present(responseFormat)) {
+		if (present(responseFormat)) {
 			return "/" + responseFormat + "/" + url;
 		} 
 		/*
@@ -123,7 +125,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		/*
 		 * redirect either to /user/*, to /author/*, to /tag/* or to /concept/tag/* page 
 		 */
-		if ("author".equals(scope) && ValidationUtils.present(requUser)) {
+		if ("author".equals(scope) && present(requUser)) {
 			/*
 			 * special handling, when requUser is given - this is for /author pages only
 			 */
@@ -172,7 +174,9 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		/*
 		 * we need a valid user name
 		 */
-		if (!ValidationUtils.present(loginUserName)) return null;
+		if (!present(loginUserName)) {
+			return null;
+		}
 		/*
 		 * redirects for /my* pages
 		 */
@@ -193,7 +197,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			} else {
 				log.error("Unknown /my* page called: " + myPage);
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (final UnsupportedEncodingException e) {
 			log.error("Could not create /my* URL.", e);
 		}
 		/*
@@ -220,7 +224,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	
 	@Override
 	public Errors getErrors() {
-		return errors;
+		return this.errors;
 	}
 	
 	@Override
