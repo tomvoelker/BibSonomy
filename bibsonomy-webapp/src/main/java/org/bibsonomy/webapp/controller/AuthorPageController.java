@@ -83,7 +83,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 				this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null);
 			}
 			this.endTiming();
-			if(hasTags){
+			if (hasTags) {
 				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
 				return Views.AUTHORTAGPAGE;
 			}
