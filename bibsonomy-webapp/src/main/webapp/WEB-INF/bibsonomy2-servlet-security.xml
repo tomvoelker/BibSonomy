@@ -329,10 +329,10 @@
 	</bean>
 	
 	<bean id="openidAuthenticationProvider" class="org.bibsonomy.webapp.util.spring.security.provider.OpenIDAuthenticationProvider">
-		<property name="userDetailsService" ref="openidUserDetailsService" />
+		<property name="authenticationUserDetailsService" ref="openidAuthenticationUserDetailsService" />
 	</bean>
 	
-	<bean id="openidUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.OpenIDDatabaseUserDetailsService">
+	<bean id="openidAuthenticationUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetails.OpenIdAuthenticationUserDetailsService">
 		<property name="adminLogic" ref="adminLogic" />
 	</bean>
 	
