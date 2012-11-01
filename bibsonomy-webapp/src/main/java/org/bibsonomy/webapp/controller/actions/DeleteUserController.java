@@ -2,8 +2,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
+import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -13,22 +13,14 @@ import org.bibsonomy.webapp.validation.DeleteUserValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.Errors;
 
 /**
  * @author daill
  * @version $Id$
  */
-public class DeleteUserController implements ValidationAwareController<SettingsViewCommand>, ErrorAware {
+public class DeleteUserController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(DeleteUserController.class);
 	
-	private LogicInterface logic;
-	private Errors errors;
-
-	@Override
-	public SettingsViewCommand instantiateCommand() {
-		return new SettingsViewCommand();
-	}
 	
 	@Override
 	public View workOn(final SettingsViewCommand command) {
@@ -88,23 +80,6 @@ public class DeleteUserController implements ValidationAwareController<SettingsV
 		}
 		
 		return new ExtendedRedirectView("/logout");
-	}
-	
-	/**
-	 * @param logic
-	 */
-	public void setLogic(final LogicInterface logic) {
-		this.logic = logic;
-	}
-
-	@Override
-	public Errors getErrors() {
-		return this.errors;
-	}
-
-	@Override
-	public void setErrors(final Errors errors) {
-		this.errors = errors;
 	}
 
 	@Override
