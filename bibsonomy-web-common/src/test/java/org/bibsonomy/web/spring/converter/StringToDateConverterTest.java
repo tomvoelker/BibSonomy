@@ -3,12 +3,12 @@ package org.bibsonomy.web.spring.converter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.convert.ConversionFailedException;
@@ -23,7 +23,7 @@ public class StringToDateConverterTest {
 	
 	@BeforeClass
 	public static void setupConverter() {
-		CONVERTER.setFormats(Arrays.<DateFormat>asList(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"), new SimpleDateFormat("yyyy-MM-dd")));
+		CONVERTER.setFormats(Arrays.<DateTimeFormatter>asList(DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ"), DateTimeFormat.forPattern("yyyy-MM-dd")));
 	}
 
 	@Test

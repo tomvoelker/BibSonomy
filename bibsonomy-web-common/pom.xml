@@ -9,7 +9,6 @@
 	</parent>
 	<artifactId>bibsonomy-web-common</artifactId>
 	<name>BibSonomy-Web-Common</name>
-	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -63,6 +62,11 @@
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.1</version>
 		</dependency>
 	</dependencies>
 </project>

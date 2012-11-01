@@ -2,11 +2,13 @@ package org.bibsonomy.web.spring.converter;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
@@ -19,8 +21,9 @@ import org.springframework.core.convert.converter.Converter;
  * @version $Id$
  */
 public class StringToDateConverter implements Converter<String, Date> {
+	private static final Log log = LogFactory.getLog(StringToDateConverter.class);
 	
-	private List<DateFormat> formats;
+	private List<DateTimeFormatter> formats;
 	
 	@Override
 	public Date convert(final String source) {
@@ -33,10 +36,11 @@ public class StringToDateConverter implements Converter<String, Date> {
 		 * the first format that can formats the string
 		 * wins
 		 */
-		for (final DateFormat format : formats) {
+		for (final DateTimeFormatter format : this.formats) {
 			try {
-				return format.parse(source);
-			} catch (final ParseException e) {
+				return format.parseDateTime(source).toDate();
+			} catch (final Exception e) {
+				log.debug("can't parse '" + source + "' with formatter " + format, e);
 				// ignore try another one
 			}
 		}
@@ -50,7 +54,7 @@ public class StringToDateConverter implements Converter<String, Date> {
 	/**
 	 * @param formats the formats to set
 	 */
-	public void setFormats(final List<DateFormat> formats) {
+	public void setFormats(final List<DateTimeFormatter> formats) {
 		this.formats = formats;
 	}
 }
