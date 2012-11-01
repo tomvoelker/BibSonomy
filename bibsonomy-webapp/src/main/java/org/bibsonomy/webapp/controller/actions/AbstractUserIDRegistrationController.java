@@ -107,7 +107,9 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 			/*
 			 * generate a new user name if necessary
 			 */
-			if (!present(user.getName())) user.setName(generateUserName(user));
+			if (!present(user.getName())) {
+				user.setName(this.generateUserName(user));
+			}
 			/*
 			 * ensure that we proceed to the next step
 			 */
@@ -115,16 +117,16 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 			/*
 			 * return to form
 			 */
-			return registrationFormView;
+			return this.registrationFormView;
 		}
 		
 		log.debug("step 3: complete registration");
 		/* 
 		 * if there are any errors in the form, we return back to fix them.
 		 */
-		if (errors.hasErrors()) {
-			log.info("an error occoured: " + errors.toString());
-			return registrationFormView;
+		if (this.errors.hasErrors()) {
+			log.info("an error occoured: " + this.errors.toString());
+			return this.registrationFormView;
 		}
 		/*
 		 * no errors: try to store user
@@ -136,54 +138,55 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		/*
 		 * check, if user name already exists
 		 */
-		if (present(registerUser.getName()) && present(adminLogic.getUserDetails(registerUser.getName()).getName())) {
+		if (present(registerUser.getName()) && present(this.adminLogic.getUserDetails(registerUser.getName()).getName())) {
 			/*
 			 * yes -> user must choose another name
 			 */
-			errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
+			this.errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
 		}
 		/*
 		 * return to form until validation passes
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			/*
 			 * We add the ID since it is shown to the user in the form.
 			 */
-			setAuthentication(registerUser, user);
-			return registrationFormView;
+			this.setAuthentication(registerUser, user);
+			return this.registrationFormView;
 		}
-		log.info("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
+		log.info("validation passed with " + this.errors.getErrorCount() + " errors, proceeding to access database");
 		/*
 		 * set the user's inet address
 		 */
-		registerUser.setIPAddress(requestLogic.getInetAddress());
+		registerUser.setIPAddress(this.requestLogic.getInetAddress());
 		/*
 		 * before we store the user, we must ensure that he contains the 
 		 * credentials used to authenticate him
 		 */
-		setAuthentication(registerUser, user);
+		this.setAuthentication(registerUser, user);
 		/*
 		 * create user in DB
 		 */
-		adminLogic.createUser(registerUser);
+		this.adminLogic.createUser(registerUser);
 		/*
 		 * delete user from session.
 		 */
-		requestLogic.setSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED, null);
+		this.requestLogic.setSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED, null);
 
 		/*
 		 * log user into system
+		 * TODO: user correct? not registerUser? (maybe the user has changed his name)
 		 */
-		final Authentication authentication = getAuthentication(user);
+		final Authentication authentication = this.getAuthentication(user);
 
-		final Authentication authenticated = authenticationManager.authenticate(authentication);
+		final Authentication authenticated = this.authenticationManager.authenticate(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authenticated);
-		cookieLogic.createRememberMeCookie(rememberMeServices, authenticated);
+		this.cookieLogic.createRememberMeCookie(this.rememberMeServices, authenticated);
 
 		/*
 		 * present the success view
 		 */
-		return new ExtendedRedirectView(successRedirect);
+		return new ExtendedRedirectView(this.successRedirect);
 	}
 	
 	/**
@@ -235,7 +238,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		String newName = cleanUserName(user.getRealname());
 		int tryCount = 0;
 		log.debug("try existence of username: " + newName);
-		while ((newName.equalsIgnoreCase(adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
+		while ((newName.equalsIgnoreCase(this.adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
 			try {
 				if (tryCount == 0) {
 					// try first character of forename concatenated with surname
@@ -270,7 +273,9 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	}
 	
 	private static String cleanUserName(final String name) {
-		if (!present(name)) return "";
+		if (!present(name)) {
+			return "";
+		}
 		return UserValidator.USERNAME_DISALLOWED_CHARACTERS_PATTERN.matcher(name).replaceAll("").toLowerCase();
 	}
 
