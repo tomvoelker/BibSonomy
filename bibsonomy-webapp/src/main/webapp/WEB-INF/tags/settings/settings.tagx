@@ -8,7 +8,6 @@
   xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
   xmlns:form="http://www.springframework.org/tags/form"
   xmlns:spring="http://www.springframework.org/tags"
-  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
   xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
   xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings">
@@ -34,12 +33,6 @@
 	<fmt:message var="advanced" key="settings.advanced"/>
 	<fmt:message var="simple" key="settings.simple"/>
 				
-
-	<!--+  
-		| show global errors
-		+-->
-	<errors:global errors="${errors}"/>
-
 	<!-- style settings -->		
 	<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
 	<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
