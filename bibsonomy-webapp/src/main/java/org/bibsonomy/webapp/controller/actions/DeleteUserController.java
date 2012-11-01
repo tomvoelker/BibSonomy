@@ -76,7 +76,7 @@ public class DeleteUserController extends SettingsPageController implements Vali
 		
 
 		if (errors.hasErrors()){
-			return Views.SETTINGSPAGE;
+			return super.workOn(command);
 		}
 		
 		return new ExtendedRedirectView("/logout");
