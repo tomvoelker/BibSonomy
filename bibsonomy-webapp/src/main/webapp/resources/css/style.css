@@ -2521,6 +2521,14 @@ div.fsRow div.resizable-textarea textarea {
 	font-style: italic;
 }
 
+.fsScraperSelectedText {
+	resize: none;
+	margin-top: 0px;
+	padding: 0px;
+	border: 0px;
+	background-color: #EEEEEE;
+}
+
 .ui-autocomplete-subtext{
 	font-size:10px;
 }

@@ -34,7 +34,8 @@
 				<c:if test="${not empty command.scrapingContext.selectedText}">
 					<span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText" /></span>
 					<buttons:help message="post.resource.fields.scraper.selectedText.help" cssClass="widehelp"/>
-					<span style="display:table"><c:out value="${command.scrapingContext.selectedText}" /></span>
+					<!-- already put textarea-resizer-processed class on textarea so that it is not resizeable anymore -->
+					<textarea class="fsInput fsScraperSelectedText textarea-resizer-processed" readonly="readonly"><c:out value="${command.scrapingContext.selectedText}" /></textarea>
 				</c:if>
 			</c:if>
         	<editpub:required post="${post}" autocompletion="$(false)"/>
