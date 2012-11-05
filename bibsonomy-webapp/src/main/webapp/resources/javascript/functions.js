@@ -1075,6 +1075,7 @@ this.imagePreview = function(){
 		$("#preview")
 		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
 		.css("left", (e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px")
+		.css("z-index", 110)
 		.fadeIn("fast");      
 	}, function(){
 		this.title = this.t;	
@@ -1083,7 +1084,8 @@ this.imagePreview = function(){
 	$("a.preview").mousemove(function(e){
 		$("#preview")
 		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
-		.css("left", (e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px");
+		.css("left", (e.pageX + (e.pageX < window.innerWidth/2 ? 0 : -xOff)) + "px")
+		.css("z-index", 110);
 	});		     	      
 };
 
