@@ -26,7 +26,7 @@ public class ListCommand<T> {
 	private final PageCommand curPage = new PageCommand();
 	private List<PageCommand> previousPages;
 	private List<PageCommand> nextPages;
-	private int totalCount = 0;
+	private Integer totalCount = null;
 	private List<T> list;
 	
 	/**
@@ -97,6 +97,13 @@ public class ListCommand<T> {
 		if (this.entriesPerPage == 0) {
 			return 0;
 		}
+		return this.totalCount == null ? 0 : this.totalCount;
+	}
+	
+	/**
+	 * @return the real integer object behind the total count
+	 */
+	public Integer getTotalCountAsInteger() {
 		return this.totalCount;
 	}
 	
@@ -140,7 +147,7 @@ public class ListCommand<T> {
 			this.nextPages = new ArrayList<PageCommand>();
 			for (int i = 1; i <= this.numNextPages; ++i) {
 				final int start = this.curPage.getStart() + (i * this.entriesPerPage);
-				if ((start < this.totalCount) || (this.totalCount == 0)) {
+				if ((start < this.getTotalCount()) || (this.getTotalCount() == 0)) {
 					this.nextPages.add(new PageCommand(this.getCurPage().getNumber() + i, start));
 				}
 			}
@@ -261,4 +268,5 @@ public class ListCommand<T> {
 		}
 		return 0;
 	}
+
 }

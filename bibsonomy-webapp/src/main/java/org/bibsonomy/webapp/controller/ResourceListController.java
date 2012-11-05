@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
@@ -103,7 +102,7 @@ public abstract class ResourceListController {
 		/*
 		 * check parameters from URL
 		 */
-		if (tagCloudCommand.getMinFreq() == 0 && tagCloudCommand.getMaxCount() == 0) { // no parameter was set via URL
+		if ((tagCloudCommand.getMinFreq() == 0) && (tagCloudCommand.getMaxCount() == 0)) { // no parameter was set via URL
 			/*
 			 * check user's settings
 			 */
@@ -179,7 +178,7 @@ public abstract class ResourceListController {
 		if (present(tagsType)) {
 
 			// if tags are requested (not related tags), remove non-systemtags from tags list
-			if (TagsType.DEFAULT.equals(tagsType) && tags != null ) {
+			if (TagsType.DEFAULT.equals(tagsType) && (tags != null) ) {
 				SystemTagsExtractor.removeAllNonSystemTags(tags);
 			}
 
@@ -269,6 +268,10 @@ public abstract class ResourceListController {
 	 */
 	protected <T extends Resource> void setTotalCount(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
+		// check if total count already set by resource search
+		if (listCommand.getTotalCountAsInteger() != null) {
+			return;
+		}
 		log.debug("getPostStatistics " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
 		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, search, filter, constraint, order, startDate, endDate, start, start + itemsPerPage).getCount();
@@ -293,7 +296,7 @@ public abstract class ResourceListController {
 	 */
 	private boolean isPublicationOnlyRequested(final ResourceViewCommand cmd) {
 		final Set<Class<? extends Resource>> listsToInitialize = this.getListsToInitialize(cmd.getFormat(), cmd.getResourcetype());
-		return listsToInitialize.size() == 1 && listsToInitialize.contains(BibTex.class);
+		return (listsToInitialize.size() == 1) && listsToInitialize.contains(BibTex.class);
 	}
 
 	/**
@@ -304,7 +307,7 @@ public abstract class ResourceListController {
 	 */
 	private boolean isBookmarkOnlyRequested(final ResourceViewCommand cmd) {
 		final Set<Class<? extends Resource>> listsToInitialize = this.getListsToInitialize(cmd.getFormat(), cmd.getResourcetype());
-		return listsToInitialize.size() == 1 && listsToInitialize.contains(Bookmark.class);
+		return (listsToInitialize.size() == 1) && listsToInitialize.contains(Bookmark.class);
 	}
 
 	/**
@@ -374,7 +377,7 @@ public abstract class ResourceListController {
 	 * @param resourcesToInitialize initially filled by ?resourcetype=bookmark&resourcetype=publication
 	 * @return all resources that must be initialized by this controller
 	 */
-	public Set<Class<? extends Resource>> getListsToInitialize(final String format, Set<Class<? extends Resource>> resourcesToInitialize) {
+	public Set<Class<? extends Resource>> getListsToInitialize(final String format, final Set<Class<? extends Resource>> resourcesToInitialize) {
 		// explictly don't intialize resources (e.g. when only tags are requested)
 		if (this.initializeNoResources) {
 			resourcesToInitialize.clear();
