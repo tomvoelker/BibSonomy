@@ -23,8 +23,18 @@
     <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
     <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
+    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+    
 
-	<layout:editGoldStandardPostLayout generalInformation="${generalInformation}" requPath="${requPath}" resourceType="${resourceType}" command="${command}" detailedInformation="${detailedInformation}" extraInformation="${extraInformation}">
+	<layout:editGoldStandardPostLayout 
+		generalInformation="${generalInformation}" 
+		requPath="${requPath}" 
+		resourceType="${resourceType}" 
+		command="${command}" 
+		detailedInformation="${detailedInformation}" 
+		extraInformation="${extraInformation}"
+		minimizedContentWidth="${minimizedContentWidth}">
+		
 		<jsp:attribute name="headerExtResource">
 			<script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js"><!-- keep me --></script>
 		</jsp:attribute>

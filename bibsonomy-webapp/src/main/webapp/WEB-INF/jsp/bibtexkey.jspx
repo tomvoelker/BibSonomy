@@ -12,7 +12,13 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">
+	<layout:resourceLayout 
+		pageTitle="${command.pageTitle}" 
+		command="${command}" 
+		requPath="${requPath}" 
+		disableResourcetypeSelection="${true}"
+		minimizedContentWidth="${true}" >
+		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.bibtexkey" formAction="/bibtexkey" formInputName="requestedKey" formInputValue="${command.requestedKey}">
 				<jsp:attribute name="pathPart">
@@ -43,6 +49,7 @@
 					<script type="text/javascript">
 					<![CDATA[
 					         $(function(){
+					        	 alert("bibtexkey");
 					     		$("#inpf").autocomplete("/generalAjax?action=getBibtexKeysForUser&requestedUser=${command.requestedUser}", {
 					     			width: 260,
 					     			selectFirst: true

@@ -12,7 +12,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 	
 	<fmt:message key="navi.basket" var="pageTitle"/>
 	
@@ -21,7 +21,8 @@
 			requPath="${requPath}" 
 			isBasket="${true}" 
 			disableListNavigation="${true}"
-			disableResourcetypeSelection="${true}">
+			disableResourcetypeSelection="${true}"
+			minimizedContentWidth="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.basket"/>

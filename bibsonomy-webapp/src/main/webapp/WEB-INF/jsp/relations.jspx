@@ -19,7 +19,8 @@
     		pageTitle="${command.pageTitle}" 
     		requPath="${requPath}" 
     		activeTab="popular"
-    		showPageOptions="${command.context.userLoggedIn}">
+    		showPageOptions="${command.context.userLoggedIn}"
+    		minimizedContentWidth="${true}">
       	
     	<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/concept/tag/" formInputName="tag"/>

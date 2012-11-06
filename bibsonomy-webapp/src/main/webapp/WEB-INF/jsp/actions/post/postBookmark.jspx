@@ -14,7 +14,14 @@
 
 	<fmt:message key="navi.postBookmark" var="postBookmarkPageTitle"/>
 
-	<layout:paneLayout pageTitle="${postBookmarkPageTitle}" headerMessageKey="post_bookmark.heading" headerLogoClass="bookmarks" command="${command}" requPath="${requPath}" activeTab="post">
+	<layout:paneLayout 
+		pageTitle="${postBookmarkPageTitle}" 
+		headerMessageKey="post_bookmark.heading" 
+		headerLogoClass="bookmarks" 
+		command="${command}" 
+		requPath="${requPath}" 
+		activeTab="post"
+		minimizedContentWidth="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.postBookmark"/>

@@ -15,7 +15,12 @@
 
 	<fmt:message key="navi.sync" var="syncPageTitle"/>	
 
-	<layout:paneLayout requPath="${requPath}" pageTitle="${syncPageTitle}" command="${command}" headerMessageKey="navi.sync">
+	<layout:paneLayout 
+		requPath="${requPath}" 
+		pageTitle="${syncPageTitle}" 
+		command="${command}" 
+		headerMessageKey="navi.sync"
+		minimizedContentWidth="${true}">
 	
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/sync.css" />

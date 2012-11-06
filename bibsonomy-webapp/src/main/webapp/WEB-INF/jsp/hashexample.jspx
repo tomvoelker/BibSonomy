@@ -17,7 +17,14 @@
 
     <fmt:message key="navi.bibtexhashexample" var="bibtexhashexamplePageTitle"/>
 
-    <layout:paneLayout pageTitle="${bibtexhashexamplePageTitle}" headerMessageKey="bibtexhashexample.heading" headerLogoClass="bookmarks" command="${command}" requPath="${requPath}" activeTab="post">
+    <layout:paneLayout 
+    	pageTitle="${bibtexhashexamplePageTitle}" 
+    	headerMessageKey="bibtexhashexample.heading" 
+    	headerLogoClass="bookmarks" 
+    	command="${command}" 
+    	requPath="${requPath}" 
+    	activeTab="post"
+    	minimizedContentWidth="${true}">
 
         <jsp:attribute name="heading">
             <parts:search pathMessageKey="navi.bibtexhashexample"/>

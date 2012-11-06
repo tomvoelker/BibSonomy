@@ -26,10 +26,20 @@
     <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
     <jsp:directive.attribute name="tagsAndGroups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
+    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+    
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
 	
-	<layout:paneLayout pageTitle="${editPageTitle}" headerMessageKey="post.resource.edit${resourceType}" headerLogoClass="${fn:toLowerCase(resourceType)}s" command="${command}" requPath="${requPath}" activeTab="${activeTab}">
+	<layout:paneLayout 
+		pageTitle="${editPageTitle}" 
+		headerMessageKey="post.resource.edit${resourceType}" 
+		headerLogoClass="${fn:toLowerCase(resourceType)}s" 
+		command="${command}" 
+		requPath="${requPath}" 
+		activeTab="${activeTab}"
+		minimizedContentWidth="${minimizedContentWidth}">
+		
 	    <!--+
     	 	| html header extension: page specific javascript
     	 	+-->

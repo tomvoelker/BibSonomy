@@ -16,7 +16,14 @@
 
 	<fmt:message key="navi.register" var="pageTitle" />
 
-	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="register.openid.step2" headerLogoClass="openid">
+	<layout:paneLayout 
+		command="${command}" 
+		pageTitle="${pageTitle}" 
+		requPath="${requPath}" 
+		headerMessageKey="register.openid.step2" 
+		headerLogoClass="openid"
+		minimizedContentWidth="${true}">
+		
 		<jsp:attribute name="heading">
         	<parts:search pathMessageKey="navi.register" />
         </jsp:attribute>

@@ -13,7 +13,13 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${command.pageTitle}" activeTab="groups">
+    <layout:paneLayout 
+    	requPath="${requPath}" 
+    	headerMessageKey="navi.groups" 
+    	command="${command}" 
+    	pageTitle="${command.pageTitle}" 
+    	activeTab="groups"
+    	minimizedContentWidth="${true}">
     	<!--+
     	 	| html header extension: page specific stylesheet
     	 	+-->

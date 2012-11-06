@@ -45,7 +45,8 @@
 			command="${command}" 
 			requestedUser="${command.requestedUser}" 
 			requPath="${requPath}"
-			showPageOptions="${true}">
+			showPageOptions="${true}"
+			minimizedContentWidth="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.relations" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag">

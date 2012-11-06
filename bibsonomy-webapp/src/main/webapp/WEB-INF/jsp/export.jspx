@@ -19,7 +19,8 @@
     		command="${command}" 
     		pageTitle="${command.pageTitle}" 
     		requPath="${requPath}"
-    		showPageOptions="${command.context.userLoggedIn}">
+    		showPageOptions="${command.context.userLoggedIn}"
+    		minimizedContentWidth="${true}">
       	
     <jsp:attribute name="heading">
     	<parts:search pathMessageKey="navi.export"/>

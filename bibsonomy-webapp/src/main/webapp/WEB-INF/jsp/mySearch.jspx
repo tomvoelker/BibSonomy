@@ -14,7 +14,14 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
       	
-	<layout:paneLayout pageTitle="${command.pageTitle}" headerMessageKey="mysearch.header" headerLogoClass="search" command="${command}" requPath="${requPath}" activeTab="my">
+	<layout:paneLayout 
+		pageTitle="${command.pageTitle}" 
+		headerMessageKey="mysearch.header" 
+		headerLogoClass="search" 
+		command="${command}" 
+		requPath="${requPath}" 
+		activeTab="my"
+		minimizedContentWidth="${true}">
 
     	<jsp:attribute name="heading">
     		<parts:search pathMessageKey="navi.mysearch"/>

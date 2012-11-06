@@ -20,7 +20,11 @@
 
 	<fmt:message key="navi.cv" var="cvPageTitle" />
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${cvPageTitle}">
+	<layout:layout 
+		requPath="${requPath}" 
+		loginUser="${command.context.loginUser}" 
+		pageTitle="${cvPageTitle}"
+		minimizedContentWidth="${true}">
 		
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/groupcvpage.css" />

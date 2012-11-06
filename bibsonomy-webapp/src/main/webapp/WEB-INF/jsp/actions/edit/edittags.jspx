@@ -21,7 +21,13 @@
 	
 	<fmt:message key="navi.editTags" var="pageTitle" />
 
-	<layout:paneLayout pageTitle="${pageTitle} :: ${command.context.loginUser.name}" headerMessageKey="navi.editTags" headerLogoClass="editTags" command="${command}" requPath="${requPath}">
+	<layout:paneLayout 
+	pageTitle="${pageTitle} :: ${command.context.loginUser.name}" 
+	headerMessageKey="navi.editTags" 
+	headerLogoClass="editTags" 
+	command="${command}" 
+	requPath="${requPath}"
+	minimizedContentWidth="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.editTags"/>
 		</jsp:attribute>

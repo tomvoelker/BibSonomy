@@ -12,7 +12,12 @@
 
 	<fmt:message key="navi.register" var="pageTitle" />
 	
-	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="navi.register">
+	<layout:paneLayout 
+		command="${command}" 
+		pageTitle="${pageTitle}" 
+		requPath="${requPath}" 
+		headerMessageKey="navi.register"
+		minimizedContentWidth="${true}">
   
         <jsp:attribute name="heading">
         	<parts:search pathMessageKey="navi.register"/>

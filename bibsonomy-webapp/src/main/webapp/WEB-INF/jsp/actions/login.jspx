@@ -21,7 +21,8 @@
 		requPath="${requPath}" 
 		noLoginBox="true" 
 		headerMessageKey="navi.login"
-		showPageOptions="${true}">
+		showPageOptions="${true}"
+		minimizedContentWidth="${true}">
 
 		<jsp:attribute name="headerExt">
   			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/jquery.ui.tabs.css" />
