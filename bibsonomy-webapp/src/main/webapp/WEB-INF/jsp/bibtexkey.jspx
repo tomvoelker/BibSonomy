@@ -49,7 +49,6 @@
 					<script type="text/javascript">
 					<![CDATA[
 					         $(function(){
-					        	 alert("bibtexkey");
 					     		$("#inpf").autocomplete("/generalAjax?action=getBibtexKeysForUser&requestedUser=${command.requestedUser}", {
 					     			width: 260,
 					     			selectFirst: true
