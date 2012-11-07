@@ -64,7 +64,7 @@
         <title>${properties['project.name']} publications for /<c:out value="${requPath}"/></title>
         <link>${properties['project.home']}<c:out value='${requPath}'/></link>
         <description>${properties['project.name']} RSS feed for /<c:out value='${requPath}'/></description>
-        <dc:date>${mtl:formatDateISO8601(now)}</dc:date>
+        <dc:date>${mtl:formatDateW3CDTF(now)}</dc:date>
          
         <!-- the items of the RSS feed -->
         <items>
@@ -85,7 +85,7 @@
     	  <title><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></title>
   		  <link>${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</link>
   		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
-  		  <dc:date>${mtl:formatDateISO8601(post.date)}</dc:date>
+  		  <dc:date>${mtl:formatDateW3CDTF(post.date)}</dc:date>
   		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/><c:out value=" "/></c:forEach></dc:subject>
 
           <!-- The HTML description of the item. -->

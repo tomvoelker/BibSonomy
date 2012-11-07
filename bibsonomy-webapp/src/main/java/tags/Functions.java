@@ -62,7 +62,7 @@ public class Functions  {
 	private static URLGenerator urlGenerator;
 	
 	private static final SimpleDateFormat ISO8601_FORMAT_HELPER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-
+	
 	private static final DateFormatter myDateFormatter = new DateFormatter("MMMM yyyy");
 	private static final DateFormatter dmyDateFormatter = new DateFormatter();
 	static {
@@ -520,8 +520,9 @@ public class Functions  {
 	}
 	
 	/**
-	 * formats the date to ISO 8601 for rss feeds, e.g.
-	 * currently java's formatter doesn't support this standard therefore we can
+	 * Formats the date to ISO 8601, e.g., 2012-11-07T14:43:16+0100
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
 	 * not use the fmt:formatDate tag with a pattern
 	 * 
 	 * @param date 
@@ -530,6 +531,29 @@ public class Functions  {
 	public static String formatDateISO8601(final Date date) {
 		if (present(date)) {
 			return ISO8601_FORMAT_HELPER.format(date);
+		}
+		return "";
+	}
+	
+	/**
+	 * Formats the date to W3CDTF, e.g., 2012-11-07T14:43:16+01:00 (needed for RSS feeds)
+	 * 
+	 * Currently Java's formatter doesn't support this standard therefore we can
+	 * not use the fmt:formatDate tag with a pattern
+	 * 
+	 * @param date 
+	 * @return the formatted date
+	 */
+	public static String formatDateW3CDTF(final Date date) {
+		if (present(date)) {
+			/*
+			 * gives us 2012-11-07T14:43:16+0100 
+			 */
+			final String string = ISO8601_FORMAT_HELPER.format(date);
+			/*
+			 * 
+			 */
+			return string.substring(0, string.length() - 2) + ":" + string.substring(string.length() - 2);
 		}
 		return "";
 	}

@@ -75,9 +75,19 @@ public class FunctionsTest {
 	}
 	
 	@Test
+	public void testFormatDateW3CDTF() throws Exception {
+		final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		assertEquals("2012-11-07T14:43:16+01:00", Functions.formatDateW3CDTF(ISO8601_DATE_FORMAT.parse("2012-11-07T14:43:16+0100")));
+		assertEquals("2012-11-07T16:43:16+01:00", Functions.formatDateW3CDTF(ISO8601_DATE_FORMAT.parse("2012-11-07T14:43:16-0100"))); // FIXME: time changes through parsing? 
+	}
+	
+	@Test
 	public void testFormatDateISO8601NPECheck() throws ParseException {
 		assertEquals("", Functions.formatDateISO8601(null));
 	}
+	
+	
+
 	
 	@Test
 	public void testGetDate() throws Exception {
@@ -112,4 +122,5 @@ public class FunctionsTest {
 		assertEquals("January 2011", Functions.getDate("", "#jan#", "2011", gbLocale));
 		
 	}
+
 }

@@ -15,6 +15,8 @@
 
 <jsp:directive.page contentType="application/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" isELIgnored="false"/>	
 
+<jsp:output omit-xml-declaration="false"/>
+
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 		 xmlns="http://purl.org/rss/1.0/"
 		 xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/"
@@ -39,24 +41,24 @@
 <c:forEach var="post" items="${command.bookmark.list}">
   <c:set var="bookmark" value="${post.resource}"/>
   <item rdf:about="${fn:escapeXml(mtl:removeXmlControlChars(bookmark.url))}">
-    <title><c:out value="${fn:escapeXml(mtl:removeXmlControlChars(bookmark.title))}"/></title>
+    <title><c:out value="${mtl:removeXmlControlChars(bookmark.title)}"/></title>
     <description>    
-    	<c:out value="${fn:escapeXml(mtl:removeXmlControlChars(post.description))}"/>
+    	<c:out value="${mtl:removeXmlControlChars(post.description)}"/>
 		<c:if test="${command.context.userLoggedIn}">
-		&amp;lt;a href="/editBookmark&amp;#63;hash=${post.resource.intraHash}&amp;amp;user=${mtl:encodeURI(post.user.name)}&amp;amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}"&amp;gt;				
+		&amp;lt;a href="${properties['project.home']}/editBookmark&amp;#63;hash=${post.resource.intraHash}&amp;amp;user=${mtl:encodeURI(post.user.name)}&amp;amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}"&amp;gt;				
 			<fmt:message key="post.actions.copy"/>
 		&amp;lt;/a&amp;gt;
 		</c:if>
     </description>
-    <link><c:out value='${fn:escapeXml(mtl:removeXmlControlChars(bookmark.url))}'/></link>
+    <link><c:out value='${mtl:removeXmlControlChars(bookmark.url)}'/></link>
     <dc:creator><c:out value="${post.user.name}" /></dc:creator>
-    <dc:date>${mtl:formatDateISO8601(post.date)}</dc:date>
+    <dc:date>${mtl:formatDateW3CDTF(post.date)}</dc:date>
     <dc:subject>
-      <c:forEach var="tag" items="${post.tags}"><c:out value='${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}'/><c:out value=" "/></c:forEach>  
+      <c:forEach var="tag" items="${post.tags}"><c:out value='${mtl:removeXmlControlChars(tag.name)}'/><c:out value=" "/></c:forEach>  
     </dc:subject>
     <content:encoded>
 	    <c:set var="desc"><bmark:desc post="${post}"/></c:set>
-	    ${fn:escapeXml(mtl:removeXmlControlChars(desc))}	        	    
+	    <c:out value="${mtl:removeXmlControlChars(desc)}"/>
     </content:encoded>
     <taxo:topics>
       <rdf:Bag>
