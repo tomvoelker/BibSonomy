@@ -54,13 +54,15 @@
 					</div>
 					
 					<div class="addReference">
-						<a class="addReference" href="addReference">
+						<a href="addReference" class="addReference" onclick="linkBox(true, {target:this, className:'linkDiscussionBox'});return false;">
 							<img alt="addReference" src="${resdir}/image/add_reference.png" />
 						</a>
 						<fmt:message var="alternateClose" key="close" />
-						<div id="linkBox" style="display:none">
+						<div class="linkDiscussionBox" style="display:none">
 							<input class="referenceAutocompletion" type="text" style="float:left"/>
-							<a class="closeReference" href="close" title="${alternateClose}" style="text-align:bottom"><img src="${resdir}/image/icon_close.png" alt="${alternateClose}" /></a>
+							<a href="#" onclick="linkBox(false, {target:this, className:'linkDiscussionBox'});return false;" class="closeReference" title="${alternateClose}" style="text-align:bottom">
+								<img src="${resdir}/image/icon_close.png" alt="${alternateClose}" />
+							</a>
 						</div>
 					</div>
 					

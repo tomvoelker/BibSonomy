@@ -177,7 +177,7 @@ h3 {
 	font-size: 90%
 }
 
-#linkBox {
+#linkBox, .linkDiscussionBox {
 	position: absolute;
 }
 

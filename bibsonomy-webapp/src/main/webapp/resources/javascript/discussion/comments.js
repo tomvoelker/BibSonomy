@@ -4,6 +4,7 @@ var REPLY_SELECTOR = 'a.reply';
 var EDIT_COMMENT_LINKS_SELECTOR = 'a.commentEditLink';
 var DELETE_COMMENT_LINKS_SELECTOR = 'a.commentDeleteLink';
 var TOGGLE_REPLY_SELECTOR = 'a.toggleReplies';
+var TOGGLE_REPLY_SELECTOR = 'a.toggleReplies';
 
 $(function() {
 	// reply links
@@ -28,6 +29,17 @@ $(function() {
 	$(EDIT_COMMENT_LINKS_SELECTOR).click(showEditCommentForm);
 	$(DELETE_COMMENT_LINKS_SELECTOR).click(deleteComment);
 });
+
+function addAutocompletionToLinkBox (form) {
+	var autocompletionInput = form.find("input.referenceAutocompletion");
+	initCSLSugestions(autocompletionInput);
+	if(autocompletionInput!=undefined)
+		autocompletionInput.keydown(function(event){
+			if(event.which == 27){
+				$(this).hide();
+			};
+		});	
+}
 
 function reply() {
 	showDiscussion();
@@ -57,9 +69,10 @@ function reply() {
 	}
 	
 	clone.show();
-	bindReferences();
 	form.find('textarea').TextAreaResizer();
 	
+	addAutocompletionToLinkBox(form);
+
 	scrollTo(REPLY_FORM_ID);
 	return false;
 }

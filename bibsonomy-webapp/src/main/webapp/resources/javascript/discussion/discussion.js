@@ -395,38 +395,7 @@ $(document).ready(function() {
 		return false;
 	});
 	
-	bindReferences();
-	
 	initCSLSugestions($("input.referenceAutocompletion"));
-
-});
-
-
-function bindReferences(){
-	$("a.addReference").click(function() {
-		var box= $(this).siblings("#linkbox");
-		box.show();
-		var input = box.find("input");
-		input.val("");
-		input.focus();
-		return false;
-	});
-
-	$("a.closeReference").click(function(){
-		var box= $(this).parent("#linkbox");
-		box.hide();
-		return false;
-	});
-	
-	$("input.referenceAutocompletion").keydown(function(event){
-		if(event.which == 27){
-			$(this).parent("#linkbox").hide();
-		};
-	});
-
-}
-
-$(document).ready(function(){
 
 });
 
