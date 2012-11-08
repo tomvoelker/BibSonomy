@@ -47,9 +47,11 @@
 		
 		<jsp:attribute name="sidebar">
 		    <script type="text/javascript">
+			<![CDATA[
 		    	function testDebugSphere(content) {
 			    	var test = content;
 		    	}
+			]]>
 			</script>
 			<ul>	
 			
