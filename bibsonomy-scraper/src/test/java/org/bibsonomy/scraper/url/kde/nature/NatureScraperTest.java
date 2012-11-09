@@ -45,5 +45,15 @@ public class NatureScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_45"));
 	}
+
+	/**
+	 * starts URL test with id url_231
+	 */
+	@Test
+	@Ignore
+	public void urlTest2Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_231"));
+	}
 		
 }

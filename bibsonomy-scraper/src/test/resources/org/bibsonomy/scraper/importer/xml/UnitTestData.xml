@@ -1401,5 +1401,11 @@
 		<BibFile>CoinsScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_231">
+		<TestDescription>test for nature.com</TestDescription>
+		<URL>http://www.nature.com/ncomms/journal/v3/n10/full/ncomms2132.html</URL>
+		<BibFile>NatureScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
