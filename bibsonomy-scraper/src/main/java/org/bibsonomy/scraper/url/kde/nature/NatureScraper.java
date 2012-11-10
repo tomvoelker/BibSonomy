@@ -24,11 +24,17 @@
 package org.bibsonomy.scraper.url.kde.nature;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.CookieManager;
+import java.net.HttpCookie;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -74,6 +80,7 @@ public class NatureScraper extends AbstractUrlScraper {
 	 * name from download link
 	 */
 	private static final String CITATION_DOWNLOAD_LINK_NAME = ">Export citation<";
+	private static final String CITATION_DOWNLOAD_LINK_NAME2 = ">Citation<";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -91,8 +98,9 @@ public class NatureScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		try {
+			
 			// get publication page
-			final String publicationPage = sc.getPageContent();
+			final String publicationPage = getPageContent(sc.getUrl());
 
 			// extract download citation link
 			final Matcher linkMatcher = linkPattern.matcher(publicationPage);
@@ -100,7 +108,7 @@ public class NatureScraper extends AbstractUrlScraper {
 				String link = linkMatcher.group();
 
 				// check if link is download link
-				if(link.contains(CITATION_DOWNLOAD_LINK_NAME)){
+				if(link.contains(CITATION_DOWNLOAD_LINK_NAME) || link.contains(CITATION_DOWNLOAD_LINK_NAME2)){
 
 					// get href attribute
 					final Matcher hrefMatcher = hrefPattern.matcher(link);
@@ -128,6 +136,28 @@ public class NatureScraper extends AbstractUrlScraper {
 			throw new PageNotSupportedException("Page not supported. Download URL is missing.");
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
+		}
+	}
+
+	private static String getPageContent(URL url) throws IOException {
+		HttpURLConnection con = null;
+		InputStream in = null;
+		try {
+			con = (HttpURLConnection) url.openConnection();
+			con.connect();
+			//sometimes the page is behind an gzip stream. this will be indicated by response code 401.
+			if (con.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+				in = new GZIPInputStream(con.getErrorStream());
+			} else {
+				in = con.getInputStream();
+			}
+			StringBuilder sb = WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(con.getContentType()));
+			return sb.toString();
+		} finally {
+			if (con != null) con.disconnect();
+			try {
+				if (in != null) in.close();
+			} catch (IOException ex) {}
 		}
 	}
 
