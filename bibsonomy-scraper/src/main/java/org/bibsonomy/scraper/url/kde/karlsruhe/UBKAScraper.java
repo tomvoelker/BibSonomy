@@ -142,7 +142,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 	 * @throws ScrapingException
 	 */
 	private String extractBibtexFromUBKA(final String pageContent) throws ScrapingException{
-		try{
+		try {
 			// replace all <br>
 			final Matcher m = UBKA_BIB_PATTERN.matcher(UBKA_BREAK_PATTERN.matcher(pageContent).replaceAll(""));	
 			if (m.matches()) { // we got the entry
