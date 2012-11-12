@@ -1,6 +1,6 @@
 /*
  * Switches options hide and show details
- * This is just a quick fix to have the messages in some js file
+ * TODO: This is just a quick fix to have the messages in some js file
  */
 $(function() {
 	$("a.hand").each(function(index, link) {
