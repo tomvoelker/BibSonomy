@@ -135,7 +135,14 @@ public class NatureScraper extends AbstractUrlScraper {
 			throw new InternalFailureException(ex);
 		}
 	}
-
+	/**
+	 * Gets the page content of a publication page. It can't be commonly applied since it violates
+	 * RFC 2616.
+	 * 
+	 * @param url The url to the publication page
+	 * @return the publication page as a String
+	 * @throws IOException
+	 */
 	private static String getPageContent(URL url) throws IOException {
 		HttpURLConnection con = null;
 		InputStream in = null;
