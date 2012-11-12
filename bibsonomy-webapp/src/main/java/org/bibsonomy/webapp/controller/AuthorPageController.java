@@ -14,12 +14,17 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * controller for author pages
+ *    - /author/<AUTHOR>
+ *    - /author/<AUTHOR>/<TAG(S)>
+ * 
  * @author daill
  * @version $Id$
  */
@@ -39,7 +44,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		if (!present(authorQuery)) {
 			throw new MalformedURLSchemeException("error.author_page_without_authorname");
 		}
-						
+		
 		// set grouping entity = ALL
 		final GroupingEntity groupingEntity = GroupingEntity.ALL;
 		
@@ -69,11 +74,14 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
 		
+		int totalNumPosts = 1;
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 
 			this.postProcessAndSortList(command, resourceType);
+			totalNumPosts += listCommand.getTotalCount();
 		}		
 		
 		// html format - retrieve tags and return HTML view
@@ -85,6 +93,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 			this.endTiming();
 			if (hasTags) {
 				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
+				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				return Views.AUTHORTAGPAGE;
 			}
 			return Views.AUTHORPAGE;			

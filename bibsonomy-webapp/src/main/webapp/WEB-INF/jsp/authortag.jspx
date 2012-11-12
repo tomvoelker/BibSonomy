@@ -13,18 +13,20 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout 
-		pageTitle="${command.pageTitle}" 
-		command="${command}" 
+	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
+	<fmt:message key="navi.author" var="authorPageTitle" />
+	<layout:resourceLayout
+		pageTitle="${authorPageTitle} :: ${command.requestedAuthor} :: ${command.requestedTags}"
+		command="${command}"
 		requPath="${requPath}"
-		minimizedContentWidth="${true}" >
-		
+		minimizedContentWidth="${true}"
+		disableResourcetypeSelection="${true}">
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.author" formAction="/author/${mtl:encodeURI(command.requestedAuthor)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.author" formAction="/author/${requestedAuthorEncoded}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<li>
 						:: <span itemscope="itemscope" itemtype="http://schema.org/Person">
-							<a href="/author/${mtl:encodeURI(command.requestedAuthor)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
+							<a href="/author/${requestedAuthorEncoded}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
 						</span>
 					</li>
 				</jsp:attribute>
