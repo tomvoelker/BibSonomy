@@ -32,6 +32,7 @@
 		</c:otherwise>
 	</c:choose>
 	
+	<!-- FIXME: move into html element -->
     <input id="publicInput" name="publicInput" value="${public}" type="hidden" />
 
 	<c:if test="${goldstandardPresent}">
