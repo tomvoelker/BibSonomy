@@ -25,10 +25,7 @@ package org.bibsonomy.scraper.url.kde.nature;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieManager;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
