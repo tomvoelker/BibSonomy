@@ -22,4 +22,14 @@ public class JNeurosciScraperTest {
 		assertTrue(runner.runSingleTest("url_232"));
 	}
 
+	/**
+	 * starts URL test with id url_233
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun() {
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_233"));
+	}
+
 }
