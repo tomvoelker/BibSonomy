@@ -42,10 +42,12 @@ public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	 */
 	@Override
 	public TokenStream tokenStream(String fieldName, Reader reader) { 
-		TokenStream result = new StandardTokenizer(Version.LUCENE_24, reader); 
-		result = new StandardFilter(result); 
-		result = new LowerCaseFilter(result); 
-		result = new StopFilter(true, result, getStopSet()); 
+		TokenStream result = new StandardTokenizer(Version.LUCENE_30, reader); 
+		result = new StandardFilter(Version.LUCENE_30, result); 
+		result = new LowerCaseFilter(Version.LUCENE_30, result); 
+		StopFilter sf = new StopFilter(Version.LUCENE_30, result, getStopSet());
+		sf.setEnablePositionIncrements(true);
+		result = sf;
 		result = new ASCIIFoldingFilter(result); 
 		return result; 
 	}

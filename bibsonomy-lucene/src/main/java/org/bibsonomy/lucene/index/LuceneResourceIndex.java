@@ -16,6 +16,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.StaleReaderException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
@@ -28,6 +30,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
+import org.apache.lucene.util.Version;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Resource;
@@ -118,7 +121,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	private Class<R> resourceClass;
 	
 	/** the maximum field length */
-	private IndexWriter.MaxFieldLength maxFieldLength;
+//	private IndexWriter.MaxFieldLength maxFieldLength;
 
 	
 	/**
@@ -639,7 +642,17 @@ public class LuceneResourceIndex<R extends Resource> {
 
 	protected void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
 		log.debug("Opening index " + this.indexPath + " for writing");
-		indexWriter = new IndexWriter(indexDirectory, this.analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
+//		Old, deprecated constructor call
+//		indexWriter = new IndexWriter(indexDirectory, this.analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
+		/* The old, deprecated IndexWriter constructor is replaced through the following 
+		 * three lines.
+		 * 1.) We now use a IndexWriterConfig object to set the version and
+		 *  the analyzer to use
+		 * 2.) Set the access mode. Append to the index an don't recreate it 
+		 * 3.) Create the IndexWriter with the IndexWriterConfig object*/
+		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_30, this.analyzer);
+		iwc.setOpenMode(OpenMode.APPEND);		
+		indexWriter = new IndexWriter(indexDirectory, iwc);
 		accessMode = AccessMode.WriteOnly;
 	}
 
@@ -820,19 +833,21 @@ public class LuceneResourceIndex<R extends Resource> {
 		this.baseIndexPath = baseIndexPath;
 	}
 	
-	/**
-	 * @return the maxFieldLength
-	 */
-	public IndexWriter.MaxFieldLength getMaxFieldLength() {
-		return maxFieldLength;
-	}
-
-	/**
-	 * @param maxFieldLength the maxFieldLength to set
-	 */
-	public void setMaxFieldLength(final IndexWriter.MaxFieldLength maxFieldLength) {
-		this.maxFieldLength = maxFieldLength;
-	}
+	/* This field is not supported anymore. This value is now controlled
+	 * via the analyzer */
+//	/**
+//	 * @return the maxFieldLength
+//	 */
+//	public IndexWriter.MaxFieldLength getMaxFieldLength() {
+//		return maxFieldLength;
+//	}
+//
+//	/**
+//	 * @param maxFieldLength the maxFieldLength to set
+//	 */
+//	public void setMaxFieldLength(final IndexWriter.MaxFieldLength maxFieldLength) {
+//		this.maxFieldLength = maxFieldLength;
+//	}
 
 	@Override
 	public String toString() {

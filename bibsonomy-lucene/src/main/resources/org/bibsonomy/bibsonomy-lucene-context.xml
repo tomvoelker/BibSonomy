@@ -44,17 +44,10 @@
 		<property name="resourceClass" ref="luceneGoldStandardPublicationClass" />
 	</bean>
 	
-	<!--+
-	    | lucene indexes 
-	    +-->
-	<bean id="luceneResourceIndexMaxFieldLength" class="org.bibsonomy.lucene.util.MaxFieldLengthFactoryBean">
-		<property name="maxFieldLength" value="${lucene.index.maxFieldLength}" />
-	</bean>
 	
 	<!-- abstract resource index -->
 	<bean id="luceneResourceIndex" class="org.bibsonomy.lucene.index.LuceneResourceIndex" abstract="true">
 		<property name="baseIndexPath" value="${lucene.index.basePath}" />
-		<property name="maxFieldLength" ref="luceneResourceIndexMaxFieldLength" />
 	</bean>
 	
 	<util:list id="bookmarkIndeces">

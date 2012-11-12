@@ -17,11 +17,14 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.TieredMergePolicy;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
+import org.apache.lucene.util.Version;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
@@ -191,7 +194,16 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		// create index, possibly overwriting existing index files
 		log.info("Creating empty lucene index...");
 		final Directory indexDirectory = FSDirectory.open(new File(this.resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX));
-		this.indexWriter = new IndexWriter(indexDirectory, this.resourceIndex.getAnalyzer(), true, this.resourceIndex.getMaxFieldLength());
+//		this.indexWriter = new IndexWriter(indexDirectory, this.resourceIndex.getAnalyzer(), true, this.resourceIndex.getMaxFieldLength());
+		/* The old, deprecated IndexWriter constructor is replaced through the following 
+		 * three lines.
+		 * 1.) We now use a IndexWriterConfig object to set the version and
+		 *  the analyzer to use
+		 * 2.) Set the access mode. Create a new one. Don't append 
+		 * 3.) Create the IndexWriter with the IndexWriterConfig object*/
+		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_30, this.resourceIndex.getAnalyzer());
+		iwc.setOpenMode(OpenMode.CREATE);
+		this.indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
 
 	/**
@@ -200,7 +212,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	protected void createIndexFromDatabase() throws CorruptIndexException, IOException {
+	public void createIndexFromDatabase() throws CorruptIndexException, IOException {
 		log.info("Filling index with database post entries.");
 
 		final ExecutorService executor = Executors.newFixedThreadPool(this.numberOfThreads);

@@ -15,8 +15,8 @@ import org.apache.lucene.document.FieldSelector;
 import org.apache.lucene.document.MapFieldSelector;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Scorer;
-import org.apache.lucene.search.Searcher;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Tag;
 
@@ -61,7 +61,7 @@ public class TagCountCollector extends Collector {
 	 * @param searcher index searcher for accessing documents
 	 * @return the tags and their corresponding counts from collected documents
 	 */
-	public List<Tag> getTags(final Searcher searcher) {
+	public List<Tag> getTags(final IndexSearcher searcher) {
 		final Map<String,Integer> tagCounter = new HashMap<String,Integer>();
 		
 		log.debug("Start extracting tags from index...");

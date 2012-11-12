@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
@@ -810,14 +810,17 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			// use lucene's new token stream api (see
 			// org.apache.lucene.analysis' javadoc at package level)
 			final TokenStream ts = this.analyzer.tokenStream(fieldName, new StringReader(param));
-			final TermAttribute termAtt = ts.addAttribute(TermAttribute.class);
+			/* This CharTermAttribute was formally the deprecated TermAttribute interface 
+			 * The main difference in this case is that we now obtain a char[] buffer for 
+			 * every term instead of a String object */
+			final CharTermAttribute termAtt = ts.addAttribute(CharTermAttribute.class);
 			ts.reset();
 
 			// analyze the parameter - that is: concatenate its normalized
 			// tokens
 			final StringBuilder analyzedString = new StringBuilder();
 			while (ts.incrementToken()) {
-				analyzedString.append(" ").append(termAtt.term());
+				analyzedString.append(" ").append(termAtt.buffer());
 			}
 
 			return analyzedString.toString().trim();
