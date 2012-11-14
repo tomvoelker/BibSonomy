@@ -21,4 +21,9 @@
 	<!-- renders the available export layouts as JSON -->	
 	<bean id="exportLayouts" class="org.bibsonomy.webapp.view.ExportLayoutView"/>
 
+	<bean id="oEmbed" class="org.bibsonomy.webapp.view.OEmbedView">
+		<property name="viewResolver" ref="viewResolver"/>
+	</bean>
+
+
 </beans>

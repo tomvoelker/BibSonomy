@@ -572,6 +572,10 @@ public enum Views implements View {
 	 * /csv/ pages rendered by the CSVView
 	 */
 	CSV("csv"),
+	/**
+	 * oEmbed, see http://www.oembed.org/
+	 */
+	OEMBED("oEmbed"),
 
 	/**
 	 * show the export page
@@ -681,6 +685,7 @@ public enum Views implements View {
 	 */
 	public static final String FORMAT_STRING_BIB = "bib";
 	public static final String FORMAT_STRING_CSL = "csl";
+	public static final String FORMAT_STRING_OEMBED = "oembed";
 	public static final String FORMAT_STRING_LAYOUT = "layout";
 	public static final String FORMAT_STRING_BURST = "burst";
 	public static final String FORMAT_STRING_APARSS = "aparss";
@@ -768,7 +773,8 @@ public enum Views implements View {
 		if ("tagcloud".equals(format)) return AJAX_TAGCLOUD;
 		if (FORMAT_STRING_CSV.equals(format)) return CSV;
 		if (FORMAT_STRING_CSL.equals(format)) return CSL;
-
+		if (FORMAT_STRING_OEMBED.equals(format)) return OEMBED;
+		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
 }
