@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.view;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
@@ -61,7 +63,7 @@ public class OEmbedView extends AbstractView implements ServletContextAware {
 //				dispatcher.include(request, swallowingResponse);
 
 				// alternative approach / try
-				final JstlView view = new JstlView("/WEB-INF/jsp/error.jspx");
+				final JstlView view = new JstlView("/WEB-INF/jsp/export/oembed.jspx");
 				view.setApplicationContext(getApplicationContext());
 				view.render(model, request, swallowingResponse);
 				
@@ -84,14 +86,20 @@ public class OEmbedView extends AbstractView implements ServletContextAware {
 				map.put("type", "rich");
 				map.put("width", "1000"); // TODO
 				map.put("height", "800"); // TODO
-				map.put("title", command.getPageTitle());
+				if (present(command.getPageTitle())) {
+					map.put("title", command.getPageTitle());
+				}
 				map.put("url", "TODO: how to get the URL?"); // TODO
 				map.put("provider_name", "TODO: use project.name"); // TODO
 				map.put("provider_url", "TODO: use project.home"); // TODO
 
 				map.put("html", sbuffer.toString());
 
+				// FIXME: is there a cleaner way to provide JSONP?
+				writer.write(command.getCallback() + "(");
 				writer.write(JSONSerializer.toJSON(map).toString());
+				writer.write(");");
+				
 				writer.close();
 
 			} catch(Exception e) {
