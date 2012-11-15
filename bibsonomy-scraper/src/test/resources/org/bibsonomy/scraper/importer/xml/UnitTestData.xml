@@ -1419,5 +1419,11 @@
 		<BibFile>JNeurosciScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jneurosci.JNeurosciScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_234">
+		<TestDescription>Test for BiologistsScraper</TestDescription>
+		<URL>http://dev.biologists.org/content/138/23/5067.short</URL>
+		<BibFile>BiologistsScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
