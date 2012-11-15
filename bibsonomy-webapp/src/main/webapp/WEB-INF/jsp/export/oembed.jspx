@@ -20,6 +20,14 @@
 
 	<c:set var="resdir" scope="application" value="/resources" />
 
+    <c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+    <c:set var="showPublication" value="${(showPublicationList or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
+    <c:set var="showBookmarkList" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+    <c:set var="showBookmark" value="${showBookmarkList or not empty addAsFirstBookmarksListItem }" />
+    <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
+    <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
+  
+
 	<!-- not valid XHTML, since only allowed in <head> -->
 <!--	<base href="${properties['project.home']}"/>-->
 	
@@ -28,20 +36,23 @@
 <!--	<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />-->
 	<link rel="stylesheet" type="text/css" href="${properties['project.home']}${resdir}/css/style.css" />
 
-
-	<resources:bookmarks listView="${command.bookmark}" 
-						loginUserName="${command.context.loginUser.name}" 
-						disableListNavigation="true" 
-						requPath="${requPath}" 
-						widthClassName="standard"
-		/>
-
-	<resources:bibtexs listView="${command.bibtex}" 
+	<c:if test="${not empty command.bookmark.list}">
+		<resources:bookmarks listView="${command.bookmark}" 
 						loginUserName="${command.context.loginUser.name}" 
 						disableListNavigation="false" 
 						requPath="${requPath}" 
-						widthClassName="standard"
+						widthClassName="${bookmarksWidthClass}"
 		/>
+	</c:if>
 
+
+	<c:if test="${not empty command.bibtex.list}">
+		<resources:bibtexs listView="${command.bibtex}" 
+						loginUserName="${command.context.loginUser.name}" 
+						disableListNavigation="false" 
+						requPath="${requPath}" 
+						widthClassName="${publicationsWidthClass}"
+		/>
+	</c:if>
 
 </jsp:root>
