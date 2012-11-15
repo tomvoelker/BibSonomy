@@ -21,8 +21,10 @@
 	<!-- renders the available export layouts as JSON -->	
 	<bean id="exportLayouts" class="org.bibsonomy.webapp.view.ExportLayoutView"/>
 
-	<bean id="oEmbed" class="org.bibsonomy.webapp.view.OEmbedView">
+	<bean id="oembed" class="org.bibsonomy.webapp.view.OEmbedView">
 		<property name="viewResolver" ref="viewResolver"/>
+		<property name="projectName" value="${project.name}"/>
+		<property name="projectHome" value="${project.home}"/>
 	</bean>
 
 

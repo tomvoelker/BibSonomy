@@ -575,7 +575,7 @@ public enum Views implements View {
 	/**
 	 * oEmbed, see http://www.oembed.org/
 	 */
-	OEMBED("oEmbed"),
+	OEMBED("oembed"),
 
 	/**
 	 * show the export page

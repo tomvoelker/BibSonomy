@@ -24,6 +24,8 @@ import org.springframework.web.servlet.view.JstlView;
 
 
 /**
+ * Implements oEmbed output according to http://oembed.com/
+ * 
  * For JSP rendering within Java, see 
  * http://technologicaloddity.com/2011/10/04/render-and-capture-the-output-of-a-jsp-as-a-string/
  * 
@@ -33,6 +35,8 @@ import org.springframework.web.servlet.view.JstlView;
 public class OEmbedView extends AbstractView implements ServletContextAware {
 
 	private ViewResolver viewResolver; // FIXME: unused
+	private String projectName;
+	private String projectHome;
 
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -63,15 +67,12 @@ public class OEmbedView extends AbstractView implements ServletContextAware {
 //				dispatcher.include(request, swallowingResponse);
 
 				// alternative approach / try
-				final JstlView view = new JstlView("/WEB-INF/jsp/export/oembed.jspx");
+				// FIXME: having WEB-INF and .jspx here is not nice - can't we use the viewResolver instead?
+				final JstlView view = new JstlView("/WEB-INF/jsp/export/oembed.jspx");  
 				view.setApplicationContext(getApplicationContext());
 				view.render(model, request, swallowingResponse);
-				
 
 				final StringBuffer sbuffer = sout.getBuffer();
-
-				System.out.println("wrote " + sbuffer.length() + " characters");
-
 
 				/*
 				 * output stream
@@ -82,17 +83,20 @@ public class OEmbedView extends AbstractView implements ServletContextAware {
 				final Map<String, String> map = new HashMap<String, String>();
 
 
-				map.put("version", "1.0");
 				map.put("type", "rich");
-				map.put("width", "1000"); // TODO
-				map.put("height", "800"); // TODO
+				map.put("version", "1.0");
 				if (present(command.getPageTitle())) {
 					map.put("title", command.getPageTitle());
 				}
-				map.put("url", "TODO: how to get the URL?"); // TODO
-				map.put("provider_name", "TODO: use project.name"); // TODO
-				map.put("provider_url", "TODO: use project.home"); // TODO
+				//map.put("author_name", "1000"); // TODO: could be used on /user pages
+				//map.put("author_url", "1000"); // TODO: could be used on /user pages
+				map.put("provider_name", projectName);
+				map.put("provider_url", projectHome); 
+				//map.put("cache_age", projectHome);
+				map.put("width", "1000"); // TODO
+				map.put("height", "800"); // TODO
 
+				// payload
 				map.put("html", sbuffer.toString());
 
 				// FIXME: is there a cleaner way to provide JSONP?
@@ -114,6 +118,14 @@ public class OEmbedView extends AbstractView implements ServletContextAware {
 
 	public void setViewResolver(final ViewResolver viewResolver) {
 		this.viewResolver = viewResolver;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public void setProjectHome(String projectHome) {
+		this.projectHome = projectHome;
 	}
 
 }

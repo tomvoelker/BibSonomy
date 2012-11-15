@@ -13,15 +13,35 @@
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-						<resources:bookmarks listView="${command.bookmark}" 
-							loginUserName="${command.context.loginUser.name}" 
-							disableListNavigation="true" 
-							requPath="${requPath}" 
-							widthClassName="standard"
-							/>
+	<c:set var="resdir" scope="application" value="/resources" />
+
+	<!-- not valid XHTML, since only allowed in <head> -->
+<!--	<base href="${properties['project.home']}"/>-->
+	
+	<!-- FIXME: does not work because stylesheet.main is always a relative path -->
+<!--	<spring:theme code="stylesheet.main" var="stylesheet_main" text="${properties['project.home']}${resdir}/css/style.css"/>-->
+<!--	<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />-->
+	<link rel="stylesheet" type="text/css" href="${properties['project.home']}${resdir}/css/style.css" />
+
+
+	<resources:bookmarks listView="${command.bookmark}" 
+						loginUserName="${command.context.loginUser.name}" 
+						disableListNavigation="true" 
+						requPath="${requPath}" 
+						widthClassName="standard"
+		/>
+
+	<resources:bibtexs listView="${command.bibtex}" 
+						loginUserName="${command.context.loginUser.name}" 
+						disableListNavigation="false" 
+						requPath="${requPath}" 
+						widthClassName="standard"
+		/>
+
 
 </jsp:root>
