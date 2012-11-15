@@ -30,6 +30,10 @@
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
 	
+
+	<!-- TODO: extract in separate JSP file? -->
+	<c:set var="resdir" scope="application" value="/resources" />
+
 	
 
     <!-- 
@@ -41,9 +45,6 @@
 	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
 	
-	<!-- TODO: extract in separate JSP file? -->
-	<c:set var="resdir" scope="application" value="/resources" />
-
 	
     <!-- 
       document starts here
