@@ -2878,4 +2878,19 @@ table.report td.value {
 	display:block;
 	padding-bottom:10px;
 }
-	
+
+#imgCollapseDiscussion {
+	padding: 0 5px 3px 4px;
+}
+
+#imgExpandDiscussion {
+	padding: 0 5px 3px 4px;
+}
+
+#imgExpandContent {
+	padding: 0 5px 1px 4px;
+}
+
+#imgCollapseContent {
+	padding: 0 5px 1px 4px;
+}

@@ -46,7 +46,10 @@
 		command="${command}" 
 		requPath="${requPath}" 
 		disableResourcetypeSelection="${true}"
-		showPageOptions="${false }">
+		showPageOptions="${false}"
+		resource="${bookmark}"
+		discussionBox="${true}"
+		minimizedContentWidth="${true}">
 		
 		<!--+
 			+ page heading
@@ -110,7 +113,7 @@
 			+ content heading
 			+ -->
 		<jsp:attribute name="discussion">
-			<div id="fscontent">
+			<div id="fscontent" style="margin-top: 10px;">
 				<discussion:singleResourceDiscussionLayout resource="${bookmark}" discussionItems="${command.discussionItems}" postUserName="${command.postOwner}"/>
 			</div>
 		</jsp:attribute>

@@ -169,6 +169,14 @@ ul.newMenu li a:hover {
 	margin-top: 3px;
 }
 
+#discussionMainMenu {
+	padding-top: 13px;
+}
+
+#noReviewInfo {
+	padding-top: 12px;
+} 
+
 .csl-entry {
 	margin-bottom: 5px;
 }

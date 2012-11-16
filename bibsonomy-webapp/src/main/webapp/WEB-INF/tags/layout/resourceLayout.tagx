@@ -34,7 +34,12 @@
 	<jsp:directive.attribute name="addAsFirstPublicationsListItem" fragment="true" required="false"/>
 	<jsp:directive.attribute name="addAsFirstBookmarksListItem" fragment="true" required="false"/>
 	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
+	
+	<!-- quick fix for discussion page -->
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
+	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
+	
 	
 	
 	<!--+	
@@ -95,108 +100,142 @@
 		<!--+
 			| header for resource lists and sidebar
 			+-->
-		<jsp:attribute name="headerContainer">
+		<jsp:attribute name="headerContainer">			
+
+			<c:if test="${discussionBox}">			
+		   		<!-- Headline -->
+		   		<span>
+			   		<a class="foldUnfold" href="div#discussion" style="font-size: 20px; margin: 0 auto;">
+			   			<img id="imgCollapseDiscussion" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
+				   		<img id="imgExpandDiscussion" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none;" />
+				   		<fmt:message key="post.resource.discussion.headline.title">
+			   				<fmt:param value="${mtl:cleanBibtex(resource.title)}"/>
+			   			</fmt:message>
+			   		</a>
+			   	</span>
+			</c:if>
 			
-			<jsp:invoke fragment="discussion" />
-			
-			<!-- bookmarks -->					
-			<div id="bookmarksheader" class="${bookmarksWidthClass}">								
-				<div id="bookmarkListConfig" class="${pageOptionsClass}">
-					<c:if test="${empty showPageOptions or showPageOptions == true }">					
-						<div id="bookmarkListOptions" class="listOptions">
-							<c:choose>
-								<c:when test="${not empty customPageOptions}">
-									<jsp:invoke fragment="customPageOptions"/>
-								</c:when>
-								<c:otherwise>
-									<rc:actions resourceType="bookmark" 
-										sortPage="${command.sortPage}" 
-										sortPageOrder="${command.sortPageOrder}" 
-										showBookmark="${showBookmark}" 
-										showPublication="${showPublication}" 
-										showInboxActions="${showInboxActions}" 
-										isBasket="${isBasket}"
-										disableListNavigation="${disableListNavigation}"
-										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-								</c:otherwise>
-							</c:choose>
-						</div>
-					</c:if>		
-				</div>
-				
-				<c:choose>
-					<c:when test="${headerHideable}">
-						<div class="headerLogo image bookmarks"><!--  --></div>
-						<h2 class="header ${bookmarksWidthClass}">
-							<a class="foldUnfold" href="div#hideableContent">
-								<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
-				   				<img id="imgExpandContent" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
-								<fmt:message key="bookmarks" />	
+						
+			<c:if test="${empty discussion}">
+				<!-- bookmarks -->					
+				<div id="bookmarksheader" class="${bookmarksWidthClass}">								
+					<div id="bookmarkListConfig" class="${pageOptionsClass}">
+						<c:if test="${empty showPageOptions or showPageOptions == true }">					
+							<div id="bookmarkListOptions" class="listOptions">
+								<c:choose>
+									<c:when test="${not empty customPageOptions}">
+										<jsp:invoke fragment="customPageOptions"/>
+									</c:when>
+									<c:otherwise>
+										<rc:actions resourceType="bookmark" 
+											sortPage="${command.sortPage}" 
+											sortPageOrder="${command.sortPageOrder}" 
+											showBookmark="${showBookmark}" 
+											showPublication="${showPublication}" 
+											showInboxActions="${showInboxActions}" 
+											isBasket="${isBasket}"
+											disableListNavigation="${disableListNavigation}"
+											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</c:if>		
+					</div>
+					
+					<c:choose>
+						<c:when test="${headerHideable}">
+							<div class="headerLogo image bookmarks"><!--  --></div>
+							<h2 class="header ${bookmarksWidthClass}">
+								<a class="foldUnfold" href="div#hideableContent">
+									<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
+					   				<img id="imgExpandContent" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
+									<fmt:message key="bookmarks" />	
+									<!-- Display total number of entries in list --> 
+									<c:if test="${!empty command.bookmark.list}">
+										<c:if test="${command.bookmark.totalCount != 0}">
+											<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+											${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
+										</c:if>
+									</c:if>
+								</a>								
+							</h2>
+						</c:when>
+						<c:otherwise>
+							<div class="headerLogo image bookmarks"><!--  --></div>
+							<h2 class="header ${bookmarksWidthClass}">
+								<c:choose>
+									<c:when test="${not empty customBookmarksHeaderText}">
+										<c:out value="${customBookmarksHeaderText}"/>
+									</c:when>
+									<c:otherwise>
+										<fmt:message key="bookmarks" />	
+									</c:otherwise>
+								</c:choose>
 								<!-- Display total number of entries in list --> 
 								<c:if test="${!empty command.bookmark.list}">
 									<c:if test="${command.bookmark.totalCount != 0}">
 										<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
 										${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
 									</c:if>
-								</c:if>
-							</a>								
-						</h2>
-					</c:when>
-					<c:otherwise>
-						<div class="headerLogo image bookmarks"><!--  --></div>
-						<h2 class="header ${bookmarksWidthClass}">
-							<c:choose>
-								<c:when test="${not empty customBookmarksHeaderText}">
-									<c:out value="${customBookmarksHeaderText}"/>
-								</c:when>
-								<c:otherwise>
-									<fmt:message key="bookmarks" />	
-								</c:otherwise>
-							</c:choose>
-							<!-- Display total number of entries in list --> 
-							<c:if test="${!empty command.bookmark.list}">
-								<c:if test="${command.bookmark.totalCount != 0}">
-									<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
-									${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
-								</c:if>
-							</c:if>								
-						</h2>
-				</c:otherwise>
-				</c:choose>
-			</div>
-			<!-- publications -->			
-			<div id="publicationsheader" class="${publicationsWidthClass}">
-				<div id="publicationListConfig" class="${pageOptionsClass}">
-					<c:if test="${empty showPageOptions or showPageOptions == true }">										
-						<div id="publicationListOptions" class="listOptions">
-							<c:choose>
-								<c:when test="${not empty customPageOptions}">
-									<jsp:invoke fragment="customPageOptions"/>
-								</c:when>
-								<c:otherwise>						
-									<rc:actions resourceType="bibtex" 
-										sortPage="${command.sortPage}" 
-										sortPageOrder="${command.sortPageOrder}" 
-										showBookmark="${showBookmark}" 
-										showPublication="${showPublication}" 
-										showInboxActions="${showInboxActions}" 
-										isBasket="${isBasket}"
-										disableListNavigation="${disableListNavigation}"
-										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-								</c:otherwise>
-							</c:choose>
-						</div>
-					</c:if>						
+								</c:if>								
+							</h2>
+					</c:otherwise>
+					</c:choose>
 				</div>
-				
-				<c:choose>
-					<c:when test="${headerHideable}">
+				<!-- publications -->			
+				<div id="publicationsheader" class="${publicationsWidthClass}">
+					<div id="publicationListConfig" class="${pageOptionsClass}">
+						<c:if test="${empty showPageOptions or showPageOptions == true }">										
+							<div id="publicationListOptions" class="listOptions">
+								<c:choose>
+									<c:when test="${not empty customPageOptions}">
+										<jsp:invoke fragment="customPageOptions"/>
+									</c:when>
+									<c:otherwise>						
+										<rc:actions resourceType="bibtex" 
+											sortPage="${command.sortPage}" 
+											sortPageOrder="${command.sortPageOrder}" 
+											showBookmark="${showBookmark}" 
+											showPublication="${showPublication}" 
+											showInboxActions="${showInboxActions}" 
+											isBasket="${isBasket}"
+											disableListNavigation="${disableListNavigation}"
+											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</c:if>						
+					</div>
+					
+					<c:choose>
+						<c:when test="${headerHideable}">
+								<div class="headerLogo image publications"><!--  --></div>
+							<h2 class="header ${publicationsWidthClass}">
+								<a class="foldUnfold" href="div#hideableContent">
+									<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
+				   					<img id="imgExpandContent" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
+									<fmt:message key="publications" />
+									<!-- Display total number of entries in list --> 
+									<c:if test="${!empty command.bibtex.list}">
+										<c:if test="${command.bibtex.totalCount != 0}">
+											<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
+											${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bibtex.totalCount})</span>
+										</c:if>
+									</c:if>				
+								</a>
+							</h2>
+						</c:when>
+						<c:otherwise>	
 							<div class="headerLogo image publications"><!--  --></div>
-						<h2 class="header ${publicationsWidthClass}">
-							<a class="foldUnfold" href="div#hideableContent">
-								<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
-			   					<img id="imgExpandContent" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
-								<fmt:message key="publications" />
+							<h2 class="header ${publicationsWidthClass}">
+								<c:choose>
+									<c:when test="${not empty customPublicationsHeaderText}">
+										<c:out value="${customPublicationsHeaderText}"/>
+									</c:when>
+									<c:otherwise>
+										<fmt:message key="publications" />
+									</c:otherwise>
+								</c:choose>
 								<!-- Display total number of entries in list --> 
 								<c:if test="${!empty command.bibtex.list}">
 									<c:if test="${command.bibtex.totalCount != 0}">
@@ -204,31 +243,11 @@
 										${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bibtex.totalCount})</span>
 									</c:if>
 								</c:if>				
-							</a>
-						</h2>
-					</c:when>
-					<c:otherwise>	
-						<div class="headerLogo image publications"><!--  --></div>
-						<h2 class="header ${publicationsWidthClass}">
-							<c:choose>
-								<c:when test="${not empty customPublicationsHeaderText}">
-									<c:out value="${customPublicationsHeaderText}"/>
-								</c:when>
-								<c:otherwise>
-									<fmt:message key="publications" />
-								</c:otherwise>
-							</c:choose>
-							<!-- Display total number of entries in list --> 
-							<c:if test="${!empty command.bibtex.list}">
-								<c:if test="${command.bibtex.totalCount != 0}">
-									<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
-									${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bibtex.totalCount})</span>
-								</c:if>
-							</c:if>				
-						</h2>
-					</c:otherwise>
-				</c:choose>
-			</div>
+							</h2>
+						</c:otherwise>
+					</c:choose>
+				</div>
+			</c:if>				
 		</jsp:attribute>	
 		
 			
@@ -259,6 +278,143 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
+		
+			<jsp:invoke fragment="discussion" />
+			
+			<c:if test="${not empty discussion}">
+				<!-- bookmarks -->					
+				<div id="bookmarksheader" class="${bookmarksWidthClass}">								
+					<div id="bookmarkListConfig" class="${pageOptionsClass}">
+						<c:if test="${empty showPageOptions or showPageOptions == true }">					
+							<div id="bookmarkListOptions" class="listOptions">
+								<c:choose>
+									<c:when test="${not empty customPageOptions}">
+										<jsp:invoke fragment="customPageOptions"/>
+									</c:when>
+									<c:otherwise>
+										<rc:actions resourceType="bookmark" 
+											sortPage="${command.sortPage}" 
+											sortPageOrder="${command.sortPageOrder}" 
+											showBookmark="${showBookmark}" 
+											showPublication="${showPublication}" 
+											showInboxActions="${showInboxActions}" 
+											isBasket="${isBasket}"
+											disableListNavigation="${disableListNavigation}"
+											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</c:if>		
+					</div>
+					
+					<c:choose>
+						<c:when test="${headerHideable}">
+							<div class="headerLogo image bookmarks"><!--  --></div>
+							<h2 class="header ${bookmarksWidthClass}">
+								<a class="foldUnfold" href="div#hideableContent">
+									<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
+					   				<img id="imgExpandContent" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
+									<fmt:message key="bookmarks" />	
+									<!-- Display total number of entries in list --> 
+									<c:if test="${!empty command.bookmark.list}">
+										<c:if test="${command.bookmark.totalCount != 0}">
+											<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+											${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
+										</c:if>
+									</c:if>
+								</a>								
+							</h2>
+						</c:when>
+						<c:otherwise>
+							<div class="headerLogo image bookmarks"><!--  --></div>
+							<h2 class="header ${bookmarksWidthClass}">
+								<c:choose>
+									<c:when test="${not empty customBookmarksHeaderText}">
+										<c:out value="${customBookmarksHeaderText}"/>
+									</c:when>
+									<c:otherwise>
+										<fmt:message key="bookmarks" />	
+									</c:otherwise>
+								</c:choose>
+								<!-- Display total number of entries in list --> 
+								<c:if test="${!empty command.bookmark.list}">
+									<c:if test="${command.bookmark.totalCount != 0}">
+										<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bookmark.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+										${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bookmark.totalCount})</span>
+									</c:if>
+								</c:if>								
+							</h2>
+					</c:otherwise>
+					</c:choose>
+				</div>
+				<!-- publications -->			
+				<div id="publicationsheader" class="${publicationsWidthClass}">
+					<div id="publicationListConfig" class="${pageOptionsClass}">
+						<c:if test="${empty showPageOptions or showPageOptions == true }">										
+							<div id="publicationListOptions" class="listOptions">
+								<c:choose>
+									<c:when test="${not empty customPageOptions}">
+										<jsp:invoke fragment="customPageOptions"/>
+									</c:when>
+									<c:otherwise>						
+										<rc:actions resourceType="bibtex" 
+											sortPage="${command.sortPage}" 
+											sortPageOrder="${command.sortPageOrder}" 
+											showBookmark="${showBookmark}" 
+											showPublication="${showPublication}" 
+											showInboxActions="${showInboxActions}" 
+											isBasket="${isBasket}"
+											disableListNavigation="${disableListNavigation}"
+											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</c:if>						
+					</div>
+					
+					<c:choose>
+						<c:when test="${headerHideable}">
+								<div class="headerLogo image publications"><!--  --></div>
+							<h2 class="header ${publicationsWidthClass}">
+								<a class="foldUnfold" href="div#hideableContent">
+									<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>
+				   					<img id="imgExpandContent" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none" />
+									<fmt:message key="publications" />
+									<!-- Display total number of entries in list --> 
+									<c:if test="${!empty command.bibtex.list}">
+										<c:if test="${command.bibtex.totalCount != 0}">
+											<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
+											${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bibtex.totalCount})</span>
+										</c:if>
+									</c:if>				
+								</a>
+							</h2>
+						</c:when>
+						<c:otherwise>	
+							<div class="headerLogo image publications"><!--  --></div>
+							<h2 class="header ${publicationsWidthClass}">
+								<c:choose>
+									<c:when test="${not empty customPublicationsHeaderText}">
+										<c:out value="${customPublicationsHeaderText}"/>
+									</c:when>
+									<c:otherwise>
+										<fmt:message key="publications" />
+									</c:otherwise>
+								</c:choose>
+								<!-- Display total number of entries in list --> 
+								<c:if test="${!empty command.bibtex.list}">
+									<c:if test="${command.bibtex.totalCount != 0}">
+										<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
+										${mtl:ch('nbsp')}<span title="${totalTitle}">(${command.bibtex.totalCount})</span>
+									</c:if>
+								</c:if>				
+							</h2>
+						</c:otherwise>
+					</c:choose>
+				</div>
+			</c:if>
+			
+		
 			<div id="hideableContent">
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->

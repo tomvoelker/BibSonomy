@@ -24,6 +24,8 @@
 			<c:set var="public" value="${true }"/>
 		</c:when>
 		<c:otherwise>
+			<!-- quick fix for discussion page -->
+			<c:set var="discussionBox" value="${true}"/>
 			<c:forEach var="group" items="${command.bibtex.list[0].groups}">
 				<c:if test="${group.name eq 'public'}">
 					<c:set var="public" value="${true}"/>
@@ -48,7 +50,10 @@
 			requPath="${requPath}" 
 			disableResourcetypeSelection="${true}"
 			showPageOptions="${false}"
-			customBookmarksHeaderText="${discussionsTitle}">		 	
+			customBookmarksHeaderText="${discussionsTitle}"
+			minimizedContentWidth="${true}"
+			resource="${publication}"
+			discussionBox="${discussionBox}">		 	
 			
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
