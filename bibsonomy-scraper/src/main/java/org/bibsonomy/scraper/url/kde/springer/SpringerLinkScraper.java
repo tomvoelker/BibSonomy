@@ -33,6 +33,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.ws.http.HTTPException;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -42,6 +49,8 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
+
+import bibtex.dom.BibtexEntry;
 
 
 
@@ -65,6 +74,9 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final Pattern YEAR_PATTERN_FOR_BIBTEX = Pattern.compile("(year[^\\{]*+\\{(.*?)\\})");
 	private static final Pattern YEAR_PATTERN_FOR_PAGE = Pattern.compile("(?s)<div class=\"secondary\">.*?((20|19)\\d{2}+).*?</div>");
 	
+	private static final Pattern EXPORT_LINK_PATTERN = Pattern.compile("href=\"(/export-citation/[^\"]++)\"");
+	private static final Pattern BIBTEX_LINK_PATTERN = Pattern.compile("class=\"bib\"[^>]*?href=\"([^\"]++)\"");
+	
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
 	private static final String SPRINGER_LINK_METAPRESS = "springerlink.metapress.com";
@@ -85,8 +97,82 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
+		final String url = sc.getUrl().toString();
+		
+		/*
+		 * SpringerLink has setup a redirect to a new improved site.
+		 * Let's see if we can scrape there first
+		 */
+		//get the publication page
+		HttpClient client = new HttpClient();
+		HttpMethod method = new GetMethod(url);
+		Matcher exportLinkMatcher;
 		try {
-			final String url = sc.getUrl().toString();
+			switch (client.executeMethod(method)) {
+			case HttpStatus.SC_OK:
+				exportLinkMatcher = EXPORT_LINK_PATTERN.matcher(method.getResponseBodyAsString());
+				break;
+				default:
+					throw new ScrapingException("Server returned response code " + method.getStatusCode() + " " +  method.getStatusText() + " for URL " + url);
+			}
+		} catch (IOException e) {
+			throw new ScrapingException(e);
+		} finally {
+			method.releaseConnection();
+		}
+		
+		//see if there is a export link on the publication page		
+		if (exportLinkMatcher.find()) {
+			//get the export panel page
+			Matcher bibFileMatcher;
+			try {
+				URI uri = new URI(method.getURI(), exportLinkMatcher.group(1), false);
+				method = new GetMethod();
+				method.setURI(uri);
+				switch (client.executeMethod(method)) {
+				case HttpStatus.SC_OK:
+					bibFileMatcher = BIBTEX_LINK_PATTERN.matcher(method.getResponseBodyAsString());
+					break;
+				default:
+					throw new ScrapingException("Server returned response code " + method.getStatusCode() + " " +  method.getStatusText() + " for URL " + url);
+				}
+			} catch (IOException e) {
+				throw new ScrapingException(e);
+			} catch (HTTPException e) {
+				throw new ScrapingException(e);
+			} finally {
+				method.releaseConnection();
+			}
+			//see if there is a BibTeX file offered on the export panel page
+			if (!bibFileMatcher.find()) throw new ScrapingException("No Link to BibTeX file found");
+			//download the BibTeX file now
+			try {
+				URI uri = new URI(method.getURI(), bibFileMatcher.group(1), false);
+				method = new GetMethod();
+				method.setURI(uri);
+				switch (client.executeMethod(method)) {
+				case HttpStatus.SC_OK:
+					String bibTeXResult = method.getResponseBodyAsString();
+					if (!present(bibTeXResult)) throw new ScrapingException("BibTeX file not present");
+					sc.setBibtexResult(bibTeXResult);
+					return true;
+				default:
+					throw new ScrapingException("Server returned response code " + method.getStatusCode() + " " +  method.getStatusText() + " for URL " + url);
+				}
+			} catch (IOException e) {
+				throw new ScrapingException(e);
+			} catch (HTTPException e) {
+				throw new ScrapingException(e);
+			} finally {
+				method.releaseConnection();
+			}
+		}
+
+		/*
+		 * There was export link found on the specified location.
+		 * Now try to scrape it the old SpringerLink way.
+		 */
+		try {
 			/*
 			 *  extract document ID
 			 */
@@ -111,7 +197,6 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			 * Without those form fields we don't get access to the BibTeX
 			 * entry.
 			 */
-
 			final Matcher sessionMatcher = SESSION_PATTERN.matcher(WebUtils.getCookies(new URL(url)));
 			if (!sessionMatcher.find()) throw new ScrapingException("No Session Cookie!");
 			final String cookies = "ASP.NET_SessionId=" + sessionMatcher.group(1) + "; CookiesSupported=True; highlighterEnabled=true; MUD=MP";
