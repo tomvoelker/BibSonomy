@@ -586,7 +586,7 @@
 	</URLTest>
 	<URLTest id="url_98">
 		<TestDescription>JStor Scraper url test</TestDescription>
-		<URL>http://www.jstor.org/action/exportSingleCitation?singleCitation=true&amp;suffix=4142852</URL>
+		<URL>https://www.jstor.org/action/exportSingleCitation?singleCitation=true&amp;doi=10.2307%2F20569359</URL>
 		<BibFile>JStorScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
 	</URLTest>
