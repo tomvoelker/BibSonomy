@@ -77,7 +77,7 @@ public class SpiresScraper extends AbstractUrlScraper{
 					if (!m.find()) {
 						Matcher m2 = BIBTEX_PATTERN.matcher(sc.getPageContent());
 						if (!m2.find()) throw new ScrapingFailureException("no download link found");
-						bibtexUrl = new URL(m2.group(1));
+						bibtexUrl = new URL(bibtexUrl, m2.group(1));
 					} else {
 						bibtexUrl = new URL(url.getProtocol() + "://" + url.getHost() + m.group(1));
 					}
