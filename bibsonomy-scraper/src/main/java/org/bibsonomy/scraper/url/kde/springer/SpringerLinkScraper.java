@@ -50,8 +50,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 
-import bibtex.dom.BibtexEntry;
-
 
 
 /** Scraper für SpringerLink.
@@ -79,6 +77,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
+	private static final String SPRINGER_CITATION_HOST_NEW = "link.springer.com";
 	private static final String SPRINGER_LINK_METAPRESS = "springerlink.metapress.com";
 
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
@@ -89,8 +88,8 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	static{
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST_COM), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST_DE), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST_NEW), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_LINK_METAPRESS), AbstractUrlScraper.EMPTY_PATTERN));
-
 	}
 
 	@Override
