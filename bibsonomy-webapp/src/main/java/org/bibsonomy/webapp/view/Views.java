@@ -564,6 +564,12 @@ public enum Views implements View {
 	 * list of some of our export formats in XML.
 	 */
 	UNAPI_SUPPORTED_FORMATS("export/bibtex/unapi"),
+	
+	/**
+	 * Provides a "raw" output of only the post list for embedding into other 
+	 * pages (e.g., using iframes). 
+	 */
+	EMBED("export/embed"),
 
 	/**
 	 * /layout/* pages which are rendered by JabRef
@@ -690,6 +696,7 @@ public enum Views implements View {
 	 */
 	public static final String FORMAT_STRING_BIB = "bib";
 	public static final String FORMAT_STRING_CSL = "csl";
+	public static final String FORMAT_STRING_EMBED = "embed";
 	public static final String FORMAT_STRING_OEMBED = "oembed";
 	public static final String FORMAT_STRING_LAYOUT = "layout";
 	public static final String FORMAT_STRING_BURST = "burst";
@@ -778,6 +785,7 @@ public enum Views implements View {
 		if ("tagcloud".equals(format)) return AJAX_TAGCLOUD;
 		if (FORMAT_STRING_CSV.equals(format)) return CSV;
 		if (FORMAT_STRING_CSL.equals(format)) return CSL;
+		if (FORMAT_STRING_EMBED.equals(format)) return EMBED;
 		if (FORMAT_STRING_OEMBED.equals(format)) return OEMBED;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
