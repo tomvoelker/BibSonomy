@@ -1133,7 +1133,7 @@ function startTagAutocompletion (textfield, isPost) {
 				success: function( data ) {
 					response( $.map( data.items, function( item ) {
 						return {
-							value: item.label,
+							value: item.label
 						};
 					}));
 				}
