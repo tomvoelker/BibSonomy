@@ -56,7 +56,6 @@
 				<script>
 					$(function() {
 						generateSphereDialog("${fn:escapeXml(command.requestedUser)}", "${ckey}", "linkButton", true, 0, "position2");
-
 					});
 				</script>
 			</c:if>
