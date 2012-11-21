@@ -30,131 +30,26 @@
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
 	
-
-	<!-- TODO: extract in separate JSP file? -->
-	<c:set var="resdir" scope="application" value="/resources" />
-
 	
-
-    <!-- 
-      set theme variables    
-     -->
-    <spring:theme code="stylesheet.main" var="stylesheet_main" text="${resdir}/css/style.css"/>
-	<spring:theme code="stylesheet.additional" var="additionalCSS" text=""/> 
-	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text=""/> 
-	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
-	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
-	
-	
-    <!-- 
-      document starts here
-     -->
+    <!--+
+    	| 
+      	| document starts here
+      	|
+     	+-->
 	<jsp:output omit-xml-declaration="true" />
 	<jsp:output doctype-root-element="html"	doctype-system="about:legacy-compat" />
   
 	<jsp:element name="html">
 		<jsp:body>
-			<head>
-				<meta http-equiv="X-UA-Compatible" content="IE=8" />
-				<meta charset="UTF-8" />
-				<!--+ 
-					| To have the locale available on all pages we set the scope to "request".
-					| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
-					|-->
-				<c:set var="locale" scope="request" value="${pageContext.response.locale}" />
-				<!--+
-					| At some places we need the complete path and query
-					+-->
-				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
-									
-				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
-				<c:if test="${not empty personalized and personalized == true}">
-					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
-				</c:if>
-							
-				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
-				<!--+
-					|
-					| JavaScript files 
-					| 
-				 	+-->
-				<!--+ 
-				 	| merged jquery.js, functions.js, style.js
-				 	| and jQuery plugins jquery.textarearesizer.js, jquery.corner.js
-					| 
-					| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
-				 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
-				 	+-->
-				<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
-				
-				<!-- some global vars; can be used in every js file -->
-				<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
-				<script type="text/javascript">
-						<![CDATA[
-							var projectName	= "${properties['project.name']}";
-							var ckey				= "${command.context.ckey}";
-							var currUser		= "${loginUser.name}";
-							var requUser		= ${(requestedUser ne '') ? requestedUserString : 'null'};
-							$(function() {
-								init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq});
-							});
-						]]>
-				</script>
-				<!-- localized JavaScript messages -->
-				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
-				<script type="text/javascript" src="${resdir}/javascript/systemmessage.js"><!-- keep me --></script>
-				<!-- include tooltip JavaScript only for users that have tooltips enabled -->
-				<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
-					<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
-				</c:if>
-				<!-- enable logging with user permission -->
-				<c:if test="${loginUser.settings.logLevel != 1}">
-				 <!--  <script type="text/javascript" src="${resdir}/javascript/logging.js"></script> -->
-				</c:if>
-				<!-- enable on-site spammer killing when user is admin -->
-				<c:if test="${loginUser.role eq 'ADMIN'}">
-				  <script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
-				</c:if>
 
-				<c:if test="${not empty additionalJS}">
-					<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
-				</c:if>
-				
-				<!--+
-					|
-					| Piwik
-					|
-					+--> 
-				<!-- TODO: Discuss where to store the piwik id and adress 
-					+ current: in theme files the whole piwik code ist stored
-					+ should (probably): code here/some js + id in config file
-					+-->
-				<spring:theme code="javascriptcode.piwik" var="piwikJS" text=""/> 
-				<c:if test="${not empty piwikJS}">
-					<c:out escapeXml="false" value="${piwikJS}" />
-				</c:if>
-				<!-- End Piwik Tracking Code --> 
+			<parts:htmlHead 
+			headerExt="${headerExt}" 
+			loginUser="${loginUser}"
+			requestedUser="${requestedUser}"
+			requPath="${requPath}"
+			pageTitle="${pageTitle}"
+			/>
 
-
-<!--				<meta name="email" content="${properties['project.email']}"/> -->
-				<parts:meta fieldName="author" />
-<!--				<parts:meta fieldName="copyright" /> -->
-				<parts:meta fieldName="keywords" />
-				<parts:meta fieldName="description" />
-				<!-- TODO: use feed links for bibsonomy in puma? -->
-				<link rel="alternate" type="application/atom+xml" title="${properties['project.name']} Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default" />
-				<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
-				<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
-				<jsp:invoke fragment="headerExt"/>
-
-				<c:if test="${not empty additionalCSS}">
-					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
-				</c:if>
-				<c:if test="${not empty additionalPrintCSS}">
-					<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" />
-				</c:if>
-
-			</head>
 			<body>
 				<c:if test="${not empty beforeMainContainer}">
 					<jsp:invoke fragment="beforeMainContainer"/>
