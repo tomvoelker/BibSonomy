@@ -39,10 +39,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -381,7 +383,58 @@ public class WebUtils {
 	public static String getContentAsString(final String url, final String cookie) throws IOException {
 		return getContentAsString(url, cookie, null, null);
 	}
-
+	/**
+	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
+	 * {@link HttpMethod}. If the HTTP status code is other than 200 HTTP OK null will be returned.
+	 * 
+	 * @param client The client to execute.
+	 * @param method The method to be executed.
+	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
+	 * @throws IOException 
+	 * @throws HttpException 
+	 */
+	public static String getContentAsString(HttpClient client, HttpMethod method) throws HttpException, IOException {
+		try {
+			switch (client.executeMethod(method)) {
+			case HttpStatus.SC_OK:
+				String charset = extractCharset(method.getResponseHeader(CONTENT_TYPE_HEADER_NAME).getValue());
+				return inputStreamToStringBuilder(method.getResponseBodyAsStream(), charset).toString();
+			default:
+				return null;
+			}
+		} finally {
+			method.releaseConnection();
+		}
+	}
+	/**
+	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
+	 * {@link URI}. It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}.
+	 * 
+	 * @param client The client to execute.
+	 * @param uri The URI to be requested.
+	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
+	 * @throws HttpException
+	 * @throws IOException
+	 */
+	public static String getContentAsString(HttpClient client, URI uri) throws HttpException, IOException {
+		HttpMethod method = new GetMethod();
+		method.setURI(uri);
+		return getContentAsString(client, method);
+	}
+	/**
+	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
+	 * URI as String. It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}.
+	 * 
+	 * @param client The client to execute.
+	 * @param uri The URI to be requested as String.
+	 * @return The response body as String if and only if the HTTP status code is 200 HTTP OK.
+	 * @throws HttpException
+	 * @throws IOException
+	 */
+	public static String getContentAsString(HttpClient client, String uri) throws HttpException, IOException {
+		HttpMethod method = new GetMethod(uri);
+		return getContentAsString(client, method);
+	}
 
 	/**
 	 * Sends a request to the given URL and checks, if it contains a redirect.
