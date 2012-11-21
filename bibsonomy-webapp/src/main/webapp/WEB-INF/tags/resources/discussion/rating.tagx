@@ -18,7 +18,7 @@
 			
 			<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox"/>
 			<c:if test="${post.resource.numberOfRatings eq 0}">
-				<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}?postOwner=${post.user.name}&amp;intraHash=${post.resource.intraHash}#discussionbox"/>
+				<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}?postOwner=${post.user.name}&amp;amp;intraHash=${post.resource.intraHash}#discussionbox"/>
 			</c:if>
 			<a href="${href}" title="${title}"> 
 				<review:reviewStars rating="${post.resource.rating}" dimension="0.75" /> 
