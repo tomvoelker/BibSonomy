@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
@@ -323,6 +324,17 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public Runnable onInboxMailDelete(final InboxParam deletedInboxMessageParam, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
 			this.executeRunnable(plugin.onInboxMailDelete(deletedInboxMessageParam, session));
+		}
+		return null;
+	}
+
+	@Override
+	/**
+	 * @author MarcelM
+	 */
+	public Runnable onBibTexExtraDelete(BibTexExtraParam deletedBibTexExtraParam, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			this.executeRunnable(plugin.onBibTexExtraDelete(deletedBibTexExtraParam, session));
 		}
 		return null;
 	}

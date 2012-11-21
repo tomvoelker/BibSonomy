@@ -3,6 +3,7 @@ package org.bibsonomy.database.plugin;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
@@ -148,6 +149,11 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 
 	@Override
 	public Runnable onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
+		return null;
+	}
+
+	@Override
+	public Runnable onBibTexExtraDelete(BibTexExtraParam deletedBibTexExtraParam, DBSession session) {
 		return null;
 	}
 }

@@ -11,6 +11,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibtexExtendedParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.extra.ExtendedField;
@@ -22,6 +23,7 @@ import org.bibsonomy.model.extra.ExtendedField;
 public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	private final static BibTexExtraDatabaseManager singleton = new BibTexExtraDatabaseManager();
+	private final DatabasePluginRegistry plugins; //mme
 	
 	/**
 	 * @return BibTexExtraDatabaseManager
@@ -31,8 +33,9 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private BibTexExtraDatabaseManager() {
+		this.plugins = DatabasePluginRegistry.getInstance(); //mme
 	}
-
+	
 	/**
 	 * Returns the URLs for a given publication.
 	 * 
@@ -47,6 +50,16 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		param.setHash(hash);
 		param.setUserName(username);
 		return this.queryForList("getBibTexExtraURL", param, BibTexExtra.class, session);
+	}
+	
+	/**
+	 * Returns the URLs for a given publication
+	 * 
+	 * @param contentId
+	 */
+	@SuppressWarnings("unchecked")
+	public List<BibTexExtra> getURL(final int contentId, final DBSession session) {
+		return (List<BibTexExtra>) this.queryForList("getBibTexExtraURL", contentId, session);
 	}
 
 	/**
@@ -73,6 +86,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void deleteURL(final String hash, final String username, final URL url, final DBSession session) {
 		final BibTexExtraParam param = this.buildURLParam(hash, username, url, null, session);
+		this.plugins.onBibTexExtraDelete(param, session);	//mme
 		this.delete("deleteBibTexExtraURL", param, session);
 	}
 

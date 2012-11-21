@@ -2,6 +2,7 @@ package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.DocumentParam;
@@ -67,6 +68,9 @@ public class Logging extends AbstractDatabasePlugin {
 				final BibTexParam param = new BibTexParam();
 				param.setRequestedContentId(contentId);
 				insert("logBibTex", param, session);
+				
+				//Logging of BibTexExtraURLs
+				insert("logBibTexURLs", param, session);
 			}
 		};
 	}
@@ -287,6 +291,17 @@ public class Logging extends AbstractDatabasePlugin {
 			@Override
 			public void run() {
 				insert("logInboxMessages", deletedInboxMessageParam, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
+		return new Runnable() {
+
+			@Override
+			public void run() {
+				insert("logBibTexURL", deletedBibTexExtraParam, session);
 			}
 		};
 	}

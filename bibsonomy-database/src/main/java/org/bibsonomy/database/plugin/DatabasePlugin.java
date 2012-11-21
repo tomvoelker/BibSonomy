@@ -2,6 +2,7 @@ package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
@@ -265,4 +266,13 @@ public interface DatabasePlugin {
 	 * @return
 	 */
 	public Runnable onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session);
+	
+	/**
+	 * called when a BibTexExtraURL will be deleted
+	 * 
+	 * @param deletedBibTexExtraParam
+	 * @param session
+	 * @author MarcelM
+	 */
+	public Runnable onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session); 
 }

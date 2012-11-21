@@ -45,6 +45,7 @@ DELETE FROM `inbox_tas`;
 DELETE FROM `inetAddressStates`;
 DELETE FROM `ldapUser`;
 DELETE FROM `log_bibtex`;
+DELETE FROM `log_bibtexurls`;
 DELETE FROM `log_bookmark`;
 DELETE FROM `log_gold_standard`;
 DELETE FROM `log_gold_standard_publication_references`;

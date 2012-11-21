@@ -2,7 +2,19 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Logging">
-
+	
+	<insert id="logBibTexURL" parameterClass="bibtexExtraParam">
+		INSERT INTO log_bibtexurls (content_id, url, text, `group`, date)
+		SELECT content_id, url, text, `group`, date
+		FROM bibtexurls WHERE content_id = #requestedContentId# AND url = #bibtexExtra.url#
+	</insert>
+	
+	<insert id="logBibTexURLs" parameterClass="bibtexParam">
+		INSERT INTO log_bibtexurls (content_id, url, text, `group`, date)
+		SELECT content_id, url, text, `group`, date
+		FROM bibtexurls WHERE #requestedContentId# = content_id
+	</insert>
+	
 	<insert id="logBibTex" parameterClass="bibtexParam">
 		INSERT INTO log_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
 		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
