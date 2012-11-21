@@ -12,6 +12,8 @@
 # e.g., "make gromit" deploys to gromit.
 #
 # Changes:
+# 2012-11-21 (rja):
+# - migrated maven goals to new tomcat plugin, see http://tomcat.apache.org/maven-plugin-2.0/context-goals.html
 # 2011-04-08 (rja):
 # - deployments to joe are also send out via e-mail
 # 2010-05-27 (dbe):
@@ -99,7 +101,7 @@ puma: ssh_puma document mvn_deploy mail
 # deploy to tomcat server
 #
 mvn_deploy: clean
-	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip tomcat:undeploy tomcat:deploy | ${TEE} -a ${TMPLOG}
+	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip tomcat6:redeploy | ${TEE} -a ${TMPLOG}
 
 #
 # send notification mail
