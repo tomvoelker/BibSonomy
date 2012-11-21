@@ -1289,9 +1289,6 @@ div.help>a,div.help>b {
 	font-weight: bold;
 }
 
-.post .ptitle {
-}
-
 .post .ptitle a {
 	color: #000;
 }
@@ -1352,7 +1349,6 @@ Most actions appear in three ways
 	bottom: 1ex;
 	left: 116px;
 	background-color: inherit;
-	
 }
 
 .post .action .item, #resultlist .item, #pageOptions .item {
