@@ -27,6 +27,18 @@
 			<parts:htmlHead requPath="${requPath}" pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="headerExt">
 					<base href="${properties['project.home']}embed/"/>
+					<style type="text/css">
+						.post .image, .post .overlay {
+							display: block;
+						}
+						.post .metaContainer {
+							margin-left: 110px;
+							margin-right: 14px;
+						}						
+						.post .action {
+							left: 116px;
+						}
+					</style>
 				</jsp:attribute>
 			</parts:htmlHead>
 
@@ -37,7 +49,7 @@
 		    <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
 		    <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
-			<body>
+			<body style="min-width:0px;">
 			
 				<c:if test="${not empty command.bookmark.list}">
 					<resources:bookmarks listView="${command.bookmark}" 
