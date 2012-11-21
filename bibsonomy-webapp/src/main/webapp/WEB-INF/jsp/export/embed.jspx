@@ -24,7 +24,11 @@
 	<jsp:element name="html">
 		<jsp:body>
 
-			<parts:htmlHead requPath="${requPath}" pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}"/>
+			<parts:htmlHead requPath="${requPath}" pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}">
+				<jsp:attribute name="headerExt">
+					<base href="${properties['project.home']}embed/"/>
+				</jsp:attribute>
+			</parts:htmlHead>
 
 		    <c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
 		    <c:set var="showPublication" value="${(showPublicationList or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
@@ -34,14 +38,6 @@
 		    <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
 			<body>
-			
-				<!-- not valid XHTML, since only allowed in <head> -->
-				<!--	<base href="${properties['project.home']}"/>-->
-				
-				<!-- FIXME: does not work because stylesheet.main is always a relative path -->
-				<!--	<spring:theme code="stylesheet.main" var="stylesheet_main" text="${properties['project.home']}${resdir}/css/style.css"/>-->
-				<!--	<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />-->
-				<link rel="stylesheet" type="text/css" href="${properties['project.home']}${resdir}/css/style.css" />
 			
 				<c:if test="${not empty command.bookmark.list}">
 					<resources:bookmarks listView="${command.bookmark}" 
