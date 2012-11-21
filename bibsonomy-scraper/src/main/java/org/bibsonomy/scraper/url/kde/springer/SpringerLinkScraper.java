@@ -33,12 +33,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.ws.http.HTTPException;
-
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -102,73 +98,42 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		 * SpringerLink has setup a redirect to a new improved site.
 		 * Let's see if we can scrape there first
 		 */
-		//get the publication page
-		HttpClient client = new HttpClient();
-		HttpMethod method = new GetMethod(url);
-		Matcher exportLinkMatcher;
 		try {
-			switch (client.executeMethod(method)) {
-			case HttpStatus.SC_OK:
-				exportLinkMatcher = EXPORT_LINK_PATTERN.matcher(method.getResponseBodyAsString());
-				break;
-				default:
-					throw new ScrapingException("Server returned response code " + method.getStatusCode() + " " +  method.getStatusText() + " for URL " + url);
+			//get the publication page
+			HttpClient client = new HttpClient();
+			GetMethod method = new GetMethod(url);
+			String page = WebUtils.getContentAsString(client, method);
+			
+			//had the server returned response code 200?
+			if (page == null) throw new ScrapingException("Server didn't return response code 200 for URL " + method.getURI());
+			
+			//see if there is a export link on the publication page		
+			Matcher exportLinkMatcher = EXPORT_LINK_PATTERN.matcher(page);
+			if (exportLinkMatcher.find()) {
+				//get the export panel page
+				HttpURL uri = new HttpURL(method.getURI().getHost(), method.getURI().getPort(), exportLinkMatcher.group(1));
+				String panel = WebUtils.getContentAsString(client, uri);
+				
+				//had the server returned response code 200?
+				if (panel == null) throw new ScrapingException("Server didn't return response code 200 for URL " + uri);
+					
+				//see if there is a BibTeX file offered on the export panel page
+				Matcher bibFileMatcher = BIBTEX_LINK_PATTERN.matcher(panel);
+				if (!bibFileMatcher.find()) throw new ScrapingException("No Link to BibTeX file found");
+				
+				//download the BibTeX file now
+				uri = new HttpURL(uri, bibFileMatcher.group(1));
+				String bibTeXResult = WebUtils.getContentAsString(client, uri);
+				if (!present(bibTeXResult)) throw new ScrapingException("BibTeX file not present");
+				sc.setBibtexResult(bibTeXResult);
+				return true;
 			}
 		} catch (IOException e) {
 			throw new ScrapingException(e);
-		} finally {
-			method.releaseConnection();
-		}
-		
-		//see if there is a export link on the publication page		
-		if (exportLinkMatcher.find()) {
-			//get the export panel page
-			Matcher bibFileMatcher;
-			try {
-				URI uri = new URI(method.getURI(), exportLinkMatcher.group(1), false);
-				method = new GetMethod();
-				method.setURI(uri);
-				switch (client.executeMethod(method)) {
-				case HttpStatus.SC_OK:
-					bibFileMatcher = BIBTEX_LINK_PATTERN.matcher(method.getResponseBodyAsString());
-					break;
-				default:
-					throw new ScrapingException("Server returned response code " + method.getStatusCode() + " " +  method.getStatusText() + " for URL " + url);
-				}
-			} catch (IOException e) {
-				throw new ScrapingException(e);
-			} catch (HTTPException e) {
-				throw new ScrapingException(e);
-			} finally {
-				method.releaseConnection();
-			}
-			//see if there is a BibTeX file offered on the export panel page
-			if (!bibFileMatcher.find()) throw new ScrapingException("No Link to BibTeX file found");
-			//download the BibTeX file now
-			try {
-				URI uri = new URI(method.getURI(), bibFileMatcher.group(1), false);
-				method = new GetMethod();
-				method.setURI(uri);
-				switch (client.executeMethod(method)) {
-				case HttpStatus.SC_OK:
-					String bibTeXResult = method.getResponseBodyAsString();
-					if (!present(bibTeXResult)) throw new ScrapingException("BibTeX file not present");
-					sc.setBibtexResult(bibTeXResult);
-					return true;
-				default:
-					throw new ScrapingException("Server returned response code " + method.getStatusCode() + " " +  method.getStatusText() + " for URL " + url);
-				}
-			} catch (IOException e) {
-				throw new ScrapingException(e);
-			} catch (HTTPException e) {
-				throw new ScrapingException(e);
-			} finally {
-				method.releaseConnection();
-			}
 		}
 
 		/*
-		 * There was export link found on the specified location.
+		 * There was no export link found on the specified location.
 		 * Now try to scrape it the old SpringerLink way.
 		 */
 		try {
