@@ -14,6 +14,11 @@
 # Changes:
 # 2012-11-21 (rja):
 # - migrated maven goals to new tomcat plugin, see http://tomcat.apache.org/maven-plugin-2.0/context-goals.html
+# 2011-12-06 (dbe):
+# - added two new deploy locations (slave_wuerzburg, slave_kassel
+#   including email notification; removed old ones (joe, wuerzburg, odie)
+# 2011-10-04 (rja):
+# - deployments to wuerzburg are also send out via e-mail
 # 2011-04-08 (rja):
 # - deployments to joe are also send out via e-mail
 # 2010-05-27 (dbe):
@@ -81,15 +86,19 @@ test:
 # the main system: document and archive
 #
 gandalf: document mvn_deploy mail archive
-
-gromit: mvn_deploy 
-
-
-# TODO: document/mail/archive, too?
-odie: mvn_deploy
-joe: document mvn_deploy mail
-
+#
+# test system (just deploy)
+#
+gromit: mvn_deploy
+#
+# slave systems: document, deploy, email
+# 
+slave_kassel: document mvn_deploy mail
+slave2_kassel: document mvn_deploy mail
+slave_wuerzburg: document mvn_deploy mail
+#
 # when deploying to puma, we first need to open an ssh connection 
+#
 puma: ssh_puma document mvn_deploy mail
 
 
