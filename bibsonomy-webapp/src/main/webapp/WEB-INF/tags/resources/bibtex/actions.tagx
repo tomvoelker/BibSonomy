@@ -11,32 +11,6 @@
 
 
 	<!--+
-		| PICK / UNPICK 
-		+-->
-	<c:set var="pickUnpick" value="pick"/>
-	<c:if test="${post.picked}">
-		<c:set var="pickUnpick" value="unpick"/>
-	</c:if>
-
-	<c:choose>
-		<c:when test="${command.context.userLoggedIn}">
-			<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost">
-				<c:param name="hash" value="${post.resource.intraHash}" />
-				<c:param name="user" value="${post.user.name}" />
-				<c:param name="ckey" value="${ckey}" />
-				<c:param name="action" value="${pickUnpick}"/>
-			</c:url>
-			<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
-			<a class="item ${pickUnpick}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}"><!-- Keep Me --></a>
-		</c:when>
-		<c:otherwise>
-			<fmt:message key="bibtex.actions.pick.inactive" var="pickUnpickTitle"/>
-			<span class="item i${pickUnpick}" title="${pickUnpickTitle}"><!-- Keep Me --></span>
-		</c:otherwise>
-	</c:choose>			
-
-
-	<!--+
 		| COPY/EDIT
 		+-->
 	<c:choose>
@@ -143,6 +117,31 @@
 		</c:if>
 	</c:if>	
 
+
+	<!--+
+		| PICK / UNPICK 
+		+-->
+	<c:set var="pickUnpick" value="pick"/>
+	<c:if test="${post.picked}">
+		<c:set var="pickUnpick" value="unpick"/>
+	</c:if>
+
+	<c:choose>
+		<c:when test="${command.context.userLoggedIn}">
+			<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost">
+				<c:param name="hash" value="${post.resource.intraHash}" />
+				<c:param name="user" value="${post.user.name}" />
+				<c:param name="ckey" value="${ckey}" />
+				<c:param name="action" value="${pickUnpick}"/>
+			</c:url>
+			<fmt:message key="bibtex.actions.${pickUnpick}.title" var="pickUnpickTitle"/>
+			<a class="item ${pickUnpick}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}"><!-- Keep Me --></a>
+		</c:when>
+		<c:otherwise>
+			<fmt:message key="bibtex.actions.pick.inactive" var="pickUnpickTitle"/>
+			<span class="item i${pickUnpick}" title="${pickUnpickTitle}"><!-- Keep Me --></span>
+		</c:otherwise>
+	</c:choose>		
 
 	<!--+
 		| RESOURCE LINKS (URL, DOI, BIBTEX, OPEN URL)
