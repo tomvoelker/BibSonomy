@@ -124,7 +124,9 @@ public class CslModelConverter {
 		rec.setAbstractt(cleanBibTex(bib.getAbstract()));
 		rec.setCitation_label(cleanBibTex(bib.getBibtexKey()));
 		rec.setCollection_title(cleanBibTex(bib.getBooktitle()));
-		rec.setContainer_title(cleanBibTex(bib.getBooktitle()));
+		
+		//Does not make sense, matching not correct. (sbo)
+		//rec.setContainer_title(cleanBibTex(bib.getBooktitle()));
 		rec.setDOI(cleanBibTex(bib.getMiscField("doi")));
 		rec.setEvent_place(cleanBibTex(bib.getAddress()));
 		rec.setISBN(cleanBibTex(bib.getMiscField("isbn")));
