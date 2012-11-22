@@ -76,7 +76,7 @@
 					| and do not contain parameters. 
 					|
 					| For all other URLs, the attribute target="_top" is added, 
-					| such a click on them leaves a surrounding frame.  
+					| such that a click on them leaves the surrounding frame.  
 					|
 					+-->
 				<script type="text/javascript">
