@@ -15,7 +15,7 @@
 	<!-- schema.org Markup: Reviews have authors, but Comments have creators -->
 
 
-	<div class="${class} info" data-username="${discussionItem.user.name}" data-discussionItemHash="${discussionItem.hash}">
+	<div class="${class} info" data-username="${discussionItem.user.name}" data-discussion-item-hash="${discussionItem.hash}">
 
 	<!-- WARNING: Due to the schema.org markup switch code is doubled in this switch -->
 		<c:choose>

@@ -281,7 +281,7 @@ function updateHash(element, newHash) {
 
 // TODO: rename function
 function getInterHash() {
-	return $(DISCUSSION_SELECTOR).data("interHash");
+	return $(DISCUSSION_SELECTOR).data("interhash");
 }
 
 // TODO: rename function
@@ -404,7 +404,7 @@ function initCSLSugestions(el) {
 		source: function( request, response ) {
 
 			$.ajax({
-				url: "/json/tag/" + createParameters(request.term),
+				url: "http://www.biblicious.org/json/tag/" + createParameters(request.term),
 				data: {items: 10,resourcetype: 'publication', duplicates: 'no'},
 				dataType: "jsonp",
 				success: function( data ) {
@@ -415,7 +415,8 @@ function initCSLSugestions(el) {
 							url: 'hash='+item.intraHash+'&user='+item.user+'&copytag='+item.tags,
 							author: (concatArray(item.author, 40, ' '+getString('and')+' ')),
 							user: item.user,
-							tags: item.tags
+							tags: item.tags,
+							selectValue: item.label+', ('+ item.year+ ')'
 						};
 					}));
 				}
@@ -425,7 +426,7 @@ function initCSLSugestions(el) {
 		select: function( event, ui ) {
 			var item = ui.item;
 			var textArea = $(event.target);
-			var text = "[[publication/" + item.value + "/" + item.user + "]]";
+			var text = item.selectValue;
 			textArea.val(text);
 			textArea.select();
 			return false;
@@ -460,3 +461,11 @@ function highlightMatch(text, term) {
 	return text.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
 };
 
+function setGroupBoxValueAs(element) {
+	var name = (["public","private","other"])[element.selectedIndex];
+	var siblings = $(element).siblings("input[name='abstractGrouping']");
+	for(var i = 0; i < siblings.length; i++) {
+		if(siblings[i].checked)	siblings[i].checked=false;
+		if(siblings[i].value==name)	siblings[i].checked=true;
+	}
+}

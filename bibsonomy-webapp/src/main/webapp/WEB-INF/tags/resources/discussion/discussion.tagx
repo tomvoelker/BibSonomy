@@ -65,7 +65,7 @@
 		</div>
 	
  	  	<!-- The input forms -->
- 	  	<div id="discussion" data-interHash="${resource.interHash}">
+ 	  	<div id="discussion" data-interhash="${resource.interHash}">
 	    	<!-- TODO: use spring security tags -->
 		    <c:if test="${command.context.userLoggedIn}">
 		    	<!-- review and comment forms -->
