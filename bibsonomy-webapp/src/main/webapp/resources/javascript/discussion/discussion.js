@@ -404,7 +404,7 @@ function initCSLSugestions(el) {
 		source: function( request, response ) {
 
 			$.ajax({
-				url: "http://www.biblicious.org/json/tag/" + createParameters(request.term),
+				url: "/json/tag/" + createParameters(request.term),
 				data: {items: 10,resourcetype: 'publication', duplicates: 'no'},
 				dataType: "jsonp",
 				success: function( data ) {
@@ -415,8 +415,7 @@ function initCSLSugestions(el) {
 							url: 'hash='+item.intraHash+'&user='+item.user+'&copytag='+item.tags,
 							author: (concatArray(item.author, 40, ' '+getString('and')+' ')),
 							user: item.user,
-							tags: item.tags,
-							selectValue: item.label+', ('+ item.year+ ')'
+							tags: item.tags
 						};
 					}));
 				}
@@ -426,7 +425,7 @@ function initCSLSugestions(el) {
 		select: function( event, ui ) {
 			var item = ui.item;
 			var textArea = $(event.target);
-			var text = item.selectValue;
+			var text = "[[publication/" + item.value + "/" + item.user + "]]";
 			textArea.val(text);
 			textArea.select();
 			return false;
@@ -461,11 +460,3 @@ function highlightMatch(text, term) {
 	return text.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
 };
 
-function setGroupBoxValueAs(element) {
-	var name = (["public","private","other"])[element.selectedIndex];
-	var siblings = $(element).siblings("input[name='abstractGrouping']");
-	for(var i = 0; i < siblings.length; i++) {
-		if(siblings[i].checked)	siblings[i].checked=false;
-		if(siblings[i].value==name)	siblings[i].checked=true;
-	}
-}
