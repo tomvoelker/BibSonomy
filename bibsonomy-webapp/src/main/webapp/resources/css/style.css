@@ -1621,7 +1621,7 @@ form.editTags input[type=text] {
 }
 
 
-#bookmarksheader .header, #publicationsheader .header, #panelheader .header {
+#bookmarksheader .header, #publicationsheader .header, #panelheader .header, #headercontainer .header {
 	text-transform: uppercase;
 	color: #006699;
 	font-weight: bold;
@@ -2697,7 +2697,7 @@ table.report td.value {
 		overflow: visible;
 		bottom: auto;
 		position: static;
-		background-color: #E4E4E4;
+		background-color: #FFFFFF;
 	}
 	
 	#navigation > ul {

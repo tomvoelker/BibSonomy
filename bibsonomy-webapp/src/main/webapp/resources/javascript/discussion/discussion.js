@@ -352,7 +352,11 @@ $(function(){
 	if(hash=="#discussionbox" && !gsPresent) {
 		$("#hideableContent").hide();
 		$("#imgExpandDsicussion").hide();
-		$("#imgCollapseDiscussion").show();		
+		$("#imgCollapseDiscussion").show();
+		
+		$("#textExpandDsicussion").hide();
+		$("#textCollapseDiscussion").show();		
+
 		
 		$(".imgCollapse").each(function(){
 			if($(this).attr("id") == "imgCollapseContent") {
@@ -370,6 +374,8 @@ $(function(){
 		$("div#discussion").hide();
 		$("#imgExpandDiscussion").show();
 		$("#imgCollapseDiscussion").hide();
+		$("#textExpandDiscussion").show();
+		$("#textCollapseDiscussion").hide();
 		$("#imgExpandContent").hide();
 		$("#imgCollapseContent").show();
 		
