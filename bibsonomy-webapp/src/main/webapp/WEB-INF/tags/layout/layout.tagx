@@ -223,6 +223,23 @@
 						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
 					</c:if>
 				</div>
+				
+				<!--+
+					|
+					| Piwik
+					|
+					+--> 
+				<!-- TODO: Discuss where to store the piwik id and adress 
+					+ current: in theme files the whole piwik code ist stored
+					+ should (probably): code here/some js + id in config file
+					+-->
+				<spring:theme code="javascriptcode.piwik" var="piwikJS" text=""/> 
+				<c:if test="${not empty piwikJS}">
+					<c:out escapeXml="false" value="${piwikJS}" />
+				</c:if>
+				<!-- End Piwik Tracking Code --> 
+				
+				
 			</body>			
 		</jsp:body>
 	</jsp:element>
