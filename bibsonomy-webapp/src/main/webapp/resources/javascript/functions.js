@@ -707,10 +707,6 @@ function editTags() {
 				var submit = $("<input type='submit' class='postTagButton' value='" + getString("post.meta.edit") + "'/>");
 				form.append(input).append(submit);
 				/*
-				 * start the tag autocompletion
-				 */
-				startTagAutocompletion(input, true);
-				/*
 				 * resize input field
 				 */
 //				input.width(parseInt(ptags.width()) + "px");
@@ -718,6 +714,10 @@ function editTags() {
 				 * show form
 				 */
 				ptags.after(form);
+				/*
+				 * start the tag autocompletion
+				 */
+				startTagAutocompletion(input, true);
 				/*
 				 * add submit handler (that removes the form and re-builds the tags)
 				 */
