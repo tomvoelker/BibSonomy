@@ -1444,7 +1444,7 @@ Most actions appear in three ways
 	padding-right: 0.5ex;
 }
 
-.post .ptags>ul.tags {
+.post .ptags ul.tags {
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
