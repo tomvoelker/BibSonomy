@@ -128,7 +128,9 @@
 	 	
 		<jsp:attribute name="discussion">
 			<c:if test="${not goldstandardPresent}">
-				<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
+				<div id="fscontent" style="margin-top: 10px;">			
+					<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
+				</div>
 			</c:if>
 			<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
 		</jsp:attribute>

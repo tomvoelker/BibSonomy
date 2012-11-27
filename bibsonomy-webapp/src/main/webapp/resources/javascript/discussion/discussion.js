@@ -351,12 +351,12 @@ $(function(){
 	var gsPresent = ($("#gs_present").val()=="true");
 	if(hash=="#discussionbox" && !gsPresent) {
 		$("#hideableContent").hide();
-		$("#imgExpandDsicussion").hide();
+		$("#imgExpandDiscussion").hide();
 		$("#imgCollapseDiscussion").show();
 		
-		$("#textExpandDsicussion").hide();
+		$("#textExpandDiscussion").hide();
 		$("#textCollapseDiscussion").show();		
-
+		
 		
 		$(".imgCollapse").each(function(){
 			if($(this).attr("id") == "imgCollapseContent") {
@@ -370,6 +370,9 @@ $(function(){
 			}
 		});
 		
+		//Fix to redefine the Sidebar height
+		$('#sidebar').height($('#postcontainer').height() + 11);		
+		
 	} else if (!gsPresent){
 		$("div#discussion").hide();
 		$("#imgExpandDiscussion").show();
@@ -379,13 +382,30 @@ $(function(){
 		$("#imgExpandContent").hide();
 		$("#imgCollapseContent").show();
 		
+		//Fix to redefine the Sidebar height
+		$('#sidebar').height($('#postcontainer').height() + 11);
+
 	}
 });
 
 
 $(document).ready(function() {
+	
+	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
+	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
+
+	if (numberOfBookmarkLists != 0) {
+		$("#bookmarks_"+(numberOfBookmarkLists-1)).height("auto");
+	}
+	
+	if (numberOfBookmarkLists != 0) {
+		$("#publications_"+(numberOfPublicationLists-1)).height("auto");
+	}
 
 	$("a.foldUnfold").click(function(){
+		$('#sidebar').height("auto");
+		$(".posts, .wide").height("auto");
+
 		var selector = $(this).attr("href");
 		var resource = $(selector);
 		if(resource.is(":visible")) {
@@ -398,6 +418,8 @@ $(document).ready(function() {
 		$(this).find(".imgCollapse").show();
 		$(this).find(".imgExpand").hide();
 		
+		//Fix to redefine the Sidebar height
+		$('#sidebar').height($('#postcontainer').height() + 11);
 		return false;
 	});
 	
@@ -465,4 +487,6 @@ function highlightMatches(text, input) {
 function highlightMatch(text, term) {
 	return text.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
 };
+
+
 
