@@ -12,7 +12,7 @@
 	<insert id="logBibTexURLs" parameterClass="bibtexParam">
 		INSERT INTO log_bibtexurls (content_id, url, text, `group`, date)
 		SELECT content_id, url, text, `group`, date
-		FROM bibtexurls WHERE #requestedContentId# = content_id
+		FROM bibtexurls WHERE content_id = #requestedContentId#
 	</insert>
 	
 	<insert id="logBibTex" parameterClass="bibtexParam">
