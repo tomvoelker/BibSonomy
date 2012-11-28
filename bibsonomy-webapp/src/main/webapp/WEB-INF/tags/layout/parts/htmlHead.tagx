@@ -11,7 +11,9 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
-	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
+	
 	
 	<!--+
 		|
@@ -103,6 +105,21 @@
 			<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 		</c:if>
 		
+		<!--+
+			|
+			| Piwik
+			|
+			+--> 
+		<!-- TODO: Discuss where to store the piwik id and adress 
+			+ current: in theme files the whole piwik code ist stored
+			+ should (probably): code here/some js + id in config file
+			+-->
+		<spring:theme code="javascriptcode.piwik" var="piwikJS" text=""/> 
+		<c:if test="${not empty piwikJS}">
+			<c:out escapeXml="false" value="${piwikJS}" />
+		</c:if>
+		<!-- End Piwik Tracking Code --> 
+	
 
 <!--				<meta name="email" content="${properties['project.email']}"/> -->
 		<parts:meta fieldName="author" />
