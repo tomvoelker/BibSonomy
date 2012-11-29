@@ -53,7 +53,7 @@ import org.junit.Test;
 
 import bibtex.parser.ParseException;
 
-public class ModelConverterTest {
+public class JabRefModelConverterTest {
 
     private static final String COMMON_FIELDS = "abstract, address, author, bibtexkey, booktitle, comment, description, doi, editor, isbn, keywords, month, pages, publisher, title, url, year";
     
@@ -150,7 +150,7 @@ public class ModelConverterTest {
 		final String valueActual = (String) m.invoke(actual, (Object[]) null);
 		final String valueExpected = (String) m.invoke(expected, (Object[]) null);
 
-		assertEquals(valueExpected, valueActual);
+		this.assertEquals(valueExpected, valueActual);
 	    }
 	}
     }
@@ -162,7 +162,7 @@ public class ModelConverterTest {
 	 * 
 	 * BibTeX -> JabRef BibTeXEntry
 	 */
-	final BibtexDatabase bibtexOld = bibtex2Jabref(EXAMPLE_BIBTEX);
+	final BibtexDatabase bibtexOld = this.bibtex2Jabref(EXAMPLE_BIBTEX);
 	/*
 	 * use our BibTeX parser + model converter:
 	 * 
@@ -188,19 +188,19 @@ public class ModelConverterTest {
 	/*
 	 * in 2010 we got those fields from the old converter code ...
 	 */
-	assertEquals("[abstract, address, author, bibtexkey, booktitle, comment, date, description, doi, editor, interhash, intrahash, isbn, keywords, month, pages, publisher, title, url, year]", oldFields.toString());
+	this.assertEquals("[abstract, address, author, bibtexkey, booktitle, comment, date, description, doi, editor, interhash, intrahash, isbn, keywords, month, pages, publisher, title, url, year]", oldFields.toString());
 	final LinkedList<String> newFields = new LinkedList<String>(newEntry.getAllFields());
 	Collections.sort(newFields);
 	/*
 	 * ... the new converter had the following fields
 	 */
-	assertEquals("[abstract, address, author, bibtexkey, booktitle, comment, description, doi, editor, isbn, keywords, month, pages, privnote, publisher, timestamp, title, url, year]", newFields.toString());
+	this.assertEquals("[abstract, address, author, bibtexkey, booktitle, comment, description, doi, editor, isbn, keywords, month, pages, privnote, publisher, timestamp, title, url, year]", newFields.toString());
 	/*
 	 * compare the fields they have in common ...
 	 */
 	for (final String field: COMMON_FIELDS.split(", ")) {
 	    System.out.println("checking field " + field);
-	    assertEquals(oldEntry.getField(field), newEntry.getField(field));
+	    this.assertEquals(oldEntry.getField(field), newEntry.getField(field));
 	}
 	/*
 	 * this would be perfect, but due to different supported fields it does not work
@@ -222,7 +222,6 @@ public class ModelConverterTest {
 	}
     }
     
-    
     /**
      * Test the correct parsing of usernames.
      */
@@ -233,17 +232,12 @@ public class ModelConverterTest {
 	try {
 	    final Post<BibTex> post = pbp.parseBibTeXPost(bibtexSource);	
 	    post.setUser(new User("alder"));
-	    BibtexEntry jabrefEntry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME));
+	    final BibtexEntry jabrefEntry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME));
 	    Assert.assertEquals("alder", jabrefEntry.getField("username"));	    
-	} catch (ParseException e) {
+	} catch (final ParseException e) {
 	    Assert.fail(e.getMessage());
-	} catch (IOException e) {
+	} catch (final IOException e) {
 	    Assert.fail(e.getMessage());
-	} 
-	
-	
-	
-    } 
-
-
+	}
+    }
 }
