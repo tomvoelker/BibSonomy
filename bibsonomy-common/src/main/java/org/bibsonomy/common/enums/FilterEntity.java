@@ -55,21 +55,13 @@ public enum FilterEntity {
 	MY_GROUP_POSTS,
 	
 	/**
+	 * TODO: remove or update docu, backlisted tags are not used anymore
+	 * 
 	 * Some pages apply filtering, e.g., the homepage does not show posts
 	 * which contain a blacklisted tag. Setting the filter to this entity
 	 * should turn off such filtering. 
 	 */
 	UNFILTERED,
-	
-	/**
-	 * use this if user is allowed to access documents
-	 */
-	POSTS_WITH_DOCUMENTS,
-	
-	/**
-	 * use this if user isn't allowed to access documents
-	 */
-	JUST_POSTS,
 	
 	/**
 	 * Return only posts which have been send to a repository (PUMA specific)

@@ -162,8 +162,8 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		final List<Integer> visibleGroupsUser2 = Collections.singletonList(PUBLIC_GROUP_ID);
 		final String loginUserName2 = "testuser2";
-		List<Post<Bookmark>> publicBookmarkUserPosts = bookmarkDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, 10, 0, null, this.dbSession);
-		List<Post<BibTex>> publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, 10, 0, null, this.dbSession);
+		List<Post<Bookmark>> publicBookmarkUserPosts = bookmarkDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
+		List<Post<BibTex>> publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, publicPublicationUserPosts.size());
 		assertEquals(1, publicBookmarkUserPosts.size());
 		
@@ -178,8 +178,8 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		/*
 		 * after the user is marked as spammer testuser2 shouldn't see any posts of testuser1
 		 */
-		publicBookmarkUserPosts = bookmarkDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, 10, 0, null, this.dbSession);
-		publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, 10, 0, null, this.dbSession);
+		publicBookmarkUserPosts = bookmarkDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
+		publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
 		assertEquals(0, publicPublicationUserPosts.size());
 		assertEquals(0, publicBookmarkUserPosts.size());
 		
@@ -203,8 +203,8 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setSpammer(false);
 		adminDb.flagSpammer(user, "admin", "off", this.dbSession);
 		
-		publicBookmarkUserPosts = bookmarkDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, 10, 0, null, this.dbSession);
-		publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, 10, 0, null, this.dbSession);
+		publicBookmarkUserPosts = bookmarkDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
+		publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, publicPublicationUserPosts.size());
 		assertEquals(1, publicBookmarkUserPosts.size());
 		

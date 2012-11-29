@@ -17,6 +17,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -198,6 +199,9 @@ public abstract class GenericParam {
 	private Order order;
 	private GroupingEntity grouping;
 	private FilterEntity filter;
+	
+	/** which parts of the posts can the logged in user access */
+	private PostAccess postAccess = PostAccess.POST_ONLY;
 	
 	/*
      * the days of a popular resource
@@ -953,6 +957,20 @@ public abstract class GenericParam {
 	 */
 	public void addGroups(final Collection<Integer> groups) {
 		this.groups.addAll(groups);
+	}
+
+	/**
+	 * @return the postAccess
+	 */
+	public PostAccess getPostAccess() {
+		return this.postAccess;
+	}
+
+	/**
+	 * @param postAccess the postAccess to set
+	 */
+	public void setPostAccess(final PostAccess postAccess) {
+		this.postAccess = postAccess;
 	}
 
 	/**

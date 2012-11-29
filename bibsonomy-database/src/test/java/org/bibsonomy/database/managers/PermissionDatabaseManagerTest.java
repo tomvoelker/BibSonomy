@@ -46,7 +46,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (int i = 0; i <= 1000; i++) {
 			try {
 				permissionDb.checkStartEnd(new User(), 0, i, "test");
-			} catch (AccessDeniedException ignore) {
+			} catch (final AccessDeniedException ignore) {
 				fail("no exception expected");
 			}
 		}
@@ -55,7 +55,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			try {
 				permissionDb.checkStartEnd(new User(), 0, i, "test");
 				fail("expected exception");
-			} catch (AccessDeniedException ignore) {
+			} catch (final AccessDeniedException ignore) {
 			}
 		}
 		// OK 
@@ -64,7 +64,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (int i = 1001; i < 10000; i++) {
 			try {
 				permissionDb.checkStartEnd(admin, 0, i, "test");
-			} catch (AccessDeniedException ignore) {
+			} catch (final AccessDeniedException ignore) {
 				fail("no exception expected");
 			}
 		}
@@ -81,7 +81,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			permissionDb.ensureWriteAccess(post, new User("testuser2"));
 			fail("expected exception");
-		} catch (AccessDeniedException ignore) {
+		} catch (final AccessDeniedException ignore) {
 			// ignore
 		}
 
@@ -91,7 +91,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			permissionDb.ensureWriteAccess(new User("testuser2"), document.getUserName());
 			fail("expected exception");
-		} catch (AccessDeniedException ignore) {
+		} catch (final AccessDeniedException ignore) {
 			// ignore
 		}
 
@@ -99,7 +99,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			permissionDb.ensureWriteAccess(new User("testuser1"), "testuser2");
 			fail("expected exception");
-		} catch (AccessDeniedException ignore) {
+		} catch (final AccessDeniedException ignore) {
 			// ignore
 		}
 	}
@@ -135,7 +135,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				user.setRole(Role.DEFAULT);
 				permissionDb.ensureAdminAccess(user);
 				fail("should throw an exception");
-			} catch (AccessDeniedException ignore) {
+			} catch (final AccessDeniedException ignore) {
 				// ignore
 			}
 
@@ -145,7 +145,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				user.setRole(Role.ADMIN);
 				permissionDb.ensureAdminAccess(user);
 				fail("should throw an exception");
-			} catch (AccessDeniedException ignore) {
+			} catch (final AccessDeniedException ignore) {
 				// ignore
 			}
 		}
@@ -170,31 +170,31 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests isAllowedToAccessUsersOrGroupDocuments
 	 */
-	@Ignore // FIXME: adapt to new test db
 	@Test
-	public void isAllowedToAccessUsersOrGroupDocuments() {
-		User loginUser = new User("Johnny_B");
+	public void testIsAllowedToAccessUsersOrGroupDocuments() {
+		final User loginUser = new User("testuser1");
 		// user page: own posts -> yes
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "johnny_b", null, this.dbSession));
+		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser1", null, this.dbSession));
 		// user page: posts of other users -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "Berthold_B", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser2", null, this.dbSession));
 		// null user -> no
 		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, null, null, this.dbSession));
+		// user not logged in -> no
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), GroupingEntity.USER, "testuser1", null, this.dbSession));
 
-		// loginUser is member of group KDE, loginUser2 is not
+		// loginUser is member of group testgroup1, loginUser2 is not
 		// (both may see public posts)
 		loginUser.addGroup(new Group(TESTGROUP1_ID));
 		loginUser.addGroup(GroupUtils.getPublicGroup());
-		User loginUser2 = new User("Peter");
+		final User loginUser2 = new User("testuser1");
 		loginUser2.addGroup(GroupUtils.getPublicGroup());
 
 		// group members are allowed to see posts -> yes
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "kde", null, this.dbSession));
+		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
 		// non-group members are not -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "kde", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
 		// non-existent group -> no
 		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, ParamUtils.NOGROUP_NAME, null, this.dbSession));
-
 		// dummy tests / null values -> no
 		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), null, null, null, this.dbSession));
 	}

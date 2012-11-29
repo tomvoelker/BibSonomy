@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
@@ -312,7 +313,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		}
 		
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, null, allowedGroups, userName, null, null, null, null, null, null, null, 1000, 0);
-		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
+		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, PostAccess.FULL, null, 1000, 0, null, this.dbSession);
 		assertEquals(bibRefList.size() - 1, bibResultList.size()); // db list contains one interhash duplicate!
 
 		// FIXME: this test is broken - we only get public posts from the db logic
@@ -368,7 +369,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 
 		// search
 		bibResultList = bibtexSearcher.getPosts(userName, null, null, null, allowedGroups, userName, null, null, null, null, null, null, null, 1000, 0);
-		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
+		bibRefList    = publicationDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, PostAccess.FULL, null, 1000, 0, null, this.dbSession);
 		assertEquals(bibRefList.size() - 1, bibResultList.size()); // db list contains one interhash duplicate
 }
 

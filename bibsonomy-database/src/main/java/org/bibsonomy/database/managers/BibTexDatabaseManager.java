@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
@@ -108,6 +109,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	protected List<Post<BibTex>> getPostsForUser(final BibTexParam param, final DBSession session) {		
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		
+		if (PostAccess.POST_ONLY.equals(param.getPostAccess())) {
+			return super.getPostsForUser(param, session);
+		}
+		
 		// document retrieval
 		final FilterEntity filter = param.getFilter();
 		if (present(filter)) {
@@ -117,22 +122,17 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 					return this.postList("getJustBibTexForUserWithPDF", param, session);
 				case DUPLICATES:
 					// retrieve duplicate entries
-					return this.getPostsDuplicate(param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session, null);
-				case POSTS_WITH_DOCUMENTS:
-					// posts including documents
-					return this.postList("getBibTexForUserWithPDF", param, session);
+					return this.getPostsDuplicate(param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session, null);	
 				case POSTS_WITH_DISCUSSIONS:
 					// posts with discussions
 					return this.postList("getBibTexWithDiscussions", param, session);
-				case JUST_POSTS:
-					return super.getPostsForUser(param, session);
 				default:
 					throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
 		}
 		
-		// posts only
-		return super.getPostsForUser(param, session);
+		// posts with docs
+		return this.postList("getBibTexForUserWithPDF", param, session);
 	}
 	
 	/**
@@ -143,24 +143,26 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		HashID.getSimHash(param.getSimHash()); // ensures correct simHash is set (exception would be thrown otherwise)
 		
+		/*
+		 * check if user can't access documents
+		 */
+		if (PostAccess.POST_ONLY.equals(param.getPostAccess())) {
+			return super.getPostsByTagNamesForUser(param, session);
+		}
+		
 		// if user wants to retrieve documents
 		final FilterEntity filter = param.getFilter();
 		if (present(filter)) {
 			switch (filter) {
 				case JUST_PDF:
 					return this.postList("getJustBibTexByTagNamesForUserWithPDF", param, session);
-				case POSTS_WITH_DOCUMENTS:
-					// posts including documents
-					return this.postList("getBibTexByTagNamesForUserWithPDF", param, session);
-				case JUST_POSTS:
-					return super.getPostsByTagNamesForUser(param, session);
 				default: 
 					throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
 		}
 		
-		// posts only
-		return super.getPostsByTagNamesForUser(param, session);
+		// posts including documents
+		return this.postList("getBibTexByTagNamesForUserWithPDF", param, session);	
 	}
 	
 	/**
@@ -170,23 +172,30 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	protected List<Post<BibTex>> getPostsForGroupByTag(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		
+		/*
+		 * use normal query if user can't access documents
+		 */
+		if (PostAccess.POST_ONLY.equals(param.getPostAccess())) {
+			return super.getPostsForGroupByTag(param, session);
+		}
+		
+		/*
+		 * first check for filter
+		 */
 		final FilterEntity filter = param.getFilter();
-		// if user wants to retrieve documents
 		if (present(filter)) {
 			switch (filter) {
 				case JUST_PDF:
 					return this.postList("getJustBibTexForGroupByTagWithPDF", param, session);
-				case POSTS_WITH_DOCUMENTS:
-					return this.postList("getBibTexForGroupByTagWithPDF", param, session);
-				case JUST_POSTS:
-					return super.getPostsForGroupByTag(param, session);
 				default:
 					throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
 		}
 		
-		// posts only
-		return super.getPostsForGroupByTag(param, session);
+		/*
+		 * no filter -> query documents with the posts
+		 */
+		return this.postList("getBibTexForGroupByTagWithPDF", param, session);
 	}
 	
 	/**
@@ -195,6 +204,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	@Override
 	protected List<Post<BibTex>> getPostsForGroup(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		
+		if (PostAccess.POST_ONLY.equals(param.getPostAccess())) {
+			return super.getPostsForGroup(param, session);
+		}
+		
 		// document retrieval
 		final FilterEntity filter = param.getFilter();
 		if (present(filter)) {
@@ -202,18 +216,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				case JUST_PDF:
 					// just entries with document attached
 					return this.postList("getJustBibTexForGroupWithPDF", param, session);
-				case POSTS_WITH_DOCUMENTS:
-					// posts including documents
-					return this.postList("getBibTexForGroupWithPDF", param, session);
-				case JUST_POSTS:
-					return super.getPostsForGroup(param, session);
 				default:
 					throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
 		}
 		
-		// posts only
-		return super.getPostsForGroup(param, session);
+		// posts including documents
+		return this.postList("getBibTexForGroupWithPDF", param, session);
 	}
 	
 	private List<Post<BibTex>> getLoggedPostsByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
@@ -283,7 +292,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			}
 
 			// add extra URLs
-			publication.setExtraUrls(extraDb.getURL(resourceHash, userName, session));
+			publication.setExtraUrls(this.extraDb.getURL(resourceHash, userName, session));
 			
 			return post;
 		}
@@ -341,7 +350,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				/*
 				 * store the metadata
 				 */
-				insertScraperMetadata(scraperMetadata, session);
+				this.insertScraperMetadata(scraperMetadata, session);
 				/*
 				 * store the id in the post
 				 */

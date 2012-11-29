@@ -86,16 +86,16 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		final List<Integer> groups = new ArrayList<Integer>();
 
 		List<LucenePost<BibTex>> posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
-		List<Post<BibTex>> postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
+		List<Post<BibTex>> postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 
 		posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
-		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
+		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size()); 
 
 		requestedUserName = "testuser2";
 		posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
-		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
+		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 	}
 
@@ -203,12 +203,12 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		List<Post<Bookmark>> postsRef;
 
 		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
-		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
+		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 
 		requestedUserName = "testuser2";
 		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
-		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);  
+		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);  
 		assertEquals(postsRef.size(), posts.size());
 	}
 

@@ -19,6 +19,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -283,31 +284,32 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	public void testGetPostsByTagNamesForUser() {
 		this.printMethod("testGetPostsByTagNamesForUser");
 		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("testtag");
-		List<Post<BibTex>> posts = publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex, PUBLIC_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		List<Post<BibTex>> posts = publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex, PUBLIC_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, null, this.dbSession);
 		assertEquals(1, posts.size());
 		//this.assertByTagNames(posts); // no param?!?
 
-		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex, INVALID_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex, INVALID_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, null, this.dbSession);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex2 = new ArrayList<TagIndex>();
 		tagIndex2.add(new TagIndex("privatebibtex", 1));
-		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser2", tagIndex2, PRIVATE_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser2", tagIndex2, PRIVATE_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, null, this.dbSession);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex3 = new ArrayList<TagIndex>();
 		tagIndex3.add(new TagIndex("friendbibtex", 1));
-		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser2", tagIndex3, FRIENDS_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser2", tagIndex3, FRIENDS_GROUP_ID, new LinkedList<Integer>(), 10, 0, null, null, null, this.dbSession);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex4 = new ArrayList<TagIndex>();
 		tagIndex4.add(new TagIndex("bibtexgroup", 1));
-		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		posts = publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, null, null, null, this.dbSession);
 		assertEquals(1, posts.size());
 		
 		// just call the sql statements
-		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, FilterEntity.POSTS_WITH_DOCUMENTS, null, this.dbSession);
-		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, FilterEntity.JUST_PDF, null, this.dbSession);
+		// TODO: add more tests
+		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, PostAccess.FULL, null, null, this.dbSession);
+		publicationDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, TESTGROUP1_ID, new LinkedList<Integer>(), 10, 0, null, FilterEntity.JUST_PDF, null, this.dbSession);
 	}
 
 	/**
@@ -463,29 +465,30 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		List<Integer> groups = Collections.singletonList(PUBLIC_GROUP_ID);
 		
 		String loginUserName = "testuser1";
-		List<Post<BibTex>> post = publicationDb.getPostsForGroup(3, groups, loginUserName, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
+		List<Post<BibTex>> post = publicationDb.getPostsForGroup(3, groups, loginUserName, HashID.INTER_HASH, null, null, 10, 0, null, this.dbSession);
 		assertEquals(3, post.size());
 		
-		post = publicationDb.getPostsForGroup(TESTGROUP2_ID, groups, loginUserName, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroup(TESTGROUP2_ID, groups, loginUserName, HashID.INTER_HASH, null, null, 10, 0, null, this.dbSession);
 		assertEquals(2, post.size());
 		
 		loginUserName = "testuser2";
-		post = publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, loginUserName, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, loginUserName, HashID.INTER_HASH, null, null, 10, 0, null, this.dbSession);
 		assertEquals(3, post.size());
 		
-		post = publicationDb.getPostsForGroup(TESTGROUP2_ID, groups, loginUserName, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroup(TESTGROUP2_ID, groups, loginUserName, HashID.INTER_HASH, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		groups = new ArrayList<Integer>();
-		post = publicationDb.getPostsForGroup(TESTGROUP2_ID, groups, null, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroup(TESTGROUP2_ID, groups, null, HashID.INTER_HASH, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
-		post = publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		// just call the statements
-		publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
-		publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, FilterEntity.POSTS_WITH_DOCUMENTS, 10, 0, null, this.dbSession);
+		// TODO: add tests
+		publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, null, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
+		publicationDb.getPostsForGroup(TESTGROUP1_ID, groups, null, HashID.INTER_HASH, PostAccess.FULL, null, 10, 0, null, this.dbSession);
 	}
 
 	/**
@@ -522,29 +525,30 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		String loginUser = "testuser1";
 		
-		List<Post<BibTex>> post = publicationDb.getPostsForGroupByTag(TESTGROUP2_ID, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
+		List<Post<BibTex>> post = publicationDb.getPostsForGroupByTag(TESTGROUP2_ID, visibleGroupIDs, loginUser, tagIndex, null, null, 10, 0, null, this.dbSession);
 		assertEquals(2, post.size());
 		
 		DBTestUtils.addToTagIndex(tagIndex, "testtag");
-		post = publicationDb.getPostsForGroupByTag(TESTGROUP2_ID, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroupByTag(TESTGROUP2_ID, visibleGroupIDs, loginUser, tagIndex, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		tagIndex = DBTestUtils.getTagIndex("privatebibtex");
 		loginUser = "testuser2";
-		post = publicationDb.getPostsForGroupByTag(TESTGROUP2_ID, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroupByTag(TESTGROUP2_ID, visibleGroupIDs, loginUser, tagIndex, null, null, 10, 0, null, this.dbSession);
 		assertEquals(0, post.size());
 		
-		post = publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		tagIndex = Collections.singletonList(new TagIndex("friendbibtex", 1));
 		
-		post = publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		// just call the sql statements
-		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, FilterEntity.POSTS_WITH_DOCUMENTS, 10, 0, null, this.dbSession);
-		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
+		// TODO: add tests
+		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, PostAccess.FULL, null, 10, 0, null, this.dbSession);
+		publicationDb.getPostsForGroupByTag(TESTGROUP1_ID, visibleGroupIDs, loginUser, tagIndex, null, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
 	}
 
 	/**
@@ -556,31 +560,32 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		String requestedUserName = "testuser1";
 		final List<Integer> groups = new ArrayList<Integer>();
 		
-		List<Post<BibTex>> post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, TESTGROUP1_ID, groups, null, 10, 0, null, this.dbSession);
+		List<Post<BibTex>> post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, TESTGROUP1_ID, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
-		post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, PUBLIC_GROUP_ID, groups, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, PUBLIC_GROUP_ID, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
-		post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, INVALID_GROUP_ID, groups, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, INVALID_GROUP_ID, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(2, post.size());
 		
 		groups.add(PUBLIC_GROUP_ID);
-		post = publicationDb.getPostsForUser("testuser2", requestedUserName, HashID.INTRA_HASH, TESTGROUP1_ID, groups, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForUser("testuser2", requestedUserName, HashID.INTRA_HASH, TESTGROUP1_ID, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		groups.clear();
 		
 		requestedUserName = "testuser2";
-		post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, PRIVATE_GROUP_ID, groups, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, PRIVATE_GROUP_ID, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
-		post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, null, 10, 0, null, this.dbSession);
+		post = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		// just call the statements
-		publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
-		publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, FilterEntity.POSTS_WITH_DOCUMENTS, 10, 0, null, this.dbSession);
+		// TODO: add tests
+		publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, null, FilterEntity.JUST_PDF, 10, 0, null, this.dbSession);
+		publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, FRIENDS_GROUP_ID, groups, PostAccess.FULL, null, 10, 0, null, this.dbSession);
 	}
 	
 	/**
@@ -595,11 +600,11 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		systemTag.setYear("2006");
 		
 		final List<SystemTag> systemTags = Arrays.<SystemTag>asList(systemTag);
-		List<Post<BibTex>> posts = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, groups, null, 10, 0, systemTags, this.dbSession);
+		List<Post<BibTex>> posts = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, groups, null, null, 10, 0, systemTags, this.dbSession);
 		assertEquals(1, posts.size());
 		
 		systemTag.setYear("2008");
-		posts = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, groups, null, 10, 0, systemTags, this.dbSession);
+		posts = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, groups, null, null, 10, 0, systemTags, this.dbSession);
 		assertEquals(0, posts.size());
 		
 		// TODO: fix years in test data and add more tests
@@ -618,11 +623,11 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		systemTag.setArgument("inproceedings");
 		
 		final List<SystemTag> systemTags = Arrays.<SystemTag>asList(systemTag);
-		List<Post<BibTex>> posts = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, groups, null, 10, 0, systemTags, this.dbSession);
+		List<Post<BibTex>> posts = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, groups, null, null, 10, 0, systemTags, this.dbSession);
 		assertEquals(1, posts.size());
 		
 		systemTag.setArgument("entrytype");
-		posts = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, groups, null, 10, 0, systemTags, this.dbSession);
+		posts = publicationDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, groups, null, null, 10, 0, systemTags, this.dbSession);
 		assertEquals(0, posts.size());
 		
 		// TODO: test group posts, …
@@ -640,7 +645,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	@Test
 	public void getPublicationForUserWithDocuments() {		
 		this.printMethod("getPublicationForUserWithDocuments");
-		final List<Post<BibTex>> posts = publicationDb.getPostsForUser("testuser1", "testuser1", HashID.INTER_HASH, PUBLIC_GROUP_ID, Collections.singletonList(PUBLIC_GROUP_ID), FilterEntity.POSTS_WITH_DOCUMENTS, 10, 0, null, this.dbSession);
+		final List<Post<BibTex>> posts = publicationDb.getPostsForUser("testuser1", "testuser1", HashID.INTER_HASH, PUBLIC_GROUP_ID, Collections.singletonList(PUBLIC_GROUP_ID),PostAccess.FULL, null,  10, 0, null, this.dbSession);
 		
 		// testuser 1 has 1 public post
 		assertEquals(1, posts.size());

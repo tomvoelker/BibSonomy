@@ -47,7 +47,7 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
 			return new ArrayList<Post<R>>();
 		}
-		return this.databaseManager.getPostsForGroupByTag(group.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsForGroupByTag(group.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getPostAccess(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

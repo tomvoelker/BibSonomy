@@ -27,6 +27,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -636,17 +637,17 @@ public class DBLogic implements LogicInterface {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
-
-
 				if (!allowedToAccessUsersOrGroupDocuments) {
-					if (!FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter()) && !FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER.equals(param.getFilter()) ) {
-						param.setFilter(FilterEntity.JUST_POSTS);
+					if (FilterEntity.JUST_PDF.equals(filter)) {
+						throw new AccessDeniedException("error.pdf_only_not_authorized_for_" + grouping.toString().toLowerCase());
 					}
-				} else if (!present(filter)) {
-					param.setFilter(FilterEntity.POSTS_WITH_DOCUMENTS);
+					param.setPostAccess(PostAccess.POST_ONLY);
+				} else {
+					// user can access all post details (including docs)
+					param.setPostAccess(PostAccess.FULL);
 				}
 
-				// this is save because of RTTI-check of resourceType argument
+			 	// this is save because of RTTI-check of resourceType argument
 				// which is of class T
 				final List<Post<T>> publications = (List) this.publicationDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(publications, loginUser.getName());

@@ -565,12 +565,12 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		User user = userDb.getUserDetails(name, this.dbSession);
 		if( user.getName()!=null ) {
 			final List<Post<Bookmark>> bookmarks = 
-				bookmarkDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, Integer.MAX_VALUE, 0, null, this.dbSession);
+				bookmarkDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, null, Integer.MAX_VALUE, 0, null, this.dbSession);
 			for( final Post<Bookmark> post : bookmarks ) {
 				bookmarkDb.deletePost(name, post.getResource().getIntraHash(), this.dbSession);
 			}
 			final List<Post<BibTex>> publications = 
-				bibTexDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, Integer.MAX_VALUE, 0, null, this.dbSession);
+				bibTexDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, null, Integer.MAX_VALUE, 0, null, this.dbSession);
 			for( final Post<BibTex> post : publications) {
 				bibTexDb.deletePost(name, post.getResource().getIntraHash(), this.dbSession);
 			}

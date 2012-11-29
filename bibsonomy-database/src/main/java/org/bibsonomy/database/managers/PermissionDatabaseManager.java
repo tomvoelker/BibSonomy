@@ -5,6 +5,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -31,6 +33,8 @@ import org.bibsonomy.model.util.UserUtils;
  *          doerfel Exp $
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
+	private static final Log log = LogFactory.getLog(PermissionDatabaseManager.class);
+	
 	/**
 	 * the number of tags allowed for querying the db
 	 */
@@ -190,31 +194,27 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 *         documents of the requested user / group.
 	 */
 	public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, final FilterEntity filter, final DBSession session) {
-		boolean isAllowed = false;
 		if (grouping != null) {
-			// user
-			if (grouping.equals(GroupingEntity.USER)) {
-				if (loginUser.getName() != null) {
-					isAllowed = loginUser.getName().equals(groupingName);
-					if (!isAllowed && FilterEntity.JUST_PDF.equals(filter)) {
-						throw new AccessDeniedException("error.pdf_only_not_authorized_for_user");
-					}
+			switch (grouping) {
+			case USER:
+				final String loggedinUserName = loginUser.getName();
+				if (loggedinUserName != null) {
+					return loggedinUserName.equals(groupingName);
 				}
-			}
-			// group
-			if (grouping.equals(GroupingEntity.GROUP)) {
+				break;
+			case GROUP:
 				final Group group = this.groupDb.getGroupByName(groupingName, session);
 				/*
 				 * check group membership and if the group allows shared
 				 * documents
 				 */
-				isAllowed = (group != null) && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
-				if (!isAllowed && FilterEntity.JUST_PDF.equals(filter)) {
-					throw new AccessDeniedException("error.pdf_only_not_authorized_for_group");
-				}
+				return (group != null) && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
+			default:
+				log.debug("grouping '" + grouping + "' not supported");
+				break;
 			}
 		}
-		return isAllowed;
+		return false;
 	}
 
 	/**

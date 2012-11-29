@@ -323,7 +323,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final int groupid = Integer.MAX_VALUE + 1;
 		
 		// get posts for this user
-		final List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<Integer>(), null, 10, 0, null, this.dbSession);
+		final List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<Integer>(), null, null, 10, 0, null, this.dbSession);
 		
 		// there should be at least more then one post with that negative group id
 		assertNotNull(posts);

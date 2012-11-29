@@ -158,14 +158,12 @@ public class TestDatabaseLoader {
 			final String database = jdbc.getDatabaseConfig().getDatabase();
 			
 			if (this.firstRun) {
-				if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
-					log.debug("Starting to drop + create database" + database);
-					start = System.currentTimeMillis();
-					jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
-					jdbc.execute("CREATE DATABASE `" + database + "`;");
-					elapsed = (System.currentTimeMillis() - start ) / 1000;
-					log.debug("Done; took " + elapsed + " seconds.");
-				}
+				log.debug("Starting to drop + create database" + database);
+				start = System.currentTimeMillis();
+				jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
+				jdbc.execute("CREATE DATABASE `" + database + "`;");
+				elapsed = (System.currentTimeMillis() - start ) / 1000;
+				log.debug("Done; took " + elapsed + " seconds.");
 			}
 	
 			log.debug("Switch to database " + database);
@@ -179,12 +177,7 @@ public class TestDatabaseLoader {
 			 */
 			if (this.firstRun) {				
 				final List<String> statements = new LinkedList<String>();
-				
-				if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
-					statements.addAll(this.createStatements);
-				} else {
-					statements.addAll(this.deleteStatements);
-				}
+				statements.addAll(this.createStatements);
 				
 				start = System.currentTimeMillis();
 
@@ -258,10 +251,6 @@ final class SimpleJDBCHelper implements Closeable {
 		 * @return password
 		 */
 		public String getPassword();
-		/**
-		 * @return whether to create DB before loading the data 
-		 */		
-		public boolean createDatabaseBeforeLoading();
 	}
 
 	/**
@@ -321,11 +310,6 @@ final class SimpleJDBCHelper implements Closeable {
 			@Override
 			public String getPassword() {
 				return prop.getProperty("database.main.password");
-			}
-			
-			@Override
-			public boolean createDatabaseBeforeLoading() {
-				return prop.getProperty("createDatabaseBeforeLoading", "true").equals("true");
 			}
 		};
 	}

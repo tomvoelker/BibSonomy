@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -57,7 +58,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	public abstract void testGetPostsByTagNames();
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByTagNamesForUser(java.lang.String, java.lang.String, java.util.List, int, java.util.List, int, int, org.bibsonomy.common.enums.FilterEntity, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsByTagNamesForUser(java.lang.String, java.lang.String, java.util.List, int, java.util.List, int, int, PostAccess, org.bibsonomy.common.enums.FilterEntity, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
 	public abstract void testGetPostsByTagNamesForUser();
@@ -138,7 +139,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	}
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsForGroup(int, java.util.List, java.lang.String, org.bibsonomy.common.enums.HashID, org.bibsonomy.common.enums.FilterEntity, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsForGroup(int, java.util.List, java.lang.String, org.bibsonomy.common.enums.HashID, PostAccess, org.bibsonomy.common.enums.FilterEntity, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
 	public abstract void testGetPostsForGroup();
@@ -168,13 +169,13 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	}
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsForGroupByTag(int, java.util.List, java.lang.String, java.util.List, org.bibsonomy.common.enums.FilterEntity, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsForGroupByTag(int, java.util.List, java.lang.String, java.util.List, PostAccess, org.bibsonomy.common.enums.FilterEntity, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
 	public abstract void testGetPostsForGroupByTag();
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsForUser(java.lang.String, java.lang.String, org.bibsonomy.common.enums.HashID, int, java.util.List, org.bibsonomy.common.enums.FilterEntity, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsForUser(java.lang.String, java.lang.String, org.bibsonomy.common.enums.HashID, int, java.util.List, PostAccess, org.bibsonomy.common.enums.FilterEntity, int, int, java.util.Collection, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
 	public abstract void testGetPostsForUser();
