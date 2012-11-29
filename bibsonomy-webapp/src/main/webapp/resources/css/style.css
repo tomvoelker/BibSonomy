@@ -1159,7 +1159,7 @@ div.widehelp:hover div {
 }
 
 
-div.help>a,div.help>b {
+div.help>a,div.help>b, div.help>span {
 	font-weight: bold;
 	color: #006699;
 }
@@ -1882,7 +1882,6 @@ form.editTags input[type=text] {
 
 
 .nextprev {
-	padding-left: 0.5em;
 	width: 100%;
 }
 	

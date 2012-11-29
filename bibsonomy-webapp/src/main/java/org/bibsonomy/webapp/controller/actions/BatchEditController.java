@@ -99,8 +99,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final BatchEditCommand command = new BatchEditCommand();
 		command.setOldTags(new HashMap<String, String>());
 		command.setNewTags(new HashMap<String, String>());
-		command.setDelete(new HashMap<String, Boolean>());
-		command.setNormalize(new HashMap<String, Boolean>());
+		command.setPosts(new HashMap<String, Boolean>());
 
 		command.getBibtex().setList(new LinkedList<Post<BibTex>>());
 		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
@@ -177,15 +176,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * SECOND: get the data we're working on
 		 * *******************************************************/
 		/*
-		 * posts that are flagged are either deleted or ignored 
-		 */
-		final Map<String, Boolean> postFlags = command.getDelete();
-		final Map<String, Boolean> postNormalizeFlags = command.getNormalize();
-	
-		/*
 		 * put the posts from the session into a hash map (for faster access)
 		 */
 		final Map<String, Post<? extends Resource>> postMap = getPostMap(updatePosts);
+		Map<String, Boolean> markedPostsMap = command.getPosts();
 		/*
 		 * the tags that should be added to all posts
 		 */
@@ -196,7 +190,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
 		
-		log.debug("#postFlags: " + postFlags.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
+		final boolean deleteMarkedPosts = command.getDelete();
+		final boolean normalizeMarkedPosts = command.getNormalize();
+		
+		log.debug("#postFlags: " + markedPostsMap.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
 
 		/* *******************************************************
 		 * THIRD: initialize temporary variables (lists)
@@ -223,113 +220,102 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			/*
 			 * short check if hash is correct
 			 */
-			if (intraHash.length() != HASH_LENGTH) {
-				continue;
-			}
-			/*
-			 * has this post been flagged by the user? 
-			 */
-			if (postFlags.containsKey(intraHash) && postFlags.get(intraHash)) {
-				log.debug("post has been flagged");
+			if (intraHash.length() == HASH_LENGTH) {
+				
+				boolean normalizePost = false;
 				/*
-				 * The post has been flagged by the user.
-				 * Depending on the meaning of this flag, we add the 
-				 * post to the list of posts to be deleted or just
-				 * ignore it.
+				 * SECTION 1: Check if post should be deleted or ignored.
 				 */
-				if (flagMeansDelete) {
-					/*
-					 * flagged posts should be deleted, i.e., add them
-					 * to the list of posts to be deleted and work on 
-					 * the next post.
-					 */
-					postsToDelete.add(intraHash);
-				}
-				/*
-				 * flagMeansDelete = true:  delete the post
-				 * flagMeansDelete = false: ignore the post (neither save nor update it)
-				 */
-				continue;
-			}
-			
-			boolean normalizePost = false;
-			
-			if(present(postNormalizeFlags)) {
-				normalizePost = postNormalizeFlags.containsKey(intraHash) && postNormalizeFlags.get(intraHash);
-			}
-			
-			/*
-			 * We must store/update the post, thus we parse and check its tags
-			 */
-			try {
-				final Set<Tag> oldTags = TagUtils.parse(oldTagsMap.get(intraHash));
-				final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
-				/*
-				 * we add all global tags to the set of new tags
-				 */
-				newTags.addAll(getTagsCopy(addTags));
-				/*
-				 * if we want to update the posts, we only need to update posts
-				 * where the tags have changed
-				 */
-				if (updatePosts && oldTags.equals(newTags) && !normalizePost) {
-					/*
-					 * tags haven't changed and bibtex keys should not be changed, nothing to do
-					 */
-					continue;
-				}
-				/*
-				 * For the create/update methods we need a post -> 
-				 * create/get one.
-				 */
-				Post<?> post;
-				if (updatePosts) {
-					/*
-					 * we need only a "mock" posts containing the hash, the date
-					 * and the tags, since only the post's tags are updated 
-					 */
-					final Post<Resource> postR = new Post<Resource>();
-					postR.setResource(RESOURCE_FACTORY.createResource(resourceClass));
-					postR.getResource().setIntraHash(intraHash);
-					post = postR;
-				} else {
-					/*
-					 * we get the complete post from the session, and store
-					 * it in the database
-					 */
-					post = postMap.get(intraHash);
-				}
-				/*
-				 * Finally, add the post to the list of posts that should 
-				 * be stored or updated.
-				 */
-				if (!present(post)) {
-					log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
-				} else {
-					/*
-					 * set the date and the tags for this post 
-					 * (everything else should already be set or not be changed)
-					 */
-					if(normalizePost) {
-						post = this.logic.getPostDetails(intraHash, loginUserName);
-						
-						BibTex bibtex = (BibTex) post.getResource();
-						final String oldBibtexKey = bibtex.getBibtexKey();
-						final String newBibtexKey = BibTexUtils.generateBibtexKey(bibtex);
-						
-						if(!oldBibtexKey.equals(newBibtexKey)) {
-							((BibTex) post.getResource()).setBibtexKey(newBibtexKey);
-							postsToNormalize.add(post);
+				if (markedPostsMap.containsKey(intraHash) && markedPostsMap.get(intraHash)) {
+					if (deleteMarkedPosts) {
+						if (flagMeansDelete) {
+							postsToDelete.add(intraHash);
 						}
-					} else {
-						post.setDate(now);
-						post.setTags(newTags);
-						postsToUpdate.add(post);
+						continue;
+					}
+					if (normalizeMarkedPosts) {
+						normalizePost = true;
 					}
 				}
+				
+				/*
+				 * We must store/update the post, thus we parse and check its tags
+				 */
+				try {
+					final Set<Tag> oldTags = TagUtils.parse(oldTagsMap.get(intraHash));
+					final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
+					/*
+					 * we add all global tags to the set of new tags
+					 */
+					newTags.addAll(getTagsCopy(addTags));
+					/*
+					 * if we want to update the posts, we only need to update posts
+					 * where the tags have changed
+					 */
+					if (updatePosts && oldTags.equals(newTags) && !normalizePost) {
+						/*
+						 * tags haven't changed and bibtex keys should not be changed, nothing to do
+						 */
+						continue;
+					}
+					
+					/*
+					 * For the create/update methods we need a post -> 
+					 * create/get one.
+					 */
+					Post<?> post;
+					if (updatePosts) {
+						/*
+						 * we need only a "mock" posts containing the hash, the date
+						 * and the tags, since only the post's tags are updated 
+						 */
+						final Post<Resource> postR = new Post<Resource>();
+						postR.setResource(RESOURCE_FACTORY.createResource(resourceClass));
+						postR.getResource().setIntraHash(intraHash);
+						post = postR;
+					} else {
+						/*
+						 * we get the complete post from the session, and store
+						 * it in the database
+						 */
+						post = postMap.get(intraHash);
+					}
+					/*
+					 * Finally, add the post to the list of posts that should 
+					 * be stored or updated.
+					 */
+					if (!present(post)) {
+						log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
+					} else {
+						if(normalizePost) {
+							post = this.logic.getPostDetails(intraHash, loginUserName);
+							if(present(post)) {
+								BibTex bibtex = (BibTex) post.getResource();
+								
+								if(present(bibtex)) {
+									final String oldBibtexKey = bibtex.getBibtexKey();
+									final String newBibtexKey = BibTexUtils.generateBibtexKey(bibtex);
+									
+									if(present(oldBibtexKey) && present(newBibtexKey)) {
+										if(!oldBibtexKey.equals(newBibtexKey)) {
+											((BibTex) post.getResource()).setBibtexKey(newBibtexKey);
+										}
+									}
+								}
+								post.setDate(now);
+								post.setTags(newTags);
+								postsToNormalize.add(post);
+							}
+						} else {
+							post.setDate(now);
+							post.setTags(newTags);
+							postsToUpdate.add(post);
+						}
+					}
 
-			} catch (final RecognitionException ex) {
-				log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
+				} catch (final RecognitionException ex) {
+					log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
+				}
 			}
 		}
 

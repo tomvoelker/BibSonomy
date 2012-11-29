@@ -27,7 +27,7 @@
             <a class="smalltext" style="${iconTextStyle}" href="${properties['project.home']}help_${locale.language}${helpPage}"><c:out value="${iconText}"/></a>
           </c:when>
           <c:otherwise>
-              <b class="smalltext" style="${iconTextStyle}"><c:out value="${iconText}"/></b>
+              <span class="smalltext" style="${iconTextStyle}"><c:out value="${iconText}"/></span>
           </c:otherwise>
         </c:choose>
 		<div>

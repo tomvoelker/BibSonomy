@@ -8,6 +8,7 @@
 	
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="buttonUpdate" type="java.lang.String" required="false"/>
 	
 	<div class="nextprev">
            <!-- ********** FIRST ************** -->
@@ -82,6 +83,10 @@
          </c:url>
          <fmt:message var="gotoLast" key="goto.last"/>
          <a class="listnav" href="${fn:escapeXml(lastUrl)}" title="${gotoLast}" rel="Last"><fmt:message key="last"/></a>
-        </c:if>         						
+        </c:if>
+        
+        <c:if test="${not empty buttonUpdate}">
+        	<input type="submit" value="${buttonUpdate}" style="float: right;vertical-align: middle;" />
+        </c:if>     						
 	</div>
 </jsp:root>
