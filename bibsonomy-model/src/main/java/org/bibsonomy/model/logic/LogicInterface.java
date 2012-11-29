@@ -41,6 +41,8 @@ import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -163,11 +165,11 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public Group getGroupDetails(String groupName);
 
-	/**
+	/** 
 	 * Returns a list of tags which can be filtered.
 	 * @param resourceType
-	 * 			  a resourceType (i.e. Bibtex or Bookmark) to get tags
-	 *  		  only from a bookmark or a bibtex entry
+	 * 			  a resourceType (i.e. {@link BibTex} or {@link Bookmark}) to get tags
+	 *  		  only from a bookmark or a publication entry
 	 * @param grouping
 	 *            grouping tells whom tags are to be shown: the tags of a user,
 	 *            of a group or of the viewables.
@@ -177,7 +179,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 *            then its an empty string!
 	 * @param tags
 	 * @param hash
-				  a resource hash (bibtex or bookmark)
+				  a resource hash (publication or bookmark)
 	 * @param search - search string
 	 * @param regex
 	 *            a regular expression used to filter the tagnames
@@ -187,7 +189,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned 
 	 * @param start
 	 * @param end
-	 * @return a set of tags, en empty set else
+	 * @return a set of tags, an empty list else
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
