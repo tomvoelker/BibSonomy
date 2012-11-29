@@ -51,16 +51,6 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(username);
 		return this.queryForList("getBibTexExtraURL", param, BibTexExtra.class, session);
 	}
-	
-	/**
-	 * Returns the URLs for a given publication
-	 * 
-	 * @param contentId
-	 */
-	@SuppressWarnings("unchecked")
-	public List<BibTexExtra> getURL(final int contentId, final DBSession session) {
-		return (List<BibTexExtra>) this.queryForList("getBibTexExtraURL", contentId, session);
-	}
 
 	/**
 	 * Creates an URL for the publication with the given hash.
