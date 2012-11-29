@@ -6,7 +6,7 @@
 	<fmt:message var="altPreview" key="preview"/>
 	
 	<c:choose>
-		<c:when test="${properties['project.preview.bookmark'] == 'enable'}">  
+		<c:when test="${not empty properties['project.img']}">  
 			<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
 			<span class="">
 					<a class="preview bookmark" href="${bookUrl}"> 
@@ -17,6 +17,6 @@
 		<c:otherwise>
 			<span class="entrytype web"><!-- --></span>
 		</c:otherwise>
-	</c:choose>	
+	</c:choose>
 
 </jsp:root>
