@@ -29,7 +29,6 @@
     <spring:theme code="stylesheet.main" var="stylesheet_main" text="${resdir}/css/style.css"/>
 	<spring:theme code="stylesheet.additional" var="additionalCSS" text=""/> 
 	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text=""/> 
-	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
 	
 	<!--+ 

@@ -91,6 +91,7 @@
 						 	| project.name
 						 	|
 						 	+-->
+						<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 						<c:if test="${not empty headerLogo}">
 							<div id="logoimage">
 								<img id="headerlogoimage" src="${headerLogo}"/>
