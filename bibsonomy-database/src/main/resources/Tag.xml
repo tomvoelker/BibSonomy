@@ -44,36 +44,38 @@
 	</select>
 	
 	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT t.tag_name, count(t.tag_name) as tag_ctr 
-		FROM tas t
-		WHERE t.user_name=#requestedUserName# 
+		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr 
+		FROM tas t1
+		WHERE t1.user_name = #requestedUserName# 
 			  AND
-			  t.tag_name LIKE #regex#
+			  t1.tag_name LIKE #regex#
 			  <include refid="getTagsByResourceType"/>
-		GROUP BY t.tag_name
-	  	ORDER BY tag_ctr DESC
+		GROUP BY t1.tag_name
+		<isEqual property="order" compareValue="FREQUENCY">
+	  		ORDER BY tag_ctr DESC
+	  	</isEqual>
 		LIMIT #limit# OFFSET #offset#		
 	</select>
 
  	<select id="getTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tag_name, COUNT(tag_name) AS tag_ctr 
-			FROM tas t
-			WHERE t.group = #groupId#
+		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr 
+		FROM tas t1
+		WHERE t1.group = #groupId#
 			<include refid="getTagsByResourceType"/>
-			GROUP BY t.tag_name
-			<isEqual property="order" compareValue="FREQUENCY">
+		GROUP BY t1.tag_name
+		<isEqual property="order" compareValue="FREQUENCY">
 			  ORDER BY tag_ctr DESC
-			</isEqual>
-			LIMIT #limit# OFFSET #offset#
+		</isEqual>
+		LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getTagsViewableBySpecialGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tag_name, COUNT(tag_name) AS tag_ctr 
-			FROM tas t
-			WHERE t.group = #groupId# 
-			  AND t.user_name = #requestedUserName#
+		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr 
+			FROM tas t1
+			WHERE t1.group = #groupId# 
+			  AND t1.user_name = #requestedUserName#
 			<include refid="getTagsByResourceType"/>
-			GROUP BY t.tag_name
+			GROUP BY t1.tag_name
 			<isEqual property="order" compareValue="FREQUENCY">
 			  ORDER BY tag_ctr DESC
 			</isEqual>
