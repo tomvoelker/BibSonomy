@@ -109,8 +109,9 @@ puma: ssh_puma document mvn_deploy mail
 #
 # deploy to tomcat server
 #
+# (the property "tomcat-server" activates the profiles defined in ~/.m2/settings.xml
 mvn_deploy: clean
-	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip package tomcat6:redeploy | ${TEE} -a ${TMPLOG}
+	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip tomcat6:redeploy | ${TEE} -a ${TMPLOG}
 
 #
 # send notification mail
