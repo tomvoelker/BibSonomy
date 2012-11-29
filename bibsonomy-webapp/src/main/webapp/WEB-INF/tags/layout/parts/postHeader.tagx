@@ -7,8 +7,6 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
-	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
-	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
@@ -17,22 +15,15 @@
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="addAsFirstPublicationsListItem" fragment="true" required="false"/>
 	<jsp:directive.attribute name="addAsFirstBookmarksListItem" fragment="true" required="false"/>
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="false"/>	
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="false"/>
+	<jsp:directive.attribute name="headerHideable" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="publicationsWidthClass" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="bookmarksWidthClass" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="showBookmark" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="showPublication" type="java.lang.Boolean" required="true"/>
 	
-
-	<!--+	
-		+ variables
-		+-->
-    <!-- which resourcetypes to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize) -->
-    <c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-    <c:set var="showPublication" value="${(showPublicationList or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
-    <c:set var="showBookmarkList" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-    <c:set var="showBookmark" value="${showBookmarkList or not empty addAsFirstBookmarksListItem }" />
-    <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
-    <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
-    <c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions == true ? 'config' : 'config disabled'}"/>
-	<c:set var="headerHideable" value="${not empty discussion}" />
-	
+	<c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions == true ? 'config' : 'config disabled'}"/>
 	
 	<!-- bookmarks -->					
 	<div id="bookmarksheader" class="${bookmarksWidthClass}">								
@@ -126,7 +117,7 @@
 		
 		<c:choose>
 			<c:when test="${headerHideable}">
-					<div class="headerLogo image publications"><!--  --></div>
+				<div class="headerLogo image publications"><!--  --></div>
 				<h2 class="header ${publicationsWidthClass}">
 					<a class="foldUnfold" href="div#hideableContent">
 						<img id="imgCollapseContent" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png"/>

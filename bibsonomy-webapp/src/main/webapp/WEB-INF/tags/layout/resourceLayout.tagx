@@ -40,25 +40,23 @@
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
 	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
 	
-	
-	
-	<!--+	
-		+ variables & messages
+	<!--+
+		|
+		| variables & messages
+		|
 		+-->
 	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
 	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
 	<fmt:message key="feeds.burst" var="burstRssFeed"/>
     <fmt:message key="feeds.swrc" var="swrcFeed"/>
     <c:set var="requPath" value="${fn:escapeXml(requPath)}"/>    
-    <!-- which resourcetypes to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize) -->
-    <c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-    <c:set var="showPublication" value="${(showPublicationList or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
-    <c:set var="showBookmarkList" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-    <c:set var="showBookmark" value="${showBookmarkList or not empty addAsFirstBookmarksListItem }" />
+    <!--+
+    	| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
+    	+ -->
+    <c:set var="showPublication" value="${(mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
+    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstBookmarksListItem }" />
     <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
     <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
-    <c:set var="pageOptionsClass" value="${empty showPageOptions or showPageOptions == true ? 'config' : 'config disabled'}"/>
-	<c:set var="headerHideable" value="${not empty discussion}" />
 		
 	<!--+
 		+ main layout
@@ -111,9 +109,13 @@
 						
 			<c:if test="${empty discussion}">
 				<parts:postHeader 
-					discussion="${discussion}"
+					headerHideable="${false}"
+					showPageOptions="${empty showPageOptions or showPageOptions == true}"
+					publicationsWidthClass="${publicationsWidthClass}"
+					bookmarksWidthClass="${bookmarksWidthClass}"
 					customPageOptions="${customPageOptions}"
-					showPageOptions="${showPageOptions}"
+					showBookmark="${showBookmark}"
+					showPublication="${showPublication}"
 					isBasket="${isBasket}"
 					disableListNavigation="${disableListNavigation}"
 					disableResourcetypeSelection="${disableResourcetypeSelection}"
@@ -124,7 +126,7 @@
 					addAsFirstBookmarksListItem="${addAsFirstBookmarksListItem}"
 					command="${command}">
 						<!-- keep me -->
-				</parts:postHeader>			
+				</parts:postHeader>	
 			</c:if>				
 		</jsp:attribute>	
 		
@@ -156,14 +158,18 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-		
+
 			<jsp:invoke fragment="discussion" />
 			
 			<c:if test="${not empty discussion}">
 				<parts:postHeader 
-					discussion="${discussion}"
+					headerHideable="${true}"
+					showPageOptions="${empty showPageOptions or showPageOptions == true}"
+					publicationsWidthClass="${publicationsWidthClass}"
+					bookmarksWidthClass="${bookmarksWidthClass}"
 					customPageOptions="${customPageOptions}"
-					showPageOptions="${showPageOptions}"
+					showBookmark="${showBookmark}"
+					showPublication="${showPublication}"
 					isBasket="${isBasket}"
 					disableListNavigation="${disableListNavigation}"
 					disableResourcetypeSelection="${disableResourcetypeSelection}"
@@ -177,7 +183,6 @@
 				</parts:postHeader>			
 			</c:if>
 			
-		
 			<div id="hideableContent">
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
