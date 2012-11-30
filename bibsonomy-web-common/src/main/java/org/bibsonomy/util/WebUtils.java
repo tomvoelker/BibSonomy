@@ -43,6 +43,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URI;
@@ -228,7 +229,8 @@ public class WebUtils {
 		if (method.getStatusCode() == HttpStatus.SC_SEE_OTHER) {
 			Header location = method.getResponseHeader("Location");
 			if (present(location) && present(location.getValue())) {
-				return getContentAsString(client, location.getValue());
+				HttpURL uri = new HttpURL(new HttpURL(method.getURI().getURI()), location.getValue());
+				return getContentAsString(client, uri);
 			}
 		}
 		return null;
