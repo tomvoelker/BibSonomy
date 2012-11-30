@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpURL;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -93,14 +96,17 @@ public class PubMedScraper extends AbstractUrlScraper {
 				// try to scrape with new URL-Pattern
 				// avoid crashes
 			} else {
+				HttpClient client = new HttpClient();
+				
 				// try to find link for RIS export
-				String pageContent = sc.getPageContent();
+				GetMethod method = new GetMethod(sc.getUrl().toExternalForm());
+				String pageContent = WebUtils.getContentAsString(client, method);
 				
 				Matcher risLinkMatcher = RISLINKPATTERN.matcher(pageContent);
 				if (risLinkMatcher.find()) {
-					URL risURL = new URL(_origUrl + "/" + risLinkMatcher.group(1));
+					HttpURL risURL = new HttpURL(new HttpURL(method.getURI().getURI()), risLinkMatcher.group(1));
 					RisToBibtexConverter c = new RisToBibtexConverter();
-					bibtexresult = c.risToBibtex(WebUtils.getContentAsString(risURL));
+					bibtexresult = c.risToBibtex(WebUtils.getContentAsString(client, risURL));
 				} else {
 					
 					Matcher ma = PMIDPATTERN.matcher(pageContent);
