@@ -38,6 +38,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
@@ -225,9 +226,9 @@ public class WebUtils {
 		if (present(postContent)) return postContent;
 		//check if status is 303 See Other
 		if (method.getStatusCode() == HttpStatus.SC_SEE_OTHER) {
-			String location = method.getResponseHeader("Location").getValue();
-			if (present(location)) {
-				return getContentAsString(client, location);
+			Header location = method.getResponseHeader("Location");
+			if (present(location) && present(location.getValue())) {
+				return getContentAsString(client, location.getValue());
 			}
 		}
 		return null;
