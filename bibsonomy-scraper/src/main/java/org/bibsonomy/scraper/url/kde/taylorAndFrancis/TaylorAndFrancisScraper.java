@@ -66,8 +66,6 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 		method.addParameter("direct", "true");
 		method.addParameter("include", "includeCit");
 		return method;
-//		return "doi=" + doi
-//		+ "&format=bibtex&direct=true&include=includeCit";
 	}
 	
 	public String getSupportedSiteName() {
