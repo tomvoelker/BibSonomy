@@ -207,7 +207,31 @@ public class WebUtils {
 	public static String getPostContentAsString(final URL url, final String postContent) throws IOException {
 		return getPostContentAsString(url, postContent, null, null);
 	}
-
+	/**
+	 * Convenience method for receiving page content for the given {@link PostMethod}. It calls
+	 * {@link WebUtils#getContentAsString(HttpClient, HttpMethod)} and returns on status code 200 HTTP OK.
+	 * On status code 303 See Other it calls {@link WebUtils#getContentAsString(HttpClient, String)} on the
+	 * received "Location"-parameter.
+	 * 
+	 * @param client The client to execute.
+	 * @param method The {@link PostMethod} to be executed.
+	 * @return The content of the result page.
+	 * @throws HttpException
+	 * @throws IOException
+	 */
+	public static String getPostContentAsString(HttpClient client, PostMethod method) throws HttpException, IOException {
+		String postContent = getContentAsString(client, method);
+		//if the postContent successfully received, return
+		if (present(postContent)) return postContent;
+		//check if status is 303 See Other
+		if (method.getStatusCode() == HttpStatus.SC_SEE_OTHER) {
+			String location = method.getResponseHeader("Location").getValue();
+			if (present(location)) {
+				return getContentAsString(client, location);
+			}
+		}
+		return null;
+	}
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * 
