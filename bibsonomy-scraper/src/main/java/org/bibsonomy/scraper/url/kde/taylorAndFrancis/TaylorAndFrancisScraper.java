@@ -23,13 +23,16 @@
 
 package org.bibsonomy.scraper.url.kde.taylorAndFrancis;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -56,10 +59,15 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 	private static final String TANDF_BIBTEX_DOWNLOAD_PATH = "action/downloadCitation";
 	private static final String DOWNLOADFILENAME = "tandf_rajp2080_124";
 	
-	private static String postContent(String doi) {
-		return "doi=" + doi
-		+ "&downloadFileName=" + DOWNLOADFILENAME
-		+ "&format=bibtex&direct=true&include=includeCit";
+	private static PostMethod postContent(PostMethod method, String doi) {
+		method.addParameter("doi", doi);
+		method.addParameter("downloadFileName", DOWNLOADFILENAME);
+		method.addParameter("format", "bibtex");
+		method.addParameter("direct", "true");
+		method.addParameter("include", "includeCit");
+		return method;
+//		return "doi=" + doi
+//		+ "&format=bibtex&direct=true&include=includeCit";
 	}
 	
 	public String getSupportedSiteName() {
@@ -85,13 +93,19 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 		Matcher matcher = DOI_PATTERN.matcher(scrapingContext.getUrl().toString());
 		if (!matcher.find()) return false;
 		try {
-			final String cookie = WebUtils.getCookies(scrapingContext.getUrl());
-			String bibtexEntry = WebUtils.getPostContentAsString(cookie, new URL(SITE_URL + TANDF_BIBTEX_DOWNLOAD_PATH), postContent(matcher.group().substring(1)));
-			if (bibtexEntry != null) {
+			HttpClient client = new HttpClient();
+			//get the page to start the session
+			WebUtils.getContentAsString(client, scrapingContext.getUrl().toExternalForm());
+			//post to receive the BibTeX file
+			PostMethod method = new PostMethod(SITE_URL + TANDF_BIBTEX_DOWNLOAD_PATH);
+			String doi = matcher.group().substring(1);
+			String bibtexEntry = WebUtils.getPostContentAsString(client, postContent(method, doi));
+			if (present(bibtexEntry)) {
 				scrapingContext.setBibtexResult(bibtexEntry.trim());
 				return true;
-			} else
+			} else {
 				throw new ScrapingFailureException("getting BibTeX failed");
+			}
 		} catch (IOException ex) {
 			throw new ScrapingException(ex);
 		}
