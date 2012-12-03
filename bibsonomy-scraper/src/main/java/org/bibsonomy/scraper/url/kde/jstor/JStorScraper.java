@@ -142,7 +142,7 @@ public class JStorScraper extends AbstractUrlScraper {
 	private static String getPageContent(URL url, CookieManager cookieMan) throws IOException {
 		//TODO: use apache commons, use WebUtils
 		String page = null;
-		do {
+		for (int i = 0; i < 10; i++) {
 			HttpURLConnection con = null;
 			InputStream inputStream = null;
 			try {
@@ -170,7 +170,7 @@ public class JStorScraper extends AbstractUrlScraper {
 			String location = con.getHeaderField("Location");
 			if (!present(location)) break;
 			url = new URL(url, location);
-		} while (true);
+		}
 		return page;
 	}
 
