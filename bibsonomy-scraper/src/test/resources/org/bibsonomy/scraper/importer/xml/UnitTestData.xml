@@ -587,7 +587,7 @@
 	<URLTest id="url_98">
 		<TestDescription>JStor Scraper url test</TestDescription>
 		<URL>https://www.jstor.org/action/exportSingleCitation?singleCitation=true&amp;doi=10.2307%2F20569359</URL>
-		<BibFile>JStorScraperUnitURLTest.bib</BibFile>
+		<BibFile>JStorScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_99">
