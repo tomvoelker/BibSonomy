@@ -20,8 +20,19 @@
 	
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
-		</jsp:attribute>
-		
+			
+			<!--+
+				| sphere dialog menu -> only for logged in users: friends, groups, etc.
+			 	+-->
+			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name ne command.requestedUser}">
+				<!-- Javascript for the sphere dialog menu -->
+				<script>
+					$(function() {
+						generateSphereDialog("${fn:escapeXml(command.requestedUser)}", "${ckey}", "linkButton", true, 0, "position2");
+					});
+				</script>
+			</c:if>
+		</jsp:attribute>		
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.user" formAction="/user/${fn:escapeXml(command.requestedUser)}" formInputName="tag" requestedUser="${command.requestedUser}">
@@ -51,13 +62,6 @@
 						isFriendOfUser="${command.friendOfUser}" 
 						isFollowerOfUser="${command.followerOfUser}" />
 				</li>
-												
-				<!-- Javascript for the Spheres List -->
-				<script>
-					$(function() {
-						generateSphereDialog("${fn:escapeXml(command.requestedUser)}", "${ckey}", "linkButton", true, 0, "position2");
-					});
-				</script>
 			</c:if>
 						
 			<!-- link to discussed user page -->
