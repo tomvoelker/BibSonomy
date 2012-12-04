@@ -48,7 +48,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	
 	@Override
 	public void canAccess() {
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
+		if (!this.userName.equalsIgnoreCase(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 
 	@Override

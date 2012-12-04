@@ -60,7 +60,7 @@ public class GetPostDocumentStrategy extends Strategy {
 	
 	@Override
 	public void canAccess() {
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) {
+		if (!this.userName.equalsIgnoreCase(this.getLogic().getAuthenticatedUser().getName())) {
 			throw new AccessDeniedException();
 		}
 	}

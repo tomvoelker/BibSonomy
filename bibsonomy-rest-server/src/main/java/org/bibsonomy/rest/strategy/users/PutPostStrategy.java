@@ -20,7 +20,6 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
@@ -52,7 +51,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	public void canAccess() {
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
+		if (!this.userName.equalsIgnoreCase(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 
 	@Override
