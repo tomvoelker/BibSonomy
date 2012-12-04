@@ -73,9 +73,22 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />		
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 	    	<script type="text/javascript" src="${resdir}/javascript/cv/layout.js"><!--  --></script>
 	    	<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
+	    	
+			<!--+
+				| sphere dialog menu -> only for logged in users: friends, groups, etc.
+			 	+-->
+			<c:if test="${command.context.userLoggedIn and command.context.loginUser.name ne command.requestedUser}">
+				<!-- Javascript for the sphere dialog menu -->
+				<script>
+					$(function() {
+						generateSphereDialog("${fn:escapeXml(command.requestedUser)}", "${ckey}", "linkButton", true, 0, "position2");
+					});
+				</script>
+			</c:if>
 	    </jsp:attribute>
 
 		<!--+
