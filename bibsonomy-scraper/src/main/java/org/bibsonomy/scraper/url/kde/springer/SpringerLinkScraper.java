@@ -100,30 +100,29 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		 */
 		try {
 			//get the publication page
-			HttpClient client = new HttpClient();
-			GetMethod method = new GetMethod(url);
-			String page = WebUtils.getContentAsString(client, method);
+			final HttpClient client = WebUtils.getHttpClient();
+			final GetMethod method = new GetMethod(url);
+			final String page = WebUtils.getContentAsString(client, method);
 			
 			//had the server returned response code 200?
-			if (page == null) throw new ScrapingException("Server didn't return response code 200 for URL " + method.getURI());
+			if (!present(page)) throw new ScrapingException("server did not return response code 200 for URL " + method.getURI());
 			
 			//see if there is a export link on the publication page		
-			Matcher exportLinkMatcher = EXPORT_LINK_PATTERN.matcher(page);
+			final Matcher exportLinkMatcher = EXPORT_LINK_PATTERN.matcher(page);
 			if (exportLinkMatcher.find()) {
 				//get the export panel page
-				HttpURL uri = new HttpURL(method.getURI().getHost(), method.getURI().getPort(), exportLinkMatcher.group(1));
-				String panel = WebUtils.getContentAsString(client, uri);
+				final HttpURL uri = new HttpURL(method.getURI().getHost(), method.getURI().getPort(), exportLinkMatcher.group(1));
+				final String panel = WebUtils.getContentAsString(client, uri);
 				
 				//had the server returned response code 200?
-				if (panel == null) throw new ScrapingException("Server didn't return response code 200 for URL " + uri);
+				if (present(panel)) throw new ScrapingException("server did not return response code 200 for URL " + uri);
 					
 				//see if there is a BibTeX file offered on the export panel page
-				Matcher bibFileMatcher = BIBTEX_LINK_PATTERN.matcher(panel);
-				if (!bibFileMatcher.find()) throw new ScrapingException("No Link to BibTeX file found");
+				final Matcher bibFileMatcher = BIBTEX_LINK_PATTERN.matcher(panel);
+				if (!bibFileMatcher.find()) throw new ScrapingException("could not find link to BibTeX file");
 				
 				//download the BibTeX file now
-				uri = new HttpURL(uri, bibFileMatcher.group(1));
-				String bibTeXResult = WebUtils.getContentAsString(client, uri);
+				final String bibTeXResult = WebUtils.getContentAsString(client, new HttpURL(uri, bibFileMatcher.group(1)));
 				if (!present(bibTeXResult)) throw new ScrapingException("BibTeX file not present");
 				sc.setBibtexResult(bibTeXResult);
 				return true;
