@@ -1425,5 +1425,11 @@
 		<BibFile>BiologistsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_235">
+		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
+		<URL>http://link.springer.com/chapter/10.1007%2F3-540-44527-7_10?LI=true</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest7.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
