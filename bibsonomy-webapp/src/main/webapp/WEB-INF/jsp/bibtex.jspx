@@ -60,7 +60,6 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/jquery/plugins/ui/jquery-ui.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			
 			<c:if test="${goldstandardPresent}">
