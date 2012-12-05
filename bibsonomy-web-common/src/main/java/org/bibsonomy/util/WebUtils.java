@@ -94,11 +94,26 @@ public class WebUtils {
 	 * HttpClient is thread safe and we can use one instance for several requests.
 	 */
   	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
-  	private static final HttpClient client = new HttpClient(connectionManager);
-  	static {
-  		client.getParams().setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
-  	}
+  	private static final HttpClient client = getHttpClient();
 
+  	
+  	/**
+  	 * This method returns an instance of the HttpClient and should only be used
+  	 * if the other methods that deliver direct results can not be used. Each 
+  	 * call to this method should be documented with an explanation why it is 
+  	 * necessary.
+  	 * 
+  	 * @return
+  	 */
+  	public static HttpClient getHttpClient() {
+  		final HttpClient client = new HttpClient(connectionManager);
+  		/*
+  		 * configure client
+  		 */
+  	  	client.getParams().setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
+  	  	return client;
+  	}
+  	
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
 	 * 
@@ -222,7 +237,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getPostContentAsString(HttpClient client, PostMethod method) throws HttpException, IOException {
-		String postContent = getContentAsString(client, method);
+		final String postContent = getContentAsString(client, method);
 		//if the postContent successfully received, return
 		if (present(postContent)) return postContent;
 		//check if status is 303 See Other
