@@ -29,7 +29,7 @@ function deleteLinkClicked () {
 		} else {
 			var test = $(button).next(".documentFileName").text();
 			alert($("response", data).text());
-			$(button).parent(".fsRow").remove();
+			$(button).parent("li").remove();
 		}
 	}, "xml");
 	return false;
@@ -148,42 +148,40 @@ function uploadRequestSuccessful(data) {
 		
 		var documentQRMessage = getString("qrcode.actions.download");
 		var params = [projectName];
-		
 		var documentQRHelp = getString("qrcode.info.embedderInfoMessage", params);
 		
+		
+		
 		/*
-		 * on /bibtex pages we have a DIV where we add links to the files
+		 * on /bibtex pages we have a list where we add links to the files
 		 */
-		var filesDiv = $("#files");
+		var filesUl = $("#files");
 
 		/*
 		 * file extension for qr code embedding
 		 */
 		var suffix = ".pdf";
 		
-		if (filesDiv.length) {
+		if (filesUl.length) {
 			
-			var div = "";
+			var inner = "";
 			
+			var aQrCode    = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>";
+			var aNoQrCode  = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>";
+			var imgPreview = "<img style='display:none;' class='pre_pic' src='" + documentUri + "?preview=SMALL' alt='" + fileName + "' />";
+			var aDel       = "(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)";
 			/*
 			 * check if file ends with '.pdf'
 			 */			
 			if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) != -1) {
-				div = "<div class='fsRow'>" + 
-				"<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>" + 
-				"<img style='display:none;' class='pre_pic' src='" + documentUri + "?preview=SMALL' alt='" + fileName + "' />" + fileName + "</a> " +
-				"( <a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>"  + 
-				"<img style='display:none;' class='pre_pic' src='" + documentUri + "?preview=SMALL' alt='" + fileName + "' />" + documentQRMessage + "</a>" + 
+				inner = aQrCode + imgPreview + fileName + "</a> ( " + aNoQrCode + imgPreview + documentQRMessage + "</a>" + 
 				"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
-				") (<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
+				") " + aDel;
 			} else {
-				div = "<div class='fsRow'>" + 
-				"<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>"  + 
-				"<img style='display:none;' class='pre_pic' src='" + documentUri + "?preview=SMALL' alt='" + fileName + "' />" + fileName + "</a> " +
-				"(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)</div>";
+				inner = aNoQrCode + imgPreview + fileName + "</a> " + aDel;
 			}
 			
-			filesDiv.append(div);
+			filesUl.append("<li>" + inner + "</li>");
 			$(".deleteDocument").click(deleteLinkClicked);
 		} else {
 			/*
