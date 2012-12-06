@@ -35,16 +35,17 @@
 		<h2 id="gold_title" data-interhash="${goldstandard.interHash}">
 			<a href="/bibtex/${goldstandard.interHash}" itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}"/></a>
 		</h2>
-		<div id="gold_authorsEditors"><fmt:message key="by"/><c:out value=": "/><pub:author publication="${goldstandard}" schemaOrgMarkUp="true"/></div>
+		<bib:desc publication="${post.resource}"/>
 		
 		<!-- exports -->
 		<div id="gold_exports">
 			<ul>
-				<li><a href="#gold_links"><fmt:message key="bibtex.links"/></a></li>
 				<li><a href="#gold_abstract_tab"><fmt:message key="bibtex.abstract"/></a></li>
-				<li><a href="#gold_exports_1"><fmt:message key="export.layout"/></a></li>
+				<li><a href="#gold_links"><fmt:message key="bibtex.links"/></a></li>
+				<li><a href="#gold_exports_1"><fmt:message key="export"/></a></li>
 				<li><a href="#gold_exports_2"><fmt:message key="export.bibtex.record"/></a></li>
 				<li><a href="#gold_exports_3"><fmt:message key="export.endnote.record"/></a></li>
+				<li><a href="#gold_refs"><fmt:message key="goldStandard.resource.info.citations"/></a></li>
 			</ul>
 
 			<div id="gold_links">
@@ -132,29 +133,39 @@
 		  			<textarea name="endnote_textarea" rows="20">${fn:escapeXml(endnoteExport)}</textarea>
 		  		</form>			
 			</div>
-		</div>
-		<div id="gold_refs">
-			<div id="gold_references">
-				<h3><fmt:message key="goldStandard.resource.info.references" /></h3>
-				<ol>
-					<c:forEach var="reference" items="${goldstandard.references}">
-						<li data-interhash="${reference.interHash}" class="reference"><ref:pubReference publication="${reference}" /></li>
-					</c:forEach>
-					
-					<!-- for javascript rending "THIS IS BAD, it creates an empty authorlist in the page, that is visible through markup-->
-					<li class="reference initiallyHidden" id="referenceTemplate"><ref:pubReference publication="${mockReference}" /></li>
-				</ol>
-			</div>
-			<c:if test="${fn:length(goldstandard.referencedBy) != 0}">
-				<div id="gold_referencedBy">
-					<h3><fmt:message key="goldStandard.resource.info.referencedBy" /></h3>
+			<div id="gold_refs">
+				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+					<ul class="newMenu">
+						<li>
+							<fmt:message key="post.actions.edit.gold.references" var="editRefTitle" />
+							<a href="javascript:editReferences();" title="${editRefTitle}">
+							<fmt:message key="post.actions.edit.gold.references"></fmt:message>
+							</a>
+						</li>
+					</ul>
+				</c:if>	
+				<div id="gold_references">
+					<h3><fmt:message key="goldStandard.resource.info.references" /></h3>
 					<ol>
-						<c:forEach var="reference" items="${goldstandard.referencedBy}">
-							<li data-interhash="${reference.interHash}" class="referencedBy"><ref:pubReference publication="${reference}" /></li>
+						<c:forEach var="reference" items="${goldstandard.references}">
+							<li data-interhash="${reference.interHash}" class="reference"><ref:pubReference publication="${reference}" /></li>
 						</c:forEach>
+						
+						<!-- for javascript rending "THIS IS BAD, it creates an empty authorlist in the page, that is visible through markup-->
+						<li class="reference initiallyHidden" id="referenceTemplate"><ref:pubReference publication="${mockReference}" /></li>
 					</ol>
 				</div>
-			</c:if>
+				<c:if test="${fn:length(goldstandard.referencedBy) != 0}">
+					<div id="gold_referencedBy">
+						<h3><fmt:message key="goldStandard.resource.info.referencedBy" /></h3>
+						<ol>
+							<c:forEach var="reference" items="${goldstandard.referencedBy}">
+								<li data-interhash="${reference.interHash}" class="referencedBy"><ref:pubReference publication="${reference}" /></li>
+							</c:forEach>
+						</ol>
+					</div>
+				</c:if>	
+			</div>
 		</div>
 		
 		<!-- discussion -->

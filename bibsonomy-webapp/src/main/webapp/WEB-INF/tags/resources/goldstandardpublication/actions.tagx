@@ -23,12 +23,6 @@
 					<fmt:message key="post.actions.edit"/>
 				</a>
 			</li>
-			<li>
-				<fmt:message key="post.actions.edit.gold.references" var="editRefTitle" />
-				<a href="javascript:editReferences();" title="${editRefTitle}">
-					<fmt:message key="post.actions.edit.gold.references"></fmt:message>
-				</a>
-			</li>
 			<!-- FIXME: implement -->
 			<!--<li>
 				<fmt:message key="post.actions.delete.gold.title" var="deleteTitle"/>
