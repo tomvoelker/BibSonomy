@@ -110,7 +110,6 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			if (!present(page)) throw new ScrapingException("server did not return response code 200 for URL " + method.getURI());
 			
 			//fetch abstract
-			System.out.println(page);
 			Matcher abstractMatcher = ABSTRACT_PATTERN_FOR_PAGE.matcher(page);
 			String abstractText = null;
 			if (abstractMatcher.find()) {
