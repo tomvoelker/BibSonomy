@@ -21,7 +21,7 @@
     <jsp:attribute name="additionalItemMetadata">
       <description>
       <c:set var="description">
-        <bib:desc post="${post}"/>
+        <bib:desc publication="${post.resource}"/>
         <div class="abstract"><c:out value="${post.resource.abstract}"/></div>
         <span>
           <rc:meta post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}" showTagsLabel="${true}"/>

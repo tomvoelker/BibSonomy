@@ -15,7 +15,7 @@
   <export:rssSkeleton format="burst">
 
     <jsp:attribute name="content">
-      <c:set var="description"><bib:desc post="${post}"/></c:set>
+      <c:set var="description"><bib:desc publication="${post.resource}"/></c:set>
       <c:out value="${description}"/>
     </jsp:attribute>
 

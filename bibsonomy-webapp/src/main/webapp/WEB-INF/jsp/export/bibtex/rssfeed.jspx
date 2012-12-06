@@ -22,7 +22,7 @@
 
     <jsp:attribute name="content">
       <c:set var="description">
-        <bib:desc post="${post}"/>
+        <bib:desc publication="${post.resource}"/>
       </c:set>
       <c:out value="${mtl:removeXmlControlChars(description)}"/>
     </jsp:attribute>
