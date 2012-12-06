@@ -115,7 +115,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				final String panel = WebUtils.getContentAsString(client, uri);
 				
 				//had the server returned response code 200?
-				if (present(panel)) throw new ScrapingException("server did not return response code 200 for URL " + uri);
+				if (!present(panel)) throw new ScrapingException("server did not return response code 200 for URL " + uri);
 					
 				//see if there is a BibTeX file offered on the export panel page
 				final Matcher bibFileMatcher = BIBTEX_LINK_PATTERN.matcher(panel);
