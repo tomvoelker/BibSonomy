@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -72,7 +73,10 @@ public class FunctionsTest {
 		final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		final String date = "2012-01-30T13:13:16+0100";
 		assertEquals(date, Functions.formatDateISO8601(ISO8601_DATE_FORMAT.parse(date)));
+		
+		assertEquals("1970-01-01T01:00:00+0100", Functions.formatDateISO8601(new Date(0)));
 	}
+
 	
 	@Test
 	public void testFormatDateW3CDTF() throws Exception {
