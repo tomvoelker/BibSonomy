@@ -75,8 +75,8 @@
 						<c:otherwise><bib:title post="${post}"/></c:otherwise>
 					</c:choose>
 				</jsp:attribute>
-				<jsp:attribute name="desc">     <bib:desc      post="${post}"/></jsp:attribute>
-				<jsp:attribute name="actions">  <bib:actions   post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
+				<jsp:attribute name="desc">     <bib:desc publication="${post.resource}"/></jsp:attribute>
+				<jsp:attribute name="actions">  <bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
 				<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
 			</rc:post>
 		</c:forEach>
