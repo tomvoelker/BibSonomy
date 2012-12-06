@@ -5,8 +5,9 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
-		<c:if test="${not empty post.resource.journal}">
-			<em><c:out value="${mtl:cleanBibtex(post.resource.journal)}" /></em>	
-		</c:if>	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />	
+	
+	<c:if test="${not empty publication.journal}">
+		<em><c:out value="${mtl:cleanBibtex(publication.journal)}" /></em>	
+	</c:if>	
 </jsp:root>

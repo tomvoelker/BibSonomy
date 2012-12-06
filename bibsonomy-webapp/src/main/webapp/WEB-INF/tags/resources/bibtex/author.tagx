@@ -62,6 +62,6 @@
 		<c:if test="${empty publication.author and not empty publication.editor}">
 			<c:out value=" ("/><fmt:message key="bibtex.editors.abbr"/>).
 		</c:if>
-		<c:out value=" "/>
+		<c:out value=". "/>
 	</span>
 </jsp:root>

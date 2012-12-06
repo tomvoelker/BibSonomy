@@ -4,9 +4,9 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	
-	<c:if test="${not empty post.resource.edition}">		
-		<em><c:out value="${mtl:cleanBibtex(post.resource.edition)}" /><c:out value=" "/><fmt:message key="bibtex.edition"/>,<c:out value=" "/></em>		
+	<c:if test="${not empty publication.edition}">		
+		<em><c:out value="${mtl:cleanBibtex(publication.edition)}" /><c:out value=" "/><fmt:message key="bibtex.edition"/>,<c:out value=" "/></em>		
 	</c:if>
 </jsp:root>

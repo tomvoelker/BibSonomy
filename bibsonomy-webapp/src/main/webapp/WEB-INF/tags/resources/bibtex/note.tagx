@@ -4,12 +4,11 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />	
 
-
- 	<c:if test="${not empty post.resource.note}">		
+ 	<c:if test="${not empty publication.note}">		
 		<em> 
-			<c:out value="${mtl:cleanBibtex(post.resource.note)}."/>
+			<c:out value="${mtl:cleanBibtex(publication.note)}."/>
 	    </em>
     </c:if>	
 	

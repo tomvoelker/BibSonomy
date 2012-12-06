@@ -3,9 +3,9 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />	
 	
-	<c:if test="${not empty post.resource.series}">		
-		<em><c:out value="${mtl:cleanBibtex(post.resource.series)}" /><c:out value=" "/></em>		
+	<c:if test="${not empty publication.series}">		
+		<em><c:out value="${mtl:cleanBibtex(publication.series)}" /><c:out value=" "/></em>		
 	</c:if>
 </jsp:root>

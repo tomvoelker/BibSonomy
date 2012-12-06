@@ -15,7 +15,7 @@
     <span class="info">...
       <div>
         <div class="ptitle"><bib:title post="${post}"/></div>
-        <div class="pdesc"> <bib:desc post="${post}"/></div>
+        <div class="pdesc"> <bib:desc publication="${post.resource}"/></div>
         <span>
            <rc:meta post="${post}" otherPostsUrlPrefix="/bib/"/>
         </span>
