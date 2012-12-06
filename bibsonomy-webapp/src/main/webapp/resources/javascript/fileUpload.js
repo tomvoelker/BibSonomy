@@ -181,7 +181,7 @@ function uploadRequestSuccessful(data) {
 				inner = aNoQrCode + imgPreview + fileName + "</a> " + aDel;
 			}
 			
-			filesUl.append("<li>" + inner + "</li>");
+			filesUl.find("li:last-child").before("<li>" + inner + "</li>");
 			$(".deleteDocument").click(deleteLinkClicked);
 		} else {
 			/*
