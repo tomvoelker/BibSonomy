@@ -21,13 +21,13 @@
 <c:when test="${not empty bib.booktitle}">In: <em><bib:crossref linktext="${bib.booktitle}" crossref="${bib.crossref}"/></em></c:when>
 </c:choose> 
 <c:if test="${not empty bib.volume}">, Vol. <c:out value="${mtl:cleanBibtex(bib.volume)}" /></c:if> 
-<c:if test="${not empty bib.number}">, Nr. <c:out value="${mtl:cleanBibtex(bib.number)}" /></c:if>
+<c:if test="${not empty bib.number}">, No. <c:out value="${mtl:cleanBibtex(bib.number)}" /></c:if>
 <c:if test="${not empty bib.address}">
-<c:out value=" "/><c:out value="${mtl:cleanBibtex(bib.address)}" />:
+<c:out value=", "/><c:out value="${mtl:cleanBibtex(bib.address)}" />:
 </c:if>
 <c:if test="${not empty bib.publisher}"><c:out value="${mtl:cleanBibtex(bib.publisher)}" /></c:if>
 <c:if test="${not empty bib.year}">
-(<c:out value="${mtl:getDate(bib.day, bib.month, bib.year, locale)}"/>) 
+(<c:out value="${mtl:getDate(bib.day, bib.month, bib.year, locale)}"/>)
 </c:if> 
 <c:if test="${not empty bib.pages}">, p. <c:out value="${mtl:cleanBibtex(bib.pages)}" /></c:if>.
 	  
