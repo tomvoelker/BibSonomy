@@ -2567,6 +2567,10 @@ ul.documents > li.fileError {
   list-style-image: url("/resources/image/file_status_error.png");
 }
 
+table.td-top td {
+	vertical-align: top;	
+}
+
 /* reporting */
 table.report {
 	margin: 1ex 0;
