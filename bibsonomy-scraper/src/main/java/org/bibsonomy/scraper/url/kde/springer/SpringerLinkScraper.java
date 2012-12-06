@@ -71,6 +71,8 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final Pattern EXPORT_LINK_PATTERN = Pattern.compile("href=\"(/export-citation/[^\"]++)\"");
 	private static final Pattern BIBTEX_LINK_PATTERN = Pattern.compile("class=\"bib\"[^>]*?href=\"([^\"]++)\"");
 	
+	private static final Pattern ABSTRACT_PATTERN_FOR_PAGE = Pattern.compile("(?ms)<div class=\"abstract-content formatted\" itemprop=\"description\">.*?<p class=\"a-plus-plus\">([^<]*+)");
+	
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
 	private static final String SPRINGER_CITATION_HOST_NEW = "link.springer.com";
@@ -107,6 +109,14 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			//had the server returned response code 200?
 			if (!present(page)) throw new ScrapingException("server did not return response code 200 for URL " + method.getURI());
 			
+			//fetch abstract
+			System.out.println(page);
+			Matcher abstractMatcher = ABSTRACT_PATTERN_FOR_PAGE.matcher(page);
+			String abstractText = null;
+			if (abstractMatcher.find()) {
+				abstractText = abstractMatcher.group(1);
+			}
+			
 			//see if there is a export link on the publication page		
 			final Matcher exportLinkMatcher = EXPORT_LINK_PATTERN.matcher(page);
 			if (exportLinkMatcher.find()) {
@@ -122,8 +132,15 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				if (!bibFileMatcher.find()) throw new ScrapingException("could not find link to BibTeX file");
 				
 				//download the BibTeX file now
-				final String bibTeXResult = WebUtils.getContentAsString(client, new HttpURL(uri, bibFileMatcher.group(1)));
+				String bibTeXResult = WebUtils.getContentAsString(client, new HttpURL(uri, bibFileMatcher.group(1)));
 				if (!present(bibTeXResult)) throw new ScrapingException("BibTeX file not present");
+				
+				//add abstract
+				if (present(abstractText)) {
+					bibTeXResult = BibTexUtils.addFieldIfNotContained(bibTeXResult, "abstract", abstractText);
+				}
+				
+				//done
 				sc.setBibtexResult(bibTeXResult);
 				return true;
 			}
