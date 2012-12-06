@@ -19,7 +19,7 @@
 			
 		<!-- BibTex description -->
 		<jsp:attribute name="desc">
-			<bib:desc post="${post}"/>
+			<bib:desc publication="${post.resource}"/>
 		</jsp:attribute>
 		
 		<!-- BibTeX action -->
