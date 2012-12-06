@@ -1046,42 +1046,6 @@ ul.news {
  * </groupboxes>
  */
 
-
-
-
-
-
-/*
- * jQuery UI tabs (used, for example, on /login)
- */
-div.ui-tabs div.ui-tabs-panel {
-	border: 1px solid #069;
-	margin-top: 2.2em;
-}
-
-div.ui-tabs ul.ui-tabs-nav {
-	padding: 0px;
-}
-
-div.ui-tabs ul.ui-tabs-nav li {
-	border: 1px solid #bbb;
-	background-color: #eee;
-	top: 0px;
-}
-
-div.ui-tabs ul.ui-tabs-nav li:hover {
-	background-color: #fff;
-}
-
-div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
-	background-color: #fff;
-	border: 1px solid #069;
-}
-
-div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
-	color: #069;
-}
-
 /* --- tooltips -------------------------------------------------------------*/
 span.info {
 	position: relative;
