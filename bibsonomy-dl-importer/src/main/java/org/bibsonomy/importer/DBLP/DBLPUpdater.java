@@ -81,8 +81,8 @@ public class DBLPUpdater {
 
 			
 			log.info("initializing updaters");
-			final HTTPBookmarkUpdate httpBookUpdate = new HTTPBookmarkUpdate(configuration.getHome(), configuration.getUser());
-			final HTTPBibtexUpdate httpBibUpdate = new HTTPBibtexUpdate(configuration.getHome(), configuration.getUser());
+			final HTTPBookmarkUpdate httpBookUpdate = new HTTPBookmarkUpdate(configuration.getHome(), configuration.getUser(), configuration.getCookie());
+			final HTTPBibtexUpdate httpBibUpdate = new HTTPBibtexUpdate(configuration.getHome(), configuration.getUser(), configuration.getCookie());
 
 			final BookmarkUpdate bookupdate = new BookmarkUpdate(httpBookUpdate, presult, dbhandler);
 			final BibtexUpdate bibupdate = new BibtexUpdate(httpBibUpdate, presult, dbhandler);

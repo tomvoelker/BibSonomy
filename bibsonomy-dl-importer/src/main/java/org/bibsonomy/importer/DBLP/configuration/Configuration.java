@@ -21,6 +21,11 @@ public class Configuration{
 	 */
 	private String user = null;
 	
+	/**
+	 * The cookie for BibSonomy 
+	 */
+	private String cookie = null;
+	
 	/*
 	 * DB host
 	 */
@@ -108,6 +113,14 @@ public class Configuration{
 
 	public void setHome(String home) {
 		this.home = home;
+	}
+
+	public String getCookie() {
+		return this.cookie;
+	}
+
+	public void setCookie(String cookie) {
+		this.cookie = cookie;
 	}
 	
 }

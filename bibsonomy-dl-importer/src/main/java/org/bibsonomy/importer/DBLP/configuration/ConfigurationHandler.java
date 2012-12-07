@@ -27,6 +27,8 @@ public class ConfigurationHandler extends DefaultHandler{
 	
 	private static final String XML_ELEMENT_PASSWORD = "mysqlpassword";
 	
+	private static final String XML_ELEMENT_COOKIE = "cookie";
+	
 	/*
 	 * result object
 	 */
@@ -59,14 +61,17 @@ public class ConfigurationHandler extends DefaultHandler{
 	 * constants so build new result object. If this element is db so remember that
 	 * is it found and the next elements are in db context.
 	 */
-    public void startElement (String uri, String name, String qName, Attributes atts){
+    @Override
+	public void startElement (String uri, String name, String qName, Attributes atts){
     	if(name.equals(XML_ELEMENT_CONSTANTS) && !dbconstants){
     		conResult = new Configuration();//found constants
     		lastReadElement = XML_ELEMENT_CONSTANTS;
     	}else if(name.equals(XML_ELEMENT_URL) && !dbconstants){
     		lastReadElement = XML_ELEMENT_URL;
       	}else if(name.equals(XML_ELEMENT_USER) && !dbconstants){
-    		lastReadElement = XML_ELEMENT_USER;		
+    		lastReadElement = XML_ELEMENT_USER;
+      	} else if (name.equals(XML_ELEMENT_COOKIE) && !dbconstants) {
+      		lastReadElement = XML_ELEMENT_COOKIE;
     	}else if(name.equals(XML_ELEMENT_DB) && !dbconstants){
     		lastReadElement = XML_ELEMENT_DB;
     		dbconstants = true;
@@ -87,7 +92,8 @@ public class ConfigurationHandler extends DefaultHandler{
     /*
      * detect the end of a XML tag
      */
-    public void endElement (String uri, String name, String qName){
+    @Override
+	public void endElement (String uri, String name, String qName){
     	if(name.equals(XML_ELEMENT_CONSTANTS) && !dbconstants){
     	}else if(name.equals(XML_ELEMENT_URL) && !dbconstants){
     		lastReadElement="";
@@ -113,7 +119,8 @@ public class ConfigurationHandler extends DefaultHandler{
     /*
      * this method detect and save the content of a xml element
      */
-    public void characters (char ch[], int start, int length){
+    @Override
+	public void characters (char ch[], int start, int length){
     	if(lastReadElement.equals(XML_ELEMENT_URL) && !dbconstants){
     		String newValue = new String(ch, start, length).trim();
     		if(!newValue.equals("")){
@@ -123,6 +130,11 @@ public class ConfigurationHandler extends DefaultHandler{
     		String newValue = new String(ch, start, length).trim();
     		if(!newValue.equals("")){
     			conResult.setUser(newValue);
+    		}
+    	}else if(lastReadElement.equals(XML_ELEMENT_COOKIE) && !dbconstants){
+    		String newValue = new String(ch, start, length).trim();
+    		if(!newValue.equals("")){
+    			conResult.setCookie(newValue);
     		}
     	}else if(lastReadElement.equals(XML_ELEMENT_HOST) && dbconstants){
     		String newValue = new String(ch, start, length).trim();

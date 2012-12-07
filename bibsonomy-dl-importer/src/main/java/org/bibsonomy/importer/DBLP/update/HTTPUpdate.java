@@ -22,17 +22,17 @@ public class HTTPUpdate {
 	private static final Pattern SESSION_ID_PATTERN = Pattern.compile("JSESSIONID=([0-9A-Fa-f]{32});.*");
 	private static final Pattern CKEY_PATTERN = Pattern.compile(".*ckey=([0-9A-Fa-f]{32}).*");
 
-	protected String baseURL = null;
+	protected final String baseURL;
+	private final String userCookie;
+
 	protected String cKey = null;
-	private String userCookie = null;
 	private String sessionCookie = null;
 	
 	
 	
-	public HTTPUpdate (final String baseURL, final String user) throws MalformedURLException, IOException {
+	public HTTPUpdate (final String baseURL, final String user, final String cookie) throws MalformedURLException, IOException {
 		this.baseURL = baseURL;
-		// FIXME: where do we get a cookie from?
-		this.userCookie = "";
+		this.userCookie = cookie;
 		openSession();
 	}
 	

@@ -5,6 +5,8 @@
 	<url>http://dblp.uni-trier.de/xml/dblp.xml</url>
 	<!-- Name of DBLP-User -->
 	<user>dblp</user>
+	<!-- BibSonomy cookie -->
+	<cookie>specify!</cookie>
 	<!-- projecthome -->
 	<home>http://www.bibsonomy.org/</home>
 	<!-- DB -->
