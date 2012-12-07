@@ -53,10 +53,7 @@ public class DBLPUpdater {
 
 			dbhandler = new DBHandler(configuration);
 			dbhandler.open();
-			String passHash = dbhandler.getUserhash();
 			dbhandler.close();
-			if (passHash == null)
-				throw new Exception("user is not in database");
 
 			/*
 			 * read XML file from DBLP
@@ -84,8 +81,8 @@ public class DBLPUpdater {
 
 			
 			log.info("initializing updaters");
-			final HTTPBookmarkUpdate httpBookUpdate = new HTTPBookmarkUpdate(configuration.getHome(), configuration.getUser(), passHash);
-			final HTTPBibtexUpdate httpBibUpdate = new HTTPBibtexUpdate(configuration.getHome(), configuration.getUser(), passHash);
+			final HTTPBookmarkUpdate httpBookUpdate = new HTTPBookmarkUpdate(configuration.getHome(), configuration.getUser());
+			final HTTPBibtexUpdate httpBibUpdate = new HTTPBibtexUpdate(configuration.getHome(), configuration.getUser());
 
 			final BookmarkUpdate bookupdate = new BookmarkUpdate(httpBookUpdate, presult, dbhandler);
 			final BibtexUpdate bibupdate = new BibtexUpdate(httpBibUpdate, presult, dbhandler);

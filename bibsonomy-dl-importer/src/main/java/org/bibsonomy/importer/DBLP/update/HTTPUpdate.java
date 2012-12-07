@@ -29,10 +29,10 @@ public class HTTPUpdate {
 	
 	
 	
-	public HTTPUpdate (String baseURL, String user, String passHash) throws MalformedURLException, IOException {
+	public HTTPUpdate (final String baseURL, final String user) throws MalformedURLException, IOException {
 		this.baseURL = baseURL;
 		// FIXME: where do we get a cookie from?
-		this.userCookie = "db_user=ZGJscDoxMzYyMDc0NDIwNzM1OmIyYjBjNDU0M2E4MzNjMjYyYzg3YmRmODNjZDQyOGMy;";
+		this.userCookie = "";
 		openSession();
 	}
 	

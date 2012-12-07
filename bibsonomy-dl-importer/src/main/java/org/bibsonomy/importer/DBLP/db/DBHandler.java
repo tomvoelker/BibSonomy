@@ -30,8 +30,6 @@ public class DBHandler{
 	
 	private static final String SQL_GET_BIBKEYS = "SELECT bibtexKey FROM bibtex WHERE user_name=?";
 	
-	private static final String SQL_GET_USERHASH = "SELECT user_password FROM user WHERE user_name=?";
-	
 	private static final String SQL_GET_BOOKHASH = "SELECT book_url_hash FROM bookmark WHERE LEFT(book_extended,?)=? and user_name=?";
 	
 	private static final String SQL_GET_BOOK_CONTENT_ID = "SELECT content_id FROM bookmark WHERE LEFT(book_extended,?)=? and user_name=?";
@@ -49,22 +47,6 @@ public class DBHandler{
 	private static final String SQL_COUNT_BOOKMARKS = "SELECT count(*) AS count FROM bookmark WHERE user_name=?";
 
 	
-	/* 
-	 * DBLP insert failure types
-	 */
-	private static final String WARNING_FAILURE = "warning";
-	
-	private static final String DUPLICATE_FAILURE = "duplicate";
-	
-	private static final String INCOMPLETE_FAILURE = "incomplete";
-	
-	private static final String INCOMPLETE_AUTHOR_EDITOR_FAILURE = "incomplete_author_editor";
-
-	private static final String BOOKMARK_EMPTY_URL_FAILURE = "bookmark_empty_url";
-	
-	private static final String EXCEPTION = "exception";
-	
-	private static final String UPLOAD_ERROR = "upload_error";
 	
 	public DBHandler(Configuration conResult) throws Exception{
 		this.configuration = conResult;
@@ -236,20 +218,6 @@ public class DBHandler{
        	}else
        		throw new SQLException("Cannot connect to database server");
 		return bibhash;
-	}
-	
-	/*
-	 * returns the MD5-Hash of the password for the given user name
-	 */
-	public String getUserhash() throws SQLException {
-       	if (conn != null) {
-       		stmtp = conn.prepareStatement(SQL_GET_USERHASH);
-       		stmtp.setString(1, configuration.getUser());
-       		rst = stmtp.executeQuery();
-       		if(rst.next()) return rst.getString("user_password");
-       	} else
-       		throw new SQLException("Cannot connect to database server");
-		return null;
 	}
 
 }

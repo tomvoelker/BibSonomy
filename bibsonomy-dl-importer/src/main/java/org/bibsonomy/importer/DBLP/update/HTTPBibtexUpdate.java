@@ -36,8 +36,8 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 
 	private static final Log log = LogFactory.getLog(HTTPBibtexUpdate.class);
 
-	public HTTPBibtexUpdate (String baseURL, String user, String passhash) throws MalformedURLException, IOException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-		super (baseURL, user, passhash);
+	public HTTPBibtexUpdate (String baseURL, String user) throws MalformedURLException, IOException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+		super (baseURL, user);
 	}
 
 	private final Map<String, Integer> httpStatusCounts = new HashMap<String, Integer>();
