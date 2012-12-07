@@ -34,7 +34,7 @@
 			<a id="referer" class="refererButton" href="${referer}" > <fmt:message key="post.resource.openaccess.button.referer"/></a>
 		</c:if>
 		
-		<div id="oaRepositorySentInfo"><!-- used for puma--> </div>	
+		<div style="clear:both;" id="oaRepositorySentInfo"><!-- used for puma--> </div>	
 		<h3><a href="javascript:foldUnfold('openAccessContainer');"><img id="openAccessContainerImg" src="${resdir}/image/icon_collapse.png" border="0"/><fmt:message key="post.resource.openaccess.headline"/></a></h3>
 
 		<div id="openAccessContainer">
