@@ -169,7 +169,7 @@ function uploadRequestSuccessful(data) {
 			var aQrCode    = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>";
 			var aNoQrCode  = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>";
 			var imgPreview = "<img style='display:none;' class='pre_pic' src='" + documentUri + "?preview=SMALL' alt='" + fileName + "' />";
-			var aDel       = "(<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'>" + getString("bibtex.actions.private_document.delete") + "</a>)";
+			var aDel       = "<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'></a>";
 			/*
 			 * check if file ends with '.pdf'
 			 */			

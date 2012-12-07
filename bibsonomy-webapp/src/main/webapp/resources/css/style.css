@@ -1314,7 +1314,13 @@ Most actions appear in three ways
 	left: 116px;
 	background-color: inherit;
 }
-
+ 
+.deleteDocument { 
+    background-repeat: no-repeat;
+	background: url("/resources/image/post_actions.png");
+    margin-left: 4px;
+    display: inline-block;
+}
 .post .action .item, #resultlist .item, #pageOptions .item {
     background-repeat: no-repeat;
 	background: url("/resources/image/post_actions.png");
@@ -1363,9 +1369,9 @@ Most actions appear in three ways
 .post .action .iedit, #pageOptions .iedit			{ background-position: 0 -83px; width: 16px; height: 16px; }
 
 /* Finde own icon vor remove */
-.post .action .idelete, #pageOptions .idelete, .post .action .iremove, #pageOptions .iremove						{ background-position: 0 -197px; width: 13px; height: 18px; } 
-.post .action .delete:hover, #pageOptions .delete:hover, .post .action .remove:hover, #pageOptions .remove:hover 	{ background-position: 0 -237px; width: 13px; height: 18px; } 
-.post .action .delete, #pageOptions .delete, .post .action .remove, #pageOptions .remove							{ background-position: 0 -275px; width: 13px; height: 18px; } 
+.post .action .idelete, #pageOptions .idelete, .post .action .iremove, #pageOptions .iremove											{ background-position: 0 -197px; width: 13px; height: 18px; } 
+.post .action .delete:hover, #pageOptions .delete:hover, .post .action .remove:hover, #pageOptions .remove:hover, .deleteDocument:hover	{ background-position: 0 -237px; width: 13px; height: 18px; } 
+.post .action .delete, #pageOptions .delete, .post .action .remove, #pageOptions .remove, .deleteDocument								{ background-position: 0 -275px; width: 13px; height: 18px; } 
 
 
 .post .action .icommunity, #pageOptions .icommunity{ background-position: 0 -723px; width: 19px; height: 16px; } 
