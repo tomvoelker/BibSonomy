@@ -1,3 +1,4 @@
+<p>
 \format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
  (\year). 
 \format[HTMLChars]{\title}
@@ -36,5 +37,4 @@
 \begin{pages}
 , \pages .
 \end{pages}
-<br/>
-<br/>
+</p>

@@ -1,3 +1,4 @@
+<p>
 \format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\year). 
 <i> \format[HTMLChars]{\title}.</i>
 \begin{type}
@@ -7,5 +8,4 @@ Unpublished master's thesis
 \begin{school}
 , \school
 \end{school}.
-<br/>
-<br/>
+</p>
