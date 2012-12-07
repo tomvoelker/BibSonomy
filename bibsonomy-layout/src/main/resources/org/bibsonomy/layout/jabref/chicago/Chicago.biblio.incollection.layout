@@ -1,3 +1,4 @@
+<p>
 \begin{author}
 \format[HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}
 \begin{title}&quot;\format[HTMLChars]{\title}.&quot; \end{title} In <i> \format[HTMLChars]{\booktitle}</i>
@@ -6,4 +7,5 @@
 \begin{edition}\format[HTMLChars]{\edition}\end{edition} 
 \begin{address}\format[HTMLChars]{\address}\end{address}:
 \begin{publisher} \format[HTMLChars]{\publisher}\end{publisher}, 
-\begin{year}\format[HTMLChars]{\year}. \end{year}<br/><br/>
+\begin{year}\format[HTMLChars]{\year}. \end{year}
+</p>

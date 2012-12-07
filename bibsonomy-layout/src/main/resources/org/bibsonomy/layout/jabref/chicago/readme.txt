@@ -10,3 +10,6 @@ RTFChars -> HTMLChars
 {\\i A}  -> <i>A</i>
 {\\b A}  -> <b>A</b>
 "        -> &quot;
+
+-- rja, 2012-12-06
+removed <br/><br/> at the end of each entry and instead put each entry into <p></p>  

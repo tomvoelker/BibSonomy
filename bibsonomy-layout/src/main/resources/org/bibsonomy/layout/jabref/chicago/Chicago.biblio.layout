@@ -1,3 +1,4 @@
+<p>
 \format[HTMLChars,AuthorLastFirstCommas]{\author} \format[HTMLChars]{\title}.
 
 \begin{journal}
@@ -46,6 +47,4 @@
 \end{pages}
 
 .
-<br/>
-<br/>
-
+</p>
