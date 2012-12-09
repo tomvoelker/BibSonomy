@@ -91,7 +91,7 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 		Matcher matcher = DOI_PATTERN.matcher(scrapingContext.getUrl().toString());
 		if (!matcher.find()) return false;
 		try {
-			HttpClient client = new HttpClient();
+			HttpClient client = WebUtils.getHttpClient();
 			//get the page to start the session
 			WebUtils.getContentAsString(client, scrapingContext.getUrl().toExternalForm());
 			//post to receive the BibTeX file
