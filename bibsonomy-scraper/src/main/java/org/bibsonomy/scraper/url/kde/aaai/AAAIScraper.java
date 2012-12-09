@@ -65,7 +65,14 @@ public class AAAIScraper extends AbstractUrlScraper {
 			throw new ScrapingException(ex);
 		}
 		if (new BibtexScraper().scrape(bibContext)) {
-			scrapingContext.setBibtexResult(bibContext.getBibtexResult());
+			String bibtexResult = bibContext.getBibtexResult();
+			
+			//if the title is store in conference field, rename conference field to title
+			if (bibtexResult.contains("title")) {
+				bibtexResult = bibtexResult.replace("conference", "title");
+			}
+			
+			scrapingContext.setBibtexResult(bibtexResult);
 			return true;
 		}
 		return false;
