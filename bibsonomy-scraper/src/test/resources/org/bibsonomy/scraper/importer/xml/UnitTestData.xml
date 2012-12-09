@@ -76,6 +76,8 @@
 		<URL>http://www.citebase.org/abstract?id=oai%3AarXiv.org%3Acs%2F0602042</URL>
 		<BibFile>CiteBaseScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.citebase.CiteBaseScraper</Scraper>
+		<!-- Moved Temporarily (Other host, NasaADSScraper is responsible) -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_13">
 		<TestDescription>URL scraping test with journals and proceedings from ieeexlpore</TestDescription>
