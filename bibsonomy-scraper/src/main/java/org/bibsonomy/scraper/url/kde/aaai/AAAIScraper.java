@@ -67,10 +67,9 @@ public class AAAIScraper extends AbstractUrlScraper {
 		if (new BibtexScraper().scrape(bibContext)) {
 			String bibtexResult = bibContext.getBibtexResult();
 			
-			//if the title is store in conference field, rename conference field to title
-			if (bibtexResult.contains("title")) {
-				bibtexResult = bibtexResult.replace("conference", "title");
-			}
+			//replace entry type paper by inproceedings
+			//FIXME: are all those publications inproceedings?
+			bibtexResult = bibtexResult.replace("@paper", "@inproceedings");
 			
 			scrapingContext.setBibtexResult(bibtexResult);
 			return true;
