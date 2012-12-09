@@ -127,7 +127,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 	 * Public constructor adding the active scrapers.
 	 */
 	public KDEUrlCompositeScraper() {
-		addScraper(new CiteBaseScraper());
+		//addScraper(new CiteBaseScraper()); Citebase is completely redirected to another host, where another Scraper is responsible
 		addScraper(new OpacScraper());
 		addScraper(new IEEEXploreScraper());
 		addScraper(new SpringerLinkScraper());
