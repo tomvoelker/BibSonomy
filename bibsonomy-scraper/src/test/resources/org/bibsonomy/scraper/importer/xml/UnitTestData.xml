@@ -1431,5 +1431,11 @@
 		<BibFile>SpringerLinkScraperUnitURLTest7.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_236">
+		<TestDescription>URL scraping test with publication from The Open University</TestDescription>
+		<URL>http://oro.open.ac.uk/19554/</URL>
+		<BibFile>OpenUniversityScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>

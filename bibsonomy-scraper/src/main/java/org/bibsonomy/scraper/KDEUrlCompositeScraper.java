@@ -88,6 +88,7 @@ import org.bibsonomy.scraper.url.kde.nber.NberScraper;
 import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
 import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
+import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
@@ -215,6 +216,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new FASEBJournalScraper());
 		addScraper(new JNeurosciScraper());
 		addScraper(new BiologistsScraper());
+		addScraper(new OpenUniversityScraper());
 	}
 
 }
