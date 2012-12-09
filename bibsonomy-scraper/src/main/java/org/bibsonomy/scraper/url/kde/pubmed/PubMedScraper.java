@@ -96,7 +96,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 				// try to scrape with new URL-Pattern
 				// avoid crashes
 			} else {
-				HttpClient client = new HttpClient();
+				HttpClient client = WebUtils.getHttpClient();
 				
 				// try to find link for RIS export
 				GetMethod method = new GetMethod(sc.getUrl().toExternalForm());
