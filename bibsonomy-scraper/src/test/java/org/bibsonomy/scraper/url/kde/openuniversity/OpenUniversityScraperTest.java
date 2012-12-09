@@ -30,7 +30,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL tests #117. #118, #199, #120 for OpenrepositoryScraper
+ * Scraper URL tests #117. #118, #199, #120 for OpenUniversityScraper
  * @author tst
  * @version $Id$
  */
