@@ -42,13 +42,9 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 */
 	private Map<String, Boolean> posts;
 	/**
-	 * check if posts should be normalized
+	 * actions to apply to post
 	 */
-	private boolean normalize;
-	/**
-	 * check if posts should be deleted
-	 */
-	private boolean delete;
+	private String action;
 	/**
 	 * @return the flag that determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
@@ -130,31 +126,17 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	}
 
 	/**
-	 * @return the normalize
+	 * @return the action
 	 */
-	public boolean getNormalize() {
-		return this.normalize;
+	public String getAction() {
+		return this.action;
 	}
 
 	/**
-	 * @param normalize the normalize to set
+	 * @param action the action to set
 	 */
-	public void setNormalize(boolean normalize) {
-		this.normalize = normalize;
-	}
-
-	/**
-	 * @return the delete
-	 */
-	public boolean getDelete() {
-		return this.delete;
-	}
-
-	/**
-	 * @param delete the delete to set
-	 */
-	public void setDelete(boolean delete) {
-		this.delete = delete;
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 	/**

@@ -75,6 +75,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	private static final ResourceFactory RESOURCE_FACTORY = new ResourceFactory();
 	
+	private static final String UPDATE_TAG_ACTION = "updateTag";
+	private static final String DELETE_ACTION = "delete";
+	private static final String IGNORE_ACTION = "ignore";
+	private static final String NORMALIZE_ACTION = "normalize";
+	
 	/**
 	 * 
 	 * @param resourceClass
@@ -190,9 +195,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
 		
-		final boolean deleteMarkedPosts = command.getDelete();
-		final boolean normalizeMarkedPosts = command.getNormalize();
-		
+		final String action = command.getAction();
+		System.out.println(action);
+				
 		log.debug("#postFlags: " + markedPostsMap.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
 
 		/* *******************************************************
@@ -222,32 +227,32 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 */
 			if (intraHash.length() == HASH_LENGTH) {
 				
-				boolean normalizePost = false;
-				/*
-				 * SECTION 1: Check if post should be deleted or ignored.
-				 */
-				if (markedPostsMap.containsKey(intraHash) && markedPostsMap.get(intraHash)) {
-					if (deleteMarkedPosts) {
-						if (flagMeansDelete) {
-							postsToDelete.add(intraHash);
-						}
-						continue;
-					}
-					if (normalizeMarkedPosts) {
-						normalizePost = true;
-					}
-				}
-				
 				/*
 				 * We must store/update the post, thus we parse and check its tags
 				 */
 				try {
 					final Set<Tag> oldTags = TagUtils.parse(oldTagsMap.get(intraHash));
 					final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
+				
+					boolean normalizePost = false;
 					/*
-					 * we add all global tags to the set of new tags
+					 * SECTION 1: Check if post should be deleted or ignored.
 					 */
-					newTags.addAll(getTagsCopy(addTags));
+					if (markedPostsMap.containsKey(intraHash) && markedPostsMap.get(intraHash)) {
+						if (DELETE_ACTION.equals(action)) {
+							postsToDelete.add(intraHash);
+							continue;
+						} else if (IGNORE_ACTION.equals(action)) {
+							continue;
+						} else if (NORMALIZE_ACTION.equals(action)) {
+							normalizePost = true;
+						} else if (UPDATE_TAG_ACTION.equals(action)) {
+							/*
+							 * we add all global tags to the set of new tags
+							 */
+							newTags.addAll(getTagsCopy(addTags));
+						}
+					}
 					/*
 					 * if we want to update the posts, we only need to update posts
 					 * where the tags have changed
@@ -318,6 +323,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				}
 			}
 		}
+		
+		System.out.println("posts to delete: " + postsToDelete);
+		System.out.println("posts to update: " + postsToUpdate);
+		System.out.println("posts to normalize: " + postsToNormalize);
 
 		/* *******************************************************
 		 * FIFTH: update the database
