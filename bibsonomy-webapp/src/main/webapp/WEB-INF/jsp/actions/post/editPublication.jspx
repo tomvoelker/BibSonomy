@@ -51,13 +51,13 @@
 
 		                  <div class="fsRow">
 		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.url"/></span>
-		                    <span class="fsInput"><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></span>
+		                    <span class="fsInput" style="background-color:#EEEEEE;"><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></span>
 		                  </div>
 		
 		                  <c:if test="${not empty command.scrapingContext.selectedText}">
 		                    <div class="fsRow">
 		                      <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText"/></span>
-		                      <span class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.selectedText}"/></span>
+		                      <span class="fsInput" style="background-color:#EEEEEE; max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.selectedText}"/></span>
 		                    </div>
 		                  </c:if>
 		
@@ -65,7 +65,7 @@
 		                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.scraper"/></span>
 		                    <!-- for some strange reason, "#" destroys the functionality of "$" and thus "/scraperinfo#${..}" does not work -->
 		                    <c:set var="scraperinfourl" value="/scraperinfo#"/>
-		                    <span class="fsInput"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
+		                    <span class="fsInput" style="background-color:#EEEEEE;"><a href="${scraperinfourl}${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
 		                  </div>
 		
 		                  <div class="fsRow">
