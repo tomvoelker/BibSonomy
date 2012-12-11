@@ -106,7 +106,7 @@
 						onclick="markAll(this)" />
 					</td>
 					<td style="vertical-align:middle;">
-							<select name="action" style="float:left;">
+							<select name="action">
 								<c:choose>
 									<c:when test="${deleteCheckedPosts}">
 										<option value="updateTag" onclick="manipulateTagArea(false)"><fmt:message key="batchedit.updateMarked"/></option>
@@ -123,7 +123,7 @@
 									</c:otherwise>
 								</c:choose>
 							</select>
-						<buttons:help message="batchedit.selection.help" iconTextStyle="padding-left:0.5em; font-size:120%;" />
+						<buttons:help message="batchedit.selection.help" cssStyle="float: none;" iconTextStyle="padding-left:0.5em; font-size:120%;" />
 					</td>
 					<td>
 						<input type="submit" value="${buttonUpdate}" style="float: right;" />
