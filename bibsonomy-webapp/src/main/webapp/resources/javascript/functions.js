@@ -688,8 +688,8 @@ function editTags() {
 				 * collect regular tags + system tags into a string
 				 */
 				var tagString = "";
-				var tags = ptags.find("ul li a").each(function() {tagString += $(this).html() + " ";});
-				tags = ptags.find("div.hiddenSystemTag div a").each(function() {tagString += $(this).html() + " ";});
+				ptags.find("ul li a").each(function() {tagString += $(this).html() + " ";});
+				ptags.find("div.hiddenSystemTag div a").each(function() {tagString += $(this).html() + " ";});
 				/*
 				 * extract hash of post from edit URL
 				 */
