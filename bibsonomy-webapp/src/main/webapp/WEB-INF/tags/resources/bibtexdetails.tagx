@@ -56,9 +56,11 @@
 	        		<li>
 	        			<a href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
 	        		</li>
-					<c:forEach var="citationStyle" items="${fn:split('harvardhtml,apa_html,chicago,din1505',',')}">
+					<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,din1505',',')}">
 	           			<li><a href="/layout/${citationStyle}/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
 	          		</c:forEach>
+	          		<li><a href="#citation_bibtex">BibTeX</a></li>
+	          		<li><a href="#citation_endnote">EndNote</a></li>
 	          		<li>
 	          			<a href="#citation_more"><fmt:message key="bibtex.all_exports" /></a>
 	          		</li>
@@ -67,6 +69,13 @@
        			<div id="citation_plain">           
 					<bib:desc publication="${post.resource}"/>
     			</div>
+			  	<div id="citation_bibtex">
+	  				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
+				</div>
+			  	<div id="citation_endnote">
+	  				<c:set var="endnoteExport"><export:endnote bib="${publication}"/></c:set>	  	
+			  		<textarea style="width:100%;font-size:80%;border:none;" rows="15"><c:out value="${endnoteExport}"/></textarea>
+				</div>    			
 	       		<div id="citation_more">
 	       			<fmt:message var="allExportsTitle" key="bibtex.all_exports.title" />
 					<a href="/export/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports.title"/></a>
@@ -319,29 +328,7 @@
 			  	</form>
 			</div>
 		</c:if>			
-		
-		<!--+	
-			| BibTeX
-			+-->
-		<h3><a class="foldUnfold" href="#bibtex"><img id="bibtexImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="export.bibtex.record"/></a></h3>
-	  	<div id="bibtex">
-	  		<form style="padding-right:5px;">	  	
-		  		<textarea style="width:100%;font-size:80%;" name="bibtex_textarea" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
-		  	</form>			
-		</div>
-		
-		
-		<!--+
-			| EndNote
-			+-->
-		<h3><a class="foldUnfold" href="#endnote"><img id="endnoteImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="export.endnote.record"/></a></h3>
-	  	<div id="endnote">
-	  		<form style="padding-right:5px;">
-	  			<c:set var="endnoteExport"><export:endnote bib="${publication}"/></c:set>	  	
-		  		<textarea style="width:100%;font-size:80%;" name="endnote_textarea" rows="15"><c:out value="${endnoteExport}"/></textarea>
-		  	</form>			
-		</div>
-											
+													
 	</div>
 	
 </jsp:root>

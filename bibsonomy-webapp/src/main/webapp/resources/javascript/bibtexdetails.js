@@ -28,6 +28,7 @@ $(function() {
 	$('#citation').tabs().tabs('select', 1).tabs({
 		disabled: [0],
 		spinner: "",
+		cache: true,
 	    select: function(event, ui) {
 		 	var $panel = $(ui.panel);
 		 	if ($panel.is(":empty")) {
