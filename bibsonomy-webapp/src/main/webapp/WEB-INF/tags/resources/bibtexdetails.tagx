@@ -301,7 +301,7 @@
 		
 		<!-- ###############  ABSTRACT ################# -->
 		<c:if test="${not empty publication.abstract}">
-			<h3><a class="foldUnfold" href="#abstract"><img id="abstractImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="bibtex.abstract.cap"/></a></h3>
+			<h3><a class="foldUnfold" href="#abstract"><img id="abstractImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.abstract"/></a></h3>
 			<div id="abstract" style="font-size:90%"><c:out value="${mtl:cleanBibtex(publication.abstract)}" /></div>
 		</c:if>				
 		
@@ -315,7 +315,7 @@
 			| private note
 			+-->
 		<c:if test="${isOwnEntry}">
-			<h3><a class="foldUnfold" href="#privnote"><img id="privnoteImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="bibtex.private_note"/></a></h3>
+			<h3><a class="foldUnfold" href="#privnote"><img id="privnoteImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.privnote"/></a></h3>
 			<div id="privnote">
 				<form method="post" id="note" style="padding-right:5px;">
 			  		<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
