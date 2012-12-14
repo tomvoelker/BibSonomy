@@ -54,12 +54,6 @@ function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
 	 * 
 	 */
 	prepareErrorBoxes('dissError');
-
-	/* scope: textarea input fields
-	 *  
-	 */
-	$('textarea').TextAreaResizer();
-
 	
 	/* *************************************************************************
 	 * scope: sidebar

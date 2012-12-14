@@ -69,7 +69,6 @@ function reply() {
 	}
 	
 	clone.show();
-	form.find('textarea').TextAreaResizer();
 	
 	addAutocompletionToLinkBox(form);
 
@@ -117,8 +116,7 @@ function showEditCommentForm() {
 	var spinnImage = spinner.find('img');
 	spinner.empty().append(spinnImage).append(getString('post.resource.comment.action.update'))
 	
-	// binding textarea resizer, group, and submit
-	form.find('textarea').TextAreaResizer();
+	// binding  group, and submit
 	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	form.submit(updateComment);
 	

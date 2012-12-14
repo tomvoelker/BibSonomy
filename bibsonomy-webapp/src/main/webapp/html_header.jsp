@@ -40,7 +40,6 @@
     <script type="text/javascript" src="/resources/jquery/plugins/form/jquery.form.js"></script>
     <script type="text/javascript" src="/resources/jquery/plugins/corner/jquery.corner.js"></script>
 	<script type="text/javascript" src="/resources/jquery/plugins/autocomplete/jquery.autocomplete.js"></script>    
-	<script type="text/javascript" src="/resources/jquery/plugins/textarearesizer/jquery.textarearesizer.js"></script>
     <c:if test="${projectName == 'PUMA'}">
 		<link rel="stylesheet" type="text/css" href="/resources_puma/css/puma.css">
     </c:if> 
