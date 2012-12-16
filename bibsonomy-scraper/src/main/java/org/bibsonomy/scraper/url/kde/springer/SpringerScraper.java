@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.springer;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +67,7 @@ public class SpringerScraper extends AbstractUrlScraper {
 				final String isbn = url.substring(url.lastIndexOf("/") + 1);
 				final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
 				
-				if(bibtex != null){
+				if(present(bibtex)){
 					sc.setBibtexResult(bibtex);
 					return true;
 				}else
