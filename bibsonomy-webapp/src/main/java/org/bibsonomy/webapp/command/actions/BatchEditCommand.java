@@ -44,7 +44,7 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	/**
 	 * actions to apply to post
 	 */
-	private String action;
+	private int action;
 	/**
 	 * @return the flag that determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
@@ -128,14 +128,14 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	/**
 	 * @return the action
 	 */
-	public String getAction() {
+	public int getAction() {
 		return this.action;
 	}
 
 	/**
 	 * @param action the action to set
 	 */
-	public void setAction(String action) {
+	public void setAction(int action) {
 		this.action = action;
 	}
 
