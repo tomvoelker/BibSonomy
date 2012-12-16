@@ -63,6 +63,7 @@ public class JStorScraper extends AbstractUrlScraper {
 	private static final String JSTOR_ABSTRACT_PATH = "/pss/";
 	private static final String JSTOR_EXPORT_PATH = "/action/exportSingleCitation";
 	private static final String JSTOR_STABLE_PATH = "/stable/";
+	private static final String JSTOR_DISCOVER_PATH = "/discover/";
 	private static final String JSTOR_DOWNLOAD_SUBMIT_ACTION_YESDOI = "https://www.jstor.org/action/downloadSingleCitationSec?format=bibtex&include=abs&singleCitation=true";
 	private static final String EXPORT_PAGE_URL = "https://www.jstor.org/action/exportSingleCitation?singleCitation=true&doi=";
 	
@@ -81,6 +82,7 @@ public class JStorScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_ABSTRACT_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_EXPORT_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_STABLE_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_DISCOVER_PATH + ".*")));
 	}
 	
 	public String getInfo() {
