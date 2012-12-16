@@ -1457,5 +1457,11 @@
 		<BibFile>SpringerLinkScraperUnitURLTest9.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_240">
+		<TestDescription>URL scraping test with publication from AAAI</TestDescription>
+		<URL>http://www.aaai.org/ojs/index.php/aimagazine/article/view/2376</URL>
+		<BibFile>AAAIScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>

@@ -29,6 +29,10 @@ import org.bibsonomy.scraper.UnitTestRunner;
 import org.junit.Ignore;
 import org.junit.Test;
 
+/**
+ * @author hagen
+ *
+ */
 public class AAAIScraperTest {
 	/**
 	 * starts URL test with id url_237
@@ -38,5 +42,14 @@ public class AAAIScraperTest {
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_237"));
+	}
+	/**
+	 * starts URL test with id url_240
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_240"));
 	}
 }

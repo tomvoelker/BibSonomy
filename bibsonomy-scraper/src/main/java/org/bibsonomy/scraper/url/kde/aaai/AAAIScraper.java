@@ -25,13 +25,15 @@ public class AAAIScraper extends AbstractUrlScraper {
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String PAPER_VIEW_PATH_FRAGMENT = "paper/view";
-	private static final String PAPER_DOWNLOAD_PATH_FRAGMENT = "rt/captureCite";
+	private static final String ARTICLE_VIEW_PATH_FRAGMENT = "article/view";
+	private static final String DOWNLOAD_PATH_FRAGMENT = "rt/captureCite";
 	private static final String PAPER_DOWNLOAD_PATH_SUFFIX = "/0/BibtexCitationPlugin";
 	
 	private static final List<Pair<Pattern,Pattern>> PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
 
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?www.aaai.org"), Pattern.compile(PAPER_VIEW_PATH_FRAGMENT)));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?www.aaai.org"), Pattern.compile(ARTICLE_VIEW_PATH_FRAGMENT)));
 	}
 
 	@Override
@@ -56,8 +58,16 @@ public class AAAIScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		String downloadLink = scrapingContext.getUrl().toExternalForm().replace(PAPER_VIEW_PATH_FRAGMENT, PAPER_DOWNLOAD_PATH_FRAGMENT);
+		
+		scrapingContext.setScraper(this);
+		
+		//build download link
+		String downloadLink = scrapingContext.getUrl().toExternalForm();
+		downloadLink = downloadLink.replace(PAPER_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
+		downloadLink = downloadLink.replace(ARTICLE_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
 		downloadLink += PAPER_DOWNLOAD_PATH_SUFFIX;
+		
+		//use BibtexScraper with download link
 		ScrapingContext bibContext;
 		try {
 			bibContext = new ScrapingContext(new URL(downloadLink));
