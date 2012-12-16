@@ -78,6 +78,8 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 
 	private static final Pattern URL_PATTERN_BKN      = Pattern.compile("bkn=([^&]*)");
 	private static final Pattern URL_PATTERN_ARNUMBER = Pattern.compile("arnumber=([^&]*)");
+	
+	private static final Pattern PAGE_PATTERN_ISBN = Pattern.compile("ISBN[^>]++>\\s++([\\dx]++)");
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
@@ -96,13 +98,13 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		Matcher matcher = URL_PATTERN_BKN.matcher(sc.getUrl().toString());
 		
 		
-		if(matcher.find()){
+		if (matcher.find()){
 			postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + matcher.group(1);
 		}
 		
 		matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
 		
-		if(matcher.find()){
+		if (matcher.find()){
 			postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + matcher.group(1);
 		}
 		
@@ -113,7 +115,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 				throw new InternalFailureException(ex);
 			}
 		}
-		if(bibtex != null && bibtex.length() > 0){
+		if (bibtex != null && bibtex.length() > 0){
 			// clean up
 			bibtex = bibtex.replace("<br>", "");
 
@@ -124,15 +126,18 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 			sc.setBibtexResult(bibtex);
 			return true;
 
-		}else{
+		} else {
 			
 			//let's try to scrape it by isbn
 			try {
-				String isbn = ISBNUtils.extractISBN(sc.getPageContent());
-				bibtex = WorldCatScraper.getBibtexByISBN(isbn);
-				if (present(bibtex)) {
-					sc.setBibtexResult(bibtex);
-					return true;
+				Matcher isbnMatcher = PAGE_PATTERN_ISBN.matcher(sc.getPageContent());
+				if (isbnMatcher.find()) {
+					String isbn = isbnMatcher.group(1);
+					bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toExternalForm());
+					if (present(bibtex)) {
+						sc.setBibtexResult(bibtex);
+						return true;
+					}
 				}
 			} catch (IOException ex) {
 				throw new ScrapingException(ex);
