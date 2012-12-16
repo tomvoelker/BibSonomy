@@ -34,7 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpURL;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -120,7 +120,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			final Matcher exportLinkMatcher = EXPORT_LINK_PATTERN.matcher(page);
 			if (exportLinkMatcher.find()) {
 				//get the export panel page
-				final HttpURL uri = new HttpURL(method.getURI().getHost(), method.getURI().getPort(), exportLinkMatcher.group(1));
+				final URI uri = new URI(method.getURI(), exportLinkMatcher.group(1), true);
 				final String panel = WebUtils.getContentAsString(client, uri);
 				
 				//had the server returned response code 200?
@@ -131,7 +131,8 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				if (!bibFileMatcher.find()) throw new ScrapingException("could not find link to BibTeX file");
 				
 				//download the BibTeX file now
-				String bibTeXResult = WebUtils.getContentAsString(client, new HttpURL(uri, bibFileMatcher.group(1)));
+				String relative = bibFileMatcher.group(1);
+				String bibTeXResult = WebUtils.getContentAsString(client, new URI(uri, relative, true));
 				if (!present(bibTeXResult)) throw new ScrapingException("BibTeX file not present");
 				
 				//add abstract

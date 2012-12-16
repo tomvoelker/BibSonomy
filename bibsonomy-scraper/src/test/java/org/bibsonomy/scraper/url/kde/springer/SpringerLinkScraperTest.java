@@ -105,4 +105,14 @@ public class SpringerLinkScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_235"));
 	}
+	
+	/**
+	 * starts URL test with id url_238
+	 */
+	@Test
+	@Ignore
+	public void url8TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_238"));
+	}
 }
