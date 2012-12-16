@@ -47,6 +47,7 @@ import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -111,6 +112,7 @@ public class WebUtils {
   		 * configure client
   		 */
   	  	client.getParams().setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
+  	  	client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
   	  	return client;
   	}
   	
