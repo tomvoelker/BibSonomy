@@ -43,8 +43,10 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.ISBNUtils;
 
 
 
@@ -144,12 +146,23 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				sc.setBibtexResult(bibTeXResult);
 				return true;
 			}
+			
+			//alternatively look for isbn and use WorldCatScraper
+			else {
+				String isbn = ISBNUtils.extractISBN(page);
+				if (present(isbn)) {
+					String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toString());
+					if (!present(bibtex)) return false;
+					sc.setBibtexResult(bibtex);
+					return true;
+				}
+			}
 		} catch (IOException e) {
 			throw new ScrapingException(e);
 		}
 
 		/*
-		 * There was no export link found on the specified location.
+		 * There was no export link and no isbn found on the specified location.
 		 * Now try to scrape it the old SpringerLink way.
 		 */
 		try {
