@@ -27,6 +27,7 @@ public abstract class SimpleGenericURLScraper extends AbstractUrlScraper {
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+		scrapingContext.setScraper(this);
 		try {
 			String bibtexURL = getBibTeXURL(scrapingContext.getUrl());
 			String bibtexResult = WebUtils.getContentAsString(bibtexURL);
