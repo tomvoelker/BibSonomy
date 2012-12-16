@@ -115,7 +115,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 				throw new InternalFailureException(ex);
 			}
 		}
-		if (bibtex != null && bibtex.length() > 0){
+		if (present(bibtex)) {
 			// clean up
 			bibtex = bibtex.replace("<br>", "");
 
