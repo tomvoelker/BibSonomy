@@ -78,7 +78,7 @@
 				</tr>
 				<tr>
 					<td style="background-color: #eee; vertical-align: middle; text-align: center">
-						<input type="checkbox" id="selectAll" value="true" />
+						<input type="checkbox" id="selectAll" value="true" checked="checked" />
 					</td>
 					<td style="vertical-align:middle;">
 							<select id="selector" name="action">
@@ -99,7 +99,7 @@
 						<buttons:help message="batchedit.selection.help" cssStyle="float: none;" iconTextStyle="padding-left:0.5em; font-size:120%;" />
 					</td>
 					<td>
-						<input type="submit" value="${buttonUpdate}" style="float: right;" />
+						<input type="submit" class="batchUpdateButton" value="${buttonUpdate}" style="float: right;" disabled="disabled" />
 					</td>
 				</tr>
 
@@ -173,7 +173,7 @@
 								<c:when test="${post.user.name eq command.context.loginUser.name}">
 									<tr>
 										<td style="text-align: center;">
-											<input type="checkbox" name="posts['${post.resource.intraHash}']" value="true" />
+											<input type="checkbox" name="posts['${post.resource.intraHash}']" value="true" checked="checked" />
 										</td>
 										<!--  a short description of the post -->
 										<td class="chunkybib">

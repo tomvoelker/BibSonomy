@@ -6,8 +6,7 @@ $(document).ready(function() {
 		 * with posts.
 		 */
 		$('input[name^=posts]:checkbox').each(function() {
-			$(this).attr('checked', markAllChecked);
-			$(this).change();
+			$(this).prop('checked', markAllChecked);
 		});
 	});
 });
@@ -32,15 +31,20 @@ $(document).ready(function() {
 			oneNotChecked = true;
 			return;
 		});
-		$('#selectAll').attr('checked', !oneNotChecked);
+		$('#selectAll').prop('checked', !oneNotChecked);
 	});
 });
 
 $(document).ready(function() {
 	$('#selector').change(function() {
-		if($(this).val() == 1) {
-			$('input[name=tags]').attr('disabled', false);
+		if($(this).val() == 0) {
+			changeTagInputs('input[name^=posts]:checkbox:checked', true);
+			$('input[name=tags]').prop('disabled', true);
+			$('.batchUpdateButton').prop('disabled', true);
+		} else if($(this).val() == 1) {
 			changeTagInputs('input[name^=posts]:checkbox:checked', false);
+			$('input[name=tags]').prop('disabled', false);
+			$('.batchUpdateButton').prop('disabled', false);
 		} else {
 			var value = true;
 			
@@ -51,10 +55,15 @@ $(document).ready(function() {
 			}
 			
 			if(!value) {
-				$(this).find('option:eq(1)').prop("selected", true);
+				$(this).find('option:eq(0)').prop("selected", true);
+				changeTagInputs('input[name^=posts]:checkbox:checked', true);
+				$('input[name=tags]').prop('disabled', true);
+				$('.batchUpdateButton').prop('disabled', true);
+			} else {
+				changeTagInputs('input[name^=posts]:checkbox:checked', true);
+				$('input[name=tags]').prop('disabled', true);
+				$('.batchUpdateButton').prop('disabled', false);
 			}
-			$('input[name=tags]').attr('disabled', value);
-			changeTagInputs('input[name^=posts]:checkbox:checked', value);
 		}
 	});
 });
@@ -64,8 +73,8 @@ function changeTagInputs(selector, disabled) {
 		/*
 		 * remove possible special characters from selector string
 		 */
-		var attr = $(this).attr('name').replace('posts','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
-		$('input[name=' + attr + ']:text').attr('disabled', disabled);
+		var attr = $(this).prop('name').replace('posts','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+		$('input[name=' + attr + ']:text').prop('disabled', disabled);
 	});
 }
 		           

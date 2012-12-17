@@ -86,7 +86,7 @@
         </c:if>
         
         <c:if test="${not empty buttonUpdate}">
-        	<input type="submit" value="${buttonUpdate}" style="float: right;vertical-align: middle;" />
+        	<input type="submit" class="batchUpdateButton" value="${buttonUpdate}" style="float: right;vertical-align: middle;" disabled="disabled" />
         </c:if>     						
 	</div>
 </jsp:root>
