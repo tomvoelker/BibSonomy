@@ -1976,7 +1976,7 @@ form.editTags input[type=text] {
 	display: none !important;
 }
 
-#citation.ui-tabs {overflow: hidden; padding: 0px; border: 0px; margin-bottom: 1em; font-family: Arial,Helvetica,sans-serif;}
+#citation.ui-tabs {overflow: visible; padding: 0px; border: 0px; margin-bottom: 1em; font-family: Arial,Helvetica,sans-serif;}
 #citation.ui-tabs .ui-tabs-panel {padding: 0px; min-height: 4.7em;}
 #citation.ui-tabs .ui-widget-header {background: none; border: 0px;}
 #citation.ui-tabs .ui-tabs-nav li a {padding: 0.2em 0.5em;}
