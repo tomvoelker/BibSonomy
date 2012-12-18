@@ -960,6 +960,33 @@ ul.news {
 	border: 1px solid #bbb;
 	border-bottom-width: 0;
 	margin: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+#citation h3 {
+	font-size: 130%;
+	margin-bottom: 0.2em;
+}
+
+#citation {
+	border-radius: 0 0 0 0;
+}
+#citation .tab a {
+	font-size: 80%;
+	font-weight: normal;
+}
+
+#citation .tab .citationHint {
+	font-weight: normal;
+}
+
+.indent {
+	margin-left: 2.5em;
+}
+
+.indent h3 {
+	margin-left: -14px;
 }
 
 .tab a {
@@ -974,15 +1001,25 @@ ul.news {
 	font-size: 100%;
 }
 
+.tab .citationHint a {
+	background-color: transparent;
+}
+
 .tab a:hover {
 	background-color: white;
 }
 
-.tab .selected {
+.tab .selected,
+.tab .ui-state-active {
 	border-color: #069;
 }
 
-.tab .selected a {
+html .ui-tabs .tab  li {
+	margin-bottom: 0px;
+}
+
+.tab .selected a,
+.tab .ui-state-active a {
 	position: relative;
 	top: 1px;
 	background: white;
