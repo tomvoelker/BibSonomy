@@ -1,4 +1,8 @@
-$(document).ready(function() {
+$(document).ready(function () {
+	
+	/*
+	 * handler to change all sub checkboxes with the select all option
+	 */
 	$('#selectAll').change(function() {
 		var markAllChecked = $(this).is(':checked');
 		/*
@@ -7,11 +11,16 @@ $(document).ready(function() {
 		 */
 		$('input[name^=posts]:checkbox').each(function() {
 			$(this).prop('checked', markAllChecked);
+			$(this).change();
 		});
 	});
-});
 
-$(document).ready(function() {
+	/*
+	 * handler for changing of sub checkboxes
+	 * changes state of tag inputs depending on selected action 
+	 * in selection box. tag areas only get activated on update tag
+	 * action
+	 */
 	$('input[name^=posts]:checkbox').change(function() {
 		if ($(this).is(':checked')) {
 			if ($('#selector').val() == 1) {
@@ -33,9 +42,7 @@ $(document).ready(function() {
 		});
 		$('#selectAll').prop('checked', !oneNotChecked);
 	});
-});
 
-$(document).ready(function() {
 	$('#selector').change(function() {
 		if($(this).val() == 0) {
 			changeTagInputs('input[name^=posts]:checkbox:checked', true);
@@ -67,7 +74,7 @@ $(document).ready(function() {
 		}
 	});
 });
-
+	
 function changeTagInputs(selector, disabled) {
 	$(selector).each(function() {
 		/*

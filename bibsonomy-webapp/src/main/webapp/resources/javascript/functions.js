@@ -695,9 +695,12 @@ function editTags() {
 				var type = editUrl.search(/^\/editPublication/) != -1 ? "bibtex" : "bookmark";
 				/*
 				 * add form to edit the tags
+				 * also add old tags and marked posts to iterate through and update action, 
+				 * because batchedit controller needs it
 				 */
-				var form = $("<form method='post' action='/batchEdit?deleteCheckedPosts=true&format=ajax&resourcetype=" + type + "' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
-				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\" value='" + tagString + "'/>");
+				var form = $("<form method='post' action='/batchEdit?deleteCheckedPosts=true&format=ajax&resourcetype=" + type + "&action=1' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
+				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\" value='" + tagString + "'/>" + "<input type='hidden' name=\"oldTags['" + hash + "']\" value='" + tagString + "'/>" + 
+							  "<input type='hidden' name=\"posts['" + hash + "']\" value='true' checked='checked' />");
 				var submit = $("<input type='submit' class='postTagButton' value='" + getString("post.meta.edit") + "'/>");
 				form.append(input).append(submit);
 				/*

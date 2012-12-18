@@ -48,12 +48,15 @@ import org.springframework.validation.Errors;
 /**
  * Controller to batch edit (update tags and delete) resources.
  * 
- * The controller handles two cases:
+ * The controller handles two cases if multiple posts are edited (on batch edit site or post publication site):
  * <ol>
- * <li>the given posts should be updated (and eventually some posts deleted - if the user flagged them)</li>
+ * <li>the given posts should be updated (and eventually some posts deleted or normalized - if the user flagged them)</li>
  * <li>the given posts should be stored (and eventually some posts ignored - if the user flagged them)</li>
  * </ol>
  * 
+ * The controller also updates tags for single posts with fast edit or on bibtex details page.
+ * 
+ * @author pbu
  * @author dzo
  * @author ema
  * @version $Id$
