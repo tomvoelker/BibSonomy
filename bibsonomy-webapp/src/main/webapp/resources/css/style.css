@@ -972,6 +972,10 @@ ul.news {
 #citation {
 	border-radius: 0 0 0 0;
 }
+#citation .tab_content{
+	min-height: 5.5em;
+}
+
 #citation .tab a {
 	font-size: 80%;
 	font-weight: normal;
