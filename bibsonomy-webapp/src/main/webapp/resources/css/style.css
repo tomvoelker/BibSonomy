@@ -985,14 +985,6 @@ ul.news {
 	font-weight: normal;
 }
 
-.indent {
-	margin-left: 2.5em;
-}
-
-.indent h3 {
-	margin-left: -14px;
-}
-
 .tab a {
 	text-decoration: none;
 	display: block;
