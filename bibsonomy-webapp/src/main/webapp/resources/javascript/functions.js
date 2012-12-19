@@ -724,6 +724,10 @@ function editTags() {
 					 */
 					var tags = input.val().split(" ");
 					/*
+					 * close the autocompletion
+					 */
+					endTagAutocompletion(input);
+					/*
 					 * remove form
 					 */
 					form.remove();
@@ -739,11 +743,6 @@ function editTags() {
 						ul.append("<li><a href='/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(tags[t]) + "'>" + tags[t] + "</a></li>");
 					}
 					ptags.show();
-					
-					/*
-					 * close the autocompletion
-					 */
-					endTagAutocompletion(input);
 				});
 			}
 	);
