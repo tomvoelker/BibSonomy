@@ -31,11 +31,8 @@
 							<a class="documentFileName" href="/documents/${command.post.resource.intraHash}/${mtl:encodeURI(command.post.user.name)}/${mtl:encodeURI(document.fileName)}">
 								<c:out value="${document.fileName}"/>
 							</a>
-							<c:out value=" ("/>
-							<a class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete">
-								<c:out value="${delete}"/>
-							</a>
-							<c:out value=")"/>
+							
+							<a class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"></a>
 						</li>
 					</c:forEach></ul>
 				</div>
