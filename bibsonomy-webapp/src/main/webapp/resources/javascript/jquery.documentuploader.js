@@ -80,22 +80,19 @@ var errorData = new errorBoxData("#upload");
 		var fileID=$("fileid", data).text();
 		var fileHash=$("filehash", data).text();
 		var fileName=$("filename", data).text();
-		var deleteLink = $("<a class='deleteTempDocument' href='/ajax/documents?fileHash="
+		var deleteLink = $("<a class='deleteDocument' href='/ajax/documents?fileHash="
 				+fileHash
 				+"&amp;ckey="
 				+ckey
 				+"&amp;temp=true&amp;fileID="
 				+fileID+"&amp;action=delete'>"
-				+getString("post.bibtex.delete")
 				+"</a>")
 				.click(function(){
 					return deleteFunction(this);
 				});
 		$("#file_"+fileID).
-		append("<input type='hidden' class='tempFileName' name='fileName' value='" + fileHash + fileName+"'/>").
-		append(" (").
+		append("<input type='hidden' class='tempFileName' name='fileName' value='" + fileHash + fileName+"'/> ").
 		append(deleteLink).
-		append(")").
 		removeClass("loading");
 	}
 })(jQuery);
