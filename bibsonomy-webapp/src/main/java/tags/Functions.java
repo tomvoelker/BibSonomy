@@ -530,7 +530,12 @@ public class Functions  {
 	 */
 	public static String formatDateISO8601(final Date date) {
 		if (present(date)) {
+			try {
 			return ISO8601_FORMAT_HELPER.format(date);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "";
+			}
 		}
 		return "";
 	}
