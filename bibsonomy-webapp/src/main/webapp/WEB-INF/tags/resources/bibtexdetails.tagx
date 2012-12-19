@@ -104,8 +104,7 @@
 				</c:if>
 			</c:if>
 		</c:if>
-
-		<div class="indent">
+								
 		<!--+
 			|
 			| discussion and rating
@@ -329,8 +328,8 @@
 			  		<input type="submit" value="${save}" id="makeP" onclick="javascript: return updatePrivNote($(this))"/>    
 			  	</form>
 			</div>
-		</c:if>
-	</div>
+		</c:if>			
+													
 	</div>
 	
 </jsp:root>
