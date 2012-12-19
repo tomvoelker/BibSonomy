@@ -37,10 +37,7 @@ $(function() {
 	    }
 		           }); //{event: "mouseover"} // only nice with fixed height :(
 
-    $( ".tabs-bottom .ui-tabs-nav, .tabs-bottom .ui-tabs-nav > *" )
-        .removeClass( "ui-corner-all ui-corner-top" )
-        .addClass( "ui-corner-bottom" );
-    $( ".tabs-bottom .ui-tabs-nav" ).appendTo( ".tabs-bottom" );
+    $( ".tabs, .tabs .tab > li" ).removeClass( "ui-corner-all ui-corner-top ui-corner-bottom" );
     
     /*
      * (un)folding of boxes
