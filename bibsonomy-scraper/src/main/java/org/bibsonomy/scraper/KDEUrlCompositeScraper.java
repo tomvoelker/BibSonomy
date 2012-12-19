@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper;
 
+import org.bibsonomy.scraper.url.kde.aaai.AAAIScraper;
 import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
@@ -216,6 +217,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new JNeurosciScraper());
 		addScraper(new BiologistsScraper());
 		addScraper(new OpenUniversityScraper());
+		addScraper(new AAAIScraper());
 	}
 
 }
