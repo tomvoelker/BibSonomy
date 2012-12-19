@@ -32,7 +32,7 @@
 								<c:out value="${document.fileName}"/>
 							</a>
 							
-							<a class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"></a>
+							<a class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"><!-- keep me --></a>
 						</li>
 					</c:forEach></ul>
 				</div>
