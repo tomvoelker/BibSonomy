@@ -24,23 +24,23 @@
 	<!-- inbook / incollection data -->
   	<c:choose>
     	<c:when test="${not empty post.resource.journal}">
-      		<bib:journal post="${post}"/>      		
-      		<bib:volume post="${post}"/>
-      		<bib:series post="${post}"/>
+      		<bib:journal publication="${post.resource}"/>      		
+      		<bib:volume publication="${post.resource}"/>
+      		<bib:series publication="${post.resource}"/>
     	</c:when>
     	<c:otherwise>
-      		<bib:booktitle post="${post}"/>
+      		<bib:booktitle publication="${post.resource}"/>
     	</c:otherwise>
   	</c:choose> 
   	
   	<!-- pages -->
-  	<bib:page post="${post}"/>
+  	<bib:page publication="${post.resource}"/>
 	  
     <!-- address -->
-   <bib:address post="${post}"/>
+   <bib:address publication="${post.resource}"/>
        
     <!-- publisher -->
-    <bib:publisher post="${post}"/>
+    <bib:publisher publication="${post.resource}"/>
     
     <!-- tags & url -->
     <output:tagsUrl post="${post}"/>
