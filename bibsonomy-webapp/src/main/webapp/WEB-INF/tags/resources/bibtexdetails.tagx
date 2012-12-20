@@ -120,184 +120,182 @@
 			| resources (URLs/PDF/etc.)
 			|
 			+-->
-		<c:if test="${not empty publication.url or isOwnEntry}">
-			<h3><a class="foldUnfold" href="#resources"><img id="resourcesImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="bibtex.resources"/></a></h3>
-			<div id="resources" style="font-size: 90%;">
-				<table class="td-top">
-					<!--+
-						| DOI
-						+-->
-					<c:if test="${not empty publication.miscFields['doi']}">
-						<tr>
-							<td><fmt:message key="bibtex.actions.doi"/>:</td>
-							<td><a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(publication.miscFields['doi']))}"><c:out value="${mtl:extractDOI(publication.miscFields['doi'])}"/></a></td>
-						</tr>
-					</c:if>
-					<!--+
-						| URL
-						+-->
-					<c:if test="${not empty publication.url}">
-						<tr>
-							<td><fmt:message key="bibtex.url"/>:</td>
-							<td><a href="${fn:escapeXml(publication.url)}"><c:out value="${publication.url}"/></a></td>
-						</tr>
-					</c:if>
-					<!--+
-						| additional URLs
-						+-->
-					<c:if test="${not empty publication.extraUrls or isOwnEntry}">
-						<tr>							
-							<td>
-								<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!--  --></script>
-								<fmt:message key="bibtex.additional_urls"/>:
-							</td>
-							<td>
-								<!-- display extra URLs -->
-						      	<div id="urlList" class="allAddUrls">
-						      	<c:forEach items="${publication.extraUrls}" var="url">
-						      		<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
-						      		<div id="${escapedUrl}">
-						        	<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
-						        	<c:if test="${isOwnEntry}">
-						        		<c:out value=" ("/>
-						          		<a href="#" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><fmt:message key="post.bibtex.delete"/></a>
-						          		<c:out value=")"/><br/>
-						        	</c:if>
-						        	</div>
-						      	</c:forEach>
-						      	</div>
-						    	<form method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
-						          	<fmt:message key="bibtex.url"/><c:out value=":"/>
-						          	<input type="text" name="url"/> 
-								  	<fmt:message key="text"/><c:out value=":"/>						          
-						          	<input type="text" name="text"/>
-						          	<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-						          	<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
-						          	<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
-						          	<input class="postUrl" type="button" value="addURL" id="addURLButton"/>
-						        </form>					      						  							  						  	 
-
-							  	<!--  add url -->						  	
-							    <c:if test="${isOwnEntry}">
-							        <fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
-							        <a class="addUrl" title="${addAdditionalUrlTitle}" href="javascript:addUrlForm()" id="l_addURL"><fmt:message key="bibtex.actions.additional_url.add"/></a>
-							    </c:if>								
-
-							</td>
-						</tr>
-					</c:if>
-					
-					<!--+
-						| OpenURL 
-						+-->
-					<c:if test="${not empty command.context.loginUser.openURL}">
-						<tr>							
-					    	<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
-					    	<td><fmt:message key="bibtex.actions.openurl"/>:</td>
-					    	<td>
-						    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(publication.openURL)}" title="${openurlTitle}">
-						    		<c:out value="${command.context.loginUser.openURL}"/>?<c:out value="${mtl:shorten(publication.openURL, 30)}"/>
-						    	</a>
-					    	</td>
-					    </tr>															
-					</c:if> 
-					<!--+ 
-					 	| internal link
-					 	+-->
+		<h3><a class="foldUnfold" href="#resources"><img id="resourcesImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="bibtex.resources"/></a></h3>
+		<div id="resources" style="font-size: 90%;">
+			<table class="td-top">
+				<!--+
+					| DOI
+					+-->
+				<c:if test="${not empty publication.miscFields['doi']}">
 					<tr>
-					 	<td>
-					 		<fmt:message key="discussion.resourceLink.title"/><c:out value=": "/>
-					 		<buttons:help message="discussion.resourceLink.help" cssStyle="float:none"/>
-					 	</td>
-					 	<td>
-					 		<c:set var="linkText" value="[[publication/${hash.inter.id}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
-					 		<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
-					 	</td>
+						<td><fmt:message key="bibtex.actions.doi"/>:</td>
+						<td><a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(publication.miscFields['doi']))}"><c:out value="${mtl:extractDOI(publication.miscFields['doi'])}"/></a></td>
 					</tr>
-					
-					<!--+
-						| BibTeX key
-						+-->
+				</c:if>
+				<!--+
+					| URL
+					+-->
+				<c:if test="${not empty publication.url}">
 					<tr>
-						<td><fmt:message key="post.resource.bibtexKey"/>:</td>
-						<td><a href="/bibtexkey/${mtl:encodeURI(publication.bibtexKey)}/${mtl:encodeURI(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></td>
+						<td><fmt:message key="bibtex.url"/>:</td>
+						<td><a href="${fn:escapeXml(publication.url)}"><c:out value="${publication.url}"/></a></td>
 					</tr>
-					
-					<!--+
-						| private document (pdf, ps) 
-						+-->
-				  	<c:if test="${not empty publication.documents or isOwnEntry}">
-				  		<tr>		  
-				  			<td><fmt:message key="bibtex.actions.private_document.description"/>:</td>
-				  		<td>
-				  			<ul class="documents" id="files">
-				  				<c:forEach var="document" items="${publication.documents}">
-				  					<li>
-				  						<c:choose>
-				  							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-												<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(publication.documents[0].fileName)}">
-													<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-													<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
-													<c:out value="${document.fileName}"/>
-												</a>
-												<c:out value=" ( "/>
-												
-												<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(publication.documents[0].fileName)}">
-													<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
-													<fmt:message key="qrcode.actions.download" />
-												</a>
-												
-												<c:out value=" "/>
-												
-												<buttons:help cssStyle="float:none">
-													<jsp:attribute name="helpText">
-														<fmt:message key="qrcode.info.embedderInfoMessage">
-															<fmt:param>${properties['project.name']}</fmt:param>
-														</fmt:message>
-													</jsp:attribute>
-												</buttons:help>
-												
-												<c:out value=")"/>
-											</c:when>
-											<c:otherwise>
-												<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(publication.documents[0].fileName)}">
-													<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-													<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
-													<c:out value="${document.fileName}"/>
-												</a>
-											</c:otherwise>
-										</c:choose>
-										<!--+ 
-										 	| delete 
-										 	+-->
-										<c:if test="${isOwnEntry}">
-											<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
-											<a class="deleteDocument" title="${deleteTitle}" href="/ajax/documents?intraHash=${post.resource.intraHash}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"></a>
-										</c:if>
-									</li>
-								</c:forEach>
-					  			<!--+
-					  				|
-					  				| add another document
-					  				|
-					  				+-->
-				  				<c:if test="${isOwnEntry}">
-				  				<li style="list-style-image: url(${resdir}/image/document-txt-light.png)">
-				  					<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
-					  					<fmt:message key="bibtex.actions.additionalFiles"/>
-					  				</a>
-				  					<div id="inputDiv">
-				  					<!-- keep me! - temporary content -->
-				  					</div>
-				  				</li>
-				  				</c:if>
-				  			</ul>
-				  		</td>
-				  		</tr>
-				  	</c:if>				
-				</table>
-			</div>		
-		</c:if>
+				</c:if>
+				<!--+
+					| additional URLs
+					+-->
+				<c:if test="${not empty publication.extraUrls or isOwnEntry}">
+					<tr>							
+						<td>
+							<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!--  --></script>
+							<fmt:message key="bibtex.additional_urls"/>:
+						</td>
+						<td>
+							<!-- display extra URLs -->
+					      	<div id="urlList" class="allAddUrls">
+					      	<c:forEach items="${publication.extraUrls}" var="url">
+					      		<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
+					      		<div id="${escapedUrl}">
+					        	<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
+					        	<c:if test="${isOwnEntry}">
+					        		<c:out value=" ("/>
+					          		<a href="#" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><fmt:message key="post.bibtex.delete"/></a>
+					          		<c:out value=")"/><br/>
+					        	</c:if>
+					        	</div>
+					      	</c:forEach>
+					      	</div>
+					    	<form method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
+					          	<fmt:message key="bibtex.url"/><c:out value=":"/>
+					          	<input type="text" name="url"/> 
+							  	<fmt:message key="text"/><c:out value=":"/>						          
+					          	<input type="text" name="text"/>
+					          	<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+					          	<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
+					          	<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
+					          	<input class="postUrl" type="button" value="addURL" id="addURLButton"/>
+					        </form>					      						  							  						  	 
+
+						  	<!--  add url -->						  	
+						    <c:if test="${isOwnEntry}">
+						        <fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
+						        <a class="addUrl" title="${addAdditionalUrlTitle}" href="javascript:addUrlForm()" id="l_addURL"><fmt:message key="bibtex.actions.additional_url.add"/></a>
+						    </c:if>								
+
+						</td>
+					</tr>
+				</c:if>
+				
+				<!--+
+					| OpenURL 
+					+-->
+				<c:if test="${not empty command.context.loginUser.openURL}">
+					<tr>							
+				    	<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
+				    	<td><fmt:message key="bibtex.actions.openurl"/>:</td>
+				    	<td>
+					    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(publication.openURL)}" title="${openurlTitle}">
+					    		<c:out value="${command.context.loginUser.openURL}"/>?<c:out value="${mtl:shorten(publication.openURL, 30)}"/>
+					    	</a>
+				    	</td>
+				    </tr>															
+				</c:if> 
+				<!--+ 
+				 	| internal link
+				 	+-->
+				<tr>
+				 	<td>
+				 		<fmt:message key="discussion.resourceLink.title"/><c:out value=": "/>
+				 		<buttons:help message="discussion.resourceLink.help" cssStyle="float:none"/>
+				 	</td>
+				 	<td>
+				 		<c:set var="linkText" value="[[publication/${hash.inter.id}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
+				 		<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
+				 	</td>
+				</tr>
+				
+				<!--+
+					| BibTeX key
+					+-->
+				<tr>
+					<td><fmt:message key="post.resource.bibtexKey"/>:</td>
+					<td><a href="/bibtexkey/${mtl:encodeURI(publication.bibtexKey)}/${mtl:encodeURI(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></td>
+				</tr>
+				
+				<!--+
+					| private document (pdf, ps) 
+					+-->
+			  	<c:if test="${not empty publication.documents or isOwnEntry}">
+			  		<tr>		  
+			  			<td><fmt:message key="bibtex.actions.private_document.description"/>:</td>
+			  		<td>
+			  			<ul class="documents" id="files">
+			  				<c:forEach var="document" items="${publication.documents}">
+			  					<li>
+			  						<c:choose>
+			  							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
+											<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(publication.documents[0].fileName)}">
+												<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
+												<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
+												<c:out value="${document.fileName}"/>
+											</a>
+											<c:out value=" ( "/>
+											
+											<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(publication.documents[0].fileName)}">
+												<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
+												<fmt:message key="qrcode.actions.download" />
+											</a>
+											
+											<c:out value=" "/>
+											
+											<buttons:help cssStyle="float:none">
+												<jsp:attribute name="helpText">
+													<fmt:message key="qrcode.info.embedderInfoMessage">
+														<fmt:param>${properties['project.name']}</fmt:param>
+													</fmt:message>
+												</jsp:attribute>
+											</buttons:help>
+											
+											<c:out value=")"/>
+										</c:when>
+										<c:otherwise>
+											<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(publication.documents[0].fileName)}">
+												<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
+												<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
+												<c:out value="${document.fileName}"/>
+											</a>
+										</c:otherwise>
+									</c:choose>
+									<!--+ 
+									 	| delete 
+									 	+-->
+									<c:if test="${isOwnEntry}">
+										<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
+										<a class="deleteDocument" title="${deleteTitle}" href="/ajax/documents?intraHash=${post.resource.intraHash}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"></a>
+									</c:if>
+								</li>
+							</c:forEach>
+				  			<!--+
+				  				|
+				  				| add another document
+				  				|
+				  				+-->
+			  				<c:if test="${isOwnEntry}">
+			  				<li style="list-style-image: url(${resdir}/image/document-txt-light.png)">
+			  					<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+				  					<fmt:message key="bibtex.actions.additionalFiles"/>
+				  				</a>
+			  					<div id="inputDiv">
+			  					<!-- keep me! - temporary content -->
+			  					</div>
+			  				</li>
+			  				</c:if>
+			  			</ul>
+			  		</td>
+			  		</tr>
+			  	</c:if>				
+			</table>
+		</div>		
 		
 		
 		<!-- ###############  ABSTRACT ################# -->
