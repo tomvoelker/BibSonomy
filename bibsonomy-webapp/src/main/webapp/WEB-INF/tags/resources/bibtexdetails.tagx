@@ -23,7 +23,7 @@
 	
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
 
-	<c:if test="${not empty jsOpenAccess}">
+	<c:if test="${not empty jsOpenAccess}"> 
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
   		
@@ -46,7 +46,7 @@
 			| preview picture 
 			+-->
 		<c:if test="${not empty publication.documents}" >
-			<div style="width:18%;float:left;text-align:right;">
+			<div style="width:18%;float:left;text-align:right;margin-top:1.9em;">
 				<!-- preview picture of first document -->
 				<a class="preview publication" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
 					<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
@@ -277,14 +277,14 @@
 		<c:if test="${isOwnEntry}">
 			<h3><a class="foldUnfold" href="#privnote"><img id="privnoteImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.privnote"/></a></h3>
 			<div id="privnote">
-				<form method="post" id="note" style="padding-right:5px;">
+				<form method="post" id="note">
 			  		<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 			  		<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
 			  		<input type="hidden" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
 			  		<input type="hidden" name="action" value="updatePrivateNote"/>
-			  		<textarea style="width:100%;" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
+			  		<textarea style="width:82%;" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
 			  		<fmt:message key="save" var="save" />
-			  		<input type="submit" value="${save}" id="makeP" onclick="javascript: return updatePrivNote($(this))"/>    
+			  		<input style="float:right;" type="submit" value="${save}" id="makeP" onclick="javascript: return updatePrivNote($(this))"/>    
 			  	</form>
 			</div>
 		</c:if>			
