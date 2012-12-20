@@ -35,11 +35,10 @@
 	
 	<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
 	
-		<div style="float:left;clear:right;width:80%">		
-			
-			<!--+ 
-			 	| selection of citation format 
-			 	+-->
+		<!--+ 
+		 	| selection of citation format 
+		 	+-->
+		<div style="float:left;clear:right;width:82%">
 			<bib:citation post="${post}"/>
 		</div>
 		
@@ -47,15 +46,17 @@
 			| preview picture 
 			+-->
 		<c:if test="${not empty publication.documents}" >
-			<div style="width:20%;float:left;text-align:right;">
-					<!-- preview picture of first document -->
-					<a class="preview publication" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
-						<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
-					</a>	
+			<div style="width:18%;float:left;text-align:right;">
+				<!-- preview picture of first document -->
+				<a class="preview publication" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
+					<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
+				</a>	
 			</div>
 		</c:if>
 		
-		<!-- ###############  PUMA / OpenAccess  ################# -->
+		<!--+
+			| only shown on PUMA (transfer publication to OpenAccess repository) 
+			+-->
 		<c:if test="${not empty jsOpenAccess}"> <!-- is there any openaccess javascript code defined in theme*.properties? -->
 			<c:if test="${isOwnEntry}"> <!-- only if publication is own one -->
 			    <c:if test="${mtl:hasTagMyown(post)}"> <!-- only if publication is tagged with myown system tag -->	
@@ -65,9 +66,7 @@
 		</c:if>
 								
 		<!--+
-			|
 			| discussion and rating
-			|
 			+-->
 		<h3 style="clear:both;"><a class="foldUnfold" href="#discussion"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.discussion.headline"/></a></h3>
 		<div id="discussion">
@@ -182,7 +181,7 @@
 				</tr>
 				
 				<!--+
-					| private document (pdf, ps) 
+					| private documents (pdf, ps) 
 					+-->
 			  	<c:if test="${not empty publication.documents or isOwnEntry}">
 			  		<tr>		  
@@ -256,14 +255,17 @@
 			</table>
 		</div>		
 		
-		
-		<!-- ###############  ABSTRACT ################# -->
+		<!--+
+			| abstract
+			+-->
 		<c:if test="${not empty publication.abstract}">
 			<h3><a class="foldUnfold" href="#abstract"><img id="abstractImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.abstract"/></a></h3>
 			<div id="abstract" style="font-size:90%"><c:out value="${mtl:cleanBibtex(publication.abstract)}" /></div>
 		</c:if>				
 		
-		<!-- ############## DESCRIPTION ############## -->		
+		<!--+
+			| description
+			+-->		
 		<c:if test="${not empty post.description}">
 			<h3><a class="foldUnfold" href="#desc"><img id="descImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.description.cap"/></a></h3>
 			<div id="desc"><c:out value="${post.description}" /></div>
