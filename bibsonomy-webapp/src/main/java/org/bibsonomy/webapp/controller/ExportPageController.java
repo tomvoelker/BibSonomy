@@ -35,7 +35,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
 		command.setLang(this.requestLogic.getLocale().getLanguage());
 		
-		if ("embed".equals(command.getFormat())) return Views.EXPORT_EMBEDDED;
+		if (command.getFormatEmbedded()) return Views.EXPORT_EMBEDDED;
 		
 		return Views.EXPORT;
 	}

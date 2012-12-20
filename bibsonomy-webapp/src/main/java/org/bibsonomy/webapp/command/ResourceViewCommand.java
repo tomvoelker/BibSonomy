@@ -222,14 +222,14 @@ public class ResourceViewCommand extends BaseCommand {
 	/**
 	 * @return the formatEmbedded
 	 */
-	public boolean getformatEmbedded() {
+	public boolean getFormatEmbedded() {
 		return this.formatEmbedded;
 	}
 
 	/**
 	 * @param formatEmbedded the formatEmbedded to set
 	 */
-	public void setformatEmbedded(final boolean formatEmbedded) {
+	public void setFormatEmbedded(final boolean formatEmbedded) {
 		this.formatEmbedded = formatEmbedded;
 	}
 	

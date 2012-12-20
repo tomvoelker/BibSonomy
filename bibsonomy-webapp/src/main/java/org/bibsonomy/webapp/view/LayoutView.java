@@ -54,7 +54,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 			 * get requested layout
 			 */
 			final String layout = command.getLayout();
-			final boolean formatEmbedded = command.getformatEmbedded(); 
+			final boolean formatEmbedded = command.getFormatEmbedded(); 
 			/*
 			 * get the requested path
 			 * we need it to generate the file names for inline content-disposition
