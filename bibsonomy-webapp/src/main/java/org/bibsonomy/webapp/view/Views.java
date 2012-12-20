@@ -594,6 +594,11 @@ public enum Views implements View {
 	EXPORT("export"),
 
 	/**
+	 * embeddable version of the export page dropdown list
+	 */
+	EXPORT_EMBEDDED("exportEmbedded"),
+	
+	/**
 	 * export layouts in a JSON object
 	 */
 	EXPORTLAYOUTS("exportLayouts"),

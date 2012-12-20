@@ -1,0 +1,36 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"		
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<c:url var="bibtex"  value="/bib/${requPath}${requQueryString}" />
+	<c:url var="publ"    value="/publ/${requPath}${requQueryString}" />
+	<c:url var="publrss" value="/publrss/${requPath}${requQueryString}" />
+	<c:url var="aparss"  value="/aparss/${requPath}${requQueryString}" />
+	<c:url var="burst"   value="/burst/${requPath}${requQueryString}" />
+	<c:url var="swrc"    value="/swrc/${requPath}${requQueryString}" />
+	<c:url var="json"    value="/json/${requPath}${requQueryString}" />
+	<c:url var="custom"  value="/layout/custom/${requPath}${requQueryString}" />
+
+	<select id="selectlink" onchange="self.location=this.value" size="1">
+		<option value=""><fmt:message key="form.input.select"/></option>
+		<option value="${fn:escapeXml(bibtex)}">BibTeX</option>
+		<option value="${fn:escapeXml(publ)}">HTML</option>
+		<option value="${fn:escapeXml(publrss)}">RSS</option>
+		<option value="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</option>
+		<option value="${fn:escapeXml(burst)}">BuRST</option>						
+		<option value="${fn:escapeXml(swrc)}">SWRC</option>
+		<option value="${fn:escapeXml(json)}">JSON</option>				
+		<option value="${fn:escapeXml(custom)}">Custom</option>					
+
+		<c:forEach var="entry" items="${command.layoutMap}">
+			<c:if test="${entry.value.publicLayout}">			
+				<c:url var="url" value="/layout/${entry.value.name}/${requPath}${requQueryString}" />
+				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
+			</c:if>
+		</c:forEach>
+	</select>
+	
+</jsp:root>

@@ -36,7 +36,13 @@
 			<li><a href="#citation_bibtex">BibTeX</a></li>
 			<li><a href="#citation_endnote">EndNote</a></li>
 			<li>
-				<a href="#citation_more"><fmt:message key="bibtex.all_exports" /></a>
+				<!--+ 
+					| FIXME: using ?format=embed is pretty buggy, since it is 
+					| appended by the export page and hence then two formats  
+					| are requested: the one in the URL path and the one we 
+					| give here as a parameter.
+					+ -->
+				<a href="/export/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?format=embed"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
 		</ul>
 		<div class="tab_content">
@@ -56,10 +62,6 @@
 			<div id="citation_endnote">
 				<c:set var="endnoteExport"><export:endnote bib="${post.resource}"/></c:set>	  	
 				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><c:out value="${endnoteExport}"/></textarea>
-			</div>    			
-			<div id="citation_more">
-				<fmt:message var="allExportsTitle" key="bibtex.all_exports.title" />
-				<a href="/export/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports.title"/></a>
 			</div>
 		</div>
 	</div>
