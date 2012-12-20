@@ -40,48 +40,7 @@
 			<!--+ 
 			 	| selection of citation format 
 			 	+-->
-			<div id="citation" class="tabs">
-				<!-- tab header -->
-				<ul class="tab">
-					<li class="citationHint">
-						<a href=""><fmt:message key="bibtex.citation_format_in"/>:</a>
-					</li>
-					<li>
-						<a href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
-					</li>
-					<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,din1505',',')}">
-						<li><a href="/layout/${citationStyle}/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
-					</c:forEach>
-					<li><a href="#citation_bibtex">BibTeX</a></li>
-					<li><a href="#citation_endnote">EndNote</a></li>
-					<li>
-						<a href="#citation_more"><fmt:message key="bibtex.all_exports" /></a>
-					</li>
-				</ul>
-				<div class="tab_content">
-					<!-- tab content -->
-					<div id="citation_plain">
-						<!--+
-							| title of the publication 
-							+-->
-						<h3 style="margin-top: 0;">
-							<a href="/bibtex/${post.resource.interHash}"><c:out value="${mtl:cleanBibtex(publication.title)}" /></a>
-						</h3>
-						<bib:desc publication="${post.resource}"/>
-					</div>
-					<div id="citation_bibtex">
-						<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
-					</div>
-					<div id="citation_endnote">
-						<c:set var="endnoteExport"><export:endnote bib="${publication}"/></c:set>	  	
-						<textarea style="width:100%;font-size:80%;border:none;" rows="15"><c:out value="${endnoteExport}"/></textarea>
-					</div>    			
-					<div id="citation_more">
-						<fmt:message var="allExportsTitle" key="bibtex.all_exports.title" />
-						<a href="/export/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports.title"/></a>
-					</div>
-				</div>
-			</div>
+			<bib:citation post="${post}"/>
 		</div>
 		
 		<!--+
