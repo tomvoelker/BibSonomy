@@ -1333,7 +1333,7 @@
 	<URLTest id="url_219">
 		<TestDescription>test for http://http://jis.sagepub.com/</TestDescription>
 		<URL>http://jis.sagepub.com/content/38/3/297.abstract</URL>
-		<BibFile>sagepubUnitTest.bib</BibFile>
+		<BibFile>SagepubUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.sage.SageJournalScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_220">
@@ -1469,6 +1469,12 @@
 		<BibFile>TaylorAndFrancisScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper</Scraper>
 		<Enabled>true</Enabled>
+	</URLTest>
+	<URLTest id="url_242">
+		<TestDescription>test for Sage Journals CDP Scraper</TestDescription>
+		<URL>http://cdp.sagepub.com/content/12/4/105.short</URL>
+		<BibFile>SagepubUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.sage.SageCDPScraper</Scraper>
 	</URLTest>
 	
 </test:Tests>

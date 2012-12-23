@@ -3,7 +3,7 @@ package org.bibsonomy.scraper.url.kde.sage;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +30,12 @@ public class SageJournalScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "http://jis.sagepub.com/";
 	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jis.sagepub.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = new ArrayList<Pair<Pattern,Pattern>>();
 
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jis.sagepub.com"), AbstractUrlScraper.EMPTY_PATTERN));
+	}
+	
 	private static final Pattern URL_ID_PATTERN = Pattern.compile("\\d+/\\d+/\\d+");
 
 	private static final String BIBTEX_URL = "http://jis.sagepub.com/citmgr?type=bibtex&gca=spjis;";
@@ -48,7 +52,7 @@ public class SageJournalScraper extends AbstractUrlScraper {
 			final String id = extractId(scrapingUrl);
 			if (!present(id)) {
 				log.error("can't parse publication id");
-				return false;
+				throw new ScrapingException("URL pattern not supported yet");
 			}
 			String bibTex = WebUtils.getContentAsString(BIBTEX_URL + id);
 
