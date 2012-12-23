@@ -54,7 +54,7 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 	
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + TANDF_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN));
 
-	private static final Pattern DOI_PATTERN = Pattern.compile("/10\\.1080/\\d+(\\.\\d+)*$");
+	private static final Pattern DOI_PATTERN = Pattern.compile("/10\\.1080/\\d++(\\.\\d++)*");
 	
 	private static final String TANDF_BIBTEX_DOWNLOAD_PATH = "action/downloadCitation";
 	private static final String DOWNLOADFILENAME = "tandf_rajp2080_124";
@@ -89,7 +89,7 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		Matcher matcher = DOI_PATTERN.matcher(scrapingContext.getUrl().toString());
-		if (!matcher.find()) return false;
+		if (!matcher.find()) throw new ScrapingException("URL pattern not supported yet");
 		try {
 			HttpClient client = WebUtils.getHttpClient();
 			//get the page to start the session
