@@ -1,6 +1,6 @@
 package org.bibsonomy.scraper.url.kde.biologists;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -16,12 +16,13 @@ public class BiologistsScraper extends CitationManagerScraper {
 	private static final String SITE_NAME = "Development";
 	private static final String SITE_URL = "http://dev.biologists.org/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS;
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("href=\"([^\"]++)\".*?citation manager");
 	
 	static {
-		URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "dev.biologists.org"), Pattern.compile("/content" + ".*")));
+		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "dev.biologists.org"), Pattern.compile("/content" + ".*")));
+		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jcs.biologists.org"), Pattern.compile("/content" + ".*")));
 	}
 
 	@Override

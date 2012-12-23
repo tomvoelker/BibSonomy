@@ -1476,5 +1476,11 @@
 		<BibFile>SagepubUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.sage.SageCDPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_243">
+		<TestDescription>Test for BiologistsScraper</TestDescription>
+		<URL>http://jcs.biologists.org/content/125/13/3015.long</URL>
+		<BibFile>BiologistsScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>

@@ -21,5 +21,14 @@ public class BiologistsScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_234"));
 	}
+	/**
+	 * starts URL test with id url_243
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun() {
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_243"));
+	}
 
 }
