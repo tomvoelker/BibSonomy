@@ -1482,5 +1482,11 @@
 		<BibFile>BiologistsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_244">
+		<TestDescription>Test for APAScraper</TestDescription>
+		<URL>http://psycnet.apa.org/journals/bul/119/2/254/</URL>
+		<BibFile>APAScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.apa.APAScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>

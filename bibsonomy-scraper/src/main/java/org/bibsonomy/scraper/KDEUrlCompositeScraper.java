@@ -37,6 +37,7 @@ import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
 import org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper;
 import org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper;
+import org.bibsonomy.scraper.url.kde.apa.APAScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.ats.ATSScraper;
 import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
@@ -220,6 +221,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new OpenUniversityScraper());
 		addScraper(new AAAIScraper());
 		addScraper(new SageCDPScraper());
+		addScraper(new APAScraper());
 	}
 
 }
