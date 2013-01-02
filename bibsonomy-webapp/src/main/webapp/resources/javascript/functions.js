@@ -714,7 +714,7 @@ function editTags() {
 				/*
 				 * start the tag autocompletion
 				 */
-				startTagAutocompletion(input, true);
+				startTagAutocompletion(input, true, true);
 				/*
 				 * add submit handler (that removes the form and re-builds the tags)
 				 */
@@ -1109,10 +1109,11 @@ String.prototype.trim = function () {
 /**
  * Function to start the tag autocompletion.
  * 
- * @param textfield - the textfield for the autocompletion - e.g. $("#inpf")
- * @param isPost 	- true if the autocomplete is started in the post list, false if it is started in the search bar
+ * @param textfield 	- the textfield for the autocompletion - e.g. $("#inpf")
+ * @param isPost 		- only true if the autocompletion is started in the post list (quick tag edit), false if it is started e.g. in the search bar
+ * @param multiTags 	- true if several tags are allowed in the text field, false: the textfield will be emptied and the suggested tag put in it. 
  */
-function startTagAutocompletion (textfield, isPost) {
+function startTagAutocompletion (textfield, isPost, multiTags) {
 	
 	var textfieldValue;
 	var valueArray;
@@ -1141,7 +1142,13 @@ function startTagAutocompletion (textfield, isPost) {
 			var textArea = $(event.target);
 			var text = item.value;
 			var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length));
-			textArea.val(substring + text + " ");
+			
+			if(multiTags) {
+				textArea.val(substring + text + " ");
+			} else {
+				textArea.val(text);
+			}
+			
 			return false;
 		},
 		focus: function( event, ui ) {
