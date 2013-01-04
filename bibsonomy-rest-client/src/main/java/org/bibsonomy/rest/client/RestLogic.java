@@ -111,8 +111,15 @@ import org.bibsonomy.util.ExceptionUtils;
  * @version $Id$
  */
 public class RestLogic implements LogicInterface {
-	private static final Log log = LogFactory.getLog(RestLogic.class);
+	private static final Log log = LogFactory.getLog(RestLogic.class); // FIXME: who configs the logging?
 
+	private static final User createUser(final String username, final String apiKey) {
+		final User user = new User(username);
+		user.setApiKey(apiKey);
+		return user;
+	}
+	
+	
 	private final User authUser;
 	private final AuthenticationAccessor accessor;
 
@@ -122,6 +129,8 @@ public class RestLogic implements LogicInterface {
 	private final ProgressCallbackFactory progressCallbackFactory;
 
 	/**
+	 * TODO: implement an {@link AuthenticationAccessor} for apikey access
+	 * 
 	 * @param username
 	 *            the username
 	 * @param apiKey
@@ -132,23 +141,28 @@ public class RestLogic implements LogicInterface {
 	 * @param progressCallbackFactory
 	 */
 	RestLogic(final String username, final String apiKey, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
+		this(apiURL, renderingFormat, progressCallbackFactory, null, createUser(username, apiKey));
+	}
+
+	/**
+	 * constuctor using accessor instead of username and api key
+	 * 
+	 * @param accessor
+	 * @param apiURL
+	 * @param renderingFormat
+	 * @param progressCallbackFactory
+	 */
+	RestLogic(final AuthenticationAccessor accessor, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
+		this(apiURL, renderingFormat, progressCallbackFactory, accessor, new User(RESTConfig.USER_ME));
+	}
+
+	private RestLogic(String apiURL, RenderingFormat renderingFormat, ProgressCallbackFactory progressCallbackFactory, AuthenticationAccessor accessor, User loggedinUser) {
 		this.apiURL = apiURL;
 		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
 		this.renderingFormat = renderingFormat;
 		this.progressCallbackFactory = progressCallbackFactory;
 
-		this.authUser = new User(username);
-		this.authUser.setApiKey(apiKey);
-		this.accessor = null;
-	}
-
-	public RestLogic(final AuthenticationAccessor accessor, final String apiUrl, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
-		this.apiURL = apiUrl;
-		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
-		this.renderingFormat = renderingFormat;
-		this.progressCallbackFactory = progressCallbackFactory;
-
-		this.authUser = new User(RESTConfig.USER_ME);
+		this.authUser = loggedinUser;
 		this.accessor = accessor;
 	}
 
@@ -360,7 +374,6 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
@@ -428,7 +441,6 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
-		// TODO maybe return 0;
 		throw new UnsupportedOperationException();
 	}
 
@@ -572,19 +584,16 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public void createDiscussionItem(final String interHash, final String username, final DiscussionItem comment) {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
 	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
 	public void deleteDiscussionItem(final String username, final String interHash, final String commentHash) {
 		throw new UnsupportedOperationException();
-
 	}
 
 	@Override
