@@ -28,7 +28,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JsonConfig;
@@ -53,13 +52,14 @@ import org.bibsonomy.model.Resource;
  */
 public class CslModelConverter {
 
-	// bibtex -> csl
+	/**
+	 * BibTeX entry types -> csl types
+	 * see http://xbiblio-devel.2463403.n2.nabble.com/Citeproc-json-data-input-specs-td5135372.html
+	 * FIXME: this is incomplete!
+	 */
 	private static Map<String, String> typemap;
 
 	static {
-		// see
-		// http://xbiblio-devel.2463403.n2.nabble.com/Citeproc-json-data-input-specs-td5135372.html
-		// FIXME: this is incomplete!
 		typemap = new HashMap<String, String>();
 		typemap.put("article", "article-journal");
 		typemap.put("book", "book");
@@ -70,21 +70,6 @@ public class CslModelConverter {
 		typemap.put("mastersthesis", "thesis");
 		typemap.put("report", "techreport");
 		typemap.put("inproceedings", "chapter");
-	}
-
-	public static List<Post<? extends Resource>> convertEntries(final List<Record> entries) {
-		// todo
-		return null;
-	}
-
-	public static Post<? extends Resource> convertEntry(final Record entry) {
-		// todo
-		return null;
-	}
-
-	public static List<Record> convertPosts(final List<Post<? extends Resource>> posts) {
-		// todo
-		return null;
 	}
 
 	/**
