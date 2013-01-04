@@ -38,10 +38,11 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
  */
 public class RestLogicFactory implements LogicInterfaceFactory {
 
-	/**
-	 * the url of the BibSonomy (bibsonomy.org) API
-	 */
-	public static final String BIBSONOMY_API_URL = "http://www.bibsonomy.org/api/";
+	/** the url of BibSonomy (bibsonomy.org) */
+	public static final String BIBSONOMY_URL = "http://www.bibsonomy.org/";
+	
+	/** the url of the BibSonomy (bibsonomy.org) API */
+	public static final String BIBSONOMY_API_URL = BIBSONOMY_URL + "api/";
 	
 	private static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
 	private static final ProgressCallbackFactory DEFAULT_CALLBACK_FACTORY = new ProgressCallbackFactoryImpl();
