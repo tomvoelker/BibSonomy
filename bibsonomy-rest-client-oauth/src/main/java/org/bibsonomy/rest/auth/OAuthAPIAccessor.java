@@ -44,37 +44,45 @@ import net.oauth.OAuthMessage;
 import net.oauth.OAuthServiceProvider;
 import net.oauth.ParameterStyle;
 import net.oauth.client.OAuthClient;
+import net.oauth.client.httpclient3.HttpClient3;
 import net.oauth.http.HttpMessage;
 
 import org.apache.commons.httpclient.HttpMethod;
+import org.bibsonomy.rest.client.RestLogicFactory;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
- * implements OAuth authenticated access for BibSonomy's Rest-Api
+ * TODO: add integration test
+ * 
+ * implements OAuth authenticated access for REST-API
  * 
  * Workflow:
+ * 
  *   1) String redirectUrl = accessor.getAuthorizationUrl()
  *   2) redirect user to redirectUrl
- *   3) call accessor.obtainAccessToken()
- *   4) get logic interface using the accessor
+ *   3) set the request token ({@link #setRequestToken(String)})
+ *   4) call accessor.obtainAccessToken()
+ *   5) get logic interface using the accessor @see {@link RestLogicFactory}
  * 
  * @author fei
  * @version $Id$
  */
-public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
-	/** actual OAuth communication implementation */
-	private OAuthAccessor accessor;
-
+public class OAuthAPIAccessor implements AuthenticationAccessor {
 	/** global OAuth client */
-	private static final OAuthClient OAUTH_CLIENT = new OAuthClient(new net.oauth.client.httpclient3.HttpClient3());
+	private static final OAuthClient OAUTH_CLIENT = new OAuthClient(new HttpClient3());
 	
+	/** end points */
 	/** url for obtaining (temporary) request tokens */
-	public static final String OAUTH_REQUEST_URL = "http://www.bibsonomy.org/oauth/requestToken";
+	public static final String OAUTH_REQUEST_URL = "oauth/requestToken";
 	/** url for authorizing request tokens */
-	public static final String OAUTH_AUTHORIZATION_URL = "http://www.bibsonomy.org/oauth/authorize";
+	public static final String OAUTH_AUTHORIZATION_URL = "oauth/authorize";
 	/** url for obtaining access tokens from previously authorized request tokens */
-	public static final String OAUTH_ACCESS_URL = "http://www.bibsonomy.org/oauth/accessToken";
+	public static final String OAUTH_ACCESS_URL = "oauth/accessToken";
+	
+	
+	/** actual OAuth communication implementation */
+	private final OAuthAccessor accessor;
 	
 	/** remote user id */
 	private String userId;
@@ -86,17 +94,28 @@ public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
 	 * @param consumerSecret
 	 * @param callbackUrl
 	 */
-	public BibSonomyOAuthAccesssor(final String consumerKey, final String consumerSecret, final String callbackUrl) {
-		OAuthServiceProvider provider = new OAuthServiceProvider(OAUTH_REQUEST_URL, OAUTH_AUTHORIZATION_URL, OAUTH_ACCESS_URL);
-		OAuthConsumer consumer = new OAuthConsumer(callbackUrl, consumerKey, consumerSecret, provider);
+	public OAuthAPIAccessor(final String consumerKey, final String consumerSecret, final String callbackUrl) {
+		this(RestLogicFactory.BIBSONOMY_URL, consumerKey, consumerSecret, callbackUrl);
+	}
+	
+	/**
+	 * constructor
+	 * 
+	 * @param projectHome
+	 * @param consumerKey
+	 * @param consumerSecret
+	 * @param callbackUrl
+	 */
+	public OAuthAPIAccessor(final String projectHome, final String consumerKey, final String consumerSecret, final String callbackUrl) {
+		final OAuthServiceProvider provider = new OAuthServiceProvider(projectHome + OAUTH_REQUEST_URL, projectHome + OAUTH_AUTHORIZATION_URL, projectHome + OAUTH_ACCESS_URL);
+		final OAuthConsumer consumer = new OAuthConsumer(callbackUrl, consumerKey, consumerSecret, provider);
 
+		// TODO: remove?
 		// for implementing RSA public key authentication:
         //
         // consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.RSA_SHA1);
 		// consumer.setProperty(RSA_SHA1.PRIVATE_KEY, consumerSecret);
-		
-        OAuthAccessor accessor = new OAuthAccessor(consumer);
-		this.accessor = accessor;
+		this.accessor = new OAuthAccessor(consumer);
 	}
 	
 	/**
@@ -108,8 +127,22 @@ public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
 	 * @param accessToken
 	 * @param tokenSecret
 	 */
-	public BibSonomyOAuthAccesssor(final String consumerKey, final String consumerSecret, final String callbackUrl, final String accessToken, final String tokenSecret) {
-		this(consumerKey, consumerSecret, callbackUrl);
+	public OAuthAPIAccessor(final String consumerKey, final String consumerSecret, final String callbackUrl, final String accessToken, final String tokenSecret) {
+		this(RestLogicFactory.BIBSONOMY_URL, consumerKey, consumerSecret, callbackUrl, accessToken, tokenSecret);
+	}
+	
+	/**
+	 * constructor 
+	 * 
+	 * @param projectHome 
+	 * @param consumerKey
+	 * @param consumerSecret
+	 * @param callbackUrl
+	 * @param accessToken
+	 * @param tokenSecret
+	 */
+	public OAuthAPIAccessor(final String projectHome, final String consumerKey, final String consumerSecret, final String callbackUrl, final String accessToken, final String tokenSecret) {
+		this(projectHome, consumerKey, consumerSecret, callbackUrl);
 		this.accessor.accessToken = accessToken;
 		this.accessor.tokenSecret = tokenSecret;
 	}
@@ -119,7 +152,7 @@ public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
 	 * 
 	 * @param accessor
 	 */
-	public BibSonomyOAuthAccesssor(OAuthAccessor accessor) {
+	public OAuthAPIAccessor(final OAuthAccessor accessor) {
 		this.accessor = accessor;
 	}
 	
@@ -130,14 +163,22 @@ public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
 	 * step one: obtain request token and return url which the user must visit for 
 	 *           authorizing the request token
 	 * 
-	 * @return
+	 * @return the auth url
 	 * @throws IOException
 	 * @throws OAuthException
 	 * @throws URISyntaxException
 	 */
 	public String getAuthorizationUrl() throws IOException, OAuthException, URISyntaxException {
-		this.execute("request");
-		return OAUTH_AUTHORIZATION_URL + "?oauth_token=" + this.accessor.requestToken;
+		/*
+		 * obtain (temporary) request token
+		 */
+		List<OAuth.Parameter> callback = null;
+		if (present(this.accessor.consumer.callbackURL)) {
+			callback = OAuth.newList(OAuth.OAUTH_CALLBACK, this.accessor.consumer.callbackURL);
+		}
+		OAUTH_CLIENT.getRequestToken(this.accessor, null, callback);
+		
+		return this.accessor.consumer.serviceProvider.userAuthorizationURL + "?oauth_token=" + this.accessor.requestToken;
 	}
 	
 	/**
@@ -149,20 +190,43 @@ public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
 	 * @throws URISyntaxException
 	 */
 	public void obtainAccessToken() throws IOException, OAuthException, URISyntaxException {
-		this.execute("access");
+		/*
+		 * transform previously authorized request token to an access token
+		 */
+		final Properties paramProps = new Properties();
+		paramProps.setProperty("oauth_token", this.accessor.requestToken);
+		final List<Map.Entry<?,?>> params = new ArrayList<Map.Entry<?,?>>();
+		final Iterator<?> it = paramProps.entrySet().iterator();
+		while (it.hasNext()) {
+			final Map.Entry<?,?> p = (Map.Entry<?,?>) it.next();
+			params.add(new OAuth.Parameter((String)p.getKey(), (String) p.getValue()));
+		}
+		
+		final OAuthMessage response = OAUTH_CLIENT.invoke(this.accessor, "GET",  this.accessor.consumer.serviceProvider.accessTokenURL, params);
+		// set access token and token secret
+		this.accessor.accessToken = response.getParameter("oauth_token");
+		this.accessor.tokenSecret = response.getParameter("oauth_token_secret");
+		
+		// the logged in user
+		this.userId = response.getParameter("user_id");
+	}
+	
+	/**
+	 * @param requestToken the request token from step to set
+	 */
+	public void setRequestToken(final String requestToken) {
+		this.accessor.requestToken = requestToken;
 	}
 
 	/**
-	 * get the access token
-	 * @return
+	 * @return the OAuth access token
 	 */
 	public String getAccessToken() {
 		return this.accessor.accessToken;
 	}
 
 	/**
-	 * get the token secret
-	 * @return
+	 * @return the OAuth token secret
 	 */
 	public String getTokenSecret() {
 		return this.accessor.tokenSecret;
@@ -182,103 +246,28 @@ public class BibSonomyOAuthAccesssor implements AuthenticationAccessor {
 	//------------------------------------------------------------------------
 	@Override
 	public <M extends HttpMethod> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException {
-		List<Map.Entry<?,?>> params = new ArrayList<Map.Entry<?,?>>();
-		params.add(new OAuth.Parameter("oauth_token", this.getAccessor().accessToken));
+		final List<Map.Entry<?,?>> params = new ArrayList<Map.Entry<?,?>>();
+		params.add(new OAuth.Parameter("oauth_token", this.accessor.accessToken));
 		try {
 			OAuthMessage request;
 			if (present(requestBody)) {
-				request = this.getAccessor().newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes("UTF-8")));
+				request = this.accessor.newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes("UTF-8")));
 			} else {
-				request = this.getAccessor().newRequestMessage(method.getName(), url, params);
+				request = this.accessor.newRequestMessage(method.getName(), url, params);
 			}
-			Object accepted = getAccessor().consumer.getProperty(OAuthConsumer.ACCEPT_ENCODING);
+			final Object accepted = this.accessor.consumer.getProperty(OAuthConsumer.ACCEPT_ENCODING);
 		    if (accepted != null) {
 		        request.getHeaders().add(new OAuth.Parameter(HttpMessage.ACCEPT_ENCODING, accepted.toString()));
 		    }
 		    request.getHeaders().add(new OAuth.Parameter("Accept", renderingFormat.getMimeType()));
 		    request.getHeaders().add(new OAuth.Parameter("Content-Type", renderingFormat.getMimeType()));
 
-		    Object ps = getAccessor().consumer.getProperty("parameterStyle");
-		    ParameterStyle style = (ps == null) ? ParameterStyle.BODY : Enum.valueOf(ParameterStyle.class, ps.toString());
+		    final Object ps = this.accessor.consumer.getProperty("parameterStyle");
+		    final ParameterStyle style = (ps == null) ? ParameterStyle.BODY : Enum.valueOf(ParameterStyle.class, ps.toString());
 		    
 		    return new StringReader(OAUTH_CLIENT.invoke(request, style).readBodyAsString());
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new ErrorPerformingRequestException(e);
 		}
 	}
-	
-	//------------------------------------------------------------------------
-	// private helpers
-	//------------------------------------------------------------------------
-	/**
-	 * perform OAuth requests
-	 * 
-	 * @param operation
-	 * @throws IOException
-	 * @throws OAuthException
-	 * @throws URISyntaxException
-	 */
-	private void execute(String operation) throws IOException, OAuthException, URISyntaxException {
-		if ("request".equals(operation)) {
-			//
-			// obtain (temporary) request token
-			//
-			List<OAuth.Parameter> callback = null;
-			if (present(accessor.consumer.callbackURL)) {
-				callback = OAuth.newList(OAuth.OAUTH_CALLBACK, accessor.consumer.callbackURL);
-			}
-			OAUTH_CLIENT.getRequestToken(accessor,null,callback);
-		}
-		else if ("access".equals(operation)) {
-			//
-			// transform previously authorized request token to an access token
-			//
-			Properties paramProps = new Properties();
-			paramProps.setProperty("oauth_token", this.accessor.requestToken);
-			OAuthMessage response = sendRequest(paramProps, OAUTH_ACCESS_URL);
-			
-			this.accessor.accessToken = response.getParameter("oauth_token");
-			this.accessor.tokenSecret = response.getParameter("oauth_token_secret");
-			this.userId = response.getParameter("user_id");
-		} else {
-			//
-			// access the resource
-			//
-			Properties paramProps = new Properties();
-			paramProps.setProperty("oauth_token", this.accessor.accessToken);
-
-			OAuthMessage response = sendRequest(paramProps, operation);
-			System.out.println(response.readBodyAsString());
-		}
-	}
-
-	/**
-	 * actually send request
-	 * 
-	 * @param map
-	 * @param url
-	 * @return
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 * @throws OAuthException
-	 */
-	private OAuthMessage sendRequest(Map<?,?> map, String url) throws IOException, URISyntaxException, OAuthException {
-		List<Map.Entry<?,?>> params = new ArrayList<Map.Entry<?,?>>();
-		Iterator<?> it = map.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<?,?> p = (Map.Entry<?,?>) it.next();
-			params.add(new OAuth.Parameter((String)p.getKey(), (String)p.getValue()));
-		}
-		return OAUTH_CLIENT.invoke(this.accessor, "GET",  url, params);
-	}
-
-	
-	public OAuthAccessor getAccessor() {
-		return accessor;
-	}
-
-	public void setAccessor(OAuthAccessor accessor) {
-		this.accessor = accessor;
-	}
-
 }

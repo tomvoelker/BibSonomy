@@ -3,14 +3,13 @@
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>BibSonomy-Rest-Client-OAuth</name>
-  <groupId>org.bibsonomy</groupId>
   <artifactId>bibsonomy-rest-client-oauth</artifactId>
   <packaging>jar</packaging>
-  <description>The REST-client.</description>
+  <description>The REST-client OAuth Accessor.</description>
   <parent>
     <groupId>org.bibsonomy</groupId>
     <artifactId>bibsonomy</artifactId>
-    <version>2.0.30-SNAPSHOT</version>
+    <version>2.0.31-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>
@@ -35,6 +34,12 @@
       <groupId>net.oauth.core</groupId>
       <artifactId>oauth-httpclient3</artifactId>
       <version>20090617</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>7.2.0.v20101020</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
