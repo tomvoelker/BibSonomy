@@ -7,7 +7,7 @@ import org.eclipse.jetty.server.Server;
  * 
  * @author dzo
  */
-public class TestServer {
+public class OauthTestServer {
 	
 	/**
 	 * run jetty app
