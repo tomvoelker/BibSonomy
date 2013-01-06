@@ -42,5 +42,14 @@ public class APAScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_244"));
 	}
+	/**
+	 * starts URL test with id url_245
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_245"));
+	}
 	
 }

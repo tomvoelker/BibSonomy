@@ -1488,5 +1488,11 @@
 		<BibFile>APAScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apa.APAScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_245">
+		<TestDescription>Test for APAScraper</TestDescription>
+		<URL>http://psycnet.apa.org/index.cfm?fa=buy.optionToBuy&amp;id=1996-02773-003</URL>
+		<BibFile>APAScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.apa.APAScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>

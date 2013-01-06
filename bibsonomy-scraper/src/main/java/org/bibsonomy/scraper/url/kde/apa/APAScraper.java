@@ -2,7 +2,6 @@ package org.bibsonomy.scraper.url.kde.apa;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieManager;
@@ -39,10 +38,9 @@ public class APAScraper extends AbstractUrlScraper {
 		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "psycnet.apa.org"), EMPTY_PATTERN));
 	}
 	
-	private static final Pattern EXPORT_LINK_PATTERN = Pattern.compile("<a[^>]*?doActionTaskSingle\\('([^']++)[^>]++>Export");
-	private static final Pattern UIDS_PATTERN = Pattern.compile("<input[^>]*?id=\"srhLstUIDs\"[^>]*?value=\"([^\"]++)");
-	private static final Pattern GATEWAY_PATTERN = Pattern.compile("<input[^>]*?id=\"idGateway\"[^>]*?value=\"([^\"]++)");
-	private static final Pattern ENDNOTE_LINK_PATTERN = Pattern.compile("<a href=\"([^\"]++)[^>]++>Download RIS");
+	private static final Pattern BUY_OPTION_LOCATION_PATTERN = Pattern.compile("fa=buy.*?id=([\\d\\-]++)");
+	
+	private static final Pattern UIDS_PAGE_PATTERN = Pattern.compile("<input[^>]*?id=\"srhLstUIDs\"[^>]*?value=\"([^\"]++)");
 
 	@Override
 	public String getSupportedSiteName() {
@@ -73,55 +71,27 @@ public class APAScraper extends AbstractUrlScraper {
 		//We have to proof the visit of several locations
 		CookieManager cookieMan = new CookieManager();
 		
-		//First get the requested page
-		HttpURLConnection c = null;
-		InputStream in = null;
-		String page;
-		try {
-			c = openPageConnection(scrapingContext.getUrl(), cookieMan);
-			if (!present(c)) throw new ScrapingException("Could not establish connection to requestet URL");
-			in = c.getInputStream();
-			page = WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(c.getHeaderField("Content-Type"))).toString();
-		} catch (IOException ex) {
-			throw new ScrapingException(ex);
-		} catch (URISyntaxException ex) {
-			throw new ScrapingException(ex);
-		} finally {
+		//This id is needed to build RIS download link
+		String lstUIDs = null;
+		
+		//While buy action, the id is contained in the URL requested to scrape
+		Matcher m = BUY_OPTION_LOCATION_PATTERN.matcher(scrapingContext.getUrl().toExternalForm());
+		if (m.find()) {
+			
+			//Pattern matches requested URL
+			lstUIDs = m.group(1);
+			
+		} else {
+			
+			//If scraping request is not during buy action, the id is contained in the page requested to scrape
+			HttpURLConnection c = null;
+			InputStream in = null;
+			String page;
 			try {
-				if (in != null) in.close();
-			} catch (IOException e) {
-			}
-			if (c != null) c.disconnect();
-		}
-		
-		//Get the URL for the download using the URL base of the requested page, since the form to submit for the download is on that page
-		URL downloadURL;
-		try {
-			downloadURL = new URL(c.getURL(), "/index.cfm?fa=search.export");
-		} catch (MalformedURLException ex) {
-			throw new ScrapingException(ex);
-		}
-		
-		//Meanwhile get the "Export" link from the page because we must have visited it
-		Matcher m = EXPORT_LINK_PATTERN.matcher(page);
-		if (!m.find()) throw new ScrapingException("Export link not found on requested page");
-		URL exportURL;
-		try {
-			exportURL = new URL(c.getURL(), m.group(1));
-		} catch (MalformedURLException ex) {
-			throw new ScrapingException(ex);
-		}
-		
-		//Get the Export page exactly once, although the first visit will be redirected to a login page and just the second try would result in the actual Export page
-		String exportPage;
-		for (int i = 0; i < 1; i++) {
-			try {
-				c = openPageConnection(exportURL, cookieMan);
-				if (!present(c)) throw new ScrapingException("Could not establish connection to export page URL");
+				c = openPageConnection(scrapingContext.getUrl(), cookieMan);
+				if (!present(c)) throw new ScrapingException("Could not establish connection to requestet URL");
 				in = c.getInputStream();
-				exportPage = WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(c.getHeaderField("Content-Type"))).toString();
-			} catch (MalformedURLException ex) {
-				throw new ScrapingException(ex);
+				page = WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(c.getHeaderField("Content-Type"))).toString();
 			} catch (IOException ex) {
 				throw new ScrapingException(ex);
 			} catch (URISyntaxException ex) {
@@ -133,57 +103,50 @@ public class APAScraper extends AbstractUrlScraper {
 				}
 				if (c != null) c.disconnect();
 			}
-			if (exportPage.contains("<title>PsycNET - Display</title>")) break;
+			
+			//Is the page present?
+			if (!present(page)) throw new ScrapingException("Could not get the page requested to scrape");
+			
+			//Search id in page
+			m = UIDS_PAGE_PATTERN.matcher(page);
+			if (m.find()) {
+				lstUIDs = m.group(1);
+			}
 		}
 		
-		//Remember the export form being on the original requested page? Get some data from that form
-		m = UIDS_PATTERN.matcher(page);
-		if (!m.find()) throw new ScrapingException("UIDs not found on requested page");
-		String lstUIDs = m.group(1);
-		m = GATEWAY_PATTERN.matcher(page);
-		if (!m.find()) throw new ScrapingException("Gateway not found on requested page");
-		String gateway = m.group(1);
+		//Is the id present?
+		if (!present(lstUIDs)) throw new ScrapingException("could not find lstUIDs");
 		
-		//Submit the export form. In case of Endnote format, we will simply be offered a final download link on another download page, but if we do not want to be redirected to a login page, we must have done the checklist
-		String exportResultPage;
+		//Build link to RIS download
+		URL risURL;
 		try {
-			exportResultPage = submitExportForm(downloadURL, cookieMan, lstUIDs, gateway);
-		} catch (IOException ex) {
-			throw new ScrapingException(ex);
-		} catch (URISyntaxException ex) {
-			throw new ScrapingException(ex);
-		}
-		
-		//Now search for the simple download link on the final download page and build that URL
-		if (!present(exportResultPage)) throw new ScrapingException("Could get the resulting page of endnote export");
-		m = ENDNOTE_LINK_PATTERN.matcher(exportResultPage);
-		if (!m.find()) throw new ScrapingException("Could not match link for endnote download");
-		URL finalDownloadURL;
-		try {
-			finalDownloadURL = new URL(downloadURL, m.group(1));
+			risURL = new URL("http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs);
 		} catch (MalformedURLException ex) {
 			throw new ScrapingException(ex);
 		}
 		
-		//Yes, now we can simply download the Endnote file
-		c = null;
-		in = null;
-		String ris;
-		try {
-			c = openPageConnection(finalDownloadURL, cookieMan);
-			if (!present(c)) throw new ScrapingException("Could not establish connection to download URL");
-			in = c.getInputStream();
-			ris = WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(c.getHeaderField("Content-Type"))).toString();
-		} catch (IOException ex) {
-			throw new ScrapingException(ex);
-		} catch (URISyntaxException ex) {
-			throw new ScrapingException(ex);
-		} finally {
+		//download RIS exactly two times, because the first request will finally be redirected to a login page
+		String ris = null;
+		for (int i = 0; i < 2; i++) {
+			HttpURLConnection c = null;
+			InputStream in = null;
 			try {
-				if (in != null) in.close();
-			} catch (IOException e) {
+				c = openPageConnection(risURL, cookieMan);
+				if (!present(c)) throw new ScrapingException("Could not establish connection to download URL");
+				in = c.getInputStream();
+				ris = WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(c.getHeaderField("Content-Type"))).toString();
+			} catch (IOException ex) {
+				throw new ScrapingException(ex);
+			} catch (URISyntaxException ex) {
+				throw new ScrapingException(ex);
+			} finally {
+				try {
+					if (in != null) in.close();
+				} catch (IOException e) {
+				}
+				if (c != null) c.disconnect();
 			}
-			if (c != null) c.disconnect();
+			if (ris.contains("Provider: American Psychological Association")) break;
 		}
 		
 		//Convert RIS to BibTeX
@@ -193,7 +156,7 @@ public class APAScraper extends AbstractUrlScraper {
 		if (!present(bibtex)) throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
 		scrapingContext.setBibtexResult(bibtex);
 		
-		//What a mess!
+		//success
 		return true;
 	}
 	/**
@@ -207,7 +170,7 @@ public class APAScraper extends AbstractUrlScraper {
 	 */
 	private static HttpURLConnection openPageConnection(URL url, CookieManager cookieMan) throws IOException, URISyntaxException {
 		boolean success = false;
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 7; i++) {
 			HttpURLConnection c = null;
 			try {
 				c = (HttpURLConnection) url.openConnection();
@@ -222,58 +185,11 @@ public class APAScraper extends AbstractUrlScraper {
 					return c;
 				}
 			} finally {
-				if (!success && c != null) c.disconnect();
+				if (success == false && c != null) c.disconnect();
 			}
 			String location = c.getHeaderField("Location");
 			if (!present(location)) return null;
 			url = new URL(url, location);
-		}
-		return null;
-	}
-	/**
-	 * Neither apache commons HttpClient nor java.net can do this appropriately in a shorthand manner.
-	 * 
-	 * @param downloadURL the action URL
-	 * @param cookieMan the cookie manager
-	 * @param lstUIDs corresponding value from the form
-	 * @param gateway corresponding value from the form
-	 * @return the resulting http message
-	 * @throws IOException
-	 * @throws URISyntaxException
-	 */
-	private static String submitExportForm(URL downloadURL, CookieManager cookieMan, String lstUIDs, String gateway) throws IOException, URISyntaxException {
-		HttpURLConnection c = null;
-		DataOutputStream out = null;
-		InputStream in = null;
-		try {
-			c = (HttpURLConnection) downloadURL.openConnection();
-			c.setInstanceFollowRedirects(false);
-			c.setDoOutput(true);
-			for (Entry<String, List<String>> entry : cookieMan.get(downloadURL.toURI(), c.getRequestProperties()).entrySet()) {
-				c.addRequestProperty(entry.getKey(), WebUtils.buildCookieString(entry.getValue()));
-			}
-			c.connect();
-			out = new DataOutputStream(c.getOutputStream());
-			out.writeBytes("id=&lstSelectedUIDs=&lstUIDs=");
-			out.writeBytes(lstUIDs);
-			out.writeBytes("&records=records&displayFormat=&exportFormat=endnote&printDoc=0&returnURL=&gateway=");
-			out.writeBytes(gateway);
-			out.flush();
-			cookieMan.put(downloadURL.toURI(), c.getHeaderFields());
-			if (c.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				in = c.getInputStream();
-				return WebUtils.inputStreamToStringBuilder(in, WebUtils.extractCharset(c.getHeaderField("Content-Type"))).toString();
-			}
-		} finally {
-			try {
-				if (out != null) out.close();
-			} catch (IOException e) {
-			}
-			try {
-				if (in != null) in.close();
-			} catch (IOException e) {
-			}
-			if (c != null) c.disconnect();
 		}
 		return null;
 	}
