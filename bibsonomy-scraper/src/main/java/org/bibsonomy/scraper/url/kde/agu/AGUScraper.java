@@ -28,13 +28,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
@@ -57,12 +56,14 @@ public class AGUScraper extends AbstractUrlScraper {
 	
 	private static final String HOST = "agu.org";
 	
-	private static final String PATH = "/pubs";
+	private Pattern RIS_DOWNLOAD_PATTERN = Pattern.compile("href=\"([^\\\"]*)\">Export RIS Citation");
 	
-	private Pattern patternDownloadUrl = Pattern.compile("href=\"([^\\\"]*)\">Export RIS Citation");
-	
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH + ".*")));
+	private static final List<Pair<Pattern, Pattern>> patterns = new ArrayList<Pair<Pattern,Pattern>>();
 
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), EMPTY_PATTERN));
+	}
+	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
@@ -79,13 +80,13 @@ public class AGUScraper extends AbstractUrlScraper {
 		if(pageContent != null){
 			// get download url
 			String downloadUrl = null;
-			Matcher matcherDownloadUrl = patternDownloadUrl.matcher(pageContent);
+			Matcher matcherDownloadUrl = RIS_DOWNLOAD_PATTERN.matcher(pageContent);
 			if(matcherDownloadUrl.find())
 				downloadUrl = "http://www.agu.org" + matcherDownloadUrl.group(1);
 			else
 				throw new PageNotSupportedException("This AGU page is not supported.");
 			
-			if(downloadUrl!=null){
+			if(present(downloadUrl)){
 				
 				// get RIS citation
 				String ris = null;

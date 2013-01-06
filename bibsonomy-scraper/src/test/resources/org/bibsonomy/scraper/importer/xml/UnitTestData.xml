@@ -871,7 +871,7 @@
 	</URLTest>
 	<URLTest id="url_146">
 		<TestDescription>test for AGU scraper</TestDescription>
-		<URL>http://www.agu.org/pubs/crossref/2008/2008JD010287.shtml</URL>
+		<URL>http://www.agu.org/books/ar/v071/</URL>
 		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.agu.AGUScraper</Scraper>
 	</URLTest>
