@@ -44,6 +44,7 @@ import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
 import org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper;
 import org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper;
+import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
 import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
@@ -222,6 +223,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AAAIScraper());
 		addScraper(new SageCDPScraper());
 		addScraper(new APAScraper());
+		addScraper(new BMJOpenScraper());
 	}
 
 }
