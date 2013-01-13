@@ -1357,7 +1357,7 @@
 	<URLTest id="url_223">
 		<TestDescription>RSC Scraper test</TestDescription>
 		<URL>http://pubs.rsc.org/en/content/articlelanding/2012/lc/c2lc21117c</URL>
-		<BibFile>RSCScraperUnitTest.bib</BibFile>
+		<BibFile>RSCScraperUnitTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsc.RSCScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_224">
@@ -1499,6 +1499,12 @@
 		<URL>http://europepmc.org/abstract/MED/19426458</URL>
 		<BibFile>PubMedScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_247">
+		<TestDescription>RSC Scraper test</TestDescription>
+		<URL>http://pubs.rsc.org/en/Content/ArticleLanding/2013/LC/C2LC41166K?utm_source=feedburner&amp;utm_medium=feed&amp;utm_campaign=Feed%3A+rss%2FLC+%28RSC+-+Lab+Chip+latest+articles%29&amp;utm_content=Google+Reader</URL>
+		<BibFile>RSCScraperUnitTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.rsc.RSCScraper</Scraper>
 	</URLTest>
 	
 </test:Tests>

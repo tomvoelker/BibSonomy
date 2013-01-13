@@ -17,9 +17,18 @@ public class RSCScraperTest {
 	 */
 	@Test
 	@Ignore
-	public void urlTestRun() {
+	public void url1TestRun() {
 		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_223"));
+	}
+	/**
+	 * starts URL test with id url_247
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun() {
+		final UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_247"));
 	}
 
 }
