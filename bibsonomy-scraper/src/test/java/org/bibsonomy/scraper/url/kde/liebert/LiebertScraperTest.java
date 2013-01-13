@@ -54,4 +54,13 @@ public class LiebertScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_89"));
 	}
+	
+	/**
+	 * starts URL test with id url_248
+	 */
+	@Test
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_248"));
+	}
 }

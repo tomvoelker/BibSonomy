@@ -34,7 +34,7 @@ public class RSCScraper extends AbstractUrlScraper {
 
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "pubs.rsc.org"), AbstractUrlScraper.EMPTY_PATTERN));
 
-	private static final Pattern ID_PATTERN = Pattern.compile(".*/(.*?)(?:(?:#.*)|$)");
+	private static final Pattern ID_PATTERN = Pattern.compile("(?:/[^/]++)*/(\\w++)");
 	private static final int ID_GROUP = 1;
 
 	@Override

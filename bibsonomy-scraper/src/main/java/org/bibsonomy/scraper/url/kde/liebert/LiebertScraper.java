@@ -53,6 +53,7 @@ public class LiebertScraper extends AbstractUrlScraper {
 	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String LIEBERT_HOST  = "liebertonline.com";
+	private static final String LIEBERT_HOST_NEW  = "online.liebertpub.com";
 	private static final String LIEBERT_ABSTRACT_PATH = "/doi/abs/";
 	private static final String LIEBERT_BIBTEX_PATH = "/action/showCitFormats";
 	private static final String LIEBERT_BIBTEX_PATH_AND_QUERY = "/action/showCitFormats?doi=";
@@ -63,8 +64,13 @@ public class LiebertScraper extends AbstractUrlScraper {
 
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + LIEBERT_HOST);
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(LIEBERT_ABSTRACT_PATH + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(LIEBERT_BIBTEX_PATH + ".*")));
+		Pattern abstractPathPattern = Pattern.compile(LIEBERT_ABSTRACT_PATH + ".*");
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, abstractPathPattern));
+		Pattern bibtexPathPattern = Pattern.compile(LIEBERT_BIBTEX_PATH + ".*");
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, bibtexPathPattern));
+		Pattern hostPatternNew = Pattern.compile(".*?" + LIEBERT_HOST_NEW);
+		patterns.add(new Pair<Pattern, Pattern>(hostPatternNew, abstractPathPattern));
+		patterns.add(new Pair<Pattern, Pattern>(hostPatternNew, bibtexPathPattern));
 	}
 	
 	public String getInfo() {
@@ -79,7 +85,7 @@ public class LiebertScraper extends AbstractUrlScraper {
 		String id = null;
 		URL userURL = null;
 
-		if(url.startsWith(LIEBERT_HOST_NAME + LIEBERT_ABSTRACT_PATH)) {
+		if(url.contains(LIEBERT_ABSTRACT_PATH)) {
 			userURL = sc.getUrl();
 			int idStart = url.indexOf(LIEBERT_ABSTRACT_PATH) + LIEBERT_ABSTRACT_PATH.length();
 			int idEnd = 0;
@@ -94,7 +100,7 @@ public class LiebertScraper extends AbstractUrlScraper {
 
 		}
 
-		if(url.startsWith(LIEBERT_HOST_NAME + LIEBERT_BIBTEX_PATH_AND_QUERY)) {
+		if(url.contains(LIEBERT_BIBTEX_PATH_AND_QUERY)) {
 
 			int idStart = url.indexOf("?doi=") + 5;
 			int idEnd = url.length();
