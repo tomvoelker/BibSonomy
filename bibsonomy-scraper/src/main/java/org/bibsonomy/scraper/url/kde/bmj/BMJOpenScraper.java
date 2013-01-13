@@ -82,31 +82,43 @@ public class BMJOpenScraper extends CitationManagerScraper {
 	
 	@Override
 	protected String buildDownloadLink(URL url, String content) throws ScrapingFailureException {
-
-		// get link to "download to citation manager" page
-		final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
-		
-		//throw exception if download link "download to citation manager" not found
-		if(!downloadLinkMatcher.find())
-			throw new ScrapingFailureException("Download link is not available");
-		
-		//build the url to "download to citation manager" page
-		try {
-			url = new URL(url, downloadLinkMatcher.group(1));
-		} catch (MalformedURLException ex) {
-			throw new ScrapingFailureException(ex);
-		}
 		
 		// get the "download to citation manager" page
 		String downloadPage;
-		try {
-			downloadPage = WebUtils.getContentAsString(url);
-		} catch (IOException ex) {
-			throw new ScrapingFailureException(ex);
+		
+		//if the page requested to scrape is the citmgr page, nothing else is to do
+		if (url.toExternalForm().contains("citmgr")) {
+			downloadPage = content;
 		}
 		
-		//is the download page present?
-		if (!present(downloadPage)) throw new ScrapingFailureException("couldn't get download page");
+		//otherwise try to find the citmgr page via a link on the requested page
+		else {
+
+			// get link to "download to citation manager" page
+			final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
+			
+			//throw exception if download link "download to citation manager" not found
+			if(!downloadLinkMatcher.find())
+				throw new ScrapingFailureException("Download link is not available");
+			
+			//build the url to "download to citation manager" page
+			try {
+				url = new URL(url, downloadLinkMatcher.group(1));
+			} catch (MalformedURLException ex) {
+				throw new ScrapingFailureException(ex);
+			}
+
+			//get the citmgr page
+			try {
+				downloadPage = WebUtils.getContentAsString(url);
+			} catch (IOException ex) {
+				throw new ScrapingFailureException(ex);
+			}
+			
+			//is the citmgr page present?
+			if (!present(downloadPage)) throw new ScrapingFailureException("couldn't get download page");
+			
+		}
 		
 		//get download link for BibTeX
 		Matcher m2 = CITATION_MANAGER_PATTERN.matcher(downloadPage);

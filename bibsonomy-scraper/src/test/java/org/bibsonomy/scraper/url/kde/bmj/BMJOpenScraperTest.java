@@ -45,4 +45,13 @@ public class BMJOpenScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_249"));
 	}
+	/**
+	 * starts URL test with id url_250
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_250"));
+	}
 }
