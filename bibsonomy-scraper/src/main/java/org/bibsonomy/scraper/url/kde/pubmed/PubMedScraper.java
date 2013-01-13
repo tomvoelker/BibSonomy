@@ -59,6 +59,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 	private static final String HOST = "ncbi.nlm.nih.gov";
 	private static final String PUBMED_EUTIL_HOST = "eutils.ncbi.nlm.nih.gov";
 	private static final String UK_PUBMED_CENTRAL_HOST = "ukpmc.ac.uk";
+	private static final String EUROPE_PUBMED_CENTRAL_HOST = "europepmc.org";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	
@@ -70,6 +71,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + UK_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + EUROPE_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	@Override
@@ -106,7 +108,8 @@ public class PubMedScraper extends AbstractUrlScraper {
 				if (risLinkMatcher.find()) {
 					HttpURL risURL = new HttpURL(new HttpURL(method.getURI().getURI()), risLinkMatcher.group(1));
 					RisToBibtexConverter c = new RisToBibtexConverter();
-					bibtexresult = c.risToBibtex(WebUtils.getContentAsString(client, risURL));
+					String ris = WebUtils.getContentAsString(client, risURL);
+					bibtexresult = c.risToBibtex(ris);
 				} else {
 					
 					Matcher ma = PMIDPATTERN.matcher(pageContent);

@@ -1494,5 +1494,11 @@
 		<BibFile>APAScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apa.APAScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_246">
+		<TestDescription>PubMed new URL pattern</TestDescription>
+		<URL>http://europepmc.org/abstract/MED/19426458</URL>
+		<BibFile>PubMedScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
