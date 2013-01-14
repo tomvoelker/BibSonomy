@@ -31,7 +31,6 @@
 	-->
 	<xsd:element name="bibsonomy" type="bibsonomyXML" />
 
-
 	<!--
 		root element type
 	-->
@@ -190,7 +189,7 @@
 				name="group" type="GroupType" />
 			<!-- Note: a post must have at least one tag -->
 			<xsd:element maxOccurs="unbounded" name="tag"
-				type="TagType" />
+				type="TagType" />				
 			<xsd:element minOccurs="0" maxOccurs="1" name="documents"
 				type="DocumentsType" />
 			<xsd:choice>
@@ -240,9 +239,11 @@
 	</xsd:complexType>
 
 	<!--
-		a bibtex
-	-->
-	<xsd:complexType name="BibtexType">
+		AbstractPublicationType extracted to be able to deserialize publication
+		in JSON format; seems that JAXB has some problems with inheritance
+		(else GoldStandardPublicationType would extend BibtexType)
+   		-->
+	<xsd:complexType name="AbstractPublicationType">
 		<xsd:attribute name="title" type="xsd:string" use="required" />
 		<xsd:attribute name="bibtexKey" type="xsd:string" />
 		<xsd:attribute name="bKey" type="xsd:string" />
@@ -278,8 +279,20 @@
 		<!-- hash value identifying this resource -->
 		<xsd:attribute name="intrahash" type="xsd:string" />
 		<xsd:attribute name="interhash" type="xsd:string" />
-		<!-- link to all posts of this bibtex -->
+		<!-- link to all posts of this publication -->
 		<xsd:attribute name="href" type="xsd:anyURI" />
+	</xsd:complexType>
+	
+	<!--
+		a publication
+		TODO: add a publication type with full backwards compatibility
+	-->
+	<xsd:complexType name="BibtexType">
+		<xsd:complexContent>
+   			<xsd:extension base="AbstractPublicationType">
+   				<!-- see comment for abstract publication type -->
+			</xsd:extension>
+		</xsd:complexContent>
 	</xsd:complexType>
 	
 	
@@ -298,7 +311,7 @@
 	
 	<xsd:complexType name="GoldStandardPublicationType">
 		<xsd:complexContent>
-   			<xsd:extension base="BibtexType">
+   			<xsd:extension base="AbstractPublicationType">
    				<xsd:sequence>
 					<xsd:element maxOccurs="1" minOccurs="1" name="references" type="ReferencesType" />
 				</xsd:sequence>
@@ -345,7 +358,9 @@
     	</xsd:restriction>
 	</xsd:simpleType>	
 
-
+	<!-- 
+		TODO: comment
+	-->
 	<xsd:complexType name="SyncPostType">
 		<xsd:sequence>
 			<xsd:element name="post" type="PostType" />
@@ -357,6 +372,9 @@
 		<xsd:attribute name="action" type="xsd:string" />
 	</xsd:complexType>
 
+	<!-- 
+		TODO: comment
+	-->
 	<xsd:complexType name="SyncDataType">
 		<xsd:sequence>
 			<xsd:element name="resourceType" type="xsd:string" />
@@ -366,12 +384,13 @@
 		</xsd:sequence>
 		<xsd:attribute name="service" type="xsd:anyURI" />
 	</xsd:complexType>
-
+	
+	<!-- 
+		TODO: comment
+	-->
 	<xsd:complexType name="SyncPostsType">
 		<xsd:sequence>
 			<xsd:element name="syncPost" type="SyncPostType" maxOccurs="unbounded" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
-
-
 </xsd:schema>
