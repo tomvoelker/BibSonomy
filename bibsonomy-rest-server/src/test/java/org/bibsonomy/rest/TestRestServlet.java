@@ -15,9 +15,11 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.testutil.TestRequest;
 import org.bibsonomy.rest.testutil.TestResponse;
+import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -63,28 +65,28 @@ public class TestRestServlet {
 	@Test
 	public void testUnauthorized() throws Exception {
 		this.servlet.doGet(this.request, this.response);
-		compareWithFile(this.response.getContent(), "failAuth.txt");
+		this.compareWithFile(this.response.getContent(), "failAuth.xml");
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 
 	@Test
 	public void testSimpleStuff() throws Exception {
-		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
+		this.request.putIntoHeaders("Authorization", "Basic YXNkZjphc2Rm");
 		this.request.setRequestURI("/");
 		// try to get '/'
 		this.servlet.doGet(this.request, this.response);
-		compareWithFile(this.response.getContent(), "failAccess.txt");
+		this.compareWithFile(this.response.getContent(), "failAccess.xml");
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 
 	@Test
 	public void testGetComplexStuff() throws Exception {
-		this.request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
-		this.request.getHeaders().put("User-Agent", RESTConfig.API_USER_AGENT);
+		this.request.putIntoHeaders("Authorization", "Basic YXNkZjphc2Rm");
+		this.request.putIntoHeaders("User-Agent", RESTConfig.API_USER_AGENT);
 		this.request.setRequestURI("/api/users");
 
 		this.servlet.doGet(this.request, this.response);
-		compareWithFile(this.response.getContent(), "exampleComplexResult1.txt");
+		this.compareWithFile(this.response.getContent(), "exampleComplexResult1.xml");
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 
@@ -120,6 +122,11 @@ public class TestRestServlet {
 			sb.append(s + "\n");
 		}
 		br.close();
-		assertEquals(sb.toString(), sw);
+		try {
+			XMLAssert.assertXMLEqual(sb.toString(), sw);
+		} catch (final SAXException ex) {
+			throw new RuntimeException(ex);
+		}
+
 	}
 }
