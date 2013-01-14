@@ -62,6 +62,7 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
+import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
@@ -220,12 +221,44 @@ public abstract class JAXBRendererTest {
 		xmlPost.setPostingdate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));
 		xmlPost.setChangedate(dataFact.newXMLGregorianCalendar("2009-02-04T10:42:06.000+01:00"));
 		xmlTag.setName("testtag");
-		xmlBookmark.setUrl("http://www.google.de");
-		xmlBookmark.setTitle("Google Search engine");
+		final String url = "http://www.google.de";
+		xmlBookmark.setUrl(url);
+		final String title = "Google Search engine";
+		xmlBookmark.setTitle(title);
 		bibXML.setPost(xmlPost);
 		tmpFile = File.createTempFile("bibsonomy", this.getFileExt());
 		this.marshalToFile(bibXML, tmpFile);
-		this.getRenderer().parsePost(new FileReader(tmpFile));
+		final Post<? extends Resource> post = this.getRenderer().parsePost(new FileReader(tmpFile));
+		final Bookmark bookmark = (Bookmark) post.getResource();
+		assertEquals(title, bookmark.getTitle());
+		assertEquals(url, bookmark.getUrl());
+		
+		// test parse publication
+		
+		xmlPost.setBookmark(null);
+		final BibtexType publicationType = new BibtexType();
+		publicationType.setTitle(title);
+		final String firstName = "Author";
+		final String author = "Test, " + firstName;
+		publicationType.setAuthor(author);
+		final String entryType = "acticle";
+		publicationType.setEntrytype(entryType);
+		final String year = "2010";
+		publicationType.setYear(year);
+		final String bibKey = "bibkey";
+		publicationType.setBibtexKey(bibKey);
+		xmlPost.setBibtex(publicationType);
+		
+		tmpFile = File.createTempFile("bibsonomy-publ", this.getFileExt());
+		this.marshalToFile(bibXML, tmpFile);
+		
+		final Post<? extends Resource> publicationPost = this.getRenderer().parsePost(new FileReader(tmpFile));
+		final BibTex publication = (BibTex) publicationPost.getResource();
+		assertEquals(title, publication.getTitle());
+		assertEquals(entryType, publication.getEntrytype());
+		assertEquals(bibKey, publication.getBibtexKey());
+		assertEquals(year, publication.getYear());
+		assertEquals(firstName, publication.getAuthor().get(0).getFirstName());
 	}
 	
 	@Test
@@ -307,7 +340,8 @@ public abstract class JAXBRendererTest {
 		final List<Tag> tags = new LinkedList<Tag>();
 		try {
 			this.getRenderer().serializeTags(sw, tags, null);
-			//fail("exception should have been thrown: no start-/end-values given");
+			// TODO: remove?
+			// fail("exception should have been thrown: no start-/end-values given");
 		} catch (final InternServerException e) {
 		}
 		catch (final BadRequestOrResponseException e) {			
@@ -370,6 +404,7 @@ public abstract class JAXBRendererTest {
 		final List<User> users = new LinkedList<User>();
 		try {
 			this.getRenderer().serializeUsers(sw, users, null);
+			// TODO: remove?
 			// fail("exception should have been thrown: no start-/end values specified");
 		} catch (final InternServerException e) {
 		}

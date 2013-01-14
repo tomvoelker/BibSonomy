@@ -67,6 +67,8 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
+ * TODO: move in another package
+ * 
  * Produces objects from the model based on objects from the XML model generated
  * with JAXB.
  * 
@@ -80,6 +82,7 @@ public class ModelFactory {
 	/**
 	 * @return the {@link ModelFactory} instance
 	 */
+	@Deprecated // TODO: remove singleton
 	public static ModelFactory getInstance() {
 		if (ModelFactory.modelFactory == null) {
 			ModelFactory.modelFactory = new ModelFactory();
@@ -111,12 +114,15 @@ public class ModelFactory {
 		user.setName(xmlUser.getName());
 		user.setRealname(xmlUser.getRealname());
 		user.setPassword(xmlUser.getPassword());
-		if (xmlUser.isSpammer() != null)
+		if (xmlUser.isSpammer() != null) {
 			user.setSpammer(xmlUser.isSpammer());
-		if (xmlUser.getPrediction() != null)
+		}
+		if (xmlUser.getPrediction() != null) {
 			user.setPrediction(xmlUser.getPrediction().intValue());
-		if (xmlUser.getConfidence() != null)
+		}
+		if (xmlUser.getConfidence() != null) {
 			user.setConfidence(xmlUser.getConfidence());
+		}
 		user.setAlgorithm(xmlUser.getAlgorithm());
 		user.setMode(xmlUser.getClassifierMode());
 		if (xmlUser.getToClassify() != null) {
@@ -129,7 +135,7 @@ public class ModelFactory {
 		if (groups != null) {
 			final List<Group> groups2 = user.getGroups();
 			for (final GroupType xmlGroup: groups.getGroup()) {
-				groups2.add(createGroup(xmlGroup));
+				groups2.add(this.createGroup(xmlGroup));
 			}
 		}
 		return user;
@@ -156,7 +162,7 @@ public class ModelFactory {
 		if (xmlGroup.getUser().size() > 0) {
 			group.setUsers(new ArrayList<User>());
 			for (final UserType xmlUser : xmlGroup.getUser()) {
-				group.getUsers().add(createUser(xmlUser));
+				group.getUsers().add(this.createUser(xmlUser));
 			}
 		}
 
@@ -170,7 +176,7 @@ public class ModelFactory {
 	 * @return the created tag
 	 */
 	public Tag createTag(final TagType xmlTag) {
-		return createTag(xmlTag, 1);
+		return this.createTag(xmlTag, 1);
 	}
 
 	/**
@@ -186,16 +192,20 @@ public class ModelFactory {
 		final Tag tag = new Tag();
 		tag.setName(xmlTag.getName());
 		// TODO tag count  häh?
-		if (xmlTag.getGlobalcount() != null) tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
+		if (xmlTag.getGlobalcount() != null) {
+			tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
+		}
 		// TODO tag count  häh?
-		if (xmlTag.getUsercount() != null) tag.setUsercount(xmlTag.getUsercount().intValue());
+		if (xmlTag.getUsercount() != null) {
+			tag.setUsercount(xmlTag.getUsercount().intValue());
+		}
 
 		if (depth > 0) {
 			if (xmlTag.getSubTags() != null) {
-				tag.setSubTags(createTags(xmlTag.getSubTags(), depth - 1));
+				tag.setSubTags(this.createTags(xmlTag.getSubTags(), depth - 1));
 			}
 			if (xmlTag.getSuperTags() != null) {
-				tag.setSuperTags(createTags(xmlTag.getSuperTags(), depth - 1));
+				tag.setSuperTags(this.createTags(xmlTag.getSuperTags(), depth - 1));
 			}
 		}
 		return tag;
@@ -206,7 +216,7 @@ public class ModelFactory {
 		for (final TagsType xmlSubTags : xmlTags) {
 			//tags.add(xmlSubTag);
 			for (final TagType xmlSubTag : xmlSubTags.getTag()) {
-				rVal.add(createTag(xmlSubTag, depth));
+				rVal.add(this.createTag(xmlSubTag, depth));
 			}
 		}
 		return rVal;
@@ -221,10 +231,18 @@ public class ModelFactory {
 	public RecommendedTag createRecommendedTag(final TagType xmlTag) {
 		final RecommendedTag tag = new RecommendedTag();
 		tag.setName(xmlTag.getName()); assert(tag.getName()!=null);
-		if (xmlTag.getGlobalcount() != null) tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
-		if (xmlTag.getUsercount() != null) tag.setUsercount(xmlTag.getUsercount().intValue());
-		if (xmlTag.getConfidence() != null ) tag.setConfidence(xmlTag.getConfidence().doubleValue());
-		if (xmlTag.getScore() != null ) tag.setScore(xmlTag.getScore().doubleValue());
+		if (xmlTag.getGlobalcount() != null) {
+			tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
+		}
+		if (xmlTag.getUsercount() != null) {
+			tag.setUsercount(xmlTag.getUsercount().intValue());
+		}
+		if (xmlTag.getConfidence() != null ) {
+			tag.setConfidence(xmlTag.getConfidence().doubleValue());
+		}
+		if (xmlTag.getScore() != null ) {
+			tag.setScore(xmlTag.getScore().doubleValue());
+		}
 		return tag;
 	}
 
@@ -246,7 +264,7 @@ public class ModelFactory {
 			final GoldStandardPublication publication = new GoldStandardPublication();
 			this.fillPublicationWithInformations(xmlPublication, publication);
 
-			checkPublication(publication);
+			this.checkPublication(publication);
 
 			post.setResource(publication);
 		} else {
@@ -265,7 +283,7 @@ public class ModelFactory {
 	 * @throws PersonListParserException 
 	 */
 	public Post<Resource> createPost(final PostType xmlPost) throws PersonListParserException {
-		checkPost(xmlPost);
+ 		checkPost(xmlPost);
 
 		// create post, user and date
 		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
@@ -302,7 +320,7 @@ public class ModelFactory {
 				publication.setDocuments(documents);
 			}
 
-			checkPublication(publication);
+			this.checkPublication(publication);
 
 			post.setResource(publication);
 		}
@@ -344,8 +362,8 @@ public class ModelFactory {
 		// user
 		final User user = this.createUser(xmlPost);
 		post.setUser(user);
-		post.setDate(createDate(xmlPost.getPostingdate()));
-		post.setChangeDate(createDate(xmlPost.getChangedate()));
+		post.setDate(this.createDate(xmlPost.getPostingdate()));
+		post.setChangeDate(this.createDate(xmlPost.getChangedate()));
 		return post;
 	}
 
@@ -369,23 +387,22 @@ public class ModelFactory {
 	 */
 	public SynchronizationPost createSynchronizationPost(final SyncPostType xmlSyncPost) {
 		final SynchronizationPost post = new SynchronizationPost();
-		if(present(xmlSyncPost.getAction())) {
+		if (present(xmlSyncPost.getAction())) {
 			final SynchronizationAction action = Enum.valueOf(SynchronizationAction.class, xmlSyncPost.getAction().toUpperCase());
 			post.setAction(action);
 		}
-		if(present(xmlSyncPost.getChangeDate())) {
-			post.setChangeDate(createDate(xmlSyncPost.getChangeDate()));
+		if (present(xmlSyncPost.getChangeDate())) {
+			post.setChangeDate(this.createDate(xmlSyncPost.getChangeDate()));
 		}
-		if(present(xmlSyncPost.getPost())) {
+		if (present(xmlSyncPost.getPost())) {
 			try {
-				post.setPost(createPost(xmlSyncPost.getPost()));
+				post.setPost(this.createPost(xmlSyncPost.getPost()));
 			} catch (final PersonListParserException ex) {
-				// TODO Auto-generated catch block
 				throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + xmlSyncPost.getPost().getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
 		}
 		if(present(xmlSyncPost.getCreateDate())) {
-			post.setCreateDate(createDate(xmlSyncPost.getCreateDate()));
+			post.setCreateDate(this.createDate(xmlSyncPost.getCreateDate()));
 
 		} else {
 			throw new InvalidModelException("create date not present"); 
@@ -405,7 +422,7 @@ public class ModelFactory {
 	 */
 	public SynchronizationData createSynchronizationData(final SyncDataType xmlSyncData) {
 		final SynchronizationData syncData = new SynchronizationData();
-		final String errors = fillSyncData(xmlSyncData, syncData);
+		final String errors = this.fillSyncData(xmlSyncData, syncData);
 		if (!present(errors)) {
 			return syncData;
 		}
@@ -421,7 +438,7 @@ public class ModelFactory {
 		
 		final XMLGregorianCalendar lastSyncDate = xmlSyncData.getLastSyncDate();
 		if (present(lastSyncDate)) {
-			syncData.setLastSyncDate(createDate(lastSyncDate));
+			syncData.setLastSyncDate(this.createDate(lastSyncDate));
 		} else {
 			errors.append("last sync date is not present\n");
 		}
@@ -462,7 +479,7 @@ public class ModelFactory {
 	 * @param publication
 	 * @throws PersonListParserException 
 	 */
-	private void fillPublicationWithInformations(final BibtexType xmlPublication, final BibTex publication) throws PersonListParserException {
+	private void fillPublicationWithInformations(final AbstractPublicationType xmlPublication, final BibTex publication) throws PersonListParserException {
 		publication.setAddress(xmlPublication.getAddress());
 		publication.setAnnote(xmlPublication.getAnnote());
 		publication.setAuthor(PersonNameUtils.discoverPersonNames(xmlPublication.getAuthor()));
@@ -504,8 +521,8 @@ public class ModelFactory {
 	 * @param publication
 	 */
 	protected void checkPublication(final BibTex publication) {
-		if (modelValidator != null) {
-			modelValidator.checkPublication(publication);
+		if (this.modelValidator != null) {
+			this.modelValidator.checkPublication(publication);
 		}
 	}
 

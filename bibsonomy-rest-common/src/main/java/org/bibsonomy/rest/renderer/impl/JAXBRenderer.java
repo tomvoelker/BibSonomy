@@ -79,6 +79,7 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
@@ -180,10 +181,10 @@ public abstract class JAXBRenderer implements Renderer {
 			 * unmarshal a xml instance document into a tree of Java content
 			 * objects composed of classes from the restapi package.
 			 */
-			final JAXBElement<BibsonomyXML> xmlDoc = unmarshal(u, reader);
+			final JAXBElement<BibsonomyXML> xmlDoc = this.unmarshal(u, reader);
 			return xmlDoc.getValue();
 		} catch (final JAXBException e) {
-			if (e.getLinkedException() != null && e.getLinkedException().getClass() == SAXParseException.class) {
+			if ((e.getLinkedException() != null) && (e.getLinkedException().getClass() == SAXParseException.class)) {
 				final SAXParseException ex = (SAXParseException) e.getLinkedException();
 				throw new BadRequestOrResponseException(
 						"Error while parsing XML (Line " 
@@ -202,12 +203,16 @@ public abstract class JAXBRenderer implements Renderer {
 	}
 
 	private void checkReader(final Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+		if (reader == null) {
+			throw new BadRequestOrResponseException("The body part of the received document is missing");
+		}
 	}
 
 	/**
 	 * Initializes java xml bindings, builds the document and then marshalls
 	 * it to the writer.
+	 * @param writer 
+	 * @param xmlDoc 
 	 * 
 	 * @throws InternServerException
 	 *             if the document can't be marshalled
@@ -231,11 +236,9 @@ public abstract class JAXBRenderer implements Renderer {
 
 			// marshal to the writer
 			this.marshal(marshaller, webserviceElement, writer);
-			// TODO log
-			// log.debug("");
 		} catch (final JAXBException e) {
 			final Throwable linkedException = e.getLinkedException();
-			if (present(linkedException) && linkedException.getClass() == SAXParseException.class) {
+			if (present(linkedException) && (linkedException.getClass() == SAXParseException.class)) {
 				final SAXParseException ex = (SAXParseException) linkedException;
 				throw new BadRequestOrResponseException(
 						"Error while parsing XML (Line " 
@@ -259,7 +262,9 @@ public abstract class JAXBRenderer implements Renderer {
 		final PostsType xmlPosts = new PostsType();
 		if (viewModel != null) {
 			xmlPosts.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
-			if (viewModel.getUrlToNextResources() != null) xmlPosts.setNext(viewModel.getUrlToNextResources());
+			if (viewModel.getUrlToNextResources() != null) {
+				xmlPosts.setNext(viewModel.getUrlToNextResources());
+			}
 			xmlPosts.setStart(BigInteger.valueOf(viewModel.getStartValue()));
 		} else if( posts!=null ) {
 			xmlPosts.setStart(BigInteger.valueOf(0));
@@ -271,7 +276,7 @@ public abstract class JAXBRenderer implements Renderer {
 
 		if (present(posts)) {
 			for (final Post<? extends Resource> post : posts) {
-				final PostType xmlPost = createXmlPost(post);
+				final PostType xmlPost = this.createXmlPost(post);
 				xmlPosts.getPost().add(xmlPost);
 			}
 		}
@@ -279,36 +284,38 @@ public abstract class JAXBRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setPosts(xmlPosts);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializePost(final Writer writer, final Post<? extends Resource> post, final ViewModel xxx) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setPost(createXmlPost(post));
-		serialize(writer, xmlDoc);
+		xmlDoc.setPost(this.createXmlPost(post));
+		this.serialize(writer, xmlDoc);
 	}
 
 	protected PostType createXmlPost(final Post<? extends Resource> post) throws InternServerException {
 		final PostType xmlPost = new PostType();
-		fillXmlPost(xmlPost, post);
+		this.fillXmlPost(xmlPost, post);
 		return xmlPost;
 	}
 
 	protected void fillXmlPost(final PostType xmlPost, final Post<? extends Resource> post) {
-		checkPost(post);
+		this.checkPost(post);
 
 		// set user
 		checkUser(post.getUser());
 		final UserType xmlUser = new UserType();
 		xmlUser.setName(post.getUser().getName());
-		xmlUser.setHref(urlRenderer.createHrefForUser(post.getUser().getName()));
+		xmlUser.setHref(this.urlRenderer.createHrefForUser(post.getUser().getName()));
 		xmlPost.setUser(xmlUser);
-		if (post.getDate() != null)
-			xmlPost.setPostingdate(createXmlCalendar(post.getDate()));
-		if (post.getChangeDate() != null)
-			xmlPost.setChangedate(createXmlCalendar(post.getChangeDate()));
+		if (post.getDate() != null) {
+			xmlPost.setPostingdate(this.createXmlCalendar(post.getDate()));
+		}
+		if (post.getChangeDate() != null) {
+			xmlPost.setChangedate(this.createXmlCalendar(post.getChangeDate()));
+		}
 
 		// add tags
 		if (post.getTags() != null) {
@@ -316,7 +323,7 @@ public abstract class JAXBRenderer implements Renderer {
 				checkTag(t);
 				final TagType xmlTag = new TagType();
 				xmlTag.setName(t.getName());
-				xmlTag.setHref(urlRenderer.createHrefForTag(t.getName()));
+				xmlTag.setHref(this.urlRenderer.createHrefForTag(t.getName()));
 				xmlPost.getTag().add(xmlTag);
 			}
 		}
@@ -326,7 +333,7 @@ public abstract class JAXBRenderer implements Renderer {
 			checkGroup(group);
 			final GroupType xmlGroup = new GroupType();
 			xmlGroup.setName(group.getName());
-			xmlGroup.setHref(urlRenderer.createHrefForGroup(group.getName()));
+			xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
 			xmlPost.getGroup().add(xmlGroup);
 		}
 
@@ -334,15 +341,15 @@ public abstract class JAXBRenderer implements Renderer {
 
 		// check if the resource is a publication
 		final Resource resource = post.getResource();
-		if (resource instanceof BibTex && !(resource instanceof GoldStandardPublication)) {
+		if ((resource instanceof BibTex) && !(resource instanceof GoldStandardPublication)) {
 			final BibTex publication = (BibTex) post.getResource();
 			checkPublication(publication);
 			final String userName = post.getUser().getName();
 			final BibtexType xmlBibtex = new BibtexType();
 
-			xmlBibtex.setHref(urlRenderer.createHrefForResource(userName, publication.getIntraHash()));
+			xmlBibtex.setHref(this.urlRenderer.createHrefForResource(userName, publication.getIntraHash()));
 
-			fillXmlPublicationDetails(publication, xmlBibtex);
+			this.fillXmlPublicationDetails(publication, xmlBibtex);
 
 			xmlPost.setBibtex(xmlBibtex);
 
@@ -357,7 +364,7 @@ public abstract class JAXBRenderer implements Renderer {
 					final DocumentType xmlDocument = new DocumentType();
 					xmlDocument.setFilename(document.getFileName());
 					xmlDocument.setMd5Hash(document.getMd5hash());
-					xmlDocument.setHref(urlRenderer.createHrefForResourceDocument(userName, publication.getIntraHash(), document.getFileName()));
+					xmlDocument.setHref(this.urlRenderer.createHrefForResourceDocument(userName, publication.getIntraHash(), document.getFileName()));
 					xmlDocuments.getDocument().add(xmlDocument);
 				}
 				xmlPost.setDocuments(xmlDocuments);
@@ -368,7 +375,7 @@ public abstract class JAXBRenderer implements Renderer {
 			final Bookmark bookmark = (Bookmark) post.getResource();
 			checkBookmark(bookmark);
 			final BookmarkType xmlBookmark = new BookmarkType();
-			xmlBookmark.setHref(urlRenderer.createHrefForResource(post.getUser().getName(), bookmark.getIntraHash()));
+			xmlBookmark.setHref(this.urlRenderer.createHrefForResource(post.getUser().getName(), bookmark.getIntraHash()));
 			xmlBookmark.setInterhash(bookmark.getInterHash());
 			xmlBookmark.setIntrahash(bookmark.getIntraHash());
 			xmlBookmark.setTitle(bookmark.getTitle());
@@ -404,11 +411,9 @@ public abstract class JAXBRenderer implements Renderer {
 
 			xmlPost.setGoldStandardPublication(xmlPublication);
 		}
-
-
 	}
 
-	protected void fillXmlPublicationDetails(final BibTex publication, final BibtexType xmlPublication) {
+	protected void fillXmlPublicationDetails(final BibTex publication, final AbstractPublicationType xmlPublication) {
 		xmlPublication.setAddress(publication.getAddress());
 		xmlPublication.setAnnote(publication.getAnnote());
 		xmlPublication.setAuthor(PersonNameUtils.serializePersonNames(publication.getAuthor()));
@@ -447,18 +452,22 @@ public abstract class JAXBRenderer implements Renderer {
 	private XMLGregorianCalendar createXmlCalendar(final Date date) {
 		final GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(date);
-		return datatypeFactory.newXMLGregorianCalendar(cal);
+		return this.datatypeFactory.newXMLGregorianCalendar(cal);
 	}
 
 	private void checkPost(final Post<? extends Resource> post) throws InternServerException {
-		if (post.getUser() == null) throw new InternServerException("error no user assigned!");
+		if (post.getUser() == null) {
+			throw new InternServerException("error no user assigned!");
+		}
 		// there may be posts whithout tags
 		// 2009/01/07, fei: as stated above - there are situations where posts don't have tags
 		//                  for example, when serializing a post for submission to a remote 
 		//                  recommender -> commenting out
 		// 2010/03/19, dzo: gold standard posts have also no tags
 		// if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
-		if (post.getResource() == null) throw new InternServerException("error no ressource assigned!");
+		if (post.getResource() == null) {
+			throw new InternServerException("error no ressource assigned!");
+		}
 	}
 
 	@Override
@@ -466,7 +475,9 @@ public abstract class JAXBRenderer implements Renderer {
 		final UsersType xmlUsers = new UsersType();
 		if (viewModel != null) {
 			xmlUsers.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
-			if (viewModel.getUrlToNextResources() != null) xmlUsers.setNext(viewModel.getUrlToNextResources());
+			if (viewModel.getUrlToNextResources() != null) {
+				xmlUsers.setNext(viewModel.getUrlToNextResources());
+			}
 			xmlUsers.setStart(BigInteger.valueOf(viewModel.getStartValue()));
 		} else if (users != null) {
 			xmlUsers.setStart(BigInteger.valueOf(0));
@@ -478,22 +489,22 @@ public abstract class JAXBRenderer implements Renderer {
 
 		if (present(users)) {
 			for (final User user : users) {
-				xmlUsers.getUser().add(createXmlUser(user));
+				xmlUsers.getUser().add(this.createXmlUser(user));
 			}
 		}
 
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUsers(xmlUsers);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeUser(final Writer writer, final User user, final ViewModel viewModel) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setUser(createXmlUser(user));
-		serialize(writer, xmlDoc);
+		xmlDoc.setUser(this.createXmlUser(user));
+		this.serialize(writer, xmlDoc);
 	}
 
 	private UserType createXmlUser(final User user) throws InternServerException {
@@ -505,17 +516,21 @@ public abstract class JAXBRenderer implements Renderer {
 		}
 		xmlUser.setName(user.getName());
 		xmlUser.setRealname(user.getRealname());
-		xmlUser.setHref(urlRenderer.createHrefForUser(user.getName()));
-		if (user.getSpammer() != null)
+		xmlUser.setHref(this.urlRenderer.createHrefForUser(user.getName()));
+		if (user.getSpammer() != null) {
 			xmlUser.setSpammer(user.getSpammer());
-		if (user.getPrediction() != null)
+		}
+		if (user.getPrediction() != null) {
 			xmlUser.setPrediction(BigInteger.valueOf(user.getPrediction()));
-		if (user.getConfidence() != null)
+		}
+		if (user.getConfidence() != null) {
 			xmlUser.setConfidence(Double.valueOf(user.getConfidence()));
+		}
 		xmlUser.setAlgorithm(user.getAlgorithm());
 		xmlUser.setClassifierMode(user.getMode());
-		if (user.getToClassify() != null)
+		if (user.getToClassify() != null) {
 			xmlUser.setToClassify(BigInteger.valueOf(user.getToClassify()));
+		}
 
 		/*
 		 * copy groups
@@ -525,7 +540,7 @@ public abstract class JAXBRenderer implements Renderer {
 		if (groups != null) {
 			final List<GroupType> group2 = xmlUser.getGroups().getGroup();
 			for (final Group group: groups) {
-				group2.add(createXmlGroup(group));
+				group2.add(this.createXmlGroup(group));
 			}
 			xmlUser.getGroups().setStart(BigInteger.valueOf(0));
 			xmlUser.getGroups().setEnd(BigInteger.valueOf(groups.size()));
@@ -538,7 +553,9 @@ public abstract class JAXBRenderer implements Renderer {
 		final TagsType xmlTags = new TagsType();
 		if (viewModel != null) {
 			xmlTags.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
-			if (viewModel.getUrlToNextResources() != null) xmlTags.setNext(viewModel.getUrlToNextResources());
+			if (viewModel.getUrlToNextResources() != null) {
+				xmlTags.setNext(viewModel.getUrlToNextResources());
+			}
 			xmlTags.setStart(BigInteger.valueOf(viewModel.getStartValue()));
 		} else if( tags!=null ) {
 			xmlTags.setStart(BigInteger.valueOf(0));
@@ -550,29 +567,29 @@ public abstract class JAXBRenderer implements Renderer {
 
 		if (present(tags)) {
 			for (final Tag tag : tags) {
-				xmlTags.getTag().add(createXmlTag(tag));
+				xmlTags.getTag().add(this.createXmlTag(tag));
 			}
 		}
 
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setTags(xmlTags);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeTag(final Writer writer, final Tag tag, final ViewModel model) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setTag(createXmlTag(tag));
-		serialize(writer, xmlDoc);
+		xmlDoc.setTag(this.createXmlTag(tag));
+		this.serialize(writer, xmlDoc);
 	}
 
 	private TagType createXmlTag(final Tag tag) throws InternServerException {
 		final TagType xmlTag = new TagType();
 		checkTag(tag);
 		xmlTag.setName(tag.getName());
-		xmlTag.setHref(urlRenderer.createHrefForTag(tag.getName()));
+		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
 		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
 		// }
@@ -581,11 +598,11 @@ public abstract class JAXBRenderer implements Renderer {
 		// }
 
 		// add sub-/supertags - dbe, 20070718
-		if (tag.getSubTags() != null && tag.getSubTags().size() > 0) {			
-			xmlTag.getSubTags().add(createXmlTags(tag.getSubTags()));		
+		if ((tag.getSubTags() != null) && (tag.getSubTags().size() > 0)) {			
+			xmlTag.getSubTags().add(this.createXmlTags(tag.getSubTags()));		
 		}
-		if (tag.getSuperTags() != null && tag.getSuperTags().size() > 0) {
-			xmlTag.getSuperTags().add(createXmlTags(tag.getSuperTags()));
+		if ((tag.getSuperTags() != null) && (tag.getSuperTags().size() > 0)) {
+			xmlTag.getSuperTags().add(this.createXmlTags(tag.getSuperTags()));
 		}
 		return xmlTag;
 	}
@@ -593,7 +610,7 @@ public abstract class JAXBRenderer implements Renderer {
 	private TagsType createXmlTags(final List<Tag> tags) {
 		final TagsType xmlTags = new TagsType();
 		for (final Tag tag : tags) {
-			xmlTags.getTag().add(createXmlTag(tag));				
+			xmlTags.getTag().add(this.createXmlTag(tag));				
 		}
 		xmlTags.setStart(BigInteger.valueOf(0));
 		xmlTags.setEnd(BigInteger.valueOf(tags.size()));		
@@ -610,7 +627,7 @@ public abstract class JAXBRenderer implements Renderer {
 		final TagType xmlTag = new TagType();
 		checkTag(tag);
 		xmlTag.setName(tag.getName());
-		xmlTag.setHref(urlRenderer.createHrefForTag(tag.getName()));
+		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
 		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
 		// }
@@ -628,7 +645,9 @@ public abstract class JAXBRenderer implements Renderer {
 		final GroupsType xmlGroups = new GroupsType();
 		if (viewModel != null) {
 			xmlGroups.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
-			if (viewModel.getUrlToNextResources() != null) xmlGroups.setNext(viewModel.getUrlToNextResources());
+			if (viewModel.getUrlToNextResources() != null) {
+				xmlGroups.setNext(viewModel.getUrlToNextResources());
+			}
 			xmlGroups.setStart(BigInteger.valueOf(viewModel.getStartValue()));
 		} else if (groups!=null) {
 			xmlGroups.setStart(BigInteger.valueOf(0));
@@ -640,22 +659,22 @@ public abstract class JAXBRenderer implements Renderer {
 
 		if (present(groups)) {
 			for (final Group group : groups) {
-				xmlGroups.getGroup().add(createXmlGroup(group));
+				xmlGroups.getGroup().add(this.createXmlGroup(group));
 			}
 		}
 
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setGroups(xmlGroups);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeGroup(final Writer writer, final Group group, final ViewModel model) throws InternServerException {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setGroup(createXmlGroup(group));
-		serialize(writer, xmlDoc);
+		xmlDoc.setGroup(this.createXmlGroup(group));
+		this.serialize(writer, xmlDoc);
 	}
 
 	private GroupType createXmlGroup(final Group group) {
@@ -667,11 +686,11 @@ public abstract class JAXBRenderer implements Renderer {
 		if (group.getHomepage() != null) {
 			xmlGroup.setHomepage(group.getHomepage().toString());
 		}
-		xmlGroup.setHref(urlRenderer.createHrefForGroup(group.getName()));
+		xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
 		xmlGroup.setDescription(group.getDescription());
 		if (group.getUsers() != null) {
 			for (final User user : group.getUsers()) {
-				xmlGroup.getUser().add(createXmlUser(user));
+				xmlGroup.getUser().add(this.createXmlUser(user));
 			}
 		}
 		return xmlGroup;
@@ -681,14 +700,14 @@ public abstract class JAXBRenderer implements Renderer {
 	public void serializeOK(final Writer writer) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
 	public void serializeFail(final Writer writer) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.FAIL);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}	
 
 	@Override
@@ -696,7 +715,7 @@ public abstract class JAXBRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.FAIL);
 		xmlDoc.setError(errorMessage);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
@@ -704,7 +723,7 @@ public abstract class JAXBRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setGroupid(groupId);
-		serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);		
 	}
 
 	@Override
@@ -712,7 +731,7 @@ public abstract class JAXBRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setResourcehash(hash);
-		serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);		
 	}
 
 	@Override
@@ -720,7 +739,7 @@ public abstract class JAXBRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUserid(userId);
-		serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);		
 	}
 
 	@Override
@@ -728,7 +747,7 @@ public abstract class JAXBRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUri(uri);
-		serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);		
 	}	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeSynchronizationPosts(java.io.Writer, java.util.List)
@@ -739,11 +758,11 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlDoc.setStat(StatType.OK);
 		final SyncPostsType xmlSyncPosts = new SyncPostsType();
 		for (final SynchronizationPost post : posts) {
-			final SyncPostType xmlSyncPost = createXmlSyncPost(post);
+			final SyncPostType xmlSyncPost = this.createXmlSyncPost(post);
 			xmlSyncPosts.getSyncPost().add(xmlSyncPost);
 		}
 		xmlDoc.setSyncPosts(xmlSyncPosts);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}
 
 	/**
@@ -755,14 +774,14 @@ public abstract class JAXBRenderer implements Renderer {
 		if(present(post.getAction())) {
 			xmlSyncpost.setAction(post.getAction().toString());
 		} if (present(post.getChangeDate())) {
-			xmlSyncpost.setChangeDate(createXmlCalendar(post.getChangeDate()));
+			xmlSyncpost.setChangeDate(this.createXmlCalendar(post.getChangeDate()));
 		}
 		if (present(post.getCreateDate())) {
-			xmlSyncpost.setCreateDate(createXmlCalendar(post.getCreateDate()));
+			xmlSyncpost.setCreateDate(this.createXmlCalendar(post.getCreateDate()));
 		}
 		xmlSyncpost.setHash(post.getIntraHash());
 		if(present(post.getPost())) {
-			xmlSyncpost.setPost(createXmlPost(post.getPost()));
+			xmlSyncpost.setPost(this.createXmlPost(post.getPost()));
 		}
 		return xmlSyncpost;
 	}
@@ -776,14 +795,14 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlDoc.setStat(StatType.OK);
 		
 		final SyncDataType xmlSyncData = new SyncDataType();
-		xmlSyncData.setLastSyncDate(createXmlCalendar(syncData.getLastSyncDate()));
+		xmlSyncData.setLastSyncDate(this.createXmlCalendar(syncData.getLastSyncDate()));
 		xmlSyncData.setResourceType(ResourceFactory.getResourceName(syncData.getResourceType()));
 		xmlSyncData.setService(syncData.getService().toString());
 		xmlSyncData.setSynchronizationStatus(syncData.getStatus().toString());
 		xmlSyncData.setInfo(syncData.getInfo());
 		
 		xmlDoc.setSyncData(xmlSyncData);
-		serialize(writer, xmlDoc);
+		this.serialize(writer, xmlDoc);
 	}
 
 	/* (non-Javadoc)
@@ -800,7 +819,9 @@ public abstract class JAXBRenderer implements Renderer {
 			}
 			return syncPosts;
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no synchronization posts defined.");
 	}
 
@@ -813,7 +834,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getSyncData() != null) {
 			return ModelFactory.getInstance().createSynchronizationData(xmlDoc.getSyncData());
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no  defined.");
 	}
 	
@@ -830,8 +853,8 @@ public abstract class JAXBRenderer implements Renderer {
 		type.setInterhash(referenceHash);
 		refsType.getReference().add(type);
 		xmlDoc.setReferences(refsType);
-		serialize(writer, xmlDoc);
-	};
+		this.serialize(writer, xmlDoc);
+	}
 
 	@Override
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
@@ -849,7 +872,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getUser() != null) {
 			return ModelFactory.getInstance().createUser(xmlDoc.getUser());
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user defined.");
 	}
 
@@ -866,7 +891,9 @@ public abstract class JAXBRenderer implements Renderer {
 			}
 		}
 
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
 	}
 
@@ -883,7 +910,9 @@ public abstract class JAXBRenderer implements Renderer {
 			}
 		}
 
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
 	}
 
@@ -894,7 +923,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getGroup() != null) {
 			return ModelFactory.getInstance().createGroup(xmlDoc.getGroup());
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no group defined.");
 	}
 
@@ -909,7 +940,9 @@ public abstract class JAXBRenderer implements Renderer {
 			}
 			return groups;
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of groups defined.");
 	}
 
@@ -928,7 +961,9 @@ public abstract class JAXBRenderer implements Renderer {
 			}
 			return posts;
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of posts defined.");
 	}
 
@@ -943,7 +978,9 @@ public abstract class JAXBRenderer implements Renderer {
 			}
 			return tags;
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of tags defined.");
 	}
 
@@ -958,7 +995,9 @@ public abstract class JAXBRenderer implements Renderer {
 			}
 			return users;
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of users defined.");
 	}
 
@@ -980,7 +1019,9 @@ public abstract class JAXBRenderer implements Renderer {
 			return references;
 		}		
 
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of references defined.");
 	}
 
@@ -990,7 +1031,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getTag() != null) {
 			return ModelFactory.getInstance().createTag(xmlDoc.getTag());
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
 	}
 
@@ -1000,7 +1043,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getStat() != null) {
 			return xmlDoc.getStat().value();
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no status defined.");
 	}
 
@@ -1010,7 +1055,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getGroupid() != null) {
 			return xmlDoc.getGroupid();
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no group id.");
 	}
 
@@ -1020,7 +1067,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getResourcehash() != null) {
 			return xmlDoc.getResourcehash();
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no resource hash defined.");
 	}
 
@@ -1030,7 +1079,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getUserid() != null) {
 			return xmlDoc.getUserid();
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user id defined.");
 	}
 
@@ -1040,7 +1091,9 @@ public abstract class JAXBRenderer implements Renderer {
 		if (xmlDoc.getTag() != null) {
 			return ModelFactory.getInstance().createRecommendedTag(xmlDoc.getTag());
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
 	}
 
@@ -1055,7 +1108,9 @@ public abstract class JAXBRenderer implements Renderer {
 			}
 			return tags;
 		}
-		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of tags defined.");
 	}
 
@@ -1064,7 +1119,7 @@ public abstract class JAXBRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setTag(this.createXmlRecommendedTag(tag));
-		serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);		
 	}
 
 	@Override
@@ -1074,13 +1129,13 @@ public abstract class JAXBRenderer implements Renderer {
 		xmlTags.setEnd(BigInteger.valueOf(tags != null ? tags.size() : 0));
 		if (tags != null) {
 			for (final RecommendedTag tag : tags) {
-				xmlTags.getTag().add(createXmlRecommendedTag(tag));
+				xmlTags.getTag().add(this.createXmlRecommendedTag(tag));
 			}
 		}
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setTags(xmlTags);
-		serialize(writer, xmlDoc);	
+		this.serialize(writer, xmlDoc);	
 	}
 
 	/**

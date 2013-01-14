@@ -40,6 +40,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,7 +51,7 @@ import org.junit.Test;
  */
 public class ModelFactoryTest {
 	
-	private static final String XML_IS_INVALID_MSG = "The body part of the received XML document is not valid: ";
+	private static final String XML_IS_INVALID_MSG = ModelValidationUtils.DOCUMENT_NOT_VALID_ERROR_MESSAGE;
 
 	private static ModelFactory modelFactory;
 	
@@ -130,21 +131,21 @@ public class ModelFactoryTest {
 		// checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "no tags specified");
 		final TagType xmlTag = new TagType();
 		xmlPost.getTag().add(xmlTag);
-		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "user is missing");
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "user is missing");
 		final UserType xmlUser = new UserType();
 		xmlUser.setName("tuser");
 		xmlPost.setUser(xmlUser);
-		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
 		final BookmarkType xmlBookmark = new BookmarkType();
 		xmlPost.setBookmark(xmlBookmark);
-		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
 		xmlTag.setName("testtag");
-		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
 		xmlBookmark.setUrl("http://www.google.de");
 		xmlBookmark.setTitle("Google search engine");
 		xmlPost.setBookmark(xmlBookmark);
 		xmlPost.setBibtex(new BibtexType());
-		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "only one resource type is allowed inside element 'post'");
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "only one resource type is allowed inside element 'post'");
 		xmlPost.setBibtex(null);
 
 		// check valid post with bookmark
@@ -157,7 +158,7 @@ public class ModelFactoryTest {
 		xmlPost.setBookmark(null);
 		final BibtexType xmlBibtex = new BibtexType();
 		xmlPost.setBibtex(xmlBibtex);
-		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
 		xmlBibtex.setTitle("foo bar");
 		xmlBibtex.setYear("2005");
 		xmlBibtex.setBibtexKey("myBibtexKey");
