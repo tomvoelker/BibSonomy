@@ -30,7 +30,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
@@ -102,12 +101,20 @@ public abstract class JAXBRendererTest {
 	 */
 	public abstract Renderer getRenderer();
 	
-	// TODO: move to a util class and replace writer with a string
-	private static void assertWithFile(final Writer sw, final String filename) {
+	/**
+	 * method that compares the expected and the actual serialized result
+	 * 
+	 * @param expected
+	 * @param actual
+	 * @throws Exception
+	 */
+	public abstract void compare(final String expected, final String actual) throws Exception;
+	
+	private void assertWithFile(final Writer sw, final String filename) {
 		try {
 			final String fileContents = TestUtils.readEntryFromFile(filename);
-			assertEquals("output not as expected", fileContents.trim(), sw.toString().trim());
-		} catch (final IOException ex1) {
+			this.compare(fileContents.trim(), sw.toString().trim());
+		} catch (final Exception ex1) {
 			fail(ex1.getMessage());
 		}
 	}
@@ -354,7 +361,7 @@ public abstract class JAXBRendererTest {
 		vm.setUrlToNextResources("http://www.bibsonomy.org/foo/bar");
 		sw = new StringWriter(100);
 		this.getRenderer().serializeTags(sw, tags, vm);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags1" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags1" + this.getFileExt());
 
 		// with tags
 		sw = new StringWriter(100);
@@ -368,7 +375,7 @@ public abstract class JAXBRendererTest {
 		tag1.setName("foo");
 		sw = new StringWriter(100);
 		this.getRenderer().serializeTags(sw, tags, vm);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags2" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags2" + this.getFileExt());
 
 		// with multiple tags
 		final Tag tag2 = new Tag();
@@ -378,7 +385,7 @@ public abstract class JAXBRendererTest {
 		tags.add(tag2);
 		sw = new StringWriter(100);
 		this.getRenderer().serializeTags(sw, tags, vm);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags3" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags3" + this.getFileExt());
 	}
 
 	@Test
@@ -393,7 +400,7 @@ public abstract class JAXBRendererTest {
 		}
 		tag.setName("foo");
 		this.getRenderer().serializeTag(sw, tag, null);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTag" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTag" + this.getFileExt());
 	}
 
 	@Test
@@ -435,7 +442,7 @@ public abstract class JAXBRendererTest {
 		user2.getGroups().add(new Group("kde"));
 		users.add(user2);
 		this.getRenderer().serializeUsers(sw, users, vm);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultUsers1" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultUsers1" + this.getFileExt());
 	}
 
 	@Test
@@ -450,7 +457,7 @@ public abstract class JAXBRendererTest {
 		}
 		user.setName("foo");
 		this.getRenderer().serializeUser(sw, user, null);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultUser" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultUser" + this.getFileExt());
 	}
 
 	@Test
@@ -487,7 +494,7 @@ public abstract class JAXBRendererTest {
 		group2.setName("testName2");
 		groups.add(group2);
 		this.getRenderer().serializeGroups(sw, groups, vm);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultGroups1" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultGroups1" + this.getFileExt());
 	}
 
 	@Test
@@ -505,7 +512,7 @@ public abstract class JAXBRendererTest {
 		group.setHomepage(new URL("http://www.example.com/"));
 		group.setRealname("TestGroup");
 		this.getRenderer().serializeGroup(sw, group, null);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultGroup" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultGroup" + this.getFileExt());
 	}
 
 	@Test
@@ -552,7 +559,7 @@ public abstract class JAXBRendererTest {
 		post2.setDate(new Date(1303978514000l));
 		posts.add(post2);
 		this.getRenderer().serializePosts(sw, posts, vm);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultPosts" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultPosts" + this.getFileExt());
 	}
 
 	@Test
@@ -594,7 +601,7 @@ public abstract class JAXBRendererTest {
 		post.setDate(new Date(1303978514000l));
 		post.setChangeDate(new Date(1303998514000l));
 		this.getRenderer().serializePost(sw, post, null);
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultPost" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultPost" + this.getFileExt());
 	}
 	
 	@Test
@@ -615,7 +622,7 @@ public abstract class JAXBRendererTest {
 		
 		this.getRenderer().serializePost(sw, post, null);
 		
-		assertWithFile(sw, this.getPathToTestFiles() + "ExampleGoldStandardPublication" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleGoldStandardPublication" + this.getFileExt());
 	}
 
 	@Test
@@ -640,7 +647,7 @@ public abstract class JAXBRendererTest {
 		vm.setEndValue(1);
 		vm.setUrlToNextResources(this.getQuotingTestString());
 		this.getRenderer().serializePosts(sw, posts, vm);
-		assertWithFile(sw, this.getPathToTestFiles() + "QuotingTest" + this.getFileExt());
+		this.assertWithFile(sw, this.getPathToTestFiles() + "QuotingTest" + this.getFileExt());
 	}
 
 	protected abstract String getQuotingTestString();

@@ -37,6 +37,7 @@ import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.ObjectFactory;
+import org.custommonkey.xmlunit.XMLAssert;
 
 /**
  * @author dzo
@@ -46,6 +47,11 @@ public class XMLRendererTest extends JAXBRendererTest {
 	
 	private final static Renderer RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 
+	@Override
+	public void compare(final String expected, final String actual) throws Exception {
+		XMLAssert.assertXMLEqual(expected, actual);
+	}
+	
 	@Override
 	public String getPathToTestFiles() {
 		return "xmlrenderer/";

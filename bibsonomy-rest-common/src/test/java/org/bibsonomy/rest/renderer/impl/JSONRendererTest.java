@@ -32,6 +32,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
 
+import net.sf.json.test.JSONAssert;
+
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
@@ -49,6 +51,11 @@ public class JSONRendererTest extends JAXBRendererTest {
 	
 	private static final JSONRenderer RENDERER = new JSONRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 
+	@Override
+	public void compare(final String expected, final String actual) throws Exception {
+		JSONAssert.assertJsonEquals(expected, actual);
+	}
+	
 	@Override
 	public String getPathToTestFiles() {
 		return "jsonrenderer/";
