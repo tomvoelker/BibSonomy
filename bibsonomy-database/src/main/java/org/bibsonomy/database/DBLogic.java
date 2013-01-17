@@ -2349,25 +2349,13 @@ public class DBLogic implements LogicInterface {
 						throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
 					}
 					/*
-					 * get the complete post from the database
+					 * get the content_id from the database
 					 */
-					final Post<BibTex> copy = this.publicationDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-
-					/*
-					 * post might be null, because a) it does not exist b) user
-					 * may not access it
-					 */
-					if (copy == null) {
-						/*
-						 * FIXME: proper exception message!
-						 */
-						throw new ValidationException("You are not authorized to perform the requested operation");
-					}
-
+					post.setContentId(this.publicationDBManager.getContentIdForPost(post.getResource().getIntraHash(), post.getUser().getName(), session));
 					/*
 					 * delete the post from the user's basket
 					 */
-					this.basketDBManager.deleteItem(this.loginUser.getName(), copy.getContentId(), session);
+					this.basketDBManager.deleteItem(this.loginUser.getName(), post.getContentId(), session);
 				}
 			}
 

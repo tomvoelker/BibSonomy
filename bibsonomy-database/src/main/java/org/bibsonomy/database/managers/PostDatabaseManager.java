@@ -931,7 +931,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return contentId for a given post
 	 */
-	protected Integer getContentIdForPost(final String hash, final String requestedUserName, final DBSession session) {
+	public Integer getContentIdForPost(final String hash, final String requestedUserName, final DBSession session) {
 		if (!present(hash) || !present(requestedUserName)) {
 			throw new RuntimeException("Hash and user name must be set");
 		}
