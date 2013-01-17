@@ -50,7 +50,12 @@ public enum AuthMethod {
 	/**
 	 * HTTP Basic Authentication
 	 */
-	HTTPBASIC;
+	HTTPBASIC,
+
+	/**
+	 * SAML authentication (such as shibboleth)
+	 */
+	SAML;
 	
 	/**
 	 * X509 authentication
