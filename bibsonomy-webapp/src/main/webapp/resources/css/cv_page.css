@@ -79,4 +79,16 @@ margin: 0 auto;
 text-align:center;
 }
 
+.success {
+	background-color: LightGreen;
+}
+
+.error {
+	background-color: red;
+}
+
+.loading {
+	background-color: yellow;
+}
+
 

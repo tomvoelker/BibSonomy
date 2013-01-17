@@ -45,9 +45,9 @@ public class WikiCvPageController extends ResourceListController implements Mini
 			   to the user. */
 			if (present(requestedGroup)) {
 				return handleGroupCV(this.logic.getGroupDetails(requestedUser), command);
-			} else {
-				return handleUserCV(this.logic.getUserDetails(requestedUser), command);
 			}
+			
+			return handleUserCV(this.logic.getUserDetails(requestedUser), command);
 		} catch (RuntimeException e) {
 			//If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
 			throw new MalformedURLSchemeException("Something went wrong! You are most likely looking for a non existant user/group.");
@@ -117,8 +117,6 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		if (present(wiki) && (requestedUser.equals(command.getContext().getLoginUser())
 				|| bool1 && (!bool2 || bool2 && bool3 != 1))) {
 			wikiText = wiki.getWikiText();
-		} else if (!present(wiki)) {
-			wikiText = "";
 		} else {
 			wikiText = "";
 		}

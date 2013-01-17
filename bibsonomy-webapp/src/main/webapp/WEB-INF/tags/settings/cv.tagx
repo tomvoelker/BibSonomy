@@ -35,6 +35,7 @@
 				    	<legend>${defaultlayouts}</legend>
 			    		<div class="fsRow">
 							<c:choose>
+								<!-- TODO: Gruppen testen! -->
 								<c:when test="${command.isGroup}">
 									<select class="changeLayout">
 										<option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</option>
@@ -46,12 +47,17 @@
 										class='changeLayout' value="${def1ger}" />
 									<img height="200" width="400" src="test" /> -->
 								</c:when>
+								
+								<!-- Der momentane Besucher ist KEINE gruppe! Da er aber eingeloggt ist, ist es ein
+								     normaler User. -->
 								<c:otherwise>
 									<select class="changeLayout">
+									    <option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</option>
 										<option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</option>
 										<option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</option>
 										<option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</option>
 										<option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</option>
+										
 									</select>
 <!-- 									<input type="button" data-layout='LAYOUT_DEFAULT_I_EN'
 										class='changeLayout' value="${def1en}" />
@@ -75,17 +81,16 @@
 					    </div>
 					    <div style="float: right;">
 						    <span>
-								<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />
+<!-- 								<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" /> -->
 							    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
 						    </span>
 					    </div>
+					    
+					    <!-- Hier kann man sein eigenes Layout bearbeiten. Dieses gesamte div ist dazu da. -->
 						<div class="fsRow" id="fsform"  style="display: none">
 							<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
 							<fieldset class="fsInner">
 								<legend>${customlayout}</legend>
-								<!-- This is just the div with that entering stuff, where you choose the way
-									 the CV looks. And THIS is the div where we give the users the ways to choose
-									 their design :) -->
 								<div>
 									<!-- This is the div with the textArea in it. We gonna hide this for once. -->
 									<div class="fsRow" id="customdesign">
@@ -93,6 +98,7 @@
 		<!-- 								</div> -->
 										<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
 									</div>
+
 									<!-- This is the div with the submitting buttons in it. -->							
 									<div class="fsRow" style="clear: both;">
 										<span style="float: right;">
@@ -101,6 +107,8 @@
 										</span>
 									</div>
 								</div>
+								
+								<!--  Hier ist noch ein div mit dem "Leer"-Button drin -->
 								<div>
 <!--									<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />-->
 									<input type="button" onclick="return clearCVTextField();" value="${clear}" />
@@ -109,21 +117,44 @@
 						</div>
 				    </fieldset>
 				</div>
-				<div id='errorField'
-					style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'>
-					<p id="errorText"></p>
-				</div>
-				<div id='loadingDiv' style='width: 100%; display: none'>
-					<img src="${resdir}/image/ajax_loader.gif" alt="wait" />
-				</div>
 			</form:form>
 
+
+			<div id="statusField">
+				<div style="display: inline-block;" id="statusText">.</div>
+				<div style="float:right; display: inline-block">
+					<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
+				</div>
+			</div>
+			
+			<!-- TODO: Schoener machen. Eventuell das Inline-CSS auch in die zugehoerige CSS-File legen. -->
+			<!-- Hieraus kann man auch gern eine Statusanzeige machen mit Inhalten wie "saved", "previewing...", "loading..." -->
+<!-- 			<div id='errorField' -->
+<!-- 				style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'> -->
+<!-- 				<p id="errorText"></p> -->
+<!-- 			</div> -->
+			
+			<!-- Hier waere es glaube ich schoen, wenn das Ladezeichen anstelle des gesamten Textes erschiene... -->
+<!-- 			<div id='loadingDiv' style='width: 100%; display: none'> -->
+<!-- 				<img src="${resdir}/image/ajax_loader.gif" alt="wait" /> -->
+<!-- 			</div> -->
+
+			<!-- Hier steht der Text, der gerendert wird. -->
 			<div id="wikiArea">
 				<c:choose>
 					<c:when test="${not empty command.wikiText}">
 						<c:out value="${command.renderedWikiText}" escapeXml="false" />
 					</c:when>
+					<!-- Falls noch kein Layout gesetzt wurde, wird hier das Standardlayout eingesetzt...
+						Aber das ist irgendwie uncool. Das sollte anderweitig passieren! Hier wird das ja
+						nur vorgegaukelt, dass schon eins existieren wuerde... -->
+					<!-- Korrektur: Hier wird ein Standardtext eingeblendet. Das muss aber auch noch passieren,
+						wenn der Text wieder geloescht wurde! FIXME -->
 					<c:otherwise>
+						<fmt:message key="cv.my.nowikitext" var="nowikitext" />
+						<c:out value="${nowikitext}" escapeXml="false" />
+					
+					<!-- old stuff mit standardlayouts...
 						<fmt:message key="cv.layout.user.def1en" var="def1en" />
 						<fmt:message key="cv.layout.user.def1ger" var="def1ger" />
 						<c:choose>
@@ -134,6 +165,7 @@
 								<c:out value="${def1en}" escapeXml="false" />
 							</c:otherwise>
 						</c:choose>
+					-->
 					</c:otherwise>
 				</c:choose>
 			</div>

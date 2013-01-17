@@ -186,7 +186,12 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * @return XML success string.
 	 */
 	private String getXmlSucceeded(final AjaxCvCommand command, final String... wikiText) {
-		return (wikiText.length > 1) ? "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><wikitext>" + Utils.escapeXmlChars(wikiText[0]) + "</wikitext><renderedwikitext><![CDATA[" + wikiText[1] + "]]></renderedwikitext></root>" : "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey></root>";
+		return (wikiText.length > 1) ? "<root><status>ok</status><ckey>"
+				+ command.getContext().getCkey() + "</ckey><wikitext>"
+				+ Utils.escapeXmlChars(wikiText[0])
+				+ "</wikitext><renderedwikitext><![CDATA[" + wikiText[1]
+				+ "]]></renderedwikitext></root>" : "<root><status>ok</status><ckey>"
+				+ command.getContext().getCkey() + "</ckey></root>";
 
 	}
 

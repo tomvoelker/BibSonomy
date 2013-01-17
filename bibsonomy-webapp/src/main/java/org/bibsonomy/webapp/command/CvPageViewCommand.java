@@ -14,14 +14,14 @@ public class CvPageViewCommand extends UserResourceViewCommand {
 	 * @return the wikiText
 	 */
 	public String getWikiText() {
-		return this.wikiText;
+		return this.wikiText.trim();
 	}
 
 	/**
 	 * @param wikiText the wikiText to set
 	 */
 	public void setWikiText(String wikiText) {
-		this.wikiText = wikiText;
+		this.wikiText = wikiText.trim();
 	}
 
 	/**

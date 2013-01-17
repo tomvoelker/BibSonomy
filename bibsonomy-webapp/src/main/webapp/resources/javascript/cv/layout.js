@@ -25,9 +25,11 @@ function changeCVLayout(name){
                     wikiTextArea.val(wikiText);
                     wikiArea.empty();
                     wikiArea.append(renderedWikiText);
+                    handleSuccessStatus("Changing Layout to " + name);
                 }
                 else {
                     wikiTextArea.val(wikiText);
+                    handleSuccessStatus("Clear Layout");
                 }
             }
             else {
@@ -43,8 +45,18 @@ function changeCVLayout(name){
  * @param {Object} e
  */
 function handleError(e){
-    $('#errorText').text(e);
-    $('#errorField').show();
+    $('#statusText').text("Error: " + e);
+    $('#statusField').removeClass('error success loading').addClass('error');
+}
+
+function handleLoadingStatus(e) {
+	$('#statusText').text("Loading... " + e);
+    $('#statusField').removeClass('error success loading').addClass('loading');
+}
+
+function handleSuccessStatus(e) {
+	$('#statusText').text("Success: " + e);
+    $('#statusField').removeClass('error success loading').addClass('success');
 }
 
 /**
@@ -71,6 +83,7 @@ function submitWiki(renderOptions){
                 var renderedWikiText = $("renderedwikitext", data).text();
                 wikiArea.empty();
                 wikiArea.append(renderedWikiText);
+                handleSuccessStatus(renderOptions);
             }
             else {
                 handleError(data.globalErrors[0].message);
@@ -93,6 +106,7 @@ function formatPublications(self, type){
     $.get("/layout/" + layout + "/" + type + "/" + reqUser + "/" + tags, function(data){
         $(self).parent().parent().parent().next().html(data);
     });
+    handleSuccessStatus("Loading " + layout + " style")
     return false;
 }
 
@@ -102,6 +116,8 @@ function formatPublications(self, type){
 function clearCVTextField(){
     var wikiTextArea = $('#wikiTextArea');
     wikiTextArea.val("");
+    handleSuccessStatus("Clear");
+    submitWiki("preview");
     return false;
 }
 

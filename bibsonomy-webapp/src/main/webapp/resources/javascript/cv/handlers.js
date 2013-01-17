@@ -36,6 +36,7 @@ $(function(){
                     else {
                         wikiTextArea.val(wikiText);
                     }
+                    handleSuccessStatus("changing layout to " + $(this).find("option:selected").text());
                 }
                 else {
                     handleError(data.globalErrors[0].message);
@@ -47,11 +48,17 @@ $(function(){
     /**
      * Handler for the ajax loading gif's
      */
-    $('#loadingDiv').hide().ajaxStart(function(){
-        $(this).show();
-        $('#errorField').hide();
-    }).ajaxStop(function(){
-        $(this).hide();
+    $('#loadingDiv').ajaxStart(function(){
+        $('#statusField').show();
+        $('#loadingDiv').show();
+        handleLoadingStatus("");
+//        $('#errorField').hide();
+    }).ajaxSuccess(function(){
+        $('#loadingDiv').hide();
+        $('#statusField').hide();
+    }).ajaxError(function() {
+        handleErrorStatus("");
+        $('#loadingDiv').hide();
     });
     
     /**
@@ -59,8 +66,8 @@ $(function(){
      */
     $('#hideAdmin').click(function(){
         $('#fsform').hide('blind',function() {
-			$('#showAdminField').show('blind');
-			$('#hideAdminField').hide('blind');
+			$('#showAdminField').show();
+			$('#hideAdminField').hide();
 		});
     });
     
@@ -73,8 +80,8 @@ $(function(){
 	 */
 	$('#showAdmin').click(function() {
 		$('#fsform').show('blind',function() {
-			$('#showAdminField').hide('blind');
-			$('#hideAdminField').show('blind');
+			$('#showAdminField').hide();
+			$('#hideAdminField').show();
 		});
 	});
 	
