@@ -38,6 +38,11 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 		super(name);
 	}
 
+	/**
+	 * @param converter unused. Only there to be able to override another method.
+	 * @param buf some kind of buffer, as it seems. We will write on this buffer.
+	 * @param model the wiki model used to render this tag.
+	 */
 	@Override
 	public void renderHTML(final ITextConverter converter, final Appendable buf, final IWikiModel model) throws IOException {
 		final CVWikiModel wiki = (CVWikiModel) model;
@@ -48,7 +53,11 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 		buf.append(this.render());
 	}
 	
-	
+	/**
+	 * easy peasy. Render a string.
+	 * @param toRender soem kind of string.
+	 * @return the rendered string or an empty string, if toRender was empty or null.
+	 */
 	protected String renderString(final String toRender) {
 		if (present(toRender)) {
 			return Utils.escapeXmlChars(toRender);
@@ -82,7 +91,7 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 			
 		}catch (final Exception e) {
 			log.fatal("Error while rendering the tag: " + this.name, e);
-			return this.getName() + " has caused an error.";
+			return this.getName() + " has caused an error:\n" + e.toString();
 		}
 	}
 	

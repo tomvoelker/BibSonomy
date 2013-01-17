@@ -79,14 +79,22 @@ public class CVWikiModel extends AbstractWikiModel {
 		super(Configuration.DEFAULT_CONFIGURATION, null, null);
 	}
 
-	@Override
 	/*
-	 * TODO: add Comment (non-Javadoc)
+	 * defines the look and feel of the section headlines. can be changed by the span class mw-headline.
+	 * 
+	 * @param rawHead a pure title from the wiki syntax, without the enclosing =
+	 * @param headLevel the number of =, indicating the position in the section hierarchy of this title
+	 * @param noToC good question. TODO: FIX THIS! Welcher Wahnsinnige verwendet eigentlich negierte boolsche Variablen?!
+	 * @param headCounter
 	 * 
 	 * @see info.bliki.wiki.model.AbstractWikiModel#appendHead(java.lang.String,
 	 * int, boolean, int, int, int)
 	 */
+	@Override
 	public ITableOfContent appendHead(final String rawHead, final int headLevel, final boolean noToC, final int headCounter, final int startPosition, final int endPosition) {
+		// In rawHead steht eh immer nur genau ein Section title, man kann von diesem Stack also einfach nur
+		// das erste (weil einzige) Element nehmen.
+		// * Der noToC-Parameter ist grundsätzlich auf "true" gesetzt, da wir keine ToC wollen. (Warum eigetnlich nicht?)
 		final TagStack localStack = WikipediaParser.parseRecursive(rawHead.trim(), this, true, true);
 
 		final WPTag headTagNode = new WPTag("h" + headLevel);
@@ -94,32 +102,58 @@ public class CVWikiModel extends AbstractWikiModel {
 		// Example:
 		// <h2><span class="mw-headline" id="Header_level_2">Header level
 		// 2</span></h2>
-		spanTagNode.addChildren(localStack.getNodeList());
+		spanTagNode.addChild(localStack.getNodeList().get(0));
 		headTagNode.addChild(spanTagNode);
+		
+		// Hier steht nur der tatsaechliche Content den spanTagNode.
+		/*
+		 * FIXME: Was passiert, wenn man als Titel einer Section ein HTML-Tag eingibt? Das macht doch bestimmt was kaputt!
+		 * Ja, da passiert einiges. Ist ein pures HTML-Tag im Titel, so wird das entfernt und nur der Inhalt dieses Tags zurueckgegeben.
+		 * Ist Text mit einem HTML-Tag im Titel, so wird das HTML-Tag einfach entfernt.
+		 * Ist da irgendein non-HTML-Tag (also bspw. <ba>blub</ba>), so bleibt einfach alles stehen, das Tag wird also NICHT entfernt!
+		 */
 		final String tocHead = headTagNode.getBodyString();
+		// tocHead wird halt in HTML-Form gebracht, nichts besonderes hier. Leerzeichen werden durch Unterstriche ersetzt, usw.
 		String anchor = Encoder.encodeDotUrl(tocHead);
-		this.createTableOfContent(false);
-		if (!noToC && headCounter > 3) {
-			this.fTableOfContentTag.setShowToC(true);
-		}
-		if (this.fToCSet.contains(anchor)) {
-			String newAnchor = anchor;
-			for (int i = 2; i < Integer.MAX_VALUE; i++) {
-				newAnchor = anchor + '_' + Integer.toString(i);
-				if (!this.fToCSet.contains(newAnchor)) {
-					break;
-				}
-			}
-			anchor = newAnchor;
-		}
+		
+//		// Warum geht das nicht? Bzw., was sollte da passieren?
+//		this.createTableOfContent(!noToC);
+//		this.fTableOfContentTag.setShowToC(true);
+//		
+//		// Was ist das hier?
+//		if (!noToC && headCounter > 3) {
+//			this.fTableOfContentTag.setShowToC(true);
+//		}
+//		
+//		// Hier suchen wir ... gar nichts, da fToCSet nie befuellt wird.
+//		if (this.fToCSet.contains(anchor)) {
+//			String newAnchor = anchor;
+//			// Das ist ja wohl ein bisschen uebertrieben.
+//			for (int i = 2; i < Integer.MAX_VALUE; i++) {
+//				newAnchor = anchor + '_' + Integer.toString(i);
+//				// Warum schaut man hier nicht einfach nach, ob eine bestimmte Zahl schon vorhanden ist
+//				// anstelle diese daemliche Schleife durchlaufen zu lassen? Werden die irgendwo
+//				// wieder entfernt?!
+//				if (!this.fToCSet.contains(newAnchor)) {
+//					break;
+//				}
+//			}
+//			anchor = newAnchor;
+//		}
 
-		if (this.getRecursionLevel() == 1) {
-			this.buildEditLinkUrl(this.fSectionCounter++);
-		}
+		// Das erstellt einen Link, um diese Section editieren zu koennen. Funktioniert aber irgendwie gar nicht.
+		// Abgesehen davon: Wozu?! Im Moment bringt uns das rein gar nichts.
+//		if (this.getRecursionLevel() == 1) {
+//			this.buildEditLinkUrl(this.fSectionCounter++);
+//		}
 
+		// add attributes to the tags
 		spanTagNode.addAttribute("class", "mw-headline", true);
+		
+		// FIXME: Same title --> double ids
 		spanTagNode.addAttribute("id", anchor, true);
 
+		// add the generated heading node to the local stack for later processing
 		this.append(headTagNode);
 		return this.fTableOfContentTag;
 	}

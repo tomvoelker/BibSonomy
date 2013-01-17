@@ -67,6 +67,7 @@ public class BookmarkListTag extends SharedTag {
         	renderedHTML.append("<a href='" +post.getResource().getUrl() +"' rel='nofollow'>" +post.getResource().getTitle() +"</a>");
         	renderedHTML.append("</span>");
         	
+        	// Das ist prinzipiell ein cooles Merkmal! Koennte man ja auch zu den Publikationen hinzufuegen?
         	final String description = post.getDescription();
 			if (present(description)) {
         		// TODO: i18n [show details]
