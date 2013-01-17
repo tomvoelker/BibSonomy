@@ -77,9 +77,15 @@ public class PublicationListTag extends SharedTag {
 		}
 
 		final String requestedName = this.getRequestedName();
+		
+		final String selectedLayout = tagAtttributes.get(LAYOUT).toLowerCase();
 
+		// TODO: Mehrere moegliche Layouts einbinden
 		renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format (<a href='/export/").append(this.getGroupingEntity().toString()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>): <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(this.getGroupingEntity().toString()).append("\")'>");
-		renderedHTML.append("<option value='plain'>plain</option><option value='harvardhtml'>harvard</option><option value='din1505'>DIN1505</option><option value='simplehtml'>simpleHTML</option>");
+		renderedHTML.append("<option value='plain'" + (selectedLayout.equals("plain") ? " selected" : "") + ">plain</option>");
+		renderedHTML.append("<option value='harvardhtml'" + (selectedLayout.equals("harvardhtml") ? " selected" : "") + ">harvard</option>");
+		renderedHTML.append("<option value='din1505'" + (selectedLayout.equals("din1505") ? " selected" : "") + ">DIN1505</option>");
+		renderedHTML.append("<option value='simplehtml'" + (selectedLayout.equals("simplehtml") ? " selected" : "") + ">simpleHTML</option>");
 		renderedHTML.append("</select><input id='reqUser' type='hidden' value='").append(requestedName).append("' /><input id='reqTags' type='hidden' value='").append(tags).append("' /></form></span></div>");
 
 		/*
@@ -114,7 +120,7 @@ public class PublicationListTag extends SharedTag {
 		try {
 			final Layout layout;
 			if (null != tagAtttributes.get(LAYOUT)) {
-				layout = this.layoutRenderer.getLayout(tagAtttributes.get(LAYOUT), requestedName);
+				layout = this.layoutRenderer.getLayout(tagAtttributes.get(LAYOUT).toLowerCase(), requestedName);
 			} else {
 				layout = this.layoutRenderer.getLayout(DEFAULT_LAYOUT, requestedName);
 			}
