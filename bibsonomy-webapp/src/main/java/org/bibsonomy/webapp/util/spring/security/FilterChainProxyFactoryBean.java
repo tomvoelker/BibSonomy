@@ -20,6 +20,10 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /**
+ * Adds the filters in the properties authFilterMap, authRememberMeFilterMap, and authPreFilterMap to all the filterChains in the applicationContext (in a specific order).
+ * These filterchains are then used by the {@link FilterChainProxy} instance that is to be created.
+ * Only filters for the {@link AuthMethod}s specified by {@link #config} are considered (such that config can come from a installation specific properties file)
+ * 
  * @author dzo
  * @version $Id$
  */
