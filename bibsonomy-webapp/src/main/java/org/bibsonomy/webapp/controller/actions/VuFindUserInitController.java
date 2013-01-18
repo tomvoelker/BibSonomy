@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.webapp.command.VuFindUserInitCommand;
-import org.bibsonomy.webapp.controller.opensocial.OAuthRequestTokenController;
+import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
@@ -17,7 +17,7 @@ import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodReq
  */
 public class VuFindUserInitController implements MinimalisticController<VuFindUserInitCommand> {
 
-	private OAuthRequestTokenController oaReqTokenController;
+	private OAuthAuthorizeTokenController oaAuthorizeController;
 //	AuthenticationEntryPoint remoteAuthentication;
 	
 	@Override
@@ -41,7 +41,8 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		// - check if remoteuser maps to an existing bibsonomy user
 		//   - if not: create one and add pair to the mapping
 		// - login user but without any "stay logged in" cookie
-		return oaReqTokenController.workOn(command);
+		// automatically authorize via oauth (no extra button click)
+		return oaAuthorizeController.workOn(command);
 	}
 
 	protected String getRemoteUserId() {
@@ -61,15 +62,15 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 	/**
 	 * @return the regular oAuth controller
 	 */
-	public OAuthRequestTokenController getOaReqTokenController() {
-		return this.oaReqTokenController;
+	public OAuthAuthorizeTokenController getOaAuthorizeController() {
+		return this.oaAuthorizeController;
 	}
 
 	/**
 	 * @param oaReqTokenController the regular oAuth controller
 	 */
-	public void setOaReqTokenController(OAuthRequestTokenController oaReqTokenController) {
-		this.oaReqTokenController = oaReqTokenController;
+	public void setOaAuthorizeController(OAuthAuthorizeTokenController oaReqTokenController) {
+		this.oaAuthorizeController = oaReqTokenController;
 	}
 	
 }
