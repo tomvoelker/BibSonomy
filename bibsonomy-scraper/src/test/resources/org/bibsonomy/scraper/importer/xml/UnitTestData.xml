@@ -1524,5 +1524,11 @@
 		<BibFile>BMJOpenScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_251">
+		<TestDescription>Pharmacognosy Research Scraper Test</TestDescription>
+		<URL>http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6</URL>
+		<BibFile>PharmacognosyResearchScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper</Scraper>
+	</URLTest>
 	
 </test:Tests>
