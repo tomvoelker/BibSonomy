@@ -194,3 +194,90 @@ h3 {
 		padding-bottom: 10px;
 		z-index: 100;
 }
+
+.discussionAdditionalControls {
+	position: absolute;
+	display:none;
+	background: rgba(255, 255, 255, 0.6);
+	padding:10px;
+}
+
+.discussionBox {
+	width:60%;
+	margin:50px;
+	border: 1px solid #006699;
+	padding-top: 15px;
+	padding-bottom: 15px; 
+	padding-right:10px; 
+	padding-left:10px;
+	background: #EEE;
+	overflow: auto;
+	display:block;
+}
+
+.discussionControls {
+	float:right;
+}
+
+.discussionControlsFrame {
+	height:20px;
+	padding-left:5px;
+	padding-bottom:8px;
+	padding-top:8px;
+	margin-bottom: 10px;
+	display:none;
+	transition: height 0.2s;
+    -webkit-transition: height 0.2s; 
+    -moz-transition: height 0.2s;
+}
+
+.discussionStarsContainer {
+	margin-left:1px;
+	background-color:#fff;
+	-moz-border-radius:3px;
+	border-radius:3px;
+	padding:5px;
+	border:1px solid #006699;
+	display:inline-block;
+	float:right;
+}
+
+.discussionPostbuttonFrame {
+	padding-top:5px;
+	padding-bottom:10px;
+	display:none;
+	transition: height 0.2s;
+    -webkit-transition: height 0.2s; 
+    -moz-transition: height 0.2s;
+}
+
+.textAreaWithMinHeight {
+	height:30px;
+}
+
+.discussionPictureFrame{
+	width:5%;
+	float:left;
+}
+
+.textAreaAutoresize {
+	width:97%!important;
+	min-height:30px;
+	float:right;
+	padding:5px;
+	overflow:hidden;
+	border: 1px solid #006699;
+	width:100%;
+	font-family: monospace;
+	font-weight: 400;
+	transition: height 0.2s;
+    -webkit-transition: height 0.2s; 
+    -moz-transition: height 0.2s; 
+	clear:right;
+}
+.ratingValueContainer {
+	margin-right:-3px;
+	margin-top:7px;
+	padding-right:0px;
+	float:right;
+}

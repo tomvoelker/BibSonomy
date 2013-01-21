@@ -68,6 +68,49 @@ $(function() {
 
 });
 
+function showAppendixForm(element) {
+	var parent = element.parents(".fsOuter");
+	var frame = element.parent().next(".discussionAdditionalControls");
+	
+	if(frame[0]==undefined) return;
+	if(frame.css("display") != "none") return frame.hide();
+	var left = (parent.position().left+parent.width()-frame.width());
+	var gap = left - element.position().left;
+	var controlsContainer = frame.children(".controlsContainer");
+	
+	if(gap > 0) {
+		left -= gap;
+		frame.width(frame.width()+gap);
+	}
+	
+	frame.height((parent.height()+4))
+	frame.css({"top":(element.position().top-9)+"px","left":(left-9)+"px"}).show();
+	controlsContainer.css("left", (element.offset().left-controlsContainer.width()-25));
+}
+
+$(document).ready(function() {
+	$('.descriptiveLabel').each(function() {
+		$(this).descrInputLabel({});
+	});
+	$('.textAreaAutoresize').each(function() {
+		$(this).autosize({}).focus(showMenu);
+	});
+	var ratingElement = $('.reviewrating').stars({split:2});
+	if(ratingElement.hasClass('discussionStarsContainer')) ratingElement.stars("select", 5.0);
+});
+
+function showMenu(e) {
+	$(e.target).unbind("focus", showMenu).removeClass('textAreaWithMinHeight').height('').parent().parent().parent();
+	var parent = $(e.target).unbind("focus", showMenu).parent().parent().parent();
+	var frames = ["discussionControlsFrame", "discussionPostbuttonFrame"];
+	for(var i = 0; i < frames.length; i++)
+		parent.children("."+frames[i]).css("display", "block").hide().fadeIn();
+
+}
+
+//###########################################################################
+
+
 function hasGoldstandardCreationPermission() {
 	if (!pub) {
 		// we need to ask whether or not a goldstandard is to be created.
