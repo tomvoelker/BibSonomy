@@ -623,6 +623,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation, String tag);
 	
 	/**
+	 * TODO: rename to createClipboardItems
 	 * Create basket items
 	 * 
 	 * @param posts - list of posts which should be added to the basket
@@ -631,6 +632,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public int createBasketItems(List<Post<? extends Resource>> posts);
 	
 	/**
+	 * TODO: rename to deleteBasketItems
 	 * Delete basket items 
 	 * 
 	 * @param posts - list of posts which should be deleted from the basket
