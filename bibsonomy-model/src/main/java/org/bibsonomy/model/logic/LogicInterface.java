@@ -632,7 +632,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public int createBasketItems(List<Post<? extends Resource>> posts);
 	
 	/**
-	 * TODO: rename to deleteBasketItems
+	 * TODO: rename to deleteClipboardItems
 	 * Delete basket items 
 	 * 
 	 * @param posts - list of posts which should be deleted from the basket
