@@ -13,6 +13,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.RemoteUserParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
@@ -21,6 +22,8 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -284,7 +287,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		
 		this.checkUser(user, session);
 		
-		if (present(user.getOpenID()) || present(user.getLdapId())) {
+		/** no email validation for remote users (openid/ldap/saml) */
+		if (user.getRemoteUserIds().size() > 0) {
 		    this.insert("insertUser", user, session);
 		} else {
 		    this.insert("insertPendingUser", user, session);
@@ -303,8 +307,25 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (present(user.getLdapId())) {
 			this.insertLdapUserId(user, session);
 		}
+		
+		for (RemoteUserId ruid : user.getRemoteUserIds()) {
+			this.insertRemoteUserId(user, ruid, session);
+		}
+		
 	}
 	
+	public void insertRemoteUserId(User user, RemoteUserId ruid, final DBSession session) {
+		if (ruid instanceof SamlRemoteUserId) {
+			this.insertSamlUserId(new RemoteUserParam(user, ruid), session);
+		}
+		// maybe handle other remote stuff here also
+	}
+
+	public void insertSamlUserId(RemoteUserParam remoteUserParam, DBSession session) {
+		// TODO: implement in sqlmap:
+		// this.insert("insertSamlUser", remoteUserParam, session);
+	}
+
 	/**
 	 * Inserts a user to openID table
 	 * 
