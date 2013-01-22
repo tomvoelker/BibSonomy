@@ -151,7 +151,7 @@ public class DBLogic implements LogicInterface {
 	private final DBSessionFactory dbSessionFactory;
 	private final StatisticsDatabaseManager statisticsDBManager;
 	private final TagRelationDatabaseManager tagRelationsDBManager;
-	private final BasketDatabaseManager basketDBManager;
+	private final BasketDatabaseManager clipboardDBManager;
 	private final InboxDatabaseManager inboxDBManager;
 	private final WikiDatabaseManager wikiDBManager;
 
@@ -203,7 +203,7 @@ public class DBLogic implements LogicInterface {
 		this.statisticsDBManager = StatisticsDatabaseManager.getInstance();
 		this.tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
 
-		this.basketDBManager = BasketDatabaseManager.getInstance();
+		this.clipboardDBManager = BasketDatabaseManager.getInstance();
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 
 		this.wikiDBManager = WikiDatabaseManager.getInstance();
@@ -2313,11 +2313,11 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * insert the post from the user's basket
 				 */
-				this.basketDBManager.createItem(this.loginUser.getName(), copy.getContentId(), session);
+				this.clipboardDBManager.createItem(this.loginUser.getName(), copy.getContentId(), session);
 			}
 
 			// get actual basket size
-			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
 		} catch (final Exception ex) {
 			log.error(ex);
 			throw new RuntimeException(ex);
@@ -2341,7 +2341,7 @@ public class DBLogic implements LogicInterface {
 			// decide which delete function will be called
 			if (clearBasket) {
 				// clear all in basket
-				this.basketDBManager.deleteAllItems(this.loginUser.getName(), session);
+				this.clipboardDBManager.deleteAllItems(this.loginUser.getName(), session);
 			} else {
 				// delete specific post
 				for (final Post<? extends Resource> post : posts) {
@@ -2351,23 +2351,22 @@ public class DBLogic implements LogicInterface {
 					/*
 					 * get the content_id from the database
 					 */
-					post.setContentId(this.publicationDBManager.getContentIdForPost(post.getResource().getIntraHash(), post.getUser().getName(), session));
+					final Integer contentIdOfPost = this.publicationDBManager.getContentIdForPost(post.getResource().getIntraHash(), post.getUser().getName(), session);
+					if (!present(contentIdOfPost)) {
+						throw new ValidationException("Post not found. Can't remove post from basket.");
+					}
 					/*
 					 * delete the post from the user's basket
 					 */
-					this.basketDBManager.deleteItem(this.loginUser.getName(), post.getContentId(), session);
+					this.clipboardDBManager.deleteItem(this.loginUser.getName(), contentIdOfPost, session);
 				}
 			}
 
 			// get actual basketsize
-			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
-		} catch (final Exception ex) {
-			log.error(ex);
+			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
 		} finally {
 			session.close();
 		}
-
-		return 0;
 	}
 
 	/*
