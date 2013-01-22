@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Wrapper around our user object to make it available as UserDetails.
+ * User Details for users that are only authenticated remotely but do not exist locally
  * 
  * @author jensi
  * @version $Id$
