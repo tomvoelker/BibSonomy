@@ -34,6 +34,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.util.HashUtils;
 
 /**
@@ -237,6 +238,9 @@ public class UserUtils {
 		
 		existingUser.setOpenID(!present(updatedUser.getOpenID()) ? existingUser.getOpenID() : updatedUser.getOpenID());
 		existingUser.setLdapId(!present(updatedUser.getLdapId()) ? existingUser.getLdapId() : updatedUser.getLdapId());
+		for (RemoteUserId ruid : updatedUser.getRemoteUserIds()) {
+			existingUser.setRemoteUserId(ruid);
+		}
 		
 		existingUser.setSpammer(!present(updatedUser.getSpammer()) ? existingUser.getSpammer() : updatedUser.getSpammer());
 		
