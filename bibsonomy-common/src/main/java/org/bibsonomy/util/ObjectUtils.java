@@ -80,4 +80,33 @@ public class ObjectUtils {
 		}
 	}
 
+	/**
+	 * checks whether two objects are equal in a null-safe manner.
+	 * @param obj1
+	 * @param obj2
+	 * @return whether the objects are equal
+	 */
+	public static boolean equal(Object obj1, Object obj2) {
+		if (obj1 == obj2) {
+			return true;
+		}
+		if ((obj1 == null) || (obj2 == null)) {
+			return false;
+		}
+		return obj1.equals(obj2);
+	}
+	
+	/**
+	 * @param objs
+	 * @return a composite hashcode for all given objects
+	 */
+	public static int hashCode(Object... objs) {
+		int hashCode = 0;
+		for (Object obj : objs) {
+			if (obj != null) {
+				hashCode += obj.hashCode();
+			}
+		}
+		return hashCode;
+	}
 }
