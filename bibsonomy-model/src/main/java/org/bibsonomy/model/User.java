@@ -26,11 +26,18 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.user.remote.LdapRemoteUserId;
+import org.bibsonomy.model.user.remote.OpenIdRemoteUserId;
+import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
 import org.bibsonomy.util.UrlUtils;
 
 /**
@@ -200,12 +207,19 @@ public class User implements Serializable {
 	private String IPAddress;
 	/**
 	 * OpenID url for authentication
+	 * @deprecated use {@link #remoteUserIds}
 	 */
+	@Deprecated
 	private String openID;
 	/**
 	 * LDAP userId for authentication
+	 * @deprecated use {@link #remoteUserIds}
 	 */
+	@Deprecated
 	private String ldapId;
+	
+	/** userids of remote authentication systems such as saml, ldap, and openid */
+	private final Map<RemoteUserNameSpace, RemoteUserId> remoteUserIds = new HashMap<RemoteUserNameSpace, RemoteUserId>(2);
 	/**
 	 * The temporary password the user can request when asking for a password reminder.
 	 */
@@ -536,6 +550,7 @@ public class User implements Serializable {
 	 * @param openID
 	 */
 	public void setOpenID(final String openID) {
+		setRemoteUserId(new OpenIdRemoteUserId(openID));
 		this.openID = UrlUtils.normalizeURL(openID);
 	}
 
@@ -543,6 +558,7 @@ public class User implements Serializable {
 	 * @param ldapId
 	 */
 	public void setLdapId(final String ldapId) {
+		setRemoteUserId(new LdapRemoteUserId(ldapId));
 		this.ldapId = ldapId;
 	}
 
@@ -856,5 +872,19 @@ public class User implements Serializable {
 	public String toString() {
 		return name;
 	}
+
+	/**
+	 * @return the remoteUserIds
+	 */
+	public Collection<RemoteUserId> getRemoteUserIds() {
+		return this.remoteUserIds.values();
+	}
 	
+	/**
+	 * @param remoteId remote Id to be added
+	 * @return whether remoteId was already attached to this user
+	 */
+	public boolean setRemoteUserId(RemoteUserId remoteId) {
+		return (remoteUserIds.put(remoteId.getNameSpace(), remoteId) != null);
+	}
 }
