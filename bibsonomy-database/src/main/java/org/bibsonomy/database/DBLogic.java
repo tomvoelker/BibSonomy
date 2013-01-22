@@ -2311,12 +2311,12 @@ public class DBLogic implements LogicInterface {
 				}
 
 				/*
-				 * insert the post from the user's basket
+				 * insert the post from the user's clipboard
 				 */
 				this.clipboardDBManager.createItem(this.loginUser.getName(), copy.getContentId(), session);
 			}
 
-			// get actual basket size
+			// get actual clipboard size
 			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
 		} catch (final Exception ex) {
 			log.error(ex);
@@ -2340,20 +2340,20 @@ public class DBLogic implements LogicInterface {
 		try {
 			// decide which delete function will be called
 			if (clearBasket) {
-				// clear all in basket
+				// clear all in clipboard
 				this.clipboardDBManager.deleteAllItems(this.loginUser.getName(), session);
 			} else {
 				// delete specific post
 				for (final Post<? extends Resource> post : posts) {
 					if (post.getResource() instanceof Bookmark) {
-						throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
+						throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the clipboard");
 					}
 					/*
 					 * get the content_id from the database
 					 */
 					final Integer contentIdOfPost = this.publicationDBManager.getContentIdForPost(post.getResource().getIntraHash(), post.getUser().getName(), session);
 					if (!present(contentIdOfPost)) {
-						throw new ValidationException("Post not found. Can't remove post from basket.");
+						throw new ValidationException("Post not found. Can't remove post from clipboard.");
 					}
 					/*
 					 * delete the post from the user's basket
