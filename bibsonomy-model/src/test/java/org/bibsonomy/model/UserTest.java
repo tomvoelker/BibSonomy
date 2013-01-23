@@ -37,6 +37,8 @@ import org.bibsonomy.model.user.remote.LdapRemoteUserId;
 import org.bibsonomy.model.user.remote.OpenIdRemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.testutil.ModelUtils;
+import org.bibsonomy.model.user.remote.LdapRemoteUserId;
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.junit.Test;
 
 /**
@@ -190,5 +192,39 @@ public class UserTest {
 		Assert.assertEquals(openIdRIdFound, 1);
 		
 		Assert.assertEquals("http://huhu", srcUser.getOpenID());
+	}	
+	/*
+	 * FIXME: merge with testRemoteIds()
+	 * 
+	 */
+	@Test
+	public void RemoteUserIdTest() {
+		final User user = new User();
+		final String openID = "openID_id";
+		final String ldapId = "ldap_id";
+		user.setOpenID(openID);
+		user.setLdapId(ldapId);
+		assertEquals(2, user.getRemoteUserIds().size());
+		user.setLdapId(null);
+		assertEquals(1, user.getRemoteUserIds().size());
+		user.setRemoteUserId(new LdapRemoteUserId(ldapId));
+		assertEquals(2, user.getRemoteUserIds().size());
+		/*
+		 * This test currently fails since setting remoteUserIds has no impact on the 
+		 * simple attribute ldapId. (It works however vice versa).
+		 */
+		//assertEquals(ldapId, user.getLdapId());
+		final String indentityProviderId = "provider1";
+		final String userId = "u_id1_1";
+		user.setRemoteUserId(new SamlRemoteUserId(indentityProviderId, userId));
+		final String indentityProviderId2 = "provider2";
+		final String userId2 = "u_id2";
+		user.setRemoteUserId(new SamlRemoteUserId(indentityProviderId2, userId2));
+		final String userId3 = "u_id1_2";
+		user.setRemoteUserId(new SamlRemoteUserId(indentityProviderId, userId3));
+		assertEquals(4, user.getRemoteUserIds().size());
+		assertTrue(user.getRemoteUserIds().contains(new SamlRemoteUserId(indentityProviderId, userId3)));
+		
 	}
+	
 }
