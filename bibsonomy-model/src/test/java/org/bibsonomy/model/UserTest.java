@@ -136,6 +136,9 @@ public class UserTest {
 
 	}
 	
+	/**
+	 * Tests remote id setters and lists
+	 */
 	@Test
 	public void testRemoteIds() {
 		final User srcUser = ModelUtils.getUser();
