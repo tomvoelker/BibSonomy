@@ -13,6 +13,8 @@ public class SessionAuthenticationToken extends AbstractAuthenticationToken {
 	private static final long serialVersionUID = 1434519528252232694L;
 	
 	private final Object principal;
+
+	private Object creds = "";
 	
 	/**
 	 * builds a session authentication token
@@ -28,7 +30,14 @@ public class SessionAuthenticationToken extends AbstractAuthenticationToken {
 
 	@Override
 	public Object getCredentials() {
-		return "";
+		return creds;
+	}
+	
+	/**
+	 * @param creds the user credentials to be set
+	 */
+	public void setCreds(Object creds) {
+		this.creds = creds;
 	}
 
 	@Override

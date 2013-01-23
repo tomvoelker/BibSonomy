@@ -26,13 +26,6 @@ public class LoginUrlAuthenticationEntryPoint extends org.springframework.securi
 
 	@Override
 	protected String determineUrlToUseForThisRequest(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) {
-		if (exception instanceof SpecialAuthMethodRequiredException) {
-			String url = specialEntryPointUrls.get(exception.getMessage());
-			if (url != null) {
-				return url;
-			}
-		}
-		
 		final String urlToUse = super.determineUrlToUseForThisRequest(request, response, exception);
 		
 		/*
@@ -42,7 +35,12 @@ public class LoginUrlAuthenticationEntryPoint extends org.springframework.securi
 		if (exception.getCause() instanceof AccessDeniedNoticeException) {
 			final AccessDeniedNoticeException noticeException = (AccessDeniedNoticeException) exception.getCause();
 			return UrlUtils.setParam(urlToUse, NOTICE_PARAM_NAME, noticeException.getNotice());
-		}
+		} /* else if (exception.getCause() instanceof SpecialAuthMethodRequiredException) {
+			String url = specialEntryPointUrls.get(exception.getCause().getMessage());
+			if (url != null) {
+				return url;
+			}
+		}*/
 		
 		return urlToUse;
 	}

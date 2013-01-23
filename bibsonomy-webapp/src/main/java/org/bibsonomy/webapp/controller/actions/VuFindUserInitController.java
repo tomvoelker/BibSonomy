@@ -1,11 +1,18 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.common.enums.AuthMethod;
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.webapp.command.VuFindUserInitCommand;
 import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Issuer;
+import org.opensaml.saml2.core.NameID;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.saml.SAMLCredential;
 
 
 /**
@@ -28,7 +35,7 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 	@Override
 	public View workOn(VuFindUserInitCommand command) {
 		// TODO: check if there's already a logged in user. If so, then we might like to ask the user whether he likes to directly connect his remote authentication to this user account.
-		String remoteUserId = getRemoteUserId();
+		SamlRemoteUserId remoteUserId = getRemoteUserId();
 		if (remoteUserId == null) {
 			throw new SpecialAuthMethodRequiredException(AuthMethod.SAML);
 		}
@@ -42,21 +49,32 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		//   - if not: create one and add pair to the mapping
 		// - login user but without any "stay logged in" cookie
 		// automatically authorize via oauth (no extra button click)
+		// If there is a logged-in user who is not already connected to the remoteuserid ignore him and create a new one
 		return oaAuthorizeController.workOn(command);
 	}
 
-	protected String getRemoteUserId() {
-//		Object creds = SecurityContextHolder.getContext().getAuthentication().getCredentials();
-//		if (creds instanceof SAMLCredential == false) {
-//			return null;
-//		}
-//		SAMLCredential samlCred = (SAMLCredential) creds;
-//		NameID nid = samlCred.getNameID();
-//		if (nid == null) {
-//			return null;
-//		}
-//		return nid.getValue();
-		return "dummyUserId";
+	protected SamlRemoteUserId getRemoteUserId() {
+		SecurityContext ctx = SecurityContextHolder.getContext();
+		Object creds = ctx.getAuthentication().getCredentials();
+		if (creds instanceof SAMLCredential == false) {
+			return null;
+		}
+		SAMLCredential samlCred = (SAMLCredential) creds;
+		NameID nid = samlCred.getNameID();
+		if (nid == null) {
+			return null;
+		}
+		Assertion aa = samlCred.getAuthenticationAssertion();
+		if (aa == null) {
+			return null;
+		}
+		Issuer issuer = aa.getIssuer();
+		if (issuer == null) {
+			return null;
+		}
+		String idP = issuer.getValue();
+		return new SamlRemoteUserId(idP, nid.getValue());
+//		return "dummyUserId";
 	}
 
 	/**

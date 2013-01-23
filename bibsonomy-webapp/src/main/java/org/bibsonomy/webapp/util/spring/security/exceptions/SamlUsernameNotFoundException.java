@@ -1,0 +1,34 @@
+package org.bibsonomy.webapp.util.spring.security.exceptions;
+
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.saml.SAMLCredential;
+
+/**
+ * Signals that a user that was successfully authenticated using SAML was not
+ * found in the database. 
+ * 
+ * @author jensi
+ * @version $Id$
+ */
+public class SamlUsernameNotFoundException extends UsernameNotFoundException {
+	private static final long serialVersionUID = 317691533775866307L;
+	
+	private final SAMLCredential samlCreds;
+	
+	/**
+	 * @param msg
+	 * @param samlCreds credentials as received in the assertion from the idp
+	 */
+	public SamlUsernameNotFoundException(String msg, SAMLCredential samlCreds) {
+		super(msg);
+		this.samlCreds = samlCreds;
+	}
+
+	/**
+	 * @return the credentials from the SAML assertion message
+	 */
+	public SAMLCredential getSamlCreds() {
+		return this.samlCreds;
+	}
+
+}

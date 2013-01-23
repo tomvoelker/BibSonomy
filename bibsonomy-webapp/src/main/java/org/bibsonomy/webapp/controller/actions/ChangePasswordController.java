@@ -52,7 +52,7 @@ public class ChangePasswordController extends SettingsPageController implements 
 		 * someone tries to change his password 
 		 */
 		if (!this.authConfig.contains(AuthMethod.INTERNAL)) {
-			throw new RuntimeException("Changing the password is not possible."); 
+			throw new RuntimeException("Changing the password is not possible.");
 		}
 		
 		final RequestWrapperContext context = command.getContext();
@@ -81,6 +81,12 @@ public class ChangePasswordController extends SettingsPageController implements 
 			 * and thus shall not use the reminder
 			 */
 			errors.reject("error.settings.password.openid", "You are logged in using OpenID and thus don't have a password you could change.");
+		} else if (loginUser.getRemoteUserIds().size() > 0) {
+			/*
+			 * user exists and e-mail-address is fine but user has a remoteId
+			 * and thus shall not use the reminder
+			 */
+			errors.reject("error.settings.password.sso", "You are logged in using a single-sign-on service and thus don't have a password you could change.");
 		}
 		
 		/*

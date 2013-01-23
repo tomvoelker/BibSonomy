@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
@@ -32,6 +33,8 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 
 	@Deprecated
 	private static final String REQ_ATTRIB_USER = "user";
+
+	private static final String ATTRIBUTE_CREDS = "ATTRIBUTE_CREDS";
 	
 	/**
 	 * Delivers details for each given user.
@@ -49,6 +52,7 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 	public SecurityContext loadContext(final HttpRequestResponseHolder requestResponseHolder) {
 		final HttpServletRequest request = requestResponseHolder.getRequest();
 		final SecurityContextImpl securityContext = new SecurityContextImpl();
+		SessionAuthenticationToken authentication = null;
 		
 		final String username = getLoginUser(request);
 		if (present(username)) {
@@ -56,17 +60,25 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 			 * user name found in session -> get the corresponding user
 			 */
 			final UserDetails user = this.service.loadUserByUsername(username);
-			final Authentication authentication = new SessionAuthenticationToken(user, user.getAuthorities());
-			securityContext.setAuthentication(authentication);
-
+			authentication = new SessionAuthenticationToken(user, user.getAuthorities());
 			/*
 			 * For backwards compatibility, we add the user
 			 * as request attribute (used by old servlets and JSPs).
 			 * TODO: remove when all old jsp sites are ported to the new spring system
 			 */
 			request.setAttribute(REQ_ATTRIB_USER, ((UserAdapter)user).getUser());
+			
 		}
-		
+		final Object creds = getSessionAttribute(request, ATTRIBUTE_CREDS);
+		if (creds != null) {
+			if (authentication == null) {
+				authentication = new SessionAuthenticationToken(null, null);
+			}
+			authentication.setCreds(creds);
+		}
+		if (authentication != null) {
+			securityContext.setAuthentication(authentication);
+		}
 		return securityContext;
 	}
 	
@@ -89,13 +101,20 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 	 * @return
 	 */
 	private static String getLoginUser(final HttpServletRequest request) {
-		final HttpSession session = request.getSession();
+		return (String) getSessionAttribute(request, ATTRIBUTE_LOGIN_USER_NAME);
+	}
+
+
+	private static Object getSessionAttribute(final HttpServletRequest request, String attr) {
+		final HttpSession session = request.getSession(false);
 		if (session == null) {
 			return null;
 		}
 		
-		return (String) session.getAttribute(ATTRIBUTE_LOGIN_USER_NAME);
+		return session.getAttribute(attr);
 	}
+	
+	
 	
 	private void setLoginUser(final HttpServletRequest request, final Authentication authentication) {
 		if (this.authenticationTrustResolver.isAnonymous(authentication)) {
@@ -111,10 +130,22 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 		 * 
 		 */
 		if (present(authentication)) {
-			final UserDetails user = (UserDetails) authentication.getPrincipal();
-			final String loginUsername = user.getUsername();
-			final HttpSession session = request.getSession(true);
-			session.setAttribute(ATTRIBUTE_LOGIN_USER_NAME, loginUsername);
+			Object principal = authentication.getPrincipal();
+			if (principal instanceof UserDetails) {
+				final UserDetails user = (UserDetails) principal;
+				final String loginUsername = user.getUsername();
+				final HttpSession session = request.getSession(true);
+				session.setAttribute(ATTRIBUTE_LOGIN_USER_NAME, loginUsername);
+			} else {
+				final HttpSession session = request.getSession(false);
+				if (session != null) {
+					session.removeAttribute(ATTRIBUTE_LOGIN_USER_NAME);
+				}
+			}
+			Object creds = authentication.getCredentials();
+			if (creds instanceof SAMLCredential) {
+				request.getSession(true).setAttribute(ATTRIBUTE_CREDS, creds);
+			}
 		}
 	}
 	

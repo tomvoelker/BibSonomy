@@ -127,6 +127,12 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 			 * and thus shall not use the reminder
 			 */
 			errors.reject("error.passReminder.openid", "You are registered using OpenID and thus don't have a password we could send you a reminder for.");
+		} else if (existingUser.getRemoteUserIds().size() > 0) {
+			/*
+			 * user exists and e-mail-address is fine but user has a remoteId
+			 * and thus shall not use the reminder
+			 */
+			errors.reject("error.passReminder.sso", "You are registered using a single-sign-on service and thus don't have a password we could send you a reminder for.");
 		}
 
 		/*

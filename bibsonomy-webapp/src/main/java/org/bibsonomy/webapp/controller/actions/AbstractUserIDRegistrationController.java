@@ -8,6 +8,9 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.user.remote.LdapRemoteUserId;
+import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
@@ -247,7 +250,14 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 				} else if (tryCount == 100) {
 					// now use first character of fore- and first two characters of surename concatenated with user id 
 					// bugs bunny => bbu01234567
-					newName = cleanUserName(newName.substring(0, 3).concat(user.getLdapId() == null ? user.getOpenID() : user.getLdapId()));
+					String remoteUserId = "";
+					for (RemoteUserId rId : user.getRemoteUserIds()) {
+						// historically ldapId has precedence
+						if ((ValidationUtils.present(remoteUserId) == false) || (rId instanceof LdapRemoteUserId)) {
+							remoteUserId = rId.getSimpleId();
+						}
+					}
+					newName = cleanUserName(newName.substring(0, 3).concat(remoteUserId));
 				} else {
 					// try first character of forename concatenated with surename concatenated with current number
 					// bugs bunny => bbunnyX where X is between 1 and 9
