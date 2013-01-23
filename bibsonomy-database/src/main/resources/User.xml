@@ -110,6 +110,11 @@
 	<insert id="insertLdapUser" parameterClass="user">
 		INSERT INTO ldapUser 
 		VALUES (#name#, #ldapId#, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<insert id="insertSamlUser" parameterClass="SamlRemoteUserParam">
+		INSERT INTO remoteUser
+		VALUES (#remoteId.userId#, #user.name#, #remoteId.identityProviderId#)
 	</insert>	
 
 	<delete id="deleteUser" parameterClass="string">
@@ -127,7 +132,11 @@
 	<delete id="deleteLdapUser" parameterClass="string">
 		DELETE FROM ldapUser WHERE user_name = #userName#
 	</delete>	
-
+	
+	<delete id="deleteSamlUser" parameterClass="string">
+		DELETE FROM remoteUser WHERE user_name = #userName# AND id
+	</delete>
+	
 	<select id="getOpenIDUser" resultClass="string" parameterClass="string"> 
 		SELECT user_name FROM openIDUser WHERE openID = #openID#
 	</select>

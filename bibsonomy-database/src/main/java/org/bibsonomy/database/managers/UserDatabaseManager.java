@@ -13,7 +13,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
-import org.bibsonomy.database.params.RemoteUserParam;
+import org.bibsonomy.database.params.SamlRemoteUserParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
@@ -316,14 +316,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	public void insertRemoteUserId(User user, RemoteUserId ruid, final DBSession session) {
 		if (ruid instanceof SamlRemoteUserId) {
-			this.insertSamlUserId(new RemoteUserParam(user, ruid), session);
+			this.insertSamlUserId(new SamlRemoteUserParam(user, ruid), session);
 		}
 		// maybe handle other remote stuff here also
 	}
 
-	public void insertSamlUserId(RemoteUserParam remoteUserParam, DBSession session) {
-		// TODO: implement in sqlmap:
-		// this.insert("insertSamlUser", remoteUserParam, session);
+	public void insertSamlUserId(SamlRemoteUserParam remoteUserParam, DBSession session) {
+		this.insert("insertSamlUser", remoteUserParam, session);
 	}
 
 	/**
@@ -579,6 +578,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public String getOpenIDUser(final String openID, final DBSession session) {
 		return this.queryForObject("getOpenIDUser", openID, String.class, session);
+	}
+	
+	public String getRemoteUser(final String remoteID, final DBSession session) {
+		return this.queryForObject("getRemoteUser", remoteID, String.class, session);
 	}
 	
 	/**

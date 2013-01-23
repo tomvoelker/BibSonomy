@@ -9,9 +9,9 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author jensi
  * @version $Id$
  */
-public class RemoteUserParam {
-	private RemoteUserId remoteId;
-	private User user;
+public abstract class RemoteUserParam<T extends RemoteUserId> {
+	protected T remoteId;
+	protected User user;
 
 	/**
 	 * default constructor
@@ -24,7 +24,7 @@ public class RemoteUserParam {
 	 * @param user
 	 * @param remoteId
 	 */
-	public RemoteUserParam(User user, RemoteUserId remoteId) {
+	public RemoteUserParam(User user, T remoteId) {
 		this.user = user;
 		this.remoteId = remoteId;
 	}
@@ -32,7 +32,7 @@ public class RemoteUserParam {
 	/**
 	 * @return the remoteId
 	 */
-	public RemoteUserId getRemoteId() {
+	public T getRemoteId() {
 		return this.remoteId;
 	}
 
@@ -46,7 +46,7 @@ public class RemoteUserParam {
 	/**
 	 * @param remoteId the remoteId to set
 	 */
-	public void setRemoteId(RemoteUserId remoteId) {
+	public void setRemoteId(final T remoteId) {
 		this.remoteId = remoteId;
 	}
 
