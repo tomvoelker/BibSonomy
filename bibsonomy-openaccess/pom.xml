@@ -59,6 +59,13 @@
 			<groupId>sword</groupId>
 			<artifactId>sword-common</artifactId>
 			<version>1.1</version>
+			<exclusions>
+				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven ) -->
+				<exclusion>
+					<artifactId>xmlParserAPIs</artifactId>
+					<groupId>xerces</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
