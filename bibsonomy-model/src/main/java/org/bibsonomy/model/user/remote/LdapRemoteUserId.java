@@ -9,8 +9,9 @@ public class LdapRemoteUserId extends SimpleRemoteUserId {
 
 	/**
 	 * default constructor
+	 * do not use - currently RemoteUSer Stuff is only working for SAML
 	 */
-	public LdapRemoteUserId() {
+	protected LdapRemoteUserId() {
 		super();
 	}
 
@@ -19,7 +20,7 @@ public class LdapRemoteUserId extends SimpleRemoteUserId {
 	 * 
 	 * @param remoteUserId
 	 */
-	public LdapRemoteUserId(String remoteUserId) {
+	protected LdapRemoteUserId(String remoteUserId) {
 		super(remoteUserId);
 	}
 }

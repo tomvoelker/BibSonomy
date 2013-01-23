@@ -9,17 +9,19 @@ public class OpenIdRemoteUserId extends SimpleRemoteUserId {
 
 	/**
 	 * default constructor
+	 * do not use - currently RemoteUSer Stuff is only working for SAML
 	 */
-	public OpenIdRemoteUserId() {
+	protected OpenIdRemoteUserId() {
 		super();
 	}
 
 	/**
 	 * handy constructor
+	 * do not use - currently RemoteUSer Stuff is only working for SAML
 	 * 
 	 * @param remoteUserId
 	 */
-	public OpenIdRemoteUserId(String remoteUserId) {
+	protected OpenIdRemoteUserId(String remoteUserId) {
 		super(remoteUserId);
 	}
 }

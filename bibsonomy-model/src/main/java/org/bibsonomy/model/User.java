@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.model.user.remote.LdapRemoteUserId;
-import org.bibsonomy.model.user.remote.OpenIdRemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
 import org.bibsonomy.util.UrlUtils;
@@ -207,15 +205,11 @@ public class User implements Serializable {
 	private String IPAddress;
 	/**
 	 * OpenID url for authentication
-	 * @deprecated use {@link #remoteUserIds}
 	 */
-	@Deprecated
 	private String openID;
 	/**
 	 * LDAP userId for authentication
-	 * @deprecated use {@link #remoteUserIds}
 	 */
-	@Deprecated
 	private String ldapId;
 	
 	/** userids of remote authentication systems such as saml, ldap, and openid */
@@ -551,11 +545,11 @@ public class User implements Serializable {
 	 */
 	public void setOpenID(final String openID) {
 		this.openID = UrlUtils.normalizeURL(openID);
-		if (openID == null) {
-			remoteUserIds.remove(new OpenIdRemoteUserId("").getNameSpace());
-			return;
-		}
-		setRemoteUserId(new OpenIdRemoteUserId(this.openID));
+//		if (openID == null) {
+//			remoteUserIds.remove(new OpenIdRemoteUserId("").getNameSpace());
+//			return;
+//		}
+//		setRemoteUserId(new OpenIdRemoteUserId(this.openID));
 	}
 
 	/**
@@ -563,11 +557,11 @@ public class User implements Serializable {
 	 */
 	public void setLdapId(final String ldapId) {
 		this.ldapId = ldapId;
-		if (ldapId == null) {
-			remoteUserIds.remove(new LdapRemoteUserId("").getNameSpace());
-			return;
-		}
-		setRemoteUserId(new LdapRemoteUserId(ldapId));
+//		if (ldapId == null) {
+//			remoteUserIds.remove(new LdapRemoteUserId("").getNameSpace());
+//			return;
+//		}
+//		setRemoteUserId(new LdapRemoteUserId(ldapId));
 	}
 
 	/**
@@ -882,14 +876,14 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return the remoteUserIds
+	 * @return the remoteUserIds - currently only SAML is supported via this property
 	 */
 	public Collection<RemoteUserId> getRemoteUserIds() {
 		return this.remoteUserIds.values();
 	}
 	
 	/**
-	 * @param remoteId remote Id to be added
+	 * @param remoteId remote Id to be added  - currently only SAML is supported via this property
 	 * @return whether remoteId was already attached to this user
 	 */
 	public boolean setRemoteUserId(RemoteUserId remoteId) {
