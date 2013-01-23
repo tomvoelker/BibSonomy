@@ -550,24 +550,24 @@ public class User implements Serializable {
 	 * @param openID
 	 */
 	public void setOpenID(final String openID) {
+		this.openID = UrlUtils.normalizeURL(openID);
 		if (openID == null) {
 			remoteUserIds.remove(new OpenIdRemoteUserId("").getNameSpace());
 			return;
 		}
-		setRemoteUserId(new OpenIdRemoteUserId(openID));
-		this.openID = UrlUtils.normalizeURL(openID);
+		setRemoteUserId(new OpenIdRemoteUserId(this.openID));
 	}
 
 	/**
 	 * @param ldapId
 	 */
 	public void setLdapId(final String ldapId) {
+		this.ldapId = ldapId;
 		if (ldapId == null) {
 			remoteUserIds.remove(new LdapRemoteUserId("").getNameSpace());
 			return;
 		}
 		setRemoteUserId(new LdapRemoteUserId(ldapId));
-		this.ldapId = ldapId;
 	}
 
 	/**
