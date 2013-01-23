@@ -60,8 +60,11 @@ public class SamlRemoteUserId implements RemoteUserId {
 		if (obj == null) {
 			return false;
 		}
+		if (!this.getClass().equals(obj.getClass())) {
+			return false;
+		}
 		SamlRemoteUserId other = (SamlRemoteUserId) obj;
-		return ((ObjectUtils.equal(this.identityProviderId, other.identityProviderId) == true) || (ObjectUtils.equal(this.userId, other.userId) == true));
+		return ((ObjectUtils.equal(this.identityProviderId, other.identityProviderId) == true) && (ObjectUtils.equal(this.userId, other.userId) == true));
 	}
 	
 	@Override
