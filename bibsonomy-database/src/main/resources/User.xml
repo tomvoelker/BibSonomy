@@ -146,7 +146,7 @@
 	</select>
 	
 	<select id="getUsernameByRemoteId" resultClass="string" parameterClass="SamlRemoteUserParam">
-		SELECT user_name FROM remoteuser WHERE remote_id = #remoteId.userId AND identity_provider = #remoteId.identityProviderId#
+		SELECT user_name FROM remoteuser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
 	</select>	
 
 	<select id="getUserSettings" resultMap="UserCommon.userSettings" parameterClass="userParam">
