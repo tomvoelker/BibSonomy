@@ -93,6 +93,7 @@ public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 		}
 
 		// If user clicked on the Authorize button then we're good.
+		// TODO: check if it is possible to create a link that silently authorizes a requesttoken (that would probably be bad)
 		if (AuthorizeAction.Authorize.toString().equals(command.getAuthorizeAction())) {
 			log.debug("Authorizing token '" + entry.getToken() + "' for user '" + loginUser.getName() + "'");
 			
