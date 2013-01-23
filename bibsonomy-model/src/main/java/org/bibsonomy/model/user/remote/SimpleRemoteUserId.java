@@ -22,7 +22,7 @@ public class SimpleRemoteUserId implements RemoteUserId {
 	 * @param remoteUserId
 	 */
 	public SimpleRemoteUserId(String remoteUserId) {
-		ValidationUtils.assertTrue(ValidationUtils.present(remoteUserId));
+		ValidationUtils.assertTrue(remoteUserId != null);
 		this.remoteUserId = remoteUserId;
 	}
 	
