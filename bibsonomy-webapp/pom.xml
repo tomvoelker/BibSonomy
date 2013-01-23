@@ -399,6 +399,11 @@
 					<artifactId>pull-parser</artifactId>
 					<groupId>pull-parser</groupId>
 				</exclusion>
+				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven ) -->
+				<exclusion>
+					<artifactId>xmlParserAPIs</artifactId>
+					<groupId>xerces</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -521,6 +526,11 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-wiki</artifactId>
+		</dependency>
+		<dependency>
+		<groupId>org.springframework.security.extensions</groupId>
+			<artifactId>spring-security-saml2-core</artifactId>
+			<version>1.0.0-RC1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
