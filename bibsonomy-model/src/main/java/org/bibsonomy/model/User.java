@@ -550,6 +550,10 @@ public class User implements Serializable {
 	 * @param openID
 	 */
 	public void setOpenID(final String openID) {
+		if (openID == null) {
+			remoteUserIds.remove(new OpenIdRemoteUserId("").getNameSpace());
+			return;
+		}
 		setRemoteUserId(new OpenIdRemoteUserId(openID));
 		this.openID = UrlUtils.normalizeURL(openID);
 	}
@@ -558,6 +562,10 @@ public class User implements Serializable {
 	 * @param ldapId
 	 */
 	public void setLdapId(final String ldapId) {
+		if (ldapId == null) {
+			remoteUserIds.remove(new LdapRemoteUserId("").getNameSpace());
+			return;
+		}
 		setRemoteUserId(new LdapRemoteUserId(ldapId));
 		this.ldapId = ldapId;
 	}
