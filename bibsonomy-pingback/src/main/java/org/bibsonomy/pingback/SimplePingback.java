@@ -147,7 +147,7 @@ public class SimplePingback implements Pingback {
 		this.linkLoader = linkLoader;
 	}
 
-	@Required
+	//@Required
 	public void setTrackbackClient(PingbackClient trackbackClient) {
 		this.trackbackClient = trackbackClient;
 	}
