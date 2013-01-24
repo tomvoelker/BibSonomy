@@ -28,6 +28,7 @@
 	<typeAlias alias="statisticsValues" type="org.bibsonomy.model.statistics.StatisticsValues" />
 	<typeAlias alias="statistics"				type="org.bibsonomy.model.statistics.Statistics" />
 	<typeAlias alias="personNameList"				type="java.util.List" />
+	<typeAlias alias="samlRemoteUserId"    type="org.bibsonomy.model.user.remote.SamlRemoteUserId" />
 	
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />

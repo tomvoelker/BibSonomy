@@ -114,6 +114,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 */
 		user.setSettings(this.getUserSettings(lowerCaseUsername, session));
 		
+		//ToDo - Replace this with a more Generic Version
+		for(SamlRemoteUserId remoteUserId : this.getRemoteUserIds(user.getName(), session)) {
+			user.setRemoteUserId(remoteUserId);
+		}
+		
 		return user;
 	}
 	
@@ -324,23 +329,27 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (remoteUserId instanceof SamlRemoteUserId) {
 			this.insertSamlUserId(new SamlRemoteUserParam(user, remoteUserId), session);
 		}
-//		else if (remoteUserId instanceof OpenIdRemoteUserId) {
-//			this.insertOpenIdUserId(new OpenIdRemoteUserParam(user, remoteUserId), session);
-//		}
-//		else if (remoteUserId instanceof LdapRemoteUserId) {
-//			this.insertLdapUserId(new LdapRemoteUserParam(user, remoteUserId), session);
-//		}
+		/*
+		else if (remoteUserId instanceof OpenIdRemoteUserId) {
+			this.insertOpenIdUserId(new OpenIdRemoteUserParam(user, remoteUserId), session);
+		}
+		else if (remoteUserId instanceof LdapRemoteUserId) {
+			this.insertLdapUserId(new LdapRemoteUserParam(user, remoteUserId), session);
+		}
+		*/
 	}
 
 	private void insertSamlUserId(SamlRemoteUserParam remoteUserParam, DBSession session) {
 		this.insert("insertSamlUserId", remoteUserParam, session);
 	}
-//	private void insertOpenIdUserId(OpenIdRemoteUserParam remoteUserParam, DBSession session) {
-//		this.insert("insertOpenIdUserId", remoteUserParam, session);
-//	}
-//	private void insertLdapUserId(LdapRemoteUserParam remoteUserParam, DBSession session) {
-//		this.insert("insertLdapUserId", remoteUserParam, session);
-//	}
+	/*
+	private void insertOpenIdUserId(OpenIdRemoteUserParam remoteUserParam, DBSession session) {
+		this.insert("insertOpenIdUserId", remoteUserParam, session);
+	}
+	private void insertLdapUserId(LdapRemoteUserParam remoteUserParam, DBSession session) {
+		this.insert("insertLdapUserId", remoteUserParam, session);
+	}
+	*/
 	
 	/**
 	 * Deletes a remoteUserId from remoteuser table
@@ -351,23 +360,27 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (remoteUserId instanceof SamlRemoteUserId) {
 			this.deleteSamlUserId(new SamlRemoteUserParam(null, remoteUserId), session);
 		}
-//		else if (remoteUserId instanceof OpenIdRemoteUserId) {
-//			this.deleteOpenIdUserId(new OpenIdRemoteUserParam(null, remoteUserId), session);
-//		}
-//		else if (remoteUserId instanceof LdapRemoteUserId) {
-//			this.deleteLdapUserId(new LdapRemoteUserParam(null, remoteUserId), session);
-//		}
+		/*
+		else if (remoteUserId instanceof OpenIdRemoteUserId) {
+			this.deleteOpenIdUserId(new OpenIdRemoteUserParam(null, remoteUserId), session);
+		}
+		else if (remoteUserId instanceof LdapRemoteUserId) {
+			this.deleteLdapUserId(new LdapRemoteUserParam(null, remoteUserId), session);
+		}
+		*/
 	}
 	
 	private void deleteSamlUserId(SamlRemoteUserParam remoteUserParam, DBSession session) {
 		this.delete("deleteSamlUserId", remoteUserParam, session);
 	}
-//	private void deleteOpenIdUserId(OpenIdRemoteUserParam remoteUserParam, DBSession session) {
-//		this.delete("deleteOpenIdUserId", remoteUserParam, session);
-//	}
-//	private void deleteLdapUserId(LdapRemoteUserParam remoteUserParam, DBSession session) {
-//		this.delete("deleteLdapUserId", remoteUserParam, session);
-//	}
+	/*
+	private void deleteOpenIdUserId(OpenIdRemoteUserParam remoteUserParam, DBSession session) {
+		this.delete("deleteOpenIdUserId", remoteUserParam, session);
+	}
+	private void deleteLdapUserId(LdapRemoteUserParam remoteUserParam, DBSession session) {
+		this.delete("deleteLdapUserId", remoteUserParam, session);
+	}
+	*/
 	
 	/**
 	 * Deletes all RemoteUserIds from remoteuser table for the given userName
@@ -535,7 +548,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 */
 			this.deleteLdapUserId(user.getName(), session);
 			this.deleteOpenIDUser(user.getName(), session);
-			
+			//Delete RemoteUserId
+			this.deleteRemoteUser(user.getName(), session);
 			/*
 			 * flag user as spammer & all his posts as spam
 			 */
@@ -649,13 +663,25 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (remoteUserId instanceof SamlRemoteUserId) {
 			return this.queryForObject("getUsernameBySamlRemoteUserId", new SamlRemoteUserParam(null, remoteUserId), String.class, session);
 		}
-//		else if (remoteUserId instanceof OpenIdRemoteUserId) {
-//			return this.queryForObject("getUsernameByOpenIdRemoteUserId", new OpenIdRemoteUserParam(null, remoteUserId), String.class, session);
-//		}
-//		else if (remoteUserId instanceof LdapRemoteUserId) {
-//			return this.queryForObject("getUsernameByLdapRemoteUserId", new LdapRemoteUserParam(null, remoteUserId), String.class, session);
-//		}
+		/*
+		else if (remoteUserId instanceof OpenIdRemoteUserId) {
+			return this.queryForObject("getUsernameByOpenIdRemoteUserId", new OpenIdRemoteUserParam(null, remoteUserId), String.class, session);
+		}
+		else if (remoteUserId instanceof LdapRemoteUserId) {
+			return this.queryForObject("getUsernameByLdapRemoteUserId", new LdapRemoteUserParam(null, remoteUserId), String.class, session);
+		}
+		*/
 		return null;
+	}
+	
+	/**
+	 * ToDo - Make this a more generic Method
+	 * @param userName
+	 * @param session
+	 * @return List<RemoteUserParam>
+	 */
+	private List<SamlRemoteUserId> getRemoteUserIds(final String userName, final DBSession session) {
+		return this.queryForList("getRemoteUserIds", userName, SamlRemoteUserId.class, session);
 	}
 	
 	/**

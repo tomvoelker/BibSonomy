@@ -37,6 +37,11 @@
 		<result property="openID" 			column="openID"  		javaType="string" />			
 	</resultMap>
 	
+	<resultMap id="samlRemoteUserId" class="samlRemoteUserId">
+		<result property="userId"			column="remote_id"		javaType="string" />
+		<result property="identityProviderId"	column="identity_provider"	javaType="string" />
+	</resultMap>
+	
 	<resultMap id="userWithActivationCode"  class="user" extends="user"> 
 		<result property="activationCode"   column="activation_code" javaType="string" />
 	</resultMap>

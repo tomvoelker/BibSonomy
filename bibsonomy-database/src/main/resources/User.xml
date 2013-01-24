@@ -101,12 +101,11 @@
 		  WHERE user_name = #name#
 	</update>
 	
-	
 	<insert id="insertOpenIDUser" parameterClass="user">
 		INSERT INTO openIDUser 
 		VALUES (#name#, #openID#)
 	</insert>	
-
+	
 	<insert id="insertLdapUser" parameterClass="user">
 		INSERT INTO ldapUser 
 		VALUES (#name#, #ldapId#, CURRENT_TIMESTAMP)
@@ -114,19 +113,8 @@
 	
 	<insert id="insertSamlUserId" parameterClass="SamlRemoteUserParam">
 		INSERT INTO remoteUser
-		VALUES (#remoteId.userId#, #user.name#, #remoteId.identityProviderId#)
+		VALUES (#user.name#, #remoteId.userId#, #remoteId.identityProviderId#)
 	</insert>
-	<!-- 
-	<insert id="insertOpenIdUserId" parameterClass="OpenIdRemoteUserParam">
-		INSERT INTO remoteUser
-		VALUES (#remoteId.userId#, #user.name#, #remoteId.identityProviderId#)
-	</insert>
-	
-	<insert id="insertLdapUserId" parameterClass="LdapRemoteUserParam">
-		INSERT INTO remoteUser
-		VALUES (#remoteId.userId#, #user.name#, #remoteId.identityProviderId#)
-	</insert>
-	 -->	
 
 	<delete id="deleteUser" parameterClass="string">
 		DELETE FROM user WHERE user_name = #userName#
@@ -147,15 +135,6 @@
 	<delete id="deleteSamlUserId" parameterClass="SamlRemoteUserParam">
 		DELETE FROM remoteUser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
 	</delete>
-	<!-- 
-	<delete id="deleteOpenIdUserId" parameterClass="OpenIdRemoteUserParam">
-		DELETE FROM remoteUser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
-	</delete>
-	
-	<delete id="deleteLdapUserId" parameterClass="LdapRemoteUserParam">
-		DELETE FROM remoteUser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
-	</delete>
-	 -->
 	
 	<delete id="deleteRemoteUser" parameterClass="string">
 		DELETE FROM remoteUser WHERE user_name = #userName#
@@ -170,17 +149,14 @@
 	</select>
 	
 	<select id="getUsernameBySamlRemoteUserId" resultClass="string" parameterClass="SamlRemoteUserParam">
-		SELECT user_name FROM remoteuser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
-	</select>
-	<!-- 
-	<select id="getUsernameByOpenIdRemoteUserId" resultClass="string" parameterClass="OpenIdRemoteUserParam">
-		SELECT user_name FROM remoteuser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
+		SELECT user_name FROM remoteUser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
 	</select>
 	
-	<select id="getUsernameByLdapRemoteUserId" resultClass="string" parameterClass="LdapRemoteUserParam">
-		SELECT user_name FROM remoteuser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
+	<select id="getRemoteUserIds" resultMap="UserCommon.samlRemoteUserId" parameterClass="string">
+		SELECT remote_id, identity_provider
+		FROM remoteUser
+		WHERE user_name = #userName#
 	</select>
-	 -->
 
 	<select id="getUserSettings" resultMap="UserCommon.userSettings" parameterClass="userParam">
 		SELECT <include refid="userSettingsAttributes"/>
