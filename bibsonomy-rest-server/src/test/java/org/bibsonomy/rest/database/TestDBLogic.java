@@ -51,6 +51,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.junit.Ignore;
 
 /**
@@ -1077,6 +1078,11 @@ public class TestDBLogic implements LogicInterface {
 	@Override
 	public List<SyncService> getAllSyncServices(final boolean server) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId) {
 		return null;
 	}
 }
