@@ -52,6 +52,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.sync.SyncLogicInterface;
+import org.bibsonomy.model.user.remote.RemoteUserId;
 
 /**
  * This interface is an adapter to BibSonomy's core functionality. <br/>
@@ -525,7 +526,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param remoteUserId
 	 * @return username
 	 */
-	//public String getUsernameByRemoteUserId(RemoteUserId remoteUserId);
+	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId);
 	
 	/**
 	 * Create an extended field for a publication
