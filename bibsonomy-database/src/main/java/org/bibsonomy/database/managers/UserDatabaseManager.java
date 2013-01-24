@@ -292,7 +292,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.checkUser(user, session);
 		
 		/** no email validation for remote users (openid/ldap/saml) */
-		if (user.getRemoteUserIds().size() > 0) {
+		if (present(user.getOpenID()) || present(user.getLdapId()) || (user.getRemoteUserIds().size() > 0)) {
 		    this.insert("insertUser", user, session);
 		} else {
 		    this.insert("insertPendingUser", user, session);
