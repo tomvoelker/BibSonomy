@@ -64,7 +64,7 @@ public class SamlRemoteUserId implements RemoteUserId {
 			return false;
 		}
 		SamlRemoteUserId other = (SamlRemoteUserId) obj;
-		return ((ObjectUtils.equal(this.identityProviderId, other.identityProviderId) == true) && (ObjectUtils.equal(this.userId, other.userId) == true));
+		return (ObjectUtils.equal(this.identityProviderId, other.identityProviderId) && ObjectUtils.equal(this.userId, other.userId) );
 	}
 	
 	@Override
@@ -94,11 +94,11 @@ public class SamlRemoteUserId implements RemoteUserId {
 		
 		@Override
 		public boolean equals(Object obj) {
-			if ((obj instanceof NameSpace) == false) {
+			if (!(obj instanceof NameSpace)) {
 				return false;
 			}
 			NameSpace other = (NameSpace) obj;
-			if (ruid.getClass().equals(other.ruid.getClass()) == false) {
+			if (! ruid.getClass().equals(other.ruid.getClass())) {
 				return false;
 			}
 			return ObjectUtils.equal(ruid.identityProviderId, other.ruid.identityProviderId);
