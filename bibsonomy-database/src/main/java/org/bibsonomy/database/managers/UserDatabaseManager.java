@@ -13,7 +13,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
-import org.bibsonomy.database.params.SamlRemoteUserParam;
+import org.bibsonomy.database.params.SamlUserParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
@@ -114,9 +114,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 */
 		user.setSettings(this.getUserSettings(lowerCaseUsername, session));
 		
-		//ToDo - Replace this with a more Generic Version
-		for(SamlRemoteUserId remoteUserId : this.getRemoteUserIds(user.getName(), session)) {
-			user.setRemoteUserId(remoteUserId);
+		/*
+		 * ToDo - Replace this with a more Generic Version
+		 * This fetches all SamlRemoteUserIds (LDAP and OpenId are already fetched through a join with the respective tables in "getUserDetails")
+		 * FIXME: Use another join in getUserDetails (or enable this query only if Saml Authentification is active) 
+		 */
+		for(SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
+			user.setRemoteUserId(samlRemoteUserId);
 		}
 		
 		return user;
@@ -292,7 +296,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		
 		this.checkUser(user, session);
 		
-		/** no email validation for remote users (openid/ldap/saml) */
+		/** no email validation for openid/ldap/remoteId(currently only saml) users */
 		if (present(user.getOpenID()) || present(user.getLdapId()) || (user.getRemoteUserIds().size() > 0)) {
 		    this.insert("insertUser", user, session);
 		} else {
@@ -313,6 +317,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			this.insertLdapUserId(user, session);
 		}
 		
+		/*
+		 * insert remote UserIds of user in separate table if present (currently only saml)
+		 */
 		for (RemoteUserId ruid : user.getRemoteUserIds()) {
 			this.insertRemoteUserId(user, ruid, session);
 		}
@@ -320,14 +327,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Inserts a user to remoteuser table
+	 * Inserts a user to a remoteUser table (at present only samlRemoteUserIds are handled)
 	 * @param user
 	 * @param remoteUserId
 	 * @param session
 	 */
 	private void insertRemoteUserId(User user, RemoteUserId remoteUserId, final DBSession session) {
 		if (remoteUserId instanceof SamlRemoteUserId) {
-			this.insertSamlUserId(new SamlRemoteUserParam(user, remoteUserId), session);
+			this.insertSamlUserId(new SamlUserParam(user, (SamlRemoteUserId)remoteUserId), session);
+		} else {
+			throw new IllegalArgumentException("Only SamlRemoteUserIds can be inserted!");
 		}
 		/*
 		else if (remoteUserId instanceof OpenIdRemoteUserId) {
@@ -339,8 +348,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		*/
 	}
 
-	private void insertSamlUserId(SamlRemoteUserParam remoteUserParam, DBSession session) {
-		this.insert("insertSamlUserId", remoteUserParam, session);
+	private void insertSamlUserId(SamlUserParam samlRemoteUserParam, DBSession session) {
+		this.insert("insertSamlUserId", samlRemoteUserParam, session);
 	}
 	/*
 	private void insertOpenIdUserId(OpenIdRemoteUserParam remoteUserParam, DBSession session) {
@@ -352,13 +361,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	*/
 	
 	/**
-	 * Deletes a remoteUserId from remoteuser table
-	 * @param remoteUserId
+	 * Deletes a remoteUserId from remoteUser tables (at present only samlremoteUserids are handled)
+	 * @param samlRemoteUserId
 	 * @param session
 	 */
-	public void deleteRemoteUserId(RemoteUserId remoteUserId, DBSession session) {
-		if (remoteUserId instanceof SamlRemoteUserId) {
-			this.deleteSamlUserId(new SamlRemoteUserParam(null, remoteUserId), session);
+	public void deleteRemoteUserId(RemoteUserId samlRemoteUserId, DBSession session) {
+		if (samlRemoteUserId instanceof SamlRemoteUserId) {
+			this.deleteSamlUserId(new SamlUserParam(null, (SamlRemoteUserId)samlRemoteUserId), session);
+		} else {
+			throw new IllegalArgumentException("Only SamlRemoteUserIds can be deleted!");
 		}
 		/*
 		else if (remoteUserId instanceof OpenIdRemoteUserId) {
@@ -370,8 +381,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		*/
 	}
 	
-	private void deleteSamlUserId(SamlRemoteUserParam remoteUserParam, DBSession session) {
-		this.delete("deleteSamlUserId", remoteUserParam, session);
+	private void deleteSamlUserId(SamlUserParam samlUserParam, DBSession session) {
+		this.delete("deleteSamlUserId", samlUserParam, session);
 	}
 	/*
 	private void deleteOpenIdUserId(OpenIdRemoteUserParam remoteUserParam, DBSession session) {
@@ -383,12 +394,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	*/
 	
 	/**
-	 * Deletes all RemoteUserIds from remoteuser table for the given userName
+	 * Deletes all RemoteUserIds from all remoteUser tables (currently only saml) for the given userName
 	 * @param userName
 	 * @param session
 	 */
 	private void deleteRemoteUser(final String userName, final DBSession session) {
-		this.delete("deleteRemoteUser", userName, session);
+		this.delete("deleteSamlUserIds", userName, session);
 	}
 	
 	/**
@@ -448,15 +459,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			}
 			//Update RemoteUserIds
 			//Todo - Maybe this can be implement more efficient
-			this.deleteRemoteUser(user.getName(), session);
-			for (RemoteUserId remoteUserId : user.getRemoteUserIds()) {
-				this.insertRemoteUserId(user, remoteUserId, session);
-			}
+//			this.deleteRemoteUser(user.getName(), session);
+//			for (RemoteUserId remoteUserId : user.getRemoteUserIds()) {
+//				this.insertRemoteUserId(user, remoteUserId, session);
+//			}
 			
 			// update user (does not incl. userSettings)
 			UserUtils.updateUser(existingUser, user);
 			/*
-			 * FIXME: OpenID and LdapId were updated in existingUser
+			 * FIXME: OpenID and LdapId and RemoteId (saml) were updated in existingUser
 			 * but the current "updateUser" Statement will leave those fields unchanged in the database
 			 */
 			this.plugins.onUserUpdate(existingUser.getName(), session);
@@ -661,7 +672,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public String getUsernameByRemoteUser(final RemoteUserId remoteUserId, final DBSession session) {
 		if (remoteUserId instanceof SamlRemoteUserId) {
-			return this.queryForObject("getUsernameBySamlRemoteUserId", new SamlRemoteUserParam(null, remoteUserId), String.class, session);
+			return this.queryForObject("getUsernameBySamlRemoteUserId", new SamlUserParam(null, (SamlRemoteUserId)remoteUserId), String.class, session);
+		} else {
+			throw new IllegalArgumentException("Only SamlRemoteUserIds can be retrieved!");
 		}
 		/*
 		else if (remoteUserId instanceof OpenIdRemoteUserId) {
@@ -671,17 +684,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			return this.queryForObject("getUsernameByLdapRemoteUserId", new LdapRemoteUserParam(null, remoteUserId), String.class, session);
 		}
 		*/
-		return null;
 	}
 	
 	/**
 	 * ToDo - Make this a more generic Method
 	 * @param userName
 	 * @param session
-	 * @return List<RemoteUserParam>
+	 * @return List<SamlRemoteUserParam>
 	 */
-	private List<SamlRemoteUserId> getRemoteUserIds(final String userName, final DBSession session) {
-		return this.queryForList("getRemoteUserIds", userName, SamlRemoteUserId.class, session);
+	private List<SamlRemoteUserId> getSamlRemoteUserIds(final String userName, final DBSession session) {
+		return this.queryForList("getSamlRemoteUserIds", userName, SamlRemoteUserId.class, session);
 	}
 	
 	/**
