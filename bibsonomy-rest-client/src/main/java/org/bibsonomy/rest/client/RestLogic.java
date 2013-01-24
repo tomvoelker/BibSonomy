@@ -67,6 +67,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
@@ -665,5 +666,9 @@ public class RestLogic implements LogicInterface {
 	public List<SyncService> getAllSyncServices(final boolean server) {
 		throw new UnsupportedOperationException();
 	}
-
+	
+	@Override
+	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId) {
+		throw new UnsupportedOperationException();
+	}
 }
