@@ -519,7 +519,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return username
 	 */
 	public String getUsernameByLdapUserId(String userId);
-
+	
+	/**
+	 * Retrieves bibsonomy username for given RemoteUserId
+	 * @param remoteUserId
+	 * @return username
+	 */
+	//public String getUsernameByRemoteUserId(RemoteUserId remoteUserId);
 	
 	/**
 	 * Create an extended field for a publication
