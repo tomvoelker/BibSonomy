@@ -105,6 +105,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -2177,7 +2178,7 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUsernameByRemoteUserId(org.bibsonomy.model.user.remote.RemoteUserId)
 	 */
-	/*
+
 	@Override
 	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
 		final DBSession session = openSession();
@@ -2187,7 +2188,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	*/
+
 	/*
 	 * (non-Javadoc)
 	 * 
