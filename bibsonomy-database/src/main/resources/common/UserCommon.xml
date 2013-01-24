@@ -38,7 +38,7 @@
 	</resultMap>
 	
 	<resultMap id="samlRemoteUserId" class="samlRemoteUserId">
-		<result property="userId"			column="remote_id"		javaType="string" />
+		<result property="userId"			column="samlUserId"		javaType="string" />
 		<result property="identityProviderId"	column="identity_provider"	javaType="string" />
 	</resultMap>
 	

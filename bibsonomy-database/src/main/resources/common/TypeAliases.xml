@@ -55,8 +55,7 @@
 	<typeAlias alias="repositoryParam" 	  type="org.bibsonomy.database.params.RepositoryParam"/>
 	<typeAlias alias="statisticParam"     type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="userParam"          type="org.bibsonomy.database.params.UserParam" />
-	<typeAlias alias="remoteUserParam"    type="org.bibsonomy.database.params.RemoteUserParam" />
-	<typeAlias alias="samlRemoteUserParam"    type="org.bibsonomy.database.params.SamlRemoteUserParam" />
+	<typeAlias alias="samlUserParam"    type="org.bibsonomy.database.params.SamlUserParam" />
 	<typeAlias alias="groupParam"         type="org.bibsonomy.database.params.GroupParam" />
 	<typeAlias alias="tagParam"           type="org.bibsonomy.database.params.TagParam" />
 	<typeAlias alias="tagRelationParam"   type="org.bibsonomy.database.params.TagRelationParam" />
