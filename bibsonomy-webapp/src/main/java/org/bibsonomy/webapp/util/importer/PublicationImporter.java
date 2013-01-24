@@ -10,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,6 +50,7 @@ public class PublicationImporter {
 	 * after converting EndNote to BibTeX;
 	 * 
 	 * @param command
+	 * @param errors 
 	 * @return
 	 */
 	public String handleFileUpload(final PostPublicationCommand command, final Errors errors) {
@@ -135,7 +135,7 @@ public class PublicationImporter {
 	 * @param selection
 	 * @return
 	 */
-	public String handleSelection(final PostPublicationCommand command, final String selection) {
+	public String handleSelection(final String selection) {
 		// FIXME: at this point we must first convert to bibtex!
 		if (EndnoteToBibtexConverter.canHandle(selection)) {
 			return this.endnoteToBibtexConverter.endnoteToBibtex(selection);
@@ -150,18 +150,16 @@ public class PublicationImporter {
 	}
 	
 	/**
-	 * Attach the uploaded file to command. This is required to attach file to the new post
+	 * Attach the uploaded file to the command. This is required to attach the file to the new post
 	 * 
 	 * @param command
 	 * @param document
 	 */
-	private void handleNonSnippetFile(PostPublicationCommand command, Document document) {
-		List<String> fileNames = command.getFileName();
-		if (!present(fileNames)) {
-			fileNames = new ArrayList<String>();
-			command.setFileName(fileNames);
+	private void handleNonSnippetFile(final PostPublicationCommand command, final Document document) {
+		if (!present(command.getFileName())) {
+			command.setFileName(new ArrayList<String>());
 		}
-		fileNames.add(document.getMd5hash() + document.getFile().getName() + document.getFileName());
+		command.getFileName().add(document.getMd5hash() + document.getFile().getName() + document.getFileName());
 	}
 
 	public FileUploadFactory getUploadFactory() {

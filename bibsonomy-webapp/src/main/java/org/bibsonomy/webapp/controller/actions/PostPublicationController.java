@@ -129,7 +129,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * The user has entered text into the snippet selection - we use that
 			 */
 			log.debug("user has filled selection");
-			snippet = this.publicationImporter.handleSelection(command, selection);
+			snippet = this.publicationImporter.handleSelection(selection);
 		} else if (present(command.getFile())) {
 			/*
 			 * The user uploads a BibTeX or EndNote file

@@ -53,25 +53,16 @@ public class PublicationRenderingController implements MinimalisticController<Po
 				 * The user has entered text into the snippet selection - we use that
 				 */
 				log.debug("user has filled selection");
-				snippet = this.publicationImporter.handleSelection(command, command.getSelection());
-			} else if (present(command.getFile())) {
+				snippet = this.publicationImporter.handleSelection(command.getSelection());
+			} else {
+				// command.getFile() exists
 				/*
 				 * The user uploads a BibTeX or EndNote file
 				 */
 				log.debug("user uploads a file");
 				// get the (never empty) content or add corresponding errors
 				snippet = this.publicationImporter.handleFileUpload(command, this.errors);
-			} else {
-				/*
-				 * nothing given -> 
-				 * user just opened the postPublication Dialogue OR
-				 * user send empty snippet or "nonexisting" file
-				 * FIXME: that second case should result in some error and hint for the user
-				 */
-				errors.reject("error.noInput"); // TODO: use proper code and add mesage
-				return Views.ERROR;
-			}
-
+			} 
 			/*
 			 * configure the parser
 			 */
