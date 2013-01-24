@@ -111,9 +111,9 @@
 		VALUES (#name#, #ldapId#, CURRENT_TIMESTAMP)
 	</insert>
 	
-	<insert id="insertSamlUserId" parameterClass="SamlRemoteUserParam">
-		INSERT INTO remoteUser
-		VALUES (#user.name#, #remoteId.userId#, #remoteId.identityProviderId#)
+	<insert id="insertSamlUserId" parameterClass="SamlUserParam">
+		INSERT INTO samlUser
+		VALUES (#user.name#, #samlRemoteUserId.userId#, #samlRemoteUserId.identityProviderId#)
 	</insert>
 
 	<delete id="deleteUser" parameterClass="string">
@@ -132,12 +132,12 @@
 		DELETE FROM ldapUser WHERE user_name = #userName#
 	</delete>	
 	
-	<delete id="deleteSamlUserId" parameterClass="SamlRemoteUserParam">
-		DELETE FROM remoteUser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
+	<delete id="deleteSamlUserId" parameterClass="SamlUserParam">
+		DELETE FROM samlUser WHERE samlUserId = #samlRemoteUserId.userId# AND identity_provider = #samlRemoteUserId.identityProviderId#
 	</delete>
 	
-	<delete id="deleteRemoteUser" parameterClass="string">
-		DELETE FROM remoteUser WHERE user_name = #userName#
+	<delete id="deleteSamlUserIds" parameterClass="string">
+		DELETE FROM samlUser WHERE user_name = #userName#
 	</delete>
 	
 	<select id="getOpenIDUser" resultClass="string" parameterClass="string"> 
@@ -148,13 +148,14 @@
 		SELECT user_name FROM ldapUser WHERE ldapUserId = #ldapUser#
 	</select>
 	
-	<select id="getUsernameBySamlRemoteUserId" resultClass="string" parameterClass="SamlRemoteUserParam">
-		SELECT user_name FROM remoteUser WHERE remote_id = #remoteId.userId# AND identity_provider = #remoteId.identityProviderId#
+	<select id="getUsernameBySamlRemoteUserId" resultClass="string" parameterClass="SamlUserParam">
+		SELECT user_name FROM samlUser WHERE samlUserId = #samlRemoteUserId.userId# AND identity_provider = #samlRemoteUserId.identityProviderId#
 	</select>
-	
-	<select id="getRemoteUserIds" resultMap="UserCommon.samlRemoteUserId" parameterClass="string">
-		SELECT remote_id, identity_provider
-		FROM remoteUser
+
+<!-- TODO: Possible Simplification of handling different alternate Login methods (e.g. saml, ldap, openId) in one more generic way (remoteUserId)	 -->
+	<select id="getSamlRemoteUserIds" resultMap="UserCommon.samlRemoteUserId" parameterClass="string">
+		SELECT samlUserId, identity_provider
+		FROM samlUser
 		WHERE user_name = #userName#
 	</select>
 
