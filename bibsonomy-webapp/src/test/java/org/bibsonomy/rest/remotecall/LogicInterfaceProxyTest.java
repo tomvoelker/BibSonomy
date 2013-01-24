@@ -53,6 +53,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -1096,4 +1097,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
+	@Override
+	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId) {
+		return null;
+	}
 }
