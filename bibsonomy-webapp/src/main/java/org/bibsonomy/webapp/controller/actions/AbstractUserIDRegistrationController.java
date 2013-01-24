@@ -8,9 +8,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.user.remote.LdapRemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserId;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
@@ -250,13 +248,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 				} else if (tryCount == 100) {
 					// now use first character of fore- and first two characters of surename concatenated with user id 
 					// bugs bunny => bbu01234567
-					String remoteUserId = "";
-					for (RemoteUserId rId : user.getRemoteUserIds()) {
-						// historically ldapId has precedence
-						if ((ValidationUtils.present(remoteUserId) == false) || (rId instanceof LdapRemoteUserId)) {
-							remoteUserId = rId.getSimpleId();
-						}
-					}
+					String remoteUserId = getRemoteUserId(user);
 					newName = cleanUserName(newName.substring(0, 3).concat(remoteUserId));
 				} else {
 					// try first character of forename concatenated with surename concatenated with current number
@@ -280,6 +272,19 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 			}
 		}
 		return newName;
+	}
+
+	private String getRemoteUserId(final User user) {
+		if (user.getLdapId() != null) {
+			return user.getLdapId();
+		}
+		if (user.getOpenID() != null) {
+			return user.getOpenID();
+		}
+		for (RemoteUserId rId : user.getRemoteUserIds()) {
+			return rId.getSimpleId();
+		}
+		return "";
 	}
 	
 	private static String cleanUserName(final String name) {
