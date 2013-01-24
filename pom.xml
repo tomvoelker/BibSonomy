@@ -172,6 +172,11 @@
 			<url>http://www.biblicious.org:8088/artifactory/repo</url>
 		</repository>
 		<repository>
+			<id>biblicious-snapshots</id>
+			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
+			<url>http://www.biblicious.org:8088/artifactory/snapshots-only</url>
+		</repository>
+		<repository>
 			<id>dev.bibsonomy.org</id>
 			<name>Official Source Code Releases of selected BibSonomy Modules</name>
 			<url>http://dev.bibsonomy.org/maven2/</url>
