@@ -113,7 +113,7 @@
 	
 	<insert id="insertSamlUserId" parameterClass="SamlUserParam">
 		INSERT INTO samlUser
-		VALUES (#user.name#, #samlRemoteUserId.userId#, #samlRemoteUserId.identityProviderId#)
+		VALUES (#user.name#, #samlRemoteUserId.userId#, #samlRemoteUserId.identityProviderId#, CURRENT_TIMESTAMP)
 	</insert>
 
 	<delete id="deleteUser" parameterClass="string">
