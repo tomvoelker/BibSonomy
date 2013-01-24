@@ -1,22 +1,16 @@
 package org.bibsonomy.webapp.util.spring.security.userdetailsservice;
 
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 
 /**
  * A {@link NameSpacedNameMapping} implementation that uses the bibsonomy {@link LogicInterface} as its backend.
  * @author jensi
  * @version $Id$
  */
-public class LogicInterfaceUserNameMapping implements NameSpacedNameMapping {
+public class LogicInterfaceUserNameMapping implements NameSpacedNameMapping<SamlRemoteUserId> {
 
 	private LogicInterface logic;
-	
-	@Override
-	public String mapName(String nameSpace, String name) {
-		// TODO: support several idPs? maybe also treat ldap and openid as namespaces
-		final String systemName = logic.getUsernameByLdapUserId(name);
-		return systemName;
-	}
 
 	/**
 	 * @return the {@link LogicInterface} implementation used to resolve names
@@ -30,6 +24,12 @@ public class LogicInterfaceUserNameMapping implements NameSpacedNameMapping {
 	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
+	}
+
+	@Override
+	public String map(SamlRemoteUserId remoteId) {
+		// TODO: change to new saml method
+		return logic.getUsernameByLdapUserId(remoteId.getUserId());
 	}
 
 }

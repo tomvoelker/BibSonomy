@@ -40,24 +40,26 @@
 	</bean>
 
 	<!-- Register authentication manager with SAML provider -->
+	<!-- 
 	<security:authentication-manager alias="authenticationManager">
 		<security:authentication-provider ref="samlAuthenticationProvider" />
 	</security:authentication-manager>
+	
+	 -->
 
 	<!-- Logger for SAML messages and events -->
 	<bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger" />
 
 	<!-- Central storage of cryptographic keys -->
 	<bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-		<!-- <constructor-arg value="classpath:security/samlKeystore.jks" /> -->
-		<constructor-arg value="/home/puma/samlKeystore.jks" />
-		<constructor-arg type="java.lang.String" value="LgfvZ35a" />
+		<constructor-arg value="${auth.saml.keystore}" />
+		<constructor-arg type="java.lang.String" value="${auth.saml.keystore.pass}" />
 		<constructor-arg>
 			<map>
-				<entry key="build_puma" value="JKSKeyManager" />
+				<entry key="${auth.saml.keystore.key.alias}" value="${auth.saml.keystore.key.pass}" />
 			</map>
 		</constructor-arg>
-		<constructor-arg type="java.lang.String" value="build_puma" />
+		<constructor-arg type="java.lang.String" value="${auth.saml.keystore.key.alias}" />
 	</bean>
 
 	<!-- Entry point to initialize authentication, default values taken from properties file -->
@@ -126,8 +128,7 @@
 				<bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
 					<!-- URL containing the metadata -->
 					<constructor-arg>
-						<!-- das war wohl falsch: <value type="java.lang.String">https://idp.testshib.org/idp/profile/Metadata/SAML</value> -->
-						<value type="java.lang.String">http://www.testshib.org/metadata/testshib-providers.xml</value>
+						<value type="java.lang.String">${auth.saml.idp.1.metadata.url}</value>
 					</constructor-arg>
 					<!-- Timeout for metadata loading in ms -->
 					<constructor-arg>
@@ -140,7 +141,7 @@
 		<!-- OPTIONAL used when one of the metadata files contains information about this service provider -->
 		<!-- <property name="hostedSPName" value=""/> -->
 		<!-- OPTIONAL property: can tell the system which IDP should be used for authenticating user by default. -->
-		<property name="defaultIDP" value="https://idp.testshib.org/idp/shibboleth" />
+		<property name="defaultIDP" value="${auth.saml.defaultIdp}" />
 	</bean>
 
 	<!-- SAML Authentication Provider responsible for validating of received SAML messages -->
@@ -157,17 +158,26 @@
 			</bean>
 		</property>
 		<property name="userDetailsService" ref="databaseUserService"/>
+		<property name="attributeExtractor" ref="samlAttributeExtractor" />
 	</bean>
 
+	<bean id="samlAttributeExtractor" class="org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeExtraction">
+		<property name="attributeMap">
+			<map>
+				<!-- TODO -->
+			</map>
+		</property>
+		<property name="useridAttributeName" value="todo"/>
+	</bean>
 	
 	<bean id="openidAuthenticationUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetails.OpenIdAuthenticationUserDetailsService">
 		
 	</bean>
 	
-	<bean id="openidAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
+	<bean id="samlAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
-				<ref bean="openidAuthenticationProvider"/> 
+				<ref bean="samlAuthenticationProvider"/> 
 			</list>
 		</property>
 	</bean>
@@ -177,13 +187,13 @@
 
 	<!-- Processing filter for WebSSO profile messages -->
 	<bean id="samlWebSSOProcessingFilter" class="org.springframework.security.saml.SAMLProcessingFilter">
-		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="authenticationManager" ref="samlAuthenticationManager" />
 		<property name="authenticationSuccessHandler" ref="successRedirectHandler" />
 	</bean>
 
 	<!-- Processing filter for WebSSO Holder-of-Key profile -->
 	<bean id="samlWebSSOHoKProcessingFilter" class="org.springframework.security.saml.SAMLWebSSOHoKProcessingFilter">
-		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="authenticationManager" ref="samlAuthenticationManager" />
 		<property name="authenticationSuccessHandler" ref="successRedirectHandler" />
 	</bean>
 

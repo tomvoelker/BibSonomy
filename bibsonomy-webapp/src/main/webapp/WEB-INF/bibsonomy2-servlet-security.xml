@@ -175,6 +175,7 @@
 				</bean>
 				<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.SamlUsernameNotFoundExceptionMapper">
 					<property name="redirectUrl" value="/registerSAML?step=2"/>
+					<property name="attributeExtractor" ref="samlAttributeExtractor" />
 				</bean>
 				<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.OpenIdUsernameNotFoundExceptionMapper">
 					<property name="redirectUrl" value="/registerOpenID?step=2"/>

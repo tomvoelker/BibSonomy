@@ -7,9 +7,7 @@ import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.NameID;
+import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeExtraction;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SAMLCredential;
@@ -25,6 +23,9 @@ import org.springframework.security.saml.SAMLCredential;
 public class VuFindUserInitController implements MinimalisticController<VuFindUserInitCommand> {
 
 	private OAuthAuthorizeTokenController oaAuthorizeController;
+	
+	private SamlUserAttributeExtraction attributeExtractor;
+	
 //	AuthenticationEntryPoint remoteAuthentication;
 	
 	@Override
@@ -53,29 +54,16 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		return oaAuthorizeController.workOn(command);
 	}
 
-	protected SamlRemoteUserId getRemoteUserId() {
+	private SamlRemoteUserId getRemoteUserId() {
 		SecurityContext ctx = SecurityContextHolder.getContext();
 		Object creds = ctx.getAuthentication().getCredentials();
 		if (creds instanceof SAMLCredential == false) {
 			return null;
 		}
-		SAMLCredential samlCred = (SAMLCredential) creds;
-		NameID nid = samlCred.getNameID();
-		if (nid == null) {
-			return null;
-		}
-		Assertion aa = samlCred.getAuthenticationAssertion();
-		if (aa == null) {
-			return null;
-		}
-		Issuer issuer = aa.getIssuer();
-		if (issuer == null) {
-			return null;
-		}
-		String idP = issuer.getValue();
-		return new SamlRemoteUserId(idP, nid.getValue());
-//		return "dummyUserId";
+		return attributeExtractor.getRemoteUserId((SAMLCredential) creds);
 	}
+
+	
 
 	/**
 	 * @return the regular oAuth controller
@@ -89,6 +77,20 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 	 */
 	public void setOaAuthorizeController(OAuthAuthorizeTokenController oaReqTokenController) {
 		this.oaAuthorizeController = oaReqTokenController;
+	}
+
+	/**
+	 * @return the attributeExtractor
+	 */
+	public SamlUserAttributeExtraction getAttributeExtractor() {
+		return this.attributeExtractor;
+	}
+
+	/**
+	 * @param attributeExtractor the attributeExtractor to set
+	 */
+	public void setAttributeExtractor(SamlUserAttributeExtraction attributeExtractor) {
+		this.attributeExtractor = attributeExtractor;
 	}
 	
 }

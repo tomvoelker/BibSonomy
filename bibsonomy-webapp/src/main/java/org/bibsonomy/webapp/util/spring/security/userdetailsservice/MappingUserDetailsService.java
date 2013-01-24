@@ -1,6 +1,8 @@
 package org.bibsonomy.webapp.util.spring.security.userdetailsservice;
 
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.util.spring.security.RemoteOnlyUserDetails;
+import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeExtraction;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,27 +14,24 @@ import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
  * @author jensi
  * @version $Id$
  */
-public class MappingUserDetailsService implements SAMLUserDetailsService {
-
-	// TODO: add mapper property that knows how to map userids
-	
+public class MappingUserDetailsService implements SAMLUserDetailsService {	
 	/**
 	 * {@link UserDetailsService} property that knows how to load the {@link UserDetails}
 	 */
 	private UserDetailsService userDetailsService;
-	private NameSpacedNameMapping userNameMapping;
+	private SamlUserAttributeExtraction attributeExtractor;
+	private NameSpacedNameMapping<SamlRemoteUserId> userNameMapping;
 	
 	@Override
 	public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
 		// TODO:
-		// map credentils to bibsonomy userid
+		// map credentials to bibsonomy userid
 		// if no mapping present:
 		//   create anonymous user or throw exception? - probably a special anonymous user with saml data and special contextrepository handling in
 		//   org.bibsonomy.webapp.util.spring.security.UsernameSecurityContextRepository.setLoginUser(HttpServletRequest, Authentication)
 		//   such that it can be checked later
-		String idPId = credential.getAuthenticationAssertion().getIssuer().getValue();
-		String remoteUserId = credential.getNameID().getValue();
-		final String systemName = userNameMapping.mapName(idPId, remoteUserId);
+		final SamlRemoteUserId remoteId = attributeExtractor.getRemoteUserId(credential);
+		final String systemName = userNameMapping.map(remoteId);
 		if (systemName == null) {
 			return new RemoteOnlyUserDetails(credential);
 			// TODO: raise exception somewhere later to allow regular registration:
@@ -66,15 +65,29 @@ public class MappingUserDetailsService implements SAMLUserDetailsService {
 	/**
 	 * @return the userNameMapping
 	 */
-	public NameSpacedNameMapping getUserNameMapping() {
+	public NameSpacedNameMapping<SamlRemoteUserId> getUserNameMapping() {
 		return this.userNameMapping;
 	}
 
 	/**
 	 * @param userNameMapping the userNameMapping to set
 	 */
-	public void setUserNameMapping(NameSpacedNameMapping userNameMapping) {
+	public void setUserNameMapping(NameSpacedNameMapping<SamlRemoteUserId> userNameMapping) {
 		this.userNameMapping = userNameMapping;
+	}
+
+	/**
+	 * @return the attributeExtractor
+	 */
+	public SamlUserAttributeExtraction getAttributeExtractor() {
+		return this.attributeExtractor;
+	}
+
+	/**
+	 * @param attributeExtractor the attributeExtractor to set
+	 */
+	public void setAttributeExtractor(SamlUserAttributeExtraction attributeExtractor) {
+		this.attributeExtractor = attributeExtractor;
 	}
 
 }
