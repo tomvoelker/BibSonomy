@@ -28,8 +28,7 @@ public class LogicInterfaceUserNameMapping implements NameSpacedNameMapping<Saml
 
 	@Override
 	public String map(SamlRemoteUserId remoteId) {
-		// TODO: change to new saml method
-		return logic.getUsernameByLdapUserId(remoteId.getUserId());
+		return logic.getUsernameByRemoteUserId(remoteId);
 	}
 
 }
