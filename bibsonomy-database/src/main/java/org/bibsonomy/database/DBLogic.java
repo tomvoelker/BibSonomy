@@ -2172,7 +2172,22 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUsernameByRemoteUserId(org.bibsonomy.model.user.remote.RemoteUserId)
+	 */
+	/*
+	@Override
+	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
+		final DBSession session = openSession();
+		try {
+			return this.userDBManager.getUsernameByRemoteUser(remoteUserId, session);
+		} finally {
+			session.close();
+		}
+	}
+	*/
 	/*
 	 * (non-Javadoc)
 	 * 
