@@ -60,8 +60,14 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		if (userName == null) {
 			//Throw some exception
 		}
+		/*
+		 * Gesetzt werden muss:
+		 * name, password, realname, e-mail
+		 */
 		user.setName(userName);
 		user.setPassword("doof");
+		
+		user.setEmail("arm@web.de");
 		this.adminLogic.createUser(user);
 
 		// probably not needed (to be done in spring security filters):
