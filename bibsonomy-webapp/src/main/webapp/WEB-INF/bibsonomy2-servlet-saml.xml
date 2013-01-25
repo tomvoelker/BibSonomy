@@ -161,7 +161,7 @@
 		<property name="attributeExtractor" ref="samlAttributeExtractor" />
 	</bean>
 
-	<bean id="samlAttributeExtractor" class="org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeExtraction">
+	<bean id="samlAttributeExtractor" class="org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping">
 		<property name="attributeMap">
 			<map>
 				<!-- TODO -->
