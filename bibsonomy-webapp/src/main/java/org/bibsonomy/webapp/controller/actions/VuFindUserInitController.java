@@ -10,6 +10,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
 import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SAMLCredential;
@@ -63,6 +64,7 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		// - login user but without any "stay logged in" cookie
 		// automatically authorize via oauth (no extra button click)
 		// If there is a logged-in user who is not already connected to the remoteuserid ignore him and create a new one
+		//return new ExtendedRedirectView("/");
 		return oaAuthorizeController.workOn(command);
 	}
 
@@ -78,7 +80,7 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		SecurityContext ctx = SecurityContextHolder.getContext();
 		Object creds = ctx.getAuthentication().getCredentials();
 		if (creds instanceof SAMLCredential) {
-			samlCreds = (SAMLCredential) creds;
+			return (SAMLCredential) creds;
 		}
 		samlCreds = null;
 		return samlCreds;
