@@ -403,6 +403,19 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * Updates RemoteUserIds of user
+	 * @param user
+	 * @param session
+	 */
+	private void updateRemoteUser(final User user, final DBSession session) {
+		//Todo - Implement proper update Method
+		this.deleteRemoteUser(user.getName(), session);
+		for (RemoteUserId remoteUserId : user.getRemoteUserIds()) {
+			this.insertRemoteUserId(user, remoteUserId, session);
+		}
+	}
+	
+	/**
 	 * Inserts a user to openID table
 	 * 
 	 * @param user user authenticating via OpenID
@@ -458,11 +471,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User '" + user.getName() + "' does not exist");
 			}
 			//Update RemoteUserIds
-			//Todo - Maybe this can be implement more efficient
-//			this.deleteRemoteUser(user.getName(), session);
-//			for (RemoteUserId remoteUserId : user.getRemoteUserIds()) {
-//				this.insertRemoteUserId(user, remoteUserId, session);
-//			}
+			this.updateRemoteUser(user, session);
 			
 			// update user (does not incl. userSettings)
 			UserUtils.updateUser(existingUser, user);

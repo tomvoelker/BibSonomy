@@ -28,6 +28,8 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
+import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
@@ -539,4 +541,57 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertNotNull(errorMessage.getMaxLengthForField("hobbies"));
 		}
 	}
+	
+	/**
+	 * Tests implementation of SamlRemoteIds
+	 */
+	@Test
+	public void samlUserTest() {
+		//Retrieve samlRemoteUserId of testuser1 
+		User user = userDb.getUserDetails("testuser1", this.dbSession);
+		//Check if samlRemoteUserId was correctly retrieved
+		SamlRemoteUserId user_sruid = this.userHasSamlRemoteId(user, "samlUserId1", "saml");
+		if (user_sruid == null) {
+			fail("testuser1 does not have proper SamlRemoteId");
+			return;
+		}
+		//SamlRemoteUserId was correctly retrieved!
+		
+		//getUsernameByRemoteUser() Test
+		String username = userDb.getUsernameByRemoteUser(user_sruid, dbSession);
+		assertEquals(username, "testuser1");
+		
+		//We now change SamlRemoteUserId and call updateUser()
+		user_sruid.setUserId("samlUserId1_changed");
+		user_sruid.setIdentityProviderId("saml_changed");
+		userDb.updateUser(user, this.dbSession);
+		user = userDb.getUserDetails("testuser1", this.dbSession);
+		if (user.getRemoteUserIds().size() > 1) {
+			fail("testuser1 should have only one SamlRemoteId");
+		}
+		user_sruid = this.userHasSamlRemoteId(user, "samlUserId1_changed", "saml_changed");
+		if (user_sruid == null) {
+			fail("SamlRemoteId was not changed correctly");
+		}
+	}
+	
+	/**
+	 * This Method tests if a user has a SamlRemoteUserId containing samlUserId and identity_provider
+	 * @param user
+	 * @param samlUserId
+	 * @param identity_provider
+	 * @return SamlRemoteUserId
+	 */
+	private SamlRemoteUserId userHasSamlRemoteId(User user, String samlUserId, String identity_provider) {
+		SamlRemoteUserId user_sruid = null;
+		for (RemoteUserId ruid : user.getRemoteUserIds()) {
+			SamlRemoteUserId temp_sruid = (SamlRemoteUserId) ruid;
+			if (temp_sruid.getUserId().equals(samlUserId) & temp_sruid.getIdentityProviderId().equals(identity_provider)) {
+				user_sruid = temp_sruid;
+				break;
+			}
+		}
+		return user_sruid;
+	}
+	
 }
