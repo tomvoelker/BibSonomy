@@ -403,16 +403,74 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Updates RemoteUserIds of user
+	 * Updates RemoteUserIds of user (currently only saml)
+	 * ToDo - Make this a generic method and implement this outside the database-module
 	 * @param user
 	 * @param session
 	 */
-	private void updateRemoteUser(final User user, final DBSession session) {
-		//Todo - Implement proper update Method
+	private void updateRemoteUser(final User existingUser, final User user, final DBSession session) {
+		//Update and add new RemoteIds
+		/*
+		boolean addedNewRemoteIds = false;
+		for (RemoteUserId user_ruid : user.getRemoteUserIds()) {
+			SamlRemoteUserId user_sruid = (SamlRemoteUserId) user_ruid;
+			boolean addNewRemoteId = true;
+			for (RemoteUserId existUser_ruid : existingUser.getRemoteUserIds()) {
+				SamlRemoteUserId existUser_sruid = (SamlRemoteUserId) existUser_ruid;
+				if (user_sruid.getIdentityProviderId().equals(existUser_sruid.getIdentityProviderId())) {
+					if (!user_sruid.getUserId().equals(existUser_sruid.getUserId())) {
+						//Update UserId
+						//Todo - Implement update sql query
+						this.deleteRemoteUserId(existUser_sruid, session);
+						this.insertRemoteUserId(user, user_sruid, session);
+						addNewRemoteId = false;
+					} else {
+						//RemoteId exists
+						addNewRemoteId = false;
+					}
+					break;
+				}
+				else if (user_sruid.getUserId().equals(existUser_sruid.getUserId())) {
+					//Update identity_provider
+					//Todo - Implement update sql query
+					this.deleteRemoteUserId(existUser_sruid, session);
+					this.insertRemoteUserId(user, user_sruid, session);
+					addNewRemoteId = false;
+					break;
+				}
+			}
+			if(addNewRemoteId) {
+				//SamlRemoteId does not exist -> Add new SamlRemoteId
+				this.insertRemoteUserId(user, user_sruid, session);
+				addedNewRemoteIds = true;
+			}
+		}
+		
+		//Delete non existing ruids
+		if(addedNewRemoteIds || existingUser.getRemoteUserIds().size() > user.getRemoteUserIds().size()) {
+			User updatedExistingUser = this.getUserDetails(existingUser.getName(), session);
+			for (RemoteUserId existUser_ruid : updatedExistingUser.getRemoteUserIds()) {
+				SamlRemoteUserId existUser_sruid = (SamlRemoteUserId) existUser_ruid;
+				boolean deleteRemoteId = true;
+				for (RemoteUserId user_ruid : user.getRemoteUserIds()) {
+					SamlRemoteUserId user_sruid = (SamlRemoteUserId) user_ruid;
+					if (existUser_sruid.getUserId().equals(user_sruid.getUserId())) {
+						deleteRemoteId = false;
+						break;
+					}
+				}
+				if(deleteRemoteId) {
+					this.deleteRemoteUserId(existUser_sruid, session);
+				}
+			}
+		}
+		*/
+		
 		this.deleteRemoteUser(user.getName(), session);
 		for (RemoteUserId remoteUserId : user.getRemoteUserIds()) {
 			this.insertRemoteUserId(user, remoteUserId, session);
 		}
+		
 	}
 	
 	/**
@@ -471,7 +529,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User '" + user.getName() + "' does not exist");
 			}
 			//Update RemoteUserIds
-			this.updateRemoteUser(user, session);
+			this.updateRemoteUser(existingUser, user, session);
 			
 			// update user (does not incl. userSettings)
 			UserUtils.updateUser(existingUser, user);
