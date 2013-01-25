@@ -17,7 +17,7 @@ import org.springframework.security.saml.SAMLCredential;
  * @author jensi
  * @version $Id$
  */
-public class SamlUserAttributeExtraction implements UserAttributeMapping<SAMLCredential, SamlRemoteUserId> {
+public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCredential, SamlRemoteUserId> {
 	private Map<String, String> attributeMap;
 	private String useridAttributeName;
 	
