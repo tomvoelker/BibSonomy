@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.util.spring.security.userdetailsservice;
 
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.util.spring.security.RemoteOnlyUserDetails;
-import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeExtraction;
+import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +19,7 @@ public class MappingUserDetailsService implements SAMLUserDetailsService {
 	 * {@link UserDetailsService} property that knows how to load the {@link UserDetails}
 	 */
 	private UserDetailsService userDetailsService;
-	private SamlUserAttributeExtraction attributeExtractor;
+	private SamlUserAttributeMapping attributeExtractor;
 	private NameSpacedNameMapping<SamlRemoteUserId> userNameMapping;
 	
 	@Override
@@ -79,14 +79,14 @@ public class MappingUserDetailsService implements SAMLUserDetailsService {
 	/**
 	 * @return the attributeExtractor
 	 */
-	public SamlUserAttributeExtraction getAttributeExtractor() {
+	public SamlUserAttributeMapping getAttributeExtractor() {
 		return this.attributeExtractor;
 	}
 
 	/**
 	 * @param attributeExtractor the attributeExtractor to set
 	 */
-	public void setAttributeExtractor(SamlUserAttributeExtraction attributeExtractor) {
+	public void setAttributeExtractor(SamlUserAttributeMapping attributeExtractor) {
 		this.attributeExtractor = attributeExtractor;
 	}
 
