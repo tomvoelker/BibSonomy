@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.bibsonomy.util.spring.security.RemoteOnlyUserDetails;
 import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.util.spring.security.authentication.SessionAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -145,16 +146,23 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 				final String loginUsername = user.getUsername();
 				final HttpSession session = request.getSession(true);
 				session.setAttribute(ATTRIBUTE_LOGIN_USER_NAME, loginUsername);
+				if (principal instanceof RemoteOnlyUserDetails) {
+					// this happens in cases when SAML credentials are sent that could not be mapped to a local user
+					//  -> remember credentials here so they can be handled after a redirect to the entry controller
+					Object creds = authentication.getCredentials();
+					if (creds instanceof SAMLCredential) {
+						request.getSession(true).setAttribute(ATTRIBUTE_CREDS, creds);
+					}
+				}
 			} else {
 				final HttpSession session = request.getSession(false);
 				if (session != null) {
 					session.removeAttribute(ATTRIBUTE_LOGIN_USER_NAME);
+					session.removeAttribute(ATTRIBUTE_CREDS);
 				}
 			}
-			Object creds = authentication.getCredentials();
-			if (creds instanceof SAMLCredential) {
-				request.getSession(true).setAttribute(ATTRIBUTE_CREDS, creds);
-			}
+
+			
 		}
 	}
 	
