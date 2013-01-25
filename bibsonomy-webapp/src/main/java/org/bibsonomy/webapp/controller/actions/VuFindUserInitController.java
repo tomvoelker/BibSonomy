@@ -4,13 +4,14 @@ import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.VuFindUserInitCommand;
 import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
 import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.validation.UserValidator;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SAMLCredential;
@@ -48,11 +49,18 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		}
 		// TODO wohl falsch: zeug wie man user erzeugt steht in UserRegistrationController
 		User user = new User();
-		// das muss man machen
+		user.setRemoteUserId(remoteUserId);
+		// Set additional Attributes
 		attributeExtractor.populate(user, samlCreds);
-		// und eine userid setzen (siehe AbstractUserIDRegistrationController)
-		
-		
+		// user needs his Realname here
+		if (user.getRealname() == null) {
+			//Throw some exception
+		}
+		String userName = generateUserName(user, remoteUserId);
+		if (userName == null) {
+			//Throw some exception
+		}
+		this.adminLogic.createUser(user);
 		
 		// probably not needed (to be done in spring security filters):
 		// remoteAuthentication.commence(command.getRe getRequest(), command.getResponse(), authException);
@@ -64,7 +72,6 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		// - login user but without any "stay logged in" cookie
 		// automatically authorize via oauth (no extra button click)
 		// If there is a logged-in user who is not already connected to the remoteuserid ignore him and create a new one
-		//return new ExtendedRedirectView("/");
 		return oaAuthorizeController.workOn(command);
 	}
 
@@ -80,10 +87,61 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		SecurityContext ctx = SecurityContextHolder.getContext();
 		Object creds = ctx.getAuthentication().getCredentials();
 		if (creds instanceof SAMLCredential) {
-			return (SAMLCredential) creds;
+			samlCreds = (SAMLCredential) creds;
 		}
 		samlCreds = null;
 		return samlCreds;
+	}
+	
+	private String generateUserName(final User user, SamlRemoteUserId sruid) {
+		/*
+		 * Find user name which does not exist yet in the database.
+		 * 
+		 * check if username is already used and try another
+		 */
+		String newName = cleanUserName(user.getRealname());
+		int tryCount = 0;
+		//log.debug("try existence of username: " + newName);
+		while ((newName.equalsIgnoreCase(this.adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
+			try {
+				if (tryCount == 0) {
+					// try first character of forename concatenated with surname
+					// bugs bunny => bbunny
+					newName = cleanUserName(user.getRealname()).substring(0, 1).concat(newName);
+				} else if (tryCount == 100) {
+					// now use first character of fore- and first two characters of surename concatenated with user id 
+					// bugs bunny => bbu01234567
+					String remoteUserId = sruid.getUserId();
+					newName = cleanUserName(newName.substring(0, 3).concat(remoteUserId));
+				} else {
+					// try first character of forename concatenated with surename concatenated with current number
+					// bugs bunny => bbunnyX where X is between 1 and 9
+					if (tryCount==1) {
+						// add trycount to newName
+						newName = cleanUserName(newName.concat(Integer.toString(tryCount)));
+					} else { 
+						// replace last two characters of string with trycount
+						newName = cleanUserName(newName.substring(0, newName.length() - Integer.toString(tryCount-1).length()).concat(Integer.toString(tryCount)));
+					}
+				}
+				//log.debug("try existence of username: " + newName + " (" + tryCount + ")");
+				tryCount++;
+			} catch (final IndexOutOfBoundsException ex) {
+				/*
+				 * if some substring values are out of range, catch exception and use surename
+				 */
+				newName = cleanUserName(user.getRealname());
+				tryCount = 99;
+			}
+		}
+		return newName;
+	}
+	
+	private static String cleanUserName(final String name) {
+		if (!ValidationUtils.present(name)) {
+			return "";
+		}
+		return UserValidator.USERNAME_DISALLOWED_CHARACTERS_PATTERN.matcher(name).replaceAll("").toLowerCase();
 	}
 	
 
