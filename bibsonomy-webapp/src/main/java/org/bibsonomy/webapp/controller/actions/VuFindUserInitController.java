@@ -1,13 +1,15 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.common.enums.AuthMethod;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.webapp.command.VuFindUserInitCommand;
 import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
-import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeExtraction;
+import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SAMLCredential;
@@ -24,7 +26,9 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 
 	private OAuthAuthorizeTokenController oaAuthorizeController;
 	
-	private SamlUserAttributeExtraction attributeExtractor;
+	private SamlUserAttributeMapping attributeExtractor;
+	
+	private LogicInterface adminLogic;
 	
 //	AuthenticationEntryPoint remoteAuthentication;
 	
@@ -36,10 +40,18 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 	@Override
 	public View workOn(VuFindUserInitCommand command) {
 		// TODO: check if there's already a logged in user. If so, then we might like to ask the user whether he likes to directly connect his remote authentication to this user account.
-		SamlRemoteUserId remoteUserId = getRemoteUserId();
+		SAMLCredential samlCreds = getSamlCreds();
+		SamlRemoteUserId remoteUserId = getRemoteUserId(samlCreds);
 		if (remoteUserId == null) {
 			throw new SpecialAuthMethodRequiredException(AuthMethod.SAML);
 		}
+		// TODO wohl falsch: zeug wie man user erzeugt steht in UserRegistrationController
+		User user = new User();
+		// das muss man machen
+		attributeExtractor.populate(user, samlCreds);
+		// und eine userid setzen (siehe AbstractUserIDRegistrationController)
+		
+		
 		
 		// probably not needed (to be done in spring security filters):
 		// remoteAuthentication.commence(command.getRe getRequest(), command.getResponse(), authException);
@@ -54,15 +66,23 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		return oaAuthorizeController.workOn(command);
 	}
 
-	private SamlRemoteUserId getRemoteUserId() {
-		SecurityContext ctx = SecurityContextHolder.getContext();
-		Object creds = ctx.getAuthentication().getCredentials();
-		if (creds instanceof SAMLCredential == false) {
+	private SamlRemoteUserId getRemoteUserId(SAMLCredential samlCreds) {
+		if (samlCreds == null) {
 			return null;
 		}
-		return attributeExtractor.getRemoteUserId((SAMLCredential) creds);
+		return attributeExtractor.getRemoteUserId(samlCreds);
 	}
 
+	private SAMLCredential getSamlCreds() {
+		SAMLCredential samlCreds;
+		SecurityContext ctx = SecurityContextHolder.getContext();
+		Object creds = ctx.getAuthentication().getCredentials();
+		if (creds instanceof SAMLCredential) {
+			samlCreds = (SAMLCredential) creds;
+		}
+		samlCreds = null;
+		return samlCreds;
+	}
 	
 
 	/**
@@ -82,15 +102,29 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 	/**
 	 * @return the attributeExtractor
 	 */
-	public SamlUserAttributeExtraction getAttributeExtractor() {
+	public SamlUserAttributeMapping getAttributeExtractor() {
 		return this.attributeExtractor;
 	}
 
 	/**
 	 * @param attributeExtractor the attributeExtractor to set
 	 */
-	public void setAttributeExtractor(SamlUserAttributeExtraction attributeExtractor) {
+	public void setAttributeExtractor(SamlUserAttributeMapping attributeExtractor) {
 		this.attributeExtractor = attributeExtractor;
+	}
+
+	/**
+	 * @return the adminLogic
+	 */
+	public LogicInterface getAdminLogic() {
+		return this.adminLogic;
+	}
+
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
 	}
 	
 }
