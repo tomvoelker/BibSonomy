@@ -60,8 +60,10 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		if (userName == null) {
 			//Throw some exception
 		}
+		user.setName(userName);
+		user.setPassword("doof");
 		this.adminLogic.createUser(user);
-		
+
 		// probably not needed (to be done in spring security filters):
 		// remoteAuthentication.commence(command.getRe getRequest(), command.getResponse(), authException);
 		
@@ -87,7 +89,7 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		SecurityContext ctx = SecurityContextHolder.getContext();
 		Object creds = ctx.getAuthentication().getCredentials();
 		if (creds instanceof SAMLCredential) {
-			samlCreds = (SAMLCredential) creds;
+			return (SAMLCredential) creds;
 		}
 		samlCreds = null;
 		return samlCreds;

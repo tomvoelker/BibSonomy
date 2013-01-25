@@ -42,6 +42,7 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 				throw new RuntimeException("exception while setting property '" + entry.getValue() + "'", ex);
 			}
 		}
+		user.setRealname("lalala hoho");
 		return remoteId;
 	}
 	
