@@ -75,6 +75,7 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 				authentication = new SessionAuthenticationToken(null, null);
 			}
 			authentication.setCreds(creds);
+			removeSessionAttribute(request, ATTRIBUTE_CREDS);
 		}
 		if (authentication != null) {
 			securityContext.setAuthentication(authentication);
@@ -112,6 +113,14 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 		}
 		
 		return session.getAttribute(attr);
+	}
+	
+	private static void removeSessionAttribute(final HttpServletRequest request, String attr) {
+		final HttpSession session = request.getSession(false);
+		if (session == null) {
+			return;
+		}
+		session.removeAttribute(attr);
 	}
 	
 	
