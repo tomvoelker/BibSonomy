@@ -288,6 +288,8 @@
 		<URL>http://www.nature.com/ajh/journal/v21/n4/abs/ajh20089a.html</URL>
 		<BibFile>NatureScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
+		<!--redirected to another service-->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_46">
 		<TestDescription>Amazon.de scraping test</TestDescription>
