@@ -48,6 +48,7 @@ import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -494,47 +495,22 @@ public class WebUtils {
 	 * @return - The redirect URL.
 	 */
 	public static URL getRedirectUrl(final URL url) {
+		HttpMethod method = new GetMethod(url.toExternalForm());
 		try {
-			URL internalUrl = url;
-			URL previousUrl = null;
-			int redirectCtr = 0;
-			while (internalUrl != null && redirectCtr < MAX_REDIRECT_COUNT) {
-				redirectCtr++;
-
-				final HttpURLConnection urlConn = (HttpURLConnection) internalUrl.openConnection();
-
-				urlConn.setAllowUserInteraction(false);
-				urlConn.setDoInput(true);
-				urlConn.setDoOutput(false);
-				urlConn.setUseCaches(false);
-				urlConn.setInstanceFollowRedirects(false);
-
-
-				/*
-				 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-				 * pages require it to download content.
-				 */
-				urlConn.setRequestProperty(USER_AGENT_HEADER_NAME , USER_AGENT_PROPERTY_VALUE);
-
-				urlConn.connect();
-
-				// get URL to redirected resource
-				previousUrl = internalUrl;
-				try {
-					internalUrl = new URL(urlConn.getHeaderField(LOCATION));
-				} catch (final MalformedURLException e) {
-					internalUrl = null;
-				}
-
-				urlConn.disconnect();
-
-			}
-
-			return previousUrl;
-		} catch (final IOException e) {
-			e.printStackTrace();
-			return null;
+			getHttpClient().executeMethod(method);
+		} catch (HttpException e) {
+		} catch (IOException e) {
+		} finally {
+			method.releaseConnection();
 		}
+		if (method.getStatusCode() != HttpStatus.SC_OK) return null;
+		URL result = null;
+		try {
+			result = new URL(method.getURI().getURI());
+		} catch (URIException e) {
+		} catch (MalformedURLException e) {
+		}
+		return result;
 	}
 	
 	/**
