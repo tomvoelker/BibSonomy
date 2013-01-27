@@ -87,6 +87,7 @@
 	            			<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
     						<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
     						<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
+    						<c:if test="${authMethod == 'SAML'}">  	 <user:login_saml/></c:if>
     					</form:form>
 					</div>
         		</c:forEach>

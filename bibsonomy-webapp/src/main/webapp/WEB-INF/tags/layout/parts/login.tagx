@@ -111,6 +111,15 @@
 						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
 	            	</div>
       			</c:if>
+      			
+      			<c:if test="${authMethod == 'SAML'}">
+					<div class="headlogin ${visibility}" id="headLogin${status.count}">
+						<form:form action="/login_saml" method="POST">
+							<input type="submit" style="margin-left: 1em" value="${login}"/>
+		            	</form:form>
+	            	</div>
+      			</c:if>
+      			
 			</div>
     	</c:forEach>
 	</div>
