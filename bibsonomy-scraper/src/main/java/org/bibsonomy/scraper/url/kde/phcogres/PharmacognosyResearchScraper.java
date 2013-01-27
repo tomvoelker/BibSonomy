@@ -122,7 +122,6 @@ public class PharmacognosyResearchScraper extends CitationManagerScraper {
 		
 		//get download link for BibTeX
 		Matcher m2 = CITATION_MANAGER_PATTERN.matcher(downloadPage);
-		System.out.println(downloadPage);
 		
 		//throw exception if download link to BibTeX not found
 		if (!m2.find())
