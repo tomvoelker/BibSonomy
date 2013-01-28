@@ -8,6 +8,8 @@ import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 
 /**
  * This class should be used by plugins. This way they don't have to implement
@@ -23,7 +25,7 @@ import org.bibsonomy.model.DiscussionItem;
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
 	@Override
-	public Runnable onPublicationInsert(final int contentId, final DBSession session) {
+	public Runnable onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
 		return null;
 	}
 
@@ -63,7 +65,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
+	public Runnable onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
 		return null;
 	}
 

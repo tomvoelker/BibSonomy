@@ -415,7 +415,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		// in field group in table bibtex, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
 		final int groupId = post.getGroups().iterator().next().getGroupId();
 		insert.setGroupId(groupId);
-		
+
+		// inform plugin
+		this.plugins.onPublicationInsert(post, session);	
+				
 		return insert;
 	}
 	

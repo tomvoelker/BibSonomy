@@ -7,6 +7,8 @@ import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way
@@ -23,14 +25,15 @@ import org.bibsonomy.model.DiscussionItem;
  */
 public interface DatabasePlugin {
 
+
 	/**
 	 * Called when a publication is inserted.
 	 * 
-	 * @param contentId
+	 * @param post
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onPublicationInsert(int contentId, DBSession session);
+	public Runnable onPublicationInsert(Post<? extends Resource> post, DBSession session);
 
 	/**
 	 * Called when a publication is deleted.
@@ -102,11 +105,11 @@ public interface DatabasePlugin {
 	/**
 	 * Called when a Bookmark is inserted.
 	 * 
-	 * @param contentId
+	 * @param post
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onBookmarkInsert(int contentId, DBSession session);
+	public Runnable onBookmarkInsert(Post<? extends Resource> post, DBSession session);
 
 	/**
 	 * Called when a Bookmark is deleted.

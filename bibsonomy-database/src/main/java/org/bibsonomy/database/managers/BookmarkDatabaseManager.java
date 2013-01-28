@@ -103,6 +103,9 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		// in field group in table bookmark, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
 		final int groupId = post.getGroups().iterator().next().getGroupId();
 		insert.setGroupId(groupId);
+
+		// inform plugins
+		this.plugins.onBookmarkInsert(post, session);		
 		
 		return insert;
 	}

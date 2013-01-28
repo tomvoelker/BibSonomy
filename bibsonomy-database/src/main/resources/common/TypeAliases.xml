@@ -66,6 +66,7 @@
 	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
 	<typeAlias alias="inboxParam"			type="org.bibsonomy.database.params.InboxParam" />
 	<typeAlias alias="loggingParam"			type="org.bibsonomy.database.params.LoggingParam" />
+	<typeAlias alias="metaDataCopyPostParam"	type="org.bibsonomy.database.params.metadata.CopyPostParam" />
 	<typeAlias alias="wikiParam"			type="org.bibsonomy.database.params.WikiParam" />
 	
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />

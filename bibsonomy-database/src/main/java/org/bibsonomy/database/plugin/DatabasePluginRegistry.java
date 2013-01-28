@@ -16,7 +16,10 @@ import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.database.plugin.plugins.DiscussionPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
 import org.bibsonomy.database.plugin.plugins.Logging;
+import org.bibsonomy.database.plugin.plugins.MetaDataPlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 
 /**
  * All database plugins are registered here.
@@ -38,6 +41,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		DEFAULT_PLUGINS.add(new BasketPlugin());
 		DEFAULT_PLUGINS.add(new GoldStandardPublicationReferencePlugin());
 		DEFAULT_PLUGINS.add(new DiscussionPlugin());
+		DEFAULT_PLUGINS.add(new MetaDataPlugin());
 	}
 	
 	/**
@@ -94,13 +98,12 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		}
 		runnable.run();
 	}
-	
+
 	@Override
-	public Runnable onPublicationInsert(final int contentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onPublicationInsert(contentId, session));
+	public Runnable onPublicationInsert(Post<? extends Resource> post, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			this.executeRunnable(plugin.onPublicationInsert(post, session));
 		}
-		
 		return null;
 	}
 
@@ -168,11 +171,10 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onBookmarkInsert(contentId, session));
+	public Runnable onBookmarkInsert(Post<? extends Resource> post, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			this.executeRunnable(plugin.onBookmarkInsert(post, session));
 		}
-
 		return null;
 	}
 

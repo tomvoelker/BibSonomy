@@ -31,9 +31,9 @@ public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 		this.pluginMock.reset();
 
 		pluginRegistry.onPublicationDelete(1, null);
-		pluginRegistry.onPublicationInsert(1, null);
+		pluginRegistry.onPublicationInsert(null, null);
 		pluginRegistry.onPublicationUpdate(1, 2, null);
-		pluginRegistry.onBookmarkInsert(1, null);
+		pluginRegistry.onBookmarkInsert(null, null);
 		pluginRegistry.onBookmarkUpdate(1, 2, null);
 		pluginRegistry.onTagRelationDelete(null, null, null, null);
 

@@ -67,6 +67,7 @@
 
 	<!-- plugins -->
 	<sqlMap resource="plugins/Logging.xml" />
+	<sqlMap resource="plugins/MetaDataPlugin.xml" />
 	<sqlMap resource="plugins/GoldStandardPublicationReference.xml" />
 	<sqlMap resource="plugins/DiscussionPlugin.xml" />
 </sqlMapConfig>

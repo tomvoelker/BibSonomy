@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePlugin;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.junit.Test;
 
 /**
@@ -61,7 +63,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	@Test
 	public void testReset() {
 		final DatabasePluginMock plugin = new DatabasePluginMock();
-		plugin.onBookmarkInsert(0, null);
+		plugin.onBookmarkInsert(null, null);
 		plugin.onPublicationUpdate(0, 1, null);
 		
 		assertTrue(plugin.isOnBookmarkInsert());
@@ -74,7 +76,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public Runnable onPublicationInsert(final int contentId, final DBSession session) {
+	public Runnable onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
 		this.onBibTexInsert = true;
 		return null;
 	}
@@ -93,7 +95,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
+	public Runnable onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
 		this.onBookmarkInsert = true;
 		return null;
 	}
