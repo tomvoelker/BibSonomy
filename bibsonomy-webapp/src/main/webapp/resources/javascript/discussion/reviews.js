@@ -125,7 +125,7 @@ function plotRatingDistribution() {
 	} else {
 		// get all ratings from all reviews
 		$('.subdiscussionItems li').not('#newReview').find('.rating').each(function() {
-			var key = $(this).data("rating");
+			var key = parseFloat($(this).data("rating"));
 			if (ratings[key]) {
 				ratings[key] += 1;
 			} else {
@@ -138,7 +138,7 @@ function plotRatingDistribution() {
 	}
 	
 	for (var i = 0; i < RATING_STEPS; i++) {
-		var key = i / STEP_RATING;
+		var key = parseFloat(i) / parseFloat(STEP_RATING);
 		var value = 0;
 		if (ratings[key]) {
 			value = ratings[key];
