@@ -638,6 +638,10 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * new post -> create
 		 */
 		try {
+			// setting copyFrom if present
+			if (present(command.getUser()))
+				post.setCopyFrom(command.getUser());
+			
 			log.debug("finally: creating a new post in the DB");
 			final String createdPost = logic.createPosts(Collections.<Post<?>>singletonList(post)).get(0);
 			
