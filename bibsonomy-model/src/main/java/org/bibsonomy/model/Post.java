@@ -126,6 +126,11 @@ public class Post<T extends Resource> implements Serializable {
 	private List<Repository> repositorys;
 
 	/**
+	 * This is the user who owns the post which should be copied.
+	 */
+	private String copyFrom;
+	
+	/**
 	 * @return the repositories
 	 */
 	public List<Repository> getRepositorys() {
@@ -284,6 +289,22 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * Get copyFrom of this post
+	 * 
+	 * @return copyFrom
+	 */
+	public String getCopyFrom() {
+		return copyFrom;
+	}
+
+	/**
+	 * @param copyFrom
+	 */
+	public void setCopyFrom(String copyFrom) {
+		this.copyFrom = copyFrom;
 	}
 
 	/**
