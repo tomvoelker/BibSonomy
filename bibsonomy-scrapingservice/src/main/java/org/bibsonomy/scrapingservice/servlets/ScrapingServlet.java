@@ -55,7 +55,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
+import org.bibsonomy.rest.renderer.impl.xml.XMLRenderer;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.KDEUrlCompositeScraper;
 import org.bibsonomy.scraper.Scraper;
