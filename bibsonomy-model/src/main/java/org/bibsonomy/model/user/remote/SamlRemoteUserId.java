@@ -10,6 +10,7 @@ public class SamlRemoteUserId implements RemoteUserId {
 	private static final long serialVersionUID = -4075334406626749850L;
 	private String identityProviderId;
 	private String userId;
+	private RemoteUserNameSpace ns;
 	
 	/**
 	 * default constructor
@@ -37,6 +38,7 @@ public class SamlRemoteUserId implements RemoteUserId {
 	 * @param identityProvider the identityProvider to set
 	 */
 	public void setIdentityProviderId(String identityProvider) {
+		this.ns = null;
 		this.identityProviderId = identityProvider;
 	}
 	/**
@@ -79,7 +81,10 @@ public class SamlRemoteUserId implements RemoteUserId {
 	
 	@Override
 	public RemoteUserNameSpace getNameSpace() {
-		return new NameSpace(this);
+		if (ns == null) {
+			ns = new NameSpace(this);
+		}
+		return ns;
 	}
 	
 	protected static class NameSpace implements RemoteUserNameSpace {
