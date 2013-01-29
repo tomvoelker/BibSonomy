@@ -28,6 +28,14 @@
 			<security:filter-chain pattern="/saml/discovery/**" filters="samlIDPDiscovery" />
 		</security:filter-chain-map>
 	</bean>
+	
+	<bean id="samlLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.SamlLoginFilter">
+		<property name="filterProcessesUrl" value="/login_saml" />
+		<property name="authenticationEntryPoint" ref="samlEntryPoint" />
+		<property name="authenticationManager" ref="samlAuthenticationManager" />
+		<property name="authenticationSuccessHandler" ref="successHandler" />
+		<property name="authenticationFailureHandler" ref="failureHandler" />
+	</bean>
 
 	<!-- Handler deciding where to redirect user after successful login -->
 	<bean id="successRedirectHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
@@ -70,6 +78,7 @@
 			</bean>
 		</property>
 	</bean>
+	
 
 	<!-- IDP Discovery Service -->
 	<bean id="samlIDPDiscovery" class="org.springframework.security.saml.SAMLDiscovery">
@@ -151,6 +160,11 @@
 		<property name="forcePrincipalAsString" value="false" />
 	</bean>
 	
+	<bean id="samlCredsAuthProvider" class="org.bibsonomy.webapp.util.spring.security.provider.SamlCredAuthProvider">
+		<property name="userDetails" ref="samlUserDetails" />
+		<property name="forcePrincipalAsString" value="false" />
+	</bean>
+	
 	<bean id="samlUserDetails" class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.MappingUserDetailsService">
 		<property name="userNameMapping">
 			<bean class="org.bibsonomy.webapp.util.spring.security.userdetailsservice.LogicInterfaceUserNameMapping">
@@ -177,7 +191,8 @@
 	<bean id="samlAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
-				<ref bean="samlAuthenticationProvider"/> 
+				<ref bean="samlAuthenticationProvider"/>
+				<ref bean="samlCredsAuthProvider"/>
 			</list>
 		</property>
 	</bean>

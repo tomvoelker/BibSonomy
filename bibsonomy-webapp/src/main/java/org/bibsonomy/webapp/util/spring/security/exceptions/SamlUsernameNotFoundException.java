@@ -23,6 +23,14 @@ public class SamlUsernameNotFoundException extends UsernameNotFoundException {
 		super(msg);
 		this.samlCreds = samlCreds;
 	}
+	
+	/**
+	 * {@link #SamlUsernameNotFoundException(String, SAMLCredential)} but with standard message
+	 * @param samlCreds credentials as received in the assertion from the idp
+	 */
+	public SamlUsernameNotFoundException(SAMLCredential samlCreds) {
+		this("SAML id not found in database", samlCreds);
+	}
 
 	/**
 	 * @return the credentials from the SAML assertion message

@@ -95,6 +95,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		log.debug("got user from session");
 		final User user = (User) o;
 
+		setFixedValuesFromUser(command, user);
 		/*
 		 * 2 = user has not been on form, yet -> fill it with user data from ID provider
 		 * 3 = user has seen the form and possibly changed data
@@ -174,6 +175,25 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		 */
 		this.requestLogic.setSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED, null);
 
+		return logOn(user);
+	}
+
+	/**
+	 * subclasses can set additional properties in the command object
+	 * @param command
+	 * @param user
+	 */
+	@SuppressWarnings("unused")
+	protected void setFixedValuesFromUser(UserIDRegistrationCommand command, User user) {
+	}
+
+	/**
+	 * log user into system and return success view
+	 * 
+	 * @param user
+	 * @return success view
+	 */
+	protected View logOn(final User user) {
 		/*
 		 * log user into system
 		 * TODO: user correct? not registerUser? (maybe the user has changed his name)
@@ -182,7 +202,9 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 
 		final Authentication authenticated = this.authenticationManager.authenticate(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authenticated);
-		this.cookieLogic.createRememberMeCookie(this.rememberMeServices, authenticated);
+		if (cookieLogic != null) {
+			this.cookieLogic.createRememberMeCookie(this.rememberMeServices, authenticated);
+		}
 
 		/*
 		 * present the success view

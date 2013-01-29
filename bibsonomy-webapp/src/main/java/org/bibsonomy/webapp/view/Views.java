@@ -369,6 +369,11 @@ public enum Views implements View {
 	 * OpenID register form prefilled with information from the OpenID provider
 	 */
 	REGISTER_USER_OPENID_PROVIDER_FORM("actions/register/openid/provider_form"),
+	
+	/**
+	 * SAML register form prefilled with information from SAML (Shibboleth) IdP server
+	 */
+	REGISTER_USER_SAML_FORM("actions/register/saml/profile_form"),
 
 	/**
 	 * LDAP register form prefilled with information from LDAP server

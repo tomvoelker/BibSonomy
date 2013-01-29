@@ -66,7 +66,7 @@ public class FilterChainProxyFactoryBean implements FactoryBean<FilterChainProxy
 	/**
 	 * all known filters
 	 */
-	private Map<AuthMethod, Filter> authFilterMap = new HashMap<AuthMethod, Filter>();
+	private Map<AuthMethod, List<Filter>> authFilterMap = new HashMap<AuthMethod, List<Filter>>();
 	private Map<AuthMethod, Filter> authRememberMeFilterMap = new HashMap<AuthMethod, Filter>();
 	private Map<AuthMethod, Filter> authPreFilterMap = new HashMap<AuthMethod, Filter>();
 
@@ -89,9 +89,9 @@ public class FilterChainProxyFactoryBean implements FactoryBean<FilterChainProxy
 				final List<Filter> preFilters = new LinkedList<Filter>();
 				final List<Filter> rememberMeFilters = new LinkedList<Filter>();
 				for (final AuthMethod method : this.config) {
-					final Filter filter = this.authFilterMap.get(method);
-					if (present(filter)) {
-						filters.add(filter);
+					final List<Filter> authFilters = this.authFilterMap.get(method);
+					if (present(authFilters)) {
+						filters.addAll(authFilters);
 					}
 						
 					final Filter preFilter = this.authPreFilterMap.get(method);
@@ -171,7 +171,7 @@ public class FilterChainProxyFactoryBean implements FactoryBean<FilterChainProxy
 	/**
 	 * @param authFilterMap the authFilterMap to set
 	 */
-	public void setAuthFilterMap(final Map<AuthMethod, Filter> authFilterMap) {
+	public void setAuthFilterMap(final Map<AuthMethod, List<Filter>> authFilterMap) {
 		this.authFilterMap = authFilterMap;
 	}
 	

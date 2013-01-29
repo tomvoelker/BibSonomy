@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.util.spring.security.userattributemapping;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.log4j.Logger;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.opensaml.saml2.core.Assertion;
@@ -18,6 +19,7 @@ import org.springframework.security.saml.SAMLCredential;
  * @version $Id$
  */
 public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCredential, SamlRemoteUserId> {
+	private static final Logger log = Logger.getLogger(SamlUserAttributeMapping.class);
 	private Map<String, String> attributeMap;
 	private String useridAttributeName;
 	
@@ -31,6 +33,12 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 	public SamlRemoteUserId populate(User user, SAMLCredential ctx) {
 		SamlRemoteUserId remoteId = getRemoteUserId(ctx);
 		user.setRemoteUserId(remoteId);
+		
+		if (log.isDebugEnabled() == true) {
+			for (Attribute a : ctx.getAttributes()) {
+				log.debug("" + a.getName() + "=" + a.getFriendlyName());
+			}
+		}
 		
 		// copy user attributes
 		for (Map.Entry<String, String> entry : attributeMap.entrySet()) {

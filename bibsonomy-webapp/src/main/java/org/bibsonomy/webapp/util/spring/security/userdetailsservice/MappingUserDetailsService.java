@@ -23,7 +23,7 @@ public class MappingUserDetailsService implements SAMLUserDetailsService {
 	private NameSpacedNameMapping<SamlRemoteUserId> userNameMapping;
 	
 	@Override
-	public Object loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
+	public UserDetails loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
 		// TODO:
 		// map credentials to bibsonomy userid
 		// if no mapping present:

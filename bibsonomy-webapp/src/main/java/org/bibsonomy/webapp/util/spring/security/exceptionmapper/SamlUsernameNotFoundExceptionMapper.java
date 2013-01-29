@@ -2,11 +2,9 @@ package org.bibsonomy.webapp.util.spring.security.exceptionmapper;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SamlUsernameNotFoundException;
 import org.bibsonomy.webapp.util.spring.security.userattributemapping.UserAttributeMapping;
-import org.opensaml.saml2.core.Attribute;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.saml.SAMLCredential;
 
@@ -15,7 +13,6 @@ import org.springframework.security.saml.SAMLCredential;
  * @version $Id$
  */
 public class SamlUsernameNotFoundExceptionMapper extends UsernameNotFoundExceptionMapper {
-	private static final Logger log = Logger.getLogger(SamlUsernameNotFoundExceptionMapper.class);
 	
 	private UserAttributeMapping<SAMLCredential, ?> attributeExtractor;
 	
@@ -29,12 +26,6 @@ public class SamlUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 		final User user = new User();
 		if (e instanceof SamlUsernameNotFoundException) {
 			final SAMLCredential ctx = ((SamlUsernameNotFoundException) e).getSamlCreds();
-
-			if (log.isDebugEnabled() == true) {
-				for (Attribute a : ctx.getAttributes()) {
-					log.debug("" + a.getName() + "=" + a.getFriendlyName());
-				}
-			}
 			attributeExtractor.populate(user, ctx);
 		}
 

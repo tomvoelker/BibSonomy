@@ -12,6 +12,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
 import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
 import org.bibsonomy.webapp.validation.UserValidator;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SAMLCredential;
@@ -49,7 +50,6 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		}
 		// TODO wohl falsch: zeug wie man user erzeugt steht in UserRegistrationController
 		User user = new User();
-		user.setRemoteUserId(remoteUserId);
 		// Set additional Attributes
 		attributeExtractor.populate(user, samlCreds);
 		// user needs his Realname here
@@ -90,15 +90,30 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		return attributeExtractor.getRemoteUserId(samlCreds);
 	}
 
-	private SAMLCredential getSamlCreds() {
-		SAMLCredential samlCreds;
-		SecurityContext ctx = SecurityContextHolder.getContext();
-		Object creds = ctx.getAuthentication().getCredentials();
+	/**
+	 * @return {@link SAMLCredential} object from the spring threadlocal, null if nonexistent
+	 */
+	public static SAMLCredential getSamlCreds() {
+		Authentication auth = getAuth();
+		if (auth == null) {
+			return null;
+		}
+		Object creds = auth.getCredentials();
 		if (creds instanceof SAMLCredential) {
 			return (SAMLCredential) creds;
 		}
-		samlCreds = null;
-		return samlCreds;
+		return null;
+	}
+
+	/**
+	 * @return {@link Authentication} object from the spring threadlocal, null if nonexistent
+	 */
+	public static Authentication getAuth() {
+		SecurityContext ctx = SecurityContextHolder.getContext();
+		if (ctx == null) {
+			return null;
+		}
+		return ctx.getAuthentication();
 	}
 	
 	private String generateUserName(final User user, SamlRemoteUserId sruid) {

@@ -29,11 +29,11 @@
 		<property name="config" ref="authConfig" />
 		<property name="authFilterMap">
 			<map key-type="org.bibsonomy.common.enums.AuthMethod">
-				<entry key="INTERNAL" value-ref="internalUsernamePasswordFilter" />
-				<entry key="LDAP" value-ref="ldapUsernamePasswordFilter" />
-				<entry key="SAML" value-ref="samlFilter" />
-				<entry key="OPENID" value-ref="openidFilter" />
-				<entry key="HTTPBASIC" value-ref="httpBasicAuthenticationFilter" />
+				<entry key="INTERNAL"><list><ref bean="internalUsernamePasswordFilter" /></list></entry>
+				<entry key="LDAP"><list><ref bean="ldapUsernamePasswordFilter" /></list></entry>
+				<entry key="SAML"><list><ref bean="samlFilter" /><ref bean="samlLoginFilter" /></list></entry>
+				<entry key="OPENID"><list><ref bean="openidFilter" /></list></entry>
+				<entry key="HTTPBASIC"><list><ref bean="httpBasicAuthenticationFilter" /></list></entry>
 			</map>
 		</property>
 		<property name="authRememberMeFilterMap">
@@ -129,6 +129,9 @@
 		<constructor-arg>
 			<map key-type="org.springframework.security.web.util.AntPathRequestMatcher">
 				<entry key="/vuFindInit" value-ref="samlEntryPoint" />
+				<entry key="/login_saml" value-ref="samlEntryPoint" />
+				<entry key="/register_saml" value-ref="samlEntryPoint" />
+				<entry key="/register_saml_success" value-ref="samlEntryPoint" />
 			</map>
 		</constructor-arg>
 		<property name="defaultEntryPoint" ref="entryPoint" />
@@ -137,11 +140,6 @@
 
 	<bean id="entryPoint" class="org.bibsonomy.webapp.util.spring.security.authentication.LoginUrlAuthenticationEntryPoint">
 		<property name="loginFormUrl" ref="loginUrl" />
-		<property name="specialEntryPointUrls">
-			<map>
-				<entry key="SAML" value="/saml/login/" />
-			</map>
-		</property>
 	</bean>
 	
 	<bean id="targetUrlParameter" class="java.lang.String">
@@ -174,7 +172,7 @@
 					<property name="redirectUrl" value="/registerLDAP?step=2"/>
 				</bean>
 				<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.SamlUsernameNotFoundExceptionMapper">
-					<property name="redirectUrl" value="/registerSAML?step=2"/>
+					<property name="redirectUrl" value="/registerSaml?step=2"/>
 					<property name="attributeExtractor" ref="samlAttributeExtractor" />
 				</bean>
 				<bean class="org.bibsonomy.webapp.util.spring.security.exceptionmapper.OpenIdUsernameNotFoundExceptionMapper">
