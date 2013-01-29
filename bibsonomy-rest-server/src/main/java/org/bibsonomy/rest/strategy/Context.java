@@ -24,7 +24,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.util.URLDecodingStringTokenizer;
-import org.bibsonomy.rest.validation.ServersideModelValidator;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -41,8 +40,6 @@ public final class Context {
 		Context.urlHandlers.put(RESTConfig.POSTS_URL, new PostsHandler());
 		Context.urlHandlers.put(RESTConfig.CONCEPTS_URL, new ConceptsHandler());
 		Context.urlHandlers.put(RESTConfig.SYNC_URL, new SynchronizationHandler());
-
-		RESTConfig.MODEL_VALIDATOR = ServersideModelValidator.getInstance();
 	}
 
 	private final Reader doc;
@@ -112,7 +109,7 @@ public final class Context {
 		this.items = items;
 		this.additionalInfos = additionalInfos;
 
-		if (url == null || "/".equals(url)) {
+		if ((url == null) || "/".equals(url)) {
 			throw new AccessDeniedException("It is forbidden to access '/'.");
 		}
 
@@ -176,7 +173,7 @@ public final class Context {
 	 *         browser for example
 	 */
 	public boolean apiIsUserAgent(final String userAgent) {
-		return userAgent != null && userAgent.startsWith(RESTConfig.API_USER_AGENT);
+		return (userAgent != null) && userAgent.startsWith(RESTConfig.API_USER_AGENT);
 	}
 
 	/**
@@ -186,11 +183,11 @@ public final class Context {
 	 */
 	public List<String> getTags(final String parameterName) {
 		final List<String> tags = new LinkedList<String>();
-		final String param = getStringAttribute(parameterName, null);
+		final String param = this.getStringAttribute(parameterName, null);
 		if ((param != null) && (param.length() > 0)) {
 			final String[] params = param.split("\\s");
-			for (int i = 0; i < params.length; ++i) {
-				tags.add(params[i]);
+			for (final String param2 : params) {
+				tags.add(param2);
 			}
 		}
 		return tags;
