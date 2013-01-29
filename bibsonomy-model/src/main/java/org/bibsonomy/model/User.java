@@ -883,6 +883,13 @@ public class User implements Serializable {
 	}
 	
 	/**
+	 * removes all remoteUserIds from this user
+	 */
+	public void clearRemoteUserIds() {
+		this.remoteUserIds.clear();
+	}
+	
+	/**
 	 * @param remoteId remote Id to be added  - currently only SAML is supported via this property
 	 * @return whether remoteId was already attached to this user
 	 */
