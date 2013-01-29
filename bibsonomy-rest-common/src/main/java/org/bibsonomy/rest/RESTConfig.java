@@ -23,7 +23,6 @@
 
 package org.bibsonomy.rest;
 
-import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
  * DO NOT CHANGE any constant values after a release
@@ -34,10 +33,6 @@ import org.bibsonomy.rest.validation.ModelValidator;
 public final class RESTConfig {
 	private RESTConfig() {
 	}
-
-	@Deprecated
-	// TODO: inject via spring beans
-	public static ModelValidator MODEL_VALIDATOR = null;
 
 	public static final String POSTS_URL = "posts";
 

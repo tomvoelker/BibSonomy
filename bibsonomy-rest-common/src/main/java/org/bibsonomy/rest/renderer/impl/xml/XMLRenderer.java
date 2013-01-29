@@ -21,12 +21,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.rest.renderer.impl;
+package org.bibsonomy.rest.renderer.impl.xml;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
 
 /**
  * This class creates xml documents valid to the xsd schema and vice-versa.

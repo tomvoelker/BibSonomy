@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.rest.renderer.impl.JSONRenderer;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
+import org.bibsonomy.rest.renderer.impl.json.JSONRenderer;
+import org.bibsonomy.rest.renderer.impl.xml.XMLRenderer;
 
 /**
  * A factory to get implementations of the
@@ -51,9 +51,9 @@ public class RendererFactory {
 
 	public RendererFactory(final UrlRenderer urlRenderer) {
 		this.urlRenderer = urlRenderer;
-		renderers = new HashMap<RenderingFormat, Renderer>();
-		renderers.put(RenderingFormat.JSON, new JSONRenderer(urlRenderer));
-		renderers.put(RenderingFormat.XML, new XMLRenderer(urlRenderer));
+		this.renderers = new HashMap<RenderingFormat, Renderer>();
+		this.renderers.put(RenderingFormat.JSON, new JSONRenderer(urlRenderer));
+		this.renderers.put(RenderingFormat.XML, new XMLRenderer(urlRenderer));
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class RendererFactory {
 	 * @param renderer
 	 */
 	public void addRenderer(final RenderingFormat renderingFormat, final Renderer renderer) {
-		renderers.put(renderingFormat, renderer);
+		this.renderers.put(renderingFormat, renderer);
 	}
 
 	/**
@@ -78,12 +78,12 @@ public class RendererFactory {
 			throw new InternServerException("RenderingFormat is null");
 		}
 
-		if (renderers.containsKey(renderingFormat)) {
-			return renderers.get(renderingFormat);
+		if (this.renderers.containsKey(renderingFormat)) {
+			return this.renderers.get(renderingFormat);
 		}
 
 		// the default is the XML renderer
-		return renderers.get(RenderingFormat.XML);
+		return this.renderers.get(RenderingFormat.XML);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class RendererFactory {
 	 * @return the urlRenderer
 	 */
 	public UrlRenderer getUrlRenderer() {
-		return urlRenderer;
+		return this.urlRenderer;
 	}
 
 	/**

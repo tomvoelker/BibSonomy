@@ -21,34 +21,30 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.rest.renderer.impl;
+package org.bibsonomy.rest.renderer.impl.json;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.Collections;
+import static org.junit.Assert.assertEquals;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.PropertyException;
+import java.io.IOException;
+import java.io.StringReader;
 
 import net.sf.json.test.JSONAssert;
 
-import org.bibsonomy.rest.renderer.Renderer;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.rest.renderer.AbstractRenderer;
+import org.bibsonomy.rest.renderer.AbstractRendererTest;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.ObjectFactory;
-
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.api.json.JSONJAXBContext;
-import com.sun.jersey.api.json.JSONMarshaller;
+import org.bibsonomy.rest.renderer.impl.json.JSONRenderer;
+import org.bibsonomy.testutil.TestUtils;
+import org.junit.Test;
 
 /**
  * @author dzo
  * @version $Id$
  */
-public class JSONRendererTest extends JAXBRendererTest {
-	
+public class JSONRendererTest extends AbstractRendererTest {
 	private static final JSONRenderer RENDERER = new JSONRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 
 	@Override
@@ -67,20 +63,25 @@ public class JSONRendererTest extends JAXBRendererTest {
 	}
 
 	@Override
-	public Renderer getRenderer() {
+	public AbstractRenderer getRenderer() {
 		return RENDERER;
-	}
-
-	@Override
-	protected void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws JAXBException, PropertyException, FileNotFoundException {
-		final JSONJAXBContext jc = new JSONJAXBContext(JSONConfiguration.natural().build(), JAXBRenderer.JAXB_PACKAGE_DECLARATION, this.getClass().getClassLoader(), Collections.<String, Object>emptyMap());
-		final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(bibXML);
-		final JSONMarshaller marshaller = (JSONMarshaller) jc.createMarshaller();
-		marshaller.marshallToJSON(webserviceElement, new FileOutputStream(tmpFile));
 	}
 
 	@Override
 	protected String getQuotingTestString() {
 		return "testen\"test\\";
+	}
+	
+	/**
+	 * @throws IOException
+	 */
+	@Test
+	public void testParsePostFromFile() throws IOException {
+		final String file = TestUtils.readEntryFromFile("jsonrenderer/ParsePost.json");
+		final Post<? extends Resource> post = RENDERER.parsePost(new StringReader(file));
+		assertEquals("Test", post.getDescription());
+		assertEquals(2, post.getTags().size());
+		final BibTex publication = (BibTex) post.getResource();
+		assertEquals("Test JSON Post", publication.getTitle());
 	}
 }

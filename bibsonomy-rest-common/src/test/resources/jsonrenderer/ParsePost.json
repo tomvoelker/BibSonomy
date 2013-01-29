@@ -1,0 +1,28 @@
+{
+    "post": {
+        "bibtex": {
+            "author": "Author, Test", 
+            "bibtexKey": "test", 
+            "entrytype": "test", 
+            "title": "Test JSON Post", 
+            "year": "2004"
+        }, 
+        "group": [
+            {
+                "name": "public"
+            }
+        ], 
+        "tag": [
+            {
+                "name": "tag1"
+            }, 
+            {
+                "name": "tag2"
+            }
+        ], 
+        "user": {
+            "name": "testuser42"
+        },
+        "description" : "Test"
+    }
+}

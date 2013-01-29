@@ -21,31 +21,21 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.rest.renderer.impl;
+package org.bibsonomy.rest.renderer.impl.xml;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-
-import org.bibsonomy.rest.renderer.Renderer;
+import org.bibsonomy.rest.renderer.AbstractRenderer;
+import org.bibsonomy.rest.renderer.AbstractRendererTest;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
-import org.bibsonomy.rest.renderer.xml.ObjectFactory;
+import org.bibsonomy.rest.renderer.impl.xml.XMLRenderer;
 import org.custommonkey.xmlunit.XMLAssert;
 
 /**
  * @author dzo
  * @version $Id$
  */
-public class XMLRendererTest extends JAXBRendererTest {
+public class XMLRendererTest extends AbstractRendererTest {
 	
-	private final static Renderer RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
+	private final static XMLRenderer RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 
 	@Override
 	public void compare(final String expected, final String actual) throws Exception {
@@ -63,17 +53,8 @@ public class XMLRendererTest extends JAXBRendererTest {
 	}
 
 	@Override
-	public Renderer getRenderer() {
+	public AbstractRenderer getRenderer() {
 		return RENDERER;
-	}
-
-	@Override
-	protected void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws JAXBException, PropertyException, FileNotFoundException {
-		final JAXBContext jc = JAXBContext.newInstance(JAXBRenderer.JAXB_PACKAGE_DECLARATION);
-		final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(bibXML);
-		final Marshaller marshaller = jc.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		marshaller.marshal(webserviceElement, new FileOutputStream(tmpFile));
 	}
 
 	@Override

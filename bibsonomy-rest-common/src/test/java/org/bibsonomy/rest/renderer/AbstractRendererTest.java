@@ -21,17 +21,18 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.rest.renderer.impl;
+package org.bibsonomy.rest.renderer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
@@ -40,8 +41,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.PropertyException;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -55,11 +55,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
-import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
@@ -78,8 +78,9 @@ import org.junit.Test;
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class JAXBRendererTest {
-
+public abstract class AbstractRendererTest {
+	private static final String XML_IS_INVALID_MSG = ModelValidationUtils.DOCUMENT_NOT_VALID_ERROR_MESSAGE;
+	
 	private static final String GOLD_STANDARD_PUBLICATION_ENTRYTYPE = "research report";
 	private static final String GOLD_STANDARD_PUBLICATION_BIBTEX_KEY = "doe2004";
 	private static final String GOLD_STANDARD_PUBLICATION_TITLE = "The ten famoust";
@@ -99,7 +100,7 @@ public abstract class JAXBRendererTest {
 	/**
 	 * @return the renderer
 	 */
-	public abstract Renderer getRenderer();
+	public abstract AbstractRenderer getRenderer();
 	
 	/**
 	 * method that compares the expected and the actual serialized result
@@ -337,7 +338,9 @@ public abstract class JAXBRendererTest {
 		assertEquals(GOLD_STANDARD_PUBLICATION_YEAR, publication.getYear());
 	}
 
-	protected abstract void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws JAXBException, PropertyException, FileNotFoundException;
+	protected void marshalToFile(final BibsonomyXML bibXML, final File tmpFile) throws Exception {
+		this.getRenderer().serialize(new FileWriter(tmpFile), bibXML);
+	}
 
 	@Test
 	public void testSerializeTags() throws Exception {
@@ -651,6 +654,127 @@ public abstract class JAXBRendererTest {
 	}
 
 	protected abstract String getQuotingTestString();
+
+	@Test
+	public void testCreateUser() {
+		// check invalid user
+		final UserType xmlUser = new UserType();
+		try {
+			this.getRenderer().createUser(xmlUser);
+			fail("exception should have been thrown.");
+		} catch (final InvalidModelException e) {
+			assertEquals("wrong exception thrown", XML_IS_INVALID_MSG + "username is missing in element 'user'", e.getMessage());
+		}
+
+		// check valid user
+		xmlUser.setName("test");
+		final User user = this.getRenderer().createUser(xmlUser);
+		assertEquals("model not correctly initialized", "test", user.getName());
+	}
+
+	@Test
+	public void testCreateGroup() {
+		// check invalid group
+		final GroupType xmlGroup = new GroupType();
+		try {
+			this.getRenderer().createGroup(xmlGroup);
+			fail("exception should have been thrown.");
+		} catch (final InvalidModelException e) {
+			assertEquals("wrong exception thrown", XML_IS_INVALID_MSG + "groupname is missing in element 'group'", e.getMessage());
+		}
+
+		// check valid group
+		xmlGroup.setName("test");
+		xmlGroup.setRealname("TestGroup");
+		xmlGroup.setHomepage("http://www.example.com/");
+		final Group group = this.getRenderer().createGroup(xmlGroup);
+		
+		assertEquals("model not correctly initialized", "test", group.getName());
+		assertEquals("model not correctly initialized", "http://www.example.com/", group.getHomepage().toString());
+		assertEquals("model not correctly initialized", "TestGroup", group.getRealname());
+	}
+
+	@Test
+	public void testCreateTag() {
+		// check invalid tag
+		final TagType xmlTag = new TagType();
+		try {
+			this.getRenderer().createTag(xmlTag);
+		} catch (final InvalidModelException e) {
+			assertEquals("wrong exception thrown", XML_IS_INVALID_MSG + "tag name is missing in element 'tag'", e.getMessage());
+		}
+
+		// check valid tag
+		xmlTag.setName("foo");
+		Tag tag = this.getRenderer().createTag(xmlTag);
+		assertTrue("tag not correctly initailized", "foo".equals(tag.getName()));
+		xmlTag.setGlobalcount(BigInteger.ONE);
+		xmlTag.setUsercount(BigInteger.TEN);
+		tag = this.getRenderer().createTag(xmlTag);
+		assertEquals("tag not correctly initailized", 1, tag.getGlobalcount());
+		assertEquals("tag not correctly initailized", 10, tag.getUsercount());
+	}
+
+	@Test
+	public void testCreatePost() throws DatatypeConfigurationException, PersonListParserException {
+		// check invalid posts
+		final PostType xmlPost = new PostType();
+		final DatatypeFactory dataFact = DatatypeFactory.newInstance();		
+		xmlPost.setPostingdate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));
+		// 2011/10/6, fei: deactivated test, as system tags are hidden and thus posts without tags are valid
+		// checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "no tags specified");
+		final TagType xmlTag = new TagType();
+		xmlPost.getTag().add(xmlTag);
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "user is missing");
+		final UserType xmlUser = new UserType();
+		xmlUser.setName("tuser");
+		xmlPost.setUser(xmlUser);
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
+		final BookmarkType xmlBookmark = new BookmarkType();
+		xmlPost.setBookmark(xmlBookmark);
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
+		xmlTag.setName("testtag");
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
+		xmlBookmark.setUrl("http://www.google.de");
+		xmlBookmark.setTitle("Google search engine");
+		xmlPost.setBookmark(xmlBookmark);
+		xmlPost.setBibtex(new BibtexType());
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "only one resource type is allowed inside element 'post'");
+		xmlPost.setBibtex(null);
+
+		// check valid post with bookmark
+		Post<? extends Resource> post = this.getRenderer().createPost(xmlPost);
+		assertEquals("model not correctly initialized", "tuser", post.getUser().getName());
+		assertTrue("model not correctly initialized", post.getResource() instanceof Bookmark);
+		assertEquals("model not correctly initialized", "http://www.google.de", ((Bookmark) post.getResource()).getUrl());
+		assertEquals("model not correctly initialized", "testtag", post.getTags().iterator().next().getName());
+
+		xmlPost.setBookmark(null);
+		final BibtexType xmlBibtex = new BibtexType();
+		xmlPost.setBibtex(xmlBibtex);
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
+		xmlBibtex.setTitle("foo bar");
+		xmlBibtex.setYear("2005");
+		xmlBibtex.setBibtexKey("myBibtexKey");
+		xmlBibtex.setEntrytype("inproceedings");
+		xmlBibtex.setAuthor("Hans Dampf");
+
+		// check valid post with bibtex
+		post = this.getRenderer().createPost(xmlPost);
+		assertEquals("model not correctly initialized", "tuser", post.getUser().getName());
+		assertTrue("model not correctly initialized", post.getResource() instanceof BibTex);
+		assertEquals("model not correctly initialized", "foo bar", ((BibTex) post.getResource()).getTitle());
+		assertEquals("model not correctly initialized", "testtag", post.getTags().iterator().next().getName());
+	}
+
+	private void checkInvalidPost(final PostType xmlPost, final String exceptionMessage) throws PersonListParserException {
+		try {
+			this.getRenderer().createPost(xmlPost);
+			fail("exception should have been thrown.");
+		} catch (final InvalidModelException e) {
+			assertEquals("wrong exception thrown", exceptionMessage, e.getMessage());
+		}
+	}
 	
 	private BibTex createPublication() {
 		final BibTex publication = new BibTex();

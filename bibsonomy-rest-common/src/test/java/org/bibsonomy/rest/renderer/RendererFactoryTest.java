@@ -26,8 +26,8 @@ package org.bibsonomy.rest.renderer;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.rest.renderer.impl.JSONRenderer;
-import org.bibsonomy.rest.renderer.impl.XMLRenderer;
+import org.bibsonomy.rest.renderer.impl.json.JSONRenderer;
+import org.bibsonomy.rest.renderer.impl.xml.XMLRenderer;
 import org.junit.Test;
 
 /**
@@ -40,15 +40,15 @@ public class RendererFactoryTest {
 	
 	@Test
 	public void testGetRenderer() {
-		assertTrue(rendererFactory.getRenderer(RenderingFormat.XML) instanceof XMLRenderer);
-		assertTrue(rendererFactory.getRenderer(RenderingFormat.PDF) instanceof XMLRenderer);
-		assertTrue(rendererFactory.getRenderer(RenderingFormat.APP_XML) instanceof XMLRenderer);
+		assertTrue(this.rendererFactory.getRenderer(RenderingFormat.XML) instanceof XMLRenderer);
+		assertTrue(this.rendererFactory.getRenderer(RenderingFormat.PDF) instanceof XMLRenderer);
+		assertTrue(this.rendererFactory.getRenderer(RenderingFormat.APP_XML) instanceof XMLRenderer);
 		
-		assertTrue(rendererFactory.getRenderer(RenderingFormat.JSON) instanceof JSONRenderer);
+		assertTrue(this.rendererFactory.getRenderer(RenderingFormat.JSON) instanceof JSONRenderer);
 	}
 	
 	@Test(expected = InternServerException.class)
 	public void wrongUsageGetRenderer() {
-		rendererFactory.getRenderer(null);
+		this.rendererFactory.getRenderer(null);
 	}
 }
