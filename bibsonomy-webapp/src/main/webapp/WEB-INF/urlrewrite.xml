@@ -821,10 +821,16 @@
 		<set type="parameter" name="requestedSearch">$1</set>
 		<set type="parameter" name="requestedTags">$2</set>		
 		<to last="true">/search</to>
-	</rule>-->
+	</rule>
 	<rule>
 		<name>/search/SEARCH</name>
 		<from>^/+search/+([^/]+)$</from>
+		<set type="parameter" name="requestedSearch">$1</set>
+		<to last="true">/search</to>
+	</rule>-->
+	<rule>
+		<name>/search/SEARCH</name>
+		<from>^/+search/(.+)$</from>
 		<set type="parameter" name="requestedSearch">$1</set>
 		<to last="true">/search</to>
 	</rule>
