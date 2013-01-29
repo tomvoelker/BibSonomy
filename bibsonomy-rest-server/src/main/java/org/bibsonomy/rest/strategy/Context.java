@@ -183,11 +183,11 @@ public final class Context {
 	 */
 	public List<String> getTags(final String parameterName) {
 		final List<String> tags = new LinkedList<String>();
-		final String param = this.getStringAttribute(parameterName, null);
-		if ((param != null) && (param.length() > 0)) {
-			final String[] params = param.split("\\s");
-			for (final String param2 : params) {
-				tags.add(param2);
+		final String joinParams = this.getStringAttribute(parameterName, null);
+		if ((joinParams != null) && (joinParams.length() > 0)) {
+			final String[] params = joinParams.split("\\s");
+			for (final String param : params) {
+				tags.add(param);
 			}
 		}
 		return tags;
