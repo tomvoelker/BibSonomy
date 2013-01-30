@@ -219,6 +219,7 @@
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat6-maven-plugin</artifactId>
+        				<version>2.0</version>
 						<configuration>
 							<server>tomcat_puma</server>
 							<url>http://dev.puma.uni-kassel.de:8080/manager</url>
@@ -244,6 +245,7 @@
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat6-maven-plugin</artifactId>
+        				<version>2.0</version>
 						<configuration>
 							<server>tomcat_test_puma_kassel</server>
 							<url>http://test.kassel.puma.stefani.biz:8080/manager</url>
@@ -269,6 +271,7 @@
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat6-maven-plugin</artifactId>
+        				<version>2.0</version>
 						<configuration>
 							<server>tomcat_test_puma_frankfurt</server>
 							<url>http://test.frankfurt.puma.stefani.biz:8080/manager</url>
@@ -294,6 +297,7 @@
 					<plugin>
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat6-maven-plugin</artifactId>
+        				<version>2.0</version>
 						<configuration>
 							<server>tomcat_wuerzburg</server>
 							<url>http://wue.biblicious.org:8080/manager</url>
