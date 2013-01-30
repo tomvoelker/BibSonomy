@@ -60,9 +60,6 @@
 	<security:http use-expressions="true" entry-point-ref="delegatingEntryPoint" auto-config="false" security-context-repository-ref="contextRepository">		
 		<!-- login -->
 		<security:intercept-url pattern="/login" access="isAnonymous()" />
-		<!-- 
-		<security:intercept-url pattern="/vuFindInit" access="isAnonymous()" />
-		 -->
 		
 		<!-- restrict admin pages to admins -->
 		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />

@@ -70,15 +70,24 @@
 		<constructor-arg type="java.lang.String" value="${auth.saml.keystore.key.alias}" />
 	</bean>
 
-	<!-- Entry point to initialize authentication, default values taken from properties file -->
-	<bean id="samlEntryPoint" class="org.springframework.security.saml.SAMLEntryPoint">
-		<property name="defaultProfileOptions">
-			<bean class="org.springframework.security.saml.websso.WebSSOProfileOptions">
-				<property name="includeScoping" value="false" />
+	<bean id="samlEntryPoint" class="org.bibsonomy.webapp.util.spring.factorybeans.PropertyMatchFactoryBean">
+		<property name="checkProperty" value="${auth.order}"/>
+		<property name="expected" value="saml"/>
+		<property name="successInstance">
+			<bean class="org.springframework.security.saml.SAMLEntryPoint">
+				<property name="defaultProfileOptions">
+					<bean class="org.springframework.security.saml.websso.WebSSOProfileOptions">
+						<property name="includeScoping" value="false" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<property name="failInstance">
+			<bean class="org.bibsonomy.webapp.util.spring.security.entrypoints.UnsupportedAuthenticationMethodDummyEntryPoint">
+				<property name="authMethod" value="SAML"/>
 			</bean>
 		</property>
 	</bean>
-	
 
 	<!-- IDP Discovery Service -->
 	<bean id="samlIDPDiscovery" class="org.springframework.security.saml.SAMLDiscovery">
@@ -188,7 +197,10 @@
 				<!-- TODO -->
 			</map>
 		</property>
-		<property name="useridAttributeName" value="todo"/>
+		<property name="useridAttributeName" value="${auth.saml.attr.userId}"/>
+		<!-- 
+		<property name="useridAttributeName" value="de.hebis.userid"/>
+		 -->
 	</bean>
 	
 	<bean id="openidAuthenticationUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetails.OpenIdAuthenticationUserDetailsService">

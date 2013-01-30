@@ -23,6 +23,9 @@ public class SpecialAuthMethodRequiredException extends AccessDeniedException {
 
 	private static final long serialVersionUID = -4024089851754389755L;
 
+	/**
+	 * @return type of the authentication that is required
+	 */
 	public AuthMethod getRequiredAuthMethod() {
 		return this.requiredAuthMethod;
 	}

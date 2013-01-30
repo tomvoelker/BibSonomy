@@ -128,8 +128,8 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 	
 	private void setLoginUser(final HttpServletRequest request, final Authentication authentication) {
 		if (this.authenticationTrustResolver.isAnonymous(authentication)) {
-            return;
-        }
+			return;
+		}
 		
 		/*
 		 * If an authentication is present, we store the user name in the 
