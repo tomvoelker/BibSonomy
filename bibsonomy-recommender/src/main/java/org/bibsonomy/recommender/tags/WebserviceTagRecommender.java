@@ -33,13 +33,14 @@ import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.springframework.beans.factory.DisposableBean;
 
 /**
  * Class for encapsulating webservice queries to recommenders
  * @author fei
  * @version $Id$
  */
-public class WebserviceTagRecommender implements TagRecommenderConnector {
+public class WebserviceTagRecommender implements TagRecommenderConnector, DisposableBean {
 	final Log log = LogFactory.getLog(WebserviceTagRecommender.class);
 	
 	/** url map for the getRecommendation method */
@@ -298,5 +299,13 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		// all done.
 		// log.debug("Got response: " + new String(responseBody));
 		return input;
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		// needed to prevent a failing spring-context to start more and more threads
+		if (idleConnectionHandler != null) {
+			idleConnectionHandler.shutdown();
+		}
 	}
 }
