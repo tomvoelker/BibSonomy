@@ -236,7 +236,7 @@
 			<activation>
 				<property>
 					<name>deploy-to</name>
-					<value>test-puma-ks</value>
+					<value>test_puma_ks</value>
 				</property>
 			</activation>
 			<build>
@@ -261,7 +261,7 @@
 			<activation>
 				<property>
 					<name>deploy-to</name>
-					<value>test-puma-ff</value>
+					<value>test_puma_ff</value>
 				</property>
 			</activation>
 			<build>
@@ -270,7 +270,7 @@
 						<groupId>org.apache.tomcat.maven</groupId>
 						<artifactId>tomcat6-maven-plugin</artifactId>
 						<configuration>
-							<server>tomcat_test_puma_kassel</server>
+							<server>tomcat_test_puma_frankfurt</server>
 							<url>http://test.frankfurt.puma.stefani.biz:8080/manager</url>
 						</configuration>
 					</plugin>
