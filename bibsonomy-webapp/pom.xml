@@ -214,19 +214,10 @@
 					<value>puma</value>
 				</property>
 			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat6-maven-plugin</artifactId>
-        				<version>2.0</version>
-						<configuration>
-							<maven.tomcat.server>tomcat_puma</maven.tomcat.server>
-							<maven.tomcat.url>http://dev.puma.uni-kassel.de:8080/manager</maven.tomcat.url>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
+			<properties>
+				<maven.tomcat.server>tomcat_puma</maven.tomcat.server>
+				<maven.tomcat.url>http://dev.puma.uni-kassel.de:8080/manager</maven.tomcat.url>
+			</properties>
 		</profile>
 		<profile>
 			<id>deploy-to-test-puma-ks</id>
