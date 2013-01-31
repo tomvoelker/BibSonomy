@@ -144,6 +144,16 @@ public class UserUtils {
 		final String prepareStatement = user.getName() + user.getIPAddress() + user.getApiKey() + new String(generateRandom());
 		return HashUtils.getMD5Hash(prepareStatement.getBytes());
 	}
+	
+	/**
+	 * @return a random password (e.g. for openid and saml users)
+	 */
+	public static String generateRandomPassword() {
+		final byte[] bytes = new byte[16];
+		new Random().nextBytes(bytes);
+		final String randomPassword = HashUtils.getMD5Hash(bytes);
+		return randomPassword;
+	}
 
 	/**
 	 * Helper function to get a list of group IDs from the user's list of groups
