@@ -17,6 +17,7 @@ var EDIT_COMMENT_FORM_ID = 'editcomment';
 var EDIT_FORM_SELECTOR = '#' + EDIT_COMMENT_FORM_ID;
 
 var CREATE_REVIEW_LINKS_SELECTOR = 'a.createReview';
+var COMMENT_CREATE_FORM = '#createCommentInstance';
 var REVIEW_CREATE_FORM_SELECTOR = 'form.createreview';
 
 var ANONYMOUS_CLASS = 'anonymous';
@@ -43,6 +44,11 @@ $(function() {
 	if ($(REVIEW_OWN_SELECTOR).length > 0) {
 		// user has reviewed this resource hide all create review forms
 		removeReviewActions();
+		$(COMMENT_CREATE_FORM).show();
+		
+		$(document).ready(function() {
+			createStandaloneReply($("#createCommentInstance"));
+		});
 	}
 	
 	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
@@ -68,24 +74,41 @@ $(function() {
 
 });
 
-function showAppendixForm(element) {
-	var parent = element.parents(".fsOuter");
-	var frame = element.parent().next(".discussionAdditionalControls");
+function createStandaloneReply(parent) {
+		removeAllOtherDiscussionForms();
+		var parentHash = $(".discussion_all").find(".details").find('.info').data(DISCUSSIONITEM_DATA_KEY);
+		var form = parent.find("form");
+		form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
+		
+		// bind some actions (submit, group switch)
+		form.submit(createComment);
+		form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
+		addAutocompletionToLinkBox(form);
+}
+
+function showAppendixForm(o) {
+	
+	var parent = o.target.parents(".fsOuter");
+	var frame = o.target.parent().parent().children(".discussionAdditionalControls");
 	
 	if(frame[0]==undefined) return;
-	if(frame.css("display") != "none") return frame.hide();
+	if(frame.css("display") != "none") {o.target.removeClass("linkButton").prev().hide().parent().css("z-index",0); return frame.hide();}
+	o.target.addClass("linkButton").parent().css("z-index",5);
 	var left = (parent.position().left+parent.width()-frame.width());
-	var gap = left - element.position().left;
-	var controlsContainer = frame.children(".controlsContainer");
-	
+	var gap = left - o.target.position().left;
+	var controlsContainer = o.target.parent().children(".controlsContainer");
+
 	if(gap > 0) {
 		left -= gap;
 		frame.width(frame.width()+gap);
 	}
-	
+
 	frame.height((parent.height()+4))
-	frame.css({"top":(element.position().top-9)+"px","left":(left-9)+"px"}).show();
-	controlsContainer.css("left", (element.offset().left-controlsContainer.width()-25));
+	frame.css({"top":(o.target.position().top-9)+"px","left":(left-9)+"px"}).show();
+	if(!controlsContainer.hasClass("fixedContainer"))
+		controlsContainer.css({"margin-left": "-"+((controlsContainer.width()-o.target.width())/2), "margin-top":"-"+(controlsContainer.height()+o.target.height()+10)+"px"});
+	controlsContainer.show();
+	if(o.callback!=undefined) o.callback({targetFrame:frame, menuItem:o.target, controlsContainer: controlsContainer});
 }
 
 $(document).ready(function() {
@@ -95,21 +118,41 @@ $(document).ready(function() {
 	$('.textAreaAutoresize').each(function() {
 		$(this).autosize({}).focus(showMenu);
 	});
-	var ratingElement = $('.reviewrating').stars({split:2});
-	if(ratingElement.hasClass('discussionStarsContainer')) ratingElement.stars("select", 5.0);
+	var reviewRating = $('.reviewrating');
+	reviewRating.stars({split:2});
 });
 
-function showMenu(e) {
-	$(e.target).unbind("focus", showMenu).removeClass('textAreaWithMinHeight').height('').parent().parent().parent();
-	var parent = $(e.target).unbind("focus", showMenu).parent().parent().parent();
-	var frames = ["discussionControlsFrame", "discussionPostbuttonFrame"];
-	for(var i = 0; i < frames.length; i++)
-		parent.children("."+frames[i]).css("display", "block").hide().fadeIn();
-
+function setUpLinkbox(o) {
+	var textArea = o.targetFrame.parents('.fsOuter').children('.textBoxContainer').find(".textAreaAutoresize");
+	var callback = function() {
+		textArea.css({"z-index":"","position":""});
+		o.menuItem.unbind("click", callback);
+	};
+	
+	textArea.css({"z-index":"5","position":"relative"});
+	
+	o.menuItem.bind("click", callback);
+	var input = o.controlsContainer.find('input');
+	offleft = parseInt(input.width())-parseInt(o.menuItem.width());
+	offleft +=parseInt(o.menuItem.width())+8;
+	input.trigger("focus").css({"margin-left": "-"+offleft+"px","margin-top":"-2px"});
+	
+	o.menuItem.css("position","");
 }
 
-//###########################################################################
-
+function showMenu(e) {
+	$(e.target).unbind("focus", showMenu).removeClass('textAreaWithMinHeightSmall').addClass('textAreaWithMinHeightLarge').height('').parent().parent().parent();
+	
+	var parent = $(e.target).unbind("focus", showMenu).parent().parent().parent();
+	var frames = ["discussionControlsFrame", "discussionPostbuttonFrame"];
+	var rating = getOwnReviewRating!=undefined && !isNaN((rating = getOwnReviewRating()))?parseFloat(rating):5;
+	var reviewRating = parent.find(".reviewrating");
+	
+	for(var i = 0; i < frames.length; i++)
+		parent.children("."+frames[i]).css("display", "block").hide().fadeIn();
+	if(!reviewRating.hasClass('ratingDisabled'))	
+		reviewRating.stars("select", rating.toFixed(1));
+}
 
 function hasGoldstandardCreationPermission() {
 	if (!pub) {
@@ -142,7 +185,7 @@ function showDiscussion() {
 function removeAllOtherDiscussionForms() {
 	$(EDIT_FORM_SELECTOR).remove();
 	$(REVIEW_UPDATE_FORM_SELECTOR).hide();
-	$(REVIEW_CREATE_FORM_SELECTOR).parent().hide();
+	//$(REVIEW_CREATE_FORM_SELECTOR).parent().hide();
 	$(REPLY_FORM_SELECTOR).remove();
 }
 
@@ -530,6 +573,3 @@ function highlightMatches(text, input) {
 function highlightMatch(text, term) {
 	return text.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
 };
-
-
-

@@ -128,6 +128,10 @@ ul.discussionitemMenu li:first-child {
 	white-space: pre-wrap;
 }
 
+.reviewTextBox {
+	margin-right:2px;
+}
+
 .fsform {
 	margin-top: 0.5em;
 }
@@ -195,11 +199,32 @@ h3 {
 		z-index: 100;
 }
 
+.textBoxContainer {
+	float:right;
+	width:94%;
+	margin-top:0px!important;
+	margin-bottom:0px!important;
+}
+
 .discussionAdditionalControls {
 	position: absolute;
 	display:none;
-	background: rgba(255, 255, 255, 0.6);
+	background: rgba(255, 255, 255, 0.8);
 	padding:10px;
+	z-index:4;
+}
+
+.controlsContainer {
+	position:relative;
+	display:none;
+}
+
+.hoveringControl {
+	margin-left:5px;
+	margin-right:10px; 
+	cursor:pointer;
+	position:relative;
+	z-index:0;
 }
 
 .discussionBox {
@@ -239,7 +264,9 @@ h3 {
 	padding:5px;
 	border:1px solid #006699;
 	display:inline-block;
-	float:right;
+	float:right; 
+	margin-top:-5px;
+	margin-left:-2px;
 }
 
 .discussionPostbuttonFrame {
@@ -251,8 +278,16 @@ h3 {
     -moz-transition: height 0.2s;
 }
 
-.textAreaWithMinHeight {
-	height:30px;
+.textAreaWithMinHeightSmall {
+	height:38px!important;
+}
+
+.textAreaWithMinHeightLarge {
+	min-height:80px!important;
+}
+
+.commentPicture {
+	height:31px;
 }
 
 .discussionPictureFrame{
@@ -261,7 +296,6 @@ h3 {
 }
 
 .textAreaAutoresize {
-	width:97%!important;
 	min-height:30px;
 	float:right;
 	padding:5px;
@@ -274,6 +308,8 @@ h3 {
     -webkit-transition: height 0.2s; 
     -moz-transition: height 0.2s; 
 	clear:right;
+	width:100%!important;
+	margin-top:0px;
 }
 .ratingValueContainer {
 	margin-right:-3px;

@@ -7,53 +7,92 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
     
     <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="false" />
+    <jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="false" />
+    <jsp:directive.attribute name="type" type="java.lang.String" required="false" />
     <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
    	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
 	
 	<c:set var="action" value="create" />
+	<c:set var="discussionItemClass" value="review" />
+	<c:set var="discussionItem" value="${review}" />
+	<c:set var="discussionItemMaximum" value="onlyOne" />
 	
-	<c:if test="${not empty review}">
+	<c:if test="${not empty review or not empty comment}">
 		<c:set var="action" value="edit" />
 	</c:if>
-	
-	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${review}" action="${action}" discussionItemClass="review" userName="${userName}" postUserName="${postUserName}">
+	<c:choose>
+		<c:when test="${not empty type and type eq 'comment'}">
+				<c:set var="discussionItemClass" value="comment" />
+				<c:set var="discussionItem" value="${comment}" />
+				<c:set var="discussionItemMaximum" value="several" />
+		</c:when>
+		<c:otherwise>
+				<c:set var="type" value="review" />
+		</c:otherwise>
+	</c:choose>
+
+	<discussionItem:discussionItemForm resource="${resource}" discussionItem="${discussionItem}" action="${action}" discussionItemClass="${discussionItemClass}" userName="${userName}" postUserName="${postUserName}">
 		<jsp:attribute name="additionalMenuItems">
-				<buttons:help message="post.resource.review.help">
+				<buttons:help message="post.resource.${discussionItemClass}.help">
 					<jsp:attribute name="helpText">
 				        <ul style="list-style:circle inside none">
-				        	<li> <fmt:message key="post.resource.rating.help"/></li>
+				        	<c:if test="${type eq 'review'}"><li> <fmt:message key="post.resource.rating.help"/></li></c:if>
 				        	<li> <fmt:message key="post.resource.discussion.anonymous.help"/></li>
 				        	<li> <fmt:message key="post.resource.discussion.visibility.help"/></li>
 				       	</ul>
-				       	<fmt:message key="post.resource.review.${fn:toLowerCase(resource.class.simpleName)}.onlyOne"/>
-		        	</jsp:attribute>
-	        	</buttons:help>
-				<span class="discussionRatingCounter" style="float:right" onmouseover="showAppendixForm($(this));">
+				       	<fmt:message key="post.resource.${discussionItemClass}.${fn:toLowerCase(resource.class.simpleName)}.${discussionItemMaximum}"/>
+			       	</jsp:attribute>
+		        </buttons:help>
+				<span class="discussionRatingCounter" style="float:right" >
 					<span style="float:left">
 						<fmt:message key="post.resource.rating.enabled"/>
-						<input type="checkbox" value="${ratingEnabled}" onclick="var stars = $(this).next('.reviewrating'); if(!this.checked) stars.stars('disable'); else stars.stars('enable');" checked="checked"/>
-					</span>
-					<span class="reviewrating discussionStarsContainer" style="float:right; margin-top:-5px;margin-left:-2px;" onclick="var val = $(this).children('input[type=hidden]').val(); if(val!=undefined) $(this).next('.discussionRatingValue').children('b').html(val);">
-						<!-- TODO: REVIEW: titles for rating steps? -->
-						<c:forEach var="i" begin="1" end="10">
-							<c:set var="ratingStep" value="${i / 2}" />
-							<c:choose>
-								<c:when test="${not empty review and review.rating eq ratingStep}">
-									<input name="discussionItem.rating" type="radio" value="${ratingStep}"/>
+						<c:choose>
+								<c:when test="${type eq 'review'}">
+									<input type="checkbox" onclick="toggleRating(this);" class="ratingToggleCheckbox" checked="checked"/>
 								</c:when>
 								<c:otherwise>
-									<input name="discussionItem.rating" type="radio" value="${ratingStep}"/>
+									<input type="checkbox" class="ratingToggleCheckbox" disabled="disabled"/>
 								</c:otherwise>
-							</c:choose>
-						</c:forEach>	
+						</c:choose>
+	
 					</span>
-					<span class="discussionRatingValue"><b style="margin-right:3px;">5.0</b> <img src="${resdir}/image/arrow_rating.png"/></span>
+					
+					<!-- TODO: REVIEW: titles for rating steps? -->
+					<c:choose>
+					<c:when test="${type eq 'review'}">
+					<span class="reviewrating discussionStarsContainer" onclick="updateRatingCounter(this);">
+							<c:forEach var="i" begin="1" end="10">
+								<c:set var="ratingStep" value="${i / 2}" />
+									<c:choose>								
+										<c:when test="${not empty review and review.rating eq ratingStep}">
+											<input name="discussionItem.rating" type="radio" value="${ratingStep}" />
+										</c:when>
+										<c:otherwise>
+											<input name="discussionItem.rating" type="radio" value="${ratingStep}" />
+										</c:otherwise>
+									</c:choose>
+							</c:forEach>
+					</span>
+					<span class="discussionRatingValue"><b style="margin-right:3px;margin-left:3px; height:22px; width:15px;display:inline-block;">5.0</b> <img src="${resdir}/image/arrow_rating.png"/></span>
+					</c:when>
+					<c:otherwise>
+					<span class="reviewrating discussionStarsContainer ratingDisabled" style="float:right; margin-top:-5px;margin-left:-2px;">
+							<c:forEach var="i" begin="1" end="10">
+								<c:set var="ratingStep" value="${i / 2}" />
+								<input name="discussionItem.rating" type="radio" value="${ratingStep}" disabled="disabled"/>
+							</c:forEach>
+					</span>
+					<span class="discussionRatingValue"><b style="margin-right:3px;margin-left:3px; height:22px; width:15px;display:inline-block;">-</b> <img src="${resdir}/image/arrow_rating.png"/></span>
+					</c:otherwise>	
+					</c:choose>
 				</span>
 		</jsp:attribute>
 		<jsp:attribute name="additionalInputs">
-			<div class="fsRow reviewTextBox" style="margin-right:6px">
-				<textarea class="reqinput descriptiveLabel textAreaAutoresize textAreaWithMinHeight" rows="3" name="discussionItem.text"><c:choose><c:when test="${not empty review}"><c:out value="${review.text}" /></c:when><c:otherwise><fmt:message key="post.resource.review.actions.post"/></c:otherwise></c:choose></textarea>
+			<div class="fsRow reviewTextBox">
+				<textarea class="reqinput descriptiveLabel textAreaAutoresize textAreaWithMinHeightSmall" rows="3" name="discussionItem.text">
+				<c:choose><c:when test="${not empty discussionItem}"><c:out value="${discussionItem.text}" /></c:when><c:otherwise><fmt:message key="post.resource.${discussionItemClass}.actions.post"/></c:otherwise></c:choose>
+				</textarea>
 			</div>
 		</jsp:attribute>
 	</discussionItem:discussionItemForm>

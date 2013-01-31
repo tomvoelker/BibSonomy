@@ -54,10 +54,10 @@
 			</li>
  -->
 			<!-- TODO: use spring security tags -->
-			<c:if test="${command.context.userLoggedIn}">
-				<li><a href="#createreview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li>
-				<li><a href="#createcomment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li>
-			</c:if>
+			<!-- <c:if test="${command.context.userLoggedIn}">
+				<li><a href="#createreview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li> 
+				 <li><a href="#createcomment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li> 
+			</c:if>-->
 		
 			<!--
 				<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
@@ -83,16 +83,27 @@
  	  	<div id="discussion" data-interhash="${resource.interHash}">
 	    	<!-- TODO: use spring security tags -->
 		    <c:if test="${command.context.userLoggedIn}">
-		    	<!-- review and comment forms -->
-	    		<div id="createReview" class="createReview">
+		    	<div id="createReview" class="createReview">
 		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
-		    		<!-- TODO: add tips for reviewing a resource -->
+		    		<!-- TODO: add tips for reviewing a resource !--> 
 	    		</div>
-		    
-			    <div id="createComment" class="initiallyHidden">
+		    	<!-- review and comment forms !-->
+	    		<div id="createComment" class="initiallyHidden">
+		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
+		    		<!-- TODO: add tips for reviewing a resource !--> 
+	    		</div>
+	    		<!-- review and comment forms !-->
+	    		<div id="createCommentInstance" class="initiallyHidden">
+		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
+		    		<!-- TODO: add tips for reviewing a resource !--> 
+	    		</div>
+
+<!-- <div id="createComment" class="initiallyHidden">
+			    	<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" rating="${false}"/>
 			    	<comment:commentForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
-			    </div>
+			    </div> --> 
 			</c:if>
+
 			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
 		</div>
 

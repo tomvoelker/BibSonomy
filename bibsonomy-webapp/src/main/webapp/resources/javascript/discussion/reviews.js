@@ -43,7 +43,12 @@ $(function() {
 
 function showUpdateReviewForm() {
 	removeAllOtherDiscussionForms();
-	$(REVIEW_UPDATE_FORM_SELECTOR).toggle('slow');
+	var reviewForm = $(REVIEW_UPDATE_FORM_SELECTOR);
+	var reviewRating = reviewForm.find(".reviewRating");
+
+	reviewForm.toggle('slow').find(".descriptiveLabel").bind("click", updateRatingCounter).removeClass("descriptiveLabel").trigger("focus");
+	reviewRating.prev().find(".ratingToggleCheckbox")[0].disabled=true;
+	updateRatingCounter(reviewRating.stars("select", parseFloat(getOwnReviewRating())));
 }
 
 function initStars() {
@@ -85,6 +90,14 @@ function setReviewCount(value) {
 	
 	$('#review_info_rating span[property=ratingCount]').text(value);
 	$('#review_info_rating span[property=ratingCount]').next('span').text(title);
+}
+
+function updateRatingCounter(element) {
+	if(element.target != undefined) element = element.target;
+	var val = $(element).children('input[type=hidden]').val();
+	
+	if(val!=undefined) 
+		$(element).next('.discussionRatingValue').children('b').html(val);
 }
 
 function getOwnReviewRating() {
@@ -427,6 +440,36 @@ function updateReviewView(reviewView, text, rating, abstractGrouping, groups) {
 function getRating(element) {
 	var stars = $(element).data("stars");
 	return parseFloat(stars.options.value);
+}
+
+function toggleRating(element) {
+	if(element.target) element = element.target;
+	var stars = $(element).parent().next('.reviewrating');
+	var parent = $(element).parents("fieldset");
+	var textBoxContainer = parent.find(".textBoxContainer");
+	var form;
+	var formParent;
+	removeAllOtherDiscussionForms();
+	
+	if(!element.checked) { 
+		form = $(COMMENT_CREATE_FORM);
+		var formParent = $(REVIEW_CREATE_FORM_SELECTOR)
+		var toggleCheckbox = form.find(".discussionControlsFrame").find(".ratingToggleCheckbox")[0];
+	
+		if(toggleCheckbox  != undefined && toggleCheckbox.disabled) {
+			$(toggleCheckbox).bind("click", toggleRating).removeAttr("disabled");
+			createStandaloneReply($("#createCommentInstance"));
+		}
+		element.checked = true;
+	}else{
+		form = $(REVIEW_CREATE_FORM_SELECTOR);
+		formParent = $(COMMENT_CREATE_FORM);
+		element.checked = false;
+	}
+	form.fadeIn().find(REVIEW_TEXTAREA_SELECTOR).trigger("focus").val(textBoxContainer.find(REVIEW_TEXTAREA_SELECTOR).val());
+	form.find(REVIEW_ANONYMOUS_SELECTOR)[0].checked = parent.find(REVIEW_ANONYMOUS_SELECTOR)[0].checked;
+	scrollTo(form.attr("id"));
+	formParent.hide();
 }
 
 function getStarsWidth(rating) {

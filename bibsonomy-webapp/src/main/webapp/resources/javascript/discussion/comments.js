@@ -4,7 +4,6 @@ var REPLY_SELECTOR = 'a.reply';
 var EDIT_COMMENT_LINKS_SELECTOR = 'a.commentEditLink';
 var DELETE_COMMENT_LINKS_SELECTOR = 'a.commentDeleteLink';
 var TOGGLE_REPLY_SELECTOR = 'a.toggleReplies';
-var TOGGLE_REPLY_SELECTOR = 'a.toggleReplies';
 
 $(function() {
 	// reply links
@@ -52,6 +51,7 @@ function reply() {
 	var parentHash = getHash($(this));
 	
 	var clone = $('#createComment').clone();
+	var textBox = clone.find(".descriptiveLabel");
 	clone.attr('id', REPLY_FORM_ID);
 	var form = clone.find('form');
 	
@@ -67,7 +67,8 @@ function reply() {
 	} else {
 		$(DISCUSSION_SELECTOR).prepend(clone);
 	}
-	
+	showMenu({target:textBox});
+	textBox.descrInputLabel({});
 	clone.show();
 	
 	addAutocompletionToLinkBox(form);
@@ -84,7 +85,8 @@ function showEditCommentForm() {
 	var clone = $('#createComment').clone();
 	clone.attr('id', EDIT_COMMENT_FORM_ID);
 	var form = clone.find('form');
-	
+	clone.find(".descriptiveLabel").removeClass('descriptiveLabel').bind("focus", showMenu).trigger("focus");
+
 	// find values and set it in form		
 	// … groups
 	// TODO: maybe save groups and abstract grouping as json data attribute

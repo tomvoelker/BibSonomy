@@ -50,10 +50,8 @@
 	  var selectOther = document.getElementById("post.groups.other2");
 	  var radiobuttonOther = document.getElementById("post.groups.other");
 	  var siblings = $(radiobuttonOther).siblings("input:radio");
-      var timeout = null;
       
 	  var hideSelectBox = function(el) {
-		  clearTimeout(timeout);
 		  if(el.id=="post.groups.other" && el.checked) $(selectOther).show(); 
 		  else $(selectOther).hide();
 	  };
@@ -63,16 +61,8 @@
 		  hideSelectBox(e.target);
 	  };
 	  
-	  var smoothHide = function() {
-		  timeout=setTimeout(function() {hideSelectBox(radiobuttonOther);},1200);
-	  };
-	  
 	  $(document).ready(function() {
-    	  $(radiobuttonOther)
-    	  .click(callback)
-    	  .mouseover(function() {clearTimeout(timeout);$(selectOther).show();}).mouseout(smoothHide)
-    	  .next(".expl")
-    	  .mouseover(function() {clearTimeout(timeout);$(selectOther).show();}).mouseout(smoothHide);
+    	  $(radiobuttonOther).click(callback);
     	  $(siblings[0]).click(callback);
     	  $(siblings[1]).click(callback);
     	  hideSelectBox(radiobuttonOther);
