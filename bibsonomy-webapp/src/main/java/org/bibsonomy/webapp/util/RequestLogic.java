@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.util;
 
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.util.UrlBuilder;
+import org.bibsonomy.webapp.util.spring.security.saml.context.RelayStateSamlContextProviderImpl;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.web.servlet.support.RequestContext;
 
 /**
@@ -202,4 +206,31 @@ public class RequestLogic {
 		return OAuthServlet.getMessage(this.request, URL);
 	}
 
+	/**
+	 * Sets the relaystate that is to be send by the next SAML request.
+	 * The relaystate is a parameter that is required by by the SAML standard to be send back to the SP when the IdP receives it from the SP.
+	 * It allows identification of responses to a particular authentication request.
+	 * @param value
+	 */
+	public void setNextRelayState(String value) {
+		this.request.setAttribute(RelayStateSamlContextProviderImpl.SAML_RELAYSTATE_ATTR_NAME, value);
+	}
+	
+	/**
+	 * @return the relaystate parameter send back from SAML IdPs
+	 */
+	public String getRelayState() {
+		return this.request.getParameter("RelayState");
+	}
+	
+	/**
+	 * @return a new UrlBuilder with the currently requested url
+	 */
+	public UrlBuilder getUrlBuilder() {
+        UrlBuilder urlb = new UrlBuilder(UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(), request.getRequestURI(), null));
+        for (Map.Entry<String, String[]> param : request.getParameterMap().entrySet()) {
+        	urlb.addParameter(param.getKey(), param.getValue()[0]);
+        }
+        return urlb;
+	}
 }

@@ -1,17 +1,23 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import org.bibsonomy.common.enums.AuthMethod;
+import org.apache.log4j.Logger;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.VuFindUserInitCommand;
 import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
+import org.bibsonomy.webapp.util.spring.security.authentication.SamlCredAuthToken;
+import org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool;
 import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
 import org.bibsonomy.webapp.validation.UserValidator;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,14 +32,20 @@ import org.springframework.security.saml.SAMLCredential;
  *
  */
 public class VuFindUserInitController implements MinimalisticController<VuFindUserInitCommand> {
+	private static final Logger log = Logger.getLogger(VuFindUserInitController.class);
 
 	private OAuthAuthorizeTokenController oaAuthorizeController;
 	
 	private SamlUserAttributeMapping attributeExtractor;
 	
 	private LogicInterface adminLogic;
+
+	private AuthenticationManager authenticationManager;
+
+	private SamlAuthenticationTool samlAuthTool;
 	
-//	AuthenticationEntryPoint remoteAuthentication;
+	private RequestLogic requestLogic;
+
 	
 	@Override
 	public VuFindUserInitCommand instantiateCommand() {
@@ -42,45 +54,53 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 
 	@Override
 	public View workOn(VuFindUserInitCommand command) {
-		// TODO: check if there's already a logged in user. If so, then we might like to ask the user whether he likes to directly connect his remote authentication to this user account.
+		getSamlAuthTool().ensureFreshAuthentication();
+		Authentication authToken = null;
+		if (AuthenticationUtils.getUserOrNull() == null) {
+			// we have made sure that an authentication attempt was done but still got no user
+			// -> try to create a new user from shibboleth credentials
+			authToken = createNewUserAndAuthTokenForHer();
+		}
+		// if we are here, we have authenticated a user (maybe not yet logged in)
+		// - otherwise exceptions would have been thrown
+		try {
+			if (authToken != null) {
+				Authentication auth = getAuthenticationManager().authenticate(authToken);
+				SecurityContextHolder.getContext().setAuthentication(auth);
+			}
+			return oaAuthorizeController.workOn(command);
+		} finally {
+			requestLogic.invalidateSession();
+			SecurityContextHolder.getContext().setAuthentication(null);
+		}
+	}
+
+	protected Authentication createNewUserAndAuthTokenForHer() {
+		Authentication authToken;
 		SAMLCredential samlCreds = getSamlCreds();
 		SamlRemoteUserId remoteUserId = getRemoteUserId(samlCreds);
 		if (remoteUserId == null) {
-			throw new SpecialAuthMethodRequiredException(AuthMethod.SAML);
+			String msg = "no userid after saml-login in " + getClass().getSimpleName();
+			log.warn(msg);
+			throw new AccessDeniedException(msg);
 		}
-		// TODO wohl falsch: zeug wie man user erzeugt steht in UserRegistrationController
 		User user = new User();
-		// Set additional Attributes
 		attributeExtractor.populate(user, samlCreds);
-		// user needs his Realname here
-		if (user.getRealname() == null) {
-			//Throw some exception
+		if (ValidationUtils.present(user.getRealname()) == false) {
+			user.setRealname("<unknown>");
 		}
-		String userName = generateUserName(user, remoteUserId);
-		if (userName == null) {
-			//Throw some exception
+		if (ValidationUtils.present(user.getPassword()) == false) {
+			user.setPassword(UserUtils.generateRandomPassword());
 		}
-		/*
-		 * Gesetzt werden muss:
-		 * name, password, realname, e-mail
-		 */
-		user.setName(userName);
-		user.setPassword("doof");
-		
-		user.setEmail("arm@web.de");
-		this.adminLogic.createUser(user);
+		if (ValidationUtils.present(user.getEmail()) == false) {
+			user.setEmail("<unknown>");
+		}
+		user.setIPAddress(getRequestLogic().getInetAddress());
+		user.setName(generateUserName(user, remoteUserId));
 
-		// probably not needed (to be done in spring security filters):
-		// remoteAuthentication.commence(command.getRe getRequest(), command.getResponse(), authException);
-		
-		
-		// TODO:
-		// - check if remoteuser maps to an existing bibsonomy user
-		//   - if not: create one and add pair to the mapping
-		// - login user but without any "stay logged in" cookie
-		// automatically authorize via oauth (no extra button click)
-		// If there is a logged-in user who is not already connected to the remoteuserid ignore him and create a new one
-		return oaAuthorizeController.workOn(command);
+		this.adminLogic.createUser(user);
+		authToken = new SamlCredAuthToken(samlCreds);
+		return authToken;
 	}
 
 	private SamlRemoteUserId getRemoteUserId(SAMLCredential samlCreds) {
@@ -210,4 +230,42 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		this.adminLogic = adminLogic;
 	}
 	
+    protected AuthenticationManager getAuthenticationManager() {
+        return authenticationManager;
+    }
+
+    /**
+     * @param authenticationManager
+     */
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+	/**
+	 * @return the loginTool
+	 */
+	public SamlAuthenticationTool getSamlAuthTool() {
+		return this.samlAuthTool;
+	}
+
+	/**
+	 * @param loginTool the loginTool to set
+	 */
+	public void setSamlAuthTool(SamlAuthenticationTool loginTool) {
+		this.samlAuthTool = loginTool;
+	}
+	
+	/**
+	 * @param requestLogic
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @return the requestLogic
+	 */
+	public RequestLogic getRequestLogic() {
+		return this.requestLogic;
+	}
 }

@@ -1,11 +1,9 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.util.Random;
-
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
-import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.actions.SamlUserIDRegistrationCommand;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
@@ -54,7 +52,7 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 		 * Like OpenID users, we don't have a password for SAML users thus we set a random one
 		 * for security (and database constraint) reasons.
 		 */
-		registerUser.setPassword(generateRandomPassword());
+		registerUser.setPassword(UserUtils.generateRandomPassword());
 	}
 
 	@Override
@@ -73,14 +71,7 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 		// do nothing but redirect to a successView where ( -- hopefully -- ) the user can login directly via spring security saml filters.
 		return new ExtendedRedirectView("/register_saml_success");
 	}
-
-	private String generateRandomPassword() {
-		final byte[] bytes = new byte[16];
-		new Random().nextBytes(bytes);
-		final String randomPassword = HashUtils.getMD5Hash(bytes);
-		return randomPassword;
-	}
-
+	
 	@Override
 	public Validator<UserIDRegistrationCommand> getValidator() {
 		return new UserSamlRegistrationValidator();

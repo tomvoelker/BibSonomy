@@ -24,6 +24,7 @@ import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
+import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
@@ -199,6 +200,9 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			errors.reject(ad.getMessage());
 			log.warn("Could not complete controller (AccessDeniedException), occured in: " + ad.getStackTrace()[0] + ", msg is: " + ad.getMessage());
+		} catch (final SpecialAuthMethodRequiredException sam) {
+			// ok -> pass to filter to do the required authentication
+			throw sam;
 		} catch (final ServiceUnavailableException e) {
 			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));

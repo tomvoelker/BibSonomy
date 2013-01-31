@@ -1,9 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.util.Random;
-
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
@@ -33,19 +31,12 @@ public class UserOpenIDRegistrationController extends AbstractUserIDRegistration
 		 * We don't have a password for OpenID users, thus we set a random one
 		 * for security reasons.
 		 */
-		registerUser.setPassword(generateRandomPassword());
+		registerUser.setPassword(UserUtils.generateRandomPassword());
 	}
 
 	@Override
 	protected Authentication getAuthentication(User user) {
 		return new OpenIDAuthenticationToken(new UserAdapter(user), new UserAdapter(user).getAuthorities(), user.getOpenID(), null);
-	}
-
-	private String generateRandomPassword() {
-		final byte[] bytes = new byte[16];
-		new Random().nextBytes(bytes);
-		final String randomPassword = HashUtils.getMD5Hash(bytes);
-		return randomPassword;
 	}
 
 	@Override

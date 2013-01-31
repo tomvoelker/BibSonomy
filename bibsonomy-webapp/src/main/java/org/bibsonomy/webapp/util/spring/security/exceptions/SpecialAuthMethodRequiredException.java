@@ -1,7 +1,7 @@
 package org.bibsonomy.webapp.util.spring.security.exceptions;
 
 import org.bibsonomy.common.enums.AuthMethod;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 
 /**
  * Signals that a login via a special method should be performed.  
@@ -9,7 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
  * @author jil
  * @version $Id$
  */
-public class SpecialAuthMethodRequiredException extends AccessDeniedException {
+public class SpecialAuthMethodRequiredException extends AuthenticationException {
 
 	private final AuthMethod requiredAuthMethod;
 

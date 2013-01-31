@@ -38,7 +38,7 @@
 	</bean>
 
 	<!-- Handler deciding where to redirect user after successful login -->
-	<bean id="successRedirectHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+	<bean id="successRedirectHandler" class="org.springframework.security.saml.SAMLRelayStateSuccessHandler">
 		<property name="defaultTargetUrl" value="/" />
 	</bean>
 
@@ -79,6 +79,7 @@
 					<bean class="org.springframework.security.saml.websso.WebSSOProfileOptions">
 						<property name="includeScoping" value="false" />
 					</bean>
+					
 				</property>
 			</bean>
 		</property>
@@ -217,7 +218,7 @@
 	</bean>
 
 	<!-- Provider of default SAML Context -->
-	<bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl" />
+	<bean id="contextProvider" class="org.bibsonomy.webapp.util.spring.security.saml.context.RelayStateSamlContextProviderImpl" />
 
 	<!-- Processing filter for WebSSO profile messages -->
 	<bean id="samlWebSSOProcessingFilter" class="org.springframework.security.saml.SAMLProcessingFilter">
@@ -325,5 +326,9 @@
 
 	<!-- XML parser pool needed for OpenSAML parsing -->
 	<bean id="parserPool" class="org.opensaml.xml.parse.BasicParserPool" scope="singleton" />
-
+	
+	<bean id="samlAuthTool" class="org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool" scope="request">
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+	
 </beans>
