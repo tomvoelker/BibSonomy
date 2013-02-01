@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.command.actions.UserLoginSamlCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 
 /**
  * @author nilsraabe
@@ -19,8 +20,6 @@ public class UserLoginSamlController implements MinimalisticController<UserLogin
 	public UserLoginSamlCommand instantiateCommand() {
 
 		log.info("UserLoginSamlCommand in UserLoginSamlController initialized");
-		
-		// TODO Auto-generated method stub
 		return new UserLoginSamlCommand();
 	}
 
@@ -29,8 +28,7 @@ public class UserLoginSamlController implements MinimalisticController<UserLogin
 		
 		log.info("UserLoginSamlController starts WorkOn");
 		
-		// TODO Auto-generated method stub
-		return null;
+		return new ExtendedRedirectView("/");
 	}
 
 }
