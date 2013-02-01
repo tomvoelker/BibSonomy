@@ -8,7 +8,7 @@
 		http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/security  http://www.springframework.org/schema/security/spring-security-3.1.xsd
 		http://www.springframework.org/schema/util      http://www.springframework.org/schema/util/spring-util-3.1.xsd
-		http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+		http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-3.1.xsd" default-lazy-init="true">
 
 	<!-- Enable auto-wiring -->
 	<context:annotation-config />
@@ -17,7 +17,15 @@
 	<!-- Unsecured pages -->
 	<security:http security="none" pattern="/saml/web/**" />
 
-	<bean id="samlFilter" class="org.springframework.security.web.FilterChainProxy">
+	<bean id="samlFilter" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="samlActivatedCondition"/>
+		<lookup-method name="produceSucessBean" bean="realSamlFilter"/>
+		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint"/>
+	</bean>
+	
+	<bean id="dummyFilter" class="org.bibsonomy.webapp.util.spring.filter.DummyFilter"/>
+
+	<bean id="realSamlFilter" class="org.springframework.security.web.FilterChainProxy">
 		<security:filter-chain-map request-matcher="ant">
 			<security:filter-chain pattern="/saml/login/**" filters="samlEntryPoint" />
 			<security:filter-chain pattern="/saml/logout/**" filters="samlLogoutFilter" />
@@ -29,7 +37,13 @@
 		</security:filter-chain-map>
 	</bean>
 	
-	<bean id="samlLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.SamlLoginFilter">
+	<bean id="samlLoginFilter" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="samlActivatedCondition"/>
+		<lookup-method name="produceSucessBean" bean="realSamlLoginFilter"/>
+		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint"/>
+	</bean>
+	
+	<bean id="realSamlLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.SamlLoginFilter">
 		<property name="filterProcessesUrl" value="/login_saml" />
 		<property name="authenticationEntryPoint" ref="samlEntryPoint" />
 		<property name="authenticationManager" ref="samlAuthenticationManager" />
@@ -69,25 +83,32 @@
 		</constructor-arg>
 		<constructor-arg type="java.lang.String" value="${auth.saml.keystore.key.alias}" />
 	</bean>
+	
+	<bean id="samlActivatedCondition" class="org.bibsonomy.webapp.util.spring.condition.EvalOnceCondition">
+		<property name="delegate">
+			<bean class="org.bibsonomy.webapp.util.spring.condition.StringListContainsCondition">
+				<property name="stringList" value="${auth.order}"/>
+				<property name="expected" value="saml"/>
+			</bean>
+		</property>
+	</bean>
 
-	<bean id="samlEntryPoint" class="org.bibsonomy.webapp.util.spring.factorybeans.PropertyMatchFactoryBean">
-		<property name="checkProperty" value="${auth.order}"/>
-		<property name="expected" value="saml"/>
-		<property name="successInstance">
-			<bean class="org.springframework.security.saml.SAMLEntryPoint">
-				<property name="defaultProfileOptions">
-					<bean class="org.springframework.security.saml.websso.WebSSOProfileOptions">
-						<property name="includeScoping" value="false" />
-					</bean>
-					
-				</property>
+	<bean id="samlEntryPoint" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="samlActivatedCondition"/>
+		<lookup-method name="produceSucessBean" bean="realSamlEntryPoint"/>
+		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint"/>
+	</bean>
+
+	<bean id="realSamlEntryPoint" class="org.springframework.security.saml.SAMLEntryPoint">
+		<property name="defaultProfileOptions">
+			<bean class="org.springframework.security.saml.websso.WebSSOProfileOptions">
+				<property name="includeScoping" value="false" />
 			</bean>
 		</property>
-		<property name="failInstance">
-			<bean class="org.bibsonomy.webapp.util.spring.security.entrypoints.UnsupportedAuthenticationMethodDummyEntryPoint">
-				<property name="authMethod" value="SAML"/>
-			</bean>
-		</property>
+	</bean>
+
+	<bean id="dummySamlEntryPoint" class="org.bibsonomy.webapp.util.spring.security.entrypoints.UnsupportedAuthenticationMethodDummyEntryPoint">
+		<property name="authMethod" value="SAML"/>
 	</bean>
 
 	<!-- IDP Discovery Service -->
@@ -95,8 +116,14 @@
 		<property name="idpSelectionPath" value="/WEB-INF/security/idpSelection.jsp" />
 	</bean>
 
+	<bean id="samlMetadataGeneratorFilter" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="samlActivatedCondition"/>
+		<lookup-method name="produceSucessBean" bean="realSamlMetadataGeneratorFilter"/>
+		<lookup-method name="produceFailureBean" bean="dummyFilter"/>
+	</bean>
+
 	<!-- Filter automatically generates default SP metadata -->
-	<bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter">
+	<bean id="realSamlMetadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter">
 		<constructor-arg>
 			<bean class="org.springframework.security.saml.metadata.MetadataGenerator">
 				<property name="entityAlias">
@@ -327,8 +354,6 @@
 	<!-- XML parser pool needed for OpenSAML parsing -->
 	<bean id="parserPool" class="org.opensaml.xml.parse.BasicParserPool" scope="singleton" />
 	
-	<bean id="samlAuthTool" class="org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool" scope="request">
-		<property name="requestLogic" ref="requestLogic"/>
-	</bean>
+	<bean id="samlAuthTool" class="org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool" scope="singleton"/>
 	
 </beans>

@@ -7,13 +7,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.webapp.controller.actions.VuFindUserInitController;
-import org.bibsonomy.webapp.util.spring.security.authentication.SamlCredAuthToken;
+import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 
@@ -28,35 +30,34 @@ public class SamlLoginFilter extends AbstractAuthenticationProcessingFilter {
 	
 	protected SamlLoginFilter() {
 		super("/login_saml");
+		setContinueChainBeforeSuccessfulAuthentication(true);
+		setAuthenticationSuccessHandler(new AuthenticationSuccessHandler() {
+			
+			@Override
+			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+				
+			}
+		});
 	}
-
+	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-		SAMLCredential samlCreds = VuFindUserInitController.getSamlCreds();
-		if (samlCreds == null) {
+		if (getSamlAuthTool(request).isFreshlyAuthenticated() == false) {
 			sendStartAuthentication(request, response);
 			return null;
 		}
-		return getAuthenticationManager().authenticate(new SamlCredAuthToken(samlCreds));
 
-		/*
 		Authentication auth = VuFindUserInitController.getAuth();
 		if (auth == null) {
-			throw new AuthenticationCredentialsNotFoundException("no auth");
+			// actually this is not really bad credentials. It just means something went wrong for whatever reason.
+			throw new BadCredentialsException("login failed");
 		}
-		Object principal = auth.getPrincipal();
-		if ((principal instanceof UserDetails) == false) {
-			throw new AuthenticationCredentialsNotFoundException("no userdetails");
-		}
-		if (principal instanceof RemoteOnlyUserDetails) {
-			samlCreds = VuFindUserInitController.getSamlCreds();
-			if (samlCreds == null) {
-				throw new AuthenticationCredentialsNotFoundException("no saml credentials");
-			}
-			throw new SamlUsernameNotFoundException("SAML userid not found in database", samlCreds);
-			//throw new SamlUsernameNotFoundException(((RemoteOnlyUserDetails) principal).getUsername(), samlCreds);
-		}
-		return auth;*/
+		return auth;
+	}
+
+	protected SamlAuthenticationTool getSamlAuthTool(HttpServletRequest request) {
+		final SamlAuthenticationTool samlAuthTool = new SamlAuthenticationTool(new RequestLogic(request));
+		return samlAuthTool;
 	}
 
 	protected void sendStartAuthentication(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
@@ -95,4 +96,5 @@ public class SamlLoginFilter extends AbstractAuthenticationProcessingFilter {
 	public void setRequestCache(RequestCache requestCache) {
 		this.requestCache = requestCache;
 	}
+
 }

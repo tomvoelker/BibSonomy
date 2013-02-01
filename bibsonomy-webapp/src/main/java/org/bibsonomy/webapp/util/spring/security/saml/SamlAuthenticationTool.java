@@ -14,7 +14,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class SamlAuthenticationTool {
 	private RequestLogic requestLogic;
 	private static final String REL_STATE_CHECK_SESSION_ATTR = SamlAuthenticationTool.class.getName() + ".session.checkattr";
+
+	/**
+	 * initializing constructor
+	 * @param requestLogic requestLogic for which the new object is going to be used
+	 */
+	public SamlAuthenticationTool(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
 	
+	/**
+	 * default bean constructor
+	 */
+	public SamlAuthenticationTool() {
+	}
 
 	/**
 	 * @param requestLogic
@@ -23,18 +36,31 @@ public class SamlAuthenticationTool {
 		this.requestLogic = requestLogic;
 	}
 	
-	
 	/**
 	 * ensures that an authentication procedure has been triggered.
+	 * 
+	 * @throws SpecialAuthMethodRequiredException
+	 *             if a new authentication step is required (this informs
+	 *             ExceptionTranslationFilter to trigger the authentication redirect)
 	 */
 	public void ensureFreshAuthentication() {
+		if (isFreshlyAuthenticated() == false) {
+			throw new SpecialAuthMethodRequiredException(AuthMethod.SAML);
+		}
+	}
+	
+	/**
+	 * @return true if an authentication procedure has just finished, otherwise false
+	 */
+	public boolean isFreshlyAuthenticated() {
 		if (isLoginDone() == false) {
 			requestLogic.invalidateSession();
 			SecurityContextHolder.getContext().setAuthentication(null);
 			setRelayState();
-			throw new SpecialAuthMethodRequiredException(AuthMethod.SAML);
+			return false;
 		}
 		clearLoginDoneState();
+		return true;
 	}
 	
 	protected void clearLoginDoneState() {

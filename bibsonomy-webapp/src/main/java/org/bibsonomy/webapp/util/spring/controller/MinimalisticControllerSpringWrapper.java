@@ -23,6 +23,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
 import org.bibsonomy.webapp.view.Views;
@@ -33,6 +34,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.BaseCommandController;
+import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
 /**
  * Instances of this class wrap MinimalisticController and adapt them
@@ -59,6 +61,8 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private URLGenerator urlGenerator;
 	
 	private ConversionService conversionService;
+	
+	private Condition presenceCondition;
 
 	/**
 	 * @param conversionService the conversionService to set
@@ -132,6 +136,11 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		final ApplicationContext applicationContext = this.getApplicationContext();
 		applicationContext.getBean("requestLogic", RequestLogic.class).setRequest(request); // hack but thats springs fault
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
+		
+		if ((presenceCondition!= null) && (presenceCondition.eval() == false)) {
+			 throw new NoSuchRequestHandlingMethodException(request);
+		}
+		
 		final MinimalisticController<T> controller = (MinimalisticController<T>) applicationContext.getBean(controllerBeanName);
 		
 		/*
@@ -273,5 +282,19 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		binder.setAllowedFields(allowedFields);
 		binder.setDisallowedFields(disallowedFields);
+	}
+
+	/**
+	 * @return the presenceCondition
+	 */
+	public Condition getPresenceCondition() {
+		return this.presenceCondition;
+	}
+
+	/**
+	 * @param presenceCondition the presenceCondition to set
+	 */
+	public void setPresenceCondition(Condition presenceCondition) {
+		this.presenceCondition = presenceCondition;
 	}	
 }

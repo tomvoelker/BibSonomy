@@ -42,9 +42,9 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 
 	private AuthenticationManager authenticationManager;
 
-	private SamlAuthenticationTool samlAuthTool;
-	
 	private RequestLogic requestLogic;
+
+	private SamlAuthenticationTool samlAuthTool;
 
 	
 	@Override
@@ -245,14 +245,10 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 	 * @return the loginTool
 	 */
 	public SamlAuthenticationTool getSamlAuthTool() {
+		if (this.samlAuthTool == null) {
+			this.samlAuthTool = new SamlAuthenticationTool(getRequestLogic());
+		}
 		return this.samlAuthTool;
-	}
-
-	/**
-	 * @param loginTool the loginTool to set
-	 */
-	public void setSamlAuthTool(SamlAuthenticationTool loginTool) {
-		this.samlAuthTool = loginTool;
 	}
 	
 	/**

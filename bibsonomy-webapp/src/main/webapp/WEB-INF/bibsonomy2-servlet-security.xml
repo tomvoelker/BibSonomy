@@ -76,7 +76,7 @@
 		 -->
 		<security:custom-filter after="EXCEPTION_TRANSLATION_FILTER" ref="exceptionTranslationFilter" />
 		<!-- fetches application url for saml metadata generation -->
-		<security:custom-filter before="FIRST" ref="metadataGeneratorFilter"/>
+		<security:custom-filter before="FIRST" ref="samlMetadataGeneratorFilter"/>
 		<!-- 
 			login filters are configurated by
 			org.bibsonomy.webapp.config.AuthenticationFilterConfigurator
