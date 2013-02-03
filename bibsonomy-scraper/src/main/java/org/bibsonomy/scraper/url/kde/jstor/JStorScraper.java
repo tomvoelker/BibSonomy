@@ -26,7 +26,6 @@ package org.bibsonomy.scraper.url.kde.jstor;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -34,7 +33,6 @@ import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +40,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -64,7 +63,6 @@ public class JStorScraper extends AbstractUrlScraper {
 	private static final String JSTOR_EXPORT_PATH = "/action/exportSingleCitation";
 	private static final String JSTOR_STABLE_PATH = "/stable/";
 	private static final String JSTOR_DISCOVER_PATH = "/discover/";
-	private static final String JSTOR_DOWNLOAD_SUBMIT_ACTION_YESDOI = "https://www.jstor.org/action/downloadSingleCitationSec?format=bibtex&include=abs&singleCitation=true";
 	private static final String EXPORT_PAGE_URL = "https://www.jstor.org/action/exportSingleCitation?singleCitation=true&doi=";
 	
 	private static final Pattern PAGE_CONTENT_DOI_PATTERN = Pattern.compile("(?m)<div id=\"doi\" class=\"hide\">([^>]+?)<");
@@ -72,10 +70,12 @@ public class JStorScraper extends AbstractUrlScraper {
 	
 	private static final Pattern EXPORT_LINK_PATTERN = Pattern.compile("href=\"([^\"]++).*?id=\"export\"");
 	private static final Pattern SUBMIT_ACTION_NODOI_PATTERN = Pattern.compile("<input.*?id=\"noDoi\".*?value=\"([^\"]++)\"");
-	private static final Pattern SUBMIT_ACTION_DOI_PATTERN = Pattern.compile("<input.*?name=\"doi\".*?value=\"([^\"]++)\"");
+	private static final Pattern SUBMIT_ACTION_DOI_PATTERN = Pattern.compile("<input.*?name=\"doi\".*?value=\"([^\"]*+)\"");
 	private static final Pattern NUMBER_CITS_EXPORTED_PATTERN = Pattern.compile("NUMBER OF CITATIONS : (\\d++)");
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
+
+	private static final Pattern SUBMIT_ACTION_PATTERN = Pattern.compile("href=\"javascript:submitActionInNewWindow[^']++'([^']++)");
 
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
@@ -93,43 +93,89 @@ public class JStorScraper extends AbstractUrlScraper {
 
 		sc.setScraper(this);
 		
-		//TODO: use apache commons, use WebUtils
-		CookieManager cookieMan = new CookieManager();
-		
-		String exportPageLink;
+		HttpClient client = WebUtils.getHttpClient();
 		
 		String bibtexResult = null;
 		
 		try {
+			
+			//targeting download page and from there submit action
+			String downloadPage, submitAction;
+			
 			//get the page content or at least get the cookies
-			//TODO: use WebUtils class
-			String page = getPageContent(sc.getUrl(), cookieMan);
+			GetMethod getMethod = new GetMethod(sc.getUrl().toExternalForm());
+			String page = WebUtils.getContentAsString(client, getMethod);
 			
 			if(page == null) throw new ScrapingException("Cannot access requested location");
-			
-			//search for the doi in the url
-			Matcher m = EXPORT_URL_DOI_PATTERN.matcher(sc.getUrl().toExternalForm());
+
+			//first assume we are on export page and search for submit action
+			Matcher m = SUBMIT_ACTION_PATTERN.matcher(page);
 			if (m.find()) {
-				exportPageLink = EXPORT_PAGE_URL + m.group(1);
+				
+				//found it
+				submitAction = m.group(1);
+				downloadPage = page;
 			} else {
-				//next try: search the page for doi
-				m = PAGE_CONTENT_DOI_PATTERN.matcher(page);
+				
+				//we didn't find it but want to download export page
+				String exportPageLink;
+
+				//search for the doi in the url
+				m = EXPORT_URL_DOI_PATTERN.matcher(sc.getUrl().toExternalForm());
 				if (m.find()) {
 					exportPageLink = EXPORT_PAGE_URL + m.group(1);
 				} else {
-					//we havn't found the doi, so let's search for export link
-					m = EXPORT_LINK_PATTERN.matcher(page);
-					if (!m.find()) throw new ScrapingException("Cannot continue. JStor Scraper must get updated");
-					exportPageLink = m.group(1).replace("&amp;", "&");				}
+					//next try: search the page for doi
+					m = PAGE_CONTENT_DOI_PATTERN.matcher(page);
+					if (m.find()) {
+						exportPageLink = EXPORT_PAGE_URL + m.group(1);
+					} else {
+						//we havn't found the doi, so let's search for export link
+						m = EXPORT_LINK_PATTERN.matcher(page);
+						if (!m.find()) throw new ScrapingException("Cannot continue. JStor Scraper must get updated");
+						exportPageLink = m.group(1).replace("&amp;", "&");				}
+				}
+				
+				//is the export page link present?
+				if (!present(exportPageLink)) throw new ScrapingException("Cannot continue, finally not having submit action");
+				
+				//download export page
+				getMethod = new GetMethod(exportPageLink);
+				downloadPage = WebUtils.getContentAsString(client, getMethod);
+				
+				// get the submit action from the export page
+				m = SUBMIT_ACTION_PATTERN.matcher(downloadPage);
+				
+				//did we find it?
+				if (!m.find()) throw new ScrapingException("Downloaded export page but didn't find submit action");
+				
+				submitAction = m.group(1);
 			}
 			
-			//we have the cookies and we have the export link, so now submit the export page
-			bibtexResult = submitExportPage(exportPageLink, cookieMan);
+			//get some data from the page and switch submit action
+			Matcher noDoiMatcher = SUBMIT_ACTION_NODOI_PATTERN.matcher(downloadPage);
+			Matcher doiMatcher = SUBMIT_ACTION_DOI_PATTERN.matcher(downloadPage);
+			if (!noDoiMatcher.find() || !doiMatcher.find()) throw new ScrapingException("Couldn't get required data for export form");
+			String noDoi = noDoiMatcher.group(1);
+			URI actionURL;
+			if ("noDoi".equalsIgnoreCase(noDoi)) {
+				actionURL = getMethod.getURI();
+			} else {
+				actionURL = new URI(submitAction, true);
+			}
+			
+			//post export form
+			PostMethod postMethod = new PostMethod();
+			postMethod.setURI(actionURL);
+			postMethod.addParameter("redirectUri", getMethod.getPath());
+			postMethod.addParameter("noDoi", noDoi);
+			postMethod.addParameter("doi", doiMatcher.group(1));
+			bibtexResult = WebUtils.getPostContentAsString(client, postMethod);
+
 		} catch (IOException ex) {
 			throw new ScrapingException(ex);
-		} catch (URISyntaxException ex) {
-			throw new ScrapingException(ex);
 		}
+		
 		//check the result
 		if (!present(bibtexResult)) throw new ScrapingException("Could not submit export form");
 		Matcher numberOfCitMatcher = NUMBER_CITS_EXPORTED_PATTERN.matcher(bibtexResult);
@@ -139,41 +185,6 @@ public class JStorScraper extends AbstractUrlScraper {
 		sc.setBibtexResult(bibtexResult);
 		return true;
 
-	}
-	
-	private static String getPageContent(URL url, CookieManager cookieMan) throws IOException {
-		//TODO: use apache commons, use WebUtils
-		String page = null;
-		for (int i = 0; i < 10; i++) {
-			HttpURLConnection con = null;
-			InputStream inputStream = null;
-			try {
-				con = (HttpURLConnection) url.openConnection();
-				con.setInstanceFollowRedirects(false);
-				for (Map.Entry<String, List<String>> e : cookieMan.get(url.toURI(), con.getRequestProperties()).entrySet()) {
-					con.setRequestProperty(e.getKey(), WebUtils.buildCookieString(e.getValue()));
-				}
-				con.connect();
-				cookieMan.put(url.toURI(), con.getHeaderFields());
-				if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-					inputStream = con.getInputStream();
-					page = WebUtils.inputStreamToStringBuilder(inputStream, WebUtils.extractCharset(con.getHeaderField("Content-Type"))).toString();
-					break;
-				}
-			} catch (URISyntaxException ex) {
-				break;
-			} finally {
-				try {
-					if (inputStream != null) inputStream.close();
-				} catch (IOException e) {}
-				if (con != null) con.disconnect();
-			}
-			if (con == null) return null;
-			String location = con.getHeaderField("Location");
-			if (!present(location)) break;
-			url = new URL(url, location);
-		}
-		return page;
 	}
 
 	/** FIXME: refactor
@@ -255,75 +266,6 @@ public class JStorScraper extends AbstractUrlScraper {
 		urlConn.disconnect();
 
 		return cookieString.toString();
-	}
-	
-	private static String submitExportPage(String exportPageLink, CookieManager cookieMan) throws IOException, URISyntaxException {
-		//TODO: use apache commons, use WebUtils
-		URL url = new URL(exportPageLink);
-		
-		//get the export page
-		HttpURLConnection con = null;
-		InputStream inputStream = null;
-		String exportPage;
-		try {
-			con = (HttpURLConnection) url.openConnection();
-			for (Map.Entry<String, List<String>> e : cookieMan.get(url.toURI(), con.getRequestProperties()).entrySet()) {
-				con.setRequestProperty(e.getKey(), WebUtils.buildCookieString(e.getValue()));
-			}
-			con.connect();
-			cookieMan.put(url.toURI(), con.getHeaderFields());
-			inputStream = con.getInputStream();
-			exportPage = WebUtils.inputStreamToStringBuilder(inputStream, WebUtils.extractCharset(con.getHeaderField("Content-Type"))).toString();
-		} finally {
-			try {
-				if (inputStream != null) inputStream.close();
-			} catch (IOException e) {}
-			if (con != null) con.disconnect();
-		}
-		
-		//get some data from the page and switch submit action
-		Matcher noDoiMatcher = SUBMIT_ACTION_NODOI_PATTERN.matcher(exportPage);
-		Matcher doiMatcher = SUBMIT_ACTION_DOI_PATTERN.matcher(exportPage);
-		if (!noDoiMatcher.find() || !doiMatcher.find()) return null;
-		String noDoi = noDoiMatcher.group(1);
-		URL actionURL;
-		if ("noDoi".equalsIgnoreCase(noDoi)) {
-			actionURL = url;
-		} else {
-			actionURL = new URL(JSTOR_DOWNLOAD_SUBMIT_ACTION_YESDOI);
-		}
-		
-		//post for the BibTeX file
-		HttpURLConnection con2 = null;
-		DataOutputStream postOut = null;
-		InputStream inputStream2 = null;
-		try{
-			con2 = (HttpURLConnection) actionURL.openConnection();
-			for (Map.Entry<String, List<String>> e : cookieMan.get(actionURL.toURI(), con2.getRequestProperties()).entrySet()) {
-				con2.setRequestProperty(e.getKey(), WebUtils.buildCookieString(e.getValue()));
-			}
-			con2.setRequestMethod("POST");
-			con2.setDoOutput(true);
-			con2.connect();
-			postOut = new DataOutputStream(con2.getOutputStream());
-			postOut.writeBytes("redirectUri=");
-			postOut.writeBytes(URLEncoder.encode(exportPageLink, "UTF-8"));
-			postOut.writeBytes("&noDoi=");
-			postOut.writeBytes(noDoi);
-			postOut.writeBytes("&doi=");
-			postOut.writeBytes(doiMatcher.group(1));
-			postOut.flush();
-			inputStream2 = con2.getInputStream();
-			return WebUtils.inputStreamToStringBuilder(inputStream2, WebUtils.extractCharset(con2.getHeaderField("Content-Type"))).toString();
-		} finally {
-			try {
-				if (postOut != null) postOut.close();
-			} catch (IOException e) {}
-			try {
-				if (inputStream2 != null) inputStream2.close();
-			} catch (IOException e) {}
-			if (con2 != null) con2.disconnect();
-		}
 	}
 
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
