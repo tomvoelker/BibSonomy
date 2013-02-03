@@ -87,6 +87,20 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		}
 
 		/*
+		 * Create context for scraping
+		 */
+		ScrapingContext scrapingContext;
+		try {
+			scrapingContext = new ScrapingContext(url == null ? null : new URL(url), selection);
+		} catch (MalformedURLException ex) {
+			/*
+			 * wrong url format
+			 */
+			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
+			return;
+		}
+
+		/*
 		 * --> scrape the website and parse bibtex
 		 */
 		try {
@@ -95,7 +109,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			 * NOTE: if the given URL is null, we probably have to scrape a 
 			 * selection (e.g., ISBN) - therefore, we insert a null URL
 			 */
-			final ScrapingContext scrapingContext = new ScrapingContext(url == null ? null : new URL(url), selection);
 			final boolean isSuccess = scraper.scrape(scrapingContext);
 			final String scrapedBibtex = scrapingContext.getBibtexResult();
 			if (isSuccess && present(scrapedBibtex)) {
@@ -126,7 +139,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 						/*
 						 * the parser did not return any result ...
 						 */
-						this.getErrors().reject("error.scrape.nothing", new Object[]{scrapedBibtex, url}, "The BibTeX\n\n{0}\n\nwe scraped from {1} could not be parsed.");
+						this.getErrors().reject("error.scrape.nothing", new Object[]{scrapedBibtex, scrapingContext.getUrl()}, "The BibTeX\n\n{0}\n\nwe scraped from {1} could not be parsed.");
 					}
 				} catch (final IOException ex) {
 					/*
@@ -148,18 +161,13 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 				 * FIXME: in this case we should probably show the 
 				 * boxes/import_publication_hints.jsp 
 				 */
-				this.getErrors().reject("error.scrape.nothing", new Object[]{url}, "The URL {0} is not supported by one of our scrapers.");
+				this.getErrors().reject("error.scrape.nothing", new Object[]{scrapingContext.getUrl()}, "The URL {0} is not supported by one of our scrapers.");
 			}
 		} catch (final ScrapingException ex) {
 			/*
 			 * scraping failed no bibtex scraped
 			 */
-			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
-		} catch (final MalformedURLException ex) {
-			/*
-			 * wrong url format
-			 */
-			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
+			this.getErrors().reject("error.scrape.failed", new Object[]{scrapingContext.getUrl(), ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
 		}
 	}
 
