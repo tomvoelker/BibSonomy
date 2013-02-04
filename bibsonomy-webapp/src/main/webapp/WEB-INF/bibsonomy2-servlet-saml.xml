@@ -231,10 +231,6 @@
 		 -->
 	</bean>
 	
-	<bean id="openidAuthenticationUserDetailsService" class="org.bibsonomy.webapp.util.spring.security.userdetails.OpenIdAuthenticationUserDetailsService">
-		
-	</bean>
-	
 	<bean id="samlAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
 		<property name="providers">
 			<list>
