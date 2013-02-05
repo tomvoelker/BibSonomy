@@ -27,7 +27,7 @@ import org.springframework.security.saml.SAMLCredential;
  */
 public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCredential, SamlRemoteUserId> {
 	private static final Logger log = Logger.getLogger(SamlUserAttributeMapping.class);
-	private Map<String, String> attributeMap;
+	private Map<String, String> samlToUserPropertiesMap;
 	private String useridAttributeName;
 	
 	/**
@@ -44,11 +44,11 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 		writeAttributeDebugLogs(samlCred);
 		
 		// copy user attributes
-		for (Map.Entry<String, String> entry : attributeMap.entrySet()) {
-			Attribute attrValue = samlCred.getAttributeByName(entry.getKey());
-			Object value = (attrValue == null) ? null : attrValue.getFriendlyName();
+		for (Map.Entry<String, String> entry : samlToUserPropertiesMap.entrySet()) {
+			Attribute samlAttr = samlCred.getAttributeByName(entry.getKey());
+			Object samlValue = (samlAttr == null) ? null : getSingleStringValueFromAttribute(entry.getKey(), samlAttr);
 			try {
-				BeanUtils.setProperty(user, entry.getValue(), value);
+				BeanUtils.setProperty(user, entry.getValue(), samlValue);
 			} catch (Exception ex) {
 				throw new RuntimeException("exception while setting property '" + entry.getValue() + "'", ex);
 			}
@@ -109,6 +109,10 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 		if (attr == null) {
 			throw new AuthenticationServiceException("no '" + attrName + "' attribute in saml response");
 		}
+		return getSingleStringValueFromAttribute(attrName, attr);
+	}
+
+	protected String getSingleStringValueFromAttribute(String attrName, Attribute attr) {
 		List<XMLObject> values = attr.getAttributeValues();
 		if (ValidationUtils.present(values) == false) {
 			throw new AuthenticationServiceException("no values for '" + attrName + "' attribute in saml response");
@@ -156,10 +160,10 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 	}
 
 	/**
-	 * @return the attributeMap map with SAML attribute names as keys and {@link User}-property names as values
+	 * @return the samlToUserPropertiesMap map with SAML attribute names as keys and {@link User}-property names as values
 	 */
-	public Map<String, String> getAttributeMap() {
-		return this.attributeMap;
+	public Map<String, String> getSamlToUserPropertiesMap() {
+		return this.samlToUserPropertiesMap;
 	}
 
 	/**
@@ -177,10 +181,10 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 	}
 
 	/**
-	 * @param attributeMap the attributeMap to set
+	 * @param samlToUserPropertiesMap the samlToUserPropertiesMap to set
 	 */
-	public void setAttributeMap(Map<String, String> attributeMap) {
-		this.attributeMap = attributeMap;
+	public void setSamlToUserPropertiesMap(Map<String, String> samlToUserPropertiesMap) {
+		this.samlToUserPropertiesMap = samlToUserPropertiesMap;
 	}
 
 }
