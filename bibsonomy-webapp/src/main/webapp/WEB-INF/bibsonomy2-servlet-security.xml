@@ -71,7 +71,7 @@
 		
 		<!--
 			 XXX: it is a little bit tricky to add another exception translation filter after the other one
-			 but if we replace the configurated one we could not use the namespace config (http, intercept-url) and had to add
+			 but if we replaced the configurated one we could not use the namespace config (http, intercept-url) and had to add
 			 all spring security filters to this config file by bean definitions :(
 		 -->
 		<security:custom-filter after="EXCEPTION_TRANSLATION_FILTER" ref="exceptionTranslationFilter" />
@@ -125,7 +125,7 @@
 	<bean id="delegatingEntryPoint" class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
 		<constructor-arg>
 			<map key-type="org.springframework.security.web.util.AntPathRequestMatcher">
-				<entry key="/vuFindInit" value-ref="samlEntryPoint" />
+				<entry key="/autoRegisterSamlAndOAuth" value-ref="samlEntryPoint" />
 				<entry key="/login_saml" value-ref="samlEntryPoint" />
 				<entry key="/register_saml" value-ref="samlEntryPoint" />
 				<entry key="/register_saml_success" value-ref="samlEntryPoint" />
