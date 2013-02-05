@@ -14,7 +14,7 @@ public class StringListContainsCondition implements Condition {
 	@Override
 	public boolean eval() {
 		for (String s : stringList.split(",")) {
-			if (s.trim().equals(expected) == true) {
+			if (s.trim().equalsIgnoreCase(expected) == true) {
 				return true;
 			}
 		}
