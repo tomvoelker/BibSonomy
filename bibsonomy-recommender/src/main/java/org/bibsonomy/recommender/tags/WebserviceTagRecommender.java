@@ -168,10 +168,8 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	}
 
 	@Override
-	public SortedSet<RecommendedTag> getRecommendedTags(
-			final Post<? extends Resource> post) {
-		final SortedSet<RecommendedTag> retVal = 
-			new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> retVal = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		addRecommendedTags(retVal, post);
 		return retVal;
 	}
