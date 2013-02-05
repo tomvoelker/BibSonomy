@@ -16,7 +16,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.authentication.SamlCredAuthToken;
 import org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool;
 import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
-import org.bibsonomy.webapp.validation.UserValidator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -32,6 +31,8 @@ import org.springframework.security.saml.SAMLCredential;
  *
  */
 public class VuFindUserInitController implements MinimalisticController<VuFindUserInitCommand> {
+	private static final String UNKNOWN = "<unknown>";
+
 	private static final Logger log = Logger.getLogger(VuFindUserInitController.class);
 
 	private OAuthAuthorizeTokenController oaAuthorizeController;
@@ -86,17 +87,18 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		}
 		User user = new User();
 		attributeExtractor.populate(user, samlCreds);
+		// we assume that the real name has been set by the attributeExtractor
 		if (ValidationUtils.present(user.getRealname()) == false) {
-			user.setRealname("<unknown>");
+			user.setRealname(UNKNOWN);
 		}
 		if (ValidationUtils.present(user.getPassword()) == false) {
 			user.setPassword(UserUtils.generateRandomPassword());
 		}
 		if (ValidationUtils.present(user.getEmail()) == false) {
-			user.setEmail("<unknown>");
+			user.setEmail(UNKNOWN);
 		}
 		user.setIPAddress(getRequestLogic().getInetAddress());
-		user.setName(generateUserName(user, remoteUserId));
+		user.setName(remoteUserId.getUserId());
 
 		this.adminLogic.createUser(user);
 		authToken = new SamlCredAuthToken(samlCreds);
@@ -134,57 +136,6 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 			return null;
 		}
 		return ctx.getAuthentication();
-	}
-	
-	private String generateUserName(final User user, SamlRemoteUserId sruid) {
-		/*
-		 * Find user name which does not exist yet in the database.
-		 * 
-		 * check if username is already used and try another
-		 */
-		String newName = cleanUserName(user.getRealname());
-		int tryCount = 0;
-		//log.debug("try existence of username: " + newName);
-		while ((newName.equalsIgnoreCase(this.adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
-			try {
-				if (tryCount == 0) {
-					// try first character of forename concatenated with surname
-					// bugs bunny => bbunny
-					newName = cleanUserName(user.getRealname()).substring(0, 1).concat(newName);
-				} else if (tryCount == 100) {
-					// now use first character of fore- and first two characters of surename concatenated with user id 
-					// bugs bunny => bbu01234567
-					String remoteUserId = sruid.getUserId();
-					newName = cleanUserName(newName.substring(0, 3).concat(remoteUserId));
-				} else {
-					// try first character of forename concatenated with surename concatenated with current number
-					// bugs bunny => bbunnyX where X is between 1 and 9
-					if (tryCount==1) {
-						// add trycount to newName
-						newName = cleanUserName(newName.concat(Integer.toString(tryCount)));
-					} else { 
-						// replace last two characters of string with trycount
-						newName = cleanUserName(newName.substring(0, newName.length() - Integer.toString(tryCount-1).length()).concat(Integer.toString(tryCount)));
-					}
-				}
-				//log.debug("try existence of username: " + newName + " (" + tryCount + ")");
-				tryCount++;
-			} catch (final IndexOutOfBoundsException ex) {
-				/*
-				 * if some substring values are out of range, catch exception and use surename
-				 */
-				newName = cleanUserName(user.getRealname());
-				tryCount = 99;
-			}
-		}
-		return newName;
-	}
-	
-	private static String cleanUserName(final String name) {
-		if (!ValidationUtils.present(name)) {
-			return "";
-		}
-		return UserValidator.USERNAME_DISALLOWED_CHARACTERS_PATTERN.matcher(name).replaceAll("").toLowerCase();
 	}
 	
 
