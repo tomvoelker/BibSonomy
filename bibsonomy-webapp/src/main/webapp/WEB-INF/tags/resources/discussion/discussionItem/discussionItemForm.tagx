@@ -51,40 +51,56 @@
 					</c:if>
 				</span>
  				<div style="float:right; vertical-align:middle;" class="discussionPostbuttonFrame">
- 					<div class="discussionAdditionalControls"><!-- keep -->
-					</div>
+ 					<div class="discussionAdditionalControls"><!-- keep --></div>
+
  					<fmt:message key="post.resource.${discussionItemClass}.actions.${action}" var="buttonText" />
  					<input type="submit" style="float:right; margin-right:0px;" value="${buttonText}" />
  					<span class="hoveringControl">
-						<div class="controlsContainer fixedContainer" style="position:absolute;">
-								<input class="referenceAutocompletion" type="text"/>
+						<div class="controlsContainer reversed" style="position:absolute;">
+								<img style="display:block; margin-left:auto; margin-right:auto;z-index:7;position:relative;" src="${resdir}/image/arrow_up.png"/>
+								<span class="fsOuter" style="padding:10px;padding:bottom:0px;margin-top:-1px;margin-bottom:0px;position:relative;display:block">
+									<input class="referenceAutocompletion" type="text"/>
+								</span>
 						</div>
+						<buttons:help cssStyle="float:none">
+				       			<fmt:message key="post.resource.addreference.button"/>
+		        		</buttons:help>
 						<a onclick="showAppendixForm({target:$(this), callback: setUpLinkbox});return false;">
 							<fmt:message key="post.resource.addreference" />	
 						</a>
 					</span>
 					<span class="hoveringControl">
-							<div class="controlsContainer" style="padding:2px;position:absolute;">
-								<bform:fieldset maximized="true" legendKey="post.resource.viewablefor">
-									<jsp:attribute name="content">
-										<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${discussionItem.groups}"/>
-					  				</jsp:attribute>
-								</bform:fieldset>
-								<c:choose>
-									<c:when test="${not empty discussionItem and discussionItem.anonymous}">
-										<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" style="float:left"/>
-									</c:when>
-									<c:otherwise>
-										<input type="checkbox" name="discussionItem.anonymous" value="true" style="position:relative"/>
-									</c:otherwise>
-								</c:choose>
-								<label style="float:left" for="discussionItem.anonymous">
-									<fmt:message key="post.resource.discussionItem.anonymous"/>	
-								</label>
-								<buttons:help message="post.resource.discussionItem.anonymous.help"/>
+							<div class="controlsContainer" style="position:absolute;">
+								<span class="fsOuter" style="padding:10px;padding:bottom:0px;margin-bottom:0px;z-index:7;position:relative;display:block">
+									<c:choose>
+										<c:when test="${not empty discussionItem and discussionItem.anonymous}">
+											<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" style="float:left"/>
+										</c:when>
+										<c:otherwise>
+											<input type="checkbox" name="discussionItem.anonymous" value="true" style="position:relative"/>
+										</c:otherwise>
+									</c:choose>
+									<label style="float:left" for="discussionItem.anonymous">
+										<fmt:message key="post.resource.discussionItem.anonymous"/>	
+									</label>
+									<buttons:help message="post.resource.discussionItem.anonymous.help"/>
+									<bform:fieldset maximized="true" legendKey="post.resource.viewablefor">
+										<jsp:attribute name="content">
+											<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" selectedGroups="${discussionItem.groups}"/>
+						  				</jsp:attribute>
+									</bform:fieldset>
+								</span>
+								<img style="display:block; margin-left:auto; margin-right:auto;margin-top:-1px;z-index:7;position:relative;" src="${resdir}/image/arrow_down.png"/>
 							</div>
+							<buttons:help message="post.resource.visibility.button" cssStyle="float:none">
+							        <ul style="list-style:circle inside none">
+							        	<li> <fmt:message key="post.resource.discussion.anonymous.help"/></li>
+							        	<li> <fmt:message key="post.resource.discussion.visibility.help"/></li>
+							       	</ul>
+				        	</buttons:help>
 							<a onclick="showAppendixForm({target: $(this)});return false;"><fmt:message key="post.resource.visibility"/></a>
 					</span>
+					
 					<div class="spinner initiallyHidden" style="float:left; margin-right:10px">
 						<img src="${resdir}/image/ajax_loader.gif" alt="loading"/><span class="spinnerClass"><fmt:message key="post.resource.${discussionItemClass}.action.${action}" /></span>
 					</div>

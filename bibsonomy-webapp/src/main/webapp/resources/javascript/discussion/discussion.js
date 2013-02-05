@@ -92,7 +92,7 @@ function showAppendixForm(o) {
 	var frame = o.target.parent().parent().children(".discussionAdditionalControls");
 	
 	if(frame[0]==undefined) return;
-	if(frame.css("display") != "none") {o.target.removeClass("linkButton").prev().hide().parent().css("z-index",0); return frame.hide();}
+	if(frame.css("display") != "none") {o.target.removeClass("linkButton").parent().children(".controlsContainer").hide().parent().css("z-index",0); return frame.hide();}
 	o.target.addClass("linkButton").parent().css("z-index",5);
 	var left = (parent.position().left+parent.width()-frame.width());
 	var gap = left - o.target.position().left;
@@ -105,8 +105,9 @@ function showAppendixForm(o) {
 
 	frame.height((parent.height()+4))
 	frame.css({"top":(o.target.position().top-9)+"px","left":(left-9)+"px"}).show();
-	if(!controlsContainer.hasClass("fixedContainer"))
-		controlsContainer.css({"margin-left": "-"+((controlsContainer.width()-o.target.width())/2), "margin-top":"-"+(controlsContainer.height()+o.target.height()+10)+"px"});
+	controlsContainer.css({
+		"margin-left": "-"+((controlsContainer.width()-o.target.width())/2), 
+		"margin-top":((controlsContainer.hasClass("reversed")?""+(o.target.height()+10):"-"+(controlsContainer.height()+o.target.height()+10))+"px")});
 	controlsContainer.show();
 	if(o.callback!=undefined) o.callback({targetFrame:frame, menuItem:o.target, controlsContainer: controlsContainer});
 }
@@ -128,15 +129,11 @@ function setUpLinkbox(o) {
 		textArea.css({"z-index":"","position":""});
 		o.menuItem.unbind("click", callback);
 	};
-	
+		
 	textArea.css({"z-index":"5","position":"relative"});
 	
 	o.menuItem.bind("click", callback);
-	var input = o.controlsContainer.find('input');
-	offleft = parseInt(input.width())-parseInt(o.menuItem.width());
-	offleft +=parseInt(o.menuItem.width())+8;
-	input.trigger("focus").css({"margin-left": "-"+offleft+"px","margin-top":"-2px"});
-	
+	o.controlsContainer.find('input').trigger("focus");
 	o.menuItem.css("position","");
 }
 
@@ -145,7 +142,7 @@ function showMenu(e) {
 	
 	var parent = $(e.target).unbind("focus", showMenu).parent().parent().parent();
 	var frames = ["discussionControlsFrame", "discussionPostbuttonFrame"];
-	var rating = getOwnReviewRating!=undefined && !isNaN((rating = getOwnReviewRating()))?parseFloat(rating):5;
+	var rating = getOwnReviewRating!=undefined && !isNaN((rating = getOwnReviewRating()))?parseFloat(rating):0;
 	var reviewRating = parent.find(".reviewrating");
 	
 	for(var i = 0; i < frames.length; i++)
