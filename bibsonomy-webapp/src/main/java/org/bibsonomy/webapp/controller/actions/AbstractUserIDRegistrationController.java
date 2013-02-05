@@ -287,7 +287,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 				tryCount++;
 			} catch (final IndexOutOfBoundsException ex) {
 				/*
-				 * if some substring values are out of range, catch exception and use surename
+				 * if some substring values are out of range, catch exception and use surname
 				 */
 				newName = cleanUserName(user.getRealname());
 				tryCount = 99;
@@ -306,7 +306,10 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		for (RemoteUserId rId : user.getRemoteUserIds()) {
 			return rId.getSimpleId();
 		}
-		return "";
+		return null;
+		/*
+		 * FIXME: Should we not throw an exception in this case? 
+		 */
 	}
 	
 	private static String cleanUserName(final String name) {
