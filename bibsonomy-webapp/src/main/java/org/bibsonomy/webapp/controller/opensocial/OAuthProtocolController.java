@@ -109,7 +109,7 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 	@Override
 	public View workOn(final OAuthCommand command) {
 		if (!present(this.getDataStore())) {
-			throw new RuntimeException("OAuth not enables.");
+			throw new RuntimeException("OAuth not enabled.");
 		}
 
 		// retrieve the log in user
