@@ -1,14 +1,10 @@
 package org.bibsonomy.webapp.util.spring.security.authentication;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
-import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
 import org.springframework.security.core.AuthenticationException;
 
 /**
@@ -18,11 +14,6 @@ import org.springframework.security.core.AuthenticationException;
 public class LoginUrlAuthenticationEntryPoint extends org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint {
 
 	private static final String NOTICE_PARAM_NAME = "notice";
-
-	/**
-	 * @see #getSpecialEntryPointUrls()
-	 */
-	private Map<String, String> specialEntryPointUrls = new HashMap<String, String>();
 
 	@Override
 	protected String determineUrlToUseForThisRequest(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException exception) {
@@ -35,28 +26,8 @@ public class LoginUrlAuthenticationEntryPoint extends org.springframework.securi
 		if (exception.getCause() instanceof AccessDeniedNoticeException) {
 			final AccessDeniedNoticeException noticeException = (AccessDeniedNoticeException) exception.getCause();
 			return UrlUtils.setParam(urlToUse, NOTICE_PARAM_NAME, noticeException.getNotice());
-		} /* else if (exception.getCause() instanceof SpecialAuthMethodRequiredException) {
-			String url = specialEntryPointUrls.get(exception.getCause().getMessage());
-			if (url != null) {
-				return url;
-			}
-		}*/
+		}
 		
 		return urlToUse;
-	}
-
-	/**
-	 * @return mapping from message values in {@link SpecialAuthMethodRequiredException} to urls that handle the authentication method login.
-	 */
-	public Map<String, String> getSpecialEntryPointUrls() {
-		return this.specialEntryPointUrls;
-	}
-
-	/**
-	 * @param entryPointUrls
-	 * @see #getSpecialEntryPointUrls()
-	 */
-	public void setSpecialEntryPointUrls(Map<String, String> entryPointUrls) {
-		this.specialEntryPointUrls = entryPointUrls;
 	}
 }
