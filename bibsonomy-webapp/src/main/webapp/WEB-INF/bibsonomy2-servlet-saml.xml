@@ -220,7 +220,7 @@
 	</bean>
 
 	<bean id="samlAttributeExtractor" class="org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping">
-		<property name="attributeMap">
+		<property name="samlToUserPropertiesMap">
 			<map>
 				<!-- TODO -->
 			</map>
