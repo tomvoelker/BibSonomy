@@ -1,14 +1,16 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
-import org.bibsonomy.webapp.command.VuFindUserInitCommand;
+import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
 import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -30,7 +32,7 @@ import org.springframework.security.saml.SAMLCredential;
  * @author jensi
  *
  */
-public class VuFindUserInitController implements MinimalisticController<VuFindUserInitCommand> {
+public class VuFindUserInitController implements MinimalisticController<OAuthCommand> {
 	private static final String UNKNOWN = "<unknown>";
 
 	private static final Logger log = Logger.getLogger(VuFindUserInitController.class);
@@ -49,18 +51,18 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 
 	
 	@Override
-	public VuFindUserInitCommand instantiateCommand() {
-		return new VuFindUserInitCommand();
+	public OAuthCommand instantiateCommand() {
+		return new OAuthCommand();
 	}
 
 	@Override
-	public View workOn(VuFindUserInitCommand command) {
+	public View workOn(OAuthCommand command) {
 		getSamlAuthTool().ensureFreshAuthentication();
 		Authentication authToken = null;
 		if (AuthenticationUtils.getUserOrNull() == null) {
 			// we have made sure that an authentication attempt was done but still got no user
 			// -> try to create a new user from shibboleth credentials
-			authToken = createNewUserAndAuthTokenForHer();
+			authToken = createNewLimitedUserAndAuthTokenForHer();
 		}
 		// if we are here, we have authenticated a user (maybe not yet logged in)
 		// - otherwise exceptions would have been thrown
@@ -76,7 +78,7 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 		}
 	}
 
-	protected Authentication createNewUserAndAuthTokenForHer() {
+	protected Authentication createNewLimitedUserAndAuthTokenForHer() {
 		Authentication authToken;
 		SAMLCredential samlCreds = getSamlCreds();
 		SamlRemoteUserId remoteUserId = getRemoteUserId(samlCreds);
@@ -86,10 +88,15 @@ public class VuFindUserInitController implements MinimalisticController<VuFindUs
 			throw new AccessDeniedException(msg);
 		}
 		User user = new User();
+		/*
+		 * Newly created limited users must have private settings to ensure their invisibility in the system.
+		 */
+		user.setSettings(new UserSettings());
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.PRIVATE);
 		attributeExtractor.populate(user, samlCreds);
 		// we assume that the real name has been set by the attributeExtractor
 		if (ValidationUtils.present(user.getRealname()) == false) {
-			user.setRealname(UNKNOWN);
+			user.setRealname("");
 		}
 		if (ValidationUtils.present(user.getPassword()) == false) {
 			user.setPassword(UserUtils.generateRandomPassword());
