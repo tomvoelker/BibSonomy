@@ -47,23 +47,22 @@
 	   	</a>		
    		
    		<!-- The three Buttons -->
-   		<ul id="discussionMainMenu" class="newMenu">
+   		<span class="initiallyHidden">
 <!-- 
 			<li>
 				<a href="#discussion" id="toggleDiscussion"><fmt:message key="post.resource.discussion.actions.hide" /></a>
 			</li>
  -->
 			<!-- TODO: use spring security tags -->
-			<!-- <c:if test="${command.context.userLoggedIn}">
-				<li><a href="#createreview" class="createReview"><fmt:message key="post.resource.review.actions.create" /></a></li> 
-				 <li><a href="#createcomment" class="reply"><fmt:message key="post.resource.comment.actions.create" /></a></li> 
-			</c:if>-->
+			<c:if test="${command.context.userLoggedIn}">
+				<span><span id="discussionRef"><fmt:message key="post.resource.comment.actions.create" /></span></span>
+			</c:if>
 		
 			<!--
 				<li><a href="#showOnlyReviews" id="toggleReviews"><fmt:message key="post.resource.discussion.actions.showReviews" /></a></li>
 				<li><a href="#collapseAllThreads" id="collapseAllThreads"><fmt:message key="post.resource.discussion.actions.collapseAllThreads" /></a></li>
 			-->
-		</ul>
+		</span>
 		
 		
    				

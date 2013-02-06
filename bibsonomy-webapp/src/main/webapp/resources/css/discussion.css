@@ -210,7 +210,7 @@ h3 {
 
 .textBoxContainer {
 	float:right;
-	width:94%;
+	width:92%;
 	margin-top:0px!important;
 	margin-bottom:0px!important;
 }
@@ -295,8 +295,12 @@ h3 {
 	min-height:80px!important;
 }
 
-.commentPicture {
+.discussionPicture {
 	height:31px;
+	background-color:#fff;
+	border:1px solid #aaa;
+	padding:3px;
+	width:auto;
 }
 
 .discussionPictureFrame{

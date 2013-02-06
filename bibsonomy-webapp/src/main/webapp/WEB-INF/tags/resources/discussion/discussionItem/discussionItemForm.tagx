@@ -43,7 +43,7 @@
 				</div>
 				
        			<span class="discussionPictureFrame">
-       				<img style="background-color:#fff;border:1px solid #aaa;padding:3px;" src="/picture/user/${fn:escapeXml(userName)}" alt="userPicture" class="commentPicture" />
+       				<img src="/picture/user/${fn:escapeXml(userName)}" alt="userPicture" class="discussionPicture" />
        			</span>
        			<span class="textBoxContainer">
 					<c:if test="${not empty additionalInputs}">
@@ -59,7 +59,14 @@
 						<div class="controlsContainer">
 								<img style="display:block; margin-left:auto; margin-right:auto;z-index:7;position:relative;" src="${resdir}/image/arrow_up.png"/>
 								<span class="fsOuter" style="padding:10px;margin-top:-1px;margin-bottom:0px;position:relative;display:block">
-									<input class="referenceAutocompletion" type="text"/>
+									<buttons:help>
+										<jsp:attribute name="helpText">
+							       			<fmt:message key="post.resource.addreference.hint"/>
+										</jsp:attribute>
+					        		</buttons:help>
+									<fmt:message var="alternateClose" key="close" />
+									<a class="closeReference" href="#" onclick="$(this).parents('.hoveringControl').children('.hoveringMenuItem').trigger('click'); return false;" title="${alternateClose}" style="float:right;"><img src="${resdir}/image/icon_close.png" alt="${alternateClose}" /></a>
+									<input class="referenceAutocompletion" size="60" type="text" value=""/>
 								</span>
 						</div>
 						<buttons:help cssStyle="float:none">
@@ -69,7 +76,7 @@
 								</fmt:message>
 							</jsp:attribute>
 		        		</buttons:help>
-						<a onclick="showAppendixForm({target:$(this), callback: setUpLinkbox});return false;">
+						<a class="hoveringMenuItem" onclick="showAppendixForm({menuItem:$(this), callback: setUpLinkbox});return false;">
 							<fmt:message key="post.resource.addreference" />	
 						</a>
 					</span>
@@ -101,7 +108,7 @@
 									<fmt:message key="post.resource.visibility.help"/>
 								</jsp:attribute>
 				        	</buttons:help>
-							<a onclick="showAppendixForm({target: $(this)});return false;"><fmt:message key="post.resource.visibility"/></a>
+							<a class="hoveringMenuItem" onclick="showAppendixForm({menuItem: $(this)});return false;"><fmt:message key="post.resource.visibility"/></a>
 					</span>
 					
 					<div class="spinner initiallyHidden" style="float:left; margin-right:10px">

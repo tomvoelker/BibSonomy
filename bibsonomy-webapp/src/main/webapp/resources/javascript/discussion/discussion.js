@@ -74,36 +74,46 @@ $(function() {
 
 });
 
-function createStandaloneReply(parent) {
-		removeAllOtherDiscussionForms();
-		var parentHash = $(".discussion_all").find(".details").find('.info').data(DISCUSSIONITEM_DATA_KEY);
-		var form = parent.find("form");
-		form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
-		
-		// bind some actions (submit, group switch)
-		form.submit(createComment);
-		form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-		addAutocompletionToLinkBox(form);
-}
-
 function showAppendixForm(o) {
+	o.parent = o.menuItem.parents(".fsOuter");
+	o.bgFrame = o.menuItem.parent().parent().children(".discussionAdditionalControls");
 	
-	var parent = o.target.parents(".fsOuter");
-	var frame = o.target.parent().parent().children(".discussionAdditionalControls");
+	if(o.bgFrame[0]==undefined) return;
 	
-	if(frame[0]==undefined) return;
-	if(frame.css("display") != "none") {o.target.removeClass("linkButton").parent().children(".controlsContainer").hide().parent().css("z-index",0); return frame.hide();}
-	o.target.addClass("linkButton").parent().css("z-index",5);
-	var controlsContainer = o.target.parent().children(".controlsContainer");
+	if(o.bgFrame.css("display") != "none") {
+		o.menuItem
+		.removeClass("linkButton")
+		.parent()
+		.children(".controlsContainer")
+		.hide()
+		.parent()
+		.css("z-index",0); 
+		
+		return o.bgFrame.hide();
+	}
 
-	frame.width(parent.width()).height(parent.height()).css({"top":0,"left":0}).show();
+	var frameClickCallback = function() {
+		o.bgFrame.unbind("click", frameClickCallback);
+		o.menuItem.trigger("click");
+	};
 	
-	controlsContainer.show().css("left", ""+((o.target.position().left+o.target.width()/2)-controlsContainer.width()/2)+"px")
+	o.bgFrame.bind("click", frameClickCallback);
+	o.menuItem.addClass("linkButton").parent().css("z-index",5);
+	o.ctrlsContainer = o.menuItem.parent().children(".controlsContainer");
+	o.bgFrame.width(o.parent.width()).height(o.parent.height()).css({"top":0,"left":0}).show();
+	o.ctrlsContainer.show().css("left", ""+((o.menuItem.position().left+o.menuItem.width()/2)-o.ctrlsContainer.width()/2)+"px")
 	.css({
-		"left": ""+((o.target.position().left+o.target.width()/2)-controlsContainer.width()/2)+"px", 
-		"top":""+(o.target.position().top+o.target.height()+10)+"px"
+		"left": ""+((o.menuItem.position().left+o.menuItem.width()/2)-o.ctrlsContainer.width()/2)+"px", 
+		"top":""+(o.menuItem.position().top+o.menuItem.height()+10)+"px"
 	});
-	if(o.callback!=undefined) o.callback({targetFrame:frame, menuItem:o.target, controlsContainer: controlsContainer});
+
+	if(o.callback!=undefined) o.callback(
+			{
+				bgFrame:o.bgFrame, 
+				menuItem:o.menuItem, 
+				ctrlsContainer: o.ctrlsContainer
+			}
+	);
 }
 
 $(document).ready(function() {
@@ -113,22 +123,22 @@ $(document).ready(function() {
 	$('.textAreaAutoresize').each(function() {
 		$(this).autosize({}).focus(showMenu);
 	});
-	var reviewRating = $('.reviewrating');
-	reviewRating.stars({split:2});
+	$('.reviewrating').stars({split:2});
 });
 
 function setUpLinkbox(o) {
-	var textArea = o.targetFrame.parents('.fsOuter').children('.textBoxContainer').find(".textAreaAutoresize");
+	o.textArea = o.bgFrame.parents('.fsOuter').children('.textBoxContainer').find(".textAreaAutoresize");
+	o.textArea.css({"z-index":5,"position":"relative"});
+	o.ctrlsContainer.find('input').trigger("focus");
+	o.menuItem.css("position","");
+	o.refInput = o.ctrlsContainer.find(".referenceAutocompletion");
 	var callback = function() {
-		textArea.css({"z-index":"","position":""});
+		o.refInput.val('');
+		o.textArea.css({"z-index":0,"position":""});	
 		o.menuItem.unbind("click", callback);
 	};
-		
-	textArea.css({"z-index":"5","position":"relative"});
 	
 	o.menuItem.bind("click", callback);
-	o.controlsContainer.find('input').trigger("focus");
-	o.menuItem.css("position","");
 }
 
 function showMenu(e) {
@@ -139,10 +149,9 @@ function showMenu(e) {
 	var rating = getOwnReviewRating!=undefined && !isNaN((rating = getOwnReviewRating()))?parseFloat(rating):0;
 	var reviewRating = parent.find(".reviewrating");
 	
-	for(var i = 0; i < frames.length; i++)
-		parent.children("."+frames[i]).css("display", "block").hide().fadeIn();
-	if(!reviewRating.hasClass('ratingDisabled'))	
-		reviewRating.stars("select", rating.toFixed(1));
+	for(var i = 0; i < frames.length; i++) parent.children("."+frames[i]).css("display", "block").hide().fadeIn();
+	
+	if(!reviewRating.hasClass('ratingDisabled'))	reviewRating.stars("select", rating.toFixed(1));
 }
 
 function hasGoldstandardCreationPermission() {
@@ -155,6 +164,17 @@ function hasGoldstandardCreationPermission() {
 	return true;
 }
 
+function createStandaloneReply(parent) {
+		removeAllOtherDiscussionForms();
+		var parentHash = getHash($("#discussionRef"));
+		var form = parent.find("form");
+		form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
+		
+		// bind some actions (submit, group switch)
+		form.submit(createComment);
+		form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
+		addAutocompletionToLinkBox(form);
+}
 
 function updateDiscussionToggleLink() {
 	var visible = $(DISCUSSION_SELECTOR).is(':visible');
