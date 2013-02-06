@@ -40,7 +40,6 @@ import java.util.List;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConstants;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -53,7 +52,6 @@ import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.params.HttpParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -76,7 +74,6 @@ public class WebUtils {
 
 	private static final String CHARSET			= "charset=";
 	private static final String DEFAULT_CHARSET	= "UTF-8";
-	private static final String LOCATION		= "Location";
 	private static final String EQUAL_SIGN		= "=";
 	private static final String AMP_SIGN		= "&";
 	private static final String NEWLINE			= "\n";
@@ -445,7 +442,7 @@ public class WebUtils {
 		try {
 			switch (client.executeMethod(method)) {
 			case HttpStatus.SC_OK:
-				String charset = extractCharset(method.getResponseHeader(CONTENT_TYPE_HEADER_NAME).getValue());
+				final String charset = extractCharset(method.getResponseHeader(CONTENT_TYPE_HEADER_NAME).getValue());
 				return inputStreamToStringBuilder(method.getResponseBodyAsStream(), charset).toString();
 			default:
 				return null;
@@ -465,7 +462,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(HttpClient client, URI uri) throws HttpException, IOException {
-		HttpMethod method = new GetMethod();
+		final HttpMethod method = new GetMethod();
 		method.setURI(uri);
 		return getContentAsString(client, method);
 	}
@@ -480,8 +477,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(HttpClient client, String uri) throws HttpException, IOException {
-		HttpMethod method = new GetMethod(uri);
-		return getContentAsString(client, method);
+		return getContentAsString(client, new GetMethod(uri));
 	}
 
 	/**
@@ -495,7 +491,7 @@ public class WebUtils {
 	 * @return - The redirect URL.
 	 */
 	public static URL getRedirectUrl(final URL url) {
-		HttpMethod method = new GetMethod(url.toExternalForm());
+		final HttpMethod method = new GetMethod(url.toExternalForm());
 		try {
 			getHttpClient().executeMethod(method);
 		} catch (HttpException e) {
@@ -504,13 +500,13 @@ public class WebUtils {
 			method.releaseConnection();
 		}
 		if (method.getStatusCode() != HttpStatus.SC_OK) return null;
-		URL result = null;
+		
 		try {
-			result = new URL(method.getURI().getURI());
+			return new URL(method.getURI().getURI());
 		} catch (URIException e) {
 		} catch (MalformedURLException e) {
 		}
-		return result;
+		return null;
 	}
 	
 	/**
