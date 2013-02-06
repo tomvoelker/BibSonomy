@@ -63,9 +63,11 @@
 								</span>
 						</div>
 						<buttons:help cssStyle="float:none">
+							<jsp:attribute name="helpText">
 				       			<fmt:message key="post.resource.addreference.help">
 									<fmt:param value="${properties['project.name']}"/>
 								</fmt:message>
+							</jsp:attribute>
 		        		</buttons:help>
 						<a onclick="showAppendixForm({target:$(this), callback: setUpLinkbox});return false;">
 							<fmt:message key="post.resource.addreference" />	
@@ -95,7 +97,9 @@
 								</span>
 							</div>
 							<buttons:help cssStyle="float:none">
-								<fmt:message key="post.resource.visibility.help"/>
+								<jsp:attribute name="helpText">
+									<fmt:message key="post.resource.visibility.help"/>
+								</jsp:attribute>
 				        	</buttons:help>
 							<a onclick="showAppendixForm({target: $(this)});return false;"><fmt:message key="post.resource.visibility"/></a>
 					</span>
