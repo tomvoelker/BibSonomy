@@ -3,12 +3,11 @@ package org.bibsonomy.util.upload.impl;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +18,7 @@ import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.util.upload.FileUploadInterface;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Handles the file upload
@@ -39,7 +39,7 @@ public class HandleFileUpload implements FileUploadInterface {
 	}
 
 	private final Document document = new Document();
-	private FileItem upFile;
+	private final MultipartFile upFile;
 
 	private final String docPath;
 	private final boolean isTempPath;
@@ -47,37 +47,31 @@ public class HandleFileUpload implements FileUploadInterface {
 	/**
 	 * default constructor
 	 */
-	protected HandleFileUpload(final List<FileItem> items, final String[] allowedExt, final String docPath, final boolean isTempPath) {
+	protected HandleFileUpload(final MultipartFile file, final String[] allowedExt, final String docPath, final boolean isTempPath) {
 		this.docPath = docPath;
 		this.isTempPath = isTempPath;
 		
-		if (items.size() == 1) {
-			this.upFile = items.get(0);
-		} else {
-
-			// copy items into global field map
-			for (final FileItem temp : items) {
-				if ("file".equals(temp.getFieldName())) {
-					this.upFile = temp;
-				}
-			}
-		}
-
-		final String filename = this.upFile.getName();
+		this.upFile = file;
+		
+		final String filename = this.upFile.getOriginalFilename();
 		if (present(filename)) {
 			this.document.setFileName(FilenameUtils.getName(filename));
 		}
 		
 		// check file extensions which we accept
-		if (!present(document.getFileName()) || !StringUtils.matchExtension(document.getFileName(), allowedExt)) {
+		if (!present(document.getFileName()) || !StringUtils.matchExtension(this.document.getFileName(), allowedExt)) {
 			throw new UnsupportedFileTypeException(allowedExt);
 		}
 
 		// create hash over file content
-		this.document.setMd5hash(HashUtils.getMD5Hash(this.upFile.get()));
+		try {
+			this.document.setMd5hash(HashUtils.getMD5Hash(this.upFile.getBytes()));
+		} catch (IOException e) {
+			log.error("Could not compute hash for file " + this.upFile.getOriginalFilename(), e);
+		}
 
 		// compute random file hash
-		this.document.setFileHash(StringUtils.getMD5Hash(this.upFile.getName() + Math.random() + df.format(new Date())));
+		this.document.setFileHash(StringUtils.getMD5Hash(this.upFile.getOriginalFilename() + Math.random() + df.format(new Date())));
 	}
 
 	/**
@@ -98,7 +92,7 @@ public class HandleFileUpload implements FileUploadInterface {
 		document.setFile(new File(documentPath));
 
 		try {
-			this.upFile.write(document.getFile());
+			this.upFile.transferTo(this.document.getFile());
 		} catch (final Exception ex) {
 			log.error("Could not write uploaded file.", ex);
 			throw ex;

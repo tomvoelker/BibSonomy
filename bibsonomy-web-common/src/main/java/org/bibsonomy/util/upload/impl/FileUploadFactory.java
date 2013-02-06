@@ -1,9 +1,7 @@
 package org.bibsonomy.util.upload.impl;
 
-import java.util.List;
-
-import org.apache.commons.fileupload.FileItem;
 import org.bibsonomy.util.upload.FileUploadInterface;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author cvo
@@ -22,8 +20,8 @@ public class FileUploadFactory {
      * @param allowedExt
      * @return TODO
      */
-	public FileUploadInterface getFileUploadHandler(final List<FileItem> items, final String[] allowedExt) {
-		return new HandleFileUpload(items, allowedExt, this.docpath, this.tempPath);
+	public FileUploadInterface getFileUploadHandler(final MultipartFile file, final String[] allowedExt) {
+		return new HandleFileUpload(file, allowedExt, this.docpath, this.tempPath);
 	}
 	
 	/**
