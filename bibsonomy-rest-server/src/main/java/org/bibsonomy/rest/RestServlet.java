@@ -235,6 +235,12 @@ public final class RestServlet extends HttpServlet {
 			// validate the requesting user's authorization
 			final LogicInterface logic = validateAuthorization(request);
 
+			/*
+			 * Extract a file from the request if it is a MultiPartRequest.
+			 * XXX: This expects that the extraction of the file has been done
+			 * before - typically by Spring's DispatcherServlet. If this is not
+			 * the case, the document upload file fail! 
+			 */
 			final MultipartFile file;
 			if (request instanceof MultipartHttpServletRequest) {
 				file = ((MultipartHttpServletRequest) request).getFile("file");

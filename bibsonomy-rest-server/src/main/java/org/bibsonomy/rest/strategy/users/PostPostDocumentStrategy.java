@@ -52,9 +52,9 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected String create() {
-		final FileUploadInterface up = this.fileUploadFactory.getFileUploadHandler(this.file, FileUploadInterface.FILE_UPLOAD_EXTENSIONS);
-		
 		try {
+			final FileUploadInterface up = this.fileUploadFactory.getFileUploadHandler(this.file, FileUploadInterface.FILE_UPLOAD_EXTENSIONS);
+			
 			final Document document = up.writeUploadedFile();
 			
 			/*
