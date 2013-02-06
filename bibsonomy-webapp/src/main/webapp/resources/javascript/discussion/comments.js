@@ -96,8 +96,7 @@ function showEditCommentForm() {
 //	var commentText = comment.find('.text:first').text();
 	var ct = comment.find('.originalText').text();
 	var commentText = ct != "" ? ct : comment.find('.text:first').text();
-	
-	
+		
 	form.find('textarea').attr('value', commentText);
 	if (comment.hasClass(ANONYMOUS_CLASS)) {
 		form.find(ANONYMOUS_SELECTOR).attr('checked', 'checked');
@@ -125,8 +124,10 @@ function showEditCommentForm() {
 	// append and show
 	comment.append(clone);
 	clone.show('slow');
-	scrollTo(EDIT_COMMENT_FORM_ID);
+
+	addAutocompletionToLinkBox(form);
 	
+	scrollTo(EDIT_COMMENT_FORM_ID);
 	return false;
 }
 
