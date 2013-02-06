@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -74,12 +73,12 @@ public class PublicationImporter {
 			if (StringUtils.matchExtension(uploadedFile.getName(), FILE_UPLOAD_EXTENSIONS)) {
 				log.debug("the file is in pdf format");
 
-				handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile), FILE_UPLOAD_EXTENSIONS).writeUploadedFile());
+				handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(uploadedFile, FILE_UPLOAD_EXTENSIONS).writeUploadedFile());
 				keepTempFile = true;
 				return null;
 			}
 
-			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile), FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
+			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(uploadedFile, FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
 
 			final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
 			file = uploadedDocument.getFile();
