@@ -3,14 +3,12 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
-import java.util.Map;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.model.sync.SynchronizationPost;
 
 /**
  * @author Christian Kramer
@@ -265,29 +263,5 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		this.delete("deleteAllDocumentForContentId", contentId, session);
-	}
-	
-	private DocumentParam createParam(final String userName) {
-		DocumentParam docParam = new DocumentParam();
-		docParam.setUserName(userName);
-		return docParam;
-	}
-	
-	/**
-	 * @param userName
-	 * @param session
-	 * @return Map with all synchronization posts of type Document
-	 */
-	public Map<String, SynchronizationPost> getSyncPostsMapForUser(String userName, DBSession session) {
-		return this.queryForMap("getSyncDocument", this.createParam(userName), "intraHash", session);
-	}
-	
-	/**
-	 * @param userName
-	 * @param session
-	 * @return a list of Documents to synchronize
-	 */
-	public List<SynchronizationPost> getSyncPostsListForUser(String userName, DBSession session) {
-		return this.queryForList("getSyncDocument", this.createParam(userName), SynchronizationPost.class, session);
 	}
 }
