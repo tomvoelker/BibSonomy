@@ -1,9 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.Writer;
-import java.util.List;
 
-import org.apache.commons.fileupload.FileItem;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.RestServlet;
@@ -12,6 +10,7 @@ import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -23,7 +22,7 @@ import org.bibsonomy.util.upload.impl.FileUploadFactory;
 public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	private final String userName;
 	private final String resourceHash;
-	private final List<FileItem> items;
+	private final MultipartFile file;
 	private final String projectHome;
 	private String uri;
 	
@@ -38,7 +37,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 		super(context);
 		this.userName = userName;
 		this.resourceHash = resourceHash;
-		this.items = context.getItemList();
+		this.file = context.getFile();
 		this.projectHome = context.getAdditionalInfos().get(RestServlet.PROJECT_HOME_KEY);
 		
 		this.fileUploadFactory = new FileUploadFactory();
@@ -53,7 +52,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected String create() {
-		final FileUploadInterface up = fileUploadFactory.getFileUploadHandler(this.items, FileUploadInterface.FILE_UPLOAD_EXTENSIONS);
+		final FileUploadInterface up = this.fileUploadFactory.getFileUploadHandler(this.file, FileUploadInterface.FILE_UPLOAD_EXTENSIONS);
 		
 		try {
 			final Document document = up.writeUploadedFile();

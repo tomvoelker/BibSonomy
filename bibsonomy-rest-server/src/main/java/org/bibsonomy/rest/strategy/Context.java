@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.fileupload.FileItem;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
@@ -24,6 +23,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.util.URLDecodingStringTokenizer;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -69,7 +69,7 @@ public final class Context {
 	/**
 	 * the list with all items out of the http request
 	 */
-	private final List<FileItem> items;
+	private final MultipartFile file;
 
 	/**
 	 * this should hold all additional infos of the webservice or request
@@ -94,7 +94,7 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final List<FileItem> items,
+	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final MultipartFile file,
 			final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
@@ -106,7 +106,7 @@ public final class Context {
 		}
 		this.parameterMap = parameterMap;
 
-		this.items = items;
+		this.file = file;
 		this.additionalInfos = additionalInfos;
 
 		if ((url == null) || "/".equals(url)) {
@@ -269,8 +269,8 @@ public final class Context {
 	 * 
 	 * @return the previously committed item list parsed out of a http request object
 	 */
-	public List<FileItem> getItemList() {
-		return this.items;
+	public MultipartFile getFile() {
+		return this.file;
 	}
 
 	/**

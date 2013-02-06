@@ -43,9 +43,10 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.util.MultiPartRequestParser;
 import org.bibsonomy.rest.utils.HeaderUtils;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -234,15 +235,19 @@ public final class RestServlet extends HttpServlet {
 			// validate the requesting user's authorization
 			final LogicInterface logic = validateAuthorization(request);
 
-			// parse the request object to retrieve a list with all items of the http request
-			final MultiPartRequestParser parser = new MultiPartRequestParser(request);
+			final MultipartFile file;
+			if (request instanceof MultipartHttpServletRequest) {
+				file = ((MultipartHttpServletRequest) request).getFile("file");
+			} else {
+				file = null;
+			}
 
 			// choose rendering format (defaults to xml)
 			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
 
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, parser.getList(), logic, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, file, logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
