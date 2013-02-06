@@ -94,21 +94,15 @@ function showAppendixForm(o) {
 	if(frame[0]==undefined) return;
 	if(frame.css("display") != "none") {o.target.removeClass("linkButton").parent().children(".controlsContainer").hide().parent().css("z-index",0); return frame.hide();}
 	o.target.addClass("linkButton").parent().css("z-index",5);
-	var left = (parent.position().left+parent.width()-frame.width());
-	var gap = left - o.target.position().left;
 	var controlsContainer = o.target.parent().children(".controlsContainer");
 
-	if(gap > 0) {
-		left -= gap;
-		frame.width(frame.width()+gap);
-	}
-
-	frame.height((parent.height()+4))
-	frame.css({"top":(o.target.position().top-9)+"px","left":(left-9)+"px"}).show();
-	controlsContainer.css({
-		"margin-left": "-"+((controlsContainer.width()-o.target.width())/2), 
-		"margin-top":((controlsContainer.hasClass("reversed")?""+(o.target.height()+10):"-"+(controlsContainer.height()+o.target.height()+10))+"px")});
-	controlsContainer.show();
+	frame.width(parent.width()).height(parent.height()).css({"top":0,"left":0}).show();
+	
+	controlsContainer.show().css("left", ""+((o.target.position().left+o.target.width()/2)-controlsContainer.width()/2)+"px")
+	.css({
+		"left": ""+((o.target.position().left+o.target.width()/2)-controlsContainer.width()/2)+"px", 
+		"top":""+(o.target.position().top+o.target.height()+10)+"px"
+	});
 	if(o.callback!=undefined) o.callback({targetFrame:frame, menuItem:o.target, controlsContainer: controlsContainer});
 }
 

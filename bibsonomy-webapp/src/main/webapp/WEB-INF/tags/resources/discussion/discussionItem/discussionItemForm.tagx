@@ -56,22 +56,25 @@
  					<fmt:message key="post.resource.${discussionItemClass}.actions.${action}" var="buttonText" />
  					<input type="submit" style="float:right; margin-right:0px;" value="${buttonText}" />
  					<span class="hoveringControl">
-						<div class="controlsContainer reversed" style="position:absolute;">
+						<div class="controlsContainer">
 								<img style="display:block; margin-left:auto; margin-right:auto;z-index:7;position:relative;" src="${resdir}/image/arrow_up.png"/>
-								<span class="fsOuter" style="padding:10px;padding:bottom:0px;margin-top:-1px;margin-bottom:0px;position:relative;display:block">
+								<span class="fsOuter" style="padding:10px;margin-top:-1px;margin-bottom:0px;position:relative;display:block">
 									<input class="referenceAutocompletion" type="text"/>
 								</span>
 						</div>
 						<buttons:help cssStyle="float:none">
-				       			<fmt:message key="post.resource.addreference.button"/>
+				       			<fmt:message key="post.resource.addreference.help">
+									<fmt:param value="${properties['project.name']}"/>
+								</fmt:message>
 		        		</buttons:help>
 						<a onclick="showAppendixForm({target:$(this), callback: setUpLinkbox});return false;">
 							<fmt:message key="post.resource.addreference" />	
 						</a>
 					</span>
 					<span class="hoveringControl">
-							<div class="controlsContainer" style="position:absolute;">
-								<span class="fsOuter" style="padding:10px;padding:bottom:0px;margin-bottom:0px;z-index:7;position:relative;display:block">
+							<div class="controlsContainer">
+								<img style="display:block; margin-left:auto; margin-right:auto;z-index:7;position:relative;" src="${resdir}/image/arrow_up.png"/>
+								<span class="fsOuter" style="padding:10px;margin-top:-1px;margin-bottom:0px;position:relative;display:block">
 									<c:choose>
 										<c:when test="${not empty discussionItem and discussionItem.anonymous}">
 											<input type="checkbox" name="discussionItem.anonymous" value="true" checked="checked" style="float:left"/>
@@ -90,13 +93,9 @@
 						  				</jsp:attribute>
 									</bform:fieldset>
 								</span>
-								<img style="display:block; margin-left:auto; margin-right:auto;margin-top:-1px;z-index:7;position:relative;" src="${resdir}/image/arrow_down.png"/>
 							</div>
-							<buttons:help message="post.resource.visibility.button" cssStyle="float:none">
-							        <ul style="list-style:circle inside none">
-							        	<li> <fmt:message key="post.resource.discussion.anonymous.help"/></li>
-							        	<li> <fmt:message key="post.resource.discussion.visibility.help"/></li>
-							       	</ul>
+							<buttons:help cssStyle="float:none">
+								<fmt:message key="post.resource.visibility.help"/>
 				        	</buttons:help>
 							<a onclick="showAppendixForm({target: $(this)});return false;"><fmt:message key="post.resource.visibility"/></a>
 					</span>

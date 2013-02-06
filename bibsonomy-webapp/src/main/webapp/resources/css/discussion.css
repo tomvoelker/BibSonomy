@@ -224,7 +224,7 @@ h3 {
 }
 
 .controlsContainer {
-	position:relative;
+	position:absolute;
 	display:none;
 }
 
