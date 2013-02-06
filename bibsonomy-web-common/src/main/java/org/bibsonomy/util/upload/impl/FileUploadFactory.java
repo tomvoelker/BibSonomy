@@ -1,5 +1,7 @@
 package org.bibsonomy.util.upload.impl;
 
+import java.io.IOException;
+
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +22,7 @@ public class FileUploadFactory {
      * @param allowedExt
      * @return TODO
      */
-	public FileUploadInterface getFileUploadHandler(final MultipartFile file, final String[] allowedExt) {
+	public FileUploadInterface getFileUploadHandler(final MultipartFile file, final String[] allowedExt) throws IOException {
 		return new HandleFileUpload(file, allowedExt, this.docpath, this.tempPath);
 	}
 	

@@ -47,7 +47,12 @@ public class HandleFileUpload implements FileUploadInterface {
 	/**
 	 * default constructor
 	 */
-	protected HandleFileUpload(final MultipartFile file, final String[] allowedExt, final String docPath, final boolean isTempPath) {
+	protected HandleFileUpload(final MultipartFile file, final String[] allowedExt, final String docPath, final boolean isTempPath) throws IOException {
+		
+		if (!present(file)) {
+			throw new IOException("no file given");
+		}
+		
 		this.docPath = docPath;
 		this.isTempPath = isTempPath;
 		
