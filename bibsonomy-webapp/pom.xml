@@ -566,6 +566,16 @@
 		<groupId>org.springframework.security.extensions</groupId>
 			<artifactId>spring-security-saml2-core</artifactId>
 			<version>1.0.0-RC1-PUMA-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>xml-apis</artifactId>
+					<groupId>org.apache.xerces</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>xercesImpl</artifactId>
+					<groupId>org.apache.xerces</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
