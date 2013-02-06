@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.webapp.command.BaseCommand;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author mwa
@@ -33,7 +33,7 @@ public class ImportCommand extends BaseCommand {
 	private int totalCount;
 	
 	/** the file to import **/
-	private CommonsMultipartFile file;
+	private MultipartFile file;
 	
 	private Map<String, String> newBookmarks;
 
@@ -168,14 +168,14 @@ public class ImportCommand extends BaseCommand {
 	/**
 	 * @return the file
 	 */
-	public CommonsMultipartFile getFile() {
+	public MultipartFile getFile() {
 		return this.file;
 	}
 	
 	/**
 	 * @param file the file to set
 	 */
-	public void setFile(final CommonsMultipartFile file) {
+	public void setFile(final MultipartFile file) {
 		this.file = file;
 	}
 	

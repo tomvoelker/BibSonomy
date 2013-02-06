@@ -11,7 +11,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.TabCommand;
 import org.bibsonomy.webapp.command.TabsCommandInterface;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * This command takes a the information for displaying the import publication views. 
@@ -212,19 +212,19 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * the BibTeX/Endnote file
 	 */
-	private CommonsMultipartFile file;
+	private MultipartFile file;
 	
 	/**
 	 * @return the file
 	 */
-	public CommonsMultipartFile getFile() {
+	public MultipartFile getFile() {
 		return this.file;
 	}
 
 	/**
 	 * @param file the file to set
 	 */
-	public void setFile(CommonsMultipartFile file) {
+	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
 

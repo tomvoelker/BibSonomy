@@ -7,7 +7,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -242,7 +241,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 			 * a file is given --> save it
 			 */
 			try {
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), FileUploadInterface.PICTURE_EXTENSIONS);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), FileUploadInterface.PICTURE_EXTENSIONS);
 				final File file = uploadFileHandler.writeUploadedFile().getFile();
 
 				/*

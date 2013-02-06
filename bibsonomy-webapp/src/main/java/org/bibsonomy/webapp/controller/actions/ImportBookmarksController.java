@@ -125,7 +125,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				/*
 				 * import posts/relations from Firefox
 				 */
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), FileUploadInterface.FIREFOX_IMPORT_EXTENSIONS);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), FileUploadInterface.FIREFOX_IMPORT_EXTENSIONS);
 				final Document document = uploadFileHandler.writeUploadedFile();
 				/*
 				 * FileBookmarkImporter interface

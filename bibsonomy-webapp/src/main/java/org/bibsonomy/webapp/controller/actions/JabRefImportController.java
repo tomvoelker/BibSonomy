@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import java.io.File;
-import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +23,7 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * TODO: add a validator for the command (should check file extension, …)
@@ -149,13 +148,13 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	 * @param fileItem
 	 * @param layoutPart
 	 */
-	private void writeLayoutPart(final User loginUser, final CommonsMultipartFile fileItem, final LayoutPart layoutPart) {
+	private void writeLayoutPart(final User loginUser, final MultipartFile fileItem, final LayoutPart layoutPart) {
 		if (fileItem != null && fileItem.getSize() > 0) {
 			log.debug("writing layout part " + layoutPart + " with file " + fileItem.getOriginalFilename());
 			try {
 				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);				
 				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(fileItem.getFileItem()), FileUploadInterface.LAYOUT_EXTENSIONS);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(fileItem, FileUploadInterface.LAYOUT_EXTENSIONS);
 				/*
 				 * write file to disk
 				 */

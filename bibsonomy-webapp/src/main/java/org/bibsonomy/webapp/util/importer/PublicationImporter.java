@@ -23,7 +23,7 @@ import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.springframework.validation.Errors;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Handles publication posting/upload for other controllers, e.g., the PostPublicationController.
@@ -63,23 +63,23 @@ public class PublicationImporter {
 		String fileContent = null;
 		try {
 
-			final CommonsMultipartFile uploadedFile = command.getFile();
+			final MultipartFile uploadedFile = command.getFile();
 
-			if (!present(uploadedFile) || !present(uploadedFile.getFileItem().getName())) {
+			if (!present(uploadedFile) || !present(uploadedFile.getName())) {
 				errors.reject("error.upload.failed.noFileSelected");
 				return null;
 			}
 
 			//check if uploaded file is one of allowed files, otherwise it can be a endnote or bibtex file
-			if (StringUtils.matchExtension(uploadedFile.getFileItem().getName(), FILE_UPLOAD_EXTENSIONS)) {
+			if (StringUtils.matchExtension(uploadedFile.getName(), FILE_UPLOAD_EXTENSIONS)) {
 				log.debug("the file is in pdf format");
 
-				handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), FILE_UPLOAD_EXTENSIONS).writeUploadedFile());
+				handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile), FILE_UPLOAD_EXTENSIONS).writeUploadedFile());
 				keepTempFile = true;
 				return null;
 			}
 
-			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
+			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile), FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
 
 			final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
 			file = uploadedDocument.getFile();

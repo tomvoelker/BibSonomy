@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.command.actions;
 import java.io.Serializable;
 
 import org.bibsonomy.webapp.command.BaseCommand;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author ice
@@ -21,7 +21,7 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 	
 	private String contentType;
 	
-	private CommonsMultipartFile file;
+	private MultipartFile file;
 	
 	private boolean delete;
 
@@ -88,14 +88,14 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 	/**
 	 * @param file the file to set
 	 */
-	public void setFile(CommonsMultipartFile file) {
+	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
 
 	/**
 	 * @return the file
 	 */
-	public CommonsMultipartFile getFile() {
+	public MultipartFile getFile() {
 		return file;
 	}
 
