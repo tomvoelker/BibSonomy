@@ -18,6 +18,6 @@ public class GBVScraperTest {
 	@Ignore
 	public void urlTestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_232"));
+		assertTrue(runner.runSingleTest("url_252"));
 	}
 }
