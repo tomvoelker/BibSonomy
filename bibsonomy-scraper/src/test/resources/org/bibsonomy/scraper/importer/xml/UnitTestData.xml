@@ -1405,6 +1405,19 @@
 		<BibFile>CoinsScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
+
+	<URLTest id="url_252">
+		<TestDescription>Econstor Scraper test</TestDescription>
+		<URL>http://www.econstor.eu/handle/10419/64547</URL>
+		<BibFile>EconstorScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_253">
+		<TestDescription>gso.gbv.de Scraper test</TestDescription>
+		<URL>http://gso.gbv.de/DB=2.1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=729051676</URL>
+		<BibFile>GsoGbvScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.gbv.GbvScraper</Scraper>
+	</URLTest>
 	<URLTest id="url_231">
 		<TestDescription>test for nature.com</TestDescription>
 		<URL>http://www.nature.com/ncomms/journal/v3/n10/full/ncomms2132.html</URL>
