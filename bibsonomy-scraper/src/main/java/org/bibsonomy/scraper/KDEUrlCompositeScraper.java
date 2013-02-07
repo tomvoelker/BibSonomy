@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper;
 
+import org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper;
 import org.bibsonomy.scraper.url.kde.aaai.AAAIScraper;
 import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
@@ -226,6 +227,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new APAScraper());
 		addScraper(new BMJOpenScraper());
 		addScraper(new PharmacognosyResearchScraper());
+		addScraper(new EconstorScraper());
 	}
 
 }
