@@ -433,7 +433,7 @@ public abstract class ResourceListController {
 	/**
 	 * @param userSettings the loginUsers userSettings
 	 */
-	@Required
+//	@Required
 	public void setUserSettings(final UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}
