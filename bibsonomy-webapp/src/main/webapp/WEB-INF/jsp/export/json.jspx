@@ -77,34 +77,40 @@
       <c:if test="${isCommaNecessary and not empty command.bibtex.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
       
       <!-- publications -->
-      <c:forEach var="post" varStatus="status" items="${command.bibtex.list}">
-      	<json:publication post="${post}"/><c:if test="${not status.last}">,</c:if>      
-      	<c:if test="${status.last}">
-      		<c:set var="isCommaNecessary" value="${true}"/>
-      	</c:if>
-      </c:forEach>
+      <mtl:exists path="command.bibtex">
+      	<c:forEach var="post" varStatus="status" items="${command.bibtex.list}">
+      		<json:publication post="${post}"/><c:if test="${not status.last}">,</c:if>      
+      		<c:if test="${status.last}">
+      			<c:set var="isCommaNecessary" value="${true}"/>
+      		</c:if>
+     	 </c:forEach>
+      </mtl:exists>
       
       <!-- comma between publications & gold standard publications resources, if both present -->
       <c:if test="${isCommaNecessary and not empty command.goldStandardPublications.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
       
       <!-- gold standard publications -->
-      <c:forEach var="post" varStatus="status" items="${command.goldStandardPublications.list}">
+      <mtl:exists path="command.goldStandardPublications">
+      	<c:forEach var="post" varStatus="status" items="${command.goldStandardPublications.list}">
       	<json:goldStandardPublication post="${post}"/><c:if test="${not status.last}">,</c:if>      
-      	<c:if test="${status.last}">
-      		<c:set var="isCommaNecessary" value="${true}"/>
-      	</c:if>
-      </c:forEach>
+      		<c:if test="${status.last}">
+      			<c:set var="isCommaNecessary" value="${true}"/>
+      		</c:if>
+      	</c:forEach>
+      </mtl:exists>
       
       <!-- comma if tags are present, preceded by either bookmarks or publications or gold standard publications -->
       <c:if test="${isCommaNecessary and not empty command.tagcloud.tags}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
 
       <!-- tags -->
-      <c:forEach var="tag" varStatus="status" items="${command.tagcloud.tags}" >
-      	<json:tag tag="${tag}"/><c:if test="${not status.last}">,</c:if>
-      	<c:if test="${status.last}">
-      		<c:set var="isCommaNecessary" value="${true}"/>
-      	</c:if>
-      </c:forEach>
+      <mtl:exists path="command.tagcloud">
+      	<c:forEach var="tag" varStatus="status" items="${command.tagcloud.tags}" >
+      		<json:tag tag="${tag}"/><c:if test="${not status.last}">,</c:if>
+      		<c:if test="${status.last}">
+      			<c:set var="isCommaNecessary" value="${true}"/>
+      		</c:if>
+     	 </c:forEach>
+      </mtl:exists>
 
 	  <!-- friends -->
       <mtl:exists path="command.userFriends">
