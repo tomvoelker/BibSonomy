@@ -47,7 +47,6 @@
 		<property name="filterProcessesUrl" value="/login_saml" />
 		<property name="authenticationEntryPoint" ref="samlEntryPoint" />
 		<property name="authenticationManager" ref="samlAuthenticationManager" />
-		<property name="authenticationSuccessHandler" ref="successHandler" />
 		<property name="authenticationFailureHandler" ref="failureHandler" />
 	</bean>
 
