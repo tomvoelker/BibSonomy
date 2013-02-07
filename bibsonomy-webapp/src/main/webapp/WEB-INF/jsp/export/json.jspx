@@ -65,13 +65,14 @@
       <c:set var="isCommaNecessary" value="${false}"/>
    
       <!-- bookmarks -->
-      <c:forEach var="post" varStatus="status" items="${command.bookmark.list}">
-      	<json:bookmark post="${post}"/><c:if test="${not status.last}">,</c:if>
-      	<c:if test="${status.last}">
-      		<c:set var="isCommaNecessary" value="${true}"/>
-      	</c:if>
-      </c:forEach>
-      
+      <mtl:exists path="command.bookmark">
+      	<c:forEach var="post" varStatus="status" items="${command.bookmark.list}">
+      		<json:bookmark post="${post}"/><c:if test="${not status.last}">,</c:if>
+      		<c:if test="${status.last}">
+      			<c:set var="isCommaNecessary" value="${true}"/>
+      		</c:if>
+      	</c:forEach>
+      </mtl:exists>
       <!-- comma between bibtex & bookmark resources, if both present -->
       <c:if test="${isCommaNecessary and not empty command.bibtex.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
       
