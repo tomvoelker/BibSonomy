@@ -3,8 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -26,10 +24,9 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UpdateUserController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand> {
-	private static final Log log = LogFactory.getLog(UpdateUserController.class);
 
 	@Override
-	public View workOn(SettingsViewCommand command) {
+	public View workOn(final SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
 		if (!context.isUserLoggedIn()) {
@@ -49,7 +46,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		 */
 		if (context.isValidCkey()) {
 			// update user profile 
-			updateUserProfile(context.getLoginUser(), command.getUser());
+			this.updateUserProfile(context.getLoginUser(), command.getUser());
 		} else {
 			this.errors.reject("error.field.valid.ckey");
 		}
@@ -82,7 +79,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		
 		loginUser.getSettings().setProfilePrivlevel(profilePrivlevel);
 
-		updateUser(loginUser, errors);
+		this.updateUser(loginUser, this.errors);
 	}
 
 	/**
@@ -93,7 +90,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	private void updateUser(final User user, final Errors errors) {
 		try {
 			this.logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
-		} catch(DatabaseException e) {
+		} catch(final DatabaseException e) {
 			final List<ErrorMessage> messages = e.getErrorMessages().get(user.getName());
 
 			for(final ErrorMessage eMsg : messages) {
@@ -116,7 +113,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	}
 
 	@Override
-	public boolean isValidationRequired(SettingsViewCommand command) {
+	public boolean isValidationRequired(final SettingsViewCommand command) {
 		return true;
 	}
 
