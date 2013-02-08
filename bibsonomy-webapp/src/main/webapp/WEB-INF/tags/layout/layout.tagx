@@ -213,11 +213,6 @@
 						<fmt:param value="${properties['project.name']}"/>
 					</fmt:message>
 					<c:out value=" "/>
-					<fmt:message key="system.contact"/>
-					<c:out value=" "/>
-					<parts:email address="${properties['project.email']}"/> - 
-					<fmt:message key="system.termsOfUse"/>
-					<c:out value=" - "/>
 					<fmt:message key="navi.helpUrl" var="helpLangUrl" />
 					<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
 					
