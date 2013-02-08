@@ -115,7 +115,7 @@
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
-			<id>bibsonomy-rest-common-website-documentation</id>
+			<id>bibsonomy-openaccess-website-documentation</id>
 			<url>
 				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
 			</url>
