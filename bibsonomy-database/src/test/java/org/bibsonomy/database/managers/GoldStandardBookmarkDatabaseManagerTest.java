@@ -18,8 +18,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
 
-
-
 /**
  * @author dzo
  * @version $Id$
