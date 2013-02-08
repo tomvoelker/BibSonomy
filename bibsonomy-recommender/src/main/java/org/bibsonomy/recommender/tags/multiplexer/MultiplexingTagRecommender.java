@@ -1,5 +1,7 @@
 package org.bibsonomy.recommender.tags.multiplexer;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -425,22 +427,18 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		return success;
 	}
 
-	//------------------------------------------------------------------------
-	// manage queries
-	//------------------------------------------------------------------------
-	/**
-	 * Extends TagRecommender's interface with a parameter which is used to map
-	 * recommender queries to posts in BibSonomy:
-	 *   When the postBookmark-Form is displayed, a random postID is generated and
-	 *   passed to the recommender via a hidden field.
-	 *   After storing the post, the postBookmarkController calls updateQuery()
-	 *   with the corresponding username, date, postID and Hash.
-	 *
-	 * @param recommendedTags 
-	 * @param post The post for which tag recommendations are requested.
-	 * @param postID ID for mapping posts to recommender queries
-	 */
-	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post, final int postID) {
+	@Override
+	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
+		/* When the postBookmark-Form is displayed, a random postID is generated and
+		 * passed to the recommender via a hidden field.
+		 * After storing the post, the postBookmarkController calls updateQuery()
+		 * with the corresponding username, date, postID and Hash.
+		 */
+		Integer postID = post.getContentId();
+		if (!present(postID)) {
+			postID = UNKNOWN_POSTID;
+		}
+		
 		log.debug("["+postID+"]querying["+this.localRecommenders+", "+this.distRecommenders+"]");
 
 		// id identifying this query
@@ -530,45 +528,13 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		log.debug("(" + qid + ") Running threads: " + queryThreadCounter + " query threads and " + feedbackThreadCounter + " feedback threads");
 	}
 
-	//------------------------------------------------------------------------
-	// TagRecommender interface implementation
-	//------------------------------------------------------------------------	
-	/** 
-	 * Simply adds recommendations to the given collection of recommended tags. 
-	 * 
-	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
-	 */	
-	@Override
-	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
-		this.addRecommendedTags(recommendedTags, post, UNKNOWN_POSTID);
-	}
-
 	/**
 	 * get recommendation
 	 */
 	@Override
-	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
-		return this.getRecommendedTags(post, UNKNOWN_POSTID);
-	}
-
-	/**
-	 * Extends TagRecommender's interface with a parameter which is used to map
-	 * recommender queries to posts in BibSonomy:
-	 *   When the postBookmark-Form is displayed, a random postID is generated and
-	 *   passed to the recommender via a hidden field.
-	 *   After storing the post, the postBookmarkController calls updateQuery()
-	 *   with the corresponding username, date, postID and Hash.
-	 *   
-	 *   FIXME: is this method still needed? The post ID should be set inside 
-	 *   the post (using contentID) ...
-	 *   
-	 * @param post The post for which tag recommendations are requested.
-	 * @param postID ID for mapping posts to recommender queries
-	 * @return Set of recommended Tags.
-	 */
-	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post, final int postID) {
+	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {	
 		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		this.addRecommendedTags(recommendedTags, post, postID);
+		this.addRecommendedTags(recommendedTags, post);
 		return recommendedTags;
 	}
 	
