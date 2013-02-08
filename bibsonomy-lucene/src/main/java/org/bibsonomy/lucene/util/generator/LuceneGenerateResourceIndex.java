@@ -29,9 +29,6 @@ import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.lucene.ranking.FileFolkRankDao;
-import org.bibsonomy.lucene.ranking.FolkRankDao;
-import org.bibsonomy.lucene.ranking.FolkRankInfo;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -41,8 +38,7 @@ import org.bibsonomy.model.Resource;
  * 
  * @author sst
  * @author fei
- * @version $Id: LuceneGenerateResourceIndex.java,v 1.20 2012-08-17 11:10:56
- *          telekoma Exp $
+ * @version $Id$
  * 
  * @param <R>
  *            the resource of the index to generate
@@ -315,7 +311,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 
 		// TODO configure FolkRank file location (Spring?)
 		String folkRankFile = this.resourceIndex.getResourceClass().getSimpleName();
-		FolkRankDao folkRankDao = new FileFolkRankDao(folkRankFile);
 
 		// read block wise all posts
 		List<LucenePost<R>> postList = null;
@@ -343,9 +338,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 					// create index document from post model
 					final Document doc = LuceneGenerateResourceIndex.this.resourceConverter.readPost(post);
 
-					// FolkRanks
-					String hash = post.getResource().getInterHash();
-					addFolkRanksAsFullTextFields(doc, hash, folkRankDao);
 					try {
 						LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
 						LuceneGenerateResourceIndex.this.importedPost(post);
@@ -383,79 +375,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		}
 	}
 
-	/**
-	 * 
-	 * Adds available tag/user FolkRanks to given post.
-	 * 
-	 * @param doc
-	 * @param hash
-	 * @param folkRankDao
-	 * @return
-	 */
-	protected int addFolkRanksAsFullTextFields(Document doc, String hash, FolkRankDao folkRankDao) {
-
-		List<FolkRankInfo> folkRanks = folkRankDao.getTagUserFolkRanks(hash);
-
-		if (folkRanks.size() == 0) {
-			return 0; // no FolkRanks for this item
-		}
-
-		if (!hash.equals(lastHash)) {
-
-			lastHash = hash;
-
-			tagFieldValues.clear();
-			userFieldValues.clear();
-
-			for (FolkRankInfo folkRank : folkRanks) {
-
-				String item = folkRank.getItem().toLowerCase();
-				String dim = Integer.toString(folkRank.getDim());
-				String weight = Float.toString(folkRank.getWeight());
-
-				if (item.length() == 0 || item.length() > 50 || item.contains(" ")) {
-					continue;
-				}
-
-				Map<Character, String> usedHashMap;
-				if (dim.equals("0")) {
-					usedHashMap = tagFieldValues;
-				} else if (dim.equals("1")) {
-					usedHashMap = userFieldValues;
-				} else {
-					continue;
-				}
-
-				char firstCharacter = item.charAt(0);
-
-				if (!Character.isLetter(firstCharacter)) {
-					firstCharacter = '#';
-				}
-
-				if (!usedHashMap.containsKey(firstCharacter)) {
-					usedHashMap.put(firstCharacter, "");
-				}
-
-				usedHashMap.put(firstCharacter, usedHashMap.get(firstCharacter) + item + " " + weight + " ");
-			}
-
-		}
-
-		for (char key : tagFieldValues.keySet()) {
-			// addStoreField(doc, "frtag" + key,
-			// tagFieldValues.get(key).trim());
-			doc.add(new Field("frtag" + key, tagFieldValues.get(key).trim(), Field.Store.YES, Field.Index.NO));
-		}
-
-		for (char key : userFieldValues.keySet()) {
-			// addStoreField(doc, "fruser" + key,
-			// userFieldValues.get(key).trim());
-			doc.add(new Field("fruser" + key, userFieldValues.get(key).trim(), Field.Store.YES, Field.Index.NO));
-		}
-
-		return folkRanks.size();
-	}
-
+	
 	protected synchronized void importedPost(final LucenePost<R> post) {
 		// update counter
 		this.numberOfPostsImported++;
