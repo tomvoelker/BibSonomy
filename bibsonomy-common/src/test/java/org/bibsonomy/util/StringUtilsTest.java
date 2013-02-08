@@ -121,8 +121,8 @@ public class StringUtilsTest {
 	 */
 	@Test
 	public void removeNonNumbersOrLettersOrDotsOrSpace() {
-		assertEquals(TEST_VALUE1, StringUtils.removeNonNumbersOrLetters("...!-test-!..."));
-		assertEquals(TEST_VALUE1, StringUtils.removeNonNumbersOrLetters(". . .!-test-!. . ."));
+		assertEquals("...test...", StringUtils.removeNonNumbersOrLettersOrDotsOrSpace("...!-test-!..."));
+		assertEquals(". . .test. . .", StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(". . .!-test-!. . ."));
 	}
 
 	/**
