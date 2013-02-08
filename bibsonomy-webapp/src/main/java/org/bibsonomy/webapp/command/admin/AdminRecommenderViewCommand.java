@@ -2,9 +2,9 @@ package org.bibsonomy.webapp.command.admin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
@@ -36,6 +36,8 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 
 	private long editSid;
 	private List<String> deleteRecIds;
+	
+	// TODO: use URL instead of String as type
 	private String newrecurl;
 	
 	
@@ -46,23 +48,23 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 		this.action = null;
 		
 		this.tabdescriptor = new TreeMap<Integer, String>();
-		tabdescriptor.put(Tab.STATUS.ordinal(), "Active Recommenders");
-		tabdescriptor.put(Tab.ACTIVATE.ordinal(), "Activate/deactivate");
-		tabdescriptor.put(Tab.ADD.ordinal(), "Add/Remove");
+		this.tabdescriptor.put(Tab.STATUS.ordinal(), "Active Recommenders");
+		this.tabdescriptor.put(Tab.ACTIVATE.ordinal(), "Activate/deactivate");
+		this.tabdescriptor.put(Tab.ADD.ordinal(), "Add/Remove");
 		this.tab = Tab.STATUS;
 	}
 	
 	/**
 	 * @param activeRecommenders map {setting-id} -> {recommender-id}
 	 */
-	public void setActiveRecommenders(Map<Long, String> activeRecommenders){
+	public void setActiveRecommenders(final Map<Long, String> activeRecommenders){
 		this.activeRecommenders = activeRecommenders;
 	}
 	
 	/**
 	 * @param disabledRecommenders map {setting-id} -> {recommender-id}
 	 */
-	public void setDisabledRecommenders(Map<Long, String> disabledRecommenders){
+	public void setDisabledRecommenders(final Map<Long, String> disabledRecommenders){
 		this.disabledRecommenders = disabledRecommenders;
 	}
 	
@@ -70,32 +72,34 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 * @return Entryset of currently activated recommenders 
 	 */
 	public Set<Entry<Long, String>> getActiveRecommenders(){
-		if (activeRecommenders == null) return null;
-		return activeRecommenders.entrySet();
+		if (this.activeRecommenders == null) {
+			return null;
+		}
+		return this.activeRecommenders.entrySet();
 	}
 	
 	/**
 	 * @return Entryset of currently deactivated recommenders 
 	 */
 	public Set<Entry<Long, String>> getDisabledRecommenders(){
-		if (disabledRecommenders == null) {
+		if (this.disabledRecommenders == null) {
 			return null;
 		}
-		return disabledRecommenders.entrySet();
+		return this.disabledRecommenders.entrySet();
 	}
 	
 	/**
 	 * @param t ordinal number of tab to be activated
 	 */
-	public void setTab(Integer t){
-		if (t>=0 && t<Tab.values().length) {
+	public void setTab(final Integer t){
+		if ((t>=0) && (t<Tab.values().length)) {
 		  this.tab = Tab.values()[t];
 		}
 	}
 	/**
 	 * @param t Tab to be activated
 	 */
-	public void setTab(Tab t){
+	public void setTab(final Tab t){
 		this.tab = t;
 	}
 	/**
@@ -108,27 +112,27 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 * @return name/description of currently activated tab
 	 */
 	public String getTabDescription(){
-		return tabdescriptor.get(this.tab.ordinal());
+		return this.tabdescriptor.get(this.tab.ordinal());
 	}
 	/**
 	 * @param t tab to get description for
 	 * @return Description of this tab
 	 */
-	public String getTabDescription(Tab t){
-		return tabdescriptor.get(t.ordinal());
+	public String getTabDescription(final Tab t){
+		return this.tabdescriptor.get(t.ordinal());
 	}
 
 	/**
 	 * @return Entryset containing Tab-id and their descriptions
 	 */
 	public Set<Entry<Integer, String>> getTabs(){
-		return tabdescriptor.entrySet();
+		return this.tabdescriptor.entrySet();
 	}
 	
 	/**
 	 * @param recOverview List of recommmenders contained in multiplexer
 	 */
-	public void setRecOverview(List<RecAdminOverview> recOverview){
+	public void setRecOverview(final List<RecAdminOverview> recOverview){
 		this.recOverview = recOverview;
 	}
 	/**
@@ -140,7 +144,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * @param mp multiplexer
 	 */
-	public void setMultiplexingTagRecommender(MultiplexingTagRecommender mp){
+	public void setMultiplexingTagRecommender(final MultiplexingTagRecommender mp){
 		this.mp = mp;
 	}
 	/**
@@ -152,7 +156,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * @param action the action which will be executed by the controller and set to null again
 	 */
-	public void setAction(String action){
+	public void setAction(final String action){
 		this.action = action;
 	}
 	/**
@@ -164,7 +168,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * @param queriesPerLatency number of values which will be fetched from the database to calculate average recommender-latencies
 	 */
-	public void setQueriesPerLatency(Long queriesPerLatency){
+	public void setQueriesPerLatency(final Long queriesPerLatency){
 		//only accept positive values
 		if(queriesPerLatency > 0) {
 		   this.queriesPerLatency = queriesPerLatency;
@@ -180,7 +184,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * @param adminResponse response-message to the last action executed (e.g. failure, success etc.) set by the controller
 	 */
-	public void setAdminResponse(String adminResponse){
+	public void setAdminResponse(final String adminResponse){
 		this.adminResponse = adminResponse;
 	}
 	/**
@@ -194,7 +198,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 * @param activeRecs updated list of active setting-ids.
 	 * This property can be set in the view by administrators and will be managed and set back to null by the controller. 
 	 */
-	public void setActiveRecs(List<Long> activeRecs){
+	public void setActiveRecs(final List<Long> activeRecs){
 		this.activeRecs = activeRecs;
 	}
 	/**
@@ -207,7 +211,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * @param disabledRecs updated list of inactive setting-ids
 	 */
-	public void setDisabledRecs(List<Long> disabledRecs){
+	public void setDisabledRecs(final List<Long> disabledRecs){
 		this.disabledRecs = disabledRecs;
 	}
 	/**
@@ -221,7 +225,7 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * @param editSid setting-id of recommender to be edited
 	 */
-	public void setEditSid(long editSid) {
+	public void setEditSid(final long editSid) {
 		this.editSid = editSid;
 	}
 	/**
@@ -241,13 +245,13 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * @param deleteRecIds ids/urls of recommenders to be edited
 	 */
-	public void setDeleteRecIds(List<String> deleteRecIds) {
+	public void setDeleteRecIds(final List<String> deleteRecIds) {
 		this.deleteRecIds = deleteRecIds;
 	}
 	/**
 	 * @param recurl url of new recommender to be added
 	 */
-	public void setNewrecurl(String recurl){
+	public void setNewrecurl(final String recurl){
 		this.newrecurl = recurl;
 	}
 	/**
