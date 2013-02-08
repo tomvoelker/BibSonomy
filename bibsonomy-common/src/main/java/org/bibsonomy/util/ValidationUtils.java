@@ -42,28 +42,6 @@ public class ValidationUtils {
 		return ((string != null) && (string.trim().length() > 0));
 	}
 	
-	
-	/**
-	 *  Throws an {@link AssertionFailureException} if argument is not true
-	 * @param val value to check
-	 */
-	public static void assertTrue(boolean val) {
-		if (val != true) {
-			throw new AssertionFailureException();
-		}
-	}
-	
-	/**
-	 * Throws an {@link AssertionFailureException} if argument is not true
-	 * @param msg exception message
-	 * @param val value to check
-	 */
-	public static void assertTrue(String msg, boolean val) {
-		if (val != true) {
-			throw new AssertionFailureException(msg);
-		}
-	}
-	
 	/**
 	 * @param charSequence argument to check
 	 * @return false iff the argument is null or has zero trimmed length
