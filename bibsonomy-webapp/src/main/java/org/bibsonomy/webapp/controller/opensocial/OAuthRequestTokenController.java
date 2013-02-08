@@ -14,8 +14,6 @@ import net.oauth.OAuthMessage;
 import net.oauth.OAuthProblemException;
 import net.oauth.OAuth.Parameter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
@@ -34,7 +32,6 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class OAuthRequestTokenController extends OAuthProtocolController {
-	private static final Log log = LogFactory.getLog(OAuthRequestTokenController.class);
 	
 	//------------------------------------------------------------------------
 	// OAuthProtocolController interface

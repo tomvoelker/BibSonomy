@@ -23,7 +23,9 @@ import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.ResponseAware;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -66,7 +68,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author fei
  * @version $Id$
  */
-public abstract class OAuthProtocolController implements MinimalisticController<OAuthCommand> {
+public abstract class OAuthProtocolController implements MinimalisticController<OAuthCommand>, RequestAware, ResponseAware {
 	private static final Log log = LogFactory.getLog(OAuthProtocolController.class);
 	
 	/**
@@ -93,7 +95,7 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 	private String projectHome;
 
 	/** data store for managing OAuth tokens */
-	protected OAuthDataStore dataStore;
+	private OAuthDataStore dataStore;
 
 	/** validates incoming OAuth requests mainly by verifying the request's signature */
 	public static final OAuthValidator VALIDATOR = new SimpleOAuthValidator();
@@ -116,9 +118,8 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 		final User loginUser = command.getContext().getLoginUser();
 
 		// dispatch
-		View view = null;
 		try {
-			view = this.doWorkOn(command, loginUser);
+			return this.doWorkOn(command, loginUser);
 		} catch (final IOException e) {
 			throw new RuntimeException("Error processing OAuth request '"+this.getRequestAction()+"'", e);
 		} catch (final OAuthException e) {
@@ -128,11 +129,6 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 		} catch (final URISyntaxException e) {
 			throw new RuntimeException("Error processing OAuth request '"+this.getRequestAction()+"'", e);
 		}
-		if (!present(view) ){
-			throw new RuntimeException("Invalid OAuth action requested");
-		}
-
-		return view;
 	}
 	
 	//------------------------------------------------------------------------
@@ -221,13 +217,10 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 	 * handle OAuth exceptions
 	 * 
 	 * @param e
-	 * 
-	 * @throws IOException
-	 * @throws ServletException
 	 */
     public void handleException(final Exception e) {
    		try {
-   			final String realm = present(this.projectHome)?this.projectHome:this.requestLogic.getHostInetAddress();
+   			final String realm = present(this.projectHome) ? this.projectHome : this.requestLogic.getHostInetAddress();
 			this.responseLogic.handleOAuthException(e, realm, false);
 		} catch (final IOException ex) {
 			log.error("Error handling OAuth exception.", e);
@@ -236,39 +229,34 @@ public abstract class OAuthProtocolController implements MinimalisticController<
 		}
     }
     
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
+	@Override
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
-	public RequestLogic getRequestLogic() {
-		return this.requestLogic;
-	}
-
+	@Override
 	public void setResponseLogic(final ResponseLogic responseLogic) {
 		this.responseLogic = responseLogic;
 	}
 
-	public ResponseLogic getResponseLogic() {
-		return this.responseLogic;
-	}
-
+	/**
+	 * @param projectHome the projectHome to set
+	 */
 	public void setProjectHome(final String projectHome) {
 		this.projectHome = projectHome;
 	}
-
-	public String getProjectHome() {
-		return this.projectHome;
-	}
-
+	
+	/**
+	 * @param dataStore the dataStore to set
+	 */
 	public void setDataStore(final OAuthDataStore dataStore) {
 		this.dataStore = dataStore;
 	}
 
-	public OAuthDataStore getDataStore() {
+	/**
+	 * @return the dataStore
+	 */
+	protected OAuthDataStore getDataStore() {
 		return this.dataStore;
 	}
-
 }
