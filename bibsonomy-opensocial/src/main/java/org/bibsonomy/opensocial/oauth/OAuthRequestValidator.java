@@ -91,7 +91,7 @@ public class OAuthRequestValidator {
 			// verifyBodyHash(request, bodyHash);
 		}
 		try {
-			return verifyMessage(message);
+			return this.verifyMessage(message);
 		} catch (final OAuthProblemException oauthException) {
 			throw new RuntimeException("OAuth Authentication Failure", oauthException);
 		}
@@ -106,8 +106,8 @@ public class OAuthRequestValidator {
 	 */
 	protected SecurityToken verifyMessage(final OAuthMessage message) throws OAuthProblemException {
 		// retrieve the corresponding token from the token database
-		final OAuthEntry entry = getOAuthEntry(message);
-		final OAuthConsumer authConsumer = getConsumer(message);
+		final OAuthEntry entry = this.getOAuthEntry(message);
+		final OAuthConsumer authConsumer = this.getConsumer(message);
 
 		final OAuthAccessor accessor = new OAuthAccessor(authConsumer);
 
@@ -119,6 +119,8 @@ public class OAuthRequestValidator {
 		try {
 			final OAuthValidator validator = new SimpleOAuthValidator();
 			validator.validateMessage(message, accessor);
+			
+			return this.getTokenFromVerifiedRequest(message, entry, authConsumer);
 		} catch (final OAuthProblemException e) {
 			throw e;
 		} catch (final OAuthException e) {
@@ -128,7 +130,6 @@ public class OAuthRequestValidator {
 		} catch (final URISyntaxException e) {
 			throw this.createOAuthProblemException(e);
 		}
-		return getTokenFromVerifiedRequest(message, entry, authConsumer);
 	}
 
 
@@ -147,7 +148,7 @@ public class OAuthRequestValidator {
 	 */
 	public static void verifyBodyHash(final HttpServletRequest request, final String oauthBodyHash) throws AccessDeniedException {
 		// we are doing body hash signing which is not permitted for form-encoded data
-		if (request.getContentType() != null && request.getContentType().contains(OAuth.FORM_ENCODED)) {
+		if ((request.getContentType() != null) && request.getContentType().contains(OAuth.FORM_ENCODED)) {
 			throw new AccessDeniedException("Cannot use oauth_body_hash with a Content-Type of application/x-www-form-urlencoded");
 
 		} else {
@@ -179,14 +180,12 @@ public class OAuthRequestValidator {
 	protected SecurityToken getTokenFromVerifiedRequest(final OAuthMessage message, final OAuthEntry entry, final OAuthConsumer authConsumer) throws OAuthProblemException {
 		if (entry != null) {
 			// sucessfully authenticated 3-legged request   
-			return new OAuthSecurityToken(entry.getUserId(), entry.getCallbackUrl(), entry.getAppId(),
-					entry.getDomain(), entry.getContainer(), entry.expiresAt().getTime());
-		} else {
-			// 2-legged request
-			// TODO: not implemented
-			final String userId = getParameter(message, REQUESTOR_ID_PARAM);
-			return store.getSecurityTokenForConsumerRequest(authConsumer.consumerKey, userId);
+			return new OAuthSecurityToken(entry.getUserId(), entry.getCallbackUrl(), entry.getAppId(), entry.getDomain(), entry.getContainer(), entry.expiresAt().getTime());
 		}
+		// 2-legged request
+		// TODO: not implemented
+		final String userId = getParameter(message, REQUESTOR_ID_PARAM);
+		return this.store.getSecurityTokenForConsumerRequest(authConsumer.consumerKey, userId);
 	}
 
 	/**
@@ -200,7 +199,7 @@ public class OAuthRequestValidator {
 		OAuthEntry entry = null;
 		final String token = getParameter(message, OAuth.OAUTH_TOKEN);
 		if (present(token))  {
-			entry = store.getEntry(token);
+			entry = this.store.getEntry(token);
 			if (entry == null) {
 				final OAuthProblemException e = new OAuthProblemException(OAuth.Problems.TOKEN_REJECTED);
 				e.setParameter(OAuth.Problems.OAUTH_PROBLEM_ADVICE, "cannot find token");
@@ -225,7 +224,7 @@ public class OAuthRequestValidator {
 	 */
 	protected OAuthConsumer getConsumer(final OAuthMessage message) throws OAuthProblemException {
 		final String consumerKey = getParameter(message, OAuth.OAUTH_CONSUMER_KEY);
-		final OAuthConsumer authConsumer = store.getConsumer(consumerKey);
+		final OAuthConsumer authConsumer = this.store.getConsumer(consumerKey);
 		if (!present(authConsumer)) {
 			throw new OAuthProblemException(OAuth.Problems.CONSUMER_KEY_UNKNOWN);
 		}
