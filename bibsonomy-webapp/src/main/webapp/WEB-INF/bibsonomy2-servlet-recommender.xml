@@ -10,28 +10,20 @@
 	                    http://www.springframework.org/schema/jee
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
+    <!-- import recommenderLogic -->
 	<jee:jndi-lookup id="recommenderDataSource" jndi-name="jdbc/bibsonomy_recommender"/>
-	
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-context.xml" />
-	
-	<!-- 
-		configuration file for BibSonomy's (tag) recommendation services
-	 -->
-	<!-- 
-		Simple tag recommender
-	 -->
-	<bean id="tagRecommender" class="org.bibsonomy.recommender.tags.DefaultTagRecommender" scope="singleton"/>
 	
 	<!--+
 	    | Multiplexing tag recommender
 	    +-->
 	<bean id="multiplexingTagRecommender" class="org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender" init-method="init" scope="singleton">
-	    <property name="queryTimeout" value="1000"/>
-		<property name="postModifiers" ref="postModifierList"/>
-		<property name="tagModifiers" ref="tagFilterList"/>
-		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
-		<property name="dbLogic" ref="recommenderLogic"/>
-	    <property name="localRecommenders" ref="localRecommenderList"/>
+	    <property name="queryTimeout" value="1000" />
+		<property name="postModifiers" ref="postModifierList" />
+		<property name="tagModifiers" ref="tagFilterList" />
+		<property name="resultSelector" ref="selectOneWithoutReplacement" />
+		<property name="dbLogic" ref="recommenderLogic" />
+	    <property name="localRecommenders" ref="localRecommenderList" />
 	</bean>	  
 
 	<util:list id="localRecommenderList" list-class="java.util.ArrayList"> 		
@@ -39,30 +31,21 @@
   		<ref bean="jensRecommender"/>
 	</util:list>
 	
-	<util:list id="distRecommenderList" list-class="java.util.ArrayList">
-<!--  		<ref bean="metaInfoRecommender"/>-->
-<!--  		<ref bean="distRecommender1"/>-->
-	</util:list>
-	
 	<util:list id="postModifierList" list-class="java.util.ArrayList">
-  		<ref bean="dc09NameToIDMapper"/>
+  		<!--+
+	    | name mapper
+	    +-->
+		<bean class="org.bibsonomy.recommender.tags.multiplexer.modifiers.DC09NameToIDMapping">
+			<property name="dbLogic" ref="recommenderLogic"/>
+		</bean>	
 	</util:list>
 		
 	<util:list id="tagFilterList" list-class="java.util.ArrayList">
-  		<ref bean="scoringFilter"/>
-	</util:list>
-	<!--+
-	    | name mapper
-	    +-->
-	<bean id="dc09NameToIDMapper" class="org.bibsonomy.recommender.tags.multiplexer.modifiers.DC09NameToIDMapping">
-		<property name="dbLogic" ref="recommenderLogic"/>
-	</bean>	    
-	
-	<!--+
+  		<!--+
 	    | invalid scoring filter
 	    +-->
-	<bean id="scoringFilter" class="org.bibsonomy.recommender.tags.multiplexer.modifiers.InvalidScoringFilter">
-	</bean>	    
+		<bean class="org.bibsonomy.recommender.tags.multiplexer.modifiers.InvalidScoringFilter" />
+	</util:list>
 	
 	<!--+
 		| Simple tag recommenders
@@ -108,7 +91,8 @@
 	</bean>
 	
 	<!--+ 
-	    | comes pretty close to our 'old' recommender from Jens, sorts title tags by their usage count 
+	    | comes pretty close to our 'old' recommender from Jens, sorts title tags by their usage count
+	    | Note: this tagrecommender is used as a tagrecommender for spammers
 	    +-->
 	<bean id="jensRecommender" class="org.bibsonomy.recommender.tags.meta.TagsFromFirstWeightedBySecondTagRecommender">
 		<property name="firstTagRecommender" ref="titleRecommender"/>
@@ -116,42 +100,10 @@
 		<property name="numberOfTagsToRecommend" value="5"/>
 	</bean>
 	
-	<!--+
-		| A tag recommender which uses html meta informations for bookmarks
-		+-->
-	<bean id="metaInfoRecommender" class="org.bibsonomy.recommender.tags.simple.MetaInfoTagRecommender"/>
-
-	<!--+
-		| A simple tag recommender
-		+-->
-	<bean id="distRecommender1" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://gromit.cs.uni-kassel.de:8080/recommender-servlet/TagRecommenderServlet</value>
-		</property>
-	</bean>
-    
-	<!--+
-		| A tag recommender mockup
-		+-->
-	 <!--+ 
-	     | recommendation selector mockup
-	     +-->
-	 <bean id="dummySelector" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectAll" scope="singleton"/>
-	 <!--+ 
-	     | strategy for uniform random recommender selection
-	     +-->
-	 <bean id="uniformRandomSelection" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOne" scope="singleton">
-	 	<property name="dbLogic" ref="recommenderLogic"/>
+	<!--+ 
+	    | strategy for uniform random recommender selection
+	    +-->
+	<bean id="selectOneWithoutReplacement" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOneWithoutReplacement" scope="singleton">
+		<property name="dbLogic" ref="recommenderLogic"/>
 	 </bean>
-
-	 <!--+ 
-	     | strategy for uniform random recommender selection
-	     +-->
-	 <bean id="selectOneWithoutReplacement" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOneWithoutReplacement" scope="singleton">
-	 	<property name="dbLogic" ref="recommenderLogic"/>
-	 </bean>
-	 
-	<!--  #################### imports #################### -->
-
-    <import resource="bibsonomy2-servlet-recommender-dc09.xml"/>	
 </beans>
