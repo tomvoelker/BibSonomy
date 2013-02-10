@@ -51,6 +51,7 @@ import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -481,19 +482,24 @@ public class WebUtils {
 	}
 
 	/**
-	 * Sends a request to the given URL and checks, if it contains a redirect.
-	 * If it does, returns the redirect URL. Otherwise, returns null.
-	 * This is done up to {@value #MAX_REDIRECT_COUNT}-times until the final page is reached. 
+	 * Executes a request for the given URL following up to {@value #MAX_REDIRECT_COUNT}
+	 * redirects. If response is HTTP Status Code 200 returns the URL for that location,
+	 * otherwise return null.
 	 *  
 	 * 
 	 * 
-	 * @param url
-	 * @return - The redirect URL.
+	 * @param url The location to start.
+	 * @return - The redirect URL if received HTTP Status Code 200, null otherwise.
 	 */
 	public static URL getRedirectUrl(final URL url) {
 		final HttpMethod method = new GetMethod(url.toExternalForm());
+		HttpClient client = getHttpClient();
+		
+		//set the max redirect count for the client
+		client.getParams().setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
+		
 		try {
-			getHttpClient().executeMethod(method);
+			client.executeMethod(method);
 		} catch (HttpException e) {
 		} catch (IOException e) {
 		} finally {
