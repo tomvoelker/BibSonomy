@@ -135,6 +135,10 @@ public class UserActivationController implements MinimalisticController<UserActi
 		 */
 		final Authentication authenticated = authenticationManager.authenticate(authentication);
 		
+		// later, after the http response has been written the UsernameSecurityContextRepository Filter will attempt to store the user in a session.
+		// We have to make sure that the session exists in advance because the response implementation needs to write the set-scookie-header before the body
+		requestLogic.ensureSession();
+		
 		SecurityContextHolder.getContext().setAuthentication(authenticated);
 
 		/*
