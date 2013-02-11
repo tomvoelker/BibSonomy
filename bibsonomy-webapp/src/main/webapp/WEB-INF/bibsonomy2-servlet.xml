@@ -181,8 +181,7 @@
 		<property name="paramName" value="lang" />
 	</bean>	
 	
-	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor">
-	</bean>
+	<bean id="requestWrapperContextInterceptor" class="org.bibsonomy.webapp.util.spring.RequestWrapperContextHandlerInterceptor" />
 	
 	<bean id="mobileDetectionHandlerInterceptor" class="org.bibsonomy.webapp.util.spring.MobileDetectionHandlerInterceptor">
 		<property name="wurflManager" ref="wurfl.manager" />
@@ -636,6 +635,7 @@
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="requestLogic" ref="requestLogic"/>
 		<property name="wikiRenderer" ref="wikiRenderer" />
 	</bean>
 
