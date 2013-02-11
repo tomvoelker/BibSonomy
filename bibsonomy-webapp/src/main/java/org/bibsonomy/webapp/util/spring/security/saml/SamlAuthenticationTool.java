@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.util.spring.security.saml;
 
+import java.util.Collection;
+
 import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
@@ -13,14 +15,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
  */
 public class SamlAuthenticationTool {
 	private RequestLogic requestLogic;
+	private Collection<String> allowedParams;
+	
 	private static final String REL_STATE_CHECK_SESSION_ATTR = SamlAuthenticationTool.class.getName() + ".session.checkattr";
 
 	/**
 	 * initializing constructor
 	 * @param requestLogic requestLogic for which the new object is going to be used
+	 * @param allowedParams allowedParams parameters from the current request that are allowed to be re-added in a GET-Redirect after authentication
 	 */
-	public SamlAuthenticationTool(RequestLogic requestLogic) {
+	public SamlAuthenticationTool(RequestLogic requestLogic, Collection<String> allowedParams) {
 		this.requestLogic = requestLogic;
+		this.allowedParams = allowedParams;
 	}
 	
 	/**
@@ -69,7 +75,7 @@ public class SamlAuthenticationTool {
 	
 	protected void setRelayState() {
 		String relayStateToken = UserUtils.generateRandomPassword();
-		requestLogic.setNextRelayState(requestLogic.getUrlBuilder().addParameter("RelayState", relayStateToken).asString());
+		requestLogic.setNextRelayState(requestLogic.getUrlBuilder().clearParamsRetaining(allowedParams).addParameter("RelayState", relayStateToken).asString());
 		requestLogic.setSessionAttribute(REL_STATE_CHECK_SESSION_ATTR, relayStateToken);
 	}
 

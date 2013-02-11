@@ -127,7 +127,7 @@
 			<map key-type="org.springframework.security.web.util.AntPathRequestMatcher">
 				<entry key="/autoRegisterSamlAndOAuth" value-ref="samlEntryPoint" />
 				<entry key="/login_saml" value-ref="samlEntryPoint" />
-				<entry key="/register_saml" value-ref="samlEntryPoint" />
+				<entry key="/registersaml" value-ref="samlEntryPoint" />
 				<entry key="/register_saml_success" value-ref="samlEntryPoint" />
 			</map>
 		</constructor-arg>

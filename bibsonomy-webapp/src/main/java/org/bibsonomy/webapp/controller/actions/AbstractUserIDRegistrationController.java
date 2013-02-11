@@ -123,6 +123,8 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		}
 		
 		log.debug("step 3: complete registration");
+		
+		validate(this.errors, command, user);
 		/* 
 		 * if there are any errors in the form, we return back to fix them.
 		 */
@@ -179,11 +181,19 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	}
 
 	/**
+	 * subclasses can do additional validation here
+	 * @param errors error container to be filled with potential errors 
+	 * @param userToBeRegistered 
+	 * @param command 
+	 */
+	protected void validate(Errors errors, UserIDRegistrationCommand command, User userToBeRegistered) {
+	}
+
+	/**
 	 * subclasses can set additional properties in the command object
 	 * @param command
 	 * @param user
 	 */
-	@SuppressWarnings("unused")
 	protected void setFixedValuesFromUser(UserIDRegistrationCommand command, User user) {
 	}
 
@@ -409,5 +419,19 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 */
 	public void setRegistrationFormView(final Views registrationFormView) {
 		this.registrationFormView = registrationFormView;
+	}
+
+	/**
+	 * @return the requestLogic
+	 */
+	public RequestLogic getRequestLogic() {
+		return this.requestLogic;
+	}
+
+	/**
+	 * @return the authenticationManager
+	 */
+	public AuthenticationManager getAuthenticationManager() {
+		return this.authenticationManager;
 	}
 }

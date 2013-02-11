@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.util.Arrays;
+
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
@@ -8,9 +10,15 @@ import org.bibsonomy.webapp.command.actions.SamlUserIDRegistrationCommand;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.authentication.SamlCredAuthToken;
+import org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool;
+import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
 import org.bibsonomy.webapp.validation.UserSamlRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.saml.SAMLCredential;
+import org.springframework.validation.Errors;
 
 /**
  * This controller handles the registration of users via SAML (Shibboleth)
@@ -19,7 +27,10 @@ import org.springframework.security.core.Authentication;
  * @version $Id$
  */
 public class UserSamlRegistrationController extends AbstractUserIDRegistrationController {
-
+	
+	private SamlUserAttributeMapping attributeExtractor;
+	
+	
 	@Override
 	protected String getLoginNotice() {
 		return "register.saml.step1";
@@ -38,6 +49,18 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 		for (RemoteUserId remoteId : user.getRemoteUserIds()) {
 			if (remoteId instanceof SamlRemoteUserId) {
 				((SamlUserIDRegistrationCommand) command).setSamlId((SamlRemoteUserId) remoteId);
+				break;
+			}
+		}
+	}
+	
+	@Override
+	protected void validate(Errors errors, UserIDRegistrationCommand command, User userToBeRegistered) {
+		SamlRemoteUserId authRId = attributeExtractor.getRemoteUserId(VuFindUserInitController.getSamlCreds());
+		org.bibsonomy.util.ValidationUtils.assertNotNull(authRId);
+		for (RemoteUserId rId : userToBeRegistered.getRemoteUserIds()) {
+			if (rId.equals(authRId) == false) {
+				errors.rejectValue("samlId", "error.registration.samlId.missmatch");
 				break;
 			}
 		}
@@ -68,12 +91,29 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 	
 	@Override
 	protected View logOn(User user) {
-		// do nothing but redirect to a successView where ( -- hopefully -- ) the user can login directly via spring security saml filters.
+		SAMLCredential creds = VuFindUserInitController.getSamlCreds();
+		Authentication auth = getAuthenticationManager().authenticate(new SamlCredAuthToken(creds));
+		SecurityContextHolder.getContext().setAuthentication(auth);
 		return new ExtendedRedirectView("/register_saml_success");
 	}
 	
 	@Override
 	public Validator<UserIDRegistrationCommand> getValidator() {
-		return new UserSamlRegistrationValidator();
+		return new UserSamlRegistrationValidator(new SamlAuthenticationTool(getRequestLogic(), Arrays.asList("step")), getRequestLogic());
 	}
+
+	/**
+	 * @return the attributeExtractor
+	 */
+	public SamlUserAttributeMapping getAttributeExtractor() {
+		return this.attributeExtractor;
+	}
+
+	/**
+	 * @param attributeExtractor the attributeExtractor to set
+	 */
+	public void setAttributeExtractor(SamlUserAttributeMapping attributeExtractor) {
+		this.attributeExtractor = attributeExtractor;
+	}
+
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.oauth.OAuthMessage;
 import net.oauth.server.OAuthServlet;
@@ -158,6 +159,19 @@ public class RequestLogic {
 	}
 	
 	/**
+	 * Removes a session attribute
+	 * 
+	 * @param key the key of the attribute to be removed
+	 */
+	public void removeSessionAttribute(final String key) {
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+			return;
+		}
+		session.removeAttribute(key);
+	}
+	
+	/**
 	 * @return The User object associated with the logged in user.
 	 */
 	public User getLoginUser() {
@@ -232,5 +246,12 @@ public class RequestLogic {
         	urlb.addParameter(param.getKey(), param.getValue()[0]);
         }
         return urlb;
+	}
+
+	/**
+	 * simply creates a session if there is none yet
+	 */
+	public void ensureSession() {
+		request.getSession(true);
 	}
 }

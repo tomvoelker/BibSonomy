@@ -8,11 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.webapp.controller.actions.VuFindUserInitController;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.spring.security.exceptions.SamlUsernameNotFoundException;
 import org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.saml.SAMLCredential;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -52,11 +54,18 @@ public class SamlLoginFilter extends AbstractAuthenticationProcessingFilter {
 			// actually this is not really bad credentials. It just means something went wrong for whatever reason.
 			throw new BadCredentialsException("login failed");
 		}
+		
+		if (auth.getPrincipal() == null) {
+			if (auth.getCredentials() instanceof SAMLCredential) {
+				throw new SamlUsernameNotFoundException("empty session authentication without pricipal but with saml-credentials", (SAMLCredential) auth.getCredentials());
+			}
+			throw new BadCredentialsException("no user");
+		}
 		return auth;
 	}
 
 	protected SamlAuthenticationTool getSamlAuthTool(HttpServletRequest request) {
-		final SamlAuthenticationTool samlAuthTool = new SamlAuthenticationTool(new RequestLogic(request));
+		final SamlAuthenticationTool samlAuthTool = new SamlAuthenticationTool(new RequestLogic(request), null);
 		return samlAuthTool;
 	}
 

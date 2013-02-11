@@ -1,9 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
@@ -11,11 +8,11 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
 import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.authentication.SamlCredAuthToken;
@@ -29,19 +26,16 @@ import org.springframework.security.saml.SAMLCredential;
 
 
 /**
- * TODO: move to puma package and config to bibsonomy2-puma xml file
- * 
  * This controller is called directly after the first vuFind login of a user.
  * It generates an oAuth-token request and ensures that there is a bibsonomy user for the remoteAuthentication (shibboleth) user. A new user is generated if required.
  * 
  * @author jensi
  *
  */
-public class VuFindUserInitController implements MinimalisticController<OAuthCommand>, RequestAware {
-	private static final Log log = LogFactory.getLog(VuFindUserInitController.class);
-
+public class VuFindUserInitController implements MinimalisticController<OAuthCommand> {
 	private static final String UNKNOWN = "<unknown>";
 
+	private static final Logger log = Logger.getLogger(VuFindUserInitController.class);
 
 	private OAuthAuthorizeTokenController oaAuthorizeController;
 	
@@ -62,55 +56,55 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 	}
 
 	@Override
-	public View workOn(final OAuthCommand command) {
-		this.getSamlAuthTool().ensureFreshAuthentication();
+	public View workOn(OAuthCommand command) {
+		getSamlAuthTool().ensureFreshAuthentication();
 		Authentication authToken = null;
 		if (AuthenticationUtils.getUserOrNull() == null) {
 			// we have made sure that an authentication attempt was done but still got no user
 			// -> try to create a new user from shibboleth credentials
-			authToken = this.createNewLimitedUserAndAuthTokenForHer();
+			authToken = createNewLimitedUserAndAuthTokenForHer();
 		}
 		// if we are here, we have authenticated a user (maybe not yet logged in)
 		// - otherwise exceptions would have been thrown
 		try {
 			if (authToken != null) {
-				final Authentication auth = this.authenticationManager.authenticate(authToken);
+				Authentication auth = getAuthenticationManager().authenticate(authToken);
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
-			return this.oaAuthorizeController.workOn(command);
+			return oaAuthorizeController.workOn(command);
 		} finally {
-			this.requestLogic.invalidateSession();
+			requestLogic.invalidateSession();
 			SecurityContextHolder.getContext().setAuthentication(null);
 		}
 	}
 
 	protected Authentication createNewLimitedUserAndAuthTokenForHer() {
 		Authentication authToken;
-		final SAMLCredential samlCreds = getSamlCreds();
-		final SamlRemoteUserId remoteUserId = this.getRemoteUserId(samlCreds);
+		SAMLCredential samlCreds = getSamlCreds();
+		SamlRemoteUserId remoteUserId = getRemoteUserId(samlCreds);
 		if (remoteUserId == null) {
-			final String msg = "no userid after saml-login in " + this.getClass().getSimpleName();
+			String msg = "no userid after saml-login in " + getClass().getSimpleName();
 			log.warn(msg);
 			throw new AccessDeniedException(msg);
 		}
-		final User user = new User();
+		User user = new User();
 		/*
 		 * Newly created limited users must have private settings to ensure their invisibility in the system.
 		 */
 		user.setSettings(new UserSettings());
 		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.PRIVATE);
-		this.attributeExtractor.populate(user, samlCreds);
+		attributeExtractor.populate(user, samlCreds);
 		// we assume that the real name has been set by the attributeExtractor
-		if (!present(user.getRealname())) {
+		if (ValidationUtils.present(user.getRealname()) == false) {
 			user.setRealname("");
 		}
-		if (!present(user.getPassword())) {
+		if (ValidationUtils.present(user.getPassword()) == false) {
 			user.setPassword(UserUtils.generateRandomPassword());
 		}
-		if (!present(user.getEmail())) {
+		if (ValidationUtils.present(user.getEmail()) == false) {
 			user.setEmail(UNKNOWN);
 		}
-		user.setIPAddress(this.requestLogic.getInetAddress());
+		user.setIPAddress(getRequestLogic().getInetAddress());
 		user.setName(remoteUserId.getUserId());
 
 		this.adminLogic.createUser(user);
@@ -118,22 +112,22 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 		return authToken;
 	}
 
-	private SamlRemoteUserId getRemoteUserId(final SAMLCredential samlCreds) {
+	private SamlRemoteUserId getRemoteUserId(SAMLCredential samlCreds) {
 		if (samlCreds == null) {
 			return null;
 		}
-		return this.attributeExtractor.getRemoteUserId(samlCreds);
+		return attributeExtractor.getRemoteUserId(samlCreds);
 	}
 
 	/**
 	 * @return {@link SAMLCredential} object from the spring threadlocal, null if nonexistent
 	 */
 	public static SAMLCredential getSamlCreds() {
-		final Authentication auth = getAuth();
+		Authentication auth = getAuth();
 		if (auth == null) {
 			return null;
 		}
-		final Object creds = auth.getCredentials();
+		Object creds = auth.getCredentials();
 		if (creds instanceof SAMLCredential) {
 			return (SAMLCredential) creds;
 		}
@@ -144,48 +138,73 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 	 * @return {@link Authentication} object from the spring threadlocal, null if nonexistent
 	 */
 	public static Authentication getAuth() {
-		final SecurityContext ctx = SecurityContextHolder.getContext();
+		SecurityContext ctx = SecurityContextHolder.getContext();
 		if (ctx == null) {
 			return null;
 		}
 		return ctx.getAuthentication();
 	}
 	
+
+	/**
+	 * @return the regular oAuth controller
+	 */
+	public OAuthAuthorizeTokenController getOaAuthorizeController() {
+		return this.oaAuthorizeController;
+	}
+
 	/**
 	 * @param oaReqTokenController the regular oAuth controller
 	 */
-	public void setOaAuthorizeController(final OAuthAuthorizeTokenController oaReqTokenController) {
+	public void setOaAuthorizeController(OAuthAuthorizeTokenController oaReqTokenController) {
 		this.oaAuthorizeController = oaReqTokenController;
+	}
+
+	/**
+	 * @return the attributeExtractor
+	 */
+	public SamlUserAttributeMapping getAttributeExtractor() {
+		return this.attributeExtractor;
 	}
 
 	/**
 	 * @param attributeExtractor the attributeExtractor to set
 	 */
-	public void setAttributeExtractor(final SamlUserAttributeMapping attributeExtractor) {
+	public void setAttributeExtractor(SamlUserAttributeMapping attributeExtractor) {
 		this.attributeExtractor = attributeExtractor;
+	}
+
+	/**
+	 * @return the adminLogic
+	 */
+	public LogicInterface getAdminLogic() {
+		return this.adminLogic;
 	}
 
 	/**
 	 * @param adminLogic the adminLogic to set
 	 */
-	public void setAdminLogic(final LogicInterface adminLogic) {
+	public void setAdminLogic(LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
+	
+    protected AuthenticationManager getAuthenticationManager() {
+        return authenticationManager;
+    }
 
     /**
      * @param authenticationManager
      */
-    public void setAuthenticationManager(final AuthenticationManager authenticationManager) {
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
 	/**
-	 * TODO: inject via spring beans?
 	 * @return the loginTool
 	 */
 	public SamlAuthenticationTool getSamlAuthTool() {
 		if (this.samlAuthTool == null) {
-			this.samlAuthTool = new SamlAuthenticationTool(this.requestLogic);
+			this.samlAuthTool = new SamlAuthenticationTool(getRequestLogic(), null);
 		}
 		return this.samlAuthTool;
 	}
@@ -193,8 +212,14 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 	/**
 	 * @param requestLogic
 	 */
-	@Override
-	public void setRequestLogic(final RequestLogic requestLogic) {
+	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @return the requestLogic
+	 */
+	public RequestLogic getRequestLogic() {
+		return this.requestLogic;
 	}
 }
