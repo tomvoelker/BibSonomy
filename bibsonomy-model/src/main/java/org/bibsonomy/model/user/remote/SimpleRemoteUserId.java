@@ -1,5 +1,6 @@
 package org.bibsonomy.model.user.remote;
 
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author jensi
@@ -21,10 +22,7 @@ public class SimpleRemoteUserId implements RemoteUserId {
 	 * @param remoteUserId
 	 */
 	public SimpleRemoteUserId(String remoteUserId) {
-		if (remoteUserId == null) {
-			throw new IllegalArgumentException("remoteUserId can not be null");
-		}
-		
+		ValidationUtils.assertNotNull(remoteUserId);
 		this.remoteUserId = remoteUserId;
 	}
 	
