@@ -25,7 +25,9 @@ package org.bibsonomy.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -57,6 +59,23 @@ public class UrlBuilder {
 			this.parameters.put(key, UrlUtils.safeURIEncode(value));
 		}
 		
+		return this;
+	}
+	
+	/**
+	 * Removes all parameters whose name is not contained in the given collection
+	 * @param allowedParams the set of allowed parameter names or null (in that case the method does nothing)
+	 * @return this object
+	 */
+	public UrlBuilder clearParamsRetaining(Collection<String> allowedParams) {
+		if (allowedParams == null) {
+			return this;
+		}
+		for (Iterator<Entry<String, String>> it = parameters.entrySet().iterator(); (it.hasNext() == true); ) {
+			if (allowedParams.contains(it.next().getKey()) == false) {
+				it.remove();
+			}
+		}
 		return this;
 	}
 	

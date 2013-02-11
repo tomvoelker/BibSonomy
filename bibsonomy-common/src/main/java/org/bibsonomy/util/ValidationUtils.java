@@ -111,4 +111,16 @@ public class ValidationUtils {
 		}
 		return false;
 	}
+
+
+	/**
+	 * @param obj object to be tested
+	 * @throws IllegalStateException if given object reference is null
+	 */
+	public static void assertNotNull(Object obj) {
+		if (obj == null) {
+			throw new IllegalStateException("should not be null");
+		}
+		
+	}
 }
