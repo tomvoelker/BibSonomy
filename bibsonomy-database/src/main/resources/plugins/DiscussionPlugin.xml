@@ -2,7 +2,10 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="DiscussionPlugin">
-	<update id="updateParentHash" parameterClass="loggingParam">
-		UPDATE discussion SET parent_hash = #newId# WHERE parent_hash = #oldId#
+	<update id="updateParentHash" parameterClass="discussionItemParam">
+		UPDATE discussion
+			SET parent_hash = #newParentHash#
+		WHERE parent_hash = #oldParentHash#
+			AND interHash = #interHash#
 	</update>
 </sqlMap>

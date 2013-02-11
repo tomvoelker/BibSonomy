@@ -30,280 +30,164 @@ import org.bibsonomy.model.DiscussionItem;
  * @version $Id$
  */
 public class Logging extends AbstractDatabasePlugin {
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentUpdate(java.lang.String, org.bibsonomy.model.Comment, org.bibsonomy.model.Comment, org.bibsonomy.database.common.DBSession)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentUpdate(
+	 * java.lang.String, org.bibsonomy.model.Comment,
+	 * org.bibsonomy.model.Comment, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public Runnable onDiscussionUpdate(final String interHash, final DiscussionItem item, final DiscussionItem oldItem, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				insert("logDiscussionItem", oldItem.getId(), session);
-			}
-		};
+	public void onDiscussionUpdate(final String interHash, final DiscussionItem item, final DiscussionItem oldItem, final DBSession session) {
+		this.insert("logDiscussionItem", oldItem.getId(), session);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentDelete(java.lang.String, org.bibsonomy.model.Comment, org.bibsonomy.database.common.DBSession)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.database.plugin.AbstractDatabasePlugin#onCommentDelete(
+	 * java.lang.String, org.bibsonomy.model.Comment,
+	 * org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedItem, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				insert("logDiscussionItem", deletedItem.getId(), session);
-			}
-		};
+	public void onDiscussionItemDelete(final String interHash, final DiscussionItem deletedItem, final DBSession session) {
+		this.insert("logDiscussionItem", deletedItem.getId(), session);
 	}
 
 	@Override
-	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final BibTexParam param = new BibTexParam();
-				param.setRequestedContentId(contentId);
-				insert("logBibTex", param, session);
-				
-				//Logging of BibTexExtraURLs
-				insert("logBibTexURLs", param, session);
-			}
-		};
+	public void onPublicationDelete(final int contentId, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setRequestedContentId(contentId);
+		this.insert("logBibTex", param, session);
+
+		// logging of BibTexExtraURLs
+		this.insert("logBibTexURLs", param, session);
 	}
 
 	@Override
-	public Runnable onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final BibTexParam param = new BibTexParam();
-				param.setRequestedContentId(contentId);
-				insert("logBibTex", param, session);
-				param.setNewContentId(newContentId);
-				insert("logBibTexUpdate", param, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final LoggingParam<String> logParam = new LoggingParam<String>();
-				logParam.setNewId(newInterhash);
-				logParam.setOldId(interhash);
-				
-				insert("logGoldStandard", logParam, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onGoldStandardDelete(final String interhash, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final LoggingParam<String> logParam = new LoggingParam<String>();
-				logParam.setOldId(interhash);
-				logParam.setNewId("");
-				insert("logGoldStandard", logParam, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
-		return new Runnable() {
-			@Override
-			public void run() {
-				final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
-				param.setHash(interHashPublication);
-				param.setRefHash(interHashReference);
-				param.setUsername(userName);
-				
-				insert("logGoldStandardPublicationReferenceDelete", param, session);
-			}
-		};
+	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setRequestedContentId(contentId);
+		this.insert("logBibTex", param, session);
+		param.setNewContentId(newContentId);
+		this.insert("logBibTexUpdate", param, session);
 	}
 
 	@Override
-	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final BookmarkParam param = new BookmarkParam();
-				param.setRequestedContentId(contentId);
-				insert("logBookmark", param, session);
-			}
-		};
+	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
+		final LoggingParam<String> logParam = new LoggingParam<String>();
+		logParam.setNewId(newInterhash);
+		logParam.setOldId(interhash);
+
+		this.insert("logGoldStandard", logParam, session);
 	}
 
 	@Override
-	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final BookmarkParam param = new BookmarkParam();
-				param.setRequestedContentId(contentId);
-				insert("logBookmark", param, session);
-				param.setNewContentId(newContentId);
-				insert("logBookmarkUpdate", param, session);
-			}
-		};
+	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+		final LoggingParam<String> logParam = new LoggingParam<String>();
+		logParam.setOldId(interhash);
+		logParam.setNewId("");
+		this.insert("logGoldStandard", logParam, session);
 	}
 
 	@Override
-	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final TagRelationParam trp = new TagRelationParam();
-				trp.setOwnerUserName(userName);
-				trp.setLowerTagName(lowerTagName);
-				trp.setUpperTagName(upperTagName);
-				insert("logTagRelation", trp, session);
-			}
-		};
+	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
+		final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
+		param.setHash(interHashPublication);
+		param.setRefHash(interHashReference);
+		param.setUsername(userName);
+
+		this.insert("logGoldStandardPublicationReferenceDelete", param, session);
 	}
 
 	@Override
-	public Runnable onConceptDelete(final String conceptName, final String userName, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final TagRelationParam trp = new TagRelationParam();
-				trp.setOwnerUserName(userName);
-				trp.setUpperTagName(conceptName);
-				insert("logConcept", trp, session);
-			}
-		};
+	public void onBookmarkDelete(final int contentId, final DBSession session) {
+		final BookmarkParam param = new BookmarkParam();
+		param.setRequestedContentId(contentId);
+		this.insert("logBookmark", param, session);
 	}
 
 	@Override
-	public Runnable onTagDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final TagParam param = new TagParam();
-				param.setRequestedContentId(contentId);
-				insert("logTasDelete", param, session);
-			}
-		};
+	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
+		final BookmarkParam param = new BookmarkParam();
+		param.setRequestedContentId(contentId);
+		this.insert("logBookmark", param, session);
+		param.setNewContentId(newContentId);
+		this.insert("logBookmarkUpdate", param, session);
 	}
 
 	@Override
-	public Runnable onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				final GroupParam groupParam = new GroupParam();
-				groupParam.setGroupId(groupId);
-				groupParam.setUserName(userName);
-				insert("logRemoveUserFromGroup", groupParam, session);
-
-			}
-		};
+	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
+		final TagRelationParam trp = new TagRelationParam();
+		trp.setOwnerUserName(userName);
+		trp.setLowerTagName(lowerTagName);
+		trp.setUpperTagName(upperTagName);
+		this.insert("logTagRelation", trp, session);
 	}
 
 	@Override
-	public Runnable onUserUpdate(final String userName, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				insert("logUser", userName, session);
-			}
-		};
+	public void onConceptDelete(final String conceptName, final String userName, final DBSession session) {
+		final TagRelationParam trp = new TagRelationParam();
+		trp.setOwnerUserName(userName);
+		trp.setUpperTagName(conceptName);
+		this.insert("logConcept", trp, session);
 	}
-	
-	@Override
-	public Runnable onDeleteFellowship(final UserParam param, final DBSession session){
-		return new Runnable(){
-			
-			@Override
-			public void run(){
-				insert("logFollowerDelete", param, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onDeleteFriendship(final UserParam param, final DBSession session){
-		return new Runnable(){
-			
-			@Override
-			public void run(){
-				insert("logFriendDelete", param, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onDeleteBasketItem(final BasketParam param, final DBSession session){
-		return new Runnable(){
-			
-			@Override
-			public void run(){
-				insert("logBasketItemDelete", param, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session){
-		return new Runnable(){
-			
-			@Override
-			public void run(){
-				insert("logDeleteAllFromBasket", userName, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onDocumentDelete (final DocumentParam deletedDocumentParam, final DBSession session) {
-		return new Runnable() {
-			@Override
-			public void run() {
-				insert("logDocument", deletedDocumentParam, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				insert("logInboxMessages", deletedInboxMessageParam, session);
-			}
-		};
-	}
-	
-	@Override
-	public Runnable onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
-		return new Runnable() {
 
-			@Override
-			public void run() {
-				insert("logBibTexURL", deletedBibTexExtraParam, session);
-			}
-		};
+	@Override
+	public void onTagDelete(final int contentId, final DBSession session) {
+		final TagParam param = new TagParam();
+		param.setRequestedContentId(contentId);
+		this.insert("logTasDelete", param, session);
 	}
-	
+
+	@Override
+	public void onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
+		final GroupParam groupParam = new GroupParam();
+		groupParam.setGroupId(groupId);
+		groupParam.setUserName(userName);
+		this.insert("logRemoveUserFromGroup", groupParam, session);
+	}
+
+	@Override
+	public void onUserUpdate(final String userName, final DBSession session) {
+		this.insert("logUser", userName, session);
+	}
+
+	@Override
+	public void onDeleteFellowship(final UserParam param, final DBSession session) {
+		this.insert("logFollowerDelete", param, session);
+	}
+
+	@Override
+	public void onDeleteFriendship(final UserParam param, final DBSession session) {
+		this.insert("logFriendDelete", param, session);
+	}
+
+	@Override
+	public void onDeleteBasketItem(final BasketParam param, final DBSession session) {
+		this.insert("logBasketItemDelete", param, session);
+	}
+
+	@Override
+	public void onDeleteAllBasketItems(final String userName, final DBSession session) {
+		this.insert("logDeleteAllFromBasket", userName, session);
+	}
+
+	@Override
+	public void onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session) {
+		this.insert("logDocument", deletedDocumentParam, session);
+	}
+
+	@Override
+	public void onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
+		this.insert("logInboxMessages", deletedInboxMessageParam, session);
+	}
+
+	@Override
+	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
+		this.insert("logBibTexURL", deletedBibTexExtraParam, session);
+	}
 }

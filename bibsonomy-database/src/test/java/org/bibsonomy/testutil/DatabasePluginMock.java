@@ -76,59 +76,50 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public Runnable onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
 		this.onBibTexInsert = true;
-		return null;
 	}
 
 	@Override
-	public Runnable onPublicationDelete(int contentId, DBSession session) {
+	public void onPublicationDelete(final int contentId, final DBSession session) {
 		this.onBibTexDelete = true;
-		return null;
 	}
 
 	@Override
-	public Runnable onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
+	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
 		assertTrue(contentId != newContentId);
 		this.onBibTexUpdate = true;
-		return null;
 	}
 
 	@Override
-	public Runnable onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
 		this.onBookmarkInsert = true;
-		return null;
 	}
 
 	@Override
-	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
+	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		assertTrue(contentId != newContentId);
 		this.onBookmarkUpdate = true;
-		return null;
 	}
 	
 	@Override
-	public Runnable onGoldStandardCreate(String interhash, DBSession session) {
+	public void onGoldStandardCreate(final String interhash, final DBSession session) {
 		this.onGoldStandardCreate = true;
-		return null;
 	}
 	
 	@Override
-	public Runnable onGoldStandardUpdate(String newInterhash, String interhash, DBSession session) {
+	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
 		this.onGoldStandardUpdate = true;
-		return null;
 	}
 	
 	@Override
-	public Runnable onGoldStandardDelete(String interhash, DBSession session) {
+	public void onGoldStandardDelete(final String interhash, final DBSession session) {
 		this.onGoldStandardDelete = true;
-		return null;
 	}
 
 	@Override
-	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
+	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		this.onTagRelationDelete = true;
-		return null;
 	}
 	
 	/**
@@ -139,9 +130,9 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		for (final Field field : this.getClass().getDeclaredFields()) {
 			try {
 				field.setBoolean(this, false);
-			} catch (IllegalArgumentException ex) {
+			} catch (final IllegalArgumentException ex) {
 				// ignore
-			} catch (IllegalAccessException ex) {
+			} catch (final IllegalAccessException ex) {
 				// ignore
 			}
 		}

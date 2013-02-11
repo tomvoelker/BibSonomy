@@ -25,137 +25,139 @@ import org.bibsonomy.model.Resource;
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
 	@Override
-	public Runnable onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
-		return null;
+	public void onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
+		// noop
 	}
 
 	@Override
-	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
-		return null;
+	public void onPublicationDelete(final int contentId, final DBSession session) {
+		// noop
 	}
 
 	@Override
-	public Runnable onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
-		return null;
+	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
+		// noop
 	}
 
 	@Override
-	public Runnable onGoldStandardCreate(final String interhash, final DBSession session) {
-		return null;
+	public void onGoldStandardCreate(final String interhash, final DBSession session) {
+		// noop
 	}
 
 	@Override
-	public Runnable onGoldStandardDelete(final String interhash, final DBSession session) {
-		return null;
+	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
+		// noop
 	}
 
 	@Override
-	public Runnable onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
-		return null;
+	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHash_publication, final String interHash_reference) {
+		// noop
 	}
+
+	@Override
+	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHash_publication, final String interHash_reference, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onBookmarkDelete(final int contentId, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onConceptDelete(final String conceptName, final String userName, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onTagDelete(final int contentId, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onUserInsert(final String userName, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onUserDelete(final String userName, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onUserUpdate(final String userName, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onDeleteFellowship(final UserParam param, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onDeleteFriendship(final UserParam param, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onDeleteBasketItem(final BasketParam param, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onDeleteAllBasketItems(final String userName, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onDiscussionUpdate(final String interHash, final DiscussionItem comment, final DiscussionItem oldComment, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
+		// noop
+	}
+
+	@Override
+	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
+		// noop
+	}
+
 	
-	@Override
-	public Runnable onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference) {
-		return null;
-	}
-
-	@Override
-	public Runnable onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onConceptDelete(final String conceptName, final String userName, final DBSession session) {
-		return null;
-	}
-	
-	@Override
-	public Runnable onTagDelete(final int contentId, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onRemoveUserFromGroup(final String userName, final int groupId, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onUserDelete(final String userName, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onUserInsert(final String userName, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onUserUpdate(final String userName, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onDeleteFellowship(final UserParam param, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onDeleteFriendship(final UserParam param, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onDeleteBasketItem(final BasketParam param, final DBSession session) {
-		return null;
-	}
-	
-	@Override
-	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onDiscussionUpdate(final String interHash, final DiscussionItem comment, final DiscussionItem oldComment, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
-		return null;
-	}
-
-	@Override
-	public Runnable onBibTexExtraDelete(BibTexExtraParam deletedBibTexExtraParam, DBSession session) {
-		return null;
-	}
 }

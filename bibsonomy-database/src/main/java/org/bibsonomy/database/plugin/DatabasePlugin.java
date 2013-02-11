@@ -25,24 +25,21 @@ import org.bibsonomy.model.Resource;
  */
 public interface DatabasePlugin {
 
-
 	/**
 	 * Called when a publication is inserted.
 	 * 
 	 * @param post
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onPublicationInsert(Post<? extends Resource> post, DBSession session);
+	public void onPublicationInsert(Post<? extends Resource> post, DBSession session);
 
 	/**
 	 * Called when a publication is deleted.
 	 * 
 	 * @param contentId
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onPublicationDelete(int contentId, DBSession session);
+	public void onPublicationDelete(int contentId, DBSession session);
 
 	/**
 	 * Called when a publication is updated.
@@ -50,18 +47,16 @@ public interface DatabasePlugin {
 	 * @param newContentId
 	 * @param contentId
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onPublicationUpdate(int newContentId, int contentId, DBSession session);
+	public void onPublicationUpdate(int newContentId, int contentId, DBSession session);
 
 	/**
 	 * Called when a gold standard publication is created.
 	 * 
 	 * @param interhash
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onGoldStandardCreate(String interhash, DBSession session);
+	public void onGoldStandardCreate(String interhash, DBSession session);
 
 	/**
 	 * Called when a gold standard publication will be updated.
@@ -69,18 +64,16 @@ public interface DatabasePlugin {
 	 * @param newInterhash
 	 * @param interhash
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onGoldStandardUpdate(String newInterhash, String interhash, DBSession session);
+	public void onGoldStandardUpdate(String newInterhash, String interhash, DBSession session);
 	
 	/**
 	 * Called when a reference of a gold standard publication will be created
 	 * @param userName
 	 * @param interHash_publication
 	 * @param interHash_reference
-	 * @return runnable
 	 */
-	public Runnable onGoldStandardPublicationReferenceCreate(String userName, String interHash_publication, String interHash_reference);
+	public void onGoldStandardPublicationReferenceCreate(String userName, String interHash_publication, String interHash_reference);
 	
 	/**
 	 * Called when a reference of a gold standard publication will be deleted
@@ -89,36 +82,32 @@ public interface DatabasePlugin {
 	 * @param interHash_publication
 	 * @param interHash_reference
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onGoldStandardPublicationReferenceDelete(String userName, String interHash_publication, String interHash_reference, DBSession session);
+	public void onGoldStandardPublicationReferenceDelete(String userName, String interHash_publication, String interHash_reference, DBSession session);
 	
 	/**
 	 * Called when a gold standard publication is deleted.
 	 * 
 	 * @param interhash
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onGoldStandardDelete(String interhash, DBSession session);
+	public void onGoldStandardDelete(String interhash, DBSession session);
 	
 	/**
 	 * Called when a Bookmark is inserted.
 	 * 
 	 * @param post
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onBookmarkInsert(Post<? extends Resource> post, DBSession session);
+	public void onBookmarkInsert(Post<? extends Resource> post, DBSession session);
 
 	/**
 	 * Called when a Bookmark is deleted.
 	 * 
 	 * @param contentId
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onBookmarkDelete(int contentId, DBSession session);
+	public void onBookmarkDelete(int contentId, DBSession session);
 
 	/**
 	 * Called when a Bookmark is updated.
@@ -126,9 +115,8 @@ public interface DatabasePlugin {
 	 * @param newContentId
 	 * @param contentId
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onBookmarkUpdate(int newContentId, int contentId, DBSession session);
+	public void onBookmarkUpdate(int newContentId, int contentId, DBSession session);
 	
 	/**
 	 * Called when a TagRelation is deleted.
@@ -137,9 +125,8 @@ public interface DatabasePlugin {
 	 * @param lowerTagName
 	 * @param userName
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onTagRelationDelete(String upperTagName, String lowerTagName, String userName, DBSession session);
+	public void onTagRelationDelete(String upperTagName, String lowerTagName, String userName, DBSession session);
 	
 	/**
 	 * Called when a Concept is deleted.
@@ -147,45 +134,40 @@ public interface DatabasePlugin {
 	 * @param conceptName
 	 * @param userName
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onConceptDelete(String conceptName, String userName, DBSession session);
+	public void onConceptDelete(String conceptName, String userName, DBSession session);
 	
 	/**
 	 * Called when a Tag is deleted.
 	 * 
 	 * @param contentId
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onTagDelete(int contentId, DBSession session);
+	public void onTagDelete(int contentId, DBSession session);
 	
 	/**
 	 * Called when a User is inserted.
 	 * 
 	 * @param userName
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onUserInsert(String userName, DBSession session);
+	public void onUserInsert(String userName, DBSession session);
 
 	/**
 	 * Called when a User is deleted.
 	 * 
 	 * @param userName
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onUserDelete(String userName, DBSession session);
+	public void onUserDelete(String userName, DBSession session);
 
 	/**
 	 * Called when a User is updated.
 	 * 
 	 * @param userName
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onUserUpdate(String userName, DBSession session);	
+	public void onUserUpdate(String userName, DBSession session);	
 
 	/**
 	 * Called when a user is removed from a group.
@@ -193,46 +175,41 @@ public interface DatabasePlugin {
 	 * @param userName
 	 * @param groupId
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onRemoveUserFromGroup(String userName, int groupId, DBSession session);
+	public void onRemoveUserFromGroup(String userName, int groupId, DBSession session);
 	
 	/**
 	 * Called when a fellowship will be deleted
 	 * 
 	 * @param param
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onDeleteFellowship(final UserParam param, final DBSession session);
+	public void onDeleteFellowship(final UserParam param, final DBSession session);
 	
 	/**
 	 * Called when a friendship will be deleted
 	 * 
 	 * @param param
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onDeleteFriendship(final UserParam param, final DBSession session);
+	public void onDeleteFriendship(final UserParam param, final DBSession session);
 	
 	/**
 	 * Called when a basket item will be deleted
 	 * 
 	 * @param param
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onDeleteBasketItem(final BasketParam param, final DBSession session);
+	public void onDeleteBasketItem(final BasketParam param, final DBSession session);
 	
 	/**
 	 * Called when all basket items will be deleted
 	 * 
 	 * @param userName 
 	 * @param session 
-	 * @return runnable
 	 * 
 	 */
-	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session);
+	public void onDeleteAllBasketItems(final String userName, final DBSession session);
 	
 	/**
 	 * called when a comment was updated
@@ -241,9 +218,8 @@ public interface DatabasePlugin {
 	 * @param comment
 	 * @param oldComment
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onDiscussionUpdate(final String interHash, DiscussionItem comment, DiscussionItem oldComment, DBSession session);	
+	public void onDiscussionUpdate(final String interHash, DiscussionItem comment, DiscussionItem oldComment, DBSession session);	
 	
 	/**
 	 * called when a comment will be deleted
@@ -251,24 +227,24 @@ public interface DatabasePlugin {
 	 * @param interHash
 	 * @param deletedComment
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session);
+	public void onDiscussionItemDelete(final String interHash, final DiscussionItem deletedComment, final DBSession session);
 	
 	/**
 	 * called when a document will be deleted
 	 * 
-	 * @param deletedDocument
+	 * @param deletedDocumentParam
 	 * @param session
-	 * @return runnable
 	 */
-	public Runnable onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session);
+	public void onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session);
 	
 	/**
-	 * TODO javadoc, params
-	 * @return
+	 * TODO document me
+	 * 
+	 * @param deletedInboxMessageParam 
+	 * @param session 
 	 */
-	public Runnable onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session);
+	public void onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session);
 	
 	/**
 	 * called when a BibTexExtraURL will be deleted
@@ -277,5 +253,5 @@ public interface DatabasePlugin {
 	 * @param session
 	 * @author MarcelM
 	 */
-	public Runnable onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session); 
+	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session); 
 }

@@ -12,6 +12,8 @@ import org.bibsonomy.model.DiscussionItem;
 public class DiscussionItemParam<D extends DiscussionItem> extends GenericParam {
 	
 	private String interHash;
+	private String oldParentHash;
+	private String newParentHash;
 	private D discussionItem;
 
 	/**
@@ -28,6 +30,34 @@ public class DiscussionItemParam<D extends DiscussionItem> extends GenericParam 
 		this.interHash = interHash;
 	}
 	
+	/**
+	 * @return the oldParentHash
+	 */
+	public String getOldParentHash() {
+		return this.oldParentHash;
+	}
+
+	/**
+	 * @param oldParentHash the oldParentHash to set
+	 */
+	public void setOldParentHash(final String oldParentHash) {
+		this.oldParentHash = oldParentHash;
+	}
+
+	/**
+	 * @return the newParentHash
+	 */
+	public String getNewParentHash() {
+		return this.newParentHash;
+	}
+
+	/**
+	 * @param newParentHash the newParentHash to set
+	 */
+	public void setNewParentHash(final String newParentHash) {
+		this.newParentHash = newParentHash;
+	}
+
 	/**
 	 * @return the discussion item
 	 */

@@ -9,6 +9,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
  * 
  * XXX: we can't have a static/singleton {@link BasketDatabaseManager} instance,
  * because we have a circular dependency (the manager contains the plugins ...)
+ * could be fixed by config registry with Spring beans
  * 
  * @author daill
  * @version $Id$
@@ -16,50 +17,22 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 public class BasketPlugin extends AbstractDatabasePlugin {
 	
 	@Override
-	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				BasketDatabaseManager.getInstance().deleteItems(contentId, session);
-			}
-			
-		};
+	public void onPublicationDelete(final int contentId, final DBSession session) {
+		BasketDatabaseManager.getInstance().deleteItems(contentId, session);
 	}
 	
 	@Override
-	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				BasketDatabaseManager.getInstance().deleteItems(contentId, session);
-			}
-			
-		};
+	public void onBookmarkDelete(final int contentId, final DBSession session) {
+		BasketDatabaseManager.getInstance().deleteItems(contentId, session);
 	}
 	
 	@Override
-	public Runnable onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				BasketDatabaseManager.getInstance().updateItems(newContentId, contentId, session);
-			}
-			
-		};
+	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
+		BasketDatabaseManager.getInstance().updateItems(newContentId, contentId, session);
 	}
 	
 	@Override
-	public Runnable onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session){
-		return new Runnable() {
-			
-			@Override
-			public void run() {
-				BasketDatabaseManager.getInstance().updateItems(newContentId, contentId, session);
-			}
-			
-		};
+	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session){
+		BasketDatabaseManager.getInstance().updateItems(newContentId, contentId, session);
 	}
 }

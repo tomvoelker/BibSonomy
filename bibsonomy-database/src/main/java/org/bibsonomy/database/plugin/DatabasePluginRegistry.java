@@ -90,254 +90,196 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public void clearPlugins() {
 		this.plugins.clear();
 	}
-
-	private void executeRunnable(final Runnable runnable) {
-		// If the runnable is null -> do nothing
-		if (runnable == null) {
-			return;
+	
+	@Override
+	public void onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPublicationInsert(post, session);
 		}
-		runnable.run();
 	}
 
 	@Override
-	public Runnable onPublicationInsert(Post<? extends Resource> post, DBSession session) {
+	public void onPublicationDelete(final int contentId, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPublicationDelete(contentId, session);
+		}
+	}
+
+	@Override
+	public void onPublicationUpdate(final int oldContentId, final int newContentId, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPublicationUpdate(newContentId, oldContentId, session); // new and old contentId are not swapped!
+		}
+	}
+	
+	@Override
+	public void onGoldStandardCreate(final String interhash, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onGoldStandardCreate(interhash, session);
+		}		
+	}
+
+	@Override
+	public void onGoldStandardDelete(final String interhash, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onGoldStandardDelete(interhash, session);
+		}	
+	}
+
+	@Override
+	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onGoldStandardUpdate(newInterhash, interhash, session);
+		}
+	}
+	
+	@Override
+	public void onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onGoldStandardPublicationReferenceCreate(userName, interHashPublication, interHashReference);
+		}	
+	}
+
+	@Override
+	public void onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onGoldStandardPublicationReferenceDelete(userName, interHashPublication, interHashReference, session);
+		}
+	}
+
+	@Override
+	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onBookmarkInsert(post, session);
+		}
+	}
+
+	@Override
+	public void onBookmarkDelete(final int contentId, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onBookmarkDelete(contentId, session);
+		}
+	}
+
+	@Override
+	public void onBookmarkUpdate(final int oldContentId, final int newContentId, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onBookmarkUpdate(newContentId, oldContentId, session);
+		}
+	}
+
+	@Override
+	public void onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session);
+		}		
+	}
+	
+	@Override
+	public void onConceptDelete(final String conceptName, final String userName, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onConceptDelete(conceptName, userName, session);
+		}		
+	}
+
+	@Override
+	public void onTagDelete(final int contentId, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onTagDelete(contentId, session);
+		}		
+	}
+
+	@Override
+	public void onRemoveUserFromGroup(final String username, final int groupId, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onRemoveUserFromGroup(username, groupId, session);
+		}
+	}
+	
+	@Override
+	public void onUserDelete(final String userName, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onUserDelete(userName, session);
+		}
+	}
+
+	@Override
+	public void onUserInsert(final String userName, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onUserInsert(userName, session);
+		}
+	}
+
+	@Override
+	public void onUserUpdate(final String userName, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onUserUpdate(userName, session);
+		}
+	}
+	
+	@Override
+	public void onDeleteFellowship(final UserParam param, final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onDeleteFellowship(param, session);
+		}
+	}
+	
+	@Override
+	public void onDeleteFriendship(final UserParam param,final DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onDeleteFriendship(param, session);
+		}
+	}
+	
+	@Override
+	public void onDeleteBasketItem(final BasketParam param, final DBSession session){
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onDeleteBasketItem(param, session);
+		}
+	}
+	
+	@Override
+	public void onDeleteAllBasketItems(final String userName, final DBSession session){
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onPublicationInsert(post, session));
+			plugin.onDeleteAllBasketItems(userName, session);
 		}
-		return null;
 	}
 
 	@Override
-	public Runnable onPublicationDelete(final int contentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onPublicationDelete(contentId, session));
-		}
-		
-		return null;
-	}
-
-	@Override
-	public Runnable onPublicationUpdate(final int oldContentId, final int newContentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onPublicationUpdate(newContentId, oldContentId, session)); // new and old contentId are not swapped!
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public Runnable onGoldStandardCreate(final String interhash, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onGoldStandardCreate(interhash, session));
-		}
-		
-		return null;
-	}
-
-	@Override
-	public Runnable onGoldStandardDelete(final String interhash, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onGoldStandardDelete(interhash, session));
-		}
-		
-		return null;
-	}
-
-	@Override
-	public Runnable onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onGoldStandardUpdate(newInterhash, interhash, session));
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public Runnable onGoldStandardPublicationReferenceCreate(final String userName, final String interHashPublication, final String interHashReference) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onGoldStandardPublicationReferenceCreate(userName, interHashPublication, interHashReference));
-		}
-		
-		return null;
-	}
-
-	@Override
-	public Runnable onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onGoldStandardPublicationReferenceDelete(userName, interHashPublication, interHashReference, session));
-		}
-		
-		return null;
-	}
-
-	@Override
-	public Runnable onBookmarkInsert(Post<? extends Resource> post, DBSession session) {
+	public void onDiscussionUpdate(final String interHash, final DiscussionItem discussionItem, final DiscussionItem oldDiscussionItem, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onBookmarkInsert(post, session));
+			plugin.onDiscussionUpdate(interHash, discussionItem, oldDiscussionItem, session);
 		}
-		return null;
-	}
-
-	@Override
-	public Runnable onBookmarkDelete(final int contentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onBookmarkDelete(contentId, session));
-		}
-
-		return null;
-	}
-
-	@Override
-	public Runnable onBookmarkUpdate(final int oldContentId, final int newContentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onBookmarkUpdate(newContentId, oldContentId, session));
-		}
-		
-		return null;
-	}
-
-	@Override
-	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onTagRelationDelete(upperTagName, lowerTagName, userName, session));
-		}
-
-		return null;
 	}
 	
 	@Override
-	public Runnable onConceptDelete(final String conceptName, final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onConceptDelete(conceptName, userName, session));
-		}
-
-		return null;
-	}
-
-	@Override
-	public Runnable onTagDelete(final int contentId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onTagDelete(contentId, session));
-		}
-
-		return null;
-	}
-
-	@Override
-	public Runnable onRemoveUserFromGroup(final String username, final int groupId, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onRemoveUserFromGroup(username, groupId, session));
-		}
-
-		return null;
-	}
-	
-	@Override
-	public Runnable onUserDelete(final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onUserDelete(userName, session));
-		}
-
-		return null;
-	}
-
-	@Override
-	public Runnable onUserInsert(final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onUserInsert(userName, session));
-		}
-
-		return null;
-	}
-
-	@Override
-	public Runnable onUserUpdate(final String userName, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onUserUpdate(userName, session));
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public Runnable onDeleteFellowship(final UserParam param, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onDeleteFellowship(param, session));
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public Runnable onDeleteFriendship(final UserParam param,final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onDeleteFriendship(param, session));
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public Runnable onDeleteBasketItem(final BasketParam param, final DBSession session){
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onDeleteBasketItem(param, session));
-		}
-
-		return null;
-	}
-	
-	@Override
-	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session){
+	public void onDiscussionItemDelete(final String interHash, final DiscussionItem deletedDiscussionItem, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onDeleteAllBasketItems(userName, session));
+			plugin.onDiscussionItemDelete(interHash, deletedDiscussionItem, session);
 		}
-
-		return null;
 	}
 
 	@Override
-	public Runnable onDiscussionUpdate(final String interHash, final DiscussionItem discussionItem, final DiscussionItem oldDiscussionItem, final DBSession session) {
+	public void onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onDiscussionUpdate(interHash, discussionItem, oldDiscussionItem, session));
-		}
-
-		return null;
-	}
-	
-	@Override
-	public Runnable onDiscussionItemDelete(final String interHash, final DiscussionItem deletedDiscussionItem, final DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onDiscussionItemDelete(interHash, deletedDiscussionItem, session));
-		}
-
-		return null;
+			plugin.onDocumentDelete(deletedDocumentParam, session);
+		}	
 	}
 
 	@Override
-	public Runnable onDocumentDelete(DocumentParam deletedDocumentParam, DBSession session) {
+	public void onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onDocumentDelete(deletedDocumentParam, session));
+			plugin.onInboxMailDelete(deletedInboxMessageParam, session);
 		}
-
-		return null;
-	}
-
-	@Override
-	public Runnable onInboxMailDelete(final InboxParam deletedInboxMessageParam, DBSession session) {
-		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onInboxMailDelete(deletedInboxMessageParam, session));
-		}
-		return null;
 	}
 
 	@Override
 	/**
 	 * @author MarcelM
 	 */
-	public Runnable onBibTexExtraDelete(BibTexExtraParam deletedBibTexExtraParam, DBSession session) {
+	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			this.executeRunnable(plugin.onBibTexExtraDelete(deletedBibTexExtraParam, session));
+			plugin.onBibTexExtraDelete(deletedBibTexExtraParam, session);
 		}
-		return null;
 	}
 }

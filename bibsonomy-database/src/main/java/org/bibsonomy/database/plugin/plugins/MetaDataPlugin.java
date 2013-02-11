@@ -18,44 +18,30 @@ import org.bibsonomy.model.Resource;
 public class MetaDataPlugin extends AbstractDatabasePlugin {
 
 	@Override
-	public Runnable onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
-			return new Runnable() {
-				@Override
-				public void run() {
-					final CopyPostParam param = new CopyPostParam();
-					param.setInterHash(post.getResource().getInterHash());
-					param.setIntraHash(post.getResource().getIntraHash());
-					param.setValue(post.getCopyFrom());
-					param.setUserName(post.getUser().getName());
-					param.setKey(MetaDataPluginKey.COPY_PUBLICATION);
-					insert("logPostCopy", param, session);
-				}
-			};
+			final CopyPostParam param = new CopyPostParam();
+			param.setInterHash(post.getResource().getInterHash());
+			param.setIntraHash(post.getResource().getIntraHash());
+			param.setValue(post.getCopyFrom());
+			param.setUserName(post.getUser().getName());
+			param.setKey(MetaDataPluginKey.COPY_PUBLICATION);
+			this.insert("logPostCopy", param, session);
 		}
-
-		return null;
 	}
 
 	@Override
-	public Runnable onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
-			return new Runnable() {
-				@Override
-				public void run() {
-					final CopyPostParam param = new CopyPostParam();
-					param.setInterHash(post.getResource().getInterHash());
-					param.setIntraHash(post.getResource().getIntraHash());
-					param.setValue(post.getCopyFrom());
-					param.setUserName(post.getUser().getName());
-					param.setKey(MetaDataPluginKey.COPY_BOOKMARK);
-					insert("logPostCopy", param, session);
-				}
-			};
+			final CopyPostParam param = new CopyPostParam();
+			param.setInterHash(post.getResource().getInterHash());
+			param.setIntraHash(post.getResource().getIntraHash());
+			param.setValue(post.getCopyFrom());
+			param.setUserName(post.getUser().getName());
+			param.setKey(MetaDataPluginKey.COPY_BOOKMARK);
+			this.insert("logPostCopy", param, session);
 		}
-
-		return null;
 	}
 }
