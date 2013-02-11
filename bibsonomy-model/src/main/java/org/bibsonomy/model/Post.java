@@ -127,6 +127,7 @@ public class Post<T extends Resource> implements Serializable {
 
 	/**
 	 * This is the user who owns the post which should be copied.
+	 * TODO: use User as type
 	 */
 	private String copyFrom;
 	
