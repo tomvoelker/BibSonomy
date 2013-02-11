@@ -151,7 +151,7 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 					//  -> remember credentials here so they can be handled after a redirect to the entry controller
 					Object creds = authentication.getCredentials();
 					if (creds instanceof SAMLCredential) {
-						request.getSession(true).setAttribute(ATTRIBUTE_CREDS, creds);
+						session.setAttribute(ATTRIBUTE_CREDS, creds);
 					}
 				}
 			} else {
