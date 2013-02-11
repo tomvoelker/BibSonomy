@@ -21,12 +21,7 @@ public class MetaDataPlugin extends AbstractDatabasePlugin {
 	public void onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
-			final CopyPostParam param = new CopyPostParam();
-			param.setInterHash(post.getResource().getInterHash());
-			param.setIntraHash(post.getResource().getIntraHash());
-			param.setValue(post.getCopyFrom());
-			param.setUserName(post.getUser().getName());
-			param.setKey(MetaDataPluginKey.COPY_PUBLICATION);
+			final CopyPostParam param = createParam(post, MetaDataPluginKey.COPY_PUBLICATION);
 			this.insert("logPostCopy", param, session);
 		}
 	}
@@ -35,13 +30,18 @@ public class MetaDataPlugin extends AbstractDatabasePlugin {
 	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
-			final CopyPostParam param = new CopyPostParam();
-			param.setInterHash(post.getResource().getInterHash());
-			param.setIntraHash(post.getResource().getIntraHash());
-			param.setValue(post.getCopyFrom());
-			param.setUserName(post.getUser().getName());
-			param.setKey(MetaDataPluginKey.COPY_BOOKMARK);
+			final CopyPostParam param = createParam(post, MetaDataPluginKey.COPY_BOOKMARK);
 			this.insert("logPostCopy", param, session);
 		}
+	}
+	
+	private static CopyPostParam createParam(final Post<? extends Resource> post, final MetaDataPluginKey key) {
+		final CopyPostParam param = new CopyPostParam();
+		param.setInterHash(post.getResource().getInterHash());
+		param.setIntraHash(post.getResource().getIntraHash());
+		param.setValue(post.getCopyFrom());
+		param.setUserName(post.getUser().getName());
+		param.setKey(key);
+		return param;
 	}
 }
