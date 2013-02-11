@@ -144,6 +144,9 @@
 						<value>urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact</value>
 					</list>
 				</property>
+				<!-- WARNING: this number is complete magic. It depends on what is enabled in the bindingsSSO property and must be determined by looking at the sourcecode of org.springframework.security.saml.metadata.MetadataGenerator.buildSPSSODescriptor(String, String, boolean, boolean, Collection<String>) -->
+				<!-- here we define HTTP-POST as the default binding to be used for responses from the IdP (hebis does not support the artifact bindng at the moment) -->
+				<property name="assertionConsumerIndex" value="1"/>
 			</bean>
 		</constructor-arg>
 	</bean>
