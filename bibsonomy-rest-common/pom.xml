@@ -61,7 +61,6 @@
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
-				<version>1.6.0</version>
 				<configuration>
 					<excludes>
 						<exclude>**/src/test/resources/**</exclude>

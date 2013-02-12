@@ -31,4 +31,12 @@
 			</url>
 		</site>		
 	</distributionManagement>	
+	<build>
+		<plugins>
+			<plugin>
+       		<groupId>com.mycila.maven-license-plugin</groupId>
+      		<artifactId>maven-license-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>
