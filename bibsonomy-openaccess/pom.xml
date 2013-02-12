@@ -76,17 +76,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<version>1.6.0</version>
-				<configuration>
-					<excludes>
-						<exclude>**/src/test/resources/**</exclude>
-						<exclude>**/*.txt</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
 				<artifactId>maven-jaxb2-plugin</artifactId>
 				<executions>
