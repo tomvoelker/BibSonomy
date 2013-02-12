@@ -1,6 +1,6 @@
 /**
  *
- *  BibSonomy-Rest-Client-OAuth - The REST-client.
+ *  BibSonomy-Rest-Client-OAuth - The REST-client OAuth Accessor.
  *
  *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
@@ -20,6 +20,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 
 package org.bibsonomy.rest.auth;
 
