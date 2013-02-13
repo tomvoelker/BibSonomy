@@ -191,7 +191,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		case FRIEND:
 			url += "&friend=" + this.groupingValue;
 			break;
-		case BASKET:
+		case CLIPBOARD:
 			this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + userName + "/" + RESTConfig.CLIPBOARD_SUBSTRING);
 			return null;
 		default:

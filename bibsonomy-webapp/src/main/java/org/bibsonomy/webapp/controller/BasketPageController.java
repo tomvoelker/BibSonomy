@@ -4,21 +4,21 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.validation.Errors;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
- * Controller for the basket page
+ * TODO: rename to ClipboardPageController
+ * 
+ * Controller for the clipboard page
+ * - /clipboard
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
  * @version $Id$
  */
-public class BasketPageController extends SingleResourceListController implements MinimalisticController<PublicationPageCommand>, ErrorAware {
-
-	private Errors errors;
+public class BasketPageController extends SingleResourceListController implements MinimalisticController<PublicationPageCommand> {
 
 	@Override
 	public View workOn(final PublicationPageCommand command) {
@@ -26,19 +26,16 @@ public class BasketPageController extends SingleResourceListController implement
 		this.startTiming(this.getClass(), format);
 
 		// if user is not logged in, redirect him to login page
-		if (command.getContext().isUserLoggedIn() == false) {
-			errors.reject("error.general.login");
-			return Views.ERROR;
+		if (!command.getContext().isUserLoggedIn()) {
+			throw new AccessDeniedException("please log in");
 		}				
 
-		// set login user name + grouping entity = BASKET
+		// set login user name + grouping entity = CLIPBOARD
 		final String loginUserName = command.getContext().getLoginUser().getName();
-		final GroupingEntity groupingEntity = GroupingEntity.BASKET;
+		final GroupingEntity groupingEntity = GroupingEntity.CLIPBOARD;
 
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
-			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
-
 			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, null, null, Integer.MAX_VALUE);
 			this.postProcessAndSortList(command, resourceType);
 
@@ -56,7 +53,7 @@ public class BasketPageController extends SingleResourceListController implement
 
 		this.endTiming();			
 		if ("html".equals(format)) {
-			return Views.BASKETPAGE;	
+			return Views.CLIPBOARDPAGE;	
 		}
 
 		// export - return the appropriate view
@@ -68,15 +65,4 @@ public class BasketPageController extends SingleResourceListController implement
 	public PublicationPageCommand instantiateCommand() {
 		return new PublicationPageCommand();
 	}
-
-	@Override
-	public Errors getErrors() {
-		return errors;
-	}
-
-	@Override
-	public void setErrors(final Errors errors) {
-		this.errors = errors;
-	}
-
 }

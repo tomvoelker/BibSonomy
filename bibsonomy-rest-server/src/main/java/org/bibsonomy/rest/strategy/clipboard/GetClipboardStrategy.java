@@ -22,12 +22,12 @@ public class GetClipboardStrategy extends GetUserPostsStrategy {
 	 */
 	public GetClipboardStrategy(final Context context, final String userName) {
 		super(context, userName);
-		resourceType = BibTex.class;
+		this.resourceType = BibTex.class;
 	}
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(this.resourceType, GroupingEntity.BASKET, this.userName, this.tags, null, this.search, null, null, null, null, this.getView().getStartValue(),
+		return this.getLogic().getPosts(this.resourceType, GroupingEntity.CLIPBOARD, this.userName, this.tags, null, this.search, null, null, null, null, this.getView().getStartValue(),
 				this.getView().getEndValue());
 	}
 

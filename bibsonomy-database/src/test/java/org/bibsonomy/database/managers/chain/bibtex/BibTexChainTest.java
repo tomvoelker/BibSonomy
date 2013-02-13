@@ -335,7 +335,7 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBibtexFromBasketForUser() {
-		this.bibtexParam.setGrouping(GroupingEntity.BASKET);
+		this.bibtexParam.setGrouping(GroupingEntity.CLIPBOARD);
 		this.bibtexParam.setUserName("testuser1");
 		this.bibtexParam.setBibtexKey(null);
 		this.bibtexParam.setHash(null);

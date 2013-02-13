@@ -26,7 +26,7 @@ public class GetBibtexFromBasketForUser extends ResourceChainElement<BibTex, Bib
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (param.getGrouping() == GroupingEntity.BASKET &&
+		return (param.getGrouping() == GroupingEntity.CLIPBOARD &&
 				present(param.getUserName()) && 
 				!present(param.getBibtexKey()) &&
 				!present(param.getSearch()) &&
