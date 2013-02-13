@@ -47,7 +47,9 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	
 	@Override
 	public void canAccess() {
-		if (!this.userName.equalsIgnoreCase(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
+		if (!this.userName.equalsIgnoreCase(this.getLogic().getAuthenticatedUser().getName())) {
+			throw new AccessDeniedException();
+		}
 	}
 
 	@Override
@@ -64,9 +66,10 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 			
 			this.getLogic().createDocument(document, this.resourceHash);
 			
-			uri = this.projectHome + "api/users/" + this.userName + "/posts/" + this.resourceHash + "/documents/" + document.getFileName();
+			// FIXME: urlencode
+			this.uri = this.projectHome + "api/users/" + this.userName + "/posts/" + this.resourceHash + "/documents/" + document.getFileName();
 			
-			return uri;
+			return this.uri;
 			
 		} catch (final Exception ex) {
 			throw new BadRequestOrResponseException(ex.getMessage());
