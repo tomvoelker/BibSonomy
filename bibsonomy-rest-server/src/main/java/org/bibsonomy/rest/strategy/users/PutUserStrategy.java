@@ -1,6 +1,5 @@
 package org.bibsonomy.rest.strategy.users;
 
-import java.io.Reader;
 import java.io.Writer;
 
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -17,7 +16,6 @@ import org.bibsonomy.rest.strategy.Context;
  * @version $Id$
  */
 public class PutUserStrategy extends AbstractUpdateStrategy {
-	private final Reader doc;
 	private final String userName;
 
 	/**
@@ -27,7 +25,6 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 	public PutUserStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;
-		this.doc = context.getDocument();
 	}
 
 	@Override
@@ -45,7 +42,7 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 		 * - calling user is admin (?)
 		 */
 		final UserUpdateOperation userUpdateOperation;
-		if (user.getPrediction() != null || user.getSpammer() != null) {
+		if ((user.getPrediction() != null) || (user.getSpammer() != null)) {
 			userUpdateOperation = UserUpdateOperation.UPDATE_SPAMMER_STATUS;
 		} else {
 			userUpdateOperation = UserUpdateOperation.UPDATE_ALL;
