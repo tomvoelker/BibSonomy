@@ -3,6 +3,7 @@ package org.bibsonomy.rest.strategy;
 import java.util.StringTokenizer;
 
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
@@ -44,8 +45,9 @@ public class GroupsHandler implements ContextHandler {
 			// /groups/[groupname]/users/[username]
 			groupName = urlTokens.nextToken();
 			if (RESTConfig.USERS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
+				final String username = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
 				if (HttpMethod.DELETE == httpMethod) {
-					return new RemoveUserFromGroupStrategy(context, groupName, urlTokens.nextToken());
+					return new RemoveUserFromGroupStrategy(context, groupName, username);
 				}
 			}
 			break;
@@ -53,7 +55,7 @@ public class GroupsHandler implements ContextHandler {
 		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 	}
 
-	private Strategy createGroupListStrategy(final Context context, final HttpMethod httpMethod) {
+	private static Strategy createGroupListStrategy(final Context context, final HttpMethod httpMethod) {
 		switch (httpMethod) {
 		case GET:
 			return new GetListOfGroupsStrategy(context);
@@ -64,7 +66,7 @@ public class GroupsHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createGroupStrategy(final Context context, final HttpMethod httpMethod, final String groupName) {
+	private static Strategy createGroupStrategy(final Context context, final HttpMethod httpMethod, final String groupName) {
 		switch (httpMethod) {
 		case GET:
 			return new GetGroupStrategy(context, groupName);
@@ -77,7 +79,7 @@ public class GroupsHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createUserPostsStrategy(final Context context, final HttpMethod httpMethod, final String groupName) {
+	private static Strategy createUserPostsStrategy(final Context context, final HttpMethod httpMethod, final String groupName) {
 		switch (httpMethod) {
 		case GET:
 			return new GetUserListOfGroupStrategy(context, groupName);

@@ -79,12 +79,13 @@ public final class Context {
 
 	/**
 	 * @param httpMethod
-	 *            httpMethod used in the request: GET, POST, PUT or DELETE
+	 *            method used in the request: GET, POST, PUT or DELETE
 	 * @param url
-	 * @param renderingFormat the mediatype of the request and response
-	 * @param urlRenderer the url renderer
+	 * @param renderingFormat	the mediatype of the request and response
+	 * @param rendererFactory	the renderfactory to use to create a
+	 * 							renderer for the specified rendering format
 	 * @param doc 
-	 * @param items 
+	 * @param file 
 	 * @param logic 
 	 * @param parameterMap
 	 *            map of the attributes
@@ -165,15 +166,6 @@ public final class Context {
 	 */
 	public String getContentType(final String userAgent) {
 		return this.strategy.getContentType(userAgent);
-	}
-
-	/**
-	 * @param userAgent
-	 * @return true if the client uses this webservice api, false if its a
-	 *         browser for example
-	 */
-	public boolean apiIsUserAgent(final String userAgent) {
-		return (userAgent != null) && userAgent.startsWith(RESTConfig.API_USER_AGENT);
 	}
 
 	/**

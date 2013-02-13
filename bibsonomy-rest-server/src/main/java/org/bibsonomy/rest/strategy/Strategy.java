@@ -8,6 +8,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -55,6 +56,16 @@ public abstract class Strategy {
 	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ResourceNotFoundException;
 
 	/**
+	 * @param userAgent
+	 * @return true if the client uses this webservice api, false if its a
+	 *         browser for example
+	 */
+	@Deprecated
+	private static boolean apiIsUserAgent(final String userAgent) {
+		return (userAgent != null) && userAgent.startsWith(RESTConfig.API_USER_AGENT);
+	}
+	
+	/**
 	 * Get Content type to be set for response, depending on the specified user agent.
 	 * 
 	 * @param userAgent - 
@@ -62,11 +73,11 @@ public abstract class Strategy {
 	 */
 	public final String getContentType(final String userAgent) {
 		final String contentType = this.getContentType();
-		if (contentType != null && this.context.apiIsUserAgent(userAgent)) {
+		if ((contentType != null) && apiIsUserAgent(userAgent)) {
 			// Use special content type if request comes from BibSonomy REST client
 			// (like bibsonomy/post+XML )
 			// FIXME: check if the client has ever used this content type
-			return "bibsonomy/" + contentType + "+" + getRenderingFormat().toString();
+			return "bibsonomy/" + contentType + "+" + this.getRenderingFormat().toString();
 		}
 		
 		return this.getRenderingFormat().getMimeType();
@@ -87,10 +98,18 @@ public abstract class Strategy {
 	 * @return The GroupingEntity; it defaults to ALL.
 	 */
 	protected GroupingEntity chooseGroupingEntity() {
-		if (this.context.getStringAttribute("user", null) != null) return GroupingEntity.USER;
-		if (this.context.getStringAttribute("group", null) != null) return GroupingEntity.GROUP;
-		if (this.context.getStringAttribute("viewable", null) != null) return GroupingEntity.VIEWABLE;
-		if (this.context.getStringAttribute("friend", null) != null) return GroupingEntity.FRIEND;
+		if (this.context.getStringAttribute("user", null) != null) {
+			return GroupingEntity.USER;
+		}
+		if (this.context.getStringAttribute("group", null) != null) {
+			return GroupingEntity.GROUP;
+		}
+		if (this.context.getStringAttribute("viewable", null) != null) {
+			return GroupingEntity.VIEWABLE;
+		}
+		if (this.context.getStringAttribute("friend", null) != null) {
+			return GroupingEntity.FRIEND;
+		}
 		return GroupingEntity.ALL;
 	}
 

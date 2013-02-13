@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.StringTokenizer;
 
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -51,10 +52,11 @@ public class UsersHandler implements ContextHandler {
 			// /users
 			return createUserListStrategy(context, httpMethod);
 		case 1:
+			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
 			// /users/[username]
-			return createUserStrategy(context, httpMethod, urlTokens.nextToken());
+			return createUserStrategy(context, httpMethod, userName);
 		case 2:
-			userName = normalizeUser(urlTokens.nextToken(), context);
+			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
 			req = urlTokens.nextToken();
 
 			// /users/[username]/posts
@@ -77,7 +79,7 @@ public class UsersHandler implements ContextHandler {
 			}
 			break;
 		case 3:
-			userName = normalizeUser(urlTokens.nextToken(), context);
+			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
 			req = urlTokens.nextToken();
 
 			// /users/[username]/posts/[resourceHash]
@@ -103,7 +105,7 @@ public class UsersHandler implements ContextHandler {
 			break;
 		case 4:
 			// /users/[username]/posts/[resourcehash]/documents
-			userName = normalizeUser(urlTokens.nextToken(), context);
+			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
 			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
@@ -114,7 +116,7 @@ public class UsersHandler implements ContextHandler {
 			break;
 		case 5:
 			// /users/[username]/posts/[resourcehash]/documents/[filename]
-			userName = normalizeUser(urlTokens.nextToken(), context);
+			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
 			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
 				final String resourceHash = urlTokens.nextToken();
 
@@ -128,23 +130,7 @@ public class UsersHandler implements ContextHandler {
 		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 	}
 
-	/**
-	 * maps special user tokens to corresponding user entities - currently @me is mapped to the login user name
-	 * 
-	 * @param userName user name token from url
-	 * @param context context object
-	 * @return
-	 */
-	private String normalizeUser(String userName, Context context) {
-		if (RESTConfig.USER_ME.equals(userName)) {
-			// map @me to login user name
-			return context.getLogic().getAuthenticatedUser().getName();
-		}
-
-		return userName;
-	}
-
-	private Strategy createUserListStrategy(final Context context, final HttpMethod httpMethod) {
+	private static Strategy createUserListStrategy(final Context context, final HttpMethod httpMethod) {
 		switch (httpMethod) {
 		case GET:
 			return new GetUserListStrategy(context);
@@ -155,7 +141,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createUserStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
+	private static Strategy createUserStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
 		switch (httpMethod) {
 		case GET:
 			return new GetUserStrategy(context, userName);
@@ -168,7 +154,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createUserPostsStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
+	private static Strategy createUserPostsStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
 		switch (httpMethod) {
 		case GET:
 			return new GetUserPostsStrategy(context, userName);
@@ -179,7 +165,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createUserPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
+	private static Strategy createUserPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
 		switch (httpMethod) {
 		case GET:
 			return new GetPostDetailsStrategy(context, userName, resourceHash);
@@ -192,7 +178,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createDocumentPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
+	private static Strategy createDocumentPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
 		switch (httpMethod) {
 		case POST:
 			return new PostPostDocumentStrategy(context, userName, resourceHash);
@@ -201,7 +187,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createDocumentPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash, final String filename) {
+	private static Strategy createDocumentPostStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash, final String filename) {
 		switch (httpMethod) {
 		case GET:
 			return new GetPostDocumentStrategy(context, userName, resourceHash, filename);
@@ -212,7 +198,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createUserConceptsStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
+	private static Strategy createUserConceptsStrategy(final Context context, final HttpMethod httpMethod, final String userName) {
 		switch (httpMethod) {
 		case GET:
 			return new GetUserConceptsStrategy(context, userName);
@@ -222,7 +208,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createRelatedusersForUserStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String relationship, final String tag) {
+	private static Strategy createRelatedusersForUserStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String relationship, final String tag) {
 		switch (httpMethod) {
 		case GET:
 			return new GetRelatedusersForUserStrategy(context, userName, relationship, tag);
@@ -234,7 +220,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createUserConceptsStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String conceptName) {
+	private static Strategy createUserConceptsStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String conceptName) {
 		switch (httpMethod) {
 		case GET:
 			return new GetUserConceptStrategy(context, conceptName, userName);
@@ -249,7 +235,7 @@ public class UsersHandler implements ContextHandler {
 		}
 	}
 
-	private Strategy createUserClipboardStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
+	private static Strategy createUserClipboardStrategy(final Context context, final HttpMethod httpMethod, final String userName, final String resourceHash) {
 		switch (httpMethod) {
 		case GET:
 			return new GetClipboardStrategy(context, userName);
@@ -259,7 +245,7 @@ public class UsersHandler implements ContextHandler {
 			}
 			return new PostClipboardStrategy(context, userName, resourceHash);
 		case DELETE:
-			boolean clearClipboard = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.CLIPBOARD_CLEAR, "false"));
+			final boolean clearClipboard = Boolean.parseBoolean(context.getStringAttribute(RESTConfig.CLIPBOARD_CLEAR, "false"));
 			if (!present(resourceHash) && !clearClipboard) {
 				throw new BadRequestOrResponseException("missed resource hash");
 			}

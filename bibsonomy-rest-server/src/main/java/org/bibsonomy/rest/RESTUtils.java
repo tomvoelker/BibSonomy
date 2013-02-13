@@ -13,13 +13,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.Map.Entry;
+import java.util.SortedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.util.EscapingPrintWriter;
 import org.bibsonomy.rest.utils.HeaderUtils;
 
@@ -41,7 +42,6 @@ public class RESTUtils {
 			RenderingFormat.APP_XML,
 			RenderingFormat.JSON,
 			RenderingFormat.CSL
-//			,RenderingFormat.LAYOUT
 	));
 
 	/**
@@ -114,7 +114,7 @@ public class RESTUtils {
 			 * FIXME: because of the "!urlRenderingFormat.isWildcardSubtype()" 
 			 * condition we can't use "layout/simplehtml" as url param?   
 			 */
-			return urlRenderingFormat != null && !urlRenderingFormat.isWildcardSubtype() ? urlRenderingFormat : DEFAULT_RENDERING_FORMAT;
+			return (urlRenderingFormat != null) && !urlRenderingFormat.isWildcardSubtype() ? urlRenderingFormat : DEFAULT_RENDERING_FORMAT;
 		}
 
 		// 2. check the accept header of the request
@@ -150,7 +150,9 @@ public class RESTUtils {
 	 * @return the reader for the stream
 	 */
 	public static Reader getInputReaderForStream(final InputStream stream, final String encoding) {
-		if (!present(stream)) return null;
+		if (!present(stream)) {
+			return null;
+		}
 		try {
 			// returns InputStream with correct encoding
 			return new InputStreamReader(stream, encoding);
@@ -171,7 +173,9 @@ public class RESTUtils {
 	 * @return the writer for the stream
 	 */
 	public static Writer getOutputWriterForStream(final OutputStream stream, final String encoding) {
-		if (!present(stream)) return null;
+		if (!present(stream)) {
+			return null;
+		}
 		try {
 			// returns InputStream with correct encoding
 			return new EscapingPrintWriter(stream, encoding);
@@ -181,5 +185,22 @@ public class RESTUtils {
 			log.fatal("Could not get output writer for stream with encoding " + encoding, ex);
 			return new EscapingPrintWriter(stream);
 		}
+	}
+
+	/**
+	 * maps special user tokens to corresponding user entities - currently <code>@me</code>
+	 * is mapped to the login user name
+	 * 
+	 * @param userName user name token from url
+	 * @param context context object
+	 * @return the normalized user
+	 */
+	public static String normalizeUser(final String userName, final Context context) {
+		if (RESTConfig.USER_ME.equals(userName)) {
+			// map @me to login user name
+			return context.getLogic().getAuthenticatedUser().getName();
+		}
+	
+		return userName;
 	}
 }

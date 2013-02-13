@@ -9,6 +9,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -34,18 +35,24 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
 		this.hash = context.getStringAttribute(RESTConfig.RESOURCE_PARAM, null);
 		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
-		this.grouping = chooseGroupingEntity();
+		this.grouping = this.chooseGroupingEntity();
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
-		if (grouping != GroupingEntity.ALL) {
-			this.groupingValue = context.getStringAttribute(this.grouping.toString().toLowerCase(), null);
+		String groupingValue;
+		if (this.grouping != GroupingEntity.ALL) {
+			groupingValue = context.getStringAttribute(this.grouping.toString().toLowerCase(), null);
+			if (this.grouping == GroupingEntity.USER) {
+				groupingValue = RESTUtils.normalizeUser(groupingValue, context);
+			}
 		} else {
-			this.groupingValue = null;
+			groupingValue = null;
 		}
+		
+		this.groupingValue = groupingValue;
 	}
 
 	@Override
-	protected void render(Writer writer, final List<? extends Post<? extends Resource>> resultList) {
-		this.getRenderer().serializePosts(writer, resultList, getView());
+	protected void render(final Writer writer, final List<? extends Post<? extends Resource>> resultList) {
+		this.getRenderer().serializePosts(writer, resultList, this.getView());
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	}
 
 	@Override
-	protected void appendLinkPostFix(StringBuilder sb) {
+	protected void appendLinkPostFix(final StringBuilder sb) {
 		if (this.resourceType != Resource.class) {
 			sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceUtils.toString(this.resourceType).toLowerCase());
 		}
@@ -67,10 +74,10 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		if (this.hash != null) {
 			sb.append("&").append(RESTConfig.RESOURCE_PARAM).append("=").append(this.hash);
 		}
-		if (this.grouping != GroupingEntity.ALL && this.groupingValue != null) {
+		if ((this.grouping != GroupingEntity.ALL) && (this.groupingValue != null)) {
 			sb.append('&').append(this.grouping.toString().toLowerCase()).append('=').append(this.groupingValue);
 		}
-		if (this.search != "" && this.search != null) {
+		if ((this.search != "") && (this.search != null)) {
 			sb.append("&").append(RESTConfig.SEARCH_PARAM).append("=").append(this.search);
 		}		
 	}
