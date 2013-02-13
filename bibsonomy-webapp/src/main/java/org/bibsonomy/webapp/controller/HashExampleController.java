@@ -3,11 +3,9 @@ package org.bibsonomy.webapp.controller;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.HashExampleCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.validation.Errors;
 
 /**
  * controller for
@@ -18,9 +16,7 @@ import org.springframework.validation.Errors;
  * @author janus
  * @version $Id$
  */
-public class HashExampleController implements MinimalisticController<HashExampleCommand>, ErrorAware {
-    
-    private Errors errors;
+public class HashExampleController implements MinimalisticController<HashExampleCommand> {
 
     @Override
     public HashExampleCommand instantiateCommand() {
@@ -35,15 +31,5 @@ public class HashExampleController implements MinimalisticController<HashExample
     public View workOn(final HashExampleCommand command) {
         command.getPost().getResource().recalculateHashes();
         return Views.HASHEXAMPLE;
-    }
-
-    @Override
-    public Errors getErrors() {
-        return this.errors;
-    }
-
-    @Override
-    public void setErrors(final Errors errors) {
-        this.errors = errors;
     }
 }
