@@ -21,7 +21,7 @@ public class PostUserConceptStrategy extends AbstractCreateStrategy {
 	 * @param context - the context
 	 * @param userName -  the owner of the new concept
 	 */
-	public PostUserConceptStrategy(Context context, String userName) {
+	public PostUserConceptStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;
 	}
@@ -29,16 +29,11 @@ public class PostUserConceptStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() {
 		final Tag concept = this.getRenderer().parseTag(this.doc);
-		return this.getLogic().createConcept(concept, GroupingEntity.USER, userName);				
+		return this.getLogic().createConcept(concept, GroupingEntity.USER, this.userName);				
 	}
 
 	@Override
-	protected void render(Writer writer, String resourceHash) {
+	protected void render(final Writer writer, final String resourceHash) {
 		this.getRenderer().serializeResourceHash(writer, resourceHash);	
-	}
-
-	@Override
-	protected String getContentType() {
-		return null;
 	}
 }
