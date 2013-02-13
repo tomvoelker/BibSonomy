@@ -2,23 +2,26 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.RelationsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * TODO: rename to ConceptsPageController
+ * 
+ * Controller to display the most popular concepts
+ * - /concepts
+ * 
  * @author Christian Kramer
  * @version $Id$
  */
-public class RelationsController extends SingleResourceListControllerWithTags implements MinimalisticController<RelationsCommand>{
-	private static final Log LOGGER = LogFactory.getLog(RelationsController.class);
+public class RelationsController implements MinimalisticController<RelationsCommand> {
 
 	/*
 	 * the following concepts are unwanted on the relations page
@@ -35,6 +38,8 @@ public class RelationsController extends SingleResourceListControllerWithTags im
 		"the",
 		"what"
 	};
+
+	private LogicInterface logic;
 	
 	@Override
 	public RelationsCommand instantiateCommand() {	
@@ -42,27 +47,24 @@ public class RelationsController extends SingleResourceListControllerWithTags im
 	}
 
 	@Override
-	public View workOn(RelationsCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+	public View workOn(final RelationsCommand command) {
+		/*
+		 * request the concepts
+		 */
+		final List<Tag> tags = this.logic.getConcepts(Resource.class, GroupingEntity.ALL, null, null, null, ConceptStatus.ALL, 0, 50);
 
-		// html format - retrieve tags and return HTML view
-		if ("html".equals(command.getFormat())) {
-			command.setPageTitle("relations"); // TODO: i18n
-			/*
-			 * request the concepts
-			 */
-			final List<Tag> tags = logic.getConcepts(Resource.class, GroupingEntity.ALL, null, null, null, ConceptStatus.ALL, 0, 50);
-
-			for (final String string : tagsToRemove) {
-				tags.remove(new Tag(string));
-			}
-
-			command.setTagRelations(tags);
+		for (final String string : tagsToRemove) {
+			tags.remove(new Tag(string));
 		}
 
-		this.endTiming();
-		return Views.RELATIONS;
+		command.setTagRelations(tags);
+		return Views.CONCEPTS;
 	}
 
+	/**
+	 * @param logic the logic to set
+	 */
+	public void setLogic(final LogicInterface logic) {
+		this.logic = logic;
+	}
 }

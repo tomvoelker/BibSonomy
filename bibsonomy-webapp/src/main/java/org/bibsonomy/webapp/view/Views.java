@@ -158,8 +158,9 @@ public enum Views implements View {
 
 	/**
 	 * all the posts the user has picked in his basket
+	 * TODO: move basket.jspx to clipboard.jspx
 	 */
-	BASKETPAGE("basket"),
+	CLIPBOARDPAGE("basket"),
 
 	/**
 	 * relations page shows all the relations of an user
@@ -626,9 +627,10 @@ public enum Views implements View {
 	BUTTONS("buttons"),
 
 	/**
-	 * show relations
+	 * show popular concepts
+	 * TODO: move relations.jspx to concepts.jspx
 	 */
-	RELATIONS("relations"),
+	CONCEPTS("relations"),
 
 	/**
 	 * show followers

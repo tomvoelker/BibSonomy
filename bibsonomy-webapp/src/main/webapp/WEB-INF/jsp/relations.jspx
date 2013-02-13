@@ -12,11 +12,12 @@
   	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:paneLayout command="${command}" 
+	<fmt:message var="pageTitle" key="navi.relations" />
+	<layout:paneLayout command="${command}" 
     		headerMessageKey="navi.relations" 
-    		pageTitle="${command.pageTitle}" 
+    		pageTitle="${pageTitle}" 
     		requPath="${requPath}" 
     		activeTab="popular"
     		showPageOptions="${command.context.userLoggedIn}"
