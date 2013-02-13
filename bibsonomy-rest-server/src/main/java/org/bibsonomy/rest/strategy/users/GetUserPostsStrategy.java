@@ -18,10 +18,10 @@ import org.bibsonomy.rest.strategy.Context;
 public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
 	protected final String userName;
-	protected final List<String> tags;
-	protected final String tagString;
-	protected final String search;
-	protected Class<? extends Resource> resourceType;
+	private final List<String> tags;
+	private final String tagString;
+	private final String search;
+	private final Class<? extends Resource> resourceType;
 
 	/**
 	 * @param context
