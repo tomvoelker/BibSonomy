@@ -38,7 +38,9 @@ public class UserAdapter implements UserDetails {
 	@Override
 	public Collection<GrantedAuthority> getAuthorities() {
 		final Collection<GrantedAuthority> authorities = new LinkedHashSet<GrantedAuthority>();
-		authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+		if (!Role.LIMITED.equals(this.user.getRole())) {
+			authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+		}
 		if (Role.ADMIN.equals(this.user.getRole())) {
 			authorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
 		}
