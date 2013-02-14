@@ -48,6 +48,7 @@
 	
 	<!-- no filtering for css and js -->
 	<security:http pattern="/resources/**" security="none" />
+	<security:http pattern="/resources_puma/**" security="none" />
 	<security:http pattern="/logging**" security="none" />
 	
 	<!-- api uses own authentication handling -->
