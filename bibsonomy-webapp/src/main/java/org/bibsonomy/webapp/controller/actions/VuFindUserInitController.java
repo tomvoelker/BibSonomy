@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
@@ -11,6 +12,7 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.opensocial.OAuthCommand;
+import org.bibsonomy.webapp.command.opensocial.OAuthCommand.AuthorizeAction;
 import org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -71,6 +73,7 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 				Authentication auth = getAuthenticationManager().authenticate(authToken);
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
+			command.setAuthorizeAction(AuthorizeAction.Authorize.toString());
 			return oaAuthorizeController.workOn(command);
 		} finally {
 			requestLogic.invalidateSession();
@@ -106,6 +109,7 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 		}
 		user.setIPAddress(getRequestLogic().getInetAddress());
 		user.setName(remoteUserId.getUserId());
+		user.setRole(Role.LIMITED);
 
 		this.adminLogic.createUser(user);
 		authToken = new SamlCredAuthToken(samlCreds);

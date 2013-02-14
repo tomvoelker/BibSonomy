@@ -104,7 +104,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 */
 		final User existingUser = adminLogic.getUserDetails(user.getName());
 
-		if (existingUser == null || existingUser.getName() == null || Role.DELETED.equals(existingUser.getRole())) {
+		if (existingUser == null || existingUser.getName() == null || Role.DELETED.equals(existingUser.getRole()) || Role.LIMITED.equals(existingUser.getRole())) {
 			/*
 			 * user does not exist or has been deleted (we should not sent 
 			 * reminders to deleted users!)
