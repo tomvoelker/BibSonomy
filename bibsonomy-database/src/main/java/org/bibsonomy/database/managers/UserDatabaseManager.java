@@ -287,9 +287,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 */
 		user.setToClassify(user.getToClassify() == null ? 1 : user.getToClassify());
 		/*
-		 * set user's default role
+		 * if it is not a limited user that is to be inserted, set user's default role
 		 */
-		user.setRole(Role.DEFAULT);
+		if (!Role.LIMITED.equals(user.getRole())) {
+			user.setRole(Role.DEFAULT);
+		}
 		/*
 		 * probably, we should add here more code to check for null values!
 		 */		
