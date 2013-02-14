@@ -37,7 +37,9 @@ public enum Role {
 	/** deleted account */
 	DELETED(3),
 	/** Is allowed to modify/set the date of a post during synchronization. **/
-	SYNC(4);
+	SYNC(4),
+	/** allowed to add private posts via webservice only **/
+	LIMITED(5);
 
 	private final int role;
 
@@ -74,19 +76,11 @@ public enum Role {
 	 * @return The corresponding object.
 	 */
 	public static Role getRole(final int role) {
-		switch (role) {
-		case 0:
-			return ADMIN;
-		case 1:
-			return DEFAULT;
-		case 2:
-			return NOBODY;
-		case 3: 
-			return DELETED;
-		case 4:
-			return SYNC;
-		default:
-			throw new IllegalArgumentException("unknown role id " + role);
+		for (Role r : Role.values()) {
+			if (r.role == role) {
+				return r;
+			}
 		}
+		throw new IllegalArgumentException("unknown role id " + role);
 	}
 }
