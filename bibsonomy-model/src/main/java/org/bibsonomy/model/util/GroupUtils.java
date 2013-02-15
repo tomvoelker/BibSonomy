@@ -50,16 +50,6 @@ public class GroupUtils {
 	 */
 	public static final String FRIENDS_GROUP_NAME = "friends";
 
-	private static final Group INVALID_GROUP = getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
-
-	private static final Group FRIENDS_GROUP = getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS, Privlevel.HIDDEN);
-	private static final Group PRIVATE_GROUP = getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
-	private static final Group PUBLIC_GROUP  = getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC,  Privlevel.PUBLIC);
-
-	private static final Group FRIENDS_SPAM_GROUP = getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS_SPAM, Privlevel.HIDDEN);
-	private static final Group PRIVATE_SPAM_GROUP = getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE_SPAM, Privlevel.HIDDEN);
-	private static final Group PUBLIC_SPAM_GROUP  = getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC_SPAM,  Privlevel.PUBLIC);
-
 
 	/**
 	 * Public group
@@ -67,7 +57,7 @@ public class GroupUtils {
 	 * @return public group
 	 */
 	public static Group getPublicGroup() {
-		return PUBLIC_GROUP;
+		return getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC,  Privlevel.PUBLIC);
 	}
 
 	/**
@@ -76,7 +66,7 @@ public class GroupUtils {
 	 * @return private group
 	 */
 	public static Group getPrivateGroup() {
-		return PRIVATE_GROUP;
+		return getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
 	}
 
 	/**
@@ -85,7 +75,7 @@ public class GroupUtils {
 	 * @return friends group
 	 */
 	public static Group getFriendsGroup() {
-		return FRIENDS_GROUP;
+		return getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS, Privlevel.HIDDEN);
 	}
 
 
@@ -95,7 +85,7 @@ public class GroupUtils {
 	 * @return public group
 	 */
 	public static Group getPublicSpamGroup() {
-		return PUBLIC_SPAM_GROUP;
+		return getGroup(PUBLIC_GROUP_NAME,  "public group",  GroupID.PUBLIC_SPAM,  Privlevel.PUBLIC);
 	}
 
 	/**
@@ -104,7 +94,7 @@ public class GroupUtils {
 	 * @return private group
 	 */
 	public static Group getPrivateSpamGroup() {
-		return PRIVATE_SPAM_GROUP;
+		return getGroup(PRIVATE_GROUP_NAME, "private group", GroupID.PRIVATE_SPAM, Privlevel.HIDDEN);
 	}
 
 	/**
@@ -113,7 +103,7 @@ public class GroupUtils {
 	 * @return friends group
 	 */
 	public static Group getFriendsSpamGroup() {
-		return FRIENDS_SPAM_GROUP;
+		return getGroup(FRIENDS_GROUP_NAME, "friends group", GroupID.FRIENDS_SPAM, Privlevel.HIDDEN);
 	}
 
 	/**
@@ -122,7 +112,7 @@ public class GroupUtils {
 	 * @return invalid group
 	 */
 	public static Group getInvalidGroup() {
-		return INVALID_GROUP;
+		return getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
 	}
 
 	/**
