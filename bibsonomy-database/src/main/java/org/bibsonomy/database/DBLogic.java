@@ -1198,6 +1198,7 @@ public class DBLogic implements LogicInterface {
 		}
 		this.validateGroups(post.getUser(), post.getGroups(), session);
 
+		PostUtils.limitedUserModification(post, this.loginUser);
 		/*
 		 * change group IDs to spam group IDs
 		 */
@@ -1282,6 +1283,7 @@ public class DBLogic implements LogicInterface {
 		 * change group IDs to spam group IDs
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
+		PostUtils.limitedUserModification(post, this.loginUser);
 
 		/*
 		 * XXX: this is a "hack" and will be replaced any time
