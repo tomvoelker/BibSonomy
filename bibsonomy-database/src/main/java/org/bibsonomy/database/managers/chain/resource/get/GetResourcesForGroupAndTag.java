@@ -44,7 +44,7 @@ public class GetResourcesForGroupAndTag<R extends Resource, P extends ResourcePa
 	protected List<Post<R>> handle(final P param, final DBSession session) {
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if ((group == null) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
-			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
+			log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
 			return new ArrayList<Post<R>>();
 		}
 		return this.databaseManager.getPostsForGroupByTag(group.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getPostAccess(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);

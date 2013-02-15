@@ -429,6 +429,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+			throw new RuntimeException(); // never happens but calms down eclipse 
 		}
 		TagSet tagset = this.getTagSetBySetNameAndGroup(setName, group.getGroupId(), session);
 		if(tagset == null) {
@@ -477,6 +478,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+			throw new RuntimeException(); // never happens but calms down eclipse 
 		}
 		this.delete("deleteGroup", group.getGroupId(), session);
 		this.delete("removeAllUserFromGroup", group.getGroupId(), session);
@@ -503,6 +505,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't add user to nonexistent group");
+			throw new RuntimeException(); // never happens but calms down eclipse 
 		}
 		// make sure that the user isn't a member of the group
 		if (this.isUserInGroup(username, groupname, session)) {
@@ -525,6 +528,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove user from nonexistent group");
+			throw new RuntimeException(); // never happens but calms down eclipse 
 		}
 		// make sure that the user is a member of the group
 		if (!this.isUserInGroup(username, groupname, session)) {
