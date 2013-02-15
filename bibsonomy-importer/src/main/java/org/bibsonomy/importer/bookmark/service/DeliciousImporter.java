@@ -114,6 +114,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	/**
 	 * This Method retrieves a list of Posts for a given user.
 	 */
+	@Override
 	public List<Post<Bookmark>> getPosts() throws IOException{
 		
 		final List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
@@ -181,6 +182,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	/**
 	 * This method retrieves a list of tags with subTags from Delicious.
 	 */
+	@Override
 	public List<Tag> getRelations() throws IOException {
 		final List<Tag> relations = new LinkedList<Tag>();
 		//open a connection to delicious and retrieve a document
@@ -237,12 +239,15 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			// Tell the parser how to handle errors.  Note that in the JAXP API,
 			// DOM parsers rely on the SAX API for error handling
 			parser.setErrorHandler(new ErrorHandler() {
+				@Override
 				public void warning(SAXParseException e) {
 					log.warn(e);
 				}
+				@Override
 				public void error(SAXParseException e) {
 					log.error(e);
 				}
+				@Override
 				public void fatalError(SAXParseException e)
 				throws SAXException {
 					log.fatal(e);
