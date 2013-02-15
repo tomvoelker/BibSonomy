@@ -133,7 +133,7 @@ public class Group implements Serializable{
 		this.privlevel = Privlevel.MEMBERS;
 		this.sharedDocuments = false;
 	}
-
+	
 	/**
 	 * @return groupId
 	 */
@@ -213,7 +213,6 @@ public class Group implements Serializable{
 	/**
 	 * Returns the first member of this group.
 	 * FIXME: maybe we should put this inside a param object
-	 * @see User#getFriend()
 	 * 
 	 * @return first user
 	 */
