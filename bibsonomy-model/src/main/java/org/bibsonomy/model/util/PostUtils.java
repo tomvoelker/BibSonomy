@@ -99,6 +99,20 @@ public class PostUtils {
 	}
 	
 	/**
+	 * Change all groups to private in case of a limited login user
+	 *  
+	 * @param post
+	 * @param user
+	 */
+	public static void limitedUserModification(final Post<? extends Resource> post, final User user) {
+		if (Role.LIMITED.equals(user.getRole())) {
+			Set<Group> groups = post.getGroups();
+			groups.clear();
+			groups.add(new Group(GroupUtils.PRIVATE_GROUP_NAME));
+		}
+	}
+	
+	/**
 	 * Modifies the group IDs in the post to be spam group IDs or non-spam group IDs,
 	 * depending on the given <code>spammer</code> flag.
 	 * <br/>
