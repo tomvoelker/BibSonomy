@@ -115,6 +115,7 @@ public class WebUtils {
   	  	client.getParams().setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
   	  	client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		client.getParams().setBooleanParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, true);
+		client.getParams().setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
   	  	return client;
   	}
   	
@@ -494,9 +495,6 @@ public class WebUtils {
 	public static URL getRedirectUrl(final URL url) {
 		final HttpMethod method = new GetMethod(url.toExternalForm());
 		HttpClient client = getHttpClient();
-		
-		//set the max redirect count for the client
-		client.getParams().setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);
 		
 		try {
 			client.executeMethod(method);
