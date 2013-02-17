@@ -88,8 +88,6 @@ public class JournalogyScraper extends AbstractUrlScraper {
 				String downloadLink = "http://" + HOST2 + "/" + idMatcher.group(2) + pattern_download;
 				String bibtex = WebUtils.getContentAsString(downloadLink);
 				if (bibtex != null) {
-					// add the missing ","  
-					bibtex = bibtex.replaceFirst("\\{", "\\{,");	
 					
 					//remove doubled braces
 					bibtex = bibtex.replace("{{", "{").replace("}}", "}");
