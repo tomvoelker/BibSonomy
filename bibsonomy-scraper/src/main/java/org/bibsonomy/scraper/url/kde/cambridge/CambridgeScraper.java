@@ -23,24 +23,22 @@
 
 package org.bibsonomy.scraper.url.kde.cambridge;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpURL;
+import org.apache.commons.httpclient.URIException;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
@@ -69,9 +67,12 @@ public class CambridgeScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		String url = sc.getUrl().toString();
+		
+		//get a client for cookie management
+		HttpClient client = WebUtils.getHttpClient();
 
 		String id = null;
-		URL citUrl = null;
+		HttpURL citUrl = null;
 		if(url.startsWith(CAMBRIDGE_HOST_NAME + CAMBRIDGE_ABSTRACT_PATH)) {
 			final Matcher idMatcher = idPattern.matcher(url);
 			if(idMatcher.find())
@@ -80,15 +81,15 @@ public class CambridgeScraper extends AbstractUrlScraper {
 				throw new ScrapingFailureException("No aid found.");
 
 			try {
-				citUrl = new URL(CAMBRIDGE_HOST_NAME + CAMBRIDGE_BIBTEX_DOWNLOAD_PATH + id);
-			} catch (MalformedURLException ex) {
+				citUrl = new HttpURL(CAMBRIDGE_HOST_NAME + CAMBRIDGE_BIBTEX_DOWNLOAD_PATH + id);
+			} catch (URIException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}
 
 		String bibResult = null;
 		try {
-			bibResult = getContent(citUrl, getCookie(sc.getUrl()));
+			bibResult = WebUtils.getContentAsString(client, citUrl);
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
@@ -98,82 +99,6 @@ public class CambridgeScraper extends AbstractUrlScraper {
 			return true;
 		}else
 			throw new ScrapingFailureException("getting bibtex failed");
-	}
-
-	/** FIXME: refactor
-	 * @param abstractUrl
-	 * @return
-	 * @throws IOException
-	 */
-	private String getCookie(URL abstractUrl) throws IOException{
-		/*
-		 * receive cookie from springer
-		 */
-		HttpURLConnection urlConn = null;
-
-		urlConn = (HttpURLConnection) abstractUrl.openConnection();
-
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-
-		urlConn.connect();
-		/*
-		 * extract cookie from connection
-		 */
-		List<String> cookieContent = urlConn.getHeaderFields().get("Set-Cookie");
-		//extract sessionID and store in cookie
-
-		StringBuffer cookieString = new StringBuffer();
-
-		for(String cookie : cookieContent) {
-			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
-		}
-
-		urlConn.disconnect();
-
-		return cookieString.toString();
-	}
-
-	/** FIXME: refactor
-	 * @param queryURL
-	 * @param cookie
-	 * @return
-	 * @throws IOException
-	 */
-	private String getContent(URL queryURL, String cookie) throws IOException{
-
-		/*
-		 * get BibTex-File from ACS
-		 */
-		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		//insert cookie
-		urlConn.setRequestProperty("Cookie", cookie);
-		urlConn.connect();
-		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
-		}
-		urlConn.disconnect();
-		return out.toString();
 	}
 
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
