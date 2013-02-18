@@ -303,9 +303,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 		param.setUserName(user.getName());
 		final List<Post<? extends Resource>> posts = (List<Post<? extends Resource>>) this.queryForList("getTASByTagNames", param, session);
-		log.debug("################################################################################");
-		log.debug(posts);
-		log.debug("################################################################################");
+		if (log.isDebugEnabled() == true) {
+			log.debug("################################################################################");
+			log.debug(posts);
+			log.debug("################################################################################");
+		}
 
 		/*
 		 * FIXME: shall getting the posts be included in the transaction?
@@ -346,10 +348,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				 * we must check here, if the post still contains some tags. If not - we add 
 				 * the empty tag.
 				 */
-				if (tags.isEmpty())	tags.add(emptyTag);
+				if (tags.isEmpty()) {
+					tags.add(emptyTag);
+				}
 				/*
 				 * Finally: delete the TAS and insert the new TAS.
-				 * FIXME: delete group tas, too.
 				 */
 				this.deleteTags(post, session);
 
@@ -369,16 +372,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				 * if we have something like that already.
 				 */
 				final List<Integer> groups = new ArrayList<Integer>();
-				final Set<Group> groups2 = post.getGroups();
-				for (final Group group : groups2) {
+				for (final Group group : post.getGroups()) {
 					groups.add(group.getGroupId());
 				}
 				tagParam.setGroups(groups);
 
-				/*
-				 * FIXME: shouldn't we use insertTags() here?
-				 * (because otherwise grouptas are not updated 
-				 */
 				this.insertTags(tagParam, session);
 			}
 
@@ -435,7 +433,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			}
 
 			for (final Tag tag : param.getTags()) {
-				this.tagRelDb.insertRelations(tag, param.getUserName(), session);				
+				this.tagRelDb.insertRelations(tag, param.getUserName(), session);
 			}
 
 			for (final Tag tag : allTags) {
