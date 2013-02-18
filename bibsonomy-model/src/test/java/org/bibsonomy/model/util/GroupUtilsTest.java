@@ -24,9 +24,9 @@
 package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -54,7 +54,8 @@ public class GroupUtilsTest {
 		
 		final Group g1 = GroupUtils.getPublicGroup();
 		final Group g2 = GroupUtils.getPublicGroup();
-		assertSame(g1, g2);
+		// equals should be enough before: assertSame(g1, g2);
+		assertEquals(g1, g2);
 	}
 	
 	/**
