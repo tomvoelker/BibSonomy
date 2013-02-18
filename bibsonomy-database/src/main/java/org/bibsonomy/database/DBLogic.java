@@ -1166,9 +1166,11 @@ public class DBLogic implements LogicInterface {
 					hashes.add(this.createPost(post, session));
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
+					log.warn("error message due to exception", dbex);
 				} catch (final Exception ex) {
 					// some exception other than those covered in the DatabaseException was thrown					
 					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
+					log.warn("'unspecified' error message due to exception", ex);
 				}
 			}
 		} finally {
@@ -1279,11 +1281,12 @@ public class DBLogic implements LogicInterface {
 		}
 		this.validateGroups(post.getUser(), post.getGroups(), session);
 
+		PostUtils.limitedUserModification(post, this.loginUser);
 		/*
 		 * change group IDs to spam group IDs
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
-		PostUtils.limitedUserModification(post, this.loginUser);
+		
 
 		/*
 		 * XXX: this is a "hack" and will be replaced any time

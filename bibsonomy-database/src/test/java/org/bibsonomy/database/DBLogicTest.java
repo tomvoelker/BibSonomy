@@ -17,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import junit.framework.Assert;
+
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -56,8 +58,11 @@ import org.junit.Test;
  * @version $Id$
  */
 public class DBLogicTest extends AbstractDatabaseManagerTest {
+	private static final String TEST_USER_1 = "testuser1";
+	private static final String TEST_USER_2 = "testuser2";
 	private static final String TEST_USER_NAME = "jaeschke";
 	private static final String TEST_SPAMMER_NAME = "testspammer2";
+	private static final String TEST_LIMITED_USER_NAME = "testlimited";
 	private static final String TEST_SPAMMER_EMAIL = "testspammer@bibsonomy.org";
 	private static final String TEST_SPAMMER_ALGORITHM = "testlogging";
 	private static final int    TEST_SPAMMER_PREDICTION = 1;
@@ -332,7 +337,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibtexOfTaggedByUser() throws PersonListParserException {
 		final User admUser = ModelUtils.getUser();
-		admUser.setName("testuser1");
+		admUser.setName(TEST_USER_1);
 		//--------------------------------------------------------------------
 		// create some test users and create some test relations among them
 		//--------------------------------------------------------------------
@@ -601,7 +606,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	public void getDocumentOwn() {
 		final String resourceHash = "b77ddd8087ad8856d77c740c8dc2864a";
 		final String documentFileName = "testdocument_1.pdf";
-		final Document document = this.getDbLogic("testuser1").getDocument("testuser1", resourceHash, documentFileName);
+		final Document document = this.getDbLogic(TEST_USER_1).getDocument(TEST_USER_1, resourceHash, documentFileName);
 		assertNotNull(document);
 		assertEquals("00000000000000000000000000000000", document.getFileHash());
 		assertEquals(documentFileName, document.getFileName());
@@ -626,7 +631,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final String resourceHash = "b77ddd8087ad8856d77c740c8dc2864a";
 		final String documentFileName = "testdocument_1.pdf";
 		final String documentHash = "00000000000000000000000000000000";
-		final Document document = this.getDbLogic("testuser2").getDocument("testuser1", resourceHash, documentFileName);
+		final Document document = this.getDbLogic(TEST_USER_2).getDocument(TEST_USER_1, resourceHash, documentFileName);
 		assertNotNull(document);
 		assertEquals(documentHash, document.getFileHash());
 		assertEquals(documentFileName, document.getFileName());
@@ -682,8 +687,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void userProfilePrivacy() {
 		final String username1 = "testuser3";
-		final String username2 = "testuser1";
-		final String username3 = "testuser2";
+		final String username2 = TEST_USER_1;
+		final String username3 = TEST_USER_2;
 		final LogicInterface logic  = this.getDbLogic(username1);
 		final LogicInterface logic2 = this.getDbLogic(username2);
 		final LogicInterface logic3 = this.getDbLogic(username3);
@@ -843,6 +848,46 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
+	 * tests {@link DBLogic#createPosts(List)} and {@link DBLogic#updatePosts(List, PostUpdateOperation)} for storing public posts by limited users as private
+	 * @throws Exception 
+	 */
+	@Test
+	public void testNonLimitedUserPosts() throws Exception {
+		postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPublicGroup(), TEST_USER_2, BibTex.class);
+		postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPublicGroup(), TEST_USER_2, Bookmark.class);
+	}
+	
+	/**
+	 * tests {@link DBLogic#createPosts(List)} and {@link DBLogic#updatePosts(List, PostUpdateOperation)} for storing public posts by limited users as private
+	 * @throws Exception 
+	 */
+	@Test
+	public void testLimitedUserPosts() throws Exception {
+		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
+		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
+		this.postAndAssertGroup(GroupUtils.getFriendsGroup(), GroupUtils.getPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
+		this.postAndAssertGroup(GroupUtils.getFriendsGroup(), GroupUtils.getPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
+	}
+
+	private <R extends Resource> void postAndAssertGroup(Group group, Group expectedGroup, String userName, Class<R> resourceType) {
+		
+		final LogicInterface dbl = new DBLogic( getAdminDbLogic(TEST_USER_1).getUserDetails(userName), getDbSessionFactory());
+		final Post<R> post = ModelUtils.generatePost(resourceType);
+		
+		post.getUser().setName(userName);
+		post.setGroups(Collections.singleton(group));
+		final List<String> createPosts = dbl.createPosts(Collections.<Post<?>>singletonList(post));
+		assertEquals(1, createPosts.size());
+		String hash = createPosts.get(0);
+		
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, userName);
+		Assert.assertEquals(1, savedPost.getGroups().size());
+		Assert.assertTrue(savedPost.getGroups().contains(expectedGroup));
+		
+		dbl.deletePosts(userName, Collections.singletonList(hash));
+	}
+	
+	/**
 	 * tests the {@link PostUpdateOperation#UPDATE_ALL}	
 	 * @throws Exception 
 	 */
@@ -929,7 +974,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testValidateGroups() {
-		final User user = new User("testuser2");
+		final User user = new User(TEST_USER_2);
 		final DBLogic logic = new DBLogic(user, dbSessionFactory);
 		
 		/*
