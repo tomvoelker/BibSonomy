@@ -105,7 +105,7 @@ public interface PostLogicInterface {
 	 * Add the posts to the database.
 	 * 
 	 * @param posts  the posts to add
-	 * @return String the resource hashes of the created posts
+	 * @return the resource hashes of the created posts
 	 */
 	public List<String> createPosts(List<Post<? extends Resource>> posts);
 
