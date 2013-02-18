@@ -185,6 +185,15 @@ public class GroupUtils {
 	public static boolean isPublicGroup(final Set<Group> groups) {
 		return groups.size() == 1 && groups.contains(getPublicGroup());
 	}
+	
+	/**
+	 * Checks if the set of groups contains only the private group.
+	 * @param groups
+	 * @return <code>true</code> if the set of groups contains only the private group.
+	 */
+	public static boolean isPrivateGroup(final Set<Group> groups) {
+		return groups.size() == 1 && groups.contains(getPrivateGroup());
+	}
 
 	/**
 	 * Helper method that returns a new {@link Group} object.
