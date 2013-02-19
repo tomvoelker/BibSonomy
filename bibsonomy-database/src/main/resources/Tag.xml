@@ -159,9 +159,9 @@
 
 
 	<update id="updateTagDec" parameterClass="string">
-		UPDATE tags 
-		SET tag_ctr = tag_ctr - 1 
-		WHERE tag_name = #tagName#
+		UPDATE IGNORE tags 
+		  SET tag_ctr = tag_ctr - 1 
+		  WHERE tag_name = #tagName#
 	</update>
 	
 	<!--+ 
