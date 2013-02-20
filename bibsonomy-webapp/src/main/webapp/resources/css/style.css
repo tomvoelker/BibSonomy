@@ -2882,3 +2882,39 @@ table.report td.value {
 #imgCollapseContent {
 	padding: 0 5px 1px 4px;
 }
+
+/*
+	SAML activation Page /activateSAML_User
+*/
+#SAML_description_text {
+	margin-top: 20px; 
+	margin-bottom: 20px;
+}
+
+#SAML_image_logo {
+	display: block; 
+	margin-left: auto; 
+	margin-right: auto;
+}
+
+#SAML_description {
+	width: 85%; 
+	margin-top: 3px; 
+	text-align: left; 
+	padding-right: 5px;
+  	float: left;
+	font-weight: bold;
+    font-size: 90%;
+}
+
+#SAML_error_message {
+	left: 13%; 
+	top: 0;
+}
+
+#SAML_checkbox_accept {
+	 margin-left: 10px;
+}
+
+
+

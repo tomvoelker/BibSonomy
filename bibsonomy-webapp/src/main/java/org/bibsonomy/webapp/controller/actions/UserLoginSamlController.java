@@ -14,7 +14,7 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 
 public class UserLoginSamlController implements MinimalisticController<BaseCommand> {
 
-	private static final Log log = LogFactory.getLog(UserLoginController.class);
+	private static final Log log = LogFactory.getLog(UserLoginSamlController.class);
 	
 	@Override
 	public BaseCommand instantiateCommand() {
