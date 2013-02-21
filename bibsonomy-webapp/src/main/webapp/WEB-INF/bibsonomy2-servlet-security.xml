@@ -90,6 +90,8 @@
 		<property name="allowedPathPrefixes">
 			<list>
 				<value>/activateAccount</value>
+				<value>/autoRegisterSamlAndOAuth</value>
+				<value>/render</value>
 			</list>
 		</property>
 	</bean>
