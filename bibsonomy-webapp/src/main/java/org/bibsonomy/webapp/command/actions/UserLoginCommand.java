@@ -29,6 +29,9 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	 */
 	private String openID;
 	
+	/** preselected tab */
+ 	private int selTab;
+	
 	/**
 	 * URL to which the user wants to jump back after successful login.
 	 */
@@ -141,5 +144,19 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	 */
 	public void setRememberMe(boolean rememberMe) {
 		this.rememberMe = rememberMe;
+	}
+
+	/**
+	 * @return the selTab
+	 */
+	public int getSelTab() {
+		return this.selTab;
+	}
+
+	/**
+	 * @param selTab the selTab to set
+	 */
+	public void setSelTab(int selTab) {
+		this.selTab = selTab;
 	}
 }

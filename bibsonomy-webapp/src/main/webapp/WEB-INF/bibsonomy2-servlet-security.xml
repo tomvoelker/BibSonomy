@@ -8,7 +8,7 @@
 						http://www.springframework.org/schema/security 
 						http://www.springframework.org/schema/security/spring-security-3.1.xsd
 						http://www.springframework.org/schema/util 
-	                    http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+						http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 	
 	<security:global-method-security pre-post-annotations="enabled" />
 	
@@ -189,6 +189,15 @@
 					<property name="redirectUrl" value="/registerOpenID?step=2"/>
 				</bean>
 			</set>
+		</property>
+		<property name="redirectStrategy">
+			<bean class="org.bibsonomy.webapp.util.spring.security.web.ParameterKeepingRedirectStrategy">
+				<property name="parameterNames">
+					<list>
+						<value>selTab</value>
+					</list>
+				</property>
+			</bean>
 		</property>
 	</bean>
 	

@@ -27,7 +27,7 @@
 		<jsp:attribute name="headerExt">
   			<script type="text/javascript">
 				<![CDATA[
-						$(function() {$('#logins').tabs();});
+						$(function() {$('#logins').tabs().tabs('select', ${command.selTab});});
 		  		]]>
 		  	</script>	
   		</jsp:attribute>
@@ -80,19 +80,20 @@
           		</c:forEach>
         		</ul>
         
-  				<c:forEach var="authMethod" items="${authConfig}">
-          			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
-          			<div id="login_${authMethodName}">           
-         				<form:form action="/login_${authMethodName}" method="POST">
-	            			<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
-    						<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
-    						<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
-    						<c:if test="${authMethod == 'SAML'}">  	 <user:login_saml/></c:if>
-    					</form:form>
+				<c:forEach var="authMethod" items="${authConfig}" varStatus="authMethodLoopState">
+					<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
+					<div id="login_${authMethodName}">           
+						<form:form action="/login_${authMethodName}" method="POST">
+							<c:if test="${authMethod == 'INTERNAL'}"><user:login_internal/></c:if>
+							<c:if test="${authMethod == 'LDAP'}">    <user:login_ldap/></c:if>
+							<c:if test="${authMethod == 'OPENID'}">  <user:login_openid/></c:if>
+							<c:if test="${authMethod == 'SAML'}">    <user:login_saml/></c:if>
+							<input type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+						</form:form>
 					</div>
-        		</c:forEach>
-        	</div>
-      	</jsp:attribute>
+				</c:forEach>
+			</div>
+		</jsp:attribute>
       	
       	<jsp:attribute name="pageOptions">
       		<ul>
