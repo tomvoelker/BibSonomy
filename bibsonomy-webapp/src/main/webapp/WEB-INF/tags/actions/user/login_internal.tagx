@@ -35,7 +35,7 @@
 	
 	<fmt:message key="login.register" var="loginRegister"/>
 	<c:if test="${not empty loginRegister}">
-		<h2><fmt:message key="login.register" /></h2>
+		<h2 style="margin-top: 1em;"><fmt:message key="login.register" /></h2>
 		<p>
 			<fmt:message key="login.notRegistered_1" />
 			<a href="/register"><fmt:message key="login.notRegistered_2" /></a>
@@ -43,7 +43,7 @@
 		</p>
 	</c:if>
 
-	<h2><fmt:message key="login.lostPassword" /></h2>
+	<h2 style="margin-top: 1em;"><fmt:message key="login.lostPassword" /></h2>
 	<p>
 		<fmt:message key="login.lostPassword_1" /> <c:out value=" " />
 		<a href="/reminder"><fmt:message key="login.lostPassword_2" /></a>
