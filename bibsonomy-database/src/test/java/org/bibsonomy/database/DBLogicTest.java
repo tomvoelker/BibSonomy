@@ -888,6 +888,29 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
+	 * Tests that updateUser works with {@link UserUpdateOperation#UPDATE_ROLE}
+	 */
+	@Test
+	public void testUpdateUserRole() {
+		final LogicInterface logic = getAdminDbLogic(TEST_USER_1);
+		User user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
+		Assert.assertNotNull(user);
+		Assert.assertEquals(Role.LIMITED, user.getRole());
+		user.setRole(Role.DEFAULT);
+		user.setRealname("testUpdateUserRole");
+		logic.updateUser(user, UserUpdateOperation.UPDATE_ROLE);
+		user.setRole(Role.NOBODY);
+		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
+		Assert.assertEquals(Role.DEFAULT, user.getRole());
+		Assert.assertFalse("testUpdateUserRole".equals(user.getRealname()));
+		
+		user.setRole(Role.LIMITED);
+		logic.updateUser(user, UserUpdateOperation.UPDATE_ROLE);
+		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
+		Assert.assertEquals(Role.LIMITED, user.getRole());
+	}
+	
+	/**
 	 * tests the {@link PostUpdateOperation#UPDATE_ALL}	
 	 * @throws Exception 
 	 */

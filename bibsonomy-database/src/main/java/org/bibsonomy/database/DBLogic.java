@@ -1419,6 +1419,9 @@ public class DBLogic implements LogicInterface {
 
 			case UPDATE_CORE:
 				return this.userDBManager.updateUserProfile(user, session);
+				
+			case UPDATE_ROLE:
+				return this.userDBManager.updateUserRole(user, session);
 
 			case ACTIVATE:
 				return this.userDBManager.activateUser(user, session);
@@ -1561,7 +1564,7 @@ public class DBLogic implements LogicInterface {
 				} catch (final ResourceNotFoundException ex) {
 					// ignore
 				}
-				if (present(post)) {
+				if (post != null) {
 					/*
 					 * post really exists!
 					 */
@@ -1717,7 +1720,7 @@ public class DBLogic implements LogicInterface {
 				} catch (final ResourceNotFoundException ex) {
 					// ignore
 				}
-				if (present(post)) {
+				if (post != null) {
 					/*
 					 * the given resource hash belongs to a post of the user ->
 					 * delete the corresponding document

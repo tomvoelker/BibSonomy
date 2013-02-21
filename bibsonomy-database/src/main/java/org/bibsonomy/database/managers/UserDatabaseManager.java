@@ -188,6 +188,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return user.getName();
 	}
 	
+	public String updateUserRole(final User user, final DBSession session) {
+		if (!present(this.getUserDetails(user.getName(), session).getName())) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update role of a nonexistent user");
+		}
+		this.update("updateUserRole", user, session);
+		return user.getName();
+	}
+	
 	/**
 	 * Updates the users profile (gender, hobbies, …)
 	 * 

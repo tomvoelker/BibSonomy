@@ -95,6 +95,12 @@
 		  WHERE user_name = #name#
 	</update>
 	
+	<update id="updateUserRole" parameterClass="user">
+		UPDATE user 
+		  SET role = #role#
+		  WHERE user_name = #name#
+	</update>
+	
 	<update id="updateUserSettings" parameterClass="user">
 		UPDATE user 
 		  SET <include refid="updateUserSettingsAttributes"/>
