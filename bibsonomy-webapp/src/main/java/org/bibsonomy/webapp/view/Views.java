@@ -375,11 +375,11 @@ public enum Views implements View {
 	 * SAML register form prefilled with information from SAML (Shibboleth) IdP server
 	 */
 	REGISTER_USER_SAML_FORM("actions/register/saml/profile_form"),
-	
+
 	/**
-	 * SAML activation page for limited user to become an unlimited user
+	 * activation page allowing limited users to become unlimited users
 	 */
-	ACTIVATION_USER_SAML("actions/register/saml/userSamlActivation"),
+	LIMITED_ACCOUNT_ACTIVATION("actions/register/saml/limitedAccountActivation"),
 	
 	/**
 	 * LDAP register form prefilled with information from LDAP server

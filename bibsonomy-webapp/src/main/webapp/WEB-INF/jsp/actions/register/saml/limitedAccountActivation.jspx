@@ -7,7 +7,7 @@
 	xmlns:posts="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:form="http://www.springframework.org/tags/form"
@@ -23,40 +23,39 @@
 		requPath="${requPath}" 
 		headerMessageKey="saml.naviActivate"
 		minimizedContentWidth="${true}">
-  
-        <jsp:attribute name="heading">
-         	<parts:search pathMessageKey="saml.naviActivate"/>
-        </jsp:attribute>
-        
-        <!-- 
-        	Main content for the SAML activation page
-         -->
-        <jsp:attribute name="content">
-        
-        	<!-- SAML logo image -->
-        	<img id="SAML_image_logo" src="${resdir}/image/saml-logo-small.png"/>
-        
-        	<!-- SAML description text -->
-        	<div id="SAML_description_text"><fmt:message key="saml.description"/></div>
-        
-        	<!-- Form field to accept SAML rules -->
-        	<form:form action="/activateSAML_User" method="POST">
-        		<fieldset class="fsOuter">
+	
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="saml.naviActivate"/>
+		</jsp:attribute>
+				
+		<!-- 
+			Main content for the SAML activation page
+		-->
+		<jsp:attribute name="content">
+			
+				<!-- SAML logo image -->
+				<img id="SAML_image_logo" src="${resdir}/image/saml-logo-small.png"/>
+			
+				<!-- SAML description text -->
+				<div id="SAML_description_text"><fmt:message key="saml.description"/></div>
+			
+				<!-- Form field to accept SAML rules -->
+				<form:form action="/activateAccount" method="POST">
+					<fieldset class="fsOuter">
 						<div class="fsRow" style="float: left;">
 							<form:label id="SAML_description" path="checkboxAccept" ><fmt:message key="saml.activitionConditions"/>*</form:label>
-			  				<form:checkbox path="checkboxAccept" value="yes"/>
-			  					
+							<form:checkbox path="checkboxAccept" value="yes"/>
+								
 							<fmt:message key="saml.activate" var="submitButton"/>
-							<input class="fsSubmit" id="SAML_checkbox_accept" type="submit" value="${submitButton}"/>
-							
-				  			<div class="dissError" id="SAML_error_message"><form:errors path="checkboxAccept" /></div>
+							<input class="fsSubmit" id="SAML_checkbox_accept" type="submit" name="submit" value="${submitButton}"/>
+						
+							<div class="dissError" id="SAML_error_message"><form:errors path="checkboxAccept" /></div>
 							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
-            			</div>
-            	</fieldset>
-        	</form:form>
-	    </jsp:attribute> 
-	    	
-  
+						</div>
+					</fieldset>
+				</form:form>
+		</jsp:attribute> 
+		
 		<!-- 
 			news box ( = latest blog posts) 
 			-->	   
@@ -71,7 +70,6 @@
 			</c:if>
 		</jsp:attribute>
 		
-		
 		<!-- 
 			busy tag box 
 			-->
@@ -83,6 +81,6 @@
 					</li>
 				</ul>
 		</jsp:attribute>
-	    
+			
 	</layout:paneLayout>
 </jsp:root>
