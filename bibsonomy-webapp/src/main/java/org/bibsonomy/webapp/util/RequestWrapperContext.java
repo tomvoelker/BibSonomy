@@ -68,7 +68,7 @@ public class RequestWrapperContext {
 		return getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_CREDENTIAL, String.class);
 	}
 	
-	/** Returns <code>true</code> only, when the user request contained a valid ckey.
+	/** Returns <code>true</code> only, when the user request contained a valid ckey. This is for fighting CSRF attacks
 	 * 
 	 * @return <code>true</code>, when the request contained a valid ckey.
 	 */
