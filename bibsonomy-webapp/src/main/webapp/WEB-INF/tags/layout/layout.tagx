@@ -128,7 +128,9 @@
 								<a href="/logout" class="signoff"><fmt:message key="navi.logout"/></a>
 							</c:when>
 							<c:otherwise>
-								<a href="/login"><fmt:message key="navi.login"/></a>
+								<c:if test="${properties['project.theme'] ne 'puma'}">
+									<a href="/login"><fmt:message key="navi.login"/></a>
+								</c:if>
 							</c:otherwise>
 						</c:choose>	
 					</div>

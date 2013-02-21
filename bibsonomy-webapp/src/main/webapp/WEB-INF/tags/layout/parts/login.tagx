@@ -26,6 +26,20 @@
 				}
 			}
 		]]>
+		<c:if test="${properties['project.theme'] eq 'puma'}">
+			<![CDATA[
+				$(document).ready(function() {
+					$(".jsLoginButtonPermanent").click(function() {
+						$(this).siblings("input[name='rememberMe']").val("true");
+					});
+				});
+				$(document).ready(function() {
+					$(".jsLoginButtonNonPermanent").click(function() {
+						$(this).siblings("input[name='rememberMe']").val("false");
+					});
+				});
+			]]>
+		</c:if>
 	</script>
 	
 	<!--+
@@ -51,6 +65,7 @@
 	    | set message strings
 	    +-->
 	<fmt:message key="navi.login" var="login"/>
+	<fmt:message key="navi.login.permanent" var="login_permanent"/>
 
 	<!--+
 	    | create a specialized login form for each authentication method
@@ -73,7 +88,10 @@
 							<input type="hidden" name="rememberMe" value="true" />
 							<input type="hidden" name="referer" value="${requPath}" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
-							<input type="submit" style="margin-left: 1em" value="${login}"/>
+							<input type="submit" style="margin-left: 1em" class="jsLoginButtonNonPermanent" value="${login}"/>
+							<c:if test="${properties['project.theme'] eq 'puma'}">
+								<input type="submit" style="margin-left: 0.2em" class="jsLoginButtonPermanent" value="${login_permanent}"/>
+							</c:if>
 						</form:form>
 						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
 					</div>    			
@@ -91,7 +109,10 @@
 							<input type="hidden" name="rememberMe" value="true" />
 							<input type="hidden" name="referer" value="${requPath}" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
-							<input type="submit" style="margin-left: 1em" value="${login}"/>
+							<input type="submit" style="margin-left: 1em" class="jsLoginButtonNonPermanent" value="${login}"/>
+							<c:if test="${properties['project.theme'] eq 'puma'}">
+								<input type="submit" style="margin-left: 0.2em" class="jsLoginButtonPermanent" value="${login_permanent}"/>
+							</c:if>
 						</form:form>
 						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
 					</div>
@@ -111,15 +132,15 @@
 						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
 	            	</div>
       			</c:if>
-      			
-      			<c:if test="${authMethod == 'SAML'}">
+
+				<c:if test="${authMethod == 'SAML'}">
 					<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<form:form action="/login_saml" method="POST">
 							<input type="submit" style="margin-left: 1em" value="${login}"/>
-		            	</form:form>
-	            	</div>
-      			</c:if>
-      			
+						</form:form>
+					</div>
+				</c:if>
+				
 			</div>
     	</c:forEach>
 	</div>
