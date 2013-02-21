@@ -65,5 +65,10 @@ public enum UserUpdateOperation {
 	/**
 	 * Activates the user
 	 */
-	ACTIVATE;
+	ACTIVATE,
+	
+	/**
+	 * update user's role
+	 */
+	UPDATE_ROLE;
 }
