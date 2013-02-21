@@ -2366,7 +2366,7 @@ div.reviewTextBox textarea {
 .error {
 	color: #ff6600;
 	max-width: 1200px;
-	overflow: scroll;
+	overflow: auto;
 }
 
 
@@ -2882,7 +2882,6 @@ table.report td.value {
 #imgCollapseContent {
 	padding: 0 5px 1px 4px;
 }
-
 /*
 	SAML activation Page /activateSAML_User
 */
