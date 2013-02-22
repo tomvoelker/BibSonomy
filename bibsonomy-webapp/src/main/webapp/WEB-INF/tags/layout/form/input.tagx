@@ -28,6 +28,7 @@
 		
 		<!-- errors -->
 		<div class="dissError"><form:errors path="${path}" /></div>
+		<div class="clearfloatDiv">&#160;</div>
 	</div>
 
 </jsp:root>
