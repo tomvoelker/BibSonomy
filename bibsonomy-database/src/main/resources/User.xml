@@ -95,9 +95,12 @@
 		  WHERE user_name = #name#
 	</update>
 	
-	<update id="updateUserRole" parameterClass="user">
+	<update id="updateUserActivation" parameterClass="user">
 		UPDATE user 
-		  SET role = #role#
+		  SET role = #role#,
+		  user_realname = #realname#,
+		  user_homepage = #homepage#,
+		  user_email = #email#
 		  WHERE user_name = #name#
 	</update>
 	

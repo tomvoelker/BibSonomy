@@ -9,6 +9,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -888,24 +889,42 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * Tests that updateUser works with {@link UserUpdateOperation#UPDATE_ROLE}
+	 * Tests that updateUser works with {@link UserUpdateOperation#UPDATE_ACTIVATION}
+	 * @throws Exception
 	 */
 	@Test
-	public void testUpdateUserRole() {
+	public void testUpdateUserActivation() throws Exception {
 		final LogicInterface logic = getAdminDbLogic(TEST_USER_1);
 		User user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
 		Assert.assertNotNull(user);
 		Assert.assertEquals(Role.LIMITED, user.getRole());
 		user.setRole(Role.DEFAULT);
+		final String oldRealName = user.getRealname();
+		final String oldEmail = user.getRealname();
+		final URL oldHomepage = user.getHomepage();
+		final String oldPw = user.getPassword();
 		user.setRealname("testUpdateUserRole");
-		logic.updateUser(user, UserUpdateOperation.UPDATE_ROLE);
+		user.setHomepage(new URL("http://www.biblicious.org/testUpdateUserRole"));
+		user.setEmail("testUpdateUserRole@biblicious.org");
+		user.setPassword("testUpdateUserRole");
+		logic.updateUser(user, UserUpdateOperation.UPDATE_ACTIVATION);
 		user.setRole(Role.NOBODY);
+		user.setRealname("quatsch");
+		user.setHomepage(new URL("http://www.biblicious.org/quatsch"));
+		user.setEmail("quatsch@biblicious.org");
+		user.setPassword("quatsch");
 		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
 		Assert.assertEquals(Role.DEFAULT, user.getRole());
-		Assert.assertFalse("testUpdateUserRole".equals(user.getRealname()));
+		Assert.assertEquals("testUpdateUserRole", user.getRealname());
+		Assert.assertEquals(new URL("http://www.biblicious.org/testUpdateUserRole"), user.getHomepage());
+		Assert.assertEquals("testUpdateUserRole@biblicious.org", user.getEmail());
+		Assert.assertEquals(oldPw, user.getPassword());
 		
 		user.setRole(Role.LIMITED);
-		logic.updateUser(user, UserUpdateOperation.UPDATE_ROLE);
+		user.setRealname(oldRealName);
+		user.setHomepage(oldHomepage);
+		user.setEmail(oldEmail);
+		logic.updateUser(user, UserUpdateOperation.UPDATE_ACTIVATION);
 		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
 		Assert.assertEquals(Role.LIMITED, user.getRole());
 	}
