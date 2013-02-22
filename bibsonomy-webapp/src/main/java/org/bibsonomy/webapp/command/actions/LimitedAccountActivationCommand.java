@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
@@ -26,6 +27,11 @@ public class LimitedAccountActivationCommand  extends SimpleResourceViewCommand 
 	private boolean checkboxAccept;
 
 	private String submit;
+	
+	/**
+	 * Holds the details of the user which wants to register (like name, email, password)
+	 */
+	private User registerUser = new User();
 
 	/**
 	 * @return The latest news posts.
@@ -74,5 +80,19 @@ public class LimitedAccountActivationCommand  extends SimpleResourceViewCommand 
 	 */
 	public void setSubmit(String submit) {
 		this.submit = submit;
+	}
+
+	/**
+	 * @return the registerUser
+	 */
+	public User getRegisterUser() {
+		return this.registerUser;
+	}
+
+	/**
+	 * @param registerUser the registerUser to set
+	 */
+	public void setRegisterUser(User registerUser) {
+		this.registerUser = registerUser;
 	}	
 }

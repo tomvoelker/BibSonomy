@@ -35,7 +35,7 @@ import org.springframework.security.saml.SAMLCredential;
  *
  */
 public class VuFindUserInitController implements MinimalisticController<OAuthCommand> {
-	private static final String UNKNOWN = "<unknown>";
+	public static final String UNKNOWN = "<unknown>";
 
 	private static final Logger log = Logger.getLogger(VuFindUserInitController.class);
 

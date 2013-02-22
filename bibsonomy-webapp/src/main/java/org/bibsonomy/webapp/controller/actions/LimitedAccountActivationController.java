@@ -68,6 +68,18 @@ public class LimitedAccountActivationController extends ResourceListController i
 			throw new AccessDeniedException("please log in");
 		}
 		User loginUser = AuthenticationUtils.getUser();
+		
+		if (!command.isSubmitted()) {
+			final User u = command.getRegisterUser();
+			u.setName(loginUser.getName());
+			u.setRealname(loginUser.getRealname());
+			u.setHomepage(loginUser.getHomepage());
+			u.setEmail(loginUser.getEmail());
+			if (VuFindUserInitController.UNKNOWN.equals(u.getEmail())) {
+				u.setEmail("");
+			}
+		}
+		
 		if (!Role.LIMITED.equals(loginUser.getRole())) {
 			errors.reject("limited_account.activation.user_not_limited");
 		}
@@ -83,8 +95,12 @@ public class LimitedAccountActivationController extends ResourceListController i
 		}
 		
 		
-		AuthenticationUtils.getUser().setRole(Role.DEFAULT);
-		adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_ROLE);
+		final User ru = command.getRegisterUser();
+		loginUser.setRole(Role.DEFAULT);
+		loginUser.setEmail(ru.getEmail());
+		loginUser.setHomepage(ru.getHomepage());
+		loginUser.setRealname(ru.getRealname());
+		adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_ACTIVATION);
 		
 
 		if (!context.isValidCkey()) {

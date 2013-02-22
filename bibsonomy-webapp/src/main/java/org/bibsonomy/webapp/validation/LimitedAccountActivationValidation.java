@@ -32,7 +32,10 @@ public class LimitedAccountActivationValidation implements Validator<LimitedAcco
 		if (!command.isCheckboxAccept()) {
 			errors.rejectValue("checkboxAccept", "saml.error.checkbox");
 		}
-
+		
+		errors.pushNestedPath("registerUser");
+		UserValidator.validateUser(command.getRegisterUser(), errors);
+		errors.popNestedPath();
 	}
 
 }

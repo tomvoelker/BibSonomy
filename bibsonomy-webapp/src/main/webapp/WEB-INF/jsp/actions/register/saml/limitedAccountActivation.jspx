@@ -24,6 +24,34 @@
 		headerMessageKey="saml.naviActivate"
 		minimizedContentWidth="${true}">
 	
+		<jsp:attribute name="headerExt">
+			<style type="text/css">
+				.fsRow {
+					margin-bottom: 0.2em;
+					margin-top: 0.2em;
+				}
+				.fsLabel {
+					width: 15%;
+					line-height: 1.7em;
+				}
+				#SAML_description {
+					width: 70%;
+					margin-left: 0.8em;
+				}
+				.fsSubmit {
+					margin-top: 0.4em;
+					margin-right: 2px;
+					float: right;
+				}
+				.dissError {
+					top: 0px;
+				}
+				div #postcontainer {
+					border: none;
+				}
+			</style>
+		</jsp:attribute>
+	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="saml.naviActivate"/>
 		</jsp:attribute>
@@ -41,18 +69,26 @@
 			
 				<!-- Form field to accept SAML rules -->
 				<form:form action="/activateAccount" method="POST">
-					<fieldset class="fsOuter">
-						<div class="fsRow" style="float: left;">
-							<form:label id="SAML_description" path="checkboxAccept" ><fmt:message key="saml.activitionConditions"/>*</form:label>
-							<form:checkbox path="checkboxAccept" value="yes"/>
-								
+				
+					<bform:fieldset maximized="${true}" legendKey="register.additional">
+						<jsp:attribute name="content">
+							<bform:input path="registerUser.email" labelMessageKey="user.settings.email" noHelp="${true}" required="${true}"/>  
+							<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>
+							<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>
+							<div class="fsRow" style="float: left;">
+								<label class="fsLabel" for="">&#160;</label>
+								<form:checkbox path="checkboxAccept" style="float: left;" value="yes"/>
+								<form:label style="float: left;" id="SAML_description" path="checkboxAccept" ><fmt:message key="saml.activitionConditions"/>*</form:label>
+								<div class="dissError" id="SAML_error_message"><form:errors path="checkboxAccept" /></div>
+								<div class="clearfloatDiv ">&#160;</div>
+							</div>
+							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+							
 							<fmt:message key="saml.activate" var="submitButton"/>
 							<input class="fsSubmit" id="SAML_checkbox_accept" type="submit" name="submit" value="${submitButton}"/>
-						
-							<div class="dissError" id="SAML_error_message"><form:errors path="checkboxAccept" /></div>
-							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
-						</div>
-					</fieldset>
+
+						</jsp:attribute>
+					</bform:fieldset>
 				</form:form>
 		</jsp:attribute> 
 		
