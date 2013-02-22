@@ -1048,6 +1048,12 @@ ul.news {
 .clearfloat {
 	clear: both;
 }
+
+.clearfloatDiv {
+	clear: both;
+	height: 1px;
+}
+
 /*
  * </groupboxes>
  */
