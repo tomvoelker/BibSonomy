@@ -46,7 +46,7 @@
 				.dissError {
 					top: 0px;
 				}
-				div #postcontainer {
+				#container.noPageNavigation div #postcontainer {
 					border: none;
 				}
 			</style>
@@ -77,7 +77,7 @@
 							<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>
 							<div class="fsRow" style="float: left;">
 								<label class="fsLabel" for="">&#160;</label>
-								<form:checkbox path="checkboxAccept" style="float: left;" value="yes"/>
+								<form:checkbox id="checkboxAccept" path="checkboxAccept" style="float: left;" value="yes"/>
 								<form:label style="float: left;" id="SAML_description" path="checkboxAccept" ><fmt:message key="saml.activitionConditions"/>*</form:label>
 								<div class="dissError" id="SAML_error_message"><form:errors path="checkboxAccept" /></div>
 								<div class="clearfloatDiv ">&#160;</div>
