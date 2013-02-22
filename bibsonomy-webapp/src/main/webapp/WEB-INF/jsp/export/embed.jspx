@@ -43,7 +43,7 @@
 			</parts:htmlHead>
 
 		    <c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-		    <c:set var="showPublication" value="${(showPublicationList or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
+		    <c:set var="showPublication" value="${(showPublicationList or not empty addAsFirstPublicationsListItem)}" />
 		    <c:set var="showBookmarkList" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
 		    <c:set var="showBookmark" value="${showBookmarkList or not empty addAsFirstBookmarksListItem }" />
 		    <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
