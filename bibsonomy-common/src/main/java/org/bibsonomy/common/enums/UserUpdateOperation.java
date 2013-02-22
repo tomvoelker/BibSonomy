@@ -68,7 +68,7 @@ public enum UserUpdateOperation {
 	ACTIVATE,
 	
 	/**
-	 * update user's role
+	 * used for upgrading a limited user account
 	 */
-	UPDATE_ROLE;
+	UPDATE_ACTIVATION;
 }
