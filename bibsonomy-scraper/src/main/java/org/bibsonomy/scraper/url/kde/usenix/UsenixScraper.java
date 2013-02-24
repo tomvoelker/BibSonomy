@@ -23,12 +23,17 @@
 
 package org.bibsonomy.scraper.url.kde.usenix;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -36,6 +41,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for usenix.org
@@ -110,7 +116,21 @@ public class UsenixScraper extends AbstractUrlScraper {
 					 * http://www.usenix.org/events/evt07/tech/full_papers/sandler/sandler_html/
 					 */
 					
-					String content = sc.getPageContent();
+					String content = null;
+					try {
+						/*
+						 * Force the content type to be the null value
+						 */
+						HttpClient client = WebUtils.getHttpClient();
+						GetMethod getmethod = new GetMethod(sc.getUrl().toExternalForm());
+						if (client.executeMethod(getmethod) == HttpStatus.SC_OK) {
+							content = WebUtils.inputStreamToStringBuilder(getmethod.getResponseBodyAsStream(), null).toString();
+						}
+					} catch (IOException ex) {
+						throw new ScrapingException(ex);
+					}
+					
+					if (!present(content)) throw new ScrapingException("content not available");
 					
 					/*
 					 * Pattern
