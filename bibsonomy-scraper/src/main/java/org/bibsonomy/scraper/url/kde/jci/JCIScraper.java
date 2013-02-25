@@ -55,6 +55,10 @@ public class JCIScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
+		
+		//scraper information
+		scrapingContext.setScraper(this);
+		
 		try {
 			final String bibTex = WebUtils.getContentAsString(scrapingContext.getUrl() + BIBTEX_URL);
 			if (present(bibTex)) {

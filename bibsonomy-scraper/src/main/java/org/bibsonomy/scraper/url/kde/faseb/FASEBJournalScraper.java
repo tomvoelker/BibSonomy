@@ -77,6 +77,9 @@ public class FASEBJournalScraper extends AbstractUrlScraper {
 	 */
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
+		
+		//scraper information
+		scrapingContext.setScraper(this);
 
 		final String url = scrapingContext.getUrl().toString();
 		final String id = extractId(url);
