@@ -93,6 +93,7 @@ public class JStorScraper extends AbstractUrlScraper {
 
 		sc.setScraper(this);
 		
+		//also one of the cookies we need is named "tenacious"
 		HttpClient client = WebUtils.getHttpClient();
 		
 		String bibtexResult = null;
