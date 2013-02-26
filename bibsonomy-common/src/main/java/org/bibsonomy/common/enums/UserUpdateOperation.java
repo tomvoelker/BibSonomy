@@ -70,5 +70,5 @@ public enum UserUpdateOperation {
 	/**
 	 * used for upgrading a limited user account
 	 */
-	UPDATE_ACTIVATION;
+	UPDATE_LIMITED_USER;
 }
