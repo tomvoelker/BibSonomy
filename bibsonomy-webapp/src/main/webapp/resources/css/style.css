@@ -2773,37 +2773,6 @@ table.report td.value {
 		height: 23px;
 	} */
 	
-	#search img {
-		vertical-align: middle;
-	}
-	
-	#search .searchMethodDropdown {
-		vertical-align: middle;
-	}
-	
-	#search .smallform input[type=text] {
-		font-family: Arial,Helvetica,sans-serif;
-		font-size: 14px;
-		font-weight: bold;
-		color: #006699;
-		height: 24px;
-		padding: 0px 4px;
-		margin: 0px;
-		vertical-align: middle;
-	}
-	
-	#search .smallform input[type=submit] {
-		background-image: url("http://localhost:8080/resources/image/search_button.png");
-		width: 24px;
-		height: 24px;
-		padding:0px;
-		margin: 0 0 0 4px;
-		border: 0 none;
-		color: transparent;
-		vertical-align: middle;
-	}
-	
-	
 	#search > ul li ul {
 		margin-top: -4px;
 	}
