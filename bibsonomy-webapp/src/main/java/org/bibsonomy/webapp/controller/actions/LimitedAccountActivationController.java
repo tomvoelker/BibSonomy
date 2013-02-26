@@ -100,7 +100,7 @@ public class LimitedAccountActivationController extends ResourceListController i
 		loginUser.setEmail(ru.getEmail());
 		loginUser.setHomepage(ru.getHomepage());
 		loginUser.setRealname(ru.getRealname());
-		adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_ACTIVATION);
+		adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_LIMITED_USER);
 		
 
 		if (!context.isValidCkey()) {

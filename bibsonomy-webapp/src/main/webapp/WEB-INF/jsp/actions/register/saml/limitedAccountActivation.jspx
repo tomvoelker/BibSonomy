@@ -14,15 +14,15 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<fmt:message key="saml.naviActivate" var="pageTitle" />
+	
+<fmt:message key="limited_account.activation.naviActivate" var="pageTitle" />
 	
 	<layout:paneLayout 
 		command="${command}" 
-		pageTitle="${pageTitle}" 
+		pageTitle="${pageTitle}"
 		requPath="${requPath}" 
-		headerMessageKey="saml.naviActivate"
-		minimizedContentWidth="${true}">
+		headerMessageKey="limited_account.activation.naviActivate"
+		minimizedContentWidth="${false}">
 	
 		<jsp:attribute name="headerExt">
 			<style type="text/css">
@@ -31,12 +31,7 @@
 					margin-top: 0.2em;
 				}
 				.fsLabel {
-					width: 15%;
 					line-height: 1.7em;
-				}
-				#SAML_description {
-					width: 70%;
-					margin-left: 0.8em;
 				}
 				.fsSubmit {
 					margin-top: 0.4em;
@@ -49,11 +44,40 @@
 				#container.noPageNavigation div #postcontainer {
 					border: none;
 				}
+				.twoCol {
+					float: left;
+					width: 40%;
+					padding: 1em;
+				}
+				.paddedContainer {
+					padding: 0.2em 1em;
+				}
+				.checkboxWithText {
+					float: left;
+				}
+				.checkboxText {
+					width: 65%;
+					font-weight: normal;
+					line-height: 1.2;
+					margin-left: 0.8em;
+					float: left;
+				}
+				.niceText {
+					font-size: 110%; line-height: 1.5;
+				}
+				#fscontent {
+					position: relative;
+					top: -3em;
+				}
+				.rightside .paddedContainer {
+					padding-top: 4em;
+					padding-left: 2em;
+				}
 			</style>
 		</jsp:attribute>
 	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="saml.naviActivate"/>
+			<parts:search pathMessageKey="limited_account.activation.naviActivate"/>
 		</jsp:attribute>
 				
 		<!-- 
@@ -61,36 +85,45 @@
 		-->
 		<jsp:attribute name="content">
 			
-				<!-- SAML logo image -->
-				<img id="SAML_image_logo" src="${resdir}/image/saml-logo-small.png"/>
-			
-				<!-- SAML description text -->
-				<div id="SAML_description_text"><fmt:message key="saml.description"/></div>
-			
-				<!-- Form field to accept SAML rules -->
-				<form:form action="/activateAccount" method="POST">
+				<!-- description text -->
+				<div class="bookmarksContainer standard">
+				<div class="paddedContainer">
+					<fmt:message key="limited_account.activation.text.left"/>
+					
+					<form:form action="/limitedAccountActivation" method="POST">
+						<bform:fieldset maximized="${true}" legendKey="register.additional">
+							<jsp:attribute name="content">
+								<div class="dissError"><form:errors /></div>
+								<bform:input path="registerUser.email" labelMessageKey="user.settings.email" noHelp="${true}" required="${true}"/>  
+								<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>
+								<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>
+								<div class="fsRow">
+									<label class="fsLabel" for="">&#160;</label>
+									<form:checkbox id="checkboxAccept" path="checkboxAccept" class="checkboxWithText" value="yes"/>
+									<form:label class="checkboxText" path="checkboxAccept" ><fmt:message key="limited_account.activation.activitionConditions"/>*</form:label>
+									<div class="dissError"><form:errors path="checkboxAccept" /></div>
+									<div class="clearfloatDiv ">&#160;</div>
+								</div>
+								<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+								
+								<fmt:message key="limited_account.activation.activate" var="submitButton"/>
+								<input class="fsSubmit" type="submit" name="submit" value="${submitButton}"/>
+							</jsp:attribute>
+						</bform:fieldset>
+					</form:form>
+					<div class="clearfloatDiv ">&#160;</div>
+				</div>
+				</div>
 				
-					<bform:fieldset maximized="${true}" legendKey="register.additional">
-						<jsp:attribute name="content">
-							<bform:input path="registerUser.email" labelMessageKey="user.settings.email" noHelp="${true}" required="${true}"/>  
-							<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>
-							<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>
-							<div class="fsRow" style="float: left;">
-								<label class="fsLabel" for="">&#160;</label>
-								<form:checkbox id="checkboxAccept" path="checkboxAccept" style="float: left;" value="yes"/>
-								<form:label style="float: left;" id="SAML_description" path="checkboxAccept" ><fmt:message key="saml.activitionConditions"/>*</form:label>
-								<div class="dissError" id="SAML_error_message"><form:errors path="checkboxAccept" /></div>
-								<div class="clearfloatDiv ">&#160;</div>
-							</div>
-							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
-							
-							<fmt:message key="saml.activate" var="submitButton"/>
-							<input class="fsSubmit" id="SAML_checkbox_accept" type="submit" name="submit" value="${submitButton}"/>
-
-						</jsp:attribute>
-					</bform:fieldset>
-				</form:form>
-		</jsp:attribute> 
+				<div class="publicationsContainer standard rightside">
+				<div class="paddedContainer">
+					<fmt:message key="limited_account.activation.text.right"/>
+					<div class="clearfloatDiv ">&#160;</div>
+				</div>
+				</div>
+				<div class="clearfloatDiv ">&#160;</div>
+	
+		</jsp:attribute>
 		
 		<!-- 
 			news box ( = latest blog posts) 

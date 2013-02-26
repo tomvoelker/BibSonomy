@@ -2773,6 +2773,37 @@ table.report td.value {
 		height: 23px;
 	} */
 	
+	#search img {
+		vertical-align: middle;
+	}
+	
+	#search .searchMethodDropdown {
+		vertical-align: middle;
+	}
+	
+	#search .smallform input[type=text] {
+		font-family: Arial,Helvetica,sans-serif;
+		font-size: 14px;
+		font-weight: bold;
+		color: #006699;
+		height: 24px;
+		padding: 0px 4px;
+		margin: 0px;
+		vertical-align: middle;
+	}
+	
+	#search .smallform input[type=submit] {
+		background-image: url("http://localhost:8080/resources/image/search_button.png");
+		width: 24px;
+		height: 24px;
+		padding:0px;
+		margin: 0 0 0 4px;
+		border: 0 none;
+		color: transparent;
+		vertical-align: middle;
+	}
+	
+	
 	#search > ul li ul {
 		margin-top: -4px;
 	}
@@ -2888,38 +2919,20 @@ table.report td.value {
 #imgCollapseContent {
 	padding: 0 5px 1px 4px;
 }
-/*
-	SAML activation Page /activateSAML_User
-*/
-#SAML_description_text {
-	margin-top: 20px; 
-	margin-bottom: 20px;
+
+h3.textPage {
+	font-size: 160%;
+	border-bottom: #ccc solid 1px;
+	margin-bottom: 1em;
+	color: #006699;
 }
-
-#SAML_image_logo {
-	display: block; 
-	margin-left: auto; 
-	margin-right: auto;
+h4.textPage {
+	font-size: 120%;
+	margin-bottom: 1em;
+	color: #006699;
 }
-
-#SAML_description {
-	width: 85%; 
-	margin-top: 3px; 
-	text-align: left; 
-	padding-right: 5px;
-  	float: left;
-	font-weight: bold;
-    font-size: 90%;
+ul.text {
+	list-style: outside disc !important;
+	margin-left: 2.5em !important;
+	line-height: 2em;
 }
-
-#SAML_error_message {
-	left: 13%; 
-	top: 0;
-}
-
-#SAML_checkbox_accept {
-	 margin-left: 10px;
-}
-
-
-

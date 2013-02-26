@@ -353,3 +353,8 @@ div.grippie {
 .socializer .addContainer {
         position: static;
 }
+.systemName,
+h4.textPage,
+h3.textPage {
+	color: #DF430D;
+}

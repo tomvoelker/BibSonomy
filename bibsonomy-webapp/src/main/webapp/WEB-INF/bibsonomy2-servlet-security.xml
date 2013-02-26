@@ -89,7 +89,7 @@
 	<bean id="limitedUserFilter" class="org.bibsonomy.webapp.filters.LimitedUserFilter">
 		<property name="allowedPathPrefixes">
 			<list>
-				<value>/activateAccount</value>
+				<value>/limitedAccountActivation</value>
 				<value>/autoRegisterSamlAndOAuth</value>
 				<value>/render</value>
 			</list>

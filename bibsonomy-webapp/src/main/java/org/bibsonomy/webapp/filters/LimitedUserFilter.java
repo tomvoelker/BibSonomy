@@ -21,7 +21,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 /**
- * This filter redirects Limited Users to the activateAccount page
+ * This filter redirects Limited Users to the limitedAccountActivation page
  *
  * @version $Id$
  */
@@ -37,7 +37,7 @@ public class LimitedUserFilter implements Filter {
 			return;
 		}
 		log.info("redirecting limited user");
-		((HttpServletResponse) response).sendRedirect("/activateAccount");
+		((HttpServletResponse) response).sendRedirect("/limitedAccountActivation");
 	}
 	
 	protected boolean isAllowedForLimitedUser(HttpServletRequest request) {

@@ -30,7 +30,7 @@ public class LimitedAccountActivationValidation implements Validator<LimitedAcco
 		 * check if the user accepts our privacy statement about SAML
 		 */
 		if (!command.isCheckboxAccept()) {
-			errors.rejectValue("checkboxAccept", "saml.error.checkbox");
+			errors.rejectValue("checkboxAccept", "limited_account.activation.error.checkbox");
 		}
 		
 		errors.pushNestedPath("registerUser");
