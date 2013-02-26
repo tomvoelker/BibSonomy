@@ -188,11 +188,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return user.getName();
 	}
 	
-	public String updateUserActivation(final User user, final DBSession session) {
+	/**
+	 * Updates properties that need to be updated when a limited user is set to unlimited.
+	 * @param user
+	 * @param session
+	 * @return
+	 */
+	public String updateLimitedUser(final User user, final DBSession session) {
 		if (!present(this.getUserDetails(user.getName(), session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update role of a nonexistent user");
 		}
-		this.update("updateUserActivation", user, session);
+		this.update("updateLimitedUser", user, session);
 		return user.getName();
 	}
 	

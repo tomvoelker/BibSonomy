@@ -889,11 +889,11 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * Tests that updateUser works with {@link UserUpdateOperation#UPDATE_ACTIVATION}
+	 * Tests that updateUser works with {@link UserUpdateOperation#UPDATE_LIMITED_USER}
 	 * @throws Exception
 	 */
 	@Test
-	public void testUpdateUserActivation() throws Exception {
+	public void testUpdateLimitedUser() throws Exception {
 		final LogicInterface logic = getAdminDbLogic(TEST_USER_1);
 		User user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
 		Assert.assertNotNull(user);
@@ -907,7 +907,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		user.setHomepage(new URL("http://www.biblicious.org/testUpdateUserRole"));
 		user.setEmail("testUpdateUserRole@biblicious.org");
 		user.setPassword("testUpdateUserRole");
-		logic.updateUser(user, UserUpdateOperation.UPDATE_ACTIVATION);
+		logic.updateUser(user, UserUpdateOperation.UPDATE_LIMITED_USER);
 		user.setRole(Role.NOBODY);
 		user.setRealname("quatsch");
 		user.setHomepage(new URL("http://www.biblicious.org/quatsch"));
@@ -924,7 +924,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		user.setRealname(oldRealName);
 		user.setHomepage(oldHomepage);
 		user.setEmail(oldEmail);
-		logic.updateUser(user, UserUpdateOperation.UPDATE_ACTIVATION);
+		logic.updateUser(user, UserUpdateOperation.UPDATE_LIMITED_USER);
 		user = logic.getUserDetails(TEST_LIMITED_USER_NAME);
 		Assert.assertEquals(Role.LIMITED, user.getRole());
 	}

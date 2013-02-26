@@ -1420,8 +1420,8 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_CORE:
 				return this.userDBManager.updateUserProfile(user, session);
 				
-			case UPDATE_ACTIVATION:
-				return this.userDBManager.updateUserActivation(user, session);
+			case UPDATE_LIMITED_USER:
+				return this.userDBManager.updateLimitedUser(user, session);
 
 			case ACTIVATE:
 				return this.userDBManager.activateUser(user, session);

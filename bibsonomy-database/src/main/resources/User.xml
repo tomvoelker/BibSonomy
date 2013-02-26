@@ -95,7 +95,7 @@
 		  WHERE user_name = #name#
 	</update>
 	
-	<update id="updateUserActivation" parameterClass="user">
+	<update id="updateLimitedUser" parameterClass="user">
 		UPDATE user 
 		  SET role = #role#,
 		  user_realname = #realname#,
