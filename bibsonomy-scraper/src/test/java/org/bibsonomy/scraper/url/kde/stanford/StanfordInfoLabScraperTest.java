@@ -39,6 +39,7 @@ public class StanfordInfoLabScraperTest {
 	 * starts URL test with id url_68
 	 */
 	@Test
+	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_221"));
