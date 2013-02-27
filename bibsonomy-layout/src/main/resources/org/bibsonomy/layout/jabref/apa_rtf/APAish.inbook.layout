@@ -1,24 +1,23 @@
 \begin{author}
-\format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,RTFChars] {\author}
 \end{author}
- (\year). 
-}{\format[RTFChars]{\title}. }{
-In 
+\begin{year}
+(\year). 
+\end{year}
+\begin{title}
+\format[RTFChars]{\title}. 
+\end{title}
 \begin{editor}
-\format[RTFChars,AuthorFirstAbbrLastCommas,AuthorAndsReplacer]{\editor} (ed.),
+In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,RTFChars]{\editor} (eds.), 
 \end{editor}
-}{\\i \format[RTFChars]{\booktitle}
-\begin{volume}
-, Vol. \volume
-\end{volume}}{
-\begin{pages}
- (pp. \pages)
-\end{pages}. 
+\begin{booktitle}
+{\\i \format[RTFChars]{\booktitle}}\end{booktitle}\begin{pages}
+ (pp. \pages)\end{pages}. 
 \begin{publisher}
-\format[RTFChars]{\publisher}
-\end{publisher}. }{
+\format[RTFChars]{\publisher}. 
+\end{publisher}
 \begin{isbn}
 ISBN: \format[RTFChars]{\isbn}
-\end{isbn}}{
+\end{isbn}
 \\par
 \\par

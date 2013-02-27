@@ -1,24 +1,23 @@
-<p>
 \begin{author}
-\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars] {\author}
 \end{author}
- (\year). 
+\begin{year}
+(\year). 
+\end{year}
+\begin{title}
 \format[HTMLChars]{\title}. 
-In 
+\end{title}
 \begin{editor}
-\format[HTMLChars,AuthorFirstAbbrLastCommas,AuthorAndsReplacer]{\editor} (ed.),
+In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars]{\editor} (eds.), 
 \end{editor}
-<i> \format[HTMLChars]{\booktitle}</i>
-\begin{volume}
-, Vol. \volume
-\end{volume}
-\begin{pages}
- (pp. \pages)
-\end{pages}. 
+\begin{booktitle}
+<i> \format[HTMLChars]{\booktitle}</i>\end{booktitle}\begin{pages}
+ (pp. \pages)\end{pages}. 
 \begin{publisher}
-\format[HTMLChars]{\publisher}
-\end{publisher}. 
+\format[HTMLChars]{\publisher}. 
+\end{publisher}
 \begin{isbn}
 ISBN: \format[HTMLChars]{\isbn}
 \end{isbn}
-</p>
+<br/>
+<br/>

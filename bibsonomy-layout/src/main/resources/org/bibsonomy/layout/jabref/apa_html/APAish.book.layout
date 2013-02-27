@@ -1,19 +1,19 @@
-<p>
 \begin{author}
-\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\format[HTMLChars,AuthorLastFirstAbbrOxfordCommas,Replace( and,\,)]{\author}
 \end{author}
 \begin{editor}
-\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}, (ed.).
+ & \format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (eds.)
 \end{editor}
  (\year).
-<i> \format[HTMLChars]{\title}</i>
-\begin{volume}
-, Vol. \volume
-\end{volume}. 
+<i> \format[HTMLChars]{\title}</i>\begin{volume}, Vol. \volume\end{volume}. 
+\begin{location}
+\format[HTMLChars]{\location}: 
+\end{location}
 \begin{publisher}
-\format[HTMLChars]{\publisher}
-\end{publisher}.
+\format[HTMLChars]{\publisher}.
+\end{publisher}
 \begin{isbn}
 ISBN: \format[HTMLChars]{\isbn} 
 \end{isbn}
-</p>
+<br/>
+<br/>

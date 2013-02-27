@@ -1,4 +1,3 @@
-<p>
 \begin{author}
 \format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
 \end{author}
@@ -21,4 +20,5 @@ In
 \begin{isbn}
 ISBN: \format[HTMLChars]{\isbn}.
 \end{isbn}
-</p>
+<br/>
+<br/>

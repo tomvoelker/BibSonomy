@@ -1,4 +1,3 @@
-<p>
 \format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
  (\year). 
 <i> \format[HTMLChars]{\title}</i>
@@ -15,4 +14,5 @@
 \begin{note}
  (\note) 
 \end{note}
-</p>
+<br/>
+<br/>

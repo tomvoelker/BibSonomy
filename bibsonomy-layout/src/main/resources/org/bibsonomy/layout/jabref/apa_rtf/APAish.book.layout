@@ -1,19 +1,19 @@
 \begin{author}
-\format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\format[RTFChars,AuthorLastFirstAbbrOxfordCommas,Replace( and,\,)]{\author}
 \end{author}
 \begin{editor}
-\format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}, (ed.).
+ & \format[RTFChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (eds.)
 \end{editor}
- (\year). }
-{\\i \format[RTFChars]{\title}
-\begin{volume}
-, Vol. \volume
-\end{volume}. }{
+ (\year).
+{\\i \format[RTFChars]{\title}}\begin{volume}, Vol. \volume\end{volume}. 
+\begin{location}
+\format[RTFChars]{\location}: 
+\end{location}
 \begin{publisher}
-\format[RTFChars]{\publisher}
-\end{publisher}. }
-{\begin{isbn}
+\format[RTFChars]{\publisher}.
+\end{publisher}
+\begin{isbn}
 ISBN: \format[RTFChars]{\isbn} 
-\end{isbn}}{
+\end{isbn}
 \\par
 \\par

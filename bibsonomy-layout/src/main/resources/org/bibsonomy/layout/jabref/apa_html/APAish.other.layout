@@ -1,0 +1,11 @@
+\begin{author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}\end{author}\begin{year}
+ (\year)\end{year}.
+\begin{title}
+<i>\format[HTMLChars]{\title}</i>.
+\end{title}
+\begin{description}
+\format[HTMLChars]{\description}.
+\end{description}
+<br/>
+<br/>

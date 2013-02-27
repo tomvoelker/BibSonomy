@@ -1,17 +1,9 @@
-<p>
-\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
  (\year). 
-\format[HTMLChars]{\title}. <i>\format[HTMLChars]{\journal}</i>
-\begin{volume}
-<b> \volume</b>
-\end{volume}
-\begin{number}
- (\number)
-\end{number}
-\begin{pages}
-, \pages
-\end{pages}. 
+\format[HTMLChars]{\title}. <i>\format[HTMLChars]{\journal}</i>, 
+\begin{volume}\volume\end{volume}\begin{pages}, \pages\end{pages}. 
 \begin{doi}
  doi: \format[HTMLChars]{\doi}
 \end{doi}
-</p>
+<br/>
+<br/>
