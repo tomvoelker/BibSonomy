@@ -124,6 +124,10 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 				// ranking
 				else if (SortKey.RANKING.equals(crit.sortKey)) {
 					return this.compare(post1.getRanking(), post2.getRanking(), crit.sortOrder);
+				}
+				// number
+				else if (SortKey.NUMBER.equals(crit.sortKey)) {
+					return this.compareNumber(post1.getResource().getNumber(), post2.getResource().getNumber(), crit.sortOrder);
 				} else {
 					return 0;
 				}
@@ -135,7 +139,29 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 		return 0;
 	}
 
-	
+	/**
+	 * Compare two posts by its publication number. If no number is given, return -1,
+	 * so that posts without number are put at the bottom of the list. 
+	 * @param number publication number of a post
+	 * @param number2 publication number of another post
+	 * @param sortOrder sort order
+	 * @return an integer representing the sorted order between both numbers
+	 * @throws SortKeyIsEqualException
+	 */
+	private int compareNumber(String number, String number2, SortOrder sortOrder) throws SortKeyIsEqualException {
+		if (number == null || number2 == null) {
+			return sortOrder.equals(SortOrder.ASC) ? 1 : -1;
+		}
+		try {
+			int iNumber = Integer.parseInt(number);
+			int iNumber2 = Integer.parseInt(number2);
+			
+			return this.compare(iNumber, iNumber2, sortOrder);
+		} catch (NumberFormatException e) {
+		}
+		return this.normalizeAndCompare(number, number2, sortOrder);
+	}
+
 	/**
 	 * Compare two author / editor lists of a bibtex entry
 	 * 
@@ -274,5 +300,5 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 			return this.normalizeAndCompare(month1number, month2number, order);
 		}
 	}
-
+	
 }
