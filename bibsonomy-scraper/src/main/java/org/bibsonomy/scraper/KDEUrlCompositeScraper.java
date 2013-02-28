@@ -2,7 +2,7 @@
  *
  *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *
@@ -58,7 +58,6 @@ import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
-import org.bibsonomy.scraper.url.kde.gbv.GbvScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
