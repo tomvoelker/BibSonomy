@@ -111,4 +111,9 @@ public class UrlBuilder {
 		
 		return url.toString();
 	}
+	
+	@Override
+	public String toString() {
+		return asString();
+	}
 }
