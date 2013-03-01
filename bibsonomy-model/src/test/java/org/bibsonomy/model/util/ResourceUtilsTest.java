@@ -24,9 +24,7 @@
 package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -39,28 +37,6 @@ import org.junit.Test;
 public class ResourceUtilsTest {
 
 	/**
-	 * tests getResource
-	 */
-	@Test
-	public void getResource() {
-		assertEquals(Resource.class, ResourceUtils.getResource("all"));
-		assertEquals(BibTex.class, ResourceUtils.getResource("bibtex"));
-		assertEquals(Bookmark.class, ResourceUtils.getResource("bookmark"));
-
-		assertEquals(Resource.class, ResourceUtils.getResource(" All"));
-		assertEquals(BibTex.class, ResourceUtils.getResource("BIBTEX"));
-		assertEquals(Bookmark.class, ResourceUtils.getResource("BookMark "));
-
-		for (final String resourceType : new String[] { "", " ", null, "foo bar" }) {
-			try {
-				ResourceUtils.getResource(resourceType);
-				fail("Expected UnsupportedResourceTypeException");
-			} catch (final UnsupportedResourceTypeException ignored) {
-			}
-		}
-	}
-
-	/**
 	 * We want to make sure that this is the case, because we are relying on it
 	 * in our testcases.
 	 */
@@ -71,13 +47,4 @@ public class ResourceUtilsTest {
 		assertEquals("ALL", ResourceUtils.toString(Resource.class));
 	}
 	
-	/**
-	 * Checks, if the getInstance() method works as expected
-	 * @throws Exception
-	 */
-	@Test
-	public void testGetInstance() throws Exception {
-		assertEquals(BibTex.class, ResourceUtils.getInstance("bibtex").getClass());
-		assertEquals(Bookmark.class, ResourceUtils.getInstance("bookmark").getClass());
-	}
 }

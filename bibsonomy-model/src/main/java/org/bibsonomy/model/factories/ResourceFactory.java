@@ -104,7 +104,7 @@ public class ResourceFactory {
 	
 	/**
 	 * @param resourceClass
-	 * @return the name of the resource class
+	 * @return the name of the resource class (all lowercase)
 	 */
 	public static final String getResourceName(final Class<? extends Resource> resourceClass) {
 		return RESOURCE_CLASS_NAMES.get(resourceClass);

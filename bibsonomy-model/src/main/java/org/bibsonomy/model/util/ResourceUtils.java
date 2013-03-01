@@ -30,6 +30,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.factories.ResourceFactory;
 
 /**
  * Static methods to handle Resources.
@@ -51,38 +52,11 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * @param resourceType
-	 * @return resource
-	 */
-	@Deprecated // please use the ResourceFactory#createResource!
-	public static Class<? extends Resource> getResource(final String resourceType) {
-		if (resourceType == null) throw new UnsupportedResourceTypeException("ResourceType is null");
-		final Class<? extends Resource> rVal = byStringMap.get(resourceType.trim().toUpperCase());
-		if (rVal == null) {
-			throw new UnsupportedResourceTypeException();
-		}
-		return rVal;
-	}
-	
-	/**
-	 * Returns an instance of a {@link Resource} with the given type.
-	 * 
-	 * @param resourceType
-	 * @return An instance of a resource with the given type.
-	 * 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 */
-	@Deprecated // please use the ResourceFactory!
-	public static Resource getInstance(final String resourceType) throws InstantiationException, IllegalAccessException {
-		return getResource(resourceType).newInstance();
-	}
-
-	/**
 	 * @param clazz
 	 * @return string
+	 * @deprecated  please use {@link ResourceFactory#getResourceName(Class)}
 	 */
-	@Deprecated // please use the ResourceFactory#getResourceName!
+	@Deprecated
 	public static String toString(final Class<? extends Resource> clazz) {
 		final String rVal = toStringMap.get(clazz);
 		if (rVal == null) {
