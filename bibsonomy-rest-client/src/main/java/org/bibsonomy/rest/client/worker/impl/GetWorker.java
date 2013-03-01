@@ -35,6 +35,8 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -47,6 +49,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  */
 public final class GetWorker extends HttpWorker<GetMethod> {
 
+	protected static final Log log = LogFactory.getLog(GetWorker.class);
 	private final ProgressCallback callback;
 
 	/**
@@ -71,13 +74,13 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 	@Override
 	protected Reader readResponse(final GetMethod method) throws IOException, ErrorPerformingRequestException {
 		if (method.getResponseBodyAsStream() != null) {
-			return performDownload(method.getResponseBodyAsStream(), method.getResponseContentLength());
+			return performDownload(method.getResponseBodyAsStream(), method.getResponseContentLength(), method.getResponseCharSet());
 		}
 		
 		throw new ErrorPerformingRequestException("No Answer.");
 	}
 
-	private Reader performDownload(final InputStream responseBodyAsStream, final long responseContentLength) throws ErrorPerformingRequestException, IOException {
+	private Reader performDownload(final InputStream responseBodyAsStream, final long responseContentLength, String responseCharSet) throws ErrorPerformingRequestException, IOException {
 		if (responseContentLength > Integer.MAX_VALUE) throw new ErrorPerformingRequestException("The response is to long: " + responseContentLength);
 
 		StringBuilder sb = null;
@@ -86,7 +89,7 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 		} else {
 			sb = new StringBuilder((int) responseContentLength);
 		}
-		final BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsStream, "UTF-8"));
+		final BufferedReader br = new BufferedReader(new InputStreamReader(responseBodyAsStream, responseCharSet));
 		int bytesRead = 0;
 		String line = null;
 		while ((line = br.readLine()) != null) {

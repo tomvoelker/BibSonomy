@@ -31,7 +31,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -65,14 +65,14 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 		
 		switch (this.grouping) {
 		case USER:
-			url = URL_USERS + "/" + this.groupingName + "/" + URL_CONCEPTS;			
+			url = RESTConfig.USERS_URL + "/" + this.groupingName + "/" + RESTConfig.CONCEPTS_URL;			
 			break;
 		case GROUP:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not implemented yet");
 			//url = URL_GROUPS + "/" + this.groupingName + "/" + URL_CONCEPTS;
 			//break;
 		case ALL:
-			url = URL_CONCEPTS;
+			url = RESTConfig.CONCEPTS_URL;
 			break;
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept query");
@@ -83,7 +83,7 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 		}
 
 		if (this.resourceType != null) {
-			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType).toLowerCase();
+			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceFactory.getResourceName(this.resourceType);
 		}
 		
 		if (this.regex != null) {

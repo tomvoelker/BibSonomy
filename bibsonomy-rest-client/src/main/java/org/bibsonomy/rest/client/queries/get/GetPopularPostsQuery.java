@@ -28,7 +28,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -116,7 +116,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 		String url = RESTConfig.POSTS_POPULAR_URL + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
 
 		if (this.resourceType != Resource.class) {
-			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType).toLowerCase();
+			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceFactory.getResourceName(this.resourceType);
 		}
 
 		switch (this.grouping) {

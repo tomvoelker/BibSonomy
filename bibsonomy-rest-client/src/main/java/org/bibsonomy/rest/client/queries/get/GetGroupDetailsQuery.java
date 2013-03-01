@@ -24,6 +24,7 @@
 package org.bibsonomy.rest.client.queries.get;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -60,7 +61,7 @@ public final class GetGroupDetailsQuery extends AbstractQuery<Group> {
 
 	@Override
 	protected Group doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_GROUPS + "/" + this.groupname);
+		this.downloadedDocument = performGetRequest(RESTConfig.GROUPS_URL + "/" + this.groupname);
 		return null;
 	}
 }

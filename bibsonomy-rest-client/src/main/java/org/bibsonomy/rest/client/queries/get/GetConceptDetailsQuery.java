@@ -25,6 +25,7 @@ package org.bibsonomy.rest.client.queries.get;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -52,14 +53,14 @@ public class GetConceptDetailsQuery extends AbstractQuery<Tag> {
 		
 		switch (this.grouping) {
 		case USER:
-			url = URL_USERS + "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptname;
+			url = RESTConfig.USERS_URL + "/" + this.groupingName + "/" + RESTConfig.CONCEPTS_URL + "/" + this.conceptname;
 			break;
 		case GROUP:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not implemented yet");
 			//url = URL_GROUPS + "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptname;
 			//break;
 		case ALL:
-			url = URL_CONCEPTS + "/" + this.conceptname;  
+			url = RESTConfig.CONCEPTS_URL + "/" + this.conceptname;  
 			break;			
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept details query");

@@ -247,8 +247,10 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final GetTagsQuery query = new GetTagsQuery(start, end);
+		query.setResourceType(resourceType);
 		query.setGrouping(grouping, groupingName);
 		query.setFilter(regex);
+		query.setOrder(order);
 		return execute(query);
 	}
 

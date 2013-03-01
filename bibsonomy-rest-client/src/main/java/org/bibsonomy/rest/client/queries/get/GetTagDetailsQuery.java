@@ -24,6 +24,7 @@
 package org.bibsonomy.rest.client.queries.get;
 
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -54,7 +55,7 @@ public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 
 	@Override
 	protected Tag doExecute() throws ErrorPerformingRequestException {
-		final String url = URL_TAGS + "/" + tagName;
+		final String url = RESTConfig.TAGS_URL + "/" + tagName;
 		this.downloadedDocument = performGetRequest(url);
 		return null;
 	}

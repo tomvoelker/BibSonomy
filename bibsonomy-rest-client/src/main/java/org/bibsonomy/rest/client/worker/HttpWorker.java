@@ -111,9 +111,11 @@ public abstract class HttpWorker<M extends HttpMethod> {
 		
 		try {
 			this.httpResult = getHttpClient().executeMethod(method);
-			LOGGER.debug("HTTP result: " + this.httpResult);
-			LOGGER.debug("response:\n" + method.getResponseBodyAsString());
-			LOGGER.debug("===================================================");
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("HTTP result: " + this.httpResult);
+				LOGGER.debug("response:\n" + method.getResponseBodyAsString());
+				LOGGER.debug("===================================================");
+			}
 			return this.readResponse(method);
 		} catch (final IOException e) {
 			LOGGER.error(e.getMessage(), e);

@@ -73,7 +73,7 @@ public final class GetUserListQuery extends AbstractQuery<List<User>> {
 
 	@Override
 	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_USERS + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end);
+		this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end);
 		return null;
 	}
 }

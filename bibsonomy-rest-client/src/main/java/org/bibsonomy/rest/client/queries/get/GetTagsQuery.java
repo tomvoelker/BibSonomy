@@ -32,7 +32,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -134,7 +133,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 
 	@Override
 	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
-		String url = URL_TAGS + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
+		String url = RESTConfig.TAGS_URL + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
 
 		if (order != null) {
 			url += "&" + RESTConfig.ORDER_PARAM + "=" + this.order;
@@ -156,7 +155,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 		}
 		
 		if (this.resourceType != null && !Resource.class.equals(this.resourceType)) {
-			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType);
+			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceFactory.getResourceName(this.resourceType);
 		}	
 		this.downloadedDocument = performGetRequest(url);
 		return null;

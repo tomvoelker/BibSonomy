@@ -27,6 +27,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -68,7 +69,7 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 
 	@Override
 	protected Post<? extends Resource> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username + "/" + URL_POSTS + "/" + this.resourceHash);
+		this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + this.username + "/" + RESTConfig.POSTS_URL + "/" + this.resourceHash);
 		return null;
 	}
 }

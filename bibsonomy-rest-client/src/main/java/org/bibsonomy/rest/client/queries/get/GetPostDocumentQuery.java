@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bibsonomy.model.Document;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.file.FileUtil;
@@ -94,7 +95,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 	@Override
 	protected Document doExecute() throws ErrorPerformingRequestException {
 		if (!this.fileExists) {
-			this.performFileDownload(URL_USERS + "/" + this.document.getUserName() + "/posts/" + this.resourceHash + "/documents/" + this.document.getFileName(), this.document.getFile());
+			this.performFileDownload(RESTConfig.USERS_URL + "/" + this.document.getUserName() + "/posts/" + this.resourceHash + "/documents/" + this.document.getFileName(), this.document.getFile());
 		} else {
 			this.setExecuted(true);
 			this.setStatusCode(200);

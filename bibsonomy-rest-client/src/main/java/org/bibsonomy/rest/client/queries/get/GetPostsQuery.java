@@ -34,11 +34,12 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -152,7 +153,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	 *            the search string to set
 	 */
 	public void setSearch(final String search) {
-		// TODO: use url encode!?
+		// urlencode is done later
 		this.search = search.replace(" ", "+");
 	}
 
@@ -170,60 +171,76 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	@Override
 	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
-		String url = URL_POSTS + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
-
-		if (this.resourceType != Resource.class) {
-			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType).toLowerCase();
-		}
-
-		switch (this.grouping) {
-		case USER:
-			url += "&user=" + this.groupingValue;
-			break;
-		case GROUP:
-			url += "&group=" + this.groupingValue;
-			break;
-		case VIEWABLE:
-			url += "&viewable=" + this.groupingValue;
-			break;
-		case ALL:
-			break;
-		case FRIEND:
-			url += "&friend=" + this.groupingValue;
-			break;
-		case CLIPBOARD:
+		if (GroupingEntity.CLIPBOARD.equals(this.grouping)) {
 			this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + userName + "/" + RESTConfig.CLIPBOARD_SUBSTRING);
 			return null;
-		default:
-			throw new UnsupportedOperationException("The grouping " + this.grouping + " is currently not supported by this query.");
+		}
+		
+		final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.POSTS_URL);
+		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
+		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
+
+		if (this.resourceType != Resource.class) {
+			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
+		}
+
+		final String groupingParameterName = getGroupingParameterName();
+		if (groupingParameterName != null) {
+			urlBuilder.addParameter(groupingParameterName, this.groupingValue);
 		}
 
 		if (present(this.tags)) {
-			boolean first = true;
+			StringBuilder tagsStringBuilder = new StringBuilder();
 			for (final String tag : tags) {
-				if (first) {
-					url += "&" + RESTConfig.TAGS_PARAM + "=" + tag;
-					first = false;
-				} else {
-					url += "+" + tag;
-				}
+				tagsStringBuilder.append(tag).append(' ');
 			}
+			tagsStringBuilder.setLength(tagsStringBuilder.length() - 1);
+			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, tagsStringBuilder.toString());
 		}
 
 		if (this.resourceHash != null && this.resourceHash.length() > 0) {
-			url += "&" + RESTConfig.RESOURCE_PARAM + "=" + this.resourceHash;
+			urlBuilder.addParameter(RESTConfig.RESOURCE_PARAM, this.resourceHash);
 		}
 
 		if (this.order != null) {
-			url += "&" + RESTConfig.ORDER_PARAM + "=" + this.order;
+			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, this.order.toString());
 		}
 
-		if (this.search != null && this.search.length() > 0) {
-			url += "&" + RESTConfig.SEARCH_PARAM + "=" + this.search;
+		if (present(this.search)) {
+			urlBuilder.addParameter(RESTConfig.SEARCH_PARAM, this.search);
 		}
-		log.debug("GetPostsQuery doExecute() called - URL: " + url);
+		String url = urlBuilder.toString();
+		if (log.isDebugEnabled()) {
+			log.debug("GetPostsQuery doExecute() called - URL: " + url);
+		}
 		this.downloadedDocument = performGetRequest(url);
+
 		return null;
+	}
+
+	public String getGroupingParameterName() {
+		String groupingParameterName;
+		switch (this.grouping) {
+		case USER:
+			groupingParameterName = "user";
+			break;
+		case GROUP:
+			groupingParameterName = "group";
+			break;
+		case VIEWABLE:
+			groupingParameterName = "viewable";
+			break;
+		case ALL:
+			groupingParameterName = null;
+			break;
+		case FRIEND:
+			groupingParameterName = "friend";
+			break;
+		// CLIPBOARD is already handled separately and therefore not covered here
+		default:
+			throw new UnsupportedOperationException("The grouping " + this.grouping + " is currently not supported by this query.");
+		}
+		return groupingParameterName;
 	}
 
 	/**

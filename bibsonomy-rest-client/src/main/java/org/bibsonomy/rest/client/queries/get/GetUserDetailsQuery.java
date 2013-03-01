@@ -26,6 +26,7 @@ package org.bibsonomy.rest.client.queries.get;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -62,7 +63,7 @@ public final class GetUserDetailsQuery extends AbstractQuery<User> {
 
 	@Override
 	protected User doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(URL_USERS + "/" + this.username);
+		this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + this.username);
 		return null;
 	}
 }
