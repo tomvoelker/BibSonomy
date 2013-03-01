@@ -520,6 +520,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
+	 * tests whether tags with umlauts can be queried correctly
+	 */
+	@Test
+	public void getPostsTestPublicationByTagWithUmlaut() {
+		getPosts(BibTex.class, GroupingEntity.ALL, null, Arrays.asList("blüb"), null, null, null, null, null, null, 0, 1);
+	}
+	
+	/**
 	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getPublicationByHashForUser query 
 	 */
 	@Test
