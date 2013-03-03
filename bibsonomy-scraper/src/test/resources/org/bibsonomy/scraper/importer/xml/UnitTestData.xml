@@ -1417,6 +1417,8 @@
 		<URL>http://gso.gbv.de/DB=2.1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=729051676</URL>
 		<BibFile>GsoGbvScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.gbv.GbvScraper</Scraper>
+		<!--  Scraper was removed -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_231">
 		<TestDescription>test for nature.com</TestDescription>
