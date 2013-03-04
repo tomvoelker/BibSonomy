@@ -216,6 +216,7 @@
 			</list>
 		</property>
 		<property name="cacheSeconds" value="${dev.messagesource.cache}" />
+		<property name="fallbackToSystemLocale" value="false"/>
 	</bean>
 
 	<!--  #################### view resolver #################### -->
