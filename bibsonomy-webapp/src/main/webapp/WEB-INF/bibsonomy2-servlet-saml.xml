@@ -43,12 +43,24 @@
 		<lookup-method name="produceFailureBean" bean="dummySamlEntryPoint"/>
 	</bean>
 	
+	<bean id="samlAutoLoginFilter" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="samlActivatedCondition"/>
+		<lookup-method name="produceSucessBean" bean="realSamlAutoLoginFilter"/>
+		<lookup-method name="produceFailureBean" bean="dummyFilter"/>
+	</bean>
+	
 	<bean id="realSamlLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.SamlLoginFilter">
 		<property name="filterProcessesUrl" value="/login_saml" />
 		<property name="authenticationEntryPoint" ref="samlEntryPoint" />
 		<property name="authenticationManager" ref="samlAuthenticationManager" />
 		<property name="authenticationFailureHandler" ref="failureHandler" />
 	</bean>
+	
+	<bean id="realSamlAutoLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.ParameterTriggeredAutoLoginFilter">
+		<property name="loginParameterName" value="autoLogin" />
+		<property name="authenticationEntryPoint" ref="samlEntryPoint" />
+	</bean>
+	
 
 	<!-- Handler deciding where to redirect user after successful login -->
 	<bean id="successRedirectHandler" class="org.springframework.security.saml.SAMLRelayStateSuccessHandler">

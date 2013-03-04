@@ -31,7 +31,7 @@
 			<map key-type="org.bibsonomy.common.enums.AuthMethod">
 				<entry key="INTERNAL"><list><ref bean="internalUsernamePasswordFilter" /></list></entry>
 				<entry key="LDAP"><list><ref bean="ldapUsernamePasswordFilter" /></list></entry>
-				<entry key="SAML"><list><ref bean="samlFilter" /><ref bean="samlLoginFilter" /></list></entry>
+				<entry key="SAML"><list><ref bean="samlFilter" /><ref bean="samlLoginFilter" /><ref bean="samlAutoLoginFilter"/></list></entry>
 				<entry key="OPENID"><list><ref bean="openidFilter" /></list></entry>
 				<entry key="HTTPBASIC"><list><ref bean="httpBasicAuthenticationFilter" /></list></entry>
 			</map>
@@ -80,6 +80,7 @@
 		<security:custom-filter before="FIRST" ref="samlMetadataGeneratorFilter"/>
 		
 		<security:custom-filter after="LAST" ref="limitedUserFilter" />
+
 		<!-- 
 			login filters are configurated by
 			org.bibsonomy.webapp.config.AuthenticationFilterConfigurator
@@ -138,10 +139,19 @@
 	<bean id="delegatingEntryPoint" class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
 		<constructor-arg>
 			<map key-type="org.springframework.security.web.util.AntPathRequestMatcher">
-				<entry key="/autoRegisterSamlAndOAuth" value-ref="samlEntryPoint" />
+				<entry key="/autoRegisterSamlAndOAuth" value-ref="samlEntryPoint"/>
 				<entry key="/login_saml" value-ref="samlEntryPoint" />
 				<entry key="/registersaml" value-ref="samlEntryPoint" />
 				<entry key="/register_saml_success" value-ref="samlEntryPoint" />
+				<entry>
+					<key>
+						<bean class="org.springframework.security.web.util.RegexRequestMatcher">
+							<constructor-arg index="0" value=".*autoLogin=true.*"></constructor-arg>
+							<constructor-arg index="1"><null/></constructor-arg>
+						</bean>
+					</key>
+					<ref bean="samlEntryPoint"/>
+				</entry>
 			</map>
 		</constructor-arg>
 		<property name="defaultEntryPoint" ref="entryPoint" />
