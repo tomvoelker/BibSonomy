@@ -4,14 +4,26 @@
    <formats>
       <format>tar.gz</format>
    </formats>
+   <includeBaseDirectory>false</includeBaseDirectory>
+   <!-- scripts for running bibsonomy -->
+   <fileSets>
+      <fileSet>
+         <directory>bibsonomy-batch/src/build/batch_scripts</directory>
+         <fileMode>0755</fileMode>
+         <outputDirectory>scripts</outputDirectory>
+         <directoryMode>0700</directoryMode>
+      </fileSet>
+   </fileSets>
    <files>
       <file>
          <source>misc/jabref/default-config.xml</source>
-         <destName>jabref-default-config.xml</destName>
+         <destName>config-files/jabref-default-config.xml</destName>
       </file>
+      <!-- scripts for installing bibsonomy/puma -->
       <file>
          <source>misc/scripts/createUploadFolders.sh</source>
          <fileMode>0755</fileMode>
+         <destName>install-scripts/createUploadFolders.sh</destName>
       </file>
       <!-- default user picture -->
       <file>
