@@ -1,0 +1,34 @@
+<!-- this file collects all data for installing a new BibSonomy / PUMA instance -->
+<assembly>
+   <id>install-files</id>
+   <formats>
+      <format>tar.gz</format>
+   </formats>
+   <files>
+      <file>
+         <source>misc/jabref/default-config.xml</source>
+         <destName>jabref-default-config.xml</destName>
+      </file>
+      <file>
+         <source>misc/scripts/createUploadFolders.sh</source>
+         <fileMode>0755</fileMode>
+      </file>
+      <!-- default user picture -->
+      <file>
+         <source>bibsonomy-webapp/src/main/webapp/resources/image/no_picture.png</source>
+      </file>
+      <!-- database schemata -->
+      <file>
+         <source>bibsonomy-database/src/main/resources/bibsonomy-db-schema.sql</source>
+      </file>
+      <file>
+         <source>bibsonomy-database/src/main/resources/bibsonomy-db-init.sql</source>
+      </file>
+      <file>
+         <source>bibsonomy-recommender/src/main/resources/recommender-db-schema.sql</source>
+      </file>
+      <file>
+         <source>bibsonomy-logging/src/main/resources/database/logging-db-schema.sql</source>
+      </file>
+   </files>
+</assembly>
