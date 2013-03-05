@@ -1,15 +1,8 @@
 package org.bibsonomy.webapp.util.spring.security.rememberMeServices;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
+import org.bibsonomy.util.UrlParameterExtractor;
 import org.bibsonomy.util.ValidationUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +21,8 @@ import org.springframework.security.saml.SAMLCredential;
  *          nosebrain Exp $
  */
 public class TokenBasedRememberMeServices extends org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices implements CookieBasedRememberMeServices {
-	private static final Log log = LogFactory.getLog(TokenBasedRememberMeServices.class);
-
+	private UrlParameterExtractor paramExtractor;
+	
 	/**
 	 * default constructor
 	 * 
@@ -61,27 +54,30 @@ public class TokenBasedRememberMeServices extends org.springframework.security.w
 			if (credentials instanceof SAMLCredential) {
 				SAMLCredential samlCredential = (SAMLCredential) credentials;
 				String relayState = samlCredential.getRelayState();
-				URI uri;
 				if (ValidationUtils.present(relayState)) {
-					try {
-						uri = new URI(relayState);
-						List<NameValuePair> params = URLEncodedUtils.parse(uri, "UTF-8");
-						for (NameValuePair nvp : params) {
-							if (getParameter().equals(nvp.getName())) {
-								return isPositiveRememberMeValue(nvp.getValue());
-							}
-						}
-					} catch (URISyntaxException e) {
-						log.debug("error while parsing relayState URL", e);
-					}
+					final String parameterValue = getParamExtractor().parseParameterValueFromUrl(relayState);
+					return isPositiveRememberMeValue(parameterValue);
 				}
 			}
-
 		}
 		return false;
+	}
+	
+	@Override
+	public void setParameter(String parameter) {
+		super.setParameter(parameter);
+		this.paramExtractor = null;
+	}
+	
+	private UrlParameterExtractor getParamExtractor() {
+		if (this.paramExtractor == null) {
+			this.paramExtractor =new UrlParameterExtractor(getParameter());
+		}
+		return this.paramExtractor;
 	}
 
 	private static boolean isPositiveRememberMeValue(String paramValue) {
 		return (paramValue.equalsIgnoreCase("true") || paramValue.equalsIgnoreCase("on") || paramValue.equalsIgnoreCase("yes") || paramValue.equals("1"));
 	}
+
 }
