@@ -145,9 +145,9 @@
 				<entry key="/register_saml_success" value-ref="samlEntryPoint" />
 				<entry>
 					<key>
-						<bean class="org.springframework.security.web.util.RegexRequestMatcher">
-							<constructor-arg index="0" value=".*autoLogin=true.*"></constructor-arg>
-							<constructor-arg index="1"><null/></constructor-arg>
+						<bean class="org.bibsonomy.webapp.util.spring.security.web.util.ParameterRequestMatcher">
+							<property name="parameterName" value="autoLogin" />
+							<property name="parameterValue" value="saml" />
 						</bean>
 					</key>
 					<ref bean="samlEntryPoint"/>

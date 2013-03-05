@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -32,14 +33,11 @@ public class ParameterTriggeredAutoLoginFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		if ("true".equals(request.getParameter(loginParameterName))) {
+		if (ValidationUtils.present(request.getParameter(loginParameterName))) {
 			User user = AuthenticationUtils.getUserOrNull();
 			if (user == null) {
-				//((HttpServletRequest) request).getRequestDispatcher("/login_saml").forward(request, response);
-				//return;
 				authenticationEntryPoint.commence((HttpServletRequest) request, (HttpServletResponse) response, null);
 				return;
-				//throw new SpecialAuthMethodRequiredException(AuthMethod.SAML);
 			}
 		}
 		chain.doFilter(request, response);

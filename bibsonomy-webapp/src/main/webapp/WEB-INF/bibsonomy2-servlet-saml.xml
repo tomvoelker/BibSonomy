@@ -54,6 +54,7 @@
 		<property name="authenticationEntryPoint" ref="samlEntryPoint" />
 		<property name="authenticationManager" ref="samlAuthenticationManager" />
 		<property name="authenticationFailureHandler" ref="failureHandler" />
+		<property name="rememberMeServices" ref="internalRememberMeServices" />
 	</bean>
 	
 	<bean id="realSamlAutoLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.ParameterTriggeredAutoLoginFilter">
@@ -261,6 +262,7 @@
 	<bean id="samlWebSSOProcessingFilter" class="org.springframework.security.saml.SAMLProcessingFilter">
 		<property name="authenticationManager" ref="samlAuthenticationManager" />
 		<property name="authenticationSuccessHandler" ref="successRedirectHandler" />
+		<property name="rememberMeServices" ref="internalRememberMeServices" />
 	</bean>
 
 	<!-- Processing filter for WebSSO Holder-of-Key profile -->
