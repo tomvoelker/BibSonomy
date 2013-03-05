@@ -143,15 +143,6 @@
 				<entry key="/login_saml" value-ref="samlEntryPoint" />
 				<entry key="/registersaml" value-ref="samlEntryPoint" />
 				<entry key="/register_saml_success" value-ref="samlEntryPoint" />
-				<entry>
-					<key>
-						<bean class="org.bibsonomy.webapp.util.spring.security.web.util.ParameterRequestMatcher">
-							<property name="parameterName" value="autoLogin" />
-							<property name="parameterValue" value="saml" />
-						</bean>
-					</key>
-					<ref bean="samlEntryPoint"/>
-				</entry>
 			</map>
 		</constructor-arg>
 		<property name="defaultEntryPoint" ref="entryPoint" />
