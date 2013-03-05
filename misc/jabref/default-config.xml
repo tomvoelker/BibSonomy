@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE map SYSTEM "http://java.sun.com/dtd/preferences.dtd">
+<map MAP_XML_VERSION="1.0">
+  <entry key="priBinary" value="false"/>
+  <entry key="priDescending" value="true"/>
+  <entry key="priSort" value="year"/>
+  <entry key="secDescending" value="false"/>
+  <entry key="secSort" value="author"/>
+  <entry key="terDescending" value="false"/>
+  <entry key="terSort" value="title"/>
+</map>
