@@ -30,5 +30,8 @@
       <file>
          <source>bibsonomy-logging/src/main/resources/database/logging-db-schema.sql</source>
       </file>
+      <file>
+         <source>bibsonomy-opensocial/src/main/resources/database/opensocial-db-schema.sql</source>
+      </file>
    </files>
 </assembly>
