@@ -221,11 +221,11 @@
 	
 	<!-- sets a remember me cookie for the database -->
 	<bean id="internalRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.TokenBasedRememberMeServices">
-  		<constructor-arg ref="cookieKey" />
-  		<constructor-arg ref="databaseUserService" />
-  		<property name="parameter" ref="rememberMeParameter"/>
-  		<property name="cookieName" value="db_user" />
-  		<property name="tokenValiditySeconds" ref="cookieAge" /> <!-- found in main servlet xml -->
+		<constructor-arg ref="cookieKey" />
+		<constructor-arg ref="databaseUserService" />
+		<property name="parameter" ref="rememberMeParameter"/>
+		<property name="cookieName" value="db_user" />
+		<property name="tokenValiditySeconds" ref="cookieAge" /> <!-- found in main servlet xml -->
 	</bean>
 	
 	<!-- filter for the db remember me cookie -->
@@ -282,9 +282,8 @@
 	</bean>
 
 	<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
-  		<property name="realmName" value="${project.name}"/>
+		<property name="realmName" value="${project.name}"/>
 	</bean>
-          
 	
 	<!-- Open ID login -->
 	<bean id="openidLoginUrl" class="java.lang.String">
@@ -372,11 +371,11 @@
 	
 	<!-- open id remember me service -->
 	<bean id="openidRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeServices">
-  		<constructor-arg ref="cookieKey" />
+		<constructor-arg ref="cookieKey" />
 		<constructor-arg ref="databaseUserService" />
-  		<property name="parameter" ref="rememberMeParameter" />
-  		<property name="cookieName" value="openID_user" />
-  		<property name="filterUrl" ref="openidLoginUrl" />
+			<property name="parameter" ref="rememberMeParameter" />
+			<property name="cookieName" value="openID_user" />
+			<property name="filterUrl" ref="openidLoginUrl" />
 		<property name="projectRoot" value="${project.home}" />
 		<property name="consumer" ref="openidConsumer" />
 		<property name="returnToUrlParameters" ref="openIdReturnParameters" />
@@ -435,13 +434,13 @@
 	</bean>
 	
 	<!--+ 
-	 	|
-	 	| Authenticator config for LDAP
-	 	| We have two options: directly create the DN pattern to find the user
-	 	| (simpleLdapBindAuthenticator) or first do a search using a filter
-	 	| (searchLdapBindAuthenticator).
-	 	|
-	 	+-->
+		|
+		| Authenticator config for LDAP
+		| We have two options: directly create the DN pattern to find the user
+		| (simpleLdapBindAuthenticator) or first do a search using a filter
+		| (searchLdapBindAuthenticator).
+		|
+		+-->
 	<bean id="simpleLdapBindAuthenticator" class="org.springframework.security.ldap.authentication.BindAuthenticator">
 		<constructor-arg ref="contextSource" />
 		<property name="userDnPatterns">
