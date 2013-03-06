@@ -46,6 +46,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -84,6 +85,7 @@ import org.bibsonomy.rest.client.queries.get.GetPostDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostDocumentQuery;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagDetailsQuery;
+import org.bibsonomy.rest.client.queries.get.GetTagRelationQuery;
 import org.bibsonomy.rest.client.queries.get.GetTagsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
@@ -242,6 +244,11 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public Tag getTagDetails(final String tagName) {
 		return execute(new GetTagDetailsQuery(tagName));
+	}
+	
+	@Override
+	public List<Tag> getTagRelation(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
+		return execute(new GetTagRelationQuery(start, end, relation, tagNames));
 	}
 
 	@Override
