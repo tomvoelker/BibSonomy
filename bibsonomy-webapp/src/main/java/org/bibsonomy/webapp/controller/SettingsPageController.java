@@ -191,7 +191,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 * Get the valid OAuth applications of the user
 		 * link the logo url and title from consumerInfo
 		 */
-		List <OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication("bsc");
+		List <OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
 		for(OAuthUserInfo userInfo : oauthUserInfo) {
 			userInfo.calculateExpirationTime();
 			userInfo.setExpirationTimeString(userInfo.formatDate(userInfo.getExpirationTime()));
