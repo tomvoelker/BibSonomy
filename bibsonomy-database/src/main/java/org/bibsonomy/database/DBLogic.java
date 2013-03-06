@@ -32,6 +32,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -2713,5 +2714,11 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
+	}
+
+	@Override
+	public List<Tag> getTagRelation(int start, int end, TagRelation relation, List<String> tagNames) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
