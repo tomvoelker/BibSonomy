@@ -11,6 +11,8 @@ import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 
 /**
  * Interface for accessing the OAuthDataStore
@@ -131,5 +133,7 @@ public interface IOAuthLogic {
 	 * @param token
 	 */
 	public void deleteProviderToken(String token);
+
+	public List <OAuthUserInfo> getOAuthUserApplication(String username);
 	
 }

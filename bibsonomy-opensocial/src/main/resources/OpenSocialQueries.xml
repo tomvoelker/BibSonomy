@@ -24,6 +24,17 @@
 		<result property="thumbnail"        column="thumbnail"         javaType="string" />
 		<result property="icon"             column="icon"              javaType="string" />
 	</resultMap>
+
+	<resultMap id="userInfo" class="userInfo">
+		<result property="userId"            column="viewer"           javaType="string" />
+		<result property="consumerKey"       column="consumer_key"     javaType="string" />
+        <result property="issueTime"         column="creation_date"    javaType="date"/>
+		<result property="domain"            column="server"           javaType="string"/>
+		<result property="oauthVersion"      column="oauth_version"    javaType="string"/>
+		<result property="appId"             column="gadget_url"       javaType="string"/>
+		<result property="authorized"        column="is_authorized"    typeHandler="org.bibsonomy.opensocial.oauth.database.typehandler.BooleanTypeHandler"/>
+		<result property="type"              column="token_type"       javaType="long"/>
+	</resultMap>
 	
 	<resultMap id="tokenInfo" class="tokenInfo">
 		<result property="accessToken"       column="access_token"     javaType="string" />
@@ -56,6 +67,15 @@
 		FROM oauth_store
 		WHERE gadget_url  = #gadgetUrl# 
 		  AND server      = #serviceName#
+	</select>
+	
+	<!-- +
+		 | query for oauth user information
+		 + -->
+	<select id="getUserInfo" parameterClass="string" resultMap="userInfo">
+		SELECT *
+		FROM oauth_provider_tokens
+		WHERE viewer = #username# 
 	</select>
 
  	<!-- +

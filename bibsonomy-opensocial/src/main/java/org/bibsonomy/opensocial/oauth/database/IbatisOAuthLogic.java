@@ -23,6 +23,8 @@ import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
+
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import com.ibatis.common.resources.Resources;
@@ -247,6 +249,21 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 			log.error("Error removing token '"+token+"'", e);
 		}
 	}
+	
+	@Override
+	public List <OAuthUserInfo> getOAuthUserApplication (String username) {
+		
+		List <OAuthUserInfo> tokenInfo = null;
+		
+		try {
+			 tokenInfo = this.sqlMap.queryForList("getUserInfo", username);
+		} catch (SQLException e) {
+			log.error("No user information found about OAuth for '"+username+"'");
+		}
+		
+		return tokenInfo;
+	}
+
 
 	//------------------------------------------------------------------------
 	// private helper
