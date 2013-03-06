@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
@@ -21,6 +22,9 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.opensocial.oauth.database.IOAuthLogic;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -45,7 +49,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * hold current errors
 	 */
 	protected Errors errors = null;
-
+	
+	protected IOAuthLogic oauthLogic;
 	protected LogicInterface logic;
 	protected RequestLogic requestLogic;
 
@@ -78,6 +83,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		
 		/*
+		 * At current time, only admins can see the OAuth consumers
+		 */
+		if(Role.ADMIN.equals(loginUser.getRole())) {
+			command.addTab(command.OAUTH_IDX, "navi.oauth.consumers");
+		}
+		
+		/*
 		 * get friends for sidebar
 		 */
 		final String loggedInUserName = command.getUser().getName();
@@ -104,6 +116,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		case 5: // cv tab
 			workOnCVTab(command);
 			break;
+		case 6: // OAuth tab
+			workOnOAuthTab(command);
+			break;	
 		default:
 			errors.reject("error.settings.tab");
 			break;
@@ -154,7 +169,44 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			}
 		}
 	}
+	
+	/**
+	 * function to get the OAuth User Information and store it in the SettingsViewCommand object
+	 * @param command
+	 */
+	private void workOnOAuthTab(final SettingsViewCommand command) {
+		
+		if(!Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
+			return;
+		}
+		
+		/**
+		 * List of all valid Bibsonomy OAuth consumers.
+		 */
+		List<OAuthConsumerInfo> consumerInfo = this.oauthLogic.listConsumers();
+		command.setConsumerInfo(consumerInfo);
 
+		
+		/**
+		 * Get the valid OAuth applications of the user
+		 * link the logo url and title from consumerInfo
+		 */
+		List <OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication("bsc");
+		for(OAuthUserInfo userInfo : oauthUserInfo) {
+			userInfo.calculateExpirationTime();
+			userInfo.setExpirationTimeString(userInfo.formatDate(userInfo.getExpirationTime()));
+			userInfo.setIssueTimeString(userInfo.formatDate(userInfo.getIssueTime()));
+			
+			for(OAuthConsumerInfo conInfo : consumerInfo) {
+				if(conInfo.getConsumerKey().equals(userInfo.getConsumerKey())) {
+					userInfo.setAppIconUrl(conInfo.getIcon());
+					userInfo.setAppTitle(conInfo.getTitle());
+				}
+			}
+		}
+		command.setOauthUserInfo(oauthUserInfo);
+	}
+	
 	private void workOnGroupTab(final SettingsViewCommand command) {
 		final String groupName = command.getContext().getLoginUser().getName();
 		// the group to update
@@ -356,4 +408,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.wikiRenderer = wikiRenderer;
 	}
 
+	/**
+	 * @param oauthLogic the oauthLogic to set
+	 */
+	public void setOauthLogic(IOAuthLogic oauthLogic) {
+		this.oauthLogic = oauthLogic;
+	}
 }

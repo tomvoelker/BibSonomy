@@ -8,6 +8,8 @@ import java.util.Map;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -27,6 +29,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int GROUP_IDX = 3;
 	public final static int SYNC_IDX = 4;
 	public final static int CV_IDX = 5;
+	public final static int OAUTH_IDX = 6;
 	
 	private static final String TAB_URL = "/settings";
 	
@@ -36,6 +39,16 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * by this controller for the settings.settings site
 	 */
 	private String action;
+	
+	/**
+	 * The OAuth informations about the User
+	 */
+	private List <OAuthUserInfo> oauthUserInfo;
+	
+	/**
+	 * List of all valid Bibsonomy OAuth consumers
+	 */
+	private List<OAuthConsumerInfo> consumerInfo;
 	
 	/**
 	 * current user
@@ -156,6 +169,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.addTab(SETTINGS_IDX, "navi.settings");
 		this.addTab(IMPORTS_IDX, "navi.imports");	
 		this.addTab(CV_IDX, "navi.cvedit");
+		//OAuth tab added in SettingsPageController.java
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
 	}
@@ -638,4 +652,33 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setIsGroup(boolean isGroup) {
 		this.isGroup = isGroup;
 	}
+
+	/**
+	 * @return the oauthUserInfo
+	 */
+	public List<OAuthUserInfo> getOauthUserInfo() {
+		return this.oauthUserInfo;
+	}
+
+	/**
+	 * @param oauthUserInfo the oauthUserInfo to set
+	 */
+	public void setOauthUserInfo(List<OAuthUserInfo> oauthUserInfo) {
+		this.oauthUserInfo = oauthUserInfo;
+	}
+
+	/**
+	 * @return the consumerInfo
+	 */
+	public List<OAuthConsumerInfo> getConsumerInfo() {
+		return this.consumerInfo;
+	}
+
+	/**
+	 * @param consumerInfo the consumerInfo to set
+	 */
+	public void setConsumerInfo(List<OAuthConsumerInfo> consumerInfo) {
+		this.consumerInfo = consumerInfo;
+	}
+
 }

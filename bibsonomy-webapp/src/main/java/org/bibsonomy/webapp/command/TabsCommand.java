@@ -96,7 +96,7 @@ public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandIn
 	 * @param id
 	 * @param title
 	 */
-	protected void addTab(final Integer id, final String title) {
+	public void addTab(final Integer id, final String title) {
 		tabs.add(new TabCommand(id, title));
 	}
 
