@@ -37,6 +37,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
@@ -227,13 +228,22 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * <li>details about the tag itself, like number of occurrences etc</li>
 	 * <li>list of subtags</li>
 	 * <li>list of supertags</li>
-	 * <li>list of correlated tags</li>
 	 * </ul>
 	 * 
 	 * @param tagName name of the tag
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(String tagName);
+	
+	/**
+	 * Returns the relations of a list of tags.
+	 * @param start
+	 * @param end
+	 * @param relation
+	 * @param tagNames
+	 * @return
+	 */
+	public List<Tag> getTagRelation(int start, int end, TagRelation relation, List<String> tagNames);
 
 	/** Updates the tags of the given user by replacing ALL tags of <code>tagsToReplace</code>
 	 * with ALL tags from <code>replacementTags</code>.
