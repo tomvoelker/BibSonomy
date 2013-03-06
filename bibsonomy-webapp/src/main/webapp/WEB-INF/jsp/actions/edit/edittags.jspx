@@ -232,12 +232,12 @@
 					
 					// start tag autocompletion for the input fields
 					$(function() {
-                		startTagAutocompletion($("#delTags"), false, true);
-                		startTagAutocompletion($("#addTags"), false, true);
-                		startTagAutocompletion($("#insert_up"), false, false);
-                		startTagAutocompletion($("#insert_lo"), false, true);
-                		startTagAutocompletion($("#delete_up"), false, false);
-                		startTagAutocompletion($("#delete_lo"), false, true);
+                		startTagAutocompletion($("#delTags"),   false, true,  false);
+                		startTagAutocompletion($("#addTags"),   false, true,  false);
+                		startTagAutocompletion($("#insert_up"), false, false, false);
+                		startTagAutocompletion($("#insert_lo"), false, true,  false);
+                		startTagAutocompletion($("#delete_up"), false, false, false);
+                		startTagAutocompletion($("#delete_lo"), false, true,  false);
 					});
                 	
                   ]]> 			

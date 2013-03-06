@@ -27,32 +27,6 @@
 	        	    <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
     	      	</div>
         	</c:if>
-        
-        	<!--+
-            	| show suggestions
-            	+-->
-	        <div class="fsRow">
-    	      <div class="fsLabel">${mtl:ch('nbsp')}</div>
-        	  <ul id="suggestedTags"><!-- This comment is needed, otherwise this will result in a self-closing element --></ul>
-        	</div>
-            
-	        <!--+
-    	        | show recommendations
-        	    +-->
-			<div class="fsRow">
-			  	<div class="fsLabel"><fmt:message key="post.resource.recommendation"/></div>
-          
-    	      	<!-- we assign post's id to div's class for accessing clicklog data -->
-			  	<div id="recommendedTags" class="recommended ${command.postID}">
-		    		<div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
-		      		<!-- This comment is needed, otherwise this will result in a self-closing element -->
-		  		</div>
-      
-          		<a id="fsReloadLink" href="#">
-            		<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
-            		<img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
-          		</a>
-			</div>
     
             <!--+
             	| show copied tags if available

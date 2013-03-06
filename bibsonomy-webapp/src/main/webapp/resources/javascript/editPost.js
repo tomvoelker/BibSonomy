@@ -19,7 +19,10 @@ var collect;
 
 
 $(function() {
-	initTagAutocompletion($('#inpf_tags'));
+	/**
+	 * TODO: remove unused code of old autocompletion -> initTagAutocompletion($('#inpf_tags')); 
+	 */
+	startTagAutocompletion($('#inpf_tags'), false, true, true);
 });
 
 

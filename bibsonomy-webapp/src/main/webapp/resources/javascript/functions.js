@@ -714,7 +714,7 @@ function editTags() {
 				/*
 				 * start the tag autocompletion
 				 */
-				startTagAutocompletion(input, true, true);
+				startTagAutocompletion(input, true, true, true);
 				/*
 				 * add submit handler (that removes the form and re-builds the tags)
 				 */
@@ -1112,11 +1112,31 @@ String.prototype.trim = function () {
  * @param textfield 	- the textfield for the autocompletion - e.g. $("#inpf")
  * @param isPost 		- only true if the autocompletion is started in the post list (quick tag edit), false if it is started e.g. in the search bar
  * @param multiTags 	- true if several tags are allowed in the text field, false: the textfield will be emptied and the suggested tag put in it. 
+ * @param sendAllowed	- true if send:USER is allowed in the given textfield, otherwise false
  */
-function startTagAutocompletion (textfield, isPost, multiTags) {
+function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 	
-	var textfieldValue;
-	var valueArray;
+	if (textfield[0] == null)
+		return;
+	
+	var textfieldValue 	= null;
+	var valueArray 		= null;
+	var friends 		= null;
+	
+	// only if sendAllowwed == true, get the friends of the user
+	if(sendAllowed) {
+		getFriends = function () {return friends;};
+		$.ajax({
+			url: '/json/friends?userRelation=FRIEND_OF',
+			async: false,
+			dataType: "jsonp",
+			success: function (data) {
+				friends = $.map( data.items, function( item ) {
+					return item.name;
+				});
+			}
+		});
+	}
 	
 	var autocompleteObj = textfield.autocomplete({
 		source: function( request, response ) {
@@ -1128,11 +1148,22 @@ function startTagAutocompletion (textfield, isPost, multiTags) {
 				url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + valueArray[valueArray.length - 1],
 				dataType: "jsonp",
 				success: function( data ) {
-					response( $.map( data.items, function( item ) {
-						return {
-							value: item.label
-						};
-					}));
+					if(textfieldValue.indexOf("send:") !=-1) {
+						response( $.map( friends, function( friend ) {
+							return {
+								value: friend
+							};
+						}));
+					} else {
+						response( $.map( data.items, function( item ) {
+							//don't recommend tags, which are already included in the input field
+							if(textfieldValue.indexOf(item.label) == -1) {
+								return {
+										value: item.label
+								};
+							}
+						}));
+					}
 				}
 			});
 		},
@@ -1144,7 +1175,11 @@ function startTagAutocompletion (textfield, isPost, multiTags) {
 			var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length));
 			
 			if(multiTags) {
-				textArea.val(substring + text + " ");
+				if(textfieldValue.indexOf("send:") !=-1) {
+					textArea.val(substring + "send:" + text + " ");
+				} else {
+					textArea.val(substring + text + " ");	
+				}
 			} else {
 				textArea.val(text);
 			}
@@ -1175,4 +1210,3 @@ function startTagAutocompletion (textfield, isPost, multiTags) {
 function endTagAutocompletion (textfield) {
 	textfield.autocomplete('disable');
 };
-

@@ -327,7 +327,7 @@ function switchNavi(scope, element) {
 	 * Start autocompletion if 'tag' in Search-navibar is chosen, otherwise quit autocompletion
 	 */
 	if (scope == "tag"){
-		startTagAutocompletion($("#inpf"), false, true);
+		startTagAutocompletion($("#inpf"), false, true, false);
 	} else {
 		endTagAutocompletion($("#inpf"));
 	}
