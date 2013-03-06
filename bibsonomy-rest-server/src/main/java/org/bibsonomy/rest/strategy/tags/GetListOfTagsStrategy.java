@@ -20,10 +20,10 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	protected final Class<? extends Resource> resourceType;
-	private final GroupingEntity grouping;
-	private final String groupingValue;
-	private final String regex;
-	private final String hash;
+	protected final GroupingEntity grouping;
+	protected final String groupingValue;
+	protected final String regex;
+	protected final String hash;
 	
 	/**
 	 * @param context
