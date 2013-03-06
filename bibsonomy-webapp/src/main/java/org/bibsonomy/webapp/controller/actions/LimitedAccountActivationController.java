@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
@@ -11,10 +12,13 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.actions.LimitedAccountActivationCommand;
 import org.bibsonomy.webapp.controller.ResourceListController;
 import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -34,7 +38,7 @@ public class LimitedAccountActivationController extends ResourceListController i
 	/**
 	 * After successful activation, the user is redirected to this page. 
 	 */
-	private final String successRedirect = "/register_saml_success";
+	private String successRedirect;
 
 	/**
 	 * like the homepage, only 50 tags are shown in the tag cloud
@@ -44,6 +48,8 @@ public class LimitedAccountActivationController extends ResourceListController i
 	private static final Log log       = LogFactory.getLog(LimitedAccountActivationController.class);
 	
 	private LogicInterface adminLogic;
+	
+	private RequestLogic requestLogic;
 	
 	@Override
 	public LimitedAccountActivationCommand instantiateCommand() {
@@ -94,6 +100,21 @@ public class LimitedAccountActivationController extends ResourceListController i
 			return Views.LIMITED_ACCOUNT_ACTIVATION;
 		}
 		
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+			return Views.ERROR;
+		}
+		
+		final String redirectUrl;
+		try {
+			final String hash = HashUtils.getMD5Hash((getRequestLogic().getApplicationUrl() + "/register_saml_success+" + loginUser.getName()).getBytes("UTF-8"));
+			redirectUrl = new UrlBuilder(successRedirect).addParameter("hash", hash).asString();
+		} catch (UnsupportedEncodingException ex) {
+			log.error("limited account activation failed",ex);
+			errors.reject("error.internal", new Object[] {""}, "error");
+			return Views.LIMITED_ACCOUNT_ACTIVATION;
+		}
+		
 		
 		final User ru = command.getRegisterUser();
 		loginUser.setRole(Role.DEFAULT);
@@ -101,14 +122,8 @@ public class LimitedAccountActivationController extends ResourceListController i
 		loginUser.setHomepage(ru.getHomepage());
 		loginUser.setRealname(ru.getRealname());
 		adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_LIMITED_USER);
-		
 
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-			return Views.ERROR;
-		}
-		return new ExtendedRedirectView(successRedirect);
-
+		return new ExtendedRedirectView(redirectUrl);
 	}
 
 	@Override
@@ -143,5 +158,33 @@ public class LimitedAccountActivationController extends ResourceListController i
 	 */
 	public void setAdminLogic(LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
+	}
+
+	/**
+	 * @return the successRedirect
+	 */
+	public String getSuccessRedirect() {
+		return this.successRedirect;
+	}
+
+	/**
+	 * @param successRedirect the successRedirect to set
+	 */
+	public void setSuccessRedirect(String successRedirect) {
+		this.successRedirect = successRedirect;
+	}
+
+	/**
+	 * @return the requestLogic
+	 */
+	public RequestLogic getRequestLogic() {
+		return this.requestLogic;
+	}
+
+	/**
+	 * @param requestLogic the requestLogic to set
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 }

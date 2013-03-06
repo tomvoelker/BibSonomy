@@ -241,11 +241,18 @@ public class RequestLogic {
 	 * @return a new UrlBuilder with the currently requested url
 	 */
 	public UrlBuilder getUrlBuilder() {
-        UrlBuilder urlb = new UrlBuilder(UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(), request.getRequestURI(), null));
-        for (Map.Entry<String, String[]> param : request.getParameterMap().entrySet()) {
-        	urlb.addParameter(param.getKey(), param.getValue()[0]);
-        }
-        return urlb;
+		UrlBuilder urlb = new UrlBuilder(UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(), request.getRequestURI(), null));
+		for (Map.Entry<String, String[]> param : request.getParameterMap().entrySet()) {
+			urlb.addParameter(param.getKey(), param.getValue()[0]);
+		}
+		return urlb;
+	}
+
+	/**
+	 * @return a new UrlBuilder with the currently requested url
+	 */
+	public String getApplicationUrl() {
+		return UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), null);
 	}
 
 	/**
