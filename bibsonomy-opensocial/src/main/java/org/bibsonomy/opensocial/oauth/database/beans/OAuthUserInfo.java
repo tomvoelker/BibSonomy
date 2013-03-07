@@ -10,6 +10,12 @@ import java.util.Date;
  */
 public class OAuthUserInfo {
 	
+	  /**
+	   * These constants are used to generate the variables expirationTime and isExpired for every OAuth-consumer.
+	   * There are two types of OAuth-consumers:
+	   * 	1. The OAuth consumer which lifetime is up to 5 minutes
+	   * 	2. The OAuth consumer which lifetime is up to one year
+	   */
 	  public static final long ONE_YEAR = 365 * 24 * 60 * 60 * 1000L;
 	  public static final long FIVE_MINUTES = 5 * 60 * 1000L;
 	
@@ -45,6 +51,7 @@ public class OAuthUserInfo {
 		
 		/**
 		 * Calculate expiration time and set it
+		 * According to the type of the OAuth-consumer, add the matching constant (Year/5 minutes) to the creation time.
 		 */
 
 		long expTime = issueTime.getTime();
