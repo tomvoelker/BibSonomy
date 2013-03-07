@@ -79,9 +79,9 @@ function installBookmarkletButton (options){
    	if(options.textElementId!=undefined) {
    		var param = new Array(projectName);
   		$("#"+options.textElementId).append(
-			"<h3>"
+			"<h4>"
 			+getString("bookmarklet.title"+result.browser.name, param)
-			+"</h3>"
+			+"</h4>"
 			+getString("bookmarklet.sidebarNotice", param));
    	}
    	return result.browser;

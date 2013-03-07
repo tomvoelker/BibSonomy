@@ -86,13 +86,13 @@ a {
 #navigation > ul li:hover, #navigation .pulldown:hover {
     color: #F7EFED;
 }
-
-#navigation ul li.pulldown {
+#navigation ul li.pulldown span,
+#navigation ul li.pulldown > a {
     background-image: url("/resources_puma/image/pulldown-marker-medium_white.png");
 }
 
 #navigation .pulldown > span {
-    color: #F7EFED;;
+    color: #F7EFED;
 }
 
 #navigation .pulldown.active > span {
@@ -119,6 +119,7 @@ a {
 #postcontainer {
 	border: 1px solid #DBC3BC;
 	border-top: 0;
+	border-right: 0;
 	border-bottom: 0;
 	top: 172px;
 }
@@ -138,8 +139,6 @@ a {
 }
 
 #headercontainer {
-	border-left: 1px solid #DBC3BC;
-	border-right: 1px solid #DBC3BC;
 	top: 112px;
 }
 
