@@ -139,8 +139,11 @@
 				<c:if test="${authMethod == 'SAML'}">
 					<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<form:form action="/login_saml" method="POST">
-							<input type="submit" style="margin-left: 1em" value="${login}"/>
 							<input type="hidden" name="selTab" value="${status.index}" />
+							<input type="hidden" name="rememberMe" value="false" />
+							<input type="hidden" name="referer" value="${requPath}" />
+							<input type="submit" style="margin-left: 1em" class="jsLoginButtonNonPermanent" value="${login}"/>
+							<input type="submit" style="margin-left: 0.2em" class="jsLoginButtonPermanent" value="${login_permanent}"/>
 						</form:form>
 					</div>
 				</c:if>
