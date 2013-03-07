@@ -134,6 +134,10 @@ public interface IOAuthLogic {
 	 */
 	public void deleteProviderToken(String token);
 
+	/**
+	 * @param username
+	 * @return list which is never null but may be immutable
+	 */
 	public List <OAuthUserInfo> getOAuthUserApplication(String username);
 	
 }

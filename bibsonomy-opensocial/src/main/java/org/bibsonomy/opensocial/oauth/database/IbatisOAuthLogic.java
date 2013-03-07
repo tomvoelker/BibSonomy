@@ -2,6 +2,7 @@ package org.bibsonomy.opensocial.oauth.database;
 
 import java.io.Reader;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 import net.oauth.OAuth;
@@ -253,15 +254,13 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 	@Override
 	public List <OAuthUserInfo> getOAuthUserApplication (String username) {
 		
-		List <OAuthUserInfo> tokenInfo = null;
-		
 		try {
-			 tokenInfo = this.sqlMap.queryForList("getUserInfo", username);
+			 return this.sqlMap.queryForList("getUserInfo", username);
 		} catch (SQLException e) {
 			log.error("No user information found about OAuth for '"+username+"'");
 		}
 		
-		return tokenInfo;
+		return Collections.emptyList();
 	}
 
 

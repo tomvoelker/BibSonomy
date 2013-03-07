@@ -1,5 +1,6 @@
 package org.bibsonomy.opensocial.oauth.database;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.oauth.OAuth;
@@ -101,7 +102,7 @@ public class MockupOAuthLogic implements IOAuthLogic {
 
 	public List <OAuthUserInfo> getOAuthUserApplication(String username) {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 	
 }
