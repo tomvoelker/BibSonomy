@@ -59,9 +59,12 @@
 	
 	<bean id="realSamlAutoLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.ParameterTriggeredAutoLoginFilter">
 		<property name="loginParameterName" value="autoLogin" />
-		<property name="authenticationEntryPoint" ref="samlEntryPoint" />
+		<property name="authenticationEntryPoint" ref="samlRelayStateEntryPoint" />
 	</bean>
-	
+
+	<bean id="samlRelayStateEntryPoint" class="org.bibsonomy.webapp.util.spring.security.web.RelayStateSettingEntryPoint">
+		<property name="entryPoint" ref="samlEntryPoint" />
+	</bean>	
 
 	<!-- Handler deciding where to redirect user after successful login -->
 	<bean id="successRedirectHandler" class="org.springframework.security.saml.SAMLRelayStateSuccessHandler">

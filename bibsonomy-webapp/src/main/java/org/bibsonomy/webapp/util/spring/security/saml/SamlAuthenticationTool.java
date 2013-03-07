@@ -65,15 +65,21 @@ public class SamlAuthenticationTool {
 			setRelayState();
 			return false;
 		}
-		clearLoginDoneState();
+		clearRelayState();
 		return true;
 	}
 	
-	protected void clearLoginDoneState() {
+	/**
+	 * clears the relaystate
+	 */
+	public void clearRelayState() {
 		requestLogic.setSessionAttribute(REL_STATE_CHECK_SESSION_ATTR, null);
 	}
 	
-	protected void setRelayState() {
+	/**
+	 * Sets the relaystate for the next saml request to the current url
+	 */
+	public void setRelayState() {
 		String relayStateToken = UserUtils.generateRandomPassword();
 		requestLogic.setNextRelayState(requestLogic.getUrlBuilder().clearParamsRetaining(allowedParams).addParameter("RelayState", relayStateToken).asString());
 		requestLogic.setSessionAttribute(REL_STATE_CHECK_SESSION_ATTR, relayStateToken);
@@ -84,6 +90,13 @@ public class SamlAuthenticationTool {
 		if (ValidationUtils.present(relState) == false) {
 			return false;
 		}
-		return relState.equals(requestLogic.getSessionAttribute(REL_STATE_CHECK_SESSION_ATTR));
+		return relState.equals(getRelayState());
+	}
+
+	/**
+	 * @return the relaystate
+	 */
+	public String getRelayState() {
+		return (String) requestLogic.getSessionAttribute(REL_STATE_CHECK_SESSION_ATTR);
 	}
 }
