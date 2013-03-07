@@ -77,7 +77,7 @@ public class TokenBasedRememberMeServices extends org.springframework.security.w
 	}
 
 	private static boolean isPositiveRememberMeValue(String paramValue) {
-		return (paramValue.equalsIgnoreCase("true") || paramValue.equalsIgnoreCase("on") || paramValue.equalsIgnoreCase("yes") || paramValue.equals("1"));
+		return ("true".equalsIgnoreCase(paramValue) || "on".equalsIgnoreCase(paramValue) || "yes".equalsIgnoreCase(paramValue) || "1".equals(paramValue));
 	}
 
 }
