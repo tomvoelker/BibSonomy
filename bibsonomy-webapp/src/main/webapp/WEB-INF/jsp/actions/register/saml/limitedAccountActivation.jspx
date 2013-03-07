@@ -49,9 +49,6 @@
 					width: 40%;
 					padding: 1em;
 				}
-				.paddedContainer {
-					padding: 0.2em 1em;
-				}
 				.checkboxWithText {
 					float: left;
 				}
@@ -61,9 +58,6 @@
 					line-height: 1.2;
 					margin-left: 0.8em;
 					float: left;
-				}
-				.niceText {
-					font-size: 110%; line-height: 1.5;
 				}
 				#fscontent {
 					position: relative;

@@ -2905,3 +2905,10 @@ ul.text {
 	margin-left: 2.5em !important;
 	line-height: 2em;
 }
+
+.paddedContainer {
+	padding: 0.2em 1em;
+}
+.niceText {
+	font-size: 110%; line-height: 1.5;
+}
