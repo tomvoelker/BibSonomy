@@ -25,13 +25,15 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
@@ -93,10 +95,25 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 
 			if(id != null){
 				String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations";
-				String postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + id;
 				String bibtex = null;
+				
+				//using own client because I do not want to configure any client to allow circular redirects
+				HttpClient client = WebUtils.getHttpClient();
+				client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+				
 				try {
-					bibtex = WebUtils.getPostContentAsString(new URL(downUrl), postContent);
+					//better get the page first
+					WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
+					
+					//create a post method
+					PostMethod method = new PostMethod(downUrl);
+					method.addParameter("citations-format", "citation-abstract");
+					method.addParameter("fromPage", "");
+					method.addParameter("download-format", "download-bibtex");
+					method.addParameter("recordIds", id);
+					
+					//now get bibtex
+					bibtex = WebUtils.getPostContentAsString(client, method);
 				} catch (MalformedURLException ex) {
 					throw new InternalFailureException(ex);
 				} catch (IOException ex) {
