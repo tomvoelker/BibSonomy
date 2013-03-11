@@ -761,6 +761,8 @@
 		<URL>http://ieeexplore.ieee.org/xpl/selected.jsp?imageField.x=81&amp;imageField.y=12&amp;imageField=View+Selected+Items&amp;chklist=4536262%40ieeecnfs</URL>
 		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
+		<!-- Server returns 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_129">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
