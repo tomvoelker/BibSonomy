@@ -209,10 +209,13 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	 * @throws IOException
 	 */
 	private StringBuffer extractBibtexEntries(final String siteUrl, final String path) throws MalformedURLException, IOException{
-		final StringBuffer bibtexEntries = new StringBuffer(); 
+		final StringBuffer bibtexEntries = new StringBuffer();
+		
+		//get content for siteUrl
+		final String siteContent = WebUtils.getContentAsString(siteUrl + path);
 
 		// create a DOM with each
-		final Document doc = XmlUtils.getDOM(new URL(siteUrl + path));
+		final Document doc = XmlUtils.getDOM(siteContent);
 
 		// fetch the nodelist
 		final NodeList pres = doc.getElementsByTagName("pre");
