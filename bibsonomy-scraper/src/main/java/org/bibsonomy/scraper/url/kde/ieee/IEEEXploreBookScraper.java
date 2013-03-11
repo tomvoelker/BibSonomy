@@ -26,12 +26,14 @@ package org.bibsonomy.scraper.url.kde.ieee;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
@@ -43,7 +45,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
-import org.bibsonomy.util.id.ISBNUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -93,24 +94,40 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 		
 		String bibtex = null;
-		String postContent = null;
+		String recordIds = null;
 		
 		Matcher matcher = URL_PATTERN_BKN.matcher(sc.getUrl().toString());
 		
-		
 		if (matcher.find()){
-			postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + matcher.group(1);
+			recordIds = matcher.group(1);
+		} else {
+			
+			matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
+			
+			if (matcher.find()){
+				recordIds = matcher.group(1);
+			}
+			
 		}
 		
-		matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
-		
-		if (matcher.find()){
-			postContent = "citations-format=citation-abstract&fromPage=&download-format=download-bibtex&recordIds=" + matcher.group(1);
-		}
-		
-		if (postContent != null) {
+		if (recordIds != null) {
+			
+			//create a post method
+			PostMethod method = new PostMethod(EXPORT_ARNUM_URL);
+			method.addParameter("citations-format", "citation-abstract");
+			method.addParameter("fromPage", "");
+			method.addParameter("download-format", "download-bibtex");
+			method.addParameter("recordIds", recordIds);
+			
+			//using own client because I do not want to configure any client to allow circular redirects
+			HttpClient client = WebUtils.getHttpClient();
+			client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+			
 			try {
-				bibtex = WebUtils.getPostContentAsString(new URL(EXPORT_ARNUM_URL), postContent);
+				//better get the page first
+				WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
+				
+				bibtex = WebUtils.getPostContentAsString(client, method);
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
