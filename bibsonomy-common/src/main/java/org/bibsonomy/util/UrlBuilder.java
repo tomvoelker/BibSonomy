@@ -25,9 +25,11 @@ package org.bibsonomy.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -38,6 +40,7 @@ import java.util.Map.Entry;
 public class UrlBuilder {
 	private final String baseUrl;
 	private Map<String, String> parameters;
+	private final List<String> pathElements = new ArrayList<String>(4);
 	
 	/**
 	 * @param baseUrl
@@ -56,7 +59,7 @@ public class UrlBuilder {
 			if (this.parameters == null) {
 				this.parameters = new HashMap<String, String>();
 			}
-			this.parameters.put(key, UrlUtils.safeURIEncode(value));
+			this.parameters.put(key, value);
 		}
 		
 		return this;
@@ -92,15 +95,36 @@ public class UrlBuilder {
 	}
 	
 	/**
+	 * @param pathElement part between two '/'es
+	 * @return this object
+	 */
+	public UrlBuilder addPathElement(String pathElement) {
+		this.pathElements.add(pathElement);
+		return this;
+	}
+	
+	/**
 	 * @return the url as string
 	 */
 	public String asString() {
 		final StringBuilder url = new StringBuilder(this.baseUrl);
+
+		for (String pathElement : this.pathElements) {
+			if (url.charAt(url.length() - 1) == '/') {
+				url.setLength(url.length() - 1);
+			}
+			if ((pathElement.length() == 0) || (pathElement.charAt(0)) != '/') {
+				url.append('/');
+			}
+			url.append(UrlUtils.safeURIEncode(pathElement));
+		}
 		
 		if (present(this.parameters)) {
 			url.append("?");
 			for (Entry<String, String> param : this.parameters.entrySet()) {
-				url.append(param.getKey()).append("=").append(param.getValue());
+				String key = UrlUtils.safeURIEncode(param.getKey());
+				String value = UrlUtils.safeURIEncode(param.getValue());
+				url.append(key).append("=").append(value);
 				url.append("&");
 			}
 			/*
