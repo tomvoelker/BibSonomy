@@ -239,7 +239,7 @@ public final class RestServlet extends HttpServlet {
 			 * Extract a file from the request if it is a MultiPartRequest.
 			 * XXX: This expects that the extraction of the file has been done
 			 * before - typically by Spring's DispatcherServlet. If this is not
-			 * the case, the document upload file fail! 
+			 * the case, the document upload fails! 
 			 */
 			final MultipartFile file;
 			if (request instanceof MultipartHttpServletRequest) {
