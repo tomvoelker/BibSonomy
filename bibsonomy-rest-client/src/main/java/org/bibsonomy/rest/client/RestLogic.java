@@ -50,6 +50,8 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
@@ -92,6 +94,7 @@ import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
 import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
+import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
 import org.bibsonomy.rest.client.queries.post.CreateReferenceQuery;
 import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
@@ -102,12 +105,14 @@ import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * 
@@ -130,6 +135,8 @@ public class RestLogic implements LogicInterface {
 	private final RendererFactory rendererFactory;
 	private final RenderingFormat renderingFormat;
 	private final ProgressCallbackFactory progressCallbackFactory;
+	
+	private final FileFactory fileFactory;
 
 	/**
 	 * TODO: implement an {@link AuthenticationAccessor} for apikey access
@@ -143,8 +150,8 @@ public class RestLogic implements LogicInterface {
 	 * @param renderingFormat
 	 * @param progressCallbackFactory
 	 */
-	RestLogic(final String username, final String apiKey, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
-		this(apiURL, renderingFormat, progressCallbackFactory, null, createUser(username, apiKey));
+	RestLogic(final String username, final String apiKey, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, FileFactory fileFactory) {
+		this(apiURL, renderingFormat, progressCallbackFactory, null, createUser(username, apiKey), fileFactory);
 	}
 
 	/**
@@ -155,12 +162,13 @@ public class RestLogic implements LogicInterface {
 	 * @param renderingFormat
 	 * @param progressCallbackFactory
 	 */
-	RestLogic(final AuthenticationAccessor accessor, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
-		this(apiURL, renderingFormat, progressCallbackFactory, accessor, new User(RESTConfig.USER_ME));
+	RestLogic(final AuthenticationAccessor accessor, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, FileFactory fileFactory) {
+		this(apiURL, renderingFormat, progressCallbackFactory, accessor, new User(RESTConfig.USER_ME), fileFactory);
 	}
 
-	private RestLogic(String apiURL, RenderingFormat renderingFormat, ProgressCallbackFactory progressCallbackFactory, AuthenticationAccessor accessor, User loggedinUser) {
+	private RestLogic(String apiURL, RenderingFormat renderingFormat, ProgressCallbackFactory progressCallbackFactory, AuthenticationAccessor accessor, User loggedinUser, FileFactory fileFactory) {
 		this.apiURL = apiURL;
+		this.fileFactory = fileFactory;
 		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
 		this.renderingFormat = renderingFormat;
 		this.progressCallbackFactory = progressCallbackFactory;
@@ -314,9 +322,18 @@ public class RestLogic implements LogicInterface {
 		 * probably not so simple.
 		 */
 		final List<String> resourceHashes = new LinkedList<String>();
+		final DatabaseException collectedException = new DatabaseException();
 		for (final Post<?> post : posts) {
+			ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
+			final String hash = execute(query);
+			if (query.isSuccess() == false) {
+				collectedException.addToErrorMessages(post.getResource().getIntraHash(), new ErrorMessage(hash, hash));
+			}
 			// hashes are recalculated by the server
-			resourceHashes.add(execute(new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post)));
+			resourceHashes.add(hash);
+		}
+		if (collectedException.hasErrorMessages()) {
+			throw collectedException;
 		}
 		return resourceHashes;
 	}
@@ -329,21 +346,21 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
-		throw new UnsupportedOperationException();
+		if (!ValidationUtils.present(doc.getUserName())) {
+			doc.setUserName(this.authUser.getName());
+		}
+		CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc.getUserName(), resourceHash, doc.getFile());
+		return execute(createPostDocumentQuery);
 	}
 
 	@Override
 	public Document getDocument(final String userName, final String fileHash) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
-		/*
-		 * FIXME: files are stored in /tmp and thus publicly readable! Make
-		 * directory configurable!
-		 */
-		return executeWithCallback(new GetPostDocumentQuery(userName, resourceHash, fileName, "/tmp/"), this.progressCallbackFactory.createDocumentDownloadProgressCallback());
+		return executeWithCallback(new GetPostDocumentQuery(userName, resourceHash, fileName, fileFactory), this.progressCallbackFactory.createDocumentDownloadProgressCallback());
 	}
 
 	@Override

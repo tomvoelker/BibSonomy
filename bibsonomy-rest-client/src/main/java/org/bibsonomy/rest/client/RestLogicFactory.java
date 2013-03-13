@@ -28,6 +28,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
+import org.bibsonomy.rest.client.util.FileFactory;
+import org.bibsonomy.rest.client.util.MultiDirectoryFileFactory;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactory;
 import org.bibsonomy.rest.client.util.ProgressCallbackFactoryImpl;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -44,12 +46,19 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 	/** the url of the BibSonomy (bibsonomy.org) API */
 	public static final String BIBSONOMY_API_URL = BIBSONOMY_URL + "api/";
 	
-	private static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
-	private static final ProgressCallbackFactory DEFAULT_CALLBACK_FACTORY = new ProgressCallbackFactoryImpl();
+	public static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
+	public static final ProgressCallbackFactory DEFAULT_CALLBACK_FACTORY = new ProgressCallbackFactoryImpl();
 	
 	private final String apiUrl;
 	private final RenderingFormat renderingFormat;
 	private final ProgressCallbackFactory progressCallbackFactory;
+
+	private FileFactory fileFactory;
+	private static final String TMP_DIR;
+	static {
+		String tmp = System.getProperty("java.io.tmpdir");
+		TMP_DIR = (tmp != null) ? tmp : "/tmp/";
+	}
 
 	/**
 	 * the rest logic factory
@@ -72,13 +81,18 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 	public RestLogicFactory(final String apiUrl, final RenderingFormat renderingFormat) {
 		this(apiUrl, renderingFormat, DEFAULT_CALLBACK_FACTORY);
 	}
+	
+	public RestLogicFactory(String apiUrl, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
+		this(apiUrl, renderingFormat, progressCallbackFactory, new MultiDirectoryFileFactory(TMP_DIR, TMP_DIR, TMP_DIR));
+	}
 
 	/**
 	 * @param apiUrl the api base url of the REST service
 	 * @param renderingFormat the rendering format to use
 	 * @param progressCallbackFactory the progress callback factory to use
 	 */
-	public RestLogicFactory(String apiUrl, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory) {
+	public RestLogicFactory(String apiUrl, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, FileFactory fileFactory) {
+		this.fileFactory = fileFactory;
 		if (!present(apiUrl) || apiUrl.equals("/")) throw new IllegalArgumentException("The given apiURL is not valid.");
 		
 		// normalize url
@@ -99,7 +113,7 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 		if (!present(loginName)) throw new IllegalArgumentException("The given username is not valid.");
 		if (!present(apiKey)) throw new IllegalArgumentException("The given apiKey is not valid.");
 		
-		return new RestLogic(loginName, apiKey, this.apiUrl, this.renderingFormat, this.progressCallbackFactory);
+		return new RestLogic(loginName, apiKey, this.apiUrl, this.renderingFormat, this.progressCallbackFactory, this.fileFactory);
 	}
 
 	/**
@@ -111,6 +125,6 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 		// check login name and api key
 		if (!present(accessor)) throw new IllegalArgumentException("The given OAuth accessor is not valid.");
 		
-		return new RestLogic(accessor, this.apiUrl, this.renderingFormat, this.progressCallbackFactory);
+		return new RestLogic(accessor, this.apiUrl, this.renderingFormat, this.progressCallbackFactory, this.fileFactory);
 	}
 }

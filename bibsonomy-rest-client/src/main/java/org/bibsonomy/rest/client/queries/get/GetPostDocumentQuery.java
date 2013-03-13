@@ -25,14 +25,14 @@ package org.bibsonomy.rest.client.queries.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
+import org.bibsonomy.rest.client.util.FileFactory;
+import org.bibsonomy.rest.client.util.MultiDirectoryFileFactory;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.file.FileUtil;
 
 /**
  * Downloads a document for a specific post.
@@ -53,7 +53,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 	 * @param directory the dir
 	 */
 	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, final String directory) {
-		this(username, resourceHash, fileName, directory, directory, directory);
+		this(username, resourceHash, fileName, new MultiDirectoryFileFactory(directory, directory, directory));
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 	 * @param pdfDirectory 
 	 * @param psDirectory 
 	 */
-	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, final String fileDirectory, final String pdfDirectory, final String psDirectory) {
+	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, FileFactory fileFactory) {
 		if (!present(username)) throw new IllegalArgumentException("no username given");
 		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");
 		if (!present(fileName)) throw new IllegalArgumentException("no file name given");
@@ -76,17 +76,8 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 		
 		// create the file
 		try {
-			final String extension = FileUtil.getFileExtension(fileName);
-			if ("pdf".equals(extension)) {
-				this.document.setFile(new File(pdfDirectory + "/" + fileName));
-			} else if ("ps".equals(extension)) {
-				this.document.setFile(new File(psDirectory + "/" + fileName));
-			} else {
-				this.document.setFile(new File(fileDirectory + "/" + fileName));
-			}
-			
+			this.document.setFile(fileFactory.getFile(fileName));
 			this.fileExists = !this.document.getFile().createNewFile();
-			
 		} catch (final IOException ex) {
 			throw new IllegalArgumentException("could not create new file " + this.document.getFile().getAbsolutePath());
 		}
@@ -97,6 +88,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 		if (!this.fileExists) {
 			this.performFileDownload(RESTConfig.USERS_URL + "/" + this.document.getUserName() + "/posts/" + this.resourceHash + "/documents/" + this.document.getFileName(), this.document.getFile());
 		} else {
+			// TODO: never overwrite? what if there is a new document?
 			this.setExecuted(true);
 			this.setStatusCode(200);
 		}
