@@ -2,18 +2,27 @@ package org.bibsonomy.rest.remotecall;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.http.HttpServletRequest;
+
+import junit.framework.Assert;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
@@ -61,6 +70,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
+import org.bibsonomy.util.HashUtils;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
 import org.eclipse.jetty.server.AbstractConnector;
@@ -72,6 +82,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.MultipartFilter;
 
 /**
  * Tests remote calls via an LogicInterface remote proxy.
@@ -121,6 +134,18 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	private LogicInterface serverLogic;
 	
 	/**
+	 * MultipartFilter that does not require a SpringContext
+	 * @author Jens Illig
+	 */
+	public static class CommonsMultiPartFilter extends MultipartFilter {
+		private static final MultipartResolver resolver = new CommonsMultipartResolver();
+		@Override
+		protected MultipartResolver lookupMultipartResolver(HttpServletRequest request) {
+			return resolver;
+		}
+	}
+	
+	/**
 	 * configures the server and the webapp and starts the server
 	 */
 	@BeforeClass
@@ -140,6 +165,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			final UrlRenderer urlRenderer = new UrlRenderer(apiUrl);
 			restServlet.setUrlRenderer(urlRenderer);
 			restServlet.setRendererFactory(new RendererFactory(urlRenderer));
+			//restServlet.setDocumentPath(getTmpDir());
 			
 			try {
 				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
@@ -148,6 +174,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			}			
 			
 			servletContext.addServlet(RestServlet.class, "/*").setServlet(restServlet);
+			
+			servletContext.addFilter(CommonsMultiPartFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 			
 			server.setHandler(servletContext);
 			server.start();
@@ -160,6 +188,20 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		}
 	}
 	
+	private static String getTmpDir() {
+		File f;
+		try {
+			f = File.createTempFile("dummy", "tmp");
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		try {
+			return f.getParent() + File.separator;
+		} finally {
+			f.delete();
+		}
+	}
+
 	/**
 	 * stops the servlet container after all tests have been run
 	 */
@@ -197,6 +239,39 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.reset(this.serverLogic);
 	}
 	
+	private static interface Checker<T> {
+		public boolean check(T obj);
+	}
+	
+	private static class CheckerDelegatingMatcher<T> implements IArgumentMatcher {
+
+		private final Checker<T> checker;
+
+		private CheckerDelegatingMatcher(Checker<T> checker) {
+			this.checker = checker;
+		}
+		
+		@SuppressWarnings("unchecked") // classcastexception is ok in testcase 
+		@Override
+		public boolean matches(Object argument) {
+			return checker.check((T) argument);
+		}
+
+		@Override
+		public void appendTo(StringBuffer buffer) {
+			buffer.append("checker: " + checker);
+		}
+		
+		/**
+		 * Tells {@link EasyMock} to have the argument checked by the given Checker
+		 * @param checker
+		 * @return unimportant
+		 */
+		public static <T> T check(Checker<T> checker) {
+			EasyMock.reportMatcher(new CheckerDelegatingMatcher<T>(checker));
+			return null;
+		}
+	}
 	
 	
 	/** IArgumentMatcher Implementation that wraps an object and compares it with another */
@@ -745,11 +820,60 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
-	}	
+	}
+	
+	/**
+	 * Test whether createDocument is passed through
+	 */
+	@Test
+	public void testCreateDocument() {
+		Document doc = new Document();
+		
+		File tmpData = null;
+		try {
+			tmpData = File.createTempFile(getClass().getName() + ".testCreateDocument", ".txt");
+			byte[] data = "test\ndata\n".getBytes();
+			
+			FileUtils.writeByteArrayToFile(tmpData, data);
+			
+			doc.setFile(tmpData);
+			doc.setFileName(tmpData.getName());
+			doc.setMd5hash(HashUtils.getMD5Hash(data));
+			
+			createDocument(doc, "resHash");
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		} finally {
+			if (tmpData != null) {
+				tmpData.delete();
+			}
+		}
+	}
 
 	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
-		// TODO Auto-generated method stub
+		EasyMock.expect(serverLogic.createDocument(CheckerDelegatingMatcher.check(new Checker<Document>() {
+			@Override
+			public boolean check(Document obj) {
+				Assert.assertEquals(doc.getFileName(), obj.getFileName());
+				Assert.assertEquals(doc.getMd5hash(), obj.getMd5hash());
+				byte[] sent;
+				byte[] received;
+				try {
+					sent = FileUtils.readFileToByteArray(doc.getFile());
+					received = FileUtils.readFileToByteArray(obj.getFile());
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+				Assert.assertEquals(Arrays.toString(sent), Arrays.toString(received));
+				return true;
+			}
+			
+		}), EasyMock.eq(resourceHash))).andReturn("rVal");
+		
+		EasyMock.replay(serverLogic);
+		assertEquals("rVal", clientLogic.createDocument(doc, resourceHash));
+		EasyMock.verify(serverLogic);
 		return null;
 	}
 	
