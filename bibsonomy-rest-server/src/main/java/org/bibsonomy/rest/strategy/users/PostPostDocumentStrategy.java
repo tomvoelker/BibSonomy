@@ -23,8 +23,6 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	private final String userName;
 	private final String resourceHash;
 	private final MultipartFile file;
-	private final String projectHome;
-	private String uri;
 	
 	private final FileUploadFactory fileUploadFactory;
 	
@@ -38,7 +36,6 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 		this.userName = userName;
 		this.resourceHash = resourceHash;
 		this.file = context.getFile();
-		this.projectHome = context.getAdditionalInfos().get(RestServlet.PROJECT_HOME_KEY);
 		
 		this.fileUploadFactory = new FileUploadFactory();
 		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get(RestServlet.DOCUMENTS_PATH_KEY));
@@ -64,12 +61,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 			 */
 			document.setUserName(this.userName);
 			
-			this.getLogic().createDocument(document, this.resourceHash);
-			
-			// FIXME: urlencode
-			this.uri = this.projectHome + "api/users/" + this.userName + "/posts/" + this.resourceHash + "/documents/" + document.getFileName();
-			
-			return this.uri;
+			return this.getLogic().createDocument(document, this.resourceHash);
 			
 		} catch (final Exception ex) {
 			throw new BadRequestOrResponseException(ex.getMessage());
@@ -78,7 +70,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected void render(final Writer writer, final String uri) {
-		this.getRenderer().serializeURI(writer, uri);
+		this.getRenderer().serializeResourceHash(writer, uri);
 	}
 	
 }
