@@ -69,16 +69,16 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 		final PostMethod post = new PostMethod(url);
 
 		post.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
-		post.addRequestHeader("Content-Type", CONTENT_TYPE);
+		post.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
 
 		try {
 			final HttpMethodParams params = new HttpMethodParams();
-			params.setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
 			final Part[] parts = new Part[]{new FilePart("file", file)};
 			final MultipartRequestEntity entity = new MultipartRequestEntity(parts, params);
 			post.setRequestEntity(entity);
 
 			this.getHttpClient().getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+			
 
 			this.httpResult = this.getHttpClient().executeMethod(post);
 			LOGGER.debug("HTTP result: " + this.httpResult);
