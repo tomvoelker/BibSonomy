@@ -32,10 +32,12 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to change details of an existing post - change tags, for
@@ -103,7 +105,8 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializePost(sw, post, null);
-		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_USERS + "/" + this.username + "/" + URL_POSTS + "/" + resourceHash, sw.toString());
+		UrlBuilder ub = new UrlBuilder(RESTConfig.USERS_URL).addPathElement(this.username).addPathElement(RESTConfig.POSTS_URL).addPathElement(this.resourceHash);
+		this.downloadedDocument = performRequest(HttpMethod.PUT, ub.asString(), sw.toString());
 		return null;
 	}
 	

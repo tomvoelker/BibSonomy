@@ -27,8 +27,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
 
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author wbi
@@ -57,8 +60,16 @@ public class CreatePostDocumentQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = this.performMultipartPostRequest(URL_USERS + "/" + this.username + "/posts/" + this.resourceHash + "/documents", this.file);
+		final String url = new UrlBuilder(RESTConfig.USERS_URL).addPathElement(this.username).addPathElement("posts").addPathElement(this.resourceHash).addPathElement("documents").asString();
+		this.downloadedDocument = this.performMultipartPostRequest(url, this.file);
 		return null;
 	}
 
+	@Override
+	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
+			return this.getRenderer().parseResourceHash(this.downloadedDocument);
+		}
+		return this.getError();
+	}	
 }
