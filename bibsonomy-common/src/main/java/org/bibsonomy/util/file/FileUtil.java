@@ -69,7 +69,13 @@ public class FileUtil {
 	 * @return The absolute path of the document on the file system.
 	 */
 	public static String getFilePath(final String filePath, final String fileName) {
-		return getFileDir(filePath, fileName) + fileName;
+		File dir = getFileDirAsFile(filePath, fileName);
+		if (dir.exists() == false) {
+			if (!dir.mkdir()) {
+				throw new RuntimeException("directory '" + dir.getAbsolutePath() + "' could not be created");
+			}
+		}
+		return new File(dir, fileName).getAbsolutePath();
 	}
 	
 	/**
@@ -124,7 +130,19 @@ public class FileUtil {
 	 * @return The directory of the file
 	 */
 	public static String getFileDir(final String filePath, final String fileName) {
-		return filePath + fileName.substring(0, 2) + "/";
+		return getFileDirAsFile(filePath, fileName).getAbsolutePath();
+	}
+	
+	/**
+	 * Constructs the directory path of the file using the first two digits of
+	 * the file name.
+	 * 
+	 * @param filePath - the absolute path to the document directory in the file system
+	 * @param fileName - the file name of the document (an MD5 hash)
+	 * @return The directory of the file
+	 */
+	public static File getFileDirAsFile(final String filePath, final String fileName) {
+		return new File(filePath, fileName.substring(0, 2));
 	}
 	
 	/**
