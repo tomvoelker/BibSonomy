@@ -165,7 +165,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			final UrlRenderer urlRenderer = new UrlRenderer(apiUrl);
 			restServlet.setUrlRenderer(urlRenderer);
 			restServlet.setRendererFactory(new RendererFactory(urlRenderer));
-			//restServlet.setDocumentPath(getTmpDir());
+			restServlet.setDocumentPath(getTmpDir());
 			
 			try {
 				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
