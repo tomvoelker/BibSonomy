@@ -87,9 +87,17 @@ a {
     color: #F7EFED;
 }
 #navigation ul li.pulldown span,
-#navigation ul li.pulldown > a {
-    background-image: url("/resources_puma/image/pulldown-marker-medium_white.png");
+#navigation ul li.pulldown > a,
+#navigation ul li.pulldown.active:hover span,
+#navigation ul li.pulldown.active:hover > a {
+	background-image: url("/resources_puma/image/pulldown-marker-medium_white.png");
 }
+
+#navigation ul li.pulldown.active span,
+#navigation ul li.pulldown.active > a {
+	background-image: url("/resources/image/pulldown-marker-000000.png");
+}
+
 
 #navigation .pulldown > span {
     color: #F7EFED;
