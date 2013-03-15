@@ -259,7 +259,6 @@ h3 {
 	padding-bottom:8px;
 	padding-top:8px;
 	margin-bottom: 10px;
-	display:none;
 	transition: height 0.2s;
     -webkit-transition: height 0.2s; 
     -moz-transition: height 0.2s;
