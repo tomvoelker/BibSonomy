@@ -1541,5 +1541,10 @@
 		<BibFile>EconstorScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper</Scraper>
 	</URLTest>
-	
+	<URLTest id="url_253">
+		<TestDescription>Mendeley Scraper test</TestDescription>
+		<URL>http://www.mendeley.com/catalog/social-bookmarking-beispiel-bibsonomy/</URL>
+		<BibFile>MendeleyScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper</Scraper>
+	</URLTest>
 </test:Tests>
