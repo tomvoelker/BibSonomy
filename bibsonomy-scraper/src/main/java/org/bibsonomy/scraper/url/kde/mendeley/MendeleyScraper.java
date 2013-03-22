@@ -31,13 +31,8 @@ public class MendeleyScraper extends AbstractUrlScraper{
 	private static final String SITE_NAME = "Mendeley";
 	private static final String SITE_URL = "http://mendeley.com";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-
-
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "mendeley.com"), AbstractUrlScraper.EMPTY_PATTERN));
-
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("citation_json.*");
-	
-
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("citation_json.*");	
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
@@ -45,10 +40,6 @@ public class MendeleyScraper extends AbstractUrlScraper{
 
 		final URL url = scrapingContext.getUrl();
 	
-		if (!present(url)) {
-			log.error("can't parse publication id");
-			return false;
-		}
 		try {
 
 			final String bibTex = WebUtils.getContentAsString(url);
@@ -58,8 +49,10 @@ public class MendeleyScraper extends AbstractUrlScraper{
 			if(match.find()){
 				strCitation = match.group(0);
 			}else{
-				strCitation = null;
+				log.error("can't parse publication");
+				return false;
 			}
+			
 			strCitation = strBibtex(strCitation);
 			
 			if (present(strCitation)) {
@@ -68,7 +61,6 @@ public class MendeleyScraper extends AbstractUrlScraper{
 			} else {
 				throw new ScrapingFailureException("getting bibtex failed");
 			}
-
 		} catch (final Exception e) {
 			throw new InternalFailureException(e);
 		}
@@ -148,12 +140,9 @@ public class MendeleyScraper extends AbstractUrlScraper{
 	    if(json.has("pages")) 
 	    	result.append( "pages = {" + json.getString("pages") +"}}");
 	    
-		return result.toString();
-		
+		return result.toString();		
 	}
 	
-
-
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
