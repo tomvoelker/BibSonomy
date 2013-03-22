@@ -34,7 +34,7 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
      * @return the current wiki for the specified user
      */
     public Wiki getActualWiki(final String userName, final DBSession session) {
-	return this.queryForObject("getActualWikiForUser", userName, Wiki.class, session);
+    	return this.queryForObject("getActualWikiForUser", userName, Wiki.class, session);
     }
 
     /**
@@ -44,7 +44,7 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
      * @return all wiki versions (dates) for the specified user
      */
     public List<Date> getWikiVersions(final String userName, final DBSession session) {
-	return this.queryForList("getWikiVersionsForUser", userName, Date.class, session);
+    	return this.queryForList("getWikiVersionsForUser", userName, Date.class, session);
     }
 
     /**
@@ -54,12 +54,12 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
      * @param session
      */
     public void updateWiki(final String userName, final Wiki wiki, final DBSession session) {
-	final WikiParam param = new WikiParam();
-	param.setUserName(userName);
-	param.setWikiText(wiki.getWikiText());
-	param.setDate(new Date());
-	
-	this.update("updateWikiForUser", param, session);
+		final WikiParam param = new WikiParam();
+		param.setUserName(userName);
+		param.setWikiText(wiki.getWikiText());
+		param.setDate(new Date());
+		
+		this.update("updateWikiForUser", param, session);
     }
 
     /**
@@ -69,12 +69,12 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
      * @return the wiki version specified by the date for the specified user
      */
     public Wiki getPreviousWiki(final String userName, final Date date, final DBSession session) {
-	final WikiParam param = new WikiParam();
-
-	param.setDate(date);
-	param.setUserName(userName);
-
-	return this.queryForObject("getLoggedWiki", param, Wiki.class, session);
+		final WikiParam param = new WikiParam();
+	
+		param.setDate(date);
+		param.setUserName(userName);
+	
+		return this.queryForObject("getLoggedWiki", param, Wiki.class, session);
     }
     
     /**
@@ -84,19 +84,19 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
      * @param session
      */
     public void createWiki(final String userName, final Wiki wiki, final DBSession session) {
-	session.beginTransaction();
-	
-	final WikiParam param = new WikiParam();
-	param.setUserName(userName);
-	param.setWikiText(wiki.getWikiText());
-	param.setDate(new Date());
-	
-	try {
-	    this.insert("insertWiki", param, session);
-	    session.commitTransaction();
-	} finally {
-	    session.endTransaction();
-	}
+		session.beginTransaction();
+		
+		final WikiParam param = new WikiParam();
+		param.setUserName(userName);
+		param.setWikiText(wiki.getWikiText());
+		param.setDate(new Date());
+		
+		try {
+		    this.insert("insertWiki", param, session);
+		    session.commitTransaction();
+		} finally {
+		    session.endTransaction();
+		}
     }
 
     /**
@@ -108,26 +108,26 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
      * @param session
      */
     public void logWiki(final String userName, final Wiki wiki, final DBSession session) {
-	session.beginTransaction();
-	
-	final WikiParam param = new WikiParam();
-	param.setUserName(userName);
-	param.setWikiText(wiki.getWikiText());
-	/*
-	 * FIXME: shouldn't we have an (additional) logging date here?
-	 * 
-	 * I.e., 
-	 * date = wiki.getDate()
-	 * logDate = new Date()
-	 * 
-	 */
-	param.setDate(new Date());
-	
-	try {
-	    this.insert("logWiki", param, session);
-	    session.commitTransaction();
-	} finally {
-	    session.endTransaction();
-	}
+		session.beginTransaction();
+		
+		final WikiParam param = new WikiParam();
+		param.setUserName(userName);
+		param.setWikiText(wiki.getWikiText());
+		/*
+		 * FIXME: shouldn't we have an (additional) logging date here?
+		 * 
+		 * I.e., 
+		 * date = wiki.getDate()
+		 * logDate = new Date()
+		 * 
+		 */
+		param.setDate(new Date());
+		
+		try {
+		    //this.insert("logWiki", param, session);
+		    session.commitTransaction();
+		} finally {
+		    session.endTransaction();
+		}
     }
 }
