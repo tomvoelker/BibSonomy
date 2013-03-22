@@ -20,6 +20,7 @@
 	<fmt:message key="cv.layout.name.clear" var="clear" />
 	<fmt:message key="cv.customlayout" var="customlayout" />
 	<fmt:message key="cv.defaultlayout" var="defaultlayouts" />
+	<fmt:message key="cv.heading" var="heading" />
 	<fmt:message key="cv.admin.layout" var="layout" />
 	<fmt:message key="cv.admin.preview" var="preview" />
 	<fmt:message key="cv.admin.preview_pub" var="pPrev" />
@@ -29,90 +30,64 @@
 
 	<div>
 		<div id="general_100">
+			<h2><c:out value="${heading}" /></h2>
 			<form:form>
 				<div id="defaultLayoutForm">
 				    <fieldset class="fsInner">
-				    	<legend>${defaultlayouts}</legend>
-			    		<div class="fsRow">
-							<c:choose>
-								<!-- TODO: Gruppen testen! -->
-								<c:when test="${command.isGroup}">
-									<select class="changeLayout">
-										<option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</option>
-										<option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</option>
-									</select>
-<!-- 									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_EN' 
-	 										class='changeLayout' value="${def1en}" />
-									<input type="button" data-layout='LAYOUT_G_DEFAULT_I_GER'
-										class='changeLayout' value="${def1ger}" />
-									<img height="200" width="400" src="test" /> -->
-								</c:when>
-								
-								<!-- Der momentane Besucher ist KEINE gruppe! Da er aber eingeloggt ist, ist es ein
-								     normaler User. -->
-								<c:otherwise>
-									<select class="changeLayout">
-									    <option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</option>
-										<option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</option>
-										<option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</option>
-										<option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</option>
-										<option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</option>
-										
-									</select>
-<!-- 									<input type="button" data-layout='LAYOUT_DEFAULT_I_EN'
-										class='changeLayout' value="${def1en}" />
-									<input type="button" data-layout='LAYOUT_DEFAULT_I_GER'
-										class='changeLayout' value="${def1ger}" />
-									<input type="button" data-layout='LAYOUT_DEFAULT_II_EN'
-										class='changeLayout' value="${def2en}" />
-									<input type="button" data-layout='LAYOUT_DEFAULT_II_GER'
-										class='changeLayout' value="${def2ger}" />
-									<img id="layoutPreview" height="200" width="400" src="test" /> -->
-								</c:otherwise>
-							</c:choose>
-						</div>
-						<div style="float: left;">
-							<div id="showAdminField"> <!--  style="display: none;" -->
+				    	<div class="fsRow">
+				    		<div class="fsRow" style="float:left">
+								<c:choose>
+									<c:when test="${command.isGroup}">
+										<select class="changeLayout">
+											<option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</option>
+											<option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</option>
+										</select>
+									</c:when>
+									
+									<c:otherwise>
+										<select class="changeLayout">
+										    <option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</option>
+											<option data-layout='LAYOUT_DEFAULT_I_EN' value="${def1en}">${def1en}</option>
+											<option data-layout='LAYOUT_DEFAULT_I_GER' value="${def1ger}">${def1ger}</option>
+											<option data-layout='LAYOUT_DEFAULT_II_EN' value="${def2en}">${def2en}</option>
+											<option data-layout='LAYOUT_DEFAULT_II_GER' value="${def2ger}">${def2ger}</option>
+											
+										</select>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						    <div style="float: right;">
+							    <span>
+								    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
+							    </span>
+						    </div>
+					    </div>
+					    
+						<div class="fsRow">
+							<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
+							<fieldset class="fsInner">
+								<legend><div id="showAdminField"> 
 								<input type="button" value="${show}" id="showAdmin" />
 							</div>
 							<div id="hideAdminField" style="display: none;">
 						    	<input type="button" value="${hide}" id="hideAdmin" />
-						    </div>
-					    </div>
-					    <div style="float: right;">
-						    <span>
-<!-- 								<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" /> -->
-							    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
-						    </span>
-					    </div>
-					    
-					    <!-- Hier kann man sein eigenes Layout bearbeiten. Dieses gesamte div ist dazu da. -->
-						<div class="fsRow" id="fsform"  style="display: none">
-							<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
-							<fieldset class="fsInner">
-								<legend>${customlayout}</legend>
-								<div>
-									<!-- This is the div with the textArea in it. We gonna hide this for once. -->
+						    </div></legend>
+								<div id="fsform" style="display: None">
 									<div class="fsRow" id="customdesign">
-		<!-- 								<div class="fsLabel"> -->
-		<!-- 								</div> -->
 										<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
 									</div>
 
-									<!-- This is the div with the submitting buttons in it. -->							
 									<div class="fsRow" style="clear: both;">
 										<span style="float: right;">
 										    <input type="button" href='#' onclick="return submitWiki('preview');" value="${preview}" />
 										    <input type="button" href='#' onclick="return submitWiki('publicPreview');" value="${pPrev}" />
 										</span>
 									</div>
+									<div>
+										<input type="button" onclick="return clearCVTextField();" value="${clear}" />
+									</div>
 								</div>
 								
-								<!--  Hier ist noch ein div mit dem "Leer"-Button drin -->
-								<div>
-<!--									<input type="button" data-layout='LAYOUT_CURRENT' class='changeLayout' value="${curr}" />-->
-									<input type="button" onclick="return clearCVTextField();" value="${clear}" />
-								</div>
 							</fieldset>
 						</div>
 				    </fieldset>
@@ -127,45 +102,14 @@
 				</div>
 			</div>
 			
-			<!-- TODO: Schoener machen. Eventuell das Inline-CSS auch in die zugehoerige CSS-File legen. -->
-			<!-- Hieraus kann man auch gern eine Statusanzeige machen mit Inhalten wie "saved", "previewing...", "loading..." -->
-<!-- 			<div id='errorField' -->
-<!-- 				style='background-color: red; color: black; font-weight: bold; text-align: center; display: none;'> -->
-<!-- 				<p id="errorText"></p> -->
-<!-- 			</div> -->
-			
-			<!-- Hier waere es glaube ich schoen, wenn das Ladezeichen anstelle des gesamten Textes erschiene... -->
-<!-- 			<div id='loadingDiv' style='width: 100%; display: none'> -->
-<!-- 				<img src="${resdir}/image/ajax_loader.gif" alt="wait" /> -->
-<!-- 			</div> -->
-
-			<!-- Hier steht der Text, der gerendert wird. -->
 			<div id="wikiArea">
 				<c:choose>
 					<c:when test="${not empty command.wikiText}">
 						<c:out value="${command.renderedWikiText}" escapeXml="false" />
 					</c:when>
-					<!-- Falls noch kein Layout gesetzt wurde, wird hier das Standardlayout eingesetzt...
-						Aber das ist irgendwie uncool. Das sollte anderweitig passieren! Hier wird das ja
-						nur vorgegaukelt, dass schon eins existieren wuerde... -->
-					<!-- Korrektur: Hier wird ein Standardtext eingeblendet. Das muss aber auch noch passieren,
-						wenn der Text wieder geloescht wurde! FIXME -->
 					<c:otherwise>
 						<fmt:message key="cv.my.nowikitext" var="nowikitext" />
 						<c:out value="${nowikitext}" escapeXml="false" />
-					
-					<!-- old stuff mit standardlayouts...
-						<fmt:message key="cv.layout.user.def1en" var="def1en" />
-						<fmt:message key="cv.layout.user.def1ger" var="def1ger" />
-						<c:choose>
-							<c:when test="${command.user.settings.defaultLanguage=='de'}">
-								<c:out value="${def1ger}" escapeXml="false" />
-							</c:when>
-							<c:otherwise>
-								<c:out value="${def1en}" escapeXml="false" />
-							</c:otherwise>
-						</c:choose>
-					-->
 					</c:otherwise>
 				</c:choose>
 			</div>
