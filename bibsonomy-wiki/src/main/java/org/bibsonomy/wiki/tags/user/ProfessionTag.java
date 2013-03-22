@@ -20,7 +20,8 @@ public class ProfessionTag extends UserTag{
 	
 	@Override
 	protected String renderUserTag() {
-		return this.renderString(this.requestedUser.getProfession());
+		final String profession = this.renderString(this.requestedUser.getProfession());
+		return profession == null ? null : "<div id='profession'>" + profession + "</div>";
 	}
 
 }

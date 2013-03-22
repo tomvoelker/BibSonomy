@@ -32,7 +32,7 @@ public class BirthdayTag extends UserTag {
 	protected String renderUserTag() {
 		final Date birthday = this.requestedUser.getBirthday();
 		if (present(birthday)) {
-			return this.renderString(simpleDate.format(birthday));
+			return "<div id='birthday'>" + this.renderString(simpleDate.format(birthday)) + "</div>";
 		}
 		return "";
 	}

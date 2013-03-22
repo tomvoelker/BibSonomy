@@ -1,11 +1,8 @@
 package org.bibsonomy.wiki.tags.shared;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
@@ -50,7 +47,7 @@ public class ImageTag extends SharedTag {
 //		final Map<String, String> tagAtttributes = this.getAttributes();
 		final StringBuilder renderedHTML = new StringBuilder();
 		final String name = this.getRequestedName();
-		renderedHTML.append("<img height='100px' src='/picture/user/").append(this.renderString(name)).append("'>"); //.append("' style='").append(tagAtttributes.get(STYLE)).append("'>");
+		renderedHTML.append("<div id='userImg'><img height='100px' src='/picture/user/").append(this.renderString(name)).append("' /></div>"); //.append("' style='").append(tagAtttributes.get(STYLE)).append("'>");
 		return renderedHTML.toString();
 	}
 

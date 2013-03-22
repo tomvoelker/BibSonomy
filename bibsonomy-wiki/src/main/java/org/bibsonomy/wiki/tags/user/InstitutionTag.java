@@ -20,7 +20,8 @@ public class InstitutionTag extends UserTag {
 	
 	@Override
 	protected String renderUserTag() {
-		return this.renderString(this.requestedUser.getInstitution());
+		final String institution = this.renderString(this.requestedUser.getInstitution());
+		return institution == null ? null : "<div id='institution'>" + institution + "</div>";
 	}
 
 }

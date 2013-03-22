@@ -20,6 +20,7 @@ public class LocationTag extends UserTag{
 	
 	@Override
 	protected String renderUserTag() {
-		return this.renderString(this.requestedUser.getPlace());
+		final String location = this.renderString(this.requestedUser.getPlace());
+		return (location == null ? null : "<div id='location'>" + location + "</div>");
 	}
 }

@@ -21,6 +21,7 @@ import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
 import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
+import org.bibsonomy.wiki.tags.shared.DesignTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;
 import org.bibsonomy.wiki.tags.shared.resource.BookmarkListTag;
@@ -59,6 +60,7 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new RegDateTag());
 		register(new BookmarkListTag());
 		register(new PublicationListTag());
+		register(new DesignTag());
 		
 	}
 
@@ -98,12 +100,13 @@ public class CVWikiModel extends AbstractWikiModel {
 		final TagStack localStack = WikipediaParser.parseRecursive(rawHead.trim(), this, true, true);
 
 		final WPTag headTagNode = new WPTag("h" + headLevel);
-		final TagNode spanTagNode = new TagNode("span");
+//		final TagNode spanTagNode = new TagNode("span");
 		// Example:
 		// <h2><span class="mw-headline" id="Header_level_2">Header level
 		// 2</span></h2>
-		spanTagNode.addChild(localStack.getNodeList().get(0));
-		headTagNode.addChild(spanTagNode);
+//		spanTagNode.addChild(localStack.getNodeList().get(0));
+//		headTagNode.addChild(spanTagNode);
+		headTagNode.addChild(localStack.getNodeList().get(0));
 		
 		// Hier steht nur der tatsaechliche Content den spanTagNode.
 		/*
@@ -148,10 +151,11 @@ public class CVWikiModel extends AbstractWikiModel {
 //		}
 
 		// add attributes to the tags
-		spanTagNode.addAttribute("class", "mw-headline", true);
+//		spanTagNode.addAttribute("class", "mw-headline", true);
+		headTagNode.addAttribute("class", "mw-headline", true);
 		
 		// FIXME: Same title --> double ids
-		spanTagNode.addAttribute("id", anchor, true);
+//		spanTagNode.addAttribute("id", anchor, true);
 
 		// add the generated heading node to the local stack for later processing
 		this.append(headTagNode);

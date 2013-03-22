@@ -3,7 +3,6 @@ package org.bibsonomy.wiki.tags.shared.resource;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +58,8 @@ public class BookmarkListTag extends SharedTag {
  		posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
 		
  		
-        renderedHTML.append("<div class='align'>");
-        renderedHTML.append("<ul id='liste' class='bookmarkList'>");
+        renderedHTML.append("<div class='align' id='bookmarks'>");
+        renderedHTML.append("<ul id='bookmarklist' class='bookmarkList'>");
         
         for (final Post<Bookmark> post : posts) {
         	renderedHTML.append("<div style='margin:1.2em;' class='entry'><li><span class='entry_title'>");
@@ -71,7 +70,7 @@ public class BookmarkListTag extends SharedTag {
         	final String description = post.getDescription();
 			if (present(description)) {
         		// TODO: i18n [show details]
-        		renderedHTML.append("<a class='hand' onclick='return toggleDetails(this)' > [show details] </a>");
+        		renderedHTML.append(" <a class='hand' onclick='return toggleDetails(this)' >[details] </a>");
         		renderedHTML.append("<p class='details'>" +description +"</p>");
         	}
         	

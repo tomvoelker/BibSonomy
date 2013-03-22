@@ -19,7 +19,8 @@ public class HobbyTag extends UserTag {
 
 	@Override
 	protected String renderUserTag() {
-		return this.renderString(this.requestedUser.getHobbies());
+		final String hobby = this.renderString(this.requestedUser.getHobbies());
+		return hobby == null ? null : "<div id='hobbies'>" + hobby + "</div>";
 	}
 
 }

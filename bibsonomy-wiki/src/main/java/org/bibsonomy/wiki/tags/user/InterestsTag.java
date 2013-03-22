@@ -20,6 +20,7 @@ public class InterestsTag extends UserTag {
 
 	@Override
 	protected String renderUserTag() {
-		return this.renderString(this.requestedUser.getInterests());
+		final String interests = this.renderString(this.requestedUser.getInterests());
+		return interests == null ? null : "<div id='interests'>" + interests + "</div>";
 	}
 }

@@ -33,7 +33,7 @@ public class NameTag extends SharedTag {
 		if (present(name)) {
 			// Vielleicht hier noch einen Link zum CV des anderen Users rein? Oder
 			// zur persoenlichen Homepage?
-			return "<a href='/user/" + this.renderString(this.getRequestedName()) + "'>" + this.renderString(name) + "</a>";
+			return "<div id='name'><a href='/user/" + this.renderString(this.getRequestedName()) + "'>" + this.renderString(name) + "</a></div>";
 		}
 		return "";
 	}

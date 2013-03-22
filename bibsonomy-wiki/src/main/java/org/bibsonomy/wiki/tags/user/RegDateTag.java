@@ -31,7 +31,7 @@ public class RegDateTag extends UserTag {
 	protected String renderUserTag() {
 		final Date regDate = this.requestedUser.getRegistrationDate();
 		if (present(regDate)) {
-			return this.renderString(simpleDate.format(regDate));
+			return "<div id='regDate'>" + this.renderString(simpleDate.format(regDate)) + "</div>";
 		}
 		return "";
 	}
