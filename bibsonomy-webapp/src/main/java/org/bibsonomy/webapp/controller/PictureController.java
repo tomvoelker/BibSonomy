@@ -257,7 +257,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 				/*
 				 * check existence of target folder
 				 */
-				final File directory = new File(FileUtil.getFileDir(path, StringUtils.getMD5Hash(loginUserName)));
+				final File directory = FileUtil.getFileDirAsFile(path, StringUtils.getMD5Hash(loginUserName));
 				if (!directory.exists()) {
 					directory.mkdir();
 				}
