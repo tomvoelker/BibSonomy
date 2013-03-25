@@ -44,7 +44,7 @@ public class PersonNameParser {
 	private static final String MINUS = "-".intern();
 
 	/**
-	 * @param persons
+	 * @param persons - null values lead to empty lists
 	 * @return A list of person names.
 	 * 
 	 * @throws PersonListParserException
