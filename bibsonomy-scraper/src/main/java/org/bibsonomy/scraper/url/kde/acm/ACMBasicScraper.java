@@ -2,7 +2,7 @@
  *
  *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
@@ -112,12 +113,16 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			if (indexOfDot > -1) {
 				id = id.substring(indexOfDot + 1);
 			}
+			
+			//pretty good idea to use an own client, since the session in the common client can become invalid
+			HttpClient client = WebUtils.getHttpClient();
+			
 			/*
 			 * Scrape entries from popup BibTeX site. BibTeX entry on these
 			 * pages looks like this: <PRE id="155273">@article{155273,
 			 * author = {The Author}, title = {This is the title}...}</pre>
 			 */
-			final StringBuffer bibtexEntries = extractBibtexEntries(SITE_URL, "exportformats.cfm?expformat=bibtex&id=" + id);
+			final StringBuffer bibtexEntries = extractBibtexEntries(client, SITE_URL, "exportformats.cfm?expformat=bibtex&id=" + id);
 
 			/*
 			 * download the abstract
@@ -134,7 +139,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			 * This must be done!
 			 * 
 			 */
-			final String abstrct = WebUtils.getContentAsString(SITE_URL + "/tab_abstract.cfm?usebody=tabbody&id=" + id);
+			final String abstrct = WebUtils.getContentAsString(client, SITE_URL + "/tab_abstract.cfm?usebody=tabbody&id=" + id);
 			if (present(abstrct)) {
 				/*
 				 * extract abstract from HTML
@@ -208,11 +213,11 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
-	private StringBuffer extractBibtexEntries(final String siteUrl, final String path) throws MalformedURLException, IOException{
+	private StringBuffer extractBibtexEntries(HttpClient client, final String siteUrl, final String path) throws MalformedURLException, IOException{
 		final StringBuffer bibtexEntries = new StringBuffer();
 		
 		//get content for siteUrl
-		final String siteContent = WebUtils.getContentAsString(siteUrl + path);
+		final String siteContent = WebUtils.getContentAsString(client, siteUrl + path);
 
 		// create a DOM with each
 		final Document doc = XmlUtils.getDOM(siteContent);
