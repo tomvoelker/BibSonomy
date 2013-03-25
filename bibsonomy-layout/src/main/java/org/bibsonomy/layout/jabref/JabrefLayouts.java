@@ -228,7 +228,7 @@ public class JabrefLayouts {
 		 */
 		for (final LayoutPart layoutPart : LayoutPart.layoutParts) {
 			final String hashedName = JabrefLayoutUtils.userLayoutHash(userName, layoutPart);
-			final File file = new File(FileUtil.getFileDir(userLayoutFilePath, hashedName) + hashedName);
+			final File file = new File(FileUtil.getFileDirAsFile(userLayoutFilePath, hashedName), hashedName);
 
 			log.debug("trying to load custom user layout (part " + layoutPart + ") for user " + userName + " from file " + file);
 
