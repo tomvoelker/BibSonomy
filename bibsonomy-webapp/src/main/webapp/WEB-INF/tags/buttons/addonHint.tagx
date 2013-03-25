@@ -11,19 +11,25 @@
 	<fmt:message key="image.button.postBookmark" var="buttonImage"/>
 	<script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
 	<script type="text/javascript">
-		$(document).ready(function(){
-			var result=null;
-			if((result=installBookmarkletButton(
-				{
-					textElementId:"post\\.resource\\.hint", 
-					buttonElementId:"post\\.resource\\.hint\\.buttons",
-					sidebarInlay:true,
-					emptyParent:true
+		$(document).ready(function() {
+			var result = installBookmarkletButton({
+				textElementId:"post\\.resource\\.hint", 
+				buttonElementId:"post\\.resource\\.hint\\.buttons",
+				sidebarInlay:true,
+				emptyParent:true
+			});
+			if (result != null) {
+				var browsername = result.name.toLowerCase();
+				var availablePlugins = "${properties['project.plugin.available']}";
+				if (availablePlugins.indexOf(browsername) >= 0) {
+					$("#post\\.resource\\.hint1").html(getString("bookmarklet.legacyNotice")+" "+getString("bookmarklet.legacyNotice.further2"));
+					$("#post\\.resource\\.bookmarklet\\.screenshot").attr("src", "/resources/image/bookmarklet_screenshot_"+browsername+"_${fn:toLowerCase(exampleString)}.png").show();
+					$("#post\\.resource\\.hint\\.buttons\\.div").show();
 				}
-			))!=null) $("#post\\.resource\\.hint1").html(getString("bookmarklet.legacyNotice")+" "+getString("bookmarklet.legacyNotice.further2"));
+			}
 		});
 	</script>
-	<ul>
+	<ul id="post.resource.hint.buttons.div" class="initiallyHidden">
 		<li id="post.resource.hint"><fmt:message key="post.resource.hint"/></li>
 		<ul id="post.resource.hint.buttons">
 			<li><buttons:postPublication/></li>
