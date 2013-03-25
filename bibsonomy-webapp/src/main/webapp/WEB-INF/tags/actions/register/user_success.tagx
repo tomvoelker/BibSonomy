@@ -95,7 +95,7 @@
 						}
 					))) {
 							var browsername = browser.name.toLowerCase();
-							var availablePlugins = "";//${properties['project.plugin.available']}";
+							var availablePlugins = "${properties['project.plugin.available']}";
 							if (availablePlugins.indexOf(browsername) >= 0) {
 								$("#post\\.resource\\.bookmarklet\\.screenshot").attr("src", "/resources/image/bookmarklet_screenshot_"+browsername+"_${fn:toLowerCase(exampleString)}.png").show();
 								$("#post\\.resource\\.bookmarklet\\.installInfo").show();
