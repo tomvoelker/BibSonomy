@@ -165,9 +165,13 @@ public class ContextPathFilter implements Filter {
 			} else {
 				chain.doFilter(request, response);
 			}
-		}
-		catch (Exception ex) {
-			log.error("Error during filter execution.", ex);
+		} catch (Exception ex) {
+			HttpServletRequest castedRequest = (HttpServletRequest)request;
+			log.error("Error during filter execution."+ castedRequest.getRequestURI() + "?" + castedRequest.getQueryString() + " with referer " + castedRequest.getHeader("Referer"), ex);
+			/*
+			 * TODO: It would be nice if we could throw this exception in a way that we see it on a nice error page. Instead of the default Exception Screen.
+			 */
+			throw new RuntimeException(ex);
 		}
 	}
 
