@@ -47,7 +47,7 @@ public class DocumentUtils {
 		/*
 		 * create new (final) file
 		 */
-		final File file = new File(FileUtil.getFileDir(docPath, fileNameHash) + fileNameHash);
+		final File file = new File(FileUtil.getFileDirAsFile(docPath, fileNameHash), fileNameHash);
 		/*
 		 * copy from tmp directory to documents directory
 		 */
@@ -76,7 +76,7 @@ public class DocumentUtils {
 		
 		File source = new File (FileUtil.getFilePath(docPath, sourceDocument.getFileHash()));
 		String newFileNameHash = FileUtil.getRandomFileHash(sourceDocument.getFileName());
-		File destination = new File(FileUtil.getFileDir(docPath, newFileNameHash) + newFileNameHash);
+		File destination = new File(FileUtil.getFileDirAsFile(docPath, newFileNameHash), newFileNameHash);
 		try {
 			FileCopyUtils.copy (source, destination);
 		} catch (IOException ex) {
