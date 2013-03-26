@@ -71,7 +71,7 @@ public class WebUtils {
 	/**
 	 * The user agent used for all requests with {@link HttpURLConnection}.
 	 */
-	private static final String USER_AGENT_PROPERTY_VALUE = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";
+	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
 
 	private static final String CHARSET			= "charset=";
 	private static final String DEFAULT_CHARSET	= "UTF-8";
