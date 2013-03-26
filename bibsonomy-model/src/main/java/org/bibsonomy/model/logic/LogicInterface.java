@@ -2,7 +2,7 @@
  *
  *  BibSonomy-Model - Java- and JAXB-Model.
  *
- *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *
@@ -241,8 +241,10 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param end
 	 * @param relation
 	 * @param tagNames
+	 * @deprecated this method will soon be included in {@link #getTags()}
 	 * @return
 	 */
+	@Deprecated
 	public List<Tag> getTagRelation(int start, int end, TagRelation relation, List<String> tagNames);
 
 	/** Updates the tags of the given user by replacing ALL tags of <code>tagsToReplace</code>
