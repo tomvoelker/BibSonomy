@@ -8,11 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -21,18 +18,11 @@ import org.springframework.security.web.AuthenticationEntryPoint;
  * @version $Id$
  */
 public class RelayStateSettingEntryPoint implements AuthenticationEntryPoint {
-	private static final Log log = LogFactory.getLog(RelayStateSettingEntryPoint.class);
 	private AuthenticationEntryPoint entryPoint;
-	private ApplicationContext applicationContext;
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-		SamlAuthenticationTool samlTool = getSamlTool(request);
-		if (samlTool != null) {
-			samlTool.setRelayState();
-		} else {
-			log.warn("no samlTool");
-		}
+		getSamlTool(request).setRelayState();
 		entryPoint.commence(request, response, authException);
 	}
 
@@ -40,8 +30,10 @@ public class RelayStateSettingEntryPoint implements AuthenticationEntryPoint {
 		RequestLogic reqLogic = new RequestLogic(request);
 		Collection<String> allowedParametersForRedirect;
 		if ("GET".equalsIgnoreCase(request.getMethod()) == true) {
+			// keep all get parameters
 			allowedParametersForRedirect = null;
 		} else {
+			// no parameters from a post request are allowed to be copied via the relaystate to a later redirect
 			allowedParametersForRedirect = Collections.emptySet();
 		}
 		return new SamlAuthenticationTool(reqLogic, allowedParametersForRedirect);
