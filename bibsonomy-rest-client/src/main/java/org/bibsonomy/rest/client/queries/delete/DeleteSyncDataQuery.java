@@ -1,8 +1,8 @@
 /**
- * 
+ *
  *  BibSonomy-Rest-Client - The REST-client.
  *
- *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *
@@ -20,6 +20,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 package org.bibsonomy.rest.client.queries.delete;
 
 import static org.bibsonomy.util.ValidationUtils.present;
