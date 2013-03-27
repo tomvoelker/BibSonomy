@@ -2,7 +2,7 @@
  *
  *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *
@@ -20,6 +20,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 package org.bibsonomy.scraper.url.kde.Econstor;
 
 import static org.bibsonomy.util.ValidationUtils.present;
