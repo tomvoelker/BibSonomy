@@ -8,6 +8,9 @@ use warnings;
 use strict;
 use English;
 use DBI;
+use Sys::Hostname;
+
+my $hostname = hostname;
 
 ##################################################################
 # This module contains common subroutines used by our batch 
@@ -72,7 +75,7 @@ sub check_running {
     my $name = ${PROGRAM_NAME};
     $name =~ s|.*/||;
     if (am_i_running($ENV{'TMP'}."/${name}.pid")) {
-	print STDERR "another instance of $PROGRAM_NAME is running on $ENV{'hostname'}. Aborting this job.\n";
+	print STDERR "another instance of $PROGRAM_NAME is running on $hostname. Aborting this job.\n";
 	exit;
     }
 }
