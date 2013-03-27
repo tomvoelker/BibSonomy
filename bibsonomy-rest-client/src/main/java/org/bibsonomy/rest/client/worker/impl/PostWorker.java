@@ -25,9 +25,11 @@ package org.bibsonomy.rest.client.worker.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
@@ -35,6 +37,9 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.util.EncodingUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -49,6 +54,8 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 public final class PostWorker extends HttpWorker<PostMethod> {
 
 	private static final String CONTENT_TYPE = "multipart/form-data";
+	
+	private static final Log log = LogFactory.getLog(PostWorker.class);
 
 	/**
 	 * @param username
@@ -73,7 +80,36 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 
 		try {
 			final HttpMethodParams params = new HttpMethodParams();
-			final Part[] parts = new Part[]{new FilePart("file", file)};
+			FilePart filePart = new FilePart("file", file) {
+				/**
+				 * method hacked to get this fixed:
+				 * https://issues.apache.org/jira/browse/HTTPCLIENT-293
+				 */
+				@Override
+				protected void sendDispositionHeader(OutputStream out) throws IOException {
+					log.trace("enter sendDispositionHeader(OutputStream out)");
+					out.write(CONTENT_DISPOSITION_BYTES);
+					out.write(QUOTE_BYTES);
+					out.write(EncodingUtil.getAsciiBytes(getName()));
+					out.write(QUOTE_BYTES);
+
+					final byte[] FILE_NAME_BYTES = EncodingUtil.getAsciiBytes(FILE_NAME);
+					String filename = getSource().getFileName();
+					if (filename != null) {
+						out.write(FILE_NAME_BYTES);
+
+						out.write(QUOTE_BYTES);
+						// the actual change is a one-liner. We replace
+						// out.write(EncodingUtil.getAsciiBytes(filename));
+						// by:
+						out.write(EncodingUtil.getBytes(filename, this.getCharSet()));
+
+						out.write(QUOTE_BYTES);
+					}
+				}
+			};
+			filePart.setCharSet(Charset.defaultCharset().name());
+			final Part[] parts = new Part[] { filePart };
 			final MultipartRequestEntity entity = new MultipartRequestEntity(parts, params);
 			post.setRequestEntity(entity);
 
