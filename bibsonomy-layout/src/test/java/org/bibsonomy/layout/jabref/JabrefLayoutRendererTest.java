@@ -2,7 +2,7 @@
  *
  *  BibSonomy-Layout - Layout engine for the webapp.
  *
- *  Copyright (C) 2006 - 2011 Knowledge & Data Engineering Group,
+ *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *
