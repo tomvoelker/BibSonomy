@@ -29,7 +29,7 @@
 	
 		<jsp:attribute name="content">
 			<p><fmt:message key="post_bookmark.description" /></p>
-				  
+				
 			<form method="POST" action="/editBookmark">
 				<label for="url"><fmt:message key="post.resource.url" /></label> 
 				<input class="input" type="text" name="url" id="url" size="60" value="http://" />
@@ -39,8 +39,8 @@
 		</jsp:attribute>
 		
 		
-		 		
-    	<!--+
+
+	<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">
@@ -49,7 +49,7 @@
 					<buttons:addonHint/>
 				</jsp:attribute>
 			</parts:infobox>
-         </jsp:attribute>
+		</jsp:attribute>
 
 	</layout:paneLayout>
 
