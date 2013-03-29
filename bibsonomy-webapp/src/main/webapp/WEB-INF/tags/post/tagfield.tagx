@@ -14,19 +14,38 @@
 
 	<bform:fieldset maximized="true" legendKey="post.resource.tags.describe">
 		<jsp:attribute name="content">
-
-	        <span class="fsLabel"> (<fmt:message key="post.resource.spaceseparated"/>) *</span>
-    	    <form:input cssClass="tagInput reqinput" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
-        
-        	<!-- name="tags"  -->
-			<div class="dissError"><form:errors path="tags" /></div>
-
-        	<!-- allow user to confirm tags containing comma or semicolon -->
-        	<c:if test="${containsComma}">
-          		<div>
-	        	    <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
-    	      	</div>
-        	</c:if>
+			<div class="fsRow">
+		        <span class="fsLabel"> (<fmt:message key="post.resource.spaceseparated"/>) *</span>
+	    	    <form:input cssClass="tagInput reqinput" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
+	        
+	        	<!-- name="tags"  -->
+				<div class="dissError"><form:errors path="tags" /></div>
+	
+	        	<!-- allow user to confirm tags containing comma or semicolon -->
+	        	<c:if test="${containsComma}">
+	          		<div>
+		        	    <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
+	    	      	</div>
+	        	</c:if>
+			</div>    
+            
+	        <!--+
+    	        | show recommendations
+        	    +-->
+			<div class="fsRow">
+			  	<div class="fsLabel"><fmt:message key="post.resource.recommendation"/></div>
+          
+    	      	<!-- we assign post's id to div's class for accessing clicklog data -->
+			  	<div id="recommendedTags" class="recommended ${command.postID}">
+		    		<div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
+		      		<!-- This comment is needed, otherwise this will result in a self-closing element -->
+		  		</div>
+      
+          		<a id="fsReloadLink" href="#">
+            		<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
+            		<img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
+          		</a>
+			</div>
     
             <!--+
             	| show copied tags if available

@@ -2485,7 +2485,12 @@ div.reviewTextBox textarea {
   width: 20%;
   float: left;
 }
-#copiedTags, .fsSuggestion, .fsInput, .tagInput, #suggestedTags, #recommendedTags {
+
+.tagInput {
+	margin-bottom: 10px;
+}
+
+#copiedTags, .fsSuggestion, .fsInput, .tagInput, #suggestedTags, #recommendedTags {	
   float: left;
   width: 73%;
   background-color: white;
