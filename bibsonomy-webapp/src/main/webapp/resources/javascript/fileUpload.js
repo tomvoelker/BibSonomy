@@ -118,20 +118,31 @@ function renameClicked() {
 function renameSelected() {
 	/*
 	 * get the documents type to check wether
-	 * already a document exists with the specified type
-	 * and name or not
+	 * the new ending is equals the old
 	 */
 	var temp = $("#showName").text().split(" ");
 	var type;
 	$.each(temp, function(index, item) {
 		if(item.indexOf(".") >= 0) {
-			type = item.split(".")[1].replace(":","");
+			type = item.split(".");
+			type = type[type.length-1].replace(":","");
 		}
 	});
 	
 	var renameForm = $("#renameForm");
-	var fileName = $("#renameFormTxt").val()+"."+type; //get value of the rename field
+	var fileName = $("#renameFormTxt").val(); //get value of the rename field
+	var newFileType = fileName.split(".");
+	newFileType = newFileType[newFileType.length-1];
 	var fileExist = false;
+	
+	/*
+	 * check wether the file-type is consistent
+	 */
+	if(type.indexOf(newFileType) < 0) {
+		alert(getString("post.bibtex.inconsistentFiletype"));
+		return false;
+	}
+	
 	
 	//check wether a file with this name already exists
 	$(".documentFileName").each(function() {

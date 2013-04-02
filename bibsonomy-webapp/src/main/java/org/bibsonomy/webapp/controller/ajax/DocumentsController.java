@@ -121,7 +121,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		final String userName  = command.getContext().getLoginUser().getName();
 		final String intraHash = command.getIntraHash();
 		final String fileName  = command.getFileName();
-		final String newName = command.getNewFileName() + "." + fileName.split("\\.")[1];
+		final String newName = command.getNewFileName();
 		final Document document = logic.getDocument(userName, intraHash, fileName);
 		
 		/*
