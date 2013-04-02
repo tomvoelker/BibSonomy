@@ -1692,6 +1692,60 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#renameDocument(org.bibsonomy.model.Document, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void updateDocument(Document document, String resourceHash, String newName) {
+		this.ensureLoggedIn();
+		
+		final String userName = document.getUserName();
+		/*
+		 * users can only modify their own documents
+		 */
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		
+		final DBSession session = openSession();
+		try {
+			if (resourceHash != null) {
+				/*
+				 * the document belongs to a post --> check if the user owns the
+				 * post
+				 */
+				Post<BibTex> post = null;
+				try {
+					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				} catch (final ResourceMovedException ex) {
+					//ignore
+				} catch (final ResourceNotFoundException ex) {
+					// ignore
+				}
+				if (post != null) {
+					/*
+					 * the given resource hash belongs to a post of the user ->
+					 * rename the corresponding document to the new name
+					 */
+					final Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, document.getFileName(), session);
+					if (present(existingDocument)) {
+						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), newName, document.getMd5hash(), session);
+					}
+				} else {
+					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
+				}
+			} else {
+				/*
+				 * the document does not belong to a post 
+				 * TODO: throw exception
+				 */
+			}
+		} finally {
+			session.close();
+		}
+		log.debug("renamed document " + document.getFileName() + " from user " + userName + "to " +newName);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * org.bibsonomy.model.logic.LogicInterface#deleteDocument(java.lang.String,
 	 * java.lang.String, java.lang.String)

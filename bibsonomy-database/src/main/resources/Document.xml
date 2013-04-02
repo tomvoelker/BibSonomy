@@ -11,7 +11,7 @@
 	<update id="updateDoc" parameterClass="documentParam">
 		UPDATE document d 
 		  SET d.name=#fileName#, d.hash=#fileHash#, d.date=NOW(), d.md5hash=#md5hash#
-		  WHERE d.content_id = #contentId# 
+		  WHERE d.content_id = #contentId# AND d.hash=#fileHash#
 	</update>
 	
 	<select id="getDocumentForPost" resultMap="DocumentCommon.document" parameterClass="documentParam">

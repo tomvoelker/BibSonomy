@@ -50,6 +50,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
+import org.bibsonomy.util.file.FileUtil;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -611,6 +612,40 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertNotNull(document);
 		assertEquals("00000000000000000000000000000000", document.getFileHash());
 		assertEquals(documentFileName, document.getFileName());
+	}
+	
+	/**
+	 * A user wants to rename a document which belongs to him: should be possible
+	 */
+	@Test
+	public void renameExistingDocumentTest() {
+		//create document
+		final String resourceHash = "b77ddd8087ad8856d77c740c8dc2864a";
+		final String documentFileName = "testdocument_x.pdf";
+		final String newDocumentName = "testdocument_x_renamed.pdf";
+		Document document = new Document();
+		document.setFileHash(FileUtil.getRandomFileHash(documentFileName));
+		document.setFileName(documentFileName);
+		document.setMd5hash("00000000000000000000000000000000");
+		document.setUserName(TEST_USER_1);
+		this.getDbLogic(TEST_USER_1).createDocument(document, resourceHash);
+		
+		//check wether document was successfully created
+		document = this.getDbLogic(TEST_USER_1).getDocument(TEST_USER_1, resourceHash, documentFileName);
+		assertNotNull(document);
+		
+		//rename document
+		this.getDbLogic(TEST_USER_1).updateDocument(document, resourceHash, newDocumentName);
+		Document renamedDoc = this.getDbLogic(TEST_USER_1).getDocument(TEST_USER_1, resourceHash, newDocumentName);
+		
+		//check wether document was successfully renamed
+		assertNotNull(renamedDoc);
+		assertEquals(newDocumentName, renamedDoc.getFileName());
+		
+		//remove document
+		this.getDbLogic(TEST_USER_1).deleteDocument(renamedDoc, resourceHash);
+		renamedDoc = this.getDbLogic(TEST_USER_1).getDocument(TEST_USER_1, resourceHash, newDocumentName);
+		assertNull(renamedDoc);
 	}
 
 	/**
