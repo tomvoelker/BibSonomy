@@ -1144,28 +1144,51 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 			textfieldValue = textfield.val();
 			valueArray = textfieldValue.split(" ");
 			
-			$.ajax({
-				url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + valueArray[valueArray.length - 1],
-				dataType: "jsonp",
-				success: function( data ) {
-					if(textfieldValue.indexOf("send:") !=-1) {
-						response( $.map( friends, function( friend ) {
-							return {
-								value: friend
-							};
-						}));
-					} else {
-						response( $.map( data.items, function( item ) {
-							//don't recommend tags, which are already included in the input field
-							if(textfieldValue.indexOf(item.label) == -1) {
+			/**
+			 * If the user typed nothing - do nothing 
+			 */
+			if(valueArray[valueArray.length - 1].length != 0) {
+				$.ajax({
+					url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + valueArray[valueArray.length - 1],
+					dataType: "jsonp",
+					success: function( data ) {
+						if(textfieldValue.indexOf("send:") !=-1) {
+							response( $.map( friends, function( friend ) {
 								return {
-										value: item.label
+									value: friend
 								};
-							}
-						}));
+							}));
+						} else {
+
+							var tags = $.map( data.items, function( item ) {
+								//don't recommend tags, which are already included in the input field
+								if(textfieldValue.indexOf(item.label) == -1) {
+									return { value: item.label };
+								}
+							});
+							
+							var copiedTags = $.map($("#copiedTags li, .tagbox li a"), function(item) {
+								if(item.innerHTML.indexOf(valueArray[valueArray.length - 1]) == 0 &&
+										textfieldValue.indexOf(item.innerHTML) == -1) {
+									return { value: item.innerHTML };
+								}
+							});
+							
+							var recommendedTags = $.map($("#recommendedTags li, .tagbox li a"), function(item) {
+								if(item.innerHTML.indexOf(valueArray[valueArray.length - 1]) == 0 &&
+										textfieldValue.indexOf(item.innerHTML) == -1) {
+									return { value: item.innerHTML };
+								}
+							});							
+
+							var temp 		 = $.extend(tags, copiedTags);
+							var completeTags = $.extend(temp, recommendedTags);
+							
+							response(completeTags);
+						}
 					}
-				}
-			});
+				});
+			}
 		},
 		minLength: 1,
 		select: function( event, ui ) {
