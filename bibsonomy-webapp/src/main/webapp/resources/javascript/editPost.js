@@ -23,6 +23,9 @@ $(function() {
 	 * TODO: remove unused code of old autocompletion -> initTagAutocompletion($('#inpf_tags')); 
 	 */
 	startTagAutocompletion($('#inpf_tags'), false, true, true);
+	$("#copiedTags li, .tagbox li a").each(function() {
+		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
+	});
 });
 
 
