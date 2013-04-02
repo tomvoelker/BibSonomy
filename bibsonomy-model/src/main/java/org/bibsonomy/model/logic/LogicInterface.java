@@ -370,6 +370,18 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public void deleteDocument(Document document, String resourceHash);
 
 	/**
+	 * Renames an existing document to the given new name. 
+	 * The resourceHash is to find the corresponding
+	 * resource if existing. 
+	 * 
+	 * @param document - the document to rename
+	 * @param resourceHash - the resourceHash of the document
+	 * @param newName - the document's new name
+	 * 	 
+	 */
+	public void updateDocument(Document document, String resourceHash, String newName);
+	
+	/**
 	 * Adds an InetAddress (IP) with the given status to the list of addresses.
 	 * Note that an InetAddress has exactly one status - so adding the status 
 	 * really means setting it. TODO: this should be cleaned - either by renaming 
