@@ -697,4 +697,9 @@ public class RestLogic implements LogicInterface {
 	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId) {
 		throw new UnsupportedOperationException();
 	}
+	@Override
+	public void updateDocument(Document document, String resourceHash, String newName) {
+		// TODO Auto-generated method stub
+		
+	}
 }
