@@ -75,10 +75,11 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		}
 
 		/*
-		 * check request method, GET is delete file request, POST is upload File request
+		 * check request method, GET is delete file request, POST is upload or rename File request
 		 */
 		final String method = requestLogic.getMethod();
 		final String response;
+		
 		if ("GET".equals(method)) {
 			/*
 			 * delete file
@@ -89,15 +90,72 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 				response = deleteDocument(command, locale);	
 			}
 		} else if ("POST".equals(method)) {
-			/*
-			 * upload file
-			 */
-			response = uploadFile(command, locale);
+			
+			if(command.getAction() != null && 
+					command.getAction().equalsIgnoreCase("rename")) {
+				/*
+				 * rename file
+				 */
+				response = renameFile(command, locale);
+			} else {
+				/*
+				 * upload file
+				 */
+				response = uploadFile(command, locale);
+			}
 		} else {
 			return Views.ERROR;
 		}
 		command.setResponseString(response);
 		return Views.AJAX_XML;
+	}
+
+	/**
+	 * renames an existing file in the filesystem and database
+	 * @param command
+	 * @param locale
+	 * @return
+	 */
+	private String renameFile(AjaxDocumentCommand command, Locale locale) {
+		log.debug("start renaming file");
+		final String userName  = command.getContext().getLoginUser().getName();
+		final String intraHash = command.getIntraHash();
+		final String fileName  = command.getFileName();
+		final String newName = command.getNewFileName() + "." + fileName.split("\\.")[1];
+		final Document document = logic.getDocument(userName, intraHash, fileName);
+		
+		/*
+		 * unsupported file extensions
+		 */
+		if (!StringUtils.matchExtension(newName, FileUploadInterface.FILE_UPLOAD_EXTENSIONS)) {
+			return getXmlError("error.upload.failed.filetype", new Object[] {ALLOWED_EXTENSIONS}, command.getFileID(), fileName, locale);	
+		}
+		
+		if (!present(document)) {
+			return getXmlError("error.document_not_found", null, command.getFileID(), null, locale);
+		}
+		
+		/*
+		 * 
+		 * check whether logged-in user is the document owner
+		 */
+		final String documentOwner = document.getUserName();
+		if (!documentOwner.equals(userName)) {
+			return getXmlError("post.bibtex.wrongUser", null, command.getFileID(), null, locale); 
+		}
+
+		/*
+		 * rename document in database
+		 */
+		logic.updateDocument(document, intraHash, newName);
+		
+		final String response = messageSource.getMessage("bibtex.actions.filerenamed", new Object[] {fileName, newName}, locale);
+
+		return "<root><status>renamed</status>" +
+				"<response>" + response + "</response>" +
+				"<oldName>" + fileName + "</oldName>" +
+				"<newName>" +newName + "</newName>" +
+				"</root>";
 	}
 
 	/**
@@ -148,6 +206,8 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		final String response = messageSource.getMessage("bibtex.actions.filedeleted", new Object[] {fileName}, locale); 
 		return "<root><status>deleted</status><response>" + response + "</response></root>";
 	}
+	
+	
 
 	/**
 	 * This method handles the file upload to the server 
@@ -188,6 +248,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		}
 		final String md5Hash = HashUtils.getMD5Hash(fileItem.get());
 		try {
+			//should be uploadFile after debugging
 			fileItem.write(uploadFile);
 		} catch (final Exception ex) {
 			log.error("Could not write uploaded file.", ex);

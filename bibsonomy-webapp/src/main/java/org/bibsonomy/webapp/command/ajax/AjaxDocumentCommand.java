@@ -14,8 +14,10 @@ public class AjaxDocumentCommand extends AjaxCommand {
 	
 	private String fileHash;
 	
-	private int fileID;
+	private String newFileName;
 	
+	private int fileID;
+
 	private boolean temp;
 	
 	private CommonsMultipartFile file;
@@ -104,7 +106,21 @@ public class AjaxDocumentCommand extends AjaxCommand {
 		return temp;
 	}
 	
+	/**
+	 * 
+	 * @return the new filename
+	 */
+	public String getNewFileName() {
+		return this.newFileName;
+	}
 	
+	/**
+	 * 
+	 * @param newFileName the new filename 
+	 */
+	public void setNewFileName(String newFileName) {
+		this.newFileName = newFileName;
+	}
 	
 		
 }

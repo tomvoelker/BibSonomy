@@ -68,6 +68,7 @@
 							<list>
 								<value>intraHash</value>
 								<value>fileName</value>
+								<value>newFileName</value>
 								<value>fileHash</value>
 								<value>temp</value>
 								<value>ckey</value>
