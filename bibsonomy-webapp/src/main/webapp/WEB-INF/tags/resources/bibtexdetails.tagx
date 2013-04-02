@@ -192,15 +192,15 @@
 			  					<li>
 			  						<c:choose>
 			  							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-											<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(publication.documents[0].fileName)}">
+											<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">
 												<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-												<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
+												<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
 												<c:out value="${document.fileName}"/>
 											</a>
 											<c:out value=" ( "/>
 											
-											<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(publication.documents[0].fileName)}">
-												<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
+											<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+												<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
 												<fmt:message key="qrcode.actions.download" />
 											</a>
 											
@@ -217,9 +217,9 @@
 											<c:out value=")"/>
 										</c:when>
 										<c:otherwise>
-											<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(publication.documents[0].fileName)}">
+											<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
 												<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-												<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
+												<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
 												<c:out value="${document.fileName}"/>
 											</a>
 										</c:otherwise>
