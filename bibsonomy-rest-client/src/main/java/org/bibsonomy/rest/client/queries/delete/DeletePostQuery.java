@@ -62,7 +62,7 @@ public final class DeletePostQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, RESTConfig.USERS_URL + "/" + this.userName + "/" + URL_POSTS + "/" + this.resourceHash, null);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, RESTConfig.USERS_URL + "/" + this.userName + "/" + RESTConfig.POSTS_URL + "/" + this.resourceHash, null);
 		return null;
 	}
 	
