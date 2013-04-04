@@ -26,6 +26,7 @@ package org.bibsonomy.rest.client.queries.delete;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Status;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -61,7 +62,7 @@ public final class DeletePostQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, URL_USERS + "/" + this.userName + "/" + URL_POSTS + "/" + this.resourceHash, null);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, RESTConfig.USERS_URL + "/" + this.userName + "/" + URL_POSTS + "/" + this.resourceHash, null);
 		return null;
 	}
 	
