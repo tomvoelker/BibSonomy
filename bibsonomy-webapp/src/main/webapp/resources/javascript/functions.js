@@ -1123,7 +1123,9 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 	var valueArray 		= null;
 	var friends 		= null;
 	
-	// only if sendAllowwed == true, get the friends of the user
+	/**
+	 * only if sendAllowwed == true, get the friends of the user to recommend them in the case of "send:"
+	 */
 	if(sendAllowed) {
 		getFriends = function () {return friends;};
 		$.ajax({
@@ -1137,13 +1139,13 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 			}
 		});
 	}
-	
+		
 	var autocompleteObj = textfield.autocomplete({
 		source: function( request, response ) {
 			
 			textfieldValue = textfield.val();
 			valueArray = textfieldValue.split(" ");
-			
+						
 			/**
 			 * If the user typed nothing - do nothing 
 			 */
@@ -1152,35 +1154,70 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 					url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + valueArray[valueArray.length - 1],
 					dataType: "jsonp",
 					success: function( data ) {
-						if(textfieldValue.indexOf("send:") !=-1) {
-							response( $.map( friends, function( friend ) {
-								return {
-									value: friend
-								};
-							}));
+						/**
+						 * "send:" is part of the last array index - so show the friends of the loginUser
+						 * else
+						 * we recommend the tags
+						 */
+						if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {	
+							//Get the user input of the user and slice it, so userInput doesn't contain "send:"
+							var userInput = String(valueArray[valueArray.length - 1]).slice(5);
+							var regex = new RegExp(userInput);
+							var frienddd = $.map( friends, function(friend) {
+								/**
+								 * If the post is already send to a user (Example: "sent:bsc"), don't recommend this user ("bsc")
+								 * If the user input is "nra", recommend only users which username begins with "nra" 
+								 */
+								if(textfieldValue.indexOf(friend) == -1 &&
+										friend.search(regex) == 0) {
+									return { value: friend };
+								}
+							});
+							response(frienddd);
+						
 						} else {
-
+							/**
+							 * Get the Tags which the user already used in other posts
+							 */
 							var tags = $.map( data.items, function( item ) {
-								//don't recommend tags, which are already included in the input field
+								/**
+								 * don't recommend tags, which are already included in the input field
+								 */
 								if(textfieldValue.indexOf(item.label) == -1) {
 									return { value: item.label };
 								}
 							});
 							
+							/**
+							 * Get the tags of the copied post and recommend them 
+							 */
 							var copiedTags = $.map($("#copiedTags li, .tagbox li a"), function(item) {
+								/**
+								 * Check if the user Input (valueArray[]) is equal in the beginning with the recommended tag
+								 * Recommend only tags which aren't used yet in the actual edited post
+								 */
 								if(item.innerHTML.indexOf(valueArray[valueArray.length - 1]) == 0 &&
-										textfieldValue.indexOf(item.innerHTML) == -1) {
-									return { value: item.innerHTML };
+										textfieldValue.indexOf(item.innerHTML) == -1) { 
+									return { value: item.innerHTML.substring(0, item.innerHTML.length - 1) };
 								}
 							});
 							
+							/**
+							 * Get the recommended tags (suggested tags) and recommend them
+							 */
 							var recommendedTags = $.map($("#recommendedTags li, .tagbox li a"), function(item) {
+								/**
+								 * look above, same "if-pattern"
+								 */
 								if(item.innerHTML.indexOf(valueArray[valueArray.length - 1]) == 0 &&
 										textfieldValue.indexOf(item.innerHTML) == -1) {
-									return { value: item.innerHTML };
+									return { value: item.innerHTML.substring(0, item.innerHTML.length - 1) };
 								}
 							});							
-
+							
+							/**
+							 * remove double existing tags
+							 */
 							var temp 		 = $.extend(tags, copiedTags);
 							var completeTags = $.extend(temp, recommendedTags);
 							
@@ -1197,8 +1234,16 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 			var text = item.value;
 			var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length));
 			
+			/**
+			 * If multiTags is true, the user can apply more as one tag.
+			 * Otherwise the user can only use one tag (we replace the textInput Field with the recommended tag)
+			 */
 			if(multiTags) {
-				if(textfieldValue.indexOf("send:") !=-1) {
+				/**
+				 * Distinguish if the user has typed "send:" and want to get and set the recommended friends
+				 * or he wants only the normal tags set
+				 */
+				if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {
 					textArea.val(substring + "send:" + text + " ");
 				} else {
 					textArea.val(substring + text + " ");	
