@@ -2507,6 +2507,10 @@ div.reviewTextBox textarea {
   background-color: white;
 }
 
+#recommendedTags, #copiedTags {
+	background-color: #EEEEEE;
+}
+
 #copiedTags li, #recommendedTags li, #suggestedTags li {
 	display: inline;
 	cursor: pointer;
