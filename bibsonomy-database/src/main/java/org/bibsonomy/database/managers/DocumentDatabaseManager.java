@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -100,13 +101,17 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param md5hash
 	 * @param session
 	 */
-	public void updateDocument(final int contentId, final String fileHash, final String fileName, final String md5hash, final DBSession session) {
+	public void updateDocument(final int contentId, final String fileHash, final String fileName, final Date date, final String userName,
+			final String md5hash, final DBSession session) {
 		final DocumentParam docParam = new DocumentParam();
 		docParam.setFileHash(fileHash);
 		docParam.setFileName(fileName);
 		docParam.setContentId(contentId);
+		docParam.setUserName(userName);
+		docParam.setDate(date);
 		docParam.setMd5hash(md5hash);
 		
+		this.onDocumentUpdate(docParam, session);
 		this.update("updateDoc", docParam, session);
 	}
 
@@ -206,7 +211,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		this.onDocumentDelete(docParam, session);
 		this.delete("deleteDoc", docParam, session);
 	}
-
+	
 	/**
 	 * This method deletes an existing document
 	 * 
@@ -249,6 +254,16 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		this.plugins.onDocumentDelete(param, session);
 	}
 
+	/**
+	 * called when a document is updated
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	private void onDocumentUpdate(final DocumentParam param,  final DBSession session) {
+		this.plugins.onDocumentUpdate(param, session);
+	}
+	
 	/**
 	 * deletes all documents for a post (with logging)
 	 * @param contentId

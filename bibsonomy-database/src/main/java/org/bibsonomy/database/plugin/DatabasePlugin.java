@@ -239,6 +239,14 @@ public interface DatabasePlugin {
 	public void onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session);
 	
 	/**
+	 * called when a will be updated
+	 * 
+	 * @param updatedDocumentParam
+	 * @param session
+	 */
+	public void onDocumentUpdate(final DocumentParam updatedDocumentParam, final DBSession session);
+	
+	/**
 	 * TODO document me
 	 * 
 	 * @param deletedInboxMessageParam 

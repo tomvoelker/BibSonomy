@@ -159,5 +159,9 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 		// noop
 	}
 
+	@Override
+	public void onDocumentUpdate(DocumentParam updatedDocumentParam, DBSession session) {
+		// noop
+	}
 	
 }

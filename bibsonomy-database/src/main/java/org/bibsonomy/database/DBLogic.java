@@ -1576,7 +1576,7 @@ public class DBLogic implements LogicInterface {
 						 * ...
 						 * FIXME: is this really required?
 						 */
-						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
+						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), document.getFileName(), document.getDate(), userName, document.getMd5hash(), session);
 
 					} else {
 						// add document
@@ -1705,6 +1705,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 		
 		final DBSession session = openSession();
+		
 		try {
 			if (resourceHash != null) {
 				/*
@@ -1726,7 +1727,8 @@ public class DBLogic implements LogicInterface {
 					 */
 					final Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, document.getFileName(), session);
 					if (present(existingDocument)) {
-						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), newName, document.getMd5hash(), session);
+						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), newName, document.getDate(),
+								userName, document.getMd5hash(), session);
 					}
 				} else {
 					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");

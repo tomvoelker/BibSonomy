@@ -180,6 +180,11 @@ public class Logging extends AbstractDatabasePlugin {
 	public void onDocumentDelete(final DocumentParam deletedDocumentParam, final DBSession session) {
 		this.insert("logDocument", deletedDocumentParam, session);
 	}
+	
+	@Override
+	public void onDocumentUpdate(DocumentParam updatedDocumentParam, DBSession session) {
+		this.insert("logDocument", updatedDocumentParam, session);
+	}
 
 	@Override
 	public void onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {

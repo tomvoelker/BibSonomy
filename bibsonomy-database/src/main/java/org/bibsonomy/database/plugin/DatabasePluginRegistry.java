@@ -265,6 +265,13 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 			plugin.onDocumentDelete(deletedDocumentParam, session);
 		}	
 	}
+	
+	@Override
+	public void onDocumentUpdate(DocumentParam updatedDocumentParam, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			plugin.onDocumentUpdate(updatedDocumentParam, session);
+		}
+	}
 
 	@Override
 	public void onInboxMailDelete(final InboxParam deletedInboxMessageParam, final DBSession session) {
