@@ -106,10 +106,67 @@ function renameClicked() {
 
 	/*
 	 * attach handler that is called when the user selected a file
+	 * Click handler
 	 */
 	$("#renameBtn").click(renameSelected);
+	/*
+	 * handler for presses enter button 
+	 */
+	$("#renameFormTxt").keypress(function(event) {
+		if(event.which == 13) {
+			renameSelected();
+			return false;
+		}
+	});
 
 	return false;
+}
+
+function checkConsistency(oldSuffix, newSuffix) {
+	
+	/*
+	 * check for each suffix-pair for which it is allowed to get 
+	 * converted if it fit's to the new file's suffix
+	 */
+	if(oldSuffix.toLowerCase() != newSuffix.toLowerCase()) {
+		var equalSuffixes = ["jpg-jpeg-png-tif-tiff", "pdf-ps", "djv-djvu", "txt-tex",
+		                     "doc-docx-ppt-pptx-xls-xlsx", "ods-odt-odp", "htm-html"];
+		var currentLeftSuffix, currentRightSuffix;
+		var check = false;
+		var testForRename = false;
+		$.each(equalSuffixes, function(index, item) {
+			var suffixes = item.split("-");
+			var length = suffixes.length;
+			for(var i = 0; i < length; i++) {
+				for(var j = i; j < length; j++) {
+					currentLeftSuffix = item.split("-")[i];
+					currentRightSuffix = item.split("-")[j];
+					if(oldSuffix.toLowerCase() ==  currentLeftSuffix && newSuffix.toLowerCase() == currentRightSuffix) {
+						check = confirm(getString("post.bibtex.changeFiletype"));
+						testForRename = true;
+					} else if (oldSuffix.toLowerCase() ==  currentRightSuffix && newSuffix.toLowerCase() == currentLeftSuffix) {
+						check = confirm(getString("post.bibtex.changeFiletype"));
+						testForRename = true;
+					}
+				}
+			}
+		});
+		
+		/*
+		 * user want's to save a new consistent suffix
+		 */
+		if(check) {
+			return true;
+		/*
+		 * filetype is inconsitent, rename is not possible
+		 */
+		} else if(!check && !testForRename) {
+			alert(getString("post.bibtex.inconsistentFiletype"));
+			return false;
+		}
+	} else {
+		return true;
+	}
 }
 
 /**
@@ -132,14 +189,14 @@ function renameSelected() {
 	var renameForm = $("#renameForm");
 	var fileName = $("#renameFormTxt").val(); //get value of the rename field
 	var newFileType = fileName.split(".");
+	var length = newFileType.length;
 	newFileType = newFileType[newFileType.length-1];
 	var fileExist = false;
 	
 	/*
 	 * check wether the file-type is consistent
 	 */
-	if(type.indexOf(newFileType) < 0) {
-		alert(getString("post.bibtex.inconsistentFiletype"));
+	if(!checkConsistency(type, newFileType, length)) {
 		return false;
 	}
 	
