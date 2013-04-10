@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.view;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -145,7 +147,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * If an extension is given, which is differrent from ".html", this suggests to the 
 		 * browser to show a file dialog.
 		 */
-		if (extension != null && !extension.trim().equals("") && !extension.equalsIgnoreCase(".html")) {
+		if (present(extension) && !extension.equalsIgnoreCase(".html")) {
 			response.setHeader("Content-Disposition", "attachement; filename=" + Functions.makeCleanFileName(requPath) + extension);
 		}
 		/*
