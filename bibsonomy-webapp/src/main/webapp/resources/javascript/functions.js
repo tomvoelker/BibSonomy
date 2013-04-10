@@ -1122,6 +1122,8 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 	var textfieldValue 	= null;
 	var valueArray 		= null;
 	var friends 		= null;
+    var termTemplate 	= "<span class='ui-autocomplete-term'>%s</span>";
+
 	
 	/**
 	 * only if sendAllowwed == true, get the friends of the user to recommend them in the case of "send:"
@@ -1140,7 +1142,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 		});
 	}
 		
-	var autocompleteObj = textfield.autocomplete({
+	var autocompleteObj = textfield.autocomplete({		
 		source: function( request, response ) {
 			
 			textfieldValue = textfield.val();
@@ -1257,10 +1259,41 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 		focus: function( event, ui ) {
 			return false;
 		},
-		open: function(){
+        open: function(event,ui) {
+        	/**
+        	 * This functionality below causes the bold letters of the autocompletion.
+        	 * We distinguish if the user wants to send the post to a user (contains "send:"),
+        	 * or the user wants the tags.
+        	 * The entire part of the recommendation starts with bold text-width (style.css -> .ui-menu-item).
+        	 * Below in the acData iteration, we replace the input of the user of the textfield (e.g. "Buil")
+        	 * in the recommendation (The recommendation contains "Building" and we replace "Buil" with normal text-width
+        	 * in a span with the class ".ui-autocomplete-term" (style.css)). 
+        	 */
+            var acData 		= $(this).data('autocomplete');
+            var styledTerm;
+            
+			if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {
+				styledTerm 	= termTemplate.replace('%s', String(valueArray[valueArray.length - 1]).slice(5));
+			} else {
+				styledTerm 	= termTemplate.replace('%s', valueArray[valueArray.length - 1]);	
+			}
+
+            acData
+                .menu
+                .element
+                .find('a')
+                .each(function() {
+                    var me = $(this);
+        			if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {
+        				me.html( me.text().replace(String(valueArray[valueArray.length - 1]).slice(5), styledTerm));
+        			} else {
+        				me.html( me.text().replace(valueArray[valueArray.length - 1], styledTerm));	
+        			}
+                });
+            
 	        $(this).autocomplete('widget').css('z-index', 999);
 	        return false;
-	    }
+        }
 	});
 	
 	if(isPost) {

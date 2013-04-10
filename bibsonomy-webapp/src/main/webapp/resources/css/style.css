@@ -2561,7 +2561,12 @@ div.reviewTextBox textarea {
 }
 
 .ui-menu-item{
+	font-weight: bold; 
 	font-size:11px;
+}
+
+.ui-autocomplete-term { 
+	font-weight: normal; 
 }
 
 .ui-state-hover{
