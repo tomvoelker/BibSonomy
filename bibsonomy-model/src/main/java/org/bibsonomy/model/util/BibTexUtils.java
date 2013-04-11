@@ -37,11 +37,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -464,6 +464,7 @@ public class BibTexUtils {
 		return buffer.toString();
 	}
 
+	
 	/**
 	 * @param value
 	 * @return
@@ -914,6 +915,24 @@ public class BibTexUtils {
 		return StringUtils.parseBracketedKeyValuePairs(miscFieldString, ASSIGNMENT_OPERATOR, KEYVALUE_SEPARATOR, DEFAULT_OPENING_BRACKET, DEFAULT_CLOSING_BRACKET);		
 	}
 
+
+	/**
+	 * Generates the flags for {@link #toBibtexString(BibTex, int)}.
+	 * 
+	 * @param plainMiscField - Should the plain misc field be used or should it be parsed and cleaned?
+	 * @param firstLastNames - Order of names should be First, Last?
+	 * @param generatedBibtexKeys - Should the BibTeX key be generated or should the original be taken?
+	 * @return An int containing the flags.
+	 */
+	public static int getFlags(final boolean plainMiscField, final boolean firstLastNames, final boolean generatedBibtexKeys) {
+		int flags = 0;
+		if (plainMiscField)      flags |= SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD;
+		if (firstLastNames)      flags |= SERIALIZE_BIBTEX_OPTION_FIRST_LAST;
+		if (generatedBibtexKeys) flags |= SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS;
+
+		return flags;
+	}
+	
     /**
      * Indicates whether a particular flag is set or not.
      * @param flags - the flags where we look if testFlag is set
