@@ -245,6 +245,8 @@ public class RestLogic implements LogicInterface {
 		query.setResourceHash(hash);
 		query.setResourceType(resourceType);
 		query.setTags(tags);
+		query.setSearch(search);
+		query.setOrder(order);
 		query.setUserName(this.getAuthenticatedUser().getName());
 		return (List) execute(query);
 	}
