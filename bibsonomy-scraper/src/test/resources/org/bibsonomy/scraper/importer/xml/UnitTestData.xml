@@ -1553,4 +1553,10 @@
 		<BibFile>JCBScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jcb.JCBScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_255">
+		<TestDescription>Aps Scraper test</TestDescription>
+		<URL>http://physrev.physiology.org/content/91/4/1281.short</URL>
+		<BibFile>ApsScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.aps.ApsScraper</Scraper>
+	</URLTest>
 </test:Tests>
