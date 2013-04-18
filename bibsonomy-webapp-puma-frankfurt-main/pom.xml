@@ -1,8 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.bibsonomy</groupId>
   <artifactId>bibsonomy-webapp-puma-frankfurt-main</artifactId>
-  <version>2.0.34-SNAPSHOT</version>
+  <parent>
+  	<groupId>org.bibsonomy</groupId>    
+    <artifactId>bibsonomy</artifactId>
+    <version>2.0.34-SNAPSHOT</version>
+  </parent>
   <packaging>war</packaging>
   <name>BibSonomy Webapp PUMA Frankfurt Main</name>
   <description>PUMA version of BibSonomy for Library of Frankfurt Main University</description>
@@ -15,4 +18,23 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
+  <profiles>
+		<profile>
+		    <id>deploy-to-puma-ff-puma</id>
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=puma-ff-puma is given as
+				parameter.
+			-->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma_ff_puma</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_puma_frankfurt_puma</maven.tomcat.server>
+				<maven.tomcat.url>http://test2.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+			</properties>
+		</profile>
+   </profiles>
 </project>
