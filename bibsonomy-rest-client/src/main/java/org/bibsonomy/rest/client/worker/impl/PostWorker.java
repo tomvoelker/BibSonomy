@@ -80,21 +80,22 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 
 		try {
 			final HttpMethodParams params = new HttpMethodParams();
-			FilePart filePart = new FilePart("file", file) {
+			final FilePart filePart = new FilePart("file", file) {
 				/**
+				 * TODO: remove as soon as the http-client is updated to 4.0
 				 * method hacked to get this fixed:
 				 * https://issues.apache.org/jira/browse/HTTPCLIENT-293
 				 */
 				@Override
-				protected void sendDispositionHeader(OutputStream out) throws IOException {
+				protected void sendDispositionHeader(final OutputStream out) throws IOException {
 					log.trace("enter sendDispositionHeader(OutputStream out)");
 					out.write(CONTENT_DISPOSITION_BYTES);
 					out.write(QUOTE_BYTES);
-					out.write(EncodingUtil.getAsciiBytes(getName()));
+					out.write(EncodingUtil.getAsciiBytes(this.getName()));
 					out.write(QUOTE_BYTES);
 
 					final byte[] FILE_NAME_BYTES = EncodingUtil.getAsciiBytes(FILE_NAME);
-					String filename = getSource().getFileName();
+					final String filename = this.getSource().getFileName();
 					if (filename != null) {
 						out.write(FILE_NAME_BYTES);
 
