@@ -36,5 +36,22 @@
 				<maven.tomcat.url>http://test2.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
 			</properties>
 		</profile>
+		<profile>
+			<id>deploy-to-test-puma-ff</id>
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=test-puma-ff is given as
+				parameter.
+			-->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>test_puma_ff</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_test_puma_frankfurt</maven.tomcat.server>
+				<maven.tomcat.url>http://test.frankfurt.puma.stefani.biz:8080/manager</maven.tomcat.url>
+			</properties>
+		</profile>
    </profiles>
 </project>
