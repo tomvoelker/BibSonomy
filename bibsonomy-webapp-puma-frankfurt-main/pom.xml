@@ -51,6 +51,7 @@
 			<properties>
 				<maven.tomcat.server>tomcat_test_puma_frankfurt</maven.tomcat.server>
 				<maven.tomcat.url>http://test.frankfurt.puma.stefani.biz:8080/manager</maven.tomcat.url>
+				<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
 			</properties>
 		</profile>
    </profiles>
