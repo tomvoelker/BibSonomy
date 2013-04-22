@@ -23,9 +23,12 @@
 
 package org.bibsonomy.scraper;
 
+import java.io.PrintWriter;
+
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
 import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.scraper.generic.CoinsScraper;
+import org.bibsonomy.scraper.generic.EprintScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
 import org.bibsonomy.scraper.id.kde.doi.DOIScraper;
@@ -68,6 +71,8 @@ public class KDEScraperFactory {
 		scraper.addScraper(new DOIScraper());
 		
 		scraper.addScraper(new KDEUrlCompositeScraper());
+		
+		scraper.addScraper(new EprintScraper());
 		
 		// this scraper always crawls the content and thus accepts ALL URLs!
 		scraper.addScraper(new UnAPIScraper());
