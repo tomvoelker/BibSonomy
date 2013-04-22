@@ -204,8 +204,13 @@ input#inpf {
     border: 1px solid #DBC3BC;
 }
 
-div.ui-tabs div.ui-tabs-panel {
-    border: 1px solid #DBC3BC;
+.tab .selected, .tab .ui-state-active {
+	border-color: #DBC3BC 
+}
+
+#citation .citationHint a,
+.tab .selected a, .tab .ui-state-active a {
+	color: #872708;
 }
 
 div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
