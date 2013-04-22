@@ -8,6 +8,7 @@ a {
 
 #container {
 	top: 14px;
+	min-height: 1px;
 }
 
 #logoimage {
@@ -77,7 +78,7 @@ a {
 }
 
 #navigation ul li a { 
-	color: #EDEFF7;
+	color: white;
 }
 
 #navigation ul li.active { 
@@ -101,7 +102,7 @@ a {
 
 
 #navigation .pulldown > span {
-    color: #EDEFF7;
+    color: white;
 }
 
 #navigation .pulldown.active > span {
@@ -137,8 +138,9 @@ a {
 	border-bottom: 1px solid #bcc3db;
 }
 
+#container,
 #container.noPageNavigation {
-	background-color: #666;
+	background-color: #C6C6C6;
 }
 
 
@@ -205,8 +207,13 @@ input#inpf {
     border: 1px solid #bcc3db;
 }
 
-div.ui-tabs div.ui-tabs-panel {
-    border: 1px solid #bcc3db;
+.tab .selected, .tab .ui-state-active {
+	border-color: #BCC3DB;
+}
+
+#citation .citationHint a,
+.tab .selected a, .tab .ui-state-active a {
+	color: #06C;
 }
 
 div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
