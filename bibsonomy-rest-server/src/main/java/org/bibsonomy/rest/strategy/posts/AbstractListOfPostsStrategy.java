@@ -8,6 +8,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
@@ -27,6 +28,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final String tagString;
 	protected final List<String> tags;
 	protected final String search;
+	protected final Order order;
 	
 	/**
 	 * @param context
@@ -37,6 +39,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
 		this.hash = context.getStringAttribute(RESTConfig.RESOURCE_PARAM, null);
 		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
+		this.order = context.getEnumAttribute(RESTConfig.ORDER_PARAM, Order.class, null);
 		this.grouping = this.chooseGroupingEntity();
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
 		String groupingValue;

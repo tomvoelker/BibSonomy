@@ -218,6 +218,20 @@ public final class Context {
 	public String getStringAttribute(final String parameterName, final String defaultValue) {
 		return RESTUtils.getStringAttribute(this.parameterMap, parameterName, defaultValue);
 	}
+	
+	/**
+	 * @param parameterName
+	 * @param enumType name of enum type to be searched for the constant
+	 * @param defaultValue
+	 * @return paramter value
+	 */
+	public <X extends Enum<X>> X getEnumAttribute(final String parameterName, Class<X> enumType, X defaultValue) {
+		String valueStr = RESTUtils.getStringAttribute(this.parameterMap, parameterName, null);
+		if (valueStr == null) {
+			return defaultValue;
+		}
+		return Enum.valueOf(enumType, valueStr);
+	}
 
 	/**
 	 * @return Returns the logic.
