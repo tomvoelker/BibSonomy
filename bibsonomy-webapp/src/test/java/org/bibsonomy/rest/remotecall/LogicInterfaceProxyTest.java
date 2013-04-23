@@ -611,6 +611,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, null, null, null, null, 0, 5);
 	}
 	
+	@Test
+	public void getPostsTestWithSearchAndOrder() {
+		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search", null, Order.FOLKRANK, null, null, 0, 5);
+	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
