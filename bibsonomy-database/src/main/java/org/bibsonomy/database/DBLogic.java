@@ -1734,10 +1734,7 @@ public class DBLogic implements LogicInterface {
 					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
 				}
 			} else {
-				/*
-				 * the document does not belong to a post 
-				 * TODO: throw exception
-				 */
+				throw new ValidationException("update document without resourceHash is not possible");
 			}
 		} finally {
 			session.close();
