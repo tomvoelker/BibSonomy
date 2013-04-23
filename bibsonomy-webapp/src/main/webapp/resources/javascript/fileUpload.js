@@ -35,7 +35,7 @@ function renameClicked() {
 		var temp = $("#showName").text().split(" ");
 		$.each(temp, function(index, item) {
 			if(item.indexOf(".") >= 0) {
-				currentName = item;
+				currentName = item.substring(0, item.length-1);
 			}
 		});
 	}
@@ -59,14 +59,21 @@ function renameClicked() {
 	//get name of the document to rename out of the given href
 	$.each(extractName, function(index, item) {
 		if(item.indexOf("fileName") >= 0) {
-			name = item.split("=")[1];
+			var nameParts = item.split("=");
+			$.each(nameParts, function(innerIndex, innerItem) {
+				if(innerIndex > 1) {
+					name += "="+innerItem;
+				} else if(innerIndex == 1)  {
+					name = innerItem;
+				}
+			});
 		}
 	});
 	
 	/*
 	 * the same rename button was clicked twice, so hide the rename form and do nothing 
 	 */
-	if(currentName && currentName.indexOf(name) >= 0) {
+	if(currentName && currentName == name) {
 		return false;
 	}
 	
@@ -76,11 +83,11 @@ function renameClicked() {
 	 */
 	if($("#showName").length) {
 		$("#showName").text(getString("post.bibtex.renameTitle") +" " +name);
-		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data'>" + 
+		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
 		 "<input id='renameFormTxt' type='text' name='newFileName'/>" +
 				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
 	} else {
-		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data'>" + 
+		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
 		"<p id='showName'>" +getString("post.bibtex.renameTitle") +" " +name +":</p> <input id='renameFormTxt' type='text' name='newFileName'/>" +
 				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
 	}
@@ -199,7 +206,6 @@ function renameSelected() {
 	if(!checkConsistency(type, newFileType, length)) {
 		return false;
 	}
-	
 	
 	//check wether a file with this name already exists
 	$(".documentFileName").each(function() {

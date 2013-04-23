@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
@@ -34,6 +35,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	private static final Log log = LogFactory.getLog(DocumentsController.class);
 
 	private static final String ALLOWED_EXTENSIONS = StringUtils.implodeStringArray(FileUploadInterface.FILE_UPLOAD_EXTENSIONS, ", ");
+	private static final String FORBIDDEN_SYMBOLS = ".*[<>/\\\\].*";
 
 	/**
 	 * Path to the documents folder
@@ -128,11 +130,18 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 * unsupported file extensions
 		 */
 		if (!StringUtils.matchExtension(newName, FileUploadInterface.FILE_UPLOAD_EXTENSIONS)) {
-			return getXmlError("error.upload.failed.filetype", new Object[] {ALLOWED_EXTENSIONS}, command.getFileID(), fileName, locale);	
+			return getXmlRenameError("error.upload.failed.filetype", new Object[] {ALLOWED_EXTENSIONS}, command.getFileID(), fileName, locale);	
 		}
 		
 		if (!present(document)) {
-			return getXmlError("error.document_not_found", null, command.getFileID(), null, locale);
+			return getXmlRenameError("error.document_not_found", null, command.getFileID(), null, locale);
+		}
+		
+		/*
+		 * check if the new name contains forbidden symbols
+		 */
+		if (Pattern.matches(FORBIDDEN_SYMBOLS, newName)) {
+			return getXmlRenameError("error.document_invalid_symbols", null, command.getFileID(), null, locale);
 		}
 		
 		/*
@@ -141,9 +150,9 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 */
 		final String documentOwner = document.getUserName();
 		if (!documentOwner.equals(userName)) {
-			return getXmlError("post.bibtex.wrongUser", null, command.getFileID(), null, locale); 
+			return getXmlRenameError("post.bibtex.wrongUser", null, command.getFileID(), null, locale); 
 		}
-
+	
 		/*
 		 * rename document in database
 		 */
@@ -291,6 +300,22 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	private String getXmlError (final String messageCode, final Object[] arguments, int fileID, final String fileName, Locale locale) {
 		final String reason = messageSource.getMessage(messageCode, arguments, locale);
 		final String errorMsg = messageSource.getMessage("error.upload.failed", new Object[] {reason}, locale);
+		return "<root><status>error</status><reason>" + errorMsg + "</reason><fileid>"+ fileID + "</fileid><filename>" + fileName + "</filename></root>";
+	}
+	
+	/**
+	 * generates an AJAX_XML response for failed file renaming with the specified reason
+	 * 
+	 * @param messageCode the reason to display
+	 * @param arguments
+	 * @param fileID
+	 * @param fileName
+	 * @param locale
+	 * @return
+	 */
+	private String getXmlRenameError(final String messageCode, final Object[] arguments, int fileID, final String fileName, Locale locale) {
+		final String reason = messageSource.getMessage(messageCode, arguments, locale);
+		final String errorMsg = messageSource.getMessage("error.rename.failed", new Object[] {reason}, locale);
 		return "<root><status>error</status><reason>" + errorMsg + "</reason><fileid>"+ fileID + "</fileid><filename>" + fileName + "</filename></root>";
 	}
 
