@@ -101,6 +101,7 @@ public class EprintScraper implements Scraper {
 					if (present(bibtexResult)) {
 						
 						scrapingContext.setBibtexResult(bibtexResult);
+						return true;
 						
 					} else {
 						
@@ -119,7 +120,7 @@ public class EprintScraper implements Scraper {
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	@Override
