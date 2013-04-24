@@ -33,10 +33,6 @@
 							</a>
 							
 							<a class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"><!-- keep me --></a>
-							
-							<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
-							<a class="renameDoc" onclick="return renameFunction(this);" title="${renameTitle}" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${command.post.resource.intraHash}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;action=rename"><!-- keep me --></a>
-							
 						</li>
 					</c:forEach></ul>
 				</div>
@@ -46,13 +42,12 @@
 			<div class="fsRow" id="inputDiv">
 				<label class="fsLabel" for="fu"><fmt:message key="bibtex.actions.private_document.upload"/></label>
 				<buttons:help message="post.bibtex.help"/>
-				<input id="fu"  style="display:block" type="file" name="file"/>
+				<input id="fu" type="file" name="file"/>
 				<script type="text/javascript">
 						$(function(){
 							$("#fu").documentUploader();
 						});
 				</script>
-				<label class="fsLabel" id="showName"><!-- keep me --></label>
 			</div>
 			
 			
