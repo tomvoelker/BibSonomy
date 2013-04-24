@@ -400,9 +400,9 @@ function uploadRequestSuccessful(data) {
 			if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) != -1) {
 				inner = aQrCode + imgPreview + fileName + "</a> ( " + aNoQrCode + imgPreview + documentQRMessage + "</a>" + 
 				"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
-				") " + aDel +aRename;
+				") " + aDel +"<br />" +aRename;
 			} else {
-				inner = aNoQrCode + imgPreview + fileName + "</a> " + aDel +aRename;
+				inner = aNoQrCode + imgPreview + fileName + "</a> " + aDel+"<br />" +aRename;
 			}
 			
 			filesUl.find("li:last-child").before("<li>" + inner + "</li>");
