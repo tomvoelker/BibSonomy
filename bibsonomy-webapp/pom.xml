@@ -254,23 +254,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>deploy-to-puma-ff-puma</id>
-			<!--
-				change tomcat deploy destination when -Ddeploy-to=puma-ff-puma is given as
-				parameter.
-			-->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>puma_ff_puma</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_puma_frankfurt_puma</maven.tomcat.server>
-				<maven.tomcat.url>http://test2.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
 			<id>deploy-to-test-puma-ks</id>
 			<!--
 				change tomcat deploy destination when -Ddeploy-to=test-puma-ks is given as
@@ -285,23 +268,6 @@
 			<properties>
 				<maven.tomcat.server>tomcat_test_puma_kassel</maven.tomcat.server>
 				<maven.tomcat.url>http://test.kassel.puma.stefani.biz:8080/manager</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
-			<id>deploy-to-test-puma-ff</id>
-			<!--
-				change tomcat deploy destination when -Ddeploy-to=test-puma-ff is given as
-				parameter.
-			-->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>test_puma_ff</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_test_puma_frankfurt</maven.tomcat.server>
-				<maven.tomcat.url>http://test.frankfurt.puma.stefani.biz:8080/manager</maven.tomcat.url>
 			</properties>
 		</profile>
 		<profile>
