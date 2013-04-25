@@ -49,12 +49,7 @@ public class EprintScraper implements Scraper {
 	/*
 	 * pattern identifying eprints pages
 	 */
-	private static final Pattern PATTERN = Pattern.compile("rel=\"alternate\".*href=\"http://.*eprint.*\".*title=\"BibTeX\"");
-	/*
-	 * pattern identifying the bibtex-url
-	 */
-	private static final Pattern BIBTEX_URL = Pattern.compile("href=\"http://.*bib");
-
+	private static final Pattern PATTERN = Pattern.compile("<\\s*link(?=.*rel=\"alternate\")(?=.*href=\"(http://.*eprint.*bib)\")(?=.*type=\"text/plain\")(?=.*title=\"BibTeX\").*>");
 
 	@Override
 	public String getInfo() {
@@ -78,20 +73,8 @@ public class EprintScraper implements Scraper {
 		if(matcher.find()) {
 			try {
 				
-				String bibtexLink = "";
-				Matcher bibtexMatcher = BIBTEX_URL.matcher(page.substring(matcher.start(), matcher.end()));
-				
-				//find the href attribute to identify the bibtex url
-				if( bibtexMatcher.find() ) {
-					
-					bibtexLink = bibtexMatcher.group().split("=")[1];
-					bibtexLink = bibtexLink.substring(1);
-					
-				} else {
-					
-					return false;
-					
-				}
+				//get the URL to the bibtex
+				String bibtexLink = matcher.group(1);
 				
 				if ( present(bibtexLink) ) {
 					
@@ -116,7 +99,9 @@ public class EprintScraper implements Scraper {
 				}
 				
 			} catch (IOException ex) {
+				
 				return false;
+				
 			}
 		}
 
