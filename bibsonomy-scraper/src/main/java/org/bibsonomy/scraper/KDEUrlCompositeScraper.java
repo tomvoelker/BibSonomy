@@ -222,7 +222,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new StanfordInfoLabScraper());
 		addScraper(new RSCScraper());
 		addScraper(new FASEBJournalScraper());
-		//addScraper(new GbvScraper());
+//		addScraper(new GbvScraper());
 		addScraper(new JNeurosciScraper());
 		addScraper(new BiologistsScraper());
 		addScraper(new OpenUniversityScraper());
