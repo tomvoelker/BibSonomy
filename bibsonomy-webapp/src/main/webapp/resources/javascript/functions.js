@@ -1121,6 +1121,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 	
 	var textfieldValue 	= null;
 	var valueArray 		= null;
+	var userInput		= null;	
 	var friends 		= null;
     var termTemplate 	= "<span class='ui-autocomplete-term'>%s</span>";
 
@@ -1147,13 +1148,14 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 			
 			textfieldValue = textfield.val();
 			valueArray = textfieldValue.split(" ");
-						
+			userInput = valueArray[valueArray.length - 1];
+			
 			/**
 			 * If the user typed nothing - do nothing 
 			 */
-			if(valueArray[valueArray.length - 1].length != 0) {
+			if(userInput.length != 0) {
 				$.ajax({
-					url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + valueArray[valueArray.length - 1],
+					url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + userInput,
 					dataType: "jsonp",
 					success: function( data ) {
 						/**
@@ -1161,69 +1163,106 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 						 * else
 						 * we recommend the tags
 						 */
-						if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {	
+						if(userInput.indexOf("send:") != -1) {	
 							//Get the user input of the user and slice it, so userInput doesn't contain "send:"
-							var userInput = String(valueArray[valueArray.length - 1]).slice(5);
+							userInput = String(userInput).slice(5);
 							var regex = new RegExp(userInput);
-							var frienddd = $.map( friends, function(friend) {
+
+							response($.map( friends, function(friend) {
 								/**
-								 * If the post is already send to a user (Example: "sent:bsc"), don't recommend this user ("bsc")
+								 * If the post is already sent to a user (Example: "sent:bsc"), don't recommend this user ("bsc")
 								 * If the user input is "nra", recommend only users which username begins with "nra" 
 								 */
 								if(textfieldValue.indexOf(friend) == -1 &&
 										friend.search(regex) == 0) {
 									return { value: friend };
 								}
-							});
-							response(frienddd);
-						
+							}));
 						} else {
+							
+							var regex 			= new RegExp(userInput);
+							var recommendedTags = new Array();
+							var copiedTags 		= new Array();
+							
+							/**
+							 * Get the tag-name's of "copied post" and "recommendation" -> Save them in a detached array
+							 * Only add the tags which are matching with the following patterns:
+							 * textfieldValue.indexOf(name) == -1		-> By now the tag isn't used for this post  
+ 							 * name.search(regex) == 0 					-> The tag starts with the letters of the userInput
+							 */
+							$("#recommendedTags li, .tagbox li a").each(function(index, item) {
+								var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
+								if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
+									recommendedTags.push(name);
+								}
+							});
+
+							$("#copiedTags li, .tagbox li a").each(function(index, item) {
+								var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
+								if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
+									copiedTags.push(name);
+								}
+							});
+							
 							/**
 							 * Get the Tags which the user already used in other posts
 							 */
-							var tags = $.map( data.items, function( item ) {
+							var tags = $.map( data.items, function(item) {
+								
+								var origin 					= "  [U]";
+								var recommendedTagsIndex 	= recommendedTags.indexOf(item.label);
+								var copiedTagsIndex			= copiedTags.indexOf(item.label);
+								
+								/**
+								 * If the array of "copied post" and "recommendation" tags contains the actual tag name,
+								 * remove the tag name in the array "copied post", "recommendation" or both.
+								 * Complete the origin-token. 
+								 */
+								if(recommendedTagsIndex != -1) {
+									origin = origin.slice(0,origin.length - 1) + ",R]";
+									recommendedTags.splice(recommendedTagsIndex, 1);
+								}
+								
+								if(copiedTagsIndex != -1) {
+									origin = origin.slice(0,origin.length - 1) + ",C]";
+									copiedTags.splice(copiedTagsIndex, 1);
+								}
+								
 								/**
 								 * don't recommend tags, which are already included in the input field
 								 */
 								if(textfieldValue.indexOf(item.label) == -1) {
-									return { value: item.label };
+									return { value: (item.label),
+											 label: (item.label + origin)};
 								}
 							});
 							
 							/**
-							 * Get the tags of the copied post and recommend them 
+							 * Now, the tags which are in the array of "copied post" and "recommendation" tags 
+							 * aren't used in other posts by now.
+							 * Recommend them and add the origin-token.
 							 */
-							var copiedTags = $.map($("#copiedTags li, .tagbox li a"), function(item) {
-								/**
-								 * Check if the user Input (valueArray[]) is equal in the beginning with the recommended tag
-								 * Recommend only tags which aren't used yet in the actual edited post
-								 */
-								if(item.innerHTML.indexOf(valueArray[valueArray.length - 1]) == 0 &&
-										textfieldValue.indexOf(item.innerHTML) == -1) { 
-									return { value: item.innerHTML.substring(0, item.innerHTML.length - 1) };
+							recommendedTags.forEach(function(name) {
+								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
+									if(copiedTags.indexOf(name) != -1) {
+										tags.push({value: name, label: name + "  [R,C]"});
+									} else {
+										tags.push({value: name, label: name + "  [R]"});
+									}
+								}								
+							});
+
+							copiedTags.forEach(function(name) {
+								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
+									if(recommendedTags.indexOf(name) != -1) {
+										tags.push({value: name, label: name + "  [R,C]"});
+									} else {
+										tags.push({value: name, label: name + "  [C]"});
+									}
 								}
 							});
-							
-							/**
-							 * Get the recommended tags (suggested tags) and recommend them
-							 */
-							var recommendedTags = $.map($("#recommendedTags li, .tagbox li a"), function(item) {
-								/**
-								 * look above, same "if-pattern"
-								 */
-								if(item.innerHTML.indexOf(valueArray[valueArray.length - 1]) == 0 &&
-										textfieldValue.indexOf(item.innerHTML) == -1) {
-									return { value: item.innerHTML.substring(0, item.innerHTML.length - 1) };
-								}
-							});							
-							
-							/**
-							 * remove double existing tags
-							 */
-							var temp 		 = $.extend(tags, copiedTags);
-							var completeTags = $.extend(temp, recommendedTags);
-							
-							response(completeTags);
+																				
+							response(tags);
 						}
 					}
 				});
@@ -1269,7 +1308,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
         	 * in the recommendation (The recommendation contains "Building" and we replace "Buil" with normal text-width
         	 * in a span with the class ".ui-autocomplete-term" (style.css)). 
         	 */
-            var acData 		= $(this).data('autocomplete');
+            var acData = $(this).data('autocomplete');
             var styledTerm;
             
 			if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {
