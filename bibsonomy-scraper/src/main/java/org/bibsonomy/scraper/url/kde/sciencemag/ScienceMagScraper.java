@@ -35,7 +35,8 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
  * @version $Id$
  */
 public class ScienceMagScraper extends CitationManagerScraper {
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"([^\"]*+)\">Download Citation</a>");
+	// <li><a href="/citmgr?gca=sci;276/5317/1425">Download Citation</a></li>
+	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download Citation</a>");
 	private static final String SITE_NAME = "Science Magazine";
 	private static final String SITE_URL = "http://www.sciencemag.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
