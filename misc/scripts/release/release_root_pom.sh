@@ -4,20 +4,31 @@
 # small shellscript to release the root pom into the maven repository.
 #
 # versions:
+# * 2013/04/29: cleanup (dzo)
 # * 2011/04/29: initial version (dbe)
 #
+
+WEB_DIR_BASE=~/www/maven2/org/bibsonomy/bibsonomy
+USER=bibsonomyupload
+HOST=bugs.cs.uni-kassel.de
+SERVER=${USER}@${HOST}
+WORKSPACE_LOC=~/workspace/bibsonomy
 
 # check command line args
 if [ $# -ne 1 ]
 then
-echo "USAGE: $0 <new_version_number>"
-exit 1
+	echo "USAGE: $0 <new_version_number>"
+	exit 1
 fi
 
 # create dir
-ssh bibsonomyupload@bugs "mkdir ~/www/maven2/org/bibsonomy/bibsonomy/$1"
+FOLDER=$WEB_DIR_BASE/$1
+ssh $SERVER "mkdir $FOLDER"
+
 # copy file
-scp pom.xml bibsonomyupload@bugs:~/www/maven2/org/bibsonomy/bibsonomy/$1/bibsonomy-$1.pom
+FILE=$FOLDER/bibsonomy-$1.pom
+scp $WORKSPACE_LOC/pom.xml $SERVER:$FILE
+
 # create checksums
-ssh bibsonomyupload@bugs "md5sum ~/www/maven2/org/bibsonomy/bibsonomy/$1/bibsonomy-$1.pom | cut -f1 -d ' ' > ~/www/maven2/org/bibsonomy/bibsonomy/$1/bibsonomy-$1.pom.md5"
-ssh bibsonomyupload@bugs "sha1sum ~/www/maven2/org/bibsonomy/bibsonomy/$1/bibsonomy-$1.pom | cut -f1 -d ' ' > ~/www/maven2/org/bibsonomy/bibsonomy/$1/bibsonomy-$1.pom.sha1"
+ssh $SERVER "md5sum $FILE | cut -f1 -d ' ' > ${FILE}.md5"
+ssh $SERVER "sha1sum $FILE | cut -f1 -d ' ' > ${FILE}.sha1"
