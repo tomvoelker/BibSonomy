@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -51,6 +53,9 @@ import bibtex.parser.ParseException;
  */
 public abstract class CitationManagerScraper extends AbstractUrlScraper {
 		
+	
+	private static final Log log = LogFactory.getLog(CitationManagerScraper.class);
+	
 	/**
 	 * @return The pattern to find the download link.
 	 */
@@ -98,6 +103,13 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 	
 	protected String buildDownloadLink(URL url, String content) throws ScrapingFailureException {
 
+		if (log.isDebugEnabled()) {
+			if (content.matches("Download Citation")) {
+				log.debug("found \"Download Citation\" in content:");
+			}
+			log.debug(content);
+		}
+		
 		// get link to download page
 		final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
 		final String downloadLink;
