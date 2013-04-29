@@ -9,7 +9,8 @@ import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.model.Wiki;
 
 /**
- * TODO: tests are missing
+ * This class represents the layer between BibSonomy and the database
+ * concerning all requests about the CVWiki.
  * 
  * @author philipp
  * @version $Id$
@@ -18,40 +19,31 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
     private static final WikiDatabaseManager singleton = new WikiDatabaseManager();
 
     /**
+     * Returns a singleton object for this database manager.
      * @return UserDatabaseManager
      */
     public static WikiDatabaseManager getInstance() {
-	return singleton;
+    	return singleton;
     }
 
     private WikiDatabaseManager() {
     }
 
     /**
-     * 
-     * @param userName
-     * @param session
+     * return the current wiki for a specified user.
+     * @param userName the name of the user
+     * @param session the current dbsession which is to retrieve the corresponding wiki.
      * @return the current wiki for the specified user
      */
-    public Wiki getActualWiki(final String userName, final DBSession session) {
-    	return this.queryForObject("getActualWikiForUser", userName, Wiki.class, session);
-    }
-
-    /**
-     * 
-     * @param userName
-     * @param session
-     * @return all wiki versions (dates) for the specified user
-     */
-    public List<Date> getWikiVersions(final String userName, final DBSession session) {
-    	return this.queryForList("getWikiVersionsForUser", userName, Date.class, session);
+    public Wiki getCurrentWiki(final String userName, final DBSession session) {
+    	return this.queryForObject("getCurrentWikiForUser", userName, Wiki.class, session);
     }
 
     /**
      * updates the wiki for the specified user
-     * @param userName
-     * @param wiki
-     * @param session
+     * @param userName the user for whom the wiki is updated.
+     * @param wiki the new wiki which is to be inserted in the database.
+     * @param session the requesting session.
      */
     public void updateWiki(final String userName, final Wiki wiki, final DBSession session) {
 		final WikiParam param = new WikiParam();
@@ -63,25 +55,10 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
     }
 
     /**
-     * @param userName
-     * @param date
-     * @param session
-     * @return the wiki version specified by the date for the specified user
-     */
-    public Wiki getPreviousWiki(final String userName, final Date date, final DBSession session) {
-		final WikiParam param = new WikiParam();
-	
-		param.setDate(date);
-		param.setUserName(userName);
-	
-		return this.queryForObject("getLoggedWiki", param, Wiki.class, session);
-    }
-    
-    /**
      * creates a new wiki for the specified user
-     * @param userName
-     * @param wiki
-     * @param session
+     * @param userName the name of the user who we want to create the wiki for.
+     * @param wiki an object containing all the necessary information to be put in the db.
+     * @param session the session which is to submit the wiki in the database.
      */
     public void createWiki(final String userName, final Wiki wiki, final DBSession session) {
 		session.beginTransaction();
@@ -100,19 +77,61 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
     }
 
     /**
+     * This method is never called until yet.
+     * 
+     * returns a list of saved wiki versions, described by the saving date.
+     * 
+     * @param userName the userName for whom the versions shall be received.
+     * @param session the requesting session.
+     * @return all wiki versions (dates) for the specified user
+     */
+    public List<Date> getWikiVersions(final String userName, final DBSession session) {
+    	return this.queryForList("getWikiVersionsForUser", userName, Date.class, session);
+    }
+
+    /**
+     * This method is never called until yet. See DBLogic.getWiki for this.
+     * 
+     * This method retrieves the latest wiki before the date parameter.
+     * 
+     * @param userName the user for whom this wiki is requested.
+     * @param date the date where we want the latest wiki before.
+     * @param session the requesting session.
+     * @return the wiki version specified by the date for the specified user
+     */
+    public Wiki getPreviousWiki(final String userName, final Date date, final DBSession session) {
+		final WikiParam param = new WikiParam();
+	
+		param.setDate(date);
+		param.setUserName(userName);
+	
+		/*
+		 * This query will fail because the corresponding section for "getLoggedWiki"
+		 * is commented out. Anyhow, this is never called until now.
+		 */
+		return this.queryForObject("getLoggedWiki", param, Wiki.class, session);
+    }
+    
+    /**
+     * This method is never called until yet.
+     * 
      * logs the wiki of the user
      * TODO: move to logging plugin
+     * TODO: Find out why this should happen, makes no sense to me. This is
+     * another kind of logging than what happens in the logging plugin.
      * 
      * @param userName
      * @param wiki
      * @param session
      */
     public void logWiki(final String userName, final Wiki wiki, final DBSession session) {
-		session.beginTransaction();
+    	// DO NOTHING!!!
+    	
+//		session.beginTransaction();
 		
-		final WikiParam param = new WikiParam();
-		param.setUserName(userName);
-		param.setWikiText(wiki.getWikiText());
+//		final WikiParam param = new WikiParam();
+//		param.setUserName(userName);
+//		param.setWikiText(wiki.getWikiText());
 		/*
 		 * FIXME: shouldn't we have an (additional) logging date here?
 		 * 
@@ -121,13 +140,13 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 		 * logDate = new Date()
 		 * 
 		 */
-		param.setDate(new Date());
+//		param.setDate(new Date());
 		
-		try {
-		    //this.insert("logWiki", param, session);
-		    session.commitTransaction();
-		} finally {
-		    session.endTransaction();
-		}
+//		try {
+//		    this.insert("logWiki", param, session);
+//		    session.commitTransaction();
+//		} finally {
+//		    session.endTransaction();
+//		}
     }
 }

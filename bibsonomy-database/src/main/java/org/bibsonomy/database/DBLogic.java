@@ -2516,6 +2516,11 @@ public class DBLogic implements LogicInterface {
 		}	
 	}
 
+	/**
+	 * This method creates a new wiki for a user given by its username.
+	 * @param userName the user for whom this wiki is to be created.
+	 * @param wiki the wiki for userName.
+	 */
 	@Override
 	public void createWiki(final String userName, final Wiki wiki) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
@@ -2528,16 +2533,23 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/**
+	 * Why would we want what was written within whimsy wittlewicks?
+	 */
 	@Override
 	public void deleteWiki(final String userName) {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * @param date - if <code>null</code>, the latest version of the wiki is 
-	 * returned. Otherwise, the latest version before <code>date</code>.
+	 * Retrieves a wiki from the database.
 	 * 
 	 * @see org.bibsonomy.model.logic.LogicInterface#getWiki(java.lang.String, java.util.Date)
+	 * @param userName the user for whom the wiki is to be retrieved.
+	 * @param date - if <code>null</code>, the latest version of the wiki is 
+	 * returned. Otherwise, the latest version before <code>date</code>.
+	 * @return the current wiki for userName, latest before date or an empty wiki if the
+	 * logged in user isn't allowed to access userName's wiki. 
 	 */
 	@Override
 	public Wiki getWiki(final String userName, final Date date) {
@@ -2554,27 +2566,46 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (!present(date)) {
-				return this.wikiDBManager.getActualWiki(userName, session);
+				return this.wikiDBManager.getCurrentWiki(userName, session);
 			}
 
+			/* TODO: remove this comment when the time is right!
+			 * this will never happen to get called because right now (29.04.2013)
+			 * this method is only called with date = null.
+			 */
 			return this.wikiDBManager.getPreviousWiki(userName, date, session);
 		} finally {
 			session.close();
 		}
 	}
 
+	/**
+	 * This method will not be used yet, still it has to come here because of
+	 * inheritance issues. It isn't called from anywhere anyway, yet.
+	 * 
+	 * This method will retrieve old versions of a user's wiki for reversing
+	 * actions or changes in the wiki.
+	 * 
+	 * @param userName the name of the requesting user
+	 * @return a list of dates where the wiki of userName has been changed.
+	 */
 	@Override
 	public List<Date> getWikiVersions(final String userName) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 
 		final DBSession session = openSession();
 		try {
-			return this.wikiDBManager.getWikiVersions(userName, session);
+			return null;
+//			TODO: Implement versioning system for Wikis
+//			return this.wikiDBManager.getWikiVersions(userName, session);
 		} finally {
 			session.close();
 		}
 	}
 
+	/**
+	 * updates the current wiki with the new one.
+	 */
 	@Override
 	public void updateWiki(final String userName, final Wiki wiki) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
@@ -2582,22 +2613,39 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 
 		try {
-			final Wiki actual = this.wikiDBManager.getActualWiki(userName, session);
+			final Wiki currentWiki = this.wikiDBManager.getCurrentWiki(userName, session);
 			
 			/*
-			 * Check if the wiki even exists (actual == null)!
+			 * Check if the wiki exists
 			 */
-			if (actual != null) {
+			if (currentWiki != null) {
 				
 				/*
-				 * Check, if the wiki has changed (otherwise we don't update it).
+				 * Check if the text has changed compared to the
+				 * current version in the database.
+				 * 
+				 * If currentWikiText is null, we just interpret this
+				 * as a missing wiki (shouldn't happen that much anymore)
+				 * and set the contents to an empty string.
 				 */
-				String actualWikiText = actual.getWikiText();
-				if (actualWikiText == null) actualWikiText = "";
-				if (!actualWikiText.equals(wiki.getWikiText())) {
+				String currentWikiText = currentWiki.getWikiText();
+				if (currentWikiText == null) currentWikiText = "";
+				
+				/*
+				 * If we find differences, update the database.
+				 * TODO: Implement versioning system for Wikis.					
+				 */
+				if (!currentWikiText.equals(wiki.getWikiText())) {
 					this.wikiDBManager.updateWiki(userName, wiki, session);
-					this.wikiDBManager.logWiki(userName, actual, session);
+//					this.wikiDBManager.logWiki(userName, currentWiki, session);
 				}
+				
+			/* 
+			 * a wiki does not exist, at least there is nothing in the database.
+			 * This should never happen after the 2.0.35 release, because
+			 * we will create a wiki for each new user. All the old users should
+			 * have been updated as well then.
+			 */
 			} else {
 				this.createWiki(userName, wiki);
 			}
