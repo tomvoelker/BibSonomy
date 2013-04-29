@@ -75,7 +75,7 @@
       #mousedocumentpos#,
       #anumberofposts#,
       #abmown#,
-      #referer#
+      LEFT(#referer#, 250)
     )
   </insert>
 </sqlMap>
