@@ -9,6 +9,8 @@
 	
 	<fmt:message key="navi.postBookmark" var="postBookmark"/>
 	<fmt:message key="image.button.postBookmark" var="buttonImage"/>
+	<!-- TODO: why not simply use de/en instead of weird toLowercase operations on i18n-values -->
+	<fmt:message var="exampleString" key="example"/>
 	<script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -24,12 +26,11 @@
 				if (availablePlugins.indexOf(browsername) >= 0) {
 					$("#post\\.resource\\.hint1").html(getString("bookmarklet.legacyNotice")+" "+getString("bookmarklet.legacyNotice.further2"));
 					$("#post\\.resource\\.bookmarklet\\.screenshot").attr("src", "/resources/image/bookmarklet_screenshot_"+browsername+"_${fn:toLowerCase(exampleString)}.png").show();
-					$("#post\\.resource\\.hint\\.buttons\\.div").show();
 				}
 			}
 		});
 	</script>
-	<ul id="post.resource.hint.buttons.div" class="initiallyHidden">
+	<ul id="post.resource.hint.buttons.div">
 		<li id="post.resource.hint"><fmt:message key="post.resource.hint"/></li>
 		<ul id="post.resource.hint.buttons">
 			<li><buttons:postPublication/></li>
