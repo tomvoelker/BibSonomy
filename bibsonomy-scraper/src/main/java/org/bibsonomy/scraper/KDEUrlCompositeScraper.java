@@ -144,7 +144,11 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new PubMedScraper());
 		addScraper(new PubMedCentralScraper());
 		addScraper(new SpiresScraper());
-		addScraper(new L3SScraper());
+		/*
+		 * lha, 2013-04-29: new L3S web site layout not supported;
+		 * publication lists on web site not in correct format, yet.
+		 */
+		//addScraper(new L3SScraper());
 		addScraper(new ACMBasicScraper());
 		// addScraper(new CiteseerBasicScraper()); old citeseer scraper removed
 		// from chain
