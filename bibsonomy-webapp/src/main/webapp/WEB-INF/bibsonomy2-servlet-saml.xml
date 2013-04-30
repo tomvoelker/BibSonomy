@@ -49,6 +49,11 @@
 		<lookup-method name="produceFailureBean" bean="dummyFilter"/>
 	</bean>
 	
+	<bean id="samlHttpsPretedingFilter" class="org.bibsonomy.webapp.filters.HttpsPretendingFilter">
+		<property name="pathPrefix" value="/saml" />
+		<property name="enabled" value="${auth.saml.useHttps}" />
+	</bean>
+	
 	<bean id="realSamlLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.SamlLoginFilter">
 		<property name="filterProcessesUrl" value="/login_saml" />
 		<property name="authenticationEntryPoint" ref="samlEntryPoint" />
