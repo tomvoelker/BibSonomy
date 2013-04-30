@@ -29,9 +29,10 @@ function changeCVLayout(name){
                 }
                 else {
                     wikiTextArea.val(wikiText);
-                    handleSuccessStatus("Clear Layout");
+                    handleErrorStatus("CV must not be empty");
                 }
             }
+            // status is not ok!
             else {
                 handleError(data.globalErrors[0].message);
             }
@@ -45,17 +46,17 @@ function changeCVLayout(name){
  * @param {Object} e
  */
 function handleError(e){
-    $('#statusText').text("Error: " + e);
+//    $('#statusText').text("Error: " + e);
     $('#statusField').removeClass('error success loading').addClass('error');
 }
 
 function handleLoadingStatus(e) {
-	$('#statusText').text("Loading... " + e);
+//	$('#statusText').text("Loading... " + e);
     $('#statusField').removeClass('error success loading').addClass('loading');
 }
 
 function handleSuccessStatus(e) {
-	$('#statusText').text("Success: " + e);
+//	$('#statusText').text("Success: " + e);
     $('#statusField').removeClass('error success loading').addClass('success');
 }
 

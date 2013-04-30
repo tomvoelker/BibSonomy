@@ -32,12 +32,14 @@ $(function(){
                         wikiTextArea.val(wikiText);
                         wikiArea.empty();
                         wikiArea.append(renderedWikiText);
+                        handleSuccessStatus("changing layout to " + $(this).find("option:selected").text());
                     }
                     else {
                         wikiTextArea.val(wikiText);
+                        handleError("We do not want empty CVses! No, my preciousssss")
                     }
-                    handleSuccessStatus("changing layout to " + $(this).find("option:selected").text());
                 }
+                // status is not ok.
                 else {
                     handleError(data.globalErrors[0].message);
                 }
@@ -49,20 +51,29 @@ $(function(){
      * Handler for the ajax loading gif's
      */
     $('#loadingDiv').ajaxStart(function(){
-        $('#statusField').show();
+//        $('#statusField').show();
         $('#loadingDiv').show();
+        $('#saveButtonField').hide();
         handleLoadingStatus("");
 //        $('#errorField').hide();
     }).ajaxSuccess(function(){
         $('#loadingDiv').hide();
-        $('#statusField').hide();
+        $('#saveButtonField').show();
+//        $('#statusField').hide();
     }).ajaxError(function() {
-        handleErrorStatus("");
+//        handleError("");
         $('#loadingDiv').hide();
+        // this now enforces the preview buttons to be shown.
+        $('#saveButtonField').hide();
     });
+    // FIXME: UNUSED
+//    $('.toggleImage').click(function(e){
+//    	alert($(e).html);
+//    });
+	
     
     /**
-     * Handler to toggle the admin panel
+     * Handler to hide the cvedit panel
      */
     $('#hideAdmin').click(function(){
         $('#fsform').hide('blind',function() {
@@ -71,12 +82,8 @@ $(function(){
 		});
     });
     
-    $('.toggleImage').click(function(e){
-    	alert($(e).html);
-    });
-	
 	/**
-	 * Handler to toggle the admin panel
+	 * Handler to show the cvedit panel
 	 */
 	$('#showAdmin').click(function() {
 		$('#fsform').show('blind',function() {
@@ -88,14 +95,18 @@ $(function(){
 	/**
 	 * Handler for the layout form 
 	 * @param {Object} e
+	 * 
+	 * FIXME: unused!
 	 */
-	$('#layoutButton').click(function() {
-		$('#layouts').toggle("blind");
-	});
+//	$('#layoutButton').click(function() {
+//		$('#layouts').toggle("blind");
+//	});
     
     /**
      * Handler for the textfield shortcuts
      * @param {Object} e
+     * 
+     * TODO: Document me.
      */
     $('#wikiTextArea').keydown(function(e){
         if (e.ctrlKey) {

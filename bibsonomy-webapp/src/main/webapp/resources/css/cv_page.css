@@ -20,11 +20,7 @@ input[type=button] {
 	margin: 0.2em;
 } 
 
-p {
-	width: 100%;
-}
- 
-h2 {
+.mw-headline {
 	margin: 5px 0px 10px 5px;
 	border-bottom: solid #eee 2px;
 }
@@ -80,15 +76,15 @@ text-align:center;
 }
 
 .success {
-	background-color: LightGreen;
+/*	background-color: LightGreen; */
 }
 
 .error {
-	background-color: red;
+/*	background-color: red;*/
 }
 
 .loading {
-	background-color: yellow;
+/*	background-color: yellow;*/
 }
 
 

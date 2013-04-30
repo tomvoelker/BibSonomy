@@ -57,21 +57,29 @@
 								</c:choose>
 							</div>
 						    <div style="float: right;">
-							    <span>
+						    	<div id="saveButtonField">
 								    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
-							    </span>
+						    	</div>
+								<div id="statusField">
+<!-- 									<div style="display: inline-block;" id="statusText">.</div> -->
+<!-- 									<div style="float:right; display: inline-block"> -->
+									<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
+<!-- 									</div> -->
+								</div>
 						    </div>
 					    </div>
 					    
 						<div class="fsRow">
 							<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
 							<fieldset class="fsInner">
-								<legend><div id="showAdminField"> 
-								<input type="button" value="${show}" id="showAdmin" />
-							</div>
-							<div id="hideAdminField" style="display: none;">
-						    	<input type="button" value="${hide}" id="hideAdmin" />
-						    </div></legend>
+								<legend>
+									<div id="showAdminField">
+										<input type="button" value="${show}" id="showAdmin" />
+									</div>
+									<div id="hideAdminField" style="display: none;">
+								    	<input type="button" value="${hide}" id="hideAdmin" />
+								    </div>
+							    </legend>
 								<div id="fsform" style="display: None">
 									<div class="fsRow" id="customdesign">
 										<form:textarea id="wikiTextArea" rows="10" cssClass="fsInput" path="wikiText" />
@@ -95,13 +103,6 @@
 			</form:form>
 
 
-			<div id="statusField">
-				<div style="display: inline-block;" id="statusText">.</div>
-				<div style="float:right; display: inline-block">
-					<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
-				</div>
-			</div>
-			
 			<div id="wikiArea">
 				<c:choose>
 					<c:when test="${not empty command.wikiText}">

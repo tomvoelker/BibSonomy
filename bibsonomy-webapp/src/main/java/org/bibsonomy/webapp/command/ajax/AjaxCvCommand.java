@@ -3,6 +3,9 @@ package org.bibsonomy.webapp.command.ajax;
 import org.bibsonomy.wiki.enums.DefaultLayout;
 
 /**
+ * TODO: If we want dated versions of the wiki contents, we need to add
+ * a date attribute here.
+ * 
  * @author Bernd
  * @version $Id$
  */

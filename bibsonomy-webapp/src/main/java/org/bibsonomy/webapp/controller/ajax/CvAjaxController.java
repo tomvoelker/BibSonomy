@@ -76,32 +76,23 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		final String wikiText = command.getWikiText();
 		final Group requestedGroup = this.logic.getGroupDetails(authUser);
 		
-		final boolean isGroup = present(requestedGroup);
-		
 		final LogicInterface interfaceToUse;
-		if (PUBLIC_PREVIEW.equals(renderOptions)) {
+		
+		/* if we chose to render the layout as it is publicly viewable
+		 * (i.e. also for users who are not logged in), do this.
+		 * what, if I am a spammer?
+		 * TODO: Check what the spammer check is actually doing.
+		 */
+		if (PUBLIC_PREVIEW.equals(renderOptions) && !this.logic.getAuthenticatedUser().isSpammer()) {
 			interfaceToUse = this.notLoggedInUserLogic;
 		} else {
 			interfaceToUse = this.logic;
 		}
 		
 		/*
-		 * handle save action
-		 * first update 
+		 * Determine if the requested page is a group cv or a user cv
 		 */
-		if (SAVE_OPTION.equals(renderOptions)) {
-			final Wiki wiki = new Wiki();
-			wiki.setWikiText(wikiText);
-			/*
-			 * TODO: add support for group members to edit group cv page
-			 */
-			this.logic.updateWiki(authUser, wiki);
-			/*
-			 * go on and return the preview
-			 */
-		}
-		
-		if (isGroup) {
+		if (present(requestedGroup)) {
 			/*
 			 * get all members of the group
 			 */
@@ -114,60 +105,85 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		}
 
 		/*
-		 * if a renderOption was specified and the wikitext is not null
+		 * if a renderOption was specified and the wikitext is neither null nor nonexistent,
 		 * render a preview
+		 * 
+		 * TODO: What happens with an empty CV?
 		 */
-		if (present(renderOptions) && wikiText != null) {
-			return renderWiki(command, wikiText, interfaceToUse);
+//		if (present(renderOptions) && present(wikiText)) {
+//			return renderLayout(command, locale, wikiText, interfaceToUse);
+//		}
+		
+		/*
+		 * handle save action
+		 * first update 
+		 */
+		if (SAVE_OPTION.equals(renderOptions)) {
+			final Wiki wiki = new Wiki();
+			wiki.setWikiText(wikiText);
+			/*
+			 * TODO: add support for group members to edit group cv page, restrict only to moderators
+			 */
+			this.logic.updateWiki(authUser, wiki);
+			/*
+			 * go on and return the preview
+			 */
+			
+			/* is this really necessary? Wouldn't it be better to save the Wiki
+			 * only after already having rendered a preview? Workflow?
+			 */
+			
+			// return renderLayout(command, locale, wikiText, interfaceToUse);
 		}
 		
 		/*
-		 * if no renderOption is given try to set a layout
+		 * the rendering should take place now, regardless of the given wikiText.
+		 * TODO: Test this at home: selecting layout, selecting layout before,
+		 * saving, saving again without editing and stuff...
+		 * if no renderOption is given, try to set a layout
 		 */
 		try {
-			return getLayout(command, locale);
+			return renderLayout(command, locale, wikiText, interfaceToUse);
 		} catch (final Exception e) {
 			return handleError("error.405");
 		}
 	}
 	
-	private View renderWiki(final AjaxCvCommand command, final String wikiText, final LogicInterface interfaceToUse) {
-		log.debug("ajax -> renderWiki");
+	// TODO: Zwei Methoden zum Rendern sind doch behindert! Was soll der Mist denn!?
+	
+	/**
+	 * renders a layout and returns it.
+	 * @param command the Ajax command for the CV page.
+	 * @param locale some locale necessary for rendering (i guess)
+	 * @return some view. Actually it is more important that the ajax response string contains
+	 * the rendered layout.
+	 */
+	private View renderLayout(final AjaxCvCommand command, final Locale locale, final String wikiText, final LogicInterface interfaceToUse) {
+		log.debug("ajax -> getLayout");
 		
 		this.wikiRenderer.setLogic(interfaceToUse);
-		command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
-		return Views.AJAX_XML;
-	}
-
-	/**
-	 * 
-	 * @param command
-	 * @param locale
-	 * @return
-	 * @throws Exception
-	 */
-	private View getLayout(final AjaxCvCommand command, final Locale locale) throws Exception {
-		log.debug("ajax -> getLayout");
-		if ( ! DefaultLayout.LAYOUT_CURRENT.equals(command.getLayout()) ) {
+		// if asked for a default layout, fetch it from the messages.
+		if (command.getLayout() != null && !DefaultLayout.LAYOUT_CURRENT.equals(command.getLayout()) ) {
 			// fetch default wiki text from messages.properties
-			final String wikiText = messageSource.getMessage(command.getLayout().getRef(), null, locale);
-			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
-		} 
-		else {
+			final String defaultWikiText = messageSource.getMessage(command.getLayout().getRef(), null, locale);
+			command.setResponseString(generateXMLSuccessString(command, defaultWikiText, wikiRenderer.render(defaultWikiText)));
+			
+		// render the custom layout.
+		} else {
 			// fetch current user wiki text from database
-			String wikiText;
+			String currentWikiText;
 			if (present(wikiRenderer.getRequestedUser())) {
-				wikiText = logic.getWiki(wikiRenderer.getRequestedUser().getName(), null).getWikiText();
+				currentWikiText = logic.getWiki(wikiRenderer.getRequestedUser().getName(), null).getWikiText();
 			} else {
-				wikiText = logic.getWiki(wikiRenderer.getRequestedGroup().getName(), null).getWikiText();
+				currentWikiText = logic.getWiki(wikiRenderer.getRequestedGroup().getName(), null).getWikiText();
 			}
-			command.setResponseString(getXmlSucceeded(command, wikiText, wikiRenderer.render(wikiText)));
+			command.setResponseString(generateXMLSuccessString(command, currentWikiText, wikiRenderer.render(currentWikiText)));
 		}
 
 		return Views.AJAX_XML;
 	}
 
-	// TODO: The two functions below are (almost) equal to the functions in
+	// TO DO: The two functions below are (almost) equal to the functions in
 	// "AdditionalURLController" -> redudant code
 	/**
 	 * Method to handle Errors based on urlError enum.
@@ -185,7 +201,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * 
 	 * @return XML success string.
 	 */
-	private String getXmlSucceeded(final AjaxCvCommand command, final String... wikiText) {
+	private String generateXMLSuccessString(final AjaxCvCommand command, final String... wikiText) {
 		return (wikiText.length > 1) ? "<root><status>ok</status><ckey>"
 				+ command.getContext().getCkey() + "</ckey><wikitext>"
 				+ Utils.escapeXmlChars(wikiText[0])

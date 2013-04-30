@@ -135,6 +135,8 @@
 							<c:out value="${nowikitext}" escapeXml="false" />
 						</c:when>
 						
+						<!-- Ist das cool? Wir sollten a) einem User beim Login einen Wikitext verpassen
+						und b) allen existierenden Usern einen Eintrag in die Datenbank geben. -->
 						<!-- Falls kein Text eingegeben wurde, steht hier eben ein Blindtext, dass man sich
 							auch so einen Lebenslauf selbst erstellen kann. -->
 						<c:otherwise>
