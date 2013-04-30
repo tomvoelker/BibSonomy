@@ -587,7 +587,7 @@ public class BibTex extends Resource {
 	 * @return String
 	 */
 	public String getMiscField(final String key) {
-		if (this.miscFields == null || this.miscFields.containsKey(key) == false) return null;
+		if (this.miscFields == null || !this.miscFields.containsKey(key)) return null;
 		return this.miscFields.get(key);
 	}
 
