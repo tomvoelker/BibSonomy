@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper;
 
-import java.io.PrintWriter;
-
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
 import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.scraper.generic.CoinsScraper;
@@ -48,7 +46,7 @@ public class KDEScraperFactory {
 	 * @return The scrapers produced by this factory.
 	 */
 	public CompositeScraper<Scraper> getScraper () {
-		final CompositeScraper<Scraper> scraper = getScraperWithoutIE();
+		final CompositeScraper<Scraper> scraper = this.getScraperWithoutIE();
 
 		/*
 		 * If nothing works: do information extraction using MALLET.
@@ -91,7 +89,7 @@ public class KDEScraperFactory {
 		// TODO: ISBNScraper can be used as a snippet scraper 
 		scraper.addScraper(new ISBNScraper());
 		
-		// TODO: Scraper for searching bibtex in HTML-Sourcecode 
+		// TODO: Scraper for searching BibTeX in HTML-Sourcecode 
 		scraper.addScraper(new BibtexScraper());
 		return scraper;
 	}
