@@ -31,6 +31,7 @@ import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.generic.EprintScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
+import org.bibsonomy.scraper.id.kde.doi.ContentNegotiationDOIScraper;
 import org.bibsonomy.scraper.id.kde.doi.DOIScraper;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
@@ -71,6 +72,9 @@ public class KDEScraperFactory {
 		scraper.addScraper(new DOIScraper());
 		
 		scraper.addScraper(new KDEUrlCompositeScraper());
+		
+		//this scraper resolves DOI pages which could not be scraped by the URLScrapers
+		scraper.addScraper(new ContentNegotiationDOIScraper());
 		
 		scraper.addScraper(new EprintScraper());
 		

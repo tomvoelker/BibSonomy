@@ -42,6 +42,11 @@ public class ScrapingContext {
 	 */
 	private URL url = null;
 	/**
+	 * The URL of the DOI content, which is saved to do content negotiation scraping when
+	 * URL scraping fails with the redirected URL
+	 */
+	private URL doiURL = null;
+	/**
 	 * The text the user selected on the web page. Extracted by JavaScript 
 	 * method window.getSelection().
 	 */
@@ -151,6 +156,22 @@ public class ScrapingContext {
 	 */
 	public void setUrl(URL url) {
 		this.url = url;
+	}
+
+	/**
+	 * get the original DOI URL
+	 * @return the doiURL
+	 */
+	public URL getDoiURL() {
+		return this.doiURL;
+	}
+
+	/**
+	 * set the DOI URL before redirecting the URL
+	 * @param doiURL the doiURL to set
+	 */
+	public void setDoiURL(URL doiURL) {
+		this.doiURL = doiURL;
 	}
 
 	/**

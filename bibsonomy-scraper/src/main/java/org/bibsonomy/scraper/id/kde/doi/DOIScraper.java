@@ -25,6 +25,7 @@ package org.bibsonomy.scraper.id.kde.doi;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,11 +49,6 @@ import org.bibsonomy.util.id.DOIUtils;
  * @version $Id$
  */
 public class DOIScraper implements Scraper {
-
-	/**
-	 * Maximum length of a selection to be search a DOI for
-	 */
-	private static final int MAX_SELECTION_LENGTH = 200;
 
 	private static final String SITE_NAME = "DOIScraper";
 	private static final String INFO 	= "Scraper which follows redirects from " + AbstractUrlScraper.href(DOIUtils.DX_DOI_ORG_URL, DOIUtils.DX_DOI_ORG) + 
@@ -84,6 +80,8 @@ public class DOIScraper implements Scraper {
 		final URL url = scrapingContext.getUrl();
 		final String selection = scrapingContext.getSelectedText();
 		if (!present(selection) && DOIUtils.isDOIURL(url)) {
+			//save the initial DOI URL for possible use in {@link ContentNegotiationDOIScraper}
+			scrapingContext.setDoiURL(url);
 			/*
 			 * dx.doi.org URL found! --> resolve redirects
 			 */
@@ -96,11 +94,19 @@ public class DOIScraper implements Scraper {
 			 * remove text selection
 			 */
 			scrapingContext.setSelectedText(null);
-		} else if (isSupportedSelection(selection)) {
+		} else if (DOIUtils.isSupportedSelection(selection)) {
 			/*
 			 * selection contains a DOI -> extract it
 			 */
 			final String doi = DOIUtils.extractDOI(selection);
+			//save the initial DOI URL for possible use in {@link ContentNegotiationDOIScraper}
+			try {
+				scrapingContext.setDoiURL(DOIUtils.getURL(doi));
+			} catch (MalformedURLException ex) {
+				//scrape with other scrapers (without use of {@link ContentNegotiationDOIScraper}
+				scrapingContext.setDoiURL(null);
+			}
+			
 			final URL redirectUrl = WebUtils.getRedirectUrl(DOIUtils.getUrlForDoi(doi));
 			if (present(redirectUrl)) {
 				scrapingContext.setUrl(redirectUrl);
@@ -116,21 +122,9 @@ public class DOIScraper implements Scraper {
 		 */
 		return false;
 	}
-
-	
-	/**
-	 * Checks, whether the selection contains a DOI and is not too long (i.e., 
-	 * hopefully only contains the DOI and nothing else. 
-	 * 
-	 * @param selection
-	 * @return
-	 */
-	private static boolean isSupportedSelection(final String selection) {
-		return selection != null && selection.length() < MAX_SELECTION_LENGTH && DOIUtils.containsOnlyDOI(selection);
-	}
 	
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
-		return DOIUtils.isDOIURL(scrapingContext.getUrl()) || isSupportedSelection(scrapingContext.getSelectedText());
+		return DOIUtils.isDOIURL(scrapingContext.getUrl()) || DOIUtils.isSupportedSelection(scrapingContext.getSelectedText());
 	}
 	
 	public String getInfo() {
