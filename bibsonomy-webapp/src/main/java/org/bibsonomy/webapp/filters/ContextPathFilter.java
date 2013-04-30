@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.filters;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  */
 public class ContextPathFilter implements Filter {
-	
-	protected final Log log = LogFactory.getLog(ContextPathFilter.class);
+	private static final Log log = LogFactory.getLog(ContextPathFilter.class);
 	
     /**
      * Instances of this class ignore the context path of the application. I.e., 
@@ -41,12 +42,11 @@ public class ContextPathFilter implements Filter {
      */
     protected static final class ContextPathFreeRequest extends HttpServletRequestWrapper {
     	
-    	// these tree variables can be removed when getHeader has been removed (dbe)
 		private static final String AUTH_HEADER = "authorization";
 		private static final String USER_AGENT_HEADER = "user-agent";
 		private static final Pattern TYPO3_USER_AGENT_REGEX = Pattern.compile("HTTP_Request2\\/0\\.5\\.1");
 
-		public ContextPathFreeRequest(HttpServletRequest request) {
+		public ContextPathFreeRequest(final HttpServletRequest request) {
 			super(request);
 		}
 		
@@ -57,12 +57,12 @@ public class ContextPathFilter implements Filter {
 		 */
 		@Override
 		public StringBuffer getRequestURL() {
-			return stripContextPath(super.getRequestURL(), super.getContextPath());
+			return this.stripContextPath(super.getRequestURL(), super.getContextPath());
 		}
 		
 		@Override
 		public String getRequestURI() {
-			return stripContextPath(super.getRequestURI(), super.getContextPath());
+			return this.stripContextPath(super.getRequestURI(), super.getContextPath());
 		}
 
 		/**
@@ -92,7 +92,7 @@ public class ContextPathFilter implements Filter {
 		}
 		
 		/**
-		 * This is a TEMPORARY fix to disable HTTP basic authorization from requests which stem
+		 * TODO: This is a TEMPORARY fix to disable HTTP basic authorization from requests which stem
 		 * from the Typo3-plugin (which uses PEARs HTTP client, see 
 		 * http://pear.php.net/package/HTTP_Request2/docs/latest/HTTP_Request2/HTTP_Request2.html).
 		 * 
@@ -104,7 +104,7 @@ public class ContextPathFilter implements Filter {
 			/*
 			 * when asking for another header than authHeader, use the original request
 			 */
-			if (! (AUTH_HEADER.equalsIgnoreCase(name)) ) {
+			if (!(AUTH_HEADER.equalsIgnoreCase(name)) ) {
 				return super.getHeader(name);
 			}
 			
@@ -120,8 +120,7 @@ public class ContextPathFilter implements Filter {
 				if (m.find()) {
 					return null;
 				}
-			}
-			catch (NullPointerException npe) {
+			} catch (final NullPointerException npe) {
 				// ignore silently; could happen if e.g. no user-agent header is present
 			}			
 			return super.getHeader(AUTH_HEADER);
@@ -136,15 +135,15 @@ public class ContextPathFilter implements Filter {
      *
      */
     protected static final class LoggingResponse extends HttpServletResponseWrapper {
-    	protected final Log log = LogFactory.getLog(LoggingResponse.class);
+    	private static final Log LOG = LogFactory.getLog(LoggingResponse.class);
     	
-		public LoggingResponse(HttpServletResponse response) {
+		public LoggingResponse(final HttpServletResponse response) {
 			super(response);
 		}
 		
 		@Override
-		public void addCookie(Cookie cookie) {
-			log.debug("adding cookie " + cookie.getName() + ": " + cookie.getValue() + " with path " + cookie.getPath());
+		public void addCookie(final Cookie cookie) {
+			LOG.debug("adding cookie " + cookie.getName() + ": " + cookie.getValue() + " with path " + cookie.getPath());
 			super.addCookie(cookie);
 		}
     }
@@ -154,7 +153,7 @@ public class ContextPathFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 		/*
 		 * If we have an HTTP servlet request we wrap it into our own class to 
 		 * modify certain calls whose results could contain the context path.
@@ -165,13 +164,14 @@ public class ContextPathFilter implements Filter {
 			} else {
 				chain.doFilter(request, response);
 			}
-		} catch (Exception ex) {
-			HttpServletRequest castedRequest = (HttpServletRequest)request;
-			String queryString = "";
-			if (null!=castedRequest.getQueryString()) {
-				queryString = "?" + castedRequest.getQueryString();
+		} catch (final Exception ex) {
+			final HttpServletRequest castedRequest = (HttpServletRequest)request;
+			String requestedUrlWithParams = castedRequest.getRequestURI();
+			final String queryString = castedRequest.getQueryString();
+			if (present(queryString)) {
+				requestedUrlWithParams = "?" + queryString;
 			}
-			log.error("Error during filter execution."+ castedRequest.getRequestURI() + queryString+ " with referer " + castedRequest.getHeader("Referer"), ex);
+			log.error("Error during filter execution. " + requestedUrlWithParams + " with referer " + castedRequest.getHeader("Referer"), ex);
 			/*
 			 * TODO: It would be nice if we could throw this exception in a way that we see it on a nice error page. Instead of the default Exception Screen.
 			 */
@@ -180,6 +180,6 @@ public class ContextPathFilter implements Filter {
 	}
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+	public void init(final FilterConfig filterConfig) throws ServletException {
 	}
 }
