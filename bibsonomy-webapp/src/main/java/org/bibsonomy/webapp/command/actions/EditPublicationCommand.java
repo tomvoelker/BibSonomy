@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.command.actions;
 
+import java.net.URL;
+
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.scraper.ScrapingContext;
 
@@ -18,6 +20,7 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	private String selection;
 	
 	/**
+	 * TODO: can we use {@link URL} as type?
 	 * url provided by bookmarklet
 	 */
 	private String url;
@@ -37,7 +40,7 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	/**
 	 * @param url the url to set
 	 */
-	public void setUrl(String url) {
+	public void setUrl(final String url) {
 		this.url = url;
 	}
 	
@@ -64,7 +67,7 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	/**
 	 * @param selection the selection to set
 	 */
-	public void setSelection(String selection) {
+	public void setSelection(final String selection) {
 		this.selection = selection;
 	}
 
@@ -89,7 +92,7 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 * 
 	 * @param scrapingContext
 	 */
-	public void setScrapingContext(ScrapingContext scrapingContext) {
+	public void setScrapingContext(final ScrapingContext scrapingContext) {
 		this.scrapingContext = scrapingContext;
 	}
 }
