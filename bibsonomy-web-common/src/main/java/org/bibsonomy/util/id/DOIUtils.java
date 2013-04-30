@@ -95,6 +95,11 @@ public class DOIUtils {
 	 */
 	private static final String CLEAN_DOI = "(doi\\s*=.*?)(doi:\\s*|http://.*?)?(10\\.\\d+\\/[^\\s\"'}]+)";
 	private static final Pattern CLEAN_DOI_PATTERN = Pattern.compile(CLEAN_DOI, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+	
+	/**
+	 * Maximum length of a selection to be search a DOI for
+	 */
+	private static final int MAX_SELECTION_LENGTH = 200;
 
 	/** Checks, if the given URL is a DOI URL (i.e., points to dx.doi.org) 
 	 * 
@@ -147,6 +152,17 @@ public class DOIUtils {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Checks, whether the selection contains a DOI and is not too long (i.e., 
+	 * hopefully only contains the DOI and nothing else. 
+	 * 
+	 * @param selection
+	 * @return
+	 */
+	public static boolean isSupportedSelection(final String selection) {
+		return selection != null && selection.length() < MAX_SELECTION_LENGTH && DOIUtils.containsOnlyDOI(selection);
 	}
 	
 	/**

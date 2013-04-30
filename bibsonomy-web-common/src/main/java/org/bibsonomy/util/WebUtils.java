@@ -454,6 +454,17 @@ public class WebUtils {
 		}
 	}
 	/**
+	 * Convenience method for getting the page content by passing the {@link HttpMethod} executed by the exisitng client.
+	 * It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}
+	 * @param method
+	 * @return
+	 * @throws HttpException
+	 * @throws IOException
+	 */
+	public static String getContentAsString(HttpMethod method) throws HttpException, IOException {
+		return getContentAsString(client, method);
+	}
+	/**
 	 * Convenience method for getting the page content by passing the {@link HttpClient} and the
 	 * {@link URI}. It calls {@link WebUtils#getContentAsString(HttpClient, HttpMethod)}.
 	 * 
@@ -481,7 +492,7 @@ public class WebUtils {
 	public static String getContentAsString(HttpClient client, String uri) throws HttpException, IOException {
 		return getContentAsString(client, new GetMethod(uri));
 	}
-
+	
 	/**
 	 * Executes a request for the given URL following up to {@value #MAX_REDIRECT_COUNT}
 	 * redirects. If response is HTTP Status Code 200 returns the URL for that location,
