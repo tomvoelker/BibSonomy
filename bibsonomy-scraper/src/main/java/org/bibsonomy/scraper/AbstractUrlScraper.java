@@ -51,14 +51,16 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#getUrlPatterns()
 	 */
+	@Override
 	public abstract List<Pair<Pattern,Pattern>> getUrlPatterns();
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.UrlScraper#supportsUrl(java.net.URL)
 	 */
+	@Override
 	public boolean supportsUrl(final URL url) {
 		if (url != null) {
-			final List<Pair<Pattern, Pattern>> urlPatterns = getUrlPatterns();
+			final List<Pair<Pattern, Pattern>> urlPatterns = this.getUrlPatterns();
 
 			/*
 			 * possible matching combinations:
@@ -67,13 +69,15 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 			 * first = null && second = true
 			 */
 			for (final Pair<Pattern, Pattern> tuple: urlPatterns){
-				final boolean match1 = tuple.getFirst() == EMPTY_PATTERN ||
+				final boolean match1 = (tuple.getFirst() == EMPTY_PATTERN) ||
 				tuple.getFirst().matcher(url.getHost()).find();
 
-				final boolean match2 = tuple.getSecond() == EMPTY_PATTERN || 
+				final boolean match2 = (tuple.getSecond() == EMPTY_PATTERN) || 
 				tuple.getSecond().matcher(url.getPath()).find();
 
-				if (match1 && match2) return true;
+				if (match1 && match2) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -95,9 +99,10 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	 * 
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
+	@Override
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
-		if (sc != null && supportsUrl(sc.getUrl())) {
-			return scrapeInternal(sc);
+		if ((sc != null) && this.supportsScrapingContext(sc)) {
+			return this.scrapeInternal(sc);
 		}
 		return false;
 	}
@@ -112,12 +117,14 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	 */
 	protected abstract boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException;
 
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singletonList(this);
 	}
 	
-	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
-		return supportsUrl(scrapingContext.getUrl());
+	@Override
+	public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
+		return this.supportsUrl(scrapingContext.getUrl());
 	}
 
 }
