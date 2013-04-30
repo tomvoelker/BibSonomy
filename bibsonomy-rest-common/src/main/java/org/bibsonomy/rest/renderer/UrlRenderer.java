@@ -27,6 +27,7 @@ import org.bibsonomy.rest.RESTConfig;
 
 /** 
  * This renderer creates URLs according to BibSonomys REST URL scheme.
+ * TODO: url encoding missing?!
  * 
  * @author rja
  * @version $Id$
