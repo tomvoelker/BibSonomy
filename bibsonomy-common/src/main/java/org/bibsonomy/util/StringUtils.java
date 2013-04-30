@@ -2441,5 +2441,26 @@ public class StringUtils {
 		sb.replace(i, i + toBeReplaced.length() + 1, replacement);
 		return sb;
 	}
+
+	/**
+	 * Converts a string from a source charset to a target charset.
+	 * @param toConvert A String in from format.
+	 * @param fromCharset the charset to convert from
+	 * @param toCharset the charset to convert to
+	 * @return the argument in UTF-8 format
+	 */
+	public static String convertString(final String toConvert, final String fromCharset, final String toCharset) {
+		if (toConvert == null) {
+			return null;
+		}
+		try {
+			final byte[] utf8 = toConvert.getBytes(fromCharset); 
+			return new String(utf8, toCharset);
+		} catch (final UnsupportedEncodingException ex) {
+			/*nothing clever, i could do here*/
+		} 
+		
+		return null;
+	}
 }
 
