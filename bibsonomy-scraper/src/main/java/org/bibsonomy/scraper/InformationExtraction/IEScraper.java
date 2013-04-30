@@ -24,10 +24,11 @@
 package org.bibsonomy.scraper.InformationExtraction;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.beans.XMLEncoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.ie.BibExtraction;
+import org.bibsonomy.util.StringUtils;
 
 
 /**
@@ -57,17 +59,20 @@ public class IEScraper implements Scraper {
 	/**
 	 * Extract a valid Bibtex entry from a given publication snippet by using information extraction.
 	 */
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+	@Override
+	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
 		//FIXME: ScrapingContext.getSelectedText returns the selected text within the browser in ISO and not UTF-8 format
 		//we need to convert this, because the mallet function removes erroneous signs, that get created
 		//when formatting a UTF-8 String in ISO format.
 		//A proper fix would be to make the getSelectedText function return UTF-8 only.
-		String selectedText = convertISO2UTF8(sc.getSelectedText());
+		final String selectedText = StringUtils.convertString(sc.getSelectedText(), "ISO-8859-1", "UTF-8");
 		
 		/*
 		 * don't scrape, if there is nothing selected
 		 */
-		if (selectedText == null || selectedText.trim().equals("")) return false;
+		if ((selectedText == null) || selectedText.trim().equals("")) {
+			return false;
+		}
 
 		try {
 			final HashMap<String, String> map = new BibExtraction().extraction(selectedText);
@@ -77,7 +82,7 @@ public class IEScraper implements Scraper {
 				/*
 				 * build Bibtex String from map
 				 */
-				final StringBuffer bibtex = getBibtex(map);
+				final StringBuffer bibtex = this.getBibtex(map);
 				/*
 				 * add url to bibtex entry
 				 */
@@ -111,11 +116,11 @@ public class IEScraper implements Scraper {
 				return true;
 			}
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new ScrapingException(e);
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			throw new ScrapingException(e);
-		} catch (NamingException e) {
+		} catch (final NamingException e) {
 			throw new ScrapingException(e);
 		}
 		return false;
@@ -129,7 +134,7 @@ public class IEScraper implements Scraper {
 		/*
 		 * extract year (needed already here for bibtex key)
 		 */
-		map.put("year", getYearFromDate(map.get("date")));
+		map.put("year", this.getYearFromDate(map.get("date")));
 		/*
 		 * generate bibtex key
 		 */
@@ -155,7 +160,7 @@ public class IEScraper implements Scraper {
 				 * clean person lists
 				 */
 				if ("author".equals(key) || "editor".equals(key)) {
-					value = cleanPerson(value);
+					value = this.cleanPerson(value);
 				}
 				bib.append(key + " = {" + value + "},\n");
 			}
@@ -192,10 +197,12 @@ public class IEScraper implements Scraper {
 	/** Returns a self description of this scraper.
 	 * 
 	 */
+	@Override
 	public String getInfo() {
 		return "IEScraper: Extraction of bibliographic references by information extraction. Author: Thomas Steuber";
 	}
 
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singletonList(this);
 	}
@@ -204,31 +211,31 @@ public class IEScraper implements Scraper {
 	 * @param person
 	 * @return
 	 */
-	private String cleanPerson(String person) {
+	private String cleanPerson(final String person) {
 		// not modify references with " and " 
-		if (person.contains(" and "))
+		if (person.contains(" and ")) {
 			return person;
+		}
 		// in references with ";" and no " and " replace ";" with " and "
-		if (person.contains(";"))
+		if (person.contains(";")) {
 			return person.replace(";", " and ");
+		}
 		// in references with "," and no " and " or ";" replace "," with " and "
-		if (person.contains(","))
+		if (person.contains(",")) {
 			return person.replace(",", " and ");
+		}
 
 		return person;
 	}
 
-	public boolean supportsScrapingContext(ScrapingContext sc) {
-		if(sc.getSelectedText()!=null)
+	@Override
+	public boolean supportsScrapingContext(final ScrapingContext sc) {
+		if (present(sc.getSelectedText())) {
 			return true; // supports every snippet
+		}
 		return false;
 	}
 
-	public static ScrapingContext getTestContext(){
-		ScrapingContext context = new ScrapingContext(null);
-		context.setSelectedText("Michael May and Bettina Berendt and Antoine Cornuejols and Joao Gama and Fosca Giannotti and Andreas Hotho and Donato Malerba and Ernestina Menesalvas and Katharina Morik and Rasmus Pedersen and Lorenza Saitta and Yucel Saygin and Assaf Schuster and Koen Vanhoof. Research Challenges in Ubiquitous Knowledge Discovery. Next Generation of Data Mining (Chapman & Hall/Crc Data Mining and Knowledge Discovery Series), Chapman & Hall/CRC,2008.");
-		return context;
-	}
 	
 	/**
 	 * @return site name
@@ -242,24 +249,6 @@ public class IEScraper implements Scraper {
 	 */
 	public String getSupportedSiteURL(){
 		return null;
-	}
-	
-	/** 
-	 * Converts a string from ISO-8859-1 to UTF-8 format.
-	 * @param toConvert A String in ISO format.
-	 * @return the argument in UTF-8 format
-	 */
-	private String convertISO2UTF8(String toConvert) {
-		String result = null;
-		if( toConvert==null ) return null;
-		try {
-			byte[] utf8 = toConvert.getBytes("ISO-8859-1"); 
-			result = new String(utf8, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			/*nothing clever, i could do here*/
-		} 
-		
-		return result;
 	}
 
 }

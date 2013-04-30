@@ -24,7 +24,6 @@
 package org.bibsonomy.scraper.generic;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,7 +50,8 @@ public class HighwireScraper implements Scraper {
 	//Pattern p = Pattern.compile("/cgi/citmgr\\?(gca=\\w+;\\d+/\\d+/[\\w+]*\\d+[&]*)+");
 	private static final Pattern urlPattern = Pattern.compile("/cgi/citmgr\\?gca=[\\w+;/&=.-]+");
 	
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+	@Override
+	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
 		if (sc.getUrl() != null) { //-- url shouldn't be null
 
 			/*
@@ -64,11 +64,11 @@ public class HighwireScraper implements Scraper {
 			String pageContent;
 			try {
 				pageContent = sc.getPageContent();
-			} catch (ScrapingException e) {
+			} catch (final ScrapingException e) {
 				return false;
 			}
 			
-			Matcher m = urlPattern.matcher(pageContent);
+			final Matcher m = urlPattern.matcher(pageContent);
 			
 			try {
 				//-- if its available extract the needed parts and form the final bibtex export url
@@ -76,10 +76,10 @@ public class HighwireScraper implements Scraper {
 					sc.setScraper(this);
 					
 					//-- to export the bibtex we need to replace ? through ?type=bibtex
-					String exportUrl = m.group(0).replaceFirst("\\?","?type=bibtex&");
+					final String exportUrl = m.group(0).replaceFirst("\\?","?type=bibtex&");
 
 					//-- form the host url and put them together 
-					String newUrl = "http://" + sc.getUrl().getHost() + exportUrl;
+					final String newUrl = "http://" + sc.getUrl().getHost() + exportUrl;
 
 					//-- get the bibtex export and throw new ScrapingException if the url is broken
 					String bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
@@ -90,25 +90,25 @@ public class HighwireScraper implements Scraper {
 					 * will crash.
 					 */
 					//-- create the pattern to finde the bibtexkey
-					Pattern pa1 = Pattern.compile("@\\w+\\{.+,");
-					Matcher ma1 = pa1.matcher(bibtexresult);
+					final Pattern pa1 = Pattern.compile("@\\w+\\{.+,");
+					final Matcher ma1 = pa1.matcher(bibtexresult);
 
 					//-- for every match ...
 					while(ma1.find()){
-						String bibtexpart = ma1.group(0);
-						Pattern pat = Pattern.compile("\\s");
-						Matcher mat = pat.matcher(bibtexpart);
+						final String bibtexpart = ma1.group(0);
+						final Pattern pat = Pattern.compile("\\s");
+						final Matcher mat = pat.matcher(bibtexpart);
 						// ... check if whitespaces are existing and replace 
 						// them through underscore
 						if (mat.find()){
-							String preparedbibtexkey = mat.replaceAll("_");
+							final String preparedbibtexkey = mat.replaceAll("_");
 							bibtexresult = bibtexresult.replaceFirst(Pattern.quote(bibtexpart), preparedbibtexkey);
 						}
 					}
 
 
 					//-- bibtex string may not be empty
-					if (bibtexresult != null && !"".equals(bibtexresult)) {
+					if ((bibtexresult != null) && !"".equals(bibtexresult)) {
 						sc.setBibtexResult(bibtexresult);
 						return true;
 					}
@@ -116,7 +116,7 @@ public class HighwireScraper implements Scraper {
 					throw new ScrapingFailureException("getting bibtex failed");
 				}
 
-			} catch (IOException ex) {
+			} catch (final IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}
@@ -124,36 +124,31 @@ public class HighwireScraper implements Scraper {
 		return false;
 	}
 
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singletonList(this);
 	}
 
-	public boolean supportsScrapingContext(ScrapingContext sc) {
+	@Override
+	public boolean supportsScrapingContext(final ScrapingContext sc) {
 		if (sc.getUrl() != null) {
 			String pageContent;
 			try {
 				pageContent = sc.getPageContent();
-			} catch (ScrapingException e) {
+			} catch (final ScrapingException e) {
 				return false;
 			}
 			
-			Matcher m = urlPattern.matcher(pageContent);
+			final Matcher m = urlPattern.matcher(pageContent);
 			
-			if (m.find())
+			if (m.find()) {
 				return true;
+			}
 		}
 		return false;
 	}
 	
-	public static ScrapingContext getTestContext(){
-		ScrapingContext context = new ScrapingContext(null);
-		try {
-			context.setUrl(new URL("http://mend.endojournals.org/cgi/gca?sendit=Get+All+Checked+Abstract(s)&gca=17%2F1%2F1"));
-		} catch (MalformedURLException ex) {
-		}
-		return context;
-	}
-	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}

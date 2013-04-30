@@ -24,7 +24,6 @@
 package org.bibsonomy.scraper.generic;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -56,13 +55,16 @@ public class UnAPIScraper implements Scraper {
 	private static final String INFO = "Scrapes pages providing BibTeX (format=bibtex) via <a href=\"http://unapi.info/\">UN-API</a>.";
 	private static final Log log = LogFactory.getLog(UnAPIScraper.class);
 
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singleton(this);
 	}
 
-	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
-		if (scrapingContext.getUrl() == null)
+	@Override
+	public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
+		if (scrapingContext.getUrl() == null) {
 			return false;
+		}
 		
 		final String pageContents = scrapingContext.getPageContent();
 		/*
@@ -74,7 +76,7 @@ public class UnAPIScraper implements Scraper {
 		 * 
 		 * <abbr class='unapi-id' title='http://canarydatabase.org/record/488'> </abbr> 
 		 */
-		if (pageContents != null && pageContents.contains("unapi-server") && pageContents.contains("unapi-id")) {
+		if ((pageContents != null) && pageContents.contains("unapi-server") && pageContents.contains("unapi-id")) {
 			/*
 			 * do the expensive JTidy stuff to extract the server and id
 			 */
@@ -82,13 +84,13 @@ public class UnAPIScraper implements Scraper {
 			/*
 			 * get the server id
 			 */
-			final String href = getApiHref(document);
+			final String href = this.getApiHref(document);
 			if (href != null) {
 				log.debug("found server id " + href);
 				/*
 				 * get record identifier
 				 */
-				final String id = getRecordIdentifier(document);
+				final String id = this.getRecordIdentifier(document);
 				if (id != null) {
 					log.debug("found record id " + id);
 					/*
@@ -113,7 +115,7 @@ public class UnAPIScraper implements Scraper {
 							scrapingContext.setBibtexResult(bibtex);
 							return true;
 						}
-					} catch (IOException ex) {
+					} catch (final IOException ex) {
 						throw new InternalFailureException(ex);
 					}
 				}
@@ -133,7 +135,7 @@ public class UnAPIScraper implements Scraper {
 			final Node node = elementsByTagName.item(i);
 			final NamedNodeMap attributes = node.getAttributes();
 			final Node relAttribute = attributes.getNamedItem("rel");
-			if (relAttribute != null && "unapi-server".equals(relAttribute.getNodeValue())) {
+			if ((relAttribute != null) && "unapi-server".equals(relAttribute.getNodeValue())) {
 				/*
 				 * link to server found -> extract href
 				 */
@@ -163,7 +165,7 @@ public class UnAPIScraper implements Scraper {
 			final Node node = abbrTags.item(i);
 			final NamedNodeMap attributes = node.getAttributes();
 			final Node classAttribute = attributes.getNamedItem("class");
-			if (classAttribute != null && "unapi-id".equals(classAttribute.getNodeValue())) {
+			if ((classAttribute != null) && "unapi-id".equals(classAttribute.getNodeValue())) {
 				/*
 				 * record found -> extract id
 				 */
@@ -177,29 +179,22 @@ public class UnAPIScraper implements Scraper {
 
 	}
 
-	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+	@Override
+	public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
 		if(scrapingContext.getUrl() != null){
 			try {
-				String pageContents = scrapingContext.getPageContent();
-				if (pageContents != null && pageContents.contains("unapi-server") && pageContents.contains("unapi-id"))
+				final String pageContents = scrapingContext.getPageContent();
+				if ((pageContents != null) && pageContents.contains("unapi-server") && pageContents.contains("unapi-id")) {
 					return true;
-			} catch (ScrapingException ex) {
+				}
+			} catch (final ScrapingException ex) {
 				return false;
 			}
 		}
 		return false;
 	}
 	
-	public static ScrapingContext getTestContext(){
-		ScrapingContext context = null;
-		try {
-			context = new ScrapingContext(new URL("http://canarydatabase.org/record/488"));
-		} catch (MalformedURLException ex) {
-			log.debug(ex);
-		}
-		return context;
-	}
-	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}

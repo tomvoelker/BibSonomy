@@ -25,6 +25,7 @@ package org.bibsonomy.scraper.id.kde.isbn;
 
 import static org.junit.Assert.assertTrue;
 
+import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -43,7 +44,7 @@ public class ISBNScraperTest {
 	@Test
 	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_166"));
 	}
 	
@@ -53,7 +54,7 @@ public class ISBNScraperTest {
 	@Test
 	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_167"));
 	}
 	
@@ -63,7 +64,7 @@ public class ISBNScraperTest {
 	@Test
 	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_170"));
 	}
 	
@@ -73,7 +74,7 @@ public class ISBNScraperTest {
 	@Test
 	@Ignore
 	public void url4TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_171"));
 	}
 
@@ -84,7 +85,7 @@ public class ISBNScraperTest {
 	public void testSupportsScrapingContext() {
 		final ISBNScraper scraper = new ISBNScraper();
 		
-		Assert.assertTrue(scraper.supportsScrapingContext(ISBNScraper.getTestContext()));
+		Assert.assertTrue(scraper.supportsScrapingContext(ReachabilityTestRunner.ISBN_SCRAPER_TEST_CONTEXT));
 		
 	}
 }

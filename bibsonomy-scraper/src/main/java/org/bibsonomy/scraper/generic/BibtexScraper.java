@@ -25,8 +25,6 @@ package org.bibsonomy.scraper.generic;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -42,6 +40,7 @@ import bibtex.parser.BibtexParser;
 
 /**
  * Search in sourcecode from the given page for bibtex and scrape it.
+ * 
  * @author tst
  * @version $Id$
  */
@@ -49,10 +48,12 @@ public class BibtexScraper implements Scraper {
 
 	private static final String INFO = "Scraper for BibTeX, independent from URL.";
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singletonList(this);
 	}
@@ -61,10 +62,10 @@ public class BibtexScraper implements Scraper {
 	 * 
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
-	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		if (sc != null && sc.getUrl() != null) {
-			
-			final String result = parseBibTeX(sc.getPageContent());
+	@Override
+	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
+		if ((sc != null) && (sc.getUrl() != null)) {
+			final String result = this.parseBibTeX(sc.getPageContent());
 
 			if (result != null) {
 				sc.setScraper(this);
@@ -77,7 +78,9 @@ public class BibtexScraper implements Scraper {
 	}
 
 	private String parseBibTeX(final String pageContent) {
-		if (pageContent == null) return null;
+		if (pageContent == null) {
+			return null;
+		}
 		
 		// html clean up
 		final String source = StringEscapeUtils.unescapeHtml(pageContent).replaceAll("<\\s*+br\\s*+/?>", "\n")
@@ -95,7 +98,7 @@ public class BibtexScraper implements Scraper {
 			// parse source
 			parser.parse(bibtexFile, sr);
 
-			for (Object potentialEntry : bibtexFile.getEntries()) {
+			for (final Object potentialEntry : bibtexFile.getEntries()) {
 				if ((potentialEntry instanceof BibtexEntry)) {
 					return potentialEntry.toString();
 				}
@@ -111,25 +114,18 @@ public class BibtexScraper implements Scraper {
 		return null;
 	}
 	
+	@Override
 	public boolean supportsScrapingContext(final ScrapingContext sc) {
-		if (sc != null && sc.getUrl() != null) {
+		if ((sc != null) && (sc.getUrl() != null)) {
 			try {
-				return parseBibTeX(sc.getPageContent()) != null;
-			} catch (InternalFailureException ex) {
+				return this.parseBibTeX(sc.getPageContent()) != null;
+			} catch (final InternalFailureException ex) {
 				return false;
-			} catch (ScrapingException ex) {
+			} catch (final ScrapingException ex) {
 				return false;
 			}
 		}
 		return false;
-	}
-	
-	public static ScrapingContext getTestContext() {
-		try {
-			return new ScrapingContext(new URL("http://de.wikipedia.org/wiki/BibTeX"));
-		} catch (final MalformedURLException ex) {
-			return new ScrapingContext(null);
-		}
 	}
 	
 	/**
@@ -138,7 +134,6 @@ public class BibtexScraper implements Scraper {
 	public String getSupportedSiteName(){
 		return null;
 	}
-	
 	
 	/**
 	 * @return site url

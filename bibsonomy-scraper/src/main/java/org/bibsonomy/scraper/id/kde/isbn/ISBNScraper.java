@@ -34,7 +34,6 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.util.id.ISBNUtils;
 
@@ -52,22 +51,25 @@ public class ISBNScraper implements Scraper {
 	// need to add these parameter to receiver the correct journal
 	private static final String ADV_PARAM = "&dblist=638&fq=dt%3Aser&qt=facet_dt%3A";
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 	
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singletonList(this);
 	}
 	
+	@Override
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
-		if (sc != null && sc.getSelectedText() != null) {
+		if ((sc != null) && (sc.getSelectedText() != null)) {
 			final String isbn = ISBNUtils.extractISBN(sc.getSelectedText());
 			final String issn = ISBNUtils.extractISSN(sc.getSelectedText());
 			
 			if (present(isbn)) {
 				try {
-					String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
+					final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
 					
 					if (present(bibtex)) {
 						sc.setBibtexResult(bibtex);
@@ -107,20 +109,16 @@ public class ISBNScraper implements Scraper {
 		return false;
 	}
 	
-	public boolean supportsScrapingContext(ScrapingContext sc) {
+	@Override
+	public boolean supportsScrapingContext(final ScrapingContext sc) {
 		if(sc.getSelectedText() != null){
 			final String isbn = ISBNUtils.extractISBN(sc.getSelectedText());
 			final String issn = ISBNUtils.extractISSN(sc.getSelectedText());
-			if (isbn != null || issn != null)
+			if ((isbn != null) || (issn != null)) {
 				return true;
+			}
 		}
 		return false;
-	}
-	
-	public static ScrapingContext getTestContext(){
-		final ScrapingContext context = new ScrapingContext(null);
-		context.setSelectedText("9783608935448");
-		return context;
 	}
 	
 	/**

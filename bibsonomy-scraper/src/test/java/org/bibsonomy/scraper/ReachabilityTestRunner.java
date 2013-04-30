@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -40,15 +42,23 @@ import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
+import org.bibsonomy.testutil.TestUtils;
 
 /**
  * Runner for reachability test for Scraper
+ * 
  * @author tst
  * @version $Id$
  */
 public class ReachabilityTestRunner {
-	
 	private static final Log log = LogFactory.getLog(ReachabilityTestRunner.class);
+	
+	/** test context for the {@link ISBNScraper} */
+	public static final ScrapingContext ISBN_SCRAPER_TEST_CONTEXT = new ScrapingContext(null, "9783608935448");
+
+	/** test context for the {@link IEScraper} */
+	public static final ScrapingContext IE_SCRAPER_TEST_CONTEXT = new ScrapingContext(null, "Michael May and Bettina Berendt and Antoine Cornuejols and Joao Gama and Fosca Giannotti and Andreas Hotho and Donato Malerba and Ernestina Menesalvas and Katharina Morik and Rasmus Pedersen and Lorenza Saitta and Yucel Saygin and Assaf Schuster and Koen Vanhoof. Research Challenges in Ubiquitous Knowledge Discovery. Next Generation of Data Mining (Chapman & Hall/Crc Data Mining and Knowledge Discovery Series), Chapman & Hall/CRC,2008.");
+
 	
 	/**
 	 * Importer which reads the tests from a external sources.
@@ -60,81 +70,94 @@ public class ReachabilityTestRunner {
 	 */
 	public ReachabilityTestRunner(){
 		// importer for xml + bib file sources
-		importer = new XMLUnitTestImporter();
+		this.importer = new XMLUnitTestImporter();
 	}
 	
 	/**
 	 * This Method reads and runs the test.
 	 */
 	public void run(){
-		URL log4j = new UnitTestRunner().getClass().getResource("log4j.properties");
+		final URL log4j = UnitTestRunner.class.getClassLoader().getResource("log4j.properties");
 		PropertyConfigurator.configure(log4j);
 		try {
-			if(importer == null)
+			if(this.importer == null) {
 				throw new Exception("no UnitTestImporter available");
+			}
 			
-			List<ScraperUnitTest> unitTests = importer.getUnitTests();
+			final List<ScraperUnitTest> unitTests = this.importer.getUnitTests();
 			
-			Collection<Scraper> compositeScrapers = new KDEScraperFactory().getScraper().getScraper();
+			final Collection<Scraper> compositeScrapers = new KDEScraperFactory().getScraper().getScraper();
 			
 			// check UrlScraper
-			for(ScraperUnitTest test : unitTests){
-				URLScraperUnitTest urlTest = (URLScraperUnitTest) test;
+			for (final ScraperUnitTest test : unitTests) {
+				final URLScraperUnitTest urlTest = (URLScraperUnitTest) test;
+				final Scraper testScraper = urlTest.getScraper();
+				final ScrapingContext context;
+				if (present(urlTest.getURL())) {
+					context = new ScrapingContext(new URL(urlTest.getURL()));
+				} else {
+					context = new ScrapingContext(null, urlTest.getSelection());					
+				}
 				
-				Scraper testScraper = urlTest.getScraper();
-				
-				ScrapingContext context = new ScrapingContext(new URL(urlTest.getURL()));
-				
-				checkScraper(compositeScrapers, context, testScraper);
+				this.checkScraper(compositeScrapers, context, testScraper);
 			}
 			
 			// check UnAPIScraper
-			checkScraper(compositeScrapers, UnAPIScraper.getTestContext(), new UnAPIScraper());
+			this.checkScraper(compositeScrapers, new ScrapingContext(new URL("http://canarydatabase.org/record/488")), new UnAPIScraper());
 			
 			// check BibtexScraper
-			checkScraper(compositeScrapers, BibtexScraper.getTestContext(), new BibtexScraper());
+			this.checkScraper(compositeScrapers, new ScrapingContext(new URL("http://de.wikipedia.org/wiki/BibTeX")), new BibtexScraper());
 
 			// check CoinsScraper
-			checkScraper(compositeScrapers, CoinsScraper.getTestContext(), new CoinsScraper());
+			this.checkScraper(compositeScrapers, new ScrapingContext(new URL("http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm")), new CoinsScraper());
 
 			// check SnippetScraper
-			checkScraper(compositeScrapers, SnippetScraper.getTestContext(), new SnippetScraper());
+			this.checkScraper(compositeScrapers, new ScrapingContext(null, " @techreport{triple/Store/Report,\n" +
+					"title = {Scalability report on triple store applications},\n" +
+					"author = {Ryan Lee},\n" +
+					"institution = {Massachusetts Institute of Technology},\n" +
+					"url = {http://simile.mit.edu/reports/stores/index.html},\n" +
+					"year = {2004},\n" +
+					"abstract = {This report examines a set of open source triple store systems suitable for The SIMILE Project's browser-like applications. Measurements on performance within a common hardware, software, and dataset environment grant insight on which systems hold the most promise for acting as large, remote backing stores for SIMILE's future requirements. The SIMILE Project (Semantic Interoperability of Metadata In like and Unlike Environments) is a joint research project between the World Wide Web Consortium (W3C), Hewlett-Packard Labs (HP), the Massachusetts Institute of Technology / Computer Science and Artificial Intelligence Laboratory (MIT / CSAIL), and MIT Libraries. Funding is provided by HP.},\n" +
+					"keywords = {MIT applications kde performance performance-project rdf report ss07 store triple uni }\n" +
+					"}"), new SnippetScraper());
 
 			// check ISBNScraper
-			checkScraper(compositeScrapers, ISBNScraper.getTestContext(), new ISBNScraper());
+			this.checkScraper(compositeScrapers, ISBN_SCRAPER_TEST_CONTEXT, new ISBNScraper());
 
 			// check IEScraper
-			checkScraper(compositeScrapers, IEScraper.getTestContext(), new IEScraper());
+			this.checkScraper(compositeScrapers, IE_SCRAPER_TEST_CONTEXT, new IEScraper());
 
 			// check HighwireScraper
-			checkScraper(compositeScrapers, HighwireScraper.getTestContext(), new HighwireScraper());
+			this.checkScraper(compositeScrapers, new ScrapingContext(TestUtils.createURL("http://mend.endojournals.org/cgi/gca?sendit=Get+All+Checked+Abstract(s)&gca=17%2F1%2F1")), new HighwireScraper());
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
 	}
 	
-	private void checkScraper(Collection<Scraper> compositeScrapers, ScrapingContext context, Scraper testScraper){
+	private void checkScraper(final Collection<Scraper> compositeScrapers, final ScrapingContext context, final Scraper testScraper){
 		Scraper foundScraper = null;
-		for(Scraper scraper: compositeScrapers){
-			if(scraper.supportsScrapingContext(context)){
+		for (final Scraper scraper: compositeScrapers){
+			if (scraper.supportsScrapingContext(context)){
 				foundScraper = scraper;
-				if(!scraper.getClass().getCanonicalName().equals(testScraper.getClass().getCanonicalName())){
+				if (!scraper.getClass().getCanonicalName().equals(testScraper.getClass().getCanonicalName())){
 					log.debug("not expected scraper found:" + scraper.getClass().getCanonicalName() + " expected scraper:" + testScraper.getClass().getCanonicalName());
 				}
 				break;
 			}
 		}
 		
-		if(foundScraper == null)
+		if (foundScraper == null) {
 			log.debug("not supported reachability test: " + testScraper.getClass().getCanonicalName());
+		}
 	}
 
 	/**
 	 * starts the whole party
 	 * @param args not needed
 	 */
-	public static void main(String[] args){
+	public static void main(final String[] args){
 		new ReachabilityTestRunner().run();
 	}
 

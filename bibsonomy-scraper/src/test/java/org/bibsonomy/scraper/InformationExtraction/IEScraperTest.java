@@ -25,6 +25,7 @@ package org.bibsonomy.scraper.InformationExtraction;
 
 import junit.framework.Assert;
 
+import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.testutil.TestUtils;
@@ -36,7 +37,7 @@ import org.junit.Test;
  */
 public class IEScraperTest {
 
-	private final String expectedBibtex = 
+	private static final String expectedBibtex = 
 		"@misc{noauthororeditor2008,\n" +
 		"booktitle = {Michael May and Bettina Berendt and Antoine Cornuejols and Joao Gama and Fosca Giannotti and Andreas Hotho and Donato Malerba and Ernestina Menesalvas and Katharina Morik and Rasmus Pedersen and Lorenza Saitta and Yucel Saygin and Assaf Schuster and Koen Vanhoof. Research Challenges in Ubiquitous Knowledge Discovery. Next Generation of Data Mining(Chapman & Hall / Crc Data Mining and Knowledge Discovery Series), Chapman & Hall / CRC},\n" +
 		"date = {2008},\n" +
@@ -46,7 +47,7 @@ public class IEScraperTest {
 
 	@Test
 	public void testScrape() throws ScrapingException {
-		final ScrapingContext sc = IEScraper.getTestContext();
+		final ScrapingContext sc = ReachabilityTestRunner.IE_SCRAPER_TEST_CONTEXT;
 		sc.setUrl(TestUtils.createURL("http://www.example.com/reasearch_challenges.html"));
 		
 		final IEScraper scraper = new IEScraper();
@@ -54,7 +55,7 @@ public class IEScraperTest {
 		Assert.assertTrue(scrape);
 
 		final String bibtex = sc.getBibtexResult();
-		Assert.assertEquals(this.expectedBibtex, bibtex);
+		Assert.assertEquals(expectedBibtex, bibtex);
 	}
 
 }

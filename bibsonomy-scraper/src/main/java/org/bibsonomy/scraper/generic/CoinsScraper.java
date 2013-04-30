@@ -25,8 +25,6 @@ package org.bibsonomy.scraper.generic;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -251,20 +249,10 @@ public class CoinsScraper implements Scraper {
 		return SITE_NAME;
 	}
 
-	public static ScrapingContext getTestContext(){
-		final ScrapingContext context = new ScrapingContext(null);
-		try {
-			context.setUrl(new URL("http://www.westmidlandbirdclub.com/bibliography/NBotWM.htm"));
-		} catch (final MalformedURLException ex) {
-		}
-		return context;
-	}
 	/**
 	 * @return site url
 	 */
 	public String getSupportedSiteURL(){
 		return SITE_URL;
 	}
-
-
 }
