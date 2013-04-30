@@ -2426,5 +2426,20 @@ public class StringUtils {
 		 */
 		return (targetSize >> 3) + (targetSize < 9 ? 3 : 6) + targetSize;
 	}
+	
+	/**
+	 * @param sb {@link StringBuilder} to be modified
+	 * @param toBeReplaced 
+	 * @param replacement
+	 * @return the given {@link StringBuilder}
+	 */
+	public static StringBuilder replaceFirstOccurrence(StringBuilder sb, String toBeReplaced, String replacement) {
+		int i = sb.indexOf(toBeReplaced);
+		if (i == -1) {
+			return sb;
+		}
+		sb.replace(i, i + toBeReplaced.length() + 1, replacement);
+		return sb;
+	}
 }
 
