@@ -18,20 +18,27 @@ import org.marc4j.marc.Record;
  */
 public class MarcToBibTexReader implements BibTexReader {
 
-	private TitleExtractor ex = new TitleExtractor();
+	private List<AttributeExtractor> extractors;
 
+	public MarcToBibTexReader() {
+		extractors = new ArrayList<AttributeExtractor>();
+		extractors.add(new TitleExtractor());
+	}
+	
 	@Override
 	public Collection<BibTex> read(InputStream is) {
 		List<BibTex> rVal = new ArrayList<BibTex>();
-		MarcReader reader = new MarcStreamReader(is);
+		MarcReader reader = new MarcStreamReader(is, "UTF-8");
 		while (reader.hasNext()) {
 			Record r = reader.next();
 			ExtendedMarcRecord er = new ExtendedMarcRecord(r);
 			BibTex b = new BibTex();
-			ex.extraxtAndSetAttribute(b, er);
+			for (AttributeExtractor ex : extractors) {
+				ex.extraxtAndSetAttribute(b, er);
+			}
 			rVal.add(b);
 
-			System.out.println(r.toString());
+			//System.out.println(r.toString());
 		}
 		return rVal;
 	}
