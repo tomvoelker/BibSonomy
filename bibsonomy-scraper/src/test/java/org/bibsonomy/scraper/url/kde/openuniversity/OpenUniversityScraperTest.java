@@ -30,8 +30,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL tests #117. #118, #199, #120 for OpenUniversityScraper
- * @author tst
+ * Scraper URL tests #236 for OpenUniversityScraper
+ * @author hks
  * @version $Id$
  */
 public class OpenUniversityScraperTest {
@@ -42,7 +42,7 @@ public class OpenUniversityScraperTest {
 	@Test
 	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_236"));
 	}
 
