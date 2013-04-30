@@ -8,6 +8,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * page controller for
+ *  - /authors
+ * 
  * @author Christian Claus
  * @version $Id$
  */
@@ -16,8 +19,7 @@ public class AuthorsPageController implements MinimalisticController<AuthorsComm
 	private LogicInterface logic;
 	
 	@Override
-	public View workOn(AuthorsCommand command) {
-		command.setPageTitle("Authors"); // TODO: i18n
+	public View workOn(final AuthorsCommand command) {
 		command.setAuthorList(this.logic.getAuthors(GroupingEntity.ALL, null, null, null, null, null, 0, Integer.MAX_VALUE, null));
 		return Views.AUTHORSPAGE;
 	}
@@ -30,7 +32,7 @@ public class AuthorsPageController implements MinimalisticController<AuthorsComm
 	/**
 	 * @param logic the logic to set
 	 */
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 }

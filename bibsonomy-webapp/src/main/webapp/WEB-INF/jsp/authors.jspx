@@ -13,7 +13,8 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:paneLayout pageTitle="${command.pageTitle}" headerMessageKey="navi.authors" command="${command}" requPath="${requPath}" activeTab="popular">
+	<fmt:message key="navi.authors" var="pageTitle" />
+	<layout:paneLayout pageTitle="${pageTitle}" headerMessageKey="navi.authors" command="${command}" requPath="${requPath}" activeTab="popular">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.authors" formAction="/author/" formInputName="author"/>
 		</jsp:attribute>
