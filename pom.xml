@@ -250,7 +250,7 @@
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-lucene</module>
-		<module>bibsonomy-marc-parser</module>
+		<!-- <module>bibsonomy-marc-parser</module> -->
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-openaccess</module>
 		<module>bibsonomy-opensocial</module>
@@ -766,11 +766,13 @@
 				<artifactId>commons-codec</artifactId>
 				<version>1.4</version>
 			</dependency>
+			<!--
 			<dependency>
 				<groupId>org.marc4j</groupId>
 				<artifactId>marc4j</artifactId>
 				<version>2.4</version>
 			</dependency>
+			-->
 		</dependencies>
 	</dependencyManagement>
 </project>
