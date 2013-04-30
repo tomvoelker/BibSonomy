@@ -1,7 +1,10 @@
-package org.bibsonomy.marc;
+package org.bibsonomy.marc.extractors;
 
 import java.util.List;
 
+import org.bibsonomy.marc.AttributeExtractor;
+import org.bibsonomy.marc.ExtendedMarcRecord;
+import org.bibsonomy.model.BibTex;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.VariableField;
@@ -10,12 +13,7 @@ import org.marc4j.marc.VariableField;
  * @author jensi
  * @version $Id$
  */
-public class TitleExtractor {
-	public String getTitle(Record r) {
-		StringBuilder sb = new StringBuilder();
-		getShortTitle(sb, r);
-		return sb.toString();
-	}
+public class TitleExtractor implements AttributeExtractor {
 	
     /**
      * Get the short (pre-subtitle) title of the record.
@@ -23,11 +21,11 @@ public class TitleExtractor {
      * @return string
      * @access protected
      */
-    public void getShortTitle(StringBuilder sb, Record r)
+    public StringBuilder getShortTitle(StringBuilder sb, ExtendedMarcRecord r)
     {
     	// 245 $a_:_$b
-    	List<DataField> tmp1 = (List<DataField>) r.getVariableFields("245");
-    	sb.append(tmp1.get(0). find("a"));
+    	sb.append(r.getFirstFieldValue("245", 'a'));
+    	return sb;
     /*	$tmp1 = $this->_getFieldArray('245', array('a'), false);
     	if (count($tmp1)> 0){
     	   $tmp = $tmp1[0];
@@ -46,4 +44,10 @@ public class TitleExtractor {
     	
     	return $tmp;*/
     }
+
+	@Override
+	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) { 
+		String val = getShortTitle(new StringBuilder(), src).toString();
+		target.setTitle(val);
+	}
 }
