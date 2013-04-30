@@ -30,7 +30,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL tests #117. #118, #199, #120 for OpenrepositoryScraper
+ * Scraper URL tests #117, #118, #199, #120 for OpenrepositoryScraper
+ * 
  * @author tst
  * @version $Id$
  */
@@ -42,7 +43,7 @@ public class OpenrepositoryScraperTest {
 	@Test
 	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_117"));
 	}
 	
@@ -52,7 +53,7 @@ public class OpenrepositoryScraperTest {
 	@Test
 	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_118"));
 	}
 	
@@ -62,7 +63,7 @@ public class OpenrepositoryScraperTest {
 	@Test
 	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_119"));
 	}
 	
@@ -72,7 +73,7 @@ public class OpenrepositoryScraperTest {
 	@Test
 	@Ignore
 	public void url4TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_120"));
 	}
 
