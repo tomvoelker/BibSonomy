@@ -10,6 +10,8 @@
 # machine, which takes shapshots of each URL.
 #  
 # Changes:
+#   2013-04-02: (dzo)
+#   - fixed file encoding (urls may contain umlauts)
 #   2012-08-03: (dbe)
 #   - initial version
 #
@@ -55,6 +57,7 @@ $stm_select_recent_urls->{"mysql_use_result"} = 1;
 $stm_select_recent_urls->execute();
 my $filename = $ENV{'TMP'} . get_filename();
 open OUT, "> $filename";
+binmode OUT, ':utf8';
 my $count = 0; 
 while (my @row = $stm_select_recent_urls->fetchrow_array ) {
     $count++;
