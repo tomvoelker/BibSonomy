@@ -163,6 +163,10 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		}
 		
 		final T command = controller.instantiateCommand();
+		
+		if (command instanceof MimeTypeCommand) {
+			((MimeTypeCommand) command).setMimeType(request.getHeader("Content-Type"));
+		}
 
 		/*
 		 * put context into command
