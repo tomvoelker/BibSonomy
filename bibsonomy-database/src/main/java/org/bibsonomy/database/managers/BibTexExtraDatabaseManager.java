@@ -23,7 +23,7 @@ import org.bibsonomy.model.extra.ExtendedField;
 public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	private final static BibTexExtraDatabaseManager singleton = new BibTexExtraDatabaseManager();
-	private final DatabasePluginRegistry plugins; //mme
+	private final DatabasePluginRegistry plugins;
 	
 	/**
 	 * @return BibTexExtraDatabaseManager
@@ -33,7 +33,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private BibTexExtraDatabaseManager() {
-		this.plugins = DatabasePluginRegistry.getInstance(); //mme
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void deleteURL(final String hash, final String username, final URL url, final DBSession session) {
 		final BibTexExtraParam param = this.buildURLParam(hash, username, url, null, session);
-		this.plugins.onBibTexExtraDelete(param, session);	//mme
+		this.plugins.onBibTexExtraDelete(param, session);
 		this.delete("deleteBibTexExtraURL", param, session);
 	}
 
