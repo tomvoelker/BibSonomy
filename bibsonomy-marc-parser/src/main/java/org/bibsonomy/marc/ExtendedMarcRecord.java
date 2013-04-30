@@ -1,7 +1,9 @@
 package org.bibsonomy.marc;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.bibsonomy.util.ValidationUtils;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
@@ -27,6 +29,18 @@ public class ExtendedMarcRecord {
 			}
 		}
 		return null;
+	}
+	
+	public void appendFirstFieldValueWithDelmiterIfPresent(Appendable a, String fieldName, char subFieldChar, String delimiter) {
+		String val =  getFirstFieldValue(fieldName, subFieldChar);
+		if (ValidationUtils.present(val)) {
+			try {
+				a.append(delimiter);
+				a.append(val);
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
