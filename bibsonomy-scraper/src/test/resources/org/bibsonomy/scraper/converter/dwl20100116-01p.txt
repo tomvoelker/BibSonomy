@@ -1,0 +1,5188 @@
+SET: S1 [134] TTL: 1          PPN: 617458618                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt10:44:03.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617458618
+007G ƒcGBVƒ0617458618
+010@ ƒager
+011@ ƒa2010
+021A ƒaPrinzipien der Strahlentherapie bei malignen orbitalen und periorbitalen RaumforderungenƒhT. Kuhnt; M. Janich
+027D/00 ƒaHNOƒpHeidelbergƒnSpringer-Medizin-Verl.ƒ00017-6192ƒz2000404
+028A ƒdT.ƒaKuhntƒ908050311Xƒ8Thomas@Kuhnt ; PND-ID: 120178990
+028B/01 ƒdM.ƒaJanich
+031A ƒd58ƒj2010ƒe1ƒh15-23
+034M ƒaIll.
+039B ƒcInƒ9129457167ƒ8HNO. - Heidelberg : Springer-Medizin-Verl.ƒx201000000580001985
+101B ƒ001-02-10ƒt10:44:03.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9537393145ƒ8Klinik und Poliklinik für Strahlentherapie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt10:44:03.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112051414
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 2          PPN: 617457867                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt10:38:54.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617457867
+007G ƒcGBVƒ0617457867
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaArchitecture of the nervous system in Mystacocarida (Arthropoda, Crustacea)ƒdan immunohistochemical study and 3D reconstructionƒhGeorg Brenneis; Stefan Richter
+027D/00 ƒaJournal of morphologyƒpNew York, NYƒnWiley-Lissƒ00022-2887ƒz30843
+028A ƒdGeorgƒaBrenneis
+028B/01 ƒdStefanƒaRichterƒ9077457935ƒ8Stefan@Richter ; PND-ID: 115767827
+031A ƒd271ƒj2010ƒe2ƒh169-189
+034M ƒaIll.
+039B ƒcInƒ9129078867ƒ8Journal of morphology. - New York, NY : Wiley-Lissƒx201000002710002831
+101B ƒ001-02-10ƒt10:34:57.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt10:34:57.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112048332
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 3          PPN: 617448450                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt09:56:18.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617448450
+007G ƒcGBVƒ0617448450
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaA @novel non-bridging external fixator construct versus volar angular stable plating for the fixation of intra-articular fractures of the distal radius-A biomechanical studyƒhMarkus Windolf; Karsten Schwieger; Ben Ockert ...
+027D/00 ƒaInjuryƒpOxfordƒnElsevierƒ00020-1383ƒz2187784
+028C/00 ƒdMarkusƒaWindolf
+028C/01 ƒdKarstenƒaSchwieger
+028C/02 ƒdBenƒaOckert
+028C/03 ƒdJesse B.ƒaJupiter
+028C/04 ƒdGeorgƒaGradlƒ9081031769ƒ8Georg@Gradl ; PND-ID: 121015688
+031A ƒd41ƒj2010ƒe2ƒh204-209
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9129548286ƒ8Injury. - Oxford : Elsevierƒx201000000410002796
+101B ƒ001-02-10ƒt09:57:18.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521140072ƒ8Klinik und Poliklinik für Chirurgie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt09:56:18.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112038086
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 4          PPN: 617379769                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:28-01-10
+001B ƒ04382:28-01-10ƒt15:25:42.000
+001D ƒ04382:28-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617379769
+007G ƒcGBVƒ0617379769
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaSubstrate utilization profiles of bacterial strains in plankton from the River Warnow, a humic and eutrophic river in North GermanyƒhHeike M. Freese; Anja Eggert; Jay L. Garland; Rhena Schumann
+027D/00 ƒaMicrobial ecologyƒpNew York, NY ; Heidelberg ; BerlinƒnSpringerƒ00095-3628ƒz1882570
+028C/00 ƒdHeike M.ƒaFreese
+028C/01 ƒdAnjaƒaEggert
+028C/02 ƒdJay L.ƒaGarland
+028C/03 ƒdRhenaƒaSchumannƒ9505285029ƒ8Rhena@Schumann ; PND-ID: 114271542
+031A ƒd59ƒj2010ƒe1ƒh59-75
+039B ƒcInƒ9129409901ƒ8Microbial ecology. - New York, NY : Springerƒx201000000590001941
+101B ƒ028-01-10ƒt15:25:42.000
+101D ƒ028-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa28-01-10ƒbxv
+201B/01 ƒ028-01-10ƒt15:25:42.000
+201D/01 ƒ028-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111783845
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 5          PPN: 617377359                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:28-01-10
+001B ƒ04382:28-01-10ƒt15:07:20.000
+001D ƒ04382:28-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617377359
+007G ƒcGBVƒ0617377359
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaEntanglement evolution in a cascaded system with lossesƒhChristian Di Fidio; Werner Vogel
+027D/00 ƒbPhysica / EƒaPhysicaƒcE, Low-dimensional systems & nanostructuresƒpAmsterdam [u.a.]ƒnNorth-Holland, Elsevier Scienceƒ01386-9477ƒz14159429
+028A ƒdChristianƒcDiƒaFidioƒ9085667951ƒ8Christian@Di Fidio ; PND-ID: 124146414
+028B/01 ƒdWernerƒaVogelƒ9530943344ƒ8Werner@Vogel ; PND-ID: 133031608
+031A ƒd42ƒj2010ƒe3ƒh369-373
+034M ƒagraph. Darst.
+039B ƒcInƒ9240533836ƒ8Physica. - Amsterdam [u.a.] : North-Holland, Elsevier SciencePhysica / Eƒx201000000420003631
+101B ƒ028-01-10ƒt15:07:20.000
+101D ƒ028-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514419970ƒ8Institut für Physik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa28-01-10ƒbxv
+201B/01 ƒ028-01-10ƒt15:07:20.000
+201D/01 ƒ028-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111778043
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 6          PPN: 617375518                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:28-01-10
+001B ƒ04382:28-01-10ƒt14:53:12.000
+001D ƒ04382:28-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617375518
+007G ƒcGBVƒ0617375518
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaFirst experience with the biostar-device for various applications in pediatric patients with congenital heart diseaseƒhRene Höhn; Carola Hesse; Hüseyin Ince; Matthias Peuster
+027D/00 ƒaCatheterization and cardiovascular interventionsƒpNew York, NYƒnWiley-Lissƒ01522-1946ƒz14599958
+028C/00 ƒdReneƒaHöhn
+028C/01 ƒdCarolaƒaHesseƒ9534386113ƒ8Carola@Hesse ; PND-ID: 13310379X
+028C/02 ƒdHüseyinƒaInceƒ9081886411ƒ8Hüseyin@Ince ; PND-ID: 122338863
+028C/03 ƒdMatthiasƒaPeusterƒ9591065207ƒ8Matthias@Peuster ; PND-ID: 137279043
+031A ƒd75ƒj2010ƒe1ƒh72-77
+034M ƒaIll.
+039B ƒcInƒ925377604Xƒ8Catheterization and cardiovascular interventions. - New York, NY : Wiley-Lissƒx201000000750001928
+101B ƒ028-01-10ƒt14:53:12.000
+101D ƒ028-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523356730ƒ8Kinder- und Jugendklinik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa28-01-10ƒbxv
+201B/01 ƒ028-01-10ƒt14:53:12.000
+201D/01 ƒ028-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111773882
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 7          PPN: 617373647                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:28-01-10
+001B ƒ04382:28-01-10ƒt14:37:37.000
+001D ƒ04382:28-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617373647
+007G ƒcGBVƒ0617373647
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaTherapeutic effects of erythropoietin in murine models of endotoxin shockƒhBrigitte Vollmar; Christian Eipel; Michael D. Menger
+027D/00 ƒaCritical care medicineƒpHagerstown, Md.ƒnLippincott Williams & Wilkinsƒ00090-3493ƒz1978901
+028A ƒdBrigitteƒaVollmarƒ9578555565ƒ8Brigitte@Vollmar ; PND-ID: 136319564
+028B/01 ƒdChristianƒaEipel
+028B/02 ƒdMichael D.ƒaMenger
+031A ƒd38ƒj2010ƒe1ƒh340-341
+039B ƒcInƒ9129451533ƒ8Critical care medicine. - Hagerstown, Md. : Lippincott Williams & Wilkinsƒx201000000380001660
+101B ƒ028-01-10ƒt14:37:37.000
+101D ƒ028-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9520803868ƒ8Institut für Experimentelle Chirurgie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa28-01-10ƒbxv
+201B/01 ƒ028-01-10ƒt14:37:37.000
+201D/01 ƒ028-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111768889
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 8          PPN: 617367442                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:28-01-10
+001B ƒ04382:28-01-10ƒt13:22:14.000
+001D ƒ04382:28-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617367442
+007G ƒcGBVƒ0617367442
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaReaction mechanism and in situ ATR spectroscopic studies of the 1-decene ozonolysis in micro- and semibatch reactorsƒhNorbert Steinfeldt; Ursula Bentrup; Klaus Jähnisch
+027D/00 ƒaIndustrial & engineering chemistry researchƒpWashington, DCƒnAmerican Chemical Societyƒ00888-5885ƒz566901
+028A ƒdNorbertƒaSteinfeldt
+028B/01 ƒdUrsulaƒaBentrup
+028B/02 ƒdKlausƒaJähnisch
+031A ƒd49ƒj2010ƒe1ƒh72-80
+034M ƒagraph. Darst.
+039B ƒcInƒ9129223565ƒ8Industrial & engineering chemistry research. - Washington, DC : American Chemical Societyƒx201000000490001928
+101B ƒ028-01-10ƒt13:22:14.000
+101D ƒ028-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa28-01-10ƒbxv
+201B/01 ƒ028-01-10ƒt13:22:14.000
+201D/01 ƒ028-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111749523
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 9          PPN: 617365741                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:28-01-10
+001B ƒ04382:28-01-10ƒt12:55:46.000
+001D ƒ04382:28-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617365741
+007G ƒcGBVƒ0617365741
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaTNF-α receptor 1 deficiency reduces antigen-presenting capacity of Schwann cells and ameliorates experimental autoimmune neuritis in miceƒhXi-Jing Mao; Xing-Mei Zhang; Hong-Liang Zhang ...
+027D/00 ƒaNeuroscience lettersƒpAmsterdam ; Jena [u.a.]ƒnElsevierƒ00304-3940ƒz1949299
+028C/00 ƒdXi-JingƒaMao
+028C/01 ƒdXing-MeiƒaZhang
+028C/02 ƒdHong-LiangƒaZhang
+028C/03 ƒdHernan ConchaƒaQuezada
+028C/04 ƒdEilhardƒaMix
+028C/05 ƒdXinƒaYang
+028C/06 ƒdBengtƒaWinblad
+028C/07 ƒdAbduƒaAdem
+028C/08 ƒdJieƒaZhu
+031A ƒd470ƒj2010ƒe1ƒh19-23
+034M ƒagraph. Darst.
+039B ƒcInƒ9129441031ƒ8Neuroscience letters. - Amsterdam : Elsevierƒx201000004700001981
+101B ƒ028-01-10ƒt12:55:46.000
+101D ƒ028-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ952071363Xƒ8Klinik und Poliklinik für Neurologie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa28-01-10ƒbxv
+201B/01 ƒ028-01-10ƒt12:55:46.000
+201D/01 ƒ028-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111743916
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 10         PPN: 617355592                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:28-01-10
+001B ƒ04382:28-01-10ƒt11:27:46.000
+001D ƒ04382:28-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617355592
+007G ƒcGBVƒ0617355592
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaImmunohistochemical, volumetric, and functional neuroimaging studies in patients with idiopathic Parkinson's diseaseƒhT. Hummel; M. Witt; H. Reichmann ...
+027D/00 ƒaJournal of the neurological sciencesƒpAmsterdamƒnElsevierƒ00022-510xƒz801604
+028C/00 ƒdT.ƒaHummel
+028C/01 ƒdMartinƒaWittƒ9522696953ƒ8Martin@Witt ; PND-ID: 132433990
+028C/02 ƒdH.ƒaReichmann
+028C/03 ƒdA.ƒaWelge-Luessen
+028C/04 ƒdA.ƒaHaehner
+031A ƒd289ƒj2010ƒe1/2ƒh119-122
+039B ƒcInƒ9129269506ƒ8Journal of the neurological sciences. - Amsterdam : Elsevierƒx201000002890001881
+101B ƒ028-01-10ƒt11:05:21.000
+101D ƒ028-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523479352ƒ8Institut für Anatomie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa28-01-10ƒbxv
+201B/01 ƒ028-01-10ƒt11:05:21.000
+201D/01 ƒ028-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111708789
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 11         PPN: 617351236                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:28-01-10
+001B ƒ04382:28-01-10ƒt10:29:08.000
+001D ƒ04382:28-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617351236
+007G ƒcGBVƒ0617351236
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaTranscranial sonography findings related to non-motor features of Parkinson's diseaseƒhUwe Walter; David Školoudík; Daniela Berg
+027D/00 ƒaJournal of the neurological sciencesƒpAmsterdamƒnElsevierƒ00022-510xƒz801604
+028A ƒdUweƒaWalterƒ9534505767ƒ8Uwe@Walter ; PND-ID: 133110575
+028B/01 ƒdDavidƒaŠkoloudík
+028B/02 ƒdDanielaƒaBerg
+031A ƒd289ƒj2010ƒe1/2ƒh123-127
+039B ƒcInƒ9129269506ƒ8Journal of the neurological sciences. - Amsterdam : Elsevierƒx201000002890001877
+101B ƒ028-01-10ƒt10:29:08.000
+101D ƒ028-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ952071363Xƒ8Klinik und Poliklinik für Neurologie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa28-01-10ƒbxv
+201B/01 ƒ028-01-10ƒt10:29:08.000
+201D/01 ƒ028-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111695512
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 12         PPN: 617286779                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt14:00:49.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617286779
+007G ƒcGBVƒ0617286779
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaA @transgenic mouse model of spinocerebellar ataxia type 3 resembling late disease onset and gender-specific instability of CAG repeatsƒhJana Boy; Thorsten Schmidt; Ulrike Schumann ...
+027D/00 ƒaNeurobiology of diseaseƒpSan Diego, Calif. [u.a.]ƒnAcademic Pressƒ00969-9961ƒz12117869
+028C/00 ƒdJanaƒaBoy
+028C/01 ƒdThorstenƒaSchmidt
+028C/02 ƒdUlrikeƒaSchumann
+028C/03 ƒdUteƒaGrasshoff
+028C/04 ƒdSamyƒaUnser
+028C/05 ƒdCarstenƒaHolzmann
+028C/06 ƒdInaƒaSchmitt
+028C/07 ƒdTimƒaKarl
+028C/08 ƒdFrancoƒaLaccone
+028C/09 ƒdHartwigƒaWolburg
+028D/00 ƒdSalehƒaIbrahim
+028D/01 ƒdOlafƒaRiess
+031A ƒd37ƒj2010ƒe2ƒh284-293
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9182506622ƒ8Neurobiology of disease. - San Diego, Calif. [u.a.] : Academic Pressƒx201000000370002716
+101B ƒ027-01-10ƒt14:06:34.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523356730ƒ8Kinder- und Jugendklinik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt14:00:49.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111613540
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 13         PPN: 617277834                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt11:58:16.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617277834
+007G ƒcGBVƒ0617277834
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaDynamical effects of epigenetic silencing of 14-3-3s expressionƒhJulio Vera; Julia Schultz; Saleh Ibrahim ...
+027D/00 ƒaMolecular BioSystemsƒpCambridgeƒnRoyal Society of Chemistryƒ01742-206Xƒz21921787
+028C/00 ƒdJulioƒaVera
+028C/01 ƒdJuliaƒaSchultzƒ9491707460ƒ8Julia@Schultz ; PND-ID: 130007633
+028C/02 ƒdSalehƒaIbrahim
+028C/03 ƒdYvonneƒaRaatz
+028C/04 ƒdOlafƒaWolkenhauerƒ9547086598ƒ8Olaf@Wolkenhauer ; PND-ID: 133515931
+028C/05 ƒdManfredƒaKunz
+031A ƒd6ƒj2010ƒe1ƒh264-273
+034M ƒagraph. Darst.
+039B ƒcInƒ9489771599ƒ8Molecular BioSystems. - Cambridge : Royal Society of Chemistryƒx201000000060001736
+101B ƒ027-01-10ƒt11:58:16.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526360216ƒ8Institut für Informatik <Rostock>
+144Z/01 ƒ9520800370ƒ8Institut für Medizinische Biochemie und Molekularbiologie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt11:58:16.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111583404
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 14         PPN: 617143854                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt15:12:58.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617143854
+007G ƒcGBVƒ0617143854
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaErythropoietin-induced upregulation of endothelial nitric oxide synthase but not vascular endothelial growth factor prevents musculocutaneous tissue from ischemic damageƒhFarid Rezaeian; Reto Wettstein; Jean-François Egger ...
+027D/00 ƒaLaboratory investigationƒpNew York, NYƒnNature Publ. Groupƒ00023-6837ƒz801781
+028C/00 ƒdFaridƒaRezaeian
+028C/01 ƒdRetoƒaWettstein
+028C/02 ƒdJean-FrançoisƒaEgger
+028C/03 ƒdFreyaƒaSandmann
+028C/04 ƒdMartinƒaRücker
+028C/05 ƒdMickae͏̈lƒaTobalem
+028C/06 ƒdBrigitteƒaVollmarƒ9578555565ƒ8Brigitte@Vollmar ; PND-ID: 136319564
+028C/07 ƒdMichael D.ƒaMenger
+028C/08 ƒdYvesƒaHarder
+031A ƒd90ƒj2010ƒe1ƒh40-51
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9129269638ƒ8Laboratory investigation. - New York, NY : Nature Publ. Groupƒx201000000900001960
+101B ƒ026-01-10ƒt15:12:58.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9520803868ƒ8Institut für Experimentelle Chirurgie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt15:12:58.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111491666
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 15         PPN: 617143234                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt15:07:04.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617143234
+007G ƒcGBVƒ0617143234
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaIdentification of Anguilla anguilla (L.) and Anguilla rostrata (Le Sueur) and their hybrids based on a diagnostic single nucleotide polymorphism in nuclear 18S rDNAƒhJens Frankowski; Ralf Bastrop
+027D/00 ƒaMolecular ecology resourcesƒpOxfordƒnBlackwell Scienceƒ01755-098Xƒz24068160
+028A ƒdJensƒaFrankowskiƒ9363370765ƒ8Jens@Frankowski ; PND-ID: 124471986
+028B/01 ƒdRalfƒaBastrop
+031A ƒd10ƒj2010ƒe1ƒh173-176
+039B ƒcInƒ9557882702ƒ8Molecular ecology resources. - Oxford : Blackwell Scienceƒx201000000100001827
+101B ƒ026-01-10ƒt15:07:04.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt15:07:04.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111490023
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 16         PPN: 617142300                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt14:57:01.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617142300
+007G ƒcGBVƒ0617142300
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaGlucosylglycerateƒda secondary compatible solute common to marine cyanobacteria from nitrogen-poor environmentsƒhStephan Klähn; Claudia Steglich; Wolfgang R. Hess; Martin Hagemann
+027D/00 ƒaEnvironmental microbiologyƒpMalden, Mass.ƒnWiley-Blackwellƒ01462-2912ƒz1436752x
+028C/00 ƒdStephanƒaKlähn
+028C/01 ƒdClaudiaƒaSteglich
+028C/02 ƒdWolfgang R.ƒaHess
+028C/03 ƒdMartinƒaHagemannƒ9079254853ƒ8Martin@Hagemann ; PND-ID: 118119249
+031A ƒd12ƒj2010ƒe1ƒh83-94
+034M ƒagraph. Darst.
+039B ƒcInƒ9246824387ƒ8Environmental microbiology. - Malden, Mass. : Wiley-Blackwellƒx201000000120001917
+101B ƒ026-01-10ƒt14:57:01.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt14:57:01.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111486891
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 17         PPN: 617141800                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt14:50:42.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617141800
+007G ƒcGBVƒ0617141800
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaSpectroscopic evidence for an enhanced anion-cation interaction from hydrogen bonding in pure imidazolium ionic liquidsƒhAlexander Wulf; Koichi Fumino; Ralf Ludwig
+027D/00 ƒbAngewandte Chemie / International editionƒaAngewandte ChemieƒcInternational editionƒpWeinheimƒnWiley-VCHƒ00044-8249ƒz1232277
+028A ƒdAlexanderƒaWulf
+028B/01 ƒdKoichiƒaFumino
+028B/02 ƒdRalfƒaLudwigƒ9582126371ƒ8Ralf@Ludwig ; PND-ID: 136437524
+031A ƒd49ƒj2010ƒe2ƒh449-453
+034M ƒagraph. Darst.
+039B ƒcInƒ9129301558ƒ8Angewandte Chemie. - Weinheim : Wiley-VCHAngewandte Chemie / International editionƒx201000000490002551
+101B ƒ026-01-10ƒt14:50:42.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513055452ƒ8Institut für Chemie <Rostock>
+144Z/01 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt14:50:42.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111485097
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 18         PPN: 61714074X                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt14:40:57.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061714074X
+007G ƒcGBVƒ061714074X
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaAxonal plasticity elicits long-term changes in oligodendroglia and myelinated fibersƒhNina Drøjdahl; Helle Hvilsted Nielsen; Jonathan E. Gardi ...
+027D/00 ƒaGliaƒpNew York, NYƒnLissƒ00894-1491ƒz6394140
+028C/00 ƒdNinaƒaDrøjdahl
+028C/01 ƒdHelle HvilstedƒaNielsen
+028C/02 ƒdJonathan E.ƒaGardi
+028C/03 ƒdAndreasƒaWreeƒ9584752598ƒ8Andreas@Wree ; PND-ID: 136643280
+028C/04 ƒdAlan C.ƒaPeterson
+028C/05 ƒdJens RandelƒaNyengaard
+028C/06 ƒdJoe͏̈lƒaEyer
+028C/07 ƒdBenteƒaFinsen
+031A ƒd58ƒj2010ƒe1ƒh29-42
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9168135256ƒ8Glia. - New York, NY : Lissƒx201000000580001971
+101B ƒ026-01-10ƒt14:40:57.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523479352ƒ8Institut für Anatomie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt14:40:57.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111482268
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 19         PPN: 617139407                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt14:25:55.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617139407
+007G ƒcGBVƒ0617139407
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaGlacial-driven vicariance in the amphipod Gammarus duebeniƒhL. Krebes; M. Blank; Karl Jürss ...
+027D/00 ƒaMolecular phylogenetics and evolutionƒpSan Diego, Calif. [u.a.]ƒnElsevierƒ01055-7903ƒz336105
+028C/00 ƒdL.ƒaKrebes
+028C/01 ƒdM.ƒaBlank
+028C/02 ƒdKarlƒaJürss
+028C/03 ƒdM. L.ƒaZettler
+028C/04 ƒdRalfƒaBastrop
+031A ƒd54ƒj2010ƒe2ƒh372-385
+034M ƒagraph. Darst.
+039B ƒcInƒ9165918373ƒ8Molecular phylogenetics and evolution. - San Diego, Calif. [u.a.] : Elsevierƒx201000000540002628
+101B ƒ026-01-10ƒt14:24:56.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt14:24:56.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111477701
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 20         PPN: 617124132                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt11:31:20.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617124132
+007G ƒcGBVƒ0617124132
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaEctomycorrhiza formation and willow growth promotion as affected by associated bacteriaƒdrole of microbial metabolites and use of C sourcesƒhKatarzyna Hrynkiewicz; Agnieszka Ciesielska: Ingeborg Haug; Christel Baum
+027D/00 ƒaBiology and fertility of soilsƒpBerlin ; Heidelberg [u.a.]ƒnSpringerƒ00178-2762ƒz7421370
+028C/00 ƒdKatarzynaƒaHrynkiewicz
+028C/01 ƒdAgnieszkaƒaCiesielska
+028C/02 ƒdIngeborgƒaHaug
+028C/03 ƒdChristelƒaBaumƒ9397652372ƒ8Christel@Baum ; PND-ID: 113834268
+031A ƒd46ƒj2010ƒe2ƒh139-150
+034M ƒagraph. Darst.
+039B ƒcInƒ9130468681ƒ8Biology and fertility of soils. - Berlin : Springerƒx201000000460002861
+101B ƒ026-01-10ƒt11:31:20.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521303060ƒ8Institut für Landnutzung <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt11:31:20.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111430098
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 21         PPN: 617123209                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt11:22:58.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617123209
+007G ƒcGBVƒ0617123209
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaLight acclimation strategies of three commercially important red algal speciesƒhRonny Marquardt; Hendrik Schubert; Daniel A. Varela ...
+027D/00 ƒaAquacultureƒpAmsterdamƒnElsevierƒ00044-8486ƒz1853806
+028C/00 ƒdRonnyƒaMarquardt
+028C/01 ƒdHendrikƒaSchubertƒ9527302481ƒ8Hendrik@Schubert ; PND-ID: 132858606
+028C/02 ƒdDaniel A.ƒaVarela
+028C/03 ƒdPirjoƒaHuovinen
+028C/04 ƒdLuisƒaHenríquez
+028C/05 ƒdAlejandro H.ƒaBuschmann
+031A ƒd299ƒj2010ƒe1/4ƒh140-148
+034M ƒagraph. Darst.
+039B ƒcInƒ9129394491ƒ8Aquaculture. - Amsterdam : Elsevierƒx201000002990001860
+101B ƒ026-01-10ƒt11:22:58.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt11:22:58.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111426953
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 22         PPN: 617122555                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt11:17:26.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617122555
+007G ƒcGBVƒ0617122555
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaLeukodystrophies and other genetic metabolic leukoencephalopathies in children and adultsƒhAlfried Kohlschütter; Annette Bley; Knut Brockmann ...
+027D/00 ƒaBrain and developmentƒpAmsterdam [u.a.]ƒnElsevierƒ00387-7604ƒz6048225
+028C/00 ƒdAlfriedƒaKohlschütter
+028C/01 ƒdAnnetteƒaBley
+028C/02 ƒdKnutƒaBrockmann
+028C/03 ƒdJuttaƒaGärtner
+028C/04 ƒdIngeborgƒaKrägeloh-Mann
+028C/05 ƒdArndtƒaRolfsƒ9577839322ƒ8Arndt@Rolfs ; PND-ID: 136256864
+028C/06 ƒdLudgerƒaSchöls
+031A ƒd32ƒj2010ƒe2ƒh82-89
+039B ƒcInƒ916791538Xƒ8Brain and development. - Amsterdam [u.a.] : Elsevierƒx201000000320002918
+101B ƒ026-01-10ƒt11:17:26.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9617114528ƒ8Albrecht-Kossel-Insitut für Neuroregeneration <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt11:17:26.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111424586
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 23         PPN: 61711630X                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt10:29:21.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061711630X
+007G ƒcGBVƒ061711630X
+010@ ƒager
+011@ ƒa2010
+021A ƒaCopper-catalyzed enantioselective hydrosilylation of ketones by using monodentate binaphthophosphepine ligandsƒhKathrin Junge; Bianca Wendt; Daniele Addis ...
+027D/00 ƒaChemistryƒpWeinheimƒnWiley-VCH Verl.ƒ00947-6539ƒz1231884x
+028C/00 ƒdKathrinƒaJungeƒ9079200745ƒ8Kathrin@Junge ; PND-ID: 118029312
+028C/01 ƒdBiancaƒaWendt
+028C/02 ƒdDanieleƒaAddis
+028C/03 ƒdShaolinƒaZhou
+028C/04 ƒdShoubhikƒaDas
+028C/05 ƒdMatthiasƒaBellerƒ9470641088ƒ8Matthias@Beller ; PND-ID: 112081908
+031A ƒd16ƒj2010ƒe1ƒh68-73
+034M ƒagraph. Darst.
+039B ƒcInƒ9185258727ƒ8Chemistry. - Weinheim : Wiley-VCH Verl.ƒx201000000160001932
+101B ƒ026-01-10ƒt10:29:21.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt10:29:21.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111405468
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 24         PPN: 617115567                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt10:22:46.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617115567
+007G ƒcGBVƒ0617115567
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaEverolimus or paclitaxel stents in real lifeƒdgo COMPAREƒhChristoph A. Nienaber
+027D/00 ƒbThe @lancet <London>ƒaThe @lancetƒpLondon [u.a.]ƒnElsevierƒ00023-7507ƒz33066
+028A ƒdChristoph A.ƒaNienaberƒ9577866796ƒ8Christoph@Nienaber ; PND-ID: 136260608
+031A ƒd375ƒj2010ƒe9710ƒh174-176
+039B ƒcInƒ9129080470ƒ8The @lancet. - London [u.a.] : ElsevierThe @lancet <London>ƒx201000003759710826
+101B ƒ026-01-10ƒt10:22:46.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt10:22:46.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111402566
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 25         PPN: 617109001                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt09:23:27.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617109001
+007G ƒcGBVƒ0617109001
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaRespiratory disease in Niemann-Pick type C2 is caused by pulmonary alveolar proteinosisƒhM. Griese; F. Brasch; V. R. Aldana ...
+027D/00 ƒaClinical geneticsƒpOxfordƒnBlackwell Munksgaardƒ00009-9163ƒz2212092
+028C/00 ƒdM.ƒaGriese
+028C/01 ƒdF.ƒaBrasch
+028C/02 ƒdV. R.ƒaAldana
+028C/03 ƒdM. M.ƒaCabrera
+028C/04 ƒdU.ƒaGoelnitz
+028C/05 ƒdE.ƒaIkonen
+028C/06 ƒdB. J.ƒaKaram
+028C/07 ƒdG.ƒaLiebisch
+028C/08 ƒdM. D.ƒaLinder
+028C/09 ƒdP.ƒaLohse
+028D/00 ƒdW.ƒaMeyer
+028D/01 ƒdG.ƒaSchmitz
+028D/02 ƒdA.ƒaPamir
+028D/03 ƒdJ.ƒaRipper
+028D/04 ƒdArndtƒaRolfsƒ9577839322ƒ8Arndt@Rolfs ; PND-ID: 136256864
+028D/05 ƒdA.ƒaSchams
+028D/06 ƒdF. J.ƒaLezana
+031A ƒd77ƒj2010ƒe2ƒh119-130
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9129558680ƒ8Clinical genetics. - Oxford : Blackwell Munksgaardƒx201000000770002881
+101B ƒ026-01-10ƒt10:16:35.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9617114528ƒ8Albrecht-Kossel-Insitut für Neuroregeneration <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt09:23:27.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111386005
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 26         PPN: 616996551                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:15:42.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616996551
+007G ƒcGBVƒ0616996551
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaOptimization of biochemical systems through mathematical programmingƒdmethods and applicationsƒhJulio Vera; Carlos González-Alcón; Alberto Marín-Sanguino ...
+027D/00 ƒaComputers & operations researchƒpOxford [u.a.]ƒnElsevierƒ00305-0548ƒz1940120
+028C/00 ƒdJulioƒaVera-Gonzáles
+028C/01 ƒdCarlosƒaGonzález-Alcón
+028C/02 ƒdAlbertoƒaMarín-Sanguino
+028C/03 ƒdNéstorƒaTorres
+031A ƒd37ƒj2010ƒe8ƒh1427-1438
+034M ƒagraph. Darst.
+039B ƒcInƒ9129436909ƒ8Computers & operations research. - Oxford [u.a.] : Elsevierƒx201000000370008573
+101B ƒ022-01-10ƒt11:10:17.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526360216ƒ8Institut für Informatik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:10:17.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110700644
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 27         PPN: 616929846                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:21-01-10
+001B ƒ04382:21-01-10ƒt16:43:58.000
+001D ƒ04382:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616929846
+007G ƒcGBVƒ0616929846
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaAccelerated identification of Staphylococcus aureus from blood cultures by a modified fluorescence in situ hybridization procedureƒhSven Poppert; Melanie Riecker; Nele Wellinghausen ...
+027D/00 ƒaThe @journal of medical microbiologyƒpReadingƒnSGMƒ00022-2615ƒz2183560
+028C/00 ƒdSvenƒaPoppert
+028C/01 ƒdMelanieƒaRiecker
+028C/02 ƒdNeleƒaWellinghausen
+028C/03 ƒdHagenƒaFrickmannƒ952267349Xƒ8Hagen@Frickmann ; PND-ID: 132401460
+028C/04 ƒdAndreasƒaEssig
+031A ƒd59ƒj2010ƒe1ƒh65-68
+039B ƒcInƒ9129546607ƒ8The @journal of medical microbiology. - Reading : SGMƒx201000000590001935
+101B ƒ021-01-10ƒt16:43:58.000
+101D ƒ021-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9522005705ƒ8Institut für Medizinische Mikrobiologie, Virologie und Hygiene <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt16:43:58.000
+201D/01 ƒ021-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110636164
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 28         PPN: 616929633                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:21-01-10
+001B ƒ04382:21-01-10ƒt16:39:00.000
+001D ƒ04382:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616929633
+007G ƒcGBVƒ0616929633
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaSynthesis, coordination chemistry, and catalysis of the First 1,2-bis(diphenylphosphino)-l,2-diphenylhydrazine, Ph2PN(Ph)N(Ph) PPh2ƒhBhaskar R. Aluri; Normen Peulecke; Bernd H. Müller ...
+027D/00 ƒaOrganometallicsƒpWashington, DCƒnSoc.ƒ00276-7333ƒz7826394
+028C/00 ƒdBhaskar R.ƒaAluriƒ9577151150ƒ8Bhaskar Reddy@Aluri ; PND-ID: 136088643
+028C/01 ƒdNormenƒaPeuleckeƒ9077464362ƒ8Normen@Peulecke ; PND-ID: 115776761
+028C/02 ƒdBernd H.ƒaMüller
+028C/03 ƒdStephanƒaPeitz
+028C/04 ƒdAnkeƒaSpannenberg
+028C/05 ƒdMarkoƒaHapkeƒ9572242611ƒ8Marko@Hapke ; PND-ID: 124641504
+028C/06 ƒdUweƒaRosenthal
+031A ƒd29ƒj2010ƒe1ƒh226-231
+039B ƒcInƒ9130549827ƒ8Organometallics. - Washington, DC : Soc.ƒx201000000290001774
+101B ƒ021-01-10ƒt16:39:00.000
+101D ƒ021-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt16:39:00.000
+201D/01 ƒ021-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110635540
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 29         PPN: 61692903X                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:21-01-10
+001B ƒ04382:21-01-10ƒt16:27:46.000
+001D ƒ04382:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061692903X
+007G ƒcGBVƒ061692903X
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaAre metallocene-acetylene (MƒfTi, Zr, Hf) complexes aromatic metallacyclopropenes?ƒhEluvathingal D. Jemmis; Subhendu Roy; V. V. Burlakov ...
+027D/00 ƒaOrganometallicsƒpWashington, DCƒnSoc.ƒ00276-7333ƒz7826394
+028C/00 ƒdEluvathingal D.ƒaJemmis
+028C/01 ƒdSubhenduƒaRoy
+028C/02 ƒdV. V.ƒaBurlakov
+028C/03 ƒdH.ƒaJiaoƒ950945044Xƒ8Haijun@Jiao ; PND-ID: 131449311
+028C/04 ƒdM.ƒaKlahnƒ9616085893ƒ8Marcus@Klahn ; PND-ID: 140179275
+028C/05 ƒdS.ƒaHansen
+028C/06 ƒdU.ƒaRosenthal
+031A ƒd29ƒj2010ƒe1ƒh76-81
+034M ƒagraph. Darst.
+039B ƒcInƒ9130549827ƒ8Organometallics. - Washington, DC : Soc.ƒx201000000290001924
+101B ƒ021-01-10ƒt16:27:46.000
+101D ƒ021-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt16:27:46.000
+201D/01 ƒ021-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110633890
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 30         PPN: 616928238                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:21-01-10
+001B ƒ04382:21-01-10ƒt16:12:55.000
+001D ƒ04382:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616928238
+007G ƒcGBVƒ0616928238
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaTheophylline induces changes in the electro-olfactogram of the mouseƒhVolker Gudziol; Jörg Pietsch; Martin Witt; Thomas Hummel
+027D/00 ƒaEuropean archives of oto-rhino-laryngology and head & neckƒpBerlin ; Heidelberg [u.a.]ƒnSpringerƒ00937-4477ƒz21415316
+028C/00 ƒdVolkerƒaGudziol
+028C/01 ƒdJörgƒaPietsch
+028C/02 ƒdMartinƒaWittƒ9522696953ƒ8Martin@Witt ; PND-ID: 132433990
+028C/03 ƒdThomasƒaHummel
+031A ƒd267ƒj2010ƒe2ƒh239-243
+039B ƒcInƒ9385027494ƒ8European archives of oto-rhino-laryngology and head & neck. - Berlin : Springerƒx201000002670002761
+101B ƒ021-01-10ƒt16:12:55.000
+101D ƒ021-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523479352ƒ8Institut für Anatomie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt16:12:55.000
+201D/01 ƒ021-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110631200
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 31         PPN: 616926308                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:21-01-10
+001B ƒ04382:21-01-10ƒt15:47:32.000
+001D ƒ04382:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616926308
+007G ƒcGBVƒ0616926308
+010@ ƒaeng
+011@ ƒa2010
+021A ƒaVapour pressure and enthalpy of vaporization of aliphatic poly-aminesƒhAnastasia A. Efimova; Vladimir N. Emel'yanenko; Sergey P. Verevkin; Yury Chernyak
+027D/00 ƒaThe @journal of chemical thermodynamicsƒpLondon [u.a.]ƒnAcademic Pressƒ00021-9614ƒz2192974
+028C/00 ƒdAnastasia A.ƒaEfimova
+028C/01 ƒdVladimir N.ƒaEmel'yanenko
+028C/02 ƒdSergey P.ƒaVerevkinƒ9527950467ƒ8Sergey@Verevkin ; PND-ID: 132905841
+028C/03 ƒdYuryƒaChernyak
+031A ƒd42ƒj2010ƒe3ƒh330-336
+034M ƒagraph. Darst.
+039B ƒcInƒ9129550582ƒ8The @journal of chemical thermodynamics. - London [u.a.] : Academic Pressƒx201000000420003670
+101B ƒ021-01-10ƒt15:47:32.000
+101D ƒ021-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513055452ƒ8Institut für Chemie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt15:47:32.000
+201D/01 ƒ021-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ0111062591X
+220B/01 ƒaScopus
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 32         PPN: 616891342                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:21-01-10
+001B ƒ00028:21-01-10ƒt10:05:55.000
+001D ƒ00028:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616891342
+007G ƒcGBVƒ0616891342
+010@ ƒager
+011@ ƒa2010ƒn2010 [eingereicht 2009]
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaDie @Entwicklung des türkischen Kündigungsschutzrechts bis zur Neufassung und Rechtsvergleich des neuen türkischen Kündigungsschutzrechts mit dem deutschen Kündigungsschutzrechtƒhvorgelegt von Cevat Gökhan Erbas
+028A ƒdCevat GökhanƒaErbasƒ9616882963ƒ8Cevat Gökhan@Erbas ; PND-ID: 140285504
+034D ƒaXII, 193 Bl.
+037C ƒb@RostockƒaUniv., Jurist. Fak., Diss., 2010
+101B ƒ021-01-10ƒt10:39:07.000
+101D ƒ021-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9525214984ƒ8Juristische Fakultät <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt10:39:07.000
+201D/01 ƒ021-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110524439
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 33         PPN: 617495033                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt15:40:49.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617495033
+007G ƒcGBVƒ0617495033
+010@ ƒager
+011@ ƒa2009
+021A ƒaDistale RadiusfrakturenƒhG. Gradl
+027D/00 ƒaZeitschrift für Orthopädie und UnfallchirurgieƒpStuttgart ; New YorkƒnThiemeƒ01864-6697ƒz22807470
+028A ƒdGeorgƒaGradlƒ9081031769ƒ8Georg@Gradl ; PND-ID: 121015688
+031A ƒd147ƒj2009ƒe5ƒh621-637
+034M ƒaIll.
+039B ƒcInƒ952836443Xƒ8Zeitschrift für Orthopädie und Unfallchirurgie. - Stuttgart : Thiemeƒx200900001470005379
+101B ƒ001-02-10ƒt15:39:17.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521140072ƒ8Klinik und Poliklinik für Chirurgie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt15:39:17.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112137890
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 34         PPN: 617490414                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt14:55:23.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617490414
+007G ƒcGBVƒ0617490414
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaNonlinear optimal control of an overhead travelling craneƒhDominik Schindele; Ingolf Menn; Harald Aschemann
+027D/00 ƒa2009 IEEE control applications (CCA) & intelligent control (ISIC)ƒpPiscataway, NJƒnIEEE
+028A ƒdDominikƒaSchindele
+028B/01 ƒdIngolfƒaMenn
+028B/02 ƒdHaraldƒaAschemann
+031A ƒj2009ƒh1045-1050
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9615101240ƒ82009 IEEE control applications (CCA) & intelligent control (ISIC) ; [2]. - Piscataway, NJ : IEEEƒx200900000000000955
+101B ƒ001-02-10ƒt14:55:23.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9516655698ƒ8Fakultät für Maschinenbau und Schiffstechnik  <Rostock>
+144Z/20 ƒ951665246Xƒ8Konferenz
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt14:55:23.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112125906
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 35         PPN: 617490007                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt14:51:02.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617490007
+007G ƒcGBVƒ0617490007
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaNonlinear measurement update and predictionƒdprior density splitting mixture estimatorƒhAndreas Rauh; Kai Briechle; Uwe D. Hanebeck
+027D/00 ƒa2009 IEEE control applications (CCA) & intelligent control (ISIC)ƒpPiscataway, NJƒnIEEE
+028A ƒdAndreasƒaRauh
+028B/01 ƒdKaiƒaBriechle
+028B/02 ƒdUwe D.ƒaHanebeck
+031A ƒj2009ƒh1421-1426
+039B ƒcInƒ9615101437ƒ82009 IEEE control applications (CCA) & intelligent control (ISIC) ; [3]. - Piscataway, NJ : IEEEƒx200900000000000579
+101B ƒ001-02-10ƒt14:51:02.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9516655698ƒ8Fakultät für Maschinenbau und Schiffstechnik  <Rostock>
+144Z/20 ƒ951665246Xƒ8Konferenz
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt14:51:02.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112124535
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 36         PPN: 617487847                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt14:31:39.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617487847
+007G ƒcGBVƒ0617487847
+010@ ƒager
+011@ ƒa2009
+021A ƒaDRG für die NierentransplantationƒhO. W. Hakenberg
+027D/00 ƒaDer @UrologeƒpHeidelbergƒnSpringer Medizin-Verl.ƒ00340-2592ƒz2040414
+028A ƒdOliver W.ƒaHakenbergƒ9575156767ƒ8Oliver@Hakenberg ; PND-ID: 13614425X
+031A ƒd48ƒj2009ƒe12ƒh1473-1477
+039B ƒcInƒ9129478970ƒ8Der @Urologe. - Heidelberg : Springer Medizin-Verl.ƒx200900000480012527
+101B ƒ001-02-10ƒt14:31:29.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ953754917Xƒ8Urologische Klinik und Poliklinik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt14:31:29.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112117687
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 37         PPN: 617486999                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt14:27:19.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617486999
+007G ƒcGBVƒ0617486999
+010@ ƒager
+011@ ƒa2009
+021A ƒaDie @aktuelle Situation der Chemotherapie des PeniskarzinomsƒdErgebnisse einer deutschlandweiten KlinikumfrageƒhC. Protzel; S. Ruppin; S. Milerski ...
+027D/00 ƒaDer @UrologeƒpHeidelbergƒnSpringer Medizin-Verl.ƒ00340-2592ƒz2040414
+028C/00 ƒdChrisƒaProtzelƒ9077508076ƒ8Chris@Protzel ; PND-ID: 115845100
+028C/01 ƒdS.ƒaRuppin
+028C/02 ƒdStefanƒaMilerski
+028C/03 ƒdK.-J.ƒaKlebingat
+028C/04 ƒdOoliver W.ƒaHakenbergƒ9575156767ƒ8Oliver@Hakenberg ; PND-ID: 13614425X
+031A ƒd48ƒj2009ƒe12ƒh1495-1498
+039B ƒcInƒ9129478970ƒ8Der @Urologe. - Heidelberg : Springer Medizin-Verl.ƒx200900000480012505
+101B ƒ001-02-10ƒt14:24:29.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ953754917Xƒ8Urologische Klinik und Poliklinik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt14:24:29.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112115188
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 38         PPN: 617481350                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:01-02-10
+001B ƒ00028:01-02-10ƒt13:31:47.000
+001D ƒ00028:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0617481350
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0023-3
+007G ƒcGBVƒ0617481350
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0023-3ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0023-3&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0023-3
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaWachstumsprognose im Rahmen einer Familienuntersuchungƒdeine Langzeitstudieƒhvorgelegt von Ibrahim Jouni
+028A ƒdIbrahimƒaJouniƒ9617266794ƒ8Ibrahim@Jouni ; PND-ID: 140341846
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaJouni, Ibrahim: Wachstumsprognose im Rahmen einer FamilienuntersuchungƒCGBVƒ6617449201
+047I ƒaZIELSTELLING: die Wachstumsrichtung von Kindern im Wechselgebissalter durch die Ermittlung des vertikalen Gesichtsschädelaufbaus der Eltern zu prognostizieren. POBANDEN UND METHODEN: 31 Familien mit 37 Kindern. Von den Eltern standen je ein FRS und von den Kindern je 2 vor K1 und nach kieferorthopädischer Therapie K2 zur Verfügung. Mittels des Symphysenvergleiches wurde bei K1 der ähnliche Elternteil ermittelt. Der vertikale Gesichtsschädelaufbau wurde durch eine strukturelle und die metrische Kephalometrie prognostiziert. ERGEBNISSE: die strukturelle Analyse erwies sich als die beste Methode.
+101B ƒ001-02-10ƒt13:34:42.000
+101D ƒ001-02-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9519748875ƒ8Klinik und Polikliniken für Zahn-, Mund- und Kieferheilkunde <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt13:34:42.000
+201D/01 ƒ001-02-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112099557
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 39         PPN: 617479860                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt13:09:19.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617479860
+007G ƒcGBVƒ0617479860
+010@ ƒager
+011@ ƒa2009
+021A ƒaUntersuchung der Reaktionsprodukte einer Alkali-Kieselsäure-Reaktion in einem Versorgungstunnel unter der OstseeƒhEllen Rigo; Klaus Unterderweide; Wulf Schwick ...
+027D/00 ƒaBeton- und StahlbetonbauƒpBerlinƒnErnstƒ00005-9900ƒz2400534
+028C/00 ƒdEllenƒaRigo
+028C/01 ƒdKlausƒaUnterderweide
+028C/02 ƒdWulfƒaSchwick
+028C/03 ƒdUlrichƒaDiederichsƒ9504904582ƒ8Ulrich@Diederichs ; PND-ID: 110726871
+031A ƒd104ƒj2009ƒe12ƒh864-868
+039B ƒcInƒ912959086Xƒ8Beton- und Stahlbetonbau. - Berlin : Ernstƒx200900001040012136
+101B ƒ001-02-10ƒt13:09:19.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9566803615ƒ8Institut für Bauingenieurwesen <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt13:09:19.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112093591
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 40         PPN: 617475350                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt12:18:30.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617475350
+007G ƒcGBVƒ0617475350
+010@ ƒager
+011@ ƒa2009
+021A ƒaNicht gelenküberbrückender Fixateur externe vs. palmare winkelstabile Plattenosteosynthese in der Behandlung der distalen extraartikulären Radiusfrakturƒdeine prospektive randomisierte StudieƒhM. Wendt; A. Wichelhaus; M. Beck ...
+027A/00 ƒaNon-bridging external fixation vs. palmar angular stable plating for the treatment of distal radius fracturesƒba prospective randomized trial
+027D/00 ƒaObere ExtremitätƒpHeidelbergƒnSpringer-Medizin-Verl.ƒ01862-6599ƒz22775699
+028C/00 ƒdMartinaƒaWendt
+028C/01 ƒdAliceƒaWichelhaus
+028C/02 ƒdMarkusƒaBeck
+028C/03 ƒdPhilipƒaGiererƒ9081970749ƒ8Philip@Gierer ; PND-ID: 122482271
+028C/04 ƒdGüntherƒaKundtƒ9081826702ƒ8Günther@Kundt ; PND-ID: 122246594
+028C/05 ƒdThomasƒaMittlmeierƒ9585163588ƒ8Thomas@Mittlmeier ; PND-ID: 136687199
+028C/06 ƒdGeorgƒaGradlƒ9081031769ƒ8Georg@Gradl ; PND-ID: 121015688
+031A ƒd4ƒj2009ƒe4ƒh209-216
+039B ƒcInƒ9527580708ƒ8Obere Extremität. - Heidelberg : Springer-Medizin-Verl.ƒx200900000040004791
+101B ƒ001-02-10ƒt12:14:32.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521140072ƒ8Klinik und Poliklinik für Chirurgie <Rostock>
+144Z/01 ƒ9520711033ƒ8Institut für Medizinische Informatik und Biometrie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt12:14:32.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112080740
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 41         PPN: 617474702                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt12:04:42.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617474702
+007G ƒcGBVƒ0617474702
+010@ ƒaeng
+011@ ƒa2009
+021A ƒa8-year follow-up after cementless hip arthroplasty with a second generation spongy metal total hip replacementƒhHans Gollwitzer; Ludger Gerdesmeyer; Carsten Horn ...
+027D/00 ƒaHip internationalƒpMilanoƒnWichtigƒ01120-7000ƒz11625132
+028C/00 ƒdHansƒaGollwitzer
+028C/01 ƒdLudgerƒaGerdesmeyer
+028C/02 ƒdCarstenƒaHorn
+028C/03 ƒdPeterƒaDiehlƒ9082040648ƒ8Peter@Diehl ; PND-ID: 122598253
+028C/04 ƒdAndreasƒaTöpfer
+028C/05 ƒdReinerƒaGradinger
+031A ƒd19ƒj2009ƒe4ƒh359-366
+039B ƒcInƒ9171184440ƒ8Hip international. - Milano : Wichtigƒx200900000190004641
+101B ƒ001-02-10ƒt12:04:42.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526298618ƒ8Orthopädische Klinik und Poliklinik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt12:04:42.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112078436
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 42         PPN: 617466300                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt11:47:50.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617466300
+007G ƒcGBVƒ0617466300
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaInterference aware route optimization with predicted network conditionsƒhTill Wollenberg; Thomas Mundt
+027D/00 ƒa2009 IEEE International Symposium on a World of Wireless, Mobile and Multimedia Networks & workshopsƒpPiscataway, NJƒnIEEE
+028A ƒdTillƒaWollenberg
+028B/01 ƒdThomasƒaMundt
+031A ƒj2009ƒh5282427-1-5282427-7
+034M ƒagraph. Darst.
+039B ƒcInƒ9614979420ƒ82009 IEEE International Symposium on a World of Wireless, Mobile and Multimedia Networks & workshops. - Piscataway, NJ : IEEEƒx200900000000000573
+101B ƒ001-02-10ƒt11:47:50.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526360216ƒ8Institut für Informatik <Rostock>
+144Z/20 ƒ951665246Xƒ8Konferenz
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt11:47:50.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112073221
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 43         PPN: 617459460                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt10:52:10.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617459460
+007G ƒcGBVƒ0617459460
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaAd hoc privacy management in ubiquitous computing environmentsƒhC. Bünnig; C. H. Cap
+027D/00 ƒaThe second International Conference on Advances in Human-Oriented and Personalized Mechanisms, Technologies, and Services, CENTRIC 2009ƒpLos AlamitosƒnIEEE
+028A ƒdChristianƒaBünnig
+028B/01 ƒdClemens H.ƒaCapƒ9283794674ƒ8Clemens H.@Cap ; PND-ID: 121717186
+031A ƒj2009ƒh85-90
+039B ƒcInƒ9612357007ƒ8The second International Conference on Advances in Human-Oriented and Personalized Mechanisms, Technologies, and Services, CENTRIC 2009. - Los Alamitos : IEEEƒx200900000000000915
+101B ƒ001-02-10ƒt10:51:37.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526360216ƒ8Institut für Informatik <Rostock>
+144Z/20 ƒ951665246Xƒ8Konferenz
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt10:51:37.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112053921
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 44         PPN: 61745342X                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:01-02-10
+001B ƒ04382:01-02-10ƒt10:28:41.000
+001D ƒ04382:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061745342X
+007G ƒcGBVƒ061745342X
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaZnSe based films characterization by cathodoluminescenceƒhAlexey A. Shakhmin; Irina V. Sedova; Sergey V. Sorokin ...
+027D/00 ƒaProceedings of the 25th International Conference on Defects in SemiconductorsƒpAmsterdamƒnElsevier
+028C/00 ƒdAlexey A.ƒaShakhmin
+028C/01 ƒdIrina V.ƒaSedova
+028C/02 ƒdSergey V.ƒaSorokin
+028C/03 ƒdHans-JoachimƒaFittingƒ9589374095ƒ8Hans-Joachim@Fitting ; PND-ID: 137085591
+028C/04 ƒdMaria V.ƒaZamoryanskaya
+031A ƒj2009ƒh5016-5018
+039B ƒcInƒ9614995620ƒ8Proceedings of the 25th International Conference on Defects in Semiconductors. - Amsterdam : Elsevierƒx200900000000000984
+101B ƒ001-02-10ƒt10:28:41.000
+101D ƒ001-02-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514419970ƒ8Institut für Physik <Rostock>
+144Z/20 ƒ951665246Xƒ8Konferenz
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt10:28:41.000
+201D/01 ƒ001-02-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112046437
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 45         PPN: 61745020X                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:01-02-10
+001B ƒ04382:01-02-10ƒt10:40:39.000
+001D ƒ00028:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ061745020X
+007G ƒcGBVƒ061745020X
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaBanking in schrumpfenden RegionenƒdAuswirkungen von Alterung und Abwanderung auf Regionalbanken unter besonderer Berücksichtigung der Sparkassenƒhvorgelegt von Alexander Conrad
+028A ƒdAlexanderƒaConradƒ961745826Xƒ8Alexander@Conrad ; PND-ID: 140382232
+034D ƒaXIII, 282 Bl., Bl. XIV-XXVIII
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Wirtschafts- u. Sozialwiss. Fak., Diss., 2009
+101B ƒ001-02-10ƒt10:40:39.000
+101D ƒ001-02-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523656432ƒ8Institut für Volkswirtschaftslehre <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt10:40:39.000
+201D/01 ƒ001-02-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112050299
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 46         PPN: 617449201                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:01-02-10
+001B ƒ00028:01-02-10ƒt13:32:06.000
+001D ƒ00028:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617449201
+007G ƒcGBVƒ0617449201
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaWachstumsprognose im Rahmen einer Familienuntersuchungƒdeine Langzeitstudieƒhvorgelegt von Ibrahim Jouni
+028A ƒdIbrahimƒaJouniƒ9617266794ƒ8Ibrahim@Jouni ; PND-ID: 140341846
+034D ƒa97 Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcOnline-Ausg.ƒaJouni, Ibrahim: Wachstumsprognose im Rahmen einer FamilienuntersuchungƒCGBVƒ6617481350
+101B ƒ001-02-10ƒt13:34:18.000
+101D ƒ001-02-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9519748875ƒ8Klinik und Polikliniken für Zahn-, Mund- und Kieferheilkunde <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt13:34:18.000
+201D/01 ƒ001-02-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112099425
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 47         PPN: 617435014                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:29-01-10
+001B ƒ00028:29-01-10ƒt18:22:18.000
+001D ƒ00028:29-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0617435014
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0018-7
+007G ƒcGBVƒ0617435014
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0018-7ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0018-7&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0018-7
+010@ ƒaeng
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaPhenotype characterization in macular dystrophiesƒdthe role of multifocal electroretinography and high-resolution optical coherence tomographyƒhvorgelegt von Christina Gerth
+028A ƒdChristinaƒaGerthƒ9617135746ƒ8Christina@Gerth ; PND-ID: 140333371
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037A ƒaEnth. Beitr. aus versch. Ztschr.
+037C ƒb@RostockƒaUniv., Habil.-Schr., 2009
+039D ƒcDruckausg.ƒaGerth, Christina: Phenotype characterization in macular dystrophiesƒCGBVƒ6617116229
+044K/00 ƒ9105099562ƒ8Makuladegeneration ; SWD-ID: 42100434
+044K/00 ƒ9104355174ƒ8Elektroretinographie ; SWD-ID: 42822968
+044K/00 ƒ9241046343ƒ8Optische Tomographie ; SWD-ID: 44911981
+045Q/01 ƒ9106410016ƒ844.95 ; Augenheilkunde
+047I ƒaThe multifocal electroretinogram (mfERG) and the high-resolution optical coherence tomography (OCT) were used as an objective measure and characterization of retinal function and morphology of hereditary and acquired macular dystrophies. MfERG and OCT permit phenotypisation even in early, partially sub-clinical diseases. MfERG changes, in particular delayed latencies, were sensitive measures in long time follow up investigations. Differences in localization and topographical extent of retinal deposits and structural changes were demonstrated by high-resolution Fourier-domain OCT.
+101B ƒ029-01-10ƒt18:27:02.000
+101D ƒ029-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9534283861ƒ8Augenklinik und Poliklinik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa29-01-10ƒbxv
+201B/01 ƒ029-01-10ƒt18:27:02.000
+201D/01 ƒ029-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111928983
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 48         PPN: 617391955                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:29-01-10
+001B ƒ00028:29-01-10ƒt07:05:01.000
+001D ƒ00028:29-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617391955
+007G ƒcGBVƒ0617391955
+010@ ƒager
+011@ ƒa2009ƒn[2009]
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaUntersuchung der Dichtigkeitseigenschaften von Glasfaser-Kunststoff-Verbunden unter thermischer und mechanischer Beanspruchungƒhvorgelegt von Ben Becker
+028A ƒdBenƒaBeckerƒ9523853173ƒ8Ben@Becker ; PND-ID: 132599732
+034D ƒa[2], 118 Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Fak. f. Maschinenbau u. Schiffstechnik, Diss., 2009
+101B ƒ001-02-10ƒt10:44:49.000
+101D ƒ001-02-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9516655698ƒ8Fakultät für Maschinenbau und Schiffstechnik  <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt10:44:49.000
+201D/01 ƒ001-02-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112051686
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 49         PPN: 617297541                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt15:58:28.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617297541
+007G ƒcGBVƒ0617297541
+010@ ƒager
+011@ ƒa2009
+021A ƒaGibt es Vorteile der Fixkombination bei der Therapie von Asthma bronchiale hinsichtlich der Verträglichkeit und Sicherheit?ƒfAre there any advantages of a fixed combination in the treatment of asthma with respect to safety and tolerability?ƒhC. Virchow
+027A/00 ƒaAre there any advantages of a fixed combination in the treatment of asthma with respect to safety and tolerability?
+027D/00 ƒaDeutsche medizinische WochenschriftƒpStuttgartƒnThiemeƒ00012-0472ƒz200446x
+028A ƒdChristianƒaVirchowƒ9616009887ƒ8Christian@Virchow ; PND-ID: 110748573
+031A ƒd134ƒj2009ƒh376-380ƒyBd. 134.2009, Suppl.10, S. S376-S380
+039B ƒcInƒ9129459941ƒ8Deutsche medizinische Wochenschrift. - Stuttgart : Thiemeƒx200900001340000624
+101B ƒ027-01-10ƒt15:57:43.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt15:57:43.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111645612
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 50         PPN: 617296995                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt15:48:53.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617296995
+007G ƒcGBVƒ0617296995
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaXeomin® in the treatment of cervical dystoniaƒhR. Benecke
+027D/00 ƒaEuropean journal of neurologyƒpOxfordƒnBlackwell Scienceƒ01351-5101ƒz12807850
+028A ƒdReinerƒaBeneckeƒ9594924464ƒ8Reiner@Benecke ; PND-ID: 137746938
+031A ƒd16ƒj2009ƒh6-10   ƒyBd. 16.2009, Suppl. 2, S. 6-10
+039B ƒcInƒ9188148876ƒ8European journal of neurology. - Oxford : Blackwell Scienceƒx200900000160000994
+101B ƒ027-01-10ƒt15:48:43.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ952071363Xƒ8Klinik und Poliklinik für Neurologie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt15:48:43.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111643792
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 51         PPN: 617296480                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt15:42:50.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617296480
+007G ƒcGBVƒ0617296480
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaDiversity-oriented synthesis of chlorinated arenes by one-pot cyclizations of 4-chloro-1,3-bis(trimethylsilyloxy)buta-1,3-dienesƒhVerena Wolf; Muhammad Adeel; Stefanie Reim ...
+027D/00 ƒaEuropean journal of organic chemistryƒpWeinheimƒnWiley-VCH Verl.ƒ01434-193Xƒz14100009
+028C/00 ƒdVerenaƒaWolf
+028C/01 ƒdMuhammadƒaAdeelƒ9603339700ƒ8Muhammad@Adeel ; PND-ID: 138536554
+028C/02 ƒdStefanieƒaReimƒ9589515160ƒ8Stefanie@Reim ; PND-ID: 13710331X
+028C/03 ƒdAlexanderƒaVillingerƒ9597883947ƒ8Alexander@Villinger ; PND-ID: 137962258
+028C/04 ƒdChristineƒaFischer
+028C/05 ƒdPeterƒaLangerƒ9520281780ƒ8Peter@Langer ; PND-ID: 132314614
+031A ƒj2009ƒe33ƒh5854-5867
+034M ƒagraph. Darst.
+039B ƒcInƒ923976899Xƒ8European journal of organic chemistry. - Weinheim : Wiley-VCH Verl.ƒx200900000000033146
+101B ƒ027-01-10ƒt15:42:50.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513055452ƒ8Institut für Chemie <Rostock>
+144Z/01 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt15:42:50.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111642370
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 52         PPN: 61729562X                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt15:34:02.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061729562X
+007G ƒcGBVƒ061729562X
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaEfficient palladium-catalyzed coupling reactions of aryl bromides and chlorides with phenolsƒhTongjie Hu; Thomas Schulz; Christian Torborg ...
+027D/00 ƒaChemical communicationsƒpCambridgeƒnSoc.ƒ00022-4936ƒz2158309
+028C/00 ƒdTongjieƒaHu
+028C/01 ƒdThomasƒaSchulz
+028C/02 ƒdChristianƒaTorborgƒ961056501Xƒ8Christian@Torborg ; PND-ID: 139453555
+028C/03 ƒdXiaorongƒaChen
+028C/04 ƒdJunƒaWang
+028C/05 ƒdMatthiasƒaBellerƒ9470641088ƒ8Matthias@Beller ; PND-ID: 112081908
+028C/06 ƒdJunƒaHuang
+031A ƒj2009ƒe47ƒh7330-7332
+039B ƒcInƒ912953465Xƒ8Chemical communications. - Cambridge : Soc.ƒx200900000000047670
+101B ƒ027-01-10ƒt15:33:38.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt15:33:38.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ0111163985X
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 53         PPN: 617288151                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt14:18:07.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617288151
+007G ƒcGBVƒ0617288151
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaGeneralized Gibbs' thermodynamics and nucleation-growth phenomenaƒhJ. W. P. Schmelzer
+027D/00 ƒaMetastable Systems under PressureƒpBerlinƒnSpringer Netherland
+028A ƒdJürn W. P.ƒaSchmelzer
+031A ƒj2009ƒh389-402
+039B ƒcInƒ9605231435ƒ8Metastable Systems under Pressure. - Berlin : Springer Netherlandƒx200900000000000611
+101B ƒ027-01-10ƒt14:17:07.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514419970ƒ8Institut für Physik <Rostock>
+144Z/20 ƒ9510795846ƒ8Monographie
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt14:17:07.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111618194
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 54         PPN: 617279098                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt12:12:26.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617279098
+007G ƒcGBVƒ0617279098
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaA @randomized trial comparing renal function in older kidney transplant patients following delayed versus immediate tacrolimus administrationƒhAmado Andrés; Klemens Budde; Pierre-Alain Clavien ...
+027D/00 ƒaTransplantationƒpHagerstown, Md.ƒnLippincott Williams & Wilkinsƒ00041-1337ƒz2084247
+028C/00 ƒdAmadoƒaAndrés
+028C/01 ƒdKlemensƒaBudde
+028C/02 ƒdPierre-AlainƒaClavien
+028C/03 ƒdThomasƒaBecker
+028C/04 ƒdMichèleƒaKessler
+028C/05 ƒdPrzemyslawƒaPisarski
+028C/06 ƒdPaoloƒaFornara
+028C/07 ƒdDirkƒaBurmeisterƒ9080700608ƒ8Dirk@Burmeister ; PND-ID: 120478579
+028C/08 ƒdRonald J.ƒaHené
+028C/09 ƒdElisabethƒaCassuto-Viguier
+031A ƒd88ƒj2009ƒe9ƒh1101-1108
+039B ƒcInƒ9129501905ƒ8Transplantation. - Hagerstown, Md. : Lippincott Williams & Wilkinsƒx200900000880009899
+101B ƒ027-01-10ƒt12:12:26.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ953754917Xƒ8Urologische Klinik und Poliklinik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt12:12:26.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111587191
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 55         PPN: 617276889                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt11:48:01.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617276889
+007G ƒcGBVƒ0617276889
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaLevomethadone is poorly removed by the molecular adsorbents recirculating systemƒhDavid Czock; Frieder Keller; Jörn Hameister ...
+027D/00 ƒaJournal of clinical psychopharmacologyƒpBaltimore, Md.ƒnWilliams & Wilkinsƒ00271-0749ƒz6046319
+028C/00 ƒdDavidƒaCzock
+028C/01 ƒdFriederƒaKeller
+028C/02 ƒdJörnƒaHameisterƒ9521951593ƒ8Jörn@Hameister ; PND-ID: 132385457
+028C/03 ƒdBirgitƒaTiefenbach
+028C/04 ƒdSteffenƒaMitznerƒ9606792279ƒ8Steffen@Mitzner ; PND-ID: 138948283
+031A ƒd29ƒj2009ƒe6ƒh622-624
+039B ƒcInƒ9167914014ƒ8Journal of clinical psychopharmacology. - Baltimore, Md. : Williams & Wilkinsƒx200900000290006378
+101B ƒ027-01-10ƒt11:48:01.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9537394079ƒ8Institut für Toxikologie und Pharmakologie <Rostock>
+144Z/01 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt11:48:01.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111580332
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 56         PPN: 617274045                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt11:21:28.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617274045
+007G ƒcGBVƒ0617274045
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaOn the Fredholm alternative for the p-Laplacian at higher eigenvalues (in one dimension)ƒhJirí Benedikt; Petr Girg; Peter Takác
+027D/00 ƒbNonlinear analysis / AƒaNonlinear analysisƒc*A*Theory and methodsƒpNew York, NY [u.a.]ƒnPergamonƒ00362-546Xƒz20312192
+028A ƒdJiríƒaBenedikt
+028B/01 ƒdPetrƒaGirg
+028B/02 ƒdPeterƒaTakácƒ9583134807ƒ8Peter@Takáč ; PND-ID: 136477593
+031A ƒd72ƒj2009ƒe6ƒh3091-3107
+039B ƒcInƒ9324826346ƒ8Nonlinear analysis. - New York, NY [u.a.] : PergamonNonlinear analysis / Aƒx200900000720006909
+101B ƒ027-01-10ƒt11:21:28.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9515130885ƒ8Institut für Mathematik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt11:21:28.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111570809
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 57         PPN: 617273405                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt11:13:33.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617273405
+007G ƒcGBVƒ0617273405
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaa-Particle condensed state in 16OƒhY. Funaki; T. Yamada; H. Horiuchi ...
+027D/00 ƒbInternational journal of modern physics / EƒaInternational journal of modern physicsƒcE, Nuclear physicsƒpSingapore [u.a.]ƒnWorld Scientificƒ00218-3013ƒz11481390
+028C/00 ƒdY.ƒaFunaki
+028C/01 ƒdT.ƒaYamada
+028C/02 ƒdH.ƒaHoriuchi
+028C/03 ƒdGerdƒaRöpkeƒ9569307546ƒ8Gerd@Röpke ; PND-ID: 135700167
+028C/04 ƒdP.ƒaSchuck
+028C/05 ƒdA.ƒaTohsaki
+031A ƒd18ƒj2009ƒe10ƒh2083-2087
+039B ƒcInƒ9131193341ƒ8International journal of modern physics. - Singapore [u.a.] : World ScientificInternational journal of modern physics / Eƒx200900000180010917
+101B ƒ027-01-10ƒt11:13:33.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514419970ƒ8Institut für Physik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt11:13:39.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111568197
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 58         PPN: 617272557                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt11:04:48.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617272557
+007G ƒcGBVƒ0617272557
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaA @survey of sexually reproducing female and male populations of Chara canescens (Charophyta) in the National Park Neusiedler See-SeewinkelƒhRalf Schaible; Ingo Bergmann; Hendrik Schubert
+027D/00 ƒbCryptogamie / AlgologieƒaCryptogamieƒcAlgologie / Muséum National d'Histoire NaturelleƒpParisƒnAssoc. des Amis des Cryptogamesƒ00181-1568ƒz2831958
+028A ƒdRalfƒaSchaibleƒ9523642709ƒ8Ralf@Schaible ; PND-ID: 132554178
+028B/01 ƒdIngoƒaBergmann
+028B/02 ƒdHendrikƒaSchubertƒ9527302481ƒ8Hendrik@Schubert ; PND-ID: 132858606
+031A ƒd30ƒj2009ƒe4ƒh279-294
+039B ƒcInƒ9129860875ƒ8Cryptogamie. - Paris : Assoc. des Amis des CryptogamesCryptogamie / Algologieƒx200900000300004721
+101B ƒ027-01-10ƒt11:04:09.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt11:04:09.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111565619
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 59         PPN: 617271771                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt10:55:18.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617271771
+007G ƒcGBVƒ0617271771
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaHuman-automation interaction strategies and models for life science applicationsƒhDavid B. Kaber; Norbert Stoll; Kerstin Thurow ...
+027D/00 ƒaHuman factors and ergonomics in manufacturingƒpNew York, NYƒnWileyƒ01090-8471ƒz13600679
+028C/00 ƒdDavid B.ƒaKaber
+028C/01 ƒdNorbertƒaStollƒ9534726291ƒ8Norbert@Stoll ; PND-ID: 133123405
+028C/02 ƒdKerstinƒaThurowƒ9081404786ƒ8Kerstin@Thurow ; PND-ID: 121586480
+028C/03 ƒdRebecca S.ƒaGreen
+028C/04 ƒdSang-HwanƒaKim
+028C/05 ƒdPrithimaƒaMosaly
+031A ƒd19ƒj2009ƒe6ƒh601-621
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9223485276ƒ8Human factors and ergonomics in manufacturing. - New York, NY : Wileyƒx200900000190006399
+101B ƒ027-01-10ƒt10:55:18.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9522062164ƒ8Institut für Automatisierungstechnik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt10:55:18.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111562997
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 60         PPN: 617268142                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt10:20:19.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617268142
+007G ƒcGBVƒ0617268142
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaA @convenient and general iron-catalyzed reduction of amides to aminesƒhShaolin Zhou; Kathrin Junge; Daniele Addis ...
+027D/00 ƒbAngewandte Chemie / International editionƒaAngewandte ChemieƒcInternational editionƒpWeinheimƒnWiley-VCHƒ00044-8249ƒz1232277
+028C/00 ƒdShaolinƒaZhou
+028C/01 ƒdKathrinƒaJungeƒ9079200745ƒ8Kathrin@Junge ; PND-ID: 118029312
+028C/02 ƒdDanieleƒaAddis
+028C/03 ƒdShoubhikƒaDas
+028C/04 ƒdMatthiasƒaBellerƒ9470641088ƒ8Matthias@Beller ; PND-ID: 112081908
+031A ƒd48ƒj2009ƒe50ƒh9507-9510
+039B ƒcInƒ9129301558ƒ8Angewandte Chemie. - Weinheim : Wiley-VCHAngewandte Chemie / International editionƒx200900000480050493
+101B ƒ027-01-10ƒt10:20:19.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt10:20:19.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ0111155210X
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 61         PPN: 617267448                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:27-01-10
+001B ƒ04382:27-01-10ƒt10:10:13.000
+001D ƒ04382:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617267448
+007G ƒcGBVƒ0617267448
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaThe @thermodynamic properties of delta-lactonesƒhV. N. Emel'yanenko; S. P. Verevkin; E. N. Burakova ...
+027D/00 ƒbRussian journal of physical chemistry / AƒaRussian journal of physical chemistryƒcAƒpMoscowƒnMAIK Nauka/Interperiodicaƒ00036-0244ƒz23164438
+028C/00 ƒdV. N.ƒaEmel'yanenko
+028C/01 ƒdSergey P.ƒaVerevkinƒ9527950467ƒ8Sergey@Verevkin ; PND-ID: 132905841
+028C/02 ƒdE. N.ƒaBurakova
+028C/03 ƒdG. N.ƒaRoganov
+028C/04 ƒdM. K.ƒaGeorgieva
+031A ƒd83ƒj2009ƒe8ƒh1271-1279
+039B ƒcInƒ9529803747ƒ8Russian journal of physical chemistry. - Moscow : MAIK Nauka/InterperiodicaRussian journal of physical chemistry / Aƒx200900000830008729
+101B ƒ027-01-10ƒt10:10:02.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513055452ƒ8Institut für Chemie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt10:10:02.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111549176
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 62         PPN: 617147531                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt15:54:28.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617147531
+007G ƒcGBVƒ0617147531
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaExploration of homodimer receptorƒdhomodimer protein interactionsƒhJulio Vera; Taesoo Kwon; Ulf Schmitz ...
+027D/00 ƒaInternational journal of bioinformatics research and applicationsƒpOlneyƒnInderscience Enterprisesƒ01744-5485ƒz22263639
+028C/00 ƒdJulioƒaVera
+028C/01 ƒdTaesooƒaKwon
+028C/02 ƒdUlfƒaSchmitz
+028C/03 ƒdWalterƒaKolch
+028C/04 ƒdOlafƒaWolkenhauerƒ9547086598ƒ8Olaf@Wolkenhauer ; PND-ID: 133515931
+031A ƒd5ƒj2009ƒe4ƒh447-457
+039B ƒcInƒ9508845394ƒ8International journal of bioinformatics research and applications. - Olney : Inderscience Enterprisesƒx200900000050004553
+101B ƒ026-01-10ƒt15:54:28.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526360216ƒ8Institut für Informatik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt15:54:28.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111503257
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 63         PPN: 617146888                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt15:47:24.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Osu
+003@ ƒ0617146888
+004V ƒ010.1101/lm.1556009
+007G ƒcGBVƒ0617146888
+009P/03 ƒS1ƒyAbstractƒahttp://dx.doi.org/10.1101/lm.1556009
+010@ ƒaeng
+011@ ƒa2009
+016H ƒ0Elektronische Ressource
+021A ƒaHCN1 channels constrain DHPG-induced LTD at hippocampal Schaffer collateral-CA1 synapsesƒhTursonjan Tokay; Marco Rohde; Sabine Krabbe ...
+027D/00 ƒaLearning & memoryƒpPlainview, NYƒnCold Spring Harbor Laboratory Pressƒ01549-5485ƒz20220571
+028C/00 ƒdTursonjanƒaTokay
+028C/01 ƒdMarcoƒaRohde
+028C/02 ƒdSabineƒaKrabbe
+028C/03 ƒdMirkoƒaRehberg
+028C/04 ƒdRoland A.ƒaBender
+028C/05 ƒdRüdigerƒaKöhlingƒ9593414527ƒ8Rüdiger@Köhling ; PND-ID: 137585756
+028C/06 ƒdTimoƒaKirschsteinƒ908232848Xƒ8Timo@Kirschstein ; PND-ID: 123070171
+031A ƒd16ƒj2009ƒe12ƒh769-776
+039B ƒcInƒ9320616444ƒ8Learning & memory. - Plainview, NY : Cold Spring Harbor Laboratory Pressƒx200900000160012231
+046D ƒaGesehen am: 26.01.2010
+101B ƒ026-01-10ƒt15:47:24.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9556061667ƒ8Institut für Physiologie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt15:47:24.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111501653
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 64         PPN: 617145849                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt15:34:21.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617145849
+007G ƒcGBVƒ0617145849
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaBasic mechanisms in pinniped visionƒhFrederike D. Hanke; Wolf Hanke; Christine Scholtyssek; Guido Dehnhardt 
+027D/00 ƒaExperimental brain researchƒpBerlin ; Heidelberg [u.a.]ƒnSpringerƒ00014-4819ƒz12014
+028C/00 ƒdFrederike D.ƒaHanke
+028C/01 ƒdWolfƒaHanke
+028C/02 ƒdChristineƒaScholtyssek
+028C/03 ƒdGuidoƒaDehnhardt ƒ9597630321ƒ8Guido@Dehnhardt ; PND-ID: 137914253
+031A ƒd199ƒj2009ƒe3/4ƒh299-311
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9129066265ƒ8Experimental brain research. - Berlin : Springerƒx200900001990003701
+101B ƒ026-01-10ƒt15:34:21.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt15:34:21.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111498229
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 65         PPN: 617134200                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:26-01-10
+001B ƒ00028:27-01-10ƒt15:53:32.000
+001D ƒ00028:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617134200
+007G ƒcGBVƒ0617134200
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaIn-Vivo-Langzeittestung der Knochenaufbaumaterialien NanoBone® und Ostim® bei der Reossifikation von Unterkieferdefektenƒdeine tierexperimentelle Studie am Miniaturschweinƒhvorgelegt von: Silvia Schneider
+028A ƒdSilviaƒaSchneiderƒ9617134456ƒ8Silvia@Schneider ; PND-ID: 140333029
+034D ƒa[7], 92, [29] Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2010
+044K/00 ƒ9106077007ƒ8Unterkiefer ; SWD-ID: 40785762
+044K/00 ƒ9106266233ƒ8Knochenbildung ; SWD-ID: 40313177
+044K/00 ƒ9104450231ƒ8Knochenersatz ; SWD-ID: 41642831
+045Q/01 ƒ9106410024ƒ844.96 ; Zahnmedizin
+101B ƒ026-01-10ƒt13:46:45.000
+101D ƒ026-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9519748875ƒ8Klinik und Polikliniken für Zahn-, Mund- und Kieferheilkunde <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt13:46:45.000
+201D/01 ƒ026-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111466610
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 66         PPN: 617125090                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt11:37:56.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617125090
+007G ƒcGBVƒ0617125090
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaConcepts of nuclear α-particle condensationƒhY. Funaki; H. Horiuchi; W. von Oertzen ...
+027D/00 ƒbPhysical review / CƒaPhysical reviewƒcC, Nuclear physicsƒpWoodbury, NYƒnInst.ƒ00556-2813ƒz2097710
+028C/00 ƒdY.ƒaFunaki
+028C/01 ƒdH.ƒaHoriuchi
+028C/02 ƒdW.ƒcvonƒaOertzen
+028C/03 ƒdGerdƒaRöpkeƒ9569307546ƒ8Gerd@Röpke ; PND-ID: 135700167
+028C/04 ƒdP.ƒaSchuck
+028C/05 ƒdA.ƒaTohsaki
+028C/06 ƒdT.ƒaYamada
+031A ƒd80ƒj2009ƒe6ƒh 064326-1-064326-14
+034M ƒagraph. Darst.
+039B ƒcInƒ9129508659ƒ8Physical review. - Woodbury, NY : Inst.Physical review / Cƒx200900000800006674
+101B ƒ026-01-10ƒt11:37:56.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514419970ƒ8Institut für Physik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt11:37:56.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111432686
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 67         PPN: 617121605                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt11:11:16.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617121605
+007G ƒcGBVƒ0617121605
+010@ ƒager
+011@ ƒa2009
+021A ƒaKonservative Therapieƒd"Step Up" oder "Top Down"?ƒhJörg Emmrich
+027D/00 ƒaViszeralmedizinƒpBasel ; Freiburg, Br. ; Paris ; London ; New York, NY ; Bangalore ; Bangkok ; Shanghai ; Singapore ; Tokyo ; SydneyƒnKargerƒ01662-6664ƒz24903498
+028A ƒdJörgƒaEmmrichƒ9520744918ƒ8Jörg@Emmrich ; PND-ID: 132352419
+031A ƒd25ƒj2009ƒe4ƒh204-208
+039B ƒcInƒ9598094644ƒ8Viszeralmedizin. - Basel : Kargerƒx200900000250004796
+101B ƒ026-01-10ƒt11:11:16.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt11:11:16.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ0111142179X
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 68         PPN: 617120811                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt11:06:08.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617120811
+007G ƒcGBVƒ0617120811
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaDobrava-Belgrade virus spillover infections, GermanyƒhMathias Schlegel; Boris Klempa; Brita Auste ...
+027D/00 ƒaEmerging infectious diseasesƒpAtlanta, Ga.ƒnCenterƒ01080-6040ƒz13806865
+028C/00 ƒdMathiasƒaSchlegel
+028C/01 ƒdBorisƒaKlempa
+028C/02 ƒdBritaƒaAuste
+028C/03 ƒdMargritƒaBemmann
+028C/04 ƒdJonasƒaSchmidt-Chanasit
+028C/05 ƒdThomasƒaBüchner
+028C/06 ƒdMartin H.ƒaGroschup
+028C/07 ƒdMarkusƒaMeier
+028C/08 ƒdAnneƒaBalkema-Buschmann
+028C/09 ƒdHinrichƒaZoller
+028D/00 ƒdDetlev H.ƒaKrüger
+028D/01 ƒdRainer G.ƒaUlrich
+031A ƒd15ƒj2009ƒe12ƒh2017-2020
+039B ƒcInƒ9227873645ƒ8Emerging infectious diseases. - Atlanta, Ga. : Centerƒx200900000150012983
+101B ƒ026-01-10ƒt11:06:08.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt11:06:08.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111419639
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 69         PPN: 617117209                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:26-01-10
+001B ƒ04382:26-01-10ƒt10:37:54.000
+001D ƒ04382:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617117209
+007G ƒcGBVƒ0617117209
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaRandomized comparison of strategies for type B aortic dissectionƒdthe INvestigation of STEnt grafts in Aortic Dissection (INSTEAD) trialƒhChristoph A. Nienaber; Hervé Rousseau; Holger Eggebrecht ...
+027D/00 ƒaCirculationƒpBaltimore, MDƒnLippincott Williams & Wilkinsƒ00009-7322ƒz800995
+028C/00 ƒdChristoph A.ƒaNienaberƒ9577866796ƒ8Christoph@Nienaber ; PND-ID: 136260608
+028C/01 ƒdHervéƒaRousseau
+028C/02 ƒdHolgerƒaEggebrecht
+028C/03 ƒdStephanƒaKischeƒ9603420915ƒ8Stephan@Kische ; PND-ID: 138552231
+028C/04 ƒdRossellaƒaFattori
+028C/05 ƒdTim C.ƒaRehdersƒ9584736894ƒ8Tim@Rehders ; PND-ID: 136639526
+028C/06 ƒdGüntherƒaKundtƒ9081826702ƒ8Günther@Kundt ; PND-ID: 122246594
+028C/07 ƒdDierkƒaScheinert
+028C/08 ƒdMartinƒaCzerny
+028C/09 ƒdTiloƒaKleinfeldt
+028D/00 ƒdBurkhartƒaZipfel
+028D/01 ƒdLouisƒaLabrousse
+028D/02 ƒdHüseyinƒaInceƒ9081886411ƒ8Hüseyin@Ince ; PND-ID: 122338863
+031A ƒd120ƒj2009ƒe25ƒh2519-2528
+039B ƒcInƒ9129269093ƒ8Circulation. - Baltimore, MD : Lippincott Williams & Wilkinsƒx200900001200025481
+101B ƒ026-01-10ƒt10:37:54.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/01 ƒ9520711033ƒ8Institut für Medizinische Informatik und Biometrie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt10:37:54.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111408408
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 70         PPN: 617116229                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:26-01-10
+001B ƒ00028:29-01-10ƒt18:22:43.000
+001D ƒ00028:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617116229
+007G ƒcGBVƒ0617116229
+010@ ƒaeng
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaPhenotype characterization in macular dystrophiesƒdthe role of multifocal electroretinography and high-resolution optical coherence tomographyƒhvorgelegt von Christina Gerth
+028A ƒdChristinaƒaGerthƒ9617135746ƒ8Christina@Gerth ; PND-ID: 140333371
+034D ƒaGetr. Zählung
+034M ƒaIll., graph. Darst.
+037A ƒaEnth. Beitr. aus versch. Ztschr.
+037C ƒb@RostockƒaUniv., Habil.-Schr., 2009
+039D ƒcOnline-Ausg.ƒaGerth, Christina: Phenotype characterization in macular dystrophiesƒCGBVƒ6617435014
+044K/00 ƒ9105099562ƒ8Makuladegeneration ; SWD-ID: 42100434
+044K/00 ƒ9104355174ƒ8Elektroretinographie ; SWD-ID: 42822968
+044K/00 ƒ9241046343ƒ8Optische Tomographie ; SWD-ID: 44911981
+045Q/01 ƒ9106410016ƒ844.95 ; Augenheilkunde
+101B ƒ026-01-10ƒt13:45:29.000
+101D ƒ026-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9534283861ƒ8Augenklinik und Poliklinik <Rostock>
+144Z/20 ƒ9533986532ƒ8Habilitation
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt13:45:29.000
+201D/01 ƒ026-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111466238
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 71         PPN: 617115087                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:26-01-10
+001B ƒ04382:26-01-10ƒt13:21:17.000
+001D ƒ00028:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617115087
+007G ƒcGBVƒ0617115087
+010@ ƒager
+011@ ƒa2009ƒn[2009]
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaAnlegerschutz bei der Emission von Schuldverschreibungenƒdunter besonderer Berücksichtigung der Frage der Anwendbarkeit des AGB-Rechts auf Emissionsbedingungenƒhvorgelegt von Sebastian Krug
+028A ƒdSebastianƒaKrugƒ9617133727ƒ8Sebastian@Krug ; PND-ID: 140332766
+034D ƒaX, 258 Bl.
+037C ƒb@RostockƒaUniv., Jurist. Fak., Diss., 2010
+101B ƒ026-01-10ƒt13:21:17.000
+101D ƒ026-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9525214984ƒ8Juristische Fakultät <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt13:21:17.000
+201D/01 ƒ026-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111460361
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 72         PPN: 617036160                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:25-01-10
+001B ƒ00028:29-01-10ƒt15:05:55.000
+001D ƒ00028:25-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0617036160
+004U ƒ0urn:nbn:de:gbv:28-diss2009-0213-8
+007G ƒcGBVƒ0617036160
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0213-8ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0213-8&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2009-0213-8
+010@ ƒaeng
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaPropagation of nonclassical light in structured mediaƒhvorgelegt von Dmytro Vasylyev
+028A ƒdDmytroƒaVasylyevƒ9617011095ƒ8Dmytro@Vasylyev ; PND-ID: 140308822
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Mathematisch-Naturwiss. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaVasylyev, Dmytro: Propagation of nonclassical light in structured mediaƒCGBVƒ6615349056
+044K/00 ƒ9105104981ƒ8Gequetschter Zustand ; SWD-ID: 42093673
+044K/00 ƒ910497608Xƒ8Quantenrauschen ; SWD-ID: 42258479
+045Q/01 ƒ9106407449ƒ833.38 ; Quantenoptik ; nichtlineare Optik
+047I ƒaIn the present thesis the propagation of nonclassical light in structured media is studied with the accounting of various loss mechanisms. First, the characterization of nonclassicality of quantum light being in contact with a thermal bath is given. For the description of nonclassical light propagation through the optical cavities the method of replacement schemes for modeling the loss mechanisms is proposed. Finally, the propagation of light in a semiconductor media with boundaries with account of absorption, dispersion, spatial inhomogeneity and spontaneous emission effects on the nonclassical properties of squeezed light are studied.
+101B ƒ025-01-10ƒt10:05:22.000
+101D ƒ025-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514419970ƒ8Institut für Physik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa25-01-10ƒbxv
+201B/01 ƒ025-01-10ƒt10:05:22.000
+201D/01 ƒ025-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111234760
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 73         PPN: 617004552                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt13:03:47.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617004552
+007G ƒcGBVƒ0617004552
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaFetuin-A serum concentrations in healthy childrenƒhMarianne Wigger; Jan Schaible; Jutta Muscheites ...
+027D/00 ƒaAnnals of clinical biochemistryƒpLondonƒnRoyal Society of Medicine Pressƒ00004-5632ƒz3903096
+028C/00 ƒdMarianneƒaWiggerƒ9523368534ƒ8Marianne@Wigger ; PND-ID: 132545195
+028C/01 ƒdJanƒaSchaible
+028C/02 ƒdJuttaƒaMuscheitesƒ9080567584ƒ8Jutta@Muscheites ; PND-ID: 120272385
+028C/03 ƒdGüntherƒaKundtƒ9081826702ƒ8Günther@Kundt ; PND-ID: 122246594
+028C/04 ƒdDieterƒaHaffnerƒ9523362323ƒ8Dieter@Haffner ; PND-ID: 132544237
+028C/05 ƒdDagmar-ChristianeƒaFischer
+031A ƒd46ƒj2009ƒe6ƒh511-513
+039B ƒcInƒ9129934615ƒ8Annals of clinical biochemistry. - London : Royal Society of Medicine Pressƒx200900000460006489
+101B ƒ022-01-10ƒt13:03:47.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523356730ƒ8Kinder- und Jugendklinik <Rostock>
+144Z/01 ƒ9520711033ƒ8Institut für Medizinische Informatik und Biometrie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt13:03:47.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110733801
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 74         PPN: 617003955                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt12:16:47.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617003955
+007G ƒcGBVƒ0617003955
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaThe @role of periodontal ligament cells in delayed tooth eruption in patients with Cleidocranial DysostosisƒfDie @Rolle der Parodontalligamentzellen im Rahmen des gestörten Zahndurchbruchs bei Patienten mit Cleidocranialer DysostoseƒhStefan Lossdörfer; Bassel Abou Jamra; Birgit Rath-Deschner ...
+027D/00 ƒaJournal of orofacial orthopedicsƒpMünchenƒnUrban & Vogelƒ00015-816Xƒz13094701
+028C/00 ƒdStefanƒaLossdörfer
+028C/01 ƒdBasselƒaAbou Jamra
+028C/02 ƒdBirgitƒaRath-Deschner
+028C/03 ƒdWernerƒaGötz
+028C/04 ƒdRamiƒaAbou Jamra
+028C/05 ƒdBertƒaBraumann
+028C/06 ƒdAndreasƒaJäger
+031A ƒd70ƒj2009ƒe6ƒh495-510
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9196257867ƒ8Journal of orofacial orthopedics. - München : Urban & Vogelƒx200900000700006505
+101B ƒ022-01-10ƒt12:16:47.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9519748875ƒ8Klinik und Polikliniken für Zahn-, Mund- und Kieferheilkunde <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt12:16:47.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110722389
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 75         PPN: 617003017                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt12:05:45.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617003017
+007G ƒcGBVƒ0617003017
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaNoninvasive imaging approaches to evaluate the patient with known or suspected aortic diseaseƒhChristoph A. Nienaber; Stephan Kische; Valeria Skriabina; Hüseyin Ince
+027D/00 ƒbCirculation / Cardiovascular imagingƒaCirculationƒcCardiovascular imagingƒpPhiladelphia, Pa.ƒnLippincott, Williams & Wilkinsƒ01941-9651ƒz2435045X
+028C/00 ƒdChristoph A.ƒaNienaberƒ9577866796ƒ8Christoph@Nienaber ; PND-ID: 136260608
+028C/01 ƒdStephanƒaKischeƒ9603420915ƒ8Stephan@Kische ; PND-ID: 138552231
+028C/02 ƒdValeriaƒaSkriabinaƒ9588362034ƒ8Valeria@Skriabina ; PND-ID: 136957471
+028C/03 ƒdHüseyinƒaInceƒ9081886411ƒ8Hüseyin@Ince ; PND-ID: 122338863
+031A ƒd2ƒj2009ƒe6ƒh499-506
+039B ƒcInƒ9571605923ƒ8Circulation. - Philadelphia, Pa. : Lippincott, Williams & WilkinsCirculation / Cardiovascular imagingƒx200900000020006501
+101B ƒ022-01-10ƒt12:05:45.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt12:05:45.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110719744
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 76         PPN: 617001855                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:54:46.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617001855
+007G ƒcGBVƒ0617001855
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaRecent applications of palladium-catalyzed coupling reactions in the pharmaceutical, agrochemical, and fine chemical industriesƒhChristian Torborg; Matthias Beller
+027D/00 ƒaAdvanced synthesis & catalysisƒpWeinheimƒnWiley-VCHƒ01615-4150ƒz20330844
+028A ƒdChristianƒaTorborgƒ961056501Xƒ8Christian@Torborg ; PND-ID: 139453555
+028B/01 ƒdMatthiasƒaBellerƒ9470641088ƒ8Matthias@Beller ; PND-ID: 112081908
+031A ƒd351ƒj2009ƒe18ƒh3027-3043
+034M ƒagraph. Darst.
+039B ƒcInƒ9324845081ƒ8Advanced synthesis & catalysis. - Weinheim : Wiley-VCHƒx200900003510018973
+101B ƒ022-01-10ƒt11:54:46.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:54:46.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110716478
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 77         PPN: 617001316                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:49:43.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617001316
+007G ƒcGBVƒ0617001316
+010@ ƒager
+011@ ƒa2009
+021A ƒaPflanzliche Analgetika und AntiphlogistikaƒhKarin Kraft
+027D/00 ƒaZeitschrift für PhytotherapieƒpStuttgartƒnHippokrates-Verl.ƒ00722-348xƒz604850x
+028A ƒdKarinƒaKraftƒ957418161Xƒ8Karin@Kraft ; PND-ID: 136051855
+031A ƒd30ƒj2009ƒe2ƒh77-81
+039B ƒcInƒ9130399396ƒ8Zeitschrift für Phytotherapie. - Stuttgart : Hippokrates-Verl.ƒx200900000300002923
+101B ƒ022-01-10ƒt11:49:43.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:49:43.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110714726
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 78         PPN: 617001065                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:47:38.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617001065
+007G ƒcGBVƒ0617001065
+010@ ƒager
+011@ ƒa2009
+021A ƒaAppetitlosigkeitƒhKarin Kraft
+027D/00 ƒaZeitschrift für PhytotherapieƒpStuttgartƒnHippokrates-Verl.ƒ00722-348xƒz604850x
+028A ƒdKarinƒaKraftƒ957418161Xƒ8Karin@Kraft ; PND-ID: 136051855
+031A ƒd30ƒj2009ƒe5ƒh250-252
+039B ƒcInƒ9130399396ƒ8Zeitschrift für Phytotherapie. - Stuttgart : Hippokrates-Verl.ƒx200900000300005750
+101B ƒ022-01-10ƒt11:47:38.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:47:38.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110713975
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 79         PPN: 617000735                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:45:29.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617000735
+007G ƒcGBVƒ0617000735
+010@ ƒager
+011@ ƒa2009
+021A ƒaPhytotherapie bei ObstipationƒhKarin Kraft
+027D/00 ƒaZeitschrift für PhytotherapieƒpStuttgartƒnHippokrates-Verl.ƒ00722-348xƒz604850x
+028A ƒdKarinƒaKraftƒ957418161Xƒ8Karin@Kraft ; PND-ID: 136051855
+031A ƒd30ƒj2009ƒe4ƒh184-186
+039B ƒcInƒ9130399396ƒ8Zeitschrift für Phytotherapie. - Stuttgart : Hippokrates-Verl.ƒx200900000300004816
+101B ƒ022-01-10ƒt11:45:29.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:45:29.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110713126
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 80         PPN: 617000492                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:43:36.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617000492
+007G ƒcGBVƒ0617000492
+010@ ƒager
+011@ ƒa2009
+021A ƒaPhytotherapie in den medizinischen LeitlinienƒdBeispiele aus der GastroenterologieƒhKarin Kraft
+027D/00 ƒaZeitschrift für PhytotherapieƒpStuttgartƒnHippokrates-Verl.ƒ00722-348xƒz604850x
+028A ƒdKarinƒaKraftƒ957418161Xƒ8Karin@Kraft ; PND-ID: 136051855
+031A ƒd30ƒj2009ƒe3ƒh107-110
+039B ƒcInƒ9130399396ƒ8Zeitschrift für Phytotherapie. - Stuttgart : Hippokrates-Verl.ƒx200900000300003893
+101B ƒ022-01-10ƒt11:43:36.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:43:36.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110712340
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 81         PPN: 617000255                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:41:35.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0617000255
+007G ƒcGBVƒ0617000255
+010@ ƒager
+011@ ƒa2009
+021A ƒaAkute und chronische DurchfallerkrankungenƒhKarin Kraft
+027D/00 ƒaZeitschrift für PhytotherapieƒpStuttgartƒnHippokrates-Verl.ƒ00722-348xƒz604850x
+028A ƒdKarinƒaKraftƒ957418161Xƒ8Karin@Kraft ; PND-ID: 136051855
+031A ƒd30ƒj2009ƒe3ƒh138-141
+039B ƒcInƒ9130399396ƒ8Zeitschrift für Phytotherapie. - Stuttgart : Hippokrates-Verl.ƒx200900000300003862
+101B ƒ022-01-10ƒt11:41:35.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:41:35.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110711662
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 82         PPN: 616999038                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:32:15.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616999038
+007G ƒcGBVƒ0616999038
+010@ ƒager
+011@ ƒa2009
+021A ƒaTransgene Pflanzen in der LandwirtschaftƒhInge Broer
+027D/00 ƒaJournal für Verbraucherschutz und LebensmittelsicherheitƒpBasel ; Boston, Mass. ; BerlinƒnBirkhäuserƒ01661-5751ƒz22321147
+028A ƒdIngeƒaBroerƒ9607645539ƒ8Inge@Broer ; PND-ID: 139044809
+031A ƒd4ƒj2009ƒe3/4ƒh 331-353
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ9510933890ƒ8Journal für Verbraucherschutz und Lebensmittelsicherheit. - Basel : Birkhäuserƒx200900000040003669
+101B ƒ022-01-10ƒt11:33:08.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521303060ƒ8Institut für Landnutzung <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:32:15.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110708238
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 83         PPN: 616995644                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt11:02:29.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616995644
+007G ƒcGBVƒ0616995644
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaRecent innovative strategies for the synthesis of aminesƒdfrom C-N bond formation to C-N bond activationƒhKarolin Krüger; Annegret Tillack; Matthias Beller
+027D/00 ƒaChemSusChemƒpWeinheimƒnWiley-VCHƒ01864-5631ƒz23899888
+028A ƒdKarolinƒaKrügerƒ9584496508ƒ8Karolin@Krüger ; PND-ID: 136535313
+028B/01 ƒdAnnegretƒaTillackƒ9585192111ƒ8Annegret@Tillack ; PND-ID: 136693903
+028B/02 ƒdMatthiasƒaBellerƒ9470641088ƒ8Matthias@Beller ; PND-ID: 112081908
+031A ƒd2ƒj2009ƒe8ƒh715-717
+039B ƒcInƒ954601058Xƒ8ChemSusChem. - Weinheim : Wiley-VCHƒx200900000020008285
+101B ƒ022-01-10ƒt11:02:29.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt11:02:29.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ0111069802X
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 84         PPN: 616995121                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt10:57:32.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616995121
+007G ƒcGBVƒ0616995121
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaFarnesoid X receptor critically determines the fibrotic response in mice but is expressed to a low extent in human hepatic stellate cells and periductal myofibroblastsƒhPeter Fickert; Andrea Fuchsbichler; Tarek Moustafa ...
+027D/00 ƒaThe @American journal of pathologyƒpBethesda, Md.ƒnAmerican Society for Investigative Pathologyƒ00002-9440ƒz29439
+028C/00 ƒdPeterƒaFickert
+028C/01 ƒdAndreaƒaFuchsbichler
+028C/02 ƒdTarekƒaMoustafa
+028C/03 ƒdMartinƒaWagner
+028C/04 ƒdGernotƒaZollner
+028C/05 ƒdEminaƒaHalilbasic
+028C/06 ƒdUlrikeƒaStöger
+028C/07 ƒdMarcoƒaArrese
+028C/08 ƒdMargaritaƒaPizarro
+028C/09 ƒdNancyƒaSolís
+028D/00 ƒdGonzaloƒaCarrasco
+028D/01 ƒdAlessandraƒaCaligiuri
+028D/02 ƒdMartinaƒaSombetzki
+028D/03 ƒdEmilƒaReisingerƒ9513734023ƒ8Emil Christian@Reisinger ; PND-ID: 13178577X
+028D/04 ƒdOleksiyƒaTsybrovskyy
+028D/05 ƒdKurtƒaZatloukal
+028D/06 ƒdHelmutƒaDenk
+028D/07 ƒdHartmutƒaJaeschke
+028D/08 ƒdMassimoƒaPinzani
+028D/09 ƒdMichaelƒaTrauner
+031A ƒd175ƒj2009ƒe6ƒh2392-2405
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ912907764Xƒ8The @American journal of pathology. - Bethesda, Md. : American Society for Investigative Pathologyƒx200900001750006608
+101B ƒ022-01-10ƒt10:57:32.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt10:57:32.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110696507
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 85         PPN: 616992815                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt10:47:29.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616992815
+007G ƒcGBVƒ0616992815
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaElastic multibody models of transport aircraft high-lift mechanismsƒhJános Zierath; Christoph Woernle; Thomas Heyden
+027D/00 ƒaJournal of aircraftƒpReston, Va. [u.a.]ƒnInst.ƒ00021-8669ƒz1604818
+028A ƒdJánosƒaZierath
+028B/01 ƒdChristophƒaWoernleƒ9616993927ƒ8Christoph@Woernle ; PND-ID: 140303553
+028B/02 ƒdThomasƒaHeyden
+031A ƒd46ƒj2009ƒe5ƒh1513-1524
+034M ƒagraph. Darst.
+039B ƒcInƒ912935886Xƒ8Journal of aircraft. - Reston, Va. [u.a.] : Inst.ƒx200900000460005487
+101B ƒ022-01-10ƒt10:39:50.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9516655698ƒ8Fakultät für Maschinenbau und Schiffstechnik  <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt10:39:13.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110690363
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 86         PPN: 616990197                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt10:16:51.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616990197
+007G ƒcGBVƒ0616990197
+010@ ƒager
+011@ ƒa2009
+021A ƒaSchadstoffbelastung von Elbauen und Testung der Sanierung durch PhytoremediationƒhRalph Meißner; Sebastian Bolze; Holger Rupp ...
+027D/00 ƒaWasserwirtschaftƒpWiesbadenƒnVieweg + Teubner, GWV-Fachverl.ƒ00043-0978ƒz2404345
+028C/00 ƒdRalphƒaMeißner
+028C/01 ƒdSebastianƒaBolze
+028C/02 ƒdHolgerƒaRupp
+028C/03 ƒdChristelƒaBaumƒ9397652372ƒ8Christel@Baum ; PND-ID: 113834268
+028C/04 ƒdDanaƒaZimmer
+028C/05 ƒdPeterƒaLeinweberƒ9534683541ƒ8Peter@Leinweber ; PND-ID: 133120813
+031A ƒd99ƒj2009ƒe6ƒh30-37
+039B ƒcInƒ9129593648ƒ8Wasserwirtschaft. - Wiesbaden : Vieweg + Teubner, GWV-Fachverl.ƒx200900000990006970
+101B ƒ022-01-10ƒt10:17:27.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521303060ƒ8Institut für Landnutzung <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt10:16:51.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110683227
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 87         PPN: 616990170                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:22-01-10
+001B ƒ00028:27-01-10ƒt13:30:07.000
+001D ƒ00028:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616990170
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0017-1
+007G ƒcGBVƒ0616990170
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0017-1ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0017-1&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0017-1
+010@ ƒaengƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaHydrogen generation from renewable resourcesƒhvorgelegt von Björn Loges
+028A ƒdBjörnƒaLogesƒ9616901666ƒ8Björn@Loges ; PND-ID: 140291040
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037A ƒaEnth. 8 Beitr. aus versch. Ztschr.
+037C ƒb@RostockƒaUniv., Mathematisch-Naturwiss. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaLoges, Björn: Hydrogen generation from renewable resourcesƒCGBVƒ6616810555
+044K/00 ƒ9106122150ƒ8Wasserstoff ; SWD-ID: 40647845
+044K/01 ƒ9105338958ƒ8Ruthenium ; SWD-ID: 41787663
+044K/02 ƒ9104630019ƒ8Ameisensäure ; SWD-ID: 42615203
+045Q/01 ƒ9106407856ƒ835.50 ; Organische Chemie: Allgemeines
+047I ƒaHydrogen generation from 2-propanol and formic acid and its direct use in fuel cells was studied. 2-propanol was dehydrogenated with ruthenium diamine catalysts. Formic acid was decomposed selectively to hydrogen and carbon dioxide in a system containing ruthenium catalysts and formic acid amine adducts. The best catalyst activity and productivity were achieved with in situ generated ruthenium phosphine catalysts, e.g. [RuCl2(benzene)]2 / dppe (TOF = 900 h-1, TON = 260.000). The influence of irradiation with visible light has been described for the ruthenium phosphine catalysts.
+101B ƒ022-01-10ƒt10:23:28.000
+101D ƒ022-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt10:23:28.000
+201D/01 ƒ022-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110685343
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 88         PPN: 61698894X                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt10:04:41.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061698894X
+007G ƒcGBVƒ061698894X
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaThe @thermodynamic properties of DL- and L-lactidesƒhV. N. Emel'yanenko; Sergej P. Verevkin; A. A. Pimerzin
+027D/00 ƒbRussian journal of physical chemistry / AƒaRussian journal of physical chemistryƒcAƒpMoscowƒnMAIK Nauka/Interperiodicaƒ00036-0244ƒz23164438
+028A ƒdV. N.ƒaEmel'yanenko
+028B/01 ƒdSergej P.ƒaVerevkinƒ9527950467ƒ8Sergey@Verevkin ; PND-ID: 132905841
+028B/02 ƒdA. A.ƒaPimerzin
+031A ƒd83ƒj2009ƒe12ƒh2013-2021
+039B ƒcInƒ9529803747ƒ8Russian journal of physical chemistry. - Moscow : MAIK Nauka/InterperiodicaRussian journal of physical chemistry / Aƒx200900000830012987
+101B ƒ022-01-10ƒt10:04:41.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513055452ƒ8Institut für Chemie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt10:04:41.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110679777
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 89         PPN: 61698829X                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt09:58:03.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061698829X
+007G ƒcGBVƒ061698829X
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaPhase transition in tetragonal hen egg-white lysozyme crystalsƒhA. V. Svanidze; H. Huth; S. G. Lushnikov ...
+027D/00 ƒaApplied physics lettersƒpMelville, NYƒnAIPƒ00003-6951ƒz2112450
+028C/00 ƒdA. V.ƒaSvanidze
+028C/01 ƒdHeikoƒaHuthƒ9082522715ƒ8Heiko@Huth ; PND-ID: 123383420
+028C/02 ƒdS. G.ƒaLushnikov
+028C/03 ƒdSeijiƒaKojima
+028C/04 ƒdChristophƒaSchickƒ9527946443ƒ8Christoph@Schick ; PND-ID: 132905272
+031A ƒd95ƒj2009ƒe26ƒh263702-1-263702-3
+034M ƒaIll., graph. Darst.
+039B ƒcInƒ912951568Xƒ8Applied physics letters. - Melville, NY : AIPƒx200900000950026298
+101B ƒ022-01-10ƒt09:57:29.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514419970ƒ8Institut für Physik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt09:57:29.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110677995
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 90         PPN: 616986947                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:22-01-10
+001B ƒ04382:22-01-10ƒt09:48:22.000
+001D ƒ04382:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616986947
+007G ƒcGBVƒ0616986947
+010@ ƒaeng
+011@ ƒa2009
+021A ƒaMass spectrometric and peptide chip epitope mapping of rheumatoid arthritis autoantigen RA33ƒhR. F. El-Kased; C. Koy; T. Deierling ...
+027D/00 ƒaEuropean journal of mass spectrometryƒpChichesterƒnIM Publicationsƒ01469-0667ƒz20213402
+028C/00 ƒdR. F.ƒaEl-Kased
+028C/01 ƒdCorneliaƒaKoy
+028C/02 ƒdT.ƒaDeierling
+028C/03 ƒdP.ƒaLorenz
+028C/04 ƒdZ.ƒaQian
+028C/05 ƒdY.ƒaLi
+028C/06 ƒdHans-JürgenƒaThiesenƒ9585340528ƒ8Hans-Jürgen@Thiesen ; PND-ID: 136714013
+028C/07 ƒdMichael O.ƒaGlocker
+031A ƒd15ƒj2009ƒe6ƒh747-759
+039B ƒcInƒ9318740516ƒ8European journal of mass spectrometry. - Chichester : IM Publicationsƒx200900000150006253
+101B ƒ022-01-10ƒt09:46:39.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ952071489Xƒ8Institut für Immunologie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt09:46:39.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110674813
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 91         PPN: 61698491X                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:22-01-10
+001B ƒ00028:22-01-10ƒt09:44:02.000
+001D ƒ00028:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ061698491X
+004A ƒA978-3-86009-055-8
+004U ƒ0urn:nbn:de:gbv:28-diss2009-0216-6
+007G ƒcGBVƒ061698491X
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0216-6ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0216-6&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2009-0216-6
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaEntwicklung, Implementierung und Validierung eines praxisnahen Verfahrens zur Bestimmung von Biogas- bzw. MethanerträgenƒhThomas Fritz
+028A ƒdThomasƒaFritzƒ9616909144ƒ8Thomas@Fritz ; PND-ID: 14029306X
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒbZugl.: @RostockƒaUniv., Diss., 2009
+039D ƒcDruckausg.ƒaFritz, Thomas: Entwicklung, Implementierung und Validierung eines praxisnahen Verfahrens zur Bestimmung von Biogas- bzw. MethanerträgenƒCGBVƒ6614048532
+045G ƒa620
+047C ƒaBiogaserträgen
+047I ƒaDurch diese Arbeit konnte auf Basis der VDI 4630 eine Methode erarbeitet werden, welche praxisnahe und reproduzierbare Ergebnisse von Biogaserträgen aus Feststoffen liefert. Die Untersuchungen zeigen, dass verschiedene Methoden (theoretische und praktische) zur Bestimmung von Biogaserträgen zu Ergebnissen unterschiedlicher Qualität führen. Derzeit kann nicht von einem Zusammenhang zwischen den Ergebnissen der getesteten theoretischen Modellen und den Ergebnissen der praktischen Bestimmung ausgegangen werden.
+101B ƒ022-01-10ƒt09:59:38.000
+101D ƒ022-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9527270202ƒ8Institut für Umweltingenieurwesen <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt09:59:38.000
+201D/01 ƒ022-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110678541
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 92         PPN: 616983905                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:22-01-10
+001B ƒ00028:22-01-10ƒt09:10:18.000
+001D ƒ00028:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616983905
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0020-6
+007G ƒcGBVƒ0616983905
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0020-6ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0020-6&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0020-6
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaBeeinflussung des Proliferationsverhaltens hormonaktiver Mamma- und Endometriumkarzinomzellen unter Einwirkung eines Pflanzenextraktes aus der Flatterulme - Ulmus laevisƒhvorgelegt von Daniel Paschke
+028A ƒdDanielƒaPaschkeƒ9616909594ƒ8Daniel@Paschke ; PND-ID: 140293221
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2010
+039D ƒcDruckausg.ƒaPaschke, Daniel: Beeinflussung des Proliferationsverhaltens hormonaktiver Mamma- und Endometriumkarzinomzellen unter Einwirkung eines Pflanzenextraktes aus der Flatterulme - Ulmus laevisƒCGBVƒ6616887787
+044K/00 ƒ9106367528ƒ8Brustkrebs ; SWD-ID: 40085284
+044K/00 ƒ9105145432ƒ8Gebärmutterschleimhautkrebs ; SWD-ID: 42041612
+044K/00 ƒ9104234504ƒ8Phytopharmakon ; SWD-ID: 41155610
+044K/00 ƒ9524238847ƒ8Flatterulme ; SWD-ID: 75560707
+045Q/01 ƒ9106410008ƒ844.92 ; Gynäkologie
+045Q/02 ƒ9106409433ƒ844.81 ; Onkologie
+047C ƒaMammakarzinomzellen
+047I ƒaSekundäre Pflanzenstoffe zeigen Potential als Arzneistoffe in der Medizin eingesetzt zu werden. Die vorliegende in vitro Studie zeigt, dass ein Extrakt der Flatterulmenrinde (Ulmus laevis) proliferationshemmend auf hormonaktive Endometrium- und Mammakarzinomzellen wirkt (MTT-Test / BrdU-Test). Es weist dabei sehr geringe Zytotoxizitäten auf (LDH-Test). Inhaltsstoffe wie Sterole/Terpene, Phytoestrogene, Fettsäuren sowie andere Substanzen konnten mittels Massenspektrometrie nachgewiesen werden. Das getestete Extrakt wirkt antiproliferativ und hat damit antikanzerogenes Potential.
+101B ƒ022-01-10ƒt09:14:37.000
+101D ƒ022-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9519454448ƒ8Universitätsfrauenklinik und Poliklinik am Klinikum Südstadt <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt09:14:37.000
+201D/01 ƒ022-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110667299
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 93         PPN: 61692559X                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:21-01-10
+001B ƒ04382:21-01-10ƒt15:38:54.000
+001D ƒ04382:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061692559X
+007G ƒcGBVƒ061692559X
+010@ ƒager
+011@ ƒa2009
+021A ƒaDie @biblischen "Hethiter/ Meik Gerhards
+027D/00 ƒaDie @Welt des OrientsƒpGöttingenƒnVandenhoeck & Ruprechtƒ00043-2547ƒz2026557
+028A ƒdMeikƒaGerhardsƒ951359597Xƒ8Meik@Gerhards ; PND-ID: 13085476X
+031A ƒd39ƒj2009ƒe2ƒh145-179
+039B ƒcInƒ9129472166ƒ8Die @Welt des Orients. - Göttingen : Vandenhoeck & Ruprechtƒx200900000390002855
+101B ƒ021-01-10ƒt15:38:54.000
+101D ƒ021-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9511449291ƒ8Theologische Fakultät <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt15:38:54.000
+201D/01 ƒ021-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110623895
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 94         PPN: 616889194                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:21-01-10
+001B ƒ00028:01-02-10ƒt11:35:25.000
+001D ƒ00028:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616889194
+007G ƒcGBVƒ0616889194
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaGestaltungsansätze flexibler Unternehmungen unter globalen Rahmenbedingungenƒhvorgelegt von Markus Roßbach
+028A ƒdMarkusƒaRoßbachƒ9616883447ƒ8Markus Jörg@Roßbach ; PND-ID: 140285652
+034D ƒaXIV, 441 S.
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Wirtschafts- u. Sozialwiss. Fak., Diss., 2009
+045Q/01 ƒ9181570378ƒ885.09 ; Unternehmensorganisation
+045Q/02 ƒ9106408682ƒ885.06 ; Unternehmensführung
+101B ƒ021-01-10ƒt10:36:26.000
+101D ƒ021-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513340432ƒ8Wirtschafts- und Sozialwissenschaftliche Fakultät <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt10:36:26.000
+201D/01 ƒ021-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110523327
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 95         PPN: 616887787                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:21-01-10
+001B ƒ00028:22-01-10ƒt09:10:33.000
+001D ƒ00028:21-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616887787
+007G ƒcGBVƒ0616887787
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaBeeinflussung des Proliferationsverhaltens hormonaktiver Mamma- und Endometriumkarzinomzellen unter Einwirkung eines Pflanzenextraktes aus der Flatterulme - Ulmus laevisƒhvorgelegt von Daniel Paschke
+028A ƒdDanielƒaPaschkeƒ9616909594ƒ8Daniel@Paschke ; PND-ID: 140293221
+034D ƒa95 Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2010
+039D ƒcOnline-Ausg.ƒaPaschke, Daniel: Beeinflussung des Proliferationsverhaltens hormonaktiver Mamma- und Endometriumkarzinomzellen unter Einwirkung eines Pflanzenextraktes aus der Flatterulme - Ulmus laevisƒCGBVƒ6616983905
+044K/00 ƒ9106367528ƒ8Brustkrebs ; SWD-ID: 40085284
+044K/00 ƒ9105145432ƒ8Gebärmutterschleimhautkrebs ; SWD-ID: 42041612
+044K/00 ƒ9104234504ƒ8Phytopharmakon ; SWD-ID: 41155610
+044K/00 ƒ9524238847ƒ8Flatterulme ; SWD-ID: 75560707
+045Q/01 ƒ9106410008ƒ844.92 ; Gynäkologie
+045Q/02 ƒ9106409433ƒ844.81 ; Onkologie
+047C ƒaMammakarzinomzellen
+101B ƒ021-01-10ƒt13:00:01.000
+101D ƒ021-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9519454448ƒ8Universitätsfrauenklinik und Poliklinik am Klinikum Südstadt <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt13:00:01.000
+201D/01 ƒ021-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110572948
+245Z/01 ƒaj2010ƒx99
+
+
+SET: S1 [134] TTL: 96         PPN: 616839669                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:20-01-10
+001B ƒ04382:20-01-10ƒt15:59:43.000
+001D ƒ04382:20-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616839669
+007G ƒcGBVƒ0616839669
+010@ ƒager
+011@ ƒa2009
+021A ƒaTheologische Texttheorieƒdtheologische Erkundungen zur Textualität der Heiligen Schrift zwischen Ludwig Wittgenstein und Johann Andreas QuenstedtƒhMichael Coors
+027D/00 ƒaNeue Zeitschrift für systematische Theologie und ReligionsphilosophieƒpBerlinƒnde Gruyterƒ00028-3517ƒz203055x
+028A ƒdMichaelƒaCoorsƒ9591017806ƒ8Michael@Coors ; PND-ID: 137210264
+031A ƒd51ƒj2009ƒe4ƒh400-426
+039B ƒcInƒ9129474436ƒ8Neue Zeitschrift für systematische Theologie und Religionsphilosophie. - Berlin : de Gruyterƒx200900000510004600
+101B ƒ020-01-10ƒt15:59:43.000
+101D ƒ020-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9511449291ƒ8Theologische Fakultät <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa20-01-10ƒbxv
+201B/01 ƒ020-01-10ƒt15:59:43.000
+201D/01 ƒ020-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110401841
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 97         PPN: 616839138                            SEITE1 .
+
+001@ ƒ0382ƒaU
+001A ƒ04382:20-01-10
+001B ƒ04382:20-01-10ƒt15:54:36.000
+001D ƒ04382:20-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0616839138
+007G ƒcGBVƒ0616839138
+010@ ƒager
+011@ ƒa2009
+021A ƒaVon der Welt als Schöpfung redenƒdSchöpfung und Evolution im Spannungsfeld von Natur und Kultur des MenschenƒhMichael Coors
+027D/00 ƒaBerliner theologische ZeitschriftƒpBerlinƒnWichern-Verl.ƒ00724-6137ƒz8030194
+028A ƒdMichaelƒaCoorsƒ9591017806ƒ8Michael@Coors ; PND-ID: 137210264
+031A ƒd26ƒj2009ƒe2ƒh323-345
+039B ƒcInƒ9130640743ƒ8Berliner theologische Zeitschrift. - Berlin : Wichern-Verl.ƒx200900000260002677
+101B ƒ020-01-10ƒt15:54:36.000
+101D ƒ020-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9511449291ƒ8Theologische Fakultät <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa20-01-10ƒbxv
+201B/01 ƒ020-01-10ƒt15:54:36.000
+201D/01 ƒ020-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110400322
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 98         PPN: 616810555                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:20-01-10
+001B ƒ00028:27-01-10ƒt13:31:02.000
+001D ƒ00028:20-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616810555
+007G ƒcGBVƒ0616810555
+010@ ƒaengƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaHydrogen generation from renewable resourcesƒhvorgelegt von Björn Loges
+028A ƒdBjörnƒaLogesƒ9616901666ƒ8Björn@Loges ; PND-ID: 140291040
+034D ƒaGetr. Zählung
+034M ƒaIll., graph. Darst.
+037A ƒaEnth. 8 Beitr. aus versch. Ztschr.
+037C ƒb@RostockƒaUniv., Mathematisch-Naturwiss. Fak., Diss., 2009
+039D ƒcOnline-Ausg.ƒaLoges, Björn: Hydrogen generation from renewable resourcesƒCGBVƒ6616990170
+044K/00 ƒ9106122150ƒ8Wasserstoff ; SWD-ID: 40647845
+044K/01 ƒ9105338958ƒ8Ruthenium ; SWD-ID: 41787663
+044K/02 ƒ9104630019ƒ8Ameisensäure ; SWD-ID: 42615203
+045Q/01 ƒ9106407856ƒ835.50 ; Organische Chemie: Allgemeines
+101B ƒ021-01-10ƒt11:32:06.000
+101D ƒ021-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514666013ƒ8Leibniz-Institut für Katalyse e.V. <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt11:32:06.000
+201D/01 ƒ021-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110545878
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 99         PPN: 616747365                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt14:49:10.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616747365
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0014-3
+007G ƒcGBVƒ0616747365
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0014-3ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0014-3&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0014-3
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaDie @Metabolisierung 15N-markierter Hefenukleinsäuren beim gesunden Erwachsenenƒdeine experimentelle Studieƒhvorgelegt von Rebekka Wichmann, [verh. Cantré]
+028A ƒdRebekkaƒaWichmannƒ9616510616ƒ8Rebekka@Cantré ; PND-ID: 140228225
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaWichmann, Rebekka: Die Metabolisierung 15N-markierter Hefenukleinsäuren beim gesunden ErwachsenenƒCGBVƒ6616512007
+044K/00 ƒ9105389587ƒ8Nucleinsäurestoffwechsel ; SWD-ID: 41721184
+044K/00 ƒ9105303895ƒ8Stickstoff-15 ; SWD-ID: 41832930
+045Q/01 ƒ9106421573ƒ844.33 ; Physiologische Chemie
+047I ƒaDie vorliegende Studie untersucht das Stoffwechselschicksal biotechnologisch synthetisierter 15N-markierter Nukleinsäuren aus 15NH4Cl ohne und mit zusätzlicher Gabe von Trockenhefe anhand der renalen und fäkalen Exkretion bzw. der Inkorporation in ausgewählten Blutplasmafraktionen beim gesunden Menschen. Die gewählte 15N-Nukleinsäurendosis von 15,27 mg/kg Körpergewicht reicht aus, um massenspektrometrisch erfassbare Konzentrationen des 15N im Blut, Harn und Stuhl zu erreichen. Die gewonnenen Ergebnisse lassen erste quantitative Aussagen über den Verbleib oral zugeführter Nukleinsäuren zu.
+101B ƒ019-01-10ƒt14:52:06.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523356730ƒ8Kinder- und Jugendklinik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt14:52:06.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110223102
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 100        PPN: 616746288                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt14:37:20.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616746288
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0001-0
+007G ƒcGBVƒ0616746288
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0001-0ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0001-0&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0001-0
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaFrequenzanalyse der Herzratenvariabilität in der Präventivmedizinƒhvorgelegt von Matthias Weippert
+028A ƒdMatthiasƒaWeippertƒ9616083696ƒ8Matthias@Weippert ; PND-ID: 140178406
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaWeippert, Matthias: Frequenzanalyse der Herzratenvariabilität in der PräventivmedizinƒCGBVƒ6615761992
+044K/00 ƒ9105738581ƒ8Herzfrequenz ; SWD-ID: 41256451
+044K/00 ƒ9105516147ƒ8Frequenzanalyse ; SWD-ID: 41553974
+044K/00 ƒ910433181Xƒ8Präventivmedizin ; SWD-ID: 40470337
+045Q/01 ƒ9106409417ƒ844.85 ; Kardiologie ; Angiologie
+045Q/02 ƒ9106421565ƒ844.11 ; Präventivmedizin
+047I ƒaAim was to test the ability of the parameter heart rate variability (HRV) to give insight into different stress-strain relations in the field of preventive medicine. Based on an overview of HRV`s physiology and potential, methodological aspects of HRV-analysis and HRV in the applied setting were explored. Results lead to the assumption that precise and valid measurements of inter-heartbeat-intervals are essential for HRV-analysis. Considering these criteria, HRV can complete the picture drawn by other physiological measures with respect to stress, strain and health risks of an individual.
+101B ƒ019-01-10ƒt14:40:49.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9546752810ƒ8Institut für Präventivmedizin <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt14:40:49.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110219431
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 101        PPN: 616736983                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt13:27:28.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616736983
+004U ƒ0urn:nbn:de:gbv:28-diss2009-0222-8
+007G ƒcGBVƒ0616736983
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0222-8ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0222-8&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2009-0222-8
+010@ ƒaeng
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaClinical, radiological and histological characteristics of orbital lesions and treatment optionsƒda study of 132 casesƒhvorgelegt von Kleanthis Manousaridis
+028A ƒdKleanthisƒaManousaridisƒ9616523564ƒ8Kleanthis@Manousaridis ; PND-ID: 140230947
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaManousaridis, Kleanthis: Clinical, radiological and histological characteristics of orbital lesions and treatment optionsƒCGBVƒ6616512465
+044K/00 ƒ9121620298ƒ8Augenhöhlenkrankheit ; SWD-ID: 43033891
+044K/00 ƒ9106142216ƒ8Therapie ; SWD-ID: 40597982
+045Q/01 ƒ9106410016ƒ844.95 ; Augenheilkunde
+047I ƒaA retrospective study of all orbital lesions, with exclusion of endocrine orbitopathy, which were treated in the University Clinic of Ophthalmology Rostock from the year 1993 to the year 2008. A pathophysiological and anatomical classification of inflammatory, neoplastic, vascular and degenerative lesions was made and treatment outcomes were analysed with reference to the literature.
+101B ƒ019-01-10ƒt13:19:34.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9534283861ƒ8Augenklinik und Poliklinik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt13:19:34.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110193750
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 102        PPN: 616736126                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:21-01-10ƒt17:10:03.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616736126
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0015-9
+007G ƒcGBVƒ0616736126
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0015-9ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0015-9&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0015-9
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaFunktionelle Relevanz der Stromkomponenten einzelner Myozyten für die elektrische Spike-Aktivität des glatten Muskels der Portalveneƒhvorgelegt von Robert Patejdl
+028A ƒdRobertƒaPatejdlƒ9616557345ƒ8Robert@Patejdl ; PND-ID: 140234136
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaPatejdl, Robert: Funktionelle Relevanz der Stromkomponenten einzelner Myozyten für die elektrische Spike-Aktivität des glatten Muskels der PortalveneƒCGBVƒ6616557817
+044K/00 ƒ9105399159ƒ8Muskelkontraktion ; SWD-ID: 41708581
+044K/00 ƒ9105500569ƒ8Glatte Muskulatur ; SWD-ID: 41574722
+044K/00 ƒ9128788496ƒ8Kaliumstrom ; SWD-ID: 43258335
+045Q/01 ƒ9106415883ƒ842.17 ; Allgemeine Physiologie <Biologie>
+045Q/02 ƒ9106409719ƒ844.37 ; Physiologie <Medizin>
+047I ƒaDie glatte Muskulatur der Portalvene der Ratte zeigt eine rhythmische Spontanaktivität, diese wird getriggert durch komplexe Aktionspotenziale mit langsamen Wellen und schnellen Spikes. Die ionalen Grundlagen dieser schnellen Spikes sind unbekannt und wurden in der vorliegenden Arbeit untersucht. Die Ergebnisse bestätigen die physiologische Relevanz der in Patch Clamp Experimenten untersuchten L-Typ Kalziumströme. Die bekannten Auswärtsströme erklären die Repolarisation nicht hinreichend, es ergeben sich Hinweise darauf, dass kalziumabhängige Kaliumströme hierbei wesentliche Rolle spielen.
+101B ƒ019-01-10ƒt13:08:41.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9556061667ƒ8Institut für Physiologie <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt13:08:41.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110188536
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 103        PPN: 616735014                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt12:53:33.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616735014
+004U ƒ0urn:nbn:de:gbv:28-diss2009-0220-6
+007G ƒcGBVƒ0616735014
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0220-6ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0220-6&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2009-0220-6
+010@ ƒager
+011@ ƒa2009ƒn[2009]
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaLandnutzungsänderungen in der Region Rostock - ein GIS- und Fernerkundungsansatz im Vergleich zu amtlichen statistischen Datenƒhvorgelegt von Ahmad Al-Hassideh
+028A ƒdAhmadƒaAl-Hassidehƒ9616561881ƒ8Ahmad@Al-Hassideh ; PND-ID: 140235418
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst., Kt.
+037C ƒb@RostockƒaUniv., Agrar- u. Umweltwiss. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaAl-Hassideh, Ahmad: Landnutzungsänderungen in der Region Rostock - ein GIS- und Fernerkundungsansatz im Vergleich zu amtlichen statistischen DatenƒCGBVƒ6615763685
+047I ƒaDiese Arbeit beschäftigt sich mit der Analyse der Landnutzungsveränderungen mittels Fernerkundung und GIS. Methodisch wird mit einer objektorientierten Klassifikation bestimmt. Zum Vergleich dienen Statistikdaten. Durch die Möglichkeit der kombinierten Betrachtung und Auswertung wird die Bevölkerungsstatistik mit einem räumlichen Bezug verknüpft. Die Zahlen erhalten wertvolle Zusatzinformationen. Insbesondere die Bevölkerungsentwicklung und mit dieser verbunden die Landnutzungsänderung können mit der vorgestellten Methode im zeitlichen Vergleich erkannt und analysiert werden.
+101B ƒ019-01-10ƒt12:59:18.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526433841ƒ8Institut für Management ländlicher Räume <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt12:59:18.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110184360
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 104        PPN: 616733836                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt12:36:20.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616733836
+004U ƒ0urn:nbn:de:gbv:28-diss2009-0206-0
+007G ƒcGBVƒ0616733836
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0206-0ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0206-0&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2009-0206-0
+010@ ƒaeng
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaGraph powersƒdhardness results, good characterizations and efficient algorithmsƒhvorgelegt von Ngoc Tuy Nguyen
+028A ƒdNgoc TuyƒaNguyenƒ961660632Xƒ8Ngoc Tuy@Nguyen ; PND-ID: 140242341
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Fak. f. Informatik u. Elektrotechnik, Diss., 2009
+039D ƒcDruckausg.ƒaNguyen, Ngoc Tuy: Graph powersƒCGBVƒ6612951650
+047I ƒaGiven a graph H = (V_H,E_H) and a positive integer k, the k-th power of H, written H^k, is the graph obtained from H by adding edges between any pair of vertices at distance at most k in H; formally, H^k = (V_H, {xy | 1 <= d_H (x, y) <= k}). A graph G is the k-th power of a graph H if G = H^k, and in this case, H is a k-th root of G. Our investigations deal with the computational complexity of recognizing k-th powers of general graphs as well as restricted graphs. This work provides new NP-completeness results, good characterizations and efficient algorithms for graph powers.
+101B ƒ019-01-10ƒt12:40:46.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526360216ƒ8Institut für Informatik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt12:40:46.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110169329
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 105        PPN: 616732449                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt12:22:42.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616732449
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0002-6
+007G ƒcGBVƒ0616732449
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0002-6ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0002-6&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0002-6
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaSchwangerschaft bei minderjährigen Müttern - eine Risiko-Schwangerschaft ?ƒdeine Analyse der Geburtsakten der Jahrgänge 1993-2000 ; aus dem Projekt "Bedingungen und Folgen minderjähriger Schwangerschaft"ƒhvorgelegt von René Hermann Barchmann
+028A ƒdRené HermannƒaBarchmannƒ9616147570ƒ8René Hermann@Barchmann ; PND-ID: 140192433
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaBarchmann, René Hermann: Schwangerschaft bei minderjährigen Müttern - eine Risiko-Schwangerschaft ?ƒCGBVƒ6615813801
+044K/00 ƒ9105078751ƒ8Risikoschwangerschaft ; SWD-ID: 42126988
+044K/00 ƒ9105405647ƒ8Minderjährigkeit ; SWD-ID: 41700053
+045Q/01 ƒ9106410008ƒ844.92 ; Gynäkologie
+047I ƒaVergleich von Risikofaktoren, Schwangerschafts- und Geburtsverlauf sowie Verfassung des Neugeborenen zwischen minder- und volljährigen Müttern anhand von 200 Geburtsakten der Jahrgänge 1993 - 2000 einer Rostocker Frauenklinik. Minderjährigkeit war dabei signifikant höher mit Risikofaktoren jedoch nicht höher mit einem schlechteren Outcome assoziiert.
+101B ƒ019-01-10ƒt12:25:38.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9526146354ƒ8Klinik für Psychiatrie, Neurologie, Psychosomatik und Psychotherapie im Kindes- und Jugendalter <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt12:25:38.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110152388
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 106        PPN: 61671355X                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:21-01-10ƒt16:47:53.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ061671355X
+004U ƒ0urn:nbn:de:gbv:28-diss2009-0203-2
+007G ƒcGBVƒ061671355X
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0203-2ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0203-2&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2009-0203-2
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaDas @Endometriumkarzinomƒdeine retrospektive Analyse der Prognosefaktoren und Therapieergebnisse an der Klinik und Poliklinik für Strahlentherapie der Universität Rostock von 1994 bis 2000ƒhvorgelegt von Beate Wilhelmsen
+028A ƒdBeateƒaWilhelmsenƒ9614256976ƒ8Beate@Wilhelmsen ; PND-ID: 139963812
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaWilhelmsen, Beate: Das EndometriumkarzinomƒCGBVƒ6615355137
+044K/00 ƒ9105145432ƒ8Gebärmutterschleimhautkrebs ; SWD-ID: 42041612
+044K/00 ƒ9104754869ƒ8Überlebenszeit ; SWD-ID: 41866095
+044K/00 ƒ9502117125ƒ8Kaplan-Meier-Schätzung ; SWD-ID: 48473844
+045Q/01 ƒ9106410008ƒ844.92 ; Gynäkologie
+045Q/02 ƒ9106409433ƒ844.81 ; Onkologie
+047I ƒaUntersucht wurden die Krankheitsverläufe von 230 Patientinnen mit einem Endometriumkarzinom, die von 1994 bis 2000 eine radiotherapeutische Behandlung erhielten. Die Behandlungsergebnisse bestätigen die insgesamt gute Prognose von postoperativ bestrahlten Patientinnen. Als signifikanter und unabhängiger Prognosefaktor erwies sich das Ausbreitungsstadium des Tumorleidens. Spezifische Nebenwirkungen der strahlentherapeutischen Behandlung wurden ermittelt.
+101B ƒ019-01-10ƒt10:06:33.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9537393145ƒ8Klinik und Poliklinik für Strahlentherapie <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt10:06:33.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110085680
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 107        PPN: 616712618                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt09:41:31.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616712618
+004U ƒ0urn:nbn:de:gbv:28-diss2009-0208-2
+007G ƒcGBVƒ0616712618
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0208-2ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0208-2&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2009-0208-2
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaDer @Einfluss des Wachstumshormons auf den Fettstoffwechsel kleinwüchsiger Kinder und Jugendlicherƒhvorgelegt von Ramona Dummer
+028A ƒdRamonaƒaDummerƒ9616153031ƒ8Ramona@Dummer ; PND-ID: 140193499
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaDummer, Ramona: Der Einfluss des Wachstumshormons auf den Fettstoffwechsel kleinwüchsiger Kinder und JugendlicherƒCGBVƒ6615394035
+044K/00 ƒ9104212136ƒ8Minderwuchs ; SWD-ID: 41700077
+044K/00 ƒ9105649988ƒ8Somatotropin ; SWD-ID: 41374460
+044K/00 ƒ9106245376ƒ8Lipidstoffwechsel ; SWD-ID: 40358756
+045Q/01 ƒ9106409514ƒ844.67 ; Kinderheilkunde
+047I ƒaIn dieser Studie sollte der Einfluss des Wachstumshormons auf die Fettoxidation untersucht werden. Dazu wurden kleinwüchsige Kinder im Alter von 6 bis 14 Jahren, welche mit Wachstumshormon behandelt wurden, in einem Zeitraum von drei Monaten beobachtet. Gemessen wurde eine Zunahme von Körpergröße und Körpergewicht. Eine Veränderung des Fettstoffwechsels wurde mittels 13CO2-Atemtests mit einem oral applizierten, den Fettstoffwechsel repräsentierenden 13C-markierten Algen-Lipid-Gemisches untersucht. Es zeigte sich eine signifikante Zunahme des Fettstoffwechels unter Wachstumshormontherapie.
+101B ƒ019-01-10ƒt09:44:35.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523356730ƒ8Kinder- und Jugendklinik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt09:44:35.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110079192
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 108        PPN: 616621086                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:18-01-10
+001B ƒ04382:19-01-10ƒt12:42:39.000
+001D ƒ00028:18-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616621086
+007G ƒcGBVƒ0616621086
+010@ ƒaeng
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaIndividual fertility choices in Polandƒhvorgelegt von Monika Mynarska
+028A ƒdMonikaƒaMynarskaƒ9616567278ƒ8Monika@Mynarska ; PND-ID: 140236775
+034D ƒa243 S.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Wirtschafts- u. Sozialwiss. Fak., Diss., 2009
+101B ƒ019-01-10ƒt12:42:39.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513340432ƒ8Wirtschafts- und Sozialwissenschaftliche Fakultät <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt12:42:39.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110170904
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 109        PPN: 616557817                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:15-01-10
+001B ƒ00028:21-01-10ƒt17:11:51.000
+001D ƒ00028:15-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616557817
+007G ƒcGBVƒ0616557817
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaFunktionelle Relevanz der Stromkomponenten einzelner Myozyten für die elektrische Spike-Aktivität des glatten Muskels der Portalveneƒhvorgelegt von Robert Patejdl
+028A ƒdRobertƒaPatejdlƒ9616557345ƒ8Robert@Patejdl ; PND-ID: 140234136
+034D ƒaVI, 111 Bl.
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcOnline-Ausg.ƒaPatejdl, Robert: Funktionelle Relevanz der Stromkomponenten einzelner Myozyten für die elektrische Spike-Aktivität des glatten Muskels der PortalveneƒCGBVƒ6616736126
+044K/00 ƒ9105399159ƒ8Muskelkontraktion ; SWD-ID: 41708581
+044K/00 ƒ9105500569ƒ8Glatte Muskulatur ; SWD-ID: 41574722
+044K/00 ƒ9128788496ƒ8Kaliumstrom ; SWD-ID: 43258335
+045Q/01 ƒ9106415883ƒ842.17 ; Allgemeine Physiologie <Biologie>
+045Q/02 ƒ9106409719ƒ844.37 ; Physiologie <Medizin>
+101B ƒ019-01-10ƒt13:08:20.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9556061667ƒ8Institut für Physiologie <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt13:08:20.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110188447
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 110        PPN: 616512007                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:14-01-10
+001B ƒ00028:19-01-10ƒt14:49:22.000
+001D ƒ00028:14-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616512007
+007G ƒcGBVƒ0616512007
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaDie @Metabolisierung 15N-markierter Hefenukleinsäuren beim gesunden Erwachsenenƒdeine experimentelle Studieƒhvorgelegt von Rebekka Wichmann, [verh. Cantré]
+028A ƒdRebekkaƒaWichmannƒ9616510616ƒ8Rebekka@Cantré ; PND-ID: 140228225
+034D ƒa87 Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcOnline-Ausg.ƒaWichmann, Rebekka: Die Metabolisierung 15N-markierter Hefenukleinsäuren beim gesunden ErwachsenenƒCGBVƒ6616747365
+044K/00 ƒ9105389587ƒ8Nucleinsäurestoffwechsel ; SWD-ID: 41721184
+044K/00 ƒ9105303895ƒ8Stickstoff-15 ; SWD-ID: 41832930
+045Q/01 ƒ9106421573ƒ844.33 ; Physiologische Chemie
+101B ƒ019-01-10ƒt14:51:47.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523356730ƒ8Kinder- und Jugendklinik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt14:51:47.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110222971
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 111        PPN: 615349056                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:18-12-09
+001B ƒ00028:29-01-10ƒt15:04:07.000
+001D ƒ00028:18-12-09
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0615349056
+007G ƒcGBVƒ0615349056
+010@ ƒaeng
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaPropagation of nonclassical light in structured mediaƒhvorgelegt von Dmytro Vasylyev
+028A ƒdDmytroƒaVasylyevƒ9617011095ƒ8Dmytro@Vasylyev ; PND-ID: 140308822
+034D ƒaII, 119 S.
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Mathematisch-Naturwiss. Fak., Diss., 2009
+039D ƒcOnline-Ausg.ƒaVasylyev, Dmytro: Propagation of nonclassical light in structured mediaƒCGBVƒ6617036160
+044K/00 ƒ9105104981ƒ8Gequetschter Zustand ; SWD-ID: 42093673
+044K/00 ƒ910497608Xƒ8Quantenrauschen ; SWD-ID: 42258479
+045Q/01 ƒ9106407449ƒ833.38 ; Quantenoptik ; nichtlineare Optik
+101B ƒ022-01-10ƒt13:54:18.000
+101D ƒ022-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514419970ƒ8Institut für Physik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt13:54:18.000
+201D/01 ƒ022-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110744811
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 112        PPN: 615314996                            SEITE1 .
+
+001@ ƒ0235,382ƒaU
+001A ƒ03235:17-12-09
+001B ƒ03235:17-12-09ƒt14:28:52.000
+001D ƒ03235:17-12-09
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0615314996
+007G ƒcGBVƒ0615314996
+010@ ƒager
+011@ ƒa2009
+019@ ƒaXA-DE
+021A ƒaRechtsfragen der maritimen Raumplanung - unter besonderer Berücksichtigung der FischereiƒhMathias Schubert
+028A ƒdMathiasƒaSchubert
+031A ƒd31ƒj2009ƒe12ƒh834-841
+039B ƒcInƒ9129894745ƒ8Natur und Recht. - Heidelberg : Springerƒx200900000310012166
+101B ƒ022-01-10ƒt10:31:42.000
+101D ƒ022-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9525214984ƒ8Juristische Fakultät <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt10:31:42.000
+201D/01 ƒ022-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ0111068794X
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 113        PPN: 614048532                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:02-12-09
+001B ƒ00028:22-01-10ƒt09:44:17.000
+001D ƒ00028:02-12-09
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0614048532
+004A ƒA978-3-86009-055-8
+007G ƒcGBVƒ0614048532
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaEntwicklung, Implementierung und Validierung eines praxisnahen Verfahrens zur Bestimmung von Biogas- bzw. MethanerträgenƒhThomas Fritz
+028A ƒdThomasƒaFritzƒ9616909144ƒ8Thomas@Fritz ; PND-ID: 14029306X
+033A ƒpRostockƒnUniv., Agrar- und Umweltwiss. Fak.
+034D ƒaIV, 187 S.
+034M ƒagraph. Darst.
+036E/00 ƒaInstitut für Umweltingenieurwesenƒl22
+036F/00 ƒx2200ƒ9547168632ƒ8Institut für Umweltingenieurwesen / Institut für Umweltingenieurwesen <Rostock> ; GKD-ID: 10096168X. - Rostock : Univ., Univ.-Bibliothek, Schriftentausch, 2007- ; ZDB-ID: 23926077ƒl22
+037C ƒbZugl.: @RostockƒaUniv., Diss., 2009
+039D ƒcOnline-Ausg.ƒaFritz, Thomas: Entwicklung, Implementierung und Validierung eines praxisnahen Verfahrens zur Bestimmung von Biogas- bzw. MethanerträgenƒCGBVƒ661698491X
+045G ƒa620
+047C ƒaBiogaserträgen
+101B ƒ021-01-10ƒt12:54:00.000
+101D ƒ021-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9527270202ƒ8Institut für Umweltingenieurwesen <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt12:54:00.000
+201D/01 ƒ021-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110571658
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 114        PPN: 61383254X                            SEITE1 .
+
+001@ ƒ0235,382ƒaU
+001A ƒ03235:27-11-09
+001B ƒ04382:27-01-10ƒt09:56:55.000
+001D ƒ03235:27-11-09
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ061383254X
+007G ƒcGBVƒ061383254X
+010@ ƒager
+011@ ƒa2009
+019@ ƒaXA-DE
+021A ƒaDie @Zucht hochleistender und gesunder Milchkühe - nur ein Traum?ƒhM. Schwerin
+027D/00 ƒaZüchtungskundeƒpStuttgartƒnUlmerƒ000445401ƒz2014920
+028A ƒdManfredƒaSchwerinƒ9588021148ƒ8Manfred@Schwerin ; PND-ID: 136930824
+031A ƒd81ƒj2009ƒe6ƒh389-396
+039B ƒcInƒ9129466271ƒ8Züchtungskunde. - Stuttgart : Ulmerƒx200900000810006611
+044K/00 ƒ9105406309ƒ8Milchkuh ; SWD-ID: 41699166
+044K/00 ƒ910614085Xƒ8Tierzucht ; SWD-ID: 40601432
+045Q/01 ƒ9106421662ƒ848.60 ; Tierproduktion ; Tierhaltung: Allgemeines
+101B ƒ027-01-10ƒt09:56:12.000
+101D ƒ027-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523435355ƒ8Institut für Nutztierwissenschaften und Technologie <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa27-01-10ƒbxv
+201B/01 ƒ027-01-10ƒt09:56:12.000
+201D/01 ƒ027-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111545456
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 115        PPN: 613689607                            SEITE1 .
+
+001@ ƒ092,382ƒaU
+001A ƒ00033:26-11-09
+001B ƒ04382:21-01-10ƒt09:21:33.000
+001D ƒ00033:26-11-09
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0613689607
+007G ƒcGBVƒ0613689607
+010@ ƒager
+011@ ƒa2009
+021A ƒaThesaurus des menschlichen Geistesƒdzu den Vorbildern von Gottfried Wilhelm Leibnitz zählt Joachim Jungius, mit dessen Namen Rostock fest verbunden ist...ƒhDietlinde Lau ; Regine Rachow
+027D/00 ƒaLeibniz NordostƒdJournal der Leibniz-Institute M-VƒpGreifswaldƒ018626335ƒz22124573
+028A ƒdDietlindeƒaLauƒ9616886926ƒ8Dietlinde@Lau ; PND-ID: 140287086
+028B/01 ƒdRegineƒaRachow
+031A ƒd9ƒj2009ƒh4-5
+034M ƒa2 Ill.
+039B ƒcInƒ9503896594ƒ8Leibniz Nordost. - Greifswald : Red. Leibniz-Nordostƒx200900000090000996
+101B ƒ021-01-10ƒt09:12:46.000
+101D ƒ021-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9515130885ƒ8Institut für Mathematik <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt09:12:46.000
+201D/01 ƒ021-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110497288
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 116        PPN: 610362941                            SEITE1 .
+
+001@ ƒ0252,382ƒaU
+001A ƒ04252:12-10-09
+001B ƒ04382:26-01-10ƒt15:20:49.000
+001D ƒ04252:12-10-09
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0610362941
+007G ƒcGBVƒ0610362941
+010@ ƒaeng
+011@ ƒa2009
+019@ ƒaXA-DE
+021A ƒaEffects of short rotation coppice with willows and poplar on soil ecologyƒhBaum, Christel; Leinweber, Peter; Weih, Martin; Lamersdorf, Norbert; Dimitriou, Ioannis
+027D/00 ƒaLandbauforschungƒpBraunschweigƒnvTIƒ00458-6859ƒz24355926
+028C/00 ƒdChristelƒaBaumƒ9397652372ƒ8Christel@Baum ; PND-ID: 113834268
+028C/01 ƒdPeterƒaLeinweberƒ9534683541ƒ8Peter@Leinweber ; PND-ID: 133120813
+028C/02 ƒdMartinƒaWeih
+028C/03 ƒdNorbertƒaLamersdorf
+028C/04 ƒdIoannisƒaDimitriou
+031A ƒd59ƒj2009ƒe3ƒh183-196
+037A ƒaOnline-Ausg.: http://www.vti.bund.de/fallitdok_extern/bitv/dk042572.pdf
+039B ƒcInƒ9571428800ƒ8Landbauforschung. - Braunschweig : VTIƒx200900000590003817
+047I ƒaEinfluss von Kurzumtrieb mit Weiden und Pappeln auf die Bodenökologie
+101B ƒ026-01-10ƒt15:20:49.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521303060ƒ8Institut für Landnutzung <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt15:20:49.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111493685
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 117        PPN: 610362216                            SEITE1 .
+
+001@ ƒ0252,382ƒaU
+001A ƒ04252:12-10-09
+001B ƒ04382:26-01-10ƒt15:22:41.000
+001D ƒ04252:12-10-09
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Asu
+003@ ƒ0610362216
+007G ƒcGBVƒ0610362216
+010@ ƒaeng
+011@ ƒa2009
+019@ ƒaXA-DE
+021A ƒaThe @impact of Short Rotation Coppice (SRC) cultivation on the environmentƒhDimitriou, Ioannis; Baum, Christel; Baum, Sarah; Busch, Gerald; Schulz, Ulrich; Köhn, Jörg; Lamersdorf, Norbert; Leinweber, Peter; Aronsson, Pär; Weih, Martin; Berndes, Göran; Bolte, Andreas
+027D/00 ƒaLandbauforschungƒpBraunschweigƒnvTIƒ00458-6859ƒz24355926
+028C/00 ƒdIoannisƒaDimitriou
+028C/01 ƒdChristelƒaBaumƒ9397652372ƒ8Christel@Baum ; PND-ID: 113834268
+028C/02 ƒdSarahƒaBaum
+028C/03 ƒdGeraldƒaBusch
+028C/04 ƒdUlrichƒaSchulz
+028C/05 ƒdJörgƒaKöhn
+028C/06 ƒdNorbertƒaLamersdorf
+028C/07 ƒdPeterƒaLeinweberƒ9534683541ƒ8Peter@Leinweber ; PND-ID: 133120813
+028C/08 ƒdPärƒaAronsson
+028C/09 ƒdMartinƒaWeih
+028D/00 ƒdGöranƒaBerndes
+028D/01 ƒdAndreasƒaBolte
+031A ƒd59ƒj2009ƒe3ƒh159-162
+034M ƒaIll.
+037A ƒaOnline-Ausg.: http://www.vti.bund.de/fallitdok_extern/bitv/dk042569.pdf
+039B ƒcInƒ9571428800ƒ8Landbauforschung. - Braunschweig : VTIƒx200900000590003841
+101B ƒ026-01-10ƒt15:22:41.000
+101D ƒ026-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521303060ƒ8Institut für Landnutzung <Rostock>
+144Z/20 ƒ9511037899ƒ8Zeitschrift
+144Z/21 ƒ9511033877ƒ8Aufsatz
+208@/01 ƒa26-01-10ƒbxv
+201B/01 ƒ026-01-10ƒt15:22:41.000
+201D/01 ƒ026-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111494339
+220B/01 ƒaScopus
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 118        PPN: 589990470                            SEITE1 .
+
+001@ ƒ011,22,31,39-40,62,69,72,345,382
+001A ƒ00007:26-01-09
+001B ƒ04382:20-01-10ƒt16:06:15.000
+001D ƒ00007:26-01-09
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0589990470
+004A ƒA978-3-525-56397-7
+007G ƒcGBVƒ0589990470
+010@ ƒager
+011@ ƒa2009
+013@/00 ƒ0ho
+019@ ƒaXA-DE-NI
+021A ƒaScriptura efficaxƒddie biblisch-dogmatische Grundlegung des theologischen Systems bei Johann Andreas Quenstedt ; ein dogmatischer Beitrag zu Theorie und Auslegung des biblischen Kanons als Heiliger SchriftƒhMichael Coors
+028A ƒdMichaelƒaCoorsƒ9591017806ƒ8Michael@Coors ; PND-ID: 137210264
+033A ƒpGöttingenƒnVandenhoeck & Ruprecht
+034D ƒa398 S.
+036E/00 ƒaForschungen zur systematischen und ökumenischen Theologieƒl123
+036F/00 ƒx12300ƒ9130172987ƒ8Forschungen zur systematischen und ökumenischen Theologie. - Göttingen : Vandenhoeck & Ruprecht, 1962- ; ZDB-ID: 521645xƒl123
+037C ƒbZugl.: @GreifswaldƒaUniv., Diss., 2008
+041A/00 ƒSpƒ71034776
+041A/01 ƒStƒ9106377604ƒ8Bibel ; SWD-ID: 40064062
+041A/02 ƒSsƒ9105694053ƒ8Kanon ; SWD-ID: 41315832
+041A/03 ƒSsƒ9104303123ƒ8Schriftverständnis ; SWD-ID: 42861093
+041A/04 ƒSsƒ9104675314ƒ8Exegese ; SWD-ID: 40159504
+041A/05 ƒSsƒ9104452455ƒ8Evangelische Theologie ; SWD-ID: 40158755
+041A/08 ƒf234561ƒf324561ƒf452361ƒf542361
+044K/00 ƒ9105911003ƒ8Quenstedt, Johann Andreas ; SWD-ID: 41034776
+045G ƒa220ƒa230
+045H/00 ƒeDDC22gerƒa220.12ƒc220.12ƒADDB
+045H/01 ƒeDDC22gerƒa230.044ƒc230.044ƒADDB
+045Q/01 ƒ9106403907ƒ811.55 ; Protestantismus
+045Q/02 ƒ9106403850ƒ811.61 ; Dogmatik ; Konfessionskunde
+045T ƒaBW 20140ƒABVB
+101B ƒ020-01-10ƒt16:06:15.000
+101D ƒ020-01-10ƒb637593ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9511449291ƒ8Theologische Fakultät <Rostock>
+144Z/20 ƒ9510795846ƒ8Monographie
+144Z/40 ƒ9510796052ƒ8Verfasser
+208@/01 ƒa20-01-10ƒbxv
+201B/01 ƒ020-01-10ƒt16:06:15.000
+201D/01 ƒ020-01-10ƒb637593ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110403291
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 119        PPN: 617480397                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:01-02-10
+001B ƒ00028:01-02-10ƒt13:20:44.000
+001D ƒ00028:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0617480397
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0021-2
+007G ƒcGBVƒ0617480397
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0021-2ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0021-2&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0021-2
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaDas @Auftreten früher arteriosklerotischer Gefäßveränderungen bei adipösen Kindern und Jugendlichen unter Berücksichtigung von Familienanamnese, Geburtsgewicht, Stillverhalten und Nikotinkonsumƒhvorgelegt von Julia Kretzschmar
+028A ƒdJuliaƒaKretzschmarƒ9617267685ƒ8Julia@Kretzschmar ; PND-ID: 140342168
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaKretzschmar, Julia: Das Auftreten früher arteriosklerotischer Gefäßveränderungen bei adipösen Kindern und Jugendlichen unter Berücksichtigung von Familienanamnese, Geburtsgewicht, Stillverhalten und NikotinkonsumƒCGBVƒ6617447950
+047I ƒaMit Hilfe nichtinvasiver Gefäßuntersuchungen wurden Frühformen und Vorstufen im pathogenetischen Prozess der Arteriosklerose bei adipösen Kindern und Jugendlichen festgestellt. Adipöse Kinder und Jugendliche haben eine signifikant erhöhte Intima-Media-Dicke und eine signifikant eingeschränkte flussbedingte Vasodilatation im Vergleich zu normalgewichtigen. Es konnte kein Einfluss der Familienanamnese, des Stillverhaltens und des Geburtsgewichtes aufgezeigt werden.
+101B ƒ001-02-10ƒt13:25:26.000
+101D ƒ001-02-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523356730ƒ8Kinder- und Jugendklinik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt13:25:26.000
+201D/01 ƒ001-02-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112097368
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 120        PPN: 617447950                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:01-02-10
+001B ƒ00028:01-02-10ƒt13:20:57.000
+001D ƒ00028:01-02-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617447950
+007G ƒcGBVƒ0617447950
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaDas @Auftreten früher arteriosklerotischer Gefäßveränderungen bei adipösen Kindern und Jugendlichen unter Berücksichtigung von Familienanamnese, Geburtsgewicht, Stillverhalten und Nikotinkonsumƒhvorgelegt von Julia Kretzschmar
+028A ƒdJuliaƒaKretzschmarƒ9617267685ƒ8Julia@Kretzschmar ; PND-ID: 140342168
+034D ƒa89 Bl.
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcOnline-Ausg.ƒaKretzschmar, Julia: Das Auftreten früher arteriosklerotischer Gefäßveränderungen bei adipösen Kindern und Jugendlichen unter Berücksichtigung von Familienanamnese, Geburtsgewicht, Stillverhalten und NikotinkonsumƒCGBVƒ6617480397
+101B ƒ001-02-10ƒt13:25:04.000
+101D ƒ001-02-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9523356730ƒ8Kinder- und Jugendklinik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt13:25:04.000
+201D/01 ƒ001-02-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112097252
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 121        PPN: 617434557                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:29-01-10
+001B ƒ00028:29-01-10ƒt17:21:27.000
+001D ƒ00028:29-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0617434557
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0019-5
+007G ƒcGBVƒ0617434557
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0019-5ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0019-5&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0019-5
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaErgebnisse einer risikoadaptierten und funktionsorientierten Radioiodtherapie bei Patienten mit Immunhyperthyreose (Morbus Basedow)ƒhvorgelegt von Volker Christof Neumann
+028A ƒdVolker ChristofƒaNeumannƒ9617266212ƒ8Volker Christof@Neumann ; PND-ID: 140341633
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2008
+039D ƒcDruckausg.ƒaNeumann, Volker Christof: Ergebnisse einer risikoadaptierten und funktionsorientierten Radioiodtherapie bei Patienten mit Immunhyperthyreose (Morbus Basedow)ƒCGBVƒ6617269564
+044K/00 ƒ9105600865ƒ8Basedow-Krankheit ; SWD-ID: 41440924
+044K/00 ƒ9105212776ƒ8Radioiodtherapie ; SWD-ID: 41953162
+045Q/01 ƒ9106409360ƒ844.64 ; Radiologie
+045Q/02 ƒ9106410075ƒ844.89 ; Endokrinologie
+047I ƒa351 Patienten mit M. Basedow wurden nach einem funktionsoptimierten und risikoadaptierten Dosiskonzept mit Radioiod behandelt. Ziel war die Wiederherstellung einer euthyreoten Stoffwechsellage durch simultane Berücksichtigung mehrerer prätherapeutischer Risikofaktoren unter Anpassung der Zielherddosen (125-250 Gy). Die so erreichte Euthyreoserate von 44,4% lag über Literaturangaben anderer funktionsoptimierter Studien bei vergleichbarer Gesamterfolgsrate von 66,7% (Eu- oder Hypothyreose). Eine weitere Steigerung der Euthyreoserate auf 50% wurde durch individuelle Halbwertzeitbestimmung erzielt.
+101B ƒ029-01-10ƒt17:28:23.000
+101D ƒ029-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9546751768ƒ8Klinik und Poliklinik für Nuklearmedizin <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa29-01-10ƒbxv
+201B/01 ƒ029-01-10ƒt17:28:23.000
+201D/01 ƒ029-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111927502
+245Z/01 ƒaj2008ƒx99
+
+
+SET: S1 [134] TTL: 122        PPN: 617269564                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:27-01-10
+001B ƒ00028:29-01-10ƒt17:22:10.000
+001D ƒ00028:27-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617269564
+007G ƒcGBVƒ0617269564
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaErgebnisse einer risikoadaptierten und funktionsorientierten Radioiodtherapie bei Patienten mit Immunhyperthyreose (Morbus Basedow)ƒhvorgelegt von Volker Christof Neumann
+028A ƒdVolker ChristofƒaNeumannƒ9617266212ƒ8Volker Christof@Neumann ; PND-ID: 140341633
+034D ƒa[6], 59 Bl.
+034M ƒagraph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2008
+039D ƒcOnline-Ausg.ƒaNeumann, Volker Christof: Ergebnisse einer risikoadaptierten und funktionsorientierten Radioiodtherapie bei Patienten mit Immunhyperthyreose (Morbus Basedow)ƒCGBVƒ6617434557
+044K/00 ƒ9105600865ƒ8Basedow-Krankheit ; SWD-ID: 41440924
+044K/00 ƒ9105212776ƒ8Radioiodtherapie ; SWD-ID: 41953162
+045Q/01 ƒ9106409360ƒ844.64 ; Radiologie
+045Q/02 ƒ9106410075ƒ844.89 ; Endokrinologie
+101B ƒ029-01-10ƒt17:27:57.000
+101D ƒ029-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9546751768ƒ8Klinik und Poliklinik für Nuklearmedizin <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa29-01-10ƒbxv
+201B/01 ƒ029-01-10ƒt17:27:57.000
+201D/01 ƒ029-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111927472
+245Z/01 ƒaj2008ƒx99
+
+
+SET: S1 [134] TTL: 123        PPN: 617117144                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:26-01-10
+001B ƒ04382:01-02-10ƒt10:54:51.000
+001D ƒ00028:26-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617117144
+007G ƒcGBVƒ0617117144
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaInduktion timing-abhängiger Plastizität im menschlichen primären somatosensiblen Kortex durch ein externes Stimulationsprotokollƒdeine elektrophysiologische Untersuchungƒhvorgelegt von Arne Schmidt
+028A ƒdArneƒaSchmidtƒ9617459800ƒ8Arne@Schmidt ; PND-ID: 140382593
+034D ƒa70 Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2008
+044K/00 ƒ9105149640ƒ8Somatosensorisches System ; SWD-ID: 42036124
+044K/00 ƒ9105085197ƒ8Somatosensorisch evoziertes Potenzial ; SWD-ID: 42118554
+044K/00 ƒ910441698Xƒ8Transkranielle magnetische Stimulation ; SWD-ID: 42124086
+045Q/01 ƒ9106409980ƒ844.90 ; Neurologie
+045Q/02 ƒ9106415883ƒ842.17 ; Allgemeine Physiologie <Biologie>
+101B ƒ001-02-10ƒt10:54:51.000
+101D ƒ001-02-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ952071363Xƒ8Klinik und Poliklinik für Neurologie <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa01-02-10ƒbxv
+201B/01 ƒ001-02-10ƒt10:54:51.000
+201D/01 ƒ001-02-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01112055118
+245Z/01 ƒaj2008ƒx99
+
+
+SET: S1 [134] TTL: 124        PPN: 616749740                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:22-01-10ƒt10:39:04.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616749740
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0011-6
+007G ƒcGBVƒ0616749740
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0011-6ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0011-6&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0011-6
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaAdhäsionsinhibition von primären humanen Linsenepithelzellen in vitro durch den T-Typ-Kalziumkanal-Antagonisten Mibefradilƒhvorgelegt von Friederike Kunz
+028A ƒdFriederikeƒaKunzƒ9616497156ƒ8Friederike Gesine Elisabeth@Kunz ; PND-ID: 14022579X
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Mathematisch-Naturwiss. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaKunz, Friederike: Adhäsionsinhibition von primären humanen Linsenepithelzellen in vitro durch den T-Typ-Kalziumkanal-Antagonisten MibefradilƒCGBVƒ6616511477
+044K/00 ƒ9104927283ƒ8Cataracta secundaria ; SWD-ID: 42321360
+044K/00 ƒ9105422606ƒ8Linsenepithel ; SWD-ID: 41677791
+044K/00 ƒ9243929293ƒ8Mibefradil ; SWD-ID: 45020450
+045Q/01 ƒ9106421433ƒ842.15 ; Zellbiologie
+045Q/02 ƒ9106410016ƒ844.95 ; Augenheilkunde
+047I ƒaIn vitro wurde der Einfluss des T-Typ Kalziumkanal-Antagonisten Mibefradil auf Adhäsion, Proliferation und Überleben an humanen Linsenepithelzellen (hLEZ) untersucht. Elektrophysiologisch ließen sich spannungsabhängige K(+) und Ca(2+)-Ströme in hLEZ nachweisen. Mibefradil beeinflusste diese Ionenströme, Komponenten der Zelladhäsion, das Zytoskelett sowie Zellproliferation und Überlebensfähigkeit. Der inhibitorische Effekt von Mibefradil auf diese Zellfunktionen war dosis- und zeitabhängig. Sowohl in primären Linsenepithelzellen als auch in der Zelllinie HLE-B3 induzierte Mibefradil Apoptose.
+101B ƒ019-01-10ƒt15:13:03.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt15:13:03.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110229356
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 125        PPN: 616748728                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt14:57:38.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616748728
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0013-8
+007G ƒcGBVƒ0616748728
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0013-8ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0013-8&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0013-8
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaDie @intrakardiale Wirkung von Erythropoietin nach künstlicher Induktion eines Myokardinfarkts im Rattenmodellƒhvorgelegt von Christian Klopsch
+028A ƒdChristianƒaKlopschƒ9616492391ƒ8Christian Robert@Klopsch ; PND-ID: 140224432
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaKlopsch, Christian: Die intrakardiale Wirkung von Erythropoietin nach künstlicher Induktion eines Myokardinfarkts im RattenmodellƒCGBVƒ6616511779
+044K/00 ƒ9104755644ƒ8Erythropoietin ; SWD-ID: 41529649
+044K/00 ƒ9106297104ƒ8Herzinfarkt ; SWD-ID: 40246541
+045Q/01 ƒ9106409417ƒ844.85 ; Kardiologie ; Angiologie
+047I ƒaStudien verdeutlichen positive Effekte von Erythropoietin bei ischämischem Myokardschaden. Diese Arbeit untersuchte eine intrakardiale Erythropoietin Therapie (MI-EPO) nach Myokardinfarkt in Ratten gegen eine Infarktkontrollgruppe (MIC) und gesunde Tiere. Physiologische und biochemische Analysen während 6 Wochen zeigten in MI-EPO Verbesserungen der biventrikulären Herzfunktion, der Physis, der Infarktgröße, der Zytoprotektion und des myokardialen Umbauprozesses gegenüber MIC. Die intrakardial erstmals dargestellte Induktion von SDF-1 und Stammzellchemoattraktion könnten mitverantwortlich sein.
+101B ƒ019-01-10ƒt15:01:08.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9534396747ƒ8Klinik und Poliklinik für Herzchirurgie <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt15:01:08.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110226071
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 126        PPN: 616737955                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt13:40:10.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616737955
+004U ƒ0urn:nbn:de:gbv:28-diss2009-0179-4
+007G ƒcGBVƒ0616737955
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0179-4ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2009-0179-4&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2009-0179-4
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaSystem zur Erfassung und Verarbeitung von Parametern im Rahmen des arbeitsphysiologischen Belastungs-Beanspruchungs-Konzeptesƒhvorgelegt von Reinhard Vilbrandt
+028A ƒdReinhardƒaVilbrandtƒ9616150911ƒ8Reinhard@Vilbrandt ; PND-ID: 140193014
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll.
+037C ƒb@RostockƒaUniv., Fak. f. Informatik u. Elektrotechnik, Diss., 2009
+039D ƒcDruckausg.ƒaVilbrandt, Reinhard: System zur Erfassung und Verarbeitung von Parametern im Rahmen des arbeitsphysiologischen Belastungs-Beanspruchungs-KonzeptesƒCGBVƒ6615389716
+044K/00 ƒ9106392131ƒ8Arbeitsphysiologie ; SWD-ID: 40027570
+044K/00 ƒ9106354248ƒ8Datenerfassung ; SWD-ID: 40111234
+044K/00 ƒ9106354116ƒ8Datenverwaltung ; SWD-ID: 40111684
+044K/00 ƒ9105696773ƒ8Datenauswertung ; SWD-ID: 41311930
+044K/00 ƒ9104136626ƒ8Visualisierung ; SWD-ID: 41884176
+045Q/01 ƒ9106415964ƒ844.12 ; Arbeitsmedizin ; betriebliches Gesundheitswesen
+045Q/02 ƒ9106419412ƒ850.20 ; Automatisierungstechnik
+047I ƒaDas automatisierungstechnische System medLIMS führt zu einer erheblichen Verbesserung in der Versuchsdurchführung und -auswertung in der arbeitsphysiologischen Forschung und Diagnose. Arbeitsabschnitte, Tätigkeiten und Fragebögen werden mit einem Protokollierungssystem (Mobilfunktelefon) erfasst. Physiologische Daten wie Herzfrequenz, EKG, Blutdruck, Atemgasparameter werden von Messgeräten geladen. Die Datenaufbereitung ermöglicht die Visualisierung, die Datenauswertung und -ausgabe. Die Praxistauglichkeit des Systems wurde in mehreren Untersuchungsreihen und Forschungsprojekten bestätigt.
+101B ƒ019-01-10ƒt14:19:37.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9522062164ƒ8Institut für Automatisierungstechnik <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt14:19:37.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110212496
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 127        PPN: 616711301                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt09:27:25.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0616711301
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0005-4
+007G ƒcGBVƒ0616711301
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0005-4ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0005-4&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0005-4
+010@ ƒagerƒaeng
+011@ ƒa2008
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaEndovaskuläre Rekonstruktion der thorakalen Aorta bei Aortendissektionƒhvorgelegt von: Tim Christopher Rehders
+028A ƒdTim ChristopherƒaRehdersƒ9584736894ƒ8Tim@Rehders ; PND-ID: 136639526
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037A ƒaEnth. Beitr. aus versch. Ztschr.
+037C ƒb@RostockƒaUniv., Habil.-Schr., 2009
+039D ƒcDruckausg.ƒaRehders, Tim Christopher: Endovaskuläre Rekonstruktion der thorakalen Aorta bei AortendissektionƒCGBVƒ6615815065
+044K/00 ƒ910632070Xƒ8Gefäßchirurgie ; SWD-ID: 40196513
+044K/00 ƒ9373408196ƒ8Arterielle Dissektion ; SWD-ID: 47550016
+044K/00 ƒ9305133403ƒ8Stent ; SWD-ID: 45629730
+045Q/01 ƒ9106409417ƒ844.85 ; Kardiologie ; Angiologie
+045Q/02 ƒ9106409379ƒ844.61 ; Innere Medizin
+047I ƒaDie Thorakale EndoVaskuläre AortenRekonstruktion (TEVAR) ist eine minimal-invasive Therapiealternative für Patienten mit Typ B-Aortendissektion, die auf der perkutanen Implantation von Stent-Grafts beruht. Die wissenschaftlichen Studien und Analysen, die in dieser Habilitationsschrift zusammengefasst sind, belegen die sehr gute technische Durchführbarkeit und hohe Sicherheit der TEVAR sowie die Bedeutung der transösophagealen Echokardiographie, des intravaskulären Ultraschall und der Schrittmacher-induzierten Hypotension während der Implantation von Stent-Grafts.
+101B ƒ019-01-10ƒt09:31:18.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9513722599ƒ8Klinik für Innere Medizin <Rostock>
+144Z/20 ƒ9533986532ƒ8Habilitation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt09:31:18.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110076177
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 128        PPN: 61670612X                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:19-01-10
+001B ƒ00028:19-01-10ƒt08:06:49.000
+001D ƒ00028:19-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ061670612X
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0009-9
+007G ƒcGBVƒ061670612X
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0009-9ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0009-9&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0009-9
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaMolekulargenetische und klinische Untersuchungen zur Laktoseintoleranz (Hypolaktasie)ƒhvorgelegt von Johannes Futh
+028A ƒdJohannesƒaFuthƒ9616153988ƒ8Johannes@Futh ; PND-ID: 140193774
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcDruckausg.ƒaFuth, Johannes: Molekulargenetische und klinische Untersuchungen zur Laktoseintoleranz (Hypolaktasie)ƒCGBVƒ6616062842
+044K/00 ƒ912660181Xƒ8Lactoseintoleranz ; SWD-ID: 43158286
+044K/00 ƒ9106225790ƒ8Molekulargenetik ; SWD-ID: 40399874
+044K/00 ƒ9591855690ƒ8Genotypisierung ; SWD-ID: 76418297
+045Q/01 ƒ9106409999ƒ844.87 ; Gastroenterologie
+045Q/02 ƒ9106410458ƒ842.13 ; Molekularbiologie
+047I ƒa2002 wurde mit dem Genotypen LCT-13910C/C ein Marker beschrieben, der mit dem primären adulten Laktasemangel (PAL) assoziiert sein soll. Ziel war die Evaluierung des entsprechenden genetischen Tests. Referenz war der H2-Atemtest. Die Studie bestätigte mit einer Sensitivität und Spezifität von 89% bzw. 97% für den genetischen Test, dass sich das Verfahren im klinischen Einsatz zum Ausschluss eines PAL eignet. Zudem erfolgte in einer Genotypisierungsstudie die Erhebung der Prävalenz des PAL erstmalig im Raum Rostock und zu interethnischen Vergleichszwecken in einer asiatischen Kohorte.
+101B ƒ019-01-10ƒt08:11:04.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ953428406Xƒ8Institut für Klinische Chemie und Laboratoriumsmedizin <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt08:11:04.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110060734
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 129        PPN: 616620993                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:18-01-10
+001B ƒ00028:22-01-10ƒt12:14:24.000
+001D ƒ00028:18-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616620993
+007G ƒcGBVƒ0616620993
+010@ ƒaeng
+011@ ƒa2008
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaWater and solute fluxes in paddy rice fieldsƒdexperimental investigations and numerical analysesƒhvorgelegt von Manon Janssen
+028A ƒdManonƒaJanssenƒ961691878Xƒ8Manon@Janssen ; PND-ID: 140295461
+034D ƒaXV, 149, A26 S.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Agrar- u. Umweltwiss. Fak., Diss., 2009
+045Q/01 ƒ9106409069ƒ848.32 ; Bodenkunde, Bodenbewertung <Land- und Forstwirtschaft>
+101B ƒ021-01-10ƒt14:36:15.000
+101D ƒ021-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9521303060ƒ8Institut für Landnutzung <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa21-01-10ƒbxv
+201B/01 ƒ021-01-10ƒt14:36:15.000
+201D/01 ƒ021-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110603665
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 130        PPN: 616511779                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:14-01-10
+001B ƒ00028:19-01-10ƒt14:57:50.000
+001D ƒ00028:14-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616511779
+007G ƒcGBVƒ0616511779
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaDie @intrakardiale Wirkung von Erythropoietin nach künstlicher Induktion eines Myokardinfarkts im Rattenmodellƒhvorgelegt von Christian Klopsch
+028A ƒdChristianƒaKlopschƒ9616492391ƒ8Christian Robert@Klopsch ; PND-ID: 140224432
+034D ƒaIII, 97, [6] Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Med. Fak., Diss., 2009
+039D ƒcOnline-Ausg.ƒaKlopsch, Christian: Die intrakardiale Wirkung von Erythropoietin nach künstlicher Induktion eines Myokardinfarkts im RattenmodellƒCGBVƒ6616748728
+044K/00 ƒ9104755644ƒ8Erythropoietin ; SWD-ID: 41529649
+044K/00 ƒ9106297104ƒ8Herzinfarkt ; SWD-ID: 40246541
+045Q/01 ƒ9106409417ƒ844.85 ; Kardiologie ; Angiologie
+101B ƒ019-01-10ƒt15:00:41.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9534396747ƒ8Klinik und Poliklinik für Herzchirurgie <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt15:00:41.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110225903
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 131        PPN: 616511477                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:14-01-10
+001B ƒ00028:22-01-10ƒt10:38:35.000
+001D ƒ00028:14-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0616511477
+007G ƒcGBVƒ0616511477
+010@ ƒager
+011@ ƒa2008
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaAdhäsionsinhibition von primären humanen Linsenepithelzellen in vitro durch den T-Typ-Kalziumkanal-Antagonisten Mibefradilƒhvorgelegt von Friederike Kunz
+028A ƒdFriederikeƒaKunzƒ9616497156ƒ8Friederike Gesine Elisabeth@Kunz ; PND-ID: 14022579X
+034D ƒaIII, 124 Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Mathematisch-Naturwiss. Fak., Diss., 2009
+039D ƒcOnline-Ausg.ƒaKunz, Friederike: Adhäsionsinhibition von primären humanen Linsenepithelzellen in vitro durch den T-Typ-Kalziumkanal-Antagonisten MibefradilƒCGBVƒ6616749740
+044K/00 ƒ9104927283ƒ8Cataracta secundaria ; SWD-ID: 42321360
+044K/00 ƒ9105422606ƒ8Linsenepithel ; SWD-ID: 41677791
+044K/00 ƒ9243929293ƒ8Mibefradil ; SWD-ID: 45020450
+045Q/01 ƒ9106421433ƒ842.15 ; Zellbiologie
+045Q/02 ƒ9106410016ƒ844.95 ; Augenheilkunde
+101B ƒ019-01-10ƒt15:12:39.000
+101D ƒ019-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9514085495ƒ8Institut für Biowissenschaften <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa19-01-10ƒbxv
+201B/01 ƒ019-01-10ƒt15:12:09.000
+201D/01 ƒ019-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110229089
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 132        PPN: 617006806                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:22-01-10
+001B ƒ00028:27-01-10ƒt11:12:02.000
+001D ƒ00028:22-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0617006806
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0004-8
+007G ƒcGBVƒ0617006806
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0004-8ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0004-8&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0004-8
+010@ ƒager
+011@ ƒa2007ƒn2007
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaZur individuell-sozialen Identitätsformation junger ErwachsenerƒdSelbstbildung und die Bedeutung der beruflichen Identitätƒhvorgelegt von Peggy Never, geb. Martens
+028A ƒdPeggyƒaNeverƒ961615478Xƒ8Peggy@Never ; PND-ID: 140193960
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+037A ƒaDie elektronische Ausg. weicht von der gedruckten ab. Die gedr. Ausg. enthält einen Anhang auf einer CD-ROM.
+037C ƒb@RostockƒaUniv., Diss., 2009
+039D ƒcDruckausg.ƒaNever, Peggy: Zur individuell-sozialen Identitätsformation junger ErwachsenerƒCGBVƒ661577850X
+044K/00 ƒ9104419199ƒ8Jugend ; SWD-ID: 40288596
+044K/00 ƒ910435366Xƒ8Identitätsentwicklung ; SWD-ID: 41386164
+044K/00 ƒ9104509716ƒ8Beruf ; SWD-ID: 40058578
+044K/00 ƒ9104675101ƒ8Sozialisation ; SWD-ID: 40557832
+044K/00 ƒ9106286862ƒ8Industriegesellschaft ; SWD-ID: 40268287
+045Q/01 ƒ9106416235ƒ881.24 ; Bildung und Beruf
+045Q/02 ƒ9106414437ƒ880.02 ; Philosophie und Theorie der Pädagogik
+045Q/03 ƒ9106414445ƒ880.03 ; Methoden und Techniken der Pädagogik
+047I ƒaDie Identitätssuche junger Menschen in der Spätmoderne ist ein pädagogisches Thema von anhaltender Relevanz und Brisanz zugleich. Notwendiger Ausgangspunkt für ein Verständnis und damit für einen Zugang zur innerprozessualen Identitätszielstruktur ist die Entwicklung eines dynamischen Identitätsmodells. Am Beispiel einer empirischen Re-Analyse von qualitativen Interviews junger Erwachsener kristallisieren sich mit Hilfe eines spezifischen methodisch-technischen Verfahrens spätmoderne plurale Identitätsmuster heraus, die insbesondere die hohe Bedeutung der beruflichen Identität betonen und konzeptionelle Schlussfolgerungen erlauben.
+101B ƒ022-01-10ƒt13:18:44.000
+101D ƒ022-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9518567230ƒ8Philosophische Fakultät <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa22-01-10ƒbxv
+201B/01 ƒ022-01-10ƒt13:18:44.000
+201D/01 ƒ022-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01110736436
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 133        PPN: 617434964                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:29-01-10
+001B ƒ00028:29-01-10ƒt18:05:43.000
+001D ƒ00028:29-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Oau
+003@ ƒ0617434964
+004U ƒ0urn:nbn:de:gbv:28-diss2010-0022-8
+007G ƒcGBVƒ0617434964
+009P/03 ƒyMetadatenƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0022-8ƒqtext/html
+009P/03 ƒyVolltextƒahttp://rosdok.uni-rostock.de/resolve?urn=urn:nbn:de:gbv:28-diss2010-0022-8&pdfƒqapplication/pdfƒ4LF
+009P/03 ƒahttp://nbn-resolving.de/urn:nbn:de:gbv:28-diss2010-0022-8
+010@ ƒager
+011@ ƒa2000ƒn[2009]
+013@/00 ƒ0ho
+013@/00 ƒ0o3
+016H ƒ0Elektronische Ressource
+019@ ƒaXA-DE
+021A ƒaEntwicklung einer elektromagnetisch angetriebenen Dosierpumpe der "Zentifluidtechnik"ƒhvorgelegt von Stefan Barten
+028A ƒdStefanƒaBartenƒ9617267928ƒ8Stefan@Barten ; PND-ID: 140342273
+033B/01 ƒpRostockƒnUniversitätsbibliothek
+034D ƒaOnline-Ressource
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Fak. f. Maschinenbau u. Schiffstechnik, Diss., 2009
+039D ƒcDruckausg.ƒaBarten, Stefan: Entwicklung einer elektromagnetisch angetriebenen Dosierpumpe der "Zentifluidtechnik"ƒCGBVƒ6617391998
+047I ƒaThema der vorliegenden Arbeit ist die Entwicklung und Untersuchung einer elektromagnetisch betriebenen Dosierpumpe zur Versorgung von Stand- bzw. Zuheizgeräten. Hinsichtlich ihrer Leistung gehört die neu entwickelte Dosierpumpe zur Zentifluidtechnik. Der Begriff Zentifluidtechnik wurde im Rahmen dieser Arbeit definiert und charakterisiert fluidtechnische Komponenten in einem Leistungsbereich zwischen 1 W und 100 W.
+101B ƒ029-01-10ƒt18:12:25.000
+101D ƒ029-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9516655698ƒ8Fakultät für Maschinenbau und Schiffstechnik  <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa29-01-10ƒbxv
+201B/01 ƒ029-01-10ƒt18:12:25.000
+201D/01 ƒ029-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111928681
+245Z/01 ƒaj2009ƒx99
+
+
+SET: S1 [134] TTL: 134        PPN: 617391998                            SEITE1 .
+
+001@ ƒ062,382
+001A ƒ00028:29-01-10
+001B ƒ00028:29-01-10ƒt18:06:06.000
+001D ƒ00028:29-01-10
+001U ƒ0utf8
+001X ƒ00
+002@ ƒ0Aau
+003@ ƒ0617391998
+007G ƒcGBVƒ0617391998
+010@ ƒager
+011@ ƒa2000ƒn[2009]
+013@/00 ƒ0ho
+019@ ƒaXA-DE-MV
+021A ƒaEntwicklung einer elektromagnetisch angetriebenen Dosierpumpe der "Zentifluidtechnik"ƒhvorgelegt von Stefan Barten
+028A ƒdStefanƒaBartenƒ9617267928ƒ8Stefan@Barten ; PND-ID: 140342273
+034D ƒaV, 106, [11] Bl.
+034M ƒaIll., graph. Darst.
+037C ƒb@RostockƒaUniv., Fak. f. Maschinenbau u. Schiffstechnik, Diss., 2009
+039D ƒcOnline-Ausg.ƒaBarten, Stefan: Entwicklung einer elektromagnetisch angetriebenen Dosierpumpe der "Zentifluidtechnik"ƒCGBVƒ6617434964
+101B ƒ029-01-10ƒt18:11:58.000
+101D ƒ029-01-10ƒb637594ƒa4382
+101U ƒ0utf8
+144Z/00 ƒ9516655698ƒ8Fakultät für Maschinenbau und Schiffstechnik  <Rostock>
+144Z/20 ƒ9515078905ƒ8Dissertation
+208@/01 ƒa29-01-10ƒbxv
+201B/01 ƒ029-01-10ƒt18:11:58.000
+201D/01 ƒ029-01-10ƒb637594ƒa4382
+201U ƒ0utf8
+203@/01 ƒ01111928673
+245Z/01 ƒaj2009ƒx99
+
+
