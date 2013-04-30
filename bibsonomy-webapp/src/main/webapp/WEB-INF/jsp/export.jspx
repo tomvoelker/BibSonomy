@@ -31,7 +31,18 @@
     <jsp:attribute name="content">
         <div>
           <fmt:message key="export.format"/>:${mtl:ch('nbsp')}
-          <export:formats/>         
+          <export:formats/>
+          
+          <form id="exportOptions" class='exportoptions' method='POST'>
+			<fmt:message key="posts"/>:
+			<input type="radio" name="items" value="5" checked="checked" />5
+			<input type="radio" name="items" value="10"/>10 
+			<input type="radio" name="items" value="20"/>20
+			<input type="radio" name="items" value="50"/>50
+			<input type="radio" name="items" value="100"/>100
+			<input type="radio" name="items" value="1000"/>1000
+		  </form>
+          
           <c:url var="currURL" value="/${requPath}${requQueryString}" />
           <p><fmt:message key="export.info"><fmt:param><a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a></fmt:param></fmt:message></p>
         </div>
@@ -103,4 +114,11 @@
     </jsp:attribute>
     
   </layout:paneLayout>
+  
+  	<!-- start and setup the logic behind the export size radio buttons (setupPostExportSize in functions.js)-->
+	<script type="text/javascript">
+		<![CDATA[
+			setupPostExportSize();		
+		]]>	
+	</script>  
 </jsp:root>

@@ -14,7 +14,7 @@
 	<c:url var="json"    value="/json/${requPath}${requQueryString}" />
 	<c:url var="custom"  value="/layout/custom/${requPath}${requQueryString}" />
 
-	<select id="selectlink" onchange="self.location=this.value" size="1">
+	<select id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
 		<option value=""><fmt:message key="form.input.select"/></option>
 		<option value="${fn:escapeXml(bibtex)}">BibTeX</option>
 		<option value="${fn:escapeXml(publ)}">HTML</option>

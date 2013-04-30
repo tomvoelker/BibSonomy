@@ -1350,3 +1350,67 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 function endTagAutocompletion (textfield) {
 	textfield.autocomplete('disable');
 };
+
+/**
+ * Function to setup radio buttons on /export/ page for the number of posts to export
+ */
+function setupPostExportSize() {
+	
+	var exportPostSize = null;
+	
+	//get the DOM elements of all links [<a..] without the ones with a star '*' [they reference only to jabref on the page - #jabref]
+	var exportLinks = document.evaluate("//dt/a[not(contains(text(),'*'))]", document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+	//get the checked value of the radio buttons and set the variable exportPostSize
+	var radioBtns = document.getElementsByName("items");
+	for(i = 0; i < radioBtns.length; i++){
+	    if(radioBtns[i].checked){
+	        exportPostSize = radioBtns[i].value;
+	    }
+	}
+	
+	//append to all links '?items=5' - exportPostSize initiated with '5'
+	for (var i = 0; i < exportLinks.snapshotLength; i++) {
+		//Contains the href any other parameters? Distinguish this cases.
+		if(exportLinks.snapshotItem(i).href.indexOf("?") != -1) {
+			exportLinks.snapshotItem(i).href = exportLinks.snapshotItem(i).href + "&items=" + exportPostSize;
+		} else {
+			exportLinks.snapshotItem(i).href = exportLinks.snapshotItem(i).href + "?items=" + exportPostSize;
+		}
+	}
+	
+	//A click on a radio button replaces in any link the old value X '?items=X' with the new value Y '?items=Y'
+	$("#exportOptions").click(function(event) {
+		
+		//get the checked value of the radio buttons and set the variable exportPostSize
+		for(i = 0; i < radioBtns.length; i++){
+		    if(radioBtns[i].checked){
+		        exportPostSize = radioBtns[i].value;
+		    }
+		}
+
+		for (var i = 0; i < exportLinks.snapshotLength; i++) {
+			exportLinks.snapshotItem(i).href = exportLinks.snapshotItem(i).href.replace(/\items=\d*/g, "items=" + exportPostSize);	
+		}
+	});		
+};
+
+/**
+ * Function to setup link generation for export (in formats.tagx) on /export/ page
+ * 
+ * @param value - the link of the website which should be exported
+ */
+function generateExportPostLink(value) {
+	
+	var exportPostSize = null;
+	
+	//get the checked value of the radio buttons and set the variable exportPostSize
+	var radioBtns = document.getElementsByName("items");
+	for(i = 0; i < radioBtns.length; i++){
+	    if(radioBtns[i].checked){
+	        exportPostSize = radioBtns[i].value;
+	    }
+	}
+	
+	self.location = value + '?items=' + exportPostSize;
+};		
