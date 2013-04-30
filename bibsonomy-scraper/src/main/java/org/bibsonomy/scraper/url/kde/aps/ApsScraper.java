@@ -39,10 +39,10 @@ import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
  */
 public class ApsScraper extends SimpleGenericURLScraper{
 	private static final String SITE_NAME = "American Psychological Society";
-	private static final String SITE_URL = "the-aps.org";
+	private static final String SITE_URL = "http://the-aps.org";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final String BIBTEX_URL = "citmgr?type=bibtex&gca=";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "physrev.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final Pattern URL_PATTERN = Pattern.compile("(http://[^/]++)(\\W+)");
 	private static final Pattern URL_START = Pattern.compile("/\\w+");
@@ -69,14 +69,16 @@ public class ApsScraper extends SimpleGenericURLScraper{
 	}
 
 	@Override
-	public String getBibTeXURL(URL url) {
-		Matcher murl = URL_PATTERN.matcher(url.toExternalForm());
-		Matcher idurl = ID_PATTERN.matcher(url.toExternalForm());
-		Matcher starturl = URL_START.matcher(url.toExternalForm());
+	public String getBibTeXURL(final URL url) {
+		final String externalForm = url.toExternalForm();
+		final Matcher murl = URL_PATTERN.matcher(externalForm);
+		final Matcher idurl = ID_PATTERN.matcher(externalForm);
+		final Matcher starturl = URL_START.matcher(externalForm);
 		
-		if(!idurl.find()) return null;
-		if (!murl.find()) return null;
-		if(!starturl.find()) return null;
+		if (!idurl.find() || !murl.find() || !starturl.find()) {
+			return null;
+		}
+		
 		return murl.group(0) + BIBTEX_URL + starturl.group(0).replace("/", "") + ";" + idurl.group(0).replace(".","");
 	}
 }
