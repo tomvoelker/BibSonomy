@@ -39,6 +39,26 @@ public class HttpsPretendingFilter implements Filter {
 			public String getScheme() {
 				return "https";
 			}
+			
+			@Override
+			public StringBuffer getRequestURL() {
+				StringBuffer url = super.getRequestURL();
+				return replaceScheme(url);
+			}
+
+			protected StringBuffer replaceScheme(StringBuffer url) {
+				int i = url.indexOf(":");
+				if ((i > -1) && (i < 6)) {
+					url.replace(0, i, "https");
+				}
+				return url;
+			}
+			
+			@Override
+			public String getRequestURI() {
+				StringBuffer sb = new StringBuffer(super.getRequestURI());
+				return replaceScheme(sb).toString();
+			}
 		};
 		chain.doFilter(reqProxy, response);
 	}
