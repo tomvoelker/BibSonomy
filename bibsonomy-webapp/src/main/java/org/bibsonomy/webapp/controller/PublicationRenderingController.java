@@ -3,14 +3,19 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -27,11 +32,15 @@ import bibtex.parser.ParseException;
  */
 public class PublicationRenderingController implements MinimalisticController<PostPublicationCommand>, ErrorAware {
 
+	private static final String APPLICATION_MARC = "application/marc";
+
 	private static final Log log = LogFactory.getLog(PublicationRenderingController.class);
 
 	private PublicationImporter publicationImporter;
 
 	private Errors errors;
+
+	private final Map<String,BibTexReader> mimeTypeReaders = Collections.emptyMap();
 
 	@Override
 	public PostPublicationCommand instantiateCommand() {
@@ -46,7 +55,7 @@ public class PublicationRenderingController implements MinimalisticController<Po
 
 		List<Post<BibTex>> posts = null;
 		
-		if (present(command.getSelection()) || present(command.getFile())) {
+		if (present(command.getSelection()) || (present(command.getFile()) && (!mimeTypeReaders.containsKey(command.getFile().getContentType()))))  {
 			final String snippet;
 			if (present(command.getSelection())) {
 				/*
@@ -74,9 +83,6 @@ public class PublicationRenderingController implements MinimalisticController<Po
 			/*
 			 * FIXME: why aren't commas, etc. removed?
 			 */
-
-
-
 			try {
 				/*
 				 * Parse the BibTeX snippet
@@ -87,12 +93,26 @@ public class PublicationRenderingController implements MinimalisticController<Po
 			} catch (final IOException ex) {
 				errors.reject("error.upload.failed.parse", ex.getMessage());
 			}
-
-			if (errors.hasErrors()) return Views.ERROR;
-
+		} else if (present(command.getFile())) {
+			BibTexReader reader = mimeTypeReaders.get(command.getFile().getContentType());
+			Collection<BibTex> bibTexs;
+			try {
+				bibTexs = reader.read(command.getFile().getInputStream());
+				posts = new ArrayList<Post<BibTex>>(bibTexs.size());
+				for (BibTex b : bibTexs) {
+					Post<BibTex> p = new Post<BibTex>();
+					p.setTags(Collections.<Tag>emptySet());
+					p.setResource(b);
+				}
+			} catch (IOException ex) {
+				errors.reject("error.upload.failed.parse", ex.getMessage());
+			}
 		} else {
 			posts = Collections.singletonList(command.getPost());
 		}
+		
+		if (errors.hasErrors()) return Views.ERROR;
+		
 		command.getBibtex().setList(posts);
 
 		return Views.getViewByFormat(command.getFormat());
