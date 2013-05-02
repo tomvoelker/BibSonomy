@@ -274,7 +274,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	
-	/** IArgumentMatcher Implementation that wraps an object and compares it with another */
+	/** IArgumentMatcher Implementation that wraps an object and compares it with another 
+	 * @param <T> type of stuff to be compared */
 	private static class PropertyEqualityArgumentMatcher<T> implements IArgumentMatcher {
 		private final T a;
 		private final String[] excludeProperties; 
