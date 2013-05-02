@@ -805,6 +805,6 @@ public enum Views implements View {
 		if (FORMAT_STRING_EMBED.equals(format)) return EMBED;
 		if (FORMAT_STRING_OEMBED.equals(format)) return OEMBED;
 		
-		throw new BadRequestOrResponseException("Invalid format specification.");
+		throw new BadRequestOrResponseException("Invalid format specification '" + format + "'");
 	}
 }
