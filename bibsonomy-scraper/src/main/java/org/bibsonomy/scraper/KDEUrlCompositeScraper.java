@@ -41,6 +41,7 @@ import org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper;
 import org.bibsonomy.scraper.url.kde.apa.APAScraper;
 import org.bibsonomy.scraper.url.kde.aps.ApsScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
+import org.bibsonomy.scraper.url.kde.asm.AsmScraper;
 import org.bibsonomy.scraper.url.kde.ats.ATSScraper;
 import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
 import org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper;
@@ -241,6 +242,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ApsScraper());
 		addScraper(new MendeleyScraper());
 		addScraper(new HindawiScraper());
+		addScraper(new AsmScraper());
 	}
 
 }
