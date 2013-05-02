@@ -40,7 +40,7 @@ public class PublicationRenderingController implements MinimalisticController<Po
 
 	private Errors errors;
 
-	private final Map<String,BibTexReader> mimeTypeReaders = Collections.emptyMap();
+	private Map<String,BibTexReader> mimeTypeReaders = Collections.emptyMap();
 
 	@Override
 	public PostPublicationCommand instantiateCommand() {
@@ -103,6 +103,7 @@ public class PublicationRenderingController implements MinimalisticController<Po
 					Post<BibTex> p = new Post<BibTex>();
 					p.setTags(Collections.<Tag>emptySet());
 					p.setResource(b);
+					posts.add(p);
 				}
 			} catch (IOException ex) {
 				errors.reject("error.upload.failed.parse", ex.getMessage());
@@ -134,6 +135,20 @@ public class PublicationRenderingController implements MinimalisticController<Po
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
+	}
+
+	/**
+	 * @return the mimeTypeReaders
+	 */
+	public Map<String, BibTexReader> getMimeTypeReaders() {
+		return this.mimeTypeReaders;
+	}
+
+	/**
+	 * @param mimeTypeReaders the mimeTypeReaders to set
+	 */
+	public void setMimeTypeReaders(Map<String, BibTexReader> mimeTypeReaders) {
+		this.mimeTypeReaders = mimeTypeReaders;
 	}
 
 }
