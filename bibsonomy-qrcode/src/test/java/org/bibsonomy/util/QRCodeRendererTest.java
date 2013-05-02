@@ -62,7 +62,10 @@ public class QRCodeRendererTest {
 			String manipulatedFilePath = null;
 			
 			try {
-				manipulatedFilePath = embedderFuture.get(QRCodeEmbedder.WAIT_TIME, TimeUnit.MILLISECONDS);
+				/*
+				 * we take 10 times the normal time because the build/test system is so slow 
+				 */
+				manipulatedFilePath = embedderFuture.get(10 * QRCodeEmbedder.WAIT_TIME, TimeUnit.MILLISECONDS);
 			} catch (final Exception e) {
 				
 				/*
