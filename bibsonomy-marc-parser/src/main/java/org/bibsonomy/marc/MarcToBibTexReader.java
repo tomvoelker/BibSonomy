@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.marc.extractors.AuthorExtractor;
+import org.bibsonomy.marc.extractors.EditionExtractor;
 import org.bibsonomy.marc.extractors.JournalExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
 import org.bibsonomy.model.BibTex;
@@ -27,6 +28,7 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new TitleExtractor());
 		extractors.add(new AuthorExtractor());
 		extractors.add(new JournalExtractor());
+		extractors.add(new EditionExtractor());
 	}
 	
 	@Override
