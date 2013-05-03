@@ -141,9 +141,15 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				if (present(abstractText)) {
 					bibTeXResult = BibTexUtils.addFieldIfNotContained(bibTeXResult, "abstract", abstractText);
 				}
-				
+				//fix missing bibtex key
+				final int indexOfBrace = bibTeXResult.indexOf('{') + 1;
+				if(indexOfBrace == bibTeXResult.indexOf('\n')){
+					bibTeXResult = bibTeXResult.substring(0, indexOfBrace ) + "noKey," + bibTeXResult.substring(indexOfBrace);
+				}
 				//done
 				sc.setBibtexResult(bibTeXResult);
+				
+				
 				return true;
 			}
 			
@@ -224,6 +230,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 					String cleanEntry = cleanEntry(bibtexEntry);
 					cleanEntry = insertYearIfNotContained(cleanEntry, sc);
 					sc.setBibtexResult(cleanEntry);
+					
 					return true;
 				} 
 			}
