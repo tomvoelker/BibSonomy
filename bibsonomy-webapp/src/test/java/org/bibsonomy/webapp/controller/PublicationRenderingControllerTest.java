@@ -70,7 +70,12 @@ public class PublicationRenderingControllerTest {
 		SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		try {
 			BufferedReader sr = new BufferedReader(new InputStreamReader(getTestBibFileStream(), "UTF-8"));
-			return parser.parseInternal(sr, true);
+			String read = "";
+			String line;
+			while((line = sr.readLine()) != null) {
+				read += line;
+			}
+			return parser.parseBibTeXs(read);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
