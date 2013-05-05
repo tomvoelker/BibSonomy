@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.marc.extractors.AddressExtractor;
 import org.bibsonomy.marc.extractors.AuthorExtractor;
 import org.bibsonomy.marc.extractors.EditionExtractor;
 import org.bibsonomy.marc.extractors.JournalExtractor;
+import org.bibsonomy.marc.extractors.PagesExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
+import org.bibsonomy.marc.extractors.YearExtractor;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexReader;
 import org.marc4j.MarcReader;
@@ -29,6 +32,9 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new AuthorExtractor());
 		extractors.add(new JournalExtractor());
 		extractors.add(new EditionExtractor());
+		extractors.add(new AddressExtractor());
+		extractors.add(new PagesExtractor());
+		extractors.add(new YearExtractor());
 	}
 	
 	@Override

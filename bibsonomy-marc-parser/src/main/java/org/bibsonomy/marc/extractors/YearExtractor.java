@@ -30,12 +30,12 @@ import org.bibsonomy.model.BibTex;
  * @author nilsraabe
  * @version $Id$
  */
-public class AddressExtractor implements AttributeExtractor {
-
+public class YearExtractor implements AttributeExtractor{
+	
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		final String address = src.getFirstFieldValue("260", 'a');
-		target.setAddress(address);  
+		final String year = src.getFirstFieldValue("260", 'c');
+		target.setYear(year);
 	}
 
 }
