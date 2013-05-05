@@ -43,14 +43,14 @@ public class MarcToBibTexReaderTest {
 			System.out.println("School:\t\t" 	+ b.getSchool());
 			System.out.println("Series:\t\t" 	+ b.getSeries());
 			System.out.println("Volume:\t\t" 	+ b.getVolume());
-			System.out.println("Day:\t\t" + b.getDay());
-			System.out.println("Month:\t\t" + b.getMonth());
-			System.out.println("Year:\t\t" + b.getYear());
-			System.out.println("Type:\t\t" + b.getType());
-			System.out.println("ScraperId:\t" + b.getScraperId());
-			System.out.println("URL:\t\t" + b.getUrl());
-			System.out.println("PrivNote:\t" + b.getPrivnote());
-			System.out.println("OpenUrl:\t" + b.getOpenURL() + "\n");
+			System.out.println("Day:\t\t" 		+ b.getDay());
+			System.out.println("Month:\t\t" 	+ b.getMonth());
+			System.out.println("Year:\t\t" 		+ b.getYear());
+			System.out.println("Type:\t\t" 		+ b.getType());
+			System.out.println("ScraperId:\t" 	+ b.getScraperId());
+			System.out.println("URL:\t\t" 		+ b.getUrl());
+			System.out.println("PrivNote:\t" 	+ b.getPrivnote());
+			System.out.println("OpenUrl:\t" 	+ b.getOpenURL() + "\n");
 						
 //			System.out.println(b);
 		}
