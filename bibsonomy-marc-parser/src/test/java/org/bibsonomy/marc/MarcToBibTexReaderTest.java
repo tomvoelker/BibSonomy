@@ -1,11 +1,11 @@
 package org.bibsonomy.marc;
 
-import java.io.InputStream;
 import java.util.Collection;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
-import org.bibsonomy.model.util.data.Data;
+import org.bibsonomy.model.util.data.ClasspathResourceData;
+import org.bibsonomy.model.util.data.DualDataWrapper;
 import org.junit.Test;
 
 /**
@@ -16,33 +16,13 @@ public class MarcToBibTexReaderTest {
 	@Test
 	public void testSomething() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
-		Collection<ImportResource> bibs = reader.read(new Data() {
-
-			@Override
-			public String getMimeType() {
-				return "application/marc";
-			}
-
-			@Override
-			public InputStream getInputStream() {
-				return getClass().getClassLoader().getResourceAsStream("hebis_data/HEB01711621X.marc");//marc_files/part29.dat");
-			}
-			
-		});
-		Collection<ImportResource> springerBibs = reader.read(new Data() {
-
-			@Override
-			public String getMimeType() {
-				return "application/marc";
-			}
-
-			@Override
-			public InputStream getInputStream() {
-				return getClass().getClassLoader().getResourceAsStream("marc_files/part29.dat");
-			}
-			
-		});
+		Collection<ImportResource> bibs = reader.read(new ClasspathResourceData("/hebis_data/HEB01711621X.marc", "application/marc"));
+		Collection<ImportResource> springerBibs = reader.read(new ClasspathResourceData("/marc_files/part29.dat", "application/marc"));
 		
+		printStuff(bibs);
+	}
+
+	public void printStuff(Collection<ImportResource> bibs) {
 		for (BibTex b : bibs) {
 			System.out.println("############## new bibtex ######################");
 			System.out.println("BibtexKey:\t" 	+ b.getBibtexKey());
@@ -80,5 +60,12 @@ public class MarcToBibTexReaderTest {
 						
 //			System.out.println(b);
 		}
+	}
+	
+	@Test
+	public void testHebisMarcPlusPica() {
+		MarcToBibTexReader reader = new MarcToBibTexReader();
+		Collection<ImportResource> bibs = reader.read(new DualDataWrapper(new ClasspathResourceData("/hebis_data/HEB01711621X.marc", "application/marc"), new ClasspathResourceData("/hebis_data/HEB01711621X.pica", "application/pica")));
+		printStuff(bibs);
 	}
 }
