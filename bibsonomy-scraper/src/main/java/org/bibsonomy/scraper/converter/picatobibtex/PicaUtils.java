@@ -45,6 +45,19 @@ public class PicaUtils {
 	 * @return The first data entry for the given category and sub-category.
 	 */
 	public static String getSubCategory(final PicaRecord pica, final String category, final String subCategory) {
+		return getSubCategory(pica, category, subCategory, "");
+	}
+	
+	/**
+	 * Returns the first data entry for the given category and sub-category. Returns the given defaultValue if field is not found
+	 * 
+	 * @param pica 
+	 * @param category
+	 * @param subCategory
+	 * @param defaultValue the default to return when the field is not found
+	 * @return The first data entry for the given category and sub-category - or default.
+	 */
+	public static String getSubCategory(final PicaRecord pica, final String category, final String subCategory, String defaultValue) {
 		final Row row = pica.getRow(category);
 		
 		if (present(row)) {
@@ -53,7 +66,7 @@ public class PicaUtils {
 				return subField.get(0);
 			}
 		}
-		return "";
+		return defaultValue;
 	}
 	
 	/**
