@@ -1,8 +1,11 @@
 package org.bibsonomy.marc;
 
+import java.io.InputStream;
 import java.util.Collection;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.ImportResource;
+import org.bibsonomy.model.util.data.Data;
 import org.junit.Test;
 
 /**
@@ -13,11 +16,34 @@ public class MarcToBibTexReaderTest {
 	@Test
 	public void testSomething() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
+		Collection<ImportResource> bibs = reader.read(new Data() {
 
-		Collection<BibTex> bibs = reader.read(getClass().getClassLoader().getResourceAsStream("marc_files/part29.dat"));
-		Collection<BibTex> springerBibs = reader.read(getClass().getClassLoader().getResourceAsStream("marc_files/c2013.mrc"));
+			@Override
+			public String getMimeType() {
+				return "application/marc";
+			}
+
+			@Override
+			public InputStream getInputStream() {
+				return getClass().getClassLoader().getResourceAsStream("hebis_data/HEB01711621X.marc");//marc_files/part29.dat");
+			}
+			
+		});
+		Collection<ImportResource> springerBibs = reader.read(new Data() {
+
+			@Override
+			public String getMimeType() {
+				return "application/marc";
+			}
+
+			@Override
+			public InputStream getInputStream() {
+				return getClass().getClassLoader().getResourceAsStream("marc_files/part29.dat");
+			}
+			
+		});
 		
-		for (BibTex b : springerBibs) {
+		for (BibTex b : bibs) {
 			System.out.println("############## new bibtex ######################");
 			System.out.println("BibtexKey:\t" 	+ b.getBibtexKey());
 			System.out.println("Misc:\t\t" 		+ b.getMisc());

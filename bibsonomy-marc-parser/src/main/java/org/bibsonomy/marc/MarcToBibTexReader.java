@@ -1,6 +1,5 @@
 package org.bibsonomy.marc;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,8 +13,9 @@ import org.bibsonomy.marc.extractors.PagesExtractor;
 import org.bibsonomy.marc.extractors.PublicationExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
 import org.bibsonomy.marc.extractors.YearExtractor;
-import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
+import org.bibsonomy.model.util.data.Data;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcStreamReader;
 import org.marc4j.marc.Record;
@@ -44,13 +44,13 @@ public class MarcToBibTexReader implements BibTexReader {
 	}
 	
 	@Override
-	public Collection<BibTex> read(InputStream is) {
-		List<BibTex> rVal = new ArrayList<BibTex>();
-		MarcReader reader = new MarcStreamReader(is, "UTF-8");
+	public Collection<ImportResource> read(Data data) {
+		List<ImportResource> rVal = new ArrayList<ImportResource>();
+		MarcReader reader = new MarcStreamReader(data.getInputStream(), "UTF-8");
 		while (reader.hasNext()) {
 			Record r = reader.next();
 			ExtendedMarcRecord er = new ExtendedMarcRecord(r);
-			BibTex b = new BibTex();
+			ImportResource b = new ImportResource();
 			for (AttributeExtractor ex : extractors) {
 				ex.extraxtAndSetAttribute(b, er);
 			}
