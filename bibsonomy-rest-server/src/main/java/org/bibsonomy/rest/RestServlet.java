@@ -38,6 +38,7 @@ import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
+import org.bibsonomy.rest.fileupload.DualUploadedFileAccessor;
 import org.bibsonomy.rest.fileupload.UploadedFileAccessor;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -46,8 +47,6 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -242,7 +241,7 @@ public final class RestServlet extends HttpServlet {
 			 * before - typically by Spring's DispatcherServlet. If this is not
 			 * the case, the document upload fails! 
 			 */
-			UploadedFileAccessor uploadAccessor = new UploadedFileAccessor(request);
+			UploadedFileAccessor uploadAccessor = new DualUploadedFileAccessor(request);
 
 			// choose rendering format (defaults to xml)
 			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
