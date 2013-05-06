@@ -10,6 +10,7 @@ import org.bibsonomy.marc.extractors.AuthorExtractor;
 import org.bibsonomy.marc.extractors.EditionExtractor;
 import org.bibsonomy.marc.extractors.JournalExtractor;
 import org.bibsonomy.marc.extractors.PagesExtractor;
+import org.bibsonomy.marc.extractors.PublicationExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
 import org.bibsonomy.marc.extractors.YearExtractor;
 import org.bibsonomy.model.BibTex;
@@ -35,6 +36,7 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new AddressExtractor());
 		extractors.add(new PagesExtractor());
 		extractors.add(new YearExtractor());
+		extractors.add(new PublicationExtractor());
 	}
 	
 	@Override

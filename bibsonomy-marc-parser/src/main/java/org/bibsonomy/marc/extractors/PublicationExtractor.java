@@ -9,11 +9,16 @@ import org.bibsonomy.model.BibTex;
  * @version $Id$
  */
 public class PublicationExtractor implements AttributeExtractor {
-
+	
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		// TODO Auto-generated method stub
-
+		
+		final String publisher = src.getFirstFieldValue("260", 'b');
+		
+		if (publisher != null) {
+			target.setPublisher(publisher.substring(0, publisher.length() - 1));
+		}
+		
 	}
 
 }
