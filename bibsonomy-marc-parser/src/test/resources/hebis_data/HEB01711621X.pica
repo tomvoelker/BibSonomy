@@ -1,0 +1,54 @@
+alg: 1711621
+001@    $03,205 
+001A    $00030:30-07-91 
+001B    $t00:55:13.000 $01999:22-04-11 
+001D    $09999:99-99-99 
+001U    $0utf8 
+001X    $00 
+002@    $0Aauc 
+003@    $001711621X 
+003O    $0180410061 $aOCoLC 
+010@    $aeng 
+011@    $a1990 $n1990 
+013H    $0k 
+015@    $00 
+021A    $a@National Conference on Clustering of Health Events 
+029A    $#Conference on Clustering of Health Events, Atlanta, Ga. 1989 $d1989 $73006179-9 $cAtlanta, Ga. $9043983804 $8National Conference on Clustering of Health Events 
+033A    $pBaltimore, Md. $nWaverly Pr. 
+034D    $a202 S. 
+034M    $aIll., graph. Darst., Kt. 
+036E    $aAmerican journal of epidemiology $lVol. 132, Nr. 1, Suppl. 
+036F    $lVol. 132, Nr. 1, Suppl. $9103366385 $8American journal of epidemiology $x3132 11 suppl 
+044K    $#Humanmedizin $#Heilkunst $#Medicine $74038243-6 $9085104442 $8Medizin 
+044K    $74226567-8 $9086180061 $8Musteranalyse 
+046M    $aLiteraturangaben 
+
+lok: 1711621 3
+101B    $t10:57:53.000 $023-03-07 
+101C    $023-03-07 
+101U    $0utf8 
+145S/01 $a018 
+
+exp: 1711621 3 1 #EPN
+201B/01 $t13:55:58.000 $020-05-11 
+201U/01 $0utf8 
+203@/01 $002563318X 
+208@/01 $bhAb $a30-07-91 
+209A/01 $f021 $db $aHZ 658 Vol. 132, Nr.1, Suppl. $hHZ 658 / B 132 1 SP $x00 
+209A/01 $amag hz hzq $z004 $x05 
+247C/01 $9102598363 $8601021-0 <F 21>Frankfurt, Universität Frankfurt, Medizinische Hauptbibliothek Frankfurt 
+
+lok: 1711621 205
+
+exp: 1711621 205 1 #EPN
+201B/01 $t19:07:36.000 $008-03-06 
+201C/01 $008-08-01 
+201U/01 $0utf8 
+203@/01 $0162381859 
+208@/01 $bz $a08-08-01 
+209A/01 $f000 $du $aXI ZC 20.05, 132,2 $x00 
+209C/01 $aZ 2001/2122 
+209G/01 $a29028567 $x00 
+237A/01 $aAngebunden an Vol. 132,[2] 
+247C/01 $9102594767 $8351000-1 <4>Marburg, Universität Marburg, Zentralbibliothek 
+
