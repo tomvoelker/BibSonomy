@@ -1,0 +1,31 @@
+alg: 83957191
+001@    $0204 $aG 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0839571917 
+009R    $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g2880637 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+010@    $aund 
+011@    $a1969 $n[ca. 1969] 
+021A    $aClustering and aggregation in economics 
+025@    $aFisher, Walter D.: Clustering and aggregation in economics 
+028A    $dWalter D. $aFisher 
+034D    $a195 S. 
+047M    $cFiaher Walter D , B 70/2877 Clustering and aggregation in eeonomics. By Walter D Fisher. Baltimore: Johns HoDkins Pr. 1969. XII, 195 S. 80 III 70 5421/7 
+
+lok: 83957191 204
+
+exp: 83957191 204 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0839571917 
+206V/01 $2Retro $0045044813 $bFiaher Walter D , B 70/2877 Clustering and aggregation in eeonomics. By Walter D Fisher. Baltimore: Johns HoDkins Pr. 1969. XII, 195 S. 80 III 70 5421/7 $ag2880637 
+208@/01 $brAa 
+209A/01 $f960 $asiehe Katalogkarte oben rechts $x00 
+209A/01 $f960 $aB 70/2877 $hGesamtkatalog B 70/2877 $x05 
+209B/01 $aHeBIS-Retro $x05 
+209U/01 $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g2880637 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+247C/01 $929053481X $8631960-9 <26/960>Gießen, Universität Gießen, Retrokatalog 
+

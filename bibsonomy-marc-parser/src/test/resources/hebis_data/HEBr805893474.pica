@@ -1,0 +1,29 @@
+alg: 80589347
+001@    $08 $aD 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0805893474 
+009R    $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d4271066 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+010@    $aund 
+011@    $a1963 
+021A    $aInformation Retrieval 
+025@    $aInformation-Retrieval 
+047M    $c37/ 5 Information-Retrieve! Information Retrieval. 1964 s. Meeting, Third annual, of the Committee for Internat!ona! Cooperat!on m lnformat!on Retr!eva! among Exam:n:ng Patent Offices 1C1REPAT at the Patent Office of the Federal Republic of Austria Vienna. Sep . 17th through 26rh, 1963. 
+
+lok: 80589347 8
+
+exp: 80589347 8 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0805893474 
+206V/01 $2Retro $0004309863 $b37/ 5 Information-Retrieve! Information Retrieval. 1964 s. Meeting, Third annual, of the Committee for Internat!ona! Cooperat!on m lnformat!on Retr!eva! among Exam:n:ng Patent Offices 1C1REPAT at the Patent Office of the Federal Republic of Austria Vienna. Sep . 17th through 26rh, 1963. $ad4271066 
+208@/01 $brAa 
+209A/01 $f000 $di $a37/ 5 $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aULB Darmstadt $x01 
+209U/01 $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d4271066 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt 
+

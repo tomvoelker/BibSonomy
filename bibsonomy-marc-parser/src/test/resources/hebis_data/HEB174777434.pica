@@ -1,0 +1,30 @@
+alg: 17477743
+001@    $064 
+001A    $04505:14-03-06 
+001B    $t17:05:04.000 $04505:15-03-06 
+001D    $04505:14-03-06 
+001U    $0utf8 
+001X    $00 
+002@    $0Aox 
+003@    $0174777434 
+007I    $0BLLt129737 
+010@    $aeng 
+011@    $a2002 
+021A    $aInformation extraction and information retrieval 
+031A    $j2002 $h349-390 
+039B    $aIn $9102539650 $8--Aau--: Computational linguistics and intelligent text processing $x200200000000000651 
+045W    $9133072479 $803.26.07 $jInformation retrieval 
+045W    $913307241X $803.26.02 $jNatürlichsprachliche Systeme 
+045W    $vKünstliche Intelligenz $9133089967 $803.26.01.007 $jWissenserwerb 
+
+lok: 17477743 64
+
+exp: 17477743 64 1 #EPN
+201B/01 $t02:54:57.000 $014-03-06 
+201U/01 $0utf8 
+203@/01 $0370488326 
+208@/01 $be $a09-03-06 
+209A/01 $f000 $a0 $x00 
+209B/01 $a29 $x05 
+247C/01 $9129368261 $8- <->Frankfurt, Bibliographie Linguistischer Literatur 
+

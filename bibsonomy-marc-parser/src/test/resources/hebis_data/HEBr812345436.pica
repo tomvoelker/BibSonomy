@@ -1,0 +1,31 @@
+alg: 81234543
+001@    $03 $aB 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0812345436 
+004A    $00-08-021193-3 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/b2790868 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+011@    $a1977 
+021A    $aTechniques for the retrieval of chemical information 
+025@    $aTechniques retrieval information 
+047M    $c2. Sq 79/9 Techniques retrieval information Techniques for the retrieval of chemical informa- tion. Aus: Pure and applied Chemistry. 49,12. 1977. ISBN 0-08-021193-3 Un 0 ig 
+
+lok: 81234543 3
+
+exp: 81234543 3 1 #EPN
+201B/01 $t18:12:08.000 $015-05-12 
+201U/01 $0utf8 
+203@/01 $0812345436 
+206V/01 $2Retro $0018217818 $b2. Sq 79/9 Techniques retrieval information Techniques for the retrieval of chemical informa- tion. Aus: Pure and applied Chemistry. 49,12. 1977. ISBN 0-08-021193-3 Un 0 ig $ab2790868 
+208@/01 $brAa $a15-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209A/01 $aSq 79/9 $x01 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Frankfurt / SeB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/b2790868 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

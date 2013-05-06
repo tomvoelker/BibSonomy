@@ -1,0 +1,29 @@
+alg: 84694065
+001@    $023 $aK 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0846940655 
+009R    $3Katalogkarte der UB Kassel $uhttp://resolver.hebis.de/retro/k1010634 $A2 $qimage/gif $mV:DE-603;B:DE-34 
+010@    $aund 
+021A    $as. Darwin, Charles 
+025@    $aDarwin-Wallace, ..: s. Darwin, Charles 
+028A    $d.. $aDarwin-Wallace 
+047M    $cDarwin-Wallace, .. s. Darwin, Charles J 
+
+lok: 84694065 23
+
+exp: 84694065 23 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0846940655 
+206V/01 $2Retro $0054839947 $bDarwin-Wallace, .. s. Darwin, Charles J $ak1010634 
+208@/01 $brAa 
+209A/01 $f000 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Kassel $x01 
+209U/01 $3Katalogkarte der UB Kassel $uhttp://resolver.hebis.de/retro/k1010634 $A2 $qimage/gif $mV:DE-603;B:DE-34 
+247C/01 $9102599394 $8352000-6 <34>Kassel, UB/LMB Kassel, Universitätsbibliothek Kassel 
+

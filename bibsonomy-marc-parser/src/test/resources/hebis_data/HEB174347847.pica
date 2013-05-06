@@ -1,0 +1,36 @@
+alg: 17434784
+001@    $064 
+001A    $04505:14-03-06 
+001B    $t09:01:43.000 $04505:06-06-09 
+001D    $04505:14-03-06 
+001U    $0utf8 
+001X    $00 
+002@    $0Aox 
+003@    $0174347847 
+007I    $0BLLt78644 
+010@    $aeng 
+011@    $a1996 
+021A    $aVerb-form clustering and syllabus design 
+028A    $7 $9175603642 $8Hill, Victor J. 
+031A    $d24 $e4 $j1996 $h529-536 
+039B    $aIn $9047221429 $8--Abvc--: System $x199600000240004471 
+045T    $a7,11 $a5,3 
+045W    $9133070409 $801.01.02 $jEnglisch 
+045W    $9133071413 $803.18.10 $jUmgangssprache 
+045W    $9133086194 $803.27.01.002.04 $jTeaching English as a second language 
+045W    $9133111008 $803.21.12.033 $jKommunikative Kompetenz 
+045W    $9133087263 $803.27.01.020 $jCurriculumforschung 
+045W    $913308907X $804.09.06.071 $jDeskriptiver Text 
+046M    $a11 Literaturangaben 
+
+lok: 17434784 64
+
+exp: 17434784 64 1 #EPN
+201B/01 $t00:44:29.000 $014-03-06 
+201U/01 $0utf8 
+203@/01 $0370058739 
+208@/01 $be $a09-03-06 
+209A/01 $f000 $a0 $x00 
+209B/01 $a24 $x05 
+247C/01 $9129368261 $8- <->Frankfurt, Bibliographie Linguistischer Literatur 
+

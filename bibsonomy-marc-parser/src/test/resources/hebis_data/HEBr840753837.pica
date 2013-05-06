@@ -1,0 +1,29 @@
+alg: 84075383
+001@    $0204 $aG 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0840753837 
+009R    $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g1530363 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+010@    $aund 
+021A    $aCaesar 
+025@    $aCaesar 
+034D    $a522 S. 
+047M    $cg . ss 58/79- 3 aesar. Hrsg. von Detlef aamussen. Tarmstadt! Wiss. Buohges/"1967. XI, 522 S., 30 Abb. 30 Wege der Forachung. Bd 43. il 67. 11313/8 Au h vofh. PB Germoo! tt'' 
+
+lok: 84075383 204
+
+exp: 84075383 204 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0840753837 
+206V/01 $2Retro $004361602X $bg . ss 58/79- 3 aesar. Hrsg. von Detlef aamussen. Tarmstadt! Wiss. Buohges/"1967. XI, 522 S., 30 Abb. 30 Wege der Forachung. Bd 43. il 67. 11313/8 Au h vofh. PB Germoo! tt'' $ag1530363 
+208@/01 $brAa 
+209A/01 $f960 $asiehe Katalogkarte oben rechts $x00 
+209A/01 $f960 $aS 58/79- 3 $hGesamtkatalog S 58/79- 3 $x05 
+209B/01 $aHeBIS-Retro $x05 
+209U/01 $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g1530363 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+247C/01 $929053481X $8631960-9 <26/960>Gießen, Universität Gießen, Retrokatalog 
+

@@ -1,0 +1,37 @@
+alg: 10527935
+001@    $025 
+001A    $00077:25-06-02 
+001B    $t07:57:24.000 $01999:23-04-11 
+001D    $00077:25-06-02 
+001U    $0utf8 
+001X    $00 
+002@    $0Aau 
+003@    $0105279358 
+003O    $039714420 $aOCoLC 
+004A    $00-571-19584-9 
+010@    $aeng 
+011@    $a1998 
+013H    $0z 
+021A    $aAfter Darwin $hTimberlake Wertenbaker 
+028A    $7 $9164960023 $8Wertenbaker, Timberlake 
+033A    $pLondon $nFaber and Faber 
+034D    $a73 S. 
+044K    $#Darwin, Charles $#Darvin, Carls $#Darvin, Čarlz $#Darvin, Charl'z $#Darvin, Tsharlz $#Darwin, Carlos R. $#Darwin, Charles R. $#Darwin, Charles Robert $#Darwin, Karol $#Darwin-Wallace, ... $#Ta-erh-wen $#Ta-erh-wen $#Darwin, Carlo $#HeBIS $#Darwin, Carlos Roberto $#HeBIS $#Darvin, Carls $#HeBIS $#Darvin, Charl'z $#HeBIS $#Darwin, Karol $#HeBIS $#Dārwīn, Tsārlz $#HeBIS $7118523813 $9086864904 $8Darwin, Charles 
+045B    $eDDC22oclc $ALoC $a812.54 
+045Z    $aHN 9990 
+
+lok: 10527935 25
+
+exp: 10527935 25 1 #EPN
+201B/01 $t10:23:13.000 $004-03-09 
+201C/01 $028-06-02 
+201U/01 $0utf8 
+203@/01 $0172341221 
+208@/01 $bz $a28-06-02 
+209A/01 $f072 $dd $aQ W 60 IV $x00 
+209A/01 $aFB 14.1 Q W 60 IV $x09 
+209C/01 $a1998/SK/557/R. 
+209G/01 $a76385074 $x00 
+209G/01 $aAnglistik/Amerikanistik $x01 
+247C/01 $910260021X $8651072-3 <77/072>Mainz, Universität Mainz, Bereichsbibliothek Philosophicum, Standort Anglistik/Amerikanistik 
+

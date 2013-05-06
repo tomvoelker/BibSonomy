@@ -1,0 +1,31 @@
+alg: 80403000
+001@    $08 $aD 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0804030006 
+009R    $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d6270633 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+010@    $aund 
+011@    $a1984 
+021A    $aInformation Retrieval 
+025@    $aMresse, Moscheh: Information Retrieval 
+028A    $dMoscheh $aMresse 
+034D    $a272 S. 
+047M    $c84/3127 Mresse, Moscheh Information Retrievol. Eine Eint. Von der Theorie zur Praxis anhand einer Implementierung in UNIX. Stuttgart: Teubner 1984. 272 S. Leitfaeden der angewandten Informatik. Teubner Studienbuecher. Informatik. ISBM 3-519-02469-1 So 
+
+lok: 80403000 8
+
+exp: 80403000 8 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0804030006 
+206V/01 $2Retro $0006196535 $b84/3127 Mresse, Moscheh Information Retrievol. Eine Eint. Von der Theorie zur Praxis anhand einer Implementierung in UNIX. Stuttgart: Teubner 1984. 272 S. Leitfaeden der angewandten Informatik. Teubner Studienbuecher. Informatik. ISBM 3-519-02469-1 So $ad6270633 
+208@/01 $brAa 
+209A/01 $f000 $di $a84/3127 $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aULB Darmstadt $x01 
+209U/01 $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d6270633 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt 
+

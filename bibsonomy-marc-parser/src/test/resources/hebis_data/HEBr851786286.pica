@@ -1,0 +1,30 @@
+alg: 85178628
+001@    $0205 $aM 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0851786286 
+009R    $3Katalogkarte der UB Marburg $uhttp://resolver.hebis.de/retro/m4220085 $A2 $qimage/gif $mV:DE-603;B:DE-4 
+010@    $aund 
+011@    $a1970 
+021A    $aThe Tragedy of Julius Caesar and the Tragedy of Marcus Brutus 
+025@    $aShakespeare, William: The Tragedy of Julius Caesar and the Tragedy of Marcus Brutus 
+028A    $dWilliam $aShakespeare 
+047M    $cShakespeare, William 4 F 71/3331 The Tragedy of Julius Caeaar and the Tragedy of Marcus Brutus. Adapt. of William Shakespearet Julius Caeaar.1 John Sheffield, Duke of Buckingham and Normanby . Seprint of the ed.J London 1722 Barber. London: Cornmarket Pr. 1970. S. 211-453. 4 Reprint aua John Sheffield, Duke of Buckingham! Works. 1723. Adaptations of Shakespeare's plays. Ser.2. Schu 
+
+lok: 85178628 205
+
+exp: 85178628 205 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0851786286 
+206V/01 $2Retro $006943137X $bShakespeare, William 4 F 71/3331 The Tragedy of Julius Caeaar and the Tragedy of Marcus Brutus. Adapt. of William Shakespearet Julius Caeaar.1 John Sheffield, Duke of Buckingham and Normanby . Seprint of the ed.J London 1722 Barber. London: Cornmarket Pr. 1970. S. 211-453. 4 Reprint aua John Sheffield, Duke of Buckingham! Works. 1723. Adaptations of Shakespeare's plays. Ser.2. Schu $am4220085 
+208@/01 $brAa 
+209A/01 $f000 $di $aF 71/3331 $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUni Marburg $x01 
+209U/01 $3Katalogkarte der UB Marburg $uhttp://resolver.hebis.de/retro/m4220085 $A2 $qimage/gif $mV:DE-603;B:DE-4 
+247C/01 $9102594767 $8351000-1 <4>Marburg, Universität Marburg, Zentralbibliothek 
+

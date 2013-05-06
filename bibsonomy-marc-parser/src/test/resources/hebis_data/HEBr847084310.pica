@@ -1,0 +1,29 @@
+alg: 84708431
+001@    $023 $aK 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0847084310 
+004A    $00-12-714250-9 
+009R    $3Katalogkarte der UB Kassel $uhttp://resolver.hebis.de/retro/k0851154 $A2 $qimage/gif $mV:DE-603;B:DE-34 
+010@    $aund 
+021A    $aMathematisches Research Center 
+025@    $aClassification and clustering 
+047M    $c2 80263716 95 Mat 0 2 CLA Classification and clustering Literaturangaben ISBN 0-12-714250-9 NE: VanRyzin, John Hrsg. ; Mathematics Research Center Madison, Wis. ; Mathematics Research Center Madison, Wis. : Publication of the Mathematics Research Center, the University of Wisconsin Madison ; 37 160883 tj t e-z ng 
+
+lok: 84708431 23
+
+exp: 84708431 23 1 #EPN
+201B/01 $t00:31:16.000 $018-12-12 
+201U/01 $0utf8 
+203@/01 $0847084310 
+206V/01 $2Retro $0054637325 $b2 80263716 95 Mat 0 2 CLA Classification and clustering Literaturangaben ISBN 0-12-714250-9 NE: VanRyzin, John Hrsg. ; Mathematics Research Center Madison, Wis. ; Mathematics Research Center Madison, Wis. : Publication of the Mathematics Research Center, the University of Wisconsin Madison ; 37 160883 tj t e-z ng $ak0851154 
+208@/01 $brAa $a07-12-12 
+209A/01 $f090 $di $aMat 0 2 $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Kassel $x01 
+209U/01 $3Katalogkarte der UB Kassel $uhttp://resolver.hebis.de/retro/k0851154 $A2 $qimage/gif $mV:DE-603;B:DE-34 
+247C/01 $9102599548 
+

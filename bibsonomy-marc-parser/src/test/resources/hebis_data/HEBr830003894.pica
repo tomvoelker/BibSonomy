@@ -1,0 +1,30 @@
+alg: 83000389
+001@    $03 $aS 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0830003894 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s0480276 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+021A    $as. Argeli, Caesare 
+025@    $aArgelius, Caesar: s. Argeli, Caesare 
+028A    $dCaesar $aArgelius 
+047M    $cArgelus, Caesar s. Argel¡, Cesare. 0 Hue/p 
+
+lok: 83000389 3
+
+exp: 83000389 3 1 #EPN
+201B/01 $t10:32:11.000 $011-05-12 
+201U/01 $0utf8 
+203@/01 $0830003894 
+206V/01 $2Retro $0019124996 $bArgelus, Caesar s. Argel¡, Cesare. 0 Hue/p $as0480276 
+208@/01 $brAa $a11-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209B/01 $aHeBIS-Retro $x05 
+209B/01 $aVerweisung $x06 
+209G/01 $aUB Frankfurt / StUB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s0480276 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

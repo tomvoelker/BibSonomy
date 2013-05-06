@@ -1,0 +1,29 @@
+alg: 81100369
+001@    $08 $aC 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0811003698 
+009R    $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/c1190037 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+010@    $aund 
+021A    $aLonginus, Caesar 
+025@    $aLonginus, Caesar: Longinus, Caesar 
+028A    $dCaesar $aLonginus 
+047M    $cLonginus, Caesar 
+
+lok: 81100369 8
+
+exp: 81100369 8 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0811003698 
+206V/01 $2Retro $0011323787 $bLonginus, Caesar $ac1190037 
+208@/01 $brAa 
+209A/01 $f000 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aULB Darmstadt $x01 
+209U/01 $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/c1190037 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt 
+

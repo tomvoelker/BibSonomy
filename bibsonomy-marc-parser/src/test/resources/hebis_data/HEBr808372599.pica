@@ -1,0 +1,29 @@
+alg: 80837259
+001@    $08 $aD 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0808372599 
+009R    $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d1740086 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+010@    $aund 
+021A    $aDarwins Reise 
+025@    $aDarwin, Charles: Darwins Reise 
+028A    $dCharles $aDarwin 
+047M    $cDarwin, Charles Darwins Reise. Tagebuch naturgeschiohtlicher und geologischer Untersuchungen.. s. Darwin: Journal of researches into natural history and geology deutsch . 
+
+lok: 80837259 8
+
+exp: 80837259 8 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0808372599 
+206V/01 $2Retro $0001796194 $bDarwin, Charles Darwins Reise. Tagebuch naturgeschiohtlicher und geologischer Untersuchungen.. s. Darwin: Journal of researches into natural history and geology deutsch . $ad1740086 
+208@/01 $brAa 
+209A/01 $f000 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aULB Darmstadt $x01 
+209U/01 $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d1740086 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt 
+

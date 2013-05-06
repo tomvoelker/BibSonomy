@@ -1,0 +1,37 @@
+alg: 17470864
+001@    $064 
+001A    $04505:14-03-06 
+001B    $t03:38:53.000 $06050:17-03-07 
+001D    $04505:14-03-06 
+001U    $0utf8 
+001X    $00 
+002@    $0Aox 
+003@    $0174708645 
+007I    $0BLLt121349 
+010@    $aeng 
+011@    $a2002 
+021A    $aWord clustering and disambiguation based on co-occurrence data 
+028A    $7120832739 $915235011X $8Li, Hang 
+031A    $d8 $e1 $j2002 $h25-42 
+039B    $aIn $9054825512 $8--Abvc--: Natural language engineering $x200200000080001975 
+045T    $a7,11 
+045W    $913308793X $803.25.02.017.01 $jWortklassenhäufigkeit 
+045W    $9133070409 $801.01.02 $jEnglisch 
+045W    $9133071642 $803.26 $jComputerlinguistik 
+045W    $vComputerlinguistik $9133090841 $803.26.08.034 $jDisambiguierung 
+045W    $913312228X $803.26.03.003 $jSemantisches Netz 
+045W    $vComputerlinguistik $9133121062 $803.26.08.066 $jÜbergangswahrscheinlichkeit 
+045W    $9133079023 $803.26.08.011 $jAutomatische Wortklassenerkennung 
+046M    $a35 Literaturangaben 
+
+lok: 17470864 64
+
+exp: 17470864 64 1 #EPN
+201B/01 $t02:36:44.000 $014-03-06 
+201U/01 $0utf8 
+203@/01 $0370419537 
+208@/01 $be $a09-03-06 
+209A/01 $f000 $a0 $x00 
+209B/01 $a28 $x05 
+247C/01 $9129368261 $8- <->Frankfurt, Bibliographie Linguistischer Literatur 
+

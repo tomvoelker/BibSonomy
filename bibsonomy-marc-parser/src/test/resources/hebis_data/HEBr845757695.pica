@@ -1,0 +1,31 @@
+alg: 84575769
+001@    $023 $aK 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0845757695 
+009R    $3Katalogkarte der UB Kassel $uhttp://resolver.hebis.de/retro/k2330685 $A2 $qimage/gif $mV:DE-603;B:DE-34 
+010@    $aund 
+011@    $a1975 
+021A    $aClustering algorithms 
+025@    $aHartigan, John A.: Clustering algorithms 
+028A    $dJohn A. $aHartigan 
+034D    $a351 S. 
+047M    $c80265301 95 mat O 2 HAR Hartigan, John A.: Clustering algorithms. - 5. printing New York u.a. : Wiley, c 1975. - XIII, 351 S. : 111., graph. Darst. A Wiley publication in applied statistics Wiley series in probability and mathematical statistics : Applied probability and statistics Literaturangaben ISBN 0-471-35645-x 183 606 j e-z ke 
+
+lok: 84575769 23
+
+exp: 84575769 23 1 #EPN
+201B/01 $t22:16:38.000 $017-12-12 
+201U/01 $0utf8 
+203@/01 $0845757695 
+206V/01 $2Retro $0056537301 $b80265301 95 mat O 2 HAR Hartigan, John A.: Clustering algorithms. - 5. printing New York u.a. : Wiley, c 1975. - XIII, 351 S. : 111., graph. Darst. A Wiley publication in applied statistics Wiley series in probability and mathematical statistics : Applied probability and statistics Literaturangaben ISBN 0-471-35645-x 183 606 j e-z ke $ak2330685 
+208@/01 $brAa $a06-12-12 
+209A/01 $f090 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Kassel $x01 
+209U/01 $3Katalogkarte der UB Kassel $uhttp://resolver.hebis.de/retro/k2330685 $A2 $qimage/gif $mV:DE-603;B:DE-34 
+247C/01 $9102599548 
+

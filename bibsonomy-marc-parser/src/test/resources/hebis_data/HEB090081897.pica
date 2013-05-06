@@ -1,0 +1,34 @@
+alg: 9008189
+001@    $025 
+001A    $00077:02-03-00 
+001B    $t22:11:36.000 $01999:28-05-10 
+001D    $00077:02-03-00 
+001U    $0utf8 
+001X    $00 
+002@    $0Aar 
+003@    $0090081897 
+003O    $002823380 $aOCoLC 
+010@    $aeng 
+011@    $a1933 
+013H    $0z 
+021A    $aJulius Caesar from the histories of Julius Caesar and Brutus in North's Plutarch $hput into basic by A. P. Rossiter 
+028C    $#Rossiter, A. P. $#Rossiter, Arthur Percival $7 $9162302711 $8Rossiter, Arthur P. 
+033A    $pLondon $nPaul, Trench, Trubner & Co. 
+034D    $a143 S. 
+036E    $aPsyche miniatures $l50 
+036F    $l50 $9089990234 $8Psyche miniatures $x250 
+045B    $eDDCoclc $ALoC $a937.05092 $aB 
+
+lok: 9008189 25
+
+exp: 9008189 25 1 #EPN
+201B/01 $t17:52:43.727 $019-12-02 
+201C/01 $002-03-00 
+201U/01 $0utf8 
+203@/01 $0141382023 
+208@/01 $br $a02-03-00 
+209A/01 $f000 $du $aZA 1329-50 $x00 
+209G/01 $a35147937 $x00 
+209G/01 $aMAG $x01 
+247C/01 $9102599602 $8651000-0 <77>Mainz, Universität Mainz, Zentralbibliothek 
+

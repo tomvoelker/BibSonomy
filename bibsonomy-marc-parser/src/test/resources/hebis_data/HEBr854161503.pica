@@ -1,0 +1,31 @@
+alg: 85416150
+001@    $0205 $aM 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0854161503 
+009R    $3Katalogkarte der UB Marburg $uhttp://resolver.hebis.de/retro/m1330037 $A2 $qimage/gif $mV:DE-603;B:DE-4 
+010@    $aund 
+011@    $a1969 
+021A    $aClustering and aggregation in economics 
+025@    $aFisher, Walter Dummer: Clustering and aggregation in economics 
+028A    $dWalter Dummer $aFisher 
+034D    $a193 S. 
+047M    $cMt vofh. t. PB W!rHch M !M'JM& n ' ! ' f Fisher, Walter Dummer W 71/5057 Cl a ferine and aggregation in eoonomioa. Walter D ummer Fiaher. Baltimore,. Md. : Johna Hopkina 1969 . XII, 193 S. 8° 
+
+lok: 85416150 205
+
+exp: 85416150 205 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0854161503 
+206V/01 $2Retro $0066744733 $bMt vofh. t. PB W!rHch M !M'JM& n ' ! ' f Fisher, Walter Dummer W 71/5057 Cl a ferine and aggregation in eoonomioa. Walter D ummer Fiaher. Baltimore,. Md. : Johna Hopkina 1969 . XII, 193 S. 8° $am1330037 
+208@/01 $brAa 
+209A/01 $f000 $di $aW 71/5057 $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUni Marburg $x01 
+209U/01 $3Katalogkarte der UB Marburg $uhttp://resolver.hebis.de/retro/m1330037 $A2 $qimage/gif $mV:DE-603;B:DE-4 
+247C/01 $9102594767 $8351000-1 <4>Marburg, Universität Marburg, Zentralbibliothek 
+

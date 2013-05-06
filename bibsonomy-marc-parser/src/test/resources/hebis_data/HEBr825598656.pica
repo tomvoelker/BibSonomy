@@ -1,0 +1,30 @@
+alg: 82559865
+001@    $03 $aS 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0825598656 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s4520462 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+021A    $as. Germanicus Caesar 
+025@    $aGermanicus, Caesar: s. Germanicus Caesar 
+028A    $dCaesar $aGermanicus 
+047M    $cGermanioust Caesar so Gegmanious Caesar, . i 1. 0 u ' ' .11 
+
+lok: 82559865 3
+
+exp: 82559865 3 1 #EPN
+201B/01 $t18:13:53.000 $010-05-12 
+201U/01 $0utf8 
+203@/01 $0825598656 
+206V/01 $2Retro $0024955639 $bGermanioust Caesar so Gegmanious Caesar, . i 1. 0 u ' ' .11 $as4520462 
+208@/01 $brAa $a10-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209B/01 $aHeBIS-Retro $x05 
+209B/01 $aVerweisung $x06 
+209G/01 $aUB Frankfurt / StUB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s4520462 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

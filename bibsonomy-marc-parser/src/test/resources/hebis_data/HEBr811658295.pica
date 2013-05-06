@@ -1,0 +1,29 @@
+alg: 81165829
+001@    $08 $aC 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0811658295 
+009R    $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/c0440767 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+010@    $aund 
+021A    $aDarwin, Francis 
+025@    $aDarwin, Francis: Darwin, Francis 
+028A    $dFrancis $aDarwin 
+047M    $cDarwin, Francis 
+
+lok: 81165829 8
+
+exp: 81165829 8 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0811658295 
+206V/01 $2Retro $0010669124 $bDarwin, Francis $ac0440767 
+208@/01 $brAa 
+209A/01 $f000 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aULB Darmstadt $x01 
+209U/01 $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/c0440767 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt 
+

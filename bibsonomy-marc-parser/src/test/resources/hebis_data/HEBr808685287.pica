@@ -1,0 +1,28 @@
+alg: 80868528
+001@    $08 $aD 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0808685287 
+009R    $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d1420728 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+010@    $aund 
+021A    $aCaesar 
+025@    $aCaesar 
+047M    $cCaesar Sg 914 43 Caesar. 1967 a. Rasmussen. Detlef Verf. XUh 7 
+
+lok: 80868528 8
+
+exp: 80868528 8 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0808685287 
+206V/01 $2Retro $000147944X $bCaesar Sg 914 43 Caesar. 1967 a. Rasmussen. Detlef Verf. XUh 7 $ad1420728 
+208@/01 $brAa 
+209A/01 $f000 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aULB Darmstadt $x01 
+209U/01 $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d1420728 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt 
+

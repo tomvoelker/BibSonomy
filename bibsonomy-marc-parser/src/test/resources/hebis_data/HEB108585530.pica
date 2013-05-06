@@ -1,0 +1,28 @@
+alg: 10858553
+001@    $06 
+001A    $03030:06-12-02 
+001B    $t22:11:50.000 $01999:28-05-10 
+001D    $03030:06-12-02 
+001U    $0utf8 
+001X    $00 
+002@    $0Acu 
+003@    $0108585530 
+003O    $029908720 $aOCoLC 
+010@    $aeng 
+013H    $0h 
+019@    $aus 
+021A    $da biography $aCharles Darwin $hJanet Browne 
+028A    $#Browne, Janet $7 $9169390411 $8Browne, E. Janet 
+033A    $pNew York $nKnopf 
+044K    $#Darwin, Charles $#Darvin, Carls $#Darvin, Čarlz $#Darvin, Charl'z $#Darvin, Tsharlz $#Darwin, Carlos R. $#Darwin, Charles R. $#Darwin, Charles Robert $#Darwin, Karol $#Darwin-Wallace, ... $#Ta-erh-wen $#Ta-erh-wen $#Darwin, Carlo $#HeBIS $#Darwin, Carlos Roberto $#HeBIS $#Darvin, Carls $#HeBIS $#Darvin, Charl'z $#HeBIS $#Darwin, Karol $#HeBIS $#Dārwīn, Tsārlz $#HeBIS $7118523813 $9086864904 $8Darwin, Charles 
+044K    $af Biographie 
+045B    $eDDC20oclc $ALoC $a575.0092 
+
+lok: 10858553 6
+
+exp: 10858553 6 1 #EPN
+201B/01 $t01:19:45.763 $007-12-02 
+201U/01 $0utf8 
+203@/01 $0178643149 
+208@/01 $bdummy $a07-12-02 
+

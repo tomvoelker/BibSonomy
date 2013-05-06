@@ -1,0 +1,46 @@
+alg: 9632382
+001@    $03 
+001A    $00030:12-03-01 
+001B    $t23:23:42.000 $01999:11-08-10 
+001C    $t12:42:41.000 $00030:11-08-10 
+001D    $00030:20-08-01 
+001U    $0utf8 
+001X    $00 
+002@    $0Zay 
+003@    $0096323825 
+003O    $0174538668 $aOCoLC 
+004A    $088-359-4459-7 
+007A    $0096323825 $aHEB 
+010@    $aita 
+011@    $a1998 
+013H    $0z 
+021A    $aCharles Darwin $nMedienkombination $hGiuseppe Montalenti 
+028A    $7108382842 $9143159429 $8Montalenti, Giuseppe 
+032@    $a4. ed. 
+033A    $pRoma $nEd. Riuniti 
+034D    $a126 S. 
+034K    $a1 Diskette ; 9 cm 
+036G    $aLibri di base + 
+044K    $#Darwin, Charles $#Darvin, Carls $#Darvin, Čarlz $#Darvin, Charl'z $#Darvin, Tsharlz $#Darwin, Carlos R. $#Darwin, Charles R. $#Darwin, Charles Robert $#Darwin, Karol $#Darwin-Wallace, ... $#Ta-erh-wen $#Ta-erh-wen $#Darwin, Carlo $#HeBIS $#Darwin, Carlos Roberto $#HeBIS $#Darvin, Carls $#HeBIS $#Darvin, Charl'z $#HeBIS $#Darwin, Karol $#HeBIS $#Dārwīn, Tsārlz $#HeBIS $7118523813 $9086864904 $8Darwin, Charles 
+044K    $af Biographie 1809-1882 
+
+lok: 9632382 3
+101B    $t13:33:14.000 $023-04-04 
+101C    $020-08-01 
+101U    $0utf8 
+144Z/20 $ab01aug 
+145S/06 $a120 
+145Z/41 $abiol E 
+145Z/42 $abiol A 
+
+exp: 9632382 3 1 #EPN
+201B/01 $t04:51:28.000 $008-03-06 
+201C/01 $012-03-01 
+201U/01 $0utf8 
+203@/01 $0152196064 
+208@/01 $bzBa $a20-08-01 
+209A/01 $f000 $du $aSAVM 2/57 $hSAVM 2 57 $x00 
+209G/01 $a35018778 $x00 
+220B/01 $aUn. 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

@@ -1,0 +1,28 @@
+alg: 84707410
+001@    $023 $aK 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0847074102 
+009R    $3Katalogkarte der UB Kassel $uhttp://resolver.hebis.de/retro/k0861274 $A2 $qimage/gif $mV:DE-603;B:DE-34 
+010@    $aund 
+021A    $aClustering phenomena in nuclei 
+025@    $aClustering phenomena in nuclei 
+047M    $cEinzelsign. Clustering phenomena in nuclei. Braunschweig : Vieweg 25 t re . ! 
+
+lok: 84707410 23
+
+exp: 84707410 23 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0847074102 
+206V/01 $2Retro $0054651662 $bEinzelsign. Clustering phenomena in nuclei. Braunschweig : Vieweg 25 t re . ! $ak0861274 
+208@/01 $brAa 
+209A/01 $f000 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Kassel $x01 
+209U/01 $3Katalogkarte der UB Kassel $uhttp://resolver.hebis.de/retro/k0861274 $A2 $qimage/gif $mV:DE-603;B:DE-34 
+247C/01 $9102599394 $8352000-6 <34>Kassel, UB/LMB Kassel, Universitätsbibliothek Kassel 
+

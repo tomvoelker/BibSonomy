@@ -1,0 +1,30 @@
+alg: 82376271
+001@    $03 $aS 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0823762718 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s6340896 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+011@    $a1958 
+021A    $aInformation storage and retrieval 
+025@    $aInformation-storage information retrieval 
+047M    $cHM 6: Jh 5 Information-storage informationretrieval Information storage and retrieval. Theory, systems' and devices. Ed. by Mortimer Taube and Harold Wooster. New York: Columbia Univ. Pr. 1958. XI1228 s. 80 Columbia University studies in library service. 101 ez-a 61/212 ba 
+
+lok: 82376271 3
+
+exp: 82376271 3 1 #EPN
+201B/01 $t01:50:14.000 $010-05-12 
+201U/01 $0utf8 
+203@/01 $0823762718 
+206V/01 $2Retro $0027448401 $bHM 6: Jh 5 Information-storage informationretrieval Information storage and retrieval. Theory, systems' and devices. Ed. by Mortimer Taube and Harold Wooster. New York: Columbia Univ. Pr. 1958. XI1228 s. 80 Columbia University studies in library service. 101 ez-a 61/212 ba $as6340896 
+208@/01 $brAa $a10-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209A/01 $a61/212 $x01 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Frankfurt / StUB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s6340896 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

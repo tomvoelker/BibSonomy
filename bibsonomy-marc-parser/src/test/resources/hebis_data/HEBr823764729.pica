@@ -1,0 +1,30 @@
+alg: 82376472
+001@    $03 $aS 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0823764729 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s6340606 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+021A    $aInformation retrieval today 
+025@    $aInformation-retrieval today 
+034D    $a176 S. 
+047M    $cInformation-retrie%-711.7. to-. 1, ay 67/265 Information retrieval toilav, .2apers Ed. by Wesley @imonton. rat 17 . @.bb. Minneapolis, Minn.: Oonte-@, "or Continuation Study, @3- Univ. of Minnesota lq-" 176 S. 40 Maschineniv, n so schr. vervielf. hr, u 
+
+lok: 82376472 3
+
+exp: 82376472 3 1 #EPN
+201B/01 $t01:50:31.000 $010-05-12 
+201U/01 $0utf8 
+203@/01 $0823764729 
+206V/01 $2Retro $002744550X $bInformation-retrie%-711.7. to-. 1, ay 67/265 Information retrieval toilav, .2apers Ed. by Wesley @imonton. rat 17 . @.bb. Minneapolis, Minn.: Oonte-@, "or Continuation Study, @3- Univ. of Minnesota lq-" 176 S. 40 Maschineniv, n so schr. vervielf. hr, u $as6340606 
+208@/01 $brAa $a10-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209A/01 $a67/265 $x01 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Frankfurt / StUB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s6340606 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

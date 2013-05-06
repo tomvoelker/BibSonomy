@@ -1,0 +1,29 @@
+alg: 80837244
+001@    $08 $aD 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0808372440 
+009R    $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d1740101 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+010@    $aund 
+021A    $aDarwins Reise 
+025@    $aDarwin, Charles: Darwins Reise 
+028A    $dCharles $aDarwin 
+047M    $c"B-rwin, Charles 45/3730 LVQya a-o a na uralist,deutsch Darwins ei e. Tagebuch naturgescf.ichti.u.geol.'L'ntersuehungeM Ler uie \'hr-nd der Weltumsegelung auf I.M.Schiff Sea le besuchten Lnder. Von Chailes Darwin. Aus '!.En l.d.l5.Aufl. c.Ori it ls. it e.Einl. u.Amr. von Alfred rc hoff. rebst 14 Abb. Halle: Pendel 893 . XX,570 S. 8 L 
+
+lok: 80837244 8
+
+exp: 80837244 8 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0808372440 
+206V/01 $2Retro $0001796348 $b"B-rwin, Charles 45/3730 LVQya a-o a na uralist,deutsch Darwins ei e. Tagebuch naturgescf.ichti.u.geol.'L'ntersuehungeM Ler uie \'hr-nd der Weltumsegelung auf I.M.Schiff Sea le besuchten Lnder. Von Chailes Darwin. Aus '!.En l.d.l5.Aufl. c.Ori it ls. it e.Einl. u.Amr. von Alfred rc hoff. rebst 14 Abb. Halle: Pendel 893 . XX,570 S. 8 L $ad1740101 
+208@/01 $brAa 
+209A/01 $f000 $di $aS            45/3730 $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aULB Darmstadt $x01 
+209U/01 $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d1740101 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt 
+

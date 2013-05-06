@@ -1,0 +1,28 @@
+alg: 83800527
+001@    $0204 $aG 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0838005276 
+009R    $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g4710594 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+010@    $aund 
+021A    $aSIR Scientific Information Retrieval 
+025@    $aInformation-Retrieval scientific 
+047M    $cIn format io n-Re trieva l se ien-Hochschu!rechenzentru! 1S21 i.2. 91 H Scientific If!fOMaMon Re rie al E a on SIR I sic o 1984 uch vorh.: Btometne .Poputationsgenett 
+
+lok: 83800527 204
+
+exp: 83800527 204 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0838005276 
+206V/01 $2Retro $004695239X $bIn format io n-Re trieva l se ien-Hochschu!rechenzentru! 1S21 i.2. 91 H Scientific If!fOMaMon Re rie al E a on SIR I sic o 1984 uch vorh.: Btometne .Poputationsgenett $ag4710594 
+208@/01 $brAa 
+209A/01 $f960 $asiehe Katalogkarte oben rechts $x00 
+209A/01 $f960 $aS21 $hGesamtkatalog S21 $x05 
+209B/01 $aHeBIS-Retro $x05 
+209U/01 $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g4710594 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+247C/01 $929053481X $8631960-9 <26/960>Gießen, Universität Gießen, Retrokatalog 
+

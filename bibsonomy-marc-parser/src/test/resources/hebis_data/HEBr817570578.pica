@@ -1,0 +1,31 @@
+alg: 81757057
+001@    $03 $aS 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0817570578 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/t2690077 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+021A    $aJulius Cäsar [Julius Caesar] oder Die Verschwörung des Brutus 
+025@    $aShakespeare, William: Julius Cäsar [Julius Caesar] oder Die Verschwörung des Brutus 
+028A    $dWilliam $aShakespeare 
+034D    $a122 S. 
+047M    $cShakespeare, William EL 1933/218 Julius Caesar Julius C a e s a r, deutsch ?der Die Verschwoerung des tus. Ein Trauersp. in 6 Handlungen von William Shakespeare. F.d.Mannheimer Buhne bearb.u.das.aufgef. on 2 .Apr.1785 von Wolfgang Heribert v.Dalberg'. Mannheim; Schwan 1785. 122 S. 80 br 
+
+lok: 81757057 3
+
+exp: 81757057 3 1 #EPN
+201B/01 $t23:55:56.000 $008-05-12 
+201U/01 $0utf8 
+203@/01 $0817570578 
+206V/01 $2Retro $003575723X $bShakespeare, William EL 1933/218 Julius Caesar Julius C a e s a r, deutsch ?der Die Verschwoerung des tus. Ein Trauersp. in 6 Handlungen von William Shakespeare. F.d.Mannheimer Buhne bearb.u.das.aufgef. on 2 .Apr.1785 von Wolfgang Heribert v.Dalberg'. Mannheim; Schwan 1785. 122 S. 80 br $at2690077 
+208@/01 $brAa $a08-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209A/01 $aEL 1933/218 $x01 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Frankfurt / StUB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/t2690077 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

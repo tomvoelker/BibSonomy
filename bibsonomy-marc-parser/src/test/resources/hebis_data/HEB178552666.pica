@@ -1,0 +1,39 @@
+alg: 17855266
+001@    $03 
+001A    $00030:02-06-06 
+001B    $t22:12:01.000 $01999:28-05-10 
+001C    $t16:05:57.000 $00030:29-05-07 
+001D    $00030:02-06-06 
+001U    $0utf8 
+001X    $00 
+002@    $0Aau 
+003@    $0178552666 
+003O    $024589042 $aOCoLC 
+007A    $0178552666 $aHEB 
+010@    $ager 
+011@    $a1898 
+021A    $aDas @Leben des M. Junius Brutus bis auf Caesars Ermordung $hvon Ernest T. Bynum 
+028A    $7 $9178552607 $8Bynum, Ernest T. 
+033A    $pHalle a.S. $nNiemeyer 
+034D    $a49 S. 
+045Z    $aNH 7260 
+
+lok: 17855266 3
+101B    $t13:33:17.000 $001-08-08 
+101C    $001-08-08 
+101U    $0utf8 
+145S/01 $a039 
+
+exp: 17855266 3 1 #EPN
+201B/01 $t16:05:57.000 $029-05-07 
+201C/01 $002-06-06 
+201U/01 $0utf8 
+203@/01 $040322246X 
+208@/01 $brCh $a02-06-06 
+209A/01 $f330 $ds $a21/NH 7260 B994 $h21 NH 7260 B994 $x00 
+209B/01 $a4403 $x05 
+209B/01 $a4590.606 $x09 
+209C/01 $a083-270/63 
+209G/01 $a1002118390 $x00 
+247C/01 $9102599378 $8601330-2 <30/330>Frankfurt, Universität Frankfurt, Bibliothekszentrum Geisteswissenschaften 
+

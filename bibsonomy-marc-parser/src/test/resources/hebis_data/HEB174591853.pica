@@ -1,0 +1,32 @@
+alg: 17459185
+001@    $064 
+001A    $04505:14-03-06 
+001B    $t23:02:52.000 $06050:16-03-07 
+001D    $04505:14-03-06 
+001U    $0utf8 
+001X    $00 
+002@    $0Aox 
+003@    $0174591853 
+007I    $0BLLt107543 
+010@    $aeng 
+011@    $a2000 
+021A    $aLattice-based information retrieval 
+028A    $#Priss, Uta E. $7 $9175529140 $8Priss, Uta 
+031A    $d27 $e3 $j2000 $h132-142 
+039B    $aIn $9048624713 $8--Abvc--: Knowledge organization $x200000000270003868 
+045T    $a24,1 
+045W    $9133072479 $803.26.07 $jInformation retrieval 
+045W    $9133087212 $803.25.01.003 $jThesaurus 
+046M    $a19 Literaturangaben 
+
+lok: 17459185 64
+
+exp: 17459185 64 1 #EPN
+201B/01 $t01:55:24.000 $014-03-06 
+201U/01 $0utf8 
+203@/01 $0370302745 
+208@/01 $be $a09-03-06 
+209A/01 $f000 $a0 $x00 
+209B/01 $a27 $x05 
+247C/01 $9129368261 $8- <->Frankfurt, Bibliographie Linguistischer Literatur 
+

@@ -1,0 +1,49 @@
+alg: 18024562
+001@    $0204-205 
+001A    $00004:10-08-06 
+001B    $t19:46:26.000 $01999:23-06-11 
+001D    $00004:10-08-06 
+001U    $0utf8 
+001X    $00 
+002@    $0Aar 
+003@    $0180245627 
+003O    $012630287 $aOCoLC 
+007A    $0180245627 $aHEB 
+010@    $ager 
+011@    $a1959 
+021A    $aDarwin und sein Werk $hvon Hans Burla 
+028A    $7105831492 $9140854223 $8Burla, Hans 
+033A    $pZürich $nFretz 
+034D    $a74 S. 
+034M    $aIll., graph. Darst. 
+036E    $aVierteljahrsschrift der Naturforschenden Gesellschaft in Zürich $l103, 6 
+036E/01 $aNeujahrsblatt / Naturforschende Gesellschaft in Zürich $l161 
+036F    $l103, 6 $9045742685 $8Vierteljahrsschrift der Naturforschenden Gesellschaft in Zürich $x3103 16 
+036F/01 $l161 $9010050493 $8Neujahrsblatt / Naturforschende Gesellschaft in Zürich $x3161 
+044K    $#Darwin, Charles $#Darvin, Carls $#Darvin, Čarlz $#Darvin, Charl'z $#Darvin, Tsharlz $#Darwin, Carlos R. $#Darwin, Charles R. $#Darwin, Charles Robert $#Darwin, Karol $#Darwin-Wallace, ... $#Ta-erh-wen $#Ta-erh-wen $#Darwin, Carlo $#HeBIS $#Darwin, Carlos Roberto $#HeBIS $#Darvin, Carls $#HeBIS $#Darvin, Charl'z $#HeBIS $#Darwin, Karol $#HeBIS $#Dārwīn, Tsārlz $#HeBIS $7118523813 $9086864904 $8Darwin, Charles 
+045Z    $aWB 3140 
+
+lok: 18024562 204
+
+exp: 18024562 204 1 #EPN
+201B/01 $t12:50:42.000 $017-02-11 
+201C/01 $017-02-11 
+201U/01 $0utf8 
+203@/01 $0606178236 
+208@/01 $brUB $a17-02-11 
+209A/01 $f000 $du $aZZ 49/272-103,6 $hZZ 49 272 / B 103 6 $x00 
+247C/01 $9102596697 $8631000-x <26>Gießen, Universität Gießen, Universitätsbibliothek Gießen 
+
+lok: 18024562 205
+
+exp: 18024562 205 1 #EPN
+201B/01 $t11:26:48.000 $010-08-06 
+201C/01 $010-08-06 
+201U/01 $0utf8 
+203@/01 $043638552X 
+208@/01 $br $a10-08-06 
+209A/01 $f000 $du $aIX C 92 d, 103, 6 $x00 
+209B/01 $a98 $x05 
+209C/01 $aZT 1958/5619 
+247C/01 $9102594767 $8351000-1 <4>Marburg, Universität Marburg, Zentralbibliothek 
+

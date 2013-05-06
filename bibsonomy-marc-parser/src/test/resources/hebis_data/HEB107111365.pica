@@ -1,0 +1,67 @@
+alg: 10711136
+001@    $025,204-205 
+001A    $06000:18-09-02 
+001B    $t22:11:50.000 $01999:28-05-10 
+001C    $t17:02:03.000 $06002:05-03-06 
+001D    $06000:18-09-02 
+001U    $0utf8 
+001X    $00 
+002@    $0Eax 
+003@    $0107111365 
+003O    $0614506454 $aOCoLC 
+007I    $0PAL703339756 
+010@    $alat 
+011@    $a1555 $n1555 
+011B    $a1991 $n1991 
+016E    $aeuuu024uuuu 
+021A    $aDe Rebvs A Carolo V. Caesare Romanorvm Imperatore Gestis, Ioannis Michaelis Bruti Oratio 
+025@    $aDe rebus a Carolo V. Caesare Romanorum Imperatore gestis, Ioannis Michaelis Bruti oratio 
+028A    $#Brutus, Johannes Michael $#Brutus, Johannes M. $#Brutus, Ioannes Michael $#Brutus, Ioannes M. $#Bruto, Gian Michele $#Bruto, Gian M. $#Brutus, Johann M. $#Brutus, Michael $#Brutus, Joannes M. $7 $9166713635 $8Bruto, Giovanni Michele 
+032C    $a[Mikrofiche-Ausg.] 
+033A    $pAntverpiae $nBellerus 
+033N    $pMünchen {[u.a.] $nSaur 
+034D    $a[48] Bl. : Ill. 
+036L    $aBibliotheca Palatina $lF1238 
+037A    $aVorlageform des Erscheinungsvermerks: Antverpiae Apud Ioannem Bellerum sub insigni Falconis. M.D.LV. - Mikrofiche 24x. - Aufnahme nach: BLC 
+037G    $aMikrofiche-Ausg.: 
+
+lok: 10711136 25
+
+exp: 10711136 25 1 #EPN
+201B/01 $t12:59:52.059 $019-09-02 
+201U/01 $0utf8 
+203@/01 $0175566097 
+208@/01 $bz $a19-09-02 
+209A/01 $f000 $di $aMG 4014-F1238 $x00 
+209B/01 $a00017 $x05 
+209C/01 $a88/3601-1 
+209G/01 $aMAG $x01 
+247C/01 $9102599602 $8651000-0 <77>Mainz, Universität Mainz, Zentralbibliothek 
+
+lok: 10711136 204
+
+exp: 10711136 204 1 #EPN
+201B/01 $t12:59:53.792 $019-09-02 
+201U/01 $0utf8 
+203@/01 $0175566100 
+208@/01 $bz $a19-09-02 
+209A/01 $f000 $di $aFH all Xa 0.1-F1238 $hFH ALL XA 0 1 / B F1238 $x00 
+209A/01 $a27.002.40-F1238 $h27 002 40 / B F1238 $x09 
+209B/01 $a00001 $x05 
+209G/01 $aFH Arbeitsplatz Mikroformen $x01 
+247C/01 $9102596697 $8631000-x <26>Gießen, Universität Gießen, Universitätsbibliothek Gießen 
+
+lok: 10711136 205
+
+exp: 10711136 205 1 #EPN
+201B/01 $t16:30:33.000 $008-03-06 
+201U/01 $0utf8 
+203@/01 $0175566119 
+208@/01 $bz $a19-09-02 
+209A/01 $f000 $ds $aLS Bibl 3133, F1238 $x00 
+209A/01 $aFilm c 98/156-A, F1238 $x09 
+209B/01 $a10 $x05 
+209C/01 $a1998/254-A 
+209G/01 $aLesesaal $x01 
+247C/01 $9102594767 $8351000-1 <4>Marburg, Universität Marburg, Zentralbibliothek 
+

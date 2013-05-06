@@ -1,0 +1,28 @@
+alg: 82376471
+001@    $03 $aS 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0823764710 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s6340608 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+021A    $aComputer-based Information retrieval systems 
+025@    $aInformation-retrieval-systems computer-based 
+047M    $c70/481.5 Infortation-retrieval-systems *3m- ,puter-based Compu'ter"bas'ed I n f or m" 'a t i o hr e. i,r i e, v1 "a- t 4 m5 E 2 do -Berri. r&@ H L,dnd B@' -IM S. Oft. illgi6y: 0968 Books for information workers in industry. U/P 
+
+lok: 82376471 3
+
+exp: 82376471 3 1 #EPN
+201B/01 $t01:50:31.000 $010-05-12 
+201U/01 $0utf8 
+203@/01 $0823764710 
+206V/01 $2Retro $0027445526 $b70/481.5 Infortation-retrieval-systems *3m- ,puter-based Compu'ter"bas'ed I n f or m" 'a t i o hr e. i,r i e, v1 "a- t 4 m5 E 2 do -Berri. r&@ H L,dnd B@' -IM S. Oft. illgi6y: 0968 Books for information workers in industry. U/P $as6340608 
+208@/01 $brAa $a10-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Frankfurt / StUB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/s6340608 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

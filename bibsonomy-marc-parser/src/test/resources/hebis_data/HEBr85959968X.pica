@@ -1,0 +1,30 @@
+alg: 85959968
+001@    $011 $aW 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $085959968X 
+009R    $3Katalogkarte der HLB Wiesbaden $uhttp://resolver.hebis.de/retro/w0261722 $A2 $qimage/gif $mV:DE-603;B:DE-43 
+010@    $aund 
+021A    $aDas Leben des M. Junius Brutus bis auf Caesars Ermordung 
+025@    $aBynum, Ernest T.: Das Leben des M. Junius Brutus bis auf Caesars Ermordung 
+028A    $dErnest T. $aBynum 
+034D    $a49 S. 
+047M    $cr . t $? /- J " ' " 3 / 2 aa T ben ea .Juniua Brutua bis auf Ca sara rmordung. Von Krneat T.Bynum. H ll a.S. . M. ierney r 1896. 49 S. t ,  . . . . L t. . "'. . 
+
+lok: 85959968 11
+
+exp: 85959968 11 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $085959968X 
+206V/01 $2Retro $007097747X $br . t $aw0261722 $? /- J " ' " 3 / 2 aa T ben ea .Juniua Brutua bis auf Ca sara rmordung. Von Krneat T.Bynum. H ll a.S. . M. ierney r 1896. 49 S. t ,  . . . . L t. . "'. . 
+208@/01 $brAa 
+209A/01 $f100 $di $a3 /   2 $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aHLB Wiesbaden $x01 
+209U/01 $3Katalogkarte der HLB Wiesbaden $uhttp://resolver.hebis.de/retro/w0261722 $A2 $qimage/gif $mV:DE-603;B:DE-43 
+247C/01 $9102599572 $8620100-3 <43>Wiesbaden, Hochschul- und Landesbibliothek RheinMain, Landesbibliothek Wiesbaden 
+

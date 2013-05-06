@@ -1,0 +1,29 @@
+alg: 85943364
+001@    $011 $aW 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0859433641 
+009R    $3Katalogkarte der HLB Wiesbaden $uhttp://resolver.hebis.de/retro/w0321976 $A2 $qimage/gif $mV:DE-603;B:DE-43 
+010@    $aund 
+021A    $as. Darwin, Charles 
+025@    $aDarwin, Francis: s. Darwin, Charles 
+028A    $dFrancis $aDarwin 
+047M    $cr n - f ' . . L , ? = ! = Ly / C' / ! tL5 .J ' .* D.fwda.OhM*!.: Th. lif. Md l.tt.r. 1M7. j m 6c6 tML NNt!t'-', ' 
+
+lok: 85943364 11
+
+exp: 85943364 11 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0859433641 
+206V/01 $2Retro $0071145583 $br n - f ' . . L , ? = ! = Ly / C' / ! tL5 .J ' .* D.fwda.OhM*!.: Th. lif. Md l.tt.r. 1M7. j m 6c6 tML NNt!t'-', ' $aw0321976 
+208@/01 $brAa 
+209A/01 $f100 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aHLB Wiesbaden $x01 
+209U/01 $3Katalogkarte der HLB Wiesbaden $uhttp://resolver.hebis.de/retro/w0321976 $A2 $qimage/gif $mV:DE-603;B:DE-43 
+247C/01 $9102599572 $8620100-3 <43>Wiesbaden, Hochschul- und Landesbibliothek RheinMain, Landesbibliothek Wiesbaden 
+

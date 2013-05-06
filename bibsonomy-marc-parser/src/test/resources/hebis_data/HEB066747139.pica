@@ -1,0 +1,33 @@
+alg: 6674713
+001@    $08 
+001A    $06050:10-03-99 
+001B    $t13:39:58.000 $00017:24-01-12 
+001D    $06050:20-11-99 
+001U    $0utf8 
+001X    $00 
+002@    $0Abvc 
+003@    $0066747139 
+003O    $070728345 $aOCoLC 
+006Z    $0773469-4 
+007A    $0773469-4 $aZDB 
+011@    $b1971 $a1971 $n1971-1971 
+013H    $0ko 
+021A    $aProceedings of the Symposium on Information Storage and Retrieval $hspons. by the Association for Computing Machinery, Special Interest Group on Information Retrieval (S/G/R). The National Aeronautics and Space Administration, The University of Maryland 
+029A    $#Information Storage and Retrieval Symposium $#ACM Information Storage and Retrieval Symposium $#ACM IS and R Symposium $710143-6 $9040220656 $8Symposium on Information Storage and Retrieval 
+029F    $#Special Interest Group on Information Retrieval $#SIGIR $#Association for Computing Machinery, Special Interest Group in Information Retrieval $#Special Interest Group in Information Retrieval $755738-9 $bSpecial Interest Group on Information Retrieval $9040463591 $8Association for Computing Machinery 
+031@    $a1971 nachgewiesen 
+033A    $pNew York, NY $nAssoc. 
+045U    $e004 
+
+lok: 6674713 8
+
+exp: 6674713 8 1 #EPN
+201B/01 $t09:38:05.000 $001-03-13 
+201C/01 $005-07-11 
+201U/01 $0utf8 
+203@/01 $0622602675 
+208@/01 $bp $a05-07-11 
+209A/01 $f000 $ds $a-121-Zb 73 $lkx $x00 
+209E/01 $a1971 $x02 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+

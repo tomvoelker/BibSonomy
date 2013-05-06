@@ -1,0 +1,30 @@
+alg: 81425642
+001@    $03 $aB 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0814256422 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/b0560382 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+021A    $aCaesar Cremonius Centens 
+025@    $aCremoninus, Caesar: Caesar Cremonius Centens 
+028A    $dCaesar $aCremoninus 
+047M    $cSonck E3 bCRE1 0 nlj UCaesar C1550-18311 Caesar Cremonius Centens.Atavi-s, Zanebonus gremonensis In mnj.ljat.phII.Iirim. aetatis 71. g lo facie Caesar.. EPortrat Plattengrgsse 143 x 103 MM3 Portratsaniml. 
+
+lok: 81425642 3
+
+exp: 81425642 3 1 #EPN
+201B/01 $t21:51:35.000 $015-05-12 
+201U/01 $0utf8 
+203@/01 $0814256422 
+206V/01 $2Retro $0015889246 $bSonck E3 bCRE1 0 nlj UCaesar C1550-18311 Caesar Cremonius Centens.Atavi-s, Zanebonus gremonensis In mnj.ljat.phII.Iirim. aetatis 71. g lo facie Caesar.. EPortrat Plattengrgsse 143 x 103 MM3 Portratsaniml. $ab0560382 
+208@/01 $brAa $a15-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209A/01 $aCRE1 0 $x01 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Frankfurt / SeB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/b0560382 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

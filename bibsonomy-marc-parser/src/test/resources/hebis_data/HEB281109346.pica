@@ -1,0 +1,39 @@
+alg: 28110934
+001@    $0204 
+001A    $01999:19-11-11 
+001B    $t00:03:28.000 $01999:20-11-11 
+001D    $01999:19-11-11 
+001U    $0utf8 
+001X    $00 
+002@    $0Aar 
+003@    $0281109346 
+003O    $037313613 $aOCoLC 
+007A    $0281109346 $aHEB 
+007T    $0gisp29665 
+010@    $ager 
+011@    $a1894 
+013H    $0z 
+021A    $aBrutus in Shakespeares Julius Caesar 
+028A    $dPeter $aKreutzberg 
+033A    $pNeisse $nBär 
+034D    $a16 S. 
+037D    $d1894 $eBeilage $bNeisse $cRealgymnasium 
+044Q    $sAnglistik 
+044Q    $gDeutschland (Historisch) / Preußen / Schlesien 
+044Q    $kPolen 
+045E    $c820 
+
+lok: 28110934 204
+101B    $t11:24:53.000 $019-11-11 
+101U    $0utf8 
+144Z/01 $aSchulprogrammsammlung 
+
+exp: 28110934 204 1 #EPN
+201B/01 $t11:24:53.000 $019-11-11 
+201U/01 $0utf8 
+203@/01 $0633703087 
+208@/01 $brUBsp $a19-11-11 
+209A/01 $f000 $di $aProgr. Neisse Rg. 1894 Beil. $x00 
+209B/01 $asp29665 $x05 
+247C/01 $9102596697 $8631000-x <26>Gießen, Universität Gießen, Universitätsbibliothek Gießen 
+

@@ -1,0 +1,28 @@
+alg: 80589343
+001@    $08 $aD 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0805893431 
+009R    $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d4271070 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+010@    $aund 
+021A    $aInformation Retrieval Systeme <IRS>, Management Information Systeme <MIS> .. 
+025@    $aInformation-Retrieval-Systeme 
+047M    $c ' !nfbrmation°Rerneval-SysteiT:e 71 A 56 InfoermoHon Rerfieva Syslef fw tRS , nogefnent IntoT- mat!on Systeme M!S .. ENachtr. Kupz W., K.-H.Meyer-Uh!enr!ea, H. Rittet: Die Entwicktung eines Infotmartonssystems Rjrden Deutschen Bundestag. 3. Schmidt Hors H. :Ein Anfrogungssystem Ueber wach sende Datenmergen RJr kleine und midiere DatenveMt ei ungsan!Qgen. C4. KtiaHmann, D. :Uber die Entwicklung eines dynamischen Informa- Honssystems. Fort $.s.fo!g.Bt. S 
+
+lok: 80589343 8
+
+exp: 80589343 8 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0805893431 
+206V/01 $2Retro $0004309901 $b ' !nfbrmation°Rerneval-SysteiT:e 71 A 56 InfoermoHon Rerfieva Syslef fw tRS , nogefnent IntoT- mat!on Systeme M!S .. ENachtr. Kupz W., K.-H.Meyer-Uh!enr!ea, H. Rittet: Die Entwicktung eines Infotmartonssystems Rjrden Deutschen Bundestag. 3. Schmidt Hors H. :Ein Anfrogungssystem Ueber wach sende Datenmergen RJr kleine und midiere DatenveMt ei ungsan!Qgen. C4. KtiaHmann, D. :Uber die Entwicklung eines dynamischen Informa- Honssystems. Fort $ad4271070 $.s.fo!g.Bt. S 
+208@/01 $brAa 
+209A/01 $f000 $di $aohne Signatur $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aULB Darmstadt $x01 
+209U/01 $3Katalogkarte der ULB Darmstadt $uhttp://resolver.hebis.de/retro/d4271070 $A2 $qimage/gif $mV:DE-603;B:DE-17 
+247C/01 $9102595879 $8611000-9 <17>Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt 
+

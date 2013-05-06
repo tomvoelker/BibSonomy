@@ -1,0 +1,29 @@
+alg: 81423106
+001@    $03 $aB 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0814231063 
+009R    $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/b0590338 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+010@    $aund 
+021A    $aDarwin 
+025@    $aDarwin 
+034D    $a28 S. 
+047M    $cCb in BX -I-A-- e 1zum TodeßtAg Darwine.1 Kapoli 18814s Tocco . 28 S. 29 Eumschla 29 Kl. Sehr. 34. 
+
+lok: 81423106 3
+
+exp: 81423106 3 1 #EPN
+201B/01 $t21:48:17.000 $015-05-12 
+201U/01 $0utf8 
+203@/01 $0814231063 
+206V/01 $2Retro $0015919722 $bCb in BX -I-A-- e 1zum TodeßtAg Darwine.1 Kapoli 18814s Tocco . 28 S. 29 Eumschla 29 Kl. Sehr. 34. $ab0590338 
+208@/01 $brAa $a15-05-12 
+209A/01 $f000 $do $aRetro $x00 
+209B/01 $aHeBIS-Retro $x05 
+209G/01 $aUB Frankfurt / SeB $x01 
+209U/01 $3Katalogkarte der UB Frankfurt $uhttp://resolver.hebis.de/retro/b0590338 $A2 $qimage/gif $mV:DE-603;B:DE-30 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

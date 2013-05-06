@@ -1,0 +1,30 @@
+alg: 83688561
+001@    $0204 $aG 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0836885619 
+009R    $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g6090441 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+010@    $aund 
+011@    $a1962 $n[ca. 1962] 
+021A    $aLiterature on information retrieval and machine translation 
+025@    $aLiterature information retrieval 
+034D    $a117 S. 
+047M    $cb Liteyaturelnformation 4° B 64/2263 retrieval Literature on information retrieval and machine tranalation. .Comp & ed. by Charles F .Balz u. Richard H tanwood. Nov. 1962. " Owego, N.Y.s Internal. Business Machines Co. ' 1962. IX, 117 S. 4 III 64 2458/9 
+
+lok: 83688561 204
+
+exp: 83688561 204 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0836885619 
+206V/01 $2Retro $0048307440 $bb Liteyaturelnformation 4° B 64/2263 retrieval Literature on information retrieval and machine tranalation. .Comp & ed. by Charles F .Balz u. Richard H tanwood. Nov. 1962. " Owego, N.Y.s Internal. Business Machines Co. ' 1962. IX, 117 S. 4 III 64 2458/9 $ag6090441 
+208@/01 $brAa 
+209A/01 $f960 $asiehe Katalogkarte oben rechts $x00 
+209A/01 $f960 $aB 64/2263 $hGesamtkatalog B 64/2263 $x05 
+209B/01 $aHeBIS-Retro $x05 
+209U/01 $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g6090441 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+247C/01 $929053481X $8631960-9 <26/960>Gießen, Universität Gießen, Retrokatalog 
+

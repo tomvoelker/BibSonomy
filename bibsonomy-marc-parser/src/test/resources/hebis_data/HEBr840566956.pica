@@ -1,0 +1,28 @@
+alg: 84056695
+001@    $0204 $aG 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0840566956 
+009R    $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g1740600 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+010@    $aund 
+021A    $aClassification and Clustering 
+025@    $aClassification clustering 
+047M    $cMath. In st. Classification clustering 62 6 van Ryzin J. Ed. Classification a d Clustering Proc. Wisconsin 976 977 London Academic Press 
+
+lok: 84056695 204
+
+exp: 84056695 204 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0840566956 
+206V/01 $2Retro $0043837158 $bMath. In st. Classification clustering 62 6 van Ryzin J. Ed. Classification a d Clustering Proc. Wisconsin 976 977 London Academic Press $ag1740600 
+208@/01 $brAa 
+209A/01 $f960 $asiehe Katalogkarte oben rechts $x00 
+209A/01 $f960 $aohne Signatur $hGesamtkatalog ohne Signatur $x05 
+209B/01 $aHeBIS-Retro $x05 
+209U/01 $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g1740600 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+247C/01 $929053481X $8631960-9 <26/960>Gießen, Universität Gießen, Retrokatalog 
+

@@ -1,0 +1,50 @@
+alg: 10702206
+001@    $03 
+001A    $00030:13-09-02 
+001B    $t11:19:38.000 $01999:15-12-12 
+001D    $00030:25-10-02 
+001U    $0utf8 
+001X    $00 
+002@    $0Aay 
+003@    $0107022060 
+003O    $050302228 $aOCoLC 
+004A    $01-84119-567-7 
+006B    $0bA2V7365 
+006H    $0L2608632 
+007G    $0DE006661B8CB2C244A8B8C1257A360045E757 
+009P    $3Inhaltsverzeichnis $uhttp://scans.hebis.de/HEBCGI/show.pl?10702206_toc.pdf $A2 $qapplication/pdf $mV:DE-603;B:DE-30 
+010@    $aeng 
+011@    $a2002 
+013H    $0z 
+021A    $aCharles Darwin $hCyril Aydon 
+028A    $7 $9169172961 $8Aydon, Cyril 
+033A    $pLondon $nConstable 
+034D    $aXXVI, 326 S. 
+041K    $045040000 $aNatural history 
+041K/01 $045242000 $aHuman evolution 
+041K/02 $097603505 $aQH 1-48 Natural hist-genl 
+044K    $#Darwin, Charles $#Darvin, Carls $#Darvin, Čarlz $#Darvin, Charl'z $#Darvin, Tsharlz $#Darwin, Carlos R. $#Darwin, Charles R. $#Darwin, Charles Robert $#Darwin, Karol $#Darwin-Wallace, ... $#Ta-erh-wen $#Ta-erh-wen $#Darwin, Carlo $#HeBIS $#Darwin, Carlos Roberto $#HeBIS $#Darvin, Carls $#HeBIS $#Darvin, Charl'z $#HeBIS $#Darwin, Karol $#HeBIS $#Dārwīn, Tsārlz $#HeBIS $7118523813 $9086864904 $8Darwin, Charles 
+044K    $af Biographie 1809-1882 
+045A    $aQH 
+045B    $eDDC21oclc $a576.82092 
+045Z    $aTB 2540 
+
+lok: 10702206 3
+101B    $t16:59:25.000 $023-04-04 
+101C    $022-11-02 
+101U    $0utf8 
+144Z/20 $ab02nov 
+145S/06 $a120 
+145Z/41 $abiol A 
+
+exp: 10702206 3 1 #EPN
+201B/01 $t05:13:59.000 $008-03-06 
+201C/01 $013-09-02 
+201U/01 $0utf8 
+203@/01 $0175288569 
+208@/01 $bzBa $a25-10-02 
+209A/01 $f000 $du $a33.016.94 $h33 016 94 $x00 
+209G/01 $a33016948 $x00 
+220B/01 $aUn. 
+247C/01 $9102598258 $8601000-3 <30>Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+

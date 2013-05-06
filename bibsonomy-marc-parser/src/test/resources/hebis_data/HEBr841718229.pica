@@ -1,0 +1,29 @@
+alg: 84171822
+001@    $0204 $aG 
+001A    $01999:11-12-11 
+001B    $t13:00:00.000 $01999:11-12-11 
+001U    $0utf8 
+001X    $00 
+002@    $0rax 
+003@    $0841718229 
+009R    $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g0380104 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+010@    $aund 
+011@    $a1985 $n[ca. 1985] 
+021A    $aClustering Aspects of Nuclear Structure 
+025@    $aAspects clustering structure 
+047M    $cAspects clustering structure FBPhysik ' p y Clustering Aspects of Nuclear Structure. Invited Papers presented at the 4th International Conference on Clustering Aspects of Nuclear Structure and Nuclear Reactions Chester,UK,23-27 July,1984. Ed.J.S. illey .M.A.Nagarajan Dordrecht:Reidel 1985.XII,42o S. ISBN 9o-277-2oo2-9 P ungen.g 4419 1o Schwerionenphysik tj 
+
+lok: 84171822 204
+
+exp: 84171822 204 1 #EPN
+201B/01 $t00:00:00.000 $011-12-11 
+201U/01 $0utf8 
+203@/01 $0841718229 
+206V/01 $2Retro $0042419980 $bAspects clustering structure FBPhysik ' p y Clustering Aspects of Nuclear Structure. Invited Papers presented at the 4th International Conference on Clustering Aspects of Nuclear Structure and Nuclear Reactions Chester,UK,23-27 July,1984. Ed.J.S. illey .M.A.Nagarajan Dordrecht:Reidel 1985.XII,42o S. ISBN 9o-277-2oo2-9 P ungen.g 4419 1o Schwerionenphysik tj $ag0380104 
+208@/01 $brAa 
+209A/01 $f960 $asiehe Katalogkarte oben rechts $x00 
+209A/01 $f960 $aohne Signatur $hGesamtkatalog ohne Signatur $x05 
+209B/01 $aHeBIS-Retro $x05 
+209U/01 $3Katalogkarte der UB Giessen $uhttp://resolver.hebis.de/retro/g0380104 $A2 $qimage/gif $mV:DE-603;B:DE-26 
+247C/01 $929053481X $8631960-9 <26/960>Gießen, Universität Gießen, Retrokatalog 
+

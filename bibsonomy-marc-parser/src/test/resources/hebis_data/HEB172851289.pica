@@ -1,0 +1,32 @@
+alg: 17285128
+001@    $064 
+001A    $04505:13-03-06 
+001B    $t07:44:50.000 $06050:15-03-07 
+001D    $04505:13-03-06 
+001U    $0utf8 
+001X    $00 
+002@    $0Aox 
+003@    $0172851289 
+007I    $0BLLt582525 
+010@    $aeng 
+011@    $a1979 
+021A    $aMemory, acquisition, and category clustering in learning-disabled children 
+028A    $7 $917524586X $8Bauer, Richard H. 
+031A    $d27 $e3 $j1979 $h365-383 
+039B    $aIn $9047356618 $8--Abvc--: Journal of experimental child psychology $x197900000270003635 
+045T    $a5,2 
+045W    $9133072002 $803.10.01.001 $jWortgedächtnis 
+045W    $9133113337 $803.27.01.036.01 $jLernschwäche 
+046M    $a22 Literaturangaben 
+
+lok: 17285128 64
+
+exp: 17285128 64 1 #EPN
+201B/01 $t18:24:34.000 $013-03-06 
+201U/01 $0utf8 
+203@/01 $0368547434 
+208@/01 $be $a09-03-06 
+209A/01 $f000 $a0 $x00 
+209B/01 $a5 $x05 
+247C/01 $9129368261 $8- <->Frankfurt, Bibliographie Linguistischer Literatur 
+
