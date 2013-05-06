@@ -2,6 +2,9 @@ package org.bibsonomy.rest.fileupload;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 
 import org.bibsonomy.model.util.data.Data;
 import org.bibsonomy.util.ValidationUtils;
@@ -37,4 +40,8 @@ public class FileUploadData implements Data {
 		}
 	}
 
+	@Override
+	public Reader getReader() {
+		return new InputStreamReader(getInputStream(), Charset.forName("UTF-8"));
+	}
 }

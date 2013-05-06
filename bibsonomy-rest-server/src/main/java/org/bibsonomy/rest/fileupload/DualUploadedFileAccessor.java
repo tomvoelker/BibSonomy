@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.util.data.Data;
+import org.bibsonomy.model.util.data.DualDataWrapper;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -32,7 +33,7 @@ public class DualUploadedFileAccessor extends UploadedFileAccessor {
 		MultipartFile part1 = getUploadedFileByName(part1Name);
 		MultipartFile part2 = getUploadedFileByName(part2Name);
 		
-		return new DualFileUploadData(part1.getContentType() + " " + part2.getContentType(), part1, part2);
+		return new DualDataWrapper(new FileUploadData(part1), new FileUploadData(part2));
 	}
 
 }
