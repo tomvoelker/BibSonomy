@@ -2438,7 +2438,7 @@ public class StringUtils {
 		if (i == -1) {
 			return sb;
 		}
-		sb.replace(i, i + toBeReplaced.length() + 1, replacement);
+		sb.replace(i, i + toBeReplaced.length(), replacement);
 		return sb;
 	}
 
