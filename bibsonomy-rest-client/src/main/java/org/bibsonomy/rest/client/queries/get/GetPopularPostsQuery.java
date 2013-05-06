@@ -29,6 +29,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -108,7 +109,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 	@Override
 	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return this.getRenderer().parsePostList(this.downloadedDocument);
+		return this.getRenderer().parsePostList(this.downloadedDocument, NoDataAccessor.getInstance());
 	}
 
 	@Override

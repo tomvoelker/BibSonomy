@@ -35,6 +35,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -165,7 +166,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			throw new IllegalStateException("Execute the query first.");
 		}
 		try {
-			return this.getRenderer().parsePostList(this.downloadedDocument);
+			return this.getRenderer().parsePostList(this.downloadedDocument, NoDataAccessor.getInstance());
 		} catch (final InternServerException ex) {
 			throw new BadRequestOrResponseException(ex);
 		}
