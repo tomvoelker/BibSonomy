@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.bibsonomy.model.enums.ImportFormat;
 
@@ -50,5 +52,9 @@ public class FileData implements Data {
 			throw new RuntimeException(ex);
 		}
 	}
-
+	
+	@Override
+	public Reader getReader() {
+		return new InputStreamReader(getInputStream());
+	}
 }
