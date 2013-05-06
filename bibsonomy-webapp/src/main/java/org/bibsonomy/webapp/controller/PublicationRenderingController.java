@@ -16,6 +16,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexReader;
+import org.bibsonomy.rest.fileupload.FileUploadData;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -31,8 +32,6 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PublicationRenderingController implements MinimalisticController<PostPublicationCommand>, ErrorAware {
-
-	private static final String APPLICATION_MARC = "application/marc";
 
 	private static final Log log = LogFactory.getLog(PublicationRenderingController.class);
 
@@ -95,18 +94,14 @@ public class PublicationRenderingController implements MinimalisticController<Po
 			}
 		} else if (present(command.getFile())) {
 			BibTexReader reader = mimeTypeReaders.get(command.getFile().getContentType());
-			Collection<BibTex> bibTexs;
-			try {
-				bibTexs = reader.read(command.getFile().getInputStream());
-				posts = new ArrayList<Post<BibTex>>(bibTexs.size());
-				for (BibTex b : bibTexs) {
-					Post<BibTex> p = new Post<BibTex>();
-					p.setTags(Collections.<Tag>emptySet());
-					p.setResource(b);
-					posts.add(p);
-				}
-			} catch (IOException ex) {
-				errors.reject("error.upload.failed.parse", ex.getMessage());
+			Collection<? extends BibTex> bibTexs;
+			bibTexs = reader.read(new FileUploadData(command.getFile()));
+			posts = new ArrayList<Post<BibTex>>(bibTexs.size());
+			for (BibTex b : bibTexs) {
+				Post<BibTex> p = new Post<BibTex>();
+				p.setTags(Collections.<Tag>emptySet());
+				p.setResource(b);
+				posts.add(p);
 			}
 		} else {
 			posts = Collections.singletonList(command.getPost());

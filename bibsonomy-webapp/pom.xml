@@ -373,6 +373,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-marc-parser</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-opensocial</artifactId>
 			<exclusions>
 				<!-- not compatible with selenium --> 

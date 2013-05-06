@@ -14,8 +14,9 @@ import junit.framework.Assert;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
-import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
+import org.bibsonomy.model.util.data.Data;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.view.Views;
@@ -34,14 +35,14 @@ public class PublicationRenderingControllerTest {
 	@Test
 	public void testBibtexReaderIntegration() throws IOException {
 		
-		final List<BibTex> bib = getBibtexFromFile();
+		final List<ImportResource> bib = getBibtexFromFile();
 		final byte[] bytes = IOUtils.toByteArray(getTestBibFileStream());
 		
 		Map<String, BibTexReader> m = new HashMap<String, BibTexReader>();
 		m.put("bla", new BibTexReader() {
 			
 			@Override
-			public Collection<BibTex> read(InputStream is) {
+			public Collection<ImportResource> read(Data d) {
 				byte[] receivedBytes;
 				try {
 					receivedBytes = IOUtils.toByteArray(getTestBibFileStream());
@@ -66,16 +67,12 @@ public class PublicationRenderingControllerTest {
 		
 	}
 
-	protected List<BibTex> getBibtexFromFile() {
+	protected List<ImportResource> getBibtexFromFile() {
 		SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		try {
 			BufferedReader sr = new BufferedReader(new InputStreamReader(getTestBibFileStream(), "UTF-8"));
-			String read = "";
-			String line;
-			while((line = sr.readLine()) != null) {
-				read += line;
-			}
-			return parser.parseBibTeXs(read);
+			// actually not 100% ok but easier
+			return (List) parser.parseInternal(sr, true);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
