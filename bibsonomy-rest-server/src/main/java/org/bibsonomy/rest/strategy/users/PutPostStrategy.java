@@ -118,7 +118,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 	 * @return the post to update
 	 */
 	protected Post<? extends Resource> getPost() {
-		final Post<? extends Resource> post = this.getRenderer().parsePost(this.doc);
+		final Post<? extends Resource> post = this.getRenderer().parsePost(this.doc, getUploadAccessor());
 		/*
 		 * set postingdate to current time
 		 */

@@ -52,7 +52,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected String create() throws InternServerException, BadRequestOrResponseException {
-		final Post<?> post = this.parsePost();
+		final Post<? extends Resource> post = this.parsePost();
 		/*
 		 * set postingdate to current time (i.e., users cannot create posts with their
 		 * own (eventually faked) date
@@ -105,7 +105,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	 * @return the post to create
 	 */
 	protected Post<? extends Resource> parsePost() {
-		return this.getRenderer().parsePost(this.doc);
+		return this.getRenderer().parsePost(this.doc, this.getUploadAccessor());
 	}
 	
 	/*

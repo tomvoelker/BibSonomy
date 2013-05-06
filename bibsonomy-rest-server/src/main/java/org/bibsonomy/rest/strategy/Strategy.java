@@ -12,6 +12,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.fileupload.UploadedFileAccessor;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
@@ -123,5 +124,9 @@ public abstract class Strategy {
 
 	protected Renderer getRenderer() {
 		return this.context.getRenderer();
+	}
+	
+	protected UploadedFileAccessor getUploadAccessor() {
+		return this.context.getUploadAccessor();
 	}
 }

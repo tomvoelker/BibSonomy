@@ -20,6 +20,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -67,12 +68,12 @@ public class JabrefLayoutRenderer implements Renderer {
 	}
 
 	@Override
-	public Post<? extends Resource> parsePost(final Reader reader) throws BadRequestOrResponseException {
+	public Post<? extends Resource> parsePost(final Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 
 	@Override
-	public List<Post<? extends Resource>> parsePostList(final Reader reader) throws BadRequestOrResponseException {
+	public List<Post<? extends Resource>> parsePostList(final Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();		
 	}
 

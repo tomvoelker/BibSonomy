@@ -18,12 +18,12 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.fileupload.UploadedFileAccessor;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.util.URLDecodingStringTokenizer;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -67,9 +67,9 @@ public final class Context {
 	private final Map<?, ?> parameterMap;
 
 	/**
-	 * the list with all items out of the http request
+	 * the list with all items out of the http request - never null
 	 */
-	private final MultipartFile file;
+	private final UploadedFileAccessor uploadAccessor;
 
 	/**
 	 * this should hold all additional infos of the webservice or request
@@ -85,7 +85,7 @@ public final class Context {
 	 * @param rendererFactory	the renderfactory to use to create a
 	 * 							renderer for the specified rendering format
 	 * @param doc 
-	 * @param file 
+	 * @param uploadAccessor 
 	 * @param logic 
 	 * @param parameterMap
 	 *            map of the attributes
@@ -95,7 +95,7 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final MultipartFile file,
+	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final UploadedFileAccessor uploadAccessor,
 			final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
@@ -107,7 +107,12 @@ public final class Context {
 		}
 		this.parameterMap = parameterMap;
 
-		this.file = file;
+		if (uploadAccessor != null) {
+			this.uploadAccessor = uploadAccessor;
+		} else {
+			this.uploadAccessor = new UploadedFileAccessor(null);
+		}
+		
 		this.additionalInfos = additionalInfos;
 
 		if ((url == null) || "/".equals(url)) {
@@ -272,14 +277,6 @@ public final class Context {
 	}
 
 	/**
-	 * 
-	 * @return the previously committed item list parsed out of a http request object
-	 */
-	public MultipartFile getFile() {
-		return this.file;
-	}
-
-	/**
 	 * @return The renderer for URLs
 	 */
 	public UrlRenderer getUrlRenderer() {
@@ -291,5 +288,12 @@ public final class Context {
 	 */
 	public Renderer getRenderer() {
 		return this.rendererFactory.getRenderer(this.getRenderingFormat());
+	}
+
+	/**
+	 * @return the uploadAcessor - never null
+	 */
+	public UploadedFileAccessor getUploadAccessor() {
+		return this.uploadAccessor;
 	}
 }

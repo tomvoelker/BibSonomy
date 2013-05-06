@@ -35,7 +35,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 		super(context);
 		this.userName = userName;
 		this.resourceHash = resourceHash;
-		this.file = context.getFile();
+		this.file = context.getUploadAccessor().getUploadedFileByName("file");
 		
 		this.fileUploadFactory = new FileUploadFactory();
 		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get(RestServlet.DOCUMENTS_PATH_KEY));

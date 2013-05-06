@@ -38,6 +38,7 @@ import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
+import org.bibsonomy.rest.fileupload.UploadedFileAccessor;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
@@ -241,19 +242,14 @@ public final class RestServlet extends HttpServlet {
 			 * before - typically by Spring's DispatcherServlet. If this is not
 			 * the case, the document upload fails! 
 			 */
-			final MultipartFile file;
-			if (request instanceof MultipartHttpServletRequest) {
-				file = ((MultipartHttpServletRequest) request).getFile("file");
-			} else {
-				file = null;
-			}
+			UploadedFileAccessor uploadAccessor = new UploadedFileAccessor(request);
 
 			// choose rendering format (defaults to xml)
 			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
 
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, file, logic, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, uploadAccessor, logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
