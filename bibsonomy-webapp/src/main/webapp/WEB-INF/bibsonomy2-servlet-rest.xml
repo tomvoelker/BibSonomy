@@ -35,6 +35,7 @@
 	<!-- provides access to the database REST servlet -->
 	<bean id="restLogicFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory">
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
+		<property name="bibtexReader" ref="bibtexReader"/>
 	</bean>
 
 	<!-- renders all API URLs -->

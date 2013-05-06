@@ -62,6 +62,7 @@
 	
 	<bean id="oauthLogicFactory" class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
+		<property name="bibtexReader" ref="bibtexReader"/>
 	</bean>
 	
 	<bean id="oauthRequestValidator" class="org.bibsonomy.opensocial.oauth.OAuthRequestValidator">
