@@ -57,6 +57,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -198,7 +199,7 @@ public abstract class AbstractRendererTest {
 	public void testParsePost() throws Exception {
 		// check null behavior
 		try {
-			this.getRenderer().parsePost(null);
+			this.getRenderer().parsePost(null, NoDataAccessor.getInstance());
 			fail("exception should have been thrown.");
 		} catch (final BadRequestOrResponseException e) {
 		}
@@ -209,7 +210,7 @@ public abstract class AbstractRendererTest {
 		this.marshalToFile(bibXML, tmpFile);
 
 		try {
-			this.getRenderer().parsePost(new FileReader(tmpFile));
+			this.getRenderer().parsePost(new FileReader(tmpFile), NoDataAccessor.getInstance());
 			fail("exception should have been thrown.");
 		} catch (final BadRequestOrResponseException e) {
 			assertEquals("The body part of the received document is erroneous - no post defined.", e.getMessage());
@@ -236,7 +237,7 @@ public abstract class AbstractRendererTest {
 		bibXML.setPost(xmlPost);
 		tmpFile = File.createTempFile("bibsonomy", this.getFileExt());
 		this.marshalToFile(bibXML, tmpFile);
-		final Post<? extends Resource> post = this.getRenderer().parsePost(new FileReader(tmpFile));
+		final Post<? extends Resource> post = this.getRenderer().parsePost(new FileReader(tmpFile), NoDataAccessor.getInstance());
 		final Bookmark bookmark = (Bookmark) post.getResource();
 		assertEquals(title, bookmark.getTitle());
 		assertEquals(url, bookmark.getUrl());
@@ -260,7 +261,7 @@ public abstract class AbstractRendererTest {
 		tmpFile = File.createTempFile("bibsonomy-publ", this.getFileExt());
 		this.marshalToFile(bibXML, tmpFile);
 		
-		final Post<? extends Resource> publicationPost = this.getRenderer().parsePost(new FileReader(tmpFile));
+		final Post<? extends Resource> publicationPost = this.getRenderer().parsePost(new FileReader(tmpFile), NoDataAccessor.getInstance());
 		final BibTex publication = (BibTex) publicationPost.getResource();
 		assertEquals(title, publication.getTitle());
 		assertEquals(entryType, publication.getEntrytype());
@@ -743,7 +744,7 @@ public abstract class AbstractRendererTest {
 		xmlPost.setBibtex(null);
 
 		// check valid post with bookmark
-		Post<? extends Resource> post = this.getRenderer().createPost(xmlPost);
+		Post<? extends Resource> post = this.getRenderer().createPost(xmlPost, NoDataAccessor.getInstance());
 		assertEquals("model not correctly initialized", "tuser", post.getUser().getName());
 		assertTrue("model not correctly initialized", post.getResource() instanceof Bookmark);
 		assertEquals("model not correctly initialized", "http://www.google.de", ((Bookmark) post.getResource()).getUrl());
@@ -760,7 +761,7 @@ public abstract class AbstractRendererTest {
 		xmlBibtex.setAuthor("Hans Dampf");
 
 		// check valid post with bibtex
-		post = this.getRenderer().createPost(xmlPost);
+		post = this.getRenderer().createPost(xmlPost, NoDataAccessor.getInstance());
 		assertEquals("model not correctly initialized", "tuser", post.getUser().getName());
 		assertTrue("model not correctly initialized", post.getResource() instanceof BibTex);
 		assertEquals("model not correctly initialized", "foo bar", ((BibTex) post.getResource()).getTitle());
@@ -769,7 +770,7 @@ public abstract class AbstractRendererTest {
 
 	private void checkInvalidPost(final PostType xmlPost, final String exceptionMessage) throws PersonListParserException {
 		try {
-			this.getRenderer().createPost(xmlPost);
+			this.getRenderer().createPost(xmlPost, NoDataAccessor.getInstance());
 			fail("exception should have been thrown.");
 		} catch (final InvalidModelException e) {
 			assertEquals("wrong exception thrown", exceptionMessage, e.getMessage());

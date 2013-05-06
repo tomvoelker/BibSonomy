@@ -33,10 +33,10 @@ import net.sf.json.test.JSONAssert;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.renderer.AbstractRenderer;
 import org.bibsonomy.rest.renderer.AbstractRendererTest;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.rest.renderer.impl.json.JSONRenderer;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
 
@@ -78,7 +78,7 @@ public class JSONRendererTest extends AbstractRendererTest {
 	@Test
 	public void testParsePostFromFile() throws IOException {
 		final String file = TestUtils.readEntryFromFile("jsonrenderer/ParsePost.json");
-		final Post<? extends Resource> post = RENDERER.parsePost(new StringReader(file));
+		final Post<? extends Resource> post = RENDERER.parsePost(new StringReader(file), NoDataAccessor.getInstance());
 		assertEquals("Test", post.getDescription());
 		assertEquals(2, post.getTags().size());
 		final BibTex publication = (BibTex) post.getResource();

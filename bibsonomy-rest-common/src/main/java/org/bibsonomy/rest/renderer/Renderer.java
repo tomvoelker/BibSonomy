@@ -39,6 +39,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
@@ -358,18 +359,19 @@ public interface Renderer {
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	public List<Post<? extends Resource>> parsePostList(Reader reader) throws BadRequestOrResponseException;
+	public List<Post<? extends Resource>> parsePostList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads one {@link Post} from a {@link Reader}.
 	 * 
 	 * @param reader
 	 *            the {@link Reader} to use.
+	 * @param uploadedFileAccessor provides access to referenced attachments in the read data
 	 * @return one {@link Post} object.
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	public Post<? extends Resource> parsePost(Reader reader) throws BadRequestOrResponseException;
+	public Post<? extends Resource> parsePost(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads one standard {@link Post} from a {@link Reader}.

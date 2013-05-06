@@ -52,6 +52,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
@@ -60,6 +62,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -74,6 +77,9 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.data.Data;
+import org.bibsonomy.model.util.data.DataAccessor;
+import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.xml.AbstractPublicationType;
@@ -95,6 +101,7 @@ import org.bibsonomy.rest.renderer.xml.SyncPostType;
 import org.bibsonomy.rest.renderer.xml.SyncPostsType;
 import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
+import org.bibsonomy.rest.renderer.xml.UploadDataType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
 import org.bibsonomy.rest.validation.ModelValidator;
@@ -104,7 +111,8 @@ import org.bibsonomy.rest.validation.ModelValidator;
  * @version $Id$
  */
 public abstract class AbstractRenderer implements Renderer {
-
+	private static final Log log = LogFactory.getLog(AbstractRenderer.class);
+	
 	protected ModelValidator modelValidator;
 	protected final UrlRenderer urlRenderer;
 	protected final DatatypeFactory datatypeFactory;
@@ -733,13 +741,13 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public Post<? extends Resource> parsePost(final Reader reader) throws BadRequestOrResponseException {
+	public Post<? extends Resource> parsePost(final Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 	
 		final PostType post = xmlDoc.getPost();
 		if (post != null) {
 			try {
-				return this.createPost(post);
+				return this.createPost(post, uploadedFileAccessor);
 			} catch (final PersonListParserException ex) {
 				xmlDoc.setError("Error parsing the person names for entry with BibTeXKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
@@ -801,13 +809,13 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public List<Post<? extends Resource>> parsePostList(final Reader reader) throws BadRequestOrResponseException {
+	public List<Post<? extends Resource>> parsePostList(final Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getPosts() != null) {
 			final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 			for (final PostType post : xmlDoc.getPosts().getPost()) {
 				try {
-					final Post<? extends Resource> p = this.createPost(post);
+					final Post<? extends Resource> p = this.createPost(post, uploadedFileAcessor);
 					posts.add(p);
 				} catch (final PersonListParserException ex) {
 					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
@@ -1175,10 +1183,11 @@ public abstract class AbstractRenderer implements Renderer {
 	 * converts an xml post to the model post
 	 * 
 	 * @param xmlPost
+	 * @param uploadedFileAccessor 
 	 * @return the converted post
 	 * @throws PersonListParserException 
 	 */
-	protected Post<Resource> createPost(final PostType xmlPost) throws PersonListParserException {
+	protected Post<Resource> createPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
  		ModelValidationUtils.checkPost(xmlPost);
 
 		// create post, user and date
@@ -1231,6 +1240,21 @@ public abstract class AbstractRenderer implements Renderer {
 			bookmark.setUrl(xmlBookmark.getUrl());
 
 			post.setResource(bookmark);
+		}
+		
+		final UploadDataType upload = xmlPost.getPublicationFileUpload();
+		if (upload != null) {
+			final String name = upload.getMultipartName();
+			if (present(name)) {
+				Data data = uploadedFileAccessor.getData(name);
+				if (data == null) {
+					log.warn("missing data in API");
+				} else {
+					post.setResource(new ImportResource(data));
+				}
+			} else {
+				log.warn("missing multipartname  in API");
+			}
 		}
 
 		if (xmlPost.getGroup() != null) {
@@ -1292,7 +1316,7 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 		if (present(xmlSyncPost.getPost())) {
 			try {
-				post.setPost(this.createPost(xmlSyncPost.getPost()));
+				post.setPost(this.createPost(xmlSyncPost.getPost(), NoDataAccessor.getInstance()));
 			} catch (final PersonListParserException ex) {
 				throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + xmlSyncPost.getPost().getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}

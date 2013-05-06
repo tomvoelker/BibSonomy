@@ -26,7 +26,6 @@ package org.bibsonomy.rest.renderer.impl.xml;
 import org.bibsonomy.rest.renderer.AbstractRenderer;
 import org.bibsonomy.rest.renderer.AbstractRendererTest;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.rest.renderer.impl.xml.XMLRenderer;
 import org.custommonkey.xmlunit.XMLAssert;
 
 /**
