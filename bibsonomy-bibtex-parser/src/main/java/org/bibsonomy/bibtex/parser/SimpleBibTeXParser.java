@@ -29,6 +29,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -161,6 +162,10 @@ public class SimpleBibTeXParser {
 	}
 
 	private List<BibTex> parseInternal (final String bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
+		return parseInternal(new BufferedReader(new StringReader(bibtex)), firstEntryOnly);
+	}
+	
+	public List<BibTex> parseInternal (final BufferedReader bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
 		final List<BibTex> result = new LinkedList<BibTex>();
 
 		final BibtexParser parser = new BibtexParser(!tryParseAll);
@@ -179,7 +184,7 @@ public class SimpleBibTeXParser {
 		/*
 		 * parse the string
 		 */
-		parser.parse(bibtexFile, new BufferedReader(new StringReader(bibtex)));
+		parser.parse(bibtexFile, bibtex);
 
 
 		// boolean topComment = false;
