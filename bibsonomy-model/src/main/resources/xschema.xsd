@@ -197,6 +197,8 @@
 					type="BookmarkType" />
 				<xsd:element name="bibtex" maxOccurs="1"
 					type="BibtexType" />
+				<xsd:element name="publicationFileUpload" maxOccurs="1"
+					type="UploadDataType" />
 				<xsd:element name="goldStandardPublication"
 					maxOccurs="1" type="GoldStandardPublicationType" />
 			</xsd:choice>
@@ -214,6 +216,11 @@
 		<xsd:attribute name="md5hash" type="xsd:string" />
 		<xsd:attribute name="href" type="xsd:anyURI" />
 	</xsd:complexType>
+	
+	<xsd:complexType name="UploadDataType">
+		<xsd:attribute name="multipartName" use="required" type="xsd:string" />
+	</xsd:complexType>
+	
 	
 	<!-- 
 		list of Documents to be shown in the xml 

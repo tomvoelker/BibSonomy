@@ -1,9 +1,10 @@
 package org.bibsonomy.model.util;
 
-import java.io.InputStream;
 import java.util.Collection;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.ImportResource;
+import org.bibsonomy.model.util.data.Data;
 
 /**
  * Generic class for Import formats
@@ -13,8 +14,8 @@ import org.bibsonomy.model.BibTex;
  */
 public interface BibTexReader {
 	/**
-	 * @param is {@link InputStream} to read from
+	 * @param data {@link Data} to read from
 	 * @return {@link Collection} of read {@link BibTex}s
 	 */
-	public Collection<BibTex> read(InputStream is);
+	public Collection<ImportResource> read(Data data);
 }
