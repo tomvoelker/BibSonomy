@@ -89,6 +89,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Review;
@@ -107,10 +108,12 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Database Implementation of the LogicInterface
@@ -158,6 +161,8 @@ public class DBLogic implements LogicInterface {
 	private final WikiDatabaseManager wikiDBManager;
 
 	private final SynchronizationDatabaseManager syncDBManager;
+	
+	private final BibTexReader bibtexReader;
 
 	private final User loginUser;
 
@@ -168,8 +173,9 @@ public class DBLogic implements LogicInterface {
 	 *            - the user which wants to use the logic.
 	 * @param dbSessionFactory
 	 */
-	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
+	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
 		this.loginUser = loginUser;
+		this.bibtexReader = bibtexReader;
 
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
 		// publication db manager
@@ -1151,6 +1157,8 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
 
+		replaceImportResources(posts);
+		
 		/*
 		 * insert posts TODO: more efficient implementation (transactions,
 		 * deadlock handling, asynchronous, etc.)
@@ -1185,6 +1193,29 @@ public class DBLogic implements LogicInterface {
 		return hashes;
 	}
 
+
+	private void replaceImportResources(List<? extends Post<? extends Resource>> posts) {
+		for (int i = 0; i < posts.size(); ++i) {
+			replaceImportResource(posts.get(i));
+		}
+	}
+
+	protected <T extends Resource> void replaceImportResource(Post<T> post) {
+		T resource = post.getResource();
+		if (resource instanceof ImportResource) {
+			@SuppressWarnings("unchecked") // this is safe because PublicationImportResource is final, and the importer creates PublicationImportResources again.
+			T parsedResource = (T) parsePublicationImportResource((ImportResource) resource);
+			post.setResource(parsedResource);
+		}
+	}
+	
+	private ImportResource parsePublicationImportResource(ImportResource resource) {
+		Collection<ImportResource> bibtexs = this.bibtexReader.read(resource.getData());
+		if (ValidationUtils.present(bibtexs) == false) {
+			throw new IllegalStateException("bibtexReader did not throw exception and returned empty result");
+		}
+		return bibtexs.iterator().next();
+	}
 
 	/**
 	 * Adds a post in the database.
@@ -2821,5 +2852,12 @@ public class DBLogic implements LogicInterface {
 	public List<Tag> getTagRelation(int start, int end, TagRelation relation, List<String> tagNames) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * @return the bibtexReader
+	 */
+	public BibTexReader getBibtexReader() {
+		return this.bibtexReader;
 	}
 }

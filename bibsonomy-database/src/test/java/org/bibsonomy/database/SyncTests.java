@@ -66,7 +66,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 
 		final User loginUser = new User();
 		loginUser.setName(userName);
-		dbLogic = new DBLogic(loginUser, getDbSessionFactory());
+		dbLogic = new DBLogic(loginUser, getDbSessionFactory(), null);
 	}
 
 	private HashMap<String, SynchronizationPost> listToMap(final List<SynchronizationPost> posts) {

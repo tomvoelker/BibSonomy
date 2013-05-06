@@ -10,6 +10,7 @@ import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.model.util.UserUtils;
 
 /**
@@ -25,6 +26,8 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 
 	protected DBSessionFactory dbSessionFactory;
 	
+	private BibTexReader bibtexReader = null;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -36,12 +39,12 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.dbSessionFactory);
+				return new DBLogic(loggedInUser, this.dbSessionFactory, this.bibtexReader);
 			}
 			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), this.dbSessionFactory);
+		return new DBLogic(new User(), this.dbSessionFactory, this.bibtexReader);
 	}
 	
 	/**
@@ -92,4 +95,17 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		return this.dbSessionFactory.getDatabaseSession();
 	}
 	
+	/**
+	 * @return the bibtexReader
+	 */
+	public BibTexReader getBibtexReader() {
+		return this.bibtexReader;
+	}
+
+	/**
+	 * @param bibtexReader the bibtexReader to set
+	 */
+	public void setBibtexReader(BibTexReader bibtexReader) {
+		this.bibtexReader = bibtexReader;
+	}
 }
