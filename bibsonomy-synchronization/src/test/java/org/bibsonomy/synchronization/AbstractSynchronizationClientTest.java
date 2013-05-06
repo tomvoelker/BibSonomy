@@ -253,7 +253,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	
 	private static class SyncDBLogic extends DBLogic {
 		public SyncDBLogic(final User user, final DBSessionFactory dbSessionFactory) {
-			super(user, dbSessionFactory);
+			super(user, dbSessionFactory, null);
 		}
 	}
 	
