@@ -149,16 +149,19 @@
 	    <!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="bibtexReader" ref="bibtexReader"/>
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="bibtexReader" ref="bibtexReader"/>
 	</bean>
 	<bean id="notLoggedInUserLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean">
 		<property name="user" ref="notLoggedInUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="bibtexReader" ref="bibtexReader"/>
 	</bean>
     <bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
 	
@@ -242,6 +245,23 @@
 	</bean>
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+	
+	<bean id="bibtexReader" class="org.bibsonomy.model.util.CompositeBibtexReader">
+		<constructor-arg>
+			<map>
+				<entry key="application/marc">
+					<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
+				</entry>
+				<!-- 
+				<entry key="application/pica">
+				</entry>
+				 -->
+				<entry key="application/marc application/pica">
+					<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
+				</entry>
+			</map>
+		</constructor-arg>
+	</bean>
 	
 	<!-- WURFL -->
 	<bean id="wurfl.model" class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
