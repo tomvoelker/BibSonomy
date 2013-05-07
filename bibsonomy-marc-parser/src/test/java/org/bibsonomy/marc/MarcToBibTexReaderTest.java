@@ -76,7 +76,11 @@ public class MarcToBibTexReaderTest {
 		Data dat;
 		for(int i = 0; i < RESOURCES_TO_TEST && i < RESOURCES.length; i++) {
 			dat = new DualDataWrapper(new ClasspathResourceData("/hebis_data/"+RESOURCES[i].split(":")[0], "application/marc"), new ClasspathResourceData("/hebis_data/"+RESOURCES[i].split(":")[1], "application/pica"));
-			bibs.addAll(reader.read(dat));
+			for (ImportResource bib : reader.read(dat)) {
+				bib.setOpenURL(RESOURCES[i]);
+				bibs.add(bib);
+			}
+			
 		}
 		printStuff(bibs);
 	}
