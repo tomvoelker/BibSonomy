@@ -21,6 +21,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.Row;
 public class PicaPlusReader {
 	private static final Log log = LogFactory.getLog(PicaPlusReader.class);
 	private static final Pattern CATEGORY_PATTERN = Pattern.compile("^\\d{3}+.*");
+	private static final String DEFAULT_SUBFIELD_SEPARATOR = "\u0192";
 
 	/**
 	 * @param r reader to read data from
@@ -79,8 +80,11 @@ public class PicaPlusReader {
 			//rVal.setOccurrence(data[1]);
 		}
 	
+		//replace possible subfield separators with default one
+		line = line.replace(" $", DEFAULT_SUBFIELD_SEPARATOR);
+
 		// get Subfields
-		String[] subfields = line.substring(pos + 1).split("\u0192");
+		String[] subfields = line.substring(pos + 1).split(DEFAULT_SUBFIELD_SEPARATOR);
 		for (String sub : subfields) {
 			if (sub.length() > 1) {				
 				rVal.addSubField("$" + sub.substring(0, 1), sub.substring(1));
