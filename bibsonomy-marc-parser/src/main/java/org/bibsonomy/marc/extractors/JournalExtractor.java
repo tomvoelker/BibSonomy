@@ -43,14 +43,16 @@ public class JournalExtractor implements AttributeExtractor {
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) throws IllegalArgumentException {
 		if(src instanceof ExtendedMarcWithPicaRecord) {
 			record = (ExtendedMarcWithPicaRecord)src;
-			if(record.getFirstPicaFieldValue("002@", "0").indexOf("o")==-1) return;
+			if(record.getFirstPicaFieldValue("002@", "$0", "").indexOf("o")==-1) return;
 			String next = null;
+			StringBuilder sb = new StringBuilder();
 			if(ValidationUtils.present((next=getName(record))))
-				target.setJournal(next);
-			if(ValidationUtils.present((next=getYear(record))))
-				target.setYear(next);
+				sb.append(next);
 			if(ValidationUtils.present((next=getVolume(record))))
-				target.setVolume(next);
+				sb.append(' ').append(next);
+			if(ValidationUtils.present((next=getYear(record))))
+				sb.append(" (").append(next).append(')');
+			target.setJournal(sb.toString());
 		} else {
 			throw new IllegalArgumentException("expects ExtendedMarcWithPicaRecord");
 		}
@@ -72,13 +74,13 @@ public class JournalExtractor implements AttributeExtractor {
     }
     
 	private String getVolume(ExtendedMarcWithPicaRecord r) {
-    	String volume = r.getFirstPicaFieldValue("031A", "$d");
+    	String volume = r.getFirstPicaFieldValue("031A", "$d", "");
     	if(volume.length() > 0) return volume;
     	return null;
     }
     
 	private String getYear(ExtendedMarcWithPicaRecord r) {
-    	String year = r.getFirstPicaFieldValue("031A", "$j");
+    	String year = r.getFirstPicaFieldValue("031A", "$j", "");
     	if(year.length() > 0) return year;
     	return null;
     }

@@ -20,4 +20,8 @@ public class ExtendedMarcWithPicaRecord extends ExtendedMarcRecord {
 	public String getFirstPicaFieldValue(final String category, final String subCategory) {
 		return PicaUtils.getSubCategory(pica, category, subCategory, null);
 	}
+	
+	public String getFirstPicaFieldValue(final String category, final String subCategory, final String defaultValue) {
+		return PicaUtils.getSubCategory(pica, category, subCategory, defaultValue);
+	}
 }
