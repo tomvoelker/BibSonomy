@@ -48,8 +48,6 @@ public class JournalExtractor implements AttributeExtractor {
 			target.setYear(next);
 		if(ValidationUtils.present((next=getVolume(src))))
 			target.setVolume(next);
-		if(ValidationUtils.present((next=getPage(src))))
-			target.setPages(next);
 	}
 	
 	private String getName(ExtendedMarcWithPicaRecord r) {
