@@ -22,6 +22,9 @@
 
 package org.bibsonomy.marc.extractors;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.model.BibTex;
@@ -34,8 +37,17 @@ public class YearExtractor implements AttributeExtractor{
 	
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+		
+		Pattern regex = Pattern.compile("^*\\d{4}");
+		
 		final String year = src.getFirstFieldValue("260", 'c');
-		target.setYear(year);
-	}
 
+		if(year != null) {
+			Matcher m = regex.matcher(year);
+			
+			if(m.find()) {
+				target.setYear(m.group());
+			}
+		}
+	}
 }
