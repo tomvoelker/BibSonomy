@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.snippet;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -48,37 +50,10 @@ public class SnippetScraper implements Scraper {
     
 	@Override
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException{
-		final String selectedText = sc.getSelectedText();
-		/*
-		 * don't scrape, if there is nothing selected
-		 */
-		if ((selectedText == null) || selectedText.trim().equals("")) {
-			return false;
-		}
-
-		try{
-			/* **************************************************
-			 * snippet parsing starts here
-			 * **************************************************/
-
-			final BibtexParser parser = new BibtexParser(true);
-			final BibtexFile bibtexFile = new BibtexFile();
-			final BufferedReader sr = new BufferedReader(new StringReader(selectedText));
-			// parse file, exceptions are catched below
-			parser.parse(bibtexFile, sr);
-
-			for (final Object potentialEntry:bibtexFile.getEntries()) {
-				if ((potentialEntry instanceof BibtexEntry)) {
-					sc.setBibtexResult(selectedText);
-					sc.setScraper(this);
-					return true; 
-				}
-			}
-
-		} catch (final ParseException pe) {
-			throw new ScrapingException(pe);
-		} catch (final IOException ioe) {
-			throw new ScrapingException(ioe);			
+		if (this.supportsScrapingContext(sc)) {
+			sc.setBibtexResult(sc.getSelectedText());
+			sc.setScraper(this);
+			return true;
 		}
 		return false;
 	}
@@ -99,31 +74,34 @@ public class SnippetScraper implements Scraper {
 		/*
 		 * don't scrape, if there is nothing selected
 		 */
-		if ((selectedText == null) || selectedText.trim().equals("")) {
+		if (!present(selectedText)) {
 			return false;
 		}
+		
+		/*
+		 * parse the selected text with our bibtex parser
+		 * to check if the selected test is valid BibTeX
+		 */
+		return this.isValidBibTeX(selectedText);
+	}
 
-		try{
-			/* **************************************************
-			 * snippet parsing starts here
-			 * **************************************************/
-
+	private boolean isValidBibTeX(final String selectedText) {
+		try {
 			final BibtexParser parser = new BibtexParser(true);
 			final BibtexFile bibtexFile = new BibtexFile();
 			final BufferedReader sr = new BufferedReader(new StringReader(selectedText));
-			// parse file, exceptions are catched below
+			// parse selected text
 			parser.parse(bibtexFile, sr);
-
+	
 			for (final Object potentialEntry:bibtexFile.getEntries()) {
 				if ((potentialEntry instanceof BibtexEntry)) {
 					return true; 
 				}
 			}
-
-		} catch(final ParseException pe) {
-			return false;
+		} catch (final ParseException pe) {
+			// no valid BibTeX
 		} catch (final IOException ioe) {
-			return false;
+			// ignore
 		}
 		return false;
 	}
