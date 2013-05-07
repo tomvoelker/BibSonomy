@@ -24,6 +24,7 @@
 package org.bibsonomy.marc.extractors;
 
 import org.bibsonomy.marc.AttributeExtractor;
+import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.util.ValidationUtils;
@@ -37,7 +38,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class JournalExtractor implements AttributeExtractor {
 	final String expr1 = "/--.+--:/";
 	final String expr2 = "/--.+--/";
-	private ExtendedMarkWithPicaRecord record = null;
+	private ExtendedMarcWithPicaRecord record = null;
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		
@@ -78,5 +79,6 @@ public class JournalExtractor implements AttributeExtractor {
     	if(year.length() > 0) return year;
     	return null;
     }
+
 }
 
