@@ -16,8 +16,10 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexReader;
+import org.bibsonomy.model.util.data.Data;
+import org.bibsonomy.model.util.data.DualDataWrapper;
 import org.bibsonomy.rest.fileupload.FileUploadData;
-import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
+import org.bibsonomy.webapp.command.actions.PublicationRendererCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -31,7 +33,7 @@ import bibtex.parser.ParseException;
  * @author rja
  * @version $Id$
  */
-public class PublicationRenderingController implements MinimalisticController<PostPublicationCommand>, ErrorAware {
+public class PublicationRenderingController implements MinimalisticController<PublicationRendererCommand>, ErrorAware {
 
 	private static final Log log = LogFactory.getLog(PublicationRenderingController.class);
 
@@ -39,22 +41,22 @@ public class PublicationRenderingController implements MinimalisticController<Po
 
 	private Errors errors;
 
-	private Map<String,BibTexReader> mimeTypeReaders = Collections.emptyMap();
+	private Map<String,BibTexReader> bibtexReaders = Collections.emptyMap();
 
 	@Override
-	public PostPublicationCommand instantiateCommand() {
-		final PostPublicationCommand postPublicationCommand = new PostPublicationCommand();
+	public PublicationRendererCommand instantiateCommand() {
+		final PublicationRendererCommand postPublicationCommand = new PublicationRendererCommand();
 		postPublicationCommand.setPost(new Post<BibTex>());
 		postPublicationCommand.getPost().setResource(new BibTex());
 		return postPublicationCommand;
 	}
 
 	@Override
-	public View workOn(PostPublicationCommand command) {
+	public View workOn(PublicationRendererCommand command) {
 
 		List<Post<BibTex>> posts = null;
 		
-		if (present(command.getSelection()) || (present(command.getFile()) && (!mimeTypeReaders.containsKey(command.getFile().getContentType()))))  {
+		if (present(command.getSelection()) || (present(command.getFile()) && (!bibtexReaders.containsKey(command.getFile().getContentType()))))  {
 			final String snippet;
 			if (present(command.getSelection())) {
 				/*
@@ -93,16 +95,11 @@ public class PublicationRenderingController implements MinimalisticController<Po
 				errors.reject("error.upload.failed.parse", ex.getMessage());
 			}
 		} else if (present(command.getFile())) {
-			BibTexReader reader = mimeTypeReaders.get(command.getFile().getContentType());
-			Collection<? extends BibTex> bibTexs;
-			bibTexs = reader.read(new FileUploadData(command.getFile()));
-			posts = new ArrayList<Post<BibTex>>(bibTexs.size());
-			for (BibTex b : bibTexs) {
-				Post<BibTex> p = new Post<BibTex>();
-				p.setTags(Collections.<Tag>emptySet());
-				p.setResource(b);
-				posts.add(p);
-			}
+			final Data data = new FileUploadData(command.getFile());
+			posts = importData(data);
+		} else if (present(command.getMarc()) && present(command.getPica())) {
+			final Data data = new DualDataWrapper(new FileUploadData(command.getMarc()), new FileUploadData(command.getPica()));
+			posts = importData(data);
 		} else {
 			posts = Collections.singletonList(command.getPost());
 		}
@@ -112,6 +109,21 @@ public class PublicationRenderingController implements MinimalisticController<Po
 		command.getBibtex().setList(posts);
 
 		return Views.getViewByFormat(command.getFormat());
+	}
+
+	public List<Post<BibTex>> importData(final Data data) {
+		BibTexReader reader = bibtexReaders.get(data.getMimeType());
+		List<Post<BibTex>> posts;
+		Collection<? extends BibTex> bibTexs;
+		bibTexs = reader.read(data);
+		posts = new ArrayList<Post<BibTex>>(bibTexs.size());
+		for (BibTex b : bibTexs) {
+			Post<BibTex> p = new Post<BibTex>();
+			p.setTags(Collections.<Tag>emptySet());
+			p.setResource(b);
+			posts.add(p);
+		}
+		return posts;
 	}
 
 	public PublicationImporter getPublicationImporter() {
@@ -135,15 +147,15 @@ public class PublicationRenderingController implements MinimalisticController<Po
 	/**
 	 * @return the mimeTypeReaders
 	 */
-	public Map<String, BibTexReader> getMimeTypeReaders() {
-		return this.mimeTypeReaders;
+	public Map<String, BibTexReader> getBibtexReaders() {
+		return this.bibtexReaders;
 	}
 
 	/**
 	 * @param mimeTypeReaders the mimeTypeReaders to set
 	 */
-	public void setMimeTypeReaders(Map<String, BibTexReader> mimeTypeReaders) {
-		this.mimeTypeReaders = mimeTypeReaders;
+	public void setBibtexReaders(Map<String, BibTexReader> mimeTypeReaders) {
+		this.bibtexReaders = mimeTypeReaders;
 	}
 
 }

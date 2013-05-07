@@ -18,7 +18,7 @@ import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.model.util.data.Data;
 import org.bibsonomy.testutil.CommonModelUtils;
-import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
+import org.bibsonomy.webapp.command.actions.PublicationRendererCommand;
 import org.bibsonomy.webapp.view.Views;
 import org.junit.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -55,9 +55,9 @@ public class PublicationRenderingControllerTest {
 		});
 		
 		PublicationRenderingController ctrl = new PublicationRenderingController();
-		ctrl.setMimeTypeReaders(m);
+		ctrl.setBibtexReaders(m);
 		ctrl.setErrors(new MapBindingResult(new HashMap<Object, Object>(), "dummy"));
-		PostPublicationCommand cmd = ctrl.instantiateCommand();
+		PublicationRendererCommand cmd = ctrl.instantiateCommand();
 		cmd.setFormat(Views.FORMAT_STRING_BIBTEX);
 		cmd.setFile(new MockMultipartFile("test.bib", "test.bib", "bla", bytes));
 		
