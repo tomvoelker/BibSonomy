@@ -245,10 +245,8 @@
 	</bean>
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
-	
-	<bean id="bibtexReader" class="org.bibsonomy.model.util.CompositeBibtexReader">
-		<constructor-arg>
-			<map>
+
+			<util:map id="bibtexReaders">
 				<entry key="application/marc">
 					<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
 				</entry>
@@ -256,11 +254,13 @@
 				<entry key="application/pica">
 				</entry>
 				 -->
-				<entry key="application/marc application/pica">
+				<entry key="application/marc:application/pica">
 					<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
 				</entry>
-			</map>
-		</constructor-arg>
+			</util:map>
+	
+	<bean id="bibtexReader" class="org.bibsonomy.model.util.CompositeBibtexReader">
+		<constructor-arg ref="bibtexReaders"/>
 	</bean>
 	
 	<!-- WURFL -->
