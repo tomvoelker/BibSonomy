@@ -37,22 +37,24 @@ import org.bibsonomy.util.ValidationUtils;
 public class JournalExtractor implements AttributeExtractor {
 	final String expr1 = "/--.+--:/";
 	final String expr2 = "/--.+--/";
-	
+	private ExtendedMarkWithPicaRecord record = null;
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		if(((ExtendedMarcWithPicaRecord)src).getFirstPicaFieldValue("002@", "0").indexOf("o")==-1) return;
+		
+		record = (ExtendedMarcWithPicaRecord)src;
+		if(record.getFirstPicaFieldValue("002@", "0").indexOf("o")==-1) return;
 		String next = null;
-		if(ValidationUtils.present((next=getName(src))))
+		if(ValidationUtils.present((next=getName(record))))
 			target.setJournal(next);
-		if(ValidationUtils.present((next=getYear(src))))
+		if(ValidationUtils.present((next=getYear(record))))
 			target.setYear(next);
-		if(ValidationUtils.present((next=getVolume(src))))
+		if(ValidationUtils.present((next=getVolume(record))))
 			target.setVolume(next);
 	}
 	
 	private String getName(ExtendedMarcWithPicaRecord r) {
 		try {
-			String name = ((ExtendedMarcWithPicaRecord)r).getFirstPicaFieldValue("039B", "$8");
+			String name = r.getFirstPicaFieldValue("039B", "$8");
 			if(ValidationUtils.present(name)) {
 				name = (name.replaceAll(expr1, "")).replaceAll(expr2, "");
 			} else if(!ValidationUtils.present((name=r.getFirstPicaFieldValue("039B", "$c")))) {
