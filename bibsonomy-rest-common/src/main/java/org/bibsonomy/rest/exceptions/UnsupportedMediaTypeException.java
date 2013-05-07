@@ -25,8 +25,7 @@ package org.bibsonomy.rest.exceptions;
 
 /**
  * @author wla
- * @version $Id: UnsupportedMediaTypeException.java,v 1.3 2013-03-27 13:14:30
- *          bibsonomy Exp $
+ * @version $Id$
  */
 public class UnsupportedMediaTypeException extends RuntimeException {
 
