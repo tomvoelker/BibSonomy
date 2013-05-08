@@ -85,7 +85,7 @@ public class TypeExtractor implements AttributeExtractor {
 		public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		    	
 				if(!(src instanceof ExtendedMarcWithPicaRecord)) {
-					target.setType("misc");
+					target.setEntrytype("misc");
 					return;
 					// throws IllegalArgumentException
 					//throw new IllegalArgumentException("record should be provided along with Pica record");
@@ -146,6 +146,6 @@ public class TypeExtractor implements AttributeExtractor {
 
 		    	// there is no format defined for the combination of art level and phys
 		    	// for debugging
-		    	target.setType(type);    	
+		    	target.setEntrytype(type);    	
 		}
 }
