@@ -37,11 +37,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -788,17 +788,6 @@ public class BibTexUtils {
 		publicationList.addAll(hashToPost.values());
  	}
 	
-	
-	
-	/**
-	 * 
-	 * @param bibtexList
-	 */
-	public static void aggregateDuplicates(final List<Post<BibTex>> bibtexList) {
-		
-	}
-
-
 	/** Adds the field <code>fieldName</code> to the BibTeX entry, if the entry 
 	 * does not already contain it.
 	 * 
