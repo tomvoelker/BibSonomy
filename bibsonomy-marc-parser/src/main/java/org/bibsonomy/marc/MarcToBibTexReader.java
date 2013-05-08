@@ -15,6 +15,7 @@ import org.bibsonomy.marc.extractors.JournalExtractor;
 import org.bibsonomy.marc.extractors.PagesExtractor;
 import org.bibsonomy.marc.extractors.PublicationExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
+import org.bibsonomy.marc.extractors.TypeExtractor;
 import org.bibsonomy.marc.extractors.YearExtractor;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
@@ -41,6 +42,7 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new TitleExtractor());
 		extractors.add(new AuthorExtractor());
 		extractors.add(new JournalExtractor());
+		extractors.add(new TypeExtractor());
 		extractors.add(new EditionExtractor());
 		extractors.add(new AddressExtractor());
 		extractors.add(new PagesExtractor());
@@ -89,7 +91,8 @@ public class MarcToBibTexReader implements BibTexReader {
 		while (reader.hasNext()) {
 			final Record r = reader.next();
 			ExtendedMarcRecord er;
-			if (picaRecords != null) {
+			if (picaRecords != null &&
+					picaRecords.hasNext()) {
 				PicaRecord picaRecord = picaRecords.next();
 				er = new ExtendedMarcWithPicaRecord(r, picaRecord);
 			} else {
@@ -97,7 +100,11 @@ public class MarcToBibTexReader implements BibTexReader {
 			}
 			ImportResource b = new ImportResource();
 			for (AttributeExtractor ex : extractors) {
-				ex.extraxtAndSetAttribute(b, er);
+				try {
+					ex.extraxtAndSetAttribute(b, er);
+				} catch (IllegalArgumentException e) {
+					//System.err.println(e.toString());
+				}
 			}
 			rVal.add(b);
 
