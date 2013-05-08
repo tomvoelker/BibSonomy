@@ -45,3 +45,11 @@ public class TitleExtractor implements AttributeExtractor {
 		target.setTitle(val);
 	}
 }
+/*
+ * Typ:
+ *  Pica: 13H 0k   k->Konferenz   -> 090? f->festschrift
+ *  Pica: 002@ 2.char b    -> marc? 006?
+ *  
+ *  
+ *  TODO: titel bei mehrbändern (knuth)
+ */
