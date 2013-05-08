@@ -37,7 +37,7 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 public class AsmScraper extends CitationManagerScraper {
 	
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download to citation manager</a>");
-	private static final String SITE_NAME = "American Society for microbiology";
+	private static final String SITE_NAME = "American Society for Microbiology";
 	private static final String SITE_URL = "http://asm.org";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
