@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>bibsonomy-bibtex-parser</name>
+	<name>bibsonomy-marc-parser</name>
 	<comment>BibTeX Parser from http://www-plan.cs.colorado.edu/henkel/stuff/javabib/.</comment>
-	<projects>
-		<project>bibsonomy-common</project>
-		<project>bibsonomy-model</project>
-	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.wst.common.project.facet.core.builder</name>
