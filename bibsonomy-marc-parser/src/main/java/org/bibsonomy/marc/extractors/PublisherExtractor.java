@@ -8,7 +8,7 @@ import org.bibsonomy.model.BibTex;
  * @author Lukas
  * @version $Id$
  */
-public class PublicationExtractor implements AttributeExtractor {
+public class PublisherExtractor implements AttributeExtractor {
 	
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
