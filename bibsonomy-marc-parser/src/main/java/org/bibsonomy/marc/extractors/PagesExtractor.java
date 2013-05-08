@@ -24,7 +24,9 @@ package org.bibsonomy.marc.extractors;
 
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
+import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
@@ -34,8 +36,18 @@ public class PagesExtractor implements AttributeExtractor{
 
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		final String pages = src.getFirstFieldValue("300", 'a');
-		target.setPages(pages);  		
+		String pages = null;
+		if (src instanceof ExtendedMarcWithPicaRecord) {
+			pages = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("031A", "$h", null);
+		}
+//		This is the number of pages, but for citations we need the pages of e.g. an article in some journal
+//		if (!ValidationUtils.present(pages)) {
+//			pages = src.getFirstFieldValue("300", 'a');
+//		}
+		if (ValidationUtils.present(pages)) {
+			target.setPages(pages);
+		}
+		// + 31A $h (pages) (bei pages extractor)
 	}
 
 }
