@@ -59,16 +59,14 @@ public class GoogleBooksScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(final ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 		try {
-			final String downloadLink;
-			
 			// extract id from url
 			final Matcher idMatcher = ID_PATTERN.matcher(sc.getUrl().toString());
 			
-			if(idMatcher.find()) {
-				downloadLink = "http://" + sc.getUrl().getHost() + PATH + "/download/?id=" + idMatcher.group(1) + "&output=bibtex";
-			} else {
+			if (!idMatcher.find()) {
 				throw new ScrapingFailureException("id is not available");
 			}
+			
+			final String downloadLink = "http://" + sc.getUrl().getHost() + PATH + "/download/?id=" + idMatcher.group(1) + "&output=bibtex";
 			// download bibtex
 			final String bibtex = WebUtils.getContentAsString(new URL(downloadLink));
 			if (bibtex != null) {
@@ -76,11 +74,12 @@ public class GoogleBooksScraper extends AbstractUrlScraper {
 				return true;
 			}
 			return false;
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}		
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
@@ -90,10 +89,12 @@ public class GoogleBooksScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
