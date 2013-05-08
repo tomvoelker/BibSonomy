@@ -13,7 +13,7 @@ import org.bibsonomy.marc.extractors.BibTeXKeyExtractor;
 import org.bibsonomy.marc.extractors.EditionExtractor;
 import org.bibsonomy.marc.extractors.JournalExtractor;
 import org.bibsonomy.marc.extractors.PagesExtractor;
-import org.bibsonomy.marc.extractors.PublicationExtractor;
+import org.bibsonomy.marc.extractors.PublisherExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
 import org.bibsonomy.marc.extractors.TypeExtractor;
 import org.bibsonomy.marc.extractors.YearExtractor;
@@ -47,7 +47,7 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new AddressExtractor());
 		extractors.add(new PagesExtractor());
 		extractors.add(new YearExtractor());
-		extractors.add(new PublicationExtractor());
+		extractors.add(new PublisherExtractor());
 		
 		//must be the last element in chain because the previous entries must be set
 		extractors.add(new BibTeXKeyExtractor());
