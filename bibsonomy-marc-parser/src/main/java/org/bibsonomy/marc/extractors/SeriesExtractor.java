@@ -42,10 +42,10 @@ public class SeriesExtractor implements AttributeExtractor {
 				f036A += picaSrc.getFirstPicaFieldValue("036A","$m");
 			}
 			if(picaSrc.getFirstPicaFieldValue("036A","$a") != null) {
-				f036A += picaSrc.getFirstPicaFieldValue("036A","$a").replace("@","");
+				f036A += ", " + picaSrc.getFirstPicaFieldValue("036A","$a").replace("@","");
 			}
 			if(picaSrc.getFirstPicaFieldValue("036A","$l") != null) {
-				f036A += picaSrc.getFirstPicaFieldValue("036A","$l");
+				f036A += " ; " + picaSrc.getFirstPicaFieldValue("036A","$l");
 			}
 			
 			/*
@@ -65,10 +65,10 @@ public class SeriesExtractor implements AttributeExtractor {
 				f036C += picaSrc.getFirstPicaFieldValue("036C","$m");
 			}
 			if(picaSrc.getFirstPicaFieldValue("036C","$a") != null) {
-				f036C += picaSrc.getFirstPicaFieldValue("036C","$a").replace("@","");
+				f036C += ", " + picaSrc.getFirstPicaFieldValue("036C","$a").replace("@","");
 			}
 			if(picaSrc.getFirstPicaFieldValue("036C","$l") != null) {
-				f036C += picaSrc.getFirstPicaFieldValue("036C","$l");
+				f036C += " ; " + picaSrc.getFirstPicaFieldValue("036C","$l");
 			}
 			
 			/*
@@ -78,10 +78,10 @@ public class SeriesExtractor implements AttributeExtractor {
 				f036F += picaSrc.getFirstPicaFieldValue("036F","$m");
 			}
 			if(picaSrc.getFirstPicaFieldValue("036F","$a") != null) {
-				f036F += picaSrc.getFirstPicaFieldValue("036F","$a").replace("@","");
+				f036F += ", " + picaSrc.getFirstPicaFieldValue("036F","$a").replace("@","");
 			}
 			if(picaSrc.getFirstPicaFieldValue("036F","$l") != null) {
-				f036F += picaSrc.getFirstPicaFieldValue("036F","$l");
+				f036F += " ; " + picaSrc.getFirstPicaFieldValue("036F","$l");
 			}
 			
 			/*
