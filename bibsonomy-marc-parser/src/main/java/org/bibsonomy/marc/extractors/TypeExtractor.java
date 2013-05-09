@@ -83,7 +83,7 @@ public class TypeExtractor implements AttributeExtractor {
 	    }
 		@Override
 		public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		    	
+	    		
 				if(!(src instanceof ExtendedMarcWithPicaRecord)) {
 					target.setEntrytype("misc");
 					return;
@@ -93,7 +93,9 @@ public class TypeExtractor implements AttributeExtractor {
 				ExtendedMarcWithPicaRecord record = (ExtendedMarcWithPicaRecord)src;
 		    	// format ist is detected by infos in Leader and kat 007
 		    	Leader leader = src.getRecord().getLeader(); 
-		    	List<DataField> fields = src.getDataFields("007");
+		    	List<DataField> fields = null;
+		    	try { fields = src.getDataFields("007");   	
+		    	} catch (IllegalArgumentException e) {}
 		    	String tmp = src.getFirstFieldValue("300", 'a');
 		    	String postfix = new String();
 		    	String type = "misc";
@@ -124,26 +126,25 @@ public class TypeExtractor implements AttributeExtractor {
 		    	//For some formats this is not enough and we need additional infos
 		    	
 		    	// preliminary solution for detection of series
+		    	String s = record.getFirstPicaFieldValue("002@", "$0");
 		    	
-		    	if (record.getFirstPicaFieldValue("002@", "$0").indexOf("c")==1 ||
-		    			record.getFirstPicaFieldValue("002@", "$0").indexOf("d")== 1 ){
+		    	if (s.indexOf("c")==1 ||
+		    			s.indexOf("d")== 1 ){
 		    		type="series";
 		    	} else		    	
 		    	// preliminary solution for articles		    	
-		    	if (record.getFirstPicaFieldValue("002@", "$0").indexOf("o")==1){
+		    	if (s.indexOf("o")==1){
 		    		type="article";
 		    	} else    	
 		    	// preliminary solution for retro
-		    	if (record.getFirstPicaFieldValue("002@", "$0").indexOf("r")==1){
+		    	if (s.indexOf("r")==1){
 		    		type="retro";
 		    	} else {
 		    	// return formats accourding to format arry in the beginning
 		    	// of this method
-		    		if (map.get(art+level+postfix)!=null){
-		         		type=map.get(art+level+postfix);
-		         	}
+		    		String value = map.get((art+""+level+postfix).trim()); 
+		    		if (value!=null) type=value;
 		        }
-
 		    	// there is no format defined for the combination of art level and phys
 		    	// for debugging
 		    	target.setEntrytype(type);    	

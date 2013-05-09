@@ -36,9 +36,9 @@ import org.bibsonomy.util.ValidationUtils;
  * @version $Id$
  */
 public class JournalExtractor implements AttributeExtractor {
-	final String expr1 = "/--.+--:/";
-	final String expr2 = "/--.+--/";
+	final String expr = "--.+--[:]?";
 	private ExtendedMarcWithPicaRecord record = null;
+	
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) throws IllegalArgumentException {
 		if(src instanceof ExtendedMarcWithPicaRecord) {
@@ -62,7 +62,7 @@ public class JournalExtractor implements AttributeExtractor {
 		try {
 			String name = r.getFirstPicaFieldValue("039B", "$8");
 			if(ValidationUtils.present(name)) {
-				name = (name.replaceAll(expr1, "")).replaceAll(expr2, "");
+				name = name.replaceAll(expr, "");
 			} else if(!ValidationUtils.present((name=r.getFirstPicaFieldValue("039B", "$c")))) {
 				return null;
     		}
