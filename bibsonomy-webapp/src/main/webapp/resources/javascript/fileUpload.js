@@ -84,11 +84,11 @@ function renameClicked() {
 	if($("#showName").length) {
 		$("#showName").text(getString("post.bibtex.renameTitle") +" " +name);
 		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
-		 "<input id='renameFormTxt' type='text' name='newFileName'/>" +
+		 "<input id='renameFormTxt' type='text' name='newFileName' value='" +name +"'/>" +
 				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
 	} else {
 		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
-		"<p id='showName'>" +getString("post.bibtex.renameTitle") +" " +name +":</p> <input id='renameFormTxt' type='text' name='newFileName'/>" +
+		"<p id='showName'>" +getString("post.bibtex.renameTitle") +" " +name +":</p> <input id='renameFormTxt' type='text' name='newFileName' value='" +name +"' />" +
 				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
 	}
 
