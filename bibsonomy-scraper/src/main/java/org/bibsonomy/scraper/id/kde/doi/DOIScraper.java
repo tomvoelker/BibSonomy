@@ -107,7 +107,7 @@ public class DOIScraper implements Scraper {
 				scrapingContext.setDoiURL(null);
 			}
 			
-			final URL redirectUrl = WebUtils.getRedirectUrl(DOIUtils.getUrlForDoi(doi));
+			final URL redirectUrl = DOIUtils.getUrlForDoi(doi);
 			if (present(redirectUrl)) {
 				scrapingContext.setUrl(redirectUrl);
 			}

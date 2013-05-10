@@ -50,7 +50,7 @@ public class DOIScraperTest {
 		
 		Assert.assertFalse(scraper.scrape(sc));
 		
-		Assert.assertEquals("http://www.springerlink.com/index/10.1007/11922162", sc.getUrl().toString());
+		Assert.assertEquals("http://link.springer.com/book/10.1007/11922162/page/1", sc.getUrl().toString());
 		
 	}
 
@@ -66,7 +66,7 @@ public class DOIScraperTest {
 		
 		Assert.assertFalse(scraper.scrape(sc));
 		
-		Assert.assertEquals("http://portal.acm.org/citation.cfm?doid=160688.160713", sc.getUrl().toString());
+		Assert.assertEquals("http://dl.acm.org/citation.cfm?doid=160688.160713", sc.getUrl().toString());
 		
 	}
 	
