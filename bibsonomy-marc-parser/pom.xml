@@ -50,21 +50,6 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>src/main/java/bibtex/**</exclude>
-						<exclude>src/main/resources/bibtex/**</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
