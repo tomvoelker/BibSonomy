@@ -1,5 +1,7 @@
 package org.bibsonomy.recommender.tags;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -37,11 +39,12 @@ import org.springframework.beans.factory.DisposableBean;
 
 /**
  * Class for encapsulating webservice queries to recommenders
+ * 
  * @author fei
  * @version $Id$
  */
 public class WebserviceTagRecommender implements TagRecommenderConnector, DisposableBean {
-	final Log log = LogFactory.getLog(WebserviceTagRecommender.class);
+	private static final Log log = LogFactory.getLog(WebserviceTagRecommender.class);
 	
 	/** url map for the getRecommendation method */
 	private static final String METHOD_GETRECOMMENDEDTAGS = "getRecommendedTags";
@@ -67,8 +70,6 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	/** post parameter for the post id */
 	public final String ID_POSTID   = "postID";
 
-	
-
 	// MultiThreadedHttpConnectionManager 
 	private final IdleClosingConnectionManager connectionManager;
 	private final IdleConnectionTimeoutThread idleConnectionHandler;
@@ -78,22 +79,22 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	 */
 	public WebserviceTagRecommender() {
 		// Create an instance of HttpClient.
-		connectionManager = new IdleClosingConnectionManager();// MultiThreadedHttpConnectionManager();
-      	client = new HttpClient(connectionManager);
+		this.connectionManager = new IdleClosingConnectionManager();// MultiThreadedHttpConnectionManager();
+      	this.client = new HttpClient(this.connectionManager);
       	
       	// set default timeouts
-      	final HttpConnectionManagerParams connectionParams = connectionManager.getParams();
+      	final HttpConnectionManagerParams connectionParams = this.connectionManager.getParams();
       	connectionParams.setSoTimeout(SOCKET_TIMEOUT_MS);
       	connectionParams.setConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
-      	connectionManager.setParams(connectionParams);
+      	this.connectionManager.setParams(connectionParams);
       	log.debug("MAXCONNECTIONS: "+connectionParams.getMaxTotalConnections());
       	log.debug("MAXCONNECTIONSPERHOST: "+connectionParams.getDefaultMaxConnectionsPerHost());
       	
       	// handle idle connections
-      	connectionManager.closeIdleConnections(IDLE_TIMEOUT_MS);
-      	idleConnectionHandler = new IdleConnectionTimeoutThread();
-      	idleConnectionHandler.addConnectionManager(connectionManager);
-      	idleConnectionHandler.start();
+      	this.connectionManager.closeIdleConnections(IDLE_TIMEOUT_MS);
+      	this.idleConnectionHandler = new IdleConnectionTimeoutThread();
+      	this.idleConnectionHandler.addConnectionManager(this.connectionManager);
+      	this.idleConnectionHandler.start();
       	
 		this.renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.XML);
 	}
@@ -117,7 +118,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	/**
 	 * @param address the address to set
 	 */
-	public void setAddress(URI address) {
+	public void setAddress(final URI address) {
 		this.address = address;
 	}
 
@@ -129,40 +130,41 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 		// render post
 		// FIXME: choose buffer size
 		final StringWriter sw = new StringWriter(100);
-		renderPost(post, sw);
+		this.renderPost(post, sw);
 		
 		// Create a method instance.
 		final NameValuePair[] data = {
-				new NameValuePair(ID_RECQUERY, sw.toString()),
-				new NameValuePair(ID_POSTID, "" + post.getContentId())
+				new NameValuePair(this.ID_RECQUERY, sw.toString()),
+				new NameValuePair(this.ID_POSTID, "" + post.getContentId())
 		};
 		// Create a method instance.
 		// send request
 		// FIXME: THIS IS JUST FOR DOWNWARD COMPATIBILITY DURING THE DC09 RECOMMENDER CHALLENGE
 		//        Replace the following three lines of code with:
 		//        InputStreamReader input = sendRequest(data, "/"+METHOD_GETRECOMMENDEDTAGS);
-		PostMethod cnct = new PostMethod(getAddress().toString());
+		PostMethod cnct = new PostMethod(this.getAddress().toString());
 		cnct.setRequestBody(data);
-		InputStreamReader input = sendRequest(cnct);
+		InputStreamReader input = this.sendRequest(cnct);
 		if( input==null ) {
 			cnct.releaseConnection();
-			cnct = new PostMethod(getAddress().toString()+"/"+METHOD_GETRECOMMENDEDTAGS);
+			cnct = new PostMethod(this.getAddress().toString()+"/"+METHOD_GETRECOMMENDEDTAGS);
 			cnct.setRequestBody(data);
-			input = sendRequest(cnct); 
+			input = this.sendRequest(cnct); 
 		}
 		
 		// Deal with the response.
 		SortedSet<RecommendedTag> result = null;
 		if( input!=null ) {
 			try {
-				result = renderer.parseRecommendedTagList(input);
+				result = this.renderer.parseRecommendedTagList(input);
 			} catch( final Exception e ) {
-				log.error("Error parsing recommender response ("+getAddress().toString()+").", e);
+				log.error("Error parsing recommender response ("+this.getAddress().toString()+").", e);
 				result = null;
 			}
 		}
-		if( result!=null )
+		if( result!=null ) {
 			recommendedTags.addAll(result);
+		}
 		
 		cnct.releaseConnection();
 	}
@@ -170,7 +172,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	@Override
 	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
 		final SortedSet<RecommendedTag> retVal = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		addRecommendedTags(retVal, post);
+		this.addRecommendedTags(retVal, post);
 		return retVal;
 	}
 
@@ -180,23 +182,23 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 		// render post
 		// FIXME: choose buffer size
 		final StringWriter sw = new StringWriter(100);
-		renderPost(post, sw);
+		this.renderPost(post, sw);
 		
 		// Create a method instance.
 		final NameValuePair[] data = {
-				new NameValuePair(ID_FEEDBACK, sw.toString()),
-				new NameValuePair(ID_RECQUERY, sw.toString()), // for downward compatibility
-				new NameValuePair(ID_POSTID, "" + post.getContentId())
+				new NameValuePair(this.ID_FEEDBACK, sw.toString()),
+				new NameValuePair(this.ID_RECQUERY, sw.toString()), // for downward compatibility
+				new NameValuePair(this.ID_POSTID, "" + post.getContentId())
 		};
 
 		// send request
-		final PostMethod cnct = new PostMethod(getAddress().toString()+"/"+METHOD_SETFEEDBACK);
+		final PostMethod cnct = new PostMethod(this.getAddress().toString()+"/"+METHOD_SETFEEDBACK);
 		cnct.setRequestBody(data);
-		final InputStreamReader input = sendRequest(cnct);
+		final InputStreamReader input = this.sendRequest(cnct);
 
 		// Deal with the response.
 		if( input!=null ) {
-			final String status = renderer.parseStat(input);
+			final String status = this.renderer.parseStat(input);
 			log.info("Feedback status: " + status);
 		}
 		
@@ -205,7 +207,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 
 	@Override
 	public byte[] getMeta() {
-		return getAddress().toString().getBytes();
+		return this.getAddress().toString().getBytes();
 	}
 
 	@Override
@@ -215,7 +217,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 
 	@Override
 	public String getId() {
-		return getAddress().toString();
+		return this.getAddress().toString();
 	}
 
 	//------------------------------------------------------------------------
@@ -248,19 +250,21 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 		// 1) set hashes
 		// 2) append 'empty' tag
 		// 3) set empty title
-		if( post.getResource().getInterHash()==null || post.getResource().getInterHash().length()==0 )
+		if (!present(post.getResource().getInterHash())) {
 			post.getResource().setInterHash("abc");
-		if( post.getResource().getIntraHash()==null || post.getResource().getIntraHash().length()==0 )
+		}
+		if (!present(post.getResource().getIntraHash())) {
 			post.getResource().setIntraHash("abc");
-		if( (post.getTags()==null) || (post.getTags().size()==0) ) {
+		}
+		if (!present(post.getTags())) {
 			final Set<Tag> tags = new HashSet<Tag>();
 			tags.add(TagUtils.getEmptyTag());
 			post.setTags(tags);
 		}
-		if( post.getResource().getTitle()==null ) {
+		if (post.getResource().getTitle() == null) {
 			post.getResource().setTitle("");
 		}
-		renderer.serializePost(sw, post, vm);		
+		this.renderer.serializePost(sw, post, vm);		
 	}
 	
 	private InputStreamReader sendRequest(final PostMethod cnct) {
@@ -269,26 +273,26 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 		
 		try {
 			// Execute the method.
-			final int statusCode = client.executeMethod(cnct);
+			final int statusCode = this.client.executeMethod(cnct);
 
 			if (statusCode != HttpStatus.SC_OK) {
-				log.error("Method at " + getAddress().toString() + " failed: " + cnct.getStatusLine());
+				log.error("Method at " + this.getAddress().toString() + " failed: " + cnct.getStatusLine());
 			} else {
 				// Read the response body.
 				// responseBody = cnct.getResponseBody();
-				input        = new InputStreamReader(cnct.getResponseBodyAsStream(), "UTF-8");
+				input = new InputStreamReader(cnct.getResponseBodyAsStream(), "UTF-8");
 			}
 
 		} catch (final HttpException e) {
-			log.fatal("Fatal protocol violation("+getAddress()+"): " + e.getMessage(), e);
+			log.fatal("Fatal protocol violation("+this.getAddress()+"): " + e.getMessage(), e);
 		} catch (final UnsupportedEncodingException ex) {
 			// returns InputStream with default encoding if a exception
 			// is thrown with utf-8 support
-			log.fatal("Encoding error("+getAddress()+"): " + ex.getMessage(), ex);
+			log.fatal("Encoding error("+this.getAddress()+"): " + ex.getMessage(), ex);
 		} catch (final IOException e) {
-			log.fatal("Fatal transport error("+getAddress()+"): " + e.getMessage(), e);
+			log.fatal("Fatal transport error("+this.getAddress()+"): " + e.getMessage(), e);
 		} catch (final Exception e) {
-			log.fatal("Unknown error ("+getAddress()+")", e);
+			log.fatal("Unknown error ("+this.getAddress()+")", e);
 		} finally {
 			// Release the connection.
 			// cnct.releaseConnection();
@@ -302,8 +306,8 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	@Override
 	public void destroy() throws Exception {
 		// needed to prevent a failing spring-context to start more and more threads
-		if (idleConnectionHandler != null) {
-			idleConnectionHandler.shutdown();
+		if (this.idleConnectionHandler != null) {
+			this.idleConnectionHandler.shutdown();
 		}
 	}
 }
