@@ -51,6 +51,15 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	/** url map for the setFeedback method */
 	private static final String METHOD_SETFEEDBACK = "setFeedback";
 	
+	// FIXME: These values are also used in TagRecommenderServlet and should
+	//        be defined in a class commonly accessible
+	/** post parameter for the feedback (xml-)post model */
+	private static final String ID_FEEDBACK = "feedback";
+	/** post parameter for the recommendation (xml-)post model */
+	private static final String ID_RECQUERY = "data";
+	/** post parameter for the post id */
+	private static final String ID_POSTID   = "postID";
+	
 	private static final int SOCKET_TIMEOUT_MS = 10000;
 	private static final int HTTP_CONNECTION_TIMEOUT_MS = 1000;
 	private static final long IDLE_TIMEOUT_MS = 3000;
@@ -60,17 +69,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	private URI address;
 	// serializes post
 	private final Renderer renderer;
-	
-	// FIXME: These values are also used in TagRecommenderServlet and should
-	//        be defined in a class commonly accessible
-	/** post parameter for the feedback (xml-)post model */
-	public final String ID_FEEDBACK = "feedback";
-	/** post parameter for the recommendation (xml-)post model */
-	public final String ID_RECQUERY = "data";
-	/** post parameter for the post id */
-	public final String ID_POSTID   = "postID";
 
-	// MultiThreadedHttpConnectionManager 
 	private final IdleClosingConnectionManager connectionManager;
 	private final IdleConnectionTimeoutThread idleConnectionHandler;
 	
@@ -78,8 +77,8 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 	 * inits the recommender
 	 */
 	public WebserviceTagRecommender() {
-		// Create an instance of HttpClient.
-		this.connectionManager = new IdleClosingConnectionManager();// MultiThreadedHttpConnectionManager();
+		// create an instance of HttpClient.
+		this.connectionManager = new IdleClosingConnectionManager();
       	this.client = new HttpClient(this.connectionManager);
       	
       	// set default timeouts
@@ -134,8 +133,8 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 		
 		// Create a method instance.
 		final NameValuePair[] data = {
-				new NameValuePair(this.ID_RECQUERY, sw.toString()),
-				new NameValuePair(this.ID_POSTID, "" + post.getContentId())
+				new NameValuePair(ID_RECQUERY, sw.toString()),
+				new NameValuePair(ID_POSTID, "" + post.getContentId())
 		};
 		// Create a method instance.
 		// send request
@@ -145,7 +144,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 		PostMethod cnct = new PostMethod(this.getAddress().toString());
 		cnct.setRequestBody(data);
 		InputStreamReader input = this.sendRequest(cnct);
-		if( input==null ) {
+		if (input == null) {
 			cnct.releaseConnection();
 			cnct = new PostMethod(this.getAddress().toString()+"/"+METHOD_GETRECOMMENDEDTAGS);
 			cnct.setRequestBody(data);
@@ -186,9 +185,9 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 		
 		// Create a method instance.
 		final NameValuePair[] data = {
-				new NameValuePair(this.ID_FEEDBACK, sw.toString()),
-				new NameValuePair(this.ID_RECQUERY, sw.toString()), // for downward compatibility
-				new NameValuePair(this.ID_POSTID, "" + post.getContentId())
+				new NameValuePair(ID_FEEDBACK, sw.toString()),
+				new NameValuePair(ID_RECQUERY, sw.toString()), // for downward compatibility
+				new NameValuePair(ID_POSTID, "" + post.getContentId())
 		};
 
 		// send request
@@ -197,7 +196,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector, Dispos
 		final InputStreamReader input = this.sendRequest(cnct);
 
 		// Deal with the response.
-		if( input!=null ) {
+		if (input != null) {
 			final String status = this.renderer.parseStat(input);
 			log.info("Feedback status: " + status);
 		}
