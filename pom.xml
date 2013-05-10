@@ -302,17 +302,8 @@
 							</description>
 						</properties>
 					</configuration>
-					<executions>
-						<execution>
-							<phase>install</phase>
-							<goals>
-								<goal>format</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
-			
 		</pluginManagement>
 		<plugins>
 			<plugin>
