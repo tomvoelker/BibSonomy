@@ -19,7 +19,6 @@
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
-		
 	</dependencies>
 	<distributionManagement>
 		<!-- deploy site documentation via scp to gromit -->
@@ -34,8 +33,8 @@
 	<build>
 		<plugins>
 			<plugin>
-       		<groupId>com.mycila.maven-license-plugin</groupId>
-      		<artifactId>maven-license-plugin</artifactId>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
