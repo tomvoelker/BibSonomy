@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -14,11 +12,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.TieredMergePolicy;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -49,7 +45,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 
 	protected static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
 
-	/** TODO: improve documentation */
+	/** the number of posts to fetch from the database by a single generating step */
 	private static final int SQL_BLOCKSIZE = 25000;
 
 	/** database logic */
@@ -72,11 +68,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 
 	private int numberOfPosts;
 	private int numberOfPostsImported;
-
-	// FolkRank caches
-	private String lastHash = "";
-	private Map<Character, String> tagFieldValues = new HashMap<Character, String>();
-	private Map<Character, String> userFieldValues = new HashMap<Character, String>();
 
 	/**
 	 * frees allocated resources and closes all files
@@ -117,9 +108,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		// generate index
 		this.createIndexFromDatabase();
 
-		// delete the old index, if exists
-		// this.resourceIndex.deleteIndex();
-
 		// Hope that works
 		this.replaceIndex();
 
@@ -134,9 +122,9 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	 */
 	public void replaceIndex() {
 		try {
-			resourceIndex.close();
-			final File indexPath = new File(resourceIndex.getIndexPath());
-			final File tmpIndexPath = new File(resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX);
+			this.resourceIndex.close();
+			final File indexPath = new File(this.resourceIndex.getIndexPath());
+			final File tmpIndexPath = new File(this.resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX);
 			// If there was no index directory create one
 			if (!indexPath.exists()) {
 				indexPath.mkdirs();
@@ -153,11 +141,11 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			log.info("Coping new index files from " + tmpIndexPath.getName());
 			boolean movedIndexSuccessful = true;
 			for (final String filename : tmpIndexDirectory.listAll()) {
-				File file = new File(tmpIndexPath.getAbsolutePath() + "/" + filename);
+				final File file = new File(tmpIndexPath.getAbsolutePath() + "/" + filename);
 				// Move file to new directory
 				log.debug("Move " + filename + " to " + indexPath.getName());
-				File file2 = new File(indexPath, file.getName());
-				boolean success = file.renameTo(file2);
+				final File file2 = new File(indexPath, file.getName());
+				final boolean success = file.renameTo(file2);
 				if (!success) {
 					movedIndexSuccessful = false;
 					log.error(filename + " was not successfully moved");
@@ -168,13 +156,14 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 			 * index directory remove the temporary index directory
 			 */
 			if (movedIndexSuccessful) {
-				boolean success = (new File(tmpIndexPath.getAbsolutePath())).delete();
-				if (success) log.info("Temporary index directory successfully deleted.");
+				final boolean success = (new File(tmpIndexPath.getAbsolutePath())).delete();
+				if (success) {
+					log.info("Temporary index directory successfully deleted.");
+				}
 			}
 		} catch (final NoSuchDirectoryException e) {
 			log.warn("Tried to delete the lucene-index-directory but it could not be found.", e);
 		} catch (final IOException e) {
-			e.printStackTrace();
 			log.error("Could not delete directory-content before index-generation or index-copy.", e);
 		}
 	}
@@ -190,14 +179,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		// create index, possibly overwriting existing index files
 		log.info("Creating empty lucene index...");
 		final Directory indexDirectory = FSDirectory.open(new File(this.resourceIndex.getIndexPath() + TMP_INDEX_SUFFIX));
-//		this.indexWriter = new IndexWriter(indexDirectory, this.resourceIndex.getAnalyzer(), true, this.resourceIndex.getMaxFieldLength());
-		/* The old, deprecated IndexWriter constructor is replaced through the following 
-		 * three lines.
-		 * 1.) We now use a IndexWriterConfig object to set the version and
-		 *  the analyzer to use
-		 * 2.) Set the access mode. Create a new one. Don't append 
-		 * 3.) Create the IndexWriter with the IndexWriterConfig object*/
-		IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_30, this.resourceIndex.getAnalyzer());
+		final IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_30, this.resourceIndex.getAnalyzer());
 		iwc.setOpenMode(OpenMode.CREATE);
 		this.indexWriter = new IndexWriter(indexDirectory, iwc);
 	}
@@ -291,7 +273,8 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 	 */
 	protected void createIndexFromDatabaseWithFolkRanks() throws CorruptIndexException, IOException {
 		log.info("Filling index with database post entries.");
-
+		// TODO: reenable multi threaded index generation
+		// TODO: don't load all posts into RAM
 		final ExecutorService executor = Executors.newFixedThreadPool(this.numberOfThreads);
 
 		// number of post entries to calculate progress
@@ -308,9 +291,6 @@ public class LuceneGenerateResourceIndex<R extends Resource> implements Runnable
 		}
 
 		log.info("Start writing data to lucene index (with duplicate detection)");
-
-		// TODO configure FolkRank file location (Spring?)
-		String folkRankFile = this.resourceIndex.getResourceClass().getSimpleName();
 
 		// read block wise all posts
 		List<LucenePost<R>> postList = null;
