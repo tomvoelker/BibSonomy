@@ -27,21 +27,20 @@ public class PropertiesTypeHandlerCallback extends AbstractTypeHandlerCallback {
 			final StringWriter sw = new StringWriter();
 			try {
 			    properties.store(sw, null);
-			} catch (IOException e) {
-			    /* TODO Auto-generated catch block
-			    e.printStackTrace();*/
+			} catch (final IOException e) {
+				// ignore (no IOException should be thrown; we are using a string writer)
 			}
-			setter.setString(sw.getBuffer().toString());
+			setter.setString(sw.toString());
 		}
 	}
 
 	@Override
 	public Object valueOf(final String str) {
-		StringReader reader = new StringReader(str);
+		final StringReader reader = new StringReader(str);
 		final Properties properties = new Properties();
 		try {
 		    properties.load(reader);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 		    return new Properties();
 		}
 		return properties;
