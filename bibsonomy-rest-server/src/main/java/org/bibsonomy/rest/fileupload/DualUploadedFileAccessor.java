@@ -23,7 +23,7 @@ public class DualUploadedFileAccessor extends UploadedFileAccessor {
 	
 	@Override
 	public Data getData(String multipartName) {
-		int separatorIndex = multipartName.indexOf(' ');
+		int separatorIndex = multipartName.indexOf(':');
 		if (separatorIndex == -1) {
 			return super.getData(multipartName);
 		}
