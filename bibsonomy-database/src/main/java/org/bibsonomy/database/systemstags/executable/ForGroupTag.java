@@ -309,7 +309,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		try {
 			return (ExecutableSystemTag) super.clone();
 		} catch (final CloneNotSupportedException ex) {
-			ex.printStackTrace();
+			// never ever reached
 			return null;
 		}
 	}
