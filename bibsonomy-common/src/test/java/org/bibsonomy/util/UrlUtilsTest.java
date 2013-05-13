@@ -24,7 +24,6 @@
 package org.bibsonomy.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -106,24 +105,22 @@ public class UrlUtilsTest {
 
 	/**
 	 * tests encodeURLExceptReservedChars
+	 * @throws UnsupportedEncodingException iff utf-8 is not supported
 	 */
 	@Test
-	public void encodeURLExceptReservedChars() {
+	public void encodeURLExceptReservedChars() throws UnsupportedEncodingException{
 		// these characters shouldn't be encoded
 		assertEquals("$&+,/:;?@", UrlUtils.encodeURLExceptReservedChars("$&+,/:;?@"));
 		// but spaces should
 		assertEquals("$+&+++,+/+:+;+?+@", UrlUtils.encodeURLExceptReservedChars("$ & + , / : ; ? @"));
-
-		try {
-			assertEquals(URLEncoder.encode("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU", "UTF-8"), UrlUtils.encodeURLExceptReservedChars("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU"));
-		} catch (UnsupportedEncodingException ex) {
-			ex.printStackTrace();
-			fail();
-		}
-
+		
+		assertEquals(URLEncoder.encode("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU", "UTF-8"), UrlUtils.encodeURLExceptReservedChars("should_be_same_as_plain_encoded_']} §°^äöü*ÄÖU"));
 		assertEquals("http://www.bibsonomy.org/user/%7Cthe_man%7C/?bookmark.start=10&bibtex.start=0", UrlUtils.encodeURLExceptReservedChars("http://www.bibsonomy.org/user/|the_man|/?bookmark.start=10&bibtex.start=0"));
 	}
 	
+	/**
+	 * tests {@link UrlUtils#getFirstPathElement(String)}
+	 */
 	@Test
 	public void testGetFirstPathElement(){
 		assertEquals("a", UrlUtils.getFirstPathElement("a"));
@@ -139,7 +136,6 @@ public class UrlUtilsTest {
 		assertEquals("aa", UrlUtils.getFirstPathElement("/aa/b/"));
 		assertEquals("aa", UrlUtils.getFirstPathElement("/aa/b/c"));
 		assertEquals("aaaaaa", UrlUtils.getFirstPathElement("/aaaaaa/b/c"));
-
 	}
 
 }
