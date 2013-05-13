@@ -283,7 +283,6 @@ public class JabRefModelConverter {
 	 * @return
 	 */
 	public static Post<? extends Resource> convertEntry(final BibtexEntry entry) {
-
 		try {
 			final Post<BibTex> post = new Post<BibTex>();
 			final BibTex bibtex = new BibTex();
@@ -353,14 +352,10 @@ public class JabRefModelConverter {
 			if (present(month))
 				bibtex.setMonth(month);
 
-
 			return post;
-
 		} catch (final Exception e) {
-			e.printStackTrace();
 			log.debug("Could not convert JabRef entry into BibSonomy post.", e);
 		}
-
 		return null;
 	}
 
