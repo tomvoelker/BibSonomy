@@ -89,25 +89,28 @@ public class SherpaRomeoImpl implements SherpaRomeoInterface {
         try {
             final Unmarshaller unmarshaller = this.context.createUnmarshaller();
             final Romeoapi rp = (Romeoapi) unmarshaller.unmarshal(url);
-
-            final List<Publisher> publishers = rp.getPublishers().getPublisher();
-            final JSONObject result = new JSONObject();
-            final JSONArray publishersJson = new JSONArray();
-            for (final Publisher publisher : publishers) {
-                final JSONObject publisherJson = new JSONObject();
-                publisherJson.put("name", publisher.getName());
-                publisherJson.put("colour", publisher.getRomeocolour());
-                
-                publisherJson.put("conditions", renderConditions(publisher.getConditions().getCondition()));
-                publishersJson.add(publisherJson);
-            }
-            result.put("publishers", publishersJson);
-            return result.toString();
+            return this.extractInformations(rp);
         } catch (final JAXBException e) {
             log.error("error unmarshalling response", e);
         }
         return "";
     }
+
+	protected String extractInformations(final Romeoapi rp) {
+		final List<Publisher> publishers = rp.getPublishers().getPublisher();
+		final JSONObject result = new JSONObject();
+		final JSONArray publishersJson = new JSONArray();
+		for (final Publisher publisher : publishers) {
+		    final JSONObject publisherJson = new JSONObject();
+		    publisherJson.put("name", publisher.getName());
+		    publisherJson.put("colour", publisher.getRomeocolour());
+		    
+		    publisherJson.put("conditions", renderConditions(publisher.getConditions().getCondition()));
+		    publishersJson.add(publisherJson);
+		}
+		result.put("publishers", publishersJson);
+		return result.toString();
+	}
 
 	private static JSONArray renderConditions(final List<Condition> conditions) {
 		final JSONArray conditionsJson = new JSONArray();
