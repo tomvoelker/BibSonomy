@@ -22,8 +22,9 @@ public class CompositeBibtexReader implements BibTexReader {
 	}
 	
 	@Override
-	public Collection<ImportResource> read(Data data) {
+	public Collection<ImportResource> read(ImportResource importRes) {
 		
+		final Data data = importRes.getData();
 		String type = data.getMimeType();
 		if (type == null) {
 			throw new IllegalArgumentException("null mimetype");
@@ -32,7 +33,7 @@ public class CompositeBibtexReader implements BibTexReader {
 		if (bibReader == null) {
 			throw new UnsupportedOperationException("unsupported import mimetype '" + type + "'");
 		}
-		return bibReader.read(data);
+		return bibReader.read(importRes);
 	}
 
 }

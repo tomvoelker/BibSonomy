@@ -13,14 +13,15 @@ public final class ImportResource extends BibTex {
 	private final Data data;
 	
 	private final boolean alreadyParsed;
+
+	private final BibTex resource;
 	
 	/**
 	 * Creates a resource that still has to be parsed
 	 * @param data
 	 */
 	public ImportResource(Data data) {
-		this.data = data;
-		this.alreadyParsed = false;
+		this(null, data);
 	}
 	
 	/**
@@ -29,8 +30,20 @@ public final class ImportResource extends BibTex {
 	public ImportResource() {
 		this.data = null;
 		this.alreadyParsed = true;
+		this.resource = null;
 	}
 	
+	/**
+	 * Creates a resource that still has to be parsed
+	 * @param resource resource with additional fields (will be overridden if parsed data is available)
+	 * @param data
+	 */
+	public ImportResource(BibTex resource, Data data) {
+		this.resource = resource;
+		this.data = data;
+		this.alreadyParsed = false;
+	}
+
 	@Override
 	public void recalculateHashes() {
 	}
@@ -47,6 +60,13 @@ public final class ImportResource extends BibTex {
 	 */
 	public boolean isAlreadyParsed() {
 		return this.alreadyParsed;
+	}
+
+	/**
+	 * @return the resource
+	 */
+	public BibTex getResource() {
+		return this.resource;
 	}
 
 }
