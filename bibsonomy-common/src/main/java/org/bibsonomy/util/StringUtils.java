@@ -2462,5 +2462,16 @@ public class StringUtils {
 		
 		return null;
 	}
+
+	public static String getSubStringBefore(String mimeType, String string) {
+		if (mimeType == null) {
+			return null;
+		}
+		int i = mimeType.indexOf(string);
+		if (i < 0) {
+			return mimeType;
+		}
+		return mimeType.substring(0,i);
+	}
 }
 
