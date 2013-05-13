@@ -368,7 +368,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void deleteDocument(final Document document, final String resourceHash) {
-		DeletePostDocumentQuery deletePostDocumentQuery = new DeletePostDocumentQuery(document, resourceHash);
+		DeletePostDocumentQuery deletePostDocumentQuery = new DeletePostDocumentQuery(document.getUserName(), resourceHash, document.getFileName());
 		execute(deletePostDocumentQuery);
 	}
 
