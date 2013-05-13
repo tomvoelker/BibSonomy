@@ -1210,7 +1210,7 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	private ImportResource parsePublicationImportResource(ImportResource resource) {
-		Collection<ImportResource> bibtexs = this.bibtexReader.read(resource.getData());
+		Collection<ImportResource> bibtexs = this.bibtexReader.read(resource);
 		if (ValidationUtils.present(bibtexs) == false) {
 			throw new IllegalStateException("bibtexReader did not throw exception and returned empty result");
 		}
