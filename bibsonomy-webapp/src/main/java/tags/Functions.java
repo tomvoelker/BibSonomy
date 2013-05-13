@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -47,6 +49,7 @@ import org.springframework.format.datetime.DateFormatter;
  * @version $Id$
  */
 public class Functions  {
+	private static final Log log = LogFactory.getLog(Functions.class);
 	
 	/**
 	 * Mapping of BibTeX entry types to SWRC entry types
@@ -118,7 +121,7 @@ public class Functions  {
 		} catch (final Exception e) {
 			form = Normalizer.Form.NFD; 
 		}
-		return Normalizer.normalize(str+form.toString(), form);
+		return Normalizer.normalize(str + form.toString(), form);
 	}
 
 	/**
@@ -411,15 +414,17 @@ public class Functions  {
 		/*
 		 * catch incorrect values
 		 */
-		if (tagCount == 0 || maxTagCount == 0) return "tagtiny";
+		if ((tagCount == 0) || (maxTagCount == 0)) {
+			return "tagtiny";
+		}
 
 		final int percentage = ((tagCount * 100) / maxTagCount);
 
 		if (percentage < 25) {
 			return  "tagtiny";
-		} else if (percentage >= 25 && percentage < 50) {
+		} else if ((percentage >= 25) && (percentage < 50)) {
 			return  "tagnormal";
-		} else if (percentage >= 50 && percentage < 75) {
+		} else if ((percentage >= 50) && (percentage < 75)) {
 			return  "taglarge";
 		} else if (percentage >= 75) {
 			return  "taghuge";
@@ -448,7 +453,7 @@ public class Functions  {
 		if (count > 1024) {
 			count = 1024;
 		}
-		return (int) (100.0 - Math.log(count / Math.log(2) * 2.0));
+		return (int) (100.0 - Math.log((count / Math.log(2)) * 2.0));
 	}
 
 	/** Returns the host name of a URL.
@@ -475,13 +480,19 @@ public class Functions  {
 		final BibTex resource = post.getResource();
 		if (resource != null) {
 			final String title = resource.getTitle();
-			if (title != null) buf.append(shorten(title, 50));
+			if (title != null) {
+				buf.append(shorten(title, 50));
+			}
 
 			final String author = PersonNameUtils.serializePersonNames(resource.getAuthor());
-			if (present(author)) buf.append(", " + shorten(author, 20));
+			if (present(author)) {
+				buf.append(", " + shorten(author, 20));
+			}
 
 			final String year = resource.getYear();
-			if (year != null) buf.append(", " + shorten(year, 4));
+			if (year != null) {
+				buf.append(", " + shorten(year, 4));
+			}
 		}
 
 		return buf.toString();
@@ -495,7 +506,9 @@ public class Functions  {
 	 * @return The shortened string
 	 */
 	public static String shorten(final String s, final Integer length) {
-		if (s != null && s.length() > length) return s.substring(0, length - 3) + "...";
+		if ((s != null) && (s.length() > length)) {
+			return s.substring(0, length - 3) + "...";
+		}
 		return s;
 	}
 
@@ -511,8 +524,12 @@ public class Functions  {
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final String projectHome, final Boolean lastFirstNames, final Boolean generatedBibtexKeys) {
 		int flags = 0;
-		if (!lastFirstNames) flags |= BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST;
-		if (generatedBibtexKeys) flags |= BibTexUtils.SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS;
+		if (!lastFirstNames) {
+			flags |= BibTexUtils.SERIALIZE_BIBTEX_OPTION_FIRST_LAST;
+		}
+		if (generatedBibtexKeys) {
+			flags |= BibTexUtils.SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS;
+		}
 		if (urlGenerator == null) {
 			urlGenerator = new URLGenerator(projectHome);
 		}
@@ -532,8 +549,8 @@ public class Functions  {
 		if (present(date)) {
 			try {
 			return ISO8601_FORMAT_HELPER.format(date);
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (final Exception e) {
+				log.error("error while formating date to ISO8601", e);
 				return "";
 			}
 		}
@@ -622,7 +639,7 @@ public class Functions  {
 	 * @return <code>true</code>, iff object is contained in set.
 	 */
 	public static boolean contains(final Collection<?> collection, final Object object) {
-		return collection != null && collection.contains(object);
+		return (collection != null) && collection.contains(object);
 	}
 
 	/**
