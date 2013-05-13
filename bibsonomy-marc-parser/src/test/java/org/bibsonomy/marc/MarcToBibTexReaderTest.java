@@ -23,8 +23,8 @@ public class MarcToBibTexReaderTest {
 	@Test
 	public void testSomething() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
-		Collection<ImportResource> bibs = reader.read(new ClasspathResourceData("/hebis_data/HEB01711621X.marc", "application/marc"));
-		Collection<ImportResource> springerBibs = reader.read(new ClasspathResourceData("/marc_files/part29.dat", "application/marc"));
+		Collection<ImportResource> bibs = reader.read(new ImportResource(new ClasspathResourceData("/hebis_data/HEB01711621X.marc", "application/marc")));
+		Collection<ImportResource> springerBibs = reader.read(new ImportResource(new ClasspathResourceData("/marc_files/part29.dat", "application/marc")));
 		
 		printStuff(bibs);
 	}
@@ -76,7 +76,7 @@ public class MarcToBibTexReaderTest {
 		Data dat;
 		for(int i = 0; i < RESOURCES_TO_TEST && i < RESOURCES.length; i++) {
 			dat = new DualDataWrapper(new ClasspathResourceData("/hebis_data/"+RESOURCES[i].split(":")[0], "application/marc"), new ClasspathResourceData("/hebis_data/"+RESOURCES[i].split(":")[1], "application/pica"));
-			for (ImportResource bib : reader.read(dat)) {
+			for (ImportResource bib : reader.read(new ImportResource(dat))) {
 				bib.setOpenURL(RESOURCES[i]);
 				bibs.add(bib);
 			}

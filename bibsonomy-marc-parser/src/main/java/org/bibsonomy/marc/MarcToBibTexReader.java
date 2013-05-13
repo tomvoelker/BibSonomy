@@ -117,6 +117,9 @@ public class MarcToBibTexReader implements BibTexReader {
 	}
 
 	private void initialize(ImportResource b, BibTex resource) {
+		if (resource == null) {
+			return;
+		}
 		b.setPrivnote(resource.getPrivnote());
 		b.setMisc(resource.getMisc());
 	}
