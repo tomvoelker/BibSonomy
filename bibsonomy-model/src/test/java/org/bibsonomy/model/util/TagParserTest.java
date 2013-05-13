@@ -24,6 +24,7 @@
 package org.bibsonomy.model.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -53,8 +54,7 @@ public class TagParserTest {
 			try {
 				parser.tagstring();
             } catch (RecognitionException e) {
-                System.out.println(e);
-                e.printStackTrace();
+                fail("error while parsing tags from string: " + e.getMessage());
             }
 		}		
 		return tags;
