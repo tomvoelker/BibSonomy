@@ -75,5 +75,14 @@ public class PubMedScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_176"));
 	}
+	/**
+	 * starts URL test with id url_246
+	 */
+	@Test
+	@Ignore
+	public void url5TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_246"));
+	}
 
 }
