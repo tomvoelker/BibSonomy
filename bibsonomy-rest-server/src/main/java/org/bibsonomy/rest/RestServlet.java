@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
@@ -47,6 +48,8 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -244,10 +247,10 @@ public final class RestServlet extends HttpServlet {
 			UploadedFileAccessor uploadAccessor = new DualUploadedFileAccessor(request);
 
 			// choose rendering format (defaults to xml)
-			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
+			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
 
 			// create Context
-			final Reader reader = RESTUtils.getInputReaderForStream(request.getInputStream(), REQUEST_ENCODING);
+			final Reader reader = RESTUtils.getInputReaderForStream(getMainInputStream(request), REQUEST_ENCODING);
 			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, uploadAccessor, logic, request.getParameterMap(), additionalInfos);
 
 			// validate request
@@ -324,6 +327,31 @@ public final class RestServlet extends HttpServlet {
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
+	}
+
+	protected String getMainContentType(HttpServletRequest request) {
+		if (request instanceof MultipartHttpServletRequest) {
+			MultipartFile main = ((MultipartHttpServletRequest) request).getFile("main");
+			if (main != null) {
+				return main.getContentType();
+			}
+		}
+		return request.getContentType();
+	}
+
+	/**
+	 * @param request
+	 * @return bei einem {@link MultipartHttpServletRequest} der {@link InputStream} des "main" files - falls keines da ist oder es kein {@link MultipartHttpServletRequest} ist, dann request.getInputStream()
+	 * @throws IOException
+	 */
+	protected InputStream getMainInputStream(HttpServletRequest request) throws IOException {
+		if (request instanceof MultipartHttpServletRequest) {
+			MultipartFile main = ((MultipartHttpServletRequest) request).getFile("main");
+			if (main != null) {
+				return main.getInputStream();
+			}
+		}
+		return request.getInputStream();
 	}
 
 	/**
