@@ -12,7 +12,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
+import org.bibsonomy.common.exceptions.RestException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexReader;
@@ -113,9 +115,12 @@ public class PublicationRenderingController implements MinimalisticController<Pu
 
 	public List<Post<BibTex>> importData(final Data data) {
 		BibTexReader reader = bibtexReaders.get(data.getMimeType());
+		if (reader == null) {
+			throw new RestException(0, "", "");
+		}
 		List<Post<BibTex>> posts;
 		Collection<? extends BibTex> bibTexs;
-		bibTexs = reader.read(data);
+		bibTexs = reader.read(new ImportResource(data));
 		posts = new ArrayList<Post<BibTex>>(bibTexs.size());
 		for (BibTex b : bibTexs) {
 			Post<BibTex> p = new Post<BibTex>();
