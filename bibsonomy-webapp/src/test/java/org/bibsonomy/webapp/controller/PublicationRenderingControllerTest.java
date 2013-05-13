@@ -16,7 +16,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
-import org.bibsonomy.model.util.data.Data;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.webapp.command.actions.PublicationRendererCommand;
 import org.bibsonomy.webapp.view.Views;
@@ -42,7 +41,7 @@ public class PublicationRenderingControllerTest {
 		m.put("bla", new BibTexReader() {
 			
 			@Override
-			public Collection<ImportResource> read(Data d) {
+			public Collection<ImportResource> read(ImportResource r) {
 				byte[] receivedBytes;
 				try {
 					receivedBytes = IOUtils.toByteArray(getTestBibFileStream());
