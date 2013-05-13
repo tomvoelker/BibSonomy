@@ -17,6 +17,7 @@ import org.bibsonomy.marc.extractors.PublisherExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
 import org.bibsonomy.marc.extractors.TypeExtractor;
 import org.bibsonomy.marc.extractors.YearExtractor;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.model.util.data.Data;
@@ -54,7 +55,8 @@ public class MarcToBibTexReader implements BibTexReader {
 	}
 	
 	@Override
-	public Collection<ImportResource> read(Data data) {
+	public Collection<ImportResource> read(ImportResource importRes) {
+		Data data = importRes.getData();
 		List<ImportResource> rVal = new ArrayList<ImportResource>();
 		
 		MarcReader reader;
@@ -99,6 +101,7 @@ public class MarcToBibTexReader implements BibTexReader {
 				er = new ExtendedMarcRecord(r);
 			}
 			ImportResource b = new ImportResource();
+			initialize(b, importRes.getResource());
 			for (AttributeExtractor ex : extractors) {
 				try {
 					ex.extraxtAndSetAttribute(b, er);
@@ -111,6 +114,11 @@ public class MarcToBibTexReader implements BibTexReader {
 			//System.out.println(r.toString());
 		}
 		return rVal;
+	}
+
+	private void initialize(ImportResource b, BibTex resource) {
+		b.setPrivnote(resource.getPrivnote());
+		b.setMisc(resource.getMisc());
 	}
 
 }
