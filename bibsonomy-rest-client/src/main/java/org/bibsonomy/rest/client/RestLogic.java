@@ -74,6 +74,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
+import org.bibsonomy.rest.client.queries.delete.DeletePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.delete.DeletePostQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
@@ -367,7 +368,8 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void deleteDocument(final Document document, final String resourceHash) {
-		throw new UnsupportedOperationException();
+		DeletePostDocumentQuery deletePostDocumentQuery = new DeletePostDocumentQuery(document, resourceHash);
+		execute(deletePostDocumentQuery);
 	}
 
 	@Override
