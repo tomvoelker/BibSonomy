@@ -3,15 +3,21 @@ package org.bibsonomy.database.util;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.util.file.FileUtil;
 import org.springframework.util.FileCopyUtils;
 
 /**
+ * TODO: move to bibsonomy-model module?
+ * 
  * @author wla
  * @version $Id$
  */
 public class DocumentUtils {
+	private static final Log log = LogFactory.getLog(DocumentUtils.class);
+	
 	/**
 	 * Copies the temporary file to the documents directory.
 	 * 
@@ -53,8 +59,8 @@ public class DocumentUtils {
 		 */
 		try {
 			FileCopyUtils.copy(tmpFile, file);
-		} catch (IOException ex) {
-
+		} catch (final IOException ex) {
+			// TODO: don't ignore the exception!
 		}
 		/*
 		 * delete temporary file
@@ -72,19 +78,18 @@ public class DocumentUtils {
 		return document;
 	}
 	
-	public static Document copyDocument(final Document sourceDocument, String ownerName, String docPath) {
-		
-		File source = new File (FileUtil.getFilePath(docPath, sourceDocument.getFileHash()));
-		String newFileNameHash = FileUtil.getRandomFileHash(sourceDocument.getFileName());
-		File destination = new File(FileUtil.getFileDirAsFile(docPath, newFileNameHash), newFileNameHash);
+	public static Document copyDocument(final Document sourceDocument, final String ownerName, final String docPath) {
+		final File source = new File(FileUtil.getFilePath(docPath, sourceDocument.getFileHash()));
+		final String newFileNameHash = FileUtil.getRandomFileHash(sourceDocument.getFileName());
+		final File destination = new File(FileUtil.getFileDirAsFile(docPath, newFileNameHash), newFileNameHash);
 		try {
-			FileCopyUtils.copy (source, destination);
-		} catch (IOException ex) {
-			ex.printStackTrace();
+			FileCopyUtils.copy(source, destination);
+		} catch (final IOException ex) {
+			log.error("error while copying file from '" + source + "' to '" + destination + "'", ex);
+			// TODO: don't ignore the exception!
 		}
 		
-		
-		Document document = new Document();
+		final Document document = new Document();
 		document.setFileName(sourceDocument.getFileName());
 		document.setFileHash(newFileNameHash);
 		document.setMd5hash(sourceDocument.getMd5hash());
