@@ -3,6 +3,8 @@ package org.bibsonomy.model.util.data;
 import java.io.InputStream;
 import java.io.Reader;
 
+import org.bibsonomy.util.StringUtils;
+
 /**
  * @author jensi
  * @version $Id$
@@ -24,7 +26,7 @@ public class DualDataWrapper implements DualData {
 	
 	@Override
 	public String getMimeType() {
-		return "" + first.getMimeType() + ":" + second.getMimeType();
+		return "" + StringUtils.getSubStringBefore(first.getMimeType(),";") + ":" + StringUtils.getSubStringBefore(second.getMimeType(), ";");
 	}
 
 	@Override
