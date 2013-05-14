@@ -54,13 +54,13 @@ public class ISBNExtractor implements AttributeExtractor {
 				isbn = picaSrc.getFirstPicaFieldValue("004a","$0");
 			}
 						
-			target.setMisc(target.getMisc() + isbn);
-			target.parseMiscField();
-
 		} else {
 			isbn = ", isbn = {" + src.getFirstFieldValue("020", 'a') + "}";
+		}
+
+		if(isbn != null) {
 			target.setMisc(target.getMisc() + isbn);
-			target.parseMiscField();		
+			target.parseMiscField();
 		}
 	}
 }
