@@ -31,6 +31,7 @@ public class MarcToBibTexReaderTest {
 
 	public void printStuff(Collection<ImportResource> bibs) {
 		for (BibTex b : bibs) {
+			b.syncMiscFields();
 			System.out.println("############## new bibtex ######################");
 			System.out.println("BibtexKey:\t" 	+ b.getBibtexKey());
 			System.out.println("Misc:\t\t" 		+ b.getMisc());
