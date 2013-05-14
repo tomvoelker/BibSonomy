@@ -2473,5 +2473,22 @@ public class StringUtils {
 		}
 		return mimeType.substring(0,i);
 	}
+
+	/**
+	 * @param sb the {@link StringBuffer} whose content is to be trimmed
+	 */
+	public static void trimStringBuffer(StringBuilder sb) {
+		int i = sb.length() - 1;
+		while ((i > 0) && Character.isWhitespace(sb.charAt(i))) {
+			--i;
+		}
+		sb.setLength(i + 1);
+		
+		int a = 0;
+		while ((a < i) && Character.isWhitespace(sb.charAt(a))) {
+			++a;
+		}
+		sb.replace(0, a, "");
+	}
 }
 
