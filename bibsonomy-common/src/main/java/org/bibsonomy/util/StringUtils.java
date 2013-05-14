@@ -2466,7 +2466,7 @@ public class StringUtils {
 	/**
 	 * @param fullString
 	 * @param occurrenceString
-	 * @return the substring before the first occurence of the second argument in first argument 
+	 * @return the substring before the first occurrence of the second argument in first argument 
 	 */
 	public static String getSubStringBefore(String fullString, String occurrenceString) {
 		if (fullString == null) {
