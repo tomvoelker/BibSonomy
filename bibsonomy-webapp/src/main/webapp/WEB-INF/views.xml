@@ -18,6 +18,16 @@
 	<!-- renders documents of publications -->
 	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DownloadView"/>
 
+	<!-- renders bibtex files of publications -->
+	<bean id="bibtexExport" class="org.bibsonomy.webapp.view.BibTeXView">
+		<property name="urlGenerators">
+			<map>
+				<entry key="default" value-ref="urlGenerator"/>
+				<entry key="vufind" value-ref="vuFindUrlGenerator"/>
+			</map>
+		</property>
+	</bean>
+
 	<!-- renders the available export layouts as JSON -->	
 	<bean id="exportLayouts" class="org.bibsonomy.webapp.view.ExportLayoutView"/>
 
