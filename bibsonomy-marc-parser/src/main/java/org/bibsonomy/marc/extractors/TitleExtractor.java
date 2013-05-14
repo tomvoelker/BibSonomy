@@ -10,46 +10,48 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class TitleExtractor implements AttributeExtractor {
-	
-    /**
-     * Get the short (pre-subtitle) title of the record.
-     *
-     * @return string
-     * @access protected
-     */
-    public StringBuilder getShortTitle(StringBuilder sb, ExtendedMarcRecord r)
-    {
-    	// 245 $a_:_$b
-    	r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'a', "");
-    	StringUtils.replaceFirstOccurrence(sb, "@", "");
-    	return sb;
-    }
-    
-    public StringBuilder getSubtitle(StringBuilder sb, ExtendedMarcRecord r) {
-    	r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'h', "");
-    	r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'b', " : ");
-    	r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'c', " / ");
-    	return sb;
-    }
+
+	/**
+	 * Get the short (pre-subtitle) title of the record.
+	 * 
+	 * @return string
+	 * @access protected
+	 */
+	public StringBuilder getShortTitle(StringBuilder sb, ExtendedMarcRecord r) {
+		// 245 $a_:_$b
+		r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'a', "");
+		StringUtils.replaceFirstOccurrence(sb, "@", "");
+		return sb;
+	}
+
+	public StringBuilder getSubtitle(StringBuilder sb, ExtendedMarcRecord r) {
+		int l = sb.length();
+		//r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'h', ""); h is Medium (media type)
+		r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'b', ": ");
+		if (l > 0) {
+			int semiI = sb.indexOf(";", l-1);
+			if (semiI >= l) {
+				sb.setLength(semiI);
+			}
+		}
+		// r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'c', " / ");
+		return sb;
+	}
 
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		StringBuilder sb = new StringBuilder();
 		getShortTitle(sb, src);
-		int l = sb.length();
 		getSubtitle(sb, src);
-		if (sb.length() > l) {
-			sb.insert(l, " ");
-		}
+		StringUtils.trimStringBuffer(sb);
 		String val = sb.toString();
 		target.setTitle(val);
 	}
 }
 /*
- * Typ:
- *  Pica: 13H 0k   k->Konferenz   -> 090? f->festschrift
- *  Pica: 002@ 2.char b    -> marc? 006?
- *  
- *  
- *  TODO: titel bei mehrbändern (knuth)
+ * Typ: Pica: 13H 0k k->Konferenz -> 090? f->festschrift Pica: 002@ 2.char b ->
+ * marc? 006?
+ * 
+ * 
+ * TODO: titel bei mehrbändern (knuth)
  */
