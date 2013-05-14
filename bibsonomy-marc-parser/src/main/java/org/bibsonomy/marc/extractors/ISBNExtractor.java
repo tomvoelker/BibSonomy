@@ -26,6 +26,7 @@ import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
@@ -35,32 +36,25 @@ public class ISBNExtractor implements AttributeExtractor {
 
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-
 		String isbn = null;
-
 		if(src instanceof ExtendedMarcWithPicaRecord) {
-			
 			ExtendedMarcWithPicaRecord picaSrc = (ExtendedMarcWithPicaRecord) src;
 			
-			if(src.getFirstFieldValue("020", 'a') != null) {
-				isbn = ", isbn = {" + src.getFirstFieldValue("020", 'a') + "}";
+			isbn = src.getFirstFieldValue("020", 'a');
+			if (!ValidationUtils.present(isbn)) {
+				isbn = src.getFirstFieldValue("020", 'z');
 			}
-			
-			if(src.getFirstFieldValue("020", 'z') != null) {
-				isbn = ", isbn = {" + src.getFirstFieldValue("020", 'z') + "}";
-			}
-			
-			if(picaSrc.getFirstPicaFieldValue("004a","$0") != null) {
+			if (!ValidationUtils.present(isbn)) {
 				isbn = picaSrc.getFirstPicaFieldValue("004a","$0");
 			}
-						
 		} else {
-			isbn = ", isbn = {" + src.getFirstFieldValue("020", 'a') + "}";
+			isbn = src.getFirstFieldValue("020", 'a');
 		}
 
-		if(isbn != null) {
-			target.setMisc(target.getMisc() + isbn);
+		if (ValidationUtils.present(isbn)) {
 			target.parseMiscField();
+			target.addMiscField("isbn", isbn);
+			target.serializeMiscFields();
 		}
 	}
 }
