@@ -503,7 +503,7 @@ public enum Views implements View {
 	/**
 	 * bibtex output
 	 */
-	BIBTEX("export/bibtex/bibtex"),
+	BIBTEX("bibtexExport"),
 
 	/**
 	 * EndNote (RIS) output

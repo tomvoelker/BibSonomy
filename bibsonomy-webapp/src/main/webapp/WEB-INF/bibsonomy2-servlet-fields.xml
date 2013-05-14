@@ -62,6 +62,11 @@
 		<value>userSimilarity</value>
 		<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
 		<value>ranking.*</value> <!-- ranking information -->
+		<!-- used for exporting bibtex by various controllers -->
+		<value>lastFirstNames</value>
+		<value>generatedBibtexKeys</value>
+		<value>download</value>
+		<value>urlGenerator</value>
 	</util:list>
 	
 	<!-- all fields which are NEVER allowed to be set by the user -->

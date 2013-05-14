@@ -208,7 +208,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final MalformedURLSchemeException malformed) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject("error.http.notFound", malformed.getMessage());
-			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage());
+			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage(),malformed);
 		} catch (final AccessDeniedException ad) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			errors.reject(ad.getMessage());

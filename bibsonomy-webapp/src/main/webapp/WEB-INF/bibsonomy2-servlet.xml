@@ -209,6 +209,24 @@
 	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
 		<property name="projectHome" value="${project.home}" />
 	</bean>
+	
+	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition">
+			<bean class="org.bibsonomy.webapp.util.spring.condition.NonEmptyStringCondition">
+				<property name="value" value="${export.bibtex.vufind.marc.biburl}"/>
+			</bean>
+		</property>
+		<lookup-method name="produceSucessBean" bean="realVuFindUrlGenerator"/>
+		<lookup-method name="produceFailureBean" bean="urlGenerator"/>
+	</bean>
+	
+	<bean id="realVuFindUrlGenerator" class="org.bibsonomy.webapp.view.urlbuilder.VuFindURLGenerator" lazy-init="true">
+		<property name="projectHome" value="${project.home}" />
+		<property name="publicationUrlPrefix" value="${export.bibtex.vufind.marc.biburl}" />
+		<property name="ebscoPublicationUrlPrefix" value="${export.bibtex.vufind.ebsco.biburl}" />
+		<property name="miscField" value="uniqueId" />
+	</bean>
+	
 
 	<!-- to resolve messages -->  
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
