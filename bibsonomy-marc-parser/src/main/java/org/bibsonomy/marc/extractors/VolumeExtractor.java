@@ -14,12 +14,25 @@ public class VolumeExtractor implements AttributeExtractor {
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		
+		/*
+		 * first try to get volume from the marc record
+		 */
+		String volume = src.getFirstFieldValue("490", 'v');
+		
+		if(volume != null) {
+			target.setVolume(volume);
+			return;
+		}
+		
+		/*
+		 * marc record extraction failed -> check the pica record
+		 */
 		if(src instanceof ExtendedMarcWithPicaRecord) {
 			
 			ExtendedMarcWithPicaRecord record = (ExtendedMarcWithPicaRecord) src;
 			
 			//try to get volume on 036E first
-			String volume = record.getFirstPicaFieldValue("036E", "$l");
+			volume = record.getFirstPicaFieldValue("036E", "$l");
 			
 			if(volume != null) {
 				target.setVolume(volume);
@@ -29,10 +42,7 @@ public class VolumeExtractor implements AttributeExtractor {
 			//try to get volume on 036E if 036E was not set
 			volume = record.getFirstPicaFieldValue("036F", "$l");
 			
-			if(volume != null) {
-				target.setVolume(volume);
-				return;
-			}
+			target.setVolume(volume);
 			
 		}
 		
