@@ -97,7 +97,7 @@
 		<BibFile>IngentaconnectScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 		<!-- Search Error -->
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_16">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
@@ -110,6 +110,8 @@
 		<URL>http://www.l3s.de/web/page25g.do?kcond12g.att1=782</URL>
 		<BibFile>L3SScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.l3s.L3SScraper</Scraper>
+		<!-- New L3S web site layout not supported; publication lists on web site not in correct format, yet -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_18">
 		<TestDescription>URL test for work-info pages from librarything (no standard language)</TestDescription>

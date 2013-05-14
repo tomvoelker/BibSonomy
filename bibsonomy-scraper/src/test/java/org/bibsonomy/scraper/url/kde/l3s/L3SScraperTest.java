@@ -46,8 +46,8 @@ public class L3SScraperTest {
 		 * temporarily disabled because of disabled scraper in chain
 		 */
 		
-//		UnitTestRunner runner = new UnitTestRunner();
-//		assertTrue(runner.runSingleTest("url_17"));
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_17"));
 	}
 	
 }
