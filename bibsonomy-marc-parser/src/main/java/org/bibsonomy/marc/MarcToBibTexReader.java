@@ -15,6 +15,7 @@ import org.bibsonomy.marc.extractors.HebisIdExtractor;
 import org.bibsonomy.marc.extractors.JournalExtractor;
 import org.bibsonomy.marc.extractors.PagesExtractor;
 import org.bibsonomy.marc.extractors.PublisherExtractor;
+import org.bibsonomy.marc.extractors.SeriesExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
 import org.bibsonomy.marc.extractors.TypeExtractor;
 import org.bibsonomy.marc.extractors.VolumeExtractor;
@@ -53,6 +54,7 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new PublisherExtractor());
 		extractors.add(new HebisIdExtractor());
 		extractors.add(new VolumeExtractor());
+		extractors.add(new SeriesExtractor());
 		//must be the last element in chain because the previous entries must be set
 		extractors.add(new BibTeXKeyExtractor());
 	}
