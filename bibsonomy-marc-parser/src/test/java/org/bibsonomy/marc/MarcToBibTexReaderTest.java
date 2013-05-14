@@ -2,6 +2,7 @@ package org.bibsonomy.marc;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
@@ -64,9 +65,12 @@ public class MarcToBibTexReaderTest {
 			System.out.println("ScraperId:\t" 	+ b.getScraperId());
 			System.out.println("URL:\t\t" 		+ b.getUrl());
 			System.out.println("PrivNote:\t" 	+ b.getPrivnote());
-			System.out.println("OpenUrl:\t" 	+ b.getOpenURL() + "\n");
-						
-//			System.out.println(b);
+			System.out.println("OpenUrl:\t" 	+ b.getOpenURL());
+			
+			System.out.println("######## Misc Map ########:");
+			for(Map.Entry<String, String> entry : b.getMiscFields().entrySet()) {
+				System.out.println(entry.getKey() + ": \t\t" + entry.getValue());
+			}
 		}
 	}
 	
