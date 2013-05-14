@@ -97,7 +97,7 @@
 		<BibFile>IngentaconnectScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 		<!-- Search Error -->
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_16">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
