@@ -2463,15 +2463,20 @@ public class StringUtils {
 		return null;
 	}
 
-	public static String getSubStringBefore(String mimeType, String string) {
-		if (mimeType == null) {
+	/**
+	 * @param fullString
+	 * @param occurrenceString
+	 * @return the substring before the first occurence of the second argument in first argument 
+	 */
+	public static String getSubStringBefore(String fullString, String occurrenceString) {
+		if (fullString == null) {
 			return null;
 		}
-		int i = mimeType.indexOf(string);
+		int i = fullString.indexOf(occurrenceString);
 		if (i < 0) {
-			return mimeType;
+			return fullString;
 		}
-		return mimeType.substring(0,i);
+		return fullString.substring(0,i);
 	}
 
 	/**
