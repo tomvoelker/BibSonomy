@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.webapp.command.BibtexViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.TabCommand;
 import org.bibsonomy.webapp.command.TabsCommandInterface;
@@ -20,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author ema
  * @version $Id$
  */
-public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object> {
+public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand {
 	
 	/**
 	 * The URL which the tab header links to.

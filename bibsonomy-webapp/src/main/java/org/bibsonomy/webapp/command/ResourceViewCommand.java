@@ -70,6 +70,11 @@ public class ResourceViewCommand extends BaseCommand {
 	
 	/** filter group resources  */
 	private FilterEntity filter;
+	
+	private boolean download = false;
+	private boolean generatedBibtexKeys;
+	private boolean lastFirstNames;
+	private String urlGenerator = "default";
 
 	
 	/**
@@ -318,4 +323,57 @@ public class ResourceViewCommand extends BaseCommand {
 		this.endDate = endDate;
 	}
 
+	/** @return whether the result should be presented as a download */
+	public boolean isDownload() {
+		return download;
+	}
+
+	/**
+	 * @param download whether the result should be presented as a download
+	 */
+	public void setDownload(boolean download) {
+		this.download = download;
+	}
+
+	/**
+	 * @return how to render person names in bibtex export
+	 */
+	public boolean isLastFirstNames() {
+		return lastFirstNames;
+	}
+
+	/**
+	 * @return bibtexkey stuff
+	 */
+	public boolean isGeneratedBibtexKeys() {
+		return generatedBibtexKeys;
+	}
+
+	/**
+	 * @param generatedBibtexKeys bibtexkey stuff
+	 */
+	public void setGeneratedBibtexKeys(boolean generatedBibtexKeys) {
+		this.generatedBibtexKeys = generatedBibtexKeys;
+	}
+
+	/**
+	 * @param lastFirstNames how to render person names in bibtex export
+	 */
+	public void setLastFirstNames(boolean lastFirstNames) {
+		this.lastFirstNames = lastFirstNames;
+	}
+
+	/**
+	 * @return name of a spring-registered urlGenerator (for customized biburl fields from vufind)
+	 */
+	public String getUrlGenerator() {
+		return urlGenerator;
+	}
+
+	/**
+	 * @param urlGenerator name of a spring-registered urlGenerator (for customized biburl fields from vufind)
+	 */
+	public void setUrlGenerator(String urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
 }

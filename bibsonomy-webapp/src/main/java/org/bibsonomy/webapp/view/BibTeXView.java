@@ -17,7 +17,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.BibtexViewCommand;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.mvc.BaseCommandController;
@@ -56,8 +56,8 @@ public class BibTeXView extends AbstractView implements ServletContextAware {
 		 */
 		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
 
-		if(object instanceof SimpleResourceViewCommand) {
-			final SimpleResourceViewCommand command = (SimpleResourceViewCommand)object;
+		if(object instanceof BibtexViewCommand) {
+			final BibtexViewCommand command = (BibtexViewCommand)object;
 
 
 			/*

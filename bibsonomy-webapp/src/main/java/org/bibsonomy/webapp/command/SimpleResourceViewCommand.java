@@ -20,7 +20,7 @@ import org.bibsonomy.model.statistics.StatisticsValues;
  * @author Dominik Benz
  * @version $Id$
  */
-public class SimpleResourceViewCommand extends ResourceViewCommand {
+public class SimpleResourceViewCommand extends ResourceViewCommand implements BibtexViewCommand {
 	// TODO: rename to bookmarks
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
 	// TODO: rename to publications
@@ -31,10 +31,6 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	
 	// TODO: move to DiscussedViewCommand ?
 	private StatisticsValues discussionsStatistic;
-	private boolean download = false;
-	private boolean generatedBibtexKeys;
-	private boolean lastFirstNames;
-	private String urlGenerator = "default";
 	
 	/**
 	 * @param <T> type of the entities in the list
@@ -132,60 +128,6 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	 */
 	public StatisticsValues getDiscussionsStatistic() {
 		return discussionsStatistic;
-	}
-
-	/** @return whether the result should be presented as a download */
-	public boolean isDownload() {
-		return download;
-	}
-
-	/**
-	 * @param download whether the result should be presented as a download
-	 */
-	public void setDownload(boolean download) {
-		this.download = download;
-	}
-
-	/**
-	 * @return how to render person names in bibtex export
-	 */
-	public boolean isLastFirstNames() {
-		return lastFirstNames;
-	}
-
-	/**
-	 * @return bibtexkey stuff
-	 */
-	public boolean isGeneratedBibtexKeys() {
-		return generatedBibtexKeys;
-	}
-
-	/**
-	 * @param generatedBibtexKeys bibtexkey stuff
-	 */
-	public void setGeneratedBibtexKeys(boolean generatedBibtexKeys) {
-		this.generatedBibtexKeys = generatedBibtexKeys;
-	}
-
-	/**
-	 * @param lastFirstNames how to render person names in bibtex export
-	 */
-	public void setLastFirstNames(boolean lastFirstNames) {
-		this.lastFirstNames = lastFirstNames;
-	}
-
-	/**
-	 * @return name of a spring-registered urlGenerator (for customized biburl fields from vufind)
-	 */
-	public String getUrlGenerator() {
-		return urlGenerator;
-	}
-
-	/**
-	 * @param urlGenerator name of a spring-registered urlGenerator (for customized biburl fields from vufind)
-	 */
-	public void setUrlGenerator(String urlGenerator) {
-		this.urlGenerator = urlGenerator;
 	}
 	
 }
