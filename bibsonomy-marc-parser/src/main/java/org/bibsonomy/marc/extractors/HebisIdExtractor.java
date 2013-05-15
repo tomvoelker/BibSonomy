@@ -46,7 +46,7 @@ public class HebisIdExtractor implements AttributeExtractor{
 //		}
 		if (ValidationUtils.present(ppn)) {
 			target.parseMiscField();
-			target.addMiscField("uniqueId","HEB" + ppn);
+			target.addMiscField("uniqueid","HEB" + ppn);
 			target.serializeMiscFields();
 		}
 		// + 31A $h (pages) (bei pages extractor)
