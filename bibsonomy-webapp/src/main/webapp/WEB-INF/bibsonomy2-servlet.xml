@@ -224,7 +224,7 @@
 		<property name="projectHome" value="${project.home}" />
 		<property name="publicationUrlPrefix" value="${export.bibtex.vufind.marc.biburl}" />
 		<property name="ebscoPublicationUrlPrefix" value="${export.bibtex.vufind.ebsco.biburl}" />
-		<property name="miscField" value="uniqueId" />
+		<property name="miscField" value="uniqueid" />
 	</bean>
 	
 
