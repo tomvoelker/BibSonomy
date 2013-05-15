@@ -33,120 +33,145 @@ import org.marc4j.marc.Subfield;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 /**
  * @author mve
  * @version $Id$
  */
 
 public class TypeExtractor implements AttributeExtractor {
-		private static final HashMap<String, String> map = getMap();
-	    private static HashMap<String, String> getMap(){
-	    	HashMap<String, String> typeMap = new HashMap<String, String>();
-	    	typeMap.put("amxxx","book");
-	    	typeMap.put("amco","dvd");
-	    	typeMap.put("amcocd","cd");
-	    	typeMap.put("amc ","cd");
-	    	typeMap.put("amcr","ebook");
-	    	typeMap.put("amh","microfilm");
-	    	typeMap.put("amf","braille");
-	    	typeMap.put("amo","kit");
-	    	typeMap.put("asxxx","journal");
-	    	typeMap.put("ast","journal");
-	    	typeMap.put("ash","journal");
-	    	typeMap.put("asco","journal");
-	    	typeMap.put("ascocd","journal");
-	    	typeMap.put("ascr","electronic");
-	    	typeMap.put("asf","braille");
-	    	typeMap.put("cmq","musicalscore");
-	    	typeMap.put("csq","musicalscore");
-	    	typeMap.put("ema","map");
-	    	typeMap.put("esa","map");
-	    	typeMap.put("gmm","video");
-	    	typeMap.put("gmxxx","video");
-	    	typeMap.put("gsm","video");
-	    	typeMap.put("gsxxx","video");
-	    	typeMap.put("ims","audio");
-	    	typeMap.put("imcocd","cd");
-	    	typeMap.put("jmxxx","audio");
-	    	typeMap.put("jms","audio");
-	    	typeMap.put("jmcocd","audio");
-	    	typeMap.put("jsco","audio");
-	    	typeMap.put("jss","audio");
-	    	typeMap.put("kma","photo");
-	    	typeMap.put("kmk","photo");
-	    	typeMap.put("omxxx","kit");
-	    	typeMap.put("omo","kit");
-	    	typeMap.put("rmxxx","physicalobject");
-	    	typeMap.put("rmz","physicalobject");
-	    	typeMap.put("tmxxx","manuscript");
-	        return typeMap;
-	    }
-		@Override
-		public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-	    		
-				if(!(src instanceof ExtendedMarcWithPicaRecord)) {
-					target.setEntrytype("misc");
-					return;
-					// throws IllegalArgumentException
-					//throw new IllegalArgumentException("record should be provided along with Pica record");
-				}
-				ExtendedMarcWithPicaRecord record = (ExtendedMarcWithPicaRecord)src;
-		    	// format ist is detected by infos in Leader and kat 007
-		    	Leader leader = src.getRecord().getLeader(); 
-		    	List<DataField> fields = null;
-		    	try { fields = src.getDataFields("007");   	
-		    	} catch (IllegalArgumentException e) {}
-		    	String tmp = src.getFirstFieldValue("300", 'a');
-		    	String postfix = new String();
-		    	String type = "misc";
-		    	
-		    	if (fields != null){
-		    	   for(DataField field: fields){
-		    	      Subfield subfield = field.getSubfield('c'); 
-		    	      if (subfield != null){
-		    	         // cd or dvd
-		    	         if (subfield.getData().startsWith("co") 
-		    	        		 && (tmp.toUpperCase().indexOf("DVD") == -1))
-		    	      	    postfix = "cocd";
-		    	      	 else {
-		    	      		 subfield = (Subfield)(field.getSubfields().get(0));
-		    	      	 }
-		    	      }   
-		    	      else { 
-		    	    	  postfix = (field.getSubfields().get(0).toString());
-		    	      }
-		    	  }
-		    	} else {
-		    		postfix ="xxx";
-		    	} 
-		    	   	   
-		    	char art = leader.getTypeOfRecord();
-		    	char level = leader.getImplDefined1()[0];
-		    	// now we have the three components art, level and phys. 
-		    	//For some formats this is not enough and we need additional infos
-		    	
-		    	// preliminary solution for detection of series
-		    	String s = record.getFirstPicaFieldValue("002@", "$0");
-		    	
-		    	if (s.indexOf("c")==1 ||
-		    			s.indexOf("d")== 1 ){
-		    		type="series";
-		    	} else		    	
-		    	// preliminary solution for articles		    	
-		    	if (s.indexOf("o")==1){
-		    		type="article";
-		    	} else    	
-		    	// preliminary solution for retro
-		    	if (s.indexOf("r")==1){
-		    		type="retro";
-		    	} else {
-		    	// return formats accourding to format arry in the beginning
-		    	// of this method
-		    		String value = map.get((art+""+level+postfix).trim()); 
-		    		if (value!=null) type=value;
-		        }
-		    	// there is no format defined for the combination of art level and phys
-		    	// for debugging
-		    	target.setEntrytype(type);    	
+	private static final HashMap<String, String> map = getMap();
+
+	private static HashMap<String, String> getMap() {
+		HashMap<String, String> typeMap = new HashMap<String, String>();
+		typeMap.put("amxxx", "book");
+		typeMap.put("amco", "dvd");
+		typeMap.put("amcocd", "cd");
+		typeMap.put("amc ", "cd");
+		typeMap.put("amcr", "ebook");
+		typeMap.put("amh", "microfilm");
+		typeMap.put("amf", "braille");
+		typeMap.put("amo", "kit");
+		typeMap.put("asxxx", "journal");
+		typeMap.put("ast", "journal");
+		typeMap.put("ash", "journal");
+		typeMap.put("asco", "journal");
+		typeMap.put("ascocd", "journal");
+		typeMap.put("ascr", "electronic");
+		typeMap.put("asf", "braille");
+		typeMap.put("cmq", "musicalscore");
+		typeMap.put("csq", "musicalscore");
+		typeMap.put("ema", "map");
+		typeMap.put("esa", "map");
+		typeMap.put("gmm", "video");
+		typeMap.put("gmxxx", "video");
+		typeMap.put("gsm", "video");
+		typeMap.put("gsxxx", "video");
+		typeMap.put("ims", "audio");
+		typeMap.put("imcocd", "cd");
+		typeMap.put("jmxxx", "audio");
+		typeMap.put("jms", "audio");
+		typeMap.put("jmcocd", "audio");
+		typeMap.put("jsco", "audio");
+		typeMap.put("jss", "audio");
+		typeMap.put("kma", "photo");
+		typeMap.put("kmk", "photo");
+		typeMap.put("omxxx", "kit");
+		typeMap.put("omo", "kit");
+		typeMap.put("rmxxx", "physicalobject");
+		typeMap.put("rmz", "physicalobject");
+		typeMap.put("tmxxx", "manuscript");
+		return typeMap;
+	}
+
+	private static final Map<String, String> map2bibtex = new HashMap<String, String>();
+	static {
+		map2bibtex.put("manuscript", "unpublished");
+		map2bibtex.put("ebook", "electronic");
+		map2bibtex.put("book", "book");
+		map2bibtex.put("journal", "periodical");
+		map2bibtex.put("newspaper", "periodical");
+		map2bibtex.put("dvd", "electronic");
+		map2bibtex.put("electronic", "electronic");
+		map2bibtex.put("slide", "presentation");
+	}
+
+	@Override
+	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+
+		if (!(src instanceof ExtendedMarcWithPicaRecord)) {
+			target.setEntrytype("misc");
+			return;
+			// throws IllegalArgumentException
+			// throw new
+			// IllegalArgumentException("record should be provided along with Pica record");
 		}
+		ExtendedMarcWithPicaRecord record = (ExtendedMarcWithPicaRecord) src;
+		// format ist is detected by infos in Leader and kat 007
+		Leader leader = src.getRecord().getLeader();
+		List<DataField> fields = null;
+		try {
+			fields = src.getDataFields("007");
+		} catch (IllegalArgumentException e) {
+		}
+		String tmp = src.getFirstFieldValue("300", 'a');
+		String postfix = new String();
+		String type = "misc";
+
+		if (fields != null) {
+			for (DataField field : fields) {
+				Subfield subfield = field.getSubfield('c');
+				if (subfield != null) {
+					// cd or dvd
+					if (subfield.getData().startsWith("co") && (tmp.toUpperCase().indexOf("DVD") == -1))
+						postfix = "cocd";
+					else {
+						subfield = (Subfield) (field.getSubfields().get(0));
+					}
+				} else {
+					postfix = (field.getSubfields().get(0).toString());
+				}
+			}
+		} else {
+			postfix = "xxx";
+		}
+
+		char art = leader.getTypeOfRecord();
+		char level = leader.getImplDefined1()[0];
+		// now we have the three components art, level and phys.
+		// For some formats this is not enough and we need additional infos
+
+		// preliminary solution for detection of series
+		String s = record.getFirstPicaFieldValue("002@", "$0");
+
+		if (s.indexOf("c") == 1 || s.indexOf("d") == 1) {
+			type = "series";
+		} else
+		// preliminary solution for articles
+		if (s.indexOf("o") == 1) {
+			type = "article";
+		} else
+		// preliminary solution for retro
+		if (s.indexOf("r") == 1) {
+			type = "retro";
+		} else {
+			// return formats accourding to format arry in the beginning
+			// of this method
+			String value = map.get((art + "" + level + postfix).trim());
+			if (value != null)
+				type = value;
+		}
+		// there is no format defined for the combination of art level and phys
+		// for debugging
+		target.setEntrytype(toBibtexType(type));
+	}
+
+	private String toBibtexType(String type) {
+		String bibtexType = map2bibtex.get(type);
+		if (bibtexType == null) {
+			return "misc";
+		}
+		return bibtexType;
+	}
 }
