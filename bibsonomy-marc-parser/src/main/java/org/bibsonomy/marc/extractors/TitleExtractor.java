@@ -1,9 +1,12 @@
 package org.bibsonomy.marc.extractors;
 
+import java.text.Normalizer;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author jensi
@@ -45,7 +48,9 @@ public class TitleExtractor implements AttributeExtractor {
 		getSubtitle(sb, src);
 		StringUtils.trimStringBuffer(sb);
 		String val = sb.toString();
-		target.setTitle(val);
+		if (ValidationUtils.present(val)) {
+			target.setTitle(Normalizer.normalize(val, Normalizer.Form.NFC));
+		}
 	}
 }
 /*

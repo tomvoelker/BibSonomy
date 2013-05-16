@@ -1,5 +1,6 @@
 package org.bibsonomy.marc.extractors;
 
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Set;
 
@@ -76,7 +77,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 		StringBuilder lastName = new StringBuilder();
 		if (name.contains(", ")) {
 			// forename is available -> get foreName and lastname
-			result.setFirstName(name.split(", ")[1]);
+			result.setFirstName(Normalizer.normalize(name.split(", ")[1], Normalizer.Form.NFC));
 			lastName.append(name.split(", ")[0].replace(",", ""));
 			
 		} else {
@@ -89,7 +90,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 		if (ValidationUtils.present(title)) {
 			lastName.append(" <").append(title.trim()).append('>');
 		}
-		result.setLastName(lastName.toString());
+		result.setLastName(Normalizer.normalize(lastName.toString(), Normalizer.Form.NFC));
 		return result;
 	}
 	

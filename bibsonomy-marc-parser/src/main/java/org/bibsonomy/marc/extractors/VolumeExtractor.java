@@ -1,5 +1,7 @@
 package org.bibsonomy.marc.extractors;
 
+import java.text.Normalizer;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
@@ -20,7 +22,7 @@ public class VolumeExtractor implements AttributeExtractor {
 		String volume = src.getFirstFieldValue("490", 'v');
 		
 		if(volume != null) {
-			target.setVolume(volume);
+			target.setVolume(Normalizer.normalize(volume, Normalizer.Form.NFC));
 			return;
 		}
 		
@@ -41,8 +43,9 @@ public class VolumeExtractor implements AttributeExtractor {
 			
 			//try to get volume on 036E if 036E was not set
 			volume = record.getFirstPicaFieldValue("036F", "$l");
-			
-			target.setVolume(volume);
+			if (volume != null) {
+				target.setVolume(Normalizer.normalize(volume, Normalizer.Form.NFC));
+			}
 			
 		}
 		

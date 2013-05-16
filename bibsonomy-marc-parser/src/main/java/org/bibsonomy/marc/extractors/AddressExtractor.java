@@ -22,6 +22,8 @@
 
 package org.bibsonomy.marc.extractors;
 
+import java.text.Normalizer;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.model.BibTex;
@@ -35,7 +37,9 @@ public class AddressExtractor implements AttributeExtractor {
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		final String address = src.getFirstFieldValue("260", 'a');
-		target.setAddress(address);  
+		if (address != null) {
+			target.setAddress(Normalizer.normalize(address, Normalizer.Form.NFC));
+		}
 	}
 
 }

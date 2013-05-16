@@ -23,6 +23,8 @@
 
 package org.bibsonomy.marc.extractors;
 
+import java.text.Normalizer;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.model.BibTex;
@@ -52,7 +54,9 @@ public class JournalExtractor implements AttributeExtractor {
 				sb.append(' ').append(next);
 			if(ValidationUtils.present((next=getYear(record))))
 				sb.append(" (").append(next).append(')');
-			target.setJournal(sb.toString());
+			if (sb.length() > 0) {
+				target.setJournal(Normalizer.normalize(sb.toString(), Normalizer.Form.NFC));
+			}
 		} else {
 			throw new IllegalArgumentException("expects ExtendedMarcWithPicaRecord");
 		}

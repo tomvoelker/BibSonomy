@@ -22,6 +22,8 @@
 
 package org.bibsonomy.marc.extractors;
 
+import java.text.Normalizer;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
@@ -45,7 +47,7 @@ public class PagesExtractor implements AttributeExtractor{
 //			pages = src.getFirstFieldValue("300", 'a');
 //		}
 		if (ValidationUtils.present(pages)) {
-			target.setPages(pages);
+			target.setPages(Normalizer.normalize(pages, Normalizer.Form.NFC));
 		}
 		// + 31A $h (pages) (bei pages extractor)
 	}

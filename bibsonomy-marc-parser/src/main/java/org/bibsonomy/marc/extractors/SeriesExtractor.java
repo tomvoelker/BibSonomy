@@ -23,6 +23,8 @@
 
 package org.bibsonomy.marc.extractors;
 
+import java.text.Normalizer;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
@@ -43,7 +45,7 @@ public class SeriesExtractor implements AttributeExtractor {
 		String series = src.getFirstFieldValue("490", 'a');
 		
 		if(series != null) {
-			target.setSeries(series);
+			target.setSeries(Normalizer.normalize(series, Normalizer.Form.NFC));
 			return;
 		}
 		
@@ -58,8 +60,9 @@ public class SeriesExtractor implements AttributeExtractor {
 			if(series == null) {
 				series = picaSrc.getFirstPicaFieldValue("036G", "$a");
 			}
-			
-			target.setSeries(series);
+			if (series != null) {
+				target.setSeries(Normalizer.normalize(series, Normalizer.Form.NFC));
+			}
 		}
 		
 	}
