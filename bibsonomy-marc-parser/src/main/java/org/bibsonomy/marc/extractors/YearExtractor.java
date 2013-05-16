@@ -40,7 +40,7 @@ public class YearExtractor implements AttributeExtractor{
 		
 		Pattern regex = Pattern.compile("^*\\d{4}");
 		
-		final String year = src.getFirstFieldValue("260", 'c');
+		final String year = src.getFirstFieldValue("260", 'c'); // pica 011@ $a
 
 		if(year != null) {
 			Matcher m = regex.matcher(year);
