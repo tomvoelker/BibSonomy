@@ -146,6 +146,7 @@
 	<bean id="realSamlMetadataGeneratorFilter" class="org.bibsonomy.webapp.util.spring.security.saml.metadata.HttpsMetadataGeneratorFilter">
 		<constructor-arg>
 			<bean class="org.springframework.security.saml.metadata.MetadataGenerator">
+				<property name="entityBaseURL" value="${project.home}"/>
 				<property name="entityAlias">
 					<value>bib_test2</value>
 				</property>
@@ -171,6 +172,7 @@
 			</bean>
 		</constructor-arg>
 		<property name="useHttps" value="${auth.saml.useHttps}" />
+		<property name="removeTrailingBaseUrlSlash" value="true" />
 	</bean>
 
 	<!-- The filter is waiting for connections on URL suffixed with filterSuffix and presents SP metadata there -->

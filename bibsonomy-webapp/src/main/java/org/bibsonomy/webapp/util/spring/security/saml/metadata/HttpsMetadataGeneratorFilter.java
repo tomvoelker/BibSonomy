@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.util.spring.security.saml.metadata;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.saml.metadata.MetadataGenerator;
@@ -12,6 +13,7 @@ import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
 public class HttpsMetadataGeneratorFilter extends MetadataGeneratorFilter {
 
 	private boolean useHttps;
+	private boolean removeTrailingBaseUrlSlash;
 
 	/**
 	 * delegates to parent class
@@ -22,8 +24,25 @@ public class HttpsMetadataGeneratorFilter extends MetadataGeneratorFilter {
 	}
 	
 	@Override
+	public void afterPropertiesSet() throws ServletException {
+		String s = generator.getEntityBaseURL();
+		if (removeTrailingBaseUrlSlash == true) {
+			if (s.endsWith("/")) {
+				s = s.substring(0, s.length() - 1);
+			}
+		}
+		s = convertToHttpsIfRequired(s);
+		generator.setEntityBaseURL(s);
+		super.afterPropertiesSet();
+	}
+	
+	@Override
 	protected String getDefaultBaseURL(HttpServletRequest request) {
 		String s = super.getDefaultBaseURL(request);
+		return convertToHttpsIfRequired(s);
+	}
+
+	protected String convertToHttpsIfRequired(String s) {
 		if (useHttps == false) {
 			return s;
 		}
@@ -48,6 +67,13 @@ public class HttpsMetadataGeneratorFilter extends MetadataGeneratorFilter {
 	 */
 	public void setUseHttps(boolean useHttps) {
 		this.useHttps = useHttps;
+	}
+
+	/**
+	 * @param removeTrailingBaseUrlSlash the removeTrailingBaseUrlSlash to set
+	 */
+	public void setRemoveTrailingBaseUrlSlash(boolean removeTrailingBaseUrlSlash) {
+		this.removeTrailingBaseUrlSlash = removeTrailingBaseUrlSlash;
 	}
 
 }
