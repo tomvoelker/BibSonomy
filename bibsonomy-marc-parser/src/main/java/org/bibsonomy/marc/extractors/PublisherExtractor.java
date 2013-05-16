@@ -16,7 +16,9 @@ public class PublisherExtractor implements AttributeExtractor {
 		final String publisher = src.getFirstFieldValue("260", 'b');
 		
 		if (publisher != null) {
-			target.setPublisher(publisher.substring(0, publisher.length() - 1));
+			target.setPublisher(publisher);
+			// warum war das so? da fehlte hinten en Zeichen
+			// target.setPublisher(publisher.substring(0, publisher.length() - 1));
 		}
 		
 	}
