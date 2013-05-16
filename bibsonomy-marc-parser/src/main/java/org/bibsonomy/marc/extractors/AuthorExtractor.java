@@ -39,7 +39,11 @@ public class AuthorExtractor extends AbstractParticipantExtractor {
 			}
 		}
 		
-		//set the resulting BibTex information
+		
+		if (authors.size() == 0) {
+			// wen need an author (or we will get NPEs by various exporters such as endnote)
+			authors.add(new PersonName("", "noauthor"));
+		}
 		target.setAuthor(authors);
 		
 	}
