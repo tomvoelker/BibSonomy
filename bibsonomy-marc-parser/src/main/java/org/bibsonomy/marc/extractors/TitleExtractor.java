@@ -48,7 +48,7 @@ public class TitleExtractor implements AttributeExtractor {
 		getSubtitle(sb, src);
 		StringUtils.trimStringBuffer(sb);
 		String val = sb.toString();
-		if (ValidationUtils.present(val)) {
+		if (val != null) {
 			target.setTitle(Normalizer.normalize(val, Normalizer.Form.NFC));
 		}
 	}

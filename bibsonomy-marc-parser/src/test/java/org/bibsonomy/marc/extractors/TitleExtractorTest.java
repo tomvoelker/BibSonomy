@@ -16,12 +16,16 @@ public class TitleExtractorTest extends AbstractExtractorTest {
 		TitleExtractor e = new TitleExtractor();
 		e.extraxtAndSetAttribute(b, createExtendedMarcRecord().withMarcField("245", 'a', " Title "));
 		Assert.assertEquals("Title", b.getTitle());
+		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcRecord().withMarcField("245", 'a', ""));
 		Assert.assertEquals("", b.getTitle());
+		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcRecord());
 		Assert.assertEquals("", b.getTitle());
+		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcRecord().withMarcField("245", 'a', " Title").withMarcField("245", 'b', "bla ; blub  "));
 		Assert.assertEquals("Title: bla", b.getTitle());
+		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcRecord().withMarcField("245", 'a', "Title").withMarcField("245", 'b', "bla ; blub  "));
 		Assert.assertEquals("Title: bla", b.getTitle());
 	}
