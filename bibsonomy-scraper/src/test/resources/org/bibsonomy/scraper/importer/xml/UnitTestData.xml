@@ -1337,7 +1337,7 @@
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_219">
-		<TestDescription>test for http://http://jis.sagepub.com/</TestDescription>
+		<TestDescription>test for http://jis.sagepub.com/</TestDescription>
 		<URL>http://jis.sagepub.com/content/38/3/297.abstract</URL>
 		<BibFile>SagepubUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.sage.SageJournalScraper</Scraper>
@@ -1480,7 +1480,7 @@
 		<TestDescription>test for Sage Journals CDP Scraper</TestDescription>
 		<URL>http://cdp.sagepub.com/content/12/4/105.short</URL>
 		<BibFile>SagepubUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.sage.SageCDPScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.url.kde.sage.SageJournalScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_243">
 		<TestDescription>Test for BiologistsScraper</TestDescription>
