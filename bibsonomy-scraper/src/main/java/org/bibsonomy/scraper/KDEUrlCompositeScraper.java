@@ -233,7 +233,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BiologistsScraper());
 		addScraper(new OpenUniversityScraper());
 		addScraper(new AAAIScraper());
-		addScraper(new SageCDPScraper());
+//		addScraper(new SageCDPScraper());
 		addScraper(new APAScraper());
 		addScraper(new BMJOpenScraper());
 		addScraper(new PharmacognosyResearchScraper());
