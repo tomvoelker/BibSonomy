@@ -84,7 +84,7 @@ public class BibTeXView extends AbstractView implements ServletContextAware {
 				 * output stream
 				 */
 				final ServletOutputStream outputStream = response.getOutputStream();
-				final OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+				final OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
 
 				URLGenerator urlGenerator = urlGenerators.get(command.getUrlGenerator());
 				if (urlGenerator == null) {
