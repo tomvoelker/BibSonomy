@@ -33,6 +33,7 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.MultiDirectoryFileFactory;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Downloads a document for a specific post.
@@ -82,11 +83,17 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 			throw new IllegalArgumentException("could not create new file " + this.document.getFile().getAbsolutePath());
 		}
 	}
-
+	
 	@Override
 	protected Document doExecute() throws ErrorPerformingRequestException {
 		if (!this.fileExists) {
-			this.performFileDownload(RESTConfig.USERS_URL + "/" + this.document.getUserName() + "/posts/" + this.resourceHash + "/documents/" + this.document.getFileName(), this.document.getFile());
+			final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+			urlBuilder.addPathElement(this.document.getUserName());
+			urlBuilder.addPathElement(RESTConfig.POSTS_URL);
+			urlBuilder.addPathElement(this.resourceHash);
+			urlBuilder.addPathElement(RESTConfig.DOCUMENTS_SUB_PATH);
+			urlBuilder.addPathElement(this.document.getFileName());
+			this.performFileDownload(urlBuilder.asString(), this.document.getFile());
 		} else {
 			// TODO: never overwrite? what if there is a new document?
 			this.setExecuted(true);
