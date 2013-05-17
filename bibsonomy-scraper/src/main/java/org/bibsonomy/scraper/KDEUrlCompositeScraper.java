@@ -20,10 +20,6 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-/*
- * Created on 05.09.2006
- */
 package org.bibsonomy.scraper;
 
 import org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper;
@@ -82,7 +78,6 @@ import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
-import org.bibsonomy.scraper.url.kde.l3s.L3SScraper;
 import org.bibsonomy.scraper.url.kde.langev.LangevScraper;
 import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
 import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
@@ -108,7 +103,6 @@ import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
-import org.bibsonomy.scraper.url.kde.sage.SageCDPScraper;
 import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
 import org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper;
@@ -137,7 +131,12 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 	 * Public constructor adding the active scrapers.
 	 */
 	public KDEUrlCompositeScraper() {
-		//addScraper(new CiteBaseScraper()); Citebase is completely redirected to another host, where another Scraper is responsible
+		/*
+		 * Citebase is completely redirected to another host,
+		 * where another Scraper is responsible
+		 * TODO: remove?
+		 */
+		// addScraper(new CiteBaseScraper());
 		addScraper(new OpacScraper());
 		addScraper(new IEEEXploreScraper());
 		addScraper(new SpringerLinkScraper());
@@ -146,13 +145,16 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new PubMedCentralScraper());
 		addScraper(new SpiresScraper());
 		/*
-		 * lha, 2013-04-29: new L3S web site layout not supported;
+		 * TODO: lha, 2013-04-29: new L3S web site layout not supported;
 		 * publication lists on web site not in correct format, yet.
 		 */
 		//addScraper(new L3SScraper());
 		addScraper(new ACMBasicScraper());
-		// addScraper(new CiteseerBasicScraper()); old citeseer scraper removed
-		// from chain
+		/* 
+		 * old citeseer scraper removed  from chain
+		 * FIXME: delete the old scraper and remove this lines?
+		 */
+		// addScraper(new CiteseerBasicScraper());
 		addScraper(new AIFBScraper());
 		addScraper(new UBKAScraper());
 		addScraper(new ArxivScraper());
@@ -228,12 +230,10 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new StanfordInfoLabScraper());
 		addScraper(new RSCScraper());
 		addScraper(new FASEBJournalScraper());
-//		addScraper(new GbvScraper());
 		addScraper(new JNeurosciScraper());
 		addScraper(new BiologistsScraper());
 		addScraper(new OpenUniversityScraper());
 		addScraper(new AAAIScraper());
-//		addScraper(new SageCDPScraper());
 		addScraper(new APAScraper());
 		addScraper(new BMJOpenScraper());
 		addScraper(new PharmacognosyResearchScraper());
