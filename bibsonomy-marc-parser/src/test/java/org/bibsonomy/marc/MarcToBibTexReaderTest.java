@@ -102,6 +102,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEB113338945")))) {
 			printIt(bib);
 			Assert.assertEquals("Jörg", bib.getAuthor().get(0).getFirstName());
+			Assert.assertEquals("HEB113338945", bib.getMiscField("uniqueid"));
 		}
 	}
 	
@@ -112,6 +113,16 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 			printIt(bib);
 			Assert.assertTrue(bib.getTitle(), bib.getTitle().contains("Português"));
 			Assert.assertEquals("São Paulo", bib.getAddress());
+			Assert.assertEquals("HEB107697521", bib.getMiscField("uniqueid"));
+		}
+	}
+	
+	@Test
+	public void testHebisIdR() {
+		MarcToBibTexReader reader = new MarcToBibTexReader();
+		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEBr846866323")))) {
+			printIt(bib);
+			Assert.assertEquals("HEBr846866323", bib.getMiscField("uniqueid"));
 		}
 	}
 }

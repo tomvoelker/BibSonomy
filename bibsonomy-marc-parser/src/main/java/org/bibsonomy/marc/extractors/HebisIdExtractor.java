@@ -39,6 +39,11 @@ public class HebisIdExtractor implements AttributeExtractor{
 		String ppn = null;
 		if (src instanceof ExtendedMarcWithPicaRecord) {
 			ppn = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("003@", "$0", null);
+			String s = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("002@", "$0");
+			// preliminary solution for retro
+			if ((s != null) && (s.indexOf("r") == 0)) {
+				ppn = "r" + ppn;
+			}
 		}
 //		This is the number of pages, but for citations we need the pages of e.g. an article in some journal
 //		if (!ValidationUtils.present(pages)) {
