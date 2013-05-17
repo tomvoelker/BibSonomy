@@ -44,4 +44,13 @@ public class SageJournalScraperTest {
 		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_219"));
 	}
+	/**
+	 * starts URL test with id url_242
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun() {
+		final UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_242"));
+	}
 }
