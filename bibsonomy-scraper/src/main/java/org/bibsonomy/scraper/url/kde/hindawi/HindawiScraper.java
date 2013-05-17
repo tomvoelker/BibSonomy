@@ -31,27 +31,23 @@ public class HindawiScraper extends AbstractUrlScraper{
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "hindawi.com"), AbstractUrlScraper.EMPTY_PATTERN));
-
-	private static final Pattern DOWNLOADLINK = Pattern.compile("<a href=\"([^\"]*+)\">Download citation as EndNote</a>");
-
+	private static final String BIBTEX_URL = "http://files.hindawi.com/journals/ijcb/";
+	private static final Pattern ID_PATTERN = Pattern.compile("(\\d+/\\d+)");
+	private static final int ID_GROUP = 1;
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		
-		try {
-			// FIXME: this only works on urls ending with .../cta
-			/*
-			 * TODO: we could use the ids in the urls to build the download link!
-			 * Are their any guidelines what to do in this situation?
-			 */
-			final String endNoteLink = this.extractURL(WebUtils.getContentAsString(scrapingContext.getUrl()));
+		final URL url = scrapingContext.getUrl();
+		final String id = extractId(url.toString());
 
-			if (endNoteLink == null) {
-				log.error("can't parse publication URL");
-				return false;
-			}
+		if (!present(id)) {
+			log.error("can't parse publication id");
+			return false;
+		}
+		try {
 			
-			final String endNote = WebUtils.getContentAsString(new URL(endNoteLink));
+			final String endNote = WebUtils.getContentAsString(new URL(BIBTEX_URL + id + ".enw"));
 			final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
 			
 			final String bibTex = converter.endnoteToBibtex(endNote);
@@ -67,14 +63,19 @@ public class HindawiScraper extends AbstractUrlScraper{
 		}
 	}
 	
-	private String extractURL(final String content){
-		final Matcher matcher = DOWNLOADLINK.matcher(content);
+	/**
+	 * extracts publication id from url
+	 * 
+	 * @param url
+	 * @return publication id
+	 */
+	private String extractId(final String url) {
+		final Matcher matcher = ID_PATTERN.matcher(url);
 		if (matcher.find()) {
-			return matcher.group(1);
+			return matcher.group(ID_GROUP);
 		}
 		return null;
 	}
-	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
