@@ -31,8 +31,8 @@ public class HindawiScraper extends AbstractUrlScraper{
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "hindawi.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final String BIBTEX_URL = "http://files.hindawi.com/journals/ijcb/";
-	private static final Pattern ID_PATTERN = Pattern.compile("(\\d+/\\d+)");
+	private static final String BIBTEX_URL = "http://files.hindawi.com/journals/";
+	private static final Pattern ID_PATTERN = Pattern.compile("http://www.hindawi.com/journals/(\\w+/\\d+/\\d+)");
 	private static final int ID_GROUP = 1;
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
