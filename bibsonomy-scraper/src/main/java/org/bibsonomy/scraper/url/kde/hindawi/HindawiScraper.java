@@ -32,7 +32,7 @@ public class HindawiScraper extends AbstractUrlScraper{
 	
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "hindawi.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final String BIBTEX_URL = "http://files.hindawi.com/journals/";
-	private static final Pattern ID_PATTERN = Pattern.compile("http://www.hindawi.com/journals/(\\w+/\\d+/\\d+)");
+	private static final Pattern ID_PATTERN = Pattern.compile(".*/journals/(.*\\d+)");
 	private static final int ID_GROUP = 1;
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
