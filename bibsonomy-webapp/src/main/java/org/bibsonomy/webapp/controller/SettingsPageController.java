@@ -62,10 +62,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	@Override
 	public View workOn(final SettingsViewCommand command) {
-		
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
+		
 		/*
 		 * the user can only change his/her own settings, thus we take the 
 		 * loginUser 
@@ -82,11 +82,12 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			command.showGroupTab(true);
 		}
 		
-		/*
+		/* 
+		 * TODO: remove after testing
 		 * At current time, only admins can see the OAuth consumers
 		 */
-		if(Role.ADMIN.equals(loginUser.getRole())) {
-			command.addTab(command.OAUTH_IDX, "navi.oauth.consumers");
+		if (Role.ADMIN.equals(loginUser.getRole())) {
+			command.addTab(SettingsViewCommand.OAUTH_IDX, "navi.oauth.consumers");
 		}
 		
 		/*
@@ -175,8 +176,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 */
 	private void workOnOAuthTab(final SettingsViewCommand command) {
-		
-		if(!Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
+		// TODO: remove after testing
+		if (!Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
 			return;
 		}
 		
