@@ -20,6 +20,7 @@ import org.bibsonomy.marc.extractors.PublisherExtractor;
 import org.bibsonomy.marc.extractors.SeriesExtractor;
 import org.bibsonomy.marc.extractors.TitleExtractor;
 import org.bibsonomy.marc.extractors.TypeExtractor;
+import org.bibsonomy.marc.extractors.URLExtractor;
 import org.bibsonomy.marc.extractors.VolumeExtractor;
 import org.bibsonomy.marc.extractors.YearExtractor;
 import org.bibsonomy.model.BibTex;
@@ -46,8 +47,8 @@ public class MarcToBibTexReader implements BibTexReader {
 	public MarcToBibTexReader() {
 		extractors = new ArrayList<AttributeExtractor>();
 		extractors.add(new TypeExtractor());
-		extractors.add(new TitleExtractor());
 		extractors.add(new AuthorExtractor());
+		extractors.add(new TitleExtractor());
 		extractors.add(new EditorExtractor());
 		extractors.add(new JournalExtractor());
 		extractors.add(new EditionExtractor());
@@ -59,6 +60,7 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new VolumeExtractor());
 		extractors.add(new SeriesExtractor());
 		extractors.add(new ISBNExtractor());
+		extractors.add(new URLExtractor());
 		//must be the last element in chain because the previous entries must be set
 		extractors.add(new BibTeXKeyExtractor());
 	}
