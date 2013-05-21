@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.json.JSONSerializer;
-import net.sf.json.JSONObject;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,6 +44,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+
 /**
  * @author Haile
  * @version $Id$
@@ -54,114 +55,139 @@ public class MendeleyScraper extends AbstractUrlScraper{
 	private static final String SITE_NAME = "Mendeley";
 	private static final String SITE_URL = "http://mendeley.com";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "mendeley.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("citation_json.*");	
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
-
 		final URL url = scrapingContext.getUrl();
 	
 		try {
-
 			final String bibTex = WebUtils.getContentAsString(url);
-			Matcher match = BIBTEX_PATTERN.matcher(bibTex);
-			
-			String strCitation = "";		
-			if(match.find()){
-				strCitation = match.group(0);
-			}else{
-				log.error("can't parse publication");
-				return false;
+			final Matcher match = BIBTEX_PATTERN.matcher(bibTex);
+			if (!match.find()) {
+				this.log.error("can't parse publication");
+				return false; 
 			}
 			
-			strCitation = strBibtex(strCitation);
-			
+			final String strCitation = this.strBibtex(match.group(0));
 			if (present(strCitation)) {
 				scrapingContext.setBibtexResult(strCitation);
 				return true;
-			} else {
-				throw new ScrapingFailureException("getting bibtex failed");
 			}
+			
+			throw new ScrapingFailureException("getting bibtex failed");
 		} catch (final Exception e) {
 			throw new InternalFailureException(e);
 		}
-
 	}
-	private String strBibtex(String strCitation)  throws JSONException
-	{
-		StringBuilder result = new StringBuilder();
+	
+	private String strBibtex(final String strCitation)  throws JSONException {
+		final StringBuilder result = new StringBuilder();
 		String jsonRead = strCitation;
 		jsonRead = jsonRead.substring(16).replaceAll(";", "").replaceAll("\\/","/");
-		String citationKey = "",authorsFullName = "",editorsFullName = "";
+		String citationKey = "";
+		String authorsFullName = "";
+		String editorsFullName = "";
 		
-		JSONObject json = (JSONObject) JSONSerializer.toJSON( jsonRead );  
+		final JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonRead);  
 		
-		String entryType = "",lblTitle="";
-		String type = json.getString("type");
-		if(type.contains("book")){ 
-			entryType = "@book{"; lblTitle = "booktitle";
-		}else if(type.contains("journal")){
-			entryType = "@article{"; lblTitle = "journal";
-		}else { 
-			entryType = "@misc{"; lblTitle = "journal";
+		String entryType = "";
+		String lblTitle = "";
+		// TODO: there are more than books and articles in mendeley?!
+		final String type = json.getString("type");
+		if (type.contains("book")){ 
+			entryType = "@book{";
+			lblTitle = "booktitle";
+		} else if (type.contains("journal")) {
+			entryType = "@article{";
+			lblTitle = "journal";
+		} else { 
+			entryType = "@misc{";
+			lblTitle = "journal";
 		}
 		
-			JSONArray authors = null;
-			if(json.has("authors"))
-				authors = json.getJSONArray("authors");
-			if(authors != null){
-				for (Object author : authors) {
-					JSONObject jsonAuthor = (JSONObject) author;
-					String forename = "";
-						if(jsonAuthor.has("forename")) forename = jsonAuthor.getString("forename");
-					String surname = "";
-						if(jsonAuthor.has("surname")) surname = jsonAuthor.getString("surname");
-					citationKey +=surname+"_";
-					if(authorsFullName != "") authorsFullName += " and "; 
-					authorsFullName += surname + "," + forename;
+		JSONArray authors = null;
+		if (json.has("authors")) {
+			authors = json.getJSONArray("authors");
+		}
+		if (authors != null) {
+			for (final Object author : authors) {
+				final JSONObject jsonAuthor = (JSONObject) author;
+				String forename = "";
+				if (jsonAuthor.has("forename")) {
+					forename = jsonAuthor.getString("forename");
 				}
-			}
-			JSONArray editors = null; 
-					if(json.has("editors")) editors = json.getJSONArray("editors");
-			if(editors != null){
-				for(Object editor : editors){
-					JSONObject jsonEditor = (JSONObject) editor;
-					String forename = "";
-						if(jsonEditor.has("forename")) forename = jsonEditor.getString("forename");
-					String surname = "";
-						if(jsonEditor.has("surname")) surname = jsonEditor.getString("surname");
-					if(editorsFullName != "")	editorsFullName += " and ";
-					editorsFullName += surname + "," + forename;
+				String surname = "";
+				if (jsonAuthor.has("surname")) {
+					surname = jsonAuthor.getString("surname");
 				}
+				citationKey += surname + "_";
+				if (authorsFullName != "") {
+					authorsFullName += " and ";
+				} 
+				authorsFullName += surname + "," + forename;
 			}
+		}
+		JSONArray editors = null; 
+		if (json.has("editors")) {
+			editors = json.getJSONArray("editors");
+		}
+		if (editors != null) {
+			for (final Object editor : editors){
+				final JSONObject jsonEditor = (JSONObject) editor;
+				String forename = "";
+				if (jsonEditor.has("forename")) {
+					forename = jsonEditor.getString("forename");
+				}
+				String surname = "";
+				if  (jsonEditor.has("surname")) {
+					surname = jsonEditor.getString("surname");
+				}
+				if (editorsFullName != "") {
+					editorsFullName += " and ";
+				}
+				editorsFullName += surname + "," + forename;
+			}
+		}
 		
-		long year = json.has("year") ? json.getLong("year") : 0;
+		final long year = json.has("year") ? json.getLong("year") : 0;
 		
 		result.append(entryType);
 	    result.append(citationKey + year + ",\n");
 	    
-	    if(json.has("title"))
-	    	result.append( "title = {" + json.getString("title") + "},\n");
-	    if(json.has("volume"))
-	    	result.append( "volume = {" + json.getString("volume") + "},\n");	    
-	    if(json.has("issue")) 
-	    	result.append( "number = {" + json.getString("issue") + "},\n");	    
-	    if(json.has("website")) 
-	    	result.append("url = {" + json.getString("website") + "},\n");	    
-	    if(json.has("published_in")) 
-	    	result.append(lblTitle + " = {" + json.getString("published_in") + "},\n");	   
-	    if(json.has("publisher")) 
-	    	result.append( "publisher = {" + json.getString("publisher") + "},\n"); 	    
-	    if(authorsFullName != "") 
-	    	result.append( "author = {"+ authorsFullName+"},\n");	    
-	    if (editorsFullName != "") 
-	    	result.append( "editors = {"+ editorsFullName+"},\n");	    
-	    if(year != 0) 
-	    	result.append( "year = {" + year + "},\n");	    
-	    if(json.has("pages")) 
-	    	result.append( "pages = {" + json.getString("pages") +"}}");
+	    if (json.has("title")) {
+			result.append( "title = {" + json.getString("title") + "},\n");
+		}
+	    if (json.has("volume")) {
+			result.append( "volume = {" + json.getString("volume") + "},\n");
+		}	    
+	    if (json.has("issue")) {
+			result.append( "number = {" + json.getString("issue") + "},\n");
+		}	    
+	    if (json.has("website")) {
+			result.append("url = {" + json.getString("website") + "},\n");
+		}	    
+	    if (json.has("published_in")) {
+			result.append(lblTitle + " = {" + json.getString("published_in") + "},\n");
+		}	   
+	    if (json.has("publisher")) {
+			result.append( "publisher = {" + json.getString("publisher") + "},\n");
+		} 	    
+	    if (authorsFullName != "") {
+			result.append( "author = {"+ authorsFullName+"},\n");
+		}	    
+	    if (editorsFullName != "") {
+			result.append( "editors = {"+ editorsFullName+"},\n"); // FIXME: editors or editor
+		}	    
+	    if (year != 0) {
+			result.append( "year = {" + year + "},\n");
+		}	    
+	    if (json.has("pages")) {
+			result.append( "pages = {" + json.getString("pages") +"}}");
+		}
 	    
 		return result.toString();		
 	}
