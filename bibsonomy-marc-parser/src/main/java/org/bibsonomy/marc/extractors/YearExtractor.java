@@ -27,7 +27,9 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
+import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
@@ -40,9 +42,21 @@ public class YearExtractor implements AttributeExtractor{
 		
 		Pattern regex = Pattern.compile("^*\\d{4}");
 		
-		final String year = src.getFirstFieldValue("260", 'c'); // pica 011@ $a
+		String year = null; 
+		
+		if(src instanceof ExtendedMarcWithPicaRecord) {
+			ExtendedMarcWithPicaRecord picaSrc = (ExtendedMarcWithPicaRecord) src;
+			
+			year = src.getFirstFieldValue("260", 'c');
+			
+			if (!ValidationUtils.present(year)) {
+				year = picaSrc.getFirstPicaFieldValue("011@","$a");
+			}
+		} else {
+			year = src.getFirstFieldValue("260", 'c');
+		}
 
-		if(year != null) {
+		if(ValidationUtils.present(year)) {
 			Matcher m = regex.matcher(year);
 			
 			if(m.find()) {
