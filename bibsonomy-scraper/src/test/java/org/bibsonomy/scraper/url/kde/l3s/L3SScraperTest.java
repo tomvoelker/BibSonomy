@@ -42,11 +42,7 @@ public class L3SScraperTest {
 	@Test
 	@Ignore
 	public void urlTestRun(){
-		/*
-		 * temporarily disabled because of disabled scraper in chain
-		 */
-		
-		UnitTestRunner runner = new UnitTestRunner();
+		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_17"));
 	}
 	
