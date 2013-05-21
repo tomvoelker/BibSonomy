@@ -75,4 +75,5 @@
 			<version>2.1</version>
 		</dependency>
 	</dependencies>
+	<description>Common things for web</description>
 </project>
