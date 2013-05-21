@@ -38,23 +38,22 @@
         </jsp:attribute>
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="scraper_info.title"/>
+			<parts:search pathMessageKey="scraper_info.title" />
 		</jsp:attribute>
-    	
       
 		<jsp:attribute name="content">
-          
-            <h2><fmt:message key="scraper_info.link_header"/></h2> 
-         
-            <p><fmt:message key="scraper_info.scraper_link_description"/></p>
+            <h2><fmt:message key="scraper_info.link_header" /></h2>
+            <p><fmt:message key="scraper_info.scraper_link_description" /></p>
           
             <ul class="scraperList">
-	            <c:forEach var="scraper" items="${command.scraperList}" varStatus="status">
-					<c:choose>
-						<c:when test="${(scraper.supportedSiteURL) ne null and (scraper.supportedSiteName ne null)}">
-		            		<li><a href="${scraper.supportedSiteURL}">${scraper.supportedSiteName}</a></li>
-		            	</c:when>
-		            </c:choose>
+            	<!-- FIXME: assumes that every Scraper has a SiteURL method
+            		 but only UrlScrapers have a siteURL method (what about the
+            		 generic ones) please change and remove the siteURL methods
+            		 from all generic scrapers -->
+	            <c:forEach var="scraper" items="${command.scraperList}">
+				<c:if test="${(scraper.supportedSiteURL) ne null and (scraper.supportedSiteName ne null)}">
+	            	<li><a href="${scraper.supportedSiteURL}">${scraper.supportedSiteName}</a></li>
+	            </c:if>
             	</c:forEach>
             </ul>
 
@@ -64,25 +63,16 @@
                  <fmt:param>${link}</fmt:param>
               </fmt:message>
             </p>
-		  
-		  
-		    
 
-            <h2><fmt:message key="scraper_info.scraper_details_header"/></h2>
-          
-          
+            <h2><fmt:message key="scraper_info.scraper_details_header"/></h2>          
             <dl class="scraperList">
-              <c:forEach var="scraper" items="${command.scraperList}" varStatus="status">
-              <c:choose>
-              	<c:when test="${(scraper.supportedSiteURL ne null) and (scraper.supportedSiteName ne null)}">
+              <c:forEach var="scraper" items="${command.scraperList}">
+              	<c:if test="${(scraper.supportedSiteURL ne null) and (scraper.supportedSiteName ne null)}">
               		<dt><a name="${scraper.class.simpleName}">${scraper.class.simpleName}</a>:</dt> 
     				<dd>${scraper.info}</dd>
-              	</c:when>
-              </c:choose>
+              	</c:if>
               </c:forEach>
-            </dl>  
-          
-		</jsp:attribute>				
+            </dl>
+		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>
