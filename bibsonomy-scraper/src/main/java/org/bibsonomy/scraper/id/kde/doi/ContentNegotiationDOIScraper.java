@@ -63,8 +63,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 	 * 
 	 */
 	@Override
-	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
-		
+	public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
 		/*
 		 * first way: check DOI URL
 		 */
@@ -72,10 +71,8 @@ public class ContentNegotiationDOIScraper implements Scraper {
 		final URL originalUrl = scrapingContext.getUrl();
 		String bibtexResult = "";
 		
-		if (url != null && DOIUtils.isDOIURL(url)) {
-			
-			bibtexResult = getBibTexByCN(url);
-			
+		if ((url != null) && DOIUtils.isDOIURL(url)) {
+			bibtexResult = this.getBibTexByCN(url);
 		}
 		
 		/*
@@ -83,8 +80,8 @@ public class ContentNegotiationDOIScraper implements Scraper {
 		 *             a DOI URL which was not redirected (should not happen in fact of the DOI
 		 *             scraper should have redirected the current URL)
 		 */
-		else if(originalUrl != null && DOIUtils.isDOIURL(originalUrl)) {
-			bibtexResult = getBibTexByCN(originalUrl);
+		else if ((originalUrl != null) && DOIUtils.isDOIURL(originalUrl)) {
+			bibtexResult = this.getBibTexByCN(originalUrl);
 		}
 		
 		/*
@@ -94,21 +91,17 @@ public class ContentNegotiationDOIScraper implements Scraper {
 		else if(DOIUtils.isSupportedSelection(scrapingContext.getSelectedText())) {
 			final String doi = DOIUtils.extractDOI(scrapingContext.getSelectedText());
 			try {
-				bibtexResult = getBibTexByCN(DOIUtils.getURL(doi));
-			} catch (MalformedURLException ex) {
+				bibtexResult = this.getBibTexByCN(DOIUtils.getURL(doi));
+			} catch (final MalformedURLException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}
 		
-		//check result
-		if( present(bibtexResult) ) {
-
+		// check result
+		if (present(bibtexResult)) {
 			scrapingContext.setScraper(this);
-			
 			scrapingContext.setBibtexResult(bibtexResult);
-			
 			return true;
-			
 		}
 		
 		return false;
@@ -120,21 +113,19 @@ public class ContentNegotiationDOIScraper implements Scraper {
 	 * @param url the URL to request
 	 * @return the resulting BibTex
 	 */
-	private String getBibTexByCN(URL url) throws InternalFailureException{
-		//create request with content negotiation
-		HttpMethod getBibTexMethod = new GetMethod(url.toExternalForm());
+	private String getBibTexByCN(final URL url) throws InternalFailureException{
+		// create request with content negotiation
+		final HttpMethod getBibTexMethod = new GetMethod(url.toExternalForm());
 		getBibTexMethod.addRequestHeader("Accept", "application/x-bibtex");
-		String bibtexResult = "";
 			
-		//send request to dx.doi.org and receive resulting bibtex
+		// send request to dx.doi.org and receive resulting bibtex
 		try {
-			bibtexResult = WebUtils.getContentAsString(getBibTexMethod);
-		} catch (HttpException ex) {
+			return WebUtils.getContentAsString(getBibTexMethod);
+		} catch (final HttpException ex) {
 			throw new InternalFailureException(ex);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-		return bibtexResult;
 	}
 
 	@Override
@@ -146,17 +137,22 @@ public class ContentNegotiationDOIScraper implements Scraper {
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singletonList(this);
 	}
-
-	
 	
 	/**
 	 * checks whether DOI URL has been set by the {@link DOIScraper}
 	 */
 	@Override
-	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+	public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
 		return (scrapingContext.getDoiURL() != null) || 
 				DOIUtils.isDOIURL(scrapingContext.getUrl()) || 
 				DOIUtils.isSupportedSelection(scrapingContext.getSelectedText());
 	}
 
+	/**
+	 * @return site url
+	 * FIXME @see scraperinfo.jspx
+	 */
+	public String getSupportedSiteURL(){
+		return null;
+	}
 }

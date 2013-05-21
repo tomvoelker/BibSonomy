@@ -108,5 +108,13 @@ public class EprintScraper implements Scraper {
 			return false;
 		}
 	}
+	
+	/**
+	 * @return site url
+	 * FIXME @see scraperinfo.jspx
+	 */
+	public String getSupportedSiteURL(){
+		return null;
+	}
 
 }
