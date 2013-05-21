@@ -52,8 +52,6 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public abstract class CitationManagerScraper extends AbstractUrlScraper {
-		
-	
 	private static final Log log = LogFactory.getLog(CitationManagerScraper.class);
 	
 	/**
@@ -62,31 +60,30 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 	public abstract Pattern getDownloadLinkPattern();
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		try {
-			String downloadLink = buildDownloadLink(sc.getUrl(), WebUtils.getContentAsString(sc.getUrl()));
+			final String downloadLink = this.buildDownloadLink(sc.getUrl(), WebUtils.getContentAsString(sc.getUrl()));
 			
 			// download bibtex directly
 			final String bibtex = WebUtils.getContentAsString(new URL(downloadLink));
 			if (bibtex != null) {
-				
-				StringBuffer bibtexResult = new StringBuffer();
+				final StringBuilder bibtexResult = new StringBuilder();
 				
 				//adding key and url to bibtex if not contained
 				try {
-					SimpleBibTeXParser parser = new SimpleBibTeXParser();
-					List<BibTex> bibtexs = parser.parseBibTeXs(bibtex);
-					for (BibTex bib : bibtexs) {
-						if (! present(bib.getBibtexKey()) || bib.getBibtexKey().contains("\\s")) {
-							bib.setBibtexKey(BibTexUtils.generateBibtexKey(bib));
+					final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+					final List<BibTex> publications = parser.parseBibTeXs(bibtex);
+					for (final BibTex publication : publications) {
+						if (!present(publication.getBibtexKey()) || publication.getBibtexKey().contains("\\s")) {
+							publication.setBibtexKey(BibTexUtils.generateBibtexKey(publication));
 						}
-						if (! present(bib.getUrl())) {
-							bib.setUrl(sc.getUrl().toExternalForm());
+						if (!present(publication.getUrl())) {
+							publication.setUrl(sc.getUrl().toExternalForm());
 						}
-						bibtexResult.append(BibTexUtils.toBibtexString(bib));
+						bibtexResult.append(BibTexUtils.toBibtexString(publication));
 					}
-				} catch (ParseException ex) {
+				} catch (final ParseException ex) {
 					throw new ScrapingException("Cannot parse BibTex");
 				}
 				
@@ -94,15 +91,14 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 				return true;
 			}
 
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 
 		return false;
 	}
 	
-	protected String buildDownloadLink(URL url, String content) throws ScrapingFailureException {
-
+	protected String buildDownloadLink(final URL url, final String content) throws ScrapingFailureException {
 		if (log.isDebugEnabled()) {
 			if (content.matches("Download Citation")) {
 				log.debug("found \"Download Citation\" in content:");
@@ -111,13 +107,12 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 		}
 		
 		// get link to download page
-		final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
-		final String downloadLink;
-		if(downloadLinkMatcher.find()) // add type=bibtex to the end of the link
-			downloadLink = "http://" + url.getHost() + downloadLinkMatcher.group(1) + "&type=bibtex";
-		else
-			throw new ScrapingFailureException("Download link is not available");
-		return downloadLink;
+		final Matcher downloadLinkMatcher = this.getDownloadLinkPattern().matcher(content);
+		if (downloadLinkMatcher.find()) { // add type=bibtex to the end of the link
+			return "http://" + url.getHost() + downloadLinkMatcher.group(1) + "&type=bibtex";
+		}
+		
+		throw new ScrapingFailureException("Download link is not available");
 	}
 
 }
