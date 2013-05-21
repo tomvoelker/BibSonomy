@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.bibsonomy.marc.extractors.AddressExtractor;
 import org.bibsonomy.marc.extractors.AuthorExtractor;
-import org.bibsonomy.marc.extractors.BibTeXKeyExtractor;
 import org.bibsonomy.marc.extractors.EditionExtractor;
 import org.bibsonomy.marc.extractors.EditorExtractor;
 import org.bibsonomy.marc.extractors.HebisIdExtractor;
@@ -26,6 +25,7 @@ import org.bibsonomy.marc.extractors.YearExtractor;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.BibTexReader;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.data.Data;
 import org.bibsonomy.model.util.data.DualData;
 import org.bibsonomy.scraper.converter.PicaPlusReader;
@@ -61,8 +61,6 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new SeriesExtractor());
 		extractors.add(new ISBNExtractor());
 		extractors.add(new URLExtractor());
-		//must be the last element in chain because the previous entries must be set
-		extractors.add(new BibTeXKeyExtractor());
 	}
 	
 	@Override
@@ -120,6 +118,8 @@ public class MarcToBibTexReader implements BibTexReader {
 					//System.err.println(e.toString());
 				}
 			}
+			
+			b.setBibtexKey(BibTexUtils.generateBibtexKey(b));
 			rVal.add(b);
 
 			//System.out.println(r.toString());
