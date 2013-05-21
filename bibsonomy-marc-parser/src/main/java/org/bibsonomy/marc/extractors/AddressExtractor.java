@@ -26,7 +26,9 @@ import java.text.Normalizer;
 
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
+import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
@@ -36,10 +38,23 @@ public class AddressExtractor implements AttributeExtractor {
 
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		final String address = src.getFirstFieldValue("260", 'a');
-		if (address != null) {
-			target.setAddress(Normalizer.normalize(address, Normalizer.Form.NFC));
+	
+		String address = null;
+		
+		if(src instanceof ExtendedMarcWithPicaRecord) {
+			ExtendedMarcWithPicaRecord picaSrc = (ExtendedMarcWithPicaRecord) src;
+			
+			address = src.getFirstFieldValue("260", 'a');
+			
+			if (!ValidationUtils.present(address)) {
+				address = picaSrc.getFirstPicaFieldValue("033A","$p");
+			}
+		} else {
+			address = src.getFirstFieldValue("260", 'a');
 		}
-	}
 
+		if (ValidationUtils.present(address)) {
+			target.setAddress(Normalizer.normalize(address, Normalizer.Form.NFC));
+		}  
+	}
 }
