@@ -115,9 +115,19 @@
 				<ref bean="openidRememberMeServices" />
 				<ref bean="internalRememberMeServices" />
 				<ref bean="ldapRememberMeServices" />
+				<ref bean="logoutRedirectHandler" />
 			</list>
 		</constructor-arg>
 		<property name="filterProcessesUrl" value="/logout" />
+	</bean>
+	
+	<bean id="logoutRedirectHandler" class="org.bibsonomy.webapp.util.spring.security.web.logouthandler.RedirectHandler">
+		<property name="parameterName" value="redirectKey"/>
+		<property name="redirectUrls">
+			<bean class="org.bibsonomy.webapp.util.spring.factorybeans.JsonToMapFactoryBean">
+				<constructor-arg value="${logout.redirect.map}" />
+			</bean>
+		</property>
 	</bean>
 	
 	<!-- invalidates the session -->
