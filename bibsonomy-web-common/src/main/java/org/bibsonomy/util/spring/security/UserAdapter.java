@@ -30,7 +30,7 @@ import java.util.LinkedHashSet;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -62,10 +62,10 @@ public class UserAdapter implements UserDetails {
 	public Collection<GrantedAuthority> getAuthorities() {
 		final Collection<GrantedAuthority> authorities = new LinkedHashSet<GrantedAuthority>();
 		if (!Role.LIMITED.equals(this.user.getRole())) {
-			authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		}
 		if (Role.ADMIN.equals(this.user.getRole())) {
-			authorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		}
 		
 		return Collections.unmodifiableCollection(authorities);
