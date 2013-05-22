@@ -95,6 +95,7 @@ public class TypeExtractor implements AttributeExtractor {
 		map2bibtex.put("dvd", "electronic");
 		map2bibtex.put("electronic", "electronic");
 		map2bibtex.put("slide", "presentation");
+		map2bibtex.put("conference", "proceedings");
 	}
 
 	@Override
@@ -144,7 +145,9 @@ public class TypeExtractor implements AttributeExtractor {
 
 		// preliminary solution for detection of series
 		String s = record.getFirstPicaFieldValue("002@", "$0");
-
+		//detect conference logs
+		String conf = record.getFirstPicaFieldValue("013H", "$0");
+		
 		if (s.indexOf("c") == 1 || s.indexOf("d") == 1) {
 			type = "series";
 		} else
@@ -155,8 +158,12 @@ public class TypeExtractor implements AttributeExtractor {
 		// preliminary solution for retro
 		if (s.indexOf("r") == 1) {
 			type = "retro";
+		} else 
+		//get proceedings
+		if (conf != null && conf.indexOf("k") == 0){
+			type = "conference";
 		} else {
-			// return formats accourding to format arry in the beginning
+			// return formats accourding to format array in the beginning
 			// of this method
 			String value = map.get((art + "" + level + postfix).trim());
 			if (value != null)
@@ -165,6 +172,9 @@ public class TypeExtractor implements AttributeExtractor {
 		// there is no format defined for the combination of art level and phys
 		// for debugging
 		target.setEntrytype(toBibtexType(type));
+		
+		//set type to mvbook for book series
+		getMVBook(target, record);
 	}
 
 	private String toBibtexType(String type) {
@@ -173,5 +183,21 @@ public class TypeExtractor implements AttributeExtractor {
 			return "misc";
 		}
 		return bibtexType;
+	}
+	
+	/**
+	 * set the entrytype to mvbook if it's an anthology
+	 * 
+	 * @param target
+	 * @param src
+	 */
+	private void getMVBook(BibTex target, ExtendedMarcWithPicaRecord src) {
+		String mvType = src.getFirstPicaFieldValue("002@", "$0");
+		if ( mvType != null ) {
+			if(target.getEntrytype().equals("book") && 
+					(mvType.charAt(1) == 'c' || mvType.charAt(1) == 'd')) {
+				target.setEntrytype("mvbook");
+			}
+		}
 	}
 }

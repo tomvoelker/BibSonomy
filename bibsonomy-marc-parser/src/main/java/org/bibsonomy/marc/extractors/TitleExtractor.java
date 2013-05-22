@@ -54,103 +54,8 @@ public class TitleExtractor implements AttributeExtractor {
 			target.setTitle(Normalizer.normalize(val, Normalizer.Form.NFC));
 		}
 
-		if (src instanceof ExtendedMarcWithPicaRecord) {
-			//bookseries -> mvbook
-			getMVBook(target, (ExtendedMarcWithPicaRecord) src);
-			
-			setNoteForPhd(target, (ExtendedMarcWithPicaRecord) src);
-			//organization instead of author
-			setOrganizationForConference(target,
-					(ExtendedMarcWithPicaRecord) src);
-		}
-
 	}
 
-	/**
-	 * set the entrytype to mvbook if it's an anthology
-	 * 
-	 * @param target
-	 * @param src
-	 */
-	private void getMVBook(BibTex target, ExtendedMarcWithPicaRecord src) {
-		String mvType = src.getFirstPicaFieldValue("002@", "$0");
-		if ( mvType != null ) {
-			if(target.getEntrytype().equals("book") && 
-					(mvType.charAt(1) == 'c' || mvType.charAt(1) == 'd')) {
-				target.setEntrytype("mvbook");
-			}
-		}
-	}
-
-	/**
-	 * set note field for phdthesis
-	 * 
-	 * @param target
-	 * @param src
-	 */
-	private void setNoteForPhd(BibTex target, ExtendedMarcWithPicaRecord src) {
-		if (target.getEntrytype().equals("phdthesis")) {
-			target.setNote(src.getFirstPicaFieldValue("037C", "$a"));
-		}
-	}
-
-	/**
-	 * delete author and set organization if publication is of type conference
-	 * report
-	 * 
-	 * @param target
-	 * @param src
-	 */
-	private void setOrganizationForConference(BibTex target,
-			ExtendedMarcWithPicaRecord src) {
-		
-		String check = src.getFirstPicaFieldValue("013H", "$0");
-
-		if (ValidationUtils.present(check) && check.contains("k")) {
-			
-			//fields which possibly contain information
-			String[][] marcFields = { { "110:a", "111:a", "710:a" },
-					{ "110:c", "111:c", "710:c" } };
-			String[][] picaFields = { { "029A:$a", "029F:$8", "029E:$8" },
-					{ "029A:$c", "029F:$g", "029E:$g" } };
-			
-			String conference = "";
-			String location = "";
-			
-			//try to find marc information
-			for (int i = 0; i < marcFields.length
-					&& (!ValidationUtils.present(conference) || !ValidationUtils
-							.present(location)); i++) {
-				if(!ValidationUtils.present(conference)) {
-					conference = src.getFirstFieldValue(marcFields[0][i].split(":")[0], marcFields[0][i].split(":")[1].charAt(0));
-				}
-				
-				if(!ValidationUtils.present(location)) {
-					location = src.getFirstFieldValue(marcFields[1][i].split(":")[0], marcFields[1][i].split(":")[1].charAt(0));
-				}
-			}
-
-			//get pica information if marc was not available
-			for (int i = 0; i < picaFields.length
-					&& (!ValidationUtils.present(conference) || !ValidationUtils
-							.present(location)); i++) {
-				if(!ValidationUtils.present(conference)) {
-					conference = src.getFirstPicaFieldValue(picaFields[0][i].split(":")[0], picaFields[0][i].split(":")[1]);
-				}
-				
-				if(!ValidationUtils.present(location)) {
-					location = src.getFirstPicaFieldValue(picaFields[1][i].split(":")[0], picaFields[1][i].split(":")[1]);
-				}
-				
-			}
-
-			//set the results
-			target.setAuthor(null);
-			target.setOrganization((conference != null ? conference : "NoOrganization") + 
-					(location != null ? "<" + location + ">" : "<NoLocation>"));
-
-		}
-	}
 }
 
 /*
@@ -188,10 +93,14 @@ public class TitleExtractor implements AttributeExtractor {
  * 013H/0X = k-> proceedings dann (nein immer) marc 111 oder 110 als
  * organization und nicht als autor
  * 
- * organisation 029A/0X 029A/0X 029A/0X
+ * organisation 
+ * 029A/0X 
+ * 029A/0X 
+ * 029A/0X
  * 
  * 
- * kein autor sondern organisation: pica 029A $a <$c> sonst 029F $8 <$g> sonst
+ * kein autor sondern organisation: 
+ * pica 029A $a <$c> sonst 029F $8 <$g> sonst
  * 029E $8 <$g> / $b marc 710 genauso
  * 
  * 002@ 1.char == 'O' (online resource) -> 009Q $u als url

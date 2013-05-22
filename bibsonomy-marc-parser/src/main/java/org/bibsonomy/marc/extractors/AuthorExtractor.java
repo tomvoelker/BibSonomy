@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.marc.ExtendedMarcRecord;
+import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * extracts a BibTex author attribute out of a MarcRecord
@@ -22,19 +24,31 @@ public class AuthorExtractor extends AbstractParticipantExtractor {
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		ArrayList<PersonName> authors = new ArrayList<PersonName>();
 		
+		//in case of conference typed in 013H/0X as k we use 110, 111, 710 for organization
+		boolean conference = false;
+		if (src instanceof ExtendedMarcWithPicaRecord) {
+			conference = checkForConference((ExtendedMarcWithPicaRecord) src);
+		}
+		
 		//get fields containing firstname information
 		boolean mainAuthorFound = true;
 		if (!extractAndAddAuthorPersons(authors, src, "100", (Set<String>) null)) {
-			if (!extractAndAddAuthorCorporations(authors, src, "110", (Set<String>) null)) {
-				if (!extractAndAddAuthorMeetings(authors, src, "111", (Set<String>) null)) {
-					mainAuthorFound = false;
+			if (!conference) {
+				if (!extractAndAddAuthorCorporations(authors, src, "110",
+						(Set<String>) null)) {
+					if (!extractAndAddAuthorMeetings(authors, src, "111",
+							(Set<String>) null)) {
+						mainAuthorFound = false;
+					}
 				}
 			}
 		}
 		if (!extractAndAddAuthorPersons(authors, src, "700", authorRelatorCodes)) {
-			if (!mainAuthorFound && !extractAndAddAuthorCorporations(authors, src, "710", authorRelatorCodes)) {
-				if (!mainAuthorFound && !extractAndAddAuthorMeetings(authors, src, "711", authorRelatorCodes)) {
-					mainAuthorFound = false;
+			if (!conference) {
+				if (!mainAuthorFound && !extractAndAddAuthorCorporations(authors, src, "710", authorRelatorCodes)) {
+					if (!mainAuthorFound && !extractAndAddAuthorMeetings(authors, src, "711", authorRelatorCodes)) {
+						mainAuthorFound = false;
+					}
 				}
 			}
 		}

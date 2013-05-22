@@ -14,6 +14,8 @@ import org.bibsonomy.marc.extractors.EditorExtractor;
 import org.bibsonomy.marc.extractors.HebisIdExtractor;
 import org.bibsonomy.marc.extractors.ISBNExtractor;
 import org.bibsonomy.marc.extractors.JournalExtractor;
+import org.bibsonomy.marc.extractors.NoteExtractor;
+import org.bibsonomy.marc.extractors.OrganizationExtractor;
 import org.bibsonomy.marc.extractors.PagesExtractor;
 import org.bibsonomy.marc.extractors.PublisherExtractor;
 import org.bibsonomy.marc.extractors.SeriesExtractor;
@@ -61,6 +63,9 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new SeriesExtractor());
 		extractors.add(new ISBNExtractor());
 		extractors.add(new URLExtractor());
+		extractors.add(new OrganizationExtractor());
+		//must be placed in the chain after TypeExtractor
+		extractors.add(new NoteExtractor());
 	}
 	
 	@Override

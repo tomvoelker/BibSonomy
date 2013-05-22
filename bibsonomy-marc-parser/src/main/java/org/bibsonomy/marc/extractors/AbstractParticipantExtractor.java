@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
+import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
@@ -17,6 +18,16 @@ import org.marc4j.marc.Subfield;
  * @version $Id$
  */
 public abstract class AbstractParticipantExtractor implements AttributeExtractor {
+	
+	
+	protected boolean checkForConference(ExtendedMarcWithPicaRecord src) {
+		String check = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("013H", "$0");
+		if(ValidationUtils.present(check)) {
+			return check.contains("k");
+		}
+		return false;
+	}
+	
 	protected boolean extractAndAddAuthorPersons(List<PersonName> authors, ExtendedMarcRecord src, String fieldName, List<Set<String>> authorRelatorCodes) {
 		for (Set<String> relcodes : authorRelatorCodes) {
 			if (extractAndAddAuthorPersons(authors, src, fieldName, relcodes)) {
