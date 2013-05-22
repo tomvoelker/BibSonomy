@@ -41,20 +41,17 @@ public class PicaPlusToBibtexTest {
 	
 	/**
 	 * more like a main
+	 * @throws Exception 
 	 */
 	@Test
-	public void readPicaPlus() {
-		try {
-			final PicaPlusReader reader = new PicaPlusReader();
-			final BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("dwl20100116-01p.txt"), "UTF-8"));
-			final Collection<PicaRecord> picas = reader.parseRawPicaPlus(br);
-			br.close();
-			assertEquals(133, picas.size());
-			for (final PicaRecord p : picas) {
-				System.out.println(PicaParser.getBibRes(p, "bla"));
-			}
-		} catch (final Exception ex) {
-			throw new RuntimeException(ex);
+	public void readPicaPlus() throws Exception {
+		final PicaPlusReader reader = new PicaPlusReader();
+		final BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("dwl20100116-01p.txt"), "UTF-8"));
+		final Collection<PicaRecord> picas = reader.parseRawPicaPlus(br);
+		br.close();
+		assertEquals(133, picas.size());
+		for (final PicaRecord p : picas) {
+			System.out.println(PicaParser.getBibRes(p, "bla"));
 		}
 	}
 }
