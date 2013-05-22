@@ -96,7 +96,7 @@ public class MendeleyScraper extends AbstractUrlScraper{
 		
 		String entryType = "";
 		String lblTitle = "";
-		// TODO: there are more than books and articles in mendeley?!
+		// TODO: there are more than books and articles in mendeley!
 		final String type = json.getString("type");
 		if (type.contains("book")){ 
 			entryType = "@book{";
@@ -155,31 +155,32 @@ public class MendeleyScraper extends AbstractUrlScraper{
 		
 		final long year = json.has("year") ? json.getLong("year") : 0;
 		
+		// FIXME: use append instead of +
 		result.append(entryType);
-	    result.append(citationKey + year + ",\n");
-	    
+		result.append(citationKey + year + ",\n");
+		
 	    if (json.has("title")) {
 			result.append( "title = {" + json.getString("title") + "},\n");
 		}
 	    if (json.has("volume")) {
 			result.append( "volume = {" + json.getString("volume") + "},\n");
-		}	    
+		}
 	    if (json.has("issue")) {
 			result.append( "number = {" + json.getString("issue") + "},\n");
-		}	    
-	    if (json.has("website")) {
+		}
+		if (json.has("website")) {
 			result.append("url = {" + json.getString("website") + "},\n");
-		}	    
-	    if (json.has("published_in")) {
+		}
+		if (json.has("published_in")) {
 			result.append(lblTitle + " = {" + json.getString("published_in") + "},\n");
-		}	   
-	    if (json.has("publisher")) {
+		}
+		if (json.has("publisher")) {
 			result.append( "publisher = {" + json.getString("publisher") + "},\n");
-		} 	    
-	    if (authorsFullName != "") {
+		}
+		if (authorsFullName != "") {
 			result.append( "author = {"+ authorsFullName+"},\n");
-		}	    
-	    if (editorsFullName != "") {
+		}
+		if (editorsFullName != "") {
 			result.append( "editors = {"+ editorsFullName+"},\n"); // FIXME: editors or editor
 		}	    
 	    if (year != 0) {
