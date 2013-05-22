@@ -26,8 +26,18 @@
     <jsp:attribute name="heading">
     	<parts:search pathMessageKey="navi.export"/>
 	</jsp:attribute>
-      
-        
+    
+    
+	<jsp:attribute name="headerExt">
+		<!-- start and setup the logic behind the export size radio buttons (setupPostExportSize in functions.js)-->
+		<script type="text/javascript">
+			<![CDATA[
+				$(function() {
+					setupPostExportSize();
+				});
+			]]>
+		</script>
+	</jsp:attribute>
     <jsp:attribute name="content">
         <div>
           <fmt:message key="export.format"/>:${mtl:ch('nbsp')}
@@ -114,11 +124,4 @@
     </jsp:attribute>
     
   </layout:paneLayout>
-  
-  	<!-- start and setup the logic behind the export size radio buttons (setupPostExportSize in functions.js)-->
-	<script type="text/javascript">
-		<![CDATA[
-			setupPostExportSize();		
-		]]>	
-	</script>  
 </jsp:root>
