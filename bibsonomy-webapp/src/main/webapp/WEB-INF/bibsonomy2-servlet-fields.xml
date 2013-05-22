@@ -63,7 +63,7 @@
 		<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
 		<value>ranking.*</value> <!-- ranking information -->
 		<!-- used for exporting bibtex by various controllers -->
-		<value>lastFirstNames</value>
+		<value>firstLastNames</value>
 		<value>generatedBibtexKeys</value>
 		<value>download</value>
 		<value>urlGenerator</value>

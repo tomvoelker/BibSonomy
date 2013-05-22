@@ -73,7 +73,7 @@ public class ResourceViewCommand extends BaseCommand {
 	
 	private boolean download = false;
 	private boolean generatedBibtexKeys;
-	private boolean lastFirstNames;
+	private boolean firstLastNames;
 	private String urlGenerator = "default";
 
 	
@@ -336,10 +336,10 @@ public class ResourceViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return how to render person names in bibtex export
+	 * @return how to render person names in bibtex export (true <=> person names in "First Last" order)
 	 */
-	public boolean isLastFirstNames() {
-		return lastFirstNames;
+	public boolean isFirstLastNames() {
+		return firstLastNames;
 	}
 
 	/**
@@ -357,10 +357,10 @@ public class ResourceViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @param lastFirstNames how to render person names in bibtex export
+	 * @param firstLastName how to render person names in bibtex export (true <=> person names in "First Last" order)
 	 */
-	public void setLastFirstNames(boolean lastFirstNames) {
-		this.lastFirstNames = lastFirstNames;
+	public void setFirstLastNames(boolean firstLastName) {
+		this.firstLastNames = firstLastName;
 	}
 
 	/**

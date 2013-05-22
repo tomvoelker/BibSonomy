@@ -24,9 +24,9 @@ public interface BibtexViewCommand {
 	public boolean isDownload();
 
 	/**
-	 * @return how to render person names in bibtex export
+	 * @return how to render person names in bibtex export last (true <=> person names in "First Last" order)
 	 */
-	public boolean isLastFirstNames();
+	public boolean isFirstLastNames();
 
 	/**
 	 * @return bibtexkey stuff

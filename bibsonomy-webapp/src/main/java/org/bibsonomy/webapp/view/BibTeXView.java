@@ -67,7 +67,7 @@ public class BibTeXView extends AbstractView implements ServletContextAware {
 			 * and the allowed fields (don't change their name, they are already 
 			 * used)
 			 */
-			final int flags = BibTexUtils.getFlags(false, !command.isLastFirstNames(), command.isGeneratedBibtexKeys());
+			final int flags = BibTexUtils.getFlags(false, command.isFirstLastNames(), command.isGeneratedBibtexKeys());
 
 			try {
 				response.setContentType("text/plain; charset=UTF-8");
