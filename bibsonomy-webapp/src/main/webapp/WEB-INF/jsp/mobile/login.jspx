@@ -74,6 +74,9 @@
 			                    	<input type="submit" value="${submit}" />
 			                	</p>
    							</c:if>
+	                  		<p>
+	                  			<fmt:message key="system.register.mobile"/>
+	                  		</p>
      					</form:form>
 					</div>
        			</c:forEach>
