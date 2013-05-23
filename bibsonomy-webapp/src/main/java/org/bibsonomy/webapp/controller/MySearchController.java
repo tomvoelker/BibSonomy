@@ -119,22 +119,21 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 
 		this.endTiming();
 
-		/**
-		 * return view to show the mySearch.jspx side
+		/*
+		 * return view to show the mySearch.jspx site
 		 */
 		return Views.MYSEARCH;
 	}
 
 	private void buildRelationTables(final ListCommand<Post<BibTex>> bibtex, final MySearchCommand command) {
-
-		/**
+		/*
 		 * containers for relation tables
 		 */
 		final LinkedList<String> titleList = command.getTitles();
 		final LinkedList<String> tagList = command.getTags();
 		final LinkedList<String> authorList = command.getAuthors();
 
-		/**
+		/*
 		 * sorted lists for several relations
 		 */
 		final SortedSet<Integer>[] tagTitle = new TreeSet[tagList.size()];
@@ -142,13 +141,13 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		final SortedSet<Integer>[] tagAuthor = new TreeSet[tagList.size()];
 		final SortedSet<Integer>[] titleAuthor = new TreeSet[titleList.size()];
 
-		/**
+		/*
 		 * string arrays for hash and url informations for the several bibtex
 		 */
 		final String[] bibtexHashs = new String[titleList.size()];
 		final String[] bibtexUrls = new String[titleList.size()];
 
-		/**
+		/*
 		 * build the relations from the bibtex informations
 		 */
 		for (final Post<BibTex> post : bibtex.getList()) {
@@ -226,7 +225,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 
 		}
 
-		/**
+		/*
 		 * store relation tables in the command object
 		 */
 		command.setTagTitle(tagTitle);
@@ -236,7 +235,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		command.setBibtexHash(bibtexHashs);
 		command.setBibtexUrls(bibtexUrls);
 
-		/**
+		/*
 		 * simhash is needed by the javascript code in the mySearch.jspx side to
 		 * complete the bibtex hash string
 		 */
