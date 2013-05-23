@@ -38,26 +38,29 @@ public class AuthorExtractor extends AbstractParticipantExtractor {
 						(Set<String>) null)) {
 					if (!extractAndAddAuthorMeetings(authors, src, "111",
 							(Set<String>) null)) {
-						mainAuthorFound = false;
-					}
+					mainAuthorFound = false;
 				}
 			}
+		}
 		}
 		if (!extractAndAddAuthorPersons(authors, src, "700", authorRelatorCodes)) {
 			if (!conference) {
-				if (!mainAuthorFound && !extractAndAddAuthorCorporations(authors, src, "710", authorRelatorCodes)) {
-					if (!mainAuthorFound && !extractAndAddAuthorMeetings(authors, src, "711", authorRelatorCodes)) {
-						mainAuthorFound = false;
-					}
+			if (!mainAuthorFound && !extractAndAddAuthorCorporations(authors, src, "710", authorRelatorCodes)) {
+				if (!mainAuthorFound && !extractAndAddAuthorMeetings(authors, src, "711", authorRelatorCodes)) {
+					mainAuthorFound = false;
 				}
 			}
 		}
-		
-		
-		if (authors.size() == 0) {
-			// wen need an author (or we will get NPEs by various exporters such as endnote)
-			authors.add(new PersonName("", "noauthor"));
 		}
+		
+		if ((authors.size() == 0) && (src instanceof ExtendedMarcWithPicaRecord)){
+			String familyName =((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("028A", "$a", "");
+			String firstName =((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("028A", "$d", "");
+			if (ValidationUtils.present(familyName) || ValidationUtils.present(firstName)) {
+				authors.add(new PersonName(firstName.trim(), familyName.trim()));
+			}
+		}
+		
 		target.setAuthor(authors);
 		
 	}
