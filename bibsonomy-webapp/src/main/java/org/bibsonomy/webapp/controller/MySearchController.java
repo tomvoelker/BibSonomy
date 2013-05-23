@@ -22,12 +22,12 @@ import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MySearchCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
- * This controller retrieve all bibtex informations of a currently logged in
- * user and builds relation tables between several bibtex information fields
+ * This controller retrieve all publication informations of a currently logged in
+ * user and builds relation tables between several publication information fields
  * like author, title and tags.
  * 
  * @author Christian Voigtmann
@@ -38,9 +38,6 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 
 	@Override
 	public View workOn(final MySearchCommand command) {
-		/*
-		 * FIXME: implement this for a group!
-		 */
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
@@ -50,21 +47,12 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		 * login page
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			/*
-			 * FIXME: We need to add the ?referer= parameter such that the user
-			 * is send back to this controller after login. This is not so
-			 * simple, because we cannot access the query path and for POST
-			 * requests we would need to build the parameters by ourselves.
-			 */
-			return new ExtendedRedirectView("/login");
+			throw new AccessDeniedException("please log in");
 		}
 
 		final User user = command.getContext().getLoginUser();
 
 		// set grouping entity, grouping name, tags
-		// final GroupingEntity groupingEntity = GroupingEntity.USER;
-		// final String groupingName = user.getName();
-
 		String groupingName = command.getRequGroup();
 		GroupingEntity groupingEntity = GroupingEntity.GROUP;
 
@@ -73,11 +61,12 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			groupingEntity = GroupingEntity.USER;
 		}
 
-		// retrieve and set the requested resource lists, along with total
-		// counts
+		// retrieve and set the requested resource lists, along with total counts
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			// FIXME: we should deliver items dynamically via ajax,
-			// displaying a 'wheel of fortune' until all items are loaded
+			/* 
+			 * FIXME: we should deliver items dynamically via ajax,
+			 * displaying a 'wheel of fortune' until all items are loaded
+			 */ 
 			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, null, null, Integer.MAX_VALUE);
 			this.postProcessAndSortList(command, resourceType);
 		}
