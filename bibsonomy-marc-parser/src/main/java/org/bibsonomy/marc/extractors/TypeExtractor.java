@@ -96,6 +96,7 @@ public class TypeExtractor implements AttributeExtractor {
 		map2bibtex.put("electronic", "electronic");
 		map2bibtex.put("slide", "presentation");
 		map2bibtex.put("conference", "proceedings");
+		map2bibtex.put("phdthesis", "phdthesis");
 	}
 
 	@Override
@@ -144,10 +145,13 @@ public class TypeExtractor implements AttributeExtractor {
 		// For some formats this is not enough and we need additional infos
 
 		// preliminary solution for detection of series
-		String s = record.getFirstPicaFieldValue("002@", "$0");
+		String s = record.getFirstPicaFieldValue("002@", "$0", "");
 		//detect conference logs
-		String conf = record.getFirstPicaFieldValue("013H", "$0");
+		String conf = record.getFirstPicaFieldValue("013H", "$0", "");
 		
+		if ("u".equals(conf)) {
+			type = "phdthesis";
+		}
 		if (s.indexOf("c") == 1 || s.indexOf("d") == 1) {
 			type = "series";
 		} else
