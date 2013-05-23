@@ -28,7 +28,10 @@ import org.springframework.security.access.AccessDeniedException;
 /**
  * This controller retrieve all publication informations of a currently logged in
  * user and builds relation tables between several publication information fields
- * like author, title and tags.
+ * like author, title and tags:
+ * 
+ *   - /mysearch
+ *   - /mysearch/GROUP
  * 
  * @author Christian Voigtmann
  * @version $Id$
