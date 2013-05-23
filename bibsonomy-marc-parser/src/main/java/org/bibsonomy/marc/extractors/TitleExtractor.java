@@ -30,6 +30,7 @@ public class TitleExtractor implements AttributeExtractor {
 
 	public StringBuilder getSubtitle(StringBuilder sb, ExtendedMarcRecord r) {
 		int l = sb.length();
+
 		// r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'h', ""); h
 		// is Medium (media type)
 		r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'b', ": ");
@@ -43,13 +44,43 @@ public class TitleExtractor implements AttributeExtractor {
 		return sb;
 	}
 
+	private boolean isDependentPart(ExtendedMarcRecord r) {
+		if (r instanceof ExtendedMarcWithPicaRecord) {
+			String fieldValue = ((ExtendedMarcWithPicaRecord) r).getFirstPicaFieldValue("002@", "$0", "   ");
+			return (fieldValue.charAt(1) == 'f');
+		}
+		return false;
+	}
+	
+	private boolean isIndependentPart(ExtendedMarcRecord r) {
+		if (r instanceof ExtendedMarcWithPicaRecord) {
+			String fieldValue = ((ExtendedMarcWithPicaRecord) r).getFirstPicaFieldValue("002@", "$0", "   ");
+			return (fieldValue.charAt(1) == 'F');
+		}
+		return false;
+	}
+
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		StringBuilder sb = new StringBuilder();
-		getShortTitle(sb, src);
-		getSubtitle(sb, src);
+		final StringBuilder sb = new StringBuilder();
+		if (isDependentPart(src)) {
+			final String seriesName = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("036C", "$a", "").trim();
+			final String pieceName = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", "").trim();
+			
+			sb.append(seriesName.replace("@", ""));
+			if (ValidationUtils.present(pieceName) && ValidationUtils.present(pieceName)) {
+				sb.append(": ");
+			}
+			sb.append(pieceName.replace("@", ""));
+		} else if (isIndependentPart(src)) {
+			sb.append(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", "").replace("@", "").trim());
+		}
+		if (sb.length() == 0) {
+			getShortTitle(sb, src);
+			getSubtitle(sb, src);
+		}
 		StringUtils.trimStringBuffer(sb);
-		String val = sb.toString();
+		final String val = sb.toString();
 		if (val != null) {
 			target.setTitle(Normalizer.normalize(val, Normalizer.Form.NFC));
 		}

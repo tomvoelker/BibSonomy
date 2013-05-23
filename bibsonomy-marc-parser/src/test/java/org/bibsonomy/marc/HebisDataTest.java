@@ -17,4 +17,10 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 		BibTex bib = get("HEB291478336");
 		Assert.assertEquals(Arrays.asList(new PersonName("Gene", "Smith")), bib.getAuthor());
 	}
+	
+	@Test
+	public void testDependentPartTitle() {
+		BibTex bib = get("HEB105811688");
+		Assert.assertEquals("Werkausgabe: Tractatus logico-philosophicus", bib.getTitle());
+	}
 }
