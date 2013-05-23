@@ -74,7 +74,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			this.postProcessAndSortList(command, resourceType);
 		}
 
-		/**
+		/*
 		 * retrieve all bibtex from current user
 		 */
 		final ListCommand<Post<BibTex>> bibtex = command.getBibtex();
@@ -83,7 +83,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		final SortedSet<String> authors = new TreeSet<String>();
 		final SortedSet<String> tags = new TreeSet<String>();
 
-		/**
+		/*
 		 * read title, author and tag information form bibtex
 		 */
 		for (final Post<BibTex> post : bibtex.getList()) {
