@@ -97,6 +97,7 @@ public class TypeExtractor implements AttributeExtractor {
 		map2bibtex.put("slide", "presentation");
 		map2bibtex.put("conference", "proceedings");
 		map2bibtex.put("phdthesis", "phdthesis");
+		map2bibtex.put("series", "mvbook");
 	}
 
 	@Override
@@ -151,8 +152,7 @@ public class TypeExtractor implements AttributeExtractor {
 		
 		if ("u".equals(conf)) {
 			type = "phdthesis";
-		}
-		if (s.indexOf("c") == 1 || s.indexOf("d") == 1) {
+		} else if (s.indexOf("c") == 1 || s.indexOf("d") == 1) {
 			type = "series";
 		} else
 		// preliminary solution for articles
@@ -178,7 +178,7 @@ public class TypeExtractor implements AttributeExtractor {
 		target.setEntrytype(toBibtexType(type));
 		
 		//set type to mvbook for book series
-		getMVBook(target, record);
+		//getMVBook(target, record);
 	}
 
 	private String toBibtexType(String type) {
@@ -198,9 +198,12 @@ public class TypeExtractor implements AttributeExtractor {
 	private void getMVBook(BibTex target, ExtendedMarcWithPicaRecord src) {
 		String mvType = src.getFirstPicaFieldValue("002@", "$0");
 		if ( mvType != null ) {
-			if(target.getEntrytype().equals("book") && 
-					(mvType.charAt(1) == 'c' || mvType.charAt(1) == 'd')) {
-				target.setEntrytype("mvbook");
+			if ((mvType.charAt(1) == 'c') || (mvType.charAt(1) == 'd')) { 
+				if (target.getEntrytype().equals("book")) {
+					target.setEntrytype("mvbook");
+				} else {
+					target.setEntrytype("mvbook");
+				}
 			}
 		}
 	}

@@ -23,4 +23,27 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 		BibTex bib = get("HEB105811688");
 		Assert.assertEquals("Werkausgabe: Tractatus logico-philosophicus", bib.getTitle());
 	}
+	
+	@Test
+	public void testIndependentPartTitle() {
+		BibTex bib = get("HEB02269773X");
+		Assert.assertEquals("Seminumerical algorithms", bib.getTitle());
+		Assert.assertEquals(Arrays.asList(new PersonName("Donald Ervin", "Knuth")), bib.getAuthor());
+		Assert.assertEquals("book", bib.getEntrytype());
+	}
+	
+	@Test
+	public void testMultivolume() {
+		BibTex bib = get("HEB009840354");
+		Assert.assertEquals("The art of computer programming", bib.getTitle());
+		Assert.assertEquals(Arrays.asList(new PersonName("Donald Ervin", "Knuth")), bib.getAuthor());
+		Assert.assertEquals("mvbook", bib.getEntrytype());
+	}
+	
+	@Test
+	public void testSpecialChars() {
+		BibTex bib = get("HEB107697521");
+		Assert.assertEquals("Falar... ler... escrever... Português: um curso para estrangeiros", bib.getTitle());
+		
+	}
 }
