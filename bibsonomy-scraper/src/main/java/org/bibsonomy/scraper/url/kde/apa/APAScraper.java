@@ -51,6 +51,9 @@ public class APAScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "http://www.apa.org/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	
+	private static final String ALLOW_CIRCULAR_REDIRECTS_PARAM = "http.protocol.allow-circular-redirects";
+	private static final boolean ALLOW_CIRCULAR_REDIRECTS = true;
+	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
 	static {
@@ -89,6 +92,8 @@ public class APAScraper extends AbstractUrlScraper {
 		
 		//We have to proof the visit of several locations
 		HttpClient client = WebUtils.getHttpClient();
+		//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
+		client.getParams().setParameter(ALLOW_CIRCULAR_REDIRECTS_PARAM, ALLOW_CIRCULAR_REDIRECTS);
 		
 		//This id is needed to build RIS download link
 		String lstUIDs = null;
