@@ -7,7 +7,7 @@
 	<artifactId>bibsonomy-marc-parser</artifactId>
 	<packaging>jar</packaging>
 	<description>
-		Marc Parser for Bibsonomy
+		Marc Parser for BibSonomy
 	</description>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
@@ -33,6 +33,7 @@
 		<dependency>
 			<groupId>org.marc4j</groupId>
 			<artifactId>marc4j</artifactId>
+			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
