@@ -52,11 +52,9 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 			super.workOn(command);
 		}
 		
-		final User user = context.getLoginUser(); 
-
-		
+		final User user = context.getLoginUser();
 	
-		//do set new settings here
+		// do set new settings here
 		final String action = command.getAction();
 		if ("logging".equals(action)) {
 			/*
@@ -93,13 +91,17 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 	
 	private void updateApiKey(final User user) {
 		this.logic.updateUser(user, UserUpdateOperation.UPDATE_API);
+		/* 
+		 * FIXME: the api key is not updated in the user object => view shows old
+		 * api key! 
+		 */
 		log.debug("api key of " + user.getName() + " has been changed successfully");
 	}
 	
 	private void updateLayoutTagPost(final SettingsViewCommand command, final User user) {
 		final UserSettings commandSettings = command.getUser().getSettings();
 		
-		if(!commandSettings.isShowBibtex() && !commandSettings.isShowBookmark()) {
+		if (!commandSettings.isShowBibtex() && !commandSettings.isShowBookmark()) {
 			errors.rejectValue("user.settings.showBookmark", "error.field.oneResourceMin");
 			return;
 		}
