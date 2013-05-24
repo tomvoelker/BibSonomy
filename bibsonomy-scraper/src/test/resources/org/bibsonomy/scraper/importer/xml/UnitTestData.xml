@@ -831,12 +831,16 @@
 		<URL>http://en.scientificcommons.org/39659008</URL>
 		<BibFile>ScientificcommonsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper</Scraper>
+		<!-- Scientificcommons is down, reason why is unnknown -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_140">
 		<TestDescription>Test for scientificcommons.org</TestDescription>
 		<URL>http://en.scientificcommons.org/42505917</URL>
 		<BibFile>ScientificcommonsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper</Scraper>
+		<!-- Scientificcommons is down, reason why is unnknown -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_141">
 		<TestDescription>test for siencedirect</TestDescription>

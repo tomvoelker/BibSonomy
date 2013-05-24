@@ -211,7 +211,11 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new WormbaseScraper());
 		addScraper(new GoogleScholarScraper());
 		addScraper(new DLibScraper());
-		addScraper(new ScientificcommonsScraper());
+		/*
+		 * scientificcommons is down for a while now
+		 * if it won't come up in the next time is should be removed from chain
+		 */
+		//addScraper(new ScientificcommonsScraper());
 		addScraper(new AGUScraper());
 		addScraper(new CellScraper());
 		addScraper(new IsiScraper());
