@@ -403,18 +403,21 @@
 					artifatory, in our case. According to http://docs.codehaus.org/display/MAVENUSER/Deploying+3rd+Party+Jars+With+WebDAV 
 					this should not be necessary from Maven 2.0.9, as the wagon-webdav lib should 
 					be included in the later maven distributions - but at least for hudson's 
-					setup, it only works this way. Maybe when the maven version of hudson (currently 
+					setup, it only works this way. TODO: Maybe when the maven version of hudson (currently 
 					2.2.1) gets updated, we can remove this build extension. (dbe, 20100811) -->
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
 			</extension>
 			<!-- maven 3 supports only http, https and file, but we use scp to
-				 transfer our jars/wars to the release repository -->
+				transfer our jars/wars to the release repository
+				TODO: we use 2.2 because versions above 2.2 are only compatible with
+				maven 3 (hudson uses maven 2)
+				 -->
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
-				<version>2.4</version>
+				<version>2.2</version>
 			</extension>
 		</extensions>
 	</build>
