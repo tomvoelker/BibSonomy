@@ -49,14 +49,13 @@ DEPLOY_SERVER=${MAKECMDGOALS}
 
 # files
 TMPLOG=/tmp/deploy.log
-ARCHIVE=~/archived_war_files
+BODY_MAIL=/tmp/body.txt
+ARCHIVE=homes.cs.uni-kassel.de:~/archived_war_files
 # the war files to be archived
 WARPATTERN = target/bibsonomy-webapp-*.war
 
 # email addresses
-EMAILDEVEL=bibsonomy2-devel@cs.uni-kassel.de
 EMAILWEBMASTER=webmaster@bibsonomy.org
-EMAILRJA=jaeschke@cs.uni-kassel.de
 # the one which really gets the mail; pick one of the above
 RECIPIENT=${EMAILWEBMASTER}
 # comma separated: further recipients
@@ -94,7 +93,6 @@ gromit: mvn_deploy
 # slave systems: document, deploy, email
 # 
 slave_kassel: document mvn_deploy mail
-slave2_kassel: document mvn_deploy mail
 slave_wuerzburg: document mvn_deploy mail
 #
 # when deploying to puma, we first need to open an ssh connection 
@@ -117,7 +115,7 @@ mvn_deploy: clean
 # send notification mail
 #
 mail:
-	${MAIL} -s "[BibSonomy-Deploy] make ${MAKECMDGOALS}" ${RECIPIENT} -c ${CCRECIPIENTS} < ${TMPLOG}
+	${MAIL} -s "[BibSonomy-Deploy] make ${MAKECMDGOALS}" -a ${TMPLOG} -c ${CCRECIPIENTS} ${RECIPIENT} < ${BODY_MAIL}
 
 #
 # archive the deployed war file
@@ -125,7 +123,7 @@ mail:
 archive:
 	for i in $(wildcard ${WARPATTERN}); do \
 		j=`echo $$i | sed "s/.*\///"`; \
-		cp $$i ${ARCHIVE}/${TODAY}_$$j; \
+		scp $$i ${ARCHIVE}/${TODAY}_$$j; \
 	done
 #
 # open SSH connection with tunnel to PUMA tomcat
@@ -138,9 +136,10 @@ ssh_puma:
 #
 document:
 	-rm ${TMPLOG}
+	-rm ${BODY_MAIL}
 	@read -p "Who are you? " WHO; \
 	read -p "Why are you deploying to ${MAKECMDGOALS}? " WHY ;\
-	echo "\n### who: $$WHO\n### why: $$WHY\n\n" >> ${TMPLOG}
+	echo "### who: $$WHO\n### why: $$WHY\n\n" > ${BODY_MAIL}
 #
 # clean up WEB-INF/classes and WEB-INF/lib
 #
