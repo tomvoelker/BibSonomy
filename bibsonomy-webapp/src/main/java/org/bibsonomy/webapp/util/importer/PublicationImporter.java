@@ -40,7 +40,7 @@ public class PublicationImporter {
 	private FileUploadFactory uploadFactory;
 	
 	/**
-	 * TODO: we could inject this object using Spring.
+	 * converter from Endnote to BibTeX
 	 */
 	private EndnoteToBibtexConverter endnoteToBibtexConverter;
 	
@@ -73,7 +73,7 @@ public class PublicationImporter {
 			if (StringUtils.matchExtension(uploadedFile.getName(), FILE_UPLOAD_EXTENSIONS)) {
 				log.debug("the file is in pdf format");
 
-				handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(uploadedFile, FILE_UPLOAD_EXTENSIONS).writeUploadedFile());
+				this.handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(uploadedFile, FILE_UPLOAD_EXTENSIONS).writeUploadedFile());
 				keepTempFile = true;
 				return null;
 			}
@@ -92,7 +92,7 @@ public class PublicationImporter {
 				 * In case the uploaded file is in EndNote or RIS format, we convert it to BibTeX.
 				 */
 				log.debug("the file is in EndNote format");
-				fileContent = endnoteToBibtexConverter.endnoteToBibtexString(reader);
+				fileContent = this.endnoteToBibtexConverter.endnoteToBibtexString(reader);
 			} else {
 				/*
 				 * or just use it as it is ...
@@ -119,7 +119,7 @@ public class PublicationImporter {
 			/*
 			 * clear temporary file, but keep pdf's
 			 */
-			if (file != null && !keepTempFile) {
+			if ((file != null) && !keepTempFile) {
 				log.debug("deleting uploaded temp file");
 				file.delete();
 			}
@@ -128,11 +128,11 @@ public class PublicationImporter {
 	}
 	
 	/**
-	 * Convertes a String into a BibTeX String
+	 * converts a String into a BibTeX String
 	 * if selection is BibTeX nothing happens
-	 * if selection is EndNote is will be converted to BibTex
+	 * if selection is e.g. EndNote is will be converted to BibTex
 	 * @param selection
-	 * @return
+	 * @return the selection in BibTeX format
 	 */
 	public String handleSelection(final String selection) {
 		// FIXME: at this point we must first convert to bibtex!
@@ -161,19 +161,17 @@ public class PublicationImporter {
 		command.getFileName().add(document.getMd5hash() + document.getFile().getName() + document.getFileName());
 	}
 
-	public FileUploadFactory getUploadFactory() {
-		return this.uploadFactory;
-	}
-
-	public void setUploadFactory(FileUploadFactory uploadFactory) {
+	/**
+	 * @param uploadFactory the uploadFactory to set
+	 */
+	public void setUploadFactory(final FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}
 
-	public EndnoteToBibtexConverter getEndnoteToBibtexConverter() {
-		return this.endnoteToBibtexConverter;
-	}
-
-	public void setEndnoteToBibtexConverter(EndnoteToBibtexConverter endnoteToBibtexConverter) {
+	/**
+	 * @param endnoteToBibtexConverter the endnoteToBibtexConverter to set
+	 */
+	public void setEndnoteToBibtexConverter(final EndnoteToBibtexConverter endnoteToBibtexConverter) {
 		this.endnoteToBibtexConverter = endnoteToBibtexConverter;
 	}
 }
