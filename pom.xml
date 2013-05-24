@@ -409,6 +409,13 @@
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
 			</extension>
+			<!-- maven 3 supports only http, https and file, but we use scp to
+				 transfer our jars/wars to the release repository -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>2.4</version>
+			</extension>
 		</extensions>
 	</build>
 	<dependencies>
