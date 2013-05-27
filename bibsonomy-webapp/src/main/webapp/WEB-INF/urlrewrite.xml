@@ -172,7 +172,13 @@
 		<set type="parameter" name="layout">$1</set>
 		<to>/$2</to>
 	</rule>
-	
+	<!-- json export of our jabref layouts -->
+	<rule>
+		<name>/layoutinfo</name>
+		<from>^/+layoutinfo</from>
+		<set type="parameter" name="format">json</set>
+		<to last="true">/export</to>
+	</rule>
 	<!-- personalized view  -->
 	<rule>
 		<name>/personalized/</name>

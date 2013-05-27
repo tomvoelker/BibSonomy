@@ -611,11 +611,6 @@
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
 				</entry>
-				<entry key="/layoutinfo">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="exportLayoutController"/>
-					</bean>
-				</entry>
 				<entry key="/errors/403">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="error403PageController"/>
@@ -740,7 +735,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</set>
 		</property>
-	</bean>	
+	</bean>
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
@@ -756,7 +751,7 @@
 	
 	<bean id="spheresPageController" class="org.bibsonomy.webapp.controller.SpheresPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
-		<property name="logic" ref="logic"/>		
+		<property name="logic" ref="logic"/>
 	</bean>
 	
 	<bean id="groupPageController" class="org.bibsonomy.webapp.controller.GroupPageController" scope="request" parent="multiResourceListControllerWithTags">
@@ -801,7 +796,6 @@
 	
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
-		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
@@ -824,15 +818,10 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</set>
 		</property>
-	</bean>	 
+	</bean>
 	
 	<bean id="inboxPageController" class="org.bibsonomy.webapp.controller.InboxPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>
-	</bean>	 
-		
-	<bean id="exportLayoutController" class="org.bibsonomy.webapp.controller.ExportLayoutController" scope="request">
-		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
-		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 	
 	<!-- 

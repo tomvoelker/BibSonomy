@@ -101,7 +101,7 @@
                   <a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></a>&#160;<a href="#jabref">*</a>
                 </dt>
 				<dd>
-	 			  <c:out value="${mapEntry.value.description[command.lang]}"/>
+	 			  <c:out value="${mapEntry.value.description[locale.language]}"/>
 				</dd>
 			  </c:if>
 			</c:forEach>

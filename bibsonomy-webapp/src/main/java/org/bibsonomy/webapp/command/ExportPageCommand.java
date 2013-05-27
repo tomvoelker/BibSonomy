@@ -11,21 +11,6 @@ import org.bibsonomy.layout.jabref.JabrefLayout;
 public class ExportPageCommand extends ResourceViewCommand{
 	
 	private Map<String, JabrefLayout> layoutMap;
-	private String lang;
-
-	/**
-	 * @return language code
-	 */
-	public String getLang() {
-		return this.lang;
-	}
-
-	/**
-	 * @param lang
-	 */
-	public void setLang(final String lang) {
-		this.lang = lang;
-	}
 
 	/**
 	 * @return jabref layout map
@@ -40,6 +25,4 @@ public class ExportPageCommand extends ResourceViewCommand{
 	public void setLayoutMap(final Map<String, JabrefLayout> layoutMap) {
 		this.layoutMap = layoutMap;
 	}
-
-	
 }
