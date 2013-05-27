@@ -19,6 +19,7 @@
 .groupsButtons {
 	float: right;
 	margin-right: 0 ! important;
+	margin-left: 1em;
 	padding: 0;
 }
 
