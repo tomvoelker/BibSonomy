@@ -90,7 +90,7 @@
 			<!--+
 				| sphere dialog menu -> only for logged in users: friends, groups, etc.
 			 	+-->
-			<c:if test="${command.context.userLoggedIn and not ownCVPage}"> <!--  and command.context.loginUser.name ne command.requestedUser} -->
+			<c:if test="${command.context.userLoggedIn and not ownCVPage}">
 				<!-- Javascript for the sphere dialog menu -->
 				<script>
 					$(function() {
