@@ -23,7 +23,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.opensocial.oauth.database.IOAuthLogic;
-import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -181,30 +180,16 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			return;
 		}
 		
-		/**
-		 * List of all valid Bibsonomy OAuth consumers.
-		 */
-		List<OAuthConsumerInfo> consumerInfo = this.oauthLogic.listConsumers();
-		command.setConsumerInfo(consumerInfo);
-
-		
-		/**
-		 * Get the valid OAuth applications of the user
-		 * link the logo url and title from consumerInfo
-		 */
+		/* Get the valid OAuth applications of the user */
 		List <OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
+		
+		/* Calculate the expiration time and issue time */
 		for(OAuthUserInfo userInfo : oauthUserInfo) {
 			userInfo.calculateExpirationTime();
 			userInfo.setExpirationTimeString(userInfo.formatDate(userInfo.getExpirationTime()));
 			userInfo.setIssueTimeString(userInfo.formatDate(userInfo.getIssueTime()));
-			
-			for(OAuthConsumerInfo conInfo : consumerInfo) {
-				if(conInfo.getConsumerKey().equals(userInfo.getConsumerKey())) {
-					userInfo.setAppIconUrl(conInfo.getIcon());
-					userInfo.setAppTitle(conInfo.getTitle());
-				}
-			}
 		}
+		
 		command.setOauthUserInfo(oauthUserInfo);
 	}
 	

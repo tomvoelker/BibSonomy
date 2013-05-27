@@ -34,6 +34,8 @@
 		<result property="appId"             column="gadget_url"       javaType="string"/>
 		<result property="authorized"        column="is_authorized"    typeHandler="org.bibsonomy.opensocial.oauth.database.typehandler.BooleanTypeHandler"/>
 		<result property="type"              column="token_type"       javaType="long"/>
+		<result property="appTitle"          column="title"       	   javaType="string"/>
+		<result property="appIconUrl"        column="icon"       	   javaType="string"/>
 	</resultMap>
 	
 	<resultMap id="tokenInfo" class="tokenInfo">
@@ -74,8 +76,9 @@
 		 + -->
 	<select id="getUserInfo" parameterClass="string" resultMap="userInfo">
 		SELECT *
-		FROM oauth_provider_tokens
-		WHERE viewer = #username# 
+		FROM oauth_provider_tokens oapt
+			JOIN oauth_provider_store oaps ON oaps.consumer_key = oapt.consumer_key 
+		WHERE oapt.viewer = #username# 
 	</select>
 
  	<!-- +
