@@ -689,7 +689,13 @@ public enum Views implements View {
 	/**
 	 * Discussions-Page. Posts with Discussions
 	 */
-	DISCUSSEDPAGE("discussions");
+	DISCUSSEDPAGE("discussions"),
+	
+	/**
+	 * for the link cloud demo
+	 * TODO: in deveplopment TODODZO
+	 */
+	LINK_CLOUD("linkcloud");
 
 	/*
 	 * both bookmarks and publications

@@ -641,6 +641,12 @@
 						<property name="controllerBeanName" value="error503PageController"/>
 					</bean>
 				</entry>
+				<!-- linkcloud TODO: in development TODODZO -->
+				<entry key="/linkcloud">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="linkCloudPageController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -903,7 +909,10 @@
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
 	</bean>
-
+	<!-- linkcloud TODO: in development TODODZO -->
+	<bean id="linkCloudPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="LINK_CLOUD"/>
+	</bean>
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
 	
