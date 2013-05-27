@@ -1404,6 +1404,10 @@ function generateExportPostLink(value) {
 	
 	var exportPostSize = null;
 	
+	if(value.length == 0) {
+		return;
+	}
+	
 	//get the checked value of the radio buttons and set the variable exportPostSize
 	var radioBtns = document.getElementsByName("items");
 	for(i = 0; i < radioBtns.length; i++){
