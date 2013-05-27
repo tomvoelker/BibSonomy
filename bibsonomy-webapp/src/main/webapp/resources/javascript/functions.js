@@ -1416,5 +1416,17 @@ function generateExportPostLink(value) {
 	    }
 	}
 	
-	self.location = value + '?items=' + exportPostSize;
+	if(exportPostSize != null) {
+		if(value.indexOf("?") != -1) {
+			if(value.indexOf("items=") != -1) {
+				self.location = value.replace(/\items=\d*/g, "items=" + exportPostSize);
+			} else {
+				self.location = value + '&items=' + exportPostSize;
+			}
+		} else {
+			self.location = value + '?items=' + exportPostSize;
+		}
+	} else {
+		self.location = value;
+	}
 };		
