@@ -14,19 +14,19 @@ public class TitleExtractorTest extends AbstractExtractorTest {
 	public void testTrimming() {
 		BibTex b = new BibTex();
 		TitleExtractor e = new TitleExtractor();
-		e.extraxtAndSetAttribute(b, createExtendedMarcRecord().withMarcField("245", 'a', " Title "));
+		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title "));
 		Assert.assertEquals("Title", b.getTitle());
 		b = new BibTex();
-		e.extraxtAndSetAttribute(b, createExtendedMarcRecord().withMarcField("245", 'a', ""));
+		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', ""));
 		Assert.assertEquals("", b.getTitle());
 		b = new BibTex();
-		e.extraxtAndSetAttribute(b, createExtendedMarcRecord());
+		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord());
 		Assert.assertEquals("", b.getTitle());
 		b = new BibTex();
-		e.extraxtAndSetAttribute(b, createExtendedMarcRecord().withMarcField("245", 'a', " Title").withMarcField("245", 'b', "bla ; blub  "));
+		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title").withMarcField("245", 'b', "bla ; blub  "));
 		Assert.assertEquals("Title: bla", b.getTitle());
 		b = new BibTex();
-		e.extraxtAndSetAttribute(b, createExtendedMarcRecord().withMarcField("245", 'a', "Title").withMarcField("245", 'b', "bla ; blub  "));
+		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', "Title").withMarcField("245", 'b', "bla ; blub  "));
 		Assert.assertEquals("Title: bla", b.getTitle());
 	}
 }
