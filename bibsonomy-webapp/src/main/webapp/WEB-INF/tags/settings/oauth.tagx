@@ -39,7 +39,7 @@
        		       		<th>${oauthInfo.appId}</th>
        		       		<th>${oauthInfo.issueTimeString}</th>
        		       		<th>${oauthInfo.expirationTimeString}</th>
-       		       		<!-- delete button at present not used -->
+       		       		<!-- TODO: delete button at present not implemented -->
        		       		<!-- <th><input type="button" class="adminBtn" value="Delete" onclick="alert('OAuth access deleted')"/> </th> -->
        		       	</tr> 
 				</c:forEach>       		
