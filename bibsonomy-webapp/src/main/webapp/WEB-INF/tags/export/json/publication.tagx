@@ -14,6 +14,12 @@
          "tags" : [
             <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
          ],
+         <c:if test="${not empty post.resource.documents}">
+         "documents" : [<c:forEach var="document" varStatus="documentStatus" items="${post.resource.documents}">
+         	{ "name" : "${mtl:quoteJSON(document.fileName)}", "contentHash" : "${document.md5hash}" }<c:if test="${not documentStatus.last}">,</c:if>
+            </c:forEach>
+         ],
+         </c:if>
          <json:abstractPublication post="${post}" />
       }
 </jsp:root>
