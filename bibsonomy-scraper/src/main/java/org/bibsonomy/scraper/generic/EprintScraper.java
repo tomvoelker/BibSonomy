@@ -65,6 +65,9 @@ public class EprintScraper implements Scraper {
 
 	@Override
 	public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
+		if (!present(scrapingContext.getUrl())) {
+			return false;
+		}
 		// get the page content to find the bibtex url
 		final String page = scrapingContext.getPageContent(); 
 		final Matcher matcher = PATTERN.matcher(page);
@@ -102,7 +105,7 @@ public class EprintScraper implements Scraper {
 		}
 		try {
 			final String page = scrapingContext.getPageContent(); 
-			//check wether page has got an eprint bibtex link or not
+			// check whether page has got an eprint bibtex link or not
 			return PATTERN.matcher(page).find();
 		} catch (final ScrapingException ex) {
 			return false;
