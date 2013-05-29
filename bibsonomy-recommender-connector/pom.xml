@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>BibSonomy-Recommendation-Connector</name>
+	<artifactId>bibsonomy-recommender-connector</artifactId>
+	<packaging>jar</packaging>
+	<description>
+		Marc Parser for Bibsonomy
+	</description>
+	<parent>
+		<groupId>org.bibsonomy</groupId>
+		<artifactId>bibsonomy</artifactId>
+		<version>2.0.35-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.uni-kassel.cs</groupId>
+			<artifactId>recommender-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.uni-kassel.cs</groupId>
+			<artifactId>recommender-impl</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+</project>

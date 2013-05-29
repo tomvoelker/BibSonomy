@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	<bean id="recommenderSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="classpath:SqlMapConfig_recommender.xml" />
+        <property name="dataSource" ref="recommenderDataSource" />
+        <property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+    </bean>
+	
+	<bean id="recommenderMainSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation" value="classpath:SqlMapConfig_recommenderBibDB.xml" />
+        <property name="dataSource" ref="mainDataSource" />
+        <property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+    </bean>
+	
+	<bean id="recommenderSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="recommenderSqlMapClient" />
+	</bean>
+	
+	<bean id="recommenderMainSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="recommenderMainSqlMapClient" />
+	</bean>
+    
+    <bean id="recommenderSessionFactoryWrapper" class="org.bibsonomy.recommender.connector.database.session.SQLMapRecommenderDBSessionFactoryWrapper">
+    	<property name="sessionFactory" ref="recommenderSessionFactory" />
+    </bean>
+    
+    <bean id="recommenderMainSessionFactoryWrapper" class="org.bibsonomy.recommender.connector.database.session.SQLMapRecommenderDBSessionFactoryWrapper">
+    	<property name="sessionFactory" ref="recommenderMainSessionFactory" />
+    </bean>
+    
+    <bean id="recommenderLogic" class="recommender.impl.database.DBAccess">
+    	<property name="recommenderFactory" ref="recommenderSessionFactoryWrapper" />
+    </bean>
+    
+    <bean id="recommenderMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderDBLogic">
+    	<property name="mainFactory" ref="recommenderMainSessionFactoryWrapper" />
+    </bean>
+</beans>
