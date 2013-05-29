@@ -74,12 +74,12 @@
 		<extension>.html</extension>
 	</layout>
 	<layout name="plain">
-		<displayName>plain </displayName>
+		<displayName>plain</displayName>
 		<description xml:lang="en">
 			A simple layout for cvpage
 		</description>
 		<description xml:lang="de">
-			Ausgabe f\u00FCr die cvpage
+			Ausgabe für die CV-Seite
 		</description>
 		<baseFileName>plain</baseFileName>
 		<mimeType>text/html</mimeType>
