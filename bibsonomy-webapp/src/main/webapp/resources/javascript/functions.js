@@ -714,7 +714,7 @@ function editTags() {
 				/*
 				 * start the tag autocompletion
 				 */
-				startTagAutocompletion(input, true, true, true);
+				startTagAutocompletion(input, true, true, true, false);
 				/*
 				 * add submit handler (that removes the form and re-builds the tags)
 				 */
@@ -1113,14 +1113,16 @@ String.prototype.trim = function () {
  * @param isPost 		- only true if the autocompletion is started in the post list (quick tag edit), false if it is started e.g. in the search bar
  * @param multiTags 	- true if several tags are allowed in the text field, false: the textfield will be emptied and the suggested tag put in it. 
  * @param sendAllowed	- true if send:USER is allowed in the given textfield, otherwise false
+ * @param showOrigin	- true if the origin of a tag (user, copy, recommended) should be shown, otherwise false
  */
-function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
+function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, showOrigin) {
 	
 	if (textfield[0] == null)
 		return;
 	
 	var textfieldValue 	= null;
 	var valueArray 		= null;
+	var ajaxTagArray	= null;
 	var userInput		= null;	
 	var friends 		= null;
     var termTemplate 	= "<span class='ui-autocomplete-term'>%s</span>";
@@ -1146,9 +1148,16 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 	var autocompleteObj = textfield.autocomplete({		
 		source: function( request, response ) {
 			
-			textfieldValue = textfield.val();
-			valueArray = textfieldValue.split(" ");
-			userInput = valueArray[valueArray.length - 1];
+			textfieldValue 	= textfield.val();
+			valueArray 		= textfieldValue.split(" ");
+			userInput 		= valueArray[valueArray.length - 1];
+			
+			/**
+			 * Abort if the user types "send:" and sendAllowed is set to false.
+			 */
+			if(userInput.indexOf("send:") != -1 && !sendAllowed) {
+				return;
+			}
 			
 			/**
 			 * If the user typed nothing - do nothing 
@@ -1175,7 +1184,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 								 */
 								if(textfieldValue.indexOf(friend) == -1 &&
 										friend.search(regex) == 0) {
-									return { value: friend };
+									return { value: friend};
 								}
 							}));
 						} else {
@@ -1183,11 +1192,12 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 							var regex 			= new RegExp(userInput);
 							var recommendedTags = new Array();
 							var copiedTags 		= new Array();
+							ajaxTagArray		= new Array();
 							
 							/**
 							 * Get the tag-name's of "copied post" and "recommendation" -> Save them in a detached array
 							 * Only add the tags which are matching with the following patterns:
-							 * textfieldValue.indexOf(name) == -1		-> By now the tag isn't used for this post  
+							 * textfieldValue.indexOf(name) == -1		-> By now the tag isn't used for this post yet -> suggest it !
  							 * name.search(regex) == 0 					-> The tag starts with the letters of the userInput
 							 */
 							$("#recommendedTags li, .tagbox li a").each(function(index, item) {
@@ -1209,59 +1219,58 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 							 */
 							var tags = $.map( data.items, function(item) {
 								
-								var origin 					= "  [U]";
 								var recommendedTagsIndex 	= recommendedTags.indexOf(item.label);
 								var copiedTagsIndex			= copiedTags.indexOf(item.label);
 								
 								/**
 								 * If the array of "copied post" and "recommendation" tags contains the actual tag name,
 								 * remove the tag name in the array "copied post", "recommendation" or both.
-								 * Complete the origin-token. 
 								 */
 								if(recommendedTagsIndex != -1) {
-									origin = origin.slice(0,origin.length - 1) + ",R]";
 									recommendedTags.splice(recommendedTagsIndex, 1);
 								}
 								
 								if(copiedTagsIndex != -1) {
-									origin = origin.slice(0,origin.length - 1) + ",C]";
 									copiedTags.splice(copiedTagsIndex, 1);
 								}
 								
 								/**
-								 * don't recommend tags, which are already included in the input field
+								 * don't suggest tags, which are already included in the input field
 								 */
 								if(textfieldValue.indexOf(item.label) == -1) {
+									
+									/**
+									 * Store all tags with origin user to this array.
+									 * Later in the "open:" method of the autocompletion plugin we need them to distingush the tag origin.
+									 */
+									ajaxTagArray.push(item.label);
+									
 									return { value: (item.label),
-											 label: (item.label + origin)};
+											 label: (item.label)};
 								}
 							});
-							
+																					
 							/**
 							 * Now, the tags which are in the array of "copied post" and "recommendation" tags 
-							 * aren't used in other posts by now.
-							 * Recommend them and add the origin-token.
+							 * aren't used in other posts of the user by now.
+							 * Suggest them by adding them to the tags map.
 							 */
 							recommendedTags.forEach(function(name) {
 								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
-									if(copiedTags.indexOf(name) != -1) {
-										tags.push({value: name, label: name + "  [R,C]"});
-									} else {
-										tags.push({value: name, label: name + "  [R]"});
-									}
+									tags.push({value: name, label: name});
 								}								
 							});
 
 							copiedTags.forEach(function(name) {
 								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
-									if(recommendedTags.indexOf(name) != -1) {
-										tags.push({value: name, label: name + "  [R,C]"});
-									} else {
-										tags.push({value: name, label: name + "  [C]"});
-									}
+									tags.push({value: name, label: name});
 								}
 							});
-																				
+								
+							/**
+							 * Response all tags with origin user, recommended and copy.
+							 * Later in the "open:" method we add the span for the tag origin.
+							 */
 							response(tags);
 						}
 					}
@@ -1273,7 +1282,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 			var item = ui.item;
 			var textArea = $(event.target);
 			var text = item.value;
-			var substring = textfieldValue.substr(0, textfieldValue.length - (valueArray[valueArray.length - 1].length));
+			var substring = textfieldValue.substr(0, textfieldValue.length - (userInput.length));
 			
 			/**
 			 * If multiTags is true, the user can apply more as one tag.
@@ -1284,7 +1293,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 				 * Distinguish if the user has typed "send:" and want to get and set the recommended friends
 				 * or he wants only the normal tags set
 				 */
-				if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {
+				if(userInput.indexOf("send:") != -1) {
 					textArea.val(substring + "send:" + text + " ");
 				} else {
 					textArea.val(substring + text + " ");	
@@ -1300,37 +1309,122 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed) {
 		},
         open: function(event,ui) {
         	/**
+        	 * 
+        	 * 1.	Bold letters
         	 * This functionality below causes the bold letters of the autocompletion.
-        	 * We distinguish if the user wants to send the post to a user (contains "send:"),
-        	 * or the user wants the tags.
         	 * The entire part of the recommendation starts with bold text-width (style.css -> .ui-menu-item).
         	 * Below in the acData iteration, we replace the input of the user of the textfield (e.g. "Buil")
         	 * in the recommendation (The recommendation contains "Building" and we replace "Buil" with normal text-width
-        	 * in a span with the class ".ui-autocomplete-term" (style.css)). 
+        	 * in a span (named termTemplate) with the class ".ui-autocomplete-term" (style.css)).
+        	 * 
+        	 * 2.	Tag origin
+        	 * Add a span with the tag origin in every (tag-) list element.
+        	 * 
         	 */
+        	
             var acData = $(this).data('autocomplete');
-            var styledTerm;
-            
-			if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {
-				styledTerm 	= termTemplate.replace('%s', String(valueArray[valueArray.length - 1]).slice(5));
+            var styledTerm		= null;
+			var recommendedTags = null;
+			var copiedTags 		= null;
+
+            /**
+             * Here we distinguish if the user wants to send the post to a user (user input contains "send:"),
+        	 * or the user wants the tags. If the user used "send:", we don't want to suggest like "send:nraabe".
+        	 * We want to suggest "nraabe" in the autocompletion list.
+             */
+			if(userInput.indexOf("send:") != -1) {
+				styledTerm 	= termTemplate.replace('%s', String(userInput).slice(5));
 			} else {
-				styledTerm 	= termTemplate.replace('%s', valueArray[valueArray.length - 1]);	
+				styledTerm 	= termTemplate.replace('%s', userInput);	
 			}
 
+			/**
+			 * This part is only used, if we want to show the tag origin.
+			 * The functionality below gives us the tags with origin recommended and copy. 
+			 */
+			if(showOrigin) {
+	            var regex 		= new RegExp(userInput);
+				recommendedTags = new Array();
+				copiedTags 		= new Array();
+				
+				/**
+				 * Get the tag-name's of "copied post" and "recommendation" -> Save them in a detached array
+				 * Only add the tags which are matching with the following patterns:
+				 * textfieldValue.indexOf(name) == -1		-> By now the tag isn't used for this post yet -> suggest it !
+				 * name.search(regex) == 0 					-> The tag starts with the letters of the userInput
+				 */
+				$("#recommendedTags li, .tagbox li a").each(function(index, item) {
+					var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
+					if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
+						recommendedTags.push(name);
+					}
+				});
+
+				$("#copiedTags li, .tagbox li a").each(function(index, item) {
+					var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
+					if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
+						copiedTags.push(name);
+					}
+				});
+			}
+			
             acData
                 .menu
                 .element
                 .find('a')
                 .each(function() {
                     var me = $(this);
-        			if(valueArray[valueArray.length - 1].indexOf("send:") != -1) {
-        				me.html( me.text().replace(String(valueArray[valueArray.length - 1]).slice(5), styledTerm));
+                    
+                    /**
+                     * Example: user types "goo" - we want to suggest "google"
+                     * We take "google" and replace "goo" with the span with thin letters.
+                     */
+        			if(userInput.indexOf("send:") != -1) {
+        				me.html( me.text().replace(String(userInput).slice(5), styledTerm));
         			} else {
-        				me.html( me.text().replace(valueArray[valueArray.length - 1], styledTerm));	
+        				me.html( me.text().replace(userInput, styledTerm));	
+        			}
+        			
+        			/**
+        			 * Show the user the tag origin.
+        			 * Build a string tagOrigin. After that create a span with the text of the tag originand 
+        			 * and append it to the list element oh this tag suggestion. 
+        			 */
+        			if(showOrigin) {
+
+        				var tagOrigin = "";
+
+            			if(ajaxTagArray.indexOf(me.text()) != -1) {
+            				tagOrigin = tagOrigin + "user";
+            			}
+
+            			if(recommendedTags.indexOf(me.text()) != -1) {
+            				if(tagOrigin.length > 0 ) {
+            					tagOrigin = tagOrigin + ", recommended";
+            				} else {
+            					tagOrigin = "recommended";
+            				}
+            			}
+
+            			
+            			if(copiedTags.indexOf(me.text()) != -1) {
+            				if(tagOrigin.length > 0 ) {
+            					tagOrigin = tagOrigin + ", copy";
+            				} else {
+            					tagOrigin = "copy";
+            				}
+            			}
+            			
+        				var tagOriginSpan 		= document.createElement("span"); 
+        				tagOriginSpan.innerHTML = tagOrigin;
+        				tagOriginSpan.className	= "ui-autocomplete-tagOrigin";
+
+        				me.append(tagOriginSpan);
         			}
                 });
-            
+
 	        $(this).autocomplete('widget').css('z-index', 999);
+	        
 	        return false;
         }
 	});

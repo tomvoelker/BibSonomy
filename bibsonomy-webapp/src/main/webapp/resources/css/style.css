@@ -2569,6 +2569,11 @@ div.reviewTextBox textarea {
 	font-weight: normal; 
 }
 
+.ui-autocomplete-tagOrigin {
+	color: #aaa; 
+	float: right;
+}
+
 .ui-state-hover{
 	font-weight:bold;
 }
