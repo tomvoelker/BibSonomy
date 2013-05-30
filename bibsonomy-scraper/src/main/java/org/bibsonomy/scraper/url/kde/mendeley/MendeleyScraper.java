@@ -96,15 +96,30 @@ public class MendeleyScraper extends AbstractUrlScraper{
 		
 		String entryType = "";
 		String lblTitle = "";
-		// TODO: there are more than books and articles in mendeley!
+		
 		final String type = json.getString("type");
-		if (type.contains("book")){ 
+		if (type.equalsIgnoreCase("book") || type.equalsIgnoreCase("statute")){ 
 			entryType = "@book{";
 			lblTitle = "booktitle";
-		} else if (type.contains("journal")) {
+		} else if (type.equalsIgnoreCase("journal") || type.equalsIgnoreCase("case") || 
+				type.equalsIgnoreCase("computer_program") || type.equalsIgnoreCase("generic") ||
+				type.equalsIgnoreCase("journal_article") || type.equalsIgnoreCase("magazine_article") ||
+				type.equalsIgnoreCase("newspaper_article") || type.equalsIgnoreCase("working_paper")) {
 			entryType = "@article{";
 			lblTitle = "journal";
-		} else { 
+		}else if (type.equalsIgnoreCase("book_section")){
+			entryType = "@inbook{";
+			lblTitle = "booktitle";
+		}else if(type.equalsIgnoreCase("thesis")){
+			entryType = "@phdthesis{";
+			lblTitle = "journal";
+		}else if(type.equalsIgnoreCase("conference_proceedings")){
+			entryType = "@inproceedings{";
+			lblTitle = "journal";
+		}else if(type.equalsIgnoreCase("report")){
+			entryType = "@techreport{";
+			lblTitle = "journal";
+		}else { 
 			entryType = "@misc{";
 			lblTitle = "journal";
 		}
@@ -155,41 +170,40 @@ public class MendeleyScraper extends AbstractUrlScraper{
 		
 		final long year = json.has("year") ? json.getLong("year") : 0;
 		
-		// FIXME: use append instead of +
 		result.append(entryType);
 		result.append(citationKey + year + ",\n");
-		
+	
 	    if (json.has("title")) {
-			result.append( "title = {" + json.getString("title") + "},\n");
+			result.append( "title = {").append(json.getString("title")).append( "},\n");
 		}
 	    if (json.has("volume")) {
-			result.append( "volume = {" + json.getString("volume") + "},\n");
+			result.append( "volume = {").append(json.getString("volume")).append("},\n");
 		}
 	    if (json.has("issue")) {
-			result.append( "number = {" + json.getString("issue") + "},\n");
+			result.append( "number = {").append(json.getString("issue")).append("},\n");
 		}
 		if (json.has("website")) {
-			result.append("url = {" + json.getString("website") + "},\n");
+			result.append("url = {").append(json.getString("website")).append("},\n");
 		}
 		if (json.has("published_in")) {
-			result.append(lblTitle + " = {" + json.getString("published_in") + "},\n");
+			result.append(lblTitle + " = {").append(json.getString("published_in")).append("},\n");
 		}
 		if (json.has("publisher")) {
-			result.append( "publisher = {" + json.getString("publisher") + "},\n");
+			result.append( "publisher = {").append(json.getString("publisher")).append("},\n");
 		}
 		if (authorsFullName != "") {
-			result.append( "author = {"+ authorsFullName+"},\n");
+			result.append( "author = {").append(authorsFullName).append("},\n");
 		}
 		if (editorsFullName != "") {
-			result.append( "editors = {"+ editorsFullName+"},\n"); // FIXME: editors or editor
+			result.append( "editor(s) = {").append(editorsFullName).append("},\n"); 
 		}	    
 	    if (year != 0) {
-			result.append( "year = {" + year + "},\n");
+			result.append( "year = {").append(year).append("},\n");
 		}	    
 	    if (json.has("pages")) {
-			result.append( "pages = {" + json.getString("pages") +"}}");
+			result.append( "pages = {").append(json.getString("pages")).append("}");
 		}
-	    
+	    result.append("}");
 		return result.toString();		
 	}
 	
