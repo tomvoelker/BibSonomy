@@ -801,8 +801,8 @@ function prepareErrorBoxes(className) {
 			$(this).fadeIn("slow");    
 	});
 	if ($("." + className)) {
-		// this is a workaround because the tags input element's id is not 'tags.so-and-so' but 'inpf'
-		$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});
+		// this is a workaround because the tags input element's id is not 'tags.so-and-so' but 'inpf_tags'
+		$('#inpf_tags').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});
 	}
 }
 
@@ -1423,7 +1423,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
         			}
                 });
 
-	        $(this).autocomplete('widget').css('z-index', 999);
+	        $(this).autocomplete('widget').css('z-index', 99);
 	        
 	        return false;
         }
