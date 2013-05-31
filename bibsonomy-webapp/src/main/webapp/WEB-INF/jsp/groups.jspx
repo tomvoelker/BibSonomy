@@ -41,7 +41,9 @@
                 | explain what groups are good for
                 +-->
 			<p id="groupIntro">
-               <fmt:message key="system.groups"/>
+				<fmt:message key="system.groups">
+					<fmt:param value="${properties['project.email']}" />
+				</fmt:message>
 			</p> 
 			<!--+
 				| show alphabet for direct links to groups
