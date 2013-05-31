@@ -30,6 +30,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all groups bibsonomy has.
@@ -73,7 +74,10 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
 	@Override
 	protected List<Group> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(RESTConfig.GROUPS_URL + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end);
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
+		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
+		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
 }

@@ -30,6 +30,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive details about an user of bibsonomy.
@@ -63,7 +64,9 @@ public final class GetUserDetailsQuery extends AbstractQuery<User> {
 
 	@Override
 	protected User doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + this.username);
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+		urlBuilder.addPathElement(this.username);
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
 }

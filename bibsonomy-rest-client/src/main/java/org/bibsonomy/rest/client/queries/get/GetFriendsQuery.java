@@ -31,6 +31,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Returns a list of users which either the requested user has in his friend list,
@@ -80,7 +81,13 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 
 	@Override
 	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + this.username + "/" + URL_FRIENDS + "?" + RESTConfig.ATTRIBUTE_KEY_RELATION + "=" + relation + "&start=" + this.start + "&end=" + this.end);
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+		urlBuilder.addPathElement(this.username);
+		urlBuilder.addPathElement(RESTConfig.FRIENDS_SUB_PATH);
+		urlBuilder.addParameter(RESTConfig.ATTRIBUTE_KEY_RELATION, this.relation);
+		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
+		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
 }

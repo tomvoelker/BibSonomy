@@ -30,6 +30,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all users bibsonomy has.
@@ -73,7 +74,10 @@ public final class GetUserListQuery extends AbstractQuery<List<User>> {
 
 	@Override
 	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end);
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
+		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
 }

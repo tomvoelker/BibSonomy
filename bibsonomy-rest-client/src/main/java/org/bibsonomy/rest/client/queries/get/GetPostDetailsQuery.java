@@ -32,6 +32,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive details about a post of an user.
@@ -70,7 +71,11 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 
 	@Override
 	protected Post<? extends Resource> doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + this.username + "/" + RESTConfig.POSTS_URL + "/" + this.resourceHash);
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+		urlBuilder.addPathElement(this.username);
+		urlBuilder.addPathElement(RESTConfig.POSTS_URL);
+		urlBuilder.addPathElement(this.resourceHash);
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
 }

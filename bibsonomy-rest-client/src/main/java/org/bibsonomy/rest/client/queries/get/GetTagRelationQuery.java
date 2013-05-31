@@ -33,11 +33,13 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author niebler
@@ -69,37 +71,38 @@ public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	@Override
 	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
 		// /tags/[tags]?...
-		String url = URL_TAGS + "/" + StringUtils.implodeStringCollection(tagNames, "+")
-				+ "?" + RESTConfig.START_PARAM + "=" + this.start
-				+ "&" + RESTConfig.END_PARAM + "=" + this.end;
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.TAGS_URL);
+		urlBuilder.addPathElement(StringUtils.implodeStringCollection(tagNames, "+"));
+		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
+		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
 		
 		if (order != null) {
-			url += "&" + RESTConfig.ORDER_PARAM + "=" + this.order;
+			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, this.order.toString());
 		}
 		switch (this.grouping) {
 		case USER:
-			url += "&user=" + this.groupingValue;
+			urlBuilder.addParameter("user", this.groupingValue);
 			break;
 		case GROUP:
-			url += "&group=" + this.groupingValue;
+			urlBuilder.addParameter("group", this.groupingValue);
 			break;
 		case VIEWABLE:
-			url += "&viewable=" + this.groupingValue;
+			urlBuilder.addParameter("viewable", this.groupingValue);
 			break;
 		}
 
 		if (present(this.filter)) {
-			url += "&" + RESTConfig.FILTER_PARAM + "=" + this.filter;
+			urlBuilder.addParameter(RESTConfig.FILTER_PARAM, this.filter);
 		}
 		
-		if (this.resourceType != null && !Resource.class.equals(this.resourceType)) {
-			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceUtils.toString(this.resourceType);
+		if (this.resourceType != null && this.resourceType != Resource.class) {
+			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
 		}
 		
 		// add relation parameter.
-		url += "&" + RESTConfig.RELATION_PARAM + "=" + this.relation;
+		urlBuilder.addParameter(RESTConfig.RELATION_PARAM, this.relation.toString());
 		
-		this.downloadedDocument = performGetRequest(url);
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		
 		return null;
 	}

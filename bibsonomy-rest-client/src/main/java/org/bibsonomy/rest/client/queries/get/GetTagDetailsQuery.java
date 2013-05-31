@@ -28,6 +28,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive information about a specific tag
@@ -55,8 +56,9 @@ public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 
 	@Override
 	protected Tag doExecute() throws ErrorPerformingRequestException {
-		final String url = RESTConfig.TAGS_URL + "/" + tagName;
-		this.downloadedDocument = performGetRequest(url);
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.TAGS_URL);
+		urlBuilder.addPathElement(tagName);
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
 }

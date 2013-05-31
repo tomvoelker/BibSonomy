@@ -34,6 +34,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -114,25 +115,27 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 
 	@Override
 	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
-		String url = RESTConfig.POSTS_POPULAR_URL + "?" + RESTConfig.START_PARAM + "=" + this.start + "&" + RESTConfig.END_PARAM + "=" + this.end;
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.POSTS_POPULAR_URL);
+		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
+		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
 
 		if (this.resourceType != Resource.class) {
-			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceFactory.getResourceName(this.resourceType);
+			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
 		}
 
 		switch (this.grouping) {
 		case USER:
-			url += "&user=" + this.groupingValue;
+			urlBuilder.addParameter("user", this.groupingValue);
 			break;
 		case GROUP:
-			url += "&group=" + this.groupingValue;
+			urlBuilder.addParameter("group", this.groupingValue);
 			break;
 		case VIEWABLE:
-			url += "&viewable=" + this.groupingValue;
+			urlBuilder.addParameter("viewable", this.groupingValue);
 			break;
 		}
 
-		this.downloadedDocument = performGetRequest(url);
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
 }

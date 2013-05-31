@@ -36,6 +36,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to get concepts 
@@ -60,49 +61,52 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 	
 	@Override
 	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
-		// TODO: use string builder
-		String url;
+		UrlBuilder urlBuilder;
 		
 		switch (this.grouping) {
 		case USER:
-			url = RESTConfig.USERS_URL + "/" + this.groupingName + "/" + RESTConfig.CONCEPTS_URL;			
+			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+			urlBuilder.addPathElement(this.groupingName);
+			urlBuilder.addPathElement(RESTConfig.CONCEPTS_URL);			
 			break;
 		case GROUP:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not implemented yet");
 			//url = URL_GROUPS + "/" + this.groupingName + "/" + URL_CONCEPTS;
 			//break;
 		case ALL:
-			url = RESTConfig.CONCEPTS_URL;
+			urlBuilder = new UrlBuilder(RESTConfig.CONCEPTS_URL);
 			break;
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept query");
 		}
 				
 		if (this.status != null) {
-			url += "?" + RESTConfig.CONCEPT_STATUS_PARAM + "=" + this.status.toString().toLowerCase();
+			urlBuilder.addParameter(RESTConfig.CONCEPT_STATUS_PARAM, this.status.toString().toLowerCase());
 		}
 
 		if (this.resourceType != null) {
-			url += "&" + RESTConfig.RESOURCE_TYPE_PARAM + "=" + ResourceFactory.getResourceName(this.resourceType);
+			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
 		}
 		
 		if (this.regex != null) {
-			url += "?" + RESTConfig.REGEX_PARAM + "=" + this.regex;
+			urlBuilder.addParameter(RESTConfig.REGEX_PARAM, this.regex);
 		}	
 		
 		if (present(this.tags)) {
+			String tagsValues = null;
 			boolean first = true;
 			for (final String tag : tags) {
 				if (first) {
-					url += "&" + RESTConfig.TAGS_PARAM + "=" + tag;
+					tagsValues = tag;
 					first = false;
 				} else {
-					url += "+" + tag;
+					tagsValues += "+" + tag;
 				}
 			}
+			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, tagsValues);
 		}			
 		
-		this.downloadedDocument = performGetRequest(url);
+		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
 
