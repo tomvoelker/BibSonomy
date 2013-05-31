@@ -165,8 +165,8 @@
 					<!-- choose the layout: the minimized layout or the full screen layout -->
 					<c:choose>
 						<c:when test="${not empty minimizedContentWidth and minimizedContentWidth == true}">
-							<div class="upperMinimizedPostcontainer"> 
-								<div id="postcontainer" class="lowerMinimizedPostcontainer">
+							<div id="postcontainer">
+								<div class="minimizedPostcontainer">
 									<c:if test="${not empty contentIntro}">
 										<div id="intro">
 											<jsp:invoke fragment="contentIntro"/>
@@ -176,8 +176,8 @@
 									<jsp:invoke fragment="content"/>
 							
 									<div class="floatclear"></div>
-								</div> <!-- #postcontainer -->
-							</div>
+								</div>
+							</div> <!-- #postcontainer -->
 						</c:when>
 						<c:otherwise>						
 							<div id="postcontainer">

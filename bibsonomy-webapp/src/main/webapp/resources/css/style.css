@@ -1853,7 +1853,7 @@ form.editTags input[type=text] {
 	display: none;
 }
 
-.lowerMinimizedPostcontainer {
+.minimizedPostcontainer {
 	max-width: 800px; 
 	min-width: 590px;
 /* 	Activate for centering the content */
@@ -1861,18 +1861,10 @@ form.editTags input[type=text] {
 /* 	margin-right: auto !important;  */
 }
 
-.upperMinimizedPostcontainer {
-	background-color: #FFFFFF;
-/* 	Activate for centering the content */
-/* 	margin-right: 300px; */
-}
-
-
 #fullscreenfooter {
 	height: 30px;
 	width: 100%;
 	background-color: white;
-	
 }
 
 #postcontainer {
@@ -1887,11 +1879,10 @@ form.editTags input[type=text] {
 	right: 0;
 }
 
-
 .nextprev {
 	width: 100%;
 }
-	
+
 .listnav {
 	border:1px solid #c6c6c6;
 	margin:2px;
