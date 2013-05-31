@@ -23,6 +23,7 @@
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
+	<!-- FIXME: footerContainer not used -->
 	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
@@ -87,14 +88,14 @@
 
 
 						<!--+ 
-						 	|
-						 	| project.name
+						 	| 
+						 	| logo and project name
 						 	|
 						 	+-->
 						<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 						<c:if test="${not empty headerLogo}">
 							<div id="logoimage">
-								<img id="headerlogoimage" src="${headerLogo}"/>
+								<a href="/"><img id="headerlogoimage" src="${headerLogo}"/></a>
 							</div>
 						</c:if>
 
@@ -110,9 +111,7 @@
 						</div>
 					
 						<div id="logoSubtitle"><fmt:message key="system.desc"/></div><!-- FIXME: not shown by CSS -->
-					
-
-
+						
 					</div><!-- #header -->
 
 
@@ -195,7 +194,7 @@
 						</c:otherwise>
 					</c:choose>
 
-					
+					<!-- TODO: remove?! -->
 <!--					<div id="footercontainer">-->
 <!--						<c:choose>-->
 <!--							<c:when test="${not empty footerContainer}">-->
