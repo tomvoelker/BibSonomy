@@ -1156,15 +1156,35 @@ div.help>a,div.help>b, div.help>span {
 
 
 .post {
-	clear: left;
-	padding: 2px;
-	background-color: #ffffff;
-	position: relative;
-	min-height: 86px; /* to give previews images enough space */ 
+/*	clear: left; */
+	padding: 0px;
+	height: 90px; /* to give previews images enough space and preventing changing size during hover */ 
+	overflow: hidden; 
 }
-	
+
+.post .innerpost {
+	padding: 2px;
+	margin: 0px;
+	width: 100%;
+	height: 86px;
+	position: relative;
+}
+
 .post:hover {
+	overflow: visible;
+}
+
+.post:hover .innerpost {
 	background-color: #ffffc6 !important;
+	/* width: 138%; */
+	min-width: 138%;
+	width: auto;
+	position: relative;
+	z-index: 10;
+	min-height: 120px;
+	height: auto;
+	border: 1px solid gray;
+	padding: 1px;
 }
 
 .post .image {
@@ -1265,11 +1285,15 @@ div.help>a,div.help>b, div.help>span {
 }
 
 
-.ptitle,  .pdesc, .post .authors {
+.ptitle, .pdesc, .post .authors {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-  	-o-text-overflow: ellipsis;  /* necessary for opera 9+10 */
+	-o-text-overflow: ellipsis;  /* necessary for opera 9+10 */
+}
+
+.post:hover .ptitle, .post:hover .pdesc, .post:hover .authors {
+	white-space: inherit;
 }
 
 .ptitle {
@@ -1436,8 +1460,8 @@ Most actions appear in three ways
 }
 
 .post .ptags {
-	margin-top: 2px;		
-	margin-bottom: 5ex;		
+	margin-top: 2px;
+	margin-bottom: 20px;
 }
 
 .ptags li {
@@ -1445,6 +1469,15 @@ Most actions appear in three ways
 	color: black;
 	padding-right: 0.5ex;
 	display: inline;
+}
+
+.post:hover .ptags li {
+	margin-bottom: 0.5ex;
+	color: black;
+	padding-right: 0.5ex;
+	display: block;
+	padding-bottom: 0.2ex;
+	float: left;
 }
 
 .ptags .hiddenSystemTag img {
@@ -1457,8 +1490,15 @@ Most actions appear in three ways
     text-overflow: ellipsis;
   	-o-text-overflow: ellipsis;  /* necessary for opera 9+10 */
 	float: left;
-	max-width: 86%;
+	max-width: 95%;
 	white-space: nowrap;
+}
+
+.post:hover .ptags ul.tags {
+	white-space: inherit;
+	text-overflow: clip;
+	overflow: visible;
+	-o-text-overflow: clip;  /* necessary for opera 9+10 */
 }
 
 .ptags a {
@@ -1478,7 +1518,7 @@ Most actions appear in three ways
 	background: url("/resources/image/post_actions.png");
     vertical-align: text-bottom;
     background-color: inherit;
-    float:left;	
+    
 }
 
 .post .ptags span.ieditTags		{ background-position: 0 -85px; width: 16px; height: 16px;} 
@@ -1865,6 +1905,7 @@ form.editTags input[type=text] {
 	height: 30px;
 	width: 100%;
 	background-color: white;
+	
 }
 
 #postcontainer {
@@ -1879,10 +1920,11 @@ form.editTags input[type=text] {
 	right: 0;
 }
 
+
 .nextprev {
 	width: 100%;
 }
-
+	
 .listnav {
 	border:1px solid #c6c6c6;
 	margin:2px;
