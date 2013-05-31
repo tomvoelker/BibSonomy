@@ -1452,26 +1452,33 @@ function setupPostExportSize() {
 	
 	var exportPostSize = null;
 	
-	//get the DOM elements of all links [<a..] without the ones with a star '*' [they reference only to jabref on the page - #jabref]
-	var exportLinks = document.evaluate("//dt/a[not(contains(text(),'*'))]", document.documentElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-
 	//get the checked value of the radio buttons and set the variable exportPostSize
-	var radioBtns = document.getElementsByName("items");
-	for(i = 0; i < radioBtns.length; i++){
+	var radioBtns = $("[name='items']");
+	for(i = 0; i < radioBtns.length; i++) {
 	    if(radioBtns[i].checked){
 	        exportPostSize = radioBtns[i].value;
 	    }
 	}
 	
+	var links = $("dt").children();
+	
 	//append to all links '?items=5' - exportPostSize initiated with '5'
-	for (var i = 0; i < exportLinks.snapshotLength; i++) {
-		//Contains the href any other parameters? Distinguish this cases.
-		if(exportLinks.snapshotItem(i).href.indexOf("?") != -1) {
-			exportLinks.snapshotItem(i).href = exportLinks.snapshotItem(i).href + "&items=" + exportPostSize;
-		} else {
-			exportLinks.snapshotItem(i).href = exportLinks.snapshotItem(i).href + "?items=" + exportPostSize;
+	$.each(links, function(index, value) {
+		//get the elements of all links [<a..] without the ones with a star '*' [they reference only to jabref on the page - #jabref]
+		if(value.href.indexOf("#jabref") == -1) {
+			
+			//Contains the href any other parameters? Distinguish this cases.
+			if(value.href.indexOf("?") != -1) {
+				if(value.href.indexOf("items=") != -1) {
+					value.href = value.href.replace(/\items=\d*/g, "items=" + exportPostSize);
+				} else {
+					value.href = value.href + '&items=' + exportPostSize;
+				}
+			} else {
+				value.href = value.href + "?items=" + exportPostSize;
+			}
 		}
-	}
+	});
 	
 	//A click on a radio button replaces in any link the old value X '?items=X' with the new value Y '?items=Y'
 	$("#exportOptions").click(function(event) {
@@ -1482,15 +1489,18 @@ function setupPostExportSize() {
 		        exportPostSize = radioBtns[i].value;
 		    }
 		}
-
-		for (var i = 0; i < exportLinks.snapshotLength; i++) {
-			exportLinks.snapshotItem(i).href = exportLinks.snapshotItem(i).href.replace(/\items=\d*/g, "items=" + exportPostSize);	
-		}
+		
+		//set the new value "exportPostSize" for parameter "items"
+		$.each(links, function(index, value) {
+			if(value.href.indexOf("#jabref") == -1) {
+				value.href = value.href.replace(/\items=\d*/g, "items=" + exportPostSize);	
+			}
+		});
 	});		
 };
 
 /**
- * Function to setup link generation for export (in formats.tagx) on /export/ page
+ * Function to setup link generation for export (in formats.tagx) on /export/ page (only for <select ... >)
  * 
  * @param value - the link of the website which should be exported
  */
@@ -1503,7 +1513,7 @@ function generateExportPostLink(value) {
 	}
 	
 	//get the checked value of the radio buttons and set the variable exportPostSize
-	var radioBtns = document.getElementsByName("items");
+	var radioBtns = $("[name='items']");
 	for(i = 0; i < radioBtns.length; i++){
 	    if(radioBtns[i].checked){
 	        exportPostSize = radioBtns[i].value;
