@@ -43,9 +43,12 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
+import org.springframework.web.util.HtmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -76,42 +79,39 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	}
 
 	private static final String BROKEN_END = new String("},\n}");
-	private static final Pattern URL_PARAM_ID_PATTERN = Pattern.compile("id=([0-9\\.]+)");
-	private static final Pattern DOI_URL_ID_PATTERN = Pattern.compile("(?:/\\d+\\.(\\d+))++");
-	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div style=\"display:inline\">(\\s*<p>\\s*)?(.+?)(\\s*<\\/p>\\s*)?<\\/div>", Pattern.MULTILINE);
-
+	//get the publication's id, take the part behind the dot if present
+	private static final Pattern URL_PARAM_ID_PATTERN = Pattern.compile("id=(\\d+(?:\\.(\\d+))?)");
+	private static final Pattern DOI_URL_ID_PATTERN = Pattern.compile("/(\\d+(?:\\.(\\d+))?)");
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div style=\"display:inline\">(\\s*<p>\\s*)?((?s).+?)(\\s*<\\/p>\\s*)?<\\/div>", Pattern.MULTILINE);
+	//remove tags in abstract
+	private static final String CLEANUP_ABSTRACT = "<[\\da-zA-Z\\s]*>|<\\s*/\\s*[\\da-zA-Z\\s]*>|\\r\\n|\\n";
+	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
 		try {
 
 			/*
 			 * extract the id from the URL
 			 */
-			String id = null;
-			String query = sc.getUrl().getQuery();
+			final String id;
+			final String query = sc.getUrl().getQuery();
+			final Matcher matcher;
 			if (query == null) {
-				final Matcher m = DOI_URL_ID_PATTERN.matcher(sc.getUrl().getPath());
-				if (m.find()) {
-					id = m.group(1);
-				}
+				matcher = DOI_URL_ID_PATTERN.matcher(sc.getUrl().toExternalForm());
 			} else {
-				final Matcher matcher = URL_PARAM_ID_PATTERN.matcher(query);
-				if (matcher.find()) {
-					id = matcher.group(1);
-				}
+				matcher = URL_PARAM_ID_PATTERN.matcher(query);
 			}
-
-			if (id == null) return false;
-
+			
+			if(matcher == null) return false;
+			
 			/*
-			 * If the id contains a dot ".", we use the part after the dot.
-			 * TODO: Can we do this nicer? 
+			 * if present take the id behind the dot
 			 */
-			final int indexOfDot = id.indexOf(".");
-			if (indexOfDot > -1) {
-				id = id.substring(indexOfDot + 1);
+			if (matcher.find()) {
+				id = ((matcher.group(2) != null) ? matcher.group(2) : matcher.group(1));
+			} else {
+				return false;
 			}
 			
 			//pretty good idea to use an own client, since the session in the common client can become invalid
@@ -124,21 +124,6 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			 */
 			final StringBuffer bibtexEntries = extractBibtexEntries(client, SITE_URL, "exportformats.cfm?expformat=bibtex&id=" + id);
 
-			/*
-			 * download the abstract
-			 * FIXME: 
-			 * 
-			 * IDs with a "dot" (e.g., 1082036.1082037 seem to have no abstract:
-			 * 
-			 * http://portal.acm.org/tab_abstract.cfm?id=1082036.1082037&usebody=tabbody
-			 * 
-			 * We must use only the part after the dot to get it:
-			 * 
-			 * http://portal.acm.org/tab_abstract.cfm?id=1082037&usebody=tabbody
-			 * 
-			 * This must be done!
-			 * 
-			 */
 			final String abstrct = WebUtils.getContentAsString(client, SITE_URL + "/tab_abstract.cfm?usebody=tabbody&id=" + id);
 			if (present(abstrct)) {
 				/*
@@ -146,18 +131,11 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				 */
 				final Matcher matcher2 = ABSTRACT_PATTERN.matcher(abstrct);
 				if (matcher2.find()) {
-					/*
-					 * FIXME: we don't get here for URL 
-					 * 
-					 * http://doi.acm.org/10.1145/1105664.1105676
-					 *  
-					 * Thus, the pattern fails for that abstract at
-					 * 
-					 * http://portal.acm.org/tab_abstract.cfm?id=1105676&usebody=tabbody
-					 */
 					final String extractedAbstract = matcher2.group(2);
-					BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", extractedAbstract);
-
+					if(extractedAbstract != null) {
+						//add abstract, remove tags and replace html entities with utf-8 pendants
+						BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", HtmlUtils.htmlUnescape(extractedAbstract.replaceAll(CLEANUP_ABSTRACT, "")));
+					}
 				} else {
 					// log if abstract is not available
 					log.info("ACMBasicScraper: Abstract not available");
