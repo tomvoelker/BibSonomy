@@ -123,17 +123,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
 		}
 
-		switch (this.grouping) {
-		case USER:
-			urlBuilder.addParameter("user", this.groupingValue);
-			break;
-		case GROUP:
-			urlBuilder.addParameter("group", this.groupingValue);
-			break;
-		case VIEWABLE:
-			urlBuilder.addParameter("viewable", this.groupingValue);
-			break;
-		}
+		AbstractQuery.addGroupingParam(grouping, groupingValue, urlBuilder);
 
 		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;

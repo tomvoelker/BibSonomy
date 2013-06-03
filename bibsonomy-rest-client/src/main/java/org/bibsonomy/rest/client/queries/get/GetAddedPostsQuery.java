@@ -122,17 +122,7 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, this.resourceType.toString().toLowerCase());
 		}
 		
-		switch (this.grouping) {
-		case USER:
-			urlBuilder.addParameter("user", this.groupingValue);
-			break;
-		case GROUP:
-			urlBuilder.addParameter("group", this.groupingValue);
-			break;
-		case VIEWABLE:
-			urlBuilder.addParameter("viewable", this.groupingValue);
-			break;
-		}
+		AbstractQuery.addGroupingParam(grouping, groupingValue, urlBuilder);
 		
 		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;

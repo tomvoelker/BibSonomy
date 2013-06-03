@@ -141,17 +141,8 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 		if (order != null) {
 			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, this.order.toString());
 		}
-		switch (this.grouping) {
-		case USER:
-			urlBuilder.addParameter("user", this.groupingValue);
-			break;
-		case GROUP:
-			urlBuilder.addParameter("group", this.groupingValue);
-			break;
-		case VIEWABLE:
-			urlBuilder.addParameter("viewable", this.groupingValue);
-			break;
-		}
+		
+		AbstractQuery.addGroupingParam(grouping, groupingValue, urlBuilder);
 
 		if (present(this.filter)) {
 			urlBuilder.addParameter(RESTConfig.FILTER_PARAM, this.filter);

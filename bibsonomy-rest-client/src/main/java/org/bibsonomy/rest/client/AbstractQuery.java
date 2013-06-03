@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.Reader;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
@@ -42,6 +43,7 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -178,7 +180,25 @@ public abstract class AbstractQuery<T> {
 		this.statusCode = worker.getHttpResult();
 		return result;
 	}
-
+	
+	
+	protected static void addGroupingParam(GroupingEntity grouping, String groupingValue, UrlBuilder urlBuilder) {
+		switch (grouping) {
+		case USER:
+			urlBuilder.addParameter("user", groupingValue);
+			break;
+		case GROUP:
+			urlBuilder.addParameter("group", groupingValue);
+			break;
+		case VIEWABLE:
+			urlBuilder.addParameter("viewable", groupingValue);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	
 	/**
 	 * Execute this query. The query blocks until a result from the server is
 	 * received.
