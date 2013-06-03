@@ -181,7 +181,13 @@ public abstract class AbstractQuery<T> {
 		return result;
 	}
 	
-	
+	/**
+	 * Helper Method that adds a grouping Parameter to the given urlBuilder
+	 * 
+	 * @param grouping
+	 * @param groupingValue
+	 * @param urlBuilder
+	 */
 	protected static void addGroupingParam(GroupingEntity grouping, String groupingValue, UrlBuilder urlBuilder) {
 		switch (grouping) {
 		case USER:
