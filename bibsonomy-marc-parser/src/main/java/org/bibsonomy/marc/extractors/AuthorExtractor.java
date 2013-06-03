@@ -61,6 +61,22 @@ public class AuthorExtractor extends AbstractParticipantExtractor {
 			}
 		}
 		
+		
+		if (authors.size() == 0) {
+			// still no author -> try everything mentioned
+			if (!extractAndAddAuthorPersons(authors, src, "700", (Set<String>) null)) {
+				if (!conference) {
+					if (!extractAndAddAuthorCorporations(authors, src, "710",
+							(Set<String>) null)) {
+						if (!extractAndAddAuthorMeetings(authors, src, "711",
+								(Set<String>) null)) {
+							mainAuthorFound = false;
+						}
+					}
+				}
+			}
+		}
+		
 		target.setAuthor(authors);
 		
 	}
@@ -73,10 +89,13 @@ public class AuthorExtractor extends AbstractParticipantExtractor {
 		// freely chosen from http://www.loc.gov/marc/relators/relaterm.html
 		Set<String> creatingAuthors = new HashSet<String>();
 		Set<String> performingAuthors = new HashSet<String>();
+		Set<String> ratherUnspecificAuthors = new HashSet<String>();
 		creatingAuthors.addAll(Arrays.asList("aut", "cre", "cmp", "drt"));
 		performingAuthors.addAll(Arrays.asList("cnd", "prf", "cmp", "sng", "spk", "stl"));
+		ratherUnspecificAuthors.addAll(Arrays.asList("ctb"));
 		authorRelatorCodes.add(creatingAuthors);
 		authorRelatorCodes.add(performingAuthors);
+		authorRelatorCodes.add(ratherUnspecificAuthors);
 	}
 
 
