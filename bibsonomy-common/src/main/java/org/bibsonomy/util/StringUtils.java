@@ -2495,5 +2495,40 @@ public class StringUtils {
 		}
 		sb.replace(0, a, "");
 	}
+	
+	/**
+	 * @param out {@link StringBuilder} to append to
+	 * @param objs objs to be appended
+	 * @param delimiter delimiter to be appended between objects
+	 * @return out
+	 */
+	public static StringBuilder appendDelimited(StringBuilder out, Iterable<?> objs, String delimiter) {
+		try {
+			appendDelimited((Appendable) out, objs, delimiter);
+		} catch (IOException ex) {
+			throw new IllegalStateException("never happens");
+		}
+		return out;
+	}
+
+	/**
+	 * @param out {@link Appendable} to append to
+	 * @param objs objs to be appended
+	 * @param delimiter delimiter to be appended between objects
+	 * @return out
+	 * @throws IOException from appendable
+	 */
+	public static <A extends Appendable> A appendDelimited(A out, Iterable<?> objs, String delimiter) throws IOException {
+		boolean first = true;
+		for (final Object obj : objs) {
+			if (first) {
+				first = false;
+			} else {
+				out.append(delimiter);
+			}
+			out.append(obj.toString());
+		}
+		return out;
+	}
 }
 
