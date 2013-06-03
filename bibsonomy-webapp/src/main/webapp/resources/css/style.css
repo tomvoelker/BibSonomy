@@ -405,6 +405,7 @@ a img {
 /* Display the dropdown on hover */
 #navigation > ul li:hover ul, #navigation > ul li:hover table, #search > ul li:hover ul { 
 	left: 0; /* Bring back on-screen when needed */
+	box-shadow: 4px 4px 6px gray;
 }
 /* These create persistent hover states, meaning the top-most link stays 'hovered' even when your cursor has moved down the list. */
 #navigation > ul li:hover a { 
@@ -1184,7 +1185,7 @@ div.help>a,div.help>b, div.help>span {
 	height: auto;
 	border: 1px solid gray;
 	padding: 1px;
-	box-shadow: 4px 4px 8px;
+	box-shadow: 4px 4px 8px gray;
 }
 
 .post .image {
