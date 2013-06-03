@@ -1176,7 +1176,6 @@ div.help>a,div.help>b, div.help>span {
 
 .post:hover .innerpost {
 	background-color: #ffffc6 !important;
-	/* width: 138%; */
 	min-width: 138%;
 	width: auto;
 	position: relative;
@@ -1185,6 +1184,7 @@ div.help>a,div.help>b, div.help>span {
 	height: auto;
 	border: 1px solid gray;
 	padding: 1px;
+	box-shadow: 4px 4px 8px;
 }
 
 .post .image {
@@ -1196,6 +1196,11 @@ div.help>a,div.help>b, div.help>span {
 	top: 3px;
 	z-index: 1;
 	position: absolute;
+}
+
+.post:hover .image {
+	left: 2px;
+	top: 2px;
 }
 
 .post .image .entrytype a {
