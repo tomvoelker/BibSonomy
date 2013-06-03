@@ -36,6 +36,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
@@ -93,17 +94,7 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 		}	
 		
 		if (present(this.tags)) {
-			String tagsValues = null;
-			boolean first = true;
-			for (final String tag : tags) {
-				if (first) {
-					tagsValues = tag;
-					first = false;
-				} else {
-					tagsValues += "+" + tag;
-				}
-			}
-			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, tagsValues);
+			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, StringUtils.appendDelimited(new StringBuilder(), tags, "+").toString());
 		}			
 		
 		this.downloadedDocument = performGetRequest(urlBuilder.asString());
