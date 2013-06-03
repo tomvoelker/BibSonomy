@@ -171,37 +171,37 @@ public class MendeleyScraper extends AbstractUrlScraper{
 		final long year = json.has("year") ? json.getLong("year") : 0;
 		
 		result.append(entryType);
-		result.append(citationKey + year + ",\n");
+		result.append(citationKey).append(year ).append( ",\n");
 	
 	    if (json.has("title")) {
-			result.append( "title = {").append(json.getString("title")).append( "},\n");
+			result.append( "title={").append(json.getString("title")).append( "},\n");
 		}
 	    if (json.has("volume")) {
-			result.append( "volume = {").append(json.getString("volume")).append("},\n");
+			result.append( "volume={").append(json.getString("volume")).append("},\n");
 		}
 	    if (json.has("issue")) {
-			result.append( "number = {").append(json.getString("issue")).append("},\n");
+			result.append( "number={").append(json.getString("issue")).append("},\n");
 		}
 		if (json.has("website")) {
-			result.append("url = {").append(json.getString("website")).append("},\n");
+			result.append("url={").append(json.getString("website")).append("},\n");
 		}
 		if (json.has("published_in")) {
-			result.append(lblTitle + " = {").append(json.getString("published_in")).append("},\n");
+			result.append(lblTitle + "={").append(json.getString("published_in")).append("},\n");
 		}
 		if (json.has("publisher")) {
-			result.append( "publisher = {").append(json.getString("publisher")).append("},\n");
+			result.append( "publisher={").append(json.getString("publisher")).append("},\n");
 		}
 		if (authorsFullName != "") {
-			result.append( "author = {").append(authorsFullName).append("},\n");
+			result.append( "author={").append(authorsFullName).append("},\n");
 		}
 		if (editorsFullName != "") {
-			result.append( "editor(s) = {").append(editorsFullName).append("},\n"); 
+			result.append( "editor={").append(editorsFullName).append("},\n"); 
 		}	    
 	    if (year != 0) {
-			result.append( "year = {").append(year).append("},\n");
+			result.append( "year={").append(year).append("},\n");
 		}	    
 	    if (json.has("pages")) {
-			result.append( "pages = {").append(json.getString("pages")).append("}");
+			result.append( "pages={").append(json.getString("pages")).append("}");
 		}
 	    result.append("}");
 		return result.toString();		
