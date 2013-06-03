@@ -150,7 +150,7 @@ public class TypeExtractor implements AttributeExtractor {
 		//detect conference logs
 		String conf = record.getFirstPicaFieldValue("013H", "$0", "");
 		
-		if ("u".equals(conf)) {
+		if ("u".equals(conf.trim())) {
 			type = "phdthesis";
 		} else if (s.indexOf("c") == 1 || s.indexOf("d") == 1) {
 			type = "series";
