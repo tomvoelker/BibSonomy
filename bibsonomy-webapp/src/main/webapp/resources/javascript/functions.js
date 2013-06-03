@@ -1395,23 +1395,23 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
         				var tagOrigin = "";
 
             			if(ajaxTagArray.indexOf(me.text()) != -1) {
-            				tagOrigin = tagOrigin + "user";
+            				tagOrigin = tagOrigin + getString("post.actions.edit.tags.myTags");
             			}
 
             			if(recommendedTags.indexOf(me.text()) != -1) {
             				if(tagOrigin.length > 0 ) {
-            					tagOrigin = tagOrigin + ", recommended";
+            					tagOrigin = tagOrigin + ", " + getString("post.actions.edit.tags.recommended");
             				} else {
-            					tagOrigin = "recommended";
+            					tagOrigin = getString("post.actions.edit.tags.recommended");
             				}
             			}
 
             			
             			if(copiedTags.indexOf(me.text()) != -1) {
             				if(tagOrigin.length > 0 ) {
-            					tagOrigin = tagOrigin + ", copy";
+            					tagOrigin = tagOrigin + ", " + getString("post.actions.edit.tags.copied");
             				} else {
-            					tagOrigin = "copy";
+            					tagOrigin = getString("post.actions.edit.tags.copied");
             				}
             			}
             			
