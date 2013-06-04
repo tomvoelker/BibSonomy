@@ -1,31 +1,94 @@
 package org.bibsonomy.webapp.view.urlbuilder;
 
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.services.URLGenerator;
+
 /**
  * @author jensi
  * @version $Id$
  */
-public class VuFindURLGenerator extends MiscFieldPublicationUrlURLGenerator {
-	private String ebscoPublicationUrlPrefix;
-	
-	@Override
-	protected String addPrefix(String miscFieldData) {
-		if (miscFieldData.contains("|")) {
-			return ebscoPublicationUrlPrefix + miscFieldData;
+public class VuFindURLGenerator extends URLGenerator {
+	private String pumaUrlMiscFieldName = "pumaurl";
+	private String vuFindUrlMiscFieldName;
+	private String ebscoVuFindUrlPrefix;
+	private String vuFindUrlPrefix;
+
+	private String getHebisUrlFromUniquId(final String uniqueId) {
+		if (uniqueId.contains("|")) {
+			return ebscoVuFindUrlPrefix + uniqueId;
 		}
-		return super.addPrefix(miscFieldData);
+		return vuFindUrlPrefix + uniqueId;
+	}
+
+	@Override
+	public void setBibtexMiscUrls(final Post<BibTex> post) {
+		if (pumaUrlMiscFieldName != null) {
+			post.getResource().addMiscField(pumaUrlMiscFieldName, getPublicationUrl(post.getResource(), post.getUser()).toString());
+		}
+		if (vuFindUrlMiscFieldName != null) {
+			final String uniqueId = post.getResource().getMiscField("uniqueid");
+			if (uniqueId != null) {
+				post.getResource().addMiscField(vuFindUrlMiscFieldName, getHebisUrlFromUniquId(uniqueId));
+			}
+		}
 	}
 
 	/**
-	 * @return the ebscoPublicationUrlPrefix
+	 * @return the vuFindUrlMiscFieldName
 	 */
-	public String getEbscoPublicationUrlPrefix() {
-		return this.ebscoPublicationUrlPrefix;
+	public String getVuFindUrlMiscFieldName() {
+		return this.vuFindUrlMiscFieldName;
 	}
 
 	/**
-	 * @param ebscoPublicationUrlPrefix the ebscoPublicationUrlPrefix to set
+	 * @param vuFindUrlMiscFieldName the vuFindUrlMiscFieldName to set
 	 */
-	public void setEbscoPublicationUrlPrefix(String ebscoPublicationUrlPrefix) {
-		this.ebscoPublicationUrlPrefix = ebscoPublicationUrlPrefix;
+	public void setVuFindUrlMiscFieldName(String vuFindUrlMiscFieldName) {
+		this.vuFindUrlMiscFieldName = vuFindUrlMiscFieldName;
 	}
+
+	/**
+	 * @return the ebscoHebisUrlPrefix
+	 */
+	public String getEbscoVuFindUrlPrefix() {
+		return this.ebscoVuFindUrlPrefix;
+	}
+
+	/**
+	 * @param ebscoHebisUrlPrefix the ebscoHebisUrlPrefix to set
+	 */
+	public void setEbscoVuFindUrlPrefix(String ebscoHebisUrlPrefix) {
+		this.ebscoVuFindUrlPrefix = ebscoHebisUrlPrefix;
+	}
+
+	/**
+	 * @return the vuFindUrlPrefix
+	 */
+	public String getVuFindUrlPrefix() {
+		return this.vuFindUrlPrefix;
+	}
+
+	/**
+	 * @param vuFindUrlPrefix the vuFindUrlPrefix to set
+	 */
+	public void setVuFindUrlPrefix(String vuFindUrlPrefix) {
+		this.vuFindUrlPrefix = vuFindUrlPrefix;
+	}
+
+	/**
+	 * @return the pumaUrlMiscFieldName
+	 */
+	public String getPumaUrlMiscFieldName() {
+		return this.pumaUrlMiscFieldName;
+	}
+
+	/**
+	 * @param pumaUrlMiscFieldName the pumaUrlMiscFieldName to set
+	 */
+	public void setPumaUrlMiscFieldName(String pumaUrlMiscFieldName) {
+		this.pumaUrlMiscFieldName = pumaUrlMiscFieldName;
+	}
+	
+	
 }

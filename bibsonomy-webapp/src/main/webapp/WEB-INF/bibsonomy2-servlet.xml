@@ -222,9 +222,10 @@
 	
 	<bean id="realVuFindUrlGenerator" class="org.bibsonomy.webapp.view.urlbuilder.VuFindURLGenerator" lazy-init="true">
 		<property name="projectHome" value="${project.home}" />
-		<property name="publicationUrlPrefix" value="${export.bibtex.vufind.marc.biburl}" />
-		<property name="ebscoPublicationUrlPrefix" value="${export.bibtex.vufind.ebsco.biburl}" />
-		<property name="miscField" value="uniqueid" />
+		<property name="vuFindUrlPrefix" value="${export.bibtex.vufind.marc.biburl}" />
+		<property name="ebscoVuFindUrlPrefix" value="${export.bibtex.vufind.ebsco.biburl}" />
+		<property name="vuFindUrlMiscFieldName" value="hdsurl" />
+		<property name="pumaUrlMiscFieldName" value="pumaurl" />
 	</bean>
 	
 
