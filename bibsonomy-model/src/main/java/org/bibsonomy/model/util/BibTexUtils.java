@@ -538,7 +538,7 @@ public class BibTexUtils {
 	 * @return A string representation of the posts in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final int flags, final URLGenerator urlGenerator) {
-		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, urlGenerator.getPublicationUrl(post.getResource(), post.getUser()).toString());
+		urlGenerator.setBibtexMiscUrls(post);
 		return toBibtexString(post, flags);
 	}
 	

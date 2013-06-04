@@ -35,6 +35,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
 
 /**
@@ -339,6 +340,13 @@ public class URLGenerator {
 	public boolean matchesResourcePage(final String url, final String userName, final String intraHash) {
 		if (!present(url)) return false;
 		return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX + ")/[0-3]?" + intraHash + "/" + userName + ".*");
+	}
+
+	/**
+	 * @param post adds all misc field urls to the bibtex in this post
+	 */
+	public void setBibtexMiscUrls(final Post<BibTex> post) {
+		post.getResource().addMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_BIBURL, getPublicationUrl(post.getResource(), post.getUser()).toString());
 	}
 	
 }
