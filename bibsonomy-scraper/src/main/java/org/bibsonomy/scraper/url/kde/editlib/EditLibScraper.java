@@ -57,12 +57,14 @@ public class EditLibScraper extends AbstractUrlScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + EDITLIB_HOST), Pattern.compile(EDITLIB_PATH + ".*")));
 	
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		String url = sc.getUrl().toString();
+	@Override
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
+		final String url = sc.getUrl().toString();
 
 		sc.setScraper(this);
 
@@ -76,7 +78,7 @@ public class EditLibScraper extends AbstractUrlScraper {
 			id = url.substring(url.indexOf(EDITLIB_BIBTEX_PATH) + EDITLIB_BIBTEX_PATH.length());
 		}
 
-		String bibResult = null;
+		final String bibResult;
 
 		try {
 			bibResult = WebUtils.getContentAsString(new URL(EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id));
@@ -92,17 +94,18 @@ public class EditLibScraper extends AbstractUrlScraper {
 
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
 		return SITE_URL;
 	}
 
