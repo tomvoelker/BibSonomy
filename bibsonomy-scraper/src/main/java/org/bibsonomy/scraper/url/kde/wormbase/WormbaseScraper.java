@@ -58,11 +58,13 @@ public class WormbaseScraper extends AbstractUrlScraper {
 
 	private static final String DOWNLOAD_URL = "http://www.textpresso.org/cgi-bin/wb/exportendnote?mode=singleentry&lit=C.%20elegans&id=";
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	@Override
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 
@@ -97,17 +99,18 @@ public class WormbaseScraper extends AbstractUrlScraper {
 			throw new PageNotSupportedException("no paper ID available");
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
 		return SITE_URL;
 	}
 
