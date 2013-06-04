@@ -1789,13 +1789,14 @@ form.editTags input[type=text] {
 .listOptions, .pageOptions { 
 	border:2px solid #c6c6c6; 
 	z-index:70;
- 	top:141px;
+	top:141px;
 	position:absolute;
-  	background-color: #eee;
-  	position: absolute;
-  	margin-top: .5em;
-  	padding: .5em;
-  	display:none;	
+	box-shadow: 4px 4px 6px gray;
+	background-color: #eee;
+	position: absolute;
+	margin-top: .5em;
+	padding: .5em;
+	display:none;	
 }
 
 #headercontainer {
