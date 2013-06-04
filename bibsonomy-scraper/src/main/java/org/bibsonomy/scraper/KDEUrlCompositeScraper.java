@@ -105,7 +105,6 @@ import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
 import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
 import org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper;
-import org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper;
 import org.bibsonomy.scraper.url.kde.scopus.ScopusScraper;
 import org.bibsonomy.scraper.url.kde.spires.SpiresScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
@@ -131,12 +130,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 	 * Public constructor adding the active scrapers.
 	 */
 	public KDEUrlCompositeScraper() {
-		/*
-		 * Citebase is completely redirected to another host,
-		 * where another Scraper is responsible
-		 * TODO: remove?
-		 */
-		// addScraper(new CiteBaseScraper());
 		addScraper(new OpacScraper());
 		addScraper(new IEEEXploreScraper());
 		addScraper(new SpringerLinkScraper());
@@ -150,11 +143,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		 */
 		//addScraper(new L3SScraper());
 		addScraper(new ACMBasicScraper());
-		/* 
-		 * old citeseer scraper removed  from chain
-		 * FIXME: delete the old scraper and remove this lines?
-		 */
-		// addScraper(new CiteseerBasicScraper());
 		addScraper(new AIFBScraper());
 		addScraper(new UBKAScraper());
 		addScraper(new ArxivScraper());
@@ -212,8 +200,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new GoogleScholarScraper());
 		addScraper(new DLibScraper());
 		/*
-		 * scientificcommons is down for a while now
-		 * if it won't come up in the next time is should be removed from chain
+		 *Scientificcommons is reachable but shows default web page (apache)
+		 *TODO: Enable Scraper if Scientificcommons works properly again
 		 */
 		//addScraper(new ScientificcommonsScraper());
 		addScraper(new AGUScraper());
