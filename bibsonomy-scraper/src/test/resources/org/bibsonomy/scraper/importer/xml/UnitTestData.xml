@@ -908,11 +908,10 @@
 		<Scraper>org.bibsonomy.scraper.generic.EprintScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_151">
-		<TestDescription>url test for isi scraper</TestDescription>
-		<URL>http://apps.isiknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=N2L59PB4hgkcaodaihL&amp;page=1&amp;doc=1&amp;colname=WOS</URL>
-		<BibFile>IsiScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.isi.IsiScraper</Scraper>
-		<Enabled>false</Enabled>
+		<TestDescription>url test for webofknowledge scraper</TestDescription>
+		<URL>http://apps.webofknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=T1oiG1PgP2L42IlFLI4&amp;page=1&amp;doc=8</URL>
+		<BibFile>WebOfKnowledgeUnitUrlTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper</Scraper>
 		<AdditionalInfo>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_152">

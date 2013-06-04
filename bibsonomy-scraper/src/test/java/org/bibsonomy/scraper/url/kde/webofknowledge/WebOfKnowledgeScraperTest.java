@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.scraper.url.kde.isi;
+package org.bibsonomy.scraper.url.kde.webofknowledge;
 
 import static org.junit.Assert.assertTrue;
 
@@ -30,13 +30,19 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * @author claus
- * @version $Id$
+ * Scraper URL test for http://apps.webofknowledge.com
+ * 
+ * @author lha
  */
-public class IsiScraperTest {
+
+public class WebOfKnowledgeScraperTest {
 
 	/**
 	 * starts URL test with id url_151
+	 * 
+	 * if this test fails, check the if the SID in 
+	 * the URL of entry url_151 is still actual
+	 * 
 	 */
 	@Test
 	@Ignore
@@ -44,4 +50,5 @@ public class IsiScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_151"));
 	}
+	
 }
