@@ -3,11 +3,12 @@ package org.bibsonomy.webapp.controller.special;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.special.RedirectCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.HeaderUtils;
@@ -16,6 +17,7 @@ import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
@@ -24,7 +26,7 @@ import org.springframework.validation.Errors;
  * 
  * <p>Currently, the following /my* pages are available:
  * <ul>
- * <li>/myBibSonomy</li>
+ * <li>/myBibSonomy or myPUMA</li>
  * <li>/myBibTeX</li>
  * <li>/myRelations</li>
  * <li>/myPDF</li>
@@ -53,7 +55,10 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		final String scope = command.getScope();
 		log.debug("input: myPage=" + myPage + ", search=" + search + ", scope=" + scope + ", url=" + url);
 
-		if (command.getContext().isUserLoggedIn() && present(myPage)) {
+		if (present(myPage)) {
+			if (!command.getContext().isUserLoggedIn()) {
+				throw new AccessDeniedException("please log in");
+			}
 			/*
 			 * handle /my* pages
 			 */
@@ -62,12 +67,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			/*
 			 * handle main page search form
 			 */
-			try {
-				redirectUrl = this.getSearchPageRedirect(search, scope, command.getRequUser());
-			} catch (final UnsupportedEncodingException e) {
-				log.error("Could not search form redirect URL.", e);
-			}
-
+			redirectUrl = this.getSearchPageRedirect(search, scope, command.getRequUser());
 		} else if (present(url)) { 
 			/* 
 			 * Handle /uri/ content negotiating using the Accept: header.
@@ -120,7 +120,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	 * @return
 	 * @throws UnsupportedEncodingException - if it could not encode the parameters for the redirect.
 	 */
-	private String getSearchPageRedirect(final String search, final String scope, final String requUser) throws UnsupportedEncodingException {
+	private String getSearchPageRedirect(final String search, final String scope, final String requUser) {
 		log.debug("handling redirect for main page search form");
 		/*
 		 * redirect either to /user/*, to /author/*, to /tag/* or to /concept/tag/* page 
@@ -130,27 +130,27 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			 * special handling, when requUser is given - this is for /author pages only
 			 */
 			log.debug("requUser given - handling /author");
-			return "/author/" + URLEncoder.encode(search,"UTF-8") + "?requUser=" + URLEncoder.encode(requUser, "UTF-8");
+			return "/author/" + UrlUtils.safeURIEncode(search) + "?requUser=" + UrlUtils.safeURIEncode(requUser);
 		}
 		if (scope.startsWith("user:")) {
 			/*
 			 * special handling, when scope is "user:USERNAME", this is search restricted to the given user name
 			 */
 			log.debug("scope is user:");
-			return "/search/" + URLEncoder.encode(search + " " + scope, "UTF-8");
+			return "/search/" + UrlUtils.safeURIEncode(search + " " + scope);
 		}
 		if (scope.startsWith("group:")) {
 			/*
 			 * special handling, when scope is "group:GROUPNAME", this is search restricted to the given group name
 			 */
 			log.debug("scope is group:");
-			return "/search/" + URLEncoder.encode(search + " " + scope, "UTF-8");
+			return "/search/" + UrlUtils.safeURIEncode(search + " " + scope);
 		}
 		/*
 		 * all other pages simply go to /scope/search
 		 */
 		log.debug("generic handling of /scope/search");
-		return "/" + scope + "/" + URLEncoder.encode(search, "UTF-8");
+		return "/" + scope + "/" + UrlUtils.safeURIEncode(search);
 
 
 	}
@@ -172,34 +172,37 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	 */
 	private String getMyPageRedirect(final String myPage, final String loginUserName) {
 		/*
-		 * we need a valid user name
-		 */
-		if (!present(loginUserName)) {
-			return null;
-		}
-		/*
 		 * redirects for /my* pages
 		 */
-		try {
-			/*
-			 * FIXME: use projectName here ?
-			 */
-			if ("myBibSonomy".equals(myPage)) {
-				return "/user/" + URLEncoder.encode(loginUserName, "UTF-8");
-			} else if ("myBibTeX".equals(myPage)) {
-				return "/bib/user/" + URLEncoder.encode(loginUserName, "UTF-8") + "?items=1000";
-			} else if ("myRelations".equals(myPage)) {
-				return "/relations/" + URLEncoder.encode(loginUserName, "UTF-8");
-			} else if ("myPDF".equals(myPage)) {
-				return "/user/" + URLEncoder.encode(loginUserName, "UTF-8") + "?filter=JUST_PDF";
-			} else if ("myDuplicates".equals(myPage)) {
-				return "/user/" + URLEncoder.encode(loginUserName, "UTF-8") + "?filter=DUPLICATES";
-			} else {
-				log.error("Unknown /my* page called: " + myPage);
-			}
-		} catch (final UnsupportedEncodingException e) {
-			log.error("Could not create /my* URL.", e);
+		final String encodedLoggedinUserName = UrlUtils.safeURIEncode(loginUserName);
+		if ("myRelations".equals(myPage)) {
+			return "/relations/" + encodedLoggedinUserName;
 		}
+		
+		// TODO: use urlgenerator
+		final String userPage = "/user/" + encodedLoggedinUserName;
+		/*
+		 * XXX: it would be nice that myPUMA and myBibSonomy redirects are only
+		 * available in the corresponding themes, but e.g. old and new help pages
+		 * are linking to myBibSonomy at the moment
+		 */
+		if ("myBibSonomy".equals(myPage) || "myPUMA".equals(myPage)) {
+			return userPage;
+		}
+		if ("myown".equals(myPage)) {
+			return userPage + "/myown";
+		}
+		if ("myBibTeX".equals(myPage)) {
+			return "/bib" + userPage + "?items=1000";
+		}
+		if ("myPDF".equals(myPage)) {
+			return userPage + "?filter=" + FilterEntity.JUST_PDF;
+		}
+		if ("myDuplicates".equals(myPage)) {
+			return userPage + "?filter=" + FilterEntity.DUPLICATES;
+		}
+		
+		log.error("Unknown /my* page called: " + myPage);
 		/*
 		 * we could not create an appropriate URL -> return null
 		 */
