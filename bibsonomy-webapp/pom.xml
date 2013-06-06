@@ -112,7 +112,7 @@
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/styles.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
