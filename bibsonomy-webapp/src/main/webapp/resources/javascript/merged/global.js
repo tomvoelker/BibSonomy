@@ -3,7 +3,7 @@
  * Please add scripts only, if you are 100% sure that this makes sense (discuss
  * with senior developer).
  * 
- * Note: this file is overwritten in the WAR file - you must add your script 
+ * NOTE: this file is overwritten in the WAR file - you must add your script 
  * also to the pom.xml into the correct "aggregation" section of the 
  * yuicompressor-maven-plugin
  * 

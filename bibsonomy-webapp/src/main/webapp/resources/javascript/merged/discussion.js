@@ -1,5 +1,9 @@
 /*
  * Scripts that are available on every discussion page
+ * 
+ * NOTE: this file is overwritten in the WAR file - you must add your script 
+ * also to the pom.xml into the correct "aggregation" section of the 
+ * yuicompressor-maven-plugin
  */
 function includeJavaScript(jsFile) {
 	// separated end script tag to prevent IE bug
