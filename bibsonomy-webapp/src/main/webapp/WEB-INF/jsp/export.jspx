@@ -96,7 +96,7 @@
     											
 		  <c:forEach var="mapEntry" items="${command.layoutMap}">
 		    <c:if test="${mapEntry.value.publicLayout}">			
-			  <c:url var="url" value="/layout/${mapEntry.value.name}/${requPath}" />
+			  <c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
 			    <dt>
                   <a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></a>&#160;<a href="#jabref">*</a>
                 </dt>
