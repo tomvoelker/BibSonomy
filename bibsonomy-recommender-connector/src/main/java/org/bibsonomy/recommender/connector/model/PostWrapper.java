@@ -1,40 +1,38 @@
 package org.bibsonomy.recommender.connector.model;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
-import java.io.Serializable;
 
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Repository;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 
-
 import recommender.core.interfaces.model.RecommendationGroup;
-import recommender.core.interfaces.model.RecommendationResource;
 import recommender.core.interfaces.model.RecommendationTag;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationUser;
+import recommender.core.model.TagRecommendationEntity;
 
-
-public class PostWrapper<T extends Resource> implements Serializable, TagRecommendationEntity{
+public class PostWrapper <T extends Resource> implements TagRecommendationEntity {
 
 	/**
-	 * for persistence
+	 * for serialization
 	 */
-	private static final long serialVersionUID = -8566116081805155722L;
+	private static final long serialVersionUID = -8716576273787930613L;
 	
 	private Post<T> post;
-	
+
 	public PostWrapper(Post<T> post) {
+		this.post = post;
+	}
+	
+	public Post<T> getPost() {
+		return post;
+	}
+	
+	public void setPost(Post<T> post) {
 		this.post = post;
 	}
 	
@@ -60,73 +58,48 @@ public class PostWrapper<T extends Resource> implements Serializable, TagRecomme
 
 	@Override
 	public Set<RecommendationTag> getTags() {
-		Set<RecommendationTag> tags = new HashSet<RecommendationTag>();
-		for(Tag tag : this.post.getTags()) {
-			tags.add(new TagWrapper(tag));
+		HashSet<RecommendationTag> resultTags = new HashSet<RecommendationTag>();
+		for(Tag t : this.post.getTags()) {
+			resultTags.add(new TagWrapper(t));
 		}
-		return tags;
+		return resultTags;
 	}
 
 	@Override
 	public void setTags(Set<RecommendationTag> tags) {
-		Set<Tag> bibTags = new HashSet<Tag>();
-		for(RecommendationTag tag : tags) {
-			if(tag instanceof TagWrapper) {
-				bibTags.add(((TagWrapper) tag).getTag());
-			}
+		HashSet<Tag> resultTags = new HashSet<Tag>();
+		for(RecommendationTag t : tags) {
+			resultTags.add(((TagWrapper) t).getTag());
 		}
-		this.post.setTags(bibTags);
+		this.post.setTags(resultTags);
 	}
 
 	@Override
 	public Set<RecommendationGroup> getGroups() {
-		Set<RecommendationGroup> groups = new HashSet<RecommendationGroup>();
-		for(Group group : this.post.getGroups()) {
-			groups.add(new GroupWrapper(group));
+		HashSet<RecommendationGroup> resultGroups = new HashSet<RecommendationGroup>();
+		for(Group g : this.post.getGroups()) {
+			resultGroups.add(new GroupWrapper(g));
 		}
-		return groups;
+		return resultGroups;
 	}
 
 	@Override
 	public void setGroups(Set<RecommendationGroup> groups) {
-		Set<Group> bibGroups = new HashSet<Group>();
-		for(RecommendationGroup group : groups) {
-			if(group instanceof GroupWrapper) {
-				bibGroups.add(((GroupWrapper) group).getGroup());
-			}
+		HashSet<Group> resultGroups = new HashSet<Group>();
+		for(RecommendationGroup g : groups) {
+			resultGroups.add(((GroupWrapper) g).getGroup());
 		}
-		this.post.setGroups(bibGroups);
+		this.post.setGroups(resultGroups);
 	}
 
 	@Override
-	public RecommendationResource getResource() {
-		if(this.post.getResource() instanceof BibTex) {
-			return new BibTexWrapper((BibTex) this.post.getResource());
-		} else if (this.post.getResource() instanceof Bookmark) {
-			return new BookmarkWrapper((Bookmark) this.post.getResource());
-		}
-		return null;
-	}
-
-	@Override
-	public void setResource(RecommendationResource resource) {
-		if(resource instanceof BibTexWrapper && 
-				(this.post.getResource() instanceof BibTex || this.post.getResource() == null)) {
-			this.post.setResource((T) ((BibTexWrapper) resource).getBibtex());
-		} else if(resource instanceof BookmarkWrapper && 
-				(this.post.getResource() instanceof Bookmark || this.post.getResource() == null)) {
-			this.post.setResource((T) ((BookmarkWrapper) resource).getBookmark());
-		}
-	}
-
-	@Override
-	public Integer getContentId() {
+	public Integer getID() {
 		return this.post.getContentId();
 	}
 
 	@Override
-	public void setContentId(Integer contentId) {
-		this.post.setContentId(contentId);
+	public void setID(Integer id) {
+		this.post.setContentId(id);
 	}
 
 	@Override
@@ -136,17 +109,32 @@ public class PostWrapper<T extends Resource> implements Serializable, TagRecomme
 
 	@Override
 	public void setUser(RecommendationUser user) {
-		if(user instanceof UserWrapper) {
-			this.post.setUser(((UserWrapper) user).getUser());
-		}
+		this.post.setUser(((UserWrapper) user).getUser());
 	}
 
-	public Post<T> getPost() {
-		return post;
+	@Override
+	public String getTitle() {
+		return this.post.getResource().getTitle();
 	}
-	
-	public void setPost(Post<T> post) {
-		this.post = post;
+
+	@Override
+	public void setTitle(String title) {
+		this.post.getResource().setTitle(title);
+	}
+
+	@Override
+	public String getUrl() {
+		if (this.post.getResource() instanceof BibTex) {
+			return ((BibTex) this.post.getResource()).getUrl();
+		}
+		return "";
+	}
+
+	@Override
+	public void setUrl(String url) {
+		if (this.post.getResource() instanceof BibTex) {
+			((BibTex) this.post.getResource()).setUrl(url);
+		}
 	}
 	
 }

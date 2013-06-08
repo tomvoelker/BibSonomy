@@ -3,7 +3,7 @@ package org.bibsonomy.recommender.connector.testutil;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import recommender.core.interfaces.model.RecommendedTag;
+import recommender.core.model.RecommendedTag;
 import recommender.impl.multiplexer.RecommendedTagResultManager;
 import recommender.impl.multiplexer.tags.strategy.SelectAll;
 

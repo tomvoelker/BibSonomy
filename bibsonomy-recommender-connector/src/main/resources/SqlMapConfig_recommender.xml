@@ -10,11 +10,8 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 	<typeAlias alias="timestamp"       type="java.sql.Timestamp"/>
 
 	<typeAlias alias="tag"             type="org.bibsonomy.model.Tag" />
-	<typeAlias alias="rectag"          type="recommender.core.interfaces.model.RecommendedTag" />
-	<typeAlias alias="recTag"          type="recommender.core.interfaces.model.RecommendedTag" />
-
-	<typeAlias alias="bookmarkParam"   type="org.bibsonomy.database.params.BookmarkParam" />
-	<typeAlias alias="bibtexParam"     type="org.bibsonomy.database.params.BibTexParam" />
+	<typeAlias alias="rectag"          type="recommender.core.model.RecommendedTag" />
+	<typeAlias alias="recTag"          type="recommender.core.model.RecommendedTag" />
 	
 	<typeAlias alias="tagRecEntityParam" type="recommender.core.database.params.TagRecommendationEntityParam" />
 

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import recommender.core.interfaces.model.RecommendedTag;
-import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.core.model.RecommendedTag;
+import recommender.core.model.TagRecommendationEntity;
 
 /**
  * @author fei

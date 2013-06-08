@@ -9,15 +9,12 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.recommender.connector.model.BibTexWrapper;
-import org.bibsonomy.recommender.connector.model.BookmarkWrapper;
 import org.bibsonomy.recommender.connector.model.GroupWrapper;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 
 import recommender.core.interfaces.filter.PrivacyFilter;
 import recommender.core.interfaces.model.RecommendationGroup;
-import recommender.core.interfaces.model.RecommendationResource;
-import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.core.model.TagRecommendationEntity;
 
 public class PostPrivacyFilter implements PrivacyFilter {
 
@@ -43,28 +40,27 @@ public class PostPrivacyFilter implements PrivacyFilter {
 			// return post;
 		}
 		
-		/*
-		 * create a copy of the post which is returned
-		 */
-		/*
-		 * post
-		 */
-		final PostWrapper<Resource> postCopy = new PostWrapper<Resource>(new Post<Resource>());
-		postCopy.setUser(post.getUser());
-		postCopy.setDate(post.getDate());
-		postCopy.setContentId(post.getContentId());
-		postCopy.setDescription(post.getDescription());
-		postCopy.setGroups(post.getGroups());
-		postCopy.setTags(post.getTags());
+		Post<Resource> existingPost = null;
+		
+		if(post instanceof PostWrapper<?>) {
+			existingPost = ((PostWrapper<Resource>) post).getPost();
+		}
+		
 		/*
 		 * resource
 		 */
-		final RecommendationResource resource = post.getResource();
-		if (resource instanceof BibTexWrapper) {
+		if (existingPost.getResource() instanceof BibTex) {
+			/*
+			 * create a copy of the post which is returned
+			 */
+			final Post<BibTex> postCopy = new Post<BibTex>();
+			postCopy.setDate(post.getDate());
+			postCopy.setDescription(post.getDescription());
+			
 			/*
 			 * bibtex
 			 */
-			final BibTex bibtex = ((BibTexWrapper) resource).getBibtex();
+			final BibTex bibtex = (BibTex) existingPost.getResource();
 			final BibTex bibtexCopy = new BibTex();
 			
 			bibtexCopy.setAbstract(bibtex.getAbstract());
@@ -98,28 +94,45 @@ public class PostPrivacyFilter implements PrivacyFilter {
 			bibtexCopy.setVolume(bibtex.getVolume());
 			bibtexCopy.setYear(bibtex.getYear());
 			
-			postCopy.setResource(new BibTexWrapper(bibtexCopy));
-		} else if (resource instanceof Bookmark) {
+			postCopy.setResource(bibtexCopy);
+			
+			/*
+			 * new hashes
+			 */
+			existingPost.getResource().recalculateHashes();
+			postCopy.getResource().recalculateHashes();
+
+			return new PostWrapper<BibTex>(postCopy);
+		} else if (existingPost.getResource() instanceof Bookmark) {
+			/*
+			 * create a copy of the post which is returned
+			 */
+			final Post<Bookmark> postCopy = new Post<Bookmark>();
+			postCopy.setDate(post.getDate());
+			postCopy.setDescription(post.getDescription());
+			
 			/*
 			 * bookmark
 			 */
-			final Bookmark bookmark = ((BookmarkWrapper) resource).getBookmark();
+			final Bookmark bookmark = (Bookmark) existingPost.getResource();
 			final Bookmark bookmarkCopy = new Bookmark();
 			
 			bookmarkCopy.setTitle(bookmark.getTitle());
 			bookmarkCopy.setUrl(bookmark.getUrl());
 			
-			postCopy.setResource(new BookmarkWrapper(bookmarkCopy));
+			postCopy.setResource(bookmarkCopy);
+			
+			/*
+			 * new hashes
+			 */
+			existingPost.getResource().recalculateHashes();
+			postCopy.getResource().recalculateHashes();
+
+			return new PostWrapper<Bookmark>(postCopy);
 		}
 		
+		return null;
 		
-		/*
-		 * new hashes
-		 */
-		post.getResource().recalculateHashes();
-		postCopy.getResource().recalculateHashes();
-
-		return postCopy;
 	}
 
 }

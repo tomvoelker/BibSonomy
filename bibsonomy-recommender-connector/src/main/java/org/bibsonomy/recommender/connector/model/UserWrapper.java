@@ -1,15 +1,12 @@
 package org.bibsonomy.recommender.connector.model;
 
-import java.util.List;
-
 import org.bibsonomy.model.User;
 
-import recommender.core.interfaces.model.Item;
+import recommender.core.interfaces.model.RecommendationUser;
 
-public class UserWrapper implements recommender.core.interfaces.model.RecommendationUser{
+public class UserWrapper implements RecommendationUser{
 
 	private User user;
-	private List<Item> items;
 	
 	public UserWrapper(User user) {
 		this.user = user;
@@ -30,18 +27,6 @@ public class UserWrapper implements recommender.core.interfaces.model.Recommenda
 		this.user.setOpenID(id);
 	}
 	/**
-	 * @return the item
-	 */
-	public List<Item> getItems() {
-		return items;
-	}
-	/**
-	 * @param item the item to set
-	 */
-	public void setItems(List<Item> items) {
-		this.items = items;
-	}
-	/**
 	 * @return the name
 	 */
 	@Override
@@ -54,12 +39,6 @@ public class UserWrapper implements recommender.core.interfaces.model.Recommenda
 	@Override
 	public void setName(String name) {
 		this.user.setName(name);
-	}
-
-	@Override
-	public Item getItem(int index) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public User getUser() {

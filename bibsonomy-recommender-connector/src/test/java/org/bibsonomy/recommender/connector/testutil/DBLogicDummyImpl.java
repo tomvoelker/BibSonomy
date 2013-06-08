@@ -16,8 +16,8 @@ import recommender.core.database.params.RecAdminOverview;
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecSettingParam;
 import recommender.core.database.params.SelectorSettingParam;
-import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.interfaces.model.RecommendedTag;
+import recommender.core.model.TagRecommendationEntity;
+import recommender.core.model.RecommendedTag;
 
 /**
  * @author rja
@@ -60,7 +60,7 @@ public class DBLogicDummyImpl implements DBLogic {
 	}
 
 	@Override
-	public void connectWithPost(final TagRecommendationEntity post, final int postID) {
+	public void connectWithRecommendationEntity(final TagRecommendationEntity post, final int postID) {
 		// TODO Auto-generated method stub
 
 	}
@@ -91,7 +91,7 @@ public class DBLogicDummyImpl implements DBLogic {
 	}
 
 	@Override
-	public Long getQueryForPost(final String user_name, final Date date, final Integer postID) {
+	public Long getQueryForEntity(final String user_name, final Date date, final Integer postID) {
 		return 0l;
 	}
 

@@ -14,11 +14,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.model.BibTexWrapper;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
-import org.bibsonomy.recommender.connector.model.GroupWrapper;
-import org.bibsonomy.recommender.connector.model.TagWrapper;
-import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -28,13 +24,8 @@ import recommender.core.database.DBLogic;
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecSettingParam;
 import recommender.core.database.params.SelectorSettingParam;
-import recommender.core.interfaces.database.RecommenderDBAccess;
-import recommender.core.interfaces.model.RecommendationGroup;
-import recommender.core.interfaces.model.RecommendedTag;
-import recommender.core.interfaces.model.RecommendationResource;
-import recommender.core.interfaces.model.RecommendationTag;
-import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.interfaces.model.RecommendationUser;
+import recommender.core.model.RecommendedTag;
+import recommender.core.model.TagRecommendationEntity;
 import recommender.impl.multiplexer.MultiplexingTagRecommender;
 
 /**
@@ -177,7 +168,7 @@ public class DBAccessTest {
 		
 		// store and retrieve query
 		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID, 1234);
-		final Long  id = dbLogic.getQueryForPost(post.getUser().getName(), ts, postID);
+		final Long  id = dbLogic.getQueryForEntity(post.getUser().getName(), ts, postID);
 		
 		assertEquals(qid, id);
 	}

@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
-import recommender.core.interfaces.model.RecommendedTag;
+import recommender.core.model.RecommendedTag;
 import recommender.impl.tags.meta.TopTagsMapBackedSet;
 
 

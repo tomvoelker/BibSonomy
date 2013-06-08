@@ -28,12 +28,13 @@ import org.bibsonomy.recommender.connector.testutil.SelectCounter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import recommender.core.Recommender;
 import recommender.core.database.DBLogic;
 import recommender.core.interfaces.database.RecommenderDBAccess;
 import recommender.core.interfaces.filter.PrivacyFilter;
-import recommender.core.interfaces.model.RecommendedTag;
-import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.interfaces.tags.TagRecommenderConnector;
+import recommender.core.model.RecommendedTag;
+import recommender.core.model.TagRecommendationEntity;
 import recommender.impl.multiplexer.MultiplexingTagRecommender;
 import recommender.impl.multiplexer.RecommendedTagResultManager;
 import recommender.impl.tags.simple.DummyTagRecommender;
@@ -200,9 +201,11 @@ public class MultiplexingTagRecommenderTest {
 		// initialize multiplexer
 		multi.init();
 
+		final Recommender recommender = new Recommender();
+		recommender.setTagRecommender(multi);
 		// query recommender
 		final TagRecommendationEntity post = createPost();
-		multi.getRecommendedTags(post);
+		recommender.getRecommendedTags(post);
 
 		// shut down
 		for( final TagRecommenderConnector reco : recos ) {

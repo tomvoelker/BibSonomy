@@ -488,41 +488,13 @@
 	       (post_id, user_name, date, hash)
 	    VALUES ( #postID#, #userName#, #date#, #hash# )
 	</insert>
-
-	<!--+
-		| Insert Bookmark 
-	 	+-->
-	<insert id="insertBookmark" parameterClass="bookmarkParam">
-		INSERT INTO recommender_bookmark (content_id, book_url, book_url_hash, book_description, book_extended, `group`, date, user_name)
-		VALUES (#requestedContentId#,#url#,#hash#,#resource.title#,#description#,#groupId#,#date#,#userName#)
-	</insert> 
-
-	<!--+
-		| Insert BibTex 
-	 	+-->
-	<insert id="insertBibTex" parameterClass="bibtexParam">
-		INSERT INTO recommender_bibtex (title, entrytype, author, editor, year, content_id, journal, volume, chapter,
-		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
-		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
-		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
-		                    scraperid, simhash0, simhash1, simhash2, simhash3)
-		VALUES (#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
-		        #requestedContentId#, #resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
-		        #resource.month#, #resource.booktitle#, #resource.howpublished#, #resource.institution#,
-		        #resource.organization#, #resource.publisher#, #resource.address#, #resource.school#,
-		        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #userName#,
-		        #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
-		        #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
-		        #resource.type#, #resource.day#, #resource.scraperId#, #resource.simHash0#, #resource.simHash1#,
-		        #resource.simHash2#, #resource.simHash3#)
-	</insert>
 	
 	<!-- +
 		 | store an tagRecommendationEntity
 		 + -->
 	<insert id="insertRecommendationEntity" parameterClass="tagRecEntityParam">
 		INSERT INTO recommender_tagrecentities (requestid, entityid, description, type, date, username, title, url)
-		VALUES (#requestedContentId#, #entityId#, #description#, #type#, #date#, #userName#, #resource.title#, #resource.url#)
+		VALUES (#requestedId#, #entityId#, #description#, #type#, #date#, #userName#, #title#, #url#)
 	</insert>
 	
 	<!--+

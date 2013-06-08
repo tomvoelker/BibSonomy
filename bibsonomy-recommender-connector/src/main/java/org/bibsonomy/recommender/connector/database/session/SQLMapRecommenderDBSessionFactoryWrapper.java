@@ -1,6 +1,5 @@
 package org.bibsonomy.recommender.connector.database.session;
 
-import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory;
 
 import recommender.core.database.RecommenderDBSessionFactory;

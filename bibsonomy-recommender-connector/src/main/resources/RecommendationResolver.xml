@@ -60,7 +60,7 @@
 		SELECT tag_lower as first, COUNT(tag_lower) as second 
 		  FROM tas t 
 		    JOIN bookmark b USING (content_id)
-		  WHERE b.book_url_hash = #intraHash#
+		  WHERE b.content_id = #contentID#
 		    AND b.group = 0
 		  GROUP BY tag_lower 
 		  ORDER BY COUNT(tag_lower) DESC 
@@ -74,7 +74,7 @@
 		SELECT tag_lower as first, COUNT(tag_lower) as second 
 		  FROM tas t
 		    JOIN bibtex b USING (content_id) 
-		WHERE b.simhash2 = #intraHash#
+		WHERE b.content_id = #contentID#
 		  AND b.group = 0 
 		GROUP BY tag_lower 
 		ORDER BY COUNT(tag_lower) DESC 
@@ -106,7 +106,7 @@
 		SELECT COUNT(DISTINCT tag_lower) 
 		  FROM tas 
 		    JOIN bookmark b USING (content_id)  
-		  WHERE b.book_url_hash = #intraHash#
+		  WHERE b.content_id = #entityId#
 		    AND b.group = 0
 	</select>
 
@@ -117,7 +117,7 @@
 		SELECT COUNT(*) 
 		  FROM tas 
 		    JOIN bookmark b USING (content_id)  
-		  WHERE b.book_url_hash = #intraHash#
+		  WHERE b.content_id = #entityId#
 		    AND b.group = 0
 	</select>	
 	
@@ -128,7 +128,7 @@
 		SELECT COUNT(DISTINCT tag_lower) 
 		  FROM tas
 		    JOIN bibtex b USING (content_id) 
-		  WHERE b.simhash2 = #intraHash#
+		  WHERE b.content_id = #entityId#
 		    AND b.group = 0
 	</select>
 	
@@ -139,7 +139,7 @@
 		SELECT COUNT(*) 
 		  FROM tas
 		    JOIN bibtex b USING (content_id) 
-		  WHERE b.simhash2 = #intraHash#
+		  WHERE b.content_id = #entityId#
 		    AND b.group = 0
 	</select>	
 
