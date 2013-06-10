@@ -68,20 +68,21 @@
         <c:url var="burst"   value="/burst/${pathAndQueryString}" />
         <c:url var="swrc"    value="/swrc/${pathAndQueryString}" />
         <c:url var="json"    value="/json/${pathAndQueryString}" />
+        <c:url var="csl"     value="/csl/${pathAndQueryString}" />
         <c:url var="custom"  value="/layout/custom/${pathAndQueryString}" />
       	<dl>
 		  <dt><a href="${fn:escapeXml(bibtex)}">BibTeX</a></dt>
 		  <dd><fmt:message key="export.bibtex.faq"/></dd>
-						
+		  
    		  <dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
     	  <dd><fmt:message key="export.html.faq"/></dd>
-    										
+    	  
     	  <dt><a href="${fn:escapeXml(publrss)}">RSS</a></dt>
   		  <dd><fmt:message key="export.rss.faq"/></dd>
   					 	 
   		  <dt><a href="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</a></dt>
   		  <dd><fmt:message key="export.rss.faq"/></dd>
-  					 	 
+  		  
  		  <dt><a href="${fn:escapeXml(burst)}">BuRST</a></dt>
   		  <dd><fmt:message key="export.burst.faq"/></dd>
 
@@ -90,7 +91,10 @@
           
           <dt><a href="${fn:escapeXml(json)}">JSON</a></dt>
           <dd><fmt:message key="export.json.faq"/></dd>
-
+          
+          <dt><a href="${fn:escapeXml(csl)}"><fmt:message key="export.csl.caption" /></a></dt>
+          <dd><fmt:message key="export.csl.faq"/></dd>
+          
     	  <dt><a href="${fn:escapeXml(custom)}">Custom</a></dt>	
     	  <dd><fmt:message key="export.custom.faq"/></dd>
     											
