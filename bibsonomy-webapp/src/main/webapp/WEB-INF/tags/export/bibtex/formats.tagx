@@ -12,6 +12,7 @@
 	<c:url var="burst"   value="/burst/${requPath}${requQueryString}" />
 	<c:url var="swrc"    value="/swrc/${requPath}${requQueryString}" />
 	<c:url var="json"    value="/json/${requPath}${requQueryString}" />
+	<c:url var="csl"     value="/csl/${pathAndQueryString}" />
 	<c:url var="custom"  value="/layout/custom/${requPath}${requQueryString}" />
 
 	<select id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
@@ -20,13 +21,14 @@
 		<option value="${fn:escapeXml(publ)}">HTML</option>
 		<option value="${fn:escapeXml(publrss)}">RSS</option>
 		<option value="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</option>
-		<option value="${fn:escapeXml(burst)}">BuRST</option>						
+		<option value="${fn:escapeXml(burst)}">BuRST</option>
 		<option value="${fn:escapeXml(swrc)}">SWRC</option>
-		<option value="${fn:escapeXml(json)}">JSON</option>				
-		<option value="${fn:escapeXml(custom)}">Custom</option>					
+		<option value="${fn:escapeXml(json)}">JSON</option>
+		<option value="${fn:escapeXml(csl)}"><fmt:message key="export.csl.caption" /></option>
+		<option value="${fn:escapeXml(custom)}">Custom</option>
 
 		<c:forEach var="entry" items="${command.layoutMap}">
-			<c:if test="${entry.value.publicLayout}">			
+			<c:if test="${entry.value.publicLayout}">
 				<c:url var="url" value="/layout/${entry.value.name}/${requPath}${requQueryString}" />
 				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
 			</c:if>
