@@ -34,7 +34,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -51,17 +50,17 @@ public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	private final List<String> tagNames;
 	private final int start;
 	private final int end;
-	private String filter = null;
-	private Order order = null;
-	private GroupingEntity grouping = GroupingEntity.ALL;
+	private final String filter = null;
+	private final Order order = null;
+	private final GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
-	private Class<? extends Resource> resourceType = Resource.class;
+	private final Class<? extends Resource> resourceType = Resource.class;
 
 	public GetTagRelationQuery() {
 		this(0, 19, TagRelation.RELATED, Arrays.asList("myown"));
 	}
 	
-	public GetTagRelationQuery(int start, int end, TagRelation relation, List<String> tagNames) {
+	public GetTagRelationQuery(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
 		this.start = start < 0 ? 0 : start;
 		this.end = end < start ? start : end;
 		this.relation = relation == null ? TagRelation.RELATED : relation;
@@ -71,45 +70,36 @@ public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	@Override
 	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
 		// /tags/[tags]?...
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.TAGS_URL);
-		urlBuilder.addPathElement(StringUtils.implodeStringCollection(tagNames, "+"));
+		final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.TAGS_URL);
+		urlBuilder.addPathElement(StringUtils.implodeStringCollection(this.tagNames, "+"));
 		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
 		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
 		
-		if (order != null) {
+		if (this.order != null) {
 			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, this.order.toString());
 		}
-		switch (this.grouping) {
-		case USER:
-			urlBuilder.addParameter("user", this.groupingValue);
-			break;
-		case GROUP:
-			urlBuilder.addParameter("group", this.groupingValue);
-			break;
-		case VIEWABLE:
-			urlBuilder.addParameter("viewable", this.groupingValue);
-			break;
-		}
+		AbstractQuery.addGroupingParam(this.grouping, this.groupingValue, urlBuilder);
 
 		if (present(this.filter)) {
 			urlBuilder.addParameter(RESTConfig.FILTER_PARAM, this.filter);
 		}
 		
-		if (this.resourceType != null && this.resourceType != Resource.class) {
+		if ((this.resourceType != null) && (this.resourceType != Resource.class)) {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
 		}
 		
 		// add relation parameter.
 		urlBuilder.addParameter(RESTConfig.RELATION_PARAM, this.relation.toString());
-		
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
+		this.downloadedDocument = this.performGetRequest(urlBuilder.asString());
 		
 		return null;
 	}
 	
 	@Override
 	public final List<Tag> getResult() {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+		if (this.downloadedDocument == null) {
+			throw new IllegalStateException("Execute the query first.");
+		}
 		return this.getRenderer().parseTagList(this.downloadedDocument);
 	}
 
