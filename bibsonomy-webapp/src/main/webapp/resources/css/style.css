@@ -1369,15 +1369,19 @@ Most actions appear in three ways
 	background-color: inherit;
 }
  
-.renameDoc { 
-    background-repeat: no-repeat;
-	background: url("/resources/image/document-txt-rename.png");
-	vertical-align: top;
-    margin-left: 4px;
-    background-position: top left;
-    width: 16px; 
-    height: 16px;
+.renameDoc:hover {
+ 	background-position: 0px 17px;
+ 	height: 16px;
+    width: 16px;
+}
+
+.renameDoc {
+    background: url("/resources/image/document-txt-rename.png");
     display: inline-block;
+    height: 16px;
+    margin-left: 4px;
+    width: 16px;
+    background-position: 0px 35px;
 }
  
 .deleteDocument { 
@@ -1437,7 +1441,7 @@ Most actions appear in three ways
 /* Finde own icon vor remove */
 .post .action .idelete, #pageOptions .idelete, .post .action .iremove, #pageOptions .iremove											{ background-position: 0 -197px; width: 13px; height: 18px; } 
 .post .action .delete:hover, #pageOptions .delete:hover, .post .action .remove:hover, #pageOptions .remove:hover, .deleteDocument:hover	{ background-position: 0 -237px; width: 13px; height: 18px; } 
-.post .action .delete, #pageOptions .delete, .post .action .remove, #pageOptions .remove, .deleteDocument								{ background-position: 0 -275px; width: 13px; height: 18px; }
+.post .action .delete, #pageOptions .delete, .post .action .remove, #pageOptions .remove, .deleteDocument							{ background-position: 0 -275px; width: 13px; height: 18px; }
 
 
 
