@@ -703,7 +703,6 @@ public class RestLogic implements LogicInterface {
 	}
 	@Override
 	public void updateDocument(Document document, String resourceHash, String newName) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException(); // TODO: implement
 	}
 }
