@@ -40,8 +40,9 @@ public class WebOfKnowledgeScraperTest {
 	/**
 	 * starts URL test with id url_151
 	 * 
-	 * if this test fails, check the if the SID in 
-	 * the URL of entry url_151 is still actual
+	 * Test is disabled, to run it insert fresh URL
+	 * in UnitTestData.xml
+	 * (SIDs get outdated)
 	 * 
 	 */
 	@Test

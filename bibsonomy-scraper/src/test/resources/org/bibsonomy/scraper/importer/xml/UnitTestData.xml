@@ -913,6 +913,7 @@
 		<BibFile>WebOfKnowledgeUnitUrlTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper</Scraper>
 		<AdditionalInfo>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</AdditionalInfo>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_152">
 		<TestDescription>RSOC Scraper url test, alternate host</TestDescription>
