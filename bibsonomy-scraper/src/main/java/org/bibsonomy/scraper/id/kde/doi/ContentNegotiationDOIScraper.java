@@ -34,6 +34,7 @@ import java.util.Collections;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -53,8 +54,10 @@ import org.bibsonomy.util.id.DOIUtils;
  */
 public class ContentNegotiationDOIScraper implements Scraper {
 
-	private static final String INFO = "The ContentNegotiationDOIScraper resolves bibtex directly from a given DOI, " +
-			"if no URL scraper matched the previously redirected page.";
+	private static final String SITE_NAME = "ContentNegotiationDOIScraper";
+	private static final String SITE_URL = "http://www.doi.org/";
+	private static final String INFO = "The ContentNegotiationDOIScraper resolves bibtex directly from a given " + AbstractUrlScraper.href("http://www.doi.org/", "DOI") +
+			", if no URL scraper matched the previously redirected page.";
 	
 	
 	/**
@@ -149,10 +152,16 @@ public class ContentNegotiationDOIScraper implements Scraper {
 	}
 
 	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return SITE_NAME;
+	}
+
+	/**
 	 * @return site url
-	 * FIXME @see scraperinfo.jspx
 	 */
 	public String getSupportedSiteURL(){
-		return null;
+		return SITE_URL;
 	}
 }

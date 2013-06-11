@@ -53,6 +53,10 @@ public class EprintScraper implements Scraper {
 	 */
 	private static final Pattern PATTERN = Pattern.compile("<\\s*link(?=.*rel=\"alternate\")(?=.*href=\"(http://.*eprint.*bib)\")(?=.*type=\"text/plain\")(?=.*title=\"BibTeX\").*>");
 
+	private static final String SITE_NAME = "EprintsScraper";
+
+	private static final String SITE_URL = "http://www.eprints.org/";
+
 	@Override
 	public String getInfo() {
 		return INFO;
@@ -113,11 +117,17 @@ public class EprintScraper implements Scraper {
 	}
 	
 	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return SITE_NAME;
+	}
+
+	/**
 	 * @return site url
-	 * FIXME @see scraperinfo.jspx
 	 */
 	public String getSupportedSiteURL(){
-		return null;
+		return SITE_URL;
 	}
 
 }
