@@ -63,4 +63,18 @@ public class BrowserImporterTest {
 		assertEquals("The Wall Street Journal", exampleBookmark.getTitle());
 		assertEquals("http://online.wsj.com/home-page", exampleBookmark.getUrl());
 	}
+	@Test
+	public void testChrome() throws IOException {
+		final BrowserImporter importer = new BrowserImporter();
+		importer.initialize(new File("src/test/resources/chrome_13.06.13.html"), new User("testuser"), "public");
+		final List<Post<Bookmark>> posts = importer.getPosts();
+		assertEquals(9, posts.size());
+		
+		// test one of the extracted bookmarks
+		final Post<Bookmark> example = posts.get(4);
+		final Bookmark exampleBookmark = example.getResource();
+		assertEquals("BibSonomy :: home", exampleBookmark.getTitle());
+		assertEquals("http://www.bibsonomy.org/", exampleBookmark.getUrl());
+		
+	}
 }
