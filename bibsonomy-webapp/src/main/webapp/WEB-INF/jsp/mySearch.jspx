@@ -86,10 +86,6 @@
 
 
 <script language="javascript">
-
-
-	
-	
 	var authors = new Array(<c:forEach var='author' items='${command.authors}' varStatus="loopStatus">
 								"${mtl:quoteJSON(author)}"<c:if test="${not loopStatus.last}">,</c:if>
 							</c:forEach>);
@@ -110,9 +106,6 @@
 	var tagAuthor 		= <c:out value='${command.tagAuthor}'/>;	
 	var titleAuthor 	= <c:out value='${command.titleAuthor}'/>;
 	var simHashID       = <c:out value='${command.simHash}'/>;
-	var loginusername   = "<c:out value='${command.context.loginUser.name}'/>";
-	var optionsAuthors  = "<fmt:message key='options.authors'/>";
-	var optionsTags     = "<fmt:message key='options.tags'/>";
 	
 	/**
 	* array containing bibtex hashes of each publication
