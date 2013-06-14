@@ -35,7 +35,7 @@
 
 		authorsIdx = authorsIdx.sort(comparator);	
 		authorList.length = 0;		
-		authorList.options[0] = new Option(optionsAuthors,-1);
+		authorList.options[0] = new Option(getString('options.authors'), -1);
 		
 		for (var i=0; i<authorsIdx.length; i++) {
 			authorList.options[i+1] = new Option(authors[authorsIdx[i]],authorsIdx[i]);		
@@ -130,9 +130,13 @@
 				k++;
 				results++;
 			}
-		}		
-		document.getElementById("numresult").innerHTML = results + " " + getString('mysearch.option.result.lang');		
-	}	
+		}
+		displayResults(results);
+	}
+	
+	function displayResults(results) {
+		document.getElementById("numresult").innerHTML = results + " " + getString('mysearch.option.result.lang');
+	}
 
 	/**
 	* checks the form before submitting
@@ -180,7 +184,7 @@
 		authorlist.selectedIndex = 0;	
 		
 		// update number of search results
-		document.getElementById("numresult").innerHTML = titles.length + " " + resultlang;		
+		displayResults(titles.length);
 	}
 	
 		
