@@ -1,3 +1,4 @@
+	// TODO: fix indentation on release workspace
 	/**
 	* updates authorlist for selected tag in taglist
 	**/
@@ -130,14 +131,14 @@
 				results++;
 			}
 		}		
-		document.getElementById("numresult").innerHTML = results + " " + resultlang;		
+		document.getElementById("numresult").innerHTML = results + " " + getString('mysearch.option.result.lang');		
 	}	
 
 	/**
 	* checks the form before submitting
 	**/		
 	function checkForm(bibtexhash) {
-		var url = "/bibtex/" + simHashID + bibtexhash + "/" + loginusername;	
+		var url = "/bibtex/" + simHashID + bibtexhash + "/" + currUser;	
 		document.location.href = url;	
 		return false;
 	}
@@ -153,8 +154,8 @@
 		var authorlist 	= document.searchform.authors;
 		var resultlist 	= document.searchform.results;
 		
-		taglist.options[0] 		= new Option(optionsTags, -1);//new Option("- all tags -",-1);
-		authorlist.options[0] 	= new Option(optionsAuthors, -1);//new Option("- all authors -",-1);		
+		taglist.options[0] 		= new Option(getString('options.tags'), -1);
+		authorlist.options[0] 	= new Option(getString('options.authors'), -1);
 		
 		// taglist
 		for (var i=0; i<tags.length; i++) {
@@ -204,6 +205,7 @@
 	* appends a row in search result list with given information 
 	**/
 	function appendRow(title, authors, bibtexhash, url) {		
+		// FIXME: mysearch groups: currUser wrong (user of post)
 		var table = document.getElementById("resultlist");
 		var tr = document.createElement("tr");
 		
@@ -220,18 +222,18 @@
 		linktd.style.borderBottom = "1px solid #BBBBBB";
 		linktd.style.textAlign = "right";		
 		linktd.style.fontSize = "70%";	
-				
+		
 		var link = document.createElement("a");	
 		link.className="litem";
 		link.innerHTML = getString("bibtex.actions.bibtex");
-		link.href = "/bib/bibtex/" + simHashID + bibtexhash + "/" + loginusername;
+		link.href = "/bib/bibtex/" + simHashID + bibtexhash + "/" + currUser;
 		link.title = getString("bibtex.actions.bibtex.title");
 		
 		
 		var pick = document.createElement("a");
 		pick.className="item pick";
 		pick.onclick = function() {return pickUnpickPublication(this);};
-		pick.href = "/ajax/pickUnpickPost?action=pick&hash=" + bibtexhash + "&user=" + encodeURIComponent(loginusername) + "&ckey=" + ckey;
+		pick.href = "/ajax/pickUnpickPost?action=pick&hash=" + bibtexhash + "&user=" + encodeURIComponent(currUser) + "&ckey=" + ckey;
 		pick.title = getString("bibtex.actions.pick.title");
 		
 		if (url != "") {
@@ -373,5 +375,4 @@
 			}
 			titleAuthorStringArray[i] = temp.join(", ");			
 		}		
-	}	
-
+	}

@@ -111,12 +111,8 @@
 	var titleAuthor 	= <c:out value='${command.titleAuthor}'/>;
 	var simHashID       = <c:out value='${command.simHash}'/>;
 	var loginusername   = "<c:out value='${command.context.loginUser.name}'/>";
-	var ckey        	= "<c:out value='${command.context.ckey}'/>";
-	var resultlang 		= "<fmt:message key='mysearch.option.result.lang'/>"; 
 	var optionsAuthors  = "<fmt:message key='options.authors'/>";
-	var optionsTags     = "<fmt:message key='options.tags'/>";	
-	var pickMessage	    = "<fmt:message key='post.meta.pick'/>";
-
+	var optionsTags     = "<fmt:message key='options.tags'/>";
 	
 	/**
 	* array containing bibtex hashes of each publication
