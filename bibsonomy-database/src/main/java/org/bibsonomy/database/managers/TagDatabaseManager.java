@@ -753,7 +753,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * This is just a hack as long as we don't supply separate user counts for
+	 * XXX: This is just a hack as long as we don't supply separate user counts for
 	 * each tag, dbe
 	 * 
 	 * @param tags
