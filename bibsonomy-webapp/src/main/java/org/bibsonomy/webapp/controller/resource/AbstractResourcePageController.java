@@ -105,7 +105,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		final int entriesPerPage = command.getListCommand(this.getResourceClass()).getEntriesPerPage();		
 		final Date startDate = command.getStartDate();
 		final Date endDate = command.getEndDate();
-		this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, startDate, endDate, entriesPerPage);
+		this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, startDate, endDate, entriesPerPage);
 
 		if (GroupingEntity.ALL.equals(groupingEntity)) {
 			/* 
