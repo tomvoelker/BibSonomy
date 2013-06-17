@@ -13,7 +13,7 @@
 	</head>
 	<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
 	
-	<body data-path="${fn:escapeXml(pathAndQueryString)}">
+	<body data-path="${fn:escapeXml(pathAndQueryString)}" data-loggedinuser="${fn:escapeXml(command.context.loginUser.name)}">
 		<!-- keep me -->
 	</body>
 </html>
