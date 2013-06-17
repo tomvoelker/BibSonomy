@@ -331,28 +331,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean useResourceSearchForTagQuery(final int i) {
 		return i >= MAX_TAG_SIZE;
 	}
-
-	/**
-	 * Check permissions to decide if filter can be set
-	 * 
-	 * @param loginUser
-	 *            - the user whose permissions need to be checked
-	 * @param filter
-	 *            - the filter under question
-	 * @return <code>true</code> if the logged-in user is allowed to set the
-	 *         specific filter
-	 */
-	public boolean checkFilterPermissions(final FilterEntity filter, final User loginUser) {
-		if (filter == null) {
-			return false;
-		}
-
-		if (FilterEntity.ADMIN_SPAM_POSTS.equals(filter) && this.isAdmin(loginUser)) {
-			return true;
-		}
-		return false;
-	}
-
+	
 	/**
 	 * Checks, if the given login user is either an admin, or the user requested
 	 * by user name.

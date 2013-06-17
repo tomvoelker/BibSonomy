@@ -113,7 +113,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Database Implementation of the LogicInterface
@@ -617,7 +616,9 @@ public class DBLogic implements LogicInterface {
 		if (GroupingEntity.ALL.equals(grouping) && !present(tags) && !present(search)) {
 			this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
 		}
-
+		
+		this.handleAdminFilters(filter);
+		
 		// check for systemTags disabling this resourceType
 		if (!this.systemTagsAllowResourceType(tags, resourceType)) {
 			return new ArrayList<Post<T>>();
@@ -663,19 +664,6 @@ public class DBLogic implements LogicInterface {
 			} 
 
 			if (resourceType == Bookmark.class) {
-				// check filters
-				// can not add filter to BookmarkParam yet, but need to add
-				// group before buildParam
-				if (this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)) {
-					/*
-					 * FIXME: it is not safe, what is done here!
-					 * checkFilterPermissions only checks, if ANY filter is
-					 * applicable by loginUser. But here we assume
-					 * ADMIN_SPAM_POSTS has been checked!
-					 */
-					loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
-				}
-
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
 				final List<Post<T>> bookmarks= (List) this.bookmarkDBManager.getPosts(param, session);
 				SystemTagsExtractor.handleHiddenSystemTags(bookmarks, loginUser.getName());
@@ -1211,7 +1199,7 @@ public class DBLogic implements LogicInterface {
 	
 	private ImportResource parsePublicationImportResource(ImportResource resource) {
 		Collection<ImportResource> bibtexs = this.bibtexReader.read(resource);
-		if (ValidationUtils.present(bibtexs) == false) {
+		if (!present(bibtexs)) {
 			throw new IllegalStateException("bibtexReader did not throw exception and returned empty result");
 		}
 		return bibtexs.iterator().next();
@@ -1908,12 +1896,9 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 
 		try {
-			if (this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)) {
-				loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
-			}
+			this.handleAdminFilters(filter);
 
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
-
 			if (resourceType == GoldStandardPublication.class || resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class ) {
 				param.setContentTypeByClass(resourceType);
 				return this.statisticsDBManager.getPostStatistics(param, session);
@@ -2853,11 +2838,16 @@ public class DBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 
-	/**
-	 * @return the bibtexReader
-	 */
-	public BibTexReader getBibtexReader() {
-		return this.bibtexReader;
+	private void handleAdminFilters(final FilterEntity filter) {
+		/*
+		 * if filter is set to spam posts admins can see public spam!
+		 */
+		if (FilterEntity.ADMIN_SPAM_POSTS.equals(filter)) {
+			this.permissionDBManager.ensureAdminAccess(loginUser);
+			// add public spam group to the groups of the loggedin users
+			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
+		}
 	}
 }
