@@ -3,7 +3,7 @@ use File::Find;
 
 my @styleFiles =();
 
-my $jsfile = "styles.js";
+my $jsfile = "cslstyles.js";
 unlink($jsfile);
 
 find(sub { push(@styleFiles, $File::Find::name) if /\.csl$/ }, './styles');
