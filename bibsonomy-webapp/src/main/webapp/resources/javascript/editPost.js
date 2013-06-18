@@ -14,6 +14,7 @@ var copyList = new Array();
 var savTag = "";
 var activeTag = "";
 var sortedCollection;
+var reloadRecommendationsLock = true;
 var collect;
 
 
@@ -26,6 +27,8 @@ $(function() {
 	$("#copiedTags li, .tagbox li a").each(function() {
 		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
 	});
+	//only add this listener one time
+	$("#fsReloadButton").click(reloadRecommendation);
 });
 
 
@@ -214,47 +217,47 @@ function handler(event) {
  * @return
  */
 function handleRecommendedTags(xml) {
-	var tagSuggestions = [];
-
-	// lookup and clear target node
-	var tagField = $("#recommendedTags");
+		var tagSuggestions = [];
 	
-	// clear previous recommendations
-	tagField.empty();
-	
-	// lookup tags
-	var root = xml.getElementsByTagName('tags').item(0);
-	if (root == null) {
-		// FIXME: DEBUG
-		//alert("Invalid Ajax response: <tags/> not found.");
-		return;
-	}
-	// append each tag to target field
-	for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
-		var node = root.childNodes.item(iNode);
-		// work around to firefox' phantom nodes
-		if ((node.nodeType == 1) && (node.tagName == 'tag')) {
-			var tagName       = node.getAttribute('name');
-			
-			var newTag = $("<li tabindex='1'>" + tagName + " </li>");
-			newTag.click(copytag);
-			tagField.append(newTag);
-			
-			// append tag to suggestion list
-			var suggestion = new Object;
-			suggestion.label      = tagName;
-			suggestion.score      = node.getAttribute('score');
-			suggestion.confidence = node.getAttribute('confidence');
-			tagSuggestions.push(suggestion);
+		// lookup and clear target node
+		var tagField = $("#recommendedTags");
+		
+		// clear previous recommendations
+		tagField.empty();
+		
+		// lookup tags
+		var root = xml.getElementsByTagName('tags').item(0);
+		if (root == null) {
+			// FIXME: DEBUG
+			//alert("Invalid Ajax response: <tags/> not found.");
+			return;
 		}
-	}
-
-	// add recommended tags to suggestions
-	populateSuggestionsFromRecommendations(tagSuggestions);
-
-	// enable reload button
-	$("#fsReloadLink").click(reloadRecommendation);
-	$("#fsReloadButton").attr("src","/resources/image/button_reload.png");
+		// append each tag to target field
+		for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
+			var node = root.childNodes.item(iNode);
+			// work around to firefox' phantom nodes
+			if ((node.nodeType == 1) && (node.tagName == 'tag')) {
+				var tagName       = node.getAttribute('name');
+				
+				var newTag = $("<li tabindex='1'>" + tagName + " </li>");
+				newTag.click(copytag);
+				tagField.append(newTag);
+				
+				// append tag to suggestion list
+				var suggestion = new Object;
+				suggestion.label      = tagName;
+				suggestion.score      = node.getAttribute('score');
+				suggestion.confidence = node.getAttribute('confidence');
+				tagSuggestions.push(suggestion);
+			}
+		}
+	
+		// add recommended tags to suggestions
+		populateSuggestionsFromRecommendations(tagSuggestions);
+	
+		// unlock the reload button
+		$("#fsReloadButton").attr("src","/resources/image/button_reload.png");
+		reloadRecommendationsLock = true;
 }
 
 /**
@@ -879,9 +882,14 @@ function getRelations(input) {
  * handler for the 'reload recommendations button'
  */
 function reloadRecommendation() {
-    $("#fsReloadLink").click("");
-    $("#fsReloadButton").attr("src","/resources/image/button_reload-inactive.png");
-    $('#postForm').ajaxSubmit(tagRecoOptions); 
+	//if the button is not locked send AJAX request
+	if(reloadRecommendationsLock) {
+		//lock the reload button
+		reloadRecommendationsLock = false;
+	    $("#fsReloadLink").click("");
+	    $("#fsReloadButton").attr("src","/resources/image/button_reload-inactive.png");
+	    $('#postForm').ajaxSubmit(tagRecoOptions); 
+	}
 }
 
 
