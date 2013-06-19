@@ -23,8 +23,7 @@
 
 package org.bibsonomy.model;
 
-import bibsonomy-model.src.main.java.org.bibsonomy.model.BibTex;
-import bibsonomy-model.src.main.java.org.bibsonomy.model.util.data.Data;
+import org.bibsonomy.model.util.data.Data;
 
 /**
  * @author jensi
