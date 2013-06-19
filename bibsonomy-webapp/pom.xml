@@ -479,35 +479,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.openid4java</groupId>
-			<artifactId>openid4java</artifactId>
-			<version>0.9.5</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>spring-dao</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>spring-jdbc</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
-				<exclusion>
-					<!--
-						the version required by openid4java is broken (kills Tomcat on
-						some OpenIDs)
-					-->
-					<artifactId>nekohtml</artifactId>
-					<groupId>net.sourceforge.nekohtml</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- TODO: update available -->
-		<dependency>
-			<groupId>net.sourceforge.nekohtml</groupId>
-			<artifactId>nekohtml</artifactId>
-			<version>1.9.15</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
@@ -590,6 +561,21 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-openid</artifactId>
 			<version>${spring-security.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.openid4java</groupId>
+					<artifactId>openid4java-nodeps</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- the current 0.9.6 version that is included by spring-security-openid
+			caches requests too long; 0.9.7 fixed the problem 
+			TODO: as soon as spring-security-openid updates the openid4java library
+			we can remove this dependency "override"-->
+		<dependency>
+			<groupId>org.openid4java</groupId>
+			<artifactId>openid4java</artifactId>
+			<version>0.9.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
