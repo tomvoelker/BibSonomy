@@ -56,7 +56,7 @@
 
 					<bform:fieldset maximized="${false}" legendKey="register.openid.optional">
 						<jsp:attribute name="content">
-							<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>;
+							<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>
 							<div class="fsRow">
 								<form:label cssClass="fsLabel" path="registerUser.gender" ><fmt:message key="navi.gender"/></form:label>
 								<form:select path="registerUser.gender">
@@ -65,8 +65,8 @@
 								</form:select>
 								<div class="dissError"><form:errors path="registerUser.gender" /></div>
 							</div>
-							<bform:input path="registerUser.place" labelMessageKey="user.place" noHelp="${true}"/>;
-							<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>;
+							<bform:input path="registerUser.place" labelMessageKey="user.place" noHelp="${true}"/>
+							<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>
 						</jsp:attribute>
 					</bform:fieldset>
 
