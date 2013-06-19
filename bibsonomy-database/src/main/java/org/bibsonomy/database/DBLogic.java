@@ -1145,6 +1145,7 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
 
+		// XXX: find other solution which does not use BibTex subclasses
 		replaceImportResources(posts);
 		
 		/*
@@ -1183,8 +1184,8 @@ public class DBLogic implements LogicInterface {
 
 
 	private void replaceImportResources(List<? extends Post<? extends Resource>> posts) {
-		for (int i = 0; i < posts.size(); ++i) {
-			replaceImportResource(posts.get(i));
+		for (final Post<? extends Resource> post : posts) {
+			replaceImportResource(post);
 		}
 	}
 
@@ -2611,6 +2612,7 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = openSession();
 		try {
+			// XXX: if nothing present better return an empty list
 			return null;
 //			TODO: Implement versioning system for Wikis
 //			return this.wikiDBManager.getWikiVersions(userName, session);
