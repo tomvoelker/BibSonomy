@@ -23,16 +23,15 @@
 
 package org.bibsonomy.model.util;
 
-import java.util.Collection;
-
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.ImportResource;
+import bibsonomy-model.src.main.java.org.bibsonomy.model.BibTex;
 
 /**
  * Generic class for Import formats
  * 
  * @author Jens Illig
  * @version $Id$
+ * 
+ * TODO: rename BibTex to Publication
  */
 public interface BibTexReader {
 	/**
