@@ -26,6 +26,8 @@ package org.bibsonomy.model.enums;
 /**
  * @author Jens Illig
  * @version $Id$
+ * 
+ * TODO: merge with RenderingFormat
  */
 public enum ImportFormat {
 	/**
@@ -51,7 +53,7 @@ public enum ImportFormat {
 	
 	private final String mimeType;
 	
-	private ImportFormat(String mimeType) {
+	private ImportFormat(final String mimeType) {
 		this.mimeType = mimeType;
 	}
 
