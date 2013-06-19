@@ -23,7 +23,10 @@
 
 package org.bibsonomy.model.util;
 
-import bibsonomy-model.src.main.java.org.bibsonomy.model.BibTex;
+import java.util.Collection;
+
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.ImportResource;
 
 /**
  * Generic class for Import formats
