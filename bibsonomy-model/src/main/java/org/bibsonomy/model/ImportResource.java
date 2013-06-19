@@ -23,11 +23,14 @@
 
 package org.bibsonomy.model;
 
-import org.bibsonomy.model.util.data.Data;
+import bibsonomy-model.src.main.java.org.bibsonomy.model.BibTex;
+import bibsonomy-model.src.main.java.org.bibsonomy.model.util.data.Data;
 
 /**
  * @author jensi
  * @version $Id$
+ * 
+ * XXX: find solution without subclassing bibtex
  */
 public final class ImportResource extends BibTex {
 
@@ -43,7 +46,7 @@ public final class ImportResource extends BibTex {
 	 * Creates a resource that still has to be parsed
 	 * @param data
 	 */
-	public ImportResource(Data data) {
+	public ImportResource(final Data data) {
 		this(null, data);
 	}
 	
@@ -61,7 +64,7 @@ public final class ImportResource extends BibTex {
 	 * @param resource resource with additional fields (will be overridden if parsed data is available)
 	 * @param data
 	 */
-	public ImportResource(BibTex resource, Data data) {
+	public ImportResource(final BibTex resource, final Data data) {
 		this.resource = resource;
 		this.data = data;
 		this.alreadyParsed = false;
