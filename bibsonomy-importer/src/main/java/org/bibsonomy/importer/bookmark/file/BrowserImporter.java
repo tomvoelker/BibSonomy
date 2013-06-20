@@ -113,12 +113,16 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 
 		for (int i = 0; i < children.getLength(); i++) {
 			Node currentNode = children.item(i);
+			//if child node is <hr> jump to the next parent node
+			if("dd".equals(currentNode.getNodeName()) && "hr".equals(currentNode.getFirstChild().getNodeName())){
+				currentNode = children.item(i++);
+			}
 			// connect all upper tags with the currentNode
 			Vector<String> myTags = new Vector<String>(tags);
 			if (!"".equals(sepTag)) {
 				myTags.add(sepTag);
 			}
-
+			
 			// is currentNode a folder?
 			if ("dd".equals(currentNode.getNodeName())) {
 				NodeList secondGen = currentNode.getChildNodes();
