@@ -157,7 +157,7 @@ public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	        if (sec <= 1) {
 	            sb.append(getMessage("about_a_second", null, locale, messageSource)); // "about a second"
 	        } else {
-	            sb.append(getMessage("about_x_seconds", sec, null, messageSource)); // "about " + sec + " seconds"
+	            sb.append(getMessage("about_x_seconds", sec, locale, messageSource)); // "about " + sec + " seconds"
 	        }
 	    }
 
