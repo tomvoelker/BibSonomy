@@ -22,14 +22,15 @@ import org.junit.Test;
 public class BrowserImporterTest {
 
 	@Test
-	@Ignore // FIXME: importer imports 11 bookmarks instead of 10
+	@Ignore 
+	
 	public void testFirefox() throws IOException {
 		final BrowserImporter importer = new BrowserImporter();
 		importer.initialize(new File("src/test/resources/firefox_20.html"), new User("testuser"), "public");
 		final List<Post<Bookmark>> posts = importer.getPosts();
 		assertEquals(10, posts.size());
 		
-		final Post<Bookmark> example = posts.get(7);
+		final Post<Bookmark> example = posts.get(6);
 		final Bookmark exampleBookmark = example.getResource();
 		assertEquals("BibSonomy", exampleBookmark.getTitle());
 		assertEquals("http://www.bibsonomy.org", exampleBookmark.getUrl());
