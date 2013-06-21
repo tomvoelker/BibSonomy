@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * @author Jens Illig
  * @version $Id$
  */
+// TODO: still needed?
 public class HttpsPretendingFilter implements Filter {
 	
 	private boolean enabled;
