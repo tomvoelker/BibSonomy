@@ -21,7 +21,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
  * @version $Id$
  */
 public class UpdateUserSettingsController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, RequestAware {
-	private static final Log log = LogFactory.getLog(DeletePostController.class);
+	private static final Log log = LogFactory.getLog(UpdateUserSettingsController.class);
 		
 	@Override
 	public SettingsViewCommand instantiateCommand() {
