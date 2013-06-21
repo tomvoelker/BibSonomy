@@ -163,10 +163,6 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		}
 		
 		final T command = controller.instantiateCommand();
-		
-		if (command instanceof MimeTypeCommand) {
-			((MimeTypeCommand) command).setMimeType(request.getHeader("Content-Type"));
-		}
 
 		/*
 		 * put context into command
@@ -208,7 +204,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final MalformedURLSchemeException malformed) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject("error.http.notFound", malformed.getMessage());
-			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage(),malformed);
+			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage());
 		} catch (final AccessDeniedException ad) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			errors.reject(ad.getMessage());
