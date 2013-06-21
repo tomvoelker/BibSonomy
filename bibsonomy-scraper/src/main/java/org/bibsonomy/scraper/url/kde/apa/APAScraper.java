@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -50,12 +51,6 @@ public class APAScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "American Psychological Association";
 	private static final String SITE_URL = "http://www.apa.org/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-	
-	private static final String ALLOW_CIRCULAR_REDIRECTS_PARAM = "http.protocol.allow-circular-redirects";
-	private static final String MAX_REDIRECTS_PARAM = "http.protocol.max-redirects";
-	private static final int MAX_REDIRECTS_PARAM_VALUE = 8;
-	
-	private static final boolean ALLOW_CIRCULAR_REDIRECTS = true;
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
@@ -88,17 +83,16 @@ public class APAScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		
 		//Welcome to the story of scraping APA PsycNET
 		scrapingContext.setScraper(this);
 		
 		//We have to proof the visit of several locations
-		HttpClient client = WebUtils.getHttpClient();
+		final HttpClient client = WebUtils.getHttpClient();
 		//we have to allow circular redirects to avoid an exception when we get temporary redirected to the login page
-		client.getParams().setParameter(ALLOW_CIRCULAR_REDIRECTS_PARAM, ALLOW_CIRCULAR_REDIRECTS);
-		// to prevent infinite redirect loops limit the maximum nr of redirects
-		client.getParams().setParameter(MAX_REDIRECTS_PARAM, MAX_REDIRECTS_PARAM_VALUE);
+		client.getParams().setParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+		// infinite redirect loops already prevented in WebUtils.getHttpClient()
 		
 		//This id is needed to build RIS download link
 		String lstUIDs = null;
@@ -116,7 +110,7 @@ public class APAScraper extends AbstractUrlScraper {
 			String page;
 			try {
 				page = WebUtils.getContentAsString(client, scrapingContext.getUrl().toExternalForm());
-			} catch (IOException ex) {
+			} catch (final IOException ex) {
 				throw new ScrapingException(ex);
 			}
 			//Is the page present?
@@ -136,7 +130,7 @@ public class APAScraper extends AbstractUrlScraper {
 		HttpURL risURL;
 		try {
 			risURL = new HttpURL("http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs);
-		} catch (URIException ex1) {
+		} catch (final URIException ex1) {
 			throw new ScrapingException(ex1);
 		}
 		
@@ -145,7 +139,7 @@ public class APAScraper extends AbstractUrlScraper {
 		for (int i = 0; i < 2; i++) {
 			try {
 				ris = WebUtils.getContentAsString(client, risURL);
-			} catch (IOException ex) {
+			} catch (final IOException ex) {
 				throw new ScrapingException(ex);
 			}
 			if (ris.contains("Provider: American Psychological Association")) break;
@@ -153,8 +147,8 @@ public class APAScraper extends AbstractUrlScraper {
 		
 		//Convert RIS to BibTeX
 		if (!present(ris)) throw new ScrapingException("Could not download citation");
-		RisToBibtexConverter converter = new RisToBibtexConverter();
-		String bibtex = converter.risToBibtex(ris);
+		final RisToBibtexConverter converter = new RisToBibtexConverter();
+		final String bibtex = converter.risToBibtex(ris);
 		if (!present(bibtex)) throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
 		scrapingContext.setBibtexResult(bibtex);
 		
