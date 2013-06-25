@@ -43,7 +43,6 @@
  					<span class="ieditTags" href="" title="${editTags}"><!-- Keep Me --> </span>
 				</c:otherwise>
 			</c:choose>
-			<div class="clearfloatDiv">&#160;</div>
 		</div>
 
 </jsp:root>

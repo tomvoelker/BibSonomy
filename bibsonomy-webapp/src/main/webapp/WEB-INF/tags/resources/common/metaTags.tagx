@@ -36,12 +36,18 @@
 		<c:if test="${showTagsLabel}">
 			<fmt:message key="tags"/><c:out value=": "/>
 		</c:if>
+		<div class="extend">
 			<ul class="tags">
 				<c:forEach var="tag" items="${post.visibleTags}">
 					<li><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name}"/></a></li>
 				</c:forEach>
 			</ul>
-
+				<div>
+					<c:forEach var="tag" items="${post.visibleTags}">
+						<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}"><c:out value="${tag.name} "/></a><c:out value=" "/>
+					</c:forEach>
+				</div>
+		</div>
 	</c:if>
 	
 </jsp:root>
