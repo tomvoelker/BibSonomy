@@ -12,8 +12,7 @@ import org.bibsonomy.model.User;
 import org.junit.Test;
 
 /**
- * tests fot {@link BrowserImporter}
- * TODO: add a test for chrome/chromium
+ * tests for {@link BrowserImporter}
  * 
  * @author dzo
  * @version $Id$
