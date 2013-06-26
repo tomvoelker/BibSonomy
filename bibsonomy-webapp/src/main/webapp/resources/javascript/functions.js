@@ -698,11 +698,17 @@ function editTags() {
 				 * also add old tags and marked posts to iterate through and update action, 
 				 * because batchedit controller needs it
 				 */
+				/*
+				 * XXX: this is the only way to get the attribute value in the encoding we need
+				 * not nice!
+				 */
+				var encodedTagString = $('<div />').html(tagString).text(); 
 				var form = $("<form method='post' action='/batchEdit?deleteCheckedPosts=true&format=ajax&resourcetype=" + type + "&action=1' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
-				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\" value='" + tagString + "'/>" + "<input type='hidden' name=\"oldTags['" + hash + "']\" value='" + tagString + "'/>" + 
-							  "<input type='hidden' name=\"posts['" + hash + "']\" value='true' checked='checked' />");
+				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\"'/>").attr("value", encodedTagString);
+				var oldTagsInput = $("<input type='hidden' name=\"oldTags['" + hash + "']\" />").attr("value", encodedTagString);
+				var checkedInput = $("<input type='hidden' name=\"posts['" + hash + "']\" value='true' checked='checked' />");
 				var submit = $("<input type='submit' class='postTagButton' value='" + getString("post.meta.edit") + "'/>");
-				form.append(input).append(submit);
+				form.append(input).append(oldTagsInput).append(checkedInput).append(submit);
 				/*
 				 * resize input field
 				 */
