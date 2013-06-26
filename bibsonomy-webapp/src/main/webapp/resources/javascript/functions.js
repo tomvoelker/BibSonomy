@@ -1125,7 +1125,6 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 	var ajaxTagArray	= null;
 	var userInput		= null;	
 	var friends 		= null;
-    var termTemplate 	= "<span class='ui-autocomplete-term'>%s</span>";
 
 	
 	/**
@@ -1152,27 +1151,27 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			valueArray 		= textfieldValue.split(" ");
 			userInput 		= valueArray[valueArray.length - 1];
 			
-			/**
-			 * Abort if the user types "send:" and sendAllowed is set to false.
+			/*
+			 * abort if the user types "send:" and sendAllowed is set to false.
 			 */
-			if(userInput.indexOf("send:") != -1 && !sendAllowed) {
+			if (userInput.indexOf("send:") != -1 && !sendAllowed) {
 				return;
 			}
 			
-			/**
-			 * If the user typed nothing - do nothing 
+			/*
+			 * if the user typed nothing - do nothing 
 			 */
-			if(userInput.length != 0) {
+			if (userInput.length != 0) {
 				$.ajax({
 					url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + userInput,
 					dataType: "jsonp",
 					success: function( data ) {
-						/**
+						/*
 						 * "send:" is part of the last array index - so show the friends of the loginUser
 						 * else
 						 * we recommend the tags
 						 */
-						if(userInput.indexOf("send:") != -1) {	
+						if (userInput.indexOf("send:") != -1) {	
 							//Get the user input of the user and slice it, so userInput doesn't contain "send:"
 							userInput = String(userInput).slice(5);
 							var regex = new RegExp(userInput);
@@ -1308,14 +1307,14 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			return false;
 		},
         open: function(event,ui) {
-        	/**
+        	/*
         	 * 
         	 * 1.	Bold letters
         	 * This functionality below causes the bold letters of the autocompletion.
         	 * The entire part of the recommendation starts with bold text-width (style.css -> .ui-menu-item).
         	 * Below in the acData iteration, we replace the input of the user of the textfield (e.g. "Buil")
         	 * in the recommendation (The recommendation contains "Building" and we replace "Buil" with normal text-width
-        	 * in a span (named termTemplate) with the class ".ui-autocomplete-term" (style.css)).
+        	 * in a span with the class ".ui-autocomplete-term" (style.css)).
         	 * 
         	 * 2.	Tag origin
         	 * Add a span with the tag origin in every (tag-) list element.
@@ -1324,21 +1323,22 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
         	
             var acData = $(this).data('autocomplete');
             var styledTerm		= null;
+            var termHighlighted = null;
 			var recommendedTags = null;
 			var copiedTags 		= null;
 
-            /**
+            /*
              * Here we distinguish if the user wants to send the post to a user (user input contains "send:"),
         	 * or the user wants the tags. If the user used "send:", we don't want to suggest like "send:nraabe".
         	 * We want to suggest "nraabe" in the autocompletion list.
              */
-			if(userInput.indexOf("send:") != -1) {
-				styledTerm 	= termTemplate.replace('%s', String(userInput).slice(5));
+			if (userInput.indexOf("send:") != -1) {
+				termHighlighted = String(userInput).slice(5);
 			} else {
-				styledTerm 	= termTemplate.replace('%s', userInput);	
+				termHighlighted = userInput;
 			}
 
-			/**
+			/*
 			 * This part is only used, if we want to show the tag origin.
 			 * The functionality below gives us the tags with origin recommended and copy. 
 			 */
@@ -1368,29 +1368,32 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 				});
 			}
 			
-            acData
+			acData
                 .menu
                 .element
                 .find('a')
                 .each(function() {
                     var me = $(this);
                     
-                    /**
+                    /*
                      * Example: user types "goo" - we want to suggest "google"
                      * We take "google" and replace "goo" with the span with thin letters.
                      */
-        			if(userInput.indexOf("send:") != -1) {
-        				me.html( me.text().replace(String(userInput).slice(5), styledTerm));
+					var recommendedTag = me.text();
+					me.empty(); // remove aold content
+                    var styledTerm = $('<span class="ui-autocomplete-term"></span>').text(termHighlighted);
+        			if (userInput.indexOf("send:") != -1) {
+        				me.append(sytledTerm).append(userInput.substring(5)); // TODO: document why to use 5 here
         			} else {
-        				me.html( me.text().replace(userInput, styledTerm));	
+        				me.append(styledTerm).append(recommendedTag.substring(termHighlighted.length));
         			}
         			
-        			/**
+        			/*
         			 * Show the user the tag origin.
         			 * Build a string tagOrigin. After that create a span with the text of the tag originand 
         			 * and append it to the list element oh this tag suggestion. 
         			 */
-        			if(showOrigin) {
+        			if (showOrigin) {
 
         				var tagOrigin = "";
 
