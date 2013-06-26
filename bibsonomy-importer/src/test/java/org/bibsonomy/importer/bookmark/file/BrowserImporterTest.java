@@ -9,7 +9,6 @@ import java.util.List;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -22,8 +21,6 @@ import org.junit.Test;
 public class BrowserImporterTest {
 
 	@Test
-	@Ignore 
-	
 	public void testFirefox() throws IOException {
 		final BrowserImporter importer = new BrowserImporter();
 		importer.initialize(new File("src/test/resources/firefox_20.html"), new User("testuser"), "public");
