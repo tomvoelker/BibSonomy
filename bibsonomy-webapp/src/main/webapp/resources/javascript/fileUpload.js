@@ -400,9 +400,9 @@ function uploadRequestSuccessful(data) {
 			if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) != -1) {
 				inner = aQrCode + imgPreview + fileName + "</a> ( " + aNoQrCode + imgPreview + documentQRMessage + "</a>" + 
 				"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
-				") " + aDel +"<br />" +aRename;
+				") " + aDel +aRename;
 			} else {
-				inner = aNoQrCode + imgPreview + fileName + "</a> " + aDel+"<br />" +aRename;
+				inner = aNoQrCode + imgPreview + fileName + "</a> " + aDel +aRename;
 			}
 			
 			filesUl.find("li:last-child").before("<li>" + inner + "</li>");
@@ -456,7 +456,10 @@ function renameRequestSuccessful(data) {
 	/*
 	 * find and update all links, containing old filenames
 	 */
-	var toRename = $('a:contains("' + oldName +'")');
+	var toRename = $('a:contains("' + oldName +'")').filter(function(index) {
+		return $(this).text() == oldName;
+	});
+	
 	$('a[href*="' + oldName +'"]').each(function() {
 		var newHref = $(this).prop("href").replace(oldName, newName);
 		$(this).prop("href", newHref);
