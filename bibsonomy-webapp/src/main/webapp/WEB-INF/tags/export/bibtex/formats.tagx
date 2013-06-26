@@ -5,15 +5,16 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"		
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
-	<c:url var="bibtex"  value="/bib/${requPath}${requQueryString}" />
-	<c:url var="publ"    value="/publ/${requPath}${requQueryString}" />
-	<c:url var="publrss" value="/publrss/${requPath}${requQueryString}" />
-	<c:url var="aparss"  value="/aparss/${requPath}${requQueryString}" />
-	<c:url var="burst"   value="/burst/${requPath}${requQueryString}" />
-	<c:url var="swrc"    value="/swrc/${requPath}${requQueryString}" />
-	<c:url var="json"    value="/json/${requPath}${requQueryString}" />
+	<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
+	<c:url var="bibtex"  value="/bib/${pathAndQueryString}" />
+	<c:url var="publ"    value="/publ/${pathAndQueryString}" />
+	<c:url var="publrss" value="/publrss/${pathAndQueryString}" />
+	<c:url var="aparss"  value="/aparss/${pathAndQueryString}" />
+	<c:url var="burst"   value="/burst/${pathAndQueryString}" />
+	<c:url var="swrc"    value="/swrc/${pathAndQueryString}" />
+	<c:url var="json"    value="/json/${pathAndQueryString}" />
 	<c:url var="csl"     value="/csl/${pathAndQueryString}" />
-	<c:url var="custom"  value="/layout/custom/${requPath}${requQueryString}" />
+	<c:url var="custom"  value="/layout/custom/${pathAndQueryString}" />
 
 	<select id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
 		<option value=""><fmt:message key="form.input.select"/></option>
@@ -29,7 +30,7 @@
 
 		<c:forEach var="entry" items="${command.layoutMap}">
 			<c:if test="${entry.value.publicLayout}">
-				<c:url var="url" value="/layout/${entry.value.name}/${requPath}${requQueryString}" />
+				<c:url var="url" value="/layout/${entry.value.name}/${pathAndQueryString}" />
 				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
 			</c:if>
 		</c:forEach>
