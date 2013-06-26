@@ -1432,7 +1432,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
         			}
                 });
 
-	        $(this).autocomplete('widget').css('z-index', 99);
+	        $(this).autocomplete('widget').css('z-index', 127);
 	        
 	        return false;
         }
