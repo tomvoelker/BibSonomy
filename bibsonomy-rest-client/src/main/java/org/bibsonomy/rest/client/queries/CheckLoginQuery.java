@@ -23,6 +23,7 @@
 
 package org.bibsonomy.rest.client.queries;
 
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -35,6 +36,6 @@ public class CheckLoginQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		return performRequest(HttpMethod.HEAD, URL_GROUPS, null).toString();
+		return performRequest(HttpMethod.HEAD, RESTConfig.GROUPS_URL, null).toString();
 	}
 }
