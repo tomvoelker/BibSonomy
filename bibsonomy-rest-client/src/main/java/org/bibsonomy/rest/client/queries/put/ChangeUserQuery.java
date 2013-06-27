@@ -32,6 +32,7 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * Use this Class to change details of an existing user account.
@@ -67,7 +68,7 @@ public final class ChangeUserQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeUser(sw, this.user, null);
-		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_USERS + "/" + this.userName, sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.PUT, new UrlRenderer("").createHrefForUser(this.userName), sw.toString());
 		return null;
 	}
 	

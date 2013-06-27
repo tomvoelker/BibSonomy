@@ -32,6 +32,7 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * Use this Class to change details of an existing group in bibsonomy.
@@ -67,7 +68,7 @@ public final class ChangeGroupQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeGroup(sw, group, null);
-		this.downloadedDocument = performRequest(HttpMethod.PUT, URL_GROUPS + "/" + this.groupName, sw.toString());
+		this.downloadedDocument = performRequest(HttpMethod.PUT, new UrlRenderer("").createHrefForGroup(this.groupName), sw.toString());
 		return null;
 	}
 	
