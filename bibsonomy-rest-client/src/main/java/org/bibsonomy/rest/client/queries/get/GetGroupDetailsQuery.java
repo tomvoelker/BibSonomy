@@ -28,6 +28,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
@@ -62,8 +63,7 @@ public final class GetGroupDetailsQuery extends AbstractQuery<Group> {
 
 	@Override
 	protected Group doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
-		urlBuilder.addPathElement(this.groupname);
+		UrlBuilder urlBuilder = new UrlBuilder((new UrlRenderer("")).createHrefForGroup(this.groupname));
 		this.downloadedDocument = performGetRequest(urlBuilder.asString());
 		return null;
 	}
