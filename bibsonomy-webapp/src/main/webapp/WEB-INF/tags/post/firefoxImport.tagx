@@ -4,60 +4,43 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
+	<fmt:message var="private" key="post.resource.private"/>
+	<fmt:message var="public" key="post.resource.public"/>
+	<fmt:message var="valueButton" key="settings.import.button"/>
+	
+	<h2><fmt:message key="settings.firefox.header"/></h2>
+	
 	<!-- This tag can be used to support the bookmark import from a firefox bookmark export file -->
-	
-	<fmt:message key="import" var="valueButton" />
-	
+	<form:form id="settingImportForm" action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		<fieldset class="fsInner">
+			<div class="fsRow">
+				<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.firefox.fileselect"/></form:label>
+				<buttons:help message="settings.firefox.fileselect.help"/>
+				<input type="file" name="file" class="fsInput fsSmall"/>
+			</div>
 
-	<form:form action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
-		<fieldset class="fsOuter" style="padding: 1em; margin-bottom: 1em;">
-			
-			<legend><fmt:message key="import.firefox"/></legend>
-			<h2><fmt:message key="settings.firefox.header"/></h2>
-       
-			<table>
-				<tr>
-					<td>
-						<form:label path="file" >
-							<fmt:message key="settings.firefox.fileselect"/>
-						</form:label>
-					</td>
-					<td>
-						<input type="file" name="file" size="20"/>
-						<form:errors path="file"/><br/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<!-- set the visibility of the resources -->
-						<form:label path="group">
-							<fmt:message key="post.resource.viewablefor"/>:
-						</form:label>
-					</td>
-					<td>
-						<form:select path="group" id="viewablebox">
-						<form:option label="public" value="public"/>
-						<form:option label="private" value="private"/>
-					</form:select>
-					</td>
-				</tr>
-				<tr>
-					<td>
-					</td>
-					<td>
-                           <!-- overwrite duplicates? -->
-						<form:checkbox path="overwrite"/>
-                           <fmt:message key="import.overwrite">
-                               <fmt:param><fmt:message key="import.firefox"/></fmt:param>
-                               <fmt:param>${properties['project.name']}</fmt:param>
-                           </fmt:message>
-					</td>
-				</tr>
-			</table>
-			<input type="submit" value="${valueButton}" />
+			<div class="fsRow">
+				<form:label cssClass="fsLabel" path="group"><fmt:message key="settings.firefox.viewable"/></form:label>
+				<buttons:help message="settings.firefox.viewable.help"/>
+					<form:select path="group" id="viewablebox" cssClass="fsInput fsSmall">
+					<form:option label="${public}" value="public"/>
+					<form:option label="${private}" value="private"/>
+				</form:select>
+			</div>
+
+			<div class="fsRow">	
+				<form:label cssClass="fsLabel" path="overwrite"><fmt:message key="settings.overwrite"/></form:label>
+				<buttons:help message="settings.overwrite.help.firefox"/>
+					<form:checkbox path="overwrite" id="overwriteBox" cssClass="fsInput fsSmall"/>
+			</div>
+
+			<div class="fsRow">	
+				<input type="submit" value="${valueButton}" />
+				<input id="importType" name="importType" type="hidden" value="firefox"/>
+			</div>
 		</fieldset>
 	</form:form>
-
 </jsp:root>
