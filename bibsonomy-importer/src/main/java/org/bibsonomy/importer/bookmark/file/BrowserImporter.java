@@ -47,27 +47,25 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 
 	@Override
 	public void initialize(File file, User user, String groupName) throws IOException {
-		
-		getBookmarksFromBrowser(file, user, groupName);
+		this.getBookmarksFromBrowser(file, user, groupName);
 	}
 	
 	private void getBookmarksFromBrowser(File bookmarkFile, User currUser, String groupName) throws FileNotFoundException {
-
 		final Document document = XmlUtils.getDOM(new FileInputStream(bookmarkFile));
 		try {
 			//if getChildNodes().item(0) returns value the browser is safari otherwise other browsers
-			final Node checkFolder = document.getElementsByTagName("body").item(0).getChildNodes().item(0);
-			if(checkFolder != null){ 
-				
-				int size = document.getElementsByTagName("body").item(0).getChildNodes().getLength();
-				for(int i = 0;i < size;i++ ){
-					final Node mainfolder = document.getElementsByTagName("body").item(0).getChildNodes().item(i);			
-					if(mainfolder != null){
+			final NodeList childNotes = document.getElementsByTagName("body").item(0).getChildNodes();
+			final Node checkFolder = childNotes.item(0);
+			if (checkFolder != null) {
+				int size = childNotes.getLength();
+				for (int i = 0;i < size;i++ ) {
+					final Node mainfolder = childNotes.item(i);
+					if (mainfolder != null) {
 						createBookmarks(mainfolder, null, currUser, groupName);
 					}
 				}
-			}else{
-				final Node mainFolder = document.getElementsByTagName("body").item(0).getChildNodes().item(1);
+			} else {
+				final Node mainFolder = childNotes.item(1);
 				if (mainFolder != null) {
 					createBookmarks(mainFolder, null, currUser, groupName);
 				}
@@ -122,7 +120,7 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 			if (!"".equals(sepTag)) {
 				myTags.add(sepTag);
 			}
-			
+
 			// is currentNode a folder?
 			if ("dd".equals(currentNode.getNodeName())) {
 				NodeList secondGen = currentNode.getChildNodes();
@@ -172,11 +170,12 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 
 				// need to check if the <a>-Tag has a name (ChildNodes) i.e. <a
 				// href="http://www.foo.bar"></a> causes a failure
-				if (currentNode.getFirstChild().hasChildNodes() == true) {
+				if (currentNode.getFirstChild().hasChildNodes()) {
 					final Post<Bookmark> post = new Post<Bookmark>();
-					post.setResource(new Bookmark());
-					post.getResource().setTitle(currentNode.getFirstChild().getFirstChild().getNodeValue());
-					post.getResource().setUrl(currentNode.getFirstChild().getAttributes().getNamedItem("href").getNodeValue());
+					final Bookmark bookmark = new Bookmark();
+					post.setResource(bookmark);
+					bookmark.setTitle(currentNode.getFirstChild().getFirstChild().getNodeValue());
+					bookmark.setUrl(currentNode.getFirstChild().getAttributes().getNamedItem("href").getNodeValue());
 					// add tags/relations to bookmark
 					if (upperTags != null) {
 						// only 1 tag found -> add a tag
