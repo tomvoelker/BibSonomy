@@ -32,6 +32,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
@@ -84,8 +85,7 @@ public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>> {
 
 	@Override
 	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
-		urlBuilder.addPathElement(this.groupname);
+		UrlBuilder urlBuilder = new UrlBuilder((new UrlRenderer("").createHrefForGroup(this.groupname)));
 		urlBuilder.addPathElement(RESTConfig.USERS_URL);
 		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
 		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
