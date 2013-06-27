@@ -28,7 +28,6 @@ import java.io.Reader;
 
 import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -52,22 +51,6 @@ import org.bibsonomy.util.UrlBuilder;
  */
 public abstract class AbstractQuery<T> {
 	
-	// TODO: use RESTConfig..+ directly
-	@Deprecated
-	protected static final String URL_TAGS = RESTConfig.TAGS_URL;
-	@Deprecated
-	protected static final String URL_USERS = RESTConfig.USERS_URL;
-	@Deprecated
-	protected static final String URL_FRIENDS = RESTConfig.FRIENDS_SUB_PATH;
-	@Deprecated
-	protected static final String URL_FOLLOWERS = RESTConfig.FOLLOWERS_SUB_PATH;
-	@Deprecated
-	protected static final String URL_GROUPS = RESTConfig.GROUPS_URL;
-	@Deprecated
-	protected static final String URL_POSTS = RESTConfig.POSTS_URL;
-	@Deprecated
-	protected static final String URL_CONCEPTS = RESTConfig.CONCEPTS_URL;
-
 	private String apiKey;
 	private String username;
 	private AuthenticationAccessor accessor;
