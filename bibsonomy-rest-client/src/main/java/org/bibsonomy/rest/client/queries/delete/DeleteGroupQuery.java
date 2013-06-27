@@ -30,6 +30,7 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * Use this Class to delete a specified group.
@@ -56,7 +57,7 @@ public final class DeleteGroupQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, URL_GROUPS + "/" + this.groupName, null);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, (new UrlRenderer("")).createHrefForGroup(this.groupName), null);
 		return null;
 	}
 	

@@ -31,6 +31,8 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author MarcelM
@@ -61,9 +63,13 @@ public class DeletePostDocumentQuery extends AbstractQuery<String>{
 	
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, RESTConfig.USERS_URL + "/" + userName + "/" + 
-												 RESTConfig.POSTS_URL + "/" + resourceHash + "/" + 
-												 RESTConfig.DOCUMENTS_SUB_PATH + "/" + fileName,null); 
+		UrlBuilder urlBuilder = new UrlBuilder((new UrlRenderer("").createHrefForUser(userName)));
+		urlBuilder.addPathElement(RESTConfig.POSTS_URL);
+		urlBuilder.addPathElement(this.resourceHash);
+		urlBuilder.addPathElement(RESTConfig.DOCUMENTS_SUB_PATH);
+		urlBuilder.addPathElement(this.fileName);
+		
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, urlBuilder.asString(),null); 
 		return null;
 	}
 	

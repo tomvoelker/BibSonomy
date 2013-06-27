@@ -26,10 +26,12 @@ package org.bibsonomy.rest.client.queries.delete;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Status;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to delete a specified user.
@@ -56,7 +58,9 @@ public final class DeleteUserQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, URL_USERS + "/" + this.userName, null);
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+		urlBuilder.addPathElement(this.userName);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, urlBuilder.asString(), null);
 		return null;
 	}
 	

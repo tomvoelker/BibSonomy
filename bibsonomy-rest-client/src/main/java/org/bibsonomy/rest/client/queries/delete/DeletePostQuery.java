@@ -31,6 +31,7 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to delete a specified post.
@@ -62,7 +63,11 @@ public final class DeletePostQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, RESTConfig.USERS_URL + "/" + this.userName + "/" + RESTConfig.POSTS_URL + "/" + this.resourceHash, null);
+		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+		urlBuilder.addPathElement(this.userName);
+		urlBuilder.addPathElement(RESTConfig.POSTS_URL);
+		urlBuilder.addPathElement(this.resourceHash);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, urlBuilder.asString(), null);
 		return null;
 	}
 	

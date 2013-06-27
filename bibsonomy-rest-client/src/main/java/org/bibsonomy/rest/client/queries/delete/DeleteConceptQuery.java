@@ -30,6 +30,7 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to delete a concept or a single relation.
@@ -55,26 +56,28 @@ public class DeleteConceptQuery extends AbstractQuery<String> {
 	
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		String url;
+		UrlBuilder urlBuilder;
 		
 		switch (grouping) {
-		case USER:	
-			url = URL_USERS; 
+		case USER:
+			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
 			break;
 		case GROUP:
-			url = URL_GROUPS;
+			urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
 			break;
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept delete query");
 		}
-
-		url += "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptName;
+		
+		urlBuilder.addPathElement(this.groupingName);
+		urlBuilder.addPathElement(RESTConfig.CONCEPTS_URL);
+		urlBuilder.addPathElement(this.conceptName);
 		
 		if (subTag != null) {
-			url += "?" + RESTConfig.SUB_TAG_PARAM + "=" + this.subTag;
+			urlBuilder.addParameter(RESTConfig.SUB_TAG_PARAM, this.subTag);
 		}
 		
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, url, null);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, urlBuilder.asString(), null);
 		return null;	
 	}
 
