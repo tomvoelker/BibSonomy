@@ -28,6 +28,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.StringWriter;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -62,7 +63,7 @@ public final class CreateGroupQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeGroup(sw, this.group, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_GROUPS, StringUtils.toDefaultCharset(sw.toString()));
+		this.downloadedDocument = performRequest(HttpMethod.POST, RESTConfig.GROUPS_URL, StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
 	

@@ -27,11 +27,13 @@ import java.io.StringWriter;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to create a new concept
@@ -60,23 +62,23 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 	
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		String url;
+		UrlBuilder urlBuilder;
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeTag(sw, concept, null);
 		
 		switch (grouping) {
 		case USER:
-			url = URL_USERS;			
+			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);			
 			break;
 		case GROUP:
-			url = URL_GROUPS;
+			urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
 			break;
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept change query");
 		}		
 		
-		url += "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptName;
-		this.downloadedDocument = performRequest(HttpMethod.POST, url, StringUtils.toDefaultCharset(sw.toString()));
+		urlBuilder.addPathElement(this.groupingName).addPathElement(RESTConfig.CONCEPTS_URL).addPathElement(this.conceptName);
+		this.downloadedDocument = performRequest(HttpMethod.POST, urlBuilder.asString(), StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
 

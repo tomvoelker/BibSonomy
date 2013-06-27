@@ -32,11 +32,14 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to post a post. ;)
@@ -93,7 +96,7 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializePost(sw, this.post, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + URL_POSTS, StringUtils.toDefaultCharset(sw.toString()));
+		this.downloadedDocument = performRequest(HttpMethod.POST, new UrlBuilder(new UrlRenderer("").createHrefForUser(this.username)).addPathElement(RESTConfig.POSTS_URL).asString(), StringUtils.toDefaultCharset(sw.toString()));
 		return null;
 	}
 	

@@ -28,6 +28,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
@@ -95,12 +96,12 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 		/*
 		 * friend/follower, tag
 		 */
-		final String friendOrFollower = FRIEND_RELATIONSHIP.equals(relationType) ? URL_FRIENDS : URL_FOLLOWERS;
+		final String friendOrFollower = FRIEND_RELATIONSHIP.equals(relationType) ? RESTConfig.FRIENDS_SUB_PATH : RESTConfig.FOLLOWERS_SUB_PATH;
 		final String queryTag = present(this.tag) ? "/"+tag : "";
 		/*
 		 * perform request
 		 */
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_USERS + "/" + this.username + "/" + friendOrFollower + queryTag, StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
+		this.downloadedDocument = performRequest(HttpMethod.POST, RESTConfig.USERS_URL + "/" + this.username + "/" + friendOrFollower + queryTag, StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
 		return null;
 	}
 }

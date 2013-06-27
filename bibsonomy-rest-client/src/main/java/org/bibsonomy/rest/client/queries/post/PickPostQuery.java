@@ -27,6 +27,8 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
+import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author wla
@@ -39,8 +41,7 @@ public class PickPostQuery extends AbstractQuery<Integer> {
 
 	@Override
 	protected Integer doExecute() throws ErrorPerformingRequestException {
-		final String url = RESTConfig.USERS_URL + "/" + userName + "/" + RESTConfig.CLIPBOARD_SUBSTRING + "/" + resourceHash;
-		performRequest(HttpMethod.POST, url, new String());
+		performRequest(HttpMethod.POST, new UrlBuilder(new UrlRenderer("").createHrefForUser(this.userName)).addPathElement(RESTConfig.CLIPBOARD_SUBSTRING).addPathElement(this.resourceHash).asString(), new String());
 		return 0;
 	}
 
