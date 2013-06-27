@@ -33,9 +33,9 @@ import org.bibsonomy.model.User;
 public interface FileUploadInterface {
 
 	/**
-	 * firefox extion
+	 * browser bookmark export extensions
 	 */
-	public static final String[] FIREFOX_IMPORT_EXTENSIONS = { "html", "htm" };
+	public static final String[] BROWSER_IMPORT_EXTENSIONS = { "html", "htm" };
 	
 	/**
 	 * all extensions allowed for document upload
