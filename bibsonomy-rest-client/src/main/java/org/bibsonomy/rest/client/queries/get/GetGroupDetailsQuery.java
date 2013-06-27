@@ -24,7 +24,6 @@
 package org.bibsonomy.rest.client.queries.get;
 
 import org.bibsonomy.model.Group;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
