@@ -11,9 +11,9 @@
 	
 	<!-- Make some output about the result of the import -->
 	
-	<c:set var="bookmarks"><fmt:message key="bookmarks"/></c:set>
-	<c:set var="concepts"><fmt:message key="import.concepts"/></c:set>
-	<c:set var="back"><fmt:message key="bibtex.upload.file.back"/></c:set>
+	<fmt:message key="bookmarks" var="bookmarks"/>
+	<fmt:message key="import.concepts" var="concepts"/>
+	<fmt:message key="bibtex.upload.file.back" var="back" />
 	
 	<c:choose>
 		<c:when test="${command.importData eq 'posts'}">
