@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.validation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
@@ -11,9 +13,8 @@ import org.springframework.validation.Errors;
  */
 public class ImportValidator implements Validator<ImportCommand>{
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return ImportCommand.class.equals(clazz);
 	}
 
@@ -25,16 +26,16 @@ public class ImportValidator implements Validator<ImportCommand>{
 		
 		Assert.notNull(command.getImportType());
 		
-		/** look into the for each importType required fields **/
-		if("delicious".equals(command.getImportType())) {
-			if(command.getImportUsername().length() == 0){
+		/* look into the for each importType required fields */
+		if ("delicious".equals(command.getImportType())) {
+			if (!present(command.getImportUsername())) {
 				errors.rejectValue("importUsername", "error.field.required");
 			}
-			if(command.getImportPassword().length() == 0){
+			if (!present(command.getImportPassword())) {
 				errors.rejectValue("importPassword", "error.field.required");
 			}
-		} else if("firefox".equals(command.getImportType())) {
-			if(command.getFile() == null || command.getFile().getSize() == 0){
+		} else if ("browser".equals(command.getImportType())) {
+			if (command.getFile() == null || command.getFile().getSize() == 0){
 				errors.rejectValue("file", "error.field.required");
 			}
 		}

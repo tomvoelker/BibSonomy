@@ -16,7 +16,7 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
-import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
+import org.bibsonomy.importer.bookmark.file.BrowserImporter;
 import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
@@ -42,6 +42,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
+ * TODO: use validator to check for errors (validator never invoked)
+ * where do we want to display the errors? on the settings page?
+ * 
  * @author mwa
  * @version $Id$
  */
@@ -121,16 +124,13 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 					relations = relationImporter.getRelations();
 				} 
 
-			} else if ("firefox".equals(importType)) {
+			} else if ("browser".equals(importType)) {
 				/*
-				 * import posts/relations from Firefox
+				 * import posts/relations from Firefox, Safari, Opera, Chrome
 				 */
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), FileUploadInterface.FIREFOX_IMPORT_EXTENSIONS);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), FileUploadInterface.BROWSER_IMPORT_EXTENSIONS);
 				final Document document = uploadFileHandler.writeUploadedFile();
-				/*
-				 * FileBookmarkImporter interface
-				 */
-				final FileBookmarkImporter fileImporter = new FirefoxImporter();
+				final FileBookmarkImporter fileImporter = new BrowserImporter();
 				fileImporter.initialize(document.getFile(), loginUser, command.getGroup());
 				posts = fileImporter.getPosts();
 				/*
@@ -147,22 +147,22 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
 		} catch (final Exception ex) {
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
-			log.warn("Delicious/Firefox-Import failed: " + ex.getMessage());
+			log.warn("Delicious/Browser-Import failed: " + ex.getMessage());
 		}
 
-		/** store the posts **/
+		/* store the posts */
 		if (present(posts)) {
 			this.storePosts(command, posts);
 
-			/** how many posts were found? **/
+			/* how many posts were found? */
 			command.setTotalCount(posts.size());
 		}
 
-		/** if available store relations **/
+		/* if available store relations */
 		if (present(relations)) {
 			this.storeRelations(relations, command);
 
-			/** how many bundles were found? **/
+			/* how many bundles were found? */
 			command.setTotalCount(relations.size());
 		}
 
@@ -281,15 +281,6 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
-	}
-
-	/**
-	 * This factory returns pre-configured Delicious-Importers.
-	 * 
-	 * @return The factory.
-	 */
-	public DeliciousImporterFactory getImporterFactory() {
-		return this.importerFactory;
 	}
 
 	/**

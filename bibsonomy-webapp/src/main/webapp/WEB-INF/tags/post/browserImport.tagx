@@ -7,24 +7,23 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
+	<!-- This tag can be used to support the bookmark import from a browser bookmark export file -->
 	<fmt:message var="private" key="post.resource.private"/>
 	<fmt:message var="public" key="post.resource.public"/>
 	<fmt:message var="valueButton" key="settings.import.button"/>
 	
-	<h2><fmt:message key="settings.firefox.header"/></h2>
-	
-	<!-- This tag can be used to support the bookmark import from a firefox bookmark export file -->
-	<form:form id="settingImportForm" action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
+	<h2><fmt:message key="settings.browser.header"/></h2>
+	<form:form id="settingImportForm" action="/import/browser?ckey=${ckey}" method="post" enctype="multipart/form-data">
 		<fieldset class="fsInner">
 			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.firefox.fileselect"/></form:label>
-				<buttons:help message="settings.firefox.fileselect.help"/>
+				<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.browser.fileselect"/></form:label>
+				<buttons:help message="settings.browser.fileselect.help"/>
 				<input type="file" name="file" class="fsInput fsSmall"/>
 			</div>
 
 			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="group"><fmt:message key="settings.firefox.viewable"/></form:label>
-				<buttons:help message="settings.firefox.viewable.help"/>
+				<form:label cssClass="fsLabel" path="group"><fmt:message key="settings.browser.viewable"/></form:label>
+				<buttons:help message="settings.browser.viewable.help"/>
 					<form:select path="group" id="viewablebox" cssClass="fsInput fsSmall">
 					<form:option label="${public}" value="public"/>
 					<form:option label="${private}" value="private"/>
@@ -33,13 +32,13 @@
 
 			<div class="fsRow">	
 				<form:label cssClass="fsLabel" path="overwrite"><fmt:message key="settings.overwrite"/></form:label>
-				<buttons:help message="settings.overwrite.help.firefox"/>
+				<buttons:help message="settings.overwrite.help.browser"/>
 					<form:checkbox path="overwrite" id="overwriteBox" cssClass="fsInput fsSmall"/>
 			</div>
 
 			<div class="fsRow">	
 				<input type="submit" value="${valueButton}" />
-				<input id="importType" name="importType" type="hidden" value="firefox"/>
+				<input id="importType" name="importType" type="hidden" value="browser"/>
 			</div>
 		</fieldset>
 	</form:form>

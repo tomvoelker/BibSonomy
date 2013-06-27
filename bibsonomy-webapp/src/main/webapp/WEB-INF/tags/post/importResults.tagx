@@ -77,8 +77,8 @@
 					</ul>
             
 				</fieldset>
-				<c:if test="${empty importType or importType eq 'firefox'}">
-					<post:firefoxImport/>
+				<c:if test="${empty importType or importType eq 'browser'}">
+					<post:browserImport/>
 				</c:if>
 
 			</c:if>

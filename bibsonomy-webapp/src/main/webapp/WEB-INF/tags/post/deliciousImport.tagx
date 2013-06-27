@@ -8,10 +8,8 @@
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<!-- This tag can be used to support the bookmark import from a delicious bookmark export file -->
-
-    <jsp:directive.attribute name="valueButton" type="java.lang.String" required="true" description="value for submit button"/>
+	<fmt:message var="valueButton" key="settings.import.button"/>
 	
-		
 		<h2><fmt:message key="settings.delicious.header" /></h2>
 
 		<form:form action="/import/delicious?ckey=${ckey}" method="post">

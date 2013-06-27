@@ -16,7 +16,7 @@ public class ImportCommand extends BaseCommand {
 	private boolean overwrite;
 	
 	/** the import-type describes which kind of import will be used 
-	 *  e.g. FireFox import, Delicious import etc.. **/
+	 *  e.g. browser import, Delicious import etc.. **/
 	// TODO: introduce enum
 	private String importType;
 	

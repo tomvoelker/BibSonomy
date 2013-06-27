@@ -937,15 +937,9 @@
 		<to last="true">/import/bookmarks</to>
 	</rule>
 	<rule>
-		<name>/import/delicious/v2</name>
-		<from>^/import/delicious/v2$</from>
-		<set type="parameter" name="importType">delicious.yahoo</set>
-		<to last="true">/import/bookmarks</to>
-	</rule>
-	<rule>
-		<name>/import/firefox</name>
-		<from>^/import/firefox</from>
-		<set type="parameter" name="importType">firefox</set>
+		<name>/import/browser</name>
+		<from>^/import/browser</from>
+		<set type="parameter" name="importType">browser</set>
 		<to last="true">/import/bookmarks</to>
 	</rule>
 	<!-- redirect /import/facebook/STATE -->
