@@ -1,6 +1,5 @@
 package org.bibsonomy.opensocial.oauth.database.beans;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -10,68 +9,54 @@ import java.util.Date;
  */
 public class OAuthUserInfo {
 	
-	  /**
-	   * These constants are used to generate the variables expirationTime and isExpired for every OAuth-consumer.
-	   * There are two types of OAuth-consumers:
-	   * 	1. The OAuth consumer which lifetime is up to 5 minutes
-	   * 	2. The OAuth consumer which lifetime is up to one year
-	   */
-	  public static final long ONE_YEAR = 365 * 24 * 60 * 60 * 1000L;
-	  public static final long FIVE_MINUTES = 5 * 60 * 1000L;
-	
-	  
-	  private String 	appId;
-	  private String	appTitle;
-	  private String	appIconUrl;
-	  private String 	userId;
-	  private boolean 	authorized;
-	  private String 	consumerKey;
-	  private int 		type;
-	  private String 	domain;
-	  private String 	oauthVersion;
-	  private boolean 	isExpired;
-	  private Date 		issueTime;
-	  private String 	issueTimeString;
-	  private Date 		expirationTime;
-	  private String 	expirationTimeString;
-	
-	  	
 	/**
-	 * Create a nice looking String from the Date
+	 * These constants are used to generate the variables expirationTime and isExpired for every OAuth-consumer.
+	 * There are two types of OAuth-consumers:
+	 * 	1. The OAuth consumer which lifetime is up to 5 minutes
+	 * 	2. The OAuth consumer which lifetime is up to one year
 	 */
-	public String formatDate(Date date) {
-		SimpleDateFormat formater = new SimpleDateFormat();
-		return formater.format(date);
-	}
+	public static final long ONE_YEAR = 365 * 24 * 60 * 60 * 1000L;
+	public static final long FIVE_MINUTES = 5 * 60 * 1000L;
+	
+	private String appId;
+	private String appTitle;
+	private String appIconUrl;
+	private String userId;
+	private boolean authorized;
+	private String consumerKey;
+	private int type;
+	private String domain;
+	private String oauthVersion;
+	private boolean isExpired;
+	private Date issueTime;
+	private Date expirationTime;
 	
 	/**
 	 * Calculate and set the variables expirationTime and isExpired
 	 */
 	public void calculateExpirationTime() {
-		
-		/**
+		/*
 		 * Calculate expiration time and set it
 		 * According to the type of the OAuth-consumer, add the matching constant (Year/5 minutes) to the creation time.
 		 */
-
 		long expTime = issueTime.getTime();
-	    
-	    switch (type) {
-	    case 0:
-	      expTime += FIVE_MINUTES;
-	      break;
-	    case 1:
-	      expTime += ONE_YEAR;
-	      break;
-	    }
-	    
-	    this.setExpirationTime(new Date(expTime));
+		
+		switch (type) {
+		case 0:
+			expTime += FIVE_MINUTES;
+			break;
+		case 1:
+			expTime += ONE_YEAR;
+			break;
+		}
+		
+		this.setExpirationTime(new Date(expTime));
 
-	    /**
-	     * Define and set the bool isExpired
-	     */
-	    Date currentDate = new Date();
-	    this.setExpired(currentDate.compareTo(this.getExpirationTime()) > 0);
+		/*
+		 * check if the token has expired
+		 */
+		final Date currentDate = new Date();
+		this.setExpired(currentDate.compareTo(this.getExpirationTime()) > 0);
 	}
 
 	/**
@@ -240,33 +225,5 @@ public class OAuthUserInfo {
 	 */
 	public void setAppIconUrl(String appIconUrl) {
 		this.appIconUrl = appIconUrl;
-	}
-
-	/**
-	 * @return the issueTimeString
-	 */
-	public String getIssueTimeString() {
-		return issueTimeString;
-	}
-
-	/**
-	 * @param issueTimeString the issueTimeString to set
-	 */
-	public void setIssueTimeString(String issueTimeString) {
-		this.issueTimeString = issueTimeString;
-	}
-
-	/**
-	 * @return the expirationTimeString
-	 */
-	public String getExpirationTimeString() {
-		return expirationTimeString;
-	}
-
-	/**
-	 * @param expirationTimeString the expirationTimeString to set
-	 */
-	public void setExpirationTimeString(String expirationTimeString) {
-		this.expirationTimeString = expirationTimeString;
 	}
 }
