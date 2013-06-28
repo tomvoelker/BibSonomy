@@ -23,22 +23,23 @@
 		
 		<fieldset class="fsOuter">
        		<table cellspacing="15">
-	      				
        			<tr>
+       				<!-- TODO: i18n -->
 					<th>Icon</th>
 					<th>Title</th>
        				<th>ID</th>
        				<th>Issue Time</th>
        				<th>Expiration Time</th>
        			</tr>
-       		  	
+       		  	<!-- TODO: show only non expired tokens -->
+       		  	<!-- TODO: show only access tokens (type=1) (remove request tokens) -->
        		  	<c:forEach items="${command.oauthUserInfo}" var="oauthInfo">
        		       	<tr>
        		       		<th><img src="${oauthInfo.appIconUrl}"/></th>
        		       		<th>${oauthInfo.appTitle}</th>
        		       		<th>${oauthInfo.appId}</th>
-       		       		<th>${oauthInfo.issueTimeString}</th>
-       		       		<th>${oauthInfo.expirationTimeString}</th>
+       		       		<th><fmt:formatDate value="${oauthInfo.issueTime}" pattern="yyyy-MM-dd hh:mm" /></th>
+       		       		<th><fmt:formatDate value="${oauthInfo.expirationTime}" pattern="yyyy-MM-dd hh:mm" /></th>
        		       		<!-- TODO: delete button at present not implemented -->
        		       		<!-- <th><input type="button" class="adminBtn" value="Delete" onclick="alert('OAuth access deleted')"/> </th> -->
        		       	</tr> 

@@ -181,13 +181,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		
 		/* Get the valid OAuth applications of the user */
-		List <OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
+		final List <OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
 		
 		/* Calculate the expiration time and issue time */
-		for(OAuthUserInfo userInfo : oauthUserInfo) {
-			userInfo.calculateExpirationTime();
-			userInfo.setExpirationTimeString(userInfo.formatDate(userInfo.getExpirationTime()));
-			userInfo.setIssueTimeString(userInfo.formatDate(userInfo.getIssueTime()));
+		for (final OAuthUserInfo userInfo : oauthUserInfo) {
+			userInfo.calculateExpirationTime(); // TODO: can ibatis do that for us?
 		}
 		
 		command.setOauthUserInfo(oauthUserInfo);
