@@ -14,25 +14,24 @@
 	<c:set var="username" value="${loginUser.name}" />
 	
 	<jsp:body>
-		<!-- The menu -->
-		<ul id="menu">
-			<li><a id="nav_home" href="/">Home</a></li>
-			
-			<c:choose>
-				<c:when test="${not empty username}">
-					<!-- sites for logged in users -->
-					<li><a href="/user/${mtl:encodeURI(username)}" id="nav_my"><fmt:message key="navi.my"/></a></li>
-					<li><a href="#" id="nav_search">&amp;nbsp;</a></li>
-					<li>
-						<a href="#" id="nav_more"><fmt:message key="more"/> &amp;raquo;</a>
-					</li>
-				</c:when>
-				<c:otherwise>
-					<li><a href="/login" id="nav_login"><fmt:message key="login.title" /></a></li>
-					<li><a href="/tags" id="nav_tags"><fmt:message key="navi.tags"/></a></li>
-				</c:otherwise>
-			</c:choose>
-		</ul>
+		<div id="menuContainer">
+			<!-- The menu -->
+			<ul id="menu">
+				<c:choose>
+					<c:when test="${not empty username}">
+						<!-- sites for logged in users -->
+						<li><a href="#" id="nav_more"><fmt:message key="more"/> &amp;raquo;</a></li>
+						<li><a href="#" id="nav_search">&amp;nbsp;</a></li>
+						<li><a href="/user/${mtl:encodeURI(username)}" id="nav_my"><fmt:message key="navi.my"/></a></li>
+					</c:when>
+					<c:otherwise>
+						<li><a href="/tags" id="nav_tags"><fmt:message key="navi.tags"/></a></li>
+						<li><a href="/login" id="nav_login"><fmt:message key="login.title" /></a></li>
+					</c:otherwise>
+				</c:choose>
+				<li><a id="nav_home" href="/">Home</a></li>
+			</ul>
+		</div>
 		<!-- The toolbar -->
 		<div id="toolbar">
 			<!-- search fields -->
@@ -90,7 +89,6 @@
 		<script type="text/javascript">
 		<![CDATA[
 		    $(function() {
-		    	
 		    	var selected = "${selected}";
 		    	var resource_toggle = ${resources};
 		    	

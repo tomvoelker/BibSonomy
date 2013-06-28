@@ -4,7 +4,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mobile="urn:jsptagdir:/WEB-INF/tags/mobile"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:spring="http://www.springframework.org/tags">
 	
 	<!-- Basic layout for mobile site 
 		 Includes header, content placeholder and footer.
@@ -25,6 +26,7 @@
 			<head>
 				<!-- to have it on all pages we set the scope to "request" -->
 				<c:set var="locale" scope="request" value="${pageContext.response.locale}"/>
+				<c:set var="resdir" value="/resources" />
 				
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<!--  set the viewport of the mobile device. disabled scaling -->
@@ -33,7 +35,11 @@
 				<c:if test="${not empty additionalCSS}">
 					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
 				</c:if>
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/mobile.css" />
+				
+				<!-- set style via spring theme -->
+				<spring:theme code="stylesheet.mobile" var="mobileStyle" text=""/>
+				<link rel="stylesheet" type="text/css" href="${mobileStyle}" />
+				
 				<!-- The only JavaScript framework used on the mobile site is jQuery -->
 				<script type="text/javascript" src="${resdir}/jquery/jquery.js"><!-- keep me --></script>
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
@@ -52,6 +58,17 @@
 			<body>
 				<!-- site header -->
 				<div id="head">
+					<!--+ 
+					 	| 
+					 	| logo and project name
+					 	|
+					 	+-->
+					<spring:theme code="image.head.logo.mobile" var="headerLogo" text=""/>
+					<c:if test="${not empty headerLogo}">
+						<div id="logoimage">
+							<a href="/"><img id="headerlogoimage" src="${headerLogo}"/></a>
+						</div>
+					</c:if>
 					<h1>
 						<a href="/">${properties['project.name']}</a>
 					</h1>

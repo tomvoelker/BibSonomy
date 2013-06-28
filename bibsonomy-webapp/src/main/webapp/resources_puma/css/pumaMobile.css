@@ -1,18 +1,30 @@
-@CHARSET "UTF-8";
-
 body {
 	padding: 0;
 	margin: 0;
 	font: 0.9em Arial, Helvetica, sans;
+	background-color: #F7EFED;
+}
+
+#logoimage {
+	display: block;
+    margin-top: 0px;
+    position: absolute;
+	z-index: 555;
 }
 
 h1 {
-	float: left;
+	position: absolute;
+	top: 0px;
+	left: 45px;
 	margin: 0;
 	padding: 0;
 	font-size: 1.2em;
-	margin-top: 0.4em;
+	margin-top: 1.1em;
 	margin-left: 0.3em;
+}
+
+h1 a {
+	color: #000000;
 }
 
 .extend>div {
@@ -20,7 +32,7 @@ h1 {
 }
 
 a {
-	color: #336699;
+	color: #872708;
 	text-decoration: none;
 }
 
@@ -30,7 +42,6 @@ a {
 	position: relative;
 	width: 300px;
 }
-
 
 #menu {
 	width: 100%;
@@ -49,43 +60,39 @@ a {
 }
 
 #menu li a {
-	
-	background: #EEEEEE;
-	padding: 5px 10px;
-	display: block;
-	text-decoration: none;
-	margin-top: 0.65em;
-	color: #000000;
-	text-transform: uppercase;
-	border-radius: 5px 5px 0 0;
-	-moz-border-radius: 5px 5px 0 0;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	font-size: 0.8em;
-	font-weight: bold;
+	background: #CBCBCB;
+    border-radius: 5px 5px 0 0;
+    color: #000000;
+    display: block;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-top: 0.65em;
+    padding: 5px 10px;
+    text-decoration: none;
+    text-transform: uppercase;
 }
 
 #menu li a.active {
 	
-	background: #336699;
+	background: #DF430D;
 	color: #FFFFFF;
 }
 
 #menu #nav_search {
 	
 	width: 20px;
-	background: #EEEEEE url('../image/mobile/search_inactive.png') center center no-repeat;
+	background: #CBCBCB url('../image/mobile/search_inactive.png') center center no-repeat;
 }
 
 #menu #nav_search.active {
 
-	background: #336699 url('../image/mobile/search_active.png') center center no-repeat;
+	background: #DF430D url('../image/mobile/search_active.png') center center no-repeat;
 }
 
 #toolbar {
-	clear: both;
-	padding: 5px;
-	background: #336699;
+	background: #DF430D;
+    clear: both;
+    padding: 5px;
 }
 
 #content {
@@ -113,8 +120,8 @@ a {
 
 #resources-toggle a.active, #resources-toggle #bookmark-add, #login-bar a.active, #post-toggle a.active  {
 	
-	background: #142B4B;
-	color: #FFFFFF;
+	background: #CBCBCB;
+	color: #000000;
 }
 
 #resources-toggle #bookmark-add {
@@ -161,7 +168,7 @@ a {
 	font-size: 0.8em;
 	padding: 3px;
 	width: 65%;
-	border: 2px solid #EEEEEE;
+	border: 2px solid #CBCBCB;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -171,10 +178,8 @@ a {
 	
 	font-size: 0.8em;
 	padding: 3px;
-	width: 25%;
-	border: 2px solid #FFFFFF;
-	background: #142B4B;
-	color: #FFFFFF;
+	width: 15%;
+	background-color: #CBCBCB;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -329,7 +334,7 @@ ul.posts li:nth-of-type(2n-1) {
 	padding-right: 8px;
 	background: url('../image/mobile/tag.png') center left no-repeat;
 	text-decoration: none;
-	color: #336699;
+	color: #872708;
 }
 
 .ptime {
@@ -345,7 +350,7 @@ ul.posts li:nth-of-type(2n-1) {
 	font-size: 1.4em;
 	font-weight: bold;
 	text-decoration: none;
-	color: #336699;
+	color: #000000;
 }
 
 .pdesc {
@@ -372,7 +377,7 @@ div.info>div {
 
 #footer {
 	
-	background: #336699;
+	background: #DF430D;
 	color: #FFFFFF;
 	padding: 5px;
 	font-size: 0.8em;
