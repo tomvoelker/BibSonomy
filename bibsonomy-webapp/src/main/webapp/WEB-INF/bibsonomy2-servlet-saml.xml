@@ -148,7 +148,7 @@
 			<bean class="org.springframework.security.saml.metadata.MetadataGenerator">
 				<property name="entityBaseURL" value="${project.home}"/>
 				<property name="entityAlias">
-					<value>bib_test2</value>
+					<value>${auth.saml.entityalias}</value>
 				</property>
 				<property name="includeDiscovery" value="false" />
 				<property name="bindingsSSO">
