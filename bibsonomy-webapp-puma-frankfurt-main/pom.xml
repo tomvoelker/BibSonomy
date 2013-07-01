@@ -1,27 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>bibsonomy-webapp-puma-frankfurt-main</artifactId>
-  <parent>
-  	<groupId>org.bibsonomy</groupId>    
-    <artifactId>bibsonomy</artifactId>
-    <version>2.0.37-SNAPSHOT-SNAPSHOT</version>
-  </parent>
-  <packaging>war</packaging>
-  <name>BibSonomy Webapp PUMA Frankfurt Main</name>
-  <description>PUMA version of BibSonomy for Library of Frankfurt Main University</description>
-  <dependencies>
-    <dependency>
-      <groupId>org.bibsonomy</groupId>
-      <artifactId>bibsonomy-webapp</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
-  <profiles>
-  	<profile>
-  		<id>deploy-to-puma-ff-puma</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=puma-ff-puma is given as	parameter.	-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>bibsonomy-webapp-puma-frankfurt-main</artifactId>
+	<parent>
+		<groupId>org.bibsonomy</groupId>
+		<artifactId>bibsonomy</artifactId>
+		<version>2.0.37-SNAPSHOT</version>
+	</parent>
+	<packaging>war</packaging>
+	<name>BibSonomy Webapp PUMA Frankfurt Main</name>
+	<description>PUMA version of BibSonomy for Library of Frankfurt Main University</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-webapp</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+	<profiles>
+		<profile>
+			<id>deploy-to-puma-ff-puma</id>
+			<!-- change tomcat deploy destination when -Ddeploy-to=puma-ff-puma is given as parameter. -->
 			<activation>
 				<property>
 					<name>deploy-to</name>
@@ -36,18 +37,59 @@
 		</profile>
 		<profile>
 			<id>deploy-to-test-puma-ff</id>
-				<!-- change tomcat deploy destination when -Ddeploy-to=test-puma-ff is given as parameter.	-->
-				<activation>
-					<property>
-						<name>deploy-to</name>
-						<value>test_puma_ff</value>
-					</property>
-				</activation>
+			<!-- change tomcat deploy destination when -Ddeploy-to=test-puma-ff is given as parameter. -->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>test_puma_ff</value>
+				</property>
+			</activation>
 			<properties>
 				<maven.tomcat.server>tomcat_test_puma_frankfurt</maven.tomcat.server>
 				<maven.tomcat.url>http://test.frankfurt.puma.stefani.biz:8080/manager</maven.tomcat.url>
 				<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
 			</properties>
 		</profile>
+		<profile>
+			<id>deploy-to-puma-ffm-dev</id>
+			<!-- change tomcat deploy destination when -Ddeploy-to=puma_ffm_dev is 
+				given as parameter. -->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma_ffm_dev</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_puma_ffm_dev</maven.tomcat.server>
+				<maven.tomcat.url>http://p212.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+				<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy-to-puma-ffm-rc</id>
+			<!-- change tomcat deploy destination when -Ddeploy-to=puma_ffm_rc is 
+				given as parameter. -->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma_ffm_rc</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_puma_ffm_rc</maven.tomcat.server>
+				<maven.tomcat.url>http://p217.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+				<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
+			</properties>
+		</profile>
 	</profiles>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat6-maven-plugin</artifactId>
+				<version>2.0</version>
+			</plugin>
+		</plugins>
+	</build>
 </project>
