@@ -76,11 +76,11 @@ function renameClicked() {
 	if($("#showName").length) {
 		$("#showName").text(getString("post.bibtex.renameTitle") +" " +name);
 		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
-		 "<input id='renameFormTxt' type='text' name='newFileName' value='" +name +"'/>" +
+		 "<input id='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"'/>" +
 				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
 	} else {
 		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
-		"<p id='showName'>" +getString("post.bibtex.renameTitle") +" " +name +":</p> <input id='renameFormTxt' type='text' name='newFileName' value='" +name +"' />" +
+		"<p id='showName'>" +getString("post.bibtex.renameTitle") +" " +name +":</p> <input id='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"' />" +
 				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
 	}
 
@@ -442,15 +442,17 @@ function renameRequestSuccessful(data) {
 	/*
 	 * get response data
 	 */
-	var oldName =  decodeURI($("<div />").text($("oldName", data).text()).html()).replace(/%26/g, "&");
-	var newName =  decodeURI($("<div />").text($("newName", data).text()).html()).replace(/%26/g, "&");
+	var oldName = $("<div />").text($("oldName", data).text()).html();
+	var newName = $("<div />").text($("newName", data).text()).html();
+	var oldNameEscaped =  decodeURI($("<div />").text($("oldName", data).text()).html()).replace(/%26/g, "&");
+	var newNameEscaped =  decodeURI($("<div />").text($("newName", data).text()).html()).replace(/%26/g, "&");
 	var response = decodeURI($("response", data).text()).replace(/%26/g, "&");
 	
 	/*
 	 * find and update all links, containing old filenames
 	 */
-	var toRename = $('a:contains("' + oldName +'")').filter(function(index) {
-		return $(this).text() == oldName;
+	var toRename = $('a:contains("' + oldNameEscaped +'")').filter(function(index) {
+		return $(this).text() == oldNameEscaped;
 	});
 	
 	$('a[href*="' + oldName +'"]').each(function() {
@@ -477,7 +479,7 @@ function renameRequestSuccessful(data) {
 		}
 	});
 	
-	toRename.text(newName);
+	toRename.text(newNameEscaped);
 	
 	/*
 	 * print status 
