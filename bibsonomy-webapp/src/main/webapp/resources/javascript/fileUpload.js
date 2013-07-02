@@ -54,21 +54,13 @@ function renameClicked() {
 	/*
 	 * build rename form
 	 */
-	var extractName = $(this).attr('href').split("&");
+	var nameMatcher = /fileName=([^<>\\\/]*)&action=rename$/.exec($(this).attr('href'));
 	var name;
-	//get name of the document to rename out of the given href
-	$.each(extractName, function(index, item) {
-		if(item.indexOf("fileName") >= 0) {
-			var nameParts = item.split("=");
-			$.each(nameParts, function(innerIndex, innerItem) {
-				if(innerIndex > 1) {
-					name += "="+innerItem;
-				} else if(innerIndex == 1)  {
-					name = innerItem;
-				}
-			});
-		}
-	});
+	if(nameMatcher != null) {
+		name = decodeURI(nameMatcher[1]).replace(/%26/g, "&");
+	} else {
+		return false;
+	}
 	
 	/*
 	 * the same rename button was clicked twice, so hide the rename form and do nothing 
@@ -130,7 +122,6 @@ function renameClicked() {
 }
 
 function checkConsistency(oldSuffix, newSuffix) {
-	
 	/*
 	 * check for each suffix-pair for which it is allowed to get 
 	 * converted if it fit's to the new file's suffix
@@ -221,6 +212,8 @@ function renameSelected() {
 		$(renameForm).remove();
 		return;
 	}
+	
+	renameForm.val(decodeURI(renameForm.val()).replace(/&/g, "%26"));
 	
 	//do an ajaxsubmit of the renameForm
 	$(renameForm).ajaxSubmit({
@@ -449,9 +442,9 @@ function renameRequestSuccessful(data) {
 	/*
 	 * get response data
 	 */
-	var oldName = $("oldName", data).text();
-	var newName = $("newName", data).text();
-	var response = $("response", data).text();
+	var oldName =  decodeURI($("<div />").text($("oldName", data).text()).html()).replace(/%26/g, "&");
+	var newName =  decodeURI($("<div />").text($("newName", data).text()).html()).replace(/%26/g, "&");
+	var response = decodeURI($("response", data).text()).replace(/%26/g, "&");
 	
 	/*
 	 * find and update all links, containing old filenames

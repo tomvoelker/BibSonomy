@@ -230,10 +230,10 @@
 									<c:if test="${isOwnEntry}">
 										<!-- delete -->
 										<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
-										<a class="deleteDocument" title="${deleteTitle}" href="/ajax/documents?intraHash=${post.resource.intraHash}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"></a>
+										<a class="deleteDocument" title="${deleteTitle}" href="/ajax/documents?intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"></a>
 										<!-- rename -->
 										<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
-										<a class="renameDoc" title="${renameTitle}" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;action=rename"></a>
+										<a class="renameDoc" title="${renameTitle}" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename"></a>
 									</c:if>
 								</li>
 							</c:forEach>
