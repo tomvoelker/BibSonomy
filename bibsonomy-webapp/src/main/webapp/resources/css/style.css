@@ -2520,6 +2520,30 @@ div.reviewTextBox textarea {
   max-width: 15em;
 }
 
+.fsMedium {
+	max-width: 35%;
+}
+
+.fsDiffMissingColor{
+	background-color:Tomato;
+}
+
+.fsDiffAddColor{
+	background-color:GreenYellow;
+}
+
+.fsDiffField {
+	float: left;
+  	width: 73%;
+	min-height:16px;
+	margin-top: 2px;
+	margin-bottom: 2px; 
+	border: 1px solid #069; 
+	padding: 2px; 
+	font-family: monospace; 
+	font-weight: normal; 
+	background-color: #eee"
+}
 
 .fsSuggestion {
     font-size: 80%;
