@@ -26,6 +26,7 @@ package org.bibsonomy.scraper;
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
 import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.scraper.generic.CoinsScraper;
+import org.bibsonomy.scraper.generic.DublinCoreScraper;
 import org.bibsonomy.scraper.generic.EprintScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
@@ -91,6 +92,10 @@ public class KDEScraperFactory {
 		
 		// TODO: Scraper for searching BibTeX in HTML-Sourcecode 
 		scraper.addScraper(new BibtexScraper());
+		
+		//scraper for Dublin Core metadata
+		scraper.addScraper(new DublinCoreScraper());
+		
 		return scraper;
 	}
 
