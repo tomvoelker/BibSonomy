@@ -695,7 +695,18 @@ public enum Views implements View {
 	 * for the link cloud demo
 	 * TODO: in deveplopment TODODZO
 	 */
-	LINK_CLOUD("linkcloud");
+	LINK_CLOUD("linkcloud"),
+	
+	/**
+	 * DiffBookmark-Page. page with diff of two post
+	 */
+	DIFFBOOKMARKPAGE("actions/post/diffBookmark"),
+	
+	/**
+	 * DiffPublication-Page. page with diff of two post
+	 */
+	DIFFPUBLICATIONPAGE("actions/post/diffPublication");
+
 
 	/*
 	 * both bookmarks and publications
