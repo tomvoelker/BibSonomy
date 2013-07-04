@@ -2,8 +2,6 @@ package org.bibsonomy.lucene.search;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Collection;
-
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
