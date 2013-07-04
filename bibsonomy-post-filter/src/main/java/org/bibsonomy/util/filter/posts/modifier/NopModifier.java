@@ -5,6 +5,8 @@ import org.bibsonomy.model.Resource;
 
 /**
  * 
+ * Does nothing.
+ * 
  * @author:  rja
  * @version: $Id$
  * $Author$
@@ -12,10 +14,8 @@ import org.bibsonomy.model.Resource;
  */
 public class NopModifier implements Modifier {
 
-
 	@Override
-	public boolean updatePost(Post<? extends Resource> post) {
-		// TODO Auto-generated method stub
+	public boolean updatePost(final Post<? extends Resource> post) {
 		return false;
 	}
 }
