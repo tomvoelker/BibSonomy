@@ -44,7 +44,7 @@ import org.bibsonomy.scraper.exceptions.UsageFailureException;
  */
 public class CompositeScraper<S extends Scraper> implements Scraper {
 
-	private List<S> _scrapers = new LinkedList<S>();
+	private final List<S> scrapers = new LinkedList<S>();
 	private static final Log log = LogFactory.getLog(CompositeScraper.class);
 
 	/**
@@ -52,44 +52,45 @@ public class CompositeScraper<S extends Scraper> implements Scraper {
 	 * 
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
+	@Override
 	public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
 		try {
-			for (final S scraper : _scrapers) {
+			for (final S scraper : this.scrapers) {
 				if (scraper.scrape(scrapingContext)) {
 					return true;
 				}
 			}
 			
-		} catch (final InternalFailureException e) {
+		} catch (final InternalFailureException ex) {
 			log.fatal("Exception during scraping following url: " + scrapingContext.getUrl());
 			// internal failure 
-			log.fatal(e,e);			
-			throw (e);
-		} catch (final UsageFailureException e) {
+			log.fatal(ex, ex);			
+			throw ex;
+		} catch (final UsageFailureException ex) {
 			log.info("Exception during scraping following url: " + scrapingContext.getUrl());
 			// a user has used a scraper in a wrong way
-			log.info(e);
-			throw (e);
-		} catch (final PageNotSupportedException e) {
+			log.info(ex);
+			throw ex;
+		} catch (final PageNotSupportedException ex) {
 			log.error("Exception during scraping following url: " + scrapingContext.getUrl());
 			// a scraper can't scrape a page but the host is supported
-			log.error(e,e);
-			throw (e);
-		} catch (final ScrapingFailureException e) {
+			log.error(ex, ex);
+			throw ex;
+		} catch (final ScrapingFailureException ex) {
 			log.fatal("Exception during scraping following url: " + scrapingContext.getUrl());
 			// getting bibtex failed (conversion failed)
-			log.fatal(e,e);
-			throw (e);
-		} catch (final ScrapingException e) {
+			log.fatal(ex,  ex);
+			throw ex;
+		} catch (final ScrapingException ex) {
 			log.error("Exception during scraping following url: " + scrapingContext.getUrl());
 			// something else
-			log.error(e,e);
-			throw (e);
-		} catch (final Exception e) {
+			log.error(ex, ex);
+			throw ex;
+		} catch (final Exception ex) {
 			log.fatal("Exception during scraping following url: " + scrapingContext.getUrl());
 			// unexpected internal failure 
-			log.fatal(e,e);			
-			throw (new InternalFailureException(e));
+			log.fatal(ex, ex);			
+			throw (new InternalFailureException(ex));
 		}
 		return false;
 	}
@@ -100,9 +101,10 @@ public class CompositeScraper<S extends Scraper> implements Scraper {
 	 * @param scraper
 	 */
 	public void addScraper(final S scraper) {
-		_scrapers.add(scraper);
+		this.scrapers.add(scraper);
 	}
 
+	@Override
 	public String getInfo () {
 		return "Generic Composite Scraper";
 	}
@@ -111,16 +113,18 @@ public class CompositeScraper<S extends Scraper> implements Scraper {
 	 * Returns the collection of all the scrapers contained in the Composite Scraper
 	 * 
 	 */
+	@Override
 	public Collection<Scraper> getScraper () {
 		final LinkedList<Scraper> scrapers = new LinkedList<Scraper>();
-		for (final S scraper : _scrapers) {
+		for (final S scraper : this.scrapers) {
 			scrapers.addAll(scraper.getScraper());
 		}
 		return scrapers;
 	}
 
+	@Override
 	public boolean supportsScrapingContext(final ScrapingContext scrapingContext){
-		for (final S scraper : _scrapers){
+		for (final S scraper : this.scrapers){
 			if (scraper.supportsScrapingContext(scrapingContext)){
 				return true;
 			}

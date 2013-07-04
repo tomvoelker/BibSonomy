@@ -29,6 +29,8 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * Interface for Screen Scrapers.
+ * @author rja
+ * @version $Id$
  */
 public interface Scraper {
 	
@@ -54,9 +56,7 @@ public interface Scraper {
      * 
      * @return The current scraper or a list of its subscrapers.
      */
-    public Collection<Scraper> getScraper ();
-    
-    
+    public Collection<Scraper> getScraper ();    
     
     /** Checks if this scraper can scrape the given context.
      * <br/>
@@ -68,6 +68,4 @@ public interface Scraper {
      * scrapable by this scraper.
      */
     public boolean supportsScrapingContext(final ScrapingContext scrapingContext);
-    
-
 }
