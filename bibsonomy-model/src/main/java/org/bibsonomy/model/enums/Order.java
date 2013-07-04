@@ -38,7 +38,7 @@ public enum Order {
 	/** for ordering by popularity (desc) */
 	POPULAR,
 	/**
-	 * for ordering by rank (e. g. full text search tf/idf) 
+	 * for ordering by rank (e. g. full text search by score) 
 	 */
 	RANK,
 	/** for ordering by folkrank (desc) */
