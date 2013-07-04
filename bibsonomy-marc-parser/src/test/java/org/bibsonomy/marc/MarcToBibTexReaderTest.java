@@ -11,6 +11,7 @@ import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.data.ClasspathResourceData;
 import org.bibsonomy.model.util.data.Data;
 import org.bibsonomy.model.util.data.DualDataWrapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -97,6 +98,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	}
 	
 	@Test
+	@Ignore // TODO: change index url
 	public void testUmlauts() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
 		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEB113338945")))) {
@@ -107,6 +109,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	}
 	
 	@Test
+	@Ignore // TODO: change index url
 	public void testUmlauts2() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
 		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEB107697521")))) {
@@ -118,6 +121,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	}
 	
 	@Test
+	@Ignore // TODO: change index url
 	public void testHebisIdR() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
 		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEBr846866323")))) {
