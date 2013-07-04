@@ -17,11 +17,11 @@ public class FilterRuleParserTest {
 
 
 	@Test
-	public void testParser() {
+	public void testParser1() {
 		final String tagString = "&[ resource.year >= 1992 resource.publisher = 'Springer'  (resource.address = 'Heidelberg' | resource.address = 'Berlin') : resource.address := 'Berlin/Heidelberg']";
-		CommonTokenStream tokens = new CommonTokenStream();
+		final CommonTokenStream tokens = new CommonTokenStream();
 		tokens.setTokenSource(new FilterRuleLexer(new ANTLRStringStream(tagString)));
-		FilterRuleParser parser = new FilterRuleParser(tokens);
+		final FilterRuleParser parser = new FilterRuleParser(tokens);
 		try {
 			System.out.println("################################################");
 			parser.filter();
@@ -36,5 +36,27 @@ public class FilterRuleParserTest {
 		}
 	}
 
+	
+	@Test
+	public void testParser2() {
+		final String tagString = "&[ resource.pages =~ '.*[0-9]\\s*-\\s*[0-9].*' : resource.pages :~ '\\s*-\\s*'/'--']";
+		final CommonTokenStream tokens = new CommonTokenStream();
+		tokens.setTokenSource(new FilterRuleLexer(new ANTLRStringStream(tagString)));
+		final FilterRuleParser parser = new FilterRuleParser(tokens);
+		try {
+			System.out.println("################################################");
+			parser.filter();
+			final PostFilter postFilter = parser.getPostFilter();
+			System.out.println(postFilter.getMatcher());
+			System.out.println(":");
+			System.out.println(postFilter.getModifier());
+			System.out.println("################################################");
+		} catch (RecognitionException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+	}
+
+	
 }
 

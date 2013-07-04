@@ -45,7 +45,9 @@ tokens {
   import org.antlr.runtime.RecognitionException;
   import org.antlr.runtime.Token;
   import org.antlr.runtime.TokenStream;
-	
+
+  import java.util.regex.Pattern;
+
   import org.bibsonomy.util.filter.posts.*;
   import org.bibsonomy.util.filter.posts.comparator.*;
   import org.bibsonomy.util.filter.posts.matcher.*;
@@ -128,6 +130,10 @@ value returns [String s]
 	| n = NUMBER         { s =  n.getText(); }
 	;
 
+pattern returns [Pattern p]
+	: id = STRINGLITERAL { String ss = id.getText(); String s = ss.substring(1,ss.length() - 1); p = Pattern.compile(s);}
+	;
+
 relation returns [Comparator c]
 	: EQUALS {c = new Equals();} 
 	| LT     {c = new LessThan();}
@@ -152,6 +158,7 @@ all returns [AllMatcher m]
  * ****************************************************************************/
 modifier returns [Modifier m]
 	: i = identifier ':=' v = value {m = new PropertyModifier(i, v);} 
+	| i = identifier ':~' p = pattern '/' v = value {m = new ReplacementPropertyModifier(i, p, v);}  
 	;
 
 

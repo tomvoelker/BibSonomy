@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -24,6 +27,8 @@ import org.bibsonomy.util.filter.posts.matcher.BooleanOrMatcher;
 import org.bibsonomy.util.filter.posts.matcher.Matcher;
 import org.bibsonomy.util.filter.posts.modifier.PropertyModifier;
 import org.bibsonomy.util.filter.posts.modifier.ReplacementPropertyModifier;
+import org.bibsonomy.util.filter.posts.parser.FilterRuleLexer;
+import org.bibsonomy.util.filter.posts.parser.FilterRuleParser;
 import org.junit.Test;
 
 import bibtex.parser.ParseException;
@@ -136,6 +141,61 @@ public class PostFilterTest {
 		for (final Post<? extends Resource> post : filteredPosts) {
 			final BibTex resource = (BibTex) post.getResource();
 			Assert.assertTrue(resource.getPages().matches(".*[0-9]--[0-9].*"));
+		}
+	}
+	
+	
+	// final String tagString = "&[ resource.year >= 1992 resource.publisher = 'Springer'  (resource.address = 'Heidelberg' | resource.address = 'Berlin') : resource.address := 'Berlin/Heidelberg']";
+	
+	@Test
+	public void testGetFilteredAndUpdatedPostsPagesWithParser() {
+		System.out.println("== filtering pages using the parser ==");
+		final List<Post<? extends Resource>> posts = getPosts();
+
+		/*
+		 * configure matcher: page values with just one dash
+		 */
+		final BeanPropertyMatcher<String> pagesSingleDashMatcher = new BeanPropertyMatcher<String>("resource.pages", new Matches(), ".*[0-9]\\s*-\\s*[0-9].*");
+
+		/*
+		 * configure filter
+		 */
+		final String tagString = "&[ resource.pages =~ '.*[0-9]\\s*-\\s*[0-9].*' : resource.pages :~ '\\s*-\\s*'/'--']";
+		final CommonTokenStream tokens = new CommonTokenStream();
+		tokens.setTokenSource(new FilterRuleLexer(new ANTLRStringStream(tagString)));
+		final FilterRuleParser parser = new FilterRuleParser(tokens);
+		try {
+			System.out.println("################################################");
+			parser.filter();
+			final PostFilter postFilter = parser.getPostFilter();
+			System.out.println(postFilter.getMatcher());
+			System.out.println(":");
+			System.out.println(postFilter.getModifier());
+			System.out.println("################################################");
+
+			/*
+			 * filter posts
+			 */
+			final List<Post<? extends Resource>> filteredPosts = postFilter.getFilteredPosts(posts);
+			System.out.println("Got " + filteredPosts.size() + " from filter.");
+			Assert.assertEquals(81, filteredPosts.size());
+
+			/*
+			 * modify posts
+			 */
+			final List<Post<? extends Resource>> filteredAndUpdatedPosts = postFilter.getFilteredAndUpdatedPosts(posts);
+			System.out.println("Got " + filteredAndUpdatedPosts.size() + " from filter");
+			Assert.assertEquals(81, filteredAndUpdatedPosts.size());
+
+			/*
+			 * check result
+			 */
+			for (final Post<? extends Resource> post : filteredPosts) {
+				final BibTex resource = (BibTex) post.getResource();
+				Assert.assertTrue(resource.getPages().matches(".*[0-9]--[0-9].*"));
+			}
+		} catch (final RecognitionException e) {
+			Assert.fail();
 		}
 	}
 	
