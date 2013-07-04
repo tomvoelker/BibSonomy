@@ -32,13 +32,18 @@
 				<!--  set the viewport of the mobile device. disabled scaling -->
 				<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
+				
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/mobile.css" />
+				
+				<!-- set puma style via spring theme if current instance is of type puma -->
+				<spring:theme code="stylesheet.additional.mobile" var="additionalMobileStyle" text=""/>
+				<c:if test="${not empty additionalMobileStyle}">
+					<link rel="stylesheet" type="text/css" href="${additionalMobileStyle}" />
+				</c:if>
+				
 				<c:if test="${not empty additionalCSS}">
 					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
 				</c:if>
-				
-				<!-- set style via spring theme -->
-				<spring:theme code="stylesheet.mobile" var="mobileStyle" text=""/>
-				<link rel="stylesheet" type="text/css" href="${mobileStyle}" />
 				
 				<!-- The only JavaScript framework used on the mobile site is jQuery -->
 				<script type="text/javascript" src="${resdir}/jquery/jquery.js"><!-- keep me --></script>
