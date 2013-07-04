@@ -2534,15 +2534,15 @@ div.reviewTextBox textarea {
 
 .fsDiffField {
 	float: left;
-  	width: 73%;
+	width: 73%;
 	min-height:16px;
 	margin-top: 2px;
-	margin-bottom: 2px; 
-	border: 1px solid #069; 
-	padding: 2px; 
-	font-family: monospace; 
-	font-weight: normal; 
-	background-color: #eee"
+	margin-bottom: 2px;
+	border: 1px solid #069;
+	padding: 2px;
+	font-family: monospace;
+	font-weight: normal;
+	background-color: #eee;
 }
 
 .fsSuggestion {
