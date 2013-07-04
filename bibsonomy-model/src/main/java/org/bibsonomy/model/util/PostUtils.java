@@ -26,7 +26,6 @@ package org.bibsonomy.model.util;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -36,6 +35,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.Sets;
 
 /**
  * Static methods to handle Posts.
@@ -108,9 +108,8 @@ public class PostUtils {
 	public static void limitedUserModification(final Post<? extends Resource> post, final User user) {
 		if (Role.LIMITED.equals(user.getRole())) {
 			if (!GroupUtils.isPrivateGroup(post.getGroups())) {
-				Set<Group> groups = new HashSet<Group>();
-				post.setGroups(groups);
-				groups.add(GroupUtils.getPrivateGroup());
+				// if post it not private set it to private
+				post.setGroups(Sets.asSet(GroupUtils.getPrivateGroup()));
 			}
 		}
 	}
