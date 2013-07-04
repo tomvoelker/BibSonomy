@@ -13,7 +13,6 @@ import net.oauth.signature.RSA_SHA1;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
 import org.apache.shindig.gadgets.oauth.OAuthError;
 import org.apache.shindig.gadgets.oauth.OAuthRequestException;
@@ -21,6 +20,7 @@ import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyT
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
@@ -32,6 +32,12 @@ import com.ibatis.common.resources.Resources;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
+/**
+ * TODO: use {@link AbstractDatabaseManager}
+ * 
+ * @author fei
+ * @version $Id$
+ */
 public class IbatisOAuthLogic implements IOAuthLogic {
 	private static final Log log = LogFactory.getLog(IbatisOAuthLogic.class);
 
@@ -108,7 +114,7 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 			consumer = new OAuthConsumer(null, cks.getConsumerKey(), cks.getConsumerSecret(), provider);
 			consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
 		}
-		String callback = (cks.getCallbackUrl() != null ? cks.getCallbackUrl() : getDefaultCallbackUrl());
+		String callback = (cks.getCallbackUrl() != null ? cks.getCallbackUrl() : this.defaultCallbackUrl);
 		return new ConsumerInfo(consumer, cks.getKeyName(), callback);
 	}
 
@@ -253,13 +259,11 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 	
 	@Override
 	public List <OAuthUserInfo> getOAuthUserApplication (String username) {
-		
 		try {
 			 return this.sqlMap.queryForList("getUserInfo", username);
 		} catch (SQLException e) {
 			log.error("No user information found about OAuth for '"+username+"'");
 		}
-		
 		return Collections.emptyList();
 	}
 
@@ -280,11 +284,4 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 	public void setDefaultCallbackUrl(String defaultCallbackUrl) {
 		this.defaultCallbackUrl = defaultCallbackUrl;
 	}
-
-	public String getDefaultCallbackUrl() {
-		return defaultCallbackUrl;
-	}
-
-
-
 }
