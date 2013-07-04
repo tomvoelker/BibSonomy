@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
@@ -22,6 +23,7 @@ import org.bibsonomy.util.filter.posts.matcher.BooleanAllAndMatcher;
 import org.bibsonomy.util.filter.posts.matcher.BooleanOrMatcher;
 import org.bibsonomy.util.filter.posts.matcher.Matcher;
 import org.bibsonomy.util.filter.posts.modifier.PropertyModifier;
+import org.bibsonomy.util.filter.posts.modifier.ReplacementPropertyModifier;
 import org.junit.Test;
 
 import bibtex.parser.ParseException;
@@ -39,7 +41,8 @@ public class PostFilterTest {
 	private static final String EXAMPLE_BIBTEX_FILE = "postFilterTest.bib";
 
 	@Test
-	public void testGetFilteredAndUpdatedPosts() {
+	public void testGetFilteredAndUpdatedPostsAddress() {
+		System.out.println("== filtering address from Springer ==");
 		final List<Post<? extends Resource>> posts = getPosts();
 
 		/*
@@ -87,10 +90,55 @@ public class PostFilterTest {
 			final BibTex resource = (BibTex) post.getResource();
 			Assert.assertEquals("Berlin/Heidelberg", resource.getAddress());
 		}
-
-
 	}
 
+	
+	@Test
+	public void testGetFilteredAndUpdatedPostsPages() {
+		System.out.println("== filtering pages [0-9]\\s*-\\s*[0-9] ==");
+		final List<Post<? extends Resource>> posts = getPosts();
+
+		/*
+		 * configure matcher: page values with just one dash
+		 */
+		final BeanPropertyMatcher<String> pagesSingleDashMatcher = new BeanPropertyMatcher<String>("resource.pages", new Matches(), ".*[0-9]\\s*-\\s*[0-9].*");
+
+		/*
+		 * matches the part to be replaced
+		 */
+		final Pattern dashPattern = Pattern.compile("\\s*-\\s*");
+		/*
+		 * configure modifier
+		 */
+		final ReplacementPropertyModifier pagesModifier = new ReplacementPropertyModifier("resource.pages", dashPattern, "--");
+		/*
+		 * configure filter
+		 */
+		final PostFilter filter = new PostFilter(pagesSingleDashMatcher, pagesModifier);
+
+		/*
+		 * filter posts
+		 */
+		final List<Post<? extends Resource>> filteredPosts = filter.getFilteredPosts(posts);
+		System.out.println("Got " + filteredPosts.size() + " from filter.");
+		Assert.assertEquals(81, filteredPosts.size());
+
+		/*
+		 * modify posts
+		 */
+		final List<Post<? extends Resource>> filteredAndUpdatedPosts = filter.getFilteredAndUpdatedPosts(posts);
+		System.out.println("Got " + filteredAndUpdatedPosts.size() + " from filter");
+		Assert.assertEquals(81, filteredAndUpdatedPosts.size());
+
+		/*
+		 * check result
+		 */
+		for (final Post<? extends Resource> post : filteredPosts) {
+			final BibTex resource = (BibTex) post.getResource();
+			Assert.assertTrue(resource.getPages().matches(".*[0-9]--[0-9].*"));
+		}
+	}
+	
 	private List<Post<? extends Resource>> getPosts() {
 		/*
 		 * get file contents
@@ -126,11 +174,12 @@ public class PostFilterTest {
 		return posts;
 	}
 	/**
-	 * The same test as {@link #testGetFilteredAndUpdatedPosts()} but now 
+	 * The same test as {@link #testGetFilteredAndUpdatedPostsAddress()} but now 
 	 * configured via Spring XML bean definition.
 	 */
 	@Test
 	public void testGetFilteredAndUpdatedPostsUsingSpringXML() {
+		System.out.println("== filtering by bean definition file ==");
 		final PostFilter filter = new PostFilterFactory().getPostFilterFromBeanDefinitionInClasspath(SPRING_BEAN_DEFINITION_FILE);
 		System.err.println(filter.getMatcher());
 		/*
