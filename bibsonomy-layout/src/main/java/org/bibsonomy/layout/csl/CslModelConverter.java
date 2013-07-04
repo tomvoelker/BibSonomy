@@ -44,7 +44,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
- * TENTATIVE implementation of a mapping of our bibtex model to the CSL model,
+ * TENTATIVE implementation of a mapping of our publication model to the CSL model,
  * which we transform to JSON later on.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
