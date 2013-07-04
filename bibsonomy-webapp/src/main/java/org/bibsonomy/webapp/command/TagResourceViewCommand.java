@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * Bean for Tag Sites
@@ -21,8 +22,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	private List<String> requestedTagsList = null;
 	
 	/** the specified order */
-	// TODO: use Order enum as type
-	private String order = "added";
+	private Order order = Order.ADDED;
 		
 	/** bean for related tags */
 	private RelatedTagCommand relatedTagCommand = new RelatedTagCommand();
@@ -105,14 +105,14 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @return order
 	 */
-	public String getOrder() {
+	public Order getOrder() {
 		return this.order;
 	}
 
 	/**
 	 * @param order
 	 */
-	public void setOrder(final String order) {
+	public void setOrder(final Order order) {
 		this.order = order;
 	}
 

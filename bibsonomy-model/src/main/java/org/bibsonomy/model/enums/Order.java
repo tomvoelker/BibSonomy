@@ -37,6 +37,10 @@ public enum Order {
 	ADDED,
 	/** for ordering by popularity (desc) */
 	POPULAR,
+	/**
+	 * for ordering by rank (e. g. full text search tf/idf) 
+	 */
+	RANK,
 	/** for ordering by folkrank (desc) */
 	FOLKRANK,	
 	/** for ordering tags by frequency (desc) */

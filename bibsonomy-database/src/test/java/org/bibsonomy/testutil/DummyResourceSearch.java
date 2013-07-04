@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -15,7 +16,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 public class DummyResourceSearch implements ResourceSearch<Resource> {
 	
 	@Override
-	public List<Post<Resource>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
+	public List<Post<Resource>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, Order order, final int limit, final int offset) {
 		return null;
 	}
 	

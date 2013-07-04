@@ -13,18 +13,46 @@
 	 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<c:set var="hasTags" value="${not empty command.requestedTags}" />
-	
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<fmt:message var="pageTitle" key="navi.search" />
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search" formInputValue="${command.requestedSearch}"/>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search" formInputValue="${command.requestedSearch}">
+				<jsp:attribute name="afterInput">
+					<!--  sorting options -->
+					<c:url var="searchUrl" value="/search/${mtl:encodeURI(command.requestedSearch)}"/>
+					<span style="font-size: 65%">
+						<fmt:message key="sort.orderBy"/>
+						(
+						<c:out value=" "/>
+						<c:choose>
+							<c:when test="${command.order eq 'RANK'}">
+								<fmt:message key="sort.rank"/>
+							</c:when>
+							<c:otherwise>
+								<a href="${searchUrl}"><fmt:message key="sort.rank"/></a>
+							</c:otherwise>
+						</c:choose>
+						|
+						<c:choose>
+							<c:when test="${command.order eq 'ADDED'}">
+								<fmt:message key="sort.date"/>
+							</c:when>
+							<c:otherwise>
+								<a href="${searchUrl}?order=added"><fmt:message key="sort.date"/></a>
+							</c:otherwise>
+						</c:choose>
+						)
+					</span>
+				</jsp:attribute>
+			</parts:search>
 		</jsp:attribute>
 	
 		<!--+
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-		<ul>			
+		<ul>
 			<li>
 				<span class="sidebar_h"><fmt:message key="tags"/></span>
 				

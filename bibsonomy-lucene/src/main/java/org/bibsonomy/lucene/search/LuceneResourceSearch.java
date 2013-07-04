@@ -2,7 +2,6 @@ package org.bibsonomy.lucene.search;
 
 import static org.apache.lucene.util.Version.LUCENE_24;
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
-import static org.bibsonomy.lucene.util.LuceneBase.PARAM_RELEVANCE;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
@@ -12,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -27,6 +25,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -37,7 +36,6 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeFilter;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
@@ -49,10 +47,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
- * abstract parent class for lucene search
+ * lucene search for all supported resources
  * 
  * @author fei
  * @version $Id$
@@ -124,9 +123,9 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * java.lang.String, int, int)
 	 */
 	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		// build query
-		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order);
 		// perform search query
 		return this.searchLucene(query, limit, offset);
 	}
@@ -142,13 +141,13 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * java.lang.String, int, int)
 	 */
 	@Override
-	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, List<String> negatedTags, final int limit, final int offset) {
+	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 		if (!this.isEnabled() || !this.tagCloudEnabled) {
 			return new LinkedList<Tag>();
 		}
 		
 		// build query
-		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, null);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 		this.r.lock();
 		try {
@@ -363,6 +362,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * given search terms
 	 * 
 	 * @param userName
+	 * @param searchTerms 
 	 * @return the private notes query for the user
 	 */
 	protected Query buildPrivateNotesQuery(final String userName, final String searchTerms) {
@@ -543,12 +543,19 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @param requestedRelationNames
 	 * 				expand the search in the post of users which are defined by the given 
 	 * 				relation names
-	 * @param requestedRelationNames TODO
+	 * @param allowedGroups 
 	 * @param searchTerms
+	 * @param titleSearchTerms 
+	 * @param authorSearchTerms 
+	 * @param tagIndex 
+	 * @param year 
+	 * @param firstYear 
+	 * @param lastYear 
 	 * @param negatedTags
+	 * @param order
 	 * @return overall lucene search query
 	 */
-	protected QuerySortContainer buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected QuerySortContainer buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags, Order order) {
 
 		// --------------------------------------------------------------------
 		// build the query
@@ -596,12 +603,16 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// --------------------------------------------------------------------
 
 		// combine query terms
-
 		mainQuery.add(accessModeQuery, Occur.MUST);
-
+		
+		
 		// set ordering
-		final Sort sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
-
+		final Sort sort;
+		if (Order.ADDED.equals(order)) {
+			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
+		} else {
+			sort = new Sort(SortField.FIELD_SCORE, new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
+		}
 		// all done
 		log.debug("[Full text] Search query: " + mainQuery.toString());
 
@@ -693,109 +704,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	}
 
 	/**
-	 * construct lucene query filter for searching posts matching a given title
-	 * 
-	 * (title:searchTerms) [AND user_name:requestedUsername] AND (
-	 * group:allowedGroup_1 OR ... OR group:allowedGroup_n OR (group:private AND
-	 * user:userName) )
-	 * 
-	 * FIXME: merge buildFulltextQuery and buildGroupSearchQuery FIXME:
-	 * shouldn't this query also respect 'visible for friends'?
-	 * 
-	 * @param group
-	 *            group name from which posts should be searched
-	 * @param searchTerms
-	 *            search query
-	 * @param requestedUserName
-	 *            user name from whom posts should be searched
-	 * @param userName
-	 *            login user name
-	 * @param allowedGroups
-	 *            groups which the login user is member of
-	 * 
-	 * @return title query
-	 */
-	protected QuerySortContainer buildTitleQuery(final String group, final String searchTerms, final String requestedUserName, final String userName, final Set<String> allowedGroups) {
-		// FIXME: configure this possible values: "relevance", ...
-		final String orderBy = LuceneFieldNames.DATE;
-
-		final BooleanQuery mainQuery = new BooleanQuery();
-		final BooleanQuery searchQuery = new BooleanQuery();
-		final BooleanQuery accessModeQuery = new BooleanQuery();
-		final BooleanQuery privatePostQuery = new BooleanQuery();
-
-		// --------------------------------------------------------------------
-		// search terms
-		// --------------------------------------------------------------------
-		final Query searchTermQuery = this.parseSearchQuery(LuceneFieldNames.TITLE, searchTerms);
-		searchQuery.add(searchTermQuery, Occur.SHOULD);
-
-		// --------------------------------------------------------------------
-		// allowed groups
-		// --------------------------------------------------------------------
-		for (final String groupName : allowedGroups) {
-			final Query groupQuery = new TermQuery(new Term(LuceneFieldNames.GROUP, groupName));
-			accessModeQuery.add(groupQuery, Occur.SHOULD);
-		}
-
-		// --------------------------------------------------------------------
-		// private post query
-		// --------------------------------------------------------------------
-		if (present(userName)) {
-			final BooleanQuery privatePostGroups = new BooleanQuery();
-			privatePostGroups.add(new TermQuery(new Term(LuceneFieldNames.GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
-			privatePostGroups.add(new TermQuery(new Term(LuceneFieldNames.GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
-			privatePostQuery.add(privatePostGroups, Occur.MUST);
-			privatePostQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, userName)), Occur.MUST);
-			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
-		}
-
-		// --------------------------------------------------------------------
-		// post owned by user
-		// --------------------------------------------------------------------
-		if (present(requestedUserName)) {
-			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, requestedUserName)), Occur.MUST);
-		}
-
-		// --------------------------------------------------------------------
-		// post owned by group
-		// --------------------------------------------------------------------
-		if (present(group)) {
-			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.GROUP, group)), Occur.MUST);
-		}
-
-		// --------------------------------------------------------------------
-		// build final query
-		// --------------------------------------------------------------------
-		mainQuery.add(searchQuery, Occur.MUST);
-		if (!(present(userName) && userName.equals(requestedUserName))) {
-			mainQuery.add(accessModeQuery, Occur.MUST);
-		}
-
-		log.debug("[Full text] Search query: " + mainQuery.toString());
-
-		// --------------------------------------------------------------------
-		// set ordering
-		// --------------------------------------------------------------------
-		Sort sort = null;
-		if (PARAM_RELEVANCE.equals(orderBy)) {
-			sort = new Sort(SortField.FIELD_SCORE, new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
-		} else {
-			// orderBy == "date"
-			// FIXME: why does the default operator depend on the ordering
-			// myParser.setDefaultOperator(QueryParser.Operator.AND);
-			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
-		}
-
-		// at last build the container
-		final QuerySortContainer qf = new QuerySortContainer();
-		qf.setQuery(mainQuery);
-		qf.setSort(sort);
-
-		return qf;
-	}
-
-	/**
 	 * analyzes given input parameter
 	 * 
 	 * @param fieldName
@@ -840,16 +748,13 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// parse search terms for handling phrase search
 		final QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, this.analyzer);
 		searchTermParser.setDefaultOperator(this.defaultSearchTermJunctor);
-		Query searchTermQuery = null;
 		try {
 			// disallow field specification in search query
 			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\" + CFG_LUCENE_FIELD_SPECIFIER);
-			searchTermQuery = searchTermParser.parse(searchTerms);
+			return searchTermParser.parse(searchTerms);
 		} catch (final ParseException e) {
-			searchTermQuery = new TermQuery(new Term(fieldName, searchTerms));
+			return new TermQuery(new Term(fieldName, searchTerms));
 		}
-
-		return searchTermQuery;
 	}
 
 	/**

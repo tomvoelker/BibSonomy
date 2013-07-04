@@ -60,15 +60,6 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		// FIXME we can only retrieve 1000 tags here
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
 		
-		// requested order
-		Order order = Order.ADDED;
-		try {
-			order = Order.getOrderByName(command.getOrder());
-		} catch (final IllegalArgumentException ex) {
-			// TODO: why rethrowing the exception and not just don't catch it?
-			throw new MalformedURLSchemeException(ex.getMessage());
-		}
-
 		// get the information on tags and concepts needed for the sidebar
 		command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 		final String loginUser = command.getContext().getLoginUser().getName();
@@ -77,6 +68,8 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
 		}
 		
+		// requested order
+		final Order order = command.getOrder();
 		int totalNumPosts = 1; 
 		
 		// retrieve and set the requested resource lists

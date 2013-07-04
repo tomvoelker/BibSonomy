@@ -29,6 +29,7 @@ import java.util.List;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 
 /**
  * Interface for resource search operations
@@ -46,7 +47,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
-	 * @param requestedRelationNames TODO
+	 * @param requestedRelationNames
 	 * @param allowedGroups
 	 * @param searchTerms
 	 * @param titleSearchTerms
@@ -55,7 +56,8 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
-	 * @param negatedTags TODO
+	 * @param negatedTags
+	 * @param order			the order to use (supported {@link Order#ADDED} and {@link Order#RANK}
 	 * @param limit
 	 * @param offset
 	 * @return a list of posts containing the search result
@@ -64,7 +66,7 @@ public interface ResourceSearch<R extends Resource> {
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final List<String> requestedRelationNames,
 			final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
-			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset);
+			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
 	
 
 	/**
@@ -81,7 +83,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
-	 * @param negatedTags TODO
+	 * @param negatedTags
 	 * @param limit
 	 * @param offset
 	 * @return the tag cloud for the given search

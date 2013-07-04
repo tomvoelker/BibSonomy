@@ -25,7 +25,7 @@
 						(
 						<c:out value=" "/>
 						<c:choose>
-							<c:when test="${command.order eq 'added'}">
+							<c:when test="${command.order eq 'ADDED'}">
 								<fmt:message key="sort.date"/>
 							</c:when>
 							<c:otherwise>
@@ -34,15 +34,15 @@
 						</c:choose>
 						|
 						<c:choose>
-							<c:when test="${command.order eq 'folkrank'}">
+							<c:when test="${command.order eq 'FOLKRANK'}">
 								<fmt:message key="sort.folkrank"/>
 							</c:when>
 							<c:otherwise>
 								<a href="${tagUrl}?order=folkrank"><fmt:message key="sort.folkrank"/></a>
 							</c:otherwise>
 						</c:choose>
-						)							
-					</span>						
+						)
+					</span>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
