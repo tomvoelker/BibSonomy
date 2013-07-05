@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.junit.Test;
 
@@ -125,6 +126,31 @@ public class FunctionsTest {
 
 		assertEquals("January 2011", Functions.getDate("", "#jan#", "2011", gbLocale));
 		
+	}
+
+	/**
+	 * tests {@link Functions#getSWRCEntryType(String)}
+	 * @throws Exception
+	 */
+	@Test
+	public  void testGetSWRCEntryType() throws Exception {
+		assertEquals("Book", Functions.getSWRCEntryType(BibTexUtils.BOOK));
+		assertEquals("Misc", Functions.getSWRCEntryType(BibTexUtils.PRESENTATION));
+		assertEquals("Misc", Functions.getSWRCEntryType("dfsdf"));
+		assertEquals("Article", Functions.getSWRCEntryType(BibTexUtils.ARTICLE));
+	}
+
+	/**
+	 * tests {@link Functions#getRISEntryType(String)}
+	 * @throws Exception
+	 */
+	@Test
+	public  void testGetRISEntryType() throws Exception {
+		assertEquals("Journal Article", Functions.getRISEntryType(BibTexUtils.ARTICLE));
+		assertEquals("Generic", Functions.getRISEntryType(BibTexUtils.MISC));
+		assertEquals("Generic", Functions.getRISEntryType(BibTexUtils.MANUAL));
+		assertEquals("Book", Functions.getRISEntryType(BibTexUtils.BOOK));
+		assertEquals("Book", Functions.getRISEntryType(BibTexUtils.BOOKLET));
 	}
 
 }

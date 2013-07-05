@@ -11,7 +11,9 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -51,13 +53,39 @@ import org.springframework.format.datetime.DateFormatter;
 public class Functions  {
 	private static final Log log = LogFactory.getLog(Functions.class);
 	
+	private static final Map<String, String> RIS_ENTRY_TYPE_MAP = new HashMap<String, String>();
+	static {
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.ARTICLE, "Journal Article");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.BOOK, "Book");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.BOOKLET, "Book");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.INBOOK, "Book Section");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.INCOLLECTION, "Book Section");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.INPROCEEDINGS, "Conference Paper");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.MASTERS_THESIS, "Thesis");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.PHD_THESIS, "Thesis");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.PROCEEDINGS, "Conference Proceedings");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.TECH_REPORT, "Report");
+		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.UNPUBLISHED, "Unpublished Work");
+	}
 	/**
-	 * Mapping of BibTeX entry types to SWRC entry types
-	 * @see BibTexUtils#ENTRYTYPES
+	 * mapping of BibTeX entry types to SWRC entry types
 	 */
-	public static final String[] swrcEntryTypes   = {"Article",          "Book", "Booklet", "Misc",       "Misc",       "InBook",       "InCollection", "InProceedings",    "Manual",  "MasterThesis",  "Misc",    "Misc",    "Misc",       "PhDThesis", "Misc",     "Misc",         "Proceedings",            "Misc",     "TechnicalReport", "Unpublished",      "Misc"};
-	private static final String[] risEntryTypes    = {"Journal Article", "Book", "Book",    "Generic",    "Generic",    "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis",        "Generic", "Generic", "Generic",    "Thesis",    "Generic",  "Generic",      "Conference Proceedings", "Generic",  "Report",          "Unpublished Work", "Misc"};
-
+	private static final Map<String, String> SWRC_ENTRY_TYPE_MAP = new HashMap<String, String>();
+	static {
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.ARTICLE, "Article");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.BOOK, "Book");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.BOOKLET, "Booklet");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.INBOOK, "InBook");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.INCOLLECTION, "InCollection");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.INPROCEEDINGS, "InProceedings");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.MANUAL, "Manual");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.MASTERS_THESIS, "MasterThesis");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.PHD_THESIS, "PhDThesis");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.PROCEEDINGS, "Proceedings");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.TECH_REPORT, "TechnicalReport");
+		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.UNPUBLISHED, "Unpublished");
+	}
+	
 	// contains special characters, symbols, etc...
 	private static final Properties chars = new Properties();
 
@@ -368,37 +396,25 @@ public class Functions  {
 	/**
 	 * Maps BibTeX entry types to SWRC entry types.
 	 * 
-	 * TODO: very inefficient ... use a static map instead
-	 *  
 	 * @param bibtexEntryType
 	 * @return the SWRC entry type
 	 */
 	public static String getSWRCEntryType(final String bibtexEntryType) {
-		for (int i = 0; i < ENTRYTYPES.length; i++) {
-			/* Comparison with current entrytype value */
-			if (ENTRYTYPES[i].equals(bibtexEntryType)) {
-				/* match found -> print and stop loop */
-				return swrcEntryTypes[i];
-			}
+		if (SWRC_ENTRY_TYPE_MAP.containsKey(bibtexEntryType)) {
+			return SWRC_ENTRY_TYPE_MAP.get(bibtexEntryType);
 		}
 		return "Misc";
 	}
 
 	/**
 	 * Maps BibTeX entry types to RIS entry types.
-	 * 
-	 * TODO: very inefficient ... use a static map instead
 	 *  
 	 * @param bibtexEntryType
 	 * @return The RIS entry type
 	 */
 	public static String getRISEntryType(final String bibtexEntryType) {
-		for (int i = 0; i < ENTRYTYPES.length; i++) {
-			/* Comparison with current entrytype value */
-			if (ENTRYTYPES[i].equals(bibtexEntryType)) {
-				/* match found -> print and stop loop */
-				return risEntryTypes[i];
-			}
+		if (RIS_ENTRY_TYPE_MAP.containsKey(bibtexEntryType)) {
+			return RIS_ENTRY_TYPE_MAP.get(bibtexEntryType);
 		}
 		return "Generic";
 	}
