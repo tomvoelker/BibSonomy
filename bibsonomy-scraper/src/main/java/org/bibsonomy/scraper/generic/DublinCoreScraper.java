@@ -28,6 +28,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,11 +46,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * Scraper to extract bibtex information from a site, which holds Dublin Core Metadata
  * in it's HTML
  * 
+ * TODO: move DublinCore extraction to a DublinCoreToBibtexConverter
+ * 
  * @author Lukas
  * @version $Id$
  */
 public class DublinCoreScraper implements Scraper {
-
 	//scraper informations
 	private static final String SITE_NAME = "DublinCoreScraper";
 	private static final String SITE_URL = "http://dublincore.org/";
@@ -55,14 +59,26 @@ public class DublinCoreScraper implements Scraper {
 	" in the DublinCore Metaformat, given by the " + AbstractUrlScraper.href(SITE_URL, "Dublin Core Metadata Initiative") + 
 	"\n Because all components of DC-Metadata are optional and their values not standardized, the scraper may not always be successful.";
 
+	// TODO: document why we are not using ISBNUtils#extractISSN
+	private static final Pattern ISSN_PATTERN = Pattern.compile("\\d{4}-\\d{4}");
+	// TODO: document why we are not using ISBNUtils#extractISBN
+	private static final Pattern ISBN_PATTERN = Pattern.compile("\\d{3}-\\d-\\d{5}-\\d{3}-\\d");
+	
+	private static final String BIBTEX_END_LINE = ",\n";
+	
+	private static final String TITLE_KEY = "title";
+	private static final String AUTHOR_KEY = "author";
+	private static final String ID_KEY = "id";
+	private static final String TYPE_KEY = "type";
+	
 	//pattern for checking support for a given site
 	private static final Pattern DUBLIN_CORE_PATTERN = Pattern.compile("(?im)(?=<\\s*meta[^>]*name=\"DC.Title[^>]\"[^>]*>)(?=<\\s*meta[^>]*name=\"DC.Type[^>]\"[^>]*>)" +
 	"(?=<\\s*meta[^>]*name=\"DC.Creator[^>]\"[^>]*>)");
 
-	//pattern to extract all DC key-value pairs, placed in the page's html
+	// pattern to extract all DC key-value pairs, placed in the page's html
 	private static final Pattern EXTRACTION_PATTERN = Pattern.compile("(?im)<\\s*meta(?=[^>]*lang=\"([^>\"]*)\")?(?=[^>]*content=\"([^>\"]*)\")[^>]*name=\"(?-i)DC(?i).([^>\"]*)\"[^>]*>");
 
-	//pattern to extract a year out of a string
+	// pattern to extract a year out of a string
 	private static final Pattern EXTRACT_YEAR = Pattern.compile("\\d\\d\\d\\d");
 	
 	@Override
@@ -92,42 +108,61 @@ public class DublinCoreScraper implements Scraper {
 	 * @throws ScrapingFailureException thrown idf not enough information was found
 	 */
 	private String getBibTeX(final String pageContent) throws ScrapingFailureException {
-		String bibtex = "";
-
 		// get all DC values
-		HashMap<String, String> data = this.extractData(pageContent);
+		final Map<String, String> data = this.extractData(pageContent);
 
 		// check if enough information is present
-		if (data.get("type") == null || data.get("author") == null || data.get("title") == null) {
+		if (!present(data.get(TYPE_KEY)) || !present(data.get(AUTHOR_KEY)) || !present(data.get(TITLE_KEY))) {
 			throw new ScrapingFailureException("Not enough Dublin Core Metadata found!");
 		}
+		
+		final String entrytype = this.getEntrytype(data);
+		final StringBuilder bibtex = new StringBuilder("@");
+		bibtex.append(entrytype);
+		bibtex.append("{");
+		final String bibtexKey = BibTexUtils.generateBibtexKey(data.get(AUTHOR_KEY), data.get("editor"), data.get("year"), data.get(TITLE_KEY));
+		bibtex.append(bibtexKey).append(BIBTEX_END_LINE);
 
-		// generate the bibtex entrytype
-		bibtex = this.setEntrytype(bibtex, data);
-
-		// add all key value pairs to the well formatted bibtex string
-		for (String key : data.keySet()) {
-			// if corporate is set as a DC field, it must be interpreted
-			// differently for
-			// different entrytypes
-			if (key.equals("school") && !bibtex.contains("@phdthesis") || key.equals("institution") && bibtex.contains("@phdthesis")) {
-				continue;
+		/*
+		 * extract isbn and issn
+		 */
+		if (BibTexUtils.ARTICLE.equals(entrytype)) {
+			Matcher m = ISSN_PATTERN.matcher(data.get(ID_KEY));
+			if (m.find()) {
+				bibtex.append(getBibTeXEntry("ISSN", m.group())).append(BIBTEX_END_LINE);
 			}
-			// add bibtex key values pair to the bibtex string
-			else {
-				bibtex += this.getBibTeXEntry(key, data.get(key));
+		}
+		if (BibTexUtils.BOOK.equals(entrytype)) {
+			final Matcher m = ISBN_PATTERN.matcher(data.get(ID_KEY));
+			if (m.find()) {
+				bibtex.append(getBibTeXEntry("ISBN", m.group())).append(BIBTEX_END_LINE);
+			}
+		}
+		
+		final boolean isPHDThesis = BibTexUtils.PHD_THESIS.equals(entrytype);
+		final Iterator<Entry<String, String>> dataEntryInterator = data.entrySet().iterator();
+		while (dataEntryInterator.hasNext()) {
+			final Entry<String, String> dataEntry = dataEntryInterator.next();
+			/*
+			 * if corporate is set as a DC field, it must be interpreted
+			 * differently for different entrytypes
+			 */
+			final String key = dataEntry.getKey();
+			if (key.equals("school") && !isPHDThesis || key.equals("institution") && isPHDThesis) {
+				continue;
+			} else {
+				// add bibtex key values pair to the bibtex string
+				bibtex.append(this.getBibTeXEntry(key, dataEntry.getValue()));
+				if (dataEntryInterator.hasNext()) {
+					bibtex.append(BIBTEX_END_LINE);
+				}
 			}
 		}
 
-		// remove last comma
-		final int index = bibtex.lastIndexOf(',');
-		bibtex = bibtex.substring(0, index) + bibtex.substring(index + 1);
-
 		// close brackets
-		bibtex += "}";
+		bibtex.append("\n}");
 
-		return insertBibTexKey(bibtex, data);
-
+		return bibtex.toString();
 	}
 
 	/**
@@ -136,12 +171,11 @@ public class DublinCoreScraper implements Scraper {
 	 * 
 	 * @param pageContent the html code of the site
 	 * 
-	 * @return a hashmap which maps bibtex key to thei contained DC values
+	 * @return a map which maps bibtex key to their contained DC values
 	 */
-	private HashMap<String, String> extractData(final String pageContent) {
-
+	private Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
-		HashMap<String, String> data = new HashMap<String, String>();
+		Map<String, String> data = new HashMap<String, String>();
 
 		String key = "";
 		String value = "";
@@ -154,30 +188,30 @@ public class DublinCoreScraper implements Scraper {
 			lang = matcher.group(1);
 
 			if (key.equalsIgnoreCase("Type")) {
-				data = addOrAppendField("type", value, data);
-			} else if (StringUtils.containsIgnoreCase(key, "title") && present(lang) && lang.equalsIgnoreCase("eng")) {
-				data = addOrAppendField("title", value, data);
+				addOrAppendField(TYPE_KEY, value, data);
+			} else if (StringUtils.containsIgnoreCase(key, TITLE_KEY) && present(lang) && lang.equalsIgnoreCase("eng")) {
+				addOrAppendField(TITLE_KEY, value, data);
 			} else if (StringUtils.containsIgnoreCase(key, "creator")) {
-				data = addOrAppendField("author", value, data);
+				addOrAppendField(AUTHOR_KEY, value, data);
 			} else if (StringUtils.containsIgnoreCase(key, "identifier")) {
-				data = addOrAppendField("id", value, data);
+				addOrAppendField(ID_KEY, value, data);
 			} else if (lang != null && lang.equalsIgnoreCase("eng") && StringUtils.containsIgnoreCase(key, "description")) {
-				data = addOrAppendField("abstract", value, data);
+				addOrAppendField("abstract", value, data);
 			} else if (StringUtils.containsIgnoreCase(key, "date")) {
 				data.put("year", this.extractYear(value));
 			} else if (StringUtils.containsIgnoreCase(key, "Contributor.CorporateName")) {
 				data.put("school", value);
 				data.put("institution", value);
 			} else if (StringUtils.containsIgnoreCase(key, "contributor")) {
-				data = addOrAppendField("editor", value, data);
+				addOrAppendField("editor", value, data);
 			} else if (StringUtils.containsIgnoreCase(key, "publisher")) {
-				data = addOrAppendField("publisher", value, data);
+				addOrAppendField("publisher", value, data);
 			} else if (StringUtils.containsIgnoreCase(key, "journal")) {
-				data = addOrAppendField("journal", value, data);
+				addOrAppendField("journal", value, data);
 			} else if (StringUtils.containsIgnoreCase(key, "conference")) {
-				data = addOrAppendField("conference", value, data);
+				addOrAppendField("conference", value, data);
 			} else if (StringUtils.containsIgnoreCase(key, "organization")) {
-				data = addOrAppendField("organization", value, data);
+				addOrAppendField("organization", value, data);
 			}
 		}
 
@@ -191,35 +225,17 @@ public class DublinCoreScraper implements Scraper {
 	 * @param key the key to set for the map
 	 * @param value the value to set for the key in the map
 	 * @param data the map itself
-	 * 
-	 * @return the altered map
 	 */
-	private HashMap<String, String> addOrAppendField(final String key, final String value, final HashMap<String, String> data) {
-		// append
-		if (present(data.get(key))) {
-			data.put(key, data.get(key) + ", " + value);
+	private void addOrAppendField(final String key, final String value, final Map<String, String> data) {
+		if (present(value)) {
+			// append
+			if (data.containsKey(key)) {
+				data.put(key, data.get(key) + ", " + value);
+			} else {
+				// insert new entry
+				data.put(key, value);
+			}
 		}
-		// insert new entry
-		else {
-			data.put(key, value);
-		}
-		return data;
-	}
-
-	/**
-	 * generates and inserts the bibtexkey at the correct position in the bibtex
-	 * string
-	 * 
-	 * @param bibtex string without bibtexkey in which to insert
-	 * @param data the generated hashmap with bibtex key-value pairs
-	 * 
-	 * @return the bibtex string with bibtexkey
-	 */
-	private String insertBibTexKey(final String bibtex, final HashMap<String, String> data) {
-		final String key = BibTexUtils.generateBibtexKey(data.get("author"), data.get("editor"), data.get("year"), data.get("title"));
-		int index = bibtex.indexOf("{") + 1;
-
-		return (bibtex.substring(0, index) + key + ",\n" + bibtex.substring(index));
 	}
 
 	/**
@@ -246,7 +262,7 @@ public class DublinCoreScraper implements Scraper {
 	 * @return an well formed bibtex entry as a string
 	 */
 	private String getBibTeXEntry(final String key, final String value) {
-		return key + " = {" + value + "},\n";
+		return key + " = {" + value + "}";
 	}
 
 	/**
@@ -260,61 +276,40 @@ public class DublinCoreScraper implements Scraper {
 	 * @param data the data map, which contains bibtex information , generated
 	 *            out of the DC HTML values
 	 * 
-	 * @return the new bibtexstring in the form \@type{
+	 * @return the entrytype
 	 */
-	private String setEntrytype(String bibtex, final HashMap<String, String> data) {
-		//instance of DCMI type text
-		if (StringUtils.containsIgnoreCase(data.get("type"), "text")) {
-			//possible values for phdthesis
-			if (data.get("type").equalsIgnoreCase("Text.Thesis.Doctoral") || data.get("type").equalsIgnoreCase("Text.phdthesis")) {
-				bibtex = "@phdthesis{";
-			} 
-			//isbn or substring book in type -> should be a book
-			else if (StringUtils.containsIgnoreCase(data.get("id"), "ISBN") || StringUtils.containsIgnoreCase(data.get("type"), "book")) {
-				Pattern getISBN = Pattern.compile("\\d{3}-\\d-\\d{5}-\\d{3}-\\d");
-				Matcher m = getISBN.matcher(data.get("id"));
-				if (m.find()) {
-					bibtex = "@book{";
-					bibtex += getBibTeXEntry("ISBN", m.group());
+	private String getEntrytype(final Map<String, String> data) {
+		// instance of DCMI type text
+		if (StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "text")) {
+			// possible values for phdthesis
+			if (data.get(TYPE_KEY).equalsIgnoreCase("Text.Thesis.Doctoral") || data.get(TYPE_KEY).equalsIgnoreCase("Text.phdthesis")) {
+				return BibTexUtils.PHD_THESIS;
+			} else {
+				final String idValue = data.get(ID_KEY);
+				if (StringUtils.containsIgnoreCase(idValue, "ISBN") || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "book")) {
+					return BibTexUtils.BOOK;
 				}
-			} 
-			//issn or articel in type -> should be an article
-			else if (StringUtils.containsIgnoreCase(data.get("id"), "ISSN") || StringUtils.containsIgnoreCase(data.get("type"), "article")) {
-				Pattern getISSN = Pattern.compile("\\d{4}-\\d{4}");
-				Matcher m = getISSN.matcher(data.get("id"));
-				if (m.find()) {
-					bibtex = "@article{";
-					bibtex += getBibTeXEntry("ISSN", m.group());
+				// issn or articel in type -> should be an article
+				if (StringUtils.containsIgnoreCase(idValue, "ISSN") || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "article")) {
+					return BibTexUtils.ARTICLE;
 				}
-			} 
-			//conference was set in DC data or type contains conference -> should be proceedings
-			else if (present(data.get("conference")) || StringUtils.containsIgnoreCase(data.get("type"), "conference") || StringUtils.containsIgnoreCase(data.get("type"), "proceedings")) {
-				bibtex = "@proceedings{";
-			} 
-			//no hints for a specific textual type were found, so take misc
-			else {
-				// default entrytype for DCMIType text
-				bibtex = "@misc{";
+				// conference was set in DC data or type contains conference -> should be proceedings
+				if (present(data.get("conference")) || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "conference") || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "proceedings")) {
+					return BibTexUtils.PROCEEDINGS;
+				}
 			}
 		} 
-		//type event, may a conference?
-		else if (StringUtils.containsIgnoreCase(data.get("type"), "text")) {
+		// type event, may a conference?
+		if (StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "text")) { // TODO: event instead of text?!
 			//conference was set in DC data or type contains conference -> should be proceedings
-			if (present(data.get("conference")) || StringUtils.containsIgnoreCase(data.get("type"), "conference") || StringUtils.containsIgnoreCase(data.get("type"), "poceedings")) {
-				bibtex = "@proceedings{";
+			if (present(data.get("conference")) || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "conference") || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "poceedings")) {
+				return BibTexUtils.PROCEEDINGS;
 			} 
-			//no hints for a specific event were found, so take misc as default type for event
-			else {
-				// default entrytype for DCMIType event
-				bibtex = "@misc{";
-			}
-		} 
-		//type is something exotic, so misc is choosen as entrytype
-		else {
-			bibtex = "@misc{";
 		}
-
-		return bibtex;
+		/*
+		 * as default return misc
+		 */
+		return BibTexUtils.MISC;
 	}
 
 	/*
