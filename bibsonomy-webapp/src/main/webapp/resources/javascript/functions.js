@@ -1133,7 +1133,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 	var friends 		= null;
 
 	
-	/**
+	/*
 	 * only if sendAllowwed == true, get the friends of the user to recommend them in the case of "send:"
 	 */
 	if(sendAllowed) {
@@ -1183,7 +1183,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 							var regex = new RegExp(userInput);
 
 							response($.map( friends, function(friend) {
-								/**
+								/*
 								 * If the post is already sent to a user (Example: "sent:bsc"), don't recommend this user ("bsc")
 								 * If the user input is "nra", recommend only users which username begins with "nra" 
 								 */
@@ -1199,7 +1199,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 							var copiedTags 		= new Array();
 							ajaxTagArray		= new Array();
 							
-							/**
+							/*
 							 * Get the tag-name's of "copied post" and "recommendation" -> Save them in a detached array
 							 * Only add the tags which are matching with the following patterns:
 							 * textfieldValue.indexOf(name) == -1		-> By now the tag isn't used for this post yet -> suggest it !
@@ -1219,7 +1219,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								}
 							});
 							
-							/**
+							/*
 							 * Get the Tags which the user already used in other posts
 							 */
 							var tags = $.map( data.items, function(item) {
@@ -1227,7 +1227,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								var recommendedTagsIndex 	= recommendedTags.indexOf(item.label);
 								var copiedTagsIndex			= copiedTags.indexOf(item.label);
 								
-								/**
+								/*
 								 * If the array of "copied post" and "recommendation" tags contains the actual tag name,
 								 * remove the tag name in the array "copied post", "recommendation" or both.
 								 */
@@ -1239,40 +1239,45 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 									copiedTags.splice(copiedTagsIndex, 1);
 								}
 								
-								/**
+								/*
 								 * don't suggest tags, which are already included in the input field
 								 */
 								if(textfieldValue.indexOf(item.label) == -1) {
 									
-									/**
+									/*
 									 * Store all tags with origin user to this array.
 									 * Later in the "open:" method of the autocompletion plugin we need them to distingush the tag origin.
 									 */
 									ajaxTagArray.push(item.label);
 									
 									return { value: (item.label),
-											 label: (item.label)};
+											 label: (item.label),
+											 count: (item.count)};
 								}
 							});
 																					
-							/**
+							/*
 							 * Now, the tags which are in the array of "copied post" and "recommendation" tags 
 							 * aren't used in other posts of the user by now.
 							 * Suggest them by adding them to the tags map.
 							 */
 							recommendedTags.forEach(function(name) {
 								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
-									tags.push({value: name, label: name});
+									tags.push({value: name, 
+											   label: name,
+											   count: 10000});
 								}								
 							});
 
 							copiedTags.forEach(function(name) {
 								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
-									tags.push({value: name, label: name});
+									tags.push({value: name, 
+											   label: name,
+											   count: 10000});
 								}
 							});
 								
-							/**
+							/*
 							 * Response all tags with origin user, recommended and copy.
 							 * Later in the "open:" method we add the span for the tag origin.
 							 */
@@ -1283,18 +1288,42 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			}
 		},
 		minLength: 1,
+		response: function( event, ui ) {						
+			/*
+			 * Sort all tags by count of usage 
+			 */
+			function compare(a,b) {
+			  if (a.count > b.count)
+			     return -1;
+			  if (a.count < b.count)
+			    return 1;
+			  return 0;
+			}
+
+			ui.content.sort(compare);
+
+			/*
+			 * Append for each tag the count of usage
+			 */
+			$.each(ui.content, function(index, value) {
+				value.label = value.value + " (" + value.count + ")";
+			});
+
+			return;
+		},
 		select: function( event, ui ) {
+			
 			var item = ui.item;
 			var textArea = $(event.target);
 			var text = item.value;
 			var substring = textfieldValue.substr(0, textfieldValue.length - (userInput.length));
 			
-			/**
+			/*
 			 * If multiTags is true, the user can apply more as one tag.
 			 * Otherwise the user can only use one tag (we replace the textInput Field with the recommended tag)
 			 */
 			if(multiTags) {
-				/**
+				/*
 				 * Distinguish if the user has typed "send:" and want to get and set the recommended friends
 				 * or he wants only the normal tags set
 				 */
@@ -1332,7 +1361,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
             var termHighlighted = null;
 			var recommendedTags = null;
 			var copiedTags 		= null;
-
+			
             /*
              * Here we distinguish if the user wants to send the post to a user (user input contains "send:"),
         	 * or the user wants the tags. If the user used "send:", we don't want to suggest like "send:nraabe".
@@ -1353,7 +1382,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 				recommendedTags = new Array();
 				copiedTags 		= new Array();
 				
-				/**
+				/*
 				 * Get the tag-name's of "copied post" and "recommendation" -> Save them in a detached array
 				 * Only add the tags which are matching with the following patterns:
 				 * textfieldValue.indexOf(name) == -1		-> By now the tag isn't used for this post yet -> suggest it !
@@ -1373,7 +1402,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 					}
 				});
 			}
-			
+
 			acData
                 .menu
                 .element
@@ -1381,15 +1410,24 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
                 .each(function() {
                     var me = $(this);
                     
+                    
                     /*
                      * Example: user types "goo" - we want to suggest "google"
                      * We take "google" and replace "goo" with the span with thin letters.
                      */
-					var recommendedTag = me.text();
-					me.empty(); // remove aold content
-                    var styledTerm = $('<span class="ui-autocomplete-term"></span>').text(termHighlighted);
+					var recommendedTag = me.text();					
+					
+					var regex = /(\(.*?\))/;
+					regex.exec(recommendedTag);
+					recommendedTag = recommendedTag.replace(/(\s\(.*?\))/, "");
+					var usageCounter = RegExp.$1;
+					
+					me.empty(); // remove old content
+                    
+					var styledTerm = $('<span class="ui-autocomplete-term"></span>').text(termHighlighted);
+                    
         			if (userInput.indexOf("send:") != -1) {
-        				me.append(sytledTerm).append(userInput.substring(5)); // TODO: document why to use 5 here
+        				me.append(sytledTerm).append(userInput.substring(5)); // 5 is used to slice "send:"
         			} else {
         				me.append(styledTerm).append(recommendedTag.substring(termHighlighted.length));
         			}
@@ -1425,13 +1463,32 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
             			}
             			
         				var tagOriginSpan 		= document.createElement("span"); 
-        				tagOriginSpan.innerHTML = tagOrigin;
+        				tagOriginSpan.innerHTML = tagOrigin + " " + usageCounter;
         				tagOriginSpan.className	= "ui-autocomplete-tagOrigin";
 
         				me.append(tagOriginSpan);
         			}
                 });
+			
+			/*
+			 *	- create a listener for the tab key
+			 *	- if the tab key is pressed without selected the tag -> add the first tag and close the autocompletion   
+			 */
+			textfield.keydown(function(event){
+			    var newEvent = $.Event('keydown', {
+			        keyCode: event.keyCode
+			    });
+			    
+			    if (newEvent.keyCode == $.ui.keyCode.TAB) {
+			        newEvent.keyCode = $.ui.keyCode.DOWN;
+			        $(this).trigger(newEvent);
+			        newEvent.keyCode = $.ui.keyCode.ENTER;
+			        $(this).trigger(newEvent);
 
+			        return false;
+			    }
+			});
+			
 	        $(this).autocomplete('widget').css('z-index', 127);
 	        
 	        return false;
