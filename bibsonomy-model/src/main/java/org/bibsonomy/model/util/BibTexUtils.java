@@ -250,12 +250,7 @@ public class BibTexUtils {
 	public static final String PREPRINT = "preprint";
 	
 	/**
-	 * the supported entrytypes of a bibtex
-	 * be careful when changing order some code uses the order to map entrytypes to (swrc|ris) entrytypes
-	 * 
-	 * e.g., in org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES 
-	 * 
-	 * FIXME: this is bad. Please fix this behaviour. 
+	 * the common entrytypes of a BibTeX
 	 */
 	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
 		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PREAMBLE, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
