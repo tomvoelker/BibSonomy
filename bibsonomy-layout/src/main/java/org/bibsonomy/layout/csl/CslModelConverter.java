@@ -42,6 +42,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.BibTexUtils;
 
 /**
  * TENTATIVE implementation of a mapping of our publication model to the CSL model,
@@ -61,15 +62,15 @@ public class CslModelConverter {
 
 	static {
 		typemap = new HashMap<String, String>();
-		typemap.put("article", "article-journal");
-		typemap.put("book", "book");
-		typemap.put("booklet", "pamphlet");
-		typemap.put("inbook", "chapter");
-		typemap.put("incollection", "chapter");
-		typemap.put("phdthesis", "thesis");
-		typemap.put("mastersthesis", "thesis");
-		typemap.put("report", "techreport");
-		typemap.put("inproceedings", "chapter");
+		typemap.put(BibTexUtils.ARTICLE, "article-journal");
+		typemap.put(BibTexUtils.BOOK, "book");
+		typemap.put(BibTexUtils.BOOKLET, "pamphlet");
+		typemap.put(BibTexUtils.INBOOK, "chapter");
+		typemap.put(BibTexUtils.INCOLLECTION, "chapter");
+		typemap.put(BibTexUtils.PHD_THESIS, "thesis");
+		typemap.put(BibTexUtils.MASTERS_THESIS, "thesis");
+		typemap.put(BibTexUtils.TECH_REPORT, "report");
+		typemap.put(BibTexUtils.INPROCEEDINGS, "chapter");
 	}
 
 	/**
@@ -90,18 +91,14 @@ public class CslModelConverter {
 		// authors, editors
 		if (present(bib.getAuthor())) {
 			for (final PersonName author : bib.getAuthor()) {
-				final Person a = new Person();
-				a.setGiven(cleanBibTex(author.getFirstName()));
-				a.setFamily(cleanBibTex(author.getLastName()));
-				rec.getAuthor().add(a);
+				final Person person = convertToPerson(author);
+				rec.getAuthor().add(person);
 			}
 		}
 		if (present(bib.getEditor())) {
-			for (final PersonName author : bib.getEditor()) {
-				final Person a = new Person();
-				a.setGiven(cleanBibTex(author.getFirstName()));
-				a.setFamily(cleanBibTex(author.getLastName()));
-				rec.getEditor().add(a);
+			for (final PersonName editor : bib.getEditor()) {
+				final Person person = convertToPerson(editor);
+				rec.getEditor().add(person);
 			}
 		}
 
@@ -128,6 +125,13 @@ public class CslModelConverter {
 		rec.setIssued(date);
 
 		return rec;
+	}
+
+	private static Person convertToPerson(final PersonName personName) {
+		final Person person = new Person();
+		person.setGiven(cleanBibTex(personName.getFirstName()));
+		person.setFamily(cleanBibTex(personName.getLastName()));
+		return person;
 	}
 
 	/**
