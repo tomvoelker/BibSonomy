@@ -4,6 +4,7 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.util.filter.posts.PostFilter;
+import org.bibsonomy.util.filter.posts.PostFilterFactory;
 import org.junit.Test;
 
 /**
@@ -36,27 +37,19 @@ public class FilterRuleParserTest {
 		}
 	}
 
-	
+
 	@Test
-	public void testParser2() {
-		final String tagString = "&[ resource.pages =~ '.*[0-9]\\s*-\\s*[0-9].*' : resource.pages :~ '\\s*-\\s*'/'--']";
-		final CommonTokenStream tokens = new CommonTokenStream();
-		tokens.setTokenSource(new FilterRuleLexer(new ANTLRStringStream(tagString)));
-		final FilterRuleParser parser = new FilterRuleParser(tokens);
-		try {
-			System.out.println("################################################");
-			parser.filter();
-			final PostFilter postFilter = parser.getPostFilter();
-			System.out.println(postFilter.getMatcher());
-			System.out.println(":");
-			System.out.println(postFilter.getModifier());
-			System.out.println("################################################");
-		} catch (RecognitionException e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
+	public void testParser2() throws RecognitionException {
+
+		final PostFilter postFilter = new PostFilterFactory().getPostFilterFromStringDefinition("&[ resource.pages =~ '.*[0-9]\\s*-\\s*[0-9].*' : resource.pages :~ '\\s*-\\s*'/'--']");
+		System.out.println("################################################");
+		System.out.println(postFilter.getMatcher());
+		System.out.println(":");
+		System.out.println(postFilter.getModifier());
+		System.out.println("################################################");
+		
 	}
 
-	
+
 }
 
