@@ -182,8 +182,66 @@ public class BibTexUtils {
 	
 	/** prefix for tags indicating post owners when duplicates=merge */
 	private static final String MERGED_PREFIX = "merged:";
-
 	
+	/** PHD thesis */
+	public static final String PHD_THESIS = "phdthesis";
+	
+	/** unpublished work */
+	public static final String UNPUBLISHED = "unpublished";
+	
+	/** tech repost */
+	public static final String TECH_REPORT = "techreport";
+	
+	/** standard */
+	public static final String STANDARD = "standard";
+	
+	/** proceedings */
+	public static final String PROCEEDINGS = "proceedings";
+	
+	/** presentation */
+	public static final String PRESENTATION = "presentation";
+	
+	/** preamble */
+	public static final String PREAMBLE = "preamble";
+
+	/** periodical */
+	public static final String PERIODICAL = "periodical";
+
+	/** patent */
+	public static final String PATENT = "patent";
+
+	/** misc */
+	public static final String MISC = "misc";
+
+	/** mastersthesis */
+	public static final String MASTERS_THESIS = "mastersthesis";
+
+	/** manual */
+	public static final String MANUAL = "manual";
+
+	/** inproceedings */
+	public static final String INPROCEEDINGS = "inproceedings";
+
+	/** incollection */
+	public static final String INCOLLECTION = "incollection";
+
+	/** inbook */
+	public static final String INBOOK = "inbook";
+
+	/** electronic */
+	public static final String ELECTRONIC = "electronic";
+
+	/** electronic */
+	public static final String CONFERENCE = "conference";
+
+	/** electronic */
+	public static final String BOOKLET = "booklet";
+
+	/** book */
+	public static final String BOOK = "book";
+
+	/** article */
+	public static final String ARTICLE = "article";
 	
 	/**
 	 * To remove the preprint entry type remove all occurrences of this string and the corresponding types 
@@ -199,8 +257,8 @@ public class BibTexUtils {
 	 * 
 	 * FIXME: this is bad. Please fix this behaviour. 
 	 */
-	public static final String[] ENTRYTYPES = {"article", "book", "booklet", "conference", "electronic", "inbook", "incollection", "inproceedings",
-		"manual", "mastersthesis", "misc", "patent", "periodical", "phdthesis", "preamble", "presentation", "proceedings", "standard", "techreport", "unpublished",
+	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
+		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PREAMBLE, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
 		PREPRINT
 	};
 	
@@ -312,18 +370,18 @@ public class BibTexUtils {
 			if (entryType.equals("journal")) {
 				appendOpenURL(openurl, "genre", "journal");
 				appendOpenURL(openurl, "title", bib.getTitle());
-			} else if (entryType.equals("book")) {
-				appendOpenURL(openurl, "genre", "book");
+			} else if (entryType.equals(BOOK)) {
+				appendOpenURL(openurl, "genre", BOOK);
 				appendOpenURL(openurl, "title", bib.getTitle());
-			} else if (entryType.equals("article")) {
-				appendOpenURL(openurl, "genre", "article");
+			} else if (entryType.equals(ARTICLE)) {
+				appendOpenURL(openurl, "genre", ARTICLE);
 				appendOpenURL(openurl, "title", bib.getJournal());
 				appendOpenURL(openurl, "atitle", bib.getTitle());
-			} else if (entryType.equals("inbook")) {
+			} else if (entryType.equals(INBOOK)) {
 				appendOpenURL(openurl, "genre", "bookitem");
 				appendOpenURL(openurl, "title", bib.getBooktitle());
 				appendOpenURL(openurl, "atitle", bib.getTitle());
-			} else if (entryType.equals("proceedings")) {
+			} else if (entryType.equals(PROCEEDINGS)) {
 				appendOpenURL(openurl, "genre", "proceeding");
 				appendOpenURL(openurl, "title", bib.getBooktitle());
 				appendOpenURL(openurl, "atitle", bib.getTitle());
