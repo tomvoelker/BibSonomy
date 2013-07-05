@@ -152,43 +152,41 @@ public class RisToBibtexConverter {
 				String value = entry.substring(6).trim();
 				if (key.equals("TY")) {
 					if (value.equals("BOOK"))
-						type = "book";
+						type = BibTexUtils.BOOK;
 					else if (value.equals("JOUR") || value.equals("MGZN"))
-						type = "article";
+						type = BibTexUtils.ARTICLE;
 					else if (value.equals("THES"))
-						type = "phdthesis";
+						type = BibTexUtils.PHD_THESIS;
 					else if (value.equals("UNPB"))
-						type = "unpublished";
+						type = BibTexUtils.UNPUBLISHED;
 					else if (value.equals("RPRT"))
-						type = "techreport";
+						type = BibTexUtils.TECH_REPORT;
 					else if (value.equals("CONF"))
-						type = "inproceedings";
-					//					else if (value.equals("CHAP"))
-					//						type = "incollection";//"inbook";
+						type = BibTexUtils.INPROCEEDINGS;
 					else if (value.equals("CTLG"))
-						type = "booklet";
+						type = BibTexUtils.BOOKLET;
 					else if (value.equals("CPAPER"))
-						type = "conference";
+						type = BibTexUtils.CONFERENCE;
 					else if (value.equals("EJOUR") || value.equals("BLOG") || value.equals("ELEC"))
-						type = "electronic";
+						type = BibTexUtils.ELECTRONIC;
 					else if (value.equals("CHAP"))
-						type = "inbook";
+						type = BibTexUtils.INBOOK;
 					//					else if (value.equals("XXXX"))
 					//						type = "manual";
 					//					else if (value.equals("THESIS"))
 					//						type = "mastersthesis";
 					else if (value.equals("PAT"))
-						type = "patent";
+						type = BibTexUtils.PATENT;
 					else if (value.equals("SER") || value.equals("MGZN"))
-						type = "periodical";
+						type = BibTexUtils.PERIODICAL;
 					else if (value.equals("SLIDE"))
-						type = "presentation";
+						type = BibTexUtils.PRESENTATION;
 					//					else if (value.equals("CONF"))
 					//						type = "proceedings";
 					else if (value.equals("STAND"))
-						type = "standard";
+						type = BibTexUtils.STANDARD;
 					else
-						type = "misc";
+						type = BibTexUtils.MISC;
 				} else if (key.equals("T1") || key.equals("TI")) {
 					if (value.endsWith(",") || value.endsWith(".")) {
 						value = value.substring(0, value.length() - 1);
@@ -257,8 +255,9 @@ public class RisToBibtexConverter {
 
 					for (int i = 0; i < _s.length; ++i) {
 						_s[i] = _s[i].trim();
-						if (ISBNUtils.extractISBN(_s[i]) != null) {
-							_isbn += ISBNUtils.extractISBN(_s[i]) + " ";
+						String extractedISBN = ISBNUtils.extractISBN(_s[i]);
+						if (present(extractedISBN)) {
+							_isbn += extractedISBN + " ";
 						} else if (ISBNUtils.extractISSN(_s[i]) != null){
 							_issn += ISBNUtils.extractISSN(_s[i]) + " ";
 						}
@@ -369,9 +368,8 @@ public class RisToBibtexConverter {
 	 * @return true if snippet is ris
 	 */
 	public static boolean canHandle(final String snippet) {
-
 		// remove leading whitespace and retrieve first line
-		String firstLine = snippet.trim().split("\n", 2)[0];
+		final String firstLine = snippet.trim().split("\n", 2)[0];
 		// patter: 1 capital letter + 1 other character (non whitespace) + 2 space + "-"
 		final Pattern eachLinePattern  = Pattern.compile("^[A-Z]\\S\\s{2}-");
 		return firstLine.length()>=5 && eachLinePattern.matcher( firstLine.substring(0, 5)  ).lookingAt();
