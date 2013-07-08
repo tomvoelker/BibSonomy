@@ -271,23 +271,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>deploy-to-wuerzburg</id>
-			<!--
-				change tomcat deploy destination when -Ddeploy-to=wuerzburg is given
-				as parameter.
-			-->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>wuerzburg</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_wuerzburg</maven.tomcat.server>
-				<maven.tomcat.url>http://wue.biblicious.org:8080/manager</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
 			<id>deploy-to-puma-sandbox</id>
 			<!--
 				change tomcat deploy destination when -Ddeploy-to=puma_sandbox is given
