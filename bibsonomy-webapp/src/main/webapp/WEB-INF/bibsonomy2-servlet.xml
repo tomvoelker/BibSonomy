@@ -54,33 +54,22 @@
 	</bean>
 	
 	<bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-    	<property name="locations">
-    		<list>
-        		<value>/WEB-INF/project.properties</value>
-        		<value>file:§{config.location}</value>
-      		</list>
-    	</property>
-    	<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>/WEB-INF/project.properties</value>
+				<value>file:${config.location}</value>
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
 	</bean>
 	
-	<!-- 
-		XXX: see class for comments
-		extracts properties from the provided file and inserts them into bean 
-		properties using "${property.name}" notation  
-	-->	
-	<bean id="configFilePropertyConfigurer" class="org.bibsonomy.webapp.util.OrderedPropertyPlaceholderConfigurer">
+	<bean id="configFilePropertyConfigurer" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="properties" ref="properties" />
 	</bean>
 	
 	<bean id="conversionServiceBeanFactoryPostProcessor" class="org.bibsonomy.webapp.util.ConversionServiceBeanFactoryPostProcessor">
 		<property name="conversionService" ref="conversionService" />
 	</bean>
-	
-	<bean id="servletContextPropertyConfigurer" class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer">
-		<property name="placeholderPrefix" value="§{" />
-		<property name="contextOverride" value="true" />
-	</bean>
-	
 	
 	<!-- TODO: remove after all jsp are ported to spring mvc -->
 	<bean id="oldPagesFix" class="servlets.utils.ProperiesAttributeSetter" init-method="init">
