@@ -62,6 +62,10 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	
 	private static final RisToBibtexConverter converter = new RisToBibtexConverter();
 
+	//for preprocessing of Worldcat RIS
+	private static final String KEY_VALUE_SEPARATOR = "  - ";
+	private static final String LINE_DELIMITER = "\n";
+	private static final Pattern AUTHOR_EXTRACTOR_PATTERN = Pattern.compile("([^,]+, [^,]+),");
 	
 	public String getInfo() {
 		return INFO;
@@ -138,7 +142,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		if (ris == null) return null;
 		Matcher m = Pattern.compile("UR\\s{2}-\\s(.*\\n)+?\\p{Upper}\\p{Alnum}\\s{2}-\\s").matcher(ris);
 		if (m.find()) {
-			ris = ris.replace(m.group(1), replacementURL + "\n");
+			ris = ris.replace(m.group(1), replacementURL + LINE_DELIMITER);
 		} else {
 			ris = ris.replaceFirst("ER\\s{2}-\\s[\\n.]*\\z", "UR  - " + replacementURL + "\nER  - ");
 		}
@@ -146,6 +150,57 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		return BibTexUtils.addFieldIfNotContained(bibtex, "isbn", isbn);
 	}
 	
+	/**
+	 * temporary fix for and RIS export error of Worldcat, which exports data not fitting to the
+	 * RIS standart
+	 * 
+	 * -> because the issue only happens with RIS from worldcat, this is placed here and not
+	 * in the {@link RisToBibtexConverter}
+	 * 
+	 * @param ris the ris string to preprocess
+	 * 
+	 * @return the preprocessed ris
+	 */
+	private static String preprocessWorldcatRIS(final String ris) {
+		
+		//get all entries
+		final String[] entries = ris.split(LINE_DELIMITER);
+		
+		StringBuilder correctRIS = new StringBuilder();
+		String key = "";
+		String value = "";
+		
+		for(String entry : entries) {
+			key = entry.split(" - ")[0].trim();
+			
+			//check wether the field is the main author's one
+			if(key.equals("A1") || key.equals("AU")) {
+				
+				value = entry.split(KEY_VALUE_SEPARATOR)[1];
+				Matcher authorExtractor = AUTHOR_EXTRACTOR_PATTERN.matcher(value);
+				
+				//is the ris not well formatted?
+				while(authorExtractor.find()) {
+					String author = authorExtractor.group(1);
+					//final String[] authors = value.split(",,");
+					//create a field for each author, like defined in the ris specification
+					//for(int authorCounter = 0; authorCounter < authors.length; authorCounter++) {
+						if (present(author)) {
+							correctRIS.append("A1" + KEY_VALUE_SEPARATOR + author.trim() + LINE_DELIMITER);
+						//}
+					}
+					
+				}
+			}
+			//not an author field -> keep it
+			else {
+				correctRIS.append(entry + LINE_DELIMITER);
+			}
+		}
+		
+		return correctRIS.toString();
+	}
+
 	private static String getRIS(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
 		String publPageContent = WebUtils.getContentAsString(publPageURL);
 		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(publPageContent);
@@ -174,6 +229,8 @@ public class WorldCatScraper extends AbstractUrlScraper {
 			return null;
 		}
 
+		ris = preprocessWorldcatRIS(ris);
+		
 		return ris;
 	}
 	
