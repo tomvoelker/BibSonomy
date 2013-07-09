@@ -46,6 +46,8 @@ import org.bibsonomy.util.id.ISBNUtils;
 public class DublinCoreToBibtexConverter {
 
 	
+	private static final String PREFERRED_LANGUAGE = "en";
+
 	private static final String BIBTEX_END_LINE = ",\n";
 	
 	private static final String TITLE_KEY = "title";
@@ -54,7 +56,7 @@ public class DublinCoreToBibtexConverter {
 	private static final String TYPE_KEY = "type";
 
 	// pattern to extract all DC key-value pairs, placed in the page's html
-	private static final Pattern EXTRACTION_PATTERN = Pattern.compile("(?im)<\\s*meta(?=[^>]*lang=\"([^>\"]*)\")?(?=[^>]*content=\"([^>\"]*)\")[^>]*name=\"(?-i)DC(?i).([^>\"]*)\"[^>]*>");
+	private static final Pattern EXTRACTION_PATTERN = Pattern.compile("(?im)<\\s*meta(?=[^>]*lang=\"([^\"]*)\")?(?=[^>]*content=\"([^\"]*)\")[^>]*name=\"(?-i)DC(?i).([^\"]*)\"[^>]*>");
 
 	// pattern to extract a year out of a string
 	private static final Pattern EXTRACT_YEAR = Pattern.compile("\\d\\d\\d\\d");
@@ -137,7 +139,7 @@ public class DublinCoreToBibtexConverter {
 	private static Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
 		Map<String, String> data = new HashMap<String, String>();
-
+	
 		String key = "";
 		String value = "";
 		String lang = "";
@@ -149,30 +151,30 @@ public class DublinCoreToBibtexConverter {
 			lang = matcher.group(1);
 
 			if (key.equalsIgnoreCase("Type")) {
-				addOrAppendField(TYPE_KEY, value, data);
-			} else if (StringUtils.containsIgnoreCase(key, TITLE_KEY) && present(lang) && lang.equalsIgnoreCase("eng")) {
-				addOrAppendField(TITLE_KEY, value, data);
+				addOrAppendField(TYPE_KEY, value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, TITLE_KEY)) {
+				addOrAppendField(TITLE_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "creator")) {
-				addOrAppendField(AUTHOR_KEY, value, data);
+				addOrAppendField(AUTHOR_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "identifier")) {
-				addOrAppendField(ID_KEY, value, data);
-			} else if (lang != null && lang.equalsIgnoreCase("eng") && StringUtils.containsIgnoreCase(key, "description")) {
-				addOrAppendField("abstract", value, data);
+				addOrAppendField(ID_KEY, value, lang, data);
+			} else if (StringUtils.containsIgnoreCase(key, "description")) {
+				addOrAppendField("abstract", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "date")) {
 				data.put("year", extractYear(value));
 			} else if (StringUtils.containsIgnoreCase(key, "Contributor.CorporateName")) {
 				data.put("school", value);
 				data.put("institution", value);
 			} else if (StringUtils.containsIgnoreCase(key, "contributor")) {
-				addOrAppendField("editor", value, data);
+				addOrAppendField("editor", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "publisher")) {
-				addOrAppendField("publisher", value, data);
+				addOrAppendField("publisher", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "journal")) {
-				addOrAppendField("journal", value, data);
+				addOrAppendField("journal", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "conference")) {
-				addOrAppendField("conference", value, data);
+				addOrAppendField("conference", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "organization")) {
-				addOrAppendField("organization", value, data);
+				addOrAppendField("organization", value, lang, data);
 			}
 		}
 
@@ -187,8 +189,18 @@ public class DublinCoreToBibtexConverter {
 	 * @param value the value to set for the key in the map
 	 * @param data the map itself
 	 */
-	private static void addOrAppendField(final String key, final String value, final Map<String, String> data) {
-		if (present(value)) {
+	private static void addOrAppendField(final String key, final String value, final String language,  final Map<String, String> data) {
+		// insert new entry and overwrite existing (they should be in a different language)
+		if(present(language) && language.equalsIgnoreCase(PREFERRED_LANGUAGE) && present(value)) {
+			data.put(key, value);
+			return;
+		} 
+		// add entry with lang different to english only, if no entry is set
+		else if(present(language) && !language.equalsIgnoreCase(PREFERRED_LANGUAGE) && present(data.get(key))) {
+			return;
+		}
+		// language not set
+		else if (present(value)) {
 			// append
 			if (data.containsKey(key)) {
 				data.put(key, data.get(key) + ", " + value);
@@ -245,7 +257,13 @@ public class DublinCoreToBibtexConverter {
 			// possible values for phdthesis
 			if (data.get(TYPE_KEY).equalsIgnoreCase("Text.Thesis.Doctoral") || data.get(TYPE_KEY).equalsIgnoreCase("Text.phdthesis")) {
 				return BibTexUtils.PHD_THESIS;
-			} else {
+			} 
+			// type is a research article
+			else if(data.get(TYPE_KEY).equalsIgnoreCase("Text.Serial.Journal")) {
+				return BibTexUtils.ARTICLE;
+			}
+			// type could not be directly extracted -> try id
+			else {
 				final String idValue = data.get(ID_KEY);
 				if (StringUtils.containsIgnoreCase(idValue, "ISBN") || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "book")) {
 					return BibTexUtils.BOOK;
@@ -262,7 +280,7 @@ public class DublinCoreToBibtexConverter {
 		} 
 		// type event, may a conference?
 		if (StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "event")) {
-			//conference was set in DC data or type contains conference -> should be proceedings
+			// conference was set in DC data or type contains conference -> should be proceedings
 			if (present(data.get("conference")) || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "conference") || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "poceedings")) {
 				return BibTexUtils.PROCEEDINGS;
 			} 

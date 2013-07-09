@@ -1589,9 +1589,15 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.asm.AsmScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_260">
-		<TestDescription>DublinCoreScraper Test</TestDescription>
+		<TestDescription>DublinCoreScraper Test 1</TestDescription>
 		<URL>http://darwin.bth.rwth-aachen.de/opus3/volltexte/2013/4533/</URL>
 		<BibFile>DCScraperTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_261">
+		<TestDescription>DublinCoreScraper Test 2</TestDescription>
+		<URL>http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6</URL>
+		<BibFile>DCScraperTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
 </test:Tests>

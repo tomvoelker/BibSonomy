@@ -42,4 +42,10 @@ public class DublinCoreScraperTest {
 		assertTrue(runner.runSingleTest("url_260"));
 	}
 	
+	@Ignore
+	@Test
+	public void testDCScraper2() {
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_261"));
+	}
 }
