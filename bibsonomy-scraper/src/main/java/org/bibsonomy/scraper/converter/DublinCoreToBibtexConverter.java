@@ -238,7 +238,7 @@ public class DublinCoreToBibtexConverter {
 			}
 		} 
 		// type event, may a conference?
-		if (StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "event")) { // TODO: event instead of text?!
+		if (StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "event")) {
 			//conference was set in DC data or type contains conference -> should be proceedings
 			if (present(data.get("conference")) || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "conference") || StringUtils.containsIgnoreCase(data.get(TYPE_KEY), "poceedings")) {
 				return BibTexUtils.PROCEEDINGS;
