@@ -665,7 +665,7 @@
 	</URLTest>
 	<URLTest id="url_111">
 		<TestDescription>URL test for metapress.com</TestDescription>
-		<URL>http://www.metapress.com/content/d18n477648411447/?p=796894ff484e4c518d5e5a2b6aaae1f6&amp;pi=0</URL>
+		<URL>http://www.metapress.com/content/718t4p3m1380140t/</URL>
 		<BibFile>MetapressScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.metapress.MetapressScraper</Scraper>
 	</URLTest>
