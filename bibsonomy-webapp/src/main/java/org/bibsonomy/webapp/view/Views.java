@@ -508,7 +508,7 @@ public enum Views implements View {
 	/**
 	 * EndNote (RIS) output
 	 */
-	ENDNOTE("export/bibtex/endnote"),
+	ENDNOTE("endnoteExport"),
 
 	/**
 	 * burst output for publications

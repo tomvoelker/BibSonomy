@@ -27,6 +27,8 @@
 			</map>
 		</property>
 	</bean>
+	
+	<bean id="endnoteExport" class="org.bibsonomy.webapp.view.EndnoteView"/>
 
 	<!-- renders the available export layouts as JSON -->	
 	<bean id="exportLayouts" class="org.bibsonomy.webapp.view.ExportLayoutView"/>

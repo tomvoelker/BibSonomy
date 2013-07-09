@@ -11,9 +11,7 @@ import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -29,6 +27,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.EndnoteUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -52,39 +51,6 @@ import org.springframework.format.datetime.DateFormatter;
  */
 public class Functions  {
 	private static final Log log = LogFactory.getLog(Functions.class);
-	
-	private static final Map<String, String> RIS_ENTRY_TYPE_MAP = new HashMap<String, String>();
-	static {
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.ARTICLE, "Journal Article");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.BOOK, "Book");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.BOOKLET, "Book");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.INBOOK, "Book Section");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.INCOLLECTION, "Book Section");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.INPROCEEDINGS, "Conference Paper");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.MASTERS_THESIS, "Thesis");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.PHD_THESIS, "Thesis");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.PROCEEDINGS, "Conference Proceedings");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.TECH_REPORT, "Report");
-		RIS_ENTRY_TYPE_MAP.put(BibTexUtils.UNPUBLISHED, "Unpublished Work");
-	}
-	/**
-	 * mapping of BibTeX entry types to SWRC entry types
-	 */
-	private static final Map<String, String> SWRC_ENTRY_TYPE_MAP = new HashMap<String, String>();
-	static {
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.ARTICLE, "Article");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.BOOK, "Book");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.BOOKLET, "Booklet");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.INBOOK, "InBook");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.INCOLLECTION, "InCollection");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.INPROCEEDINGS, "InProceedings");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.MANUAL, "Manual");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.MASTERS_THESIS, "MasterThesis");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.PHD_THESIS, "PhDThesis");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.PROCEEDINGS, "Proceedings");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.TECH_REPORT, "TechnicalReport");
-		SWRC_ENTRY_TYPE_MAP.put(BibTexUtils.UNPUBLISHED, "Unpublished");
-	}
 	
 	// contains special characters, symbols, etc...
 	private static final Properties chars = new Properties();
@@ -400,10 +366,7 @@ public class Functions  {
 	 * @return the SWRC entry type
 	 */
 	public static String getSWRCEntryType(final String bibtexEntryType) {
-		if (SWRC_ENTRY_TYPE_MAP.containsKey(bibtexEntryType)) {
-			return SWRC_ENTRY_TYPE_MAP.get(bibtexEntryType);
-		}
-		return "Misc";
+		return EndnoteUtils.getSWRCEntryType(bibtexEntryType);
 	}
 
 	/**
@@ -413,10 +376,7 @@ public class Functions  {
 	 * @return The RIS entry type
 	 */
 	public static String getRISEntryType(final String bibtexEntryType) {
-		if (RIS_ENTRY_TYPE_MAP.containsKey(bibtexEntryType)) {
-			return RIS_ENTRY_TYPE_MAP.get(bibtexEntryType);
-		}
-		return "Generic";
+		return EndnoteUtils.getRISEntryType(bibtexEntryType);
 	}
 
 
