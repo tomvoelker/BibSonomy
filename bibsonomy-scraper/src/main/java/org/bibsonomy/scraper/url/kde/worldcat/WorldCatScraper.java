@@ -171,7 +171,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		String value = "";
 		
 		for(String entry : entries) {
-			key = entry.split(" - ")[0].trim();
+			key = entry.split(KEY_VALUE_SEPARATOR)[0].trim();
 			
 			//check wether the field is the main author's one
 			if(key.equals("A1") || key.equals("AU")) {
