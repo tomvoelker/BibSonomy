@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -50,6 +52,7 @@ import org.bibsonomy.util.id.DOIUtils;
  *
  */
 public class ScienceDirectScraper extends AbstractUrlScraper {
+	private final Log log = LogFactory.getLog(ScienceDirectScraper.class);
 	private static final String SITE_NAME = "ScienceDirect";
 
 	private static final String SITE_URL = "http://www.sciencedirect.com/";
@@ -95,22 +98,20 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 		// This Scraper might handle the specified url
 		try {
 			String downloadQuery = null;
-
 			// article page
 			final URL url = sc.getUrl();
 			if (url.getPath().startsWith("/science")) {
-				if(url.getQuery() == null || url.getQuery().contains("_ob=ArticleURL")) {
+				if((url.getQuery() != null) && url.getQuery().contains("_ob=DownloadURL")){
+					downloadQuery = url.toString().substring("http://www.sciencedirect.com".length());
+				}else {
 					final String pageContent = sc.getPageContent();
-
 					// search link to download page (there is only one download link on page)
 					final Matcher matcherDownload = patternDownload.matcher(pageContent);
 					if (matcherDownload.find()) {
 						downloadQuery = matcherDownload.group(1);
-					}
-					// TODO: handle download link not found
-					// download page
-				} else if(url.getQuery().contains("_ob=DownloadURL")) 
-					downloadQuery = url.toString();
+					}else
+						log.error("can't parse download query");
+				}
 			} else
 				throw new  PageNotSupportedException("This page is currently not supported.");
 
@@ -233,6 +234,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	}
 
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
@@ -244,11 +246,13 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	}
 
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
