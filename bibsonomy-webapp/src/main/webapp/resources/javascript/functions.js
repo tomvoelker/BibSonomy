@@ -1265,7 +1265,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
 									tags.push({value: name, 
 											   label: name,
-											   count: 9007199254740992});
+											   count: Number.MAX_VALUE});
 								}								
 							});
 
@@ -1273,7 +1273,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 								if( $.grep(tags, function(t){ return t.value == name; }).length == 0) {
 									tags.push({value: name, 
 											   label: name,
-											   count: 9007199254740992});
+											   count: Number.MAX_VALUE});
 								}
 							});
 								
@@ -1306,7 +1306,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			 * Append for each tag the count of usage
 			 */
 			$.each(ui.content, function(index, value) {
-				if(value.count != 9007199254740992) {
+				if(value.count != Number.MAX_VALUE) {
 					value.label = value.value + " (" + value.count + ")";
 				} else {
 					value.label = value.value;
