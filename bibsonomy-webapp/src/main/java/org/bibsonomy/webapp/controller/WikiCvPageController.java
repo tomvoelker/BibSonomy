@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -36,7 +37,12 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	@Override
 	public View workOn(final CvPageViewCommand command) {
 		log.debug("cvPageController accessed.");
-
+		
+		//prevent showing cv pages of deleted users
+		if(this.logic.getUserDetails(command.getRequestedUser()).getRole() == Role.DELETED) {
+			return Views.ERROR404;
+		}
+		
 		try {
 			final String requestedUser = command.getRequestedUser();
 			final Group requestedGroup = this.logic.getGroupDetails(requestedUser);

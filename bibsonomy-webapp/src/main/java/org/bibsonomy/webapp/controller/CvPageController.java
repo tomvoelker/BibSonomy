@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collections;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -29,6 +30,12 @@ public class CvPageController extends ResourceListController implements Minimali
 	 */
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
+		
+		//prevent showing cv pages of deleted users
+		if(this.logic.getUserDetails(command.getRequestedUser()).getRole() == Role.DELETED) {
+			return Views.ERROR404;
+		}
+		
 		command.setPageTitle("Curriculum vitae");
 		
 		final String requUser = command.getRequestedUser();
