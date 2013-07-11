@@ -4,15 +4,8 @@
 # This script generates the counters for the "tagtag" table of BibSonomy.
 # This special version reads from the SLAVE and writes to the MASTER.
 #
-# Expected things:
-#   There exists a user "batch" on both databases which has the same
-#   password on both databases.
-#   On the SLAVE: GRANT SELECT ON bibsonomy.* TO 'batch'@'%' IDENTIFIED BY '';
-#   On the MASTER: GRANT INSERT,UPDATE,SELECT ON bibsonomy.* TO 'batch'@'%' IDENTIFIED BY '';
-# Command line arguments:
-#   database - name of the database (same for SLAVE and MASTER)
 # Environment variables:
-#   MASTER_PASS, MASTER_HOST, etc.
+#   SLAVE and MASTER config variables set @see Common.pm
 #
 # Changes:
 #   2011-06-28 (rja)
