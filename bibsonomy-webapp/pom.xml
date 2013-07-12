@@ -284,7 +284,7 @@
 			</activation>
 			<properties>
 				<maven.tomcat.server>tomcat_puma_sandbox</maven.tomcat.server>
-				<maven.tomcat.url>http://p209.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+				<maven.tomcat.url>http://sandbox.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
 			</properties>
 		</profile>
 		<profile>
@@ -301,7 +301,7 @@
 			</activation>
 			<properties>
 				<maven.tomcat.server>tomcat_puma_ks_dev</maven.tomcat.server>
-				<maven.tomcat.url>http://p211.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+				<maven.tomcat.url>http://ks-dev.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
 			</properties>
 		</profile>
 	</profiles>
