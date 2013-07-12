@@ -53,11 +53,11 @@ public class ACSScraper extends AbstractUrlScraper {
 	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String ACS_HOST_NAME  = "http://pubs.acs.org";
-	private static final String ACS_PATH = "/doi/abs/";
+	private static final String ACS_PATH = "/doi/(abs|pdf|full|pdfplus)/";
 	private static final String ACS_BIBTEX_PATH = "/action/downloadCitation";
 	private static final String ACS_BIBTEX_PARAMS = "?include=abs&format=bibtex&doi=";
 
-	private static Pattern PATTERN_GETTING_DOI_PATH = Pattern.compile("doi/abs/([^\\?]*)");
+	private static Pattern PATTERN_GETTING_DOI_PATH = Pattern.compile("doi/(abs|pdf|full|pdfplus)/([^\\?]*)");
 	private static Pattern PATTERN_GETTING_DOI_QUERY = Pattern.compile("doi=([^\\&]*)");
 	
 	private static final Pattern pathPatternAbstract = Pattern.compile(ACS_PATH + ".*");
@@ -101,7 +101,7 @@ public class ACSScraper extends AbstractUrlScraper {
 			String doi = null;
 			Matcher matcherPath = PATTERN_GETTING_DOI_PATH.matcher(citationURL.toString());
 			if(matcherPath.find())
-				doi = matcherPath.group(1);
+				doi = matcherPath.group(2);
 			else{
 				Matcher matcherQuery = PATTERN_GETTING_DOI_QUERY.matcher(citationURL.toString());
 				if(matcherQuery.find())
