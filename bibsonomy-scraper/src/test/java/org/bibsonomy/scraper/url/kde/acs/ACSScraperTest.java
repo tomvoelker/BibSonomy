@@ -55,5 +55,14 @@ public class ACSScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_64"));
 	}
+	/**
+	 * starts URL test with id url_262
+	 */
+	@Test
+	@Ignore
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_262"));
+	}
 	
 }
