@@ -4,8 +4,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 						http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
-	<bean id="propertyConfigurer"  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    	<property name="locations" value="classpath:lucene-test.properties" />
+	<bean id="propertyConfigurerLucene" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="classpath:lucene-test.properties" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 	
 	<!-- TODO: move to bibsonomy-lucene-context as soon as we are not using jndi -->
@@ -15,6 +16,8 @@
 		<property name="username" value="${database.lucene.username}" />
 		<property name="password" value="${database.lucene.password}" />
 	</bean>
+	
+	<import resource="classpath:TestDatabaseBaseContext.xml" />
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-lucene-context.xml" />
 </beans>
