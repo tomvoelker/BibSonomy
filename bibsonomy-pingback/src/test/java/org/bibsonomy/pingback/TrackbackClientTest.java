@@ -1,6 +1,8 @@
 package org.bibsonomy.pingback;
 
+import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.net.UnknownHostException;
@@ -83,7 +85,7 @@ public class TrackbackClientTest extends AbstractClientTest {
 			trackbackClient.sendPingback("http://www.bibsonomy.org/article", link);
 			fail("expected " + PingbackException.class.getSimpleName());
 		} catch (final PingbackException e) {
-			assertEquals("request error: " + UnknownHostException.class.getName() + ": www.kde.kde.cs.uni-kassel.de", e.getMessage());
+			assertThat(e.getMessage(), startsWith("request error: " + UnknownHostException.class.getName() + ": www.kde.kde.cs.uni-kassel.de"));
 			assertEquals(PingbackClient.UPSTREAM_PROBLEM, e.getFaultCode());
 		}
 	}
