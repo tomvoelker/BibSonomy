@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.view.urlbuilder;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.services.URLGenerator;
@@ -24,7 +26,9 @@ public class VuFindURLGenerator extends URLGenerator {
 	@Override
 	public void setBibtexMiscUrls(final Post<BibTex> post) {
 		if (pumaUrlMiscFieldName != null) {
-			post.getResource().addMiscField(pumaUrlMiscFieldName, getPublicationUrl(post.getResource(), post.getUser()).toString());
+			if (present(post.getUser()) && present(post.getUser().getName())) {
+				post.getResource().addMiscField(pumaUrlMiscFieldName, getPublicationUrl(post.getResource(), post.getUser()).toString());
+			}
 		}
 		if (vuFindUrlMiscFieldName != null) {
 			final String uniqueId = post.getResource().getMiscField("uniqueid");
