@@ -1600,12 +1600,10 @@
 		<BibFile>DCScraperTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
-	<!-- XXX: where is this file???
 	<URLTest id="url_262">
 		<TestDescription>ACS Publications Url 3</TestDescription>
 		<URL>http://pubs.acs.org/doi/pdf/10.1021/nn103618d</URL>
 		<BibFile>ACSScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
 	</URLTest>
-	 -->
 </test:Tests>
