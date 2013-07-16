@@ -172,7 +172,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void createGroup() {
 		final Group newGroup = new Group();
-		newGroup.setName("testuser1");
+		newGroup.setName("testuser1".toUpperCase());
 		groupDb.createGroup(newGroup, this.dbSession);
 		final Group newGroupTest = groupDb.getGroupMembers("testuser1", "testuser1", this.dbSession);
 		assertEquals("testuser1", newGroupTest.getName());
@@ -260,7 +260,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// can't add user to a group he's already a member of
 		for (final String username : new String[] { "testuser1", "testuser2" }) {
 			try {
-				groupDb.addUserToGroup(testGroup, username, this.dbSession);
+				groupDb.addUserToGroup(testGroup.toUpperCase(), username, this.dbSession);
 				fail("Should throw an exception");
 			} catch (final RuntimeException ignored) {
 			}

@@ -92,20 +92,20 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (!present(groupname)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Groupname isn't present");
 		}
-
-		if ("public".equals(groupname)) {
+		final String normedGroupName = this.getNormedGroupName(groupname);
+		if ("public".equals(normedGroupName)) {
 			return GroupUtils.getPublicGroup();
 		}
 
-		if ("private".equals(groupname)) {
+		if ("private".equals(normedGroupName)) {
 			return GroupUtils.getPrivateGroup();
 		}
 
-		if ("friends".equals(groupname)) {
+		if ("friends".equals(normedGroupName)) {
 			return GroupUtils.getFriendsGroup();
 		}
 
-		return this.queryForObject("getGroupByName", groupname, Group.class, session);
+		return this.queryForObject("getGroupByName", normedGroupName, Group.class, session);
 	}
 
 	/**
@@ -180,9 +180,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			//$FALL-THROUGH$
 		case HIDDEN:
 			// only a group owner may always see the group members
-			if ( !groupname.equalsIgnoreCase(authUser) ) {
-				group.setUsers(Collections.<User> emptyList());
+			if (!groupname.equalsIgnoreCase(authUser)) {
+				group.setUsers(Collections.<User>emptyList());
 			}
+			break;
+		case PUBLIC:
+			// ignore
 			break;
 		}
 
@@ -327,7 +330,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			if (specialGroup != null) {
 				return specialGroup.getId();
 			}
-		} catch (IllegalArgumentException ignore) {
+		} catch (final IllegalArgumentException ignore) {
 			// do nothing - this simply means that the given group is not a special group
 		}
 
@@ -358,23 +361,42 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 */
 	public void createGroup(final Group group, final DBSession session) {
-		// get the user with that name ...
-		final User groupUser = this.getUserDb().getUserDetails(group.getName(), session);
-		// check if a user exists with that name
+		final String groupName = group.getName();
+		
+		final String normedGroupName = getNormedGroupName(groupName);
+		group.setName(normedGroupName);
+		
+		/*
+		 * check if a user exists with that name
+		 * currently every group also has a corresponding user in the system
+		 */
+		final User groupUser = this.getUserDb().getUserDetails(normedGroupName, session);
 		if (!present(groupUser.getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is no user with this name - cannot create a group with this name.");
 		}
-		// check if the user is a spammer
+		/*
+		 * check if the user is a spammer
+		 * if the user is a spammer and we add a group with that name
+		 * strange things happen
+		 */
 		if (groupUser.isSpammer()) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user is flagged as spammer - cannot create a group with this name");
 		}
 
 		// check if a group already exists with that name
-		if (present(this.getGroupByName(group.getName(), session))) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is already a group with this name ('" + group.getName() + "').");
+		if (present(this.getGroupByName(normedGroupName, session))) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is already a group with this name ('" + groupName + "').");
 		}
 
 		this.insertGroup(group, session);
+	}
+
+	private String getNormedGroupName(final String groupName) {
+		if (!present(groupName)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No group name specified.");
+		}
+		
+		return groupName.toLowerCase();
 	}
 
 	/**
@@ -495,12 +517,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public void addUserToGroup(final String groupname, final String username, final DBSession session) {
 		// check if a user exists with that name
 		final User user = this.getUserDb().getUserDetails(username, session);
-		if (user.isSpammer()) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user '" + username + "' is a spammer");
-		}
 		if (user.getName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
 		}
+		if (user.isSpammer()) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user '" + username + "' is a spammer");
+		}
+		
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
@@ -508,7 +531,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			throw new RuntimeException(); // never happens but calms down eclipse 
 		}
 		// make sure that the user isn't a member of the group
-		if (this.isUserInGroup(username, groupname, session)) {
+		if (this.isUserInGroup(username, group.getName(), session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
 		}
 		// XXX: the next line is semantically incorrect
@@ -548,7 +571,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param groupToUpdate 
 	 * @param session
 	 */
-	public void updateGroupSettings (Group groupToUpdate, final DBSession session) {
+	public void updateGroupSettings(Group groupToUpdate, final DBSession session) {
 		if(!present(groupToUpdate)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");
 		}
