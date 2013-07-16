@@ -108,7 +108,8 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER);
 			} catch (final Exception ex) {
 				// if a user can't be added to a group, this exception is thrown
-				this.errors.reject("settings.group.error.addUserToGroupFailed");
+				this.errors.reject("settings.group.error.addUserToGroupFailed", new Object[]{command.getAddUserToGroup(), groupToUpdate.getName()},
+						"The User {0} couldn't be added to the Group {1}.");
 			}
 		} else {			
 			try {
