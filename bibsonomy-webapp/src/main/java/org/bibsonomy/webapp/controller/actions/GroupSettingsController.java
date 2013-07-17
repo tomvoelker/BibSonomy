@@ -53,16 +53,16 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		final User loginUser = context.getLoginUser();
 		command.setUser(loginUser);
-				
+		
 		// used to set the user specific value of maxCount/minFreq 
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 		
-		// check whether the user is a group		
-		if (UserUtils.userIsGroup(loginUser))  {
+		// check whether the user is a group
+		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 			// show sync tab only for non-spammers
-			command.showSyncTab(!loginUser.isSpammer());					
+			command.showSyncTab(!loginUser.isSpammer());
 		} else {
 			// if he is not, he will be forwarded to the first settings tab
 			command.showGroupTab(false);
@@ -71,7 +71,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 			this.errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
 		}
-			
+		
 		/*
 		 * check the ckey
 		 */
@@ -96,32 +96,36 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 			return Views.SETTINGSPAGE;
 		}
 		
+		final String groupName = groupToUpdate.getName();
 		// update the bean
 		groupToUpdate.setPrivlevel(priv);
 		groupToUpdate.setSharedDocuments(sharedDocs);
 		
 		// do ADD_NEW_USER on addUserToGroup != null
-		if(present(command.getAddUserToGroup())) {
+		final String username = command.getAddUserToGroup();
+		if (present(username)) {
 			try {
 				// since now only one user can be added to a group at once
-				groupToUpdate.setUsers(Collections.singletonList(new User(command.getAddUserToGroup())));
+				groupToUpdate.setUsers(Collections.singletonList(new User(username)));
 				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER);
 			} catch (final Exception ex) {
+				log.error("error while adding user '" + username + "' to group '" + groupName + "'", ex);
 				// if a user can't be added to a group, this exception is thrown
-				this.errors.reject("settings.group.error.addUserToGroupFailed", new Object[]{command.getAddUserToGroup(), groupToUpdate.getName()},
+				this.errors.reject("settings.group.error.addUserToGroupFailed", new Object[]{username, groupName},
 						"The User {0} couldn't be added to the Group {1}.");
 			}
-		} else {			
+		} else {
 			try {
 				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS);
 			} catch (final Exception ex) {
+				log.error("error while updating settings for group '" + groupName + "'", ex);
 				// TODO: what exceptions can be thrown?!
 			}
 		}
 		/*
 		 * we have to re-fetch the group details (especially members) here
 		 */
-		groupToUpdate.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupToUpdate.getName(), null, null, null, null, null, 0, 1000));
+		groupToUpdate.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));
 		command.setGroup(groupToUpdate);
 		/*
 		 * choose correct tab and return
