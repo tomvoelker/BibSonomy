@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 ##############
 #
-# This script fetches the new public non-spammer bookmarks of the last hour
-# from the slave datebase, creates a text file in the format
+# This script fetches the new public non-spammer bookmarks of the last
+# 6 minutes from the master datebase, creates a text file in the format
 #
 #   HASH|#|URL
 #
@@ -12,6 +12,8 @@
 # Changes:
 #   2013-04-02: (dzo)
 #   - fixed file encoding (urls may contain umlauts)
+#   2012-11-15: (bse)
+#   - changed interval from 1h to 6min
 #   2012-08-03: (dbe)
 #   - initial version
 #
@@ -22,7 +24,7 @@
 #######################################################
 use strict;
 use POSIX;
-use Common qw(debug get_slave check_running);
+use Common qw(debug get_master check_running);
 
 #
 # don't run two instances of this script simultaneously
@@ -41,14 +43,14 @@ my $delim = '|#|';
 #######################################################
 
 #
-# connect to slave
+# connect to database
 #
-my $slave = get_slave();
+my $db = get_master();
 
 #
-# prepare statements to get bookmarks of last hour 
+# prepare statements to get bookmarks of 6 min
 #
-my $stm_select_recent_urls = $slave->prepare("SELECT U.book_url_hash, U.book_url FROM bookmark B, urls U WHERE B.date >= DATE_SUB(NOW(),INTERVAL 1 HOUR) AND B.book_url_hash=U.book_url_hash AND B.group=0");
+my $stm_select_recent_urls = $db->prepare("SELECT U.book_url_hash, U.book_url FROM bookmark B, urls U WHERE B.date >= DATE_SUB(NOW(),INTERVAL 6 MINUTE) AND B.book_url_hash=U.book_url_hash AND B.group=0");
 $stm_select_recent_urls->{"mysql_use_result"} = 1;
 
 #
@@ -66,7 +68,7 @@ while (my @row = $stm_select_recent_urls->fetchrow_array ) {
     print OUT $hash . $delim . $url . "\n";
 }
 close(OUT);
-$slave->disconnect;
+$db->disconnect;
 
 #
 # scp the file to webthumb, if new urls were added
