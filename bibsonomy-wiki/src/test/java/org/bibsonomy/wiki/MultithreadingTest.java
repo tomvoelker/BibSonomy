@@ -1,6 +1,7 @@
 package org.bibsonomy.wiki;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.wiki.CVWikiModel;
@@ -22,7 +23,7 @@ public class MultithreadingTest extends Thread {
 	}
 	
 	public void run(String username, String realname) { 
-		CVWikiModel model = new CVWikiModel();
+		CVWikiModel model = new CVWikiModel(Locale.ENGLISH);
 		User user = new User(username);
 		user.setRealname(realname);
 		model.setRequestedUser(user);
