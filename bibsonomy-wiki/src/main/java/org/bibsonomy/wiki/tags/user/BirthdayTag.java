@@ -31,6 +31,8 @@ public class BirthdayTag extends UserTag {
 	@Override
 	protected String renderUserTag() {
 		final Date birthday = this.requestedUser.getBirthday();
+		// TODO: Insert something small indicating the user's birthday
+		// if it coincides with the present day :)
 		if (present(birthday)) {
 			return "<div id='birthday'>" + this.renderString(simpleDate.format(birthday)) + "</div>";
 		}

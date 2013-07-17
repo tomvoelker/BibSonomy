@@ -1,7 +1,5 @@
 package org.bibsonomy.wiki;
 
-import info.bliki.htmlcleaner.TagNode;
-import info.bliki.wiki.filter.Encoder;
 import info.bliki.wiki.filter.WikipediaParser;
 import info.bliki.wiki.model.AbstractWikiModel;
 import info.bliki.wiki.model.Configuration;
@@ -11,6 +9,7 @@ import info.bliki.wiki.tags.WPTag;
 import info.bliki.wiki.tags.util.TagStack;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Set;
 
 import org.bibsonomy.model.Group;
@@ -21,7 +20,7 @@ import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
 import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
-//import org.bibsonomy.wiki.tags.shared.DesignTag;
+import org.bibsonomy.wiki.tags.shared.DesignTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;
 import org.bibsonomy.wiki.tags.shared.resource.BookmarkListTag;
@@ -33,6 +32,7 @@ import org.bibsonomy.wiki.tags.user.InterestsTag;
 import org.bibsonomy.wiki.tags.user.LocationTag;
 import org.bibsonomy.wiki.tags.user.ProfessionTag;
 import org.bibsonomy.wiki.tags.user.RegDateTag;
+import org.springframework.context.MessageSource;
 
 /**
  * @author philipp
@@ -60,7 +60,7 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new RegDateTag());
 		register(new BookmarkListTag());
 		register(new PublicationListTag());
-//		register(new DesignTag());
+		register(new DesignTag());
 		
 	}
 
@@ -71,18 +71,19 @@ public class CVWikiModel extends AbstractWikiModel {
 	private User requestedUser;
 	private Group requestedGroup;
 	private LogicInterface logic;
+	private MessageSource messageSource;
 
 	private LayoutRenderer<Layout> layoutRenderer;
 
 	/**
 	 * Default Constructor
 	 */
-	public CVWikiModel() {
-		super(Configuration.DEFAULT_CONFIGURATION, null, null);
+	public CVWikiModel(final Locale locale) {
+		super(Configuration.DEFAULT_CONFIGURATION, locale, null, null);
 	}
 
 	/*
-	 * defines the look and feel of the section headlines. can be changed by the span class mw-headline.
+	 * defines the look and feel of the section headlines. can be changed by the class mw-headline.
 	 * 
 	 * @param rawHead a pure title from the wiki syntax, without the enclosing =
 	 * @param headLevel the number of =, indicating the position in the section hierarchy of this title
@@ -93,71 +94,16 @@ public class CVWikiModel extends AbstractWikiModel {
 	 * int, boolean, int, int, int)
 	 */
 	@Override
-	public ITableOfContent appendHead(final String rawHead, final int headLevel, final boolean noToC, final int headCounter, final int startPosition, final int endPosition) {
-		// In rawHead steht eh immer nur genau ein Section title, man kann von diesem Stack also einfach nur
-		// das erste (weil einzige) Element nehmen.
-		// * Der noToC-Parameter ist grundsätzlich auf "true" gesetzt, da wir keine ToC wollen. (Warum eigetnlich nicht?)
+	public ITableOfContent appendHead(final String rawHead, final int headLevel,
+			final boolean noToC, final int headCounter, final int startPosition, final int endPosition) {
 		final TagStack localStack = WikipediaParser.parseRecursive(rawHead.trim(), this, true, true);
 
+		// This only generates a HTML node 
 		final WPTag headTagNode = new WPTag("h" + headLevel);
-//		final TagNode spanTagNode = new TagNode("span");
-		// Example:
-		// <h2><span class="mw-headline" id="Header_level_2">Header level
-		// 2</span></h2>
-//		spanTagNode.addChild(localStack.getNodeList().get(0));
-//		headTagNode.addChild(spanTagNode);
 		headTagNode.addChild(localStack.getNodeList().get(0));
 		
-		// Hier steht nur der tatsaechliche Content den spanTagNode.
-		/*
-		 * FIXME: Was passiert, wenn man als Titel einer Section ein HTML-Tag eingibt? Das macht doch bestimmt was kaputt!
-		 * Ja, da passiert einiges. Ist ein pures HTML-Tag im Titel, so wird das entfernt und nur der Inhalt dieses Tags zurueckgegeben.
-		 * Ist Text mit einem HTML-Tag im Titel, so wird das HTML-Tag einfach entfernt.
-		 * Ist da irgendein non-HTML-Tag (also bspw. <ba>blub</ba>), so bleibt einfach alles stehen, das Tag wird also NICHT entfernt!
-		 */
-		final String tocHead = headTagNode.getBodyString();
-		// tocHead wird halt in HTML-Form gebracht, nichts besonderes hier. Leerzeichen werden durch Unterstriche ersetzt, usw.
-		String anchor = Encoder.encodeDotUrl(tocHead);
+		headTagNode.addAttribute("class", "mw-headline level" + headLevel, true);
 		
-//		// Warum geht das nicht? Bzw., was sollte da passieren?
-//		this.createTableOfContent(!noToC);
-//		this.fTableOfContentTag.setShowToC(true);
-//		
-//		// Was ist das hier?
-//		if (!noToC && headCounter > 3) {
-//			this.fTableOfContentTag.setShowToC(true);
-//		}
-//		
-//		// Hier suchen wir ... gar nichts, da fToCSet nie befuellt wird.
-//		if (this.fToCSet.contains(anchor)) {
-//			String newAnchor = anchor;
-//			// Das ist ja wohl ein bisschen uebertrieben.
-//			for (int i = 2; i < Integer.MAX_VALUE; i++) {
-//				newAnchor = anchor + '_' + Integer.toString(i);
-//				// Warum schaut man hier nicht einfach nach, ob eine bestimmte Zahl schon vorhanden ist
-//				// anstelle diese daemliche Schleife durchlaufen zu lassen? Werden die irgendwo
-//				// wieder entfernt?!
-//				if (!this.fToCSet.contains(newAnchor)) {
-//					break;
-//				}
-//			}
-//			anchor = newAnchor;
-//		}
-
-		// Das erstellt einen Link, um diese Section editieren zu koennen. Funktioniert aber irgendwie gar nicht.
-		// Abgesehen davon: Wozu?! Im Moment bringt uns das rein gar nichts.
-//		if (this.getRecursionLevel() == 1) {
-//			this.buildEditLinkUrl(this.fSectionCounter++);
-//		}
-
-		// add attributes to the tags
-//		spanTagNode.addAttribute("class", "mw-headline", true);
-		headTagNode.addAttribute("class", "mw-headline", true);
-		
-		// FIXME: Same title --> double ids
-//		spanTagNode.addAttribute("id", anchor, true);
-
-		// add the generated heading node to the local stack for later processing
 		this.append(headTagNode);
 		return this.fTableOfContentTag;
 	}
@@ -174,7 +120,6 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	@Override
 	public void parseInternalImageLink(final String imageNamespace, final String rawImageLink) {
-		// nothing to do
 	}
 
 	/**
@@ -239,6 +184,14 @@ public class CVWikiModel extends AbstractWikiModel {
 	 */
 	public void setRequestedGroup(final Group requestedGroup) {
 		this.requestedGroup = requestedGroup;
+	}
+
+	public MessageSource getMessageSource() {
+		return messageSource;
+	}
+
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 
 }

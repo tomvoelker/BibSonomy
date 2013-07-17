@@ -28,6 +28,8 @@ public class NameTag extends SharedTag {
 
 	@Override
 	protected String renderSharedTag() {
+		// TODO: Include parameter for enabling or disabling link to user page.
+		
 		final String name = this.getRequestedRealName();
 		
 		if (present(name)) {

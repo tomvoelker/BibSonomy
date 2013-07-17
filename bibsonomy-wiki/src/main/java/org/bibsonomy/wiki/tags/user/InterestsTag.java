@@ -1,5 +1,6 @@
 package org.bibsonomy.wiki.tags.user;
 
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.wiki.tags.UserTag;
 
 /**
@@ -21,6 +22,6 @@ public class InterestsTag extends UserTag {
 	@Override
 	protected String renderUserTag() {
 		final String interests = this.renderString(this.requestedUser.getInterests());
-		return interests == null ? null : "<div id='interests'>" + interests + "</div>";
+		return ValidationUtils.present(interests) ? "" : "<div id='interests'>" + interests + "</div>";
 	}
 }

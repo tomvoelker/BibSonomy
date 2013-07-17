@@ -1,6 +1,7 @@
 package org.bibsonomy.wiki.tags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import info.bliki.Messages;
 import info.bliki.htmlcleaner.Utils;
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
@@ -8,6 +9,9 @@ import info.bliki.wiki.tags.HTMLTag;
 import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import java.io.IOException;
+import java.util.Locale;
+
+import javax.management.RuntimeErrorException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +21,9 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.CVWikiModel;
+
+import org.springframework.context.MessageSource;
+
 
 /**
  * @author philipp
@@ -29,7 +36,9 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 	protected User requestedUser;
 	protected Group requestedGroup;
 	protected LayoutRenderer<Layout> layoutRenderer;
-
+	protected MessageSource messageSource;
+	protected Locale locale;
+	
 	/**
 	 * 
 	 * @param name the name of the tag
@@ -47,14 +56,17 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 	public void renderHTML(final ITextConverter converter, final Appendable buf, final IWikiModel model) throws IOException {
 		final CVWikiModel wiki = (CVWikiModel) model;
 		this.logic = wiki.getLogic();
+		
 		this.requestedUser = wiki.getRequestedUser();
 		this.requestedGroup = wiki.getRequestedGroup();
 		this.layoutRenderer = wiki.getLayoutRenderer();
+		this.messageSource = wiki.getMessageSource();
+		this.locale = wiki.getLocale(); 
 		buf.append(this.render());
 	}
 	
 	/**
-	 * easy peasy. Render a string.
+	 * Render a string by escaping XML Chars. Otherwise just return an empty string.
 	 * @param toRender soem kind of string.
 	 * @return the rendered string or an empty string, if toRender was empty or null.
 	 */
@@ -65,16 +77,6 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 		return "";
 	}
 	
-	protected String renderParagraph(final String toRender) {
-		final StringBuilder renderedHTML = new StringBuilder();
-		if (present(toRender)) {
-			renderedHTML.append("<p class='align'>");
-			renderedHTML.append(Utils.escapeXmlChars(toRender));
-			renderedHTML.append("</p>");
-		}
-		return renderedHTML.toString();
-	}
-
 	/*
 	 * TODO comment
 	 */
@@ -82,16 +84,16 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 		try{
 			final String tagData = this.renderSafe();
 			if (tagData == null)
-				return this.getName() + " is not visible to you.";
+				return this.messageSource.getMessage("cv.error.common.notVisible", new Object[]{this.getName()}, this.locale);
 			else if (tagData.trim().length() == 0)
-				return "No data entered for " + this.getName() + ".";
+				return this.messageSource.getMessage("cv.error.common.noData", new Object[]{this.getName()}, this.locale);
 			else
 				return tagData;
 			
 			
-		}catch (final Exception e) {
+		} catch (final Exception e) {
 			log.fatal("Error while rendering the tag: " + this.name, e);
-			return this.getName() + " has caused an error:\n" + e.toString();
+			return this.messageSource.getMessage("cv.error.common.stacktrace", new Object[]{this.getName(), e.toString(), e}, this.locale);
 		}
 	}
 	

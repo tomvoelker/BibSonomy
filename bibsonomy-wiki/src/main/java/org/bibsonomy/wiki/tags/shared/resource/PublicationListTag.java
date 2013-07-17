@@ -48,6 +48,14 @@ public class PublicationListTag extends SharedTag {
 	private static final String TAG_NAME = "publications";
 
 	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(TAGS, LAYOUT, KEYS, ORDER, QUANTITY, DROPDOWN, FROMYEAR, TOYEAR));
+	
+	// TODO: Hard coding that is a bit ewww.
+	// How can I get these layouts from bibsonomy-layout?
+	private final static String HARVARD = "harvardhtml";
+	private final static String PLAIN = "plain";
+	private final static String DIN1505 = "din1505";
+	private final static String SIMPLEHTML = "simplehtml";
+	private final static Set<String> RENDERABLE_LAYOUTS = new HashSet<String>(Arrays.asList(PLAIN, HARVARD, DIN1505, SIMPLEHTML));
 
 	/**
 	 * sets the tag name
@@ -56,8 +64,13 @@ public class PublicationListTag extends SharedTag {
 		super(TAG_NAME);
 	}
 
-	private boolean checkSort(final Map<String, String> tagAtttributes) {
-		return ALLOWED_SORTPAGE_JABREF_LAYOUTS.contains(tagAtttributes.get(KEYS)) && ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS.contains(tagAtttributes.get(ORDER)) ? true : false;
+	/**
+	 * check if the requested sorting order is valid.
+	 * @param tagAttributes HTML attributes given in the tag
+	 * @return true, if the given sorting order is valid.
+	 */
+	private boolean checkSort(final Map<String, String> tagAttributes) {
+		return ALLOWED_SORTPAGE_JABREF_LAYOUTS.contains(tagAttributes.get(KEYS)) && ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS.contains(tagAttributes.get(ORDER));
 	}
 
 	@Override
@@ -78,6 +91,8 @@ public class PublicationListTag extends SharedTag {
 							// the constant?!
 		} else {
 			tags = tagAttributes.get(TAGS);
+			// FIXME: Check if the attribute value is valid (i.e. a 
+			// space separated list of tags
 		}
 
 		final String requestedName = this.getRequestedName();
@@ -90,11 +105,16 @@ public class PublicationListTag extends SharedTag {
 	
 			// TODO: Mehrere moegliche Layouts einbinden
 			// (<a href='/export/").append(this.getGroupingEntity().toString()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>):
-			renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>Citation format: <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(this.getGroupingEntity().toString()).append("\")'>");
-			renderedHTML.append("<option value='plain'" + (selectedLayout.equals("plain") ? " selected" : "") + ">plain</option>");
-			renderedHTML.append("<option value='harvardhtml'" + (selectedLayout.equals("harvardhtml") ? " selected" : "") + ">harvardhtml</option>");
-			renderedHTML.append("<option value='din1505'" + (selectedLayout.equals("din1505") ? " selected" : "") + ">din1505</option>");
-			renderedHTML.append("<option value='simplehtml'" + (selectedLayout.equals("simplehtml") ? " selected" : "") + ">simplehtml</option>");
+			renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>" +
+					this.messageSource.getMessage("bibtex.citation_format", new Object[]{}, this.locale) +
+					": <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(this.getGroupingEntity().toString()).append("\")'>");
+			
+			for (String layout : this.RENDERABLE_LAYOUTS) {
+				renderedHTML.append("<option value='" + layout + "'" + (selectedLayout.equals(layout) ? " selected" : "") + ">" + layout + "</option>");
+//			renderedHTML.append("<option value='harvardhtml'" + (selectedLayout.equals("harvardhtml") ? " selected" : "") + ">harvardhtml</option>");
+//			renderedHTML.append("<option value='din1505'" + (selectedLayout.equals("din1505") ? " selected" : "") + ">din1505</option>");
+//			renderedHTML.append("<option value='simplehtml'" + (selectedLayout.equals("simplehtml") ? " selected" : "") + ">simplehtml</option>");
+			}
 			renderedHTML.append("</select><input id='reqUser' type='hidden' value='").append(requestedName).append("' /><input id='reqTags' type='hidden' value='").append(tags).append("' /></form></span></div>");
 		}
 		

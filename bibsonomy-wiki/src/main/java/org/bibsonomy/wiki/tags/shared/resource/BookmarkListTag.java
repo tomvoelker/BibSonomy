@@ -22,10 +22,10 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * @version $Id$
  */
 public class BookmarkListTag extends SharedTag {
-	private static final String NAME = "tags";
+	private static final String REQUESTED_TAGS = "tags";
 	private static final String TAG_NAME = "bookmarks";
 
-	private static final Set<String> ALLOWED_ATTRIBUTES = new HashSet<String>(Arrays.asList(NAME));
+	private static final Set<String> ALLOWED_ATTRIBUTES = new HashSet<String>(Arrays.asList(REQUESTED_TAGS));
 
 	/**
 	 * sets the tag
@@ -43,16 +43,16 @@ public class BookmarkListTag extends SharedTag {
 	protected String renderSharedTag() {
  		final StringBuilder renderedHTML = new StringBuilder();
  		
-        final Map<String, String> tagAtttributes = this.getAttributes();
-        final Set<String> keysSet = tagAtttributes.keySet();
+        final Map<String, String> tagAttributes = this.getAttributes();
+        final Set<String> keysSet = tagAttributes.keySet();
 
  		final String tags;
- 		if (!keysSet.contains(NAME)) {
+ 		if (!keysSet.contains(REQUESTED_TAGS)) {
  			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
  							// dependency to database module only for accessing
  							// the constant?! => Should definitely be MyOwnSystemTag.NAME and the systemTag should be moved to the model
  		} else {
- 			tags = tagAtttributes.get(NAME);
+ 			tags = tagAttributes.get(REQUESTED_TAGS);
  		}
  		final List<Post<Bookmark>> posts;
  		posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
@@ -66,11 +66,12 @@ public class BookmarkListTag extends SharedTag {
         	renderedHTML.append("<a href='" +post.getResource().getUrl() +"' rel='nofollow'>" +post.getResource().getTitle() +"</a>");
         	renderedHTML.append("</span>");
         	
-        	// Das ist prinzipiell ein cooles Merkmal! Koennte man ja auch zu den Publikationen hinzufuegen?
         	final String description = post.getDescription();
 			if (present(description)) {
         		// TODO: i18n [show details]
-        		renderedHTML.append(" <a class='hand' onclick='return toggleDetails(this)' >[details] </a>");
+        		renderedHTML.append(" <a class='hand' onclick='return toggleDetails(this)' >" +
+        				this.messageSource.getMessage("cv.options.show_details", new Object[]{this.getName()}, this.locale) +
+        				" </a>");
         		renderedHTML.append("<p class='details'>" +description +"</p>");
         	}
         	

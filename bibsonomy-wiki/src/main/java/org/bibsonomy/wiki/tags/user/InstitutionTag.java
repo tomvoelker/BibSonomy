@@ -1,5 +1,6 @@
 package org.bibsonomy.wiki.tags.user;
 
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.wiki.tags.UserTag;
 
 /**
@@ -21,7 +22,7 @@ public class InstitutionTag extends UserTag {
 	@Override
 	protected String renderUserTag() {
 		final String institution = this.renderString(this.requestedUser.getInstitution());
-		return institution == null ? null : "<div id='institution'>" + institution + "</div>";
+		return ValidationUtils.present(institution) ? "" : "<div id='institution'>" + institution + "</div>";
 	}
 
 }

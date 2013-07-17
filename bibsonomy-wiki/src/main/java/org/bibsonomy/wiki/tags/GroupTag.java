@@ -8,7 +8,8 @@ public abstract class GroupTag extends AbstractTag {
 
 	@Override
 	protected String renderSafe() {
-		return this.requestedGroup != null  ? this.renderGroupTag() : "The tag \"" +this.getName() +"\" is only available for groups.";
+		String errorString = this.messageSource.getMessage("cv.error.group", new Object[]{this.getName()}, this.locale);
+		return this.requestedGroup != null  ? this.renderGroupTag() : errorString;
 	}
 
 	protected abstract String renderGroupTag();
