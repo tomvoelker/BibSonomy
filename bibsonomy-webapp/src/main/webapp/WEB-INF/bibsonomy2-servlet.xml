@@ -128,6 +128,10 @@
 	<bean id="wikiRenderer" class="org.bibsonomy.wiki.CVWikiModel" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer" />
+		<property name="messageSource" ref="messageSource"/>
+		<constructor-arg value="#{requestLogic.locale}">
+			
+		</constructor-arg>
 	</bean>
 	
 	<!-- 
