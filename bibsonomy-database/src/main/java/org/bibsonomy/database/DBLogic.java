@@ -39,9 +39,9 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -259,6 +259,13 @@ public class DBLogic implements LogicInterface {
 				return user;
 			}
 
+			/*
+			 * return a complete empty user, in case of a deleted user
+			 */
+			if(user.getRole() == Role.DELETED) {
+				return new User();
+			}
+			
 			/*
 			 * respect user privacy settings
 			 * clear all profile attributes if current login user isn't allowed to see the profile
@@ -709,7 +716,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ResourceMovedException, ResourceNotFoundException {
+	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ResourceMovedException, ObjectNotFoundException {
 		final DBSession session = this.openSession();
 		try {
 			return this.getPostDetails(resourceHash, userName, session);
@@ -1582,7 +1589,7 @@ public class DBLogic implements LogicInterface {
 					post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				} catch (final ResourceMovedException ex) {
 					// ignore
-				} catch (final ResourceNotFoundException ex) {
+				} catch (final ObjectNotFoundException ex) {
 					// ignore
 				}
 				if (post != null) {
@@ -1679,7 +1686,7 @@ public class DBLogic implements LogicInterface {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				} catch (final ResourceMovedException ex) {
 					// ignore
-				} catch (final ResourceNotFoundException ex) {
+				} catch (final ObjectNotFoundException ex) {
 					// ignore
 				}
 				if (post != null && post.getResource().getDocuments() != null) {
@@ -1737,7 +1744,7 @@ public class DBLogic implements LogicInterface {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				} catch (final ResourceMovedException ex) {
 					//ignore
-				} catch (final ResourceNotFoundException ex) {
+				} catch (final ObjectNotFoundException ex) {
 					// ignore
 				}
 				if (post != null) {
@@ -1791,7 +1798,7 @@ public class DBLogic implements LogicInterface {
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				} catch (final ResourceMovedException ex) {
 					//ignore
-				} catch (final ResourceNotFoundException ex) {
+				} catch (final ObjectNotFoundException ex) {
 					// ignore
 				}
 				if (post != null) {
@@ -2757,7 +2764,7 @@ public class DBLogic implements LogicInterface {
 			// verify that there exists a gold standard
 			final Post<? extends Resource> goldStandardPost = this.getPostDetails(interHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
 			if (!present(goldStandardPost)) {
-				throw new ResourceNotFoundException("To the discussion item no post could be found for interHash "+interHash+" and user "+username+".");
+				throw new ObjectNotFoundException("To the discussion item no post could be found for interHash "+interHash+" and user "+username+".");
 			}
 			/*
 			 * create the discussion item

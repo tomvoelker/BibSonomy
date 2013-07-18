@@ -15,8 +15,8 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
@@ -208,7 +208,7 @@ public class SwordService {
 				log.info("MalformedURLException! " + e.getMessage());
 			} catch (final IOException e) {
 				log.info("IOException! ", e);
-			} catch (final ResourceNotFoundException e) {
+			} catch (final ObjectNotFoundException e) {
 				log.warn("ResourceNotFoundException! SwordService-retrievePost");
 			}
 		}
@@ -326,7 +326,7 @@ public class SwordService {
 				// get documents for post
 				return ((BibTex) post.getResource()).getDocuments();
 			}			
-		} catch (final ResourceNotFoundException e) {
+		} catch (final ObjectNotFoundException e) {
 			log.warn("ResourceNotFoundException! SwordService-retrieveDocumentsFromDatabase");
 		} catch (final ResourceMovedException e) {
 			log.warn("ResourceMovedException! SwordService-retrieveDocumentsFromDatabase");

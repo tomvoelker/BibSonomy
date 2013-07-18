@@ -24,8 +24,8 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -1083,7 +1083,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @see org.bibsonomy.database.managers.CrudableContent#getPostsDetails(java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ResourceNotFoundException {
+	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
 		final List<Post<R>> list = this.getPostsByHashForUser(loginUserName, resourceHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, session);
 
 		if (list.isEmpty()) {
@@ -1515,7 +1515,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
 		} catch (final ResourceMovedException ex) {
 			// ignore
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		}
 

@@ -20,7 +20,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
@@ -225,16 +225,16 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	/**
 	 * Checks loginUser's inbox for the post with the given hash+user 
 	 * combination and returns the corresponding post.
-	 * If no such post could be found, a {@link ResourceNotFoundException} exception is thrown.
+	 * If no such post could be found, a {@link ObjectNotFoundException} exception is thrown.
 	 * 
 	 * @param loginUserName - the name of the user whose inbox should be checked
 	 * @param hash - the hash of the post we want to find
 	 * @param user - the name of the user who owns the post (!= inbox user!)
 	 * @return The post from the inbox.
-	 * @throws ResourceNotFoundException
+	 * @throws ObjectNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
-	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ResourceNotFoundException {
+	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ObjectNotFoundException {
 		/*
 		 * We can only give the name of the inbox's user and the hash to the database 
 		 * (there are no parameters available to further restrict the search to the
@@ -255,7 +255,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			}
 		}
 		
-		throw new ResourceNotFoundException(hash);
+		throw new ObjectNotFoundException(hash);
 	}	
 	
 	protected abstract void workOnCommand(final COMMAND command, final User loginUser);

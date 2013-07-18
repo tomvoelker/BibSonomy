@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
@@ -225,9 +225,10 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final ResourceMovedException e) {
 			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
 			response.setHeader("Location", urlGenerator.getPostUrl(e.getResourceType(), e.getNewIntraHash(), e.getUserName()));
-		} catch (final ResourceNotFoundException e) {
+		} catch (final ObjectNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			errors.reject("error.post.notfound", e.getMessage()); // FIXME: it would be better, to show the specific 404 view
+			errors.reject("error.object.notfound", e.getMessage());
+			view = Views.ERROR404;
 		} catch (final org.springframework.security.access.AccessDeniedException ex) {
 			/*
 			 * we rethrow the exception here in order that Spring Security can

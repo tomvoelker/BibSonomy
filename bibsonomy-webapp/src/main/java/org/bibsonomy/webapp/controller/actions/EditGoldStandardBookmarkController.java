@@ -4,7 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Post;
@@ -48,7 +48,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 		Post<Bookmark> post = null;
 		try {
 			post = (Post<Bookmark>) this.logic.getPostDetails(hash, user);
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore		

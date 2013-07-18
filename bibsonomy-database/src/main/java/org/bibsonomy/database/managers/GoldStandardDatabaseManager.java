@@ -14,7 +14,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -315,7 +315,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 			if (!present(post)) {
 				log.debug("gold standard post with interhash '" + interHash + "'  not found");
-				throw new ResourceNotFoundException(interHash);
+				throw new ObjectNotFoundException(interHash);
 			}
 			
 			final GoldStandardReferenceParam param = this.createParam(post);

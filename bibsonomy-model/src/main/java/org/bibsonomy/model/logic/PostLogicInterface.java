@@ -30,8 +30,8 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.StatisticsConstraint;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -87,9 +87,9 @@ public interface PostLogicInterface {
 	 * with that hash exists for that user, but once a resource 
 	 * with that hash existed that has been moved. The new hash 
 	 * is returned inside the exception. 
-	 * @throws ResourceNotFoundException 
+	 * @throws ObjectNotFoundException 
 	 */
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ResourceMovedException, ResourceNotFoundException;
+	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) throws ResourceMovedException, ObjectNotFoundException;
 
 	/**
 	 * Removes the given posts - identified by the connected resource's hashes -

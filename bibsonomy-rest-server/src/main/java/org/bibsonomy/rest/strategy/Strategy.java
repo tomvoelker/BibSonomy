@@ -5,8 +5,8 @@ import java.io.Writer;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
@@ -54,7 +54,7 @@ public abstract class Strategy {
 	 * @throws ResourceNotFoundException 
 	 * @throws ResourceMovedException 
 	 */
-	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ResourceNotFoundException;
+	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException;
 
 	/**
 	 * @param userAgent

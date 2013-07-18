@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -141,7 +141,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			/*
 			 * if we did not find a post -> throw an exception
 			 */
-			if (!present(post)) throw new ResourceNotFoundException(intraHash);
+			if (!present(post)) throw new ObjectNotFoundException(intraHash);
 			/*
 			 * Why do we set the goldHash here again?
 			 * Because at first it might have been an intra hash of a 
@@ -171,7 +171,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 * get the gold standard
 			 */
 			goldStandard = (Post<G>) this.logic.getPostDetails(goldHash, GoldStandardPostLogicInterface.GOLD_STANDARD_USER_NAME);
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore
@@ -191,7 +191,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 * We throw a ResourceNotFoundException such that we don't get empty
 				 * resource pages.
 				 */
-				throw new ResourceNotFoundException(shortHash);
+				throw new ObjectNotFoundException(shortHash);
 			}
 			firstResource = resourceList.get(0).getResource();	
 			/*

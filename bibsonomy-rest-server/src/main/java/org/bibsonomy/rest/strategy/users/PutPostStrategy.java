@@ -17,7 +17,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -102,7 +102,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 							if (ex instanceof InvalidModelException) {
 								throw new BadRequestOrResponseException(ex.getMessage());
 							}
-							if (ex instanceof ResourceNotFoundException) {
+							if (ex instanceof ObjectNotFoundException) {
 								throw new NoSuchResourceException(ex.getMessage());
 							}
 						}

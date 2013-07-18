@@ -28,20 +28,20 @@ package org.bibsonomy.common.exceptions;
  * @version $Id: ResourceNotFoundException.java,v 1.2 2007-10-30 17:37:35 jillig
  *          Exp $
  */
-public class ResourceNotFoundException extends RuntimeException {
+public class ObjectNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs a new resource not found exception with the specified resource
+	 * Constructs a new object not found exception with the specified object
 	 * id.
 	 * 
-	 * @param resourceId
-	 *            the id of the resource that was not found. This is written
+	 * @param id
+	 *            the id of the object (e.g. user or post) that was not found. This is written
 	 *            into a detail message which is saved for later retrieval by
 	 *            the {@link #getMessage()} method.
 	 */
-	public ResourceNotFoundException(final String resourceId) {
-		super("The requested resource (with ID " + resourceId + ") was not found. \nMaybe it has been deleted or its ID has changed, because it has been modfied via the webinterface or another application.");
+	public ObjectNotFoundException(final String id) {
+		super("The requested object (with ID " + id + ") was not found. \nMaybe it has been deleted or its ID has changed, because it has been modfied via the webinterface or another application.");
 	}
 }

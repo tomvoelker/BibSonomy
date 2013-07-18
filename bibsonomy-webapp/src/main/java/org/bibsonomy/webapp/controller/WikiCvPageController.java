@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -38,13 +39,15 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	public View workOn(final CvPageViewCommand command) {
 		log.debug("cvPageController accessed.");
 		
+		final String requestedUser = command.getRequestedUser();
+		final User requestedUserWithDetails = this.logic.getUserDetails(requestedUser);
+		
 		//prevent showing cv pages of deleted users
-		if(this.logic.getUserDetails(command.getRequestedUser()).getRole() == Role.DELETED) {
-			return Views.ERROR404;
+		if(!present(requestedUserWithDetails.getName()) || requestedUserWithDetails.getRole() == Role.DELETED) {
+			throw new ObjectNotFoundException(requestedUser);
 		}
 		
 		try {
-			final String requestedUser = command.getRequestedUser();
 			final Group requestedGroup = this.logic.getGroupDetails(requestedUser);
 			/* Check if the group is present. If it should be a user. If its no
 			   user the we will catch the exception and return an error message
@@ -53,7 +56,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 				return handleGroupCV(this.logic.getGroupDetails(requestedUser), command);
 			}
 			
-			return handleUserCV(this.logic.getUserDetails(requestedUser), command);
+			return handleUserCV(requestedUserWithDetails, command);
 		} catch (RuntimeException e) {
 			//If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
 			throw new MalformedURLSchemeException("Something went wrong! You are most likely looking for a non existant user/group.");

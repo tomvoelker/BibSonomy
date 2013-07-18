@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.Post;
@@ -43,11 +43,11 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * with that hash exists for that user, but once a resource 
 	 * with that hash existed that has been moved. The new hash 
 	 * is returned inside the exception. 
-	 * @throws ResourceNotFoundException
+	 * @throws ObjectNotFoundException
 	 * 
 	 * @return list of posts
 	 */
-	public Post<T> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) throws ResourceMovedException, ResourceNotFoundException;
+	public Post<T> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) throws ResourceMovedException, ObjectNotFoundException;
 
 	/**
 	 * Delete

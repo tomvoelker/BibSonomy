@@ -21,7 +21,7 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -572,7 +572,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								 * since those tags probably caused the error 
 								 */
 								post.setTags(updatedPost.getTags());
-							} catch (final ResourceNotFoundException ex1) {
+							} catch (final ObjectNotFoundException ex1) {
 								// ignore
 							} catch (final ResourceMovedException ex1) {
 								// ignore

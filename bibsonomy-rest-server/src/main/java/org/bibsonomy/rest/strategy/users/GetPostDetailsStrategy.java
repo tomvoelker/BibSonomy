@@ -4,8 +4,8 @@ package org.bibsonomy.rest.strategy.users;
 import java.io.ByteArrayOutputStream;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.ViewModel;
@@ -34,7 +34,7 @@ public class GetPostDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ResourceNotFoundException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
 		// delegate to the renderer
 		final Post<? extends Resource> post = this.getLogic().getPostDetails(this.resourceHash, this.userName);
 		if (post == null) {

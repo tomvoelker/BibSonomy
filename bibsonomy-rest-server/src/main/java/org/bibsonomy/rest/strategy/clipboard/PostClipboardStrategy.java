@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -43,7 +43,7 @@ public class PostClipboardStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ResourceNotFoundException {
+	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
 		this.getLogic().createBasketItems(createPost(resourceHash, userName));
 		this.getRenderer().serializeOK(this.writer);
 	}

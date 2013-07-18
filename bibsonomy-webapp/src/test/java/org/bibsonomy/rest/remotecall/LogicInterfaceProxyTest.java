@@ -41,7 +41,7 @@ import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -543,14 +543,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 		try {
 			EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedPublicationPost);
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore
 		}
 		try {
 			EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBookmarkPost);
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore
@@ -560,7 +560,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		Post<? extends org.bibsonomy.model.Resource> returnedPublicationPost = null;
 		try {
 			returnedPublicationPost = clientLogic.getPostDetails(resourceHash,userName);
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore
@@ -569,7 +569,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = null;
 		try {
 			returnedBookmarkPost = clientLogic.getPostDetails(resourceHash,userName);
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore

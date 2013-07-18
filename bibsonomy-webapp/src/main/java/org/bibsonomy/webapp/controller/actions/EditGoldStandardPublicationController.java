@@ -4,7 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
@@ -51,7 +51,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		Post<BibTex> post = null;
 		try {
 			post = (Post<BibTex>) this.logic.getPostDetails(hash, user);
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			// ignore
 		} catch (final ResourceMovedException ex) {
 			// ignore		

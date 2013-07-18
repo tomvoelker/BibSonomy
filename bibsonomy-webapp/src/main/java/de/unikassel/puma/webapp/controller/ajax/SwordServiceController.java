@@ -14,7 +14,7 @@ import net.sf.json.JSONObject;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -142,7 +142,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 	private Post<BibTex> getPostToHash(final String intraHash, final String userName) {
 		try {
 			return (Post<BibTex>) this.logic.getPostDetails(intraHash, userName);
-		} catch (final ResourceNotFoundException ex) {
+		} catch (final ObjectNotFoundException ex) {
 			return null;
 		} catch (final ResourceMovedException ex) {
 			return getPostToHash(ex.getNewIntraHash(), userName);

@@ -3,8 +3,8 @@ package org.bibsonomy.rest.strategy.clipboard;
 import java.io.ByteArrayOutputStream;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -29,7 +29,7 @@ public class DeleteClipboardStrategy extends PostClipboardStrategy {
 	}
 
 	@Override
-	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ResourceNotFoundException {
+	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
 		this.getLogic().deleteBasketItems(createPost(resourceHash, userName), clearClipboard);
 		this.getRenderer().serializeOK(this.writer);
 	}

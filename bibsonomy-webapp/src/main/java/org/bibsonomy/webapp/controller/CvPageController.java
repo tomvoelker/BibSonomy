@@ -6,8 +6,10 @@ import java.util.Collections;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -31,32 +33,32 @@ public class CvPageController extends ResourceListController implements Minimali
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
 		
+		final String requestedUser = command.getRequestedUser();
+		final User requestedUserWithDetails = this.logic.getUserDetails(requestedUser);
+		
 		//prevent showing cv pages of deleted users
-		if(this.logic.getUserDetails(command.getRequestedUser()).getRole() == Role.DELETED) {
-			return Views.ERROR404;
+		if(!present(requestedUserWithDetails.getName()) || requestedUserWithDetails.getRole() == Role.DELETED) {
+			throw new ObjectNotFoundException(requestedUser);
 		}
 		
 		command.setPageTitle("Curriculum vitae");
-		
-		final String requUser = command.getRequestedUser();
 
-		if (!present(requUser)) {
+		if (!present(requestedUser)) {
 			throw new MalformedURLSchemeException("error.cvpage_without_username");
 		}
-
 		
-		command.setUser(this.logic.getUserDetails(requUser));
+		command.setUser(requestedUserWithDetails);
 
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 
-		this.setTags(command, Resource.class, groupingEntity, requUser, null, command.getRequestedTagsList(), null, 1000, null);
+		this.setTags(command, Resource.class, groupingEntity, requestedUser, null, command.getRequestedTagsList(), null, 1000, null);
 
 		/*
 		 * retrieve and set the requested publication(s) / bookmark(s) with the "myown" tag
 		 */
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command.getFormat(), command.getResourcetype())) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
-			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(MyOwnSystemTag.NAME), null, null, null, Order.ADDED, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, requestedUser, Collections.singletonList(MyOwnSystemTag.NAME), null, null, null, Order.ADDED, null, null, entriesPerPage);
 		}
 		
 		return Views.CVPAGE;
