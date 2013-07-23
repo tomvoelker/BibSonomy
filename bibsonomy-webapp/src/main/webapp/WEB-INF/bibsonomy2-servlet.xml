@@ -175,7 +175,7 @@
 	</bean>
 
 	<!--  #################### interceptors #################### -->
-	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+	<bean id="localeChangeInterceptor" class="org.bibsonomy.webapp.util.spring.i18n.LocaleChangeInterceptor">
 		<property name="paramName" value="lang" />
 	</bean>	
 	
