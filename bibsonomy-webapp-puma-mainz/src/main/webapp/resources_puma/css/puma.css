@@ -50,7 +50,7 @@ a:hover {
 }
 
 #logo, #logo a {
-	color: #333333;
+	color: #4B4B4B;
 }
 
 #logoSubtitle {
@@ -58,7 +58,7 @@ a:hover {
 }
 
 #header {
-	background: #FFFFFF;
+	background: url("/resources_puma/image/vertical_light_gray.png") repeat-x scroll 0 -48px transparent  !important;
 	/*background-color: #EDEFF7;*/
 	border-bottom: 2px solid black;
 	height: 80px;
