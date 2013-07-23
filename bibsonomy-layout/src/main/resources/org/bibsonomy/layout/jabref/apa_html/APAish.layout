@@ -1,40 +1,40 @@
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
- (\year). 
-\format[HTMLChars]{\title}
+\format[XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
+ (\format[XMLEscaper]\year). 
+\format[XMLEscaper,HTMLChars]{\title}
 \begin{type}
-[\format[HTMLChars]{\type}].
+[\format[XMLEscaper,HTMLChars]{\type}].
 \end{type}
 \begin{journal}
-<i>\format[HTMLChars]{\journal}</i> <b>\volume</b>
+<i>\format[XMLEscaper,HTMLChars]{\journal}</i> <b>\format[XMLEscaper]\volume</b>
 \end{journal}
 \begin{number}
-(\number)
+(\format[XMLEscaper]\number)
 \end{number}
 \begin{editor}
 . In
- \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars]{\editor}
+ \format[XMLEscaper,AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars]{\editor}
  (ed.), 
 \end{editor}
 \begin{booktitle}
-<i> \format[HTMLChars]{\booktitle}. </i> 
+<i> \format[XMLEscaper,HTMLChars]{\booktitle}. </i> 
 \end{booktitle} 
 \begin{organization}
-\organization
+\format[XMLEscaper]\organization
 \end{organization}
 \begin{institution}
-(Technical report, \institution) 
+(Technical report, \format[XMLEscaper]\institution) 
 \end{institution}
 \begin{publisher}
-\format[HTMLChars]. {\publisher}
+\format[XMLEscaper,HTMLChars]. {\publisher}
 \end{publisher}
 \begin{howpublished}
-\howpublished . 
+\format[XMLEscaper]\howpublished . 
 \end{howpublished}
 \begin{note}
-(\note)
+(\format[XMLEscaper]\note)
 \end{note}
 \begin{pages}
-, \pages .
+, \format[XMLEscaper]\pages .
 \end{pages}
 <br/>
 <br/>

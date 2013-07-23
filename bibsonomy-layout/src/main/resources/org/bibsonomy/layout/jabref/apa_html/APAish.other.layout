@@ -1,11 +1,11 @@
 \begin{author}
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}\end{author}\begin{year}
- (\year)\end{year}.
+\format[XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}\end{author}\begin{year}
+\format[XMLEscaper](\year)\end{year}.
 \begin{title}
-<i>\format[HTMLChars]{\title}</i>.
+<i>\format[XMLEscaper,HTMLChars]{\title}</i>.
 \end{title}
 \begin{description}
-\format[HTMLChars]{\description}.
+\format[XMLEscaper,HTMLChars]{\description}.
 \end{description}
 <br/>
 <br/>

@@ -1,23 +1,23 @@
 \begin{author}
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars] {\author}
+\format[XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars] {\author}
 \end{author}
 \begin{year}
-(\year). 
+(\format[XMLEscaper]\year). 
 \end{year}
 \begin{title}
-\format[HTMLChars]{\title}. 
+\format[XMLEscaper,HTMLChars]{\title}. 
 \end{title}
 \begin{editor}
-In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars]{\editor} (eds.), 
+In \format[XMLEscaper,AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars]{\editor} (eds.), 
 \end{editor}
 \begin{booktitle}
-<i> \format[HTMLChars]{\booktitle}</i>\end{booktitle}\begin{pages}
- (pp. \pages)\end{pages}. 
+<i> \format[XMLEscaper,HTMLChars]{\booktitle}</i>\end{booktitle}\begin{pages}
+ (pp. \format[XMLEscaper]\pages)\end{pages}. 
 \begin{publisher}
-\format[HTMLChars]{\publisher}. 
+\format[XMLEscaper,HTMLChars]{\publisher}. 
 \end{publisher}
 \begin{isbn}
-ISBN: \format[HTMLChars]{\isbn}
+ISBN: \format[XMLEscaper,HTMLChars]{\isbn}
 \end{isbn}
 <br/>
 <br/>

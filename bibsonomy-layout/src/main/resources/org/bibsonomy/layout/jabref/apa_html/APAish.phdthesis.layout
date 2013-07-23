@@ -1,11 +1,11 @@
-\format[HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\year). 
-<i> \format[HTMLChars]{\title}. </i>
+\format[XMLEscaper,HTMLChars,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\format[XMLEscaper]\year). 
+<i> \format[XMLEscaper,HTMLChars]{\title}. </i>
 \begin{type}
-\format[HTMLChars]{\type}
+\format[XMLEscaper,HTMLChars]{\type}
 \end{type}
 Unpublished doctoral disseration
 \begin{school}
-, \school
+, \format[XMLEscaper]\school
 \end{school}.
 <br/>
 <br/>

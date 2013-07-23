@@ -1,4 +1,4 @@
 <p>
-\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\year), 
-'\format[HTMLChars]{\title}'\begin{school}, PhD thesis, \school\end{school}.
+\format[XMLEscaper,HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[XMLEscaper]\year), 
+'\format[XMLEscaper,HTMLChars]{\title}'\begin{school}, PhD thesis, \format[XMLEscaper]\school\end{school}.
 </p>
