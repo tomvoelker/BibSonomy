@@ -15,6 +15,7 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.SamlUserParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
@@ -496,7 +497,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void insertOpenIDUser(final User user, final DBSession session) {
-		this.insert("insertOpenIDUser", user, session);
+		session.beginTransaction();
+		try {
+			this.insert("insertOpenIDUser", user, session);
+			this.insertDefaultWiki(user, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 	
 	/**
@@ -1040,10 +1048,37 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return name of created user
      */
     public String activateUser(final User user, final DBSession session) {
-        this.insert("activateUser", user.getName(), session);
-        this.deletePendingUser(user.getName(), session);
+    	session.beginTransaction();
+    	try {
+	        this.insert("activateUser", user.getName(), session);
+	        this.deletePendingUser(user.getName(), session);
+	        
+	        //this.insertDefaultWiki(user, session);
+	        session.commitTransaction();
+    	} finally {
+    		session.endTransaction();
+    	}
         return user.getName();
     }
+
+    /**
+     * Inserts a default wiki for a newly activated user or for a newly
+     * registered openid user.
+     * 
+     * @param user 
+     * @param session
+     */
+	private void insertDefaultWiki(final User user, final DBSession session) {
+		WikiParam param = new WikiParam();
+		param.setUserName(user.getName());
+		param.setDate(user.getRegistrationDate());
+		// TODO: Hier muss noch der Default Text des englischen Wikis hin.
+		
+		param.setWikiText("new User, no Wiki!");
+		// hier passiert keine Sicherung, da die session-transactions in den umfassenden
+		// Methoden bereits eroeffnet wurden.
+		this.insert("insertWiki", param, session);
+	}
 
     /**
      * Returns pending users.
@@ -1054,9 +1089,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @return list of all users
      */
     public List<User> getPendingUsers(final int start, final int end,  final DBSession session) {
-	final UserParam param = new UserParam();
-	param.setOffset(start);
-	param.setLimit(end);        
+		final UserParam param = new UserParam();
+		param.setOffset(start);
+		param.setLimit(end);
         return this.queryForList("getPendingUsers", param, User.class, session);
     }
 
