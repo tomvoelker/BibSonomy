@@ -1,13 +1,15 @@
 package org.bibsonomy.wiki.tags.shared.resource;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,8 +79,7 @@ public class PublicationListTag extends SharedTag {
 	public boolean isAllowedAttribute(final String attName) {
 		return ALLOWED_ATTRIBUTES_SET.contains(attName);
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	@Override
 	protected String renderSharedTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
@@ -102,18 +103,14 @@ public class PublicationListTag extends SharedTag {
 		
 		if (dropdownMenuEnabled) {
 			final String selectedLayout = tagAttributes.get(LAYOUT).toLowerCase();
-	
 			// TODO: Mehrere moegliche Layouts einbinden
 			// (<a href='/export/").append(this.getGroupingEntity().toString()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>):
 			renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>" +
 					this.messageSource.getMessage("bibtex.citation_format", new Object[]{}, this.locale) +
 					": <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(this.getGroupingEntity().toString()).append("\")'>");
 			
-			for (String layout : this.RENDERABLE_LAYOUTS) {
+			for (final String layout : RENDERABLE_LAYOUTS) {
 				renderedHTML.append("<option value='" + layout + "'" + (selectedLayout.equals(layout) ? " selected" : "") + ">" + layout + "</option>");
-//			renderedHTML.append("<option value='harvardhtml'" + (selectedLayout.equals("harvardhtml") ? " selected" : "") + ">harvardhtml</option>");
-//			renderedHTML.append("<option value='din1505'" + (selectedLayout.equals("din1505") ? " selected" : "") + ">din1505</option>");
-//			renderedHTML.append("<option value='simplehtml'" + (selectedLayout.equals("simplehtml") ? " selected" : "") + ">simplehtml</option>");
 			}
 			renderedHTML.append("</select><input id='reqUser' type='hidden' value='").append(requestedName).append("' /><input id='reqTags' type='hidden' value='").append(tags).append("' /></form></span></div>");
 		}
@@ -122,22 +119,9 @@ public class PublicationListTag extends SharedTag {
 		/*
 		 * get the publications, maybe restricted to a certain interval of years.
 		 */
-		Date startYear = null, endYear = null;
-		if (tagAttributes.get(FROMYEAR) != null) {
-			try {
-				startYear = new Date(Integer.parseInt(tagAttributes.get(FROMYEAR)) - 1900, 0, 0);
-			} catch (NumberFormatException e) {
-				// Do nothing.
-			}
-		}
+		final Date startYear = extractYear(tagAttributes.get(FROMYEAR));
+		final Date endYear = extractYear(tagAttributes.get(TOYEAR));
 		
-		if (tagAttributes.get(TOYEAR) != null) {
-			try {
-				endYear = new Date(Integer.parseInt(tagAttributes.get(TOYEAR)) - 1900, 0, 0);
-			} catch (NumberFormatException e) {
-				// Do nothing.
-			}
-		}
 		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, null, null, startYear, endYear, 0, Integer.MAX_VALUE);
 		BibTexUtils.removeDuplicates(posts);
 		
@@ -180,5 +164,25 @@ public class PublicationListTag extends SharedTag {
 		}
 
 		return renderedHTML.toString();
+	}
+
+	protected static Date extractYear(final String yearString) {
+		if (!present(yearString)) {
+			return null;
+		}
+		try {
+			final Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, Integer.parseInt(yearString));
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.DATE, 1);
+			calendar.set(Calendar.MONTH, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			return calendar.getTime();
+		} catch (final NumberFormatException e) {
+			// Do nothing.
+		}
+		
+		return null;
 	}
 }
