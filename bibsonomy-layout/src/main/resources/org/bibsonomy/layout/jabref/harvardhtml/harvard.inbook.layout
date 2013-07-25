@@ -1,13 +1,13 @@
 <p>
 \begin{author}
-\format[XMLEscaper,HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
 \end{author}
- (\format[XMLEscaper]\year), <i>\format[XMLEscaper,HTMLChars]{\title}</i>
+ (\format[XMLEscaper]\year), <i>\format[HTMLChars,XMLEscaper]{\title}</i>
 \begin{publisher}
-, \format[XMLEscaper,HTMLChars]{\publisher}
+, \format[HTMLChars,XMLEscaper]{\publisher}
 \end{publisher}
 \begin{address}
-, \format[XMLEscaper,HTMLChars]{\address}
+, \format[HTMLChars,XMLEscaper]{\address}
 \end{address}
 \begin{chapter}
 , chapter \format[XMLEscaper]\chapter

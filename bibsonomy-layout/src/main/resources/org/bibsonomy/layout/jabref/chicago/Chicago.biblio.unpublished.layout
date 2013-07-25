@@ -1,6 +1,6 @@
 <p>
 \begin{author}
-\format[XMLEscaper,HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[XMLEscaper,HTMLChars]{\title}.&quot; \end{title}
-\begin{year}\format[XMLEscaper,HTMLChars]{\year}. \end{year}
-\begin{url}\format[XMLEscaper,HTMLChars]{\url}. \end{url}
+\format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars,XMLEscaper]{\title}.&quot; \end{title}
+\begin{year}\format[HTMLChars,XMLEscaper]{\year}. \end{year}
+\begin{url}\format[HTMLChars,XMLEscaper]{\url}. \end{url}
 </p>

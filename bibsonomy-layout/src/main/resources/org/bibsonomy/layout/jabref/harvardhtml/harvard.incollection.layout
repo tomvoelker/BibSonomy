@@ -1,11 +1,11 @@
 <p>
-\format[XMLEscaper,HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\year), 
-\format[XMLEscaper,HTMLChars]{\title}\begin{editor}, <i>in \format[XMLEscaper,HTMLChars,AuthorFirstFirst,AuthorAndsReplacer]{\editor}</i>, ed.,\end{editor}
+\format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\year), 
+\format[HTMLChars,XMLEscaper]{\title}\begin{editor}, <i>in \format[HTMLChars,XMLEscaper,AuthorFirstFirst,AuthorAndsReplacer]{\editor}</i>, ed.,\end{editor}
 \begin{booktitle}
-'\format[XMLEscaper,HTMLChars]{\booktitle}'
+'\format[HTMLChars,XMLEscaper]{\booktitle}'
 \end{booktitle}
 \begin{publisher}
-, \format[XMLEscaper,HTMLChars]{\publisher}, \format[XMLEscaper,HTMLChars]{\address}
+, \format[HTMLChars,XMLEscaper]{\publisher}, \format[HTMLChars,XMLEscaper]{\address}
 \end{publisher}
 \begin{pages}
 , pp. \format[XMLEscaper]\pages

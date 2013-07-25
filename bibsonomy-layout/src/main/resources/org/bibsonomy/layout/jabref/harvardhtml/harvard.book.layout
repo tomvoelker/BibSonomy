@@ -1,19 +1,19 @@
 <p>
 \begin{author}
-\format[XMLEscaper,HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
 \end{author}
 \begin{editor}
-\format[XMLEscaper,HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\editor}, ed.
+\format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\editor}, ed.
 \end{editor}
  (\format[XMLEscaper]\year), 
-<i> \format[XMLEscaper,HTMLChars]{\title}</i>
+<i> \format[HTMLChars,XMLEscaper]{\title}</i>
 \begin{volume}
 , Vol. \format[XMLEscaper]\volume
 \end{volume}
 \begin{publisher}
-, \format[XMLEscaper,HTMLChars]{\publisher}
+, \format[HTMLChars,XMLEscaper]{\publisher}
 \end{publisher}
 \begin{address}
-, \format[XMLEscaper,HTMLChars]{\address}
+, \format[HTMLChars,XMLEscaper]{\address}
 \end{address}.
 </p>

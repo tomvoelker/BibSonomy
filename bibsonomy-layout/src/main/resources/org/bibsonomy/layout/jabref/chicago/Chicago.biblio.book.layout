@@ -1,12 +1,12 @@
 <p>
 \begin{author}
-\format[XMLEscaper,HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}
-<i> \format[XMLEscaper,HTMLChars]{\title}</i>.
-\begin{edition} \format[XMLEscaper,HTMLChars]{\edition}\end{edition}
-\begin{editor} Edited by \format[XMLEscaper,HTMLChars,AuthorFirstFirstCommas]{\editor}.\end{editor}
+\format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author}. \end{author}
+<i> \format[HTMLChars,XMLEscaper]{\title}</i>.
+\begin{edition} \format[HTMLChars,XMLEscaper]{\edition}\end{edition}
+\begin{editor} Edited by \format[HTMLChars,XMLEscaper,AuthorFirstFirstCommas]{\editor}.\end{editor}
 \begin{volume} Vol. \format[XMLEscaper]\volume.\end{volume}
-\begin{number}, bk. \format[XMLEscaper,HTMLChars]{\number}.\end{number}
-\begin{address} \format[XMLEscaper,HTMLChars]{\address}\end{address}:
-\begin{publisher} \format[XMLEscaper,HTMLChars]{\publisher}\end{publisher}, 
-\begin{year}\format[XMLEscaper,HTMLChars]{\year}. \end{year}
+\begin{number}, bk. \format[HTMLChars,XMLEscaper]{\number}.\end{number}
+\begin{address} \format[HTMLChars,XMLEscaper]{\address}\end{address}:
+\begin{publisher} \format[HTMLChars,XMLEscaper]{\publisher}\end{publisher}, 
+\begin{year}\format[HTMLChars,XMLEscaper]{\year}. \end{year}
 </p>

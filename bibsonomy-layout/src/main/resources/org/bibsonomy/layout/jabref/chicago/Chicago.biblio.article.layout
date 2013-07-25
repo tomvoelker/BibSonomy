@@ -1,9 +1,9 @@
 <p>
 \begin{author}
-\format[XMLEscaper,HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}
-&quot;\format[XMLEscaper,HTMLChars]{\title}.&quot; <i>\format[XMLEscaper,HTMLChars]{\journal}</i>
+\format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author}. \end{author}
+&quot;\format[HTMLChars,XMLEscaper]{\title}.&quot; <i>\format[HTMLChars,XMLEscaper]{\journal}</i>
 \begin{volume} \format[XMLEscaper]\volume\end{volume}
 \begin{number}, no. \format[XMLEscaper]\number\end{number} 
-\begin{year}(\format[XMLEscaper,HTMLChars]{\year}): \end{year}
+\begin{year}(\format[HTMLChars,XMLEscaper]{\year}): \end{year}
 \begin{pages}\format[XMLEscaper]\pages\end{pages}.
 </p>

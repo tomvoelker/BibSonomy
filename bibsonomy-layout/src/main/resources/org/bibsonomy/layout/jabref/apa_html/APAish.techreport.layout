@@ -1,6 +1,6 @@
-\format[XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author}
 \format[XMLEscaper] (\year). 
-<i> \format[XMLEscaper,HTMLChars]{\title}</i>
+<i> \format[HTMLChars,XMLEscaper]{\title}</i>
  (\format[XMLEscaper]\type\format[XMLEscaper]\number). 
 \begin{organization}
 \format[XMLEscaper]\organization

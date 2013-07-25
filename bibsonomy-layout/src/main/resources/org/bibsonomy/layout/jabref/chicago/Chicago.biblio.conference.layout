@@ -1,5 +1,5 @@
 <p>
 \begin{author}
-\format[XMLEscaper,HTMLChars,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[XMLEscaper,HTMLChars]{\title}.&quot; \end{title}Paper presented at the meeting of the \format[XMLEscaper,HTMLChars]{\booktitle}, \begin{address}\format[XMLEscaper,HTMLChars]{\address},\end{address} 
-\begin{year}\format[XMLEscaper,HTMLChars]{\year}. \end{year}
+\format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars,XMLEscaper]{\title}.&quot; \end{title}Paper presented at the meeting of the \format[HTMLChars,XMLEscaper]{\booktitle}, \begin{address}\format[HTMLChars,XMLEscaper]{\address},\end{address} 
+\begin{year}\format[HTMLChars,XMLEscaper]{\year}. \end{year}
 </p>

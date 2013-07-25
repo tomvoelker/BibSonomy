@@ -1,22 +1,22 @@
-\format[XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author}
  (\format[XMLEscaper]\year). 
-\format[XMLEscaper,HTMLChars]{\title}
+\format[HTMLChars,XMLEscaper]{\title}
 \begin{type}
-[\format[XMLEscaper,HTMLChars]{\type}].
+[\format[HTMLChars,XMLEscaper]{\type}].
 \end{type}
 \begin{journal}
-<i>\format[XMLEscaper,HTMLChars]{\journal}</i> <b>\format[XMLEscaper]\volume</b>
+<i>\format[HTMLChars,XMLEscaper]{\journal}</i> <b>\format[XMLEscaper]\volume</b>
 \end{journal}
 \begin{number}
 (\format[XMLEscaper]\number)
 \end{number}
 \begin{editor}
 . In
- \format[XMLEscaper,AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars]{\editor}
+ \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\editor}
  (ed.), 
 \end{editor}
 \begin{booktitle}
-<i> \format[XMLEscaper,HTMLChars]{\booktitle}. </i> 
+<i> \format[HTMLChars,XMLEscaper]{\booktitle}. </i> 
 \end{booktitle} 
 \begin{organization}
 \format[XMLEscaper]\organization
@@ -25,7 +25,7 @@
 (Technical report, \format[XMLEscaper]\institution) 
 \end{institution}
 \begin{publisher}
-\format[XMLEscaper,HTMLChars]. {\publisher}
+\format[HTMLChars,XMLEscaper]. {\publisher}
 \end{publisher}
 \begin{howpublished}
 \format[XMLEscaper]\howpublished . 

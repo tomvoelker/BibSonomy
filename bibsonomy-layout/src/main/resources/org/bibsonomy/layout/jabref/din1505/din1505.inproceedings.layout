@@ -1,6 +1,6 @@
 <div style="margin-bottom:1em">
-\format[XMLEscaper,AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\begin{editor}
-; \format[XMLEscaper,AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
+\format[AuthorLastFirst,HTMLChars,XMLEscaper,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\begin{editor}
+; \format[AuthorLastFirst,HTMLChars,XMLEscaper,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
 \format[XMLEscaper]\title\begin{volume}.
 \format[XMLEscaper]\volume\end{volume}\begin{number}.
 \format[XMLEscaper]\number\end{number}.

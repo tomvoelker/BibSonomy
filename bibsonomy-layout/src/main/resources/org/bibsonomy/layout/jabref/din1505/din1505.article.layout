@@ -1,5 +1,5 @@
 <div style="margin-bottom:1em">
-\begin{author}\format[XMLEscaper,AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}:\end{author}
+\begin{author}\format[AuthorLastFirst,HTMLChars,XMLEscaper,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}:\end{author}
 \format[XMLEscaper]\title\begin{journal}.
 In: <i>\format[XMLEscaper]\journal</i>\end{journal}\begin{volume},
 \format[XMLEscaper]\volume\end{volume}

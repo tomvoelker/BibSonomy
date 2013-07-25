@@ -1,8 +1,8 @@
 <p>
-\format[XMLEscaper,HTMLChars,AuthorLastFirstCommas]{\author} \format[XMLEscaper,HTMLChars]{\title}.
+\format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author} \format[HTMLChars,XMLEscaper]{\title}.
 
 \begin{journal}
-}<i> \format[XMLEscaper,HTMLChars]{\journal}</i>{ }<b> \format[XMLEscaper]\volume</b>{
+}<i> \format[HTMLChars,XMLEscaper]{\journal}</i>{ }<b> \format[XMLEscaper]\volume</b>{
 \end{journal}
 
 \begin{number}
@@ -10,11 +10,11 @@
 \end{number}
 
 \begin{editor}
- \format[XMLEscaper,HTMLChars,AuthorLastFirstCommas]{\editor}, eds.
+ \format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\editor}, eds.
 \end{editor}
 
 \begin{booktitle}
-<i> \format[XMLEscaper,HTMLChars]{\booktitle}</i>
+<i> \format[HTMLChars,XMLEscaper]{\booktitle}</i>
 \end{booktitle}
 
 \begin{organization}
@@ -26,7 +26,7 @@
 \end{institution}
 
 \begin{publisher}
-, \format[XMLEscaper,HTMLChars]{\publisher}
+, \format[HTMLChars,XMLEscaper]{\publisher}
 \end{publisher}
 
 \begin{howpublished}
@@ -34,7 +34,7 @@
 \end{howpublished}
 
 \begin{address}
-, \format[XMLEscaper,HTMLChars]{\address}
+, \format[HTMLChars,XMLEscaper]{\address}
 \end{address}
 
 (\format[XMLEscaper]\year).
