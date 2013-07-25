@@ -396,6 +396,11 @@
 					</filesets>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat6-maven-plugin</artifactId>
+				<version>2.0</version>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
@@ -421,6 +426,110 @@
 			</extension>
 		</extensions>
 	</build>
+	<profiles>
+		<profile>
+			<id>deploy-to-biblicious</id>
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=biblicious is given as
+				parameter.
+			-->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>biblicious</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_gromit</maven.tomcat.server>
+				<maven.tomcat.url>http://gromit.cs.uni-kassel.de:8080/manager</maven.tomcat.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy-to-puma</id>
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=puma is given as
+				parameter.
+			-->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_puma</maven.tomcat.server>
+				<maven.tomcat.url>http://dev.puma.uni-kassel.de:8080/manager</maven.tomcat.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy-to-puma-ks-puma</id>
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=puma-ks-puma is given as
+				parameter.
+			-->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma_ks_puma</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_puma_kassel_puma</maven.tomcat.server>
+				<maven.tomcat.url>http://test1.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy-to-test-puma-ks</id>
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=test-puma-ks is given as
+				parameter.
+			-->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>test_puma_ks</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_test_puma_kassel</maven.tomcat.server>
+				<maven.tomcat.url>http://test.kassel.puma.stefani.biz:8080/manager</maven.tomcat.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy-to-puma-sandbox</id>
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=puma_sandbox is given
+				as parameter.
+			-->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma_sandbox</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_puma_sandbox</maven.tomcat.server>
+				<maven.tomcat.url>http://sandbox.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy-to-puma-ks-dev</id>
+			<!--
+				change tomcat deploy destination when -Ddeploy-to=puma_ks_dev is given
+				as parameter.
+			-->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma_ks_dev</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>tomcat_puma_ks_dev</maven.tomcat.server>
+				<maven.tomcat.url>http://ks-dev.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+			</properties>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
