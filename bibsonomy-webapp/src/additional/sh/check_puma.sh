@@ -1,6 +1,6 @@
 #!/bin/bash 
 PUMA_HOST=$1
-FILE_NAME=$2
+FILE_NAME="/var/tmp/$PUMA_HOST"
 #PUMA_URL="http://$PUMA_HOST/postBookmark"
 PUMA_URL="http://$PUMA_HOST/swrc/"
 #TIMES=$3
