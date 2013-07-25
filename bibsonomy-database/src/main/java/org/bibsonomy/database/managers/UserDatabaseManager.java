@@ -500,7 +500,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		session.beginTransaction();
 		try {
 			this.insert("insertOpenIDUser", user, session);
-			this.insertDefaultWiki(user, session);
+			// this.insertDefaultWiki(user, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -514,6 +514,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void insertLdapUserId(final User user, final DBSession session) {
+		// TODO: default wiki missing
 		this.insert("insertLdapUser", user, session);
 	}
 
