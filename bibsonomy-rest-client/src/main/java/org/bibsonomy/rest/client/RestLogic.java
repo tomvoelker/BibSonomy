@@ -515,9 +515,9 @@ public class RestLogic implements LogicInterface {
 	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, final String tag) {
 		switch (relation) {
 		case FRIEND_OF:
-			return execute(new GetFriendsQuery(0, 100, sourceUser, RESTConfig.INCOMING_ATTRIBUTE_VALUE_RELATION));
-		case OF_FRIEND:
 			return execute(new GetFriendsQuery(0, 100, sourceUser, RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION));
+		case OF_FRIEND:
+			return execute(new GetFriendsQuery(0, 100, sourceUser, RESTConfig.INCOMING_ATTRIBUTE_VALUE_RELATION));
 		default:
 			throw new UnsupportedOperationException("The user relation " + relation + " is currently not supported.");
 		}
