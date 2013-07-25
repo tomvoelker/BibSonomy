@@ -1,27 +1,13 @@
 body {
-	background-color: #666;
+	background-color: #EBEBED;
 }
 
 a {
-	color: #282879;
-}
-
-a:hover {
-	text-decoration: none;
-	color: #C1002A;
-}
-
-.post:hover {
-	background-color: #fff3f6 !important;
-}
-
-.newsbox {
-	background-color: #FFF3F6;
+	color: #255C8B;
 }
 
 #container {
 	top: 14px;
-	min-height: 1px;
 }
 
 #logoimage {
@@ -50,31 +36,25 @@ a:hover {
 }
 
 #logo, #logo a {
-	color: #4B4B4B;
+	color: #F6F6F6;
 }
 
 #logoSubtitle {
-	color: #4B4B4B;
+	color: #F6F6F6;
 }
 
 #header {
-	background: url("/resources_puma/image/vertical_light_gray.png") repeat-x scroll 0 -48px transparent  !important;
-	/*background-color: #EDEFF7;*/
-	border-bottom: 2px solid black;
+	background-color: #3D6282;
+	border-bottom: 1px solid #F6F6F6;
 	height: 80px;
 }
 
 #infoline, #infoline a {
-	color: black;
+	 color: black;
 }
 
 #language, #language a {
-	color: #4B4B4B;
-}
-
-#language a:hover {
-	text-decoration: none;
-	color: #C1002A;
+	 color: #F6F6F6;
 }
 
 
@@ -83,7 +63,7 @@ a:hover {
 }
 
 #navigation, #navigation2 {
-    background:  url("/resources_puma/image/imagesprite_v.png") repeat scroll 0 -57px ;
+    background-color: #D26130;
     color: white;
 }
 
@@ -96,16 +76,23 @@ a:hover {
 }
 
 #navigation ul li a { 
-	color: white;
+	color: #FFF;
 }
 
 #navigation ul li.active { 
-	color: #4B4B4B;
+	color: #D26130;
 }
 
 #navigation > ul li:hover, #navigation .pulldown:hover {
-    color: #EDEFF7;
+	color: #FFF;
+	background-color: #3D6282;
 }
+
+#navigation > ul li:hover * a:hover,
+#search > ul li:hover ul li:hover {
+	background-color: #3D6282;
+}
+
 #navigation ul li.pulldown span,
 #navigation ul li.pulldown > a,
 #navigation ul li.pulldown.active:hover span,
@@ -119,16 +106,12 @@ a:hover {
 }
 
 
-#navigation .pulldown > span {
-    color: white;
-}
-
 #navigation .pulldown.active > span {
     color: inherit;
 }
     
 #navigation > ul > li > a:hover {
-    color: #EDEFF7;
+    color: #FFF;
 }
 
 #navigation > ul ul li a, #navigation > ul li table a {
@@ -141,29 +124,28 @@ a:hover {
 }
 
 #navigation2 a {
-    color: #EDEFF7;
+    color: #FFF;
 }	
 
 #postcontainer {
-	border: 1px solid #bcc3db;
+	border: 1px solid #DBC3BC;
 	border-top: 0;
 	border-right: 0;
 	border-bottom: 0;
 	top: 172px;
 }
 
-#container.noPageNavigation #postcontainer {
-	border-bottom: 1px solid #bcc3db;
+#legalnotices {
+	background-color: #D3D6DB;
 }
 
-#container,
 #container.noPageNavigation {
-	background-color: #C6C6C6;
+	background-color: #FFF;
 }
 
 
 #footercontainer {
-	border: 1px solid #bcc3db;
+	border: 1px solid #DBC3BC;
 	border-top: 0;
 }
 
@@ -172,7 +154,7 @@ a:hover {
 }
 
 input[type="text"], input[type="password"], input[type="file"], textarea, select {
-    border: 1px solid #bcc3db;
+    border: 1px solid #DBC3BC;
     font-size: 100%;
 }
 
@@ -181,7 +163,7 @@ input#inpf {
 }
 
 .tab_content, .tab .selected {
-    border: 1px solid #bcc3db;
+    border: 1px solid #DBC3BC;
 }
 
 .tab .selected {
@@ -196,6 +178,10 @@ input#inpf {
 	border: none;
 }
 
+.post:hover {
+	background-color: #fff2ed !important;
+}
+
 #bookmarksheader .header, #publicationsheader .header {
     border: none;
 }
@@ -205,15 +191,15 @@ input#inpf {
 }
 
 #bookmarksheader .header, #publicationsheader .header, #panelheader .header {
-	color: #4B4B4B;
+	color: #3D6282;
 }
 
 .pgroup .private {
-    background-color: #4B4B4B;
+    background-color: #D26130;
 }
 
 .tab .selected a {
-	color: #4B4B4B;
+	color: #D26130;
 }
 
 .fsOuter {
@@ -222,43 +208,43 @@ input#inpf {
 
 .fsOuter, .fsInner, .fsVisible {
     background-color: #F8F8F8;
-    border: 1px solid #bcc3db;
+    border: 1px solid #DBC3BC;
 }
 
 .tab .selected, .tab .ui-state-active {
-	border-color: #BCC3DB;
+	border-color: #DBC3BC 
 }
 
 #citation .citationHint a,
 .tab .selected a, .tab .ui-state-active a {
-	color: #848484;
+	color: #872708;
 }
 
 div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected {
-    border: 1px solid #bcc3db;
+    border: 1px solid #DBC3BC;
 }
 
 div.ui-tabs ul.ui-tabs-nav li.ui-tabs-selected a:hover {
-    color: #282879;
+    color: #872708;
 }
 
 .reqinput {
-    background-color: #EDEFF7;
+    background-color: #EBEBED;
 }
 
 div.help > a, div.help > b {
-    color: #4B4B4B;
+    color: #D26130;
 }
 
 ul#gold_menu li a {
-    background-color: #4B4B4B;
-    border: 1px solid #bcc3db;
+    background-color: #D26130;
+    border: 1px solid #DBC3BC;
     color: white !important;
 }
 
 ul.newMenu li a {
-    background-color: #4B4B4B;
-    border: 1px solid #bcc3db;
+    background-color: #D26130;
+    border: 1px solid #DBC3BC;
     color: white !important;
 }
 
@@ -282,7 +268,7 @@ ul.newMenu li a {
     width: 100%;
 }
 #desc_advantages {
-    color: #4B4B4B;
+    color: #D26130;
     font-weight: normal;
     height: 5ex;
     padding: 2ex 3em;
@@ -299,34 +285,35 @@ ul.newMenu li a {
 }
 
 #sidebox {
-    background-color: #EDEFF7;
+	background-color: #EBEBED;
 }
 
+#sidebar {
+	background-color: #D3D6DB;
+}
 
 #sidebar a, #sidebar a:link, #sidebar a:visited {
-    color: #282879 !important;
+    color: #2D1A13;
 }
 
-#sidebar a:hover {
-	text-decoration: none;
-	color: #C1002A !important;
+#sidebar a, #sidebar a:link, #sidebar a:visited {
+    color: #2D1A13;
 }
-
 
 .tagnormal a, .taghuge {
-    color: #282879 !important;
+    color: #2D1A13 !important;
 }
 
 .taglarge a, .taglarge {
-    color: #394f89 !important;
+    color: #894F39 !important;
 }
 
 .tagnormal a, .tagnormal {
-    color: #4863ad !important;
+    color: #AD6348 !important;
 }
 
 .tagtiny a,.tagtiny {
-	color: #6083e5 ! important;
+	color: #E58360 ! important;
 }
 
 .dd .ddChild a.selected {
@@ -339,7 +326,7 @@ ul.newMenu li a {
 
 
 div.grippie {
-    border-color: #bcc3db;
+    border-color: #DBC3BC;
 }
 
 
@@ -391,11 +378,5 @@ div.grippie {
 .systemName,
 h4.textPage,
 h3.textPage {
-	color: #4B4B4B;
-}
-
-.post .action .litem:hover,
-#resultlist .litem:hover,
-#pageOptions .litem:hover {
-    color: #C1002A;
+	color: #D26130;
 }
