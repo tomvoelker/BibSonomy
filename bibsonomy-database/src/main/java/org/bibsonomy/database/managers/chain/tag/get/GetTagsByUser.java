@@ -21,7 +21,7 @@ public class GetTagsByUser extends TagChainElement {
 
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
-		if (param.getTagIndex() != null && param.getTagIndex().size() > 0) {
+		if (present(param.getTagIndex())) {
 			// retrieve related tags
 			return this.db.getRelatedTagsForUser(param.getUserName(),
 							param.getRequestedUserName(), 
