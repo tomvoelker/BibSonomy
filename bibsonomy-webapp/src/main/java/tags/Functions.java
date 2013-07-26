@@ -190,11 +190,11 @@ public class Functions  {
 	}
 
 	/**
-	 * Cuts the last segment of the url string until last slash. If the path
-	 * contains more than three slashes, then the cut is after the third slash.
-	 * (Previous to adding this restrictions, tags that included a slash could 
-	 * not be handled on /user/USER/TAG 
-	 * 
+	 * Cuts the last segment of the url string until last slash.
+	 * TODO: If the path contains more than three slashes, then the cut is after
+	 * the third slash. (Previous to adding this restrictions, tags that included
+	 * a slash could not be handled on /user/USER/TAG; remove as soon as the bug in
+	 * urlrewrite lib is fixed
 	 * 
 	 * @param uriString the url
 	 * @return last segment of the url string until last slash
