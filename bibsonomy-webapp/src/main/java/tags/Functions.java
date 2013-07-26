@@ -190,13 +190,27 @@ public class Functions  {
 	}
 
 	/**
-	 * Cuts the last segment of the url string until last slash
+	 * Cuts the last segment of the url string until last slash. If the path
+	 * contains more than three slashes, then the cut is after the third slash.
+	 * (Previous to adding this restrictions, tags that included a slash could 
+	 * not be handled on /user/USER/TAG 
+	 * 
 	 * 
 	 * @param uriString the url
 	 * @return last segment of the url string until last slash
 	 */
 	public static String getLowerPath(final String uriString) {
-		final int lio = uriString.lastIndexOf("/");
+		
+		final int count = org.apache.commons.lang.StringUtils.countMatches(uriString, "/");
+		
+		final int lio;
+		if (count > 3) {
+			lio = uriString.indexOf("/", uriString.indexOf("/", uriString.indexOf("/") + 1) + 1);
+//			lio = uriString.indexOf("/", uriString.indexOf("/") + 1);
+		} else {
+			lio = uriString.lastIndexOf("/");
+		}
+		
 		if (lio > 0) {
 			try {
 				/*
