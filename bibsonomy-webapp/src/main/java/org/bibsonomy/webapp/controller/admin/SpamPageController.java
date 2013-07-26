@@ -65,23 +65,26 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		/*
 		 * handle specific user
 		 */
-		if (present(command.getAclUserInfo())) {
-			if ("flag_spammer".equals(command.getAction())) {
-				if (!logic.getUserDetails(command.getAclUserInfo()).getSpammer()) {
-					final User user = new User(command.getAclUserInfo());
+		final String requestedUser = command.getAclUserInfo();
+		if (present(requestedUser)) {
+			final User userDetails = logic.getUserDetails(requestedUser);
+			if (!present(userDetails.getName())) {
+				command.addInfo("User '" + requestedUser + "' was not found in the system.");
+			} else if ("flag_spammer".equals(command.getAction())) {
+				if (!userDetails.getSpammer()) {
+					final User user = new User(requestedUser);
 					user.setToClassify(0);
-					user.setAlgorithm("admin");
+					user.setAlgorithm("admin"); // TODO: add to Constants
 					user.setSpammer(true);
 					this.logic.updateUser(user, UserUpdateOperation.UPDATE_SPAMMER_STATUS);
 				} else {
 					command.addInfo("The user was already flagged as a spammer.");
 				}
 			}
-			command.setUser(logic.getUserDetails(command.getAclUserInfo()));
+			command.setUser(userDetails);
 		}
 
 		return Views.ADMIN_SPAM;
-
 	}
 
 	@Override
