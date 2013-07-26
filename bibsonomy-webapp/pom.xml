@@ -136,10 +136,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat6-maven-plugin</artifactId>
-			</plugin>
 		</plugins>
 		<resources>
 			<resource>
