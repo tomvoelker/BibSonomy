@@ -1346,6 +1346,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			return false;
 		},
         open: function(event,ui) {
+        	// TODO: why not using formatResult callback for this?
         	/*
         	 * 
         	 * 1.	Bold letters
