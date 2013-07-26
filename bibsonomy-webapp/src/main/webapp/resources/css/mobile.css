@@ -66,19 +66,16 @@ a {
 }
 
 #menu li a.active {
-	
 	background: #336699;
 	color: #FFFFFF;
 }
 
 #menu #nav_search {
-	
 	width: 20px;
 	background: #EEEEEE url('../image/mobile/search_inactive.png') center center no-repeat;
 }
 
 #menu #nav_search.active {
-
 	background: #336699 url('../image/mobile/search_active.png') center center no-repeat;
 }
 
@@ -93,8 +90,7 @@ a {
 	min-height: 500px;
 }
 
-#resources-toggle a,  #login-bar a, #post-toggle a{
-	
+#resources-toggle a,  #login-bar a, #post-toggle a {
 	display: block;
 	float: left;
 	background: #FFFFFF;
