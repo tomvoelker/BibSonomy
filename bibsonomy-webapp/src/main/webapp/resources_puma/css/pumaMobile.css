@@ -34,35 +34,30 @@ a {
 	text-decoration: none;
 }
 
-
 #menu li a {
 	background: #CBCBCB;
-    border-radius: 5px 5px 0 0;
-    color: #000000;
-    display: block;
-    font-size: 0.8em;
-    font-weight: bold;
-    margin-top: 0.65em;
-    padding: 5px 10px;
-    text-decoration: none;
-    text-transform: uppercase;
+	border-radius: 5px 5px 0 0;
+	color: #000000;
+	display: block;
+	font-size: 0.8em;
+	font-weight: bold;
+	margin-top: 0.65em;
+	padding: 5px 10px;
+	text-decoration: none;
+	text-transform: uppercase;
 }
 
 #menu li a.active {
-	
 	background: #DF430D;
 	color: #FFFFFF;
 }
 
 #menu #nav_search {
-	
-	width: 20px;
-	background: #CBCBCB url('../image/mobile/search_inactive.png') center center no-repeat;
+	background-color: #CBCBCB;
 }
 
 #menu #nav_search.active {
-
-	background: #DF430D url('../image/mobile/search_active.png') center center no-repeat;
+	background-color: #DF430D;
 }
 
 #toolbar {
@@ -71,12 +66,10 @@ a {
     padding: 5px;
 }
 
-
 #resources-toggle a.active, #resources-toggle #bookmark-add, #login-bar a.active, #post-toggle a.active  {
 	background: #CBCBCB;
 	color: #000000;
 }
-
 
 #search-bar input[type="text"] {
 	
@@ -122,7 +115,3 @@ a {
 	padding: 5px;
 	font-size: 0.8em;
 }
-
-
-
-
