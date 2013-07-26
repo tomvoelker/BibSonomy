@@ -122,7 +122,7 @@ public abstract class PostComparator implements Serializable {
 	 */
 	protected int compare (final int i1, final int i2, final SortOrder order) throws SortKeyIsEqualException {
 		int comp = 0;
-		if (order.equals(SortOrder.ASC)) {
+		if (SortOrder.ASC.equals(order)) {
 			comp = i1 - i2;
 		} else {
 			comp = i2 - i1;
