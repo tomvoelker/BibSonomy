@@ -3,8 +3,6 @@ package org.bibsonomy.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -14,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.webapp.command.ajax.AjaxDocumentCommand;
@@ -160,17 +159,14 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		 */
 		logic.updateDocument(document, intraHash, newName);
 		
-		try {
-			final String response = messageSource.getMessage("bibtex.actions.filerenamed", new Object[] {URLEncoder.encode(fileName, "UTF-8"), URLEncoder.encode(newName, "UTF-8")}, locale);
-			
-			return  "<root><status>renamed</status>" +
-					"<response>" + response + "</response>" +
-					"<oldName>" + URLEncoder.encode(fileName, "UTF-8") + "</oldName>" +
-					"<newName>" + URLEncoder.encode(newName, "UTF-8") + "</newName>" +
-					"</root>";
-		} catch (UnsupportedEncodingException ex) {
-			return getXmlRenameError("post.bibtex.internalProblemRename", null, command.getFileID(), null, locale);
-		}
+		
+		final String response = messageSource.getMessage("bibtex.actions.filerenamed", new Object[] {UrlUtils.safeURIEncode(fileName), UrlUtils.safeURIEncode(newName)}, locale);
+		
+		return  "<root><status>renamed</status>" +
+				"<response>" + response + "</response>" +
+				"<oldName>" + UrlUtils.safeURIEncode(fileName) + "</oldName>" +
+				"<newName>" + UrlUtils.safeURIEncode(newName) + "</newName>" +
+				"</root>";
 	}
 
 	/**
