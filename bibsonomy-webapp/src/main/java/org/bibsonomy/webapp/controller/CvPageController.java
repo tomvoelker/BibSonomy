@@ -32,21 +32,19 @@ public class CvPageController extends ResourceListController implements Minimali
 	 */
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
-		
 		final String requestedUser = command.getRequestedUser();
-		final User requestedUserWithDetails = this.logic.getUserDetails(requestedUser);
-		
-		//prevent showing cv pages of deleted users
-		if(!present(requestedUserWithDetails.getName()) || requestedUserWithDetails.getRole() == Role.DELETED) {
-			throw new ObjectNotFoundException(requestedUser);
-		}
-		
-		command.setPageTitle("Curriculum vitae");
-
 		if (!present(requestedUser)) {
 			throw new MalformedURLSchemeException("error.cvpage_without_username");
 		}
 		
+		final User requestedUserWithDetails = this.logic.getUserDetails(requestedUser);
+		
+		// don't render cv pages of deleted users
+		if (!present(requestedUserWithDetails.getName()) || requestedUserWithDetails.getRole() == Role.DELETED) {
+			throw new ObjectNotFoundException(requestedUser);
+		}
+		
+		command.setPageTitle("Curriculum vitae");
 		command.setUser(requestedUserWithDetails);
 
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
