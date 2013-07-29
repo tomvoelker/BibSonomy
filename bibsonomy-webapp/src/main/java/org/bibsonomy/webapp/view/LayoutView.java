@@ -81,7 +81,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 					/*
 					 * render publication posts
 					 */
-					renderResponse(layout, requPath, publicationPosts, loginUserName, response, formatEmbedded);
+					renderResponse(layout, requPath, publicationPosts, loginUserName, response, formatEmbedded, command);
 				} else {
 					/*
 					 * we could not find a suitable renderer - this should never happen!
@@ -128,7 +128,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	 * @throws LayoutRenderingException
 	 * @throws IOException
 	 */
-	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbedded) throws LayoutRenderingException, IOException {
+	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbedded, SimpleResourceViewCommand command) throws LayoutRenderingException, IOException {
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
 
 		log.info("got layout " + layout);
@@ -142,12 +142,15 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 */				
 		response.setContentType(layout.getMimeType());
 		response.setCharacterEncoding("UTF-8");
-		final String extension = layout.getExtension();
+		String extension = layout.getExtension();
 		/*
 		 * If an extension is given, which is differrent from ".html", this suggests to the 
 		 * browser to show a file dialog.
 		 */
-		if (present(extension) && !extension.equalsIgnoreCase(".html")) {
+		if (command.isDownload() || !extension.equalsIgnoreCase(".html")) {
+			if (!present(extension)) {
+				extension = "." + command.getFormat();
+			}
 			response.setHeader("Content-Disposition", "attachement; filename=" + Functions.makeCleanFileName(requPath) + extension);
 		}
 		/*
