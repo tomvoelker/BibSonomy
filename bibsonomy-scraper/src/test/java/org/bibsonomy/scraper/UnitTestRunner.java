@@ -23,13 +23,10 @@
 
 package org.bibsonomy.scraper;
 
-import java.io.IOException;
 import java.util.List;
 
 import junit.framework.TestResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
@@ -42,99 +39,24 @@ import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
  */
 public class UnitTestRunner {
 
-	private static final String LINE = "------------------------------------------------------------------------";
-
-	private final Log log = LogFactory.getLog(UnitTestRunner.class);
-
 	/**
 	 * Importer which reads the tests from a external sources.
 	 */
-	private IUnitTestImporter importer = null;
+	private static IUnitTestImporter IMPORTER = new XMLUnitTestImporter();
 
 	/**
-	 * Init the Importer
-	 */
-	public UnitTestRunner(){
-		// importer for xml + bib file sources
-		importer = new XMLUnitTestImporter();
-	}
-
-	/**
-	 * This Method reads and runs the unit tests.
-	 */
-	@Deprecated
-	public void run(){
-
-		try {
-			if (importer == null)
-				throw new Exception("no UnitTestImporter available");
-
-			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
-
-			/*
-			 * run tests
-			 */
-			int errorCtr = 0;
-			int testCtr = 0;
-			for (final ScraperUnitTest test : unitTests){
-				if (test.isEnabled()) {
-					testCtr++;
-					test.setTestResult(test.run());
-					if (test.isTestFailed()) errorCtr++;
-				}
-			}
-
-			/*
-			 * print output
-			 */
-			if (errorCtr > 0) {
-
-				/*
-				 * print overview
-				 */
-				log.info(LINE);
-				log.info("Tests run: " + unitTests.size() + ", Failures: " + errorCtr + ", Skipped: " + (unitTests.size() - testCtr));
-				log.info("");
-
-				log.warn("Failed tests:");
-				log.warn("");
-				for (final ScraperUnitTest test : unitTests) {
-					if (test.isTestFailed()) {
-						log.warn("  " + test.getScraperClass().getSimpleName() + ": " + test.getScraperTestId() );
-					}
-				}
-				log.warn("");
-				log.warn(LINE);
-				
-				/*
-				 * print details
-				 */
-				log.warn("Details:");
-				for (final ScraperUnitTest test : unitTests) {
-					if (test.isTestFailed()) {
-						test.printTestFailure();
-					}
-				}
-			}
-
-
-		} catch (final Exception e) {
-			ParseFailureMessage.printParseFailureMessage(e, "main class");
-		}
-	}
-
-	/**
-	 * Runs a single URLSCraperUnitTest, which ist referenced by its ID.
+	 * Runs a single URLSCraperUnitTest, which is referenced by its ID.
+	 * 
 	 * @param testId ID from URL test
 	 * @return result of the test
 	 */
-	public boolean runSingleTest(String testId){
+	public static boolean runSingleTest(String testId){
 
 		try {
-			if (this.importer == null)
+			if (IMPORTER == null)
 				throw new Exception("no UnitTestImporter available");
 
-			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
+			final List<ScraperUnitTest> unitTests = IMPORTER.getUnitTests();
 
 			for (final ScraperUnitTest test : unitTests){
 				if (test.getScraperTestId().equals(testId)){
@@ -155,16 +77,16 @@ public class UnitTestRunner {
 	}
 
 	/**
-	 * Runs a single URLSCraperUnitTest, which ist referenced by its ID and returns test and its results.
+	 * Runs a single URLSCraperUnitTest, which is referenced by its ID and returns test and its results.
 	 * @param testId ID from URL test
 	 * @return scraped bibtex, null if scraping failed
 	 */
-	public URLScraperUnitTest getUrlUnitTest(String testId) {
+	public static URLScraperUnitTest getUrlUnitTest(final String testId) {
 		try {
-			if(importer == null)
+			if (IMPORTER == null)
 				throw new Exception("no UnitTestImporter available");
 
-			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
+			final List<ScraperUnitTest> unitTests = IMPORTER.getUnitTests();
 
 			for (final ScraperUnitTest test : unitTests){
 				if (test.getScraperTestId().equals(testId)){
@@ -182,15 +104,6 @@ public class UnitTestRunner {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
 		return null;
-	}
-
-	/**
-	 * starts the whole party
-	 * @param args not needed
-	 * @throws IOException 
-	 */
-	public static void main(String[] args) throws IOException{
-		new UnitTestRunner().run();
 	}
 
 }

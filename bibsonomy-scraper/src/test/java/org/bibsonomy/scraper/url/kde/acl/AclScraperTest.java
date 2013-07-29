@@ -43,7 +43,7 @@ public class AclScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(new UnitTestRunner().runSingleTest("url_108"));
+		assertTrue(UnitTestRunner.runSingleTest("url_108"));
 	}
 	
 }

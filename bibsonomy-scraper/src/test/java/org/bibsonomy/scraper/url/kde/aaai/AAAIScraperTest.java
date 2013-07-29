@@ -26,30 +26,28 @@ package org.bibsonomy.scraper.url.kde.aaai;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * @author hagen
  *
  */
+@Category(RemoteTest.class)
 public class AAAIScraperTest {
 	/**
 	 * starts URL test with id url_237
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_237"));
+		assertTrue(UnitTestRunner.runSingleTest("url_237"));
 	}
 	/**
 	 * starts URL test with id url_240
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_240"));
+		assertTrue(UnitTestRunner.runSingleTest("url_240"));
 	}
 }

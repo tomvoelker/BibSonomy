@@ -65,8 +65,7 @@ public class ReplaceBibtexFile {
 	public static void replaceBibtex(final String id) throws IOException {
 		System.out.println("Test: " + id);
 		System.out.println("running test");
-		final UnitTestRunner runner = new UnitTestRunner();
-		final URLScraperUnitTest test = runner.getUrlUnitTest(id);
+		final URLScraperUnitTest test = UnitTestRunner.getUrlUnitTest(id);
 		if (test != null){
 			System.out.println("test finished");
 			final String bibFile = test.getBibFile();
