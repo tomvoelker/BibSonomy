@@ -24,7 +24,6 @@
 package org.bibsonomy.scraper;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import junit.framework.TestResult;
@@ -45,7 +44,7 @@ public class UnitTestRunner {
 
 	private static final String LINE = "------------------------------------------------------------------------";
 
-	private Log log = LogFactory.getLog(UnitTestRunner.class);
+	private final Log log = LogFactory.getLog(UnitTestRunner.class);
 
 	/**
 	 * Importer which reads the tests from a external sources.
@@ -63,6 +62,7 @@ public class UnitTestRunner {
 	/**
 	 * This Method reads and runs the unit tests.
 	 */
+	@Deprecated
 	public void run(){
 
 		try {
@@ -131,25 +131,24 @@ public class UnitTestRunner {
 	public boolean runSingleTest(String testId){
 
 		try {
-			if (importer == null)
+			if (this.importer == null)
 				throw new Exception("no UnitTestImporter available");
 
 			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
 
 			for (final ScraperUnitTest test : unitTests){
 				if (test.getScraperTestId().equals(testId)){
-					TestResult result = test.run();
+					final TestResult result = test.run();
 					test.setTestResult(result);
-					if(result.errorCount() > 0 || result.failureCount() > 0) {
+					if (result.errorCount() > 0 || result.failureCount() > 0) {
 						test.printTestFailure();
 						return false;
-					} else {
-						return true;
 					}
+					return true;
 				}
 			}
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
 		return false;

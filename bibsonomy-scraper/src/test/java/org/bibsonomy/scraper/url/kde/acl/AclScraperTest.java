@@ -26,24 +26,24 @@ package org.bibsonomy.scraper.url.kde.acl;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #108 for AclScraper
  * @author tst
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class AclScraperTest {
 
 	/**
 	 * starts URL test with id url_108
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_108"));
+		assertTrue(new UnitTestRunner().runSingleTest("url_108"));
 	}
 	
 }
