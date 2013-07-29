@@ -17,7 +17,7 @@ import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.services.renderer.LayoutRenderer;
-import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.BaseCommandController;
@@ -45,11 +45,11 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * get the data
 		 */
 		final Object object = model.get(BaseCommandController.DEFAULT_COMMAND_NAME);
-		if (object instanceof SimpleResourceViewCommand) {
+		if (object instanceof LayoutViewCommand) {
 			/*
 			 * we can only handle SimpleResourceViewCommands ...
 			 */
-			final SimpleResourceViewCommand command = (SimpleResourceViewCommand) object;
+			final LayoutViewCommand command = (LayoutViewCommand) object;
 			final String loginUserName = command.getContext().getLoginUser().getName();
 
 			/*
@@ -121,14 +121,14 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	 * @param <T>
 	 * @param layoutName
 	 * @param requPath
-	 * @param posts
+	 * @param publicationPosts
 	 * @param loginUserName
 	 * @param response
 	 * 
 	 * @throws LayoutRenderingException
 	 * @throws IOException
 	 */
-	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbedded, SimpleResourceViewCommand command) throws LayoutRenderingException, IOException {
+	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<BibTex>> publicationPosts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbedded, LayoutViewCommand command) throws LayoutRenderingException, IOException {
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
 
 		log.info("got layout " + layout);
@@ -136,7 +136,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * First: do the real rendering, such that when an exception is thrown, we can forward to a JSP,
 		 * since response.getOutputStream() hasn't been called yet,
 		 */
-		final StringBuffer buf = layoutRenderer.renderLayout(layout, posts, formatEmbedded);
+		final StringBuffer buf = layoutRenderer.renderLayout(layout, publicationPosts, formatEmbedded);
 		/*
 		 * set the content type headers
 		 */				
