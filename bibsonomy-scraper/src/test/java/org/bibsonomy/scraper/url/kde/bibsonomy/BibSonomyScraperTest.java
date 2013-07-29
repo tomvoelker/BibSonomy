@@ -26,14 +26,16 @@ package org.bibsonomy.scraper.url.kde.bibsonomy;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests for BibSonomyScraper
  * @author tst
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class BibSonomyScraperTest {
 	
 	/**
@@ -58,7 +60,6 @@ public class BibSonomyScraperTest {
 	 * starts URL test with id url_209
 	 */
 	@Test
-	@Ignore // TODO: remove as soon as bibsonomy supports /publication
 	public void url3TestRun(){
 		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_209"));
@@ -68,7 +69,6 @@ public class BibSonomyScraperTest {
 	 * starts URL test with id url_210
 	 */
 	@Test
-	@Ignore // TODO: remove as soon as bibsonomy supports /publication
 	public void url4TestRun(){
 		final UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_210"));
