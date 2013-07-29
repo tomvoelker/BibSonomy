@@ -7,12 +7,12 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.webapp.command.ajax.AjaxDocumentCommand;
@@ -160,12 +160,12 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		logic.updateDocument(document, intraHash, newName);
 		
 		
-		final String response = messageSource.getMessage("bibtex.actions.filerenamed", new Object[] {UrlUtils.safeURIEncode(fileName), UrlUtils.safeURIEncode(newName)}, locale);
+		final String response = messageSource.getMessage("bibtex.actions.filerenamed", new Object[] {StringEscapeUtils.escapeXml(fileName), StringEscapeUtils.escapeXml(newName)}, locale);
 		
 		return  "<root><status>renamed</status>" +
 				"<response>" + response + "</response>" +
-				"<oldName>" + UrlUtils.safeURIEncode(fileName) + "</oldName>" +
-				"<newName>" + UrlUtils.safeURIEncode(newName) + "</newName>" +
+				"<oldName>" + StringEscapeUtils.escapeXml(fileName) + "</oldName>" +
+				"<newName>" + StringEscapeUtils.escapeXml(newName) + "</newName>" +
 				"</root>";
 	}
 

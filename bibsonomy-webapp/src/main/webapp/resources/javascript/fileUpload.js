@@ -54,18 +54,12 @@ function renameClicked() {
 	/*
 	 * build rename form
 	 */
-	var nameMatcher = /fileName=([^<>\\\/]*)&action=rename$/.exec($(this).attr('href'));
-	var name;
-	if(nameMatcher != null) {
-		name = decodeURI(nameMatcher[1]).replace(/%26/g, "&");
-	} else {
-		return false;
-	}
+	var name = $(this).data('filename');
 	
 	/*
 	 * the same rename button was clicked twice, so hide the rename form and do nothing 
 	 */
-	if(currentName && currentName == name) {
+	if (currentName && currentName == name) {
 		return false;
 	}
 	
@@ -442,21 +436,22 @@ function renameRequestSuccessful(data) {
 	/*
 	 * get response data
 	 */
-	var oldName = $("<div />").text($("oldName", data).text()).html();
-	var newName = $("<div />").text($("newName", data).text()).html();
-	var oldNameEscaped =  decodeURI($("<div />").text($("oldName", data).text()).html()).replace(/%26/g, "&");
-	var newNameEscaped =  decodeURI($("<div />").text($("newName", data).text()).html()).replace(/%26/g, "&");
-	var response = decodeURI($("response", data).text()).replace(/%26/g, "&");
+	var oldName = $("oldName", data).text();
+	var newName = $("newName", data).text();
+	var response = $("response", data).text();
 	
 	/*
 	 * find and update all links, containing old filenames
 	 */
-	var toRename = $('a:contains("' + oldNameEscaped +'")').filter(function(index) {
-		return $(this).text() == oldNameEscaped;
+	var toRename = $('a:contains("' + oldName +'")').filter(function(index) {
+		return $(this).text() == oldName;
 	});
 	
-	$('a[href*="' + oldName +'"]').each(function() {
-		var newHref = $(this).prop("href").replace(oldName, newName);
+	// XXX: java is encoding whitespace as +, javascript as %20 :(
+	var encodedOldName = encodeURIComponent(oldName).replace(/%20/g, '+');
+	var encodedNewName = encodeURIComponent(newName).replace(/%20/g, '+');
+	$('a[href*="' + encodedOldName +'"]').each(function() {
+		var newHref = $(this).prop("href").replace(encodedOldName, encodedNewName);
 		$(this).prop("href", newHref);
 		if($(this).attr("title") && !$(this).hasClass('renameDoc')) {
 			$(this).prop("title", newName);
@@ -469,7 +464,7 @@ function renameRequestSuccessful(data) {
 	/*
 	 * find and update all preview pictures which contain outdated filenames
 	 */
-	$('img[alt="'+oldName+'"]').each(function() {
+	$('img[alt="'+ oldName +'"]').each(function() {
 		if($(this).attr("href")) {
 			var newHref = $(this).prop("href").replace(oldName, newName);
 			$(this).prop("href", newHref);
@@ -479,7 +474,8 @@ function renameRequestSuccessful(data) {
 		}
 	});
 	
-	toRename.text(newNameEscaped);
+	toRename.text(newName);
+	toRename.siblings().filter('a:last').data('filename', newName);
 	
 	/*
 	 * print status 

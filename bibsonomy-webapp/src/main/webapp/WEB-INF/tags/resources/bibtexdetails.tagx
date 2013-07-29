@@ -230,34 +230,42 @@
 									<c:if test="${isOwnEntry}">
 										<!-- delete -->
 										<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
-										<a class="deleteDocument" title="${deleteTitle}" href="/ajax/documents?intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"></a>
+										
+										<c:url var="deleteUrl" value="/ajax/documents">
+											<c:param name="intraHash" value="${post.resource.intraHash}" />
+											<c:param name="fileName" value="${document.fileName}" />
+											<c:param name="ckey" value="${ckey}" />
+											<c:param name="temp" value="false" />
+											<c:param name="action" value="delete" />
+										</c:url>
+										<a class="deleteDocument" title="${deleteTitle}" href="${deleteUrl}"></a>
 										<!-- rename -->
 										<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
-										<a class="renameDoc" title="${renameTitle}" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename"></a>
+										<a class="renameDoc" title="${renameTitle}" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" data-filename="${fn:escapeXml(document.fileName)}"></a>
 									</c:if>
 								</li>
 							</c:forEach>
-				  			<!--+
-				  				|
-				  				| add another document
-				  				|
-				  				+-->
-			  				<c:if test="${isOwnEntry}">
-			  				<li style="list-style-image: url(${resdir}/image/document-txt-light.png)">
-			  					<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
-				  					<fmt:message key="bibtex.actions.additionalFiles"/>
-				  				</a>
-			  					<div id="inputDiv">
-			  					<!-- keep me! - temporary content -->
-			  					</div>
-			  				</li>
-			  				</c:if>
-			  			</ul>
-			  		</td>
-			  		</tr>
-			  	</c:if>				
+							<!--+
+								|
+								| add another document
+								|
+								+-->
+							<c:if test="${isOwnEntry}">
+							<li style="list-style-image: url(${resdir}/image/document-txt-light.png)">
+								<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+									<fmt:message key="bibtex.actions.additionalFiles"/>
+								</a>
+								<div id="inputDiv">
+								<!-- keep me! - temporary content -->
+								</div>
+							</li>
+							</c:if>
+						</ul>
+					</td>
+					</tr>
+				</c:if>
 			</table>
-		</div>		
+		</div>
 		
 		<!--+
 			| abstract
