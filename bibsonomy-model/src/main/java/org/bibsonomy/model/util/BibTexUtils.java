@@ -775,6 +775,9 @@ public class BibTexUtils {
 	 * @return an integer representation of the year, or Integer.MAX_VALUE if it fails
 	 */
 	public static int getYear(final String year) {
+		if (year == null) {
+			return Integer.MAX_VALUE;
+		}
 		try {
 			return Integer.parseInt(year);
 		} catch (final NumberFormatException ignore) {
