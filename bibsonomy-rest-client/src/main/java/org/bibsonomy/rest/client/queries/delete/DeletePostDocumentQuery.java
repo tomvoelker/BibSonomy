@@ -63,7 +63,8 @@ public class DeletePostDocumentQuery extends AbstractQuery<String>{
 	
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder((new UrlRenderer("").createHrefForUser(userName)));
+		// TODO: fix Urlrenderer and use #createHrefForResourceDocument
+		final UrlBuilder urlBuilder = new UrlBuilder((new UrlRenderer("").createHrefForUser(userName)));
 		urlBuilder.addPathElement(RESTConfig.POSTS_URL);
 		urlBuilder.addPathElement(this.resourceHash);
 		urlBuilder.addPathElement(RESTConfig.DOCUMENTS_SUB_PATH);
