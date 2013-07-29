@@ -63,7 +63,8 @@ public final class DeletePostQuery extends AbstractQuery<String> {
 
 	@Override
 	protected String doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
+		// TODO: use the UrlRenderer#createHrefForResource
+		final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
 		urlBuilder.addPathElement(this.userName);
 		urlBuilder.addPathElement(RESTConfig.POSTS_URL);
 		urlBuilder.addPathElement(this.resourceHash);

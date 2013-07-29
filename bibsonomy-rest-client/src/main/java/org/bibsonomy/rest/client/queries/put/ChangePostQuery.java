@@ -105,7 +105,8 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializePost(sw, post, null);
-		UrlBuilder ub = new UrlBuilder(RESTConfig.USERS_URL).addPathElement(this.username).addPathElement(RESTConfig.POSTS_URL).addPathElement(this.resourceHash);
+		// TODO: use the UrlRenderer#createHrefForResource
+		final UrlBuilder ub = new UrlBuilder(RESTConfig.USERS_URL).addPathElement(this.username).addPathElement(RESTConfig.POSTS_URL).addPathElement(this.resourceHash);
 		this.downloadedDocument = performRequest(HttpMethod.PUT, ub.asString(), sw.toString());
 		return null;
 	}
