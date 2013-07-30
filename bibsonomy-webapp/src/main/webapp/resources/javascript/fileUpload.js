@@ -351,8 +351,10 @@ function uploadRequestSuccessful(data) {
 		var fileHash  = $("filehash", data).text();
 		var intrahash = $("intrahash", data).text();
 		var fileName  = $("filename", data).text();
+		
+		var encodedFileName = encodeURIComponent(fileName).replace(/%20/g, '+');
 
-		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(fileName);
+		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(encodedFileName);
 		var documentHelp = getString("bibtex.actions.private_document.download");
 		//var documentImg = "<img src='" + documentUploadSuccessIcon +"' style='float: left;'/>";
 		
@@ -379,8 +381,9 @@ function uploadRequestSuccessful(data) {
 			var aQrCode    = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>";
 			var aNoQrCode  = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>";
 			var imgPreview = "<img style='display:none;' class='pre_pic' src='" + documentUri + "?preview=SMALL' alt='" + fileName + "' />";
-			var aDel       = "<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ fileName + "&ckey=" + ckey + "&temp=false&action=delete'></a>";
-			var aRename = "<a class='renameDoc' href='/ajax/documents?ckey="+ckey+"&temp=false&intraHash=" + intrahash + "&fileName="+ fileName +"&action=rename'></a>";
+			var aDel       = "<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete'></a>";
+			var aRename = "<a class='renameDoc' href='/ajax/documents?ckey="+ckey+"&temp=false&intraHash=" + intrahash + "&fileName="+
+			encodedFileName +"&action=rename' data-filename='" + encodedFileName +"'></a>";
 			/*
 			 * check if file ends with '.pdf'
 			 */			
