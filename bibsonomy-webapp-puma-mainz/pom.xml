@@ -42,7 +42,7 @@
 			<activation>
 				<property>
 					<name>deploy-to</name>
-					<value>puma_mz_dev</value>
+					<value>puma_mainz_dev</value>
 				</property>
 			</activation>
 			<properties>

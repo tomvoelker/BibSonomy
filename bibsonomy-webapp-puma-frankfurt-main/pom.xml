@@ -57,7 +57,7 @@
 			<activation>
 				<property>
 					<name>deploy-to</name>
-					<value>puma_ffm_dev</value>
+					<value>puma_frankfurt-main_dev</value>
 				</property>
 			</activation>
 			<properties>
