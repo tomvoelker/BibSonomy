@@ -19,9 +19,9 @@
 		</c:when>
 		<c:otherwise>
 			<fmt:message var="pickPublications" key="post.meta.pick.title"/>
-			<a href="" title="${pickPublications}" onclick="pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}	  			
+			<a href="" title="${pickPublications}" onclick="return pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}	  			
 			<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
-			<a href="" title="${unPickPublications}" onclick="unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
+			<a href="" title="${unPickPublications}" onclick="return unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
 		</c:otherwise>
 	</c:choose>
 
