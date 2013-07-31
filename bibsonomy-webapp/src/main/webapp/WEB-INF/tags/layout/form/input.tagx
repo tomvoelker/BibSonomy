@@ -24,7 +24,7 @@
 		<c:if test="${empty noHelp or not noHelp}"><buttons:help message="${path}.help" helpPage="${helpPage}"/></c:if>
 		
 		<!-- input -->
-		<form:input cssClass="fsInput${small ? ' fsSmall' : ''}${required ? ' reqinput' : ''}" path="${path}" tabindex="2"/>
+		<form:input cssClass="fsInput${small ? ' fsSmall' : ''}${required ? ' reqinput' : ''}" path="${path}"/>
 		
 		<!-- errors -->
 		<div class="dissError"><form:errors path="${path}" /></div>
