@@ -204,8 +204,8 @@ public class Functions  {
 		final int count = org.apache.commons.lang.StringUtils.countMatches(uriString, "/");
 		
 		final int lio;
-		if (count > 3) {
-			lio = uriString.indexOf("/", uriString.indexOf("/", uriString.indexOf("/") + 1) + 1);
+		if (count > 2) {
+			lio = uriString.indexOf("/", uriString.indexOf("/") + 1);
 //			lio = uriString.indexOf("/", uriString.indexOf("/") + 1);
 		} else {
 			lio = uriString.lastIndexOf("/");

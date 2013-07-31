@@ -59,16 +59,16 @@ public class FunctionsTest {
 	
 	@Test
 	public void testGetLowerPath() {
-		assertEquals("/user", Functions.getLowerPath("/user/jaeschke"));
-		assertEquals("/user/jaeschke", Functions.getLowerPath("/user/jaeschke/foo"));
-		assertEquals("/user/jaeschke", Functions.getLowerPath("/user/jaeschke/foo"));
+		assertEquals("user", Functions.getLowerPath("user/jaeschke"));
+		assertEquals("user/jaeschke", Functions.getLowerPath("user/jaeschke/foo"));
+		assertEquals("user/jaeschke", Functions.getLowerPath("user/jaeschke/foo"));
 		// tags with slash did not work with the first implementation: 
-		assertEquals("/user/foobar", Functions.getLowerPath("/user/foobar/use:doi:10.0000/WWW:DD:1.0.0"));
+		assertEquals("user/foobar", Functions.getLowerPath("user/foobar/use:doi:10.0000/WWW:DD:1.0.0"));
 		// TODO: still does not work (requires separate method or parameter for different pages
 //		assertEquals("/tag", Functions.getLowerPath("/tag/use:doi:10.0000/WWW:DD:1.0.0"));
-		assertEquals("/user/thomaslevine", Functions.getLowerPath("/user/thomaslevine/pinyin \\xe4\\xb8\\xad\\xe6\\x96\\x87 education China software korean Language?lang=en&.entriesPerPage=5"));
-		assertEquals("/search", Functions.getLowerPath("/search/clustering"));
-		assertEquals("", Functions.getLowerPath("/groups"));
+		assertEquals("user/thomaslevine", Functions.getLowerPath("user/thomaslevine/pinyin \\xe4\\xb8\\xad\\xe6\\x96\\x87 education China software korean Language?lang=en&.entriesPerPage=5"));
+		assertEquals("search", Functions.getLowerPath("search/clustering"));
+		assertEquals("", Functions.getLowerPath("groups"));
 	}
 	
 	@Test
