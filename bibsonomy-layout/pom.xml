@@ -28,7 +28,7 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-bibtex-parser</artifactId>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
@@ -62,7 +62,13 @@
 			<artifactId>json-lib</artifactId>
 			<classifier>jdk15</classifier>
 			<version>2.4</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
