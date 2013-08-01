@@ -9,6 +9,7 @@
 		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
 		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
 		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
 		"active":true
 	},
 	{
@@ -21,6 +22,7 @@
 		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome_sb.png",
 		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome_sb.png",
 		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome_sb.png",
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon_sb.png",
 		"active":true
 	}
 ]}
