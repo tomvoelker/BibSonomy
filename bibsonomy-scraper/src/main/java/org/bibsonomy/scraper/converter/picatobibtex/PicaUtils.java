@@ -25,6 +25,7 @@ package org.bibsonomy.scraper.converter.picatobibtex;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.text.Normalizer;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -63,7 +64,10 @@ public class PicaUtils {
 		if (present(row)) {
 			final List<String> subField = row.getSubField(subCategory);
 			if (present(subField)) {
-				return subField.get(0);
+				final String rVal = subField.get(0);
+				if (rVal != null) {
+					return Normalizer.normalize(rVal, Normalizer.Form.NFC);
+				}
 			}
 		}
 		return defaultValue;
