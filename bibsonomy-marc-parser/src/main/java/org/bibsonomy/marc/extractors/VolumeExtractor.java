@@ -6,6 +6,7 @@ import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Lukas
@@ -36,17 +37,23 @@ public class VolumeExtractor implements AttributeExtractor {
 			//try to get volume on 036E first
 			volume = record.getFirstPicaFieldValue("036E", "$l");
 			
-			if(volume != null) {
-				target.setVolume(volume);
+			if(ValidationUtils.present(volume)) {
+				target.setVolume(Normalizer.normalize(volume.trim(), Normalizer.Form.NFC));
 				return;
 			}
 			
 			//try to get volume on 036E if 036E was not set
 			volume = record.getFirstPicaFieldValue("036F", "$l");
-			if (volume != null) {
-				target.setVolume(Normalizer.normalize(volume, Normalizer.Form.NFC));
+			if (ValidationUtils.present(volume)) {
+				target.setVolume(Normalizer.normalize(volume.trim(), Normalizer.Form.NFC));
+				return;
 			}
 			
+			// some newspapers have a volume set in 031A $d  // TODO: ask Martina if this is correct
+			volume = record.getFirstPicaFieldValue("031A", "$d");
+			if (ValidationUtils.present(volume)) {
+				target.setVolume((Normalizer.normalize(volume.trim(), Normalizer.Form.NFC)));
+			}
 		}
 		
 	}
