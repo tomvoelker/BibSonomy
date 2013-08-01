@@ -32,7 +32,8 @@ public abstract class AbstractDataDownloadingTestCase {
 	protected DualData downloadMarcWithPica(String hebisId) {
 		Document doc;
 		try {
-			doc = parse(new URL("http://wastl.hebis.uni-frankfurt.de:8983/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));
+			//doc = parse(new URL("http://wastl.hebis.uni-frankfurt.de:8983/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));
+			doc = parse(new URL("http://solr.hebis.de/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {

@@ -17,21 +17,26 @@ import org.junit.internal.matchers.IsCollectionContaining;
  */
 public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	@Test
-	@Ignore // TODO: change index url
 	public void testHEB291478336() {
 		BibTex bib = get("HEB291478336");
 		Assert.assertEquals(Arrays.asList(new PersonName("Gene", "Smith")), bib.getAuthor());
 	}
 	
 	@Test
-	@Ignore // TODO: change index url
 	public void testDependentPartTitle() {
 		BibTex bib = get("HEB105811688");
 		Assert.assertEquals("Werkausgabe: Tractatus logico-philosophicus", bib.getTitle());
 	}
 	
 	@Test
-	@Ignore // TODO: change index url
+	public void testPhysicalInfo() {
+		BibTex bib = get("HEB178705594");
+		Assert.assertEquals("25", bib.getPages());
+		Assert.assertEquals("10", bib.getDay());
+		Assert.assertEquals("5", bib.getMonth());
+	}
+	
+	@Test
 	public void testIndependentPartTitle() {
 		BibTex bib = get("HEB02269773X");
 		Assert.assertEquals("Seminumerical algorithms", bib.getTitle());
@@ -40,7 +45,6 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	}
 	
 	@Test
-	@Ignore // TODO: change index url
 	public void testMultivolume() {
 		BibTex bib = get("HEB009840354");
 		Assert.assertEquals("The art of computer programming", bib.getTitle());
@@ -49,7 +53,6 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	}
 	
 	@Test
-	@Ignore // TODO: change index url
 	public void testSpecialChars() {
 		BibTex bib = get("HEB107697521");
 		Assert.assertEquals("Falar... ler... escrever... Português: um curso para estrangeiros", bib.getTitle());
@@ -57,7 +60,6 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	}
 	
 	@Test
-	@Ignore // TODO: change index url
 	public void testPhdThesis() {
 		BibTex bib = get("HEB231779038");
 		Assert.assertEquals("Formal concept analysis and tag recommendations in collaborative tagging systems", bib.getTitle());
@@ -68,7 +70,6 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	}
 	
 	@Test
-	@Ignore // TODO: change index url
 	public void testContributor() {
 		BibTex bib = get("HEB226718743");
 		Assert.assertEquals("Algorithmen - eine Einführung", bib.getTitle());
@@ -82,7 +83,6 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	}
 	
 	@Test
-	@Ignore // TODO: change index url
 	public void testContributor2() {
 		BibTex bib = get("HEB207127891");
 		Assert.assertThat(bib.getAuthor(), IsCollectionContaining.hasItem(new PersonName("Yannick", "Versley")));
