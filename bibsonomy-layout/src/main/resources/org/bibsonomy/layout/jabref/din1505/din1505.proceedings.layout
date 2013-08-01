@@ -1,12 +1,12 @@
 <div style="margin-bottom:1em">
-\begin{organization}<span style="font-variant: small-caps">\format[XMLEscaper]\organization</span> (Veranst.):
-\end{organization}<i>\format[XMLEscaper]\title</i>\begin{series}
-\format[XMLEscaper]\series\end{series}\begin{volume}.
-\format[XMLEscaper]\volume\end{volume}\begin{number}.
-\format[XMLEscaper]\number\end{number}\begin{address}.
-\format[XMLEscaper]\address\end{address}\begin{publisher}
-: <span style="font-variant: small-caps">\format[XMLEscaper]\publisher</span>\end{publisher}\begin{year},
-\format[XMLEscaper]\year\end{year}\begin{note}. -
-\format[XMLEscaper]\note\end{note}\begin{isbn}. - ISBN
-\format[XMLEscaper]\isbn\end{isbn}
+\begin{organization}<span style="font-variant: small-caps">\format[XMLEscaper]{\organization}</span> (Veranst.):
+\end{organization}<i>\format[XMLEscaper]{\title}</i>\begin{series}
+\format[XMLEscaper]{\serie}s\end{series}\begin{volume}.
+\format[XMLEscaper]{\volume}\end{volume}\begin{number}.
+\format[XMLEscaper]{\number}\end{number}\begin{address}.
+\format[XMLEscaper]{\address}\end{address}\begin{publisher}
+: <span style="font-variant: small-caps">\format[XMLEscaper]{\publisher}</span>\end{publisher}\begin{year},
+\format[XMLEscaper]{\year}\end{year}\begin{note}. -
+\format[XMLEscaper]{\note}\end{note}\begin{isbn}. - ISBN
+\format[XMLEscaper]{\isbn}\end{isbn}
 </div>
