@@ -1,7 +1,7 @@
 \begin{author}
 \format[HTMLChars,XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
 \end{author}
- (\format[XMLEscaper]\year). 
+ (\format[XMLEscaper]{\year}). 
 \format[HTMLChars,XMLEscaper]{\title}. 
 In 
 \begin{editor}
@@ -9,10 +9,10 @@ In
 \end{editor}
 <i> \format[HTMLChars,XMLEscaper]{\booktitle}</i>
 \begin{volume}
-, Vol. \format[XMLEscaper]\volume
+, Vol. \format[XMLEscaper]{\volume}
 \end{volume}
 \begin{pages}
- (pp. \format[XMLEscaper]\pages)
+ (pp. \format[XMLEscaper]{\pages})
 \end{pages}. 
 \begin{publisher}
 \format[HTMLChars,XMLEscaper]{\publisher}

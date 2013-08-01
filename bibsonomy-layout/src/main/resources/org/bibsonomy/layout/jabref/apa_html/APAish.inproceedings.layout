@@ -2,7 +2,7 @@
 \format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author} 
 \end{author}
 \begin{year}
-(\format[XMLEscaper]\year). 
+(\format[XMLEscaper]{\year}). 
 \end{year}
 \begin{title}
 \format[HTMLChars,XMLEscaper]{\title}. 
@@ -11,7 +11,7 @@
 In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\editor} (eds.), 
 \end{editor}
 \begin{booktitle}
-<i>\format[HTMLChars,XMLEscaper]{\booktitle}</i>\end{booktitle}\begin{pages} (p./pp. \format[XMLEscaper]\pages)\end{pages},
+<i>\format[HTMLChars,XMLEscaper]{\booktitle}</i>\end{booktitle}\begin{pages} (p./pp. \format[XMLEscaper]{\pages})\end{pages},
 \begin{month}
 \format[HTMLChars,XMLEscaper]{\tech} 
 \format[HTMLChars,XMLEscaper]{\month}, 

@@ -1,11 +1,11 @@
-\format[HTMLChars,XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\format[XMLEscaper]\year). 
+\format[HTMLChars,XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author} (\format[XMLEscaper]{\year}). 
 <i> \format[HTMLChars,XMLEscaper]{\title}.</i>
 \begin{type}
 \format[HTMLChars,XMLEscaper]{\type}
 \end{type}
 Unpublished master's thesis
 \begin{school}
-, \format[XMLEscaper]\school
+, \format[XMLEscaper]{\school}
 \end{school}.
 <br/>
 <br/>

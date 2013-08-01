@@ -4,8 +4,8 @@
 \begin{editor}
  & \format[HTMLChars,XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (eds.)
 \end{editor}
- (\format[XMLEscaper]\year).
-<i> \format[HTMLChars,XMLEscaper]{\title}</i>\begin{volume}, Vol. \format[XMLEscaper]\volume\end{volume}. 
+ (\format[XMLEscaper]{\year}).
+<i> \format[HTMLChars,XMLEscaper]{\title}</i>\begin{volume}, Vol. \format[XMLEscaper]{\volume}\end{volume}. 
 \begin{location}
 \format[HTMLChars,XMLEscaper]{\location}: 
 \end{location}

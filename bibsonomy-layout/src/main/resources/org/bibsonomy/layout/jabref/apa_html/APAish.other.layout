@@ -1,6 +1,6 @@
 \begin{author}
 \format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author}\end{author}\begin{year}
-\format[XMLEscaper](\year)\end{year}.
+ (\format[XMLEscaper]{\year})\end{year}.
 \begin{title}
 <i>\format[HTMLChars,XMLEscaper]{\title}</i>.
 \end{title}
