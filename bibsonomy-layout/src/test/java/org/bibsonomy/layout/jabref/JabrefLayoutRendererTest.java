@@ -73,11 +73,10 @@ public class JabrefLayoutRendererTest {
 		return files;
 	}
 	
-	private static JabrefLayoutRenderer getRenderer() {
-		final JabrefLayoutRenderer renderer = new JabrefLayoutRenderer();
-		renderer.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
-		renderer.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
-		return renderer;
+	private static final JabrefLayoutRenderer RENDERER = new JabrefLayoutRenderer();
+	static {
+		RENDERER.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
+		RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
 	}
 	
 	private final File layoutTest;
@@ -88,7 +87,6 @@ public class JabrefLayoutRendererTest {
 	
     @Test
     public void testRender() throws Exception {
-	    final JabrefLayoutRenderer renderer = getRenderer();
 	    String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
 	    String layoutName = fileName;
 	    String entryType = "article";
@@ -98,9 +96,8 @@ public class JabrefLayoutRendererTest {
 	    	layoutName = parts[0];
 	    	entryType = parts[1];
 	    }
-	    final JabrefLayout layout = renderer.getLayout(layoutName, "foo");
-	    final StringBuffer renderedLayout = renderer.renderLayout(layout, getPosts(entryType), false);
-	    
+	    final JabrefLayout layout = RENDERER.getLayout(layoutName, "foo");
+	    final StringBuffer renderedLayout = RENDERER.renderLayout(layout, getPosts(entryType), false);
 	    assertEquals("layout: " + layoutName + ", entrytype: " + entryType, TestUtils.toString(new FileInputStream(this.layoutTest)).trim(), renderedLayout.toString().replaceAll("\\r", "").trim());
     }
 
@@ -129,7 +126,6 @@ public class JabrefLayoutRendererTest {
 		b2.setMonth("jun");
 		b2.setPrivnote("This is a test note"); 
 		b2.setAbstract("In this demo we present BibSonomy, a social bookmark and publication sharing system.");
-	
 		final Post<BibTex> p2 = new Post<BibTex>();
 		p2.setResource(b2);
 		p2.setUser(u);
