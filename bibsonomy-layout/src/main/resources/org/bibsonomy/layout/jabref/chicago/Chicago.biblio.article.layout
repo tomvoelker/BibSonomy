@@ -2,8 +2,8 @@
 \begin{author}
 \format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author}. \end{author}
 &quot;\format[HTMLChars,XMLEscaper]{\title}.&quot; <i>\format[HTMLChars,XMLEscaper]{\journal}</i>
-\begin{volume} \format[XMLEscaper]\volume\end{volume}
-\begin{number}, no. \format[XMLEscaper]\number\end{number} 
+\begin{volume} \format[XMLEscaper]{\volume}\end{volume}
+\begin{number}, no. \format[XMLEscaper]{\number}\end{number} 
 \begin{year}(\format[HTMLChars,XMLEscaper]{\year}): \end{year}
-\begin{pages}\format[XMLEscaper]\pages\end{pages}.
+\begin{pages}\format[XMLEscaper]{\pages}\end{pages}.
 </p>

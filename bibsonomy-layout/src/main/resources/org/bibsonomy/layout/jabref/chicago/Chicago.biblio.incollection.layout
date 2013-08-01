@@ -3,7 +3,7 @@
 \format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author}. \end{author}
 \begin{title}&quot;\format[HTMLChars,XMLEscaper]{\title}.&quot; \end{title} In <i> \format[HTMLChars,XMLEscaper]{\booktitle}</i>
 \begin{editor}, edited by \format[HTMLChars,XMLEscaper,AuthorFirstFirstCommas]{\editor}\end{editor}
-\begin{pages}, \format[XMLEscaper]\pages\end{pages}.
+\begin{pages}, \format[XMLEscaper]{\pages}\end{pages}.
 \begin{edition}\format[HTMLChars,XMLEscaper]{\edition}\end{edition} 
 \begin{address}\format[HTMLChars,XMLEscaper]{\address}\end{address}:
 \begin{publisher} \format[HTMLChars,XMLEscaper]{\publisher}\end{publisher}, 

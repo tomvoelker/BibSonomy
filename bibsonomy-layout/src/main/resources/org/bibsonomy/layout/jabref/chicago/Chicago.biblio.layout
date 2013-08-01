@@ -2,11 +2,11 @@
 \format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author} \format[HTMLChars,XMLEscaper]{\title}.
 
 \begin{journal}
-}<i> \format[HTMLChars,XMLEscaper]{\journal}</i>{ }<b> \format[XMLEscaper]\volume</b>{
+}<i> \format[HTMLChars,XMLEscaper]{\journal}</i>{ }<b> \format[XMLEscaper]{\volume}</b>{
 \end{journal}
 
 \begin{number}
- (\format[XMLEscaper]\number) 
+ (\format[XMLEscaper]{\number}) 
 \end{number}
 
 \begin{editor}
@@ -18,11 +18,11 @@
 \end{booktitle}
 
 \begin{organization}
-, \format[XMLEscaper]\organization
+, \format[XMLEscaper]{\organization}
 \end{organization}
 
 \begin{institution}
-, \format[XMLEscaper]\institution
+, \format[XMLEscaper]{\institution}
 \end{institution}
 
 \begin{publisher}
@@ -30,20 +30,20 @@
 \end{publisher}
 
 \begin{howpublished}
-, \format[XMLEscaper]\howpublished
+, \format[XMLEscaper]{\howpublished}
 \end{howpublished}
 
 \begin{address}
 , \format[HTMLChars,XMLEscaper]{\address}
 \end{address}
 
-(\format[XMLEscaper]\year).
+(\format[XMLEscaper]{\year}).
 \begin{note}
-, \format[XMLEscaper]\note
+, \format[XMLEscaper]{\note}
 \end{note}
 
 \begin{pages}
-, \format[XMLEscaper]\pages
+, \format[XMLEscaper]{\pages}
 \end{pages}
 
 .
