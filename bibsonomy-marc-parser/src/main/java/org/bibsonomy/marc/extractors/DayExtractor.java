@@ -17,6 +17,7 @@ public class DayExtractor implements AttributeExtractor {
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		String day = null;
+		 // TODO: ask Martina if this is correct
 		if (!ValidationUtils.present(day) && (src instanceof ExtendedMarcWithPicaRecord)) {
 			day = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("031A", "$b");
 		}
