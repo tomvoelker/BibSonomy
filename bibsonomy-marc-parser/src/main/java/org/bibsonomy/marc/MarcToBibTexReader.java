@@ -19,6 +19,7 @@ import org.bibsonomy.marc.extractors.ISBNExtractor;
 import org.bibsonomy.marc.extractors.JournalExtractor;
 import org.bibsonomy.marc.extractors.MonthExtractor;
 import org.bibsonomy.marc.extractors.NoteExtractor;
+import org.bibsonomy.marc.extractors.NumberExtractor;
 import org.bibsonomy.marc.extractors.OrganizationExtractor;
 import org.bibsonomy.marc.extractors.PagesExtractor;
 import org.bibsonomy.marc.extractors.PublisherExtractor;
@@ -71,6 +72,7 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new OrganizationExtractor());
 		extractors.add(new DayExtractor());
 		extractors.add(new MonthExtractor());
+		extractors.add(new NumberExtractor());
 		//must be placed in the chain after TypeExtractor
 		extractors.add(new NoteExtractor());
 		extractors.add(new EmergencyRepairingExtractor());
