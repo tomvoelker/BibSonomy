@@ -1,8 +1,12 @@
 package org.bibsonomy.marc.extractors;
 
+import java.text.Normalizer;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
+import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
@@ -12,8 +16,13 @@ public class DayExtractor implements AttributeExtractor {
 
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		// TODO Auto-generated method stub
-		
+		String day = null;
+		if (!ValidationUtils.present(day) && (src instanceof ExtendedMarcWithPicaRecord)) {
+			day = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("031A", "$b");
+		}
+		if (ValidationUtils.present(day)) {
+			target.setDay(Normalizer.normalize(day.trim(), Normalizer.Form.NFC));
+		}
 	}
 
 }
