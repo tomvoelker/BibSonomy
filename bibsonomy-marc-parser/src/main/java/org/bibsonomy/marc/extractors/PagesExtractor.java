@@ -47,7 +47,7 @@ public class PagesExtractor implements AttributeExtractor{
 //			pages = src.getFirstFieldValue("300", 'a');
 //		}
 		if (ValidationUtils.present(pages)) {
-			target.setPages(Normalizer.normalize(pages, Normalizer.Form.NFC));
+			target.setPages(Normalizer.normalize(pages.trim(), Normalizer.Form.NFC));
 		}
 		// + 31A $h (pages) (bei pages extractor)
 	}
