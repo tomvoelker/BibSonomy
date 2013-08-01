@@ -5,10 +5,10 @@
 \begin{editor}
 \format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\editor}, ed.
 \end{editor}
- (\format[XMLEscaper]\year), 
+ (\format[XMLEscaper]{\year}), 
  <i>\format[HTMLChars,XMLEscaper]{\title}</i>
 \begin{volume}
-, Vol. \format[XMLEscaper]\volume
+, Vol. \format[XMLEscaper]{\volume}
 \end{volume}
 \begin{publisher}
 , \format[HTMLChars,XMLEscaper]{\publisher}

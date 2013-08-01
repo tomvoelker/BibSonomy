@@ -2,7 +2,7 @@
 \begin{author}
 \format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
 \end{author}
- (\format[XMLEscaper]\year), <i>\format[HTMLChars,XMLEscaper]{\title}</i>
+ (\format[XMLEscaper]{\year}), <i>\format[HTMLChars,XMLEscaper]{\title}</i>
 \begin{publisher}
 , \format[HTMLChars,XMLEscaper]{\publisher}
 \end{publisher}
@@ -10,9 +10,9 @@
 , \format[HTMLChars,XMLEscaper]{\address}
 \end{address}
 \begin{chapter}
-, chapter \format[XMLEscaper]\chapter
+, chapter \format[XMLEscaper]{\chapter}
 \end{chapter}
 \begin{pages}
-, pp. \format[XMLEscaper]\pages
+, pp. \format[XMLEscaper]{\pages}
 \end{pages}.
 </p>

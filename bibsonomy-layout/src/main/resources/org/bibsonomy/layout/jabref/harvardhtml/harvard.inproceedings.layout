@@ -1,5 +1,5 @@
 <p>
-\format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[XMLEscaper]\year), 
+\format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[XMLEscaper]{\year}), 
 \format[HTMLChars,XMLEscaper]{\title}, <i>in</i>
 \begin{editor}
 \format[HTMLChars,XMLEscaper,AuthorFirstFirst,AuthorAndsReplacer]{\editor}, ed.,
@@ -11,6 +11,6 @@
 , \format[HTMLChars,XMLEscaper]{\publisher}, \format[HTMLChars,XMLEscaper]{\address}
 \end{publisher}
 \begin{pages}
-, pp. \format[XMLEscaper]\pages
+, pp. \format[XMLEscaper]{\pages}
 \end{pages}.
 </p>

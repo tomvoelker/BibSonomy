@@ -8,6 +8,6 @@
 , \format[HTMLChars,XMLEscaper]{\publisher}, \format[HTMLChars,XMLEscaper]{\address}
 \end{publisher}
 \begin{pages}
-, pp. \format[XMLEscaper]\pages
+, pp. \format[XMLEscaper]{\pages}
 \end{pages}.
 </p>
