@@ -34,6 +34,16 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 		Assert.assertEquals("25", bib.getPages());
 		Assert.assertEquals("10", bib.getDay());
 		Assert.assertEquals("5", bib.getMonth());
+		Assert.assertEquals("article", bib.getEntrytype());
+	}
+	
+	//@Test
+	public void testAuthorEditor() {
+		BibTex bib = get("HEB");
+		Assert.assertEquals("25", bib.getPages());
+		Assert.assertEquals("10", bib.getDay());
+		Assert.assertEquals("5", bib.getMonth());
+		Assert.assertEquals("article", bib.getEntrytype());
 	}
 	
 	@Test
@@ -87,7 +97,7 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 		BibTex bib = get("HEB207127891");
 		Assert.assertThat(bib.getAuthor(), IsCollectionContaining.hasItem(new PersonName("Yannick", "Versley")));
 		Assert.assertEquals("Tagging kausaler Relationen", bib.getTitle());
-		Assert.assertEquals("In dieser Diplomarbeit geht es um kausale Beziehungen zwischen Ereignissen und Erklärungsbeziehungen zwischen Ereignissen, bei denen kausale Relationen eine wichtige Rolle spielen. Nachdem zeitliche Relationen einerseits ihrer einfacheren Formalisierbarkeit und andererseits ihrer gut sichtbaren Rolle in der Grammatik (Tempus und Aspekt, zeitliche Konjunktionen) wegen in jüngerer Zeit stärker im Mittelpunkt des Interesses standen, soll hier argumentiert werden, dass kausale Beziehungen und die Erklärungen, die sie ermöglichen, eine wichtigere Rolle im Kohärenzgefüge des Textes spielen. Im Gegensatz zu tiefenʺ Verfahren, die auf einer detaillierten semantischen Repräsentation des Textes aufsetzen und infolgedessen für unrestringierten Text m. E. nicht geeignet sind, wird hier untersucht, wie man dieses Ziel erreichen kann, ohne sich auf eine aufwändig konstruierte Wissensbasis verlassen zu müssen.", bib.getAbstract());
+		Assert.assertEquals("In dieser Diplomarbeit geht es um kausale Beziehungen zwischen Ereignissen und Erklärungsbeziehungen zwischen Ereignissen, bei denen kausale Relationen eine wichtige Rolle spielen. Nachdem zeitliche Relationen einerseits ihrer einfacheren Formalisierbarkeit und andererseits ihrer gut sichtbaren Rolle in der Grammatik (Tempus und Aspekt, zeitliche Konjunktionen) wegen in jüngerer Zeit stärker im Mittelpunkt des Interesses standen, soll hier argumentiert werden, dass kausale Beziehungen und die Erklärungen, die sie ermöglichen, eine wichtigere Rolle im Kohärenzgefüge des Textes spielen. Im Gegensatz zu tiefenʺ Verfahren, die auf einer detaillierten semantischen Repräsentation des Textes aufsetzen und infolgedessen für unrestringierten Text m. E. nicht geeignet sind, wird hier untersucht, wie man dieses Ziel erreichen kann, ohne sich auf eine aufwändig konstruierte Wissensbasis verlassen zu müssen.", bib.getAbstract());
 		Assert.assertEquals("Hamburg, Univ., Dipl.-Arbeit, 2004", bib.getNote());
 		//Assert.assertEquals("masterthesis", bib.getEntrytype());
 		Assert.assertEquals("phdthesis", bib.getEntrytype());
