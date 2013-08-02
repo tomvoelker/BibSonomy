@@ -28,7 +28,7 @@ public class SamlUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 			final SAMLCredential ctx = ((SamlUsernameNotFoundException) e).getSamlCreds();
 			attributeExtractor.populate(user, ctx);
 		}
-
+		user.setToClassify(0);
 		return user;
 	}
 

@@ -113,6 +113,7 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 		user.setName(remoteUserId.getUserId());
 		//user.setRole(Role.LIMITED);
 		user.setRole(Role.DEFAULT);
+		user.setToClassify(0);
 
 		this.adminLogic.createUser(user);
 		authToken = new SamlCredAuthToken(samlCreds);
