@@ -1,35 +1,35 @@
-<tr id="\format{\bibtexkey}" class="entry">
-	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars]{\author}</td>
-	<td>\format[Replace(\n, ),HTMLChars]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
-	<td>\year</td>
-	<td>\format[HTMLChars]{\journal}\format[HTMLChars]{\booktitle}\begin{school}<i>School</i>: \format[HTMLChars]{\school}\end{school} &nbsp;</td>
-	<td>\format[ToLowerCase]{\bibtextype}</td>
-	<td>\begin{doi}<a href="\format[DOICheck]{\doi}">DOI</a>\end{doi}\begin{url}<a href="\format{\url}">URL</a>\end{url} &nbsp;</td>
+<tr id="\format[XMLEscaper]{\bibtexkey}" class="entry">
+	<td>\format[XMLEscaper,AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars]{\author}</td>
+	<td>\format[XMLEscaper,Replace(\n, ),HTMLChars]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
+	<td>\format[XMLEscaper]\year</td>
+	<td>\format[XMLEscaper,HTMLChars]{\journal}\format[XMLEscaper,HTMLChars]{\booktitle}\begin{school}<i>School</i>: \format[XMLEscaper,HTMLChars]{\school}\end{school} &nbsp;</td>
+	<td>\format[XMLEscaper,ToLowerCase]{\bibtextype}</td>
+	<td>\begin{doi}<a href="\format[XMLEscaper,DOICheck]{\doi}">DOI</a>\end{doi}\begin{url}<a href="\format[XMLEscaper]{\url}">URL</a>\end{url} &nbsp;</td>
 </tr>\begin{abstract}
 <tr id="abs_\format{\bibtexkey}" class="abstract noshow">
-	<td colspan="6"><b>Abstract</b>: \format[HTMLChars]{\abstract}</td>
+	<td colspan="6"><b>Abstract</b>: \format[XMLEscaper,HTMLChars]{\abstract}</td>
 </tr>\end{abstract}\begin{review}
 <tr id="rev_\format{\bibtexkey}" class="review noshow">
-	<td colspan="6"><b>Review</b>: \format[HTMLChars]{\review}</td>
+	<td colspan="6"><b>Review</b>: \format[XMLEscaper,HTMLChars]{\review}</td>
 </tr>\end{review}
-<tr id="bib_\format{\bibtexkey}" class="bibtex noshow">
+<tr id="bib_{\bibtexkey}" class="bibtex noshow">
 <td colspan="6">
 <b>BibTeX</b>:
 <pre>
-@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
-  author = {\author}\end{author}\begin{title},
-  title = {\title}\end{title}\begin{booktitle},
-  booktitle = {\booktitle}\end{booktitle}\begin{journal},
-  journal = {\journal}\end{journal}\begin{publisher},
-  publisher = {\publisher}\end{publisher}\begin{school},
-  school = {\school}\end{school}\begin{year},
-  year = {\year}\end{year}\begin{volume},
-  volume = {\volume}\end{volume}\begin{number},
-  number = {\number}\end{number}\begin{pages},
-  pages = {\pages}\end{pages}\begin{edition},
-  edition = {\edition}\end{edition}\begin{note},
-  note = {\note}\end{note}\begin{url},
-  url = {\url}\end{url}\begin{doi},
+@\format[XMLEscaper,ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
+  author = {\format[XMLEscaper]\author}\end{author}\begin{title},
+  title = {\format[XMLEscaper]\title}\end{title}\begin{booktitle},
+  booktitle = {\format[XMLEscaper]\booktitle}\end{booktitle}\begin{journal},
+  journal = {\format[XMLEscaper]\journal}\end{journal}\begin{publisher},
+  publisher = {\format[XMLEscaper]\publisher}\end{publisher}\begin{school},
+  school = {\format[XMLEscaper]\school}\end{school}\begin{year},
+  year = {\format[XMLEscaper]\year}\end{year}\begin{volume},
+  volume = {\format[XMLEscaper]\volume}\end{volume}\begin{number},
+  number = {\format[XMLEscaper]\number}\end{number}\begin{pages},
+  pages = {\format[XMLEscaper]\pages}\end{pages}\begin{edition},
+  edition = {\format[XMLEscaper]\edition}\end{edition}\begin{note},
+  note = {\format[XMLEscaper]\note}\end{note}\begin{url},
+  url = {\format[XMLEscaper]\url}\end{url}\begin{doi},
   doi = {\format[DOICheck]{\doi}}\end{doi}
 }
 </pre></td>

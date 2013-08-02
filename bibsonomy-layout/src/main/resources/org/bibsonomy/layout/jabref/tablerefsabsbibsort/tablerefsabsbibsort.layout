@@ -1,34 +1,34 @@
-<tr id="\format{\bibtexkey}" class="entry">
-	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,NoSpaceBetweenAbbreviations,HTMLChars]{\author}</td>
-	<td>\format[Replace(\n, ),HTMLChars]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
-	<td>\year</td>
-	<td>\format[HTMLChars]{\journal}\begin{volume}<br/>Vol. \volume\end{volume}\begin{number}(\format[FormatPagesForHTML]{\number})\end{number}\format[HTMLChars]{\booktitle}\begin{pages}, pp. \format[FormatPagesForHTML]{\pages}\end{pages}\begin{school}<i>School</i>: \format[HTMLChars]{\school}\end{school}\begin{howpublished}\format[HTMLChars]{\howpublished}\end{howpublished}&nbsp;</td>
-	<td>\format[ToLowerCase]{\bibtextype}</td>
-	<td>\begin{doi}<a href="\format[DOICheck]{\doi}">DOI</a> \end{doi}\begin{url}<a href="\format{\url}">URL</a>\end{url}&nbsp;</td>
+<tr id="\format[XMLEscaper]{\bibtexkey}" class="entry">
+	<td>\format[XMLEscaper,AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,NoSpaceBetweenAbbreviations,HTMLChars]{\author}</td>
+	<td>\format[XMLEscaper,Replace(\n, ),HTMLChars]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
+	<td>\format[XMLEscaper]\year</td>
+	<td>\format[XMLEscaper,HTMLChars]{\journal}\begin{volume}<br/>Vol. \format[XMLEscaper]\volume\end{volume}\begin{number}(\format[XMLEscaper,FormatPagesForHTML]{\number})\end{number}\format[XMLEscaper,HTMLChars]{\booktitle}\begin{pages}, pp. \format[XMLEscaper,FormatPagesForHTML]{\pages}\end{pages}\begin{school}<i>School</i>: \format[XMLEscaper,HTMLChars]{\school}\end{school}\begin{howpublished}\format[XMLEscaper,HTMLChars]{\howpublished}\end{howpublished}&nbsp;</td>
+	<td>\format[XMLEscaper,ToLowerCase]{\bibtextype}</td>
+	<td>\begin{doi}<a href="\format[XMLEscaper,DOICheck]{\doi}">DOI</a> \end{doi}\begin{url}<a href="\format[XMLEscaper]{\url}">URL</a>\end{url}&nbsp;</td>
 </tr>\begin{abstract}
 <tr id="abs_\format{\bibtexkey}" class="abstract noshow">
-	<td colspan="6"><b>Abstract</b>: \format[HTMLChars]{\abstract}</td>
+	<td colspan="6"><b>Abstract</b>: \format[XMLEscaper,HTMLChars]{\abstract}</td>
 </tr>\end{abstract}\begin{review}
 <tr id="rev_\format{\bibtexkey}" class="review noshow">
-	<td colspan="6"><b>Review</b>: \format[HTMLChars]{\review}</td>
+	<td colspan="6"><b>Review</b>: \format[XMLEscaper,HTMLChars]{\review}</td>
 </tr>\end{review}
-<tr id="bib_\format{\bibtexkey}" class="bibtex noshow">
+<tr id="bib_\format[XMLEscaper]{\bibtexkey}" class="bibtex noshow">
 <td colspan="6"><b>BibTeX</b>:
 <pre>
-@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
-  author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
-  title = {\format[HTMLChars]{\title}}\end{title}\begin{booktitle},
-  booktitle = {\format[HTMLChars]{\booktitle}}\end{booktitle}\begin{journal},
-  journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
-  publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
-  school = {\format[HTMLChars]{\school}}\end{school}\begin{year},
-  year = {\format[HTMLChars]{\year}}\end{year}\begin{volume},
-  volume = {\format[HTMLChars]{\volume}}\end{volume}\begin{number},
-  number = {\format[HTMLChars]{\number}}\end{number}\begin{pages},
-  pages = {\format[HTMLChars]{\pages}}\end{pages}\begin{edition},
-  edition = {\format[HTMLChars]{\edition}}\end{edition}\begin{note},
-  note = {\format[HTMLChars]{\note}}\end{note}\begin{url},
-  url = {\format[HTMLChars]{\url}}\end{url}\begin{doi},
+@\format[XMLEscaper,ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
+  author = {\format[XMLEscaper,HTMLChars]{\author}}\end{author}\begin{title},
+  title = {\format[XMLEscaper,HTMLChars]{\title}}\end{title}\begin{booktitle},
+  booktitle = {\format[XMLEscaper,HTMLChars]{\booktitle}}\end{booktitle}\begin{journal},
+  journal = {\format[XMLEscaper,HTMLChars]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[XMLEscaper,HTMLChars]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[XMLEscaper,HTMLChars]{\school}}\end{school}\begin{year},
+  year = {\format[XMLEscaper,HTMLChars]{\year}}\end{year}\begin{volume},
+  volume = {\format[XMLEscaper,HTMLChars]{\volume}}\end{volume}\begin{number},
+  number = {\format[XMLEscaper,HTMLChars]{\number}}\end{number}\begin{pages},
+  pages = {\format[XMLEscaper,HTMLChars]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[XMLEscaper,HTMLChars]{\edition}}\end{edition}\begin{note},
+  note = {\format[XMLEscaper,HTMLChars]{\note}}\end{note}\begin{url},
+  url = {\format[XMLEscaper,HTMLChars]{\url}}\end{url}\begin{doi},
   doi = {\format[DOICheck]{\doi}}\end{doi}
 }
 </pre></td>
