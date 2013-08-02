@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bibsonomy.util.ValidationUtils;
+import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Record;
 import org.marc4j.marc.Subfield;
@@ -51,6 +52,14 @@ public class ExtendedMarcRecord {
 		return (List<DataField>) record.getVariableFields(fieldName);
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<ControlField> getControlFields(String fieldName) {
+		if ((fieldName == null) || !fieldName.startsWith("00")) {
+			throw new IllegalArgumentException("Not a Controlfield name: '" + fieldName + "'");
+		}
+		return (List<ControlField>) record.getVariableFields(fieldName);
+	}
+	
 	/**
 	 * @return the record
 	 */

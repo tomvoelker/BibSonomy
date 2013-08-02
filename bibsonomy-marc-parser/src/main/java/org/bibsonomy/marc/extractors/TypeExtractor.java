@@ -23,17 +23,18 @@
 
 package org.bibsonomy.marc.extractors;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
-import org.marc4j.marc.DataField;
+import org.bibsonomy.util.ValidationUtils;
+import org.marc4j.marc.ControlField;
 import org.marc4j.marc.Leader;
-import org.marc4j.marc.Subfield;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author mve
@@ -114,31 +115,37 @@ public class TypeExtractor implements AttributeExtractor {
 		ExtendedMarcWithPicaRecord record = (ExtendedMarcWithPicaRecord) src;
 		// format ist is detected by infos in Leader and kat 007
 		Leader leader = src.getRecord().getLeader();
-		List<DataField> fields = null;
+		List<ControlField> fields = null;
 		try {
-			fields = src.getDataFields("007");
+			fields = src.getControlFields("007");
 		} catch (IllegalArgumentException e) {
 		}
 		String tmp = src.getFirstFieldValue("300", 'a');
-		String postfix = new String();
+		List<String> phys = new ArrayList<String>();
 		String type = "misc";
 
-		if (fields != null) {
-			for (DataField field : fields) {
-				Subfield subfield = field.getSubfield('c');
-				if (subfield != null) {
-					// cd or dvd
-					if (subfield.getData().startsWith("co") && (tmp.toUpperCase().indexOf("DVD") == -1))
-						postfix = "cocd";
-					else {
-						subfield = (Subfield) (field.getSubfields().get(0));
+		if (ValidationUtils.present(fields)) {
+			for (ControlField field : fields) {
+				String data = field.getData();
+				if (ValidationUtils.present(data)) {
+					if (data.charAt(0) == 'c') {
+						// cd or dvd
+						if (data.startsWith("co") && (tmp.toUpperCase().indexOf("DVD") == -1))
+							phys.add("cocd");
+						else {
+							if (data.length() > 2) {
+								phys.add(data.substring(0,2));
+							} else {
+								phys.add(data);
+							}
+						}
+					} else {
+						phys.add(data.substring(0,1));
 					}
-				} else {
-					postfix = (field.getSubfields().get(0).toString());
 				}
 			}
 		} else {
-			postfix = "xxx";
+			phys.add("xxx");
 		}
 
 		char art = leader.getTypeOfRecord();
@@ -170,9 +177,13 @@ public class TypeExtractor implements AttributeExtractor {
 		} else {
 			// return formats accourding to format array in the beginning
 			// of this method
-			String value = map.get((art + "" + level + postfix).trim());
-			if (value != null)
-				type = value;
+			for (final String p : phys) {
+				final String value = map.get(("" + art + level + p).trim());
+				if (value != null) {
+					type = value;
+					break;
+				}
+			}
 		}
 		// there is no format defined for the combination of art level and phys
 		// for debugging
