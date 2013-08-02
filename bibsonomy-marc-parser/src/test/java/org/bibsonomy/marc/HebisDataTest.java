@@ -1,6 +1,7 @@
 package org.bibsonomy.marc;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.model.BibTex;
@@ -37,13 +38,27 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 		Assert.assertEquals("article", bib.getEntrytype());
 	}
 	
-	//@Test
-	public void testAuthorEditor() {
-		BibTex bib = get("HEB");
-		Assert.assertEquals("25", bib.getPages());
-		Assert.assertEquals("10", bib.getDay());
-		Assert.assertEquals("5", bib.getMonth());
-		Assert.assertEquals("article", bib.getEntrytype());
+	@Test
+	public void testTarantino() {
+		BibTex bib = get("HEB221544364");
+		Assert.assertTrue(bib.getAuthor().contains(new PersonName("Quentin", "Tarantino")));
+		Assert.assertEquals("electronic", bib.getEntrytype());
+	}
+	
+	@Test
+	public void testEditorOnly() {
+		BibTex bib = get("HEB321472683");
+		Assert.assertEquals(Collections.emptyList(), bib.getAuthor());
+		Assert.assertEquals(Arrays.asList(new PersonName("Adeline", "Ooi")), bib.getEditor());
+		Assert.assertEquals("book", bib.getEntrytype());
+	}
+	
+	@Test
+	public void testEditorOnly2() {
+		BibTex bib = get("HEB321193962");
+		Assert.assertEquals(Collections.emptyList(), bib.getAuthor());
+		Assert.assertEquals(Arrays.asList(new PersonName("Lili", "Gaesset")), bib.getEditor());
+		Assert.assertEquals("book", bib.getEntrytype());
 	}
 	
 	@Test
