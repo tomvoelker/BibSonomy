@@ -47,12 +47,12 @@
           
           <form id="exportOptions" class='exportoptions' method='POST'>
 			<fmt:message key="posts"/>:
-			<input type="radio" name="items" value="5" checked="checked" />5
+			<input type="radio" name="items" value="5" />5
 			<input type="radio" name="items" value="10"/>10 
 			<input type="radio" name="items" value="20"/>20
 			<input type="radio" name="items" value="50"/>50
 			<input type="radio" name="items" value="100"/>100
-			<input type="radio" name="items" value="1000"/>1000
+			<input type="radio" name="items" value="1000" checked="checked"/>1000
 		  </form>
           
           <c:url var="currURL" value="/${pathAndQueryString}" />
