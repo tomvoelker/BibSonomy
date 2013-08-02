@@ -13,6 +13,7 @@ import org.bibsonomy.marc.extractors.AuthorExtractor;
 import org.bibsonomy.marc.extractors.DayExtractor;
 import org.bibsonomy.marc.extractors.EditionExtractor;
 import org.bibsonomy.marc.extractors.EditorExtractor;
+import org.bibsonomy.marc.extractors.EmergencyAuthorExtractor;
 import org.bibsonomy.marc.extractors.EmergencyRepairingExtractor;
 import org.bibsonomy.marc.extractors.HebisIdExtractor;
 import org.bibsonomy.marc.extractors.ISBNExtractor;
@@ -75,6 +76,7 @@ public class MarcToBibTexReader implements BibTexReader {
 		extractors.add(new NumberExtractor());
 		//must be placed in the chain after TypeExtractor
 		extractors.add(new NoteExtractor());
+		extractors.add(new EmergencyAuthorExtractor());
 		extractors.add(new EmergencyRepairingExtractor());
 	}
 	

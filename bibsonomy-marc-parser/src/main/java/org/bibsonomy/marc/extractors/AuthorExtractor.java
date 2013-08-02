@@ -22,7 +22,7 @@ public class AuthorExtractor extends AbstractParticipantExtractor {
 
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
-		ArrayList<PersonName> authors = new ArrayList<PersonName>();
+		final List<PersonName> authors = new ArrayList<PersonName>();
 		
 		//in case of conference typed in 013H/0X as k we use 110, 111, 710 for organization
 		boolean conference = false;
@@ -58,22 +58,6 @@ public class AuthorExtractor extends AbstractParticipantExtractor {
 			String firstName =((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("028A", "$d", "");
 			if (ValidationUtils.present(familyName) || ValidationUtils.present(firstName)) {
 				authors.add(new PersonName(firstName.trim(), familyName.trim()));
-			}
-		}
-		
-		
-		if (authors.size() == 0) {
-			// still no author -> try everything mentioned
-			if (!extractAndAddAuthorPersons(authors, src, "700", (Set<String>) null)) {
-				if (!conference) {
-					if (!extractAndAddAuthorCorporations(authors, src, "710",
-							(Set<String>) null)) {
-						if (!extractAndAddAuthorMeetings(authors, src, "711",
-								(Set<String>) null)) {
-							mainAuthorFound = false;
-						}
-					}
-				}
 			}
 		}
 		
