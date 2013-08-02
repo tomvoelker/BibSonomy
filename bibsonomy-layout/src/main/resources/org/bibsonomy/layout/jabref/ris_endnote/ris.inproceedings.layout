@@ -6,7 +6,7 @@ T2  - \format[FormatChars]{\booktitle}
 PB  - \format[FormatChars]{\publisher}
 C1  - \format[FormatChars]{\address}
 PY  - \format[FormatChars]{\year}/\format[FormatChars,RisMonth]{\month}
-CY  - \format[FormatChars]\conferencelocation 
+CY  - \format[FormatChars]{\conferencelocation} 
 VL  - \format[FormatChars]{\volume}
 IS  - \format[FormatChars]{\number}
 SP  - \format[FormatChars,FirstPage]{\pages}
