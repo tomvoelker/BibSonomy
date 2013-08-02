@@ -1,12 +1,12 @@
 <b><i>\bibtextype</i><a name="\bibtexkey">\begin{bibtexkey} (\bibtexkey)</a>\end{bibtexkey}</b>
 <br/>
-\begin{author} \format[XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}<br/>\end{author}
-\begin{editor} \format[XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars]{\editor} <i>(ed.)</i><br/>\end{editor}
-\begin{title} \format[XMLEscaper,HTMLChars]{\title} \end{title}<br/>
-\begin{chapter} \format[XMLEscaper,HTMLChars]{\chapter}<br/>\end{chapter}
-\begin{journal} <em>\format[XMLEscaper,HTMLChars]{\journal}, </em>\end{journal}
-\begin{school} <em>\format[XMLEscaper,HTMLChars]{\school}, </em>\end{school}
-\begin{institution} <em>\format[XMLEscaper,HTMLChars]{\institution}, </em>\end{institution}
-\begin{publisher} <em>\format[XMLEscaper,HTMLChars]{\publisher}, </em>\end{publisher}
-\begin{year}<b>\format[XMLEscaper]\year</b>\end{year}\begin{volume}<i>, \format[XMLEscaper]\volume</i>\end{volume}\begin{pages}, \format[XMLEscaper,FormatPagesForHTML]{\pages} \end{pages}
+\begin{author} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author}<br/>\end{author}
+\begin{editor} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\editor} <i>(ed.)</i><br/>\end{editor}
+\begin{title} \format[HTMLChars,XMLEscaper]{\title} \end{title}<br/>
+\begin{chapter} \format[HTMLChars,XMLEscaper]{\chapter}<br/>\end{chapter}
+\begin{journal} <em>\format[HTMLChars,XMLEscaper]{\journal}, </em>\end{journal}
+\begin{school} <em>\format[HTMLChars,XMLEscaper]{\school}, </em>\end{school}
+\begin{institution} <em>\format[HTMLChars,XMLEscaper]{\institution}, </em>\end{institution}
+\begin{publisher} <em>\format[HTMLChars,XMLEscaper]{\publisher}, </em>\end{publisher}
+\begin{year}<b>\format[XMLEscaper]{\year}</b>\end{year}\begin{volume}<i>, \format[XMLEscaper]{\volume}</i>\end{volume}\begin{pages}, \format[XMLEscaper,FormatPagesForHTML]{\pages} \end{pages}
 <p></p>

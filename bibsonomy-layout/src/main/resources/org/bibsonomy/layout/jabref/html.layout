@@ -31,7 +31,7 @@
 
 		\begin{url}
 		<div class="bibtex_url">
-			<a href="\url">url</a>
+			<a href="\format[XMLEscaper]{\url}">url</a>
 		</div>
 		\end{url}
 	</div>
@@ -40,13 +40,13 @@
 
 		\begin{title}
 		<div class="bibtex_title">
-			\format[HTMLChars,RemoveLatexCommands]{\title}
+			\format[HTMLChars,RemoveLatexCommands,XMLEscaper]{\title}
 		</div>
 		\end{title}
 
 		\begin{author}
 		<div class="bibtex_author">
-			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}
+			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author}
 		</div>
 		\end{author}
 
@@ -58,18 +58,18 @@
 
 		\begin{volume}
 		<div class="bibtex_volume">
-			Vol. \volume
+			Vol. \format[XMLEscaper]{\volume}
 		</div>,
 		\end{volume}
 
 		\begin{pages}
 		<div class="bibtex_pages">
-			pp. \format[FormatPagesForHTML]{\pages}
+			pp. \format[XMLEscaper,FormatPagesForHTML]{\pages}
 		</div>,
 		\end{pages}
 
 		<div class="bibtex_year">
-			\year
+			\format[XMLEscaper]{\year}
 		</div>
 	</div>
 </div>

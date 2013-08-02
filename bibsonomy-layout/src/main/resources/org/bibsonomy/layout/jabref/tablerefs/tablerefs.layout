@@ -1,8 +1,8 @@
 <tr id="\format[XMLEscaper]{\bibtexkey}" class="entry">
-	<td>\format[XMLEscaper,AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars]{\author}</td>
-	<td>\format[XMLEscaper,Replace(\n, ),HTMLChars]{\title}</td>
-	<td>\format[XMLEscaper]\year</td>
-	<td>\format[XMLEscaper,HTMLChars]{\journal}\format[XMLEscaper,HTMLChars]{\booktitle}\begin{school}<i>School</i>: \format[XMLEscaper,HTMLChars]{\school}\end{school} \begin{editor} \format[XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars]{\editor} <i>(ed.)</i><br/>\end{editor} &nbsp;</td>
+	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars,XMLEscaper]{\author}</td>
+	<td>\format[Replace(\n, ),HTMLChars,XMLEscaper]{\title}</td>
+	<td>\format[XMLEscaper]{\year}</td>
+	<td>\format[HTMLChars,XMLEscaper]{\journal}\format[HTMLChars,XMLEscaper]{\booktitle}\begin{school}<i>School</i>: \format[HTMLChars,XMLEscaper]{\school}\end{school} \begin{editor} \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\editor} <i>(ed.)</i><br/>\end{editor} &nbsp;</td>
 	<td>\format[XMLEscaper,ToLowerCase]{\bibtextype}</td>
 	<td>\begin{doi}<a href="\format[DOICheck]{\doi}">DOI</a>\end{doi}\begin{url}<a href="\format[XMLEscaper]{\url}">URL</a>\end{url} &nbsp;</td>
 </tr>
