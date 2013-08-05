@@ -29,8 +29,8 @@
 		<url>https://gforge.cs.uni-kassel.de/tracker/?group_id=52</url>
 	</issueManagement>
 	<ciManagement>
-		<system>Continuum</system>
-		<url>http://www.se.eecs.uni-kassel.de/continuum/</url>
+		<system>Jenkins</system>
+		<url>http://jenkins.cs.uni-kassel.de/</url>
 	</ciManagement>
 	<developers>
 		<developer>
@@ -407,18 +407,18 @@
 				<version>2.0</version>
 			</plugin>
 		</plugins>
-		<extensions>
+		<extensions><!--
 			<extension>
-				<!-- wagon provider to enable deployment of artifacts via webdav (to 
+				 wagon provider to enable deployment of artifacts via webdav (to 
 					artifatory, in our case. According to http://docs.codehaus.org/display/MAVENUSER/Deploying+3rd+Party+Jars+With+WebDAV 
 					this should not be necessary from Maven 2.0.9, as the wagon-webdav lib should 
 					be included in the later maven distributions - but at least for hudson's 
 					setup, it only works this way. TODO: Maybe when the maven version of hudson (currently 
-					2.2.1) gets updated, we can remove this build extension. (dbe, 20100811) -->
+					2.2.1) gets updated, we can remove this build extension. (dbe, 20100811) 
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
-			</extension>
+			</extension>-->
 			<!-- maven 3 supports only http, https and file, but we use scp to
 				transfer our jars/wars to the release repository
 				TODO: we use 2.2 because versions above 2.2 are only compatible with
@@ -583,7 +583,7 @@
 		</repository>
 		<!-- use internal maven artifactory proxy for snapshot releases; username 
 			+ password is defined in settings.xml -->
-		<snapshotRepository>
+		<!-- <snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
 			<id>bibsonomySnapshots</id>
 			<name>Repository for BibSonomy Snapshots</name>
@@ -591,7 +591,7 @@
 				dav:http://www.biblicious.org:8088/artifactory/libs-snapshots
 			</url>
 			<layout>default</layout>
-		</snapshotRepository>
+		</snapshotRepository>-->
 		<!-- deploy web site documentation via webdav to zope -->
 		<site>
 			<id>website-bibsonomy-documentation</id>
