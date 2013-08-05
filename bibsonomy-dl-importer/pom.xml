@@ -51,7 +51,7 @@
 		</dependency>
 		<!-- used to import CSV for Hypertext 2009 -->
 		<dependency>
-			<groupId>au.com.bytecode.opencsv</groupId>
+			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>1.8</version>
 		</dependency>
@@ -61,8 +61,8 @@
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh-external</artifactId>	
-				<version>1.0-beta-2</version>			
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
 	</build>
@@ -72,17 +72,17 @@
 			<id>bibsonomy-dl-importer-website-documentation</id>
 			<url>scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}</url>
 		</site>
-	</distributionManagement>	
-    <reporting>
-      <plugins>
-        <plugin>
-          <!-- create javadoc with linked sources -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-			<linksource>true</linksource>						
-          </configuration>
-        </plugin>
-      </plugins>
-    </reporting>		
+	</distributionManagement>
+	<reporting>
+		<plugins>
+			<plugin>
+				<!-- create javadoc with linked sources -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<linksource>true</linksource>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
