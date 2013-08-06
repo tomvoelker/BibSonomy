@@ -2,8 +2,6 @@ package de.unikassel.puma.webapp.controller;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Bookmark;
@@ -24,11 +22,8 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
 	private static final int POSTS_PER_RESOURCETYPE_LOGGED_IN = 20;
-
 	private static final int POSTS_PER_RESOURCETYPE = 5;
-
-	private static final Log log = LogFactory.getLog(HomepageController.class);
-
+	
 	/*
 	 * on the homepage, only 50 tags are shown in the tag cloud
 	 */
@@ -36,9 +31,8 @@ public class HomepageController extends SingleResourceListController implements 
 
 	@Override
 	public View workOn(final HomepageCommand command) {
-		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 		
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
@@ -57,15 +51,15 @@ public class HomepageController extends SingleResourceListController implements 
 				if (Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
 					entriesPerPage = listCommand.getEntriesPerPage();
 				} else {
-					entriesPerPage = POSTS_PER_RESOURCETYPE_LOGGED_IN;	
+					entriesPerPage = POSTS_PER_RESOURCETYPE_LOGGED_IN;
 				}
 			} else {
 				entriesPerPage = POSTS_PER_RESOURCETYPE;
-			}			
+			}
 			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			postProcessAndSortList(command, resourceType);
 		}
-												
+		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			command.setPageTitle("home"); // TODO: i18n
@@ -77,12 +71,12 @@ public class HomepageController extends SingleResourceListController implements 
 			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "puma", Arrays.asList("pumanews"), null, null, null, null, null, null, 0, 3));
 		
 			this.endTiming();
-			return Views.PUMAHOMEPAGE;		
+			return Views.PUMAHOMEPAGE;
 		}
 		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(format);	
+		return Views.getViewByFormat(format);
 	}
 
 	/** Enforce 50 tags in the tag cloud.
