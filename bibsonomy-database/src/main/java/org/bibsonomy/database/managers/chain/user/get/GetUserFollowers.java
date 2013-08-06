@@ -17,7 +17,8 @@ import org.bibsonomy.model.User;
  * @author Christian Kramer
  * @version $Id$
  */
-public class GetUserFollowers extends UserChainElement{
+@Deprecated
+public class GetUserFollowers extends UserChainElement {
 	
 	@Override
 	protected List<User> handle(UserParam param, DBSession session) {
