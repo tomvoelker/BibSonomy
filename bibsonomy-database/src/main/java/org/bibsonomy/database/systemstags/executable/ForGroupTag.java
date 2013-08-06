@@ -150,8 +150,10 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 */
 		if (!present(groupDBLogic.getGroupDetails(groupName))) {
 			/*
-			 *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
-			 *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
+			 *  We decided to ignore errors in systemTags. Thus the user
+			 *  is free use any tag. XXX: The drawback: If it is the user's
+			 *  intention to use a systemTag, he will never know if there
+			 *  was a typo! 
 			 */
 			return; // this tag can not be used => abort
 		}
@@ -180,7 +182,8 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		final Set<Tag> groupTags = new HashSet<Tag>(userTags);
 		SystemTagsExtractor.removeAllSystemTags(groupTags);
 		/*
-		 * adding this tag also guarantees, that the new post will have noch empty tag set (which would be illegal)!
+		 * adding this tag also guarantees, that the new post will
+		 * have an empty tag set (which would be illegal)!
 		 */
 		groupTags.add(new Tag("from:"+userName));
 		groupPost.setTags(groupTags);
