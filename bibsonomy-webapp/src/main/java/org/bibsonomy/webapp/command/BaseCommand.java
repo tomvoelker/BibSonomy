@@ -93,7 +93,12 @@ public class BaseCommand implements ContextCommand {
 	public void setMessageParams(List<String> messageParams) {
 		this.messageParams = messageParams;
 	}
-
+	
+	/**
+	 * sets the message with the provided parameters
+	 * @param key
+	 * @param params
+	 */
 	public void setMessage(String key, List<String> params) {
 		this.setMessageKey(key);
 		this.setMessageParams(params);
