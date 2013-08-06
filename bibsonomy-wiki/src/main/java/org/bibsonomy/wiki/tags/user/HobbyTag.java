@@ -21,7 +21,7 @@ public class HobbyTag extends UserTag {
 	@Override
 	protected String renderUserTag() {
 		final String hobby = this.renderString(this.requestedUser.getHobbies());
-		return ValidationUtils.present(hobby) ? "" : "<div id='hobbies'>" + hobby + "</div>";
+		return ValidationUtils.present(hobby) ? "<div id='hobbies'>" + hobby + "</div>" : "";
 	}
 
 }

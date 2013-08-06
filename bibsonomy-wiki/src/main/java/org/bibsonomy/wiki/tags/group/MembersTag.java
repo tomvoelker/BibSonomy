@@ -19,13 +19,16 @@ public class MembersTag extends GroupTag {
 	 * The HTML div container is of the class imageContainer.
 	 */
 	@Override
+	/*
+	 * TODO: Fix this with the new group concept.
+	 */
 	protected String renderGroupTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
 		for (final User user : this.requestedGroup.getUsers()) {
 			if (!user.getName().equals(this.requestedGroup.getName())) {
 				renderedHTML.append("<div class='imageContainer'>");
 				renderedHTML.append(this.renderImage(user.getName()));
-				renderedHTML.append("<p style='text-align:center;'>" + this.renderString(user.getRealname()) + "</p>");
+				renderedHTML.append("<p style='text-align:center;'><a href=\"/cv/user/" + user.getName() + "\">" + this.renderString(user.getRealname()) + "</a></p>");
 				renderedHTML.append("</div>");
 			}
 		}

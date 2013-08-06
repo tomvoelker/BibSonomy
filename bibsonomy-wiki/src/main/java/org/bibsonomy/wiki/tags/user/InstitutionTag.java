@@ -22,7 +22,7 @@ public class InstitutionTag extends UserTag {
 	@Override
 	protected String renderUserTag() {
 		final String institution = this.renderString(this.requestedUser.getInstitution());
-		return ValidationUtils.present(institution) ? "" : "<div id='institution'>" + institution + "</div>";
+		return ValidationUtils.present(institution) ? "<div id='institution'>" + institution + "</div>" : "";
 	}
 
 }

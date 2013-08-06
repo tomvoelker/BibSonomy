@@ -18,6 +18,7 @@ public class BirthdayTag extends UserTag {
 	private static final String TAG_NAME = "birthday";
 	/*
 	 * TODO: allow other formats as tag parameter (e.g. display without year or the english order mm/dd/yyyy..."
+	 * TODO: maybe think about standardizing it with the rest of BibSonomy?
 	 */
 	private static final SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
 	

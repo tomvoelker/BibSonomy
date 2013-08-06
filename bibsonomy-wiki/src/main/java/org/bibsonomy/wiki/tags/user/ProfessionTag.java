@@ -1,5 +1,6 @@
 package org.bibsonomy.wiki.tags.user;
 
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.wiki.tags.UserTag;
 
 /**
@@ -21,7 +22,7 @@ public class ProfessionTag extends UserTag{
 	@Override
 	protected String renderUserTag() {
 		final String profession = this.renderString(this.requestedUser.getProfession());
-		return profession == null ? null : "<div id='profession'>" + profession + "</div>";
+		return ValidationUtils.present(profession) ? "<div id='profession'>" + profession + "</div>" : "";
 	}
 
 }

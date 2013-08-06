@@ -1,5 +1,6 @@
 package org.bibsonomy.wiki.tags.user;
 
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.wiki.tags.UserTag;
 
 /**
@@ -21,6 +22,6 @@ public class LocationTag extends UserTag{
 	@Override
 	protected String renderUserTag() {
 		final String location = this.renderString(this.requestedUser.getPlace());
-		return (location == null ? null : "<div id='location'>" + location + "</div>");
+		return ValidationUtils.present(location) ? "<div id='location'>" + location + "</div>" : "";
 	}
 }

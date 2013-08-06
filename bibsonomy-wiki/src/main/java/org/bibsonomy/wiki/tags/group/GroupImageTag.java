@@ -15,6 +15,9 @@ public class GroupImageTag extends GroupTag {
 	}
 
 	@Override
+	/*
+	 * TODO: Rebuild this with the new group concept.
+	 */
 	protected String renderGroupTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
 		if (!this.requestedGroup.getUsers().isEmpty()) {
