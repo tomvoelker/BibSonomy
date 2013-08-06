@@ -61,6 +61,7 @@ public class SimpleResourceViewCommand extends ResourceViewCommand implements Bi
 	/**
 	 * @return the bibtex ListView
 	 */
+	@Override
 	public ListCommand<Post<BibTex>> getBibtex() {
 		return this.bibtex;
 	}
