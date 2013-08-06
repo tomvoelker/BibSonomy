@@ -307,22 +307,35 @@ public class ResourceViewCommand extends BaseCommand {
 	public void setDuplicates(Duplicates duplicates) {
 		this.duplicates = duplicates;
 	}
+	
+	/**
+	 * @return the startDate
+	 */
 	public Date getStartDate() {
 		return this.startDate;
 	}
-
+	
+	/**
+	 * @param startDate the startDate to set
+	 */
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
-
+	
+	/**
+	 * @return the endDate
+	 */
 	public Date getEndDate() {
 		return this.endDate;
 	}
-
+	
+	/**
+	 * @param endDate the endDate to set
+	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
+	
 	/** @return whether the result should be presented as a download */
 	public boolean isDownload() {
 		return download;
