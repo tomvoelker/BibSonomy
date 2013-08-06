@@ -25,7 +25,7 @@
     	</jsp:attribute>
        
         <jsp:attribute name="content">
-           	<fmt:message key="success.joinGroupRequest.sent">
+           	<fmt:message key="${command.messageKey}">
 				 <c:if test="${not empty command.messageParams}">
 	    			<c:forEach var="p" items="${command.messageParams}">
    		       			<fmt:param value="${fn:escapeXml(p)}" />
