@@ -11,15 +11,8 @@ public class UserRelationCommand extends ResourceViewCommand {
 	private User user;
 
 	/** the group whode resources are requested */
-	private ConceptsCommand concepts = null;
+	private ConceptsCommand concepts = new ConceptsCommand(this);
 
-
-	/**
-	 * 
-	 */
-	public UserRelationCommand() {
-		concepts = new ConceptsCommand(this);
-	}
 	
 	/**
 	 * @return the concept
