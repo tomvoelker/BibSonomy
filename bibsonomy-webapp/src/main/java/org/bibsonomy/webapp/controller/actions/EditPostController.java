@@ -31,6 +31,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
@@ -679,9 +680,9 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		setRecommendationFeedback(post, command.getPostID());
 		/*
-		 * Send a pingback/trackback for the posted resource.
+		 * Send a pingback/trackback for the public posted resource.
 		 */
-		if (present(pingback) && !loginUser.isSpammer()) {
+		if (present(pingback) && !loginUser.isSpammer() && GroupUtils.isPublicGroup(post.getGroups())) {
 			pingback.sendPingback(post);
 		}
 	}
