@@ -73,27 +73,13 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		}
 		
 		/*
-		 * if user is logged in, check if the logged in user follows the requested user
-		 */
-		final RequestWrapperContext context = command.getContext();
-		if (context.isUserLoggedIn()) {
-			final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
-			for (final User u : followersOfUser){
-				if (u.getName().equals(groupingName)) {
-					command.setFollowerOfUser(true);
-					break;
-				}
-			}
-		}
-		
-		/*
 		 * extract filter
 		 */
 		final boolean publicationFilter = this.isPublicationFilter(command.getFilter());
 		if (publicationFilter) {
 			this.supportedResources.remove(Bookmark.class);
 		}
-		
+		final RequestWrapperContext context = command.getContext();
 		// "redirect" to user-user-page controller if requested
 		// TODO: better to this via Spring URL mapping
 		if (context.isUserLoggedIn() && command.isPersonalized()) {
@@ -169,13 +155,14 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				
 				return Views.USERTAGPAGE;
 			}
-
+			
 			/*
 			 * For logged users we check, if she is in a friends or group relation
 			 * with the requested user. 
 			 */
 			final String loginUserName = context.getLoginUser().getName();
 			if (context.isUserLoggedIn()) {
+				
 				/*
 				 * Put the user into command to be able to show some details.
 				 * 
@@ -189,6 +176,17 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				 */
 				command.setOfFriendUser(this.logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
 				command.setFriendOfUser(this.logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
+				
+				/*
+				 * has loginUser this user set as follower?
+				 */
+				final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
+				for (final User u : followersOfUser){
+					if (u.getName().equals(groupingName)) {
+						command.setFollowerOfUser(true);
+						break;
+					}
+				}
 				/*
 				 * TODO: we need an adminLogic to access the requested user's groups ...
 				 */
