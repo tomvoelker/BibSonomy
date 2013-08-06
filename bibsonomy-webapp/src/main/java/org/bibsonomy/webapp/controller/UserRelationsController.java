@@ -18,6 +18,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
+ * controller to display the relations of requested user
+ * - /concepts/user/USER
+ * 
  * @author Christian Voigtmann
  * @version $Id$
  */
@@ -26,9 +29,7 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 
 	@Override
 	public View workOn(final UserRelationCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
-
-		this.startTiming(this.getClass(), command.getFormat());
+		this.startTiming(command.getFormat());
 		
 		// no user given -> error
 		if (!present(command.getRequestedUser())) {
@@ -49,8 +50,6 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, 0, Integer.MAX_VALUE);
 
 		command.getConcepts().setConceptList(concepts);
-
-
 		command.getConcepts().setNumConcepts(concepts.size());
 		command.getConcepts().setTotalCount(numberOfRelations);
 

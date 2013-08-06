@@ -277,15 +277,15 @@ public abstract class ResourceListController {
 		final int totalCount = this.logic.getPostStatistics(resourceType, groupingEntity, groupingName, tags, hash, search, filter, constraint, order, startDate, endDate, start, start + itemsPerPage).getCount();
 		listCommand.setTotalCount(totalCount);
 	}
-
-	protected void startTiming(final Class<? extends ResourceListController> controller, final String format) {
-		log.info("Handling Controller: " + controller.getSimpleName() + ", format: " + format);
+	
+	protected void startTiming(final String format) {
+		log.info("Handling Controller: " + this.getClass().getSimpleName() + ", format: " + format);
 		this.startTime = System.currentTimeMillis();
 	}
 
 	protected void endTiming() {
 		final long elapsed = System.currentTimeMillis() - this.startTime;
-		log.info("Processing time: " + elapsed + " ms");
+		log.info("[" + this.getClass().getSimpleName() + "] Processing time: " + elapsed + " ms");
 	}
 
 	/**

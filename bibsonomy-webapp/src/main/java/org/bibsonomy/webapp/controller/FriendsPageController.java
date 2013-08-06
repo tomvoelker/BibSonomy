@@ -29,7 +29,7 @@ public class FriendsPageController extends SingleResourceListController implemen
 	public View workOn(final FriendsResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 
 		// we need to be logged in
 		if (!command.getContext().isUserLoggedIn()) {

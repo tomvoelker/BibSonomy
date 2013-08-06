@@ -33,10 +33,10 @@ public class ConceptPageController extends SingleResourceListController implemen
 	public View workOn(final ConceptResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 		
 		// if no concept given -> error
-		if(!present(command.getRequestedTags())) {
+		if (!present(command.getRequestedTags())) {
 			throw new MalformedURLSchemeException("error.concept_page_without_conceptname");
 		}
 		
@@ -90,11 +90,11 @@ public class ConceptPageController extends SingleResourceListController implemen
 			pageTitle.append(requGroup).append(" :: ");
 		}
 		
-		pageTitle.append(StringUtils.implodeStringCollection(requTags, " "));		
+		pageTitle.append(StringUtils.implodeStringCollection(requTags, " "));
 		command.setPageTitle(pageTitle.toString());
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 		}	
@@ -120,7 +120,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 			}
 			
 			this.endTiming();
-			return Views.CONCEPTPAGE;			
+			return Views.CONCEPTPAGE;
 		}
 		
 		this.endTiming();
@@ -131,5 +131,5 @@ public class ConceptPageController extends SingleResourceListController implemen
 	@Override
 	public ConceptResourceViewCommand instantiateCommand() {
 		return new ConceptResourceViewCommand();
-	}	
+	}
 }

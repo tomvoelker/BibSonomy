@@ -28,7 +28,7 @@ public class InboxPageController extends SingleResourceListController implements
 		}
 		
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 				
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		// retrieve and set the requested resource lists

@@ -4,8 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
@@ -19,17 +17,14 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Christian Kramer
- * @version $Id: ViewablePageController.java,v 1.25 2012-02-08 16:19:15 rja Exp
- *          $
+ * @version $Id$
  */
 public class ViewablePageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand> {
-	private static final Log log = LogFactory.getLog(ViewablePageController.class);
 
 	@Override
 	public View workOn(GroupResourceViewCommand command) {
-		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 		final RequestWrapperContext context = command.getContext();
 		
 		// we need to be logged in, and a group needs to be present
@@ -40,7 +35,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		if (!present(command.getRequestedGroup())) {
 			throw new MalformedURLSchemeException("error.viewable_page_without_group");
 		}
-						
+		
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;
 		final String groupingName = command.getRequestedGroup();
@@ -51,13 +46,13 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		
 		// handle the case when only tags are requested
 		// TODO: max 1000 tags
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, null, 1000, null);		
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, null, 1000, null);
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {			
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
-		}		
+		}
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
@@ -73,11 +68,11 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 				return Views.VIEWABLETAGPAGE;
 			}
 			this.endTiming();
-			return Views.VIEWABLEPAGE;			
+			return Views.VIEWABLEPAGE;
 		}
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(format);		
+		return Views.getViewByFormat(format);
 	}
 
 	/**

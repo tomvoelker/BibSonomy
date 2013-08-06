@@ -34,7 +34,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		}
 		
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 		
 		final String groupingName = command.getRequestedUser();
 

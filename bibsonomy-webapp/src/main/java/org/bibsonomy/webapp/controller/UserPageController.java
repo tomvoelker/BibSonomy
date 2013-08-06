@@ -39,9 +39,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 
 		final String groupingName = command.getRequestedUser();
 		

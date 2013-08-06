@@ -26,6 +26,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Christian Kramer
  * @version $Id$
  */
+@Deprecated // TODO: remove followers (in favor of spheres)
 public class FollowersPageController extends SingleResourceListController implements MinimalisticController<FollowersViewCommand>{
 	private static final Log log = LogFactory.getLog(FollowersPageController.class);
 
@@ -33,7 +34,7 @@ public class FollowersPageController extends SingleResourceListController implem
 	public View workOn(final FollowersViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 
 		// you have to be logged in
 		if (!command.getContext().isUserLoggedIn()) {

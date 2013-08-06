@@ -3,8 +3,6 @@ package org.bibsonomy.webapp.controller;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.DaysSystemTag;
@@ -21,9 +19,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author mwa
  * @version $Id$
  */
-public class PopularPageController extends MultiResourceListController implements MinimalisticController<MultiResourceViewCommand>{
-	private static final Log log = LogFactory.getLog(PopularPageController.class);
-	
+public class PopularPageController extends MultiResourceListController implements MinimalisticController<MultiResourceViewCommand>{	
 	private static final int MAX_TAGS = 50;
 	
 	
@@ -45,9 +41,8 @@ public class PopularPageController extends MultiResourceListController implement
 
 	@Override
 	public View workOn(final MultiResourceViewCommand command) {
-		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 				
 		// set the grouping entity and the order
 		final GroupingEntity groupingEntity = GroupingEntity.ALL;

@@ -4,8 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Resource;
@@ -18,8 +16,8 @@ import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RankingUtil;
-import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
+import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -29,13 +27,11 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class UserUserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
-	private static final Log LOGGER = LogFactory.getLog(UserUserPageController.class);
 
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 
 		final String groupingName = command.getRequestedUser();
 		
@@ -87,7 +83,6 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			// set total nr. 
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), origEntriesPerPage);
 		}
-
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {

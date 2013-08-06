@@ -23,12 +23,12 @@ public class BasketPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(final PublicationPageCommand command) {
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 
 		// if user is not logged in, redirect him to login page
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
-		}				
+		}
 
 		// set login user name + grouping entity = CLIPBOARD
 		final String loginUserName = command.getContext().getLoginUser().getName();
@@ -51,9 +51,9 @@ public class BasketPageController extends SingleResourceListController implement
 			command.getListCommand(resourceType).setTotalCount(command.getContext().getLoginUser().getBasket().getNumPosts());
 		}	
 
-		this.endTiming();			
+		this.endTiming();
 		if ("html".equals(format)) {
-			return Views.CLIPBOARDPAGE;	
+			return Views.CLIPBOARDPAGE;
 		}
 
 		// export - return the appropriate view

@@ -36,7 +36,7 @@ public class HomepageController extends SingleResourceListController implements 
 	public View workOn(final HomepageCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 		
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);

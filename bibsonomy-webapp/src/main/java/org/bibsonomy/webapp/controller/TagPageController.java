@@ -4,8 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -31,13 +29,11 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class TagPageController extends SingleResourceListControllerWithTags implements MinimalisticController<TagResourceViewCommand>{
-	private static final Log log = LogFactory.getLog(TagPageController.class);
 	
 	@Override
 	public View workOn(final TagResourceViewCommand command) {
-		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 		
 		// if no tags given return
 		if (!present(command.getRequestedTags())) {

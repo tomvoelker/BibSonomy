@@ -37,14 +37,14 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	public View workOn(GroupResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 
 		final String groupingName = command.getRequestedGroup();
 		
 		// if no group given -> error
 		if (!present(groupingName)) {
 			throw new MalformedURLSchemeException("error.group_page_without_groupname");
-		}				
+		}
 
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
@@ -60,7 +60,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
 		
 		// this controller only supports "JUST_PDF"
-		final FilterEntity filter = command.getFilter() == FilterEntity.JUST_PDF ? FilterEntity.JUST_PDF : null;
+		final FilterEntity filter = FilterEntity.JUST_PDF.equals(command.getFilter()) ? FilterEntity.JUST_PDF : null;
 
 		// display only posts, which have a document attached
 		if (FilterEntity.JUST_PDF.equals(filter)) {

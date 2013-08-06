@@ -8,8 +8,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
@@ -37,14 +35,9 @@ import org.springframework.security.access.AccessDeniedException;
  * @version $Id$
  */
 public class MySearchController extends SingleResourceListControllerWithTags implements MinimalisticController<MySearchCommand> {
-	private static final Log log = LogFactory.getLog(MySearchController.class);
 
 	@Override
 	public View workOn(final MySearchCommand command) {
-		log.debug(this.getClass().getSimpleName());
-		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
-
 		/*
 		 * only users which are logged in might post bookmarks -> send them to
 		 * login page
@@ -52,7 +45,9 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
 		}
-
+		
+		final String format = command.getFormat();
+		this.startTiming(format);
 		final User user = command.getContext().getLoginUser();
 
 		// set grouping entity, grouping name, tags

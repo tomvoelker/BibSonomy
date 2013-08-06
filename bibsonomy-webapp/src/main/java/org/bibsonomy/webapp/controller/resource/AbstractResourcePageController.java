@@ -37,7 +37,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	@Override
 	public final View workOn(final ResourcePageCommand<R> command) {
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 		
 		/*
 		 * This hash has 33 characters and contains at the first position the

@@ -31,7 +31,7 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 	public View workOn(final DiscussedViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 
 		final String groupingName; 
 		final GroupingEntity groupingEntity;

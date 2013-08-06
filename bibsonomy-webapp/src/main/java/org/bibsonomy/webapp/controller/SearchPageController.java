@@ -37,11 +37,11 @@ public class SearchPageController extends SingleResourceListController implement
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 		
 		// no search given -> error 
 		if (!present(command.getRequestedSearch())){
-			throw new MalformedURLSchemeException("error.search_page_without_search");	
+			throw new MalformedURLSchemeException("error.search_page_without_search");
 		}
 		
 		String search = command.getRequestedSearch();
@@ -101,11 +101,11 @@ public class SearchPageController extends SingleResourceListController implement
 			// fill the tag cloud with all tag assignments of the relevant documents
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
 			this.endTiming();
-			return Views.SEARCHPAGE;			
+			return Views.SEARCHPAGE;
 		}
 		
 		this.endTiming();
-		return Views.getViewByFormat(format);		
+		return Views.getViewByFormat(format);
 	}
 
 	@Override

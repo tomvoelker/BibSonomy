@@ -21,7 +21,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for BibtexKey * 
+ * Controller for BibtexKey
+ * - /bibtexkey/BIBKEY
+ * - /bibtexkey/BIBKEY/USER
  *
  * @author Flori, Dominik Benz
  * @version $Id$
@@ -31,9 +33,8 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 
 	@Override
 	public View workOn(BibtexkeyCommand command) {
-		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);		
+		this.startTiming(format);
 		
 		if (!present(command.getRequestedKey())) {
 			throw new MalformedURLSchemeException("error.bibtexkey_no_key");
@@ -49,7 +50,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 				
 		// check for systemtag sys:user:USERNAME
 		List<String> sysTags = SystemTagsExtractor.extractSearchSystemTagsFromString(command.getRequestedTags(), TagUtils.getDefaultListDelimiter());		
-		final String systemTagUser = extractSystemTagUser(sysTags);		
+		final String systemTagUser = extractSystemTagUser(sysTags);
 		if (systemTagUser != null) {
 			command.setRequestedUser(systemTagUser);
 		}
@@ -59,13 +60,13 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 			groupingEntity = GroupingEntity.USER;
 			groupingName = command.getRequestedUser();
 		}
-						
+		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());			
 			postProcessAndSortList(command, resourceType);
 		}
-						
+		
 		// html format - fetch tags and return HTML view
 		if (format.equals("html")) {
 			// tags
@@ -76,16 +77,16 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 			// pagetitle
 			String pageTitle = "bibtexkey :: " + command.getRequestedKey();
 			if (GroupingEntity.USER.equals(groupingEntity)) {
-				pageTitle += " :: " + command.getRequestedUser() ;
+				pageTitle += " :: " + command.getRequestedUser();
 			}
-			command.setPageTitle(pageTitle);			
+			command.setPageTitle(pageTitle);
 			this.endTiming();
 			return Views.BIBTEXKEYPAGE;	
 		}
 		
 		// export - return the appropriate view
 		this.endTiming();
-		return Views.getViewByFormat(format);				
+		return Views.getViewByFormat(format);
 	}
 
 	
@@ -112,6 +113,6 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 			}
 		}
 		return null;
-	}	
+	}
 
 }

@@ -35,7 +35,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 	public View workOn(final AuthorResourceCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
-		this.startTiming(this.getClass(), format);
+		this.startTiming(format);
 
 		// get author query - it might still contain some system tags at this point!
 		String authorQuery = command.getRequestedAuthor();
@@ -96,11 +96,11 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				return Views.AUTHORTAGPAGE;
 			}
-			return Views.AUTHORPAGE;			
+			return Views.AUTHORPAGE;
 		}
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(format);		
+		return Views.getViewByFormat(format);
 	}
 	
 	@Override
