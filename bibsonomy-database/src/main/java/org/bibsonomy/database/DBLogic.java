@@ -2085,13 +2085,17 @@ public class DBLogic implements LogicInterface {
 	 */
 	private String storeConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final boolean update) {
 		final DBSession session = openSession();
-		if (update) {
-			this.tagRelationsDBManager.insertRelations(concept, groupingName, session);
-		} else {
-			this.deleteConcept(concept.getName(), grouping, groupingName);
-			this.tagRelationsDBManager.insertRelations(concept, groupingName, session);
+		try {
+			if (update) {
+				this.tagRelationsDBManager.insertRelations(concept, groupingName, session);
+			} else {
+				this.deleteConcept(concept.getName(), grouping, groupingName);
+				this.tagRelationsDBManager.insertRelations(concept, groupingName, session);
+			}
+			return concept.getName();
+		} finally {
+			session.close();
 		}
-		return concept.getName();
 	}
 
 	/*
