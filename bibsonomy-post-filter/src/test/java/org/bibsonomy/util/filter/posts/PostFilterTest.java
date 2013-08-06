@@ -1,7 +1,6 @@
 package org.bibsonomy.util.filter.posts;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,8 +10,6 @@ import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
@@ -27,8 +24,6 @@ import org.bibsonomy.util.filter.posts.matcher.BooleanOrMatcher;
 import org.bibsonomy.util.filter.posts.matcher.Matcher;
 import org.bibsonomy.util.filter.posts.modifier.PropertyModifier;
 import org.bibsonomy.util.filter.posts.modifier.ReplacementPropertyModifier;
-import org.bibsonomy.util.filter.posts.parser.FilterRuleLexer;
-import org.bibsonomy.util.filter.posts.parser.FilterRuleParser;
 import org.junit.Test;
 
 import bibtex.parser.ParseException;
@@ -144,30 +139,20 @@ public class PostFilterTest {
 		}
 	}
 	
-	
-	// final String tagString = "&[ resource.year >= 1992 resource.publisher = 'Springer'  (resource.address = 'Heidelberg' | resource.address = 'Berlin') : resource.address := 'Berlin/Heidelberg']";
-	
+	/**
+	 * Normalize "pages" field of posts. 
+	 */
 	@Test
 	public void testGetFilteredAndUpdatedPostsPagesWithParser() {
 		System.out.println("== filtering pages using the parser ==");
 		final List<Post<? extends Resource>> posts = getPosts();
 
 		/*
-		 * configure matcher: page values with just one dash
-		 */
-		final BeanPropertyMatcher<String> pagesSingleDashMatcher = new BeanPropertyMatcher<String>("resource.pages", new Matches(), ".*[0-9]\\s*-\\s*[0-9].*");
-
-		/*
 		 * configure filter
 		 */
-		final String tagString = "&[ resource.pages =~ '.*[0-9]\\s*-\\s*[0-9].*' : resource.pages :~ '\\s*-\\s*'/'--']";
-		final CommonTokenStream tokens = new CommonTokenStream();
-		tokens.setTokenSource(new FilterRuleLexer(new ANTLRStringStream(tagString)));
-		final FilterRuleParser parser = new FilterRuleParser(tokens);
 		try {
 			System.out.println("################################################");
-			parser.filter();
-			final PostFilter postFilter = parser.getPostFilter();
+			final PostFilter postFilter = new PostFilterFactory().getPostFilterFromStringDefinition("&[ resource.pages =~ '.*[0-9]\\s*-\\s*[0-9].*' : resource.pages :~ '\\s*-\\s*'/'--']");
 			System.out.println(postFilter.getMatcher());
 			System.out.println(":");
 			System.out.println(postFilter.getModifier());
@@ -269,10 +254,6 @@ public class PostFilterTest {
 		}
 	}
 
-	private static String getFileAsString (final String fileName) throws IOException {
-		return getStreamAsString(new FileInputStream(fileName));
-	}
-
 	private static String getStreamAsString(final InputStream inputStream) throws IOException {
 		final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
@@ -286,4 +267,3 @@ public class PostFilterTest {
 	}
 
 }
-
