@@ -17,6 +17,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
      * used to show infos about the user in the sidebar (only for admins, currently)
      */
 	private User user;
+	@Deprecated // TODO: remove!
 	private boolean isFollowerOfUser = false;
 	
 	/**
@@ -32,6 +33,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * defines the similarity measure by which the related users are computed  
 	 * (default is folkrank)
 	 */
+	// TODO: use UserRelation as type
 	private String userSimilarity = UserRelation.FOLKRANK.name();
 	
 	/**
