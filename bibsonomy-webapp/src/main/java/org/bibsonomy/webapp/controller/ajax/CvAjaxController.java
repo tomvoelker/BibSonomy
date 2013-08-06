@@ -81,9 +81,8 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		/* if we chose to render the layout as it is publicly viewable
 		 * (i.e. also for users who are not logged in), do this.
 		 * what, if I am a spammer?
-		 * TODO: Check what the spammer check is actually doing.
 		 */
-		if (PUBLIC_PREVIEW.equals(renderOptions) && !this.logic.getAuthenticatedUser().isSpammer()) {
+		if (PUBLIC_PREVIEW.equals(renderOptions)) { // && !this.logic.getAuthenticatedUser().isSpammer()) {
 			interfaceToUse = this.notLoggedInUserLogic;
 		} else {
 			interfaceToUse = this.logic;
@@ -105,18 +104,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		}
 
 		/*
-		 * if a renderOption was specified and the wikitext is neither null nor nonexistent,
-		 * render a preview
-		 * 
-		 * TODO: What happens with an empty CV?
-		 */
-//		if (present(renderOptions) && present(wikiText)) {
-//			return renderLayout(command, locale, wikiText, interfaceToUse);
-//		}
-		
-		/*
-		 * handle save action
-		 * first update 
+		 * If the renderOption was set to "SAVE_OPTION", we just write the whole thing into the database.
 		 */
 		if (SAVE_OPTION.equals(renderOptions)) {
 			final Wiki wiki = new Wiki();
@@ -125,22 +113,10 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 			 * TODO: add support for group members to edit group cv page, restrict only to moderators
 			 */
 			this.logic.updateWiki(authUser, wiki);
-			/*
-			 * go on and return the preview
-			 */
-			
-			/* is this really necessary? Wouldn't it be better to save the Wiki
-			 * only after already having rendered a preview? Workflow?
-			 */
-			
-			// return renderLayout(command, locale, wikiText, interfaceToUse);
 		}
 		
 		/*
-		 * the rendering should take place now, regardless of the given wikiText.
-		 * TODO: Test this at home: selecting layout, selecting layout before,
-		 * saving, saving again without editing and stuff...
-		 * if no renderOption is given, try to set a layout
+		 * Return the rendered wiki.
 		 */
 		try {
 			return renderLayout(command, locale, wikiText, interfaceToUse);
@@ -148,8 +124,6 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 			return handleError("error.405");
 		}
 	}
-	
-	// TODO: Zwei Methoden zum Rendern sind doch behindert! Was soll der Mist denn!?
 	
 	/**
 	 * renders a layout and returns it.
@@ -165,25 +139,19 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		// if asked for a default layout, fetch it from the messages.
 		if (command.getLayout() != null && !DefaultLayout.LAYOUT_CURRENT.equals(command.getLayout()) ) {
 			// fetch default wiki text from messages.properties
+			// TODO: Maybe move the default wikis somewhere else?
 			final String defaultWikiText = messageSource.getMessage(command.getLayout().getRef(), null, locale);
 			command.setResponseString(generateXMLSuccessString(command, defaultWikiText, wikiRenderer.render(defaultWikiText)));
 			
 		// render the custom layout.
 		} else {
-			// fetch current user wiki text from database
-			String currentWikiText;
-			if (present(wikiRenderer.getRequestedUser())) {
-				currentWikiText = logic.getWiki(wikiRenderer.getRequestedUser().getName(), null).getWikiText();
-			} else {
-				currentWikiText = logic.getWiki(wikiRenderer.getRequestedGroup().getName(), null).getWikiText();
-			}
-			command.setResponseString(generateXMLSuccessString(command, currentWikiText, wikiRenderer.render(currentWikiText)));
+			command.setResponseString(generateXMLSuccessString(command, wikiText, wikiRenderer.render(wikiText)));
 		}
 
 		return Views.AJAX_XML;
 	}
 
-	// TO DO: The two functions below are (almost) equal to the functions in
+	// TODO: The two functions below are (almost) equal to the functions in
 	// "AdditionalURLController" -> redudant code
 	/**
 	 * Method to handle Errors based on urlError enum.
