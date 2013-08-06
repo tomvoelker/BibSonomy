@@ -70,10 +70,16 @@ public class TagCloudCommand extends BaseCommand {
 		return this.tags;
 	}
 
+	/**
+	 * @return the minTagCount
+	 */
 	public int getMinTagCount() {
 		return this.minTagCount;
 	}
 
+	/**
+	 * @return the minUserTagCount
+	 */
 	public int getMinUserTagCount() {
 		return this.minUserTagCount;
 	}
