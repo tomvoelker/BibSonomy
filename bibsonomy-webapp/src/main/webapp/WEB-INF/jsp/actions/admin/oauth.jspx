@@ -47,6 +47,10 @@
 				    padding: 2px;
 				    text-align: center;
 				}
+				#oauthConsumerList img {
+                                    max-width: 300px;
+                                    max-width: 300px;
+                                }
 				.consumerEntry td {
 				    border: 1px solid #CCCCCC;
 				    padding: 2px;
