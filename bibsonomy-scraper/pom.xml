@@ -86,15 +86,14 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>remoteTests</id>
+			<id>allTests</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<groups>org.bibsonomy.scraper.junit.RemoteTest</groups>
-						</configuration>
+						<!-- use standard config don't exclude RemoteTests -->
+						<configuration combine.self="override" />
 					</plugin>
 				</plugins>
 			</build>
