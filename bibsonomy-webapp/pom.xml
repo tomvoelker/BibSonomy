@@ -415,7 +415,7 @@
 		</dependency>
 		<!-- used to export CSV -->
 		<dependency>
-			<groupId>au.com.bytecode.opencsv</groupId>
+			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>1.8</version>
 		</dependency>
@@ -445,7 +445,7 @@
 			<artifactId>bibsonomy-wiki</artifactId>
 		</dependency>
 		<dependency>
-		<groupId>org.springframework.security.extensions</groupId>
+			<groupId>org.springframework.security.extensions</groupId>
 			<artifactId>spring-security-saml2-core</artifactId>
 			<version>1.0.0-RC1-PUMA-SNAPSHOT</version>
 			<exclusions>
