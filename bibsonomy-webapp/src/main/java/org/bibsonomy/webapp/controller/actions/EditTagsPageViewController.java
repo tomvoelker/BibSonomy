@@ -80,7 +80,6 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		 */
 		final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, 0, Integer.MAX_VALUE);
 		command.getConcepts().setConceptList(concepts);
-		command.getConcepts().setNumConcepts(concepts.size());
 		
 		return Views.EDIT_TAGS;
 	}

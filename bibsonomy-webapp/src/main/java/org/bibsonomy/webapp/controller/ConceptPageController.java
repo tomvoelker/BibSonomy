@@ -5,8 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -27,11 +25,9 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class ConceptPageController extends SingleResourceListController implements MinimalisticController<ConceptResourceViewCommand>{
-	private static final Log log = LogFactory.getLog(ConceptPageController.class);
 
 	@Override
 	public View workOn(final ConceptResourceViewCommand command) {
-		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(format);
 		
@@ -110,7 +106,6 @@ public class ConceptPageController extends SingleResourceListController implemen
 		
 		if (present(concepts)) {
 			command.getConcepts().setConceptList(concepts);
-			command.getConcepts().setNumConcepts(concepts.size());
 		}
 		
 		// html format - retrieve tags and return HTML view

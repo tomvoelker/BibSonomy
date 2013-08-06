@@ -19,7 +19,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * controller to display the relations of requested user
- * - /concepts/user/USER
+ * - /concepts/USER
  * 
  * @author Christian Voigtmann
  * @version $Id$
@@ -50,7 +50,6 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, 0, Integer.MAX_VALUE);
 
 		command.getConcepts().setConceptList(concepts);
-		command.getConcepts().setNumConcepts(concepts.size());
 		command.getConcepts().setTotalCount(numberOfRelations);
 
 		// set page title

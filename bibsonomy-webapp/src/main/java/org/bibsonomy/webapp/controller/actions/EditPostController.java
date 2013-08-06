@@ -19,8 +19,8 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
@@ -293,8 +293,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		final List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, loginUser.getName(), null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
 		command.getConcepts().setConceptList(concepts);
-		command.getConcepts().setNumConcepts(concepts.size());
-
+		
 		/*
 		 * prepare post from internal format into user's form format
 		 */

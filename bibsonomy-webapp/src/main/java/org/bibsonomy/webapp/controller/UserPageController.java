@@ -126,8 +126,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			// retrieve concepts
 			final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
 			command.getConcepts().setConceptList(concepts);
-			command.getConcepts().setNumConcepts(concepts.size());
-
+			
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
 				LOGGER.debug("User " + groupingName + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
