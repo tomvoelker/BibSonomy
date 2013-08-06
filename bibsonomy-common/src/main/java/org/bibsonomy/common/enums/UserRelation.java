@@ -51,8 +51,10 @@ public enum UserRelation {
 	/** source user is curious about the target user */
 	CURIOUS_ABOUT(6), 
 	/** source user follows target user */
+	@Deprecated
 	FOLLOWER_OF(7),
 	/** target user follows source user */
+	@Deprecated
 	OF_FOLLOWER(8),
 	/** relationships can also be established by a custom tag */
 	TAGGED(9);
