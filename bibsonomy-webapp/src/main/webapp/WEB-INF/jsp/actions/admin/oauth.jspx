@@ -35,7 +35,7 @@
 				#oauthConsumerList {
 				    border-collapse: collapse;
 				    empty-cells: show;
-				    font-size: 60%;
+				    font-size: 80%;
 				    margin-top: 15px;
 				    width: 100%;
 				} 
