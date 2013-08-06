@@ -189,15 +189,14 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 				 * no layout for user found -> throw an exception
 				 */
 				throw new LayoutRenderingException("no custom layout found");
-			} 
-			for (final BibtexEntry entry: sorted) {               
+			}
+			
+			for (final BibtexEntry entry: sorted) {
 				output.append(itemLayout.doLayout(entry, database));
-			}           
-
+			}
 		} else {
 			// try to retrieve type-specific layouts and process output
-			for (final BibtexEntry entry: sorted) {
-
+			for (final BibtexEntry entry : sorted) {
 				// We try to get a type-specific layout for this entry
 				// FIXME: adding the dot "." here isn't so nice ...
 				Layout itemLayout = layout.getSubLayout("." + entry.getType().getName().toLowerCase());
@@ -215,8 +214,6 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 				} 
 				output.append(itemLayout.doLayout(entry, database));
 			}
-
-
 		}
 
 		/* 
