@@ -100,6 +100,9 @@ public class TypeExtractor implements AttributeExtractor {
 		map2bibtex.put("phdthesis", "phdthesis");
 		map2bibtex.put("series", "mvbook");
 		map2bibtex.put("article", "article");
+		map2bibtex.put("audio", "audio");
+		map2bibtex.put("cd", "audio");
+		map2bibtex.put("video", "video");
 	}
 
 	@Override
