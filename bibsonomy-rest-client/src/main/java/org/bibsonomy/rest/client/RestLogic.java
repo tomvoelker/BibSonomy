@@ -593,11 +593,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteWiki(final String userName) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void createExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
 		throw new UnsupportedOperationException();
 	}
