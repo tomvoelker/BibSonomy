@@ -24,7 +24,7 @@ public class TemplateManager {
 	 * @param name the name of the template
 	 * @return a template, if it exists in the resource folder
 	 */
-	public String getTemplate(String name) {
+	public static String getTemplate(String name) {
 		return templates.get(name);
 	}
 	
@@ -32,7 +32,7 @@ public class TemplateManager {
 	 * Returns all possible template names for later use.
 	 * @return all possible template names for later use.
 	 */
-	public Set<String> getTemplateNames() {
+	public static Set<String> getTemplateNames() {
 		return templates.keySet();
 	}
 
