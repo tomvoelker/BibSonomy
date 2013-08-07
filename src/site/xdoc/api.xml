@@ -429,7 +429,7 @@
 					<em>end</em>
 					only with lists):
 					<ul>
-						<li>?format=(xml|rdf|owl) <em>*)</em></li>
+						<li>?format=(xml|json|csl) <em>*)</em></li>
 						<li>?start=[int], starting at 0, default 0 <em>**)</em></li>
 						<li>?end=[int], starting at 0, default 20 <em>**)</em></li>
 					</ul>
@@ -461,15 +461,15 @@
 
 					<ul>
 						<li><em>exclude terms:</em><tt>/posts/?search=folksonomy -ontology</tt>
-						    will return matches that contain folksonomy, but not ontology
-					   	 </li>
-						 <li><em>phrase search</em><tt>/posts/?search="folksonomies are cool"</tt>
+							will return matches that contain folksonomy, but not ontology
+						</li>
+						<li><em>phrase search</em><tt>/posts/?search="folksonomies are cool"</tt>
 							will return matches that contain the whole phrase "folksonomies are cool",
 							but not matches that contain e.g. "folksonomies are not cool".
-						</li>					    
+						</li>
 						<li><em>wildcards:</em><tt>/posts/?search=folksonom*</tt>
 							will return matches that contain "folksonomy, folksonomies, ...".
-						</li>					    						
+						</li>
 					</ul>
 
 					<b>Special characters in search terms:</b> Please note that all special 
@@ -481,13 +481,13 @@
 					such a case, phrase search will yield the expected result:
 
 					<ul>
-						<li><tt>/posts?search="978-0-387-71000-6"</tt></li>						
-					</ul>					
+						<li><tt>/posts?search="978-0-387-71000-6"</tt></li>
+					</ul>
 			
 					
-				</p>				
+				</p>
             <p>
-              <em>*)</em> Please note: RDF and OWL are not supported at the moment.<br/>
+              <em>*)</em> Please note: CSL is only supported for publication posts.<br/>
               <em>**)</em> ?start=0&amp;end=20 is a list of the first 20 entities (exclusively the 'end'-value).
             </p>
 			</subsection>
