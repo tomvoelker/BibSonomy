@@ -118,20 +118,19 @@
 						<form:option value="din1505">DIN1505</form:option>
 						<form:option value="simplehtml">simple HTML</form:option>
 					</form:select>
-				    <c:out value=" "/>
-				    <input type="image"  src="/resources/image/nice_box_arrow_right.png" alt="right"/>		    
+					<c:out value=" "/>
+					<input type="image"  src="/resources/image/nice_box_arrow_right.png" alt="right"/>		    
 				</form>
 			</div>
 			<div id="gold_exports_2">
-		  		<form>	  	
-			  		<textarea name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
-			  	</form>	
-		  	</div>
-		  	<div id="gold_exports_3">
-	  			<form>
-	  				<c:set var="endnoteExport"><export:endnote bib="${goldstandard}"/></c:set>	  	
-		  			<textarea name="endnote_textarea" rows="20">${fn:escapeXml(endnoteExport)}</textarea>
-		  		</form>			
+				<form>	  	
+					<textarea name="bibtex_textarea" rows="20"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
+				</form>	
+			</div>
+			<div id="gold_exports_3">
+				<form>
+					<textarea name="endnote_textarea" rows="20"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
+				</form>			
 			</div>
 			<div id="gold_refs">
 				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">

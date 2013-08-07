@@ -54,8 +54,7 @@
 				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
 			</div>
 			<div id="citation_endnote">
-				<c:set var="endnoteExport"><export:endnote bib="${post.resource}"/></c:set>	  	
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><c:out value="${endnoteExport}"/></textarea>
+				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
 			</div>
 		</div>
 	</div>

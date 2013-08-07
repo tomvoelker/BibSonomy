@@ -526,6 +526,10 @@ public class Functions  {
 		return BibTexUtils.toBibtexString(post, flags, urlGenerator) + "\n\n";
 	}
 	
+	public static String toEndnoteString(final Post<BibTex> post) {
+		return  EndnoteUtils.toEndnoteString(post);
+	}
+	
 	/**
 	 * Formats the date to ISO 8601, e.g., 2012-11-07T14:43:16+0100
 	 * 
