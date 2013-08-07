@@ -93,52 +93,33 @@ Java client library
   (see the {{{rest-client-javadoc/index.html}JavaDoc}} for further reference):
 
 --------------------------------------------
+package org.bibsonomy.rest.client.sample;
 
 import java.util.List;
+
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.rest.client.Bibsonomy;
-import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
-import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.client.RestLogicFactory;
 
-public class apitest {
+public class ApiTest {
 
 	public static void main(String[] args) {
+		// create a factory to get the logic, here you can config the api url, …
+		final RestLogicFactory factory = new RestLogicFactory();
+		// with the logic you can interact with the API, you only need a username and the API-key of the user
+		final LogicInterface logic = factory.getLogicAccess("username", "api-key");
 		
-		// BasicConfigurator.configure();
-		
-		// create webservice client object with credentials, set API URL
-		Bibsonomy bib = new Bibsonomy("username", "api-key");
-		bib.setApiURL("http://www.bibsonomy.org/api");
-
-		// instantiate query object
-		GetPostsQuery gpq = new GetPostsQuery();
-
-		// some queries can be parametrized
-		// -> in this example we want to fetch only bibtex entries
-		gpq.setResourceType(BibTex.class);
-
-		try {
-			// perform query
-			bib.executeQuery(gpq);
-
-			// on success, read results
-			if (gpq.getHttpStatusCode() == 200) {
-				List<Post<?>> posts = gpq.getResult();
-
-				for (Post post : posts) {
-					/*
-					 * now do something with your posts :)
-					 * e.g. print the bibtex keys
-					 */					
-					BibTex bibEntry = (BibTex) post.getResource();
-					System.out.println(bibEntry.getBibtexKey());
-				}
-			}
-		} catch (ErrorPerformingRequestException e) {
+		// get the lastest publications
+		final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, null, null, null, null, null, 0, 10);
+		for (final Post<BibTex> post : posts) {
 			/*
-			 * happens on network failure for example
-			 */
+			 * now do something with your posts :)
+			 * e.g. print the bibtex keys
+			 */					
+			final BibTex publication = post.getResource();
+			System.out.println(publication.getTitle());
 		}
 	}
 }
