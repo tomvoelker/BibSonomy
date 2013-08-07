@@ -10,6 +10,7 @@ import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -57,7 +58,7 @@ public class AuthorExtractor extends AbstractParticipantExtractor {
 			String familyName =((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("028A", "$a", "");
 			String firstName =((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("028A", "$d", "");
 			if (ValidationUtils.present(familyName) || ValidationUtils.present(firstName)) {
-				authors.add(new PersonName(firstName.trim(), familyName.trim()));
+				authors.add(new PersonName(BibTexUtils.escapeBibtexMarkup(firstName.trim(), true), BibTexUtils.escapeBibtexMarkup(familyName.trim(), true)));
 			}
 		}
 		

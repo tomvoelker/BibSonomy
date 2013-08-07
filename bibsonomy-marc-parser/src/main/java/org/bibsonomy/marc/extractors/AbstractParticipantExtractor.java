@@ -8,6 +8,7 @@ import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.marc4j.marc.DataField;
@@ -88,7 +89,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 		StringBuilder lastName = new StringBuilder();
 		if (name.contains(", ")) {
 			// forename is available -> get foreName and lastname
-			result.setFirstName(Normalizer.normalize(name.split(", ")[1], Normalizer.Form.NFC));
+			result.setFirstName(BibTexUtils.escapeBibtexMarkup(Normalizer.normalize(name.split(", ")[1], Normalizer.Form.NFC), true));
 			lastName.append(name.split(", ")[0].replace(",", ""));
 			
 		} else {
@@ -101,7 +102,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 		if (ValidationUtils.present(title)) {
 			lastName.append(" <").append(title.trim()).append('>');
 		}
-		result.setLastName(Normalizer.normalize(lastName.toString(), Normalizer.Form.NFC));
+		result.setLastName(BibTexUtils.escapeBibtexMarkup(Normalizer.normalize(lastName.toString(), Normalizer.Form.NFC), true));
 		return result;
 	}
 	
@@ -167,7 +168,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 	public boolean setAsPerson(List<PersonName> authors, StringBuilder lastName) {
 		StringUtils.trimStringBuffer(lastName);
 		if (lastName.length() > 0) {
-			authors.add(new PersonName("", lastName.toString()));
+			authors.add(new PersonName("", BibTexUtils.escapeBibtexMarkup(Normalizer.normalize(lastName.toString(), Normalizer.Form.NFC) , true)));
 			return true;
 		}
 		return false;

@@ -1,16 +1,22 @@
 package org.bibsonomy.marc;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.internal.matchers.IsCollectionContaining;
+
+import bibtex.parser.ParseException;
 
 /**
  * @author jensi
@@ -43,6 +49,23 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 		BibTex bib = get("HEB221544364");
 		Assert.assertTrue(bib.getAuthor().contains(new PersonName("Quentin", "Tarantino")));
 		Assert.assertEquals("electronic", bib.getEntrytype());
+	}
+	
+	@Test
+	public void testMonsterCd() {
+		BibTex bib = get("HEB320628140");
+		Assert.assertFalse(ValidationUtils.present(bib.getEditor()));
+		// TODO: ask martina whether we should really change this
+		// Assert.assertEquals(Arrays.asList(new PersonName("noauthor", "HEB320628140")), bib.getAuthor());
+		Assert.assertEquals("audio", bib.getEntrytype());
+	}
+	
+	@Test
+	public void testAnd() throws ParseException, IOException {
+		final BibTex bib = get("HEB21356114X");
+		Assert.assertEquals(Arrays.asList(new PersonName("", "{School of English Literature, Language and Linguistics}")), bib.getAuthor());
+		final BibTex reparsedBib = new SimpleBibTeXParser().parseBibTeX(BibTexUtils.toBibtexString(bib));
+		Assert.assertEquals(Arrays.asList(new PersonName("", "{School of English Literature, Language and Linguistics}")), reparsedBib.getAuthor());
 	}
 	
 	@Test
