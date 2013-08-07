@@ -22,7 +22,6 @@
 		WHERE user_name=#userName#
 	</update>
 
-<!-- For later use when we have versioning of the CV-Wiki
 	<insert id="logWiki" parameterClass="wikiParam">
 		INSERT INTO log_wiki (user_name, date, user_wiki)
 		VALUES (#userName#,#date#,#wikiText#)
@@ -31,7 +30,7 @@
 	<select id="getLoggedWiki" resultMap="WikiCommon.wiki" parameterClass="wikiParam">
 		SELECT <include refid="commonWikiAttributes"/>
 		FROM log_wiki
-		WHERE user_name = #userName# AND #date# >= date
+		WHERE user_name = #userName# AND date &lt;= #date#
 		ORDER BY date DESC 
 		LIMIT 1
 	</select>
@@ -42,7 +41,5 @@
 		WHERE user_name = #userName#
 		ORDER BY date DESC
 	</select>
--->	
-	
 	
 </sqlMap>

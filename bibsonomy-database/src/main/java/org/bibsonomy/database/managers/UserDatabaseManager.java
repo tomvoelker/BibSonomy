@@ -27,6 +27,8 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.wiki.TemplateManager;
+import org.springframework.context.MessageSource;
 
 /**
  * Used to retrieve users from the database.
@@ -43,6 +45,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Tag BIBSONOMY_FRIEND_SYSTEM_TAG = new Tag(NetworkRelationSystemTag.BibSonomyFriendSystemTag);
 	
 	private static final UserDatabaseManager singleton = new UserDatabaseManager();
+	
+	private MessageSource messageSource;
 	
 	/**
 	 * @return UserDatabaseManager
@@ -980,7 +984,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session - the DB session
 	 * @return a list of users, related by folkrank to the given user. 
 	 */
-	public List<User> getRelatedUsersByFolkrankAndUser(final String requestedUsername, final String loginUserName, final int limit, final int offset, final DBSession session) {
+	public List<User> getRelatedUsersByFolkrankAndUser(final String requestedUsername,
+			final String loginUserName, final int limit, final int offset, final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setRequestedUserName(requestedUsername);
 		param.setUserName(loginUserName);
@@ -1054,7 +1059,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	        this.insert("activateUser", user.getName(), session);
 	        this.deletePendingUser(user.getName(), session);
 	        
-	        //this.insertDefaultWiki(user, session);
+	        this.insertDefaultWiki(user, session);
 	        session.commitTransaction();
     	} finally {
     		session.endTransaction();
@@ -1073,9 +1078,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		WikiParam param = new WikiParam();
 		param.setUserName(user.getName());
 		param.setDate(user.getRegistrationDate());
-		// TODO: Hier muss noch der Default Text des englischen Wikis hin.
-		
-		param.setWikiText("new User, no Wiki!");
+
+		param.setWikiText(TemplateManager.getTemplate("defaulten"));
 		// hier passiert keine Sicherung, da die session-transactions in den umfassenden
 		// Methoden bereits eroeffnet wurden.
 		this.insert("insertWiki", param, session);
@@ -1161,4 +1165,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	public void setValidator(final DatabaseModelValidator<User> validator) {
 		this.validator = validator;
 	}
+
+	public final MessageSource getMessageSource() {
+		return this.messageSource;
+	}
+
+	public final void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+
 }

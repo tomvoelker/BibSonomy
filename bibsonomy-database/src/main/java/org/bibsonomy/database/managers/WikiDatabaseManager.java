@@ -105,33 +105,24 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 		param.setDate(date);
 		param.setUserName(userName);
 	
-		/*
-		 * This query will fail because the corresponding section for "getLoggedWiki"
-		 * is commented out. Anyhow, this is never called until now.
-		 */
 		return this.queryForObject("getLoggedWiki", param, Wiki.class, session);
     }
     
     /**
      * This method is never called until yet.
      * 
-     * logs the wiki of the user
-     * TODO: move to logging plugin
-     * TODO: Find out why this should happen, makes no sense to me. This is
-     * another kind of logging than what happens in the logging plugin.
+     * logs the wiki of the user, so that he can recall older revisions. Wiki style!
      * 
      * @param userName
      * @param wiki
      * @param session
      */
     public void logWiki(final String userName, final Wiki wiki, final DBSession session) {
-    	// DO NOTHING!!!
-    	
-//		session.beginTransaction();
+		session.beginTransaction();
 		
-//		final WikiParam param = new WikiParam();
-//		param.setUserName(userName);
-//		param.setWikiText(wiki.getWikiText());
+		final WikiParam param = new WikiParam();
+		param.setUserName(userName);
+		param.setWikiText(wiki.getWikiText());
 		/*
 		 * FIXME: shouldn't we have an (additional) logging date here?
 		 * 
@@ -139,14 +130,17 @@ public class WikiDatabaseManager extends AbstractDatabaseManager {
 		 * date = wiki.getDate()
 		 * logDate = new Date()
 		 * 
+		 * Nope, because we are inserting a new Wiki into the database. We will not change
+		 * old Wikis.
 		 */
-//		param.setDate(new Date());
+		param.setDate(new Date());
 		
-//		try {
-//		    this.insert("logWiki", param, session);
-//		    session.commitTransaction();
-//		} finally {
-//		    session.endTransaction();
-//		}
+		try {
+		    this.insert("logWiki", param, session);
+		    session.commitTransaction();
+		} finally {
+		    session.endTransaction();
+		}
     }
+
 }
