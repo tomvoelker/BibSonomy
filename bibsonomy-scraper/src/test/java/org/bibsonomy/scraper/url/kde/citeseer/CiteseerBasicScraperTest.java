@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.citeseer;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,16 +37,15 @@ import org.junit.Test;
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class CiteseerBasicScraperTest {
 	
 	/**
 	 * starts URL test with id url_12
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_12"));
+		assertTrue(UnitTestRunner.runSingleTest("url_12"));
 	}
 	
 

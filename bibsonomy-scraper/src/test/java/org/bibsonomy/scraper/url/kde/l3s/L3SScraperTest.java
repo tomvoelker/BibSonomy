@@ -24,26 +24,26 @@
 package org.bibsonomy.scraper.url.kde.l3s;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #17 for L3SScraper
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class L3SScraperTest {
 	
 	/**
 	 * starts URL test with id url_17
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun(){
-		final UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_17"));
+		assertTrue(UnitTestRunner.runSingleTest("url_17"));
 	}
 	
 }

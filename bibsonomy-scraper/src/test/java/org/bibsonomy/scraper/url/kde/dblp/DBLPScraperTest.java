@@ -23,37 +23,35 @@
 
 package org.bibsonomy.scraper.url.kde.dblp;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #56 for DBLPScraper
  * @author wbi
  *
  */
+@Category(RemoteTest.class)
 public class DBLPScraperTest {
 	
 	/**
 	 * starts URL test with id url_56
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_56"));
+		assertTrue(UnitTestRunner.runSingleTest("url_56"));
 	}
 	
 	/**
 	 * starts URL test with id url_180
 	 */
 	@Test
-	@Ignore
 	public void urlTest1Run(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_180"));
+		assertTrue(UnitTestRunner.runSingleTest("url_180"));
 	}
 	
 }

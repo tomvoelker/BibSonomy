@@ -77,7 +77,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<includes>
-						<include>**/*.class</include>
+						<include>**/*Test.class</include>
+						<include>**/Test*.class</include>
 					</includes>
 					<excludedGroups>org.bibsonomy.scraper.junit.RemoteTest</excludedGroups>
 				</configuration>

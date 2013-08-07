@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.coins;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,36 +36,31 @@ import org.junit.Test;
  * @author tst
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class CoinsScraperTest {
 	
 	/**
 	 * starts URL test with id url_130
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_130"));
+		assertTrue(UnitTestRunner.runSingleTest("url_130"));
 	}
 	
 	/**
 	 * starts URL test with id url_218
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_218"));
+		assertTrue(UnitTestRunner.runSingleTest("url_218"));
 	}
 	
 	/**
 	 * starts URL test with id url_230
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_230"));
+		assertTrue(UnitTestRunner.runSingleTest("url_230"));
 	}
 
 }

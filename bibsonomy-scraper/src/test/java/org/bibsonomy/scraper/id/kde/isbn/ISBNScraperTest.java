@@ -24,11 +24,12 @@
 package org.bibsonomy.scraper.id.kde.isbn;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -36,46 +37,39 @@ import org.junit.Test;
  * @author tst
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class ISBNScraperTest {
 
 	/**
 	 * starts URL test with id url_166
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		final UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_166"));
+		assertTrue(UnitTestRunner.runSingleTest("url_166"));
 	}
 	
 	/**
 	 * starts URL test with id url_167
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		final UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_167"));
+		assertTrue(UnitTestRunner.runSingleTest("url_167"));
 	}
 	
 	/**
 	 * starts URL test with id url_170
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		final UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_170"));
+		assertTrue(UnitTestRunner.runSingleTest("url_170"));
 	}
 	
 	/**
 	 * starts URL test with id url_171
 	 */
 	@Test
-	@Ignore
 	public void url4TestRun(){
-		final UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_171"));
+		assertTrue(UnitTestRunner.runSingleTest("url_171"));
 	}
 
 	/**

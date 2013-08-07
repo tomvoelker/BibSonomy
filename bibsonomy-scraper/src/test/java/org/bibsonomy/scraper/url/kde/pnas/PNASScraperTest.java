@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.pnas;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,25 +36,22 @@ import org.junit.Test;
  * @author clemens
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class PNASScraperTest {
 
 	/**
 	 * starts URL test with id url_190
 	 */
 	@Test
-	@Ignore
 	public void urlTest1Run() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_190"));
+		assertTrue(UnitTestRunner.runSingleTest("url_190"));
 	}
 
 	/**
 	 * starts URL test with id url_191
 	 */
 	@Test
-	@Ignore
 	public void urlTest2Run() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_191"));
+		assertTrue(UnitTestRunner.runSingleTest("url_191"));
 	}
 }

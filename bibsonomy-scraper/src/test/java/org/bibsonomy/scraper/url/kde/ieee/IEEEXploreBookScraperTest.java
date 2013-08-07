@@ -24,10 +24,11 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #36 for IEEEXploreBookScraper
@@ -37,35 +38,30 @@ import static org.junit.Assert.assertTrue;
  * Sometime tests are failing though the output and the string in the test file seems to be the same.
  * In that case, check if the scraped context has dos line endings.
  */
+@Category(RemoteTest.class)
 public class IEEEXploreBookScraperTest {
 	
 	/**
 	 * starts URL test with id url_36
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun1(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_36"));
+		assertTrue(UnitTestRunner.runSingleTest("url_36"));
 	}
 	
 	/**
 	 * starts URL test with id url_157
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun2(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_157"));
+		assertTrue(UnitTestRunner.runSingleTest("url_157"));
 	}
 	
 	/**
 	 * starts URL test with id url_158
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun3(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_158"));
+		assertTrue(UnitTestRunner.runSingleTest("url_158"));
 	}
 }

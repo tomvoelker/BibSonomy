@@ -24,17 +24,18 @@
 package org.bibsonomy.scraper.url.kde.nasaads;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #22 #23 for NasaAdsScraper
  * @author tst
  *
  */
-@Ignore
+@Category(RemoteTest.class)
 public class NasaAdsScraperTest {
 	
 	/**
@@ -42,8 +43,7 @@ public class NasaAdsScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_22"));
+		assertTrue(UnitTestRunner.runSingleTest("url_22"));
 	}
 
 	/**
@@ -51,8 +51,7 @@ public class NasaAdsScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_23"));
+		assertTrue(UnitTestRunner.runSingleTest("url_23"));
 	}
 	
 }

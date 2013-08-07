@@ -41,6 +41,7 @@ import org.bibsonomy.common.Pair;
  */
 public class UrlCompositeScraper extends CompositeScraper<UrlScraper> implements UrlScraper {
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		final List<Pair<Pattern, Pattern>> urlPatterns = new LinkedList<Pair<Pattern,Pattern>>();
 		for (final Scraper scraper: getScraper()) {
@@ -51,6 +52,7 @@ public class UrlCompositeScraper extends CompositeScraper<UrlScraper> implements
 		return urlPatterns;
 	}
 
+	@Override
 	public boolean supportsUrl(final URL url) {
 		for (final Scraper scraper: getScraper()) {
 			if (scraper instanceof UrlScraper) {
@@ -66,6 +68,7 @@ public class UrlCompositeScraper extends CompositeScraper<UrlScraper> implements
 	 * @return The name of the site, which gets scraped with this. ATTENTION: UNDEFINED (returns null) FOR COMPOSITE SCRAPER! 
 	 * Only defined for concrete URLScraper! 
 	 */
+	@Override
 	public String getSupportedSiteName() {
 		return null;
 	}
@@ -74,6 +77,7 @@ public class UrlCompositeScraper extends CompositeScraper<UrlScraper> implements
 	 * @return The URL of the site, which gets scraped with this. ATTENTION: UNDEFINED (returns null) FOR COMPOSITE SCRAPER! 
 	 * Only defined for concrete URLScraper!
 	 */
+	@Override
 	public String getSupportedSiteURL() {
 		return null;
 	}

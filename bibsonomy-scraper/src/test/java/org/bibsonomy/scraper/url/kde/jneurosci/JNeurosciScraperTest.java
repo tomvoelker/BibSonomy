@@ -26,33 +26,31 @@ package org.bibsonomy.scraper.url.kde.jneurosci;
 import static org.junit.Assert.*;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * @author hagen
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class JNeurosciScraperTest {
 
 	/**
 	 * starts URL test with id url_232
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_232"));
+		assertTrue(UnitTestRunner.runSingleTest("url_232"));
 	}
 
 	/**
 	 * starts URL test with id url_233
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_233"));
+		assertTrue(UnitTestRunner.runSingleTest("url_233"));
 	}
 
 }

@@ -24,36 +24,34 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #40 for IEEEComputerSocietyScraper
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class IEEEComputerSocietyScraperTest {
 	
 	/**
 	 * starts URL test with id url_40
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_40"));
+		assertTrue(UnitTestRunner.runSingleTest("url_40"));
 	}
 
 	/**
 	 * starts URL test with id url_137
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_137"));
+		assertTrue(UnitTestRunner.runSingleTest("url_137"));
 	}
 	
 }

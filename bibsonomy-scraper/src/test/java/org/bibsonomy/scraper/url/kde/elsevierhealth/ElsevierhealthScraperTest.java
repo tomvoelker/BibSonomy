@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.elsevierhealth;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,16 +35,15 @@ import org.junit.Test;
  * @author ccl
  *
  */
+@Category(RemoteTest.class)
 public class ElsevierhealthScraperTest {
 	
 	/**
 	 * starts URL test with id url_168
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun1(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_168"));
+		assertTrue(UnitTestRunner.runSingleTest("url_168"));
 	}
 	
 }

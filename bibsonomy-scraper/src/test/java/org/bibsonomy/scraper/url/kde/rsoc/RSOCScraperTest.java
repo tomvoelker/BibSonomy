@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.rsoc;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,26 +35,23 @@ import org.junit.Test;
  * @author wbi
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class RSOCScraperTest {
 	
 	/**
 	 * starts URL test with id url_96
 	 */
 	@Test
-	@Ignore
 	public void urlTest1Run(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_96"));
+		assertTrue(UnitTestRunner.runSingleTest("url_96"));
 	}
 	
 	/**
 	 * starts URL test with id url_152
 	 */
 	@Test
-	@Ignore
 	public void urlTest2Run(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_152"));
+		assertTrue(UnitTestRunner.runSingleTest("url_152"));
 	}
 	
 }

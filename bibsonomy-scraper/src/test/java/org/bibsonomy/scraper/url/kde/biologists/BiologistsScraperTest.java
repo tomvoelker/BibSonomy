@@ -26,32 +26,30 @@ package org.bibsonomy.scraper.url.kde.biologists;
 import static org.junit.Assert.*;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * @author hagen
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class BiologistsScraperTest {
 
 	/**
 	 * starts URL test with id url_234
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_234"));
+		assertTrue(UnitTestRunner.runSingleTest("url_234"));
 	}
 	/**
 	 * starts URL test with id url_243
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_243"));
+		assertTrue(UnitTestRunner.runSingleTest("url_243"));
 	}
 
 }

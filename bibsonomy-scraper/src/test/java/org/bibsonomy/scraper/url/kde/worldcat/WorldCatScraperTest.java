@@ -24,6 +24,8 @@
 package org.bibsonomy.scraper.url.kde.worldcat;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,7 +34,6 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -40,43 +41,37 @@ import org.junit.Test;
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class WorldCatScraperTest {
 	
 	/**
 	 * starts URL test with id url_59
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_59"));
+		assertTrue(UnitTestRunner.runSingleTest("url_59"));
 	}
 
 	/**
 	 * starts URL test with id url_60
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_60"));
+		assertTrue(UnitTestRunner.runSingleTest("url_60"));
 	}
 	
 	/**
 	 * starts URL test with id url_163
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_163"));
+		assertTrue(UnitTestRunner.runSingleTest("url_163"));
 	}
 	
 	/**
 	 * test getting URL 
 	 */
 	@Test
-//	@Ignore
 	public void getUrlForIsbnTest(){
 		try {
 			assertTrue(WorldCatScraper.getUrlForIsbn("0123456789").toString().equals("http://www.worldcat.org/search?qt=worldcat_org_all&q=0123456789"));
@@ -86,7 +81,6 @@ public class WorldCatScraperTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testScrape() throws MalformedURLException {
 		final WorldCatScraper scraper = new WorldCatScraper();
 		final URL urlForIsbn = new URL("http://www.worldcat.org/oclc/3119916&referer=brief_results");

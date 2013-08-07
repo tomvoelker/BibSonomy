@@ -24,16 +24,17 @@
 package org.bibsonomy.scraper.url.kde.usenix;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Scraper URL tests #74 #75 #76 #79 #80 #81 #82 #83 #84 #85 for UsenixScraper
  * @author tst
  */
-@Ignore
+@Category(RemoteTest.class)
 public class UsenixScraperTest {
 
 	/**
@@ -41,8 +42,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_74"));
+		assertTrue(UnitTestRunner.runSingleTest("url_74"));
 	}
 
 	/**
@@ -50,8 +50,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_75"));
+		assertTrue(UnitTestRunner.runSingleTest("url_75"));
 	}
 	
 	/**
@@ -59,8 +58,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_76"));
+		assertTrue(UnitTestRunner.runSingleTest("url_76"));
 	}
 
 	/**
@@ -68,8 +66,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_79"));
+		assertTrue(UnitTestRunner.runSingleTest("url_79"));
 	}
 
 	/**
@@ -77,8 +74,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url5TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_80"));
+		assertTrue(UnitTestRunner.runSingleTest("url_80"));
 	}
 	
 	/**
@@ -86,8 +82,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url6TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_81"));
+		assertTrue(UnitTestRunner.runSingleTest("url_81"));
 	}
 	
 	/**
@@ -95,8 +90,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url7TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_82"));
+		assertTrue(UnitTestRunner.runSingleTest("url_82"));
 	}
 
 	/**
@@ -104,8 +98,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url8TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_83"));
+		assertTrue(UnitTestRunner.runSingleTest("url_83"));
 	}
 
 	/**
@@ -113,8 +106,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url9TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_84"));
+		assertTrue(UnitTestRunner.runSingleTest("url_84"));
 	}
 
 	/**
@@ -122,8 +114,7 @@ public class UsenixScraperTest {
 	 */
 	@Test
 	public void url10TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_85"));
+		assertTrue(UnitTestRunner.runSingleTest("url_85"));
 	}
 	
 }

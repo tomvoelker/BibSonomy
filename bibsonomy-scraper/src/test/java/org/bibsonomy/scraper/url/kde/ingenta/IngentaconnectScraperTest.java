@@ -24,36 +24,34 @@
 package org.bibsonomy.scraper.url.kde.ingenta;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #15 #169 for IngentaconnectScraper
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class IngentaconnectScraperTest {
 	
 	/**
 	 * starts URL test with id url_15
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun1(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_15"));
+		assertTrue(UnitTestRunner.runSingleTest("url_15"));
 	}
 	
 	/**
 	 * starts URL test with id url_169
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun2(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_169"));
+		assertTrue(UnitTestRunner.runSingleTest("url_169"));
 	}
 	
 }

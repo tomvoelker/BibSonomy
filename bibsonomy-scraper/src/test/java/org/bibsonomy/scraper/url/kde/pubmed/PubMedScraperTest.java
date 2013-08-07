@@ -24,65 +24,57 @@
 package org.bibsonomy.scraper.url.kde.pubmed;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #27 #35 #91 for PubMedScraper
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class PubMedScraperTest {
 	
 	/**
 	 * starts URL test with id url_27
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_27"));
+		assertTrue(UnitTestRunner.runSingleTest("url_27"));
 	}
 	
 	/**
 	 * starts URL test with id url_35
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_35"));
+		assertTrue(UnitTestRunner.runSingleTest("url_35"));
 	}
 
 	/**
 	 * starts URL test with id url_91
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_91"));
+		assertTrue(UnitTestRunner.runSingleTest("url_91"));
 	}
 	
 	/**
 	 * starts URL test with id url_176
 	 */
 	@Test
-	@Ignore
 	public void url4TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_176"));
+		assertTrue(UnitTestRunner.runSingleTest("url_176"));
 	}
 	/**
 	 * starts URL test with id url_246
 	 */
 	@Test
-	@Ignore
 	public void url5TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_246"));
+		assertTrue(UnitTestRunner.runSingleTest("url_246"));
 	}
 
 }

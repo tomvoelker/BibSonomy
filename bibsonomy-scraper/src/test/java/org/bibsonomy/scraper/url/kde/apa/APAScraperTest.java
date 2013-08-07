@@ -24,32 +24,30 @@
 package org.bibsonomy.scraper.url.kde.apa;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  */
+@Category(RemoteTest.class)
 public class APAScraperTest {
 	
 	/**
 	 * starts URL test with id url_244
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_244"));
+		assertTrue(UnitTestRunner.runSingleTest("url_244"));
 	}
 	/**
 	 * starts URL test with id url_245
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_245"));
+		assertTrue(UnitTestRunner.runSingleTest("url_245"));
 	}
 	
 }

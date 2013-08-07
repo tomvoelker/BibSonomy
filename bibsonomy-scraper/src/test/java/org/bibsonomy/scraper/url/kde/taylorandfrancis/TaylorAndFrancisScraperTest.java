@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.taylorandfrancis;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -34,35 +35,30 @@ import org.junit.Test;
  * @author schwass
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class TaylorAndFrancisScraperTest {
 
 	/**
 	 * 
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_197"));
+		assertTrue(UnitTestRunner.runSingleTest("url_197"));
 	}
 
 	/**
 	 * 
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_198"));
+		assertTrue(UnitTestRunner.runSingleTest("url_198"));
 	}
 	/**
 	 * 
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_241"));
+		assertTrue(UnitTestRunner.runSingleTest("url_241"));
 	}
 	
 }

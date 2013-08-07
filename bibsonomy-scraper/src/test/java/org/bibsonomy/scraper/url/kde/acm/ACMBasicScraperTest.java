@@ -24,6 +24,8 @@
 package org.bibsonomy.scraper.url.kde.acm;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,7 +35,6 @@ import junit.framework.Assert;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -41,76 +42,62 @@ import org.junit.Test;
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class ACMBasicScraperTest {
 	
 	/**
 	 * starts URL test with id url_1
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun1(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_1"));
+		assertTrue(UnitTestRunner.runSingleTest("url_1"));
 	}
 
 	/**
 	 * starts URL test with id url_134
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun2(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_134"));
+		assertTrue(UnitTestRunner.runSingleTest("url_134"));
 	}
 	
 	/**
 	 * starts URL test with id url_153
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun3(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_153"));
+		assertTrue(UnitTestRunner.runSingleTest("url_153"));
 	}
 	
 	/**
 	 * starts URL test with id url_155
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun4(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_155"));
+		assertTrue(UnitTestRunner.runSingleTest("url_155"));
 	}
 	
 	/**
 	 * starts URL test with id url_184
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun5(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_184"));
+		assertTrue(UnitTestRunner.runSingleTest("url_184"));
 	}
 	
 	@Test
-	@Ignore
 	public void urlTestRun6(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_186"));
+		assertTrue(UnitTestRunner.runSingleTest("url_186"));
 	}
 	/**
 	 * 
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun7(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_199"));
+		assertTrue(UnitTestRunner.runSingleTest("url_199"));
 	}
 	
 	@Test
-	@Ignore
 	public void test2() throws MalformedURLException {
 		
 		String url = "http://portal.acm.org/citation.cfm?id=500737.500755"; // abstract works

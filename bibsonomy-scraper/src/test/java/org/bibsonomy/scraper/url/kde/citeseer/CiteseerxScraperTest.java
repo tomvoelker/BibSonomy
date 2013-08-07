@@ -24,6 +24,8 @@
 package org.bibsonomy.scraper.url.kde.citeseer;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,7 +35,6 @@ import junit.framework.Assert;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -41,20 +42,18 @@ import org.junit.Test;
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class CiteseerxScraperTest {
 	
 	/**
 	 * starts URL test with id url_112
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_112"));
+		assertTrue(UnitTestRunner.runSingleTest("url_112"));
 	}
 	
 	@Test
-	@Ignore
 	public void test1() throws MalformedURLException {
 		final String url = "http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.7185";
 		final ScrapingContext sc = new ScrapingContext(new URL(url));
@@ -73,7 +72,6 @@ public class CiteseerxScraperTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testTemporaryMalformed() throws MalformedURLException {
 		final String url = "http://citeseerx.ist.psu.edu/viewdoc/summary10.1.1.14.7185&description=Conceptual+Clustering+of+Text+Clusters";
 		final ScrapingContext sc = new ScrapingContext(new URL(url));
@@ -89,7 +87,6 @@ public class CiteseerxScraperTest {
 	}
 
 	@Test
-	@Ignore
 	public void runTest1() throws MalformedURLException {
 		String url = "http://citeseerx.ist.psu.edu/viewdoc/summary;jsessionid=352C9BD0F67928E2EDAFA8B58ACFBFB9?doi=10.1.1.110.903";
 		final CiteseerxScraper scraper = new CiteseerxScraper();

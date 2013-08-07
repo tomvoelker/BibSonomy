@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.langev;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,25 +35,22 @@ import org.junit.Test;
  * @author wbi
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class LangevScraperTest {
 	
 	/**
 	 * starts URL test with id url_86
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun1(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_86"));
+		assertTrue(UnitTestRunner.runSingleTest("url_86"));
 	}
 	
 	/**
 	 * starts URL test with id url_87
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun2(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_87"));
+		assertTrue(UnitTestRunner.runSingleTest("url_87"));
 	}
 }

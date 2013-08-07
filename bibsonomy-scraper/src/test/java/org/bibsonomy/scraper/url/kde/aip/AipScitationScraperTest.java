@@ -24,10 +24,11 @@
 package org.bibsonomy.scraper.url.kde.aip;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #8 #9 for AipScitationScraper
@@ -35,36 +36,31 @@ import static org.junit.Assert.assertTrue;
  * @version $Id$
  *
  */
+@Category(RemoteTest.class)
 public class AipScitationScraperTest {
 	
 	/**
 	 * starts URL test with id url_8
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_8"));
+		assertTrue(UnitTestRunner.runSingleTest("url_8"));
 	}
 
 	/**
 	 * starts URL test with id url_9
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_9"));
+		assertTrue(UnitTestRunner.runSingleTest("url_9"));
 	}
 	
 	/**
 	 * starts URL test with id url_174
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_174"));
+		assertTrue(UnitTestRunner.runSingleTest("url_174"));
 	}
 
 }

@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,95 +35,78 @@ import org.junit.Test;
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class SpringerLinkScraperTest {
 	
 	/**
 	 * starts URL test with id url_30
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_30"));
+		assertTrue(UnitTestRunner.runSingleTest("url_30"));
 	}
 	
 	/**
 	 * starts URL test with id url_41
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_41"));
+		assertTrue(UnitTestRunner.runSingleTest("url_41"));
 	}
 
 	/**
 	 * starts URL test with id url_142
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_142"));
+		assertTrue(UnitTestRunner.runSingleTest("url_142"));
 	}
 
 	/**
 	 * starts URL test with id url_143
 	 */
 	@Test
-	@Ignore
 	public void url4TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_143"));
+		assertTrue(UnitTestRunner.runSingleTest("url_143"));
 	}
 	
 	/**
 	 * starts URL test with id url_183
 	 */
 	@Test
-	@Ignore
 	public void url5TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_183"));
+		assertTrue(UnitTestRunner.runSingleTest("url_183"));
 	}
 	
 	/**
 	 * starts URL test with id url_187
 	 */
 	@Test
-	@Ignore
 	public void url6TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_187"));
+		assertTrue(UnitTestRunner.runSingleTest("url_187"));
 	}
 	
 	/**
 	 * starts URL test with id url_235
 	 */
 	@Test
-	@Ignore
 	public void url7TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_235"));
+		assertTrue(UnitTestRunner.runSingleTest("url_235"));
 	}
 	
 	/**
 	 * starts URL test with id url_238
 	 */
 	@Test
-	@Ignore
 	public void url8TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_238"));
+		assertTrue(UnitTestRunner.runSingleTest("url_238"));
 	}
 	
 	/**
 	 * starts URL test with id url_239
 	 */
 	@Test
-	@Ignore
 	public void url9TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_239"));
+		assertTrue(UnitTestRunner.runSingleTest("url_239"));
 	}
 }

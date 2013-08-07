@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.psycontent;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,26 +35,23 @@ import org.junit.Test;
  * @author wbi
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class PsyContentScraperTest {
 	
 	/**
 	 * starts URL test with id url_94
 	 */
 	@Test
-	@Ignore
 	public void urlTest1Run(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_94"));
+		assertTrue(UnitTestRunner.runSingleTest("url_94"));
 	}
 	
 	/**
 	 * starts URL test with id url_95
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_95"));
+		assertTrue(UnitTestRunner.runSingleTest("url_95"));
 	}
 
 }

@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.jmlr;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,36 +35,31 @@ import org.junit.Test;
  * @author tst
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class JMLRScraperTest {
 	
 	/**
 	 * starts URL test with id url_101
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_101"));
+		assertTrue(UnitTestRunner.runSingleTest("url_101"));
 	}
 	
 	/**
 	 * starts URL test with id url_102
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_102"));
+		assertTrue(UnitTestRunner.runSingleTest("url_102"));
 	}
 	
 	/**
 	 * starts URL test with id url_103
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_103"));
+		assertTrue(UnitTestRunner.runSingleTest("url_103"));
 	}
 	
 }

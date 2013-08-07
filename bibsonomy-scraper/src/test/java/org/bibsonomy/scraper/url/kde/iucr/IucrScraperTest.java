@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.iucr;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,6 +35,7 @@ import org.junit.Test;
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class IucrScraperTest {
 	
 	
@@ -41,10 +43,8 @@ public class IucrScraperTest {
 	 * starts URL test with id url_92
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_92"));
+		assertTrue(UnitTestRunner.runSingleTest("url_92"));
 	}
 
 }

@@ -24,26 +24,26 @@
 package org.bibsonomy.scraper.url.kde.pubmedcentral;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #26 for PubMedCentralScraper
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class PubMedCentralScraperTest {
 	
 	/**
 	 * starts URL test with id url_26
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_26"));
+		assertTrue(UnitTestRunner.runSingleTest("url_26"));
 	}
 	
 }

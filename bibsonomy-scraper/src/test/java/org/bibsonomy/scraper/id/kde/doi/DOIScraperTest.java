@@ -30,20 +30,21 @@ import junit.framework.Assert;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.junit.Ignore;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Test for DOIScraper class (no url test)
  * @author tst
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class DOIScraperTest {
 
 	
 	
 	@Test
-	@Ignore
 	public void testScraper1() throws ScrapingException, MalformedURLException {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://dx.doi.org/10.1007/11922162"));
 		final DOIScraper scraper = new DOIScraper();
@@ -56,7 +57,6 @@ public class DOIScraperTest {
 
 	
 	@Test
-	@Ignore
 	public void testScraper2() throws ScrapingException, MalformedURLException {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.example.com/"));
 		final DOIScraper scraper = new DOIScraper();

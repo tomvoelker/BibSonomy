@@ -24,36 +24,34 @@
 package org.bibsonomy.scraper.url.kde.eric;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #99 #136 for EricScraper
  * @author tst
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class EricScraperTest {
 	
 	/**
 	 * starts URL test with id url_99
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_99"));
+		assertTrue(UnitTestRunner.runSingleTest("url_99"));
 	}
 	
 	/**
 	 * starts URL test with id url_136
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_136"));
+		assertTrue(UnitTestRunner.runSingleTest("url_136"));
 	}
 
 }

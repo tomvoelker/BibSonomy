@@ -24,28 +24,26 @@
 package org.bibsonomy.scraper.generic;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author Lukas
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class DublinCoreScraperTest {
 
-	@Ignore
 	@Test
 	public void testDCScraper() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_260"));
+		assertTrue(UnitTestRunner.runSingleTest("url_260"));
 	}
 	
-	@Ignore
 	@Test
 	public void testDCScraper2() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_261"));
+		assertTrue(UnitTestRunner.runSingleTest("url_261"));
 	}
 }

@@ -24,10 +24,11 @@
 package org.bibsonomy.scraper.url.kde.iop;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #16 for IOPScraper
@@ -35,26 +36,23 @@ import static org.junit.Assert.assertTrue;
  * @version $Id$
  *
  */
+@Category(RemoteTest.class)
 public class IOPScraperTest {
 	
 	/**
 	 * starts URL test with id url_16
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_16"));
+		assertTrue(UnitTestRunner.runSingleTest("url_16"));
 	}
 	
 	/**
 	 * starts URL test with id url_178
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_178"));
+		assertTrue(UnitTestRunner.runSingleTest("url_178"));
 	}
 	
 }

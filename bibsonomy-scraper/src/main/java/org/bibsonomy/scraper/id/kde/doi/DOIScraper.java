@@ -55,6 +55,7 @@ public class DOIScraper implements Scraper {
 											" and passes the resulting URLs to the following scrapers. Additionally checks, if the given selection" +
 											" text contains (almost only!) a DOI and basically does the same.";
 	
+	@Override
 	public Collection<Scraper> getScraper() {
 		return Collections.<Scraper>singletonList(this);
 	}
@@ -73,6 +74,7 @@ public class DOIScraper implements Scraper {
 	 * 
 	 * @see org.bibsonomy.scraper.AbstractUrlScraper#scrapeInternal(org.bibsonomy.scraper.ScrapingContext)
 	 */
+	@Override
 	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
 		/*
 		 * first: check URL
@@ -123,10 +125,12 @@ public class DOIScraper implements Scraper {
 		return false;
 	}
 	
+	@Override
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
 		return DOIUtils.isDOIURL(scrapingContext.getUrl()) || DOIUtils.isSupportedSelection(scrapingContext.getSelectedText());
 	}
 	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}

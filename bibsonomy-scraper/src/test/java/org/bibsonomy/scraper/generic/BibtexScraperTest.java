@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.generic;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,26 +35,23 @@ import org.junit.Test;
  * @author tst
  * 
  */
+@Category(RemoteTest.class)
 public class BibtexScraperTest {
 	
 	/**
 	 * starts URL test with id url_115
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_115"));
+		assertTrue(UnitTestRunner.runSingleTest("url_115"));
 	}
 	
 	/**
 	 * starts URL test with id url_216
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_216"));
+		assertTrue(UnitTestRunner.runSingleTest("url_216"));
 	}
 	
 }

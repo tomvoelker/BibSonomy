@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.wileyintersience;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,45 +35,39 @@ import org.junit.Test;
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class WileyIntersienceScraperTest {
 	
 	/**
 	 * starts URL test with id url_33
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_33"));
+		assertTrue(UnitTestRunner.runSingleTest("url_33"));
 	}
 
 	/**
 	 * starts URL test with id url_34
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_34"));
+		assertTrue(UnitTestRunner.runSingleTest("url_34"));
 	}
 
 	/**
 	 * starts URL test with id url_109
 	 */
 	@Test
-	@Ignore
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_109"));
+		assertTrue(UnitTestRunner.runSingleTest("url_109"));
 	}
 	
 	/**
 	 * starts URL test with id url_189
 	 */
 	@Test
-	@Ignore
 	public void url4TestRun(){
-		assertTrue(new UnitTestRunner().runSingleTest("url_189"));
+		assertTrue(UnitTestRunner.runSingleTest("url_189"));
 	}	
 	
 }

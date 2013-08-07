@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.liebert;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,7 +35,7 @@ import org.junit.Test;
  * @author wbi
  * @version $Id$
  */
-@Ignore
+@Category(RemoteTest.class)
 public class LiebertScraperTest {
 	
 	/**
@@ -42,8 +43,7 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_88"));
+		assertTrue(UnitTestRunner.runSingleTest("url_88"));
 	}
 	
 	/**
@@ -51,8 +51,7 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_89"));
+		assertTrue(UnitTestRunner.runSingleTest("url_89"));
 	}
 	
 	/**
@@ -60,7 +59,6 @@ public class LiebertScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_248"));
+		assertTrue(UnitTestRunner.runSingleTest("url_248"));
 	}
 }

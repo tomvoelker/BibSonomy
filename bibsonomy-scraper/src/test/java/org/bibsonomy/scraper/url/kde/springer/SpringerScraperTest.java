@@ -24,26 +24,26 @@
 package org.bibsonomy.scraper.url.kde.springer;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 /**
  * Scraper URL tests #58 for SpringerScraper
  * @author tst
  *
  */
+@Category(RemoteTest.class)
 public class SpringerScraperTest {
 	
 	/**
 	 * starts URL test with id url_58
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_58"));
+		assertTrue(UnitTestRunner.runSingleTest("url_58"));
 	}
 	
 	

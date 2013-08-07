@@ -24,33 +24,31 @@
 package org.bibsonomy.scraper.url.kde.sage;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author wla
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class SageJournalScraperTest {
 
 	/**
 	 * starts URL test with id url_219
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun() {
-		final UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_219"));
+		assertTrue(UnitTestRunner.runSingleTest("url_219"));
 	}
 	/**
 	 * starts URL test with id url_242
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun() {
-		final UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_242"));
+		assertTrue(UnitTestRunner.runSingleTest("url_242"));
 	}
 }

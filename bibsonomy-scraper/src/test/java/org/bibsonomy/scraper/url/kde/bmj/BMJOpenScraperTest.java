@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.bmj;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,24 +35,21 @@ import org.junit.Test;
  * @author wbi
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class BMJOpenScraperTest {
 	
 	/**
 	 * starts URL test with id url_249
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_249"));
+		assertTrue(UnitTestRunner.runSingleTest("url_249"));
 	}
 	/**
 	 * starts URL test with id url_250
 	 */
 	@Test
-	@Ignore
 	public void url2TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_250"));
+		assertTrue(UnitTestRunner.runSingleTest("url_250"));
 	}
 }

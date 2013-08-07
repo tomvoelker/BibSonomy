@@ -24,24 +24,24 @@
 package org.bibsonomy.scraper.url.kde.jci;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author wla
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class JCIScraperTest {
 
 	/**
 	 * starts URL test with id url_219
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun() {
-		final UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_220"));
+		assertTrue(UnitTestRunner.runSingleTest("url_220"));
 	}
 }

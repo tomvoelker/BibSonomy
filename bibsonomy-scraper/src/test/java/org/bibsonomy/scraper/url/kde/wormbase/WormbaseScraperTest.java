@@ -24,9 +24,10 @@
 package org.bibsonomy.scraper.url.kde.wormbase;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,16 +35,15 @@ import org.junit.Test;
  * @author tst
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class WormbaseScraperTest {
 
 	/**
 	 * starts URL test with id url_125
 	 */
 	@Test
-	@Ignore
 	public void url1TestRun(){
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_125"));
+		assertTrue(UnitTestRunner.runSingleTest("url_125"));
 	}
 	
 }

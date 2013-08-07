@@ -24,15 +24,17 @@
 package org.bibsonomy.scraper.url.kde.asm;
 
 import static org.junit.Assert.assertTrue;
+import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author Haile
  * @version $Id$
  */
+@Category(RemoteTest.class)
 public class AsmScraperTest {
 
 	/**
@@ -42,10 +44,8 @@ public class AsmScraperTest {
 	 * starts URL test with id url_259
 	 */
 	@Test
-	@Ignore
 	public void urlTestRun() {
-		UnitTestRunner runner = new UnitTestRunner();
-		assertTrue(runner.runSingleTest("url_259"));
+		assertTrue(UnitTestRunner.runSingleTest("url_259"));
 	}
 
 }
