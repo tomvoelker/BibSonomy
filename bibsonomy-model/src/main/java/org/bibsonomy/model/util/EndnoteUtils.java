@@ -24,6 +24,7 @@
 package org.bibsonomy.model.util;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,61 +112,89 @@ public class EndnoteUtils {
 		final BibTex bib = post.getResource();
 		
 		a.append("%0 ").append(getRISEntryType(bib.getEntrytype())).append('\n');
+		
+		if (ValidationUtils.present(bib.getBibtexKey())) {
+			a.append("%1 ").append(BibTexUtils.cleanBibTex(bib.getBibtexKey())).append('\n'); 
+		}
 
 		if (ValidationUtils.present(bib.getAuthor())) {
 			for (PersonName person : bib.getAuthor()) {
-				a.append("%A ").append(person.getLastName()).append(", ").append(person.getFirstName()).append('\n');
+				a.append("%A ").append(BibTexUtils.cleanBibTex(person.getLastName())).append(", ").append(BibTexUtils.cleanBibTex(person.getFirstName())).append('\n');
 			}
 		}
 
 		if (ValidationUtils.present(bib.getBooktitle())) {
-			a.append("%B ").append(bib.getBooktitle()).append('\n');
+			a.append("%B ").append(BibTexUtils.cleanBibTex(bib.getBooktitle())).append('\n');
+		} else if (ValidationUtils.present(bib.getSeries())) { // TODO: ask Martina whether this is correct
+			a.append("%B ").append(BibTexUtils.cleanBibTex(bib.getSeries())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getAddress())) {
-			a.append("%C ").append(bib.getAddress()).append('\n');
+			a.append("%C ").append(BibTexUtils.cleanBibTex(bib.getAddress())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getYear())) {
-			a.append("%D ").append(bib.getYear()).append('\n');
+			a.append("%D ").append(BibTexUtils.cleanBibTex(bib.getYear())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getEditor())) {
 			for (PersonName person : bib.getEditor()) {
-				a.append("%E ").append(person.getLastName()).append(", ").append(person.getFirstName()).append('\n');
+				a.append("%E ").append(BibTexUtils.cleanBibTex(person.getLastName())).append(", ").append(BibTexUtils.cleanBibTex(person.getFirstName())).append('\n');
 			}
 		}
 		if (ValidationUtils.present(bib.getPublisher())) {
-			a.append("%I ").append(bib.getPublisher()).append('\n');
+			a.append("%I ").append(BibTexUtils.cleanBibTex(bib.getPublisher())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getJournal())) {
-			a.append("%J ").append(bib.getJournal()).append('\n');
+			a.append("%J ").append(BibTexUtils.cleanBibTex(bib.getJournal())).append('\n');
 		}
 		a.append("%K ").append(TagUtils.toTagString(post.getTags(), " ")).append('\n');
 
 		if (ValidationUtils.present(bib.getNumber())) {
-			a.append("%N ").append(bib.getNumber()).append('\n');
+			a.append("%N ").append(BibTexUtils.cleanBibTex(bib.getNumber())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getPages())) {
-			a.append("%P ").append(bib.getPages()).append('\n');
+			a.append("%P ").append(BibTexUtils.cleanBibTex(bib.getPages())).append('\n');
+		}
+		if (ValidationUtils.present(bib.getMiscField("doi"))) {
+			a.append("%R ").append(BibTexUtils.cleanBibTex(bib.getMiscField("doi"))).append('\n');
 		}
 		if (ValidationUtils.present(bib.getTitle())) {
-			a.append("%T ").append(bib.getTitle()).append('\n');
+			a.append("%T ").append(BibTexUtils.cleanBibTex(bib.getTitle())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getUrl())) {
-			a.append("%U ").append(bib.getUrl()).append('\n');
+			a.append("%U ").append(BibTexUtils.cleanBibTex(bib.getUrl())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getVolume())) {
-			a.append("%V ").append(bib.getVolume()).append('\n');
+			a.append("%V ").append(BibTexUtils.cleanBibTex(bib.getVolume())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getAbstract())) {
-			a.append("%X ").append(bib.getAbstract()).append('\n');
+			a.append("%X ").append(BibTexUtils.cleanBibTex(bib.getAbstract())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getAnnote())) {
-			a.append("%Z ").append(bib.getAnnote()).append('\n');
+			a.append("%Z ").append(BibTexUtils.cleanBibTex(bib.getAnnote())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getEdition())) {
-			a.append("%7 ").append(bib.getEdition()).append('\n');
+			a.append("%7 ").append(BibTexUtils.cleanBibTex(bib.getEdition())).append('\n');
 		}
 		if (ValidationUtils.present(bib.getChapter())) {
-			a.append("%& ").append(bib.getChapter()).append('\n');
+			a.append("%& ").append(BibTexUtils.cleanBibTex(bib.getChapter())).append('\n');
 		}
+		if (ValidationUtils.present(bib.getMiscField("isbn"))) {
+			a.append("%@ ").append(BibTexUtils.cleanBibTex(bib.getMiscField("isbn"))).append('\n');
+		}
+	}
+	
+	/**
+	 * Renders Endnote
+	 * 
+	 * @param post the post to be rendered
+	 * @return The Endnote-serialized publication
+	 */
+	public static String toEndnoteString(final Post<BibTex> post) {
+		StringWriter sw = new StringWriter();
+		try {
+			EndnoteUtils.append(sw, post);
+		} catch (IOException ex) {
+			// newver happens
+		}
+		return sw.toString();
 	}
 }
