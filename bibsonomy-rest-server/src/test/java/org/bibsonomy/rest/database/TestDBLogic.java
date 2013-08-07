@@ -969,11 +969,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteWiki(final String userName) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public void createExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
 		// TODO Auto-generated method stub
 	}
