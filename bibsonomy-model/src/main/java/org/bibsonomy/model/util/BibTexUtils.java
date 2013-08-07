@@ -766,6 +766,35 @@ public class BibTexUtils {
 		// decode Latex macros into unicode characters
 		return TexDecode.decode(bibtex).trim();
 	}
+	
+	/**
+	 * @param text text to be checked
+	 * @return true iff the text contains bibtex markup
+	 */
+	public static boolean containsBibtexMarkup(String text) {
+		if (text == null) {
+			return false;
+		}
+		return !text.equals(cleanBibTex(text));
+	}
+	
+	/**
+	 * @param text text to be escaped
+	 * @param escapeForPersonName if and should be replaced by {and} (as required for author names)
+	 * @return the escaped version of the given string
+	 */
+	public static String escapeBibtexMarkup(String text, boolean escapeForPersonName) {
+		if (text == null) {
+			return null;
+		}
+		if (containsBibtexMarkup(text) || ((escapeForPersonName == true) && (text.indexOf(',') >= 0))) {
+			return "{" + text + "}";
+		}
+		if (escapeForPersonName == true) {
+			return text.replace(" and ", " {and} ");
+		}
+		return text;
+	}
 
 	/**
 	 * Tries to find a year (four connected digits) in a string and returns them as int.
@@ -977,13 +1006,16 @@ public class BibTexUtils {
 
 		return flags;
 	}
-	
-    /**
-     * Indicates whether a particular flag is set or not.
-     * @param flags - the flags where we look if testFlag is set
-     * @param testFlag - the flag we want to find in flags
-     */
-    private static boolean hasFlag(final int flags, final int testFlag) {
-        return (flags & testFlag) != 0;
-    }
+
+	/**
+	 * Indicates whether a particular flag is set or not.
+	 * 
+	 * @param flags
+	 *            - the flags where we look if testFlag is set
+	 * @param testFlag
+	 *            - the flag we want to find in flags
+	 */
+	private static boolean hasFlag(final int flags, final int testFlag) {
+		return (flags & testFlag) != 0;
+	}
 }
