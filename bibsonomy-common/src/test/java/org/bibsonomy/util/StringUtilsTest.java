@@ -218,16 +218,20 @@ public class StringUtilsTest {
 		assertEquals("v=a&{}lue2", result.get("k e-y 2"));
 		assertEquals("=value3=", result.get("k___e   y3"));
 		// unmatched brackets
-		input = "     key 1={val==ue1}}, k e-y 2 ={v=a&{}lue2}, k___e   y3=={=value3=}   ";	
-		boolean fail = true;
+		input = "     key 1={val==ue1}}, k e-y 2 ={v=a&{}lue2}, k___e   y3=={=value3=}   ";
+		
 		try {
 			result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+			fail("InvalidModelException should have been thrown!");
 		} catch (InvalidModelException e) {
-			fail = false;
+			// everything fine
 		}
-		if (fail) {fail("InvalidModelException should have been thrown!");}
 	}
 	
+	/**
+	 * tests {@link StringUtils#removeSingleNumbers(String)}
+	 * @throws Exception
+	 */
 	@Test
 	public void testRemoveSingleNumbers() throws Exception {
 		assertEquals(null, StringUtils.removeSingleNumbers(null));
@@ -244,18 +248,13 @@ public class StringUtilsTest {
 	/**
 	 * test method toDefaultCharset by creating strings using differnt charsets
 	 * and converting them back to utf-8
+	 * @throws UnsupportedEncodingException 
 	 */
 	@Test
-	public void testToDefaultCharset() {
-		try {
-			String encoded;
-			for (String charsetName : JAVA_STANDARD_CHARSETS) {	    		
-				encoded = new String(SPECIAL_CHARS.getBytes(charsetName), Charset.forName(charsetName));
-				assertEquals(SPECIAL_CHARS, StringUtils.toDefaultCharset(encoded));
-			}
-		}
-		catch (UnsupportedEncodingException ex) {
-			fail("Unsupported encoding exception occured: " + ex.getMessage());
+	public void testToDefaultCharset() throws UnsupportedEncodingException {
+		for (String charsetName : JAVA_STANDARD_CHARSETS) {
+			String encoded = new String(SPECIAL_CHARS.getBytes(charsetName), Charset.forName(charsetName));
+			assertEquals(SPECIAL_CHARS, StringUtils.toDefaultCharset(encoded));
 		}
 	}
 	
@@ -268,6 +267,4 @@ public class StringUtilsTest {
 		assertEquals(expected, StringUtils.foldToASCII(test1));
 		assertEquals(expected, StringUtils.foldToASCII(expected));
 	}
-	
-	
 }
