@@ -1,0 +1,25 @@
+== Zur Person ==
+{| class="wikitable" style="text-align:left;padding:15px"
+|style="width: 5em", rowspan="5" | <image style="float: center" />
+! Name || <name />
+|-
+!style="width: 10em"| Ort || <location />
+|-
+! Geburtsdatum || <birthday />
+|-
+! Beruf || <profession />
+|-
+! Institut || <institution />
+|}
+
+== Wissenschaftliche Interessen ==
+<interests />
+
+==Meine Hobbies==
+<hobbies />
+
+==Meine Publikationen==
+<publications tags="myown" layout="plain" />
+
+==Meine Lesezeichen==
+<bookmarks />

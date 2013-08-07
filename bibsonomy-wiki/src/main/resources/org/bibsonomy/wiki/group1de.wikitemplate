@@ -1,0 +1,11 @@
+==Gruppenseite der Gruppe <name/>==
+<groupimage />
+
+==Mitglieder==
+<members />
+
+==Die neuesten Lesezeichen==
+<bookmarks tags="myown" />
+
+==Die neuesten Publikationen==
+<publications order="asc" keys="year" qty="3" />

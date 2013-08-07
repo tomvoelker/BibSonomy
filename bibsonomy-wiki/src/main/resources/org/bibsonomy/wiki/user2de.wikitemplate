@@ -1,0 +1,19 @@
+==Zu meiner Person==
+<image style="float:right;padding-right:15px"/>
+;Name: <name />
+;Ort: <location />
+;Geburtstag: <birthday />
+;Beruf: <profession />
+;Institut: <institution />
+
+==Wissenschaftliche Interessen==
+<interests />
+
+==Meine Hobbies==
+<hobbies />
+
+==Meine Lesezeichen==
+<bookmarks />
+
+==Meine Publikationen==
+<publications tags="myown" layout="plain" />

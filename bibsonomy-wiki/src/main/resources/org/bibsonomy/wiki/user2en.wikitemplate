@@ -1,0 +1,19 @@
+==personal data==
+<image style="float:right;padding-right:15px"/>
+;Name: <name />
+;Ort: <location />
+;Geburtstag: <birthday />
+;Beruf: <profession />
+;Institut: <institution />
+
+==scientific interests==
+<interests />
+
+==my hobbies==
+<hobbies />
+
+==my bookmarks==
+<bookmarks />
+
+==my publications==
+<publications tags="myown" layout="plain" />

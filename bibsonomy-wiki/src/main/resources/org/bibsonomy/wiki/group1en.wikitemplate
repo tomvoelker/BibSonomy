@@ -1,0 +1,11 @@
+==Grouppage of the group <name/>==
+<groupimage />
+
+==Members==
+<members />
+
+==Recently added bookmarks==
+<bookmarks tags="myown" />
+
+==Recently added publications==
+<publications order="asc" keys="year" qty="3" />
