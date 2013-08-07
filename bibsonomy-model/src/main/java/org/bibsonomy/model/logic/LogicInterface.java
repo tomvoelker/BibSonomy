@@ -149,11 +149,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public void updateWiki(String userName, Wiki wiki); 
 	
-	/**
-	 * @param userName
-	 */
-	public void deleteWiki(String userName); 
-	
 
 	/**
 	 * Returns all groups of the system.
@@ -687,5 +682,4 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
 	
-		
 }
