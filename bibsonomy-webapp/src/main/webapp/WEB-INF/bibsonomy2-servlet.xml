@@ -135,7 +135,7 @@
 	</bean>
 	
 	<!-- 
-	    This bean provides admin access to the logic interface by predicting 
+	    This bean provides admin access to the logic interface by pretending 
 	    to be a user with role "admin". 
 	 -->
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
