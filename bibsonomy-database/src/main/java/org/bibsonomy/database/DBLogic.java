@@ -2562,14 +2562,6 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/**
-	 * Why would we want what was written within whimsy wittlewicks?
-	 */
-	@Override
-	public void deleteWiki(final String userName) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
 	 * Retrieves a wiki from the database.
 	 * 
 	 * @see org.bibsonomy.model.logic.LogicInterface#getWiki(java.lang.String, java.util.Date)
@@ -2623,10 +2615,7 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = openSession();
 		try {
-			// XXX: if nothing present better return an empty list
-			return null;
-//			TODO: Implement versioning system for Wikis
-//			return this.wikiDBManager.getWikiVersions(userName, session);
+			return this.wikiDBManager.getWikiVersions(userName, session);
 		} finally {
 			session.close();
 		}
@@ -2662,11 +2651,10 @@ public class DBLogic implements LogicInterface {
 				
 				/*
 				 * If we find differences, update the database.
-				 * TODO: Implement versioning system for Wikis.					
 				 */
 				if (!currentWikiText.equals(wiki.getWikiText())) {
 					this.wikiDBManager.updateWiki(userName, wiki, session);
-//					this.wikiDBManager.logWiki(userName, currentWiki, session);
+					this.wikiDBManager.logWiki(userName, currentWiki, session);
 				}
 				
 			/* 
