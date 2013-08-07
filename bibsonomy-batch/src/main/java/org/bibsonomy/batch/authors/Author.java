@@ -20,6 +20,13 @@ public class Author {
 	
 	
 	/**
+	 * default constructor
+	 */
+	public Author() {
+		// noop
+	}
+	
+	/**
 	 * @param firstName
 	 * @param middleName
 	 * @param lastName
@@ -36,11 +43,6 @@ public class Author {
 		this.contentIds = new HashSet<Long>();
 		this.deletedContentIds = new HashSet<Long>();
 	}
-	
-	public Author() {
-		
-	}
-
 	
 	/**
 	 * @return long : authorid
@@ -64,7 +66,6 @@ public class Author {
 	public HashSet<Long> getContentIds() {
 		return this.contentIds;
 	}
-
 	
 	/**
 	 * @param contentId
@@ -73,6 +74,9 @@ public class Author {
 		this.contentIds = contentId;
 	}
 	
+	/**
+	 * @return the deletedContentIds
+	 */
 	public HashSet<Long> getDeletedContentIds() {
 		return deletedContentIds;
 	}
@@ -83,7 +87,6 @@ public class Author {
 	public String getFirstName() {
 		return this.firstName;
 	}
-
 	
 	/**
 	 * @param firstName
@@ -91,7 +94,6 @@ public class Author {
 	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
 	}
-
 	
 	/**
 	 * @return String : middleName
@@ -99,7 +101,6 @@ public class Author {
 	public String getMiddleName() {
 		return this.middleName;
 	}
-
 	
 	/**
 	 * @param middleName
@@ -107,7 +108,6 @@ public class Author {
 	public void setMiddleName(final String middleName) {
 		this.middleName = middleName;
 	}
-
 	
 	/**
 	 * @return String : lastName
@@ -115,7 +115,6 @@ public class Author {
 	public String getLastName() {
 		return this.lastName;
 	}
-
 	
 	/**
 	 * @param lastName
@@ -123,7 +122,6 @@ public class Author {
 	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
-
 	
 	/**
 	 * @return String : bibtexName
@@ -131,7 +129,6 @@ public class Author {
 	public Vector<String> getBibtexNames() {
 		return this.bibtexNames;
 	}
-
 	
 	/**
 	 * @param bibtexName
@@ -140,27 +137,39 @@ public class Author {
 		this.bibtexNames.add(bibtexName);
 	}
 	
+	/**
+	 * @return the ctr
+	 */
 	public int getCtr() {
 		return ctr;
 	}
-
+	
+	/**
+	 * @param ctr the ctr to set
+	 */
 	public void setCtr(int ctr) {
 		this.ctr = ctr;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
 	public String toString() {
-		String s = "id: " + authorId + ", first: " + firstName
-				+ ", middleName: " + middleName + ", lastName: "
-				+ lastName + "\ncontent ids: ";
-		for(long l : contentIds) {
-			s += l + ", ";
+		final StringBuilder s = new StringBuilder();
+		s.append("id: ").append(authorId);
+		s.append(", first: ").append(firstName);
+		s.append(", middleName: ").append(middleName);
+		s.append(", lastName: ").append(lastName);
+		s.append("\ncontent ids: ");
+		for (long l : contentIds) {
+			s.append(l).append(", ");
 		}
-		s += "\nbibtexNames: ";
-		for(String b : bibtexNames) {
-			s += b + ", ";
+		s.append("\nbibtexNames: ");
+		for (String b : bibtexNames) {
+			s.append(b).append(", ");
 		}
-		return s;
-		
+		return s.toString();
 	}
-	
 }
