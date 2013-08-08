@@ -1,1 +1,9 @@
-This is a default wiki.
+== CV ==
+<name />
+<image />
+
+==Publications==
+<publications tags="myown" layout="plain" />
+
+==Bookmarks==
+<bookmarks />
