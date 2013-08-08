@@ -24,11 +24,11 @@
 package org.bibsonomy.scraper.url.kde.aps;
 
 import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * @author Haile
@@ -37,7 +37,9 @@ import org.junit.Test;
 @Category(RemoteTest.class)
 public class ApsScraperTest {
 
-	@SuppressWarnings("javadoc")
+	/**
+	 * runs test with url 255  for {@link ApsScraper}
+	 */
 	@Test
 	public void urlTestRun(){
 		assertTrue(UnitTestRunner.runSingleTest("url_255"));
