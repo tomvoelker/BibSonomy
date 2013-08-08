@@ -24,9 +24,9 @@ public class TitleExtractorTest extends AbstractExtractorTest {
 		Assert.assertEquals("", b.getTitle());
 		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title").withMarcField("245", 'b', "bla ; blub  "));
-		Assert.assertEquals("Title: bla", b.getTitle());
+		Assert.assertEquals("Title : bla", b.getTitle());
 		b = new BibTex();
 		e.extraxtAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', "Title").withMarcField("245", 'b', "bla ; blub  "));
-		Assert.assertEquals("Title: bla", b.getTitle());
+		Assert.assertEquals("Title : bla", b.getTitle());
 	}
 }

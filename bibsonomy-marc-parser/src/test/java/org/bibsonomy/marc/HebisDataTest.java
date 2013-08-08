@@ -64,7 +64,8 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	public void testAnd() throws ParseException, IOException {
 		final BibTex bib = get("HEB21356114X");
 		Assert.assertEquals(Arrays.asList(new PersonName("", "{School of English Literature, Language and Linguistics}")), bib.getAuthor());
-		final BibTex reparsedBib = new SimpleBibTeXParser().parseBibTeX(BibTexUtils.toBibtexString(bib));
+		final String bibtexString = BibTexUtils.toBibtexString(bib);
+		final BibTex reparsedBib = new SimpleBibTeXParser().parseBibTeX(bibtexString);
 		Assert.assertEquals(Arrays.asList(new PersonName("", "{School of English Literature, Language and Linguistics}")), reparsedBib.getAuthor());
 	}
 	
@@ -103,7 +104,7 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testSpecialChars() {
 		BibTex bib = get("HEB107697521");
-		Assert.assertEquals("Falar... ler... escrever... Português: um curso para estrangeiros", bib.getTitle());
+		Assert.assertEquals("Falar... ler... escrever... Português : um curso para estrangeiros", bib.getTitle());
 		
 	}
 	
