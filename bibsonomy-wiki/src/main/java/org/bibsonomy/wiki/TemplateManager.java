@@ -5,10 +5,14 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 public class TemplateManager {
 
@@ -21,15 +25,18 @@ public class TemplateManager {
 
 	/**
 	 * Receives a template by name.
-	 * @param name the name of the template
+	 * 
+	 * @param name
+	 *            the name of the template
 	 * @return a template, if it exists in the resource folder
 	 */
 	public static String getTemplate(String name) {
 		return templates.get(name);
 	}
-	
+
 	/**
 	 * Returns all possible template names for later use.
+	 * 
 	 * @return all possible template names for later use.
 	 */
 	public static Set<String> getTemplateNames() {
@@ -37,28 +44,25 @@ public class TemplateManager {
 	}
 
 	private static void loadTemplatesFromFile() {
-		URL resources = TemplateManager.class.getClassLoader().getResource("org/bibsonomy/wiki");
-
-		File folder = new File(resources.getFile());
-		for (File file : folder.listFiles(new FileFilter() {
-
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.getName().endsWith(".wikitemplate");
-			}
-		})) {
-			try {
-				BufferedReader reader = new BufferedReader(new FileReader(file));
-				String content = "";
-				while (reader.ready()) {
-					content += reader.readLine() + "\n";
+		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(TemplateManager.class.getClassLoader());
+		try {
+			final Resource[] resources = resolver.getResources("classpath:/org/bibsonomy/wiki/*.wikitemplate");
+			for (Resource r : resources) {
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(r.getInputStream()));
+					String content = "";
+					while (reader.ready()) {
+						content += reader.readLine() + "\n";
+					}
+					templates.put(r.getFilename().split("\\.")[0], content);
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				templates.put(file.getName().split("\\.")[0], content);
-				reader.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+				
 			}
+		} catch (IOException e) {
+			// DO NOTHING
 		}
 	}
-
 }
