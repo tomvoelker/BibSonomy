@@ -24,14 +24,14 @@
 package org.bibsonomy.scraper.id.kde.doi;
 
 import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
 
 import java.io.IOException;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * @author lha
@@ -47,9 +47,7 @@ public class ContentNegotiationDOIScraperTest {
 	 */
 	@Test
 	public void testCNDOIScraper1() throws ScrapingException, IOException {
-	
 		assertTrue(UnitTestRunner.runSingleTest("url_257"));
-		
 	}
 
 	/**
@@ -59,8 +57,6 @@ public class ContentNegotiationDOIScraperTest {
 	 */
 	@Test
 	public void testCNDOIScraper2() throws ScrapingException, IOException {
-
 		assertTrue(UnitTestRunner.runSingleTest("url_258"));
-		
 	}
 }
