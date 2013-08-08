@@ -23,10 +23,11 @@
 
 package org.bibsonomy.scraper.id.kde.doi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -41,33 +42,24 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class DOIScraperTest {
-
+	private static final DOIScraper SCRAPER = new DOIScraper();
 	
 	
 	@Test
 	public void testScraper1() throws ScrapingException, MalformedURLException {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://dx.doi.org/10.1007/11922162"));
-		final DOIScraper scraper = new DOIScraper();
-		
-		Assert.assertFalse(scraper.scrape(sc));
-		
-		Assert.assertEquals("http://link.springer.com/book/10.1007/11922162/page/1", sc.getUrl().toString());
-		
+		assertFalse(SCRAPER.scrape(sc));
+		assertEquals("http://link.springer.com/book/10.1007/11922162/page/1", sc.getUrl().toString());
 	}
 
 	
 	@Test
 	public void testScraper2() throws ScrapingException, MalformedURLException {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.example.com/"));
-		final DOIScraper scraper = new DOIScraper();
-		
 		sc.setSelectedText("10.1145/160688.160713");
-		//DOI: 10.1016/j.spl.2008.05.017
 		
-		Assert.assertFalse(scraper.scrape(sc));
-		
-		Assert.assertEquals("http://dl.acm.org/citation.cfm?doid=160688.160713", sc.getUrl().toString());
-		
+		assertFalse(SCRAPER.scrape(sc));
+		assertEquals("http://dl.acm.org/citation.cfm?doid=160688.160713", sc.getUrl().toString());
 	}
 	
 }
