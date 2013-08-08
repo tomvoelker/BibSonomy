@@ -24,11 +24,11 @@
 package org.bibsonomy.scraper.url.kde.stanford;
 
 import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #58 & #59 for DBLPScraper

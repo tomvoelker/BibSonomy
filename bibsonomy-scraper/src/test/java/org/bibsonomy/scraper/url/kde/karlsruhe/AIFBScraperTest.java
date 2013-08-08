@@ -23,12 +23,12 @@
 
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
-import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Test;
-
 import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
+
+import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #2 #3 #4 #5 #6 #7 #72 for AIFBScraper

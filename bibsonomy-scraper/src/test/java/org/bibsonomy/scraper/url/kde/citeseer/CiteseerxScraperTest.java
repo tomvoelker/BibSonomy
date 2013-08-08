@@ -24,18 +24,17 @@
 package org.bibsonomy.scraper.url.kde.citeseer;
 
 import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
+import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #112 for CiteseerxScraperTest
@@ -63,12 +62,10 @@ public class CiteseerxScraperTest {
 		try {
 			final boolean scrape = scraper.scrape(sc);
 			System.out.println(sc.getBibtexResult());
-			Assert.assertTrue(scrape);
-		} catch (ScrapingException ex) {
-			Assert.fail(ex.getMessage());
+			assertTrue(scrape);
+		} catch (final ScrapingException ex) {
+			fail(ex.getMessage());
 		}
-		
-		
 	}
 	
 	@Test
@@ -80,23 +77,23 @@ public class CiteseerxScraperTest {
 		try {
 			final boolean scrape = scraper.scrape(sc);
 			System.out.println(sc.getBibtexResult());
-			Assert.assertTrue(scrape);
-		} catch (ScrapingException ex) {
-			Assert.fail(ex.getMessage());
+			assertTrue(scrape);
+		} catch (final ScrapingException ex) {
+			fail(ex.getMessage());
 		}
 	}
 
 	@Test
 	public void runTest1() throws MalformedURLException {
-		String url = "http://citeseerx.ist.psu.edu/viewdoc/summary;jsessionid=352C9BD0F67928E2EDAFA8B58ACFBFB9?doi=10.1.1.110.903";
+		final String url = "http://citeseerx.ist.psu.edu/viewdoc/summary;jsessionid=352C9BD0F67928E2EDAFA8B58ACFBFB9?doi=10.1.1.110.903";
 		final CiteseerxScraper scraper = new CiteseerxScraper();
 		final ScrapingContext sc = new ScrapingContext(new URL(url));
 		
 		try {
 			scraper.scrape(sc);
 			System.out.println(sc.getBibtexResult());
-		} catch (ScrapingException ex) {
-			Assert.fail(ex.getMessage());
+		} catch (final ScrapingException ex) {
+			fail(ex.getMessage());
 		}
 	}
 }

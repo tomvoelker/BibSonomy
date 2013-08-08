@@ -24,8 +24,6 @@
 package org.bibsonomy.scraper.url.kde.worldcat;
 
 import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,8 +31,10 @@ import java.net.URL;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #59 #60 #163 for WorldCatScraper

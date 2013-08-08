@@ -23,7 +23,7 @@
 
 package org.bibsonomy.scraper.url.kde.jneurosci;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
