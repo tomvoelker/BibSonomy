@@ -21,6 +21,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
+import org.bibsonomy.wiki.TemplateManager;
 import org.bibsonomy.wiki.enums.DefaultLayout;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
@@ -128,7 +129,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	/**
 	 * renders a layout and returns it.
 	 * @param command the Ajax command for the CV page.
-	 * @param locale some locale necessary for rendering (i guess)
+	 * @param locale some locale necessary for rendering
 	 * @return some view. Actually it is more important that the ajax response string contains
 	 * the rendered layout.
 	 */
@@ -137,16 +138,23 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		
 		this.wikiRenderer.setLogic(interfaceToUse);
 		// if asked for a default layout, fetch it from the messages.
-		if (command.getLayout() != null && !DefaultLayout.LAYOUT_CURRENT.equals(command.getLayout()) ) {
-			// fetch default wiki text from messages.properties
-			// TODO: Maybe move the default wikis somewhere else?
-			final String defaultWikiText = messageSource.getMessage(command.getLayout().getRef(), null, locale);
-			command.setResponseString(generateXMLSuccessString(command, defaultWikiText, wikiRenderer.render(defaultWikiText)));
-			
-		// render the custom layout.
+		String currentWikiText = "";
+		if (command.getLayout() == null) {
+			// render the custom layout.
+			currentWikiText = wikiText;
 		} else {
-			command.setResponseString(generateXMLSuccessString(command, wikiText, wikiRenderer.render(wikiText)));
+			// Layout was requested. Current or default layout?
+			if (DefaultLayout.LAYOUT_CURRENT.equals(command.getLayout()) ) {
+				if (present(wikiRenderer.getRequestedUser())) {
+					currentWikiText = logic.getWiki(wikiRenderer.getRequestedUser().getName(), null).getWikiText();
+				} else {
+					currentWikiText = logic.getWiki(wikiRenderer.getRequestedGroup().getName(), null).getWikiText();
+				}
+			} else {
+				currentWikiText = TemplateManager.getTemplate(command.getLayout().getRef());
+			}
 		}
+		command.setResponseString(generateXMLSuccessString(command, currentWikiText, wikiRenderer.render(currentWikiText)));
 
 		return Views.AJAX_XML;
 	}

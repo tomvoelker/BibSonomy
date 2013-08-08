@@ -104,6 +104,7 @@
 
 
 			<div id="wikiArea">
+			<!-- Diese Unterscheidung kann weg, sobald alle User ein Wiki angelegt bekommen haben. -->
 				<c:choose>
 					<c:when test="${not empty command.wikiText}">
 						<c:out value="${command.renderedWikiText}" escapeXml="false" />
