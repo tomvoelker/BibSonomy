@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">7</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB207127891</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB207127891</str>
+    <str name="fullrecord">02045nam a22002892c 4500001001000000003000700010005001700017006001900034007001500053008004100068024003700109035002100146035002500167040003900192041000800231084002200239090000600261245007600267260000900343300002100352500017500373502003900548520092500587700006401512856010501576856007401681#30;207127891#30;DE-603#30;20121211232031.0#30;m     om    00    #30;cr    nnn     #30;081128s2005    xx      om    00    ger c#30;7 #31;2urn#31;aurn:nbn:de:hebis:30-1111545#30;  #31;a(OCoLC)611808418#30;  #31;a(DE-599)HEB207127891#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;ager#30;  #31;a400#31;qDE-101#31;2sdnb#30;  #31;nu#30;10#31;aTagging kausaler Relationen#31;h[Elektronische Ressource]#31;cYannick Versley#30;3 #31;c2005#30;  #31;aOnline-Ressource#30;  #31;aUpdated version available as : Tagging kausaler relationen : Grundlagen kausaler Ereignisrelationen und aktuelle Probleme ; VDM Verlag Dr. Müller. ISBN 978-3-8364-3259-7#30;  #31;aHamburg, Univ., Dipl.-Arbeit, 2004#30;  #31;aIn dieser Diplomarbeit geht es um kausale Beziehungen zwischen Ereignissen und Erklärungsbeziehungen zwischen Ereignissen, bei denen kausale Relationen eine wichtige Rolle spielen. Nachdem zeitliche Relationen einerseits ihrer einfacheren Formalisierbarkeit und andererseits ihrer gut sichtbaren Rolle in der Grammatik (Tempus und Aspekt, zeitliche Konjunktionen) wegen in jüngerer Zeit stärker im Mittelpunkt des Interesses standen, soll hier argumentiert werden, dass kausale Beziehungen und die Erklärungen, die sie ermöglichen, eine wichtigere Rolle im Kohärenzgefüge des Textes spielen. Im Gegensatz zu tiefenʺ Verfahren, die auf einer detaillierten semantischen Repräsentation des Textes aufsetzen und infolgedessen für unrestringierten Text m. E. nicht geeignet sind, wird hier untersucht, wie man dieses Ziel erreichen kann, ohne sich auf eine aufwändig konstruierte Wissensbasis verlassen zu müssen.#30;1 #31;0(DE-588)136481264#31;0(DE-603)205935710#31;aVersley, Yannick#31;4ctb#30;  #31;uhttp://publikationen.ub.uni-frankfurt.de/frontdoor/index/index/docId/9962/#31;xArchivierung#31;zkostenfrei#30;40#31;uhttp://nbn-resolving.de/urn:nbn:de:hebis:30-1111545#31;xResolving-System#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 20712789
+001@    $03,5,8,10-11,20-21,23,25-26,58,204-205 
+001A    $00030:28-11-08 
+001B    $t23:20:31.000 $00030:11-12-12 
+001C    $t13:22:17.000 $00030:03-12-08 
+001D    $00030:28-11-08 
+001U    $0utf8 
+001X    $00 
+002@    $0Oay 
+003@    $0207127891 
+003O    $0611808418 $aOCoLC 
+004U    $0urn:nbn:de:hebis:30-1111545 $S0 
+007A    $0207127891 $aHEB 
+009Q    $uhttp://publikationen.ub.uni-frankfurt.de/frontdoor/index/index/docId/9962/ $S0 $xC 
+010@    $ager 
+011@    $a2005 
+013H    $0u 
+016A    $aDg 
+021A    $aTagging kausaler Relationen $nElektronische Ressource $hYannick Versley 
+028C    $7136481264 $9205935710 $8Versley, Yannick 
+034D    $aOnline-Ressource 
+037A    $aUpdated version available as : Tagging kausaler relationen : Grundlagen kausaler Ereignisrelationen und aktuelle Probleme ; VDM Verlag Dr. Müller. ISBN 978-3-8364-3259-7 
+037C    $bHamburg $cUniv., Dipl.-Arbeit, 2004 
+045E    $c400 
+047I    $aIn dieser Diplomarbeit geht es um kausale Beziehungen zwischen Ereignissen und Erklärungsbeziehungen zwischen Ereignissen, bei denen kausale Relationen eine wichtige Rolle spielen. Nachdem zeitliche Relationen einerseits ihrer einfacheren Formalisierbarkeit und andererseits ihrer gut sichtbaren Rolle in der Grammatik (Tempus und Aspekt, zeitliche Konjunktionen) wegen in jüngerer Zeit stärker im Mittelpunkt des Interesses standen, soll hier argumentiert werden, dass kausale Beziehungen und die Erklärungen, die sie ermöglichen, eine wichtigere Rolle im Kohärenzgefüge des Textes spielen. Im Gegensatz zu tiefenʺ Verfahren, die auf einer detaillierten semantischen Repra͏̈sentation des Textes aufsetzen und infolgedessen für unrestringierten Text m. E. nicht geeignet sind, wird hier untersucht, wie man dieses Ziel erreichen kann, ohne sich auf eine aufwändig konstruierte Wissensbasis verlassen zu müssen. 
+
+lok: 20712789 3
+101B    $t08:59:11.000 $028-11-08 
+101C    $028-11-08 
+101U    $0utf8 
+145S/01 $a711 
+
+exp: 20712789 3 1 #EPN
+201B/01 $t08:59:11.000 $028-11-08 
+201C/01 $028-11-08 
+201U/01 $0utf8 
+203@/01 $0564079561 
+208@/01 $boAa $a28-11-08 
+209B/01 $apublikationen-edocs-11154 $x05 
+
+exp: 20712789 3 2 #EPN
+201B/02 $t01:57:47.000 $013-12-12 
+201U/02 $0utf8 
+203@/02 $0564123684 
+204U/02 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/02 $bl $a28-11-08 
+
+lok: 20712789 5
+
+exp: 20712789 5 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123692 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 8
+
+exp: 20712789 8 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123706 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 10
+
+exp: 20712789 10 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123714 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 11
+
+exp: 20712789 11 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123722 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 20
+
+exp: 20712789 20 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123730 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 21
+
+exp: 20712789 21 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123749 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 23
+
+exp: 20712789 23 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123757 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 25
+
+exp: 20712789 25 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123765 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 26
+
+exp: 20712789 26 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123773 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 58
+
+exp: 20712789 58 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123781 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 204
+
+exp: 20712789 204 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $056412379X 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+lok: 20712789 205
+
+exp: 20712789 205 1 #EPN
+201B/01 $t01:57:47.000 $013-12-12 
+201U/01 $0utf8 
+203@/01 $0564123803 
+204U/01 $0urn:nbn:de:hebis:30-1111545 $S0 
+208@/01 $bl $a28-11-08 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

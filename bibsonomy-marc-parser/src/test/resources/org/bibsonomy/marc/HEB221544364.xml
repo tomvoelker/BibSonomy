@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">8</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB221544364</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB221544364</str>
+    <str name="fullrecord">01394nam a2200325 c 4500001001000000003000700010005001700017006001900034007001500053008004100068035002500109035002100134040003900155041001300194084001800207084001800225084001800243084001700261084001700278084001800295245014400313260004600457300010400503500002200607500015600629700007400785700007300859700006500932700007100997#30;221544364#30;DE-603#30;20120919151959.0#30;m     q     00    #30;co c  nnn     #30;100311s2009    xx      q     00    eng c#30;  #31;a(DE-599)HEB221544364#30;  #31;a(OCoLC)604652193#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;aeng#31;ager#30;  #31;aAP 52700#31;2rvk#30;  #31;aAP 53000#31;2rvk#30;  #31;aLH 67554#31;2rvk#30;  #31;aZH 4746#31;2rvk#30;  #31;aZH 6250#31;2rvk#30;  #31;aAP 51338#31;2rvk#30;10#31;aInglourious Basterds#31;h[Elektronische Ressource]#31;bder neue Film#31;cvon Quentin Tarantino. Brad Pitt ; Christoph Waltz ; Michael Fassbender ...#30;3 #31;aHamburg#31;bUniversal Pictures Germany#31;c2009#30;  #31;a1 DVD (Bildformat 2.40:1 anamorph widescreen, Ländercode 2, 148 Min.)#31;bfarb., Dolby digital#31;c12 cm#30;  #31;aOrig.: USA/D 2009#30;  #31;aEngl., dt. - Unteritel: engl., dt., türk. - Enth. erweiterte und alternative Szenen ; "Stolz der Nation" - kompletter Film. - Freigegeben ab 16 Jahren#30;1 #31;0(DE-588)139370579#31;0(DE-603)216387965#31;aFassbender, Michael#31;d1977-#31;4ctb#30;1 #31;0(DE-588)119290685#31;0(DE-603)087630532#31;aTarantino, Quentin#31;d1963-#31;4ctb#30;1 #31;0(DE-588)119320940#31;0(DE-603)087660768#31;aPitt, Brad#31;d1963-#31;4ctb#30;1 #31;0(DE-588)129962627#31;0(DE-603)160204992#31;aWaltz, Christoph#31;d1956-#31;4ctb#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 22154436
+001@    $08,20,23,49,204 
+001A    $00017:11-03-10 
+001B    $t15:19:59.000 $00017:19-09-12 
+001C    $t11:09:52.000 $00017:11-03-10 
+001D    $00017:11-03-10 
+001U    $0utf8 
+001X    $00 
+002@    $0Sau 
+003@    $0221544364 
+003O    $0604652193 $aOCoLC 
+007A    $0221544364 $aHEB 
+010@    $aeng $ager 
+011@    $a2009 
+016A    $aDf 
+021A    $dder neue Film $aInglourious Basterds $nElektronische Ressource $hvon Quentin Tarantino. Brad Pitt ; Christoph Waltz ; Michael Fassbender ... 
+028C    $#Tarantino, Kventin $7119290685 $9087630532 $8Tarantino, Quentin 
+028C/01 $#Pitt, Brad $#Pitt, William Bradley $7119320940 $9087660768 $8Pitt, Brad 
+028C/02 $#Waltz, Christophorus $#HeBIS $7129962627 $9160204992 $8Waltz, Christoph 
+028C/03 $7139370579 $9216387965 $8Fassbender, Michael 
+033A    $pHamburg $nUniversal Pictures Germany 
+034D    $a1 DVD (Bildformat 2.40:1 anamorph widescreen, Ländercode 2, 148 Min.) 
+034I    $a12 cm 
+034M    $afarb., Dolby digital 
+037A    $aEngl., dt. - Unteritel: engl., dt., türk. - Enth. erweiterte und alternative Szenen ; "Stolz der Nation" - kompletter Film. - Freigegeben ab 16 Jahren 
+045Z    $aAP 51338 
+045Z    $aAP 52700 
+045Z    $aAP 53000 
+045Z    $aLH 67554 
+045Z    $aZH 4746 
+045Z    $aZH 6250 
+046J    $aOrig.: USA/D 2009 
+
+lok: 22154436 8
+
+exp: 22154436 8 1 #EPN
+201B/01 $t13:29:02.000 $022-05-13 
+201C/01 $011-03-10 
+201U/01 $0utf8 
+203@/01 $0589737414 
+208@/01 $bz $a11-03-10 
+209A/01 $f002 $ds $a/AP 52700 I52 $x00 
+209B/01 $a16 $x05 
+209G/01 $a17467891 $x00 
+209G/01 $a2.Obergeschoss / Mediathek / Präsenznutzung nur für TUD-Mitglieder $x01 
+247C/01 $9308308549 $8611002-2 &lt;17/2&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Lichtwiese 
+
+lok: 22154436 20
+101B    $t07:56:18.000 $007-02-13 
+101C    $007-02-13 
+101U    $0utf8 
+145S/01 $a00020 
+
+exp: 22154436 20 1 #EPN
+201B/01 $t07:56:18.000 $007-02-13 
+201C/01 $001-02-13 
+201U/01 $0utf8 
+203@/01 $0661700070 
+208@/01 $bzF $a07-02-13 
+209A/01 $f001 $du $akun 1001 218 $x00 
+209G/01 $a70384051 $x00 
+209G/01 $a2. Obergeschoss $x01 
+247C/01 $9102600856 $8635001-x &lt;974/1&gt;Friedberg, Technische Hochschule Mittelhessen, Hochschulbibliothek Friedberg 
+
+lok: 22154436 23
+
+exp: 22154436 23 1 #EPN
+201B/01 $t15:16:25.000 $007-07-10 
+201C/01 $002-07-10 
+201U/01 $0utf8 
+203@/01 $0595726941 
+208@/01 $bz $a07-07-10 
+209A/01 $f025 $du $a25 Publ PV 0214 $hPUBL PV 0214 $x00 
+209G/01 $a25800893 $x00 
+247C/01 $9102599467 $8352025-0 &lt;34/25&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 5, Geisteswissenschaften und Psychologie 
+
+lok: 22154436 49
+
+exp: 22154436 49 1 #EPN
+201B/01 $t11:09:43.000 $024-03-12 
+201C/01 $018-10-10 
+201U/01 $0utf8 
+203@/01 $060037100X 
+208@/01 $bz $a18-10-10 
+209A/01 $f000 $db $aK 21.2/245 $x00 
+209C/01 $a2010.0792 
+209G/01 $a00442097 $x00 
+209G/01 $aDVD-Regal $x01 
+237A/01 $aLeihfrist 2 Wochen 
+247C/01 $9102600864 $8653000-x &lt;1053&gt;Mainz, Bibliothek der Fachhochschule Mainz, Standort Holzstraße 
+
+lok: 22154436 204
+
+exp: 22154436 204 1 #EPN
+201B/01 $t11:49:07.000 $026-10-10 
+201C/01 $025-10-10 
+201U/01 $0utf8 
+203@/01 $0600652491 
+208@/01 $bzp09 $a26-10-10 
+209A/01 $f090 $dg $aDVD 88.32 $h090 DVD 88 32 $x00 
+209C/01 $a85080300 $h090 85080300 
+209G/01 $a85080300 $x00 
+209G/01 $ahap10510273 $x01 
+247C/01 $9102596980 $8631090-4 &lt;26/090&gt;Gießen, Universität Gießen, Bibliothek Germanistik 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

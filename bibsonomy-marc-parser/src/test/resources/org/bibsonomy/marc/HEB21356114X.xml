@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">7</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB21356114X</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB21356114X</str>
+    <str name="fullrecord">01242nas a2200289 c 4500001001000000003000700010005001700017006001900034007001500053008004100068016002200109029001400131035002500145035002100170040003900191041000800230084002200238245012700260260004400387300002100431362002200452710011900474780010000593780010300693856009200796856006400888#30;21356114X#30;DE-603#30;20110317180016.0#30;m   p o     0    1#30;cr    nnn     #30;090702c20099999xx    p o     0    1eng c#30;7 #31;2DE-600#31;a2503151-X#30;ad#31;a1472-4855#30;  #31;a(DE-599)ZDB2503151-X#30;  #31;a(OCoLC)609905931#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;aeng#30;  #31;a400#31;qDE-600#31;2sdnb#30;10#31;aNewcastle working papers in linguistics#31;h[Elektronische Ressource]#31;cSchool of English Literature, Language and Linguistics#30;3 #31;aNewcastle upon Tyne#31;bUniv.#31;c2009, 2009-#30;  #31;aOnline-Ressource#30;0 #31;a12/13.2006/2007 -#30;2 #31;0(DE-588)10151294-6#31;0(DE-603)182212416#31;aSchool of English Literature, Language and Linguistics#31;gNewcastle-upon-Tyne#30;00#31;iVorg.#31;tDurham and Newcastle working papers in linguistics#31;w(DE-603)213561239#31;w(DE-600)2503153-3#30;00#31;iDruckausg. u. Vorg.#31;tNewcastle working papers in linguistics#31;w(DE-603)191487295#31;w(DE-600)2392469-X#30;  #31;uhttp://www.ncl.ac.uk/linguistics/research/workingpapers/Archive.htm#31;xVerlag#31;zkostenfrei#30;  #31;uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151#31;xEZB#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 21356114
+001@    $03,8,10-11,13,20-21,23,25-26,58,204-205 
+001A    $06050:02-07-09 
+001B    $t18:00:16.000 $01999:17-03-11 
+001C    $t19:59:59.699 $06050:18-09-10 
+001D    $06050:02-07-09 
+001U    $0utf8 
+001X    $00 
+002@    $0Obvc 
+003@    $021356114X 
+003O    $0609905931 $aOCoLC 
+005P    $01472-4855 $Sp 
+006Z    $02503151-X 
+007A    $02503151-X $aZDB 
+009Q    $uhttp://www.ncl.ac.uk/linguistics/research/workingpapers/Archive.htm $S0 $xH 
+009Q    $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151 $xF 
+010@    $aeng 
+011@    $a2009 $n2009- 
+016A    $aDg 
+021A    $aNewcastle working papers in linguistics $nElektronische Ressource $hSchool of English Literature, Language and Linguistics 
+029F    $#University, School of English Literature, Language and Linguistics Newcastle-upon-Tyne $gNewcastle-upon-Tyne $710151294-6 $9182212416 $8School of English Literature, Language and Linguistics 
+031@    $a12/13.2006/2007 - 
+033A    $pNewcastle upon Tyne $nUniv. 
+034D    $aOnline-Ressource 
+039E    $aVorg. $9213561239 $8--Obvc--: Durham and Newcastle working papers in linguistics 
+039E    $aDruckausg. u. Vorg. $9191487295 $8--Abvc--: Newcastle working papers in linguistics 
+045U    $e400 $a400 
+
+lok: 21356114 3
+
+exp: 21356114 3 1 #EPN
+201B/01 $t22:00:08.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845019 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=UBFM $XF 
+
+lok: 21356114 8
+
+exp: 21356114 8 1 #EPN
+201B/01 $t22:00:08.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845027 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=TUDA $XF 
+
+lok: 21356114 10
+
+exp: 21356114 10 1 #EPN
+201B/01 $t22:00:08.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845035 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=FHDA $XF 
+
+lok: 21356114 11
+
+exp: 21356114 11 1 #EPN
+201B/01 $t16:35:42.000 $029-01-13 
+201U/01 $0utf8 
+203@/01 $0576845043 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=HLB $XF 
+
+lok: 21356114 13
+
+exp: 21356114 13 1 #EPN
+201B/01 $t22:00:08.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845051 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=SBM $XF 
+
+lok: 21356114 20
+
+exp: 21356114 20 1 #EPN
+201B/01 $t22:00:08.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $057684506X 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=FHGF $XF 
+
+lok: 21356114 21
+
+exp: 21356114 21 1 #EPN
+201B/01 $t22:00:08.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845078 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=FHFD $XF 
+
+lok: 21356114 23
+
+exp: 21356114 23 1 #EPN
+201B/01 $t22:00:09.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845086 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=UBKAS $XF 
+
+lok: 21356114 25
+
+exp: 21356114 25 1 #EPN
+201B/01 $t22:00:09.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845094 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=UBMZ $XF 
+
+lok: 21356114 26
+
+exp: 21356114 26 1 #EPN
+201B/01 $t22:00:09.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845108 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=UBMZ $XF 
+
+lok: 21356114 58
+
+exp: 21356114 58 1 #EPN
+201B/01 $t22:00:09.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845116 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.ncl.ac.uk/linguistics/research/workingpapers/Archive.htm $S0 $XH 
+
+lok: 21356114 204
+
+exp: 21356114 204 1 #EPN
+201B/01 $t22:00:09.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845124 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=UBGIE $XF 
+
+lok: 21356114 205
+
+exp: 21356114 205 1 #EPN
+201B/01 $t22:00:09.000 $002-07-09 
+201U/01 $0utf8 
+203@/01 $0576845132 
+208@/01 $bl $a02-07-09 
+209S/01 $uhttp://www.bibliothek.uni-regensburg.de/ezeit/?2503151&amp;bibid=UBMA $XF 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

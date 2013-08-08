@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">16</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB291478336</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB291478336</str>
+    <str name="fullrecord">01037nam a22003012c 4500001001000000003000700010005001700017006001900034007001500053008004100068020003000109020003700139035002700176035002100203040003900224041000800263100002100271245009500292260004600387300002700433490002400460500001900484530001800503533010700521655002800628856006400656912001500720#30;291478336#30;DE-603#30;20120327202918.0#30;m     o     00    #30;cr    nnn     #30;120314s2008    xx      o     00    eng c#30;  #31;a0321550145#31;90-321-55014-5#30;  #31;a9780321550149#31;9978-0-321-55014-9#30;  #31;a(DE-599)BVBBV037357685#30;  #31;a(OCoLC)192096608#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;aeng#30;1 #31;aSmith, Gene#31;4aut#30;10#31;aTagging#31;h[Elektronische Ressource]#31;bpeople-powered metadata for the social web#31;cGene Smith#30;3 #31;aBerkeley, Calif.#31;bNew Riders#31;c2008, c2008#30;  #31;aviii, 208 p. S.#31;c23 cm#30;0 #31;aSafari Books Online#30;  #31;aIncludes index#30;  #31;aOnline-Ausg.:#30;  #31;bSebastopol, CA [u.a.]#31;cSafari Books Online#31;eOnline-Ressource#31;fSafari Tech Books Online#31;n[Online-Ausg.]#30; 7#31;aOnline-Publikation#31;2gnd#30;  #31;uhttp://proquest.safaribooksonline.com/9780321550149#31;xVerlag#30;  #31;aZDB-32-STB#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 29147833
+001@    $03 
+001A    $06054:14-03-12 
+001B    $t20:29:18.000 $01999:27-03-12 
+001D    $06054:14-03-12 
+001U    $0utf8 
+001X    $00 
+002@    $0Oax 
+003@    $0291478336 
+003O    $0192096608 $aOCoLC 
+004A    $00-321-55014-5 
+004A    $A978-0-321-55014-9 
+007A    $0BV037357685 $aBVB 
+007I    $0SATocm192096608 
+009Q    $uhttp://proquest.safaribooksonline.com/9780321550149 $xH 
+010@    $aeng 
+011@    $a2008 $nc2008 
+016A    $aDg 
+017B    $aZDB-32-STB 
+021A    $dpeople-powered metadata for the social web $aTagging $nElektronische Ressource $hGene Smith 
+028A    $dGene $aSmith 
+032C    $a[Online-Ausg.] 
+033A    $pBerkeley, Calif. $nNew Riders 
+033N    $pSebastopol, CA {[u.a.] $nSafari Books Online 
+033Q    $aOnline-Ressource 
+034D    $aviii, 208 p. S. 
+034I    $a23 cm 
+036G    $aSafari Books Online 
+036L/09 $aSafari Tech Books Online 
+037A    $aIncludes index 
+037G    $aOnline-Ausg.: 
+044A    $Ss $aMetadata 
+044A    $Ss $aInternet / Social aspects 
+044K    $af Online-Publikation 
+
+lok: 29147833 3
+101B    $t23:09:54.000 $022-03-12 
+101C    $022-03-12 
+101U    $0utf8 
+145S/01 $a013 
+
+exp: 29147833 3 1 #EPN
+201B/01 $t23:09:54.000 $022-03-12 
+201C/01 $022-03-12 
+201U/01 $0utf8 
+203@/01 $0640199771 
+208@/01 $boAa $a22-03-12 
+209A/01 $f900 $a/ $x00 
+209B/01 $a502 $x05 
+209G/01 $aLizenziert für die Universität Frankfurt am Main $x01 
+209S/01 $uhttp://proquest.safaribooksonline.com/9780321550149?uicode=frankfurt $XXL 
+247C/01 $9210502010 $8601900-6 &lt;30/900&gt;Frankfurt, Universität Frankfurt, Elektronische Ressourcen 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

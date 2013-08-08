@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">7</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB321193962</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB321193962</str>
+    <str name="fullrecord">01197nam a2200313 c 4500001001000000003000700010005001700017006001900034008004100053016002300094020004400117035002600161040003900187041000800226090000600234245009700240250001300337260003400350300002400384500002100408650005800429650005800487650005800545650005600603650005300659655002000712700006900732856008200801#30;321193962#30;DE-603#30;20130516174122.0#30;aa          00    #30;130508s2013    xx a          00    ger c#30;7 #31;2DE-101#31;a1034038389#30;  #31;a9781479174928#31;ckart.#31;9978-1-4791-7492-8#30;  #31;a(DE-599)DNB1034038389#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;ager#30;  #31;nb#30;10#31;aWillkommen neuer Erdenbürger#31;bein Wegweiser durchs Leben für Eltern und Kind#31;cLili Gaesset#30;  #31;a1. Aufl.#30;3 #31;aFrankfurt, M.#31;bG. Leist#31;c2013#30;  #31;a268 S.#31;bIll.#31;c21 cm#30;  #31;aLiteraturangaben#30; 7#31;0(DE-588)4056550-6#31;0(DE-603)085157376#31;aSprichwort#31;2gnd#30; 7#31;0(DE-588)4127870-7#31;0(DE-603)085441406#31;aKinderlied#31;2gnd#30; 7#31;0(DE-588)4163853-0#31;0(DE-603)085728438#31;aKinderreim#31;2gnd#30; 7#31;0(DE-588)4065203-8#31;0(DE-603)085182893#31;aWeisheit#31;2gnd#30; 7#31;0(DE-588)4067889-1#31;0(DE-603)085191019#31;aZitat#31;2gnd#30; 7#31;aAnthologie#31;2gnd#30;1 #31;0(DE-588)1034151061#31;0(DE-603)321000498#31;aGaesset, Lili#31;4edt#31;eHrsg.#30;42#31;mB:DE-101#31;qapplication/pdf#31;uhttp://d-nb.info/1034038389/04#31;3Inhaltsverzeichnis#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 32119396
+001@    $03 
+001A    $00030:08-05-13 
+001B    $t17:41:22.000 $06000:16-05-13 
+001D    $00030:08-05-13 
+001U    $0utf8 
+001X    $00 
+002@    $0Aau 
+003@    $0321193962 
+004A    $fkart. $A978-1-4791-7492-8 
+006G    $01034038389 
+006H    $2DNB $0TOCNEUA1320 
+006U    $f20130429 
+007A    $01034038389 $aDNB 
+009P    $3Inhaltsverzeichnis $uhttp://d-nb.info/1034038389/04 $A2 $qapplication/pdf $mB:DE-101 
+010@    $ager 
+011@    $a2013 
+017A    $asf 
+021A    $dein Wegweiser durchs Leben für Eltern und Kind $aWillkommen neuer Erdenbürger $hLili Gaesset 
+028C    $#Leist, Gisela $71034151061 $BHrsg. $9321000498 $8Gaesset, Lili 
+032@    $a1. Aufl. 
+033A    $pFrankfurt, M. $nG. Leist 
+034D    $a268 S. 
+034I    $a21 cm 
+034M    $aIll. 
+037A    $aLiteraturangaben 
+044K    $#Lebensweisheit $74065203-8 $9085182893 $8Weisheit 
+044K    $#Geflügeltes Wort $#Zitieren $#Zitierung $#Zitierweise $#Zitierpraxis $#Zitate $74067889-1 $9085191019 $8Zitat 
+044K    $#Sprichwörter $74056550-6 $9085157376 $8Sprichwort 
+044K    $#Kinderlieder $74127870-7 $9085441406 $8Kinderlied 
+044K    $#Kindervers $74163853-0 $9085728438 $8Kinderreim 
+044K    $af Anthologie 
+
+lok: 32119396 3
+101B    $t08:14:42.000 $008-05-13 
+101C    $008-05-13 
+101U    $0utf8 
+145S/01 $a001 
+
+exp: 32119396 3 1 #EPN
+201B/01 $t08:14:42.000 $008-05-13 
+201C/01 $008-05-13 
+201U/01 $0utf8 
+203@/01 $0675237882 
+208@/01 $bzAa $a08-05-13 
+209A/01 $f000 $du $a90.042.45 $h90 042 45 $x00 
+209G/01 $a90042459 $x00 
+247C/01 $9102598258 $8601000-3 &lt;30&gt;Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">8</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB105811688</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB105811688</str>
+    <str name="fullrecord">00972nam a22002772cc4500001001000000003000700010005001700017006001900034008004100053020003000094035002500124035002100149040003900170041000800209084001700217100007900234245006400313249002800377250001300405260003800418300001100456490004300467650007100510773002600581830008700607#30;105811688#30;DE-603#30;20110423080609.0#30;a           00    #30;020724s1984    xx            00    ger c#30;  #31;a3518281011#31;93-518-28101-1#30;  #31;a(DE-599)HEB105811688#30;  #31;a(OCoLC)614966972#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;ager#30;  #31;aCI 5000#31;2rvk#30;1 #31;0(DE-588)118634313#31;0(DE-603)086975250#31;aWittgenstein, Ludwig#31;d1889-1951#31;4aut#30;10#31;aWerkausgabe#31;b[in 8 Bd.]#31;n1#31;p@Tractatus logico-philosophicus#30;  #31;aTagebücher 1914 - 1916#30;  #31;a1. Aufl.#30;3 #31;aFrankfurt am Main#31;bSuhrkamp#31;c1984#30;  #31;a620 S.#30;1 #31;aSuhrkamp-Taschenbuch Wissenschaft#31;v501#30; 7#31;0(DE-588)4001869-6#31;0(DE-603)084996072#31;aAnalytische Philosophie#31;2gnd#30;08#31;q11#31;w(DE-603)005203643#30; 0#31;aSuhrkamp-Taschenbuch Wissenschaft#31;v501#31;w(DE-603)005547903#31;w(DE-600)968234-xs#31;93501#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 10581168
+001@    $03,8,23,25,204-205 
+001A    $00077:24-07-02 
+001B    $t08:06:09.000 $01999:23-04-11 
+001C    $t09:05:59.000 $00026:21-04-08 
+001D    $00077:24-07-02 
+001U    $0utf8 
+001X    $00 
+002@    $0Afr 
+003@    $0105811688 
+003O    $0614966972 $aOCoLC 
+004A    $03-518-28101-1 
+007A    $0105811688 $aHEB 
+010@    $ager 
+011@    $a1984 
+021A    $a@Tractatus logico-philosophicus 
+021M    $aTagebücher 1914 - 1916 
+028A    $#Wittgenstein, Ludwig $#Wittgenstein, Ludwig Josef Johann $#Wittgenstein, Ludvig $#Wittgenstein, Ludovicus $#Wittgenstein, L. $#Wittgenstein, ... $#Wîtgenšṭain, Lûdwig $#Vitgenštajn, Ljudvig $#Vitgenštajn, Ludvig $#Vitgenšteinas, Liudvigas $#Vitgenštejn, Ljudvig $#Uitogenshutain, Rūtovihi $#Uitogenshutain, ... $#Witgenšṭeyn, Lûdwîg $#Vitogenshutain, Rūtovihi $#Wītginšitāyn, Lūdwīg $#Vitgenšteins, Ludvigs $#Wittgenstein, Ludwig J. $#Bittnkenstai͏̈n, Luntbich $#Vitgenstejn, Ljudvig $#HeBIS $#Vitgenstajn, Ljudvig $#HeBIS $#Vitgensteinas, Liudvigas $#HeBIS $#Witgenstain, Ludwig $#HeBIS $#ויטגנשטיין, לודויג $#DE-576 $#ヴィトゲンシュタイン, ルートヴィッヒ $#DE-576 $7118634313 $9086975250 $8Wittgenstein, Ludwig 
+032@    $a1. Aufl. 
+033A    $pFrankfurt am Main $nSuhrkamp 
+034D    $a620 S. 
+036C    $d[in 8 Bd.] $aWerkausgabe $l1 $x11 
+036D    $9005203643 $8Werkausgabe / Wittgenstein, Ludwig $x11 
+036E    $aSuhrkamp-Taschenbuch Wissenschaft $l501 
+036F    $l501 $9005547903 $8Suhrkamp-Taschenbuch Wissenschaft $x3501 
+044K    $#Sprachanalytische Philosophie $#Analytische Sprachphilosophie $74001869-6 $9084996072 $8Analytische Philosophie 
+045Z    $aCI 5000 
+
+lok: 10581168 3
+101B    $t16:49:33.000 $019-08-09 
+101C    $019-08-09 
+101U    $0utf8 
+145S/01 $a002 
+
+exp: 10581168 3 1 #EPN
+201B/01 $t16:25:35.000 $024-10-03 
+201C/01 $024-10-03 
+201U/01 $0utf8 
+203@/01 $0189614684 
+208@/01 $brAa $a24-09-03 
+209A/01 $f000 $di $a82.874.01 Bd. 1 $h82 874 01 / B 1 $x00 
+209G/01 $a82874011 $x00 
+247C/01 $9102598258 $8601000-3 &lt;30&gt;Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+
+exp: 10581168 3 2 #EPN
+201B/02 $t10:52:43.000 $019-04-07 
+201C/02 $019-04-07 
+201U/02 $0utf8 
+203@/02 $0502863137 
+208@/02 $brEf $a19-04-07 
+209A/02 $f205 $du $aTZB Nh 229.I $hTZB NH 229 / B 1 $x00 
+209C/02 $a30895a/92 $h30895A 92 
+247C/02 $9120346273 $8608205-1 &lt;30/205&gt;Frankfurt, Theologische Zentralbibliothek in der UB 
+
+lok: 10581168 8
+
+exp: 10581168 8 1 #EPN
+201B/01 $t10:52:42.000 $017-07-07 
+201C/01 $004-11-03 
+201U/01 $0utf8 
+203@/01 $0189995912 
+208@/01 $bz $a04-11-03 
+209A/01 $f040 $du $a-040-X-E Wit $x00 
+209B/01 $aMagazin $x09 
+209C/01 $a9301/1 
+245Z/01 $aX-E $x01 
+247C/01 $910259614X $8611040-x &lt;17/40&gt;Darmstadt, Technische Universität Darmstadt, Bibliothek Gesellschafts- und Geschichtswissenschaften, Bibliothek  Philosophie/Soziologie (BGG) 
+
+lok: 10581168 23
+
+exp: 10581168 23 1 #EPN
+201B/01 $t15:06:28.000 $021-07-04 
+201C/01 $021-07-04 
+201U/01 $0utf8 
+203@/01 $0217258034 
+208@/01 $bz $a21-07-04 
+209A/01 $f025 $du $a25 Phi HU 2001 $hPHI HU 2001 $x00 
+209C/01 $a327124 
+209G/01 $a10924456 $x00 
+247C/01 $9102599467 $8352025-0 &lt;34/25&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 5, Geisteswissenschaften und Psychologie 
+
+lok: 10581168 25
+
+exp: 10581168 25 1 #EPN
+201B/01 $t21:25:35.000 $010-08-12 
+201C/01 $008-06-06 
+201U/01 $0utf8 
+203@/01 $0404970532 
+208@/01 $br $a08-06-06 
+209A/01 $f017 $dd $aUf 2154-1 $x00 
+209C/01 $a1012 K 84 
+209G/01 $a61166520 $x00 
+209G/01 $aEvangelische Theologie $x01 
+247C/01 $910259970X $8651017-6 &lt;77/017&gt;Mainz, Universität Mainz, Bereichsbibliothek Katholische Theologie und Evangelische Theologie, Evangelische Theologie 
+
+exp: 10581168 25 2 #EPN
+201B/02 $t12:55:35.000 $003-02-09 
+201C/02 $026-03-04 
+201U/02 $0utf8 
+203@/02 $0211620718 
+208@/02 $br $a26-03-04 
+209A/02 $f058 $dd $aXV 13 a - 16 / 1 $h15 13 A 16 1 $x00 
+209A/02 $aFB 11.1 15 13 A 16 1 $x09 
+209C/02 $a729/86 
+209G/02 $a70191527 $x00 
+209G/02 $aPhilosophie $x01 
+247C/02 $9102600104 $8651058-9 &lt;77/058&gt;Mainz, Universität Mainz, Bereichsbibliothek Philosophicum, Standort Philosophie 
+
+exp: 10581168 25 3 #EPN
+201B/03 $t10:52:59.000 $004-02-09 
+201C/03 $024-07-02 
+201U/03 $0utf8 
+203@/03 $017316871X 
+208@/03 $br $a24-07-02 
+209A/03 $f070 $dd $aPh 545/10 $hPh 545 10 $x00 
+209A/03 $aFB 13.1 Ph 545 10 $x09 
+209C/03 $a1984/1789 
+209G/03 $a70888174 $x00 
+209G/03 $aGermanistik $x01 
+247C/03 $9102600198 $8651070-x &lt;77/070&gt;Mainz, Universität Mainz, Bereichsbibliothek Philosophicum, Standorte Germanistik I / Kulturanthropologie und Germanistik II 
+
+lok: 10581168 204
+
+exp: 10581168 204 1 #EPN
+201B/01 $t13:21:09.000 $005-01-09 
+201C/01 $006-04-05 
+201U/01 $0utf8 
+203@/01 $0238890880 
+208@/01 $brUBrvk $a05-01-09 
+209A/01 $f000 $du $aFH Philos Wittgenstein $hFH PHILOS WITTGENSTEIN $x00 
+209A/01 $aphi CI 5000.984-1 $x08 
+209B/01 $a00001 $x05 
+209C/01 $a31396 a $h300 31396 A 
+209G/01 $a14149406 $x00 
+245S/01 $a14000 $x01 
+247C/01 $9102596697 $8631000-x &lt;26&gt;Gießen, Universität Gießen, Universitätsbibliothek Gießen 
+
+exp: 10581168 204 2 #EPN
+201B/02 $t09:05:59.000 $021-04-08 
+201C/02 $012-02-07 
+201U/02 $0utf8 
+203@/02 $0500925321 
+208@/02 $brUBrvk $a12-02-07 
+209A/02 $f000 $du $aFH phi Cw 1.6-1 $hFH PHI CW 1 6 / B 1 $x00 
+209A/02 $aphi CI 5000.984-1 $x08 
+209A/02 $a20.827.20-1 $h20 827 20 / B 1 $x09 
+209B/02 $a00001 $x05 
+209G/02 $a20827203 $x00 
+245S/02 $a14000 $x01 
+247C/02 $9102596697 $8631000-x &lt;26&gt;Gießen, Universität Gießen, Universitätsbibliothek Gießen 
+
+lok: 10581168 205
+
+exp: 10581168 205 1 #EPN
+201B/01 $t16:00:02.000 $008-03-06 
+201C/01 $021-01-04 
+201U/01 $0utf8 
+203@/01 $020817625X 
+208@/01 $br $a21-01-04 
+209A/01 $f000 $du $aR 85/11, 1 $x00 
+209B/01 $a98 $x05 
+209G/01 $a23040409 $x00 
+247C/01 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 10581168 205 2 #EPN
+201B/02 $t18:17:34.000 $021-01-04 
+201C/02 $021-01-04 
+201U/02 $0utf8 
+203@/02 $0208176268 
+208@/02 $br $a21-01-04 
+209A/02 $f301 $ds $a/ $x00 
+209B/02 $a98 $x05 
+247C/02 $9102595119 $8351301-4 &lt;4/301&gt;Marburg, Universität Marburg, Bibliothek Rechtswissenschaften, Juristisches Seminar 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

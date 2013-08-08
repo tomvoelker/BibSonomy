@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">4</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB231779038</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB231779038</str>
+    <str name="fullrecord">02199nam a2200517 c 4500001001000000003000700010005001700017006001900034008004100053015001600094016002300110020003700133020003000170020003000200020003700230035002100267035002500288035002400313040003900337041000800376082003300384083003300417084001600450084001800466084002700484085001700511085001700528090000600545100007100551245010200622260005600724300005000780490005000830502003700880650006200917650007100979650006501050650005901115650007101174650006501245650006501310650006601375650006001441830009801501856008201599#30;231779038#30;DE-603#30;20111201195952.0#30;a           00    #30;110223s2011    xx            00    eng c#30;  #31;a11,A15#31;2dnb#30;7 #31;2DE-101#31;a1010227467#30;  #31;a9783898383325#31;9978-3-89838-332-5#30;  #31;a1607507072#31;91-60750-707-2#30;  #31;a3898383326#31;93-89838-332-6#30;  #31;a9781607507079#31;9978-1-60750-707-9#30;  #31;a(OCoLC)719429119#30;  #31;a(DE-599)BSZ337671699#30;  #31;a(DE-604)BV037238391#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;aeng#30;04#31;81\x#31;a006.332#31;qDE-101#31;222/ger#30;0 #31;82\x#31;a006.312#31;qDE-101#31;222/ger#30;  #31;aST 273#31;2rvk#30;  #31;aAN 95500#31;2rvk#30;  #31;a004#31;a020#31;qDE-101#31;2sdnb#30;  #31;82\x#31;b006.312#30;  #31;81\x#31;b006.332#30;  #31;nu#30;1 #31;0(DE-588)137950063#31;0(DE-603)211590312#31;aJäschke, Robert#31;d1980-#31;4aut#30;10#31;aFormal concept analysis and tag recommendations in collaborative tagging systems#31;cRobert Jäschke#30;3 #31;aHeidelberg#31;bAkad. Verl.-Ges. AKA [u.a.]#31;c2011, 2011#30;  #31;aXXXII, 201 S.#31;bgraph. Darst.#31;c210 mm x 148 mm#30;1 #31;aDissertations in artificial intelligence#31;v332#30;  #31;aZugl.: Kassel, Univ., Diss. 2010#30; 7#31;0(DE-588)7629989-2#31;0(DE-603)205715222#31;aSocial Tagging#31;2gnd#30; 7#31;0(DE-588)4351376-1#31;0(DE-603)088223191#31;aFormale Begriffsanalyse#31;2gnd#30; 7#31;0(DE-588)4546354-2#31;0(DE-603)089458168#31;aWissensextraktion#31;2gnd#30; 7#31;0(DE-588)4428654-5#31;0(DE-603)088701859#31;aData Mining#31;2gnd#30; 7#31;0(DE-588)7512839-1#31;0(DE-603)135410088#31;aKollaborative Filterung#31;2gnd#30; 7#31;0(DE-588)4122898-4#31;0(DE-603)085403814#31;aBenutzerverhalten#31;2gnd#30; 7#31;0(DE-588)7511891-9#31;0(DE-603)13541007X#31;aEmpfehlungssystem#31;2gnd#30; 7#31;0(DE-588)7548364-6#31;0(DE-603)182367878#31;aWorld Wide Web 2.0#31;2gnd#30; 7#31;0(DE-588)4688372-1#31;0(DE-603)105210854#31;aSemantic Web#31;2gnd#30; 0#31;aDissertationen zur künstlichen Intelligenz#31;v332#31;w(DE-603)020863284#31;w(DE-600)1110528-8s#31;93332#30;42#31;mB:DE-101#31;qapplication/pdf#31;uhttp://d-nb.info/1010227467/04#31;3Inhaltsverzeichnis#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 23177903
+001@    $08,23 
+001A    $00034:23-02-11 
+001B    $t19:59:52.000 $06000:01-12-11 
+001C    $t10:12:10.000 $00017:31-05-11 
+001D    $00034:31-03-11 
+001U    $0utf8 
+001X    $00 
+002@    $0Aau 
+003@    $0231779038 
+003O    $0719429119 $aOCoLC 
+004A    $A978-1-60750-707-9 
+004A    $A978-3-89838-332-5 
+004A    $01-60750-707-2 
+004A    $03-89838-332-6 
+006G    $01010227467 
+006H    $2DNB $0TOCIMA1148 
+006H    $2DNB $0TOCIMA1110 
+006L    $2BVB $0BV037238391 
+006U    $f20110223 $011,A15 
+007A    $0337671699 $aBSZ 
+007G    $0DE00471932C7135C4ABD6C12578A5003F951C 
+009P    $3Inhaltsverzeichnis $uhttp://d-nb.info/1010227467/04 $A2 $qapplication/pdf $mB:DE-101 
+010@    $aeng 
+011@    $a2011 $n2011 
+013H    $0u 
+021A    $aFormal concept analysis and tag recommendations in collaborative tagging systems $hRobert Jäschke 
+028A    $#Jäschke, R. $7137950063 $9211590312 $8Jäschke, Robert 
+033A    $pHeidelberg $nAkad. Verl.-Ges. AKA {[u.a.] 
+034D    $aXXXII, 201 S. 
+034I    $a210 mm x 148 mm 
+034M    $agraph. Darst. 
+036E    $aDissertations in artificial intelligence $l332 
+036F    $l332 $9020863284 $8Dissertationen zur künstlichen Intelligenz $x3332 
+037C    $bKassel $cUniv., Diss. 2010 $aZugl.: 
+041A    $#Gemeinschaftliches Indexieren $#Gemeinschaftliche Indexierung $#Collaborative Tagging $#Kollaborative Verschlagwortung $#Folksonomy $77629989-2 $9205715222 $8Social Tagging 
+041A/01 $#Formal Concept Analysis $74351376-1 $9088223191 $8Formale Begriffsanalyse 
+041A/02 $#Wissensentdeckung $#Wissensgewinnung $#Knowledge Discovery $#Knowledge Discovery in Databases $#KDD $#Wissensextraktion aus Datenbanken $#Regelextraktion aus Datenbanken $74546354-2 $9089458168 $8Wissensextraktion 
+041A/03 $#Datamining $#Datenmustererkennung $#Data-Mining $74428654-5 $9088701859 $8Data Mining 
+041A/04 $#Collaborative Filtering $#Kollaboratives Filtern $77512839-1 $9135410088 $8Kollaborative Filterung 
+041A/05 $#Benutzer Verhalten $74122898-4 $9085403814 $8Benutzerverhalten 
+041A/06 $#Recommender System $#Recommendation System $77511891-9 $913541007X $8Empfehlungssystem 
+041A/07 $#Web 2.0 $#WWW 2.0 $77548364-6 $9182367878 $8World Wide Web 2.0 
+041A/08 $#Semantisches Web $74688372-1 $9105210854 $8Semantic Web 
+044N    $aDissertation, Algorithm, Evaluation, Recommendation, Conceptualization, learning, Topic, Data bank, Bookmark, Application program interface, Calculus, Baseline, Implementation, Foundation, Application 
+045E    $c004 $c020 
+045F    $eDDC22ger $a006.332 
+045F/01 $a006.332 
+045G    $eDDC22ger $a006.312 
+045G/01 $a006.312 
+045Z    $aST 273 
+045Z    $aAN 95500 
+
+lok: 23177903 8
+
+exp: 23177903 8 1 #EPN
+201B/01 $t20:07:44.000 $007-11-12 
+201C/01 $003-05-11 
+201U/01 $0utf8 
+203@/01 $0618249249 
+208@/01 $bz $a31-05-11 
+209A/01 $f000 $du $a/AN 95500 J22 $x00 
+209G/01 $a18009994 $x00 
+209G/01 $a1. Obergeschoss $x01 
+247C/01 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+lok: 23177903 23
+
+exp: 23177903 23 1 #EPN
+201B/01 $t12:36:43.000 $031-03-11 
+201C/01 $023-02-11 
+201U/01 $0utf8 
+203@/01 $0606888381 
+208@/01 $bz $a31-03-11 
+209A/01 $f050 $du $a55 inf N 5.4 JAE $hINF N 5.4 JAE $x00 
+209G/01 $a25923677 $x00 
+247C/01 $9102599513 $8352050-x &lt;34/50&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 7, Elektrotechnik/Informatik 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

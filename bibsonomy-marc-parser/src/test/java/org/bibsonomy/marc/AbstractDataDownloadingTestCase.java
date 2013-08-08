@@ -1,10 +1,17 @@
 package org.bibsonomy.marc;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.IOUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.data.ByteArrayData;
@@ -33,7 +40,7 @@ public abstract class AbstractDataDownloadingTestCase {
 		Document doc;
 		try {
 			//doc = parse(new URL("http://wastl.hebis.uni-frankfurt.de:8983/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));
-			doc = parse(new URL("http://solr.hebis.de/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));
+			doc = parse(readCached(hebisId));
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
@@ -52,9 +59,27 @@ public abstract class AbstractDataDownloadingTestCase {
         return new DualDataWrapper(marcData, picaData);
 	}
 
-	public static Document parse(URL url) throws DocumentException {
+	private InputStream readCached(String hebisId) throws MalformedURLException, IOException {
+		final String fileName = hebisId + ".xml";
+		InputStream rVal = this.getClass().getResourceAsStream(fileName);
+		if (rVal == null) {
+			final String absoluteFileName = "src/test/resources/" + getClass().getPackage().getName().replace('.','/') + "/"  + fileName;
+			InputStream is = new URL("http://solr.hebis.de/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true").openStream();
+			OutputStream os = new FileOutputStream(absoluteFileName);
+			IOUtils.copy(is, os);
+			is.close();
+			os.close();
+			rVal = new FileInputStream(absoluteFileName);
+		}
+		return rVal;
+	}
+
+	public static Document parse(InputStream is) throws DocumentException, IOException {
         SAXReader reader = new SAXReader();
-        Document document = reader.read(url);
+        Document document = reader.read(is);
+        is.close();
         return document;
     }
+	
+	
 }

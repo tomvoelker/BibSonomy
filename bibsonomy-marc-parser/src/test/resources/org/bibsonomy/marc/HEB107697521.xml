@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">8</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB107697521</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB107697521</str>
+    <str name="fullrecord">00680nom a2200193 ca4500001001000000003000700010005001700017006001900034007000300053008004100056035002100097035002500118040003900143041000800182245013500190260005800325700005400383700004900437#30;107697521#30;DE-603#30;20100528221150.0#30;o                 #30;o #30;021017s        xx                  por c#30;  #31;a(OCoLC)175090407#30;  #31;a(DE-599)HEB107697521#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;apor#30;10#31;aFalar... ler... escrever... Português#31;h[Medienkombination]#31;bum curso para estrangeiros#31;cEmma Eberlein O. F. Lima; Samira A. Iunes#30;3 #31;aSão Paulo#31;bEditora Pedagogica e Universitária Ltda.#30;1 #31;0(DE-603)166828955#31;aLima, Emma Eberlein O. F.#31;4ctb#30;1 #31;0(DE-603)169269957#31;aIunes, Samira Abirad#31;4ctb#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 10769752
+001@    $08,10,23,204 
+001A    $00026:17-10-02 
+001B    $t22:11:50.000 $01999:28-05-10 
+001C    $t10:47:44.000 $00034:09-11-06 
+001D    $00026:17-10-02 
+001U    $0utf8 
+001X    $00 
+002@    $0Zcu 
+003@    $0107697521 
+003O    $0175090407 $aOCoLC 
+010@    $apor 
+021A    $dum curso para estrangeiros $aFalar... ler... escrever... Português $nMedienkombination $hEmma Eberlein O. F. Lima; Samira A. Iunes 
+028C    $#Lima, Emma E. $#Lima, Emma Eberlein $7 $9166828955 $8Lima, Emma Eberlein O. F. 
+028C/01 $#Iunes, Samira A. $7 $9169269957 $8Iunes, Samira Abirad 
+033A    $pSão Paulo $nEditora Pedagogica e Universitária Ltda. 
+
+lok: 10769752 8
+
+exp: 10769752 8 1 #EPN
+201B/01 $t01:10:28.000 $017-04-09 
+201U/01 $0utf8 
+203@/01 $0573665680 
+208@/01 $bdummy $a16-04-09 
+
+lok: 10769752 10
+
+exp: 10769752 10 1 #EPN
+201B/01 $t22:44:05.000 $010-05-07 
+201U/01 $0utf8 
+203@/01 $0503782742 
+208@/01 $bdummy $a10-05-07 
+
+lok: 10769752 23
+
+exp: 10769752 23 1 #EPN
+201B/01 $t10:47:44.000 $009-11-06 
+201C/01 $009-11-06 
+201U/01 $0utf8 
+203@/01 $0478986181 
+208@/01 $bda $a09-11-06 
+
+lok: 10769752 204
+
+exp: 10769752 204 1 #EPN
+201B/01 $t08:29:02.000 $029-01-13 
+201U/01 $0utf8 
+203@/01 $0176738533 
+208@/01 $bdaUB $a29-01-13 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

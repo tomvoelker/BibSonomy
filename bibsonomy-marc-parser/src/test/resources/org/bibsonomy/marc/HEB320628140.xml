@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">7</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB320628140</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB320628140</str>
+    <str name="fullrecord">00696njm a22002052cc4500001001000000003000700010005001700017006001900034007001500053008004100068035002500109040003900134041000800173245009900181260004100280300001600321700007800337700004900415773002600464#30;320628140#30;DE-603#30;20130418233606.0#30;j                 #30;sd            #30;130418s2013    xx                  ger c#30;  #31;a(DE-599)HEB320628140#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;ager#30;10#31;aMonster Poems#31;h[Medienkombination]#31;n[CD]#31;cNora Gomringer. Mit Illustrationen von Reimar Limmer#30;3 #31;aDresden [u.a.]#31;bVoland &amp; Quist#31;c2013#30;  #31;a1 CD#31;c12 cm#30;1 #31;0(DE-588)123821762#31;0(DE-603)108025411#31;aGomringer, Nora-Eugenie#31;d1980-#31;4ctb#30;1 #31;0(DE-603)320626784#31;aLimmer, Reimar#31;4ill#31;eIll.#30;08#31;qcd#31;w(DE-603)320522423#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 32062814
+001@    $03 
+001A    $00030:18-04-13 
+001B    $t23:36:06.000 $01999:18-04-13 
+001C    $t16:04:03.000 $00030:18-04-13 
+001D    $00030:18-04-13 
+001U    $0utf8 
+001X    $00 
+002@    $0Gfy 
+003@    $0320628140 
+007A    $0320628140 $aHEB 
+010@    $ager 
+011@    $a2013 
+028C    $#Gomringer, Nora $7123821762 $9108025411 $8Gomringer, Nora-Eugenie 
+028C/01 $7 $BIll. $9320626784 $8Limmer, Reimar 
+033A    $pDresden {[u.a.] $nVoland &amp; Quist 
+034D    $a1 CD 
+034I    $a12 cm 
+036C    $aMonster Poems $nMedienkombination $l[CD] $hNora Gomringer. Mit Illustrationen von Reimar Limmer $xcd 
+036D    $9320522423 $8Monster Poems $xcd 
+
+lok: 32062814 3
+101B    $t16:04:03.000 $018-04-13 
+101C    $018-04-13 
+101U    $0utf8 
+145S/01 $a720 
+
+exp: 32062814 3 1 #EPN
+201B/01 $t16:04:03.000 $018-04-13 
+201C/01 $018-04-13 
+201U/01 $0utf8 
+203@/01 $0674027256 
+208@/01 $bzAa $a18-04-13 
+209A/01 $f000 $du $aAVM 22/4770 Nr. 2 $hAVM 22 4770 2 $x00 $ic 
+209B/01 $a104 $x05 
+247C/01 $9102598258 $8601000-3 &lt;30&gt;Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

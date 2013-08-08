@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">8</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB02269773X</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB02269773X</str>
+    <str name="fullrecord">01113nam a22003132cb4500001001000000003000700010005001700017006001900034008004100053020003000094035002500124040003900149041000800188084001600196084001600212084001600228084001600244084001600260090000600276100007400282245004800356250001100404260004800415300003800463490007300501490005700574800009500631856007300726#30;02269773X#30;DE-603#30;20120907093432.0#30;aa          00    #30;921203s1981    xx a          00    eng c#30;  #31;a0201038226#31;90-201-03822-6#30;  #31;a(DE-599)HEB02269773X#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;aeng#30;  #31;aST 130#31;2rvk#30;  #31;aST 134#31;2rvk#30;  #31;aST 230#31;2rvk#30;  #31;aSK 900#31;2rvk#30;  #31;aST 120#31;2rvk#30;  #31;nz#30;1 #31;0(DE-588)121578437#31;0(DE-603)152930531#31;aKnuth, Donald Ervin#31;d1938-#31;4aut#30;10#31;aSeminumerical algorithms#31;c[Donald E. Knuth]#30;  #31;a2. ed.#30;3 #31;aReading, Mass. [u.a.]#31;bAddison-Wesley#31;c1981#30;  #31;aXIII, 688 S.#31;bIll., graph. Darst.#30;0 #31;aAddison-Wesley series in computer science and information processing#30;1 #31;aThe art of computer programming / Donald E. Knuth#31;v2#30;1 #31;aKnuth, Donald Ervin#31;d1938-#31;4aut#31;tThe art of computer programming#31;v2#31;w(DE-603)009840354#31;912#30;42#31;uhttp://www.ulb.tu-darmstadt.de/tocs/2269773X.pdf#31;3Inhaltsverzeichnis#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 2269773
+001@    $03,8,10,21,23,25,204 
+001A    $02030:03-12-92 
+001B    $t09:34:32.000 $01999:07-09-12 
+001C    $t15:40:06.000 $00030:02-03-11 
+001D    $00077:02-09-05 
+001U    $0utf8 
+001X    $00 
+002@    $0AFr 
+003@    $002269773X 
+004A    $00-201-03822-6 
+007A    $002269773X $aHEB 
+007G    $0DE004A1135CEC8DEB2CC9C1257A54002A3932 
+007S    $03017000011041 
+007T    $0034-024853+2 
+009P    $3Inhaltsverzeichnis $uhttp://www.ulb.tu-darmstadt.de/tocs/2269773X.pdf 
+010@    $aeng 
+011@    $a1981 
+013H    $0z 
+015@    $0Z 
+021A    $aSeminumerical algorithms $h[Donald E. Knuth] 
+028A    $#Knuth, Donald Ervin $#Knuth, D. E. $#Knuth, Donald E. $#Knuth, D. $#Knuth, Donald $#Knuth, Donalʹd Ėrvin $#Knuth, Don $7121578437 $9152930531 $8Knuth, Donald Ervin 
+032@    $a2. ed. 
+033A    $pReading, Mass. {[u.a.] $nAddison-Wesley 
+034D    $aXIII, 688 S. 
+034M    $aIll., graph. Darst. 
+036C    $aThe @art of computer programming $l2 $hDonald E. Knuth $x12 
+036D    $9009840354 $8The @art of computer programming / Knuth, Donald Ervin $x12 
+036G    $aAddison-Wesley series in computer science and information processing 
+045Z    $aST 120 
+045Z    $aST 130 
+045Z    $aST 134 
+045Z    $aST 230 
+045Z    $aSK 900 
+
+lok: 2269773 3
+101B    $t15:40:17.000 $002-03-11 
+101C    $002-03-11 
+101U    $0utf8 
+145S/01 $a012 
+145S/02 $a013 
+
+exp: 2269773 3 1 #EPN
+201B/01 $t18:29:03.000 $013-08-11 
+201C/01 $002-03-11 
+201U/01 $0utf8 
+203@/01 $0607467800 
+208@/01 $brBb $a02-03-11 
+209A/01 $f003 $du $a09/ST 230 K74-2 (2) $h09 ST 230 K74 / B 2 / A 2 $x00 
+209C/01 $aZ 88/128 $hZ 88 128 
+209G/01 $a2004244075 $x00 
+247C/01 $9102598274 $8601003-9 &lt;30/3&gt;Frankfurt, Universität Frankfurt, Bibliothek Naturwissenschaften (BNat) 
+
+exp: 2269773 3 2 #EPN
+201B/02 $t11:03:37.000 $018-10-11 
+201U/02 $0utf8 
+203@/02 $0093426216 
+208@/02 $bhCb $a01-03-93 
+209A/02 $f095 $de $aA 16772 $hA 16772 $x00 
+209B/02 $a2099 $x05 
+209B/02 $a2012 $x06 
+209B/02 $a2002 $x07 
+209C/02 $aA 16772 $hA 16772 
+209G/02 $aHandbibliothek AG 1.2 $x01 
+220B/02 $aUni 
+245Z/02 $a68 Q $x01 
+247C/02 $9102598657 $8601095-7 &lt;30/95&gt;Frankfurt, Universität Frankfurt, Mathematisches Seminar 
+247D/02 $avermisst 03/07 
+
+exp: 2269773 3 3 #EPN
+201B/03 $t14:21:31.000 $005-10-11 
+201C/03 $027-08-08 
+201U/03 $0utf8 
+203@/03 $0548691282 
+208@/03 $brCb $a27-08-08 
+209A/03 $f095 $du $aA 13149 $hA 13149 $x00 
+209B/03 $a2095 $x05 
+209C/03 $aA 13149 $hA 13149 
+209G/03 $a54992823 $x00 
+220B/03 $aUni 
+247C/03 $9102598657 $8601095-7 &lt;30/95&gt;Frankfurt, Universität Frankfurt, Mathematisches Seminar 
+
+exp: 2269773 3 4 #EPN
+201B/04 $t14:21:32.000 $005-10-11 
+201C/04 $027-08-08 
+201U/04 $0utf8 
+203@/04 $0548692327 
+208@/04 $brCb $a27-08-08 
+209A/04 $f095 $du $aA 13243 $hA 13243 $x00 
+209B/04 $a2095 $x05 
+209C/04 $aA 13243 $hA 13243 
+209G/04 $a54992866 $x00 
+220B/04 $aUni 
+247C/04 $9102598657 $8601095-7 &lt;30/95&gt;Frankfurt, Universität Frankfurt, Mathematisches Seminar 
+
+exp: 2269773 3 5 #EPN
+201B/05 $t23:08:50.000 $002-03-11 
+201U/05 $0utf8 
+203@/05 $0510325300 
+208@/05 $brEk $a05-06-07 
+209A/05 $f212 $du $aG.3-4 ex 2 $x00 
+209C/05 $a1991 
+209G/05 $a2001859075 $x00 
+245Z/05 $aG.3.0 $x01 
+245Z/05 $aG.1.0 $x02 
+245Z/05 $aB.5.1 $x03 
+247C/05 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 6 #EPN
+201B/06 $t23:08:50.000 $002-03-11 
+201U/06 $0utf8 
+203@/06 $0510325319 
+208@/06 $brEk $a05-06-07 
+209A/06 $f212 $du $aG.3-4 ex 3 $x00 
+209C/06 $a3/128 
+209G/06 $a2001859080 $x00 
+245Z/06 $aG.3.0 $x01 
+245Z/06 $aG.1.0 $x02 
+245Z/06 $aB.5.1 $x03 
+247C/06 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 7 #EPN
+201B/07 $t23:08:50.000 $002-03-11 
+201U/07 $0utf8 
+203@/07 $0510325327 
+208@/07 $brEk $a05-06-07 
+209A/07 $f212 $ds $aG.3-4 ex 4 $x00 
+209B/07 $a4841 $x05 
+209C/07 $a4/132 
+209G/07 $a2001859094 $x00 
+209G/07 $aHandapparat Theorie komplexer Systeme $x01 
+245Z/07 $aG.3.0 $x01 
+245Z/07 $aG.1.0 $x02 
+245Z/07 $aB.5.1 $x03 
+247C/07 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 8 #EPN
+201B/08 $t23:08:50.000 $002-03-11 
+201U/08 $0utf8 
+203@/08 $0510325335 
+208@/08 $brEk $a05-06-07 
+209A/08 $f212 $du $aG.3-4 ex 5 $x00 
+209C/08 $a4/325 
+209G/08 $a2001859107 $x00 
+245Z/08 $aG.3.0 $x01 
+245Z/08 $aG.1.0 $x02 
+245Z/08 $aB.5.1 $x03 
+247C/08 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 9 #EPN
+201B/09 $t23:08:50.000 $002-03-11 
+201U/09 $0utf8 
+203@/09 $0510325343 
+208@/09 $brEk $a05-06-07 
+209A/09 $f212 $du $aG.3-4 ex 6 $x00 
+209C/09 $a4/474 
+209G/09 $a2001859111 $x00 
+245Z/09 $aG.3.0 $x01 
+245Z/09 $aG.1.0 $x02 
+245Z/09 $aB.5.1 $x03 
+247C/09 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 10 #EPN
+201B/10 $t23:08:50.000 $002-03-11 
+201U/10 $0utf8 
+203@/10 $0510325351 
+208@/10 $brEk $a05-06-07 
+209A/10 $f212 $du $aG.3-4 ex 7 $x00 
+209C/10 $a83/41 
+209G/10 $a2001859126 $x00 
+245Z/10 $aG.3.0 $x01 
+245Z/10 $aG.1.0 $x02 
+245Z/10 $aB.5.1 $x03 
+247C/10 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 11 #EPN
+201B/11 $t23:08:50.000 $002-03-11 
+201U/11 $0utf8 
+203@/11 $051032536X 
+208@/11 $brEk $a05-06-07 
+209A/11 $f212 $ds $aG.3-4 ex 8 $x00 
+209B/11 $a4805 $x05 
+209C/11 $a84/110 
+209G/11 $a2001859130 $x00 
+209G/11 $aSonderbestand Programmiersprachen und Compiler $x01 
+245Z/11 $aG.3.0 $x01 
+245Z/11 $aG.1.0 $x02 
+245Z/11 $aB.5.1 $x03 
+247C/11 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 12 #EPN
+201B/12 $t23:08:50.000 $002-03-11 
+201U/12 $0utf8 
+203@/12 $0510325378 
+208@/12 $brEk $a05-06-07 
+209A/12 $f212 $ds $aG.3-4 ex 9 $x00 
+209B/12 $a4806 $x05 
+209C/12 $a8/25 
+209G/12 $a2001859145 $x00 
+209G/12 $aSonderbestand Künstliche Intelligenz und Softwaretechnologie $x01 
+245Z/12 $aG.3.0 $x01 
+245Z/12 $aG.1.0 $x02 
+245Z/12 $aB.5.1 $x03 
+247C/12 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 13 #EPN
+201B/13 $t23:08:50.000 $002-03-11 
+201U/13 $0utf8 
+203@/13 $0510325386 
+208@/13 $brEk $a05-06-07 
+209A/13 $f212 $du $aG.3-4 ex 10 $x00 
+209C/13 $a3/497 
+209G/13 $a2001859150 $x00 
+245Z/13 $aG.3.0 $x01 
+245Z/13 $aG.1.0 $x02 
+245Z/13 $aB.5.1 $x03 
+247C/13 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 2269773 3 14 #EPN
+201B/14 $t23:08:50.000 $002-03-11 
+201U/14 $0utf8 
+203@/14 $0510325394 
+208@/14 $brEk $a05-06-07 
+209A/14 $f212 $ds $a5 F.2-3 $x00 
+209B/14 $a4803 $x05 
+209C/14 $a5/94 
+209G/14 $a2001927980 $x00 
+209G/14 $aSonderbestand Technische Informatik $x01 
+245Z/14 $aG.3.0 $x01 
+245Z/14 $aG.1.0 $x02 
+245Z/14 $aB.5.1 $x03 
+247C/14 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+lok: 2269773 8
+
+exp: 2269773 8 1 #EPN
+201B/01 $t23:53:01.000 $018-12-12 
+201U/01 $0utf8 
+203@/01 $0275294676 
+208@/01 $bz $a29-05-94 
+209A/01 $f000 $ds $a/ST 130 K74 (2)-2 $x00 
+209B/01 $aa034 $x05 
+209C/01 $aB 21 318 
+209G/01 $a58305260 $x00 
+209G/01 $a4. Obergeschoss $x01 
+247C/01 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 2269773 8 2 #EPN
+201B/02 $t18:11:14.000 $002-01-13 
+201C/02 $027-01-05 
+201U/02 $0utf8 
+203@/02 $0224324039 
+208@/02 $bz $a27-01-05 
+209A/02 $f000 $ds $a-024-62.1.42 $x00 
+209B/02 $aa024 $x05 
+209G/02 $a4. Obergeschoss $x01 
+247C/02 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 2269773 8 3 #EPN
+201B/03 $t18:11:14.000 $002-01-13 
+201C/03 $027-01-05 
+201U/03 $0utf8 
+203@/03 $0224324101 
+208@/03 $bz $a27-01-05 
+209A/03 $f000 $ds $a-024-62.1.39 $x00 
+209B/03 $aa024 $x05 
+209C/03 $a10481 GE 
+209G/03 $a4. Obergeschoss $x01 
+247C/03 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 2269773 8 4 #EPN
+201B/04 $t23:08:35.000 $008-01-13 
+201C/04 $030-04-08 
+201U/04 $0utf8 
+203@/04 $054312102X 
+208@/04 $bz $a30-04-08 
+209A/04 $f000 $du $a/ST 120 K74 (2)-2 $x00 
+209B/04 $aa121 $x05 
+209C/04 $a5076 
+209G/04 $a59409646 $x00 
+209G/04 $a4. Obergeschoss $x01 
+247C/04 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 2269773 8 5 #EPN
+201B/05 $t22:54:42.000 $025-04-13 
+201C/05 $008-11-08 
+201U/05 $0utf8 
+203@/05 $0562295615 
+208@/05 $bz $a08-11-08 
+209A/05 $f000 $dc $aLBS/ST 134 K74 (2)-1 $x00 
+209B/05 $aa121 $x05 
+209C/05 $a9040 
+209G/05 $a59459376 $x00 
+209G/05 $aErdgeschoss $x01 
+247C/05 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 2269773 8 6 #EPN
+201B/06 $t22:54:42.000 $025-04-13 
+201C/06 $008-11-08 
+201U/06 $0utf8 
+203@/06 $0562333673 
+208@/06 $bz $a08-11-08 
+209A/06 $f000 $dc $aLBS/ST 134 K74 (2)-1 $x00 
+209B/06 $aa121 $x05 
+209C/06 $a5721 
+209G/06 $a59459368 $x00 
+209G/06 $aErdgeschoss $x01 
+247C/06 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 2269773 8 7 #EPN
+201B/07 $t22:54:42.000 $025-04-13 
+201C/07 $008-11-08 
+201U/07 $0utf8 
+203@/07 $0562336346 
+208@/07 $bz $a08-11-08 
+209A/07 $f000 $dc $aLBS/ST 134 K74 (2)-1 $x00 
+209B/07 $aa121 $x05 
+209C/07 $a5643 
+209G/07 $a59459350 $x00 
+209G/07 $aErdgeschoss $x01 
+247C/07 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 2269773 8 8 #EPN
+201B/08 $t22:54:42.000 $025-04-13 
+201C/08 $031-01-10 
+201U/08 $0utf8 
+203@/08 $0587898062 
+208@/08 $bz $a31-01-10 
+209A/08 $f000 $dc $aLBS/ST 134 K74 (2)-1 $x00 
+209B/08 $aa121 $x05 
+209C/08 $a5644 
+209G/08 $a59503243 $x00 
+209G/08 $aErdgeschoss $x01 
+247C/08 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 2269773 8 9 #EPN
+201B/09 $t22:54:42.000 $025-04-13 
+201U/09 $0utf8 
+203@/09 $0275294684 
+208@/09 $bz $a29-05-94 
+209A/09 $f034 $ds $a-034-AG 9/1796 $x00 
+209C/09 $aAG 9/1796 
+209G/09 $aHandapparat Mathematik Stochastik $x01 
+247C/09 $9102596115 $8611034-4 &lt;17/34&gt;Darmstadt, Technische Universität Darmstadt, Fachbereichsbibliothek Mathematik 
+
+lok: 2269773 10
+101B    $t16:07:50.556 $020-12-01 
+101U    $0utf8 
+145S/01 $a00017 
+
+exp: 2269773 10 1 #EPN
+201B/01 $t22:08:46.000 $024-10-09 
+201C/01 $021-07-93 
+201U/01 $0utf8 
+203@/01 $0152740007 
+208@/01 $bz $a29-03-95 
+209A/01 $f000 $du $aZ/Rr 617Aa 2 a $x00 
+209C/01 $aI87/298 
+209G/01 $a100699717114 $x00 
+247C/01 $9102600988 $8612000-3 &lt;Ds 114&gt;Darmstadt, Bibliothek der Hochschule Darmstadt 
+
+lok: 2269773 21
+101B    $t11:54:51.000 $028-11-06 
+101C    $028-11-06 
+101U    $0utf8 
+144Z/51 $aAlgorithmus 
+144Z/52 $aProgrammierung &lt;EDV&gt; 
+
+exp: 2269773 21 1 #EPN
+201B/01 $t13:53:55.000 $026-08-10 
+201C/01 $028-11-06 
+201U/01 $0utf8 
+203@/01 $0488721199 
+208@/01 $br $a28-11-06 
+209A/01 $f000 $du $a21 / ST 134 K74 (2) -2 $hST 134 K74 / A 2 / B 2 $x00 
+209A/01 $f000 $du $a21 / EDV 360 28 -2 (2) $hEDV 360 28 / B 2 / A 2 $x07 
+209B/01 $a00021 $x05 
+209B/01 $a00070 $x06 
+209C/01 $a5454/85 
+209G/01 $a10053900 $x00 
+209G/01 $aAusleihe $x01 
+237A/01 $aRetro &lt;F2027107&gt; 
+247C/01 $9102599580 $8641000-5 &lt;66/0&gt;Fulda, Hochschul- und Landesbibliothek Fulda, Standort Marquardstraße 
+
+exp: 2269773 21 2 #EPN
+201B/02 $t13:53:57.000 $026-08-10 
+201C/02 $028-11-06 
+201U/02 $0utf8 
+203@/02 $0488721202 
+208@/02 $br $a28-11-06 
+209A/02 $f000 $du $a21 / ST 134 K74 (2) -2 +2 $hST 134 K74 / A 2 / B 2 / +2 $x00 
+209A/02 $f000 $du $a21 / EDV 360 28 -2 (2) +2 $hEDV 360 28 / B 2 / A 2 / +2 $x07 
+209B/02 $a00021 $x05 
+209B/02 $a00070 $x06 
+209C/02 $a6047/89 
+209G/02 $a10332583 $x00 
+209G/02 $aAusleihe $x01 
+237A/02 $aRetro &lt;F2027107&gt; 
+247C/02 $9102599580 $8641000-5 &lt;66/0&gt;Fulda, Hochschul- und Landesbibliothek Fulda, Standort Marquardstraße 
+
+lok: 2269773 23
+101B    $t07:40:41.302 $002-08-95 
+101U    $0utf8 
+107F    $0054920892 
+
+exp: 2269773 23 1 #EPN
+201B/01 $t14:45:52.870 $011-12-02 
+201U/01 $0utf8 
+203@/01 $0054920906 
+208@/01 $bh $a21-04-94 
+209A/01 $f021 $du $a25 inf M 1 KNU $hINF M 1 KNU $x00 
+209C/01 $a454229 
+209G/01 $a13156760 $x00 
+247C/01 $9102599424 $8352021-3 &lt;34/21&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 1, Architektur, Planung, Technik 
+
+exp: 2269773 23 2 #EPN
+201B/02 $t14:45:53.003 $011-12-02 
+201U/02 $0utf8 
+203@/02 $0054920930 
+208@/02 $bh $a21-04-94 
+209A/02 $f050 $du $a55 inf M 1 KNU $hINF M 1 KNU $x00 
+209C/02 $a255233 
+209G/02 $a40201360 $x00 
+247C/02 $9102599513 $8352050-x &lt;34/50&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 7, Elektrotechnik/Informatik 
+
+exp: 2269773 23 3 #EPN
+201B/03 $t14:45:53.145 $011-12-02 
+201U/03 $0utf8 
+203@/03 $0054920973 
+208@/03 $bh $a21-04-94 
+209A/03 $f090 $du $a95 inf M 1 KNU $hINF M 1 KNU $x00 
+209C/03 $a261619 
+209G/03 $a14366253 $x00 
+247C/03 $9102599548 $8352090-0 &lt;34/90&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 10, Berufspädagogik, Mathematik, Naturwissenschaften 
+
+exp: 2269773 23 4 #EPN
+201B/04 $t14:45:53.281 $011-12-02 
+201C/04 $029-02-96 
+201U/04 $0utf8 
+203@/04 $0101072619 
+208@/04 $bz $a29-02-96 
+209A/04 $f090 $du $a95 inf M 1 KNU $hINF M 1 KNU $x00 
+209G/04 $a17328964 $x00 
+247C/04 $9102599548 $8352090-0 &lt;34/90&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 10, Berufspädagogik, Mathematik, Naturwissenschaften 
+
+lok: 2269773 25
+101B    $t08:41:24.000 $002-09-05 
+101C    $002-09-05 
+101U    $0utf8 
+145Z/60 $aSS 1000 
+145Z/61 $aG 2 
+
+exp: 2269773 25 1 #EPN
+201B/01 $t16:41:40.000 $018-06-08 
+201C/01 $027-05-08 
+201U/01 $0utf8 
+203@/01 $054432515X 
+208@/01 $br $a27-05-08 
+209A/01 $f002 $dd $a005.1 KNU $x00 
+209B/01 $a00016 $x05 
+209G/01 $a39008260 $x00 
+209G/01 $aUSA BIBL $x01 
+247C/01 $9103704124 $8651002-4 &lt;77/SB II&gt;Mainz, Universität Mainz, Bereichsbibliothek SB II 
+
+exp: 2269773 25 2 #EPN
+201B/02 $t16:41:40.000 $018-06-08 
+201C/02 $020-08-99 
+201U/02 $0utf8 
+203@/02 $0135546192 
+208@/02 $br $a02-09-05 
+209A/02 $f006 $du $aSS 1000 KNU1 -2 (2) +3 $x00 
+209A/02 $aPMC-D $x09 
+209C/02 $a14052 
+209G/02 $a36850936 $x00 
+209G/02 $aPMC $x01 
+247C/02 $9103704582 $8651006-1 &lt;77/PMC&gt;Mainz, Universität Mainz, Bereichsbibliothek Physik, Mathematik, Chemie 
+
+exp: 2269773 25 3 #EPN
+201B/03 $t16:41:40.000 $018-06-08 
+201C/03 $005-01-00 
+201U/03 $0utf8 
+203@/03 $0139944648 
+208@/03 $br $a02-09-05 
+209A/03 $f006 $du $aSS 1000 KNU1 -2 (2) $x00 
+209C/03 $a86/24 
+209G/03 $a37037759 $x00 
+209G/03 $aPMC $x01 
+247C/03 $9103704582 $8651006-1 &lt;77/PMC&gt;Mainz, Universität Mainz, Bereichsbibliothek Physik, Mathematik, Chemie 
+
+exp: 2269773 25 4 #EPN
+201B/04 $t16:41:40.000 $018-06-08 
+201C/04 $008-02-00 
+201U/04 $0utf8 
+203@/04 $0140791078 
+208@/04 $br $a02-09-05 
+209A/04 $f006 $du $aSS 1000 KNU1 -2 (2) +2 $x00 
+209A/04 $aPMC-D $x09 
+209C/04 $a4581 
+209G/04 $a37251836 $x00 
+209G/04 $aPMC $x01 
+247C/04 $9103704582 $8651006-1 &lt;77/PMC&gt;Mainz, Universität Mainz, Bereichsbibliothek Physik, Mathematik, Chemie 
+
+lok: 2269773 204
+101B    $t09:14:25.000 $007-06-11 
+101U    $0utf8 
+145S/01 $a89000 
+
+exp: 2269773 204 1 #EPN
+201B/01 $t11:36:46.000 $006-10-05 
+201U/01 $0utf8 
+203@/01 $0002551799 
+208@/01 $bzUB $a06-10-05 
+209A/01 $f000 $du $a21.073.14-2 $h21 073 14 / B 2 $x00 
+209G/01 $a60286582 $x00 
+245S/01 $a89000 $x01 
+247C/01 $9102596697 $8631000-x &lt;26&gt;Gießen, Universität Gießen, Universitätsbibliothek Gießen 
+
+exp: 2269773 204 2 #EPN
+201B/02 $t09:18:00.000 $007-06-11 
+201C/02 $019-04-05 
+201U/02 $0utf8 
+203@/02 $0242451810 
+208@/02 $bzh12 $a19-04-05 
+209A/02 $f120 $ds $aKnut ... $h120 KNUT $x00 
+209A/02 $f120 $du $a120 ST 230 K74 (2)-2 $x08 
+209C/02 $a19962 $h120 19962 
+209G/02 $aim Alphabet der Verfasser $x01 
+245Z/02 $aMSC 68 $x20 
+247C/02 $9102597073 $8631120-9 &lt;26/120&gt;Gießen, Universität Gießen, Fachbibliothek Mathematik und Informatik 
+
+exp: 2269773 204 3 #EPN
+201B/03 $t14:39:24.000 $003-01-12 
+201C/03 $011-08-04 
+201U/03 $0utf8 
+203@/03 $021805162X 
+208@/03 $brh12 $a11-08-04 
+209A/03 $f122 $du $a122 ST 230 K74 (2)-2 $x00 
+209A/03 $a122 Knut ... $x03 
+209B/03 $a122RVK $x05 
+209C/03 $a122 85154176 
+209G/03 $a85154176 $x00 
+247C/03 $9102597081 $8631122-2 &lt;26/122&gt;Gießen, Universität Gießen, Fachbibliothek Mathematik und Informatik / Informatik 
+247D/03 $aPräsenzbestand 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">6</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB226718743</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB226718743</str>
+    <str name="fullrecord">01542nam a2200421 c 4500001001000000003000700010005001700017006001900034008004100053015002400094016002300118020006500141024001800206035002600224035002200250035002100272040003900293041000800332082003100340084001600371084001600387084001600403084002200419085001500441090000600456245006100462250003300523260003100556300004800587504003600635650005900671650006100730655001800791700006500809730003600874856011400910856009601024#30;226718743#30;DE-603#30;20120907093454.0#30;a           00    #30;100909s2010    xx            00    ger  #30;  #31;a10,A36#31;z10,N25#31;2dnb#30;7 #31;2DE-101#31;a1003461417#30;  #31;a9783486590029#31;cKunststoff : ca. EUR 69.80#31;9978-3-486-59002-9#30;3 #31;a9783486590029#30;  #31;a(DE-599)DNB1003461417#30;  #31;a(DE-603)226368211#30;  #31;a(OCoLC)659795864#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;ager#30;04#31;81\x#31;a005.1#31;qDE-101#31;222/ger#30;  #31;aST 130#31;2rvk#30;  #31;aST 134#31;2rvk#30;  #31;aST 265#31;2rvk#30;  #31;a004#31;qDE-101#31;2sdnb#30;  #31;81\x#31;b005.1#30;  #31;nb#30;10#31;aAlgorithmen - eine Einführung#31;cvon Thomas H. Cormen ...#30;  #31;a3., überarb. und erw. Aufl.#30;3 #31;aMünchen#31;bOldenbourg#31;c2010#30;  #31;aXX, 1319 S.#31;bgraph. Darst.#31;c25 cm, 1869 gr.#30;  #31;aLiteraturverz. S. [1241] - 1263#30; 7#31;0(DE-588)4001183-5#31;0(DE-603)084993782#31;aAlgorithmus#31;2gnd#30; 7#31;0(DE-588)4011146-5#31;0(DE-603)085022551#31;aDatenstruktur#31;2gnd#30; 7#31;aLehrbuch#31;2gnd#30;1 #31;0(DE-588)12942661X#31;0(DE-603)159757134#31;aCormen, Thomas H.#31;4ctb#30;0 #31;aIntroduction to algorithms#31;gdt.#30;42#31;mX:MVB#31;qtext/html#31;uhttp://deposit.d-nb.de/cgi-bin/dokserv?id=3492106&amp;prov=M&amp;dok_var=1&amp;dok_ext=htm#31;3Inhaltstext#30;42#31;mV:DE-603;B:DE-17#31;uhttp://scans.hebis.de/HEBCGI/show.pl?22671874_toc.pdf#31;3Inhaltsverzeichnis#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 22671874
+001@    $03,5,8,11,21,23,25,204-205 
+001A    $06000:09-09-10 
+001B    $t09:34:54.000 $01999:07-09-12 
+001C    $t14:37:32.000 $00017:27-02-12 
+001D    $00077:30-09-10 
+001U    $0utf8 
+001X    $00 
+002@    $0Aau 
+003@    $0226718743 
+003O    $0659795864 $aOCoLC 
+004A    $fKunststoff : ca. EUR 69.80 $A978-3-486-59002-9 
+004K    $09783486590029 
+006G    $01003461417 
+006L    $2HEB $0226368211 
+006T    $010,N25 
+006U    $f20100614 $010,A36 
+007A    $01003461417 $aDNB 
+007G    $0DE00151D767C93818CCD9C12577A8004667B7 
+009P    $3Inhaltstext $uhttp://deposit.d-nb.de/cgi-bin/dokserv?id=3492106&amp;prov=M&amp;dok_var=1&amp;dok_ext=htm $A2 $qtext/html $mX:MVB 
+009P    $3Inhaltsverzeichnis $uhttp://scans.hebis.de/HEBCGI/show.pl?22671874_toc.pdf $A2 $mV:DE-603;B:DE-17 
+010@    $ager 
+011@    $a2010 
+017A    $asf 
+021A    $aAlgorithmen - eine Einführung $hvon Thomas H. Cormen ... 
+022A/01 $rdt. $aIntroduction to algorithms 
+028C    $#Cormen, Th. H. $#Cormen, Tom $#Cormen, Tom H. $#Cormen, T. H. $#Cormen, T. $712942661X $9159757134 $8Cormen, Thomas H. 
+032@    $a3., überarb. und erw. Aufl. 
+033A    $pMünchen $nOldenbourg 
+034D    $aXX, 1319 S. 
+034I    $a25 cm, 1869 gr. 
+034M    $agraph. Darst. 
+041A    $74011146-5 $9085022551 $8Datenstruktur 
+041A/01 $#Algorithmen $74001183-5 $9084993782 $8Algorithmus 
+041A/02 $af Lehrbuch 
+044N    $aAlgorithmus, Baum 
+045E    $c004 
+045F    $eDDC22ger $a005.1 
+045F/01 $a005.1 
+045Z    $aST 130 
+045Z    $aST 134 
+045Z    $aST 265 
+046M    $aLiteraturverz. S. [1241] - 1263 
+
+lok: 22671874 3
+101B    $t22:59:59.000 $013-09-10 
+101C    $008-09-10 
+101U    $0utf8 
+145S/01 $a013 
+
+exp: 22671874 3 1 #EPN
+201B/01 $t10:58:24.000 $029-07-11 
+201C/01 $019-07-11 
+201U/01 $0utf8 
+203@/01 $0623551810 
+208@/01 $bzAa $a29-07-11 
+209A/01 $f000 $ds $aHB 5: Ai 522 $hHB 5 AI 522 $x00 
+209A/01 $a89.527.14 $h89 527 14 $x09 
+209G/01 $a89527147 $x00 
+209G/01 $aLS Geisteswissenschaften $x01 
+247C/01 $9102598258 $8601000-3 &lt;30&gt;Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+
+exp: 22671874 3 2 #EPN
+201B/02 $t09:11:12.000 $023-09-11 
+201C/02 $029-07-11 
+201U/02 $0utf8 
+203@/02 $0624838064 
+208@/02 $bmAa $a08-07-11 
+209A/02 $f212 $dc $e5 $aLB: Xa 109 &lt;3&gt; (1.-5. Ex.) $hLB XA 109 / A 3 / +1-5 $x00 
+209C/02 $aVh (1) $hVH 
+209G/02 $a66563570 (5) $x00 
+209G/02 $a66563561 (4) $x00 
+209G/02 $a66563553 (3) $x00 
+209G/02 $a66563545 (2) $x00 
+209G/02 $a66563537 (1) $x00 
+209G/02 $aLehrbuchsammlung Informatik $x01 
+237A/02 $a1. Ex Ersatz für 4. Ex. 2. Aufl. 
+247C/02 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 22671874 3 3 #EPN
+201B/03 $t23:34:42.000 $029-07-11 
+201C/03 $008-09-10 
+201U/03 $0utf8 
+203@/03 $0598448241 
+208@/03 $bzEk $a08-09-10 
+209A/03 $f212 $ds $aG.2-124 ex 43 $hG 2 124 / +43 $x00 
+209B/03 $a4847 $x05 
+209C/03 $a23/39 
+209G/03 $a2003831911 $x00 
+209G/03 $aHandapparat Theorie der Informatik $x01 
+245Z/03 $aG.2.2 $x01 
+247C/03 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 22671874 3 4 #EPN
+201B/04 $t23:34:42.000 $029-07-11 
+201C/04 $001-11-10 
+201U/04 $0utf8 
+203@/04 $0601022335 
+208@/04 $bzEk $a01-11-10 
+209A/04 $f212 $du $aG.2-124 ex 44 $hG 2 124 / +44 $x00 
+209C/04 $a14128 
+209G/04 $a2004060106 $x00 
+245Z/04 $aG.2.2 $x01 
+247C/04 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 22671874 3 5 #EPN
+201B/05 $t23:34:42.000 $029-07-11 
+201C/05 $001-11-10 
+201U/05 $0utf8 
+203@/05 $0601023439 
+208@/05 $bzEk $a01-11-10 
+209A/05 $f212 $du $aG.2-124 ex 45 $hG 2 124 / +2 $x00 
+209C/05 $a14129 
+209G/05 $a2004060144 $x00 
+245Z/05 $aG.2.2 $x01 
+247C/05 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 22671874 3 6 #EPN
+201B/06 $t23:34:42.000 $029-07-11 
+201C/06 $001-11-10 
+201U/06 $0utf8 
+203@/06 $0601024052 
+208@/06 $bzEk $a01-11-10 
+209A/06 $f212 $du $aG.2-124 ex 46 $hG 2 124 / +46 $x00 
+209C/06 $a14130 
+209G/06 $a2004060182 $x00 
+245Z/06 $aG.2.2 $x01 
+247C/06 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+exp: 22671874 3 7 #EPN
+201B/07 $t12:07:37.000 $021-12-12 
+201C/07 $001-11-10 
+201U/07 $0utf8 
+203@/07 $0601024710 
+208@/07 $bzEk $a01-11-10 
+209A/07 $f212 $du $aG.2-124 ex 47 $hG 2 124 / +47 $x00 
+209C/07 $a14131 
+209G/07 $a2004060110 $x00 
+237A/07 $aAm Rand die Kindermalerei 
+245Z/07 $aG.2.2 $x01 
+247C/07 $9102599114 $8601212-7 &lt;30/212&gt;Frankfurt, Universität Frankfurt, Bibliothek Informatik 
+
+lok: 22671874 5
+
+exp: 22671874 5 1 #EPN
+201B/01 $t16:15:09.000 $028-11-11 
+201C/01 $009-11-11 
+201U/01 $0utf8 
+203@/01 $0633136921 
+208@/01 $bz $a25-11-11 
+209A/01 $f000 $du $aINF 21 Alg 3.Aufl. $hINF 21 ALG / A 3 $x00 
+209B/01 $a20111128 $x05 
+209G/01 $a107439156946 $x00 
+247C/01 $9102600767 $8602000-8 &lt;946&gt;Frankfurt, Bibliothek der Fachhochschule Frankfurt 
+
+exp: 22671874 5 2 #EPN
+201B/02 $t16:15:09.000 $028-11-11 
+201C/02 $025-11-11 
+201U/02 $0utf8 
+203@/02 $0634306960 
+208@/02 $bz $a25-11-11 
+209A/02 $f000 $du $aINF 21 Alg 3.Aufl. $hINF 21 ALG / A 3 $x00 
+209B/02 $a20111128 $x05 
+209G/02 $a107439143946 $x00 
+247C/02 $9102600767 $8602000-8 &lt;946&gt;Frankfurt, Bibliothek der Fachhochschule Frankfurt 
+
+lok: 22671874 8
+
+exp: 22671874 8 1 #EPN
+201B/01 $t16:57:52.000 $008-01-13 
+201C/01 $027-02-12 
+201U/01 $0utf8 
+203@/01 $0638821770 
+208@/01 $bz $a27-02-12 
+209A/01 $f000 $du $a/ST 134 C811 (3) $x00 
+209B/01 $aa121 $x05 
+209C/01 $aM12-00001 
+209G/01 $a59483927 $x00 
+209G/01 $a4. Obergeschoss $x01 
+247C/01 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+exp: 22671874 8 2 #EPN
+201B/02 $t16:57:52.000 $008-01-13 
+201C/02 $027-02-12 
+201U/02 $0utf8 
+203@/02 $0638825814 
+208@/02 $bz $a27-02-12 
+209A/02 $f000 $du $a/ST 134 C811 (3) $x00 
+209B/02 $aa121 $x05 
+209C/02 $aM11-00197 
+209G/02 $a59521667 $x00 
+209G/02 $a4. Obergeschoss $x01 
+247C/02 $9102595879 $8611000-9 &lt;17&gt;Darmstadt, Technische Universität Darmstadt, Universitäts- und Landesbibliothek Darmstadt - Stadtmitte 
+
+lok: 22671874 11
+
+exp: 22671874 11 1 #EPN
+201B/01 $t10:41:49.000 $021-02-13 
+201C/01 $030-12-10 
+201U/01 $0utf8 
+203@/01 $0603914381 
+208@/01 $bz $a16-02-11 
+209A/01 $f100 $du $a60 11 A 157 $x00 
+209B/01 $a007/1102 $x05 
+209B/01 $a010/1102 $x06 
+209B/01 $a056/1102 $x07 
+209C/01 $a12-11-53 
+209G/01 $a82923233 $x00 
+247C/01 $9102599572 $8620100-3 &lt;43&gt;Wiesbaden, Hochschul- und Landesbibliothek RheinMain, Rheinstraße 
+
+lok: 22671874 21
+
+exp: 22671874 21 1 #EPN
+201B/01 $t10:43:25.000 $027-04-11 
+201C/01 $003-01-11 
+201U/01 $0utf8 
+203@/01 $0603936946 
+208@/01 $bz $a17-02-11 
+209A/01 $f100 $du $a41 / Wcb 1 Algo $x00 
+209A/01 $a2011/194 $x09 
+209B/01 $a10002 $x05 
+209G/01 $a52643805 $x00 
+209G/01 $aSachliteratur $x01 
+247C/01 $9102599599 $8640100-4 &lt;66&gt;Fulda, Hochschul- und Landesbibliothek Fulda, Standort Heinrich-von-Bibra-Platz 
+
+lok: 22671874 23
+
+exp: 22671874 23 1 #EPN
+201B/01 $t12:36:59.000 $026-05-11 
+201C/01 $009-05-11 
+201U/01 $0utf8 
+203@/01 $0619723904 
+208@/01 $bz $a26-05-11 
+209A/01 $f050 $du $a55 inf H 4 COR $hINF H 4 COR $x00 
+209G/01 $a26132517 $x00 
+247C/01 $9102599513 $8352050-x &lt;34/50&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 7, Elektrotechnik/Informatik 
+
+exp: 22671874 23 2 #EPN
+201B/02 $t12:36:59.000 $026-05-11 
+201C/02 $026-05-11 
+201U/02 $0utf8 
+203@/02 $0620830735 
+208@/02 $bz $a26-05-11 
+209A/02 $f050 $du $a55 inf H 4 COR $hINF H 4 COR $x00 
+209G/02 $a26132525 $x00 
+247C/02 $9102599513 $8352050-x &lt;34/50&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 7, Elektrotechnik/Informatik 
+
+exp: 22671874 23 3 #EPN
+201B/03 $t12:36:59.000 $026-05-11 
+201C/03 $026-05-11 
+201U/03 $0utf8 
+203@/03 $0620830743 
+208@/03 $bz $a26-05-11 
+209A/03 $f050 $du $a55 inf H 4 COR $hINF H 4 COR $x00 
+209G/03 $a26132533 $x00 
+247C/03 $9102599513 $8352050-x &lt;34/50&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 7, Elektrotechnik/Informatik 
+
+exp: 22671874 23 4 #EPN
+201B/04 $t12:36:59.000 $026-05-11 
+201C/04 $026-05-11 
+201U/04 $0utf8 
+203@/04 $0620830751 
+208@/04 $bz $a26-05-11 
+209A/04 $f050 $ds $a55 inf H 4 COR $hINF H 4 COR $x00 
+209G/04 $a26132541 $x00 
+247C/04 $9102599513 $8352050-x &lt;34/50&gt;Kassel, UB/LMB Kassel, Bereichsbibliothek 7, Elektrotechnik/Informatik 
+
+lok: 22671874 25
+101B    $t15:55:35.000 $030-11-10 
+101C    $030-09-10 
+101U    $0utf8 
+145S/01 $a640zb 
+145Z/60 $aST 1302 
+145Z/61 $aF 2 
+
+exp: 22671874 25 1 #EPN
+201B/01 $t10:41:44.000 $003-03-11 
+201C/01 $030-11-10 
+201U/01 $0utf8 
+203@/01 $0602994977 
+208@/01 $bzu $a22-02-11 
+209A/01 $f000 $ds $aNAT P 954/01 $x00 
+209C/01 $a10/ACQ 
+209G/01 $a12056566 $x00 
+209G/01 $aLESESAAL $x01 
+247C/01 $9102599602 $8651000-0 &lt;77&gt;Mainz, Universität Mainz, Zentralbibliothek 
+
+exp: 22671874 25 2 #EPN
+201B/02 $t22:50:56.000 $021-12-10 
+201C/02 $021-12-10 
+201U/02 $0utf8 
+203@/02 $0603794130 
+208@/02 $bmu $a21-12-10 
+209A/02 $f000 $dc $e3 $a32M 110,3.Aufl. $x00 
+209G/02 $a12056645 (1) $x00 
+209G/02 $a12056657 (2) $x00 
+209G/02 $a12056669 (3) $x00 
+209G/02 $aLBS $x01 
+247C/02 $9102599602 $8651000-0 &lt;77&gt;Mainz, Universität Mainz, Zentralbibliothek 
+
+exp: 22671874 25 3 #EPN
+201B/03 $t22:50:56.000 $021-12-10 
+201C/03 $013-09-10 
+201U/03 $0utf8 
+203@/03 $0598557334 
+208@/03 $bznc $a30-09-10 
+209A/03 $f006 $du $aST 1302 COR2 (3) $x00 
+209C/03 $a2010/262 
+209G/03 $a11565999 $x00 
+209G/03 $aPMC $x01 
+247C/03 $9103704582 $8651006-1 &lt;77/PMC&gt;Mainz, Universität Mainz, Bereichsbibliothek Physik, Mathematik, Chemie 
+
+lok: 22671874 204
+
+exp: 22671874 204 1 #EPN
+201B/01 $t22:59:59.000 $013-09-10 
+201C/01 $021-05-10 
+201U/01 $0utf8 
+203@/01 $0593253353 
+208@/01 $bzUB $a30-08-10 
+209A/01 $f000 $du $aFH kyb Cd 0.32, 3.Aufl. $hfh kyb cd 0 32 / a 3 $x00 
+209G/01 $a61001700 $x00 
+245S/01 $a89000 $x01 
+247C/01 $9102596697 $8631000-x &lt;26&gt;Gießen, Universität Gießen, Universitätsbibliothek Gießen 
+
+lok: 22671874 205
+
+exp: 22671874 205 1 #EPN
+201B/01 $t13:53:26.000 $013-10-10 
+201C/01 $023-09-10 
+201U/01 $0utf8 
+203@/01 $0599399988 
+208@/01 $bz $a23-09-10 
+209A/01 $f000 $ds $aLS Inf 3308 $x00 
+209A/01 $aPk 2010/0010 $x09 
+209B/01 $a10 $x05 
+209G/01 $a51727789 $x00 
+209G/01 $aLesesaal $x01 
+247C/01 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 2 #EPN
+201B/02 $t10:51:43.000 $014-10-10 
+201C/02 $014-10-10 
+201U/02 $0utf8 
+203@/02 $0600293335 
+208@/02 $bz $a14-10-10 
+209A/02 $f000 $du $aLBS Inf 3308, 3. Aufl., 1. Ex. $x00 
+209C/02 $a2010/0010-Pk 
+209G/02 $a11185630 $x00 
+209G/02 $aLehrbuchsammlung $x01 
+247C/02 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 3 #EPN
+201B/03 $t10:51:43.000 $014-10-10 
+201C/03 $014-10-10 
+201U/03 $0utf8 
+203@/03 $0600293343 
+208@/03 $bz $a14-10-10 
+209A/03 $f000 $du $aLBS Inf 3308, 3. Aufl., 2. Ex. $x00 
+209C/03 $a2010/0010-Pk 
+209G/03 $a11185649 $x00 
+209G/03 $aLehrbuchsammlung $x01 
+247C/03 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 4 #EPN
+201B/04 $t10:51:43.000 $014-10-10 
+201C/04 $014-10-10 
+201U/04 $0utf8 
+203@/04 $0600293351 
+208@/04 $bz $a14-10-10 
+209A/04 $f000 $du $aLBS Inf 3308, 3. Aufl., 3. Ex. $x00 
+209C/04 $a2010/0010-Pk 
+209G/04 $a11185657 $x00 
+209G/04 $aLehrbuchsammlung $x01 
+247C/04 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 5 #EPN
+201B/05 $t10:53:59.000 $014-10-10 
+201C/05 $014-10-10 
+201U/05 $0utf8 
+203@/05 $0600293505 
+208@/05 $bz $a14-10-10 
+209A/05 $f000 $du $aLBS Inf 3308, 3. Aufl., 4. Ex. $x00 
+209C/05 $a2010/0010-Pk 
+209G/05 $a11185665 $x00 
+209G/05 $aLehrbuchsammlung $x01 
+247C/05 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 6 #EPN
+201B/06 $t10:54:13.000 $014-10-10 
+201C/06 $014-10-10 
+201U/06 $0utf8 
+203@/06 $0600293548 
+208@/06 $bz $a14-10-10 
+209A/06 $f000 $du $aLBS Inf 3308, 3. Aufl., 5. Ex. $x00 
+209C/06 $a2010/0010-Pk 
+209G/06 $a11185673 $x00 
+209G/06 $aLehrbuchsammlung $x01 
+247C/06 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 7 #EPN
+201B/07 $t10:54:29.000 $014-10-10 
+201C/07 $014-10-10 
+201U/07 $0utf8 
+203@/07 $0600293564 
+208@/07 $bz $a14-10-10 
+209A/07 $f000 $du $aLBS Inf 3308, 3. Aufl., 6. Ex. $x00 
+209C/07 $a2010/0010-Pk 
+209G/07 $a11185681 $x00 
+209G/07 $aLehrbuchsammlung $x01 
+247C/07 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 8 #EPN
+201B/08 $t10:56:54.000 $014-10-10 
+201C/08 $014-10-10 
+201U/08 $0utf8 
+203@/08 $0600293645 
+208@/08 $bz $a14-10-10 
+209A/08 $f000 $du $aLBS Inf 3308, 3. Aufl., 7. Ex. $x00 
+209C/08 $a2010/0010-Pk 
+209G/08 $a11185690 $x00 
+209G/08 $aLehrbuchsammlung $x01 
+247C/08 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 9 #EPN
+201B/09 $t10:57:10.000 $014-10-10 
+201C/09 $014-10-10 
+201U/09 $0utf8 
+203@/09 $0600293661 
+208@/09 $bz $a14-10-10 
+209A/09 $f000 $du $aLBS Inf 3308, 3. Aufl., 8. Ex. $x00 
+209C/09 $a2010/0010-Pk 
+209G/09 $a11185703 $x00 
+209G/09 $aLehrbuchsammlung $x01 
+247C/09 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 10 #EPN
+201B/10 $t10:57:29.000 $014-10-10 
+201C/10 $014-10-10 
+201U/10 $0utf8 
+203@/10 $0600293688 
+208@/10 $bz $a14-10-10 
+209A/10 $f000 $du $aLBS Inf 3308, 3. Aufl., 9. Ex. $x00 
+209C/10 $a2010/0010-Pk 
+209G/10 $a11185711 $x00 
+209G/10 $aLehrbuchsammlung $x01 
+247C/10 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 11 #EPN
+201B/11 $t10:59:37.000 $014-10-10 
+201C/11 $014-10-10 
+201U/11 $0utf8 
+203@/11 $0600293815 
+208@/11 $bz $a14-10-10 
+209A/11 $f000 $du $aLBS Inf 3308, 3. Aufl., 10. Ex. $x00 
+209C/11 $a2010/0010-Pk 
+209G/11 $a11185720 $x00 
+209G/11 $aLehrbuchsammlung $x01 
+247C/11 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 12 #EPN
+201B/12 $t10:59:58.000 $014-10-10 
+201C/12 $014-10-10 
+201U/12 $0utf8 
+203@/12 $0600293831 
+208@/12 $bz $a14-10-10 
+209A/12 $f000 $du $aLBS Inf 3308, 3. Aufl., 11. Ex. $x00 
+209C/12 $a2010/0010-Pk 
+209G/12 $a11185738 $x00 
+209G/12 $aLehrbuchsammlung $x01 
+247C/12 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 13 #EPN
+201B/13 $t11:00:14.000 $014-10-10 
+201C/13 $014-10-10 
+201U/13 $0utf8 
+203@/13 $060029384X 
+208@/13 $bz $a14-10-10 
+209A/13 $f000 $du $aLBS Inf 3308, 3. Aufl., 12. Ex. $x00 
+209C/13 $a2010/0010-Pk 
+209G/13 $a11185746 $x00 
+209G/13 $aLehrbuchsammlung $x01 
+247C/13 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 14 #EPN
+201B/14 $t11:02:19.000 $014-10-10 
+201C/14 $014-10-10 
+201U/14 $0utf8 
+203@/14 $0600293963 
+208@/14 $bz $a14-10-10 
+209A/14 $f000 $du $aLBS Inf 3308, 3. Aufl., 13. Ex. $x00 
+209C/14 $a2010/0010-Pk 
+209G/14 $a11185754 $x00 
+209G/14 $aLehrbuchsammlung $x01 
+247C/14 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 15 #EPN
+201B/15 $t11:02:33.000 $014-10-10 
+201C/15 $014-10-10 
+201U/15 $0utf8 
+203@/15 $0600293998 
+208@/15 $bz $a14-10-10 
+209A/15 $f000 $du $aLBS Inf 3308, 3. Aufl., 14. Ex. $x00 
+209C/15 $a2010/0010-Pk 
+209G/15 $a11185762 $x00 
+209G/15 $aLehrbuchsammlung $x01 
+247C/15 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 16 #EPN
+201B/16 $t11:02:48.000 $014-10-10 
+201C/16 $014-10-10 
+201U/16 $0utf8 
+203@/16 $0600294013 
+208@/16 $bz $a14-10-10 
+209A/16 $f000 $du $aLBS Inf 3308, 3. Aufl., 15. Ex. $x00 
+209C/16 $a2010/0010-Pk 
+209G/16 $a11185770 $x00 
+209G/16 $aLehrbuchsammlung $x01 
+247C/16 $9102594767 $8351000-1 &lt;4&gt;Marburg, Universität Marburg, Zentralbibliothek 
+
+exp: 22671874 205 17 #EPN
+201B/17 $t18:04:39.000 $014-01-13 
+201C/17 $030-11-12 
+201U/17 $0utf8 
+203@/17 $0658551868 
+208@/17 $bz $a30-11-12 
+209A/17 $f100 $db $aF.2 Algo $x00 
+209B/17 $a80 $x05 
+209C/17 $a36 2013/00034 
+209G/17 $a50612830 $x00 
+245Z/17 $aF.2 $x01 
+247C/17 $9102594783 $8351100-5 &lt;4/100&gt;Marburg, Universität Marburg, Bibliothek Mathematik und Informatik 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">7</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB009840354</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB009840354</str>
+    <str name="fullrecord">01163nam a2200337 ca4500001001000000003000700010005001700017006001900034008004100053035002200094035002100116035002500137040003900162041000800201082001000209084001600219084001600235084001600251084001600267084001600283084001600299090000600315100007400321245005300395260005000448650005900498650005600557650006200613650008100675650006900756#30;009840354#30;DE-603#30;20110930103610.0#30;a           00    #30;880118s        xx            00    eng c#30;  #31;a(DE-603)211839221#30;  #31;a(OCoLC)613221150#30;  #31;a(DE-599)HEB009840354#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;aeng#30;7 #31;a651.8#30;  #31;aQH 500#31;2rvk#30;  #31;aES 900#31;2rvk#30;  #31;aST 130#31;2rvk#30;  #31;aST 240#31;2rvk#30;  #31;aST 134#31;2rvk#30;  #31;aST 230#31;2rvk#30;  #31;nz#30;1 #31;0(DE-588)121578437#31;0(DE-603)152930531#31;aKnuth, Donald Ervin#31;d1938-#31;4aut#30;13#31;aThe art of computer programming#31;cDonald E. Knuth#30;3 #31;aUpper Saddle River, NJ [u.a.]#31;bAddison-Wesley#30; 7#31;0(DE-588)4001183-5#31;0(DE-603)084993782#31;aAlgorithmus#31;2gnd#30; 7#31;0(DE-588)4070083-5#31;0(DE-603)085197122#31;aComputer#31;2gnd#30; 7#31;0(DE-588)4076370-5#31;0(DE-603)085216526#31;aProgrammierung#31;2gnd#30; 7#31;0(DE-588)4171777-6#31;0(DE-603)085791733#31;aNichtnumerische Datenverarbeitung#31;2gnd#30; 7#31;0(DE-588)4042805-9#31;0(DE-603)08511880X#31;aNumerische Mathematik#31;2gnd#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 984035
+001@    $03,5,8,10-11,20-21,23,25,204-205 
+001A    $00030:18-01-88 
+001B    $t10:36:10.000 $00017:30-09-11 
+001C    $t12:15:55.000 $00030:29-04-09 
+001D    $09999:99-99-99 
+001U    $0utf8 
+001X    $00 
+002@    $0Acu 
+003@    $0009840354 
+003O    $0613221150 $aOCoLC 
+006C    $0315388279 $aOCoLC 
+006L    $2HEB $0211839221 
+007A    $0009840354 $aHEB 
+007T    $0034-035636 
+007T    $0034-025556 
+007T    $0034-022451 
+007T    $0034-029685 
+007T    $0034-010435 
+007T    $0034-024852 
+007T    $0034-037267 
+007T    $0034-025102 
+007T    $0034-024853 
+010@    $aeng 
+013H    $0z 
+015@    $00 
+021A    $aThe @art of computer programming $hDonald E. Knuth 
+028A    $#Knuth, Donald Ervin $#Knuth, D. E. $#Knuth, Donald E. $#Knuth, D. $#Knuth, Donald $#Knuth, Donalʹd Ėrvin $#Knuth, Don $7121578437 $9152930531 $8Knuth, Donald Ervin 
+033A    $pUpper Saddle River, NJ {[u.a.] $nAddison-Wesley 
+044K    $#Datenverarbeitungsanlage Computer $#Programmgesteuerter digitaler Rechenautomat $#Digitale Rechenanlage $#Digitale Datenverarbeitungsanlage $#Digitaler Computer $#Digitalrechner $#DVA $#Elektronenrechner $#Elektronische Rechenanlage $#Elektronischer Rechenautomat $#Rechenanlage $#Rechenautomat $#Rechner $#Computersystem Computer $74070083-5 $9085197122 $8Computer 
+044K    $#Computer Programmierung $#Computerprogrammierung $#Programmieren Informatik $#Programmiertechnik $74076370-5 $9085216526 $8Programmierung 
+044K    $74171777-6 $9085791733 $8Nichtnumerische Datenverarbeitung 
+044K    $#Numerik $#Numerical analysis $#Numerische Analysis Numerische Mathematik $74042805-9 $908511880X $8Numerische Mathematik 
+044K    $#Algorithmen $74001183-5 $9084993782 $8Algorithmus 
+045B    $eDDCoclc $ALoC $a651.8 
+045Z    $aST 230 
+045Z    $aQH 500 
+045Z    $aES 900 
+045Z    $aST 130 
+045Z    $aST 240 
+045Z    $aST 134 
+
+lok: 984035 3
+
+exp: 984035 3 1 #EPN
+201B/01 $t12:20:55.000 $003-11-06 
+201U/01 $0utf8 
+203@/01 $0108615065 
+208@/01 $bda $a03-11-06 
+
+lok: 984035 5
+101B    $t14:35:19.726 $003-12-02 
+101C    $008-09-98 
+101U    $0utf8 
+144Z/01 $aProgrammierung 
+
+exp: 984035 5 1 #EPN
+201B/01 $t00:08:42.120 $009-09-98 
+201U/01 $0utf8 
+203@/01 $0124066291 
+208@/01 $bdummy $a09-09-98 
+
+lok: 984035 8
+101B    $t10:19:48.000 $003-01-06 
+101C    $003-01-06 
+101U    $0utf8 
+145Z/50 $a54.51 
+145Z/51 $a31.76 
+145Z/52 $a54.10 
+
+exp: 984035 8 1 #EPN
+201B/01 $t11:27:09.579 $021-04-97 
+201U/01 $0utf8 
+203@/01 $0108615081 
+208@/01 $bdummy $a20-02-97 
+
+lok: 984035 10
+
+exp: 984035 10 1 #EPN
+201B/01 $t03:24:00.231 $021-12-01 
+201U/01 $0utf8 
+203@/01 $0166218022 
+208@/01 $bdummy $a21-12-01 
+
+lok: 984035 11
+
+exp: 984035 11 1 #EPN
+201B/01 $t19:51:34.297 $010-12-02 
+201C/01 $022-03-01 
+201U/01 $0utf8 
+203@/01 $0153124709 
+208@/01 $bda $a09-05-01 
+
+exp: 984035 11 2 #EPN
+201B/02 $t12:45:15.000 $011-03-13 
+201U/02 $0utf8 
+203@/02 $0669619922 
+206W/02 $0138446237 
+208@/02 $bdummy $a29-10-99 
+
+lok: 984035 20
+
+exp: 984035 20 1 #EPN
+201B/01 $t18:38:54.378 $025-11-98 
+201U/01 $0utf8 
+203@/01 $0122120469 
+208@/01 $bdaF $a15-07-98 
+
+lok: 984035 21
+
+exp: 984035 21 1 #EPN
+201B/01 $t20:42:56.000 $028-11-06 
+201U/01 $0utf8 
+203@/01 $0489320031 
+208@/01 $bdummy $a28-11-06 
+
+lok: 984035 23
+
+exp: 984035 23 1 #EPN
+201B/01 $t16:41:32.577 $020-02-97 
+201U/01 $0utf8 
+203@/01 $0108615103 
+208@/01 $bdummy $a20-02-97 
+
+lok: 984035 25
+
+exp: 984035 25 1 #EPN
+201B/01 $t08:44:54.000 $010-08-05 
+201U/01 $0utf8 
+203@/01 $0108615111 
+208@/01 $bdummy $a10-08-05 
+
+lok: 984035 204
+101B    $t08:45:54.000 $028-09-09 
+101C    $031-08-09 
+101U    $0utf8 
+150J    $a4 Bde bestellt (230t09) 
+
+exp: 984035 204 1 #EPN
+201B/01 $t13:54:25.000 $008-10-08 
+201U/01 $0utf8 
+203@/01 $010861512X 
+208@/01 $bdaIFZ $a08-10-08 
+
+exp: 984035 204 2 #EPN
+201B/02 $t10:49:37.000 $001-07-03 
+201C/02 $001-07-03 
+201U/02 $0utf8 
+203@/02 $0185450261 
+208@/02 $bdah12 $a01-07-03 
+
+exp: 984035 204 3 #EPN
+201B/03 $t11:44:29.000 $020-10-08 
+201C/03 $020-10-08 
+201U/03 $0utf8 
+203@/03 $0559515669 
+208@/03 $bda002 $a20-10-08 
+
+exp: 984035 204 4 #EPN
+201B/04 $t08:45:54.000 $028-09-09 
+201C/04 $031-08-09 
+201U/04 $0utf8 
+203@/04 $0581088549 
+208@/04 $bdaUB $a31-08-09 
+
+lok: 984035 205
+
+exp: 984035 205 1 #EPN
+201B/01 $t16:41:33.029 $020-02-97 
+201U/01 $0utf8 
+203@/01 $0108615138 
+208@/01 $bdummy $a20-02-97 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

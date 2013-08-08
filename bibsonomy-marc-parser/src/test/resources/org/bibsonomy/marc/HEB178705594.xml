@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">12</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB178705594</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB178705594</str>
+    <str name="fullrecord">00921nab a2200217 c 4500001001000000003000700010005001700017006001900034008004100053035002500094040003900119041000800158100005200166245018200218260000900400300000900409490003500418650005900453651006500512773012600577#30;178705594#30;DE-603#30;20060613085116.0#30;aa          00    #30;060609s2006    xx a          00    ger c#30;  #31;a(DE-599)HEB178705594#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;ager#30;1 #31;0(DE-603)168818159#31;aGöpfert, Claus-Jürgen#31;4aut#30;10#31;a"Frankfurt fehlt ein Ort der Debatte"#31;bder Toussaint- und Deleuze-Übersetzer Bernd Schwibs wünscht sich einen literarischen Treffpunkt in der Stadt#31;cvon Claus-Jürgen Göpfert#30;3 #31;c2006#30;  #31;bIll.#30;0 #31;aFokus Literaturstadt Frankfurt#30; 7#31;0(DE-588)4061414-1#31;0(DE-603)085170577#31;aÜbersetzer#31;2gnd#30; 7#31;0(DE-588)4018118-2#31;0(DE-603)085042331#31;aFrankfurt am Main#31;2gnd#30;0 #31;iIn#31;tFrankfurter Rundschau &lt;Frankfurt, Main&gt; / S-Ausgabe#31;w(DE-603)071018557#31;w(DE-600)1411418-5#31;g2006, H. 108, 10, 5, S. 25#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 17870559
+001@    $03 
+001A    $00030:09-06-06 
+001B    $t08:51:16.000 $00030:13-06-06 
+001D    $00030:09-06-06 
+001U    $0utf8 
+001X    $00 
+002@    $0Aou 
+003@    $0178705594 
+010@    $ager 
+011@    $a2006 
+021A    $dder Toussaint- und Deleuze-Übersetzer Bernd Schwibs wünscht sich einen literarischen Treffpunkt in der Stadt $a"Frankfurt fehlt ein Ort der Debatte" $hvon Claus-Jürgen Göpfert 
+028A    $#Goepfert, Claus Juergen $7 $9168818159 $8Göpfert, Claus-Jürgen 
+031A    $e108 $b10 $c5 $j2006 $h25 
+034M    $aIll. 
+036G    $aFokus Literaturstadt Frankfurt 
+039B    $aIn $9071018557 $8--Abvc--: [Frankfurter Rundschau &lt;Frankfurt, Main&gt; / S-Ausgabe]: Frankfurter Rundschau $x200605100000108975 
+044K    $#Frankfurt, Main $#Franconovurd $74018118-2 $9085042331 $8Frankfurt am Main 
+044K    $74061414-1 $9085170577 $8Übersetzer 
+
+lok: 17870559 3
+
+exp: 17870559 3 1 #EPN
+201B/01 $t13:07:08.000 $010-10-11 
+201C/01 $009-06-06 
+201U/01 $0utf8 
+203@/01 $0405606907 
+208@/01 $bfAa $a09-06-06 
+209A/01 $f000 $a/ $x00 
+244Z/01 $ap @Schwibs, Bernd $x01 
+245Z/01 $affm-zz $x01 
+247C/01 $9102598258 $8601000-3 &lt;30&gt;Frankfurt, Universitätsbibliothek Johann Christian Senckenberg 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

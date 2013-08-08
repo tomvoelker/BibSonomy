@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">9</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB321472683</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB321472683</str>
+    <str name="fullrecord">00586nam a2200181 c 4500001001000000003000700010005001700017006001900034008004100053020003700094035002500131040003900156041000800195245008300203260004600286300002400332700004800356#30;321472683#30;DE-603#30;20130516231540.0#30;aa          00    #30;130516s2013    xx a          00    eng c#30;  #31;a9789834080341#31;9978-983-40803-4-1#30;  #31;a(DE-599)HEB321472683#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;aeng#30;10#31;aToday and tomorrow#31;bemerging practices in Malaysian art#31;ced. : Adeline Ooi ...#30;3 #31;aKuala Lumpur#31;bAdeptus Design System#31;c2013#30;  #31;a264 S.#31;bzahlr. Ill.#30;1 #31;0(DE-603)309804086#31;aOoi, Adeline#31;4edt#31;eHrsg.#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 32147268
+001@    $03 
+001A    $00030:16-05-13 
+001B    $t23:15:40.000 $01999:16-05-13 
+001C    $t15:27:04.000 $00030:16-05-13 
+001D    $00030:16-05-13 
+001U    $0utf8 
+001X    $00 
+002@    $0Aau 
+003@    $0321472683 
+004A    $A978-983-40803-4-1 
+007A    $0321472683 $aHEB 
+010@    $aeng 
+011@    $a2013 
+021A    $demerging practices in Malaysian art $aToday and tomorrow $hed. : Adeline Ooi ... 
+028C    $7 $BHrsg. $9309804086 $8Ooi, Adeline 
+033A    $pKuala Lumpur $nAdeptus Design System 
+034D    $a264 S. 
+034M    $azahlr. Ill. 
+
+lok: 32147268 3
+
+exp: 32147268 3 1 #EPN
+201B/01 $t15:26:31.000 $016-05-13 
+201C/01 $016-05-13 
+201U/01 $0utf8 
+203@/01 $0675543568 
+208@/01 $bzEq $a16-05-13 
+209A/01 $f219 $du $aKU Ml 128 $hKU ML 128 $x00 
+209C/01 $a4102/13 $h13 4102 
+247C/01 $9102599149 $8601219-x &lt;30/219&gt;Frankfurt, Universität Frankfurt, Institut für Orientalische und Ostasiatische Philologien, Südostasienwissenschaften 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>
