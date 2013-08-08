@@ -33,7 +33,7 @@ public class TitleExtractor implements AttributeExtractor {
 
 		// r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'h', ""); h
 		// is Medium (media type)
-		r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'b', ": ");
+		r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'b', " : ");
 		if (l > 0) {
 			int semiI = sb.indexOf(";", l - 1);
 			if (semiI >= l) {
