@@ -24,11 +24,11 @@
 package org.bibsonomy.scraper.url.kde.faseb;
 
 import static org.junit.Assert.assertTrue;
-import org.junit.experimental.categories.Category;
-import org.bibsonomy.scraper.junit.RemoteTest;
 
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * @author wla
@@ -38,13 +38,34 @@ import org.junit.Test;
 public class FASEBJournalScraperTest {
 
 	/**
-	 * starts URL test with id url_224, url_225, url_226, url_227
+	 * starts URL test with id url_224
 	 */
 	@Test
-	public void urlTestRun() {
+	public void urlTestRun1() {
 		assertTrue(UnitTestRunner.runSingleTest("url_224"));
+	}
+	
+	/**
+	 * starts URL test with id url_225
+	 */
+	@Test
+	public void urlTestRun2() {
 		assertTrue(UnitTestRunner.runSingleTest("url_225"));
+	}
+	
+	/**
+	 * starts URL test with id url_226
+	 */
+	@Test
+	public void urlTestRun3() {
 		assertTrue(UnitTestRunner.runSingleTest("url_226"));
+	}
+	
+	/**
+	 * starts URL test with id url_227
+	 */
+	@Test
+	public void urlTestRun4() {
 		assertTrue(UnitTestRunner.runSingleTest("url_227"));
 	}
 
