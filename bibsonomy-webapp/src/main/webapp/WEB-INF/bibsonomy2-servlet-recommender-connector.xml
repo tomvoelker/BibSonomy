@@ -12,7 +12,7 @@
 
     <!-- import recommenderLogic -->
 	<jee:jndi-lookup id="itemRecommenderDataSource" jndi-name="jdbc/bibsonomy_item_recommender"/>
-	<jee:jndi-lookup id="tagRecommenderDataSource" jndi-name="jdbc/bibsonomy_tag_recommender"/>
+	<jee:jndi-lookup id="tagRecommenderDataSource" jndi-name="jdbc/bibsonomy_recommender"/>
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-log-context.xml" />
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-main-context.xml" />
 	
