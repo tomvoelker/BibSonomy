@@ -82,7 +82,7 @@ label[for="queriesPerLatency"]{
 
 .compound, .activationCompound{
     position: relative;
-    width: 780px;
+    width: 800px;
     overflow: visible;
     margin-left: 10px;
 }
@@ -114,7 +114,7 @@ input[name="newrecurl"]{
     margin-top: 112px;
 }
 
-#pushrightbutton{
+#activateBtn{
     display:block;
     margin-bottom:10px;
 }

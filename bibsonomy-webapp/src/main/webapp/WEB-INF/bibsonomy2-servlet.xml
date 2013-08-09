@@ -316,6 +316,11 @@
 						<property name="controllerBeanName" value="${project.bean.homepageController}"/>
 					</bean>
 				</entry>
+				<entry key="/recommended">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="recommendedPostsPageController"/>
+					</bean>
+				</entry>
 				<entry key="/settings">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="settingsPageController"/>
@@ -669,6 +674,12 @@
 		<property name="supportedResources" ref="allResources"/>	
 	</bean>
 	
+	<bean id="recommendedPostsPageController" class="org.bibsonomy.webapp.controller.RecommendedPostsPageController" scope="request" parent="multiResourceListController">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="bibtexRecommender" ref="multiplexingBibTexRecommender" />
+		<property name="bookmarkRecommender" ref="multiplexingBookmarkRecommender" />
+	</bean>
+	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="requestLogic" ref="requestLogic"/>
@@ -901,7 +912,7 @@
 	
 	<!-- webapp -->
 	<import resource="bibsonomy2-servlet-fields.xml"/>
-	<import resource="bibsonomy2-servlet-recommender.xml"/>	
+	<import resource="bibsonomy2-servlet-recommender-connector.xml"/>	
 	<import resource="bibsonomy2-servlet-actions.xml"/>
 	<import resource="bibsonomy2-servlet-ajax.xml"/>	
 	<import resource="bibsonomy2-servlet-admin.xml"/>

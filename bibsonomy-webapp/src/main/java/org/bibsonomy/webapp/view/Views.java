@@ -705,8 +705,12 @@ public enum Views implements View {
 	/**
 	 * DiffPublication-Page. page with diff of two post
 	 */
-	DIFFPUBLICATIONPAGE("actions/post/diffPublication");
+	DIFFPUBLICATIONPAGE("actions/post/diffPublication"),
 
+	/**
+	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.
+	 */
+	RECOMMENDEDPAGE("recommended");
 
 	/*
 	 * both bookmarks and publications

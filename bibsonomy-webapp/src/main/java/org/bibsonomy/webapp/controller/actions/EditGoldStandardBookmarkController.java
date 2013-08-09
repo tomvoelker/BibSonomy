@@ -18,6 +18,8 @@ import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
+import recommender.core.interfaces.model.TagRecommendationEntity;
+
 /**
  * @author dzo
  * @version $Id$
@@ -105,7 +107,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	}
 
 	@Override
-	protected void setRecommendationFeedback(final Post<Bookmark> post, final int postID) {
+	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
 		// noop gold standards have no tags
 	}
 }

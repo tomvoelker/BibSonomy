@@ -246,7 +246,7 @@
 	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
 		<!-- used for accessing spam informations -->
 		<property name="adminLogic" ref="adminLogic"/>  
-		<property name="tagRecommender"	ref="multiplexingTagRecommender" />
+		<property name="recommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
 	</bean>

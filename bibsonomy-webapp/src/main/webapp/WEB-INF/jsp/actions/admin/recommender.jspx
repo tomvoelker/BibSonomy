@@ -67,12 +67,13 @@
 		    <!-- Tab: Status  -->
 		    <c:if test="${command.tab == 0}">
 			    <table id="rectable">
-			      <tr><th>SettingID</th><th>RecommenderID</th><th>average Latency</th></tr>
+			      <tr><th>SettingID</th><th>RecommenderID</th><th>average Latency</th><th>RecommenderType</th></tr>
 			      <c:forEach var="recommender" items="${command.recOverview}">
 			        <tr>
 			          <td> <c:out value="${recommender.settingID}"/></td>
 			          <td> <c:out value="${recommender.recID}" /></td>
 			          <td> <c:out value="${recommender.latency}"/>ms</td>
+			          <td> <c:out value="${recommender.workingTypeString}"/></td>
 			        </tr>
 			      </c:forEach>
 			    </table>
@@ -104,7 +105,7 @@
 		            
 				  	<select name="deleteRecIds" size="15" multiple="multiple">
 						<c:forEach var="rec" items="${command.activeRecommenders}">
-						  <option value="${rec.value}">${rec.key} - ${rec.value}</option>
+						  <option value="${rec.value}">${rec.key} - ${rec.recWorkingType} - ${rec.value}</option>
 						</c:forEach>
 				  	</select>
 				  	
@@ -129,35 +130,99 @@
 		
 		    </c:if>
 			
+			<script type="text/javascript">
+			<![CDATA[
+				$(function() {
+					$("#activateBtn").click(activateReco);
+					$("#deactivateBtn").click(deactivateReco);
+					$("#recActivationBtn").click(selectAll);
+				});
+				
+				function activateReco() {
+					var selectedItem = $("#disabledSelect select :selected");
+					
+					if(selectedItem == undefined || selectedItem.length > 1) {
+						return;
+					}
+					
+					var selectedText = selectedItem.text();
+					var selectedValue = selectedItem.val();
+					
+					var optionToAdd = "<option value='"+selectedValue+"'"+">"+selectedText+"</option>";
+					
+					$("#enabledSelect select").append(optionToAdd);
+					
+					selectedItem.remove();
+					
+				}
+				
+				function deactivateReco() {
+					var selectedItem = $("#enabledSelect select :selected");
+					
+					if(selectedItem == undefined || selectedItem.length > 1) {
+						return;
+					}
+					
+					var selectedText = selectedItem.text();
+					var selectedValue = selectedItem.val();
+					
+					var optionToAdd = "<option value='"+selectedValue+"'"+">"+selectedText+"</option>";
+					
+					$("#disabledSelect select").append(optionToAdd);
+					
+					selectedItem.remove();
+					
+				}
+				
+				function selectAll() {
+					
+					$("#disabledSelect select > option").each(function() {
+					    $(this).prop("selected", true);
+					});
+					
+					$("#enabledSelect select > option").each(function() {
+						$(this).prop("selected", true);
+					});
+					
+					$("#newConfigSubmissionForm").submit();
+				}
+				]]>
+			</script>
+			
 			<!-- Tab: Activate/Deactivate -->
 		    <c:if test="${command.tab == 1}">
 		        <div class="activationCompound">
-				<form:form name="recConfig" action="/admin/recommender?action=updateRecommenderstatus" onsubmit="selectAll(activeRecs); selectAll(disabledRecs);">
-				    <div class="floatleft">
+				<form:form id="newConfigSubmissionForm" name="recConfig" action="/admin/recommender?action=updateRecommenderstatus" >
+				    <div id="disabledSelect" class="floatleft">
 					    <form:label path="disabledRecs"><fmt:message key="admin.recommender.disabled"/></form:label><br />
 				  		
 				  		<select name="disabledRecs" size="20" multiple="multiple">
 							<c:forEach var="rec" items="${command.disabledRecommenders}">
-							  <option value="${rec.key}">${rec.key} - ${rec.value}</option>
+							  <option value="${rec.key}">${rec.key} - ${rec.recWorkingType} - ${rec.value}</option>
 							</c:forEach>
 				  		</select>
 			  	    </div>
 			  	    
 				    <div id="buttondiv">
-				        <input type="button" class="adminBtn" value="&gt;&gt;" onclick="pushSelectedOptions(disabledRecs, activeRecs)" id="pushrightbutton" />
-				        <input type="button" class="adminBtn" value="&lt;&lt;" onclick="pushSelectedOptions(activeRecs, disabledRecs)" />
+				        <input id="activateBtn" type="button" class="adminBtn" value="&gt;&gt;" />
+				        <input id="deactivateBtn" type="button" class="adminBtn" value="&lt;&lt;" />
 				    </div>
 				    
-			  		<form:label path="activeRecs"><fmt:message key="admin.recommender.active"/></form:label><br />
-				  		<select name="activeRecs" size="20" multiple="multiple">
-							<c:forEach var="rec" items="${command.activeRecommenders}">
-							  <option value="${rec.key}">${rec.key} - ${rec.value}</option>
-							</c:forEach>
-				  		</select>
-			  	    <input class="adminBtn" type="submit" id="recActivationBtn" />
-			  	    <br /><br />
+				    <div id="enabledSelect">
+				  		<form:label path="activeRecs"><fmt:message key="admin.recommender.active"/></form:label><br />
+					  	<select name="activeRecs" size="20" multiple="multiple">
+								<c:forEach var="rec" items="${command.activeRecommenders}">
+								    <option value="${rec.key}">${rec.key} - ${rec.value}</option>
+								</c:forEach>
+					  	</select>
+					</div>
 				</form:form>
+			    <input class="adminBtn" type="submit" id="recActivationBtn" />
+			    
+			  	<br /><br />
 				</div>
+				
+				
 			</c:if>
 			
 			

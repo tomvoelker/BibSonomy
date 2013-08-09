@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd
+	                    http://www.springframework.org/schema/jee
+	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+
+    <!-- import recommenderLogic -->
+	<jee:jndi-lookup id="itemRecommenderDataSource" jndi-name="jdbc/bibsonomy_item_recommender"/>
+	<jee:jndi-lookup id="tagRecommenderDataSource" jndi-name="jdbc/bibsonomy_tag_recommender"/>
+	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-log-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-main-context.xml" />
+	
+	<!--+
+	    | Multiplexing tag recommender
+	    +-->
+	<bean id="multiplexingTagRecommender" class="recommender.impl.multiplexer.MultiplexingRecommender" init-method="init" scope="singleton">
+	    <property name="queryTimeout" value="1000" />
+		<property name="entityModifiers" ref="postModifierList" />
+		<property name="resultModifiers" ref="resultFilterList" />
+		<property name="resultSelector" ref="selectOneTagWithoutReplacement" />
+		<property name="dbLogic" ref="tagRecommenderLogic" />
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+	    <property name="localRecommenders" ref="localTagRecommenderList" />
+	    <property name="privacyFilter"  ref="postPrivacyFilter"/>
+	    <property name="renderer" ref="renderer" />
+	</bean>	  
+	 
+	<bean id="postPrivacyFilter" class="org.bibsonomy.recommender.connector.filter.PostPrivacyFilter" />
+
+	<bean id="renderer" class="org.bibsonomy.recommender.connector.model.BibsonomyRendererFactoryWrapper" />
+
+	<util:list id="localTagRecommenderList" list-class="java.util.ArrayList"> 		
+  		<ref bean="mostPopularMixRecommender"/>
+  		<ref bean="jensRecommender"/>
+	</util:list>
+	
+	<util:list id="postModifierList" list-class="java.util.ArrayList">
+  		<!--+
+	    | name mapper
+	    +-->
+		<bean class="recommender.impl.modifiers.DC09NameToIDMapping">
+			<property name="dbLogic" ref="tagRecommenderLogic"/>
+			<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+			<property name="userFactory" ref="userFactory" />
+		</bean>	
+	</util:list>
+	
+	<bean id="userFactory" class="org.bibsonomy.recommender.connector.factories.ConnectorUserFactory" />
+		
+	<util:list id="resultFilterList" list-class="java.util.ArrayList">
+  		<!--+
+	    | invalid scoring filter
+	    +-->
+		<bean class="recommender.impl.modifiers.InvalidScoringFilter" />
+	</util:list>
+	
+	<!--+
+		| Simple tag recommenders
+		+-->
+	<bean id="mostPopularByUserRecommender" class="recommender.impl.tags.popular.MostPopularByUserTagRecommender">
+		<property name="numberOfTagsToRecommend" value="5"/>
+		<property name="cleanTags" value="true"/>
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+	</bean>
+	<bean id="mostPopularByResourceRecommender" class="recommender.impl.tags.popular.MostPopularByResourceTagRecommender">
+		<property name="numberOfTagsToRecommend" value="5"/>
+		<property name="cleanTags" value="true"/>
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+	</bean>	
+	<!--+
+	    | merges both into the 0.6 mix 
+	    +-->
+	<bean id="mostPopularMixRecommender" class="recommender.impl.tags.meta.WeightedMergingTagRecommender">
+		<property name="numberOfTagsToRecommend" value="5"/>
+		<property name="tagRecommenders">
+			<list>
+				<ref bean="mostPopularByUserRecommender"/>
+				<ref bean="mostPopularByResourceRecommender"/>
+			</list>
+		</property>
+		<property name="weights">
+			<list>
+				<value>0.4</value>
+				<value>0.6</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="titleRecommender" class="recommender.impl.tags.simple.SimpleContentBasedTagRecommender">
+		<property name="cleanTags" value="true"/>
+	</bean>
+	
+	<bean id="allTagsOfUserRecommender"  class="recommender.impl.tags.popular.MostPopularByUserTagRecommender">
+		<!-- to get "almost all" tags of the user -->
+		<property name="numberOfTagsToRecommend" value="10000"/>
+		<property name="cleanTags" value="true"/>
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+	</bean>
+	
+	<!--+ 
+	    | comes pretty close to our 'old' recommender from Jens, sorts title tags by their usage count
+	    | Note: this tagrecommender is used as a tagrecommender for spammers
+	    +-->
+	<bean id="jensRecommender" class="recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender">
+		<property name="firstTagRecommender" ref="titleRecommender"/>
+		<property name="secondTagRecommender" ref="allTagsOfUserRecommender"/>
+		<property name="numberOfTagsToRecommend" value="5"/>
+	</bean>
+	
+	<!--+ 
+	    | strategy for uniform random recommender selection
+	    +-->
+	<bean id="selectOneTagWithoutReplacement" class="recommender.impl.multiplexer.tags.strategy.SelectOneWithoutReplacement" scope="singleton">
+		<property name="dbLogic" ref="tagRecommenderLogic"/>
+	</bean>
+	
+	<!-- +
+		 |
+		 | Initialization of item recommendations
+		 |
+		 + -->
+	<!--+
+	    | Multiplexing item recommender
+	    +-->
+	<bean id="multiplexingBookmarkRecommender" class="recommender.impl.multiplexer.MultiplexingRecommender" init-method="init" scope="singleton">
+	    <property name="queryTimeout" value="1000" />
+		<property name="resultModifiers" ref="resultFilterList" />
+		<property name="resultSelector" ref="selectOneItemWithoutReplacement" />
+		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
+	    <property name="localRecommenders" ref="localBookmarkRecommenderList" />
+	    <property name="privacyFilter"  ref="userPrivacyFilter"/>
+	</bean>	
+	    
+	<util:list id="localBookmarkRecommenderList" list-class="java.util.ArrayList"> 		
+  		<ref bean="dummyBookmarkRecommender"/>
+	</util:list>
+	    
+	<bean id="dummyBookmarkRecommender" class="recommender.impl.item.simple.DummyItemRecommender">
+		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
+		<property name="numberOfItemsToRecommend" value="5"/>
+	</bean>
+	    
+	<bean id="multiplexingBibTexRecommender" class="recommender.impl.multiplexer.MultiplexingRecommender" init-method="init" scope="singleton">
+	    <property name="queryTimeout" value="1000" />
+		<property name="resultModifiers" ref="resultFilterList" />
+		<property name="resultSelector" ref="selectOneItemWithoutReplacement" />
+		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+	    <property name="localRecommenders" ref="localBibTexRecommenderList" />
+	    <property name="privacyFilter"  ref="userPrivacyFilter"/>
+	</bean>	  	 
+	
+	<util:list id="localBibTexRecommenderList" list-class="java.util.ArrayList"> 		
+  		<ref bean="dummyBibTexRecommender"/>
+	</util:list>
+	
+	<bean id="userPrivacyFilter" class="org.bibsonomy.recommender.connector.filter.UserPrivacyFilter" />
+	
+	<!--+ 
+	    | strategy for uniform random recommender selection
+	    +-->
+	<bean id="selectOneItemWithoutReplacement" class="recommender.impl.multiplexer.tags.strategy.SelectOneWithoutReplacement" scope="singleton">
+		<property name="dbLogic" ref="itemRecommenderLogic"/>
+	</bean>
+	
+	<bean id="dummyBibTexRecommender" class="recommender.impl.item.simple.DummyItemRecommender">
+		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+		<property name="numberOfItemsToRecommend" value="5"/>
+	</bean>
+</beans>

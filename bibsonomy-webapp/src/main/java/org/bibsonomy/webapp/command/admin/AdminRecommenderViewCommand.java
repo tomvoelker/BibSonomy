@@ -6,9 +6,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
-import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.webapp.command.BaseCommand;
+
+import recommender.core.database.params.RecAdminOverview;
+import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**
  * Command bean for admin page 
@@ -17,7 +18,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @version $Id$
  */
 public class AdminRecommenderViewCommand extends BaseCommand {
-	private MultiplexingTagRecommender mp;
+	private MultiplexingRecommender mp;
 	private List<RecAdminOverview> recOverview; 
 	private String action;
 	private String adminResponse;
@@ -144,13 +145,13 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	/**
 	 * @param mp multiplexer
 	 */
-	public void setMultiplexingTagRecommender(final MultiplexingTagRecommender mp){
+	public void setMultiplexingTagRecommender(final MultiplexingRecommender mp){
 		this.mp = mp;
 	}
 	/**
 	 * @return multiplexer
 	 */
-	public MultiplexingTagRecommender getMultiplexingTagRecommender(){
+	public MultiplexingRecommender getMultiplexingTagRecommender(){
 		return this.mp;
 	}
 	/**

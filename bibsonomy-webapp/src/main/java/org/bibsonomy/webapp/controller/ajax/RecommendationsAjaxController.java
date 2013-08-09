@@ -16,17 +16,21 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import recommender.core.Recommender;
+import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * Some common operations for recommendation tasks.
@@ -56,12 +60,12 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	private LogicInterface adminLogic;
 	
 	/** default recommender for serving spammers */
-	private TagRecommender spamTagRecommender;
+	private Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> spamTagRecommender;
 	
 	/**
 	 * Provides tag recommendations to the user.
 	 */
-	private TagRecommender tagRecommender;
+	private Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> recommender;
 	
 	@Override
 	public View workOn(final AjaxRecommenderCommand<R> command) {
@@ -97,7 +101,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		 * initialize groups
 		 */
 		GroupingCommandUtils.initGroups(command, command.getPost().getGroups());
-
+		
 		// set postID for recommender
 		command.getPost().setContentId(command.getPostID());
 
@@ -106,8 +110,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			// the user is a spammer
 			log.debug("Filtering out recommendation request from spammer");
 			if (this.spamTagRecommender != null)	{
-				final SortedSet<RecommendedTag> result = this.spamTagRecommender.getRecommendedTags(command.getPost());
-				this.processRecommendedTags(command, result);
+				final SortedSet<recommender.core.model.RecommendedTag> result = this.spamTagRecommender.getRecommendation(new PostWrapper<R>(command.getPost()));
+				this.processRecommendedTags(command, RecommendationUtilities.getRecommendedTags(result));
 			} else {
 				command.setResponseString("");
 			}
@@ -115,9 +119,9 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			/* the user doesn't seem to be a spammer
 			 * get the recommended tags for the post from the normal recommender
 			 */
-			if (this.tagRecommender != null) {
-				final SortedSet<RecommendedTag> result = this.tagRecommender.getRecommendedTags(command.getPost());
-				this.processRecommendedTags(command, result);
+			if (this.recommender != null) {
+				final SortedSet<recommender.core.model.RecommendedTag> result = this.recommender.getRecommendation(new PostWrapper<R>(command.getPost()));
+				this.processRecommendedTags(command, RecommendationUtilities.getRecommendedTags(result));
 			} else {
 				command.setResponseString("");
 			}
@@ -164,10 +168,10 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 
 
 	/**
-	 * @param tagRecommender the tagRecommender to set
+	 * @param recommender 
 	 */
-	public void setTagRecommender(final TagRecommender tagRecommender) {
-		this.tagRecommender = tagRecommender;
+	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> recommender) {
+		this.recommender = recommender;
 	}
 
 	/**
@@ -180,7 +184,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	/**
 	 * @param spamTagRecommender the spamTagRecommender to set
 	 */
-	public void setSpamTagRecommender(final TagRecommender spamTagRecommender) {
+	public void setSpamTagRecommender(final Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> spamTagRecommender) {
 		this.spamTagRecommender = spamTagRecommender;
 	}
 

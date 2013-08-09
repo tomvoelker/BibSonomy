@@ -37,9 +37,12 @@ import org.bibsonomy.model.Resource;
  * to recommend matching tags during the user types them. This must be done
  * on the client using JavaScript and the user's tag cloud. 
  * 
+ * @deprecated the recommender library should be used
+ * 
  * @author rja
  * @version $Id$
  */
+@Deprecated
 public interface TagRecommender {
 
 	/**

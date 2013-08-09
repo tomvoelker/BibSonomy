@@ -18,6 +18,8 @@ import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
+import recommender.core.interfaces.model.TagRecommendationEntity;
+
 /**
  * controller for the edit gold standard publication form
  * 	- editGoldStandardPublication
@@ -108,7 +110,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected void setRecommendationFeedback(final Post<BibTex> post, final int postID) {
+	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
 		// noop gold standards have no tags
 	}
 

@@ -34,10 +34,9 @@ import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
+import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -57,6 +56,10 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import recommender.core.Recommender;
+import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.impl.database.RecommenderStatisticsManager;
+
 /**
  * @author fba
  * @version $Id$
@@ -68,7 +71,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 	
-	private TagRecommender tagRecommender;
+	private Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> recommender;
 	private Pingback pingback;
 	private Captcha captcha;
 	
@@ -532,18 +535,18 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * Update recommender table such that recommendations are linked to the final 
 	 * post.
 	 * 
-	 * @param post - the final post as saved in the database.
+	 * @param entity - the final post as saved in the database.
 	 * @param postID - the ID of the post during the posting process.
 	 */
-	protected void setRecommendationFeedback(final Post<RESOURCE> post, final int postID) {
+	protected void setRecommendationFeedback(final TagRecommendationEntity entity, final int postID) {
 		try {
 			/*
 			 * To allow the recommender to identify the post and connect it with
 			 * the post we provided at recommendation time, we give it the post
 			 * id using the contentid field. 
 			 */
-			post.setContentId(postID);
-			tagRecommender.setFeedback(post);
+			entity.setId(""+postID);
+			recommender.setFeedback(entity);
 		} catch (final Exception ex) {
 			log.warn("Could not connect post with recommendation.");
 			/*
@@ -678,7 +681,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
-		setRecommendationFeedback(post, command.getPostID());
+		setRecommendationFeedback(new PostWrapper<RESOURCE>(post), command.getPostID());
 		/*
 		 * Send a pingback/trackback for the public posted resource.
 		 */
@@ -887,8 +890,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	/**
 	 * @return The tag recommender associated with this controller.
 	 */
-	public TagRecommender getTagRecommender() {
-		return this.tagRecommender;
+	public Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> getTagRecommender() {
+		return this.recommender;
 	}
 
 	/**
@@ -897,8 +900,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param tagRecommender
 	 */
-	public void setTagRecommender(final TagRecommender tagRecommender) {
-		this.tagRecommender = tagRecommender;
+	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> tagRecommender) {
+		this.recommender = tagRecommender;
 	}
 
 	/** Give this controller an instance of {@link Captcha}.

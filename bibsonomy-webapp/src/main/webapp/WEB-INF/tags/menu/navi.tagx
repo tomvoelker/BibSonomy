@@ -24,6 +24,7 @@
 				<a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a>
 				<ul>
 					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
+					<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li>
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
 						<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>		        
 						<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>		        					

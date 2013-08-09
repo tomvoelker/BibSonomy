@@ -178,8 +178,10 @@
 	</bean>
 	
 	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" init-method="init" scope="singleton">
-	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender" />
-	    <property name="db" ref="recommenderLogic" />
+	    <property name="tagRecommender" ref="multiplexingTagRecommender" />
+	    <property name="itemRecommender" ref="multiplexingBibTexRecommender" />
+	    <property name="dbTagLogic" ref="tagRecommenderLogic" />
+	    <property name="dbItemLogic" ref="itemRecommenderLogic" />
 	</bean>
 	
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">

@@ -218,7 +218,6 @@
 		<module>bibsonomy-opensocial</module>
 		<module>bibsonomy-pingback</module>
 		<module>bibsonomy-qrcode</module>
-		<module>bibsonomy-recommender</module>
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-client-oauth</module>
 		<module>bibsonomy-rest-common</module>
@@ -230,6 +229,7 @@
 		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
+		<module>bibsonomy-recommender-connector</module>
 	</modules>
 	<build>
 		<pluginManagement>
