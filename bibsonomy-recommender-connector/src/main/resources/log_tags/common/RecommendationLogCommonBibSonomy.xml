@@ -24,7 +24,7 @@
         <result property="settingID" column="setting_id"  javaType="long" />
         <result property="recID"     column="rec_id"      javaType="string"  />
         <result property="latency"   column="rec_latency" javaType="long" />
-        <result property="local" column="local" javaType="integer" />
+        <result property="local"     column="type"        javaType="integer" />
     </resultMap>
     
     <resultMap id="selectorSetting" class="selectorSetting">

@@ -4,7 +4,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.SortedSet;
 
-import org.bibsonomy.model.BibSonomyRecommendedTag;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -13,11 +13,10 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.interfaces.renderer.RecommendationRenderer;
-import recommender.core.model.RecommendedTag;
 import recommender.core.rest.BadRequestOrResponseException;
 import recommender.core.rest.ViewModel;
 
-public class BibsonomyRendererFactoryWrapper implements RecommendationRenderer<TagRecommendationEntity, RecommendedTag> {
+public class BibsonomyRendererFactoryWrapper implements RecommendationRenderer<TagRecommendationEntity, recommender.core.model.RecommendedTag> {
 
 	private Renderer renderer;
 	
@@ -36,16 +35,16 @@ public class BibsonomyRendererFactoryWrapper implements RecommendationRenderer<T
 	}
 
 	@Override
-	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader)
+	public SortedSet<recommender.core.model.RecommendedTag> parseRecommendedTagList(Reader reader)
 			throws BadRequestOrResponseException {
 		return RecommendationUtilities.getRecommendedTagsFromBibRecTags(this.renderer.parseRecommendedTagList(reader));
 	}
 
 	@Override
-	public RecommendedTag parseRecommendedTag(Reader reader)
+	public recommender.core.model.RecommendedTag parseRecommendedTag(Reader reader)
 			throws BadRequestOrResponseException {
-		BibSonomyRecommendedTag result = this.renderer.parseRecommendedTag(reader);
-		return new RecommendedTag(result.getName(), result.getScore(), result.getConfidence());
+		RecommendedTag result = this.renderer.parseRecommendedTag(reader);
+		return new recommender.core.model.RecommendedTag(result.getName(), result.getScore(), result.getConfidence());
 	}
 
 	@Override

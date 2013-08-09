@@ -3,28 +3,27 @@ package org.bibsonomy.recommender.connector.utilities;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.bibsonomy.model.BibSonomyRecommendedTag;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 
-import recommender.core.model.RecommendedTag;
 
 public class RecommendationUtilities {
 
-	public static SortedSet<BibSonomyRecommendedTag> getBibSonomyRecommendedTags(SortedSet<RecommendedTag> tags) {
-		SortedSet<BibSonomyRecommendedTag> bibRecTags = new TreeSet<BibSonomyRecommendedTag>(new RecommendedTagComparator());
-		for(RecommendedTag tag : tags) {
-			BibSonomyRecommendedTag toAdd = new BibSonomyRecommendedTag(tag.getName(), tag.getScore(), tag.getConfidence());
+	public static SortedSet<RecommendedTag> getRecommendedTags(SortedSet<recommender.core.model.RecommendedTag> tags) {
+		SortedSet<RecommendedTag> bibRecTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		for(recommender.core.model.RecommendedTag tag : tags) {
+			RecommendedTag toAdd = new RecommendedTag(tag.getName(), tag.getScore(), tag.getConfidence());
 			bibRecTags.add(toAdd);
 		}
 		return bibRecTags;
 	}
 	
-	public static SortedSet<RecommendedTag> getRecommendedTagsFromBibRecTags(SortedSet<BibSonomyRecommendedTag> tags) {
-		SortedSet<RecommendedTag> bibRecTags = new TreeSet<RecommendedTag>(new recommender.impl.temp.copy.RecommendationResultComparator());
-		for(BibSonomyRecommendedTag tag : tags) {
-			RecommendedTag toAdd = new RecommendedTag(tag.getName(), tag.getScore(), tag.getConfidence());
-			bibRecTags.add(toAdd);
+	public static SortedSet<recommender.core.model.RecommendedTag> getRecommendedTagsFromBibRecTags(SortedSet<RecommendedTag> tags) {
+		SortedSet<recommender.core.model.RecommendedTag> recTags = new TreeSet<recommender.core.model.RecommendedTag>(new recommender.impl.temp.copy.RecommendationResultComparator());
+		for(RecommendedTag tag : tags) {
+			recommender.core.model.RecommendedTag toAdd = new recommender.core.model.RecommendedTag(tag.getName(), tag.getScore(), tag.getConfidence());
+			recTags.add(toAdd);
 		}
-		return bibRecTags;
+		return recTags;
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.bibsonomy.model.BibSonomyRecommendedTag;
+import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -25,8 +25,8 @@ public class TagRecLogEntry {
 	private Timestamp timeStamp;
 	private Post<? extends Resource> post;
 	private byte[] metaData;
-	private SortedSet<BibSonomyRecommendedTag> tags;
-	private SortedSet<BibSonomyRecommendedTag> preset;	
+	private SortedSet<RecommendedTag> tags;
+	private SortedSet<RecommendedTag> preset;	
 	
 	public void setQid(long qid) {
 		this.qid = qid;
@@ -88,24 +88,24 @@ public class TagRecLogEntry {
 	public String getUserName() {
 		return userName;
 	}
-	public void setPreset(List<BibSonomyRecommendedTag> preset) {
+	public void setPreset(List<RecommendedTag> preset) {
 		if( this.preset==null )
-			this.preset = new TreeSet<BibSonomyRecommendedTag>();
+			this.preset = new TreeSet<RecommendedTag>();
 		else
 			this.preset.clear();
 		this.preset.addAll(preset);
 	}
-	public SortedSet<BibSonomyRecommendedTag> getPreset() {
+	public SortedSet<RecommendedTag> getPreset() {
 		return preset;
 	}
-	public void setTags(List<BibSonomyRecommendedTag> tags) {
+	public void setTags(List<RecommendedTag> tags) {
 		if( this.tags==null )
-			this.tags = new TreeSet<BibSonomyRecommendedTag>();
+			this.tags = new TreeSet<RecommendedTag>();
 		else
 			this.tags.clear();
 		this.tags.addAll(tags);
 	}
-	public SortedSet<BibSonomyRecommendedTag> getTags() {
+	public SortedSet<RecommendedTag> getTags() {
 		return tags;
 	}
 	

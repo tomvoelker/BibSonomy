@@ -15,11 +15,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>de.uni-kassel.cs</groupId>
-			<artifactId>recommender-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
