@@ -55,7 +55,7 @@ private RecommenderDBSessionFactory mainFactory;
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends TagRecommendationEntity> List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(
+	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(
 			TagRecommendationEntity entity, String entityId, int range) {
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
@@ -111,7 +111,7 @@ private RecommenderDBSessionFactory mainFactory;
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getNumberOfTagsForRecommendationEntity(java.lang.Class, java.lang.String)
 	 */
 	@Override
-	public <T extends TagRecommendationEntity> Integer getNumberOfTagsForRecommendationEntity(
+	public Integer getNumberOfTagsForRecommendationEntity(
 			TagRecommendationEntity entity, String entityId) {
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
@@ -136,7 +136,7 @@ private RecommenderDBSessionFactory mainFactory;
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public <T extends TagRecommendationEntity> Integer getNumberOfTasForRecommendationEntity(
+	public Integer getNumberOfTasForRecommendationEntity(
 			TagRecommendationEntity entity, String entityId) {
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {

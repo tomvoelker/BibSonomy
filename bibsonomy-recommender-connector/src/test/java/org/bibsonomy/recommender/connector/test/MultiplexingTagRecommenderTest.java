@@ -54,13 +54,11 @@ public class MultiplexingTagRecommenderTest {
 	private static final int MAXSTORENROFTAGS    = 5;
 
 	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
-	private static RecommenderDBAccess dbAccess;
 
 	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigBibSonomy.class);
-		dbAccess = RecommenderTestContext.getBeanFactory().getBean(RecommenderBibTexDBLogic.class);
 	}
 
 	//------------------------------------------------------------------------
@@ -191,7 +189,6 @@ public class MultiplexingTagRecommenderTest {
 		// create multiplexer
 		final MultiplexingRecommender<TagRecommendationEntity, RecommendedTag> multi = new MultiplexingRecommender<TagRecommendationEntity, RecommendedTag>();
 		multi.setDbLogic(dbLogic);
-		multi.setDbAccess(dbAccess);
 		multi.setPrivacyFilter(new PostPrivacyFilter());
 		multi.setRenderer(new BibsonomyRendererFactoryWrapper());
 		multi.setResultSelector(selector);

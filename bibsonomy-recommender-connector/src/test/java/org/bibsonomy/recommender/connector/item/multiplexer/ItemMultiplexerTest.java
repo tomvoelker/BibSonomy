@@ -7,10 +7,9 @@ import java.util.SortedSet;
 import junit.framework.Assert;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.database.RecommenderBibTexDBLogic;
 import org.bibsonomy.recommender.connector.filter.UserPrivacyFilter;
-import org.bibsonomy.recommender.connector.model.BibsonomyRendererFactoryWrapper;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
+import org.bibsonomy.recommender.connector.testutil.DummyDBAccess;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,11 +31,10 @@ public class ItemMultiplexerTest {
 	
 	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
 
-	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigItemAccess.class);
-		dbAccess = RecommenderTestContext.getBeanFactory().getBean(RecommenderBibTexDBLogic.class);
+		dbAccess = new DummyDBAccess();
 	}
 	
 	@Test

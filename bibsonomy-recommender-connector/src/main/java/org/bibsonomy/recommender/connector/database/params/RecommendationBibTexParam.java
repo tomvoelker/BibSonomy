@@ -191,11 +191,15 @@ public class RecommendationBibTexParam {
 		bib.setInterHash(this.interhash);
 		bib.setJournal(this.journal);
 		bib.setTitle(this.title);
-		Matcher dateDataFinder = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})").matcher(this.date);
-		if(dateDataFinder.find()) {
-			bib.setYear(dateDataFinder.group(1));
-			bib.setMonth(dateDataFinder.group(2));
-			bib.setDay(dateDataFinder.group(3));
+		if (date != null) {
+			Matcher dateDataFinder = Pattern.compile(
+					"(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})")
+					.matcher(this.date);
+			if (dateDataFinder.find()) {
+				bib.setYear(dateDataFinder.group(1));
+				bib.setMonth(dateDataFinder.group(2));
+				bib.setDay(dateDataFinder.group(3));
+			}
 		}
 		try {
 			bib.setAuthor(PersonNameParser.parse(authors));
