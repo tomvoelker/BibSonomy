@@ -27,7 +27,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -84,8 +83,7 @@ public class ReachabilityTestRunner {
 				throw new Exception("no UnitTestImporter available");
 			}
 			
-			final List<ScraperUnitTest> unitTests = this.importer.getUnitTests();
-			
+			final Collection<ScraperUnitTest> unitTests = this.importer.getUnitTests().values();
 			final Collection<Scraper> compositeScrapers = new KDEScraperFactory().getScraper().getScraper();
 			
 			// check UrlScraper
@@ -96,7 +94,7 @@ public class ReachabilityTestRunner {
 				if (present(urlTest.getURL())) {
 					context = new ScrapingContext(new URL(urlTest.getURL()));
 				} else {
-					context = new ScrapingContext(null, urlTest.getSelection());					
+					context = new ScrapingContext(null, urlTest.getSelection());
 				}
 				
 				this.checkScraper(compositeScrapers, context, testScraper);

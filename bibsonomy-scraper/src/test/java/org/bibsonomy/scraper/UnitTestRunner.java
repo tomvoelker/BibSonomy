@@ -23,7 +23,9 @@
 
 package org.bibsonomy.scraper;
 
-import java.util.List;
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Map;
 
 import junit.framework.TestResult;
 
@@ -50,26 +52,23 @@ public class UnitTestRunner {
 	 * @param testId ID from URL test
 	 * @return result of the test
 	 */
-	public static boolean runSingleTest(String testId){
+	public static boolean runSingleTest(String testId) {
 
 		try {
 			if (IMPORTER == null)
 				throw new Exception("no UnitTestImporter available");
 
-			final List<ScraperUnitTest> unitTests = IMPORTER.getUnitTests();
-
-			for (final ScraperUnitTest test : unitTests){
-				if (test.getScraperTestId().equals(testId)){
-					final TestResult result = test.run();
-					test.setTestResult(result);
-					if (result.errorCount() > 0 || result.failureCount() > 0) {
-						test.printTestFailure();
-						return false;
-					}
-					return true;
+			final Map<String, ScraperUnitTest> unitTests = IMPORTER.getUnitTests();
+			final ScraperUnitTest test = unitTests.get(testId);
+			if (present(test)) {
+				final TestResult result = test.run();
+				test.setTestResult(result);
+				if (result.errorCount() > 0 || result.failureCount() > 0) {
+					test.printTestFailure();
+					return false;
 				}
+				return true;
 			}
-
 		} catch (final Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
@@ -86,21 +85,19 @@ public class UnitTestRunner {
 			if (IMPORTER == null)
 				throw new Exception("no UnitTestImporter available");
 
-			final List<ScraperUnitTest> unitTests = IMPORTER.getUnitTests();
-
-			for (final ScraperUnitTest test : unitTests){
-				if (test.getScraperTestId().equals(testId)){
-					/*
-					 * run test
-					 */
-					test.run();
-					/*
-					 * return test
-					 */
-					return (URLScraperUnitTest)test;
-				}
+			final Map<String, ScraperUnitTest> unitTests = IMPORTER.getUnitTests();
+			final ScraperUnitTest test = unitTests.get(testId);
+			if (present(test)){
+				/*
+				 * run test
+				 */
+				test.run();
+				/*
+				 * return test
+				 */
+				return (URLScraperUnitTest)test;
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
 		return null;

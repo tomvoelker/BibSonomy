@@ -23,7 +23,7 @@
 
 package org.bibsonomy.scraper.importer;
 
-import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.scraper.ScraperUnitTest;
 
@@ -41,6 +41,6 @@ public interface IUnitTestImporter {
 	 * @return List with ScraperUnitTests
 	 * @throws Exception
 	 */
-	public List<ScraperUnitTest> getUnitTests() throws Exception;
+	public Map<String, ScraperUnitTest> getUnitTests() throws Exception;
 
 }

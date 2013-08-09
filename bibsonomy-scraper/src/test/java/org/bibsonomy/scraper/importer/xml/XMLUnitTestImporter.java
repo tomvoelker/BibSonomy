@@ -24,7 +24,7 @@
 package org.bibsonomy.scraper.importer.xml;
 
 import java.io.InputStream;
-import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.scraper.ScraperUnitTest;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
@@ -45,7 +45,7 @@ public class XMLUnitTestImporter implements IUnitTestImporter {
 	private static final String UNIT_TEST_DATA_XML_FILE_NAME = "UnitTestData.xml";
 	
 
-	public List<ScraperUnitTest> getUnitTests() throws Exception{
+	public Map<String, ScraperUnitTest> getUnitTests() throws Exception{
 		final XMLReader xmlreader;
 		xmlreader = XMLReaderFactory.createXMLReader();
 

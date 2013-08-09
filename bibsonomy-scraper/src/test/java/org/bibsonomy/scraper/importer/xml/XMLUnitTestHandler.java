@@ -26,8 +26,8 @@ package org.bibsonomy.scraper.importer.xml;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,18 +58,18 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	
 	private static final String PATH_TO_BIBS = "org/bibsonomy/scraper/data/";
 
-	private LinkedList<ScraperUnitTest> tests = null;
+	private Map<String, ScraperUnitTest> tests = null;
 	
 	private URLScraperUnitTest currentTest = null;
 	
 	private StringBuffer charBuffer = null;
 	
-	/*
+	/**
 	 * default constructor
 	 */
 	public XMLUnitTestHandler() {
 		super();
-		this.tests = new LinkedList<ScraperUnitTest>();
+		this.tests = new HashMap<String, ScraperUnitTest>();
 	}
 
 	@Override
@@ -77,21 +77,20 @@ public class XMLUnitTestHandler extends DefaultHandler {
 		if(charBuffer != null)
 			charBuffer.append(ch, start, length);
 	}
-
-	public List<ScraperUnitTest> getTests() {
+	
+	/**
+	 * @return a map containing all tests
+	 */
+	public Map<String, ScraperUnitTest> getTests() {
 		return this.tests;
 	}
-
-	public void setTests(LinkedList<ScraperUnitTest> tests) {
-		this.tests = tests;
-	}
-
+	
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		super.endElement(uri, localName, qName);
 		
 		if(localName.equals(ELEMENT_URL_TEST)){
-			tests.add(currentTest);
+			tests.put(currentTest.getScraperTestId(), currentTest);
 			currentTest = null;
 		}else if(localName.equals(ELEMENT_Test_DESCRIPTION)){
 			currentTest.setDescription(charBuffer.toString());

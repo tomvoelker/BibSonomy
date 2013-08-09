@@ -23,9 +23,10 @@
 
 package org.bibsonomy.scraper.importer.xml;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.scraper.ScraperUnitTest;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
@@ -38,36 +39,23 @@ import org.junit.Test;
 public class XMLUnitTestImporterTest {
 
 	@Test
-	public void testGetUnitTests() {
+	public void testGetUnitTests() throws Exception {
 		final XMLUnitTestImporter importer = new XMLUnitTestImporter();
-		
-		
-		try {
-			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
+		final Map<String, ScraperUnitTest> unitTests = importer.getUnitTests();
 
-			/*
-			 * well, we have more than 60 scrapers, so we should have more than 100 tests ...
-			 */
-			assertTrue(unitTests.size() > 100);
+		/*
+		 * well, we have more than 60 scrapers, so we should have more than 100 tests ...
+		 */
+		assertTrue(unitTests.size() > 100);
 
-			/*
-			 * check each test
-			 */
-			for (final ScraperUnitTest scraperUnitTest : unitTests) {
-				if (scraperUnitTest instanceof URLScraperUnitTest) {
-					assertNotNull(((URLScraperUnitTest) scraperUnitTest).getExpectedReference());
-				}
-				
+		/*
+		 * check each test
+		 */
+		for (final ScraperUnitTest scraperUnitTest : unitTests.values()) {
+			if (scraperUnitTest instanceof URLScraperUnitTest) {
+				assertNotNull(((URLScraperUnitTest) scraperUnitTest).getExpectedReference());
 			}
-			
-			
-			
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			fail(ex.getMessage());
 		}
-		
-		
 	}
 
 }
