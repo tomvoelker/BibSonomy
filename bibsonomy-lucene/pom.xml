@@ -19,15 +19,7 @@
 		<dependency>
 			<groupId>org.apache.ibatis</groupId>
 			<artifactId>ibatis-sqlmap</artifactId>
-			<version>SNAPSHOT</version>
 			<classifier>r737724</classifier>
-			<exclusions>
-				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven ) -->
-				<exclusion>
-					<artifactId>xerces</artifactId>
-					<groupId>xerces</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
