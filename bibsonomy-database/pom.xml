@@ -22,7 +22,7 @@
 			<artifactId>bibsonomy-common</artifactId>
 			<scope>test</scope>
 			<type>test-jar</type>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database-common</artifactId>
@@ -62,38 +62,4 @@
 			<artifactId>spring-context</artifactId>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<site>
-			<!-- copy site documentation via scp to gromit -->
-			<id>bibsonomy-database-website-documentation</id>
-			<url>
-				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
-			</url>
-		</site>
-	</distributionManagement>
-	<reporting>
-		<plugins>
-			<plugin>
-				<!-- create javadoc with linked sources -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.6.1</version>
-				<configuration>
-					<linksource>true</linksource>
-				</configuration>
-			</plugin>
-			<plugin>
-				<!--  tag list report (TODO, ...) -->
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>taglist-maven-plugin</artifactId>
-				<version>2.2</version>
-			</plugin>
-			<plugin>
-				<!-- test reports -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.4.2</version>
-			</plugin>
-		</plugins>
-	</reporting>
 </project>

@@ -499,21 +499,13 @@
 	<reporting>
 		<plugins>
 			<plugin>
+				<!-- create javadoc with linked sources -->
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changes-plugin</artifactId>
-				<version>2.3</version>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
 				<configuration>
-					<issueLinkTemplate>
-						%URL%/index.php?func=detail&amp;aid=%ISSUE%&amp;group_id=52&amp;atid=278
-					</issueLinkTemplate>
+					<linksource>true</linksource>
 				</configuration>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
 			</plugin>
 		</plugins>
 	</reporting>

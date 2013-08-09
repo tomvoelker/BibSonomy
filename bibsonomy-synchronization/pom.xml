@@ -88,14 +88,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<distributionManagement>
-		<!-- deploy site documentation via scp to gromit -->
-		<site>
-			<id>bibsonomy-synchronization-website-documentation</id>
-			<name>Internal site documentation for this module</name>
-			<url>
-				scpexe://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
-			</url>
-		</site>		
-	</distributionManagement>	
 </project>
