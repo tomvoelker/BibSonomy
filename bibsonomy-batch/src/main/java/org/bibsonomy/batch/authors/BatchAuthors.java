@@ -1,23 +1,31 @@
 package org.bibsonomy.batch.authors;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
+import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.PatternLayout;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
@@ -25,26 +33,74 @@ import org.bibsonomy.util.tex.TexDecode;
  * @version $Id$
  */
 public class BatchAuthors {
-
-	private final static String PID_FILE = "batch_authors.pid";
-	private static long lastId;
 	private static Logger logger = Logger.getLogger(BatchAuthors.class);
 
 
+	private final static String PID_FILE = "batch_authors.pid";
+	private static final String LAST_ID_FILE = "last_id.properties";
+	private static final String TMP_PATH = "/tmp/";
 
 	/**
-	 * returns the last name of an author
+	 * loads the last id from a property file, fetches all bibtex_authors and authors, stores the new author
+	 * hierarchy and writes a property file with the new 'last id' - worked on
 	 * 
-	 * @param s
-	 * @return
+	 * @param args
 	 */
-	private static String getLastName(String[] subNames) {
-		if(subNames.length > 1) {
-			return subNames[subNames.length - 1].trim();
+	public static void main(String[] args) {
+		configLogging();
+		
+		// don't run twice
+		if (amIRunning()) {
+			System.err.println("pid file already exists: " + getTmpPath() + PID_FILE);
+			System.exit(0);
 		}
-		return "";
+		
+		try {
+			final long lastId = getLastId();
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			final AuthorDB database = getDatabase();
+			final long currentContentId = database.getLastContentId();
+			final Map<String, Author> bibtexAuthorMap = fetchBibtexAuthors(database, lastId, currentContentId);
+			logger.info ("Done with fetching bibtex authors");
+			final Map<String, Author> authorMap = fetchAuthors(database);
+			logger.info ("Done with fetching authors");
+			blastData(database, lastId, bibtexAuthorMap, authorMap);
+			database.closeDBConnection();
+
+			saveLastId(currentContentId);
+		} catch (final Exception ex) {
+			logger.error("exception while executing batch", ex);
+		}
+		
+		if (!removePidFile()) {
+			System.err.println("can't delete pid file: " + getTmpPath() + PID_FILE);
+		}
 	}
-	
+
+	private static AuthorDB getDatabase() throws SQLException, Exception {
+		final Properties properties = new Properties();
+		properties.load(new FileReader(new File("./batchAuthors.properties")));
+		final String masterUrl = properties.getProperty("master.url");
+		final String masterUsername = properties.getProperty("master.username");
+		final String masterPassword = properties.getProperty("master.password");
+		final Connection slaveConnection = DriverManager.getConnection(properties.getProperty("slave.url", masterUrl), properties.getProperty("slave.username", masterUsername), properties.getProperty("slave.password", masterPassword));
+		final Connection masterConnection = DriverManager.getConnection(masterUrl, masterUsername, masterPassword);
+		final AuthorDB database = new AuthorDB(slaveConnection, masterConnection);
+		return database;
+	}
+
+	private static void configLogging() {
+		try {
+			final Layout layout = new PatternLayout("[%5p] [%d{dd MMM yyyy HH:mm:ss,SSS}] [%t] [%x] [%c] - %m%n");
+			final ConsoleAppender consoleAppender = new ConsoleAppender(layout);
+			logger.addAppender(consoleAppender);
+			final FileAppender fileAppender = new FileAppender(layout, "batch_authors.log", false);
+			logger.addAppender(fileAppender);
+			logger.setLevel(Level.INFO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * returns the first name of an author
@@ -52,9 +108,13 @@ public class BatchAuthors {
 	 * @param s
 	 * @return first name
 	 */
-	private static String getFirstName(String[] subNames) {
-		if(subNames.length > 1) {
-				return subNames[0].trim();
+	private static String getFirstName(String firstName) {
+		if (!present(firstName)) {
+			return "";
+		}
+		String[] firstNames = firstName.split(" ");
+		if (firstNames.length >= 1) {
+			return firstNames[0].trim();
 		}
 		return "";
 	}
@@ -66,11 +126,15 @@ public class BatchAuthors {
 	 * @param s
 	 * @return middle name
 	 */
-	private static String getMiddleName(String[] subNames) {
-		if (subNames.length > 2) {
+	private static String getMiddleName(String firstName) {
+		if (!present(firstName)) {
+			return "";
+		}
+		String[] firstNames = firstName.split(" ");
+		if (firstNames.length >= 2) {
 			String mn = "";
-			for(int i = 1; i < (subNames.length - 1); ++i) {
-				mn +=  subNames[i].trim();
+			for (int i = 1; i < (firstNames.length); ++i) {
+				mn +=  firstNames[i].trim();
 			}
 			return mn;
 		}
@@ -86,96 +150,83 @@ public class BatchAuthors {
 	 * @return
 	 * @throws SQLException
 	 */
-	private static Map<String, Author> fetchBibtexAuthors(AuthorDB db) throws SQLException {
-		ResultSet rs = db.getBibtexAuthors(lastId);		
+	private static Map<String, Author> fetchBibtexAuthors(AuthorDB db, final long lastId, final long currentContentId) throws SQLException {
+		final ResultSet rs = db.getBibtexAuthors(lastId, currentContentId);
 		// memory consumption here: 280 MB (result set)
 		
 		// last content Id fetched
 		long lastContentId = 0;
 		
-		TexDecode enc = new TexDecode();
-		Map<String, Author> bibtexAuthorMap = new HashMap<String, Author>(1500000);
+		final Map<String, Author> bibtexAuthorMap = new HashMap<String, Author>(1500000);
 		
-		// rs.getString(1) = author feld vom bibtex eintrag
-		// rs.getString(2) = content id feld
-		
-		int c = 0;
-		
-		String authorsAndEditors = "";
-		String[] authors;
-		String[] subNames;
-		String bibtexAuthor;
-		
-		while(rs.next()) {
+		int counter = 0;
+		while (rs.next()) {
 			// clear names
-			authorsAndEditors = "";
-			bibtexAuthor = "";
+			String authorsAndEditors = "";
 			
-			if(rs.getString(1) != null) {
-				authorsAndEditors += rs.getString(1);
+			final String authorsString = rs.getString(1);
+			if (authorsString != null) {
+				authorsAndEditors += authorsString;
 			}
-			if(rs.getString(3) != null) {
-				authorsAndEditors += " and " + rs.getString(3);
+			final String editorString = rs.getString(3);
+			if (editorString != null) {
+				authorsAndEditors += " and " + editorString;
 			}
-			if(authorsAndEditors == "") {
+			if (!present(authorsAndEditors)) {
 				continue;
 			}
-			c++;
+			counter++;
 			
 			// split author field
-			authors = authorsAndEditors.split(" and ");
-			
+			final List<PersonName> authors = PersonNameUtils.discoverPersonNamesIgnoreExceptions(authorsAndEditors);
+			if (!present(authors)) {
+				logger.error("no author found for '" + authorsAndEditors + "'");
+				continue;
+			}
 			// get content ID from result
 			lastContentId = rs.getLong(2);
 						
-			// loop over all authors			
-			for(int i = 0; i < authors.length; i++) {
-				bibtexAuthor = authors[i];
-				authors[i] = authors[i].trim();
-				authors[i] = enc.decode(authors[i]);
-				if(authors[i].length() > 2) {
-					// we split the author name already here - if we do it in the
-					// getFirstName... - functions, we consume a lot of temporary 
-					// memory
-					subNames = authors[i].split(" ");
-					// create new author object
-					Author a = new Author(getFirstName(subNames),
-							getMiddleName(subNames),
-							getLastName(subNames), authors[i]);
-					// add current content ID to author object
-					a.getContentIds().add(lastContentId);
-					// check if author is already in map
-					if (bibtexAuthorMap.containsKey(authors[i]) ) {
+			// loop over all authors
+			for (final PersonName bibtexAuthor : authors) {
+				String authorString = bibtexAuthor.getLastName();
+				if (present(bibtexAuthor.getFirstName())) {
+					authorString += ", " + bibtexAuthor.getFirstName();
+				}
+				if (authorString.length() > 2) {
+					if (!bibtexAuthorMap.containsKey(authorString)) {
+						// we split the author name already here - if we do it in the
+						// getFirstName... - functions, we consume a lot of temporary 
+						// memory
+						// create new author object
+						final Author author = new Author(getFirstName(bibtexAuthor.getFirstName()), getMiddleName(bibtexAuthor.getFirstName()), bibtexAuthor.getLastName(), authorString);
+						// add current content ID to author object
+						author.getContentIds().add(Long.valueOf(lastContentId));
+						// check if author is already in map
+						// not contained -> add to map 
+						bibtexAuthorMap.put(authorString, author);
+					} else {
 						// is contained -> add content id
-						if(authors[i].length() > 2) {
-							bibtexAuthorMap.get(authors[i]).getContentIds().add(lastContentId);
-							// check if author already got the requested bibtex representation. if not, add the current one
-							if(!bibtexAuthorMap.get(authors[i]).getBibtexNames().contains(bibtexAuthor)) {
-								bibtexAuthorMap.get(authors[i]).addBibtexName(bibtexAuthor);
-							}
+						final Author author = bibtexAuthorMap.get(authorString);
+						author.getContentIds().add(Long.valueOf(lastContentId));
+						// check if author already got the requested bibtex representation. if not, add the current one
+						if (!author.getBibtexNames().contains(authorString)) {
+							author.addBibtexName(authorString);
 						}
 					}
-					else {
-						// not contained -> add to map 
-						bibtexAuthorMap.put(authors[i], a);
-					}
 				}
-			} // end for
+			}
 			
-			if (c % 10000 == 0) {
+			if (counter % 10000 == 0) {
 				logger.info("nr. of bibtex authors: " + bibtexAuthorMap.size());
-				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
+				long memUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
 				logger.info("memory used: " + memUsed + " KB");
 				logger.info("Calling GC...");
 				System.gc();
 			}
 		}
-						
-		lastId = lastContentId;
 		
 		// clean memory
-		rs = null;
-		enc = null;
+		rs.close();
 		System.gc();
 		
 		return bibtexAuthorMap;
@@ -191,54 +242,48 @@ public class BatchAuthors {
 	 * @throws SQLException
 	 */
 	private static Map<String, Author> fetchAuthors(AuthorDB db) throws SQLException {
-		ResultSet rs = db.getAuthors();
-		Map<String, Author> authorMap = new HashMap<String, Author>();
-		String authorName;
-		String bibtexName;
-		String[] subNames;
-		int c = 0;
-		TexDecode enc = new TexDecode();
+		final ResultSet rs = db.getAuthors();
+		final Map<String, Author> authorMap = new HashMap<String, Author>();
+		int counter = 0;
 		
-		while(rs.next()) {
-			authorName = rs.getString(2);
-			bibtexName = authorName;
+		while (rs.next()) {
+			final String bibtexName = rs.getString(2);
+			if (bibtexName == null) continue;
 			
-			if (authorName == null) continue;
-			
-			c++;
-			authorName = enc.decode(authorName);
+			counter++;
+			final String authorName = TexDecode.decode(bibtexName);
 			
 			if (!authorMap.containsKey(authorName)) {
-				subNames = authorName.split(" ");
-				Author a = new Author(getFirstName(subNames),
-						getMiddleName(subNames),
-						getLastName(subNames),
-						authorName);				
-				a.getContentIds().add(rs.getLong(3));
-				a.setAuthorId(rs.getLong(1));
-				authorMap.put(authorName, a);	
+				final List<PersonName> personNames = PersonNameUtils.discoverPersonNamesIgnoreExceptions(authorName);
+				if (present(personNames)) {
+					final PersonName personName = personNames.get(0);
+					final Author author = new Author(getFirstName(personName.getFirstName()), getMiddleName(personName.getFirstName()), personName.getLastName(), bibtexName);
+					author.getContentIds().add(Long.valueOf(rs.getLong(3)));
+					author.setAuthorId(rs.getLong(1));
+					authorMap.put(authorName, author);
+				}
+				
 			} else {
-				authorMap.get(authorName).getContentIds().add(rs.getLong(3));
+				final Author existingAuthor = authorMap.get(authorName);
+				existingAuthor.getContentIds().add(Long.valueOf(rs.getLong(3)));
 				// check if author already got the requested bibtex representation. if not, add the current one
-				if(!authorMap.get(authorName).getBibtexNames().contains(bibtexName)) {
-					authorMap.get(authorName).addBibtexName(bibtexName);
+				if (!existingAuthor.getBibtexNames().contains(bibtexName)) {
+					existingAuthor.addBibtexName(bibtexName);
 				}
 			}
 			
-			if (c % 10000 == 0) {
+			if (counter % 10000 == 0) {
 				logger.info("nr. of authors: " + authorMap.size());
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
 				logger.info("memory used: " + memUsed + " KB"); 
 				logger.info("Calling GC...");
-				System.gc();				
-			}			
+				System.gc();
+			}
 		}
 		
 		// clean memory
-		rs  = null;
-		enc = null;
+		rs.close();
 		System.gc();
-		
 		return authorMap;
 	}
 	
@@ -251,45 +296,40 @@ public class BatchAuthors {
 	 * @param authorMap
 	 * @throws SQLException
 	 */
-	private static void blastData(AuthorDB db, Map<String, Author> bibtexAuthorMap, Map<String, Author> authorMap) throws SQLException {
-		ArrayList<Author> insertAuthors = new ArrayList<Author>();
-		ArrayList<Author> updateAuthors = new ArrayList<Author>();
+	private static void blastData(AuthorDB db, long lastId, Map<String, Author> bibtexAuthorMap, Map<String, Author> authorMap) throws SQLException {
+		final List<Author> insertAuthors = new ArrayList<Author>();
+		final List<Author> updateAuthors = new ArrayList<Author>();
 		
-		String s;		
-		Author a;
-		Iterator<String> it = bibtexAuthorMap.keySet().iterator();
-
-		logger.info("Computing which authors to insert / update...");		
-		
-		while (it.hasNext()) {
-			s = it.next();
-			a = bibtexAuthorMap.get(s);
+		logger.info("Computing which authors to insert / update...");
+		for (final String s : bibtexAuthorMap.keySet()) {
+			final Author author = bibtexAuthorMap.get(s);
 			
-			if(authorMap.containsKey(s)) {
+			if (authorMap.containsKey(s)) {
 				// set author id
-				a.setAuthorId(authorMap.get(s).getAuthorId());
+				author.setAuthorId(authorMap.get(s).getAuthorId());
 				int ctr = authorMap.get(s).getContentIds().size();
 				
 				// if there isn't an old id in the update user, add it to delete list
 				if (lastId == 0) {
 					for (long l : authorMap.get(s).getContentIds()) {
-						if (!a.getContentIds().contains(l)) {
-							a.getDeletedContentIds().add(l);
+						final Long boxedValue = Long.valueOf(l);
+						if (!author.getContentIds().contains(boxedValue)) {
+							author.getDeletedContentIds().add(boxedValue);
 						}
 					}
 				}
 				
 				// remove existing id's for update author
-				Iterator<Long> iter = a.getContentIds().iterator();
+				Iterator<Long> iter = author.getContentIds().iterator();
 				while (iter.hasNext()) {
 					if (authorMap.get(s).getContentIds().contains(iter.next())) {
 						iter.remove();
 					}
 				}
 				
-				a.setCtr(ctr + a.getContentIds().size() - a.getDeletedContentIds().size());
+				author.setCtr(ctr + author.getContentIds().size() - author.getDeletedContentIds().size());
 				
-				Iterator<String> nameIter = a.getBibtexNames().iterator();
+				final Iterator<String> nameIter = author.getBibtexNames().iterator();
 				while (nameIter.hasNext()) {
 					if (authorMap.get(s).getBibtexNames().contains(nameIter.next())) {
 						nameIter.remove();
@@ -297,20 +337,19 @@ public class BatchAuthors {
 				}
 				
 				// remember author to update
-				if (a.getContentIds().size() > 0 
-						|| a.getBibtexNames().size() > 0 
-						|| a.getDeletedContentIds().size() > 0) {
-					updateAuthors.add(a);
+				if (author.getContentIds().size() > 0 
+						|| author.getBibtexNames().size() > 0 
+						|| author.getDeletedContentIds().size() > 0) {
+					updateAuthors.add(author);
 				}
 				
 			} else {
-				insertAuthors.add(a);
+				insertAuthors.add(author);
 			}
 		}
 		
 		logger.info("Calling GC...");
 		System.gc();
-		
 		
 		logger.info("Inserting authors...");
 		for (int i = 0; i < insertAuthors.size(); i++) { 
@@ -338,15 +377,15 @@ public class BatchAuthors {
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
 				logger.info("memory used: " + memUsed + " KB");
 				logger.info("calling GC...");
-				System.gc();				
-			}			
+				System.gc();
+			}
 			try {
 				db.updateAuthor(updateAuthors.get(j));
 			} catch(Exception e) {
 				e.printStackTrace();
 				logger.fatal(e.getMessage());
 				continue;
-			}			
+			}
 		}
 		logger.info("Done.");
 	}
@@ -357,36 +396,28 @@ public class BatchAuthors {
 	 * 
 	 * @return last id : long
 	 */
-	private static long loadProperties(String file) {
-		Properties prop = new Properties();
-		long id = 0;
-		
+	private static long getLastId() {
 		try {
-			prop.load(new FileInputStream(file));
-			id = Long.parseLong(prop.getProperty("last_row"));
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
+			Properties prop = new Properties();
+			prop.load(new FileInputStream(LAST_ID_FILE));
+			return Long.parseLong(prop.getProperty("last_id"));
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			logger.error(ex);
 		}
-		
-		return id;
+		return 0;
 	}
 	
 	
 	/**
 	 * stores the last id in a property file
 	 */
-	private static void storeProperties(String file) {
-		Properties prop = new Properties();
-		prop.setProperty("last_row", String.valueOf(lastId));
-		
+	private static void saveLastId(final long lastId) {
 		try {
-			prop.store(new FileOutputStream(file), null);
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
+			final Properties prop = new Properties();
+			prop.setProperty("last_id", String.valueOf(lastId));
+			prop.store(new FileOutputStream(LAST_ID_FILE), null);
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			logger.error(ex);
 		}
 	}
 	
@@ -397,11 +428,9 @@ public class BatchAuthors {
 	 * @return /path/to/tmp ie /tmp
 	 */
 	private static String getTmpPath() {
-		final String TMP_PATH = "/tmp/";
-		
-		String tmpPath = System.getenv().get("TMP");
-		if(tmpPath != null) {
-			return tmpPath;
+		final String tmpPath = System.getenv().get("TMP");
+		if (tmpPath != null) {
+			return tmpPath + "/";
 		}
 		
 		return TMP_PATH;
@@ -414,9 +443,8 @@ public class BatchAuthors {
 	 * @return boolean : true, if process is running
 	 */
 	private static boolean amIRunning() {
-		File pid = new File(getTmpPath() + PID_FILE); 
-		
-		if(pid.exists()) {
+		final File pid = new File(getTmpPath() + PID_FILE);
+		if (pid.exists()) {
 			return true;
 		}
 		
@@ -426,7 +454,6 @@ public class BatchAuthors {
 			System.err.println("Can't create pid file: " + getTmpPath() + PID_FILE);
 			System.exit(0);
 		}
-		
 		return false;
 	}
 	
@@ -437,84 +464,12 @@ public class BatchAuthors {
 	 * @return boolean : true, if pid was deleted
 	 */
 	private static boolean removePidFile() {
-		File pid = new File(getTmpPath() + PID_FILE); 
+		final File pid = new File(getTmpPath() + PID_FILE); 
 		
 		if(pid.delete()) {
 			return true;
 		}
 		
 		return false;
-	}
-	
-	
-	/**
-	 * loads the last id from a property file, fetches all bibtex_authors and authors, stores the new author
-	 * hierarchy and writes a property file with the new 'last id' - worked on
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		String database		= null;
-		
-		//property files have to be renamed, if all files are located in their correct packages
-		String props		= "lastRow.txt";
-		
-		try {
-			SimpleLayout layout = new SimpleLayout();
-			ConsoleAppender consoleAppender = new ConsoleAppender(layout);
-			logger.addAppender(consoleAppender);
-			FileAppender fileAppender = new FileAppender(layout, "batch_authors.log", false);
-			logger.addAppender(fileAppender);
-			logger.setLevel(Level.INFO);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		
-		//args shiften
-		if(args.length != 1) {
-			System.err.println("Please enter a database name as first argument\n");
-			System.exit(0);
-		} 
-
-		if(amIRunning()) {
-			System.err.println("pid file already exists: " + getTmpPath() + PID_FILE);
-			System.exit(0);
-		}
-		
-		database = args[0];
-		
-		try {
-			lastId = loadProperties(props);
-			
-			AuthorDB db = new AuthorDB();
-			db.initDBConnection(database);
-			Map<String, Author> bibtexAuthorMap = fetchBibtexAuthors(db);
-			logger.info ("Done with fetching bibtex authors");
-			Map<String, Author> authorMap = fetchAuthors(db);
-			logger.info ("Done with fetching authors");
-			db.closeDBConnection();
-
-			db = null;
-			
-			db = new AuthorDB();
-			db.initMasterDBConnection(database);
-			blastData(db, bibtexAuthorMap, authorMap);
-			db.closeDBConnection();
-
-			storeProperties(props);
-		} catch (InstantiationException ex) {
-			ex.printStackTrace();
-		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
-		} catch (ClassNotFoundException ex) {
-			ex.printStackTrace();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} 
-		
-		if(!removePidFile()) {
-			System.err.println("can't delete pid file: " + getTmpPath() + PID_FILE);
-		}
 	}
 }

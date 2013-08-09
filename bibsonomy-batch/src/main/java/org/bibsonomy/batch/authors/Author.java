@@ -1,20 +1,23 @@
 package org.bibsonomy.batch.authors;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
+
+import org.bibsonomy.model.PersonName;
 
 /**
  * @author claus
  * @version $Id$
  */
-public class Author {
-
+public class Author extends PersonName {
+	private static final long serialVersionUID = -5159236173916219000L;
+	
+	
 	private long authorId;
-	private HashSet<Long> contentIds;
-	private HashSet<Long> deletedContentIds;
-	private String firstName;
+	private Set<Long> contentIds;
+	private Set<Long> deletedContentIds;
 	private String middleName;
-	private String lastName;
 	private Vector<String> bibtexNames;
 	private int ctr;
 	
@@ -33,9 +36,9 @@ public class Author {
 	 * @param bibtexName
 	 */
 	public Author(final String firstName, final String middleName, final String lastName, final String bibtexName) {
-		this.firstName = firstName;
+		this.setFirstName(firstName);
+		this.setLastName(lastName);
 		this.middleName = middleName;
-		this.lastName = lastName;
 		
 		this.bibtexNames = new Vector<String>();
 		this.bibtexNames.add(bibtexName);
@@ -61,9 +64,9 @@ public class Author {
 
 	
 	/**
-	 * @return Vector<Long> : content ids
+	 * @return Set<Long> : content ids
 	 */
-	public HashSet<Long> getContentIds() {
+	public Set<Long> getContentIds() {
 		return this.contentIds;
 	}
 	
@@ -77,22 +80,8 @@ public class Author {
 	/**
 	 * @return the deletedContentIds
 	 */
-	public HashSet<Long> getDeletedContentIds() {
+	public Set<Long> getDeletedContentIds() {
 		return deletedContentIds;
-	}
-
-	/**
-	 * @return String : firstName
-	 */
-	public String getFirstName() {
-		return this.firstName;
-	}
-	
-	/**
-	 * @param firstName
-	 */
-	public void setFirstName(final String firstName) {
-		this.firstName = firstName;
 	}
 	
 	/**
@@ -109,19 +98,6 @@ public class Author {
 		this.middleName = middleName;
 	}
 	
-	/**
-	 * @return String : lastName
-	 */
-	public String getLastName() {
-		return this.lastName;
-	}
-	
-	/**
-	 * @param lastName
-	 */
-	public void setLastName(final String lastName) {
-		this.lastName = lastName;
-	}
 	
 	/**
 	 * @return String : bibtexName
@@ -159,9 +135,9 @@ public class Author {
 	public String toString() {
 		final StringBuilder s = new StringBuilder();
 		s.append("id: ").append(authorId);
-		s.append(", first: ").append(firstName);
+		s.append(", first: ").append(this.getFirstName());
 		s.append(", middleName: ").append(middleName);
-		s.append(", lastName: ").append(lastName);
+		s.append(", lastName: ").append(this.getLastName());
 		s.append("\ncontent ids: ");
 		for (long l : contentIds) {
 			s.append(l).append(", ");
