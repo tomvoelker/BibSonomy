@@ -19,10 +19,6 @@
 		<dependency>
 			<groupId>org.apache.ibatis</groupId>
 			<artifactId>ibatis-sqlmap</artifactId>
-			<!-- XXX: 2.1.0 is not the correct version,
-				but we need a number in the version
-				to host the jar on our repo -->
-			<version>2.1.0-SNAPSHOT</version>
 			<classifier>r737724</classifier>
 		</dependency>
 		<dependency>
