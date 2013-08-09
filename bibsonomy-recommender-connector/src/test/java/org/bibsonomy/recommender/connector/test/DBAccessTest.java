@@ -9,11 +9,14 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import junit.framework.Assert;
+
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.connector.database.DBLogConfigBibSonomy;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.junit.BeforeClass;
@@ -24,9 +27,9 @@ import recommender.core.database.DBLogic;
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecSettingParam;
 import recommender.core.database.params.SelectorSettingParam;
+import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
-import recommender.core.model.TagRecommendationEntity;
-import recommender.impl.multiplexer.MultiplexingTagRecommender;
+import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**
  * Test case for recommender's DBAccess class
@@ -35,11 +38,12 @@ import recommender.impl.multiplexer.MultiplexingTagRecommender;
  */
 public class DBAccessTest {
 
-	private static DBLogic dbLogic;
+	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
 	
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
-		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogic.class);
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigBibSonomy.class);
 	}
 	
 	/**
@@ -51,7 +55,7 @@ public class DBAccessTest {
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
-		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingTagRecommender.getUnknownPID(), 1234);
+		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingRecommender.getUnknownEID(), 1234);
 		final RecQueryParam retVal = dbLogic.getQuery(qid);
 		
 		final String queryUN = retVal.getUserName();
@@ -122,7 +126,7 @@ public class DBAccessTest {
 		// store tags
 		final int count = dbLogic.storeRecommendation(qid, rid, tags);
 		// fetch tags
-		final List<RecommendedTag> result = dbLogic.getSelectedTags(Long.valueOf(0));
+		final List<RecommendedTag> result = dbLogic.getSelectedResults(Long.valueOf(0));
 		
 		// compare tags
 		final SortedSet<RecommendedTag> sort = new TreeSet<RecommendedTag>();
@@ -130,9 +134,9 @@ public class DBAccessTest {
 		sort.addAll(result);
 		final int i=0;
 		for( final RecommendedTag tag : sort ) {
-			assertEquals(tag.getName(), "Tag" + (new Integer(i)).toString());
-			assertEquals((1.0*i)/count, tag.getScore());
-			assertEquals(1.0/count, tag.getConfidence());
+			Assert.assertEquals(tag.getName(), "Tag" + (new Integer(i)).toString());
+			Assert.assertEquals((1.0*i)/count, tag.getScore());
+			Assert.assertEquals(1.0/count, tag.getConfidence());
 		}
 	}
 	
@@ -164,7 +168,7 @@ public class DBAccessTest {
 		 */
 		final TagRecommendationEntity post = createPost();
 		final Timestamp ts = new Timestamp(System.currentTimeMillis());
-		final int postID = (int)Math.floor(Math.random()*Integer.MAX_VALUE);
+		final String postID = ""+(int)Math.floor(Math.random()*Integer.MAX_VALUE);
 		
 		// store and retrieve query
 		final Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID, 1234);

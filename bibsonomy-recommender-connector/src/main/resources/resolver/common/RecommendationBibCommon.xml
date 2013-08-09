@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="RecommendationLogCommon">
-	<resultMap id="tasResult" class="tasEntry">
-		<result property="userName"  column="user_name"    javaType="string" />
-		<result property="timeStamp" column="date"         javaType="timeStamp" />
-		<result property="contentID" column="content_id"   javaType="integer"/>
-		<result property="tag"       column="tag_name"     javaType="string"/>
-	</resultMap>    
+<sqlMap namespace="RecommendationLogCommon">   
 
 	<resultMap id="tagName" class="tag">
 		<result property="name"         column="tag_name"        javaType="string"/>
@@ -23,8 +17,8 @@
 	
 	</resultMap>
 	
-	<resultMap id="newestBibTex" class="bibtex">
-		<result property="contentId" column="content_id" javaType="string" />
+	<resultMap id="recommendationBibTex" class="recommendationBibTexParam">
+		<result property="id" column="content_id" javaType="string" />
 		<result property="bookTitle" column="booktitle" javaType="string" />
 		<result property="journal" column="journal" javaType="string" />
 		<result property="bibtexAbstract" column="bibtexAbstract" javaType="string" />
@@ -34,6 +28,14 @@
 		<result property="intrahash" column="intrahash" javaType="string" />
 		<result property="authors" column="author" javaType="string" />
 		<result property="date" column="date" javaType="string" />
+		<result property="ownerName" column="user_name" javaType="string" />
+	</resultMap>
+	
+	<resultMap id="recommendationBookmark" class="recommendationBookmarkParam">
+		<result property="hash" column="book_url_hash" javaType="string" />
+		<result property="title" column="book_description" javaType="string" />
+		<result property="username" column="user_name" javaType="string" />
+		<result property="group" column="group" javaType="integer" />
 	</resultMap>
 	
 	<resultMap id="tagByID" class="tag">

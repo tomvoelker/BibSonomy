@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import recommender.core.model.RecommendedTag;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
-import recommender.impl.temp.copy.RecommendedTagComparator;
+import recommender.impl.temp.copy.RecommendationResultComparator;
 
 /**
  * @author rja
@@ -38,7 +38,7 @@ public class FixedTagsTagRecommenderTest {
 			}
 		});
 
-		recommender.addRecommendedTags(recommendedTags, null);
+		recommender.addRecommendation(recommendedTags, null);
 
 		for (final String tag: fixedTags) {
 			assertTrue(recommendedTags.contains(new RecommendedTag(tag, 0.0, 0.0)));
@@ -50,7 +50,7 @@ public class FixedTagsTagRecommenderTest {
 	 */
 	@Test
 	public void testFixedTagsTagRecommenderSortedSetOfRecommendedTag() {
-		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendationResultComparator<RecommendedTag>());
 		recommendedTags.add(new RecommendedTag("eins", 0.3, 0.2));
 		recommendedTags.add(new RecommendedTag("drei", 0.2, 0.2));
 		recommendedTags.add(new RecommendedTag("vier", 0.5, 0.2));
@@ -62,7 +62,7 @@ public class FixedTagsTagRecommenderTest {
 		recommendedTags.add(new RecommendedTag("foo", 0.7, 0.2));
 		recommendedTags.add(new RecommendedTag("net", 0.8, 0.2));
 		final FixedTagsTagRecommender recommender = new FixedTagsTagRecommender(recommendedTags);
-		assertEquals(recommendedTags, recommender.getRecommendedTags(null));
+		assertEquals(recommendedTags, recommender.getRecommendation(null));
 	}
 
 }

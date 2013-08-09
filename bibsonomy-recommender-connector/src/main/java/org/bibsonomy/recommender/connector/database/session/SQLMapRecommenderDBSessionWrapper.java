@@ -3,10 +3,10 @@ package org.bibsonomy.recommender.connector.database.session;
 import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.database.common.DBSession;
 
 import recommender.core.database.RecommenderDBSession;
+import recommender.core.temp.copy.common.ErrorMessage;
 
 /**
  * wraps database access from recommender library on the bibsonomy database
@@ -54,7 +54,8 @@ public class SQLMapRecommenderDBSessionWrapper implements RecommenderDBSession {
 
 	@Override
 	public void addError(String key, ErrorMessage errorMessage) {
-		this.dbSession.addError(key, errorMessage);
+		this.dbSession.addError(key, new org.bibsonomy.common.errors.ErrorMessage(errorMessage.getDefaultMessage(),
+				errorMessage.getErrorCode(), errorMessage.getParameters()));
 	}
 
 	@Override

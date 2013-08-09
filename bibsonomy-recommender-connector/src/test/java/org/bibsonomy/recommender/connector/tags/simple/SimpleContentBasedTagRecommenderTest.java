@@ -34,7 +34,7 @@ public class SimpleContentBasedTagRecommenderTest {
 
 		final SimpleContentBasedTagRecommender recommender = new  SimpleContentBasedTagRecommender();
 		
-		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendedTags(new PostWrapper<Bookmark>(post)));
+		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendation(new PostWrapper<Bookmark>(post)));
 		
 		final String[] testTags = new String[]{"nepomuk", "main", "finalreviewnov2008script"};
 
@@ -69,7 +69,7 @@ public class SimpleContentBasedTagRecommenderTest {
 		 */
 		recommender.setNumberOfTagsToRecommend(5);
 		
-		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendedTags(new PostWrapper<Bookmark>(post)));
+		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendation(new PostWrapper<Bookmark>(post)));
 		
 		/*
 		 * check size

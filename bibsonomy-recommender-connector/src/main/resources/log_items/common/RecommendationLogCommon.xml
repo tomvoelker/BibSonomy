@@ -20,10 +20,11 @@
         <result property="recMeta"     column="rec_meta"   jdbcType="BLOB"/>
     </resultMap>
     
-    <resultMap id="recAdminOverview" class="recommender.core.database.params.RecAdminOverview">
+    <resultMap id="recAdminOverview" class="recAdminOverview">
         <result property="settingID" column="setting_id"  javaType="long" />
         <result property="recID"     column="rec_id"      javaType="string"  />
         <result property="latency"   column="rec_latency" javaType="long" />
+        <result property="local" column="local" javaType="integer" />
     </resultMap>
     
     <resultMap id="selectorSetting" class="selectorSetting">
@@ -33,7 +34,7 @@
     
 	<resultMap id="recQuery" class="recQuery">
 		<result property="qid"         column="query_id"   javaType="long" />
-		<result property="pid"         column="post_id"    javaType="integer"/>
+		<result property="entity_id"   column="entity_id"  javaType="string" />
 		<result property="userName"    column="user_name"  javaType="string" />
 		<result property="timeStamp"   column="date"       javaType="timestamp"/> 
 	</resultMap>
@@ -43,29 +44,17 @@
 		<result property="userName"     column="user_name"       javaType="string" />
 		<result property="latency"      column="rec_latency"     javaType="long"/>
 		<result property="preset"       column="{qid=query_id}"  select="selectPresets"/>
-		<result property="tags"         column="{qid=query_id}"  select="selectResults"/>
+		<result property="results"      column="{qid=query_id}"  select="selectResults"/>
 	</resultMap>
 	
-	<resultMap id="recResponse"	class="recLogEntry">
-		<result property="tagName"      column="tag"             javaType="string"/>
+	<resultMap id="recResponseMeta"	class="recLogEntry">
+		<result property="resultTitle"  column="responsetitle"   javaType="string"/>
 		<result property="score"        column="score"           javaType="double"/>
 		<result property="confidence"   column="confidence"      javaType="double"/>
 		<result property="latency"      column="rec_latency"     javaType="long"/>
-		<result property="metaData"     column="rec_meta"         jdbcType="BLOB"/>
+		<result property="metaData"     column="rec_meta"        jdbcType="BLOB"/>
 		<result property="userName"     column="user_name"       javaType="string"/>
 		<result property="timeStamp"    column="date"            jdbcType="TIMESTAMP"/>
-	</resultMap>
-	
-	<resultMap id="recTag"	class="recTag">
-		<result property="name"         column="tag"             javaType="string"/>
-		<result property="score"        column="score"           javaType="double"/>
-		<result property="confidence"   column="confidence"      javaType="double"/>
-	</resultMap>
-	
-	<resultMap id="recLog_result" class="rectag">
-		<result property="name"         column="tag"             javaType="string"/>
-		<result property="score"        column="score"           javaType="double"/>
-		<result property="confidence"   column="confidence"      javaType="double"/>
 	</resultMap>
 	
 	<resultMap id="recLog_preset" class="string">
@@ -75,29 +64,22 @@
 	<resultMap id="queryGuess" class="queryGuess">
 		<result property="qid"    column="query_id"   javaType="long" />
 		<result property="diff"   column="diff"       javaType="long" />
-	</resultMap>	
-
-	<resultMap id="postRec" class="postRecParam">
-		<result property="postID"      column="post_id"      javaType="integer" />
-		<result property="userName"    column="user_name"    javaType="string" />
-		<result property="date"        column="date"         jdbcType="DATETIME"/>
-		<result property="contentType" column="content_type" javaType="integer"/>
-		<result property="hash"        column="hash"         javaType="string"/>
-	</resultMap>	
-
-	<statement id="selectResults" resultMap="recLog_result"> <!-- resultClass="java.util.HashMap"> -->
-  		SELECT tag, score, confidence FROM recommender_result 
-  		WHERE query_id = #qid#
-	</statement>
-
-	<statement id="selectPresets" resultClass="java.util.HashMap">
-  		SELECT tag FROM recommender_preset 
-  		WHERE query_id = #qid#
-	</statement>
+	</resultMap>
 	
-	<statement id="selectRecId">
-		SELECT rec_id 
-		FROM recommender_settings
-		WHERE setting_id = #settingId#
-	</statement>
+	<resultMap id="entityParam" class="entityParam">
+		<result property="entityId" column="entity_id" javaType="string" />
+		<result property="date" column="date" jdbcType="DATETIME" />
+		<result property="userName" column="user_name" javaType="string" />
+		<result property="type" column="content_type" javaType="string" />
+	</resultMap>
+	
+	<resultMap id="recResponse"	class="recResultParam">
+		<result property="queryid" column="query_id" javaType="long" />
+		<result property="settingId" column="setting_id" javaType="long" />
+		<result property="recLatency" column="rec_latency" javaType="long" />
+		<result property="score" column="score" javaType="double"/>
+		<result property="confidence" column="confidence" javaType="double" />
+		<result property="resultTitle" column="resulttitle" javaType="string" />
+		<result property="resultId" column="resultid" javaType="string" />
+	</resultMap>
 </sqlMap>

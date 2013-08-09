@@ -2,6 +2,7 @@ package org.bibsonomy.recommender.connector.tags.meta;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -11,11 +12,12 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.junit.Test;
 
-import recommender.core.TagRecommender;
+import recommender.core.Recommender;
+import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
 import recommender.impl.tags.meta.WeightedMergingTagRecommender;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
-import recommender.impl.temp.copy.RecommendedTagComparator;
+import recommender.impl.temp.copy.RecommendationResultComparator;
 
 
 /**
@@ -28,17 +30,16 @@ public class WeightedMergingTagRecommenderTest {
 	public void testGetRecommendedTags() {
 		final WeightedMergingTagRecommender recommender = new WeightedMergingTagRecommender();
 
-		recommender.setTagRecommenders(new TagRecommender[] 
-		                                                  {
-				new FixedTagsTagRecommender(this.getTags1()),
-				new FixedTagsTagRecommender(this.getTags2())
-		                                                  }
-		);
+		ArrayList<Recommender<TagRecommendationEntity, RecommendedTag>> tagRecommenders = new ArrayList<Recommender<TagRecommendationEntity,RecommendedTag>>(2);
+		tagRecommenders.add(new FixedTagsTagRecommender(this.getTags1()));
+		tagRecommenders.add(new FixedTagsTagRecommender(this.getTags2()));
+		
+		recommender.setTagRecommenders(tagRecommenders);
 
 		recommender.setWeights(new double[] { 0.4, 0.6 });
 
 
-		final SortedSet<RecommendedTag> recommendedTags = recommender.getRecommendedTags(new PostWrapper<Bookmark>(this.getPost()));
+		final SortedSet<RecommendedTag> recommendedTags = recommender.getRecommendation(new PostWrapper<Bookmark>(this.getPost()));
 
 		assertEquals(recommender.getNumberOfTagsToRecommend(), recommendedTags.size());
 
@@ -50,7 +51,7 @@ public class WeightedMergingTagRecommenderTest {
 
 
 	private SortedSet<RecommendedTag> getTags1() {
-		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendationResultComparator<RecommendedTag>());
 
 		result.add(new RecommendedTag("semantic",   0.5, 0.1));
 		result.add(new RecommendedTag("web",        0.4, 0.1));
@@ -62,7 +63,7 @@ public class WeightedMergingTagRecommenderTest {
 	}
 
 	private SortedSet<RecommendedTag> getTags2() {
-		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendationResultComparator<RecommendedTag>());
 
 		result.add(new RecommendedTag("semantic", 0.2, 0.1));
 		result.add(new RecommendedTag("web",      0.3, 0.1));

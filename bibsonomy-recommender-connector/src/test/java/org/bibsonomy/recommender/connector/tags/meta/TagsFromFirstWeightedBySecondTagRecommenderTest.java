@@ -17,7 +17,7 @@ import recommender.core.model.RecommendedTag;
 import recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
 import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
-import recommender.impl.temp.copy.RecommendedTagComparator;
+import recommender.impl.temp.copy.RecommendationResultComparator;
 
 /**
  * @author rja
@@ -28,7 +28,7 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 	@Test
 	public void testAddRecommendedTags() {
 		final String[] firstFixedTags = new String[]{"eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "eins"};
-		final SortedSet<RecommendedTag> secondFixedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		final SortedSet<RecommendedTag> secondFixedTags = new TreeSet<RecommendedTag>(new RecommendationResultComparator());
 		secondFixedTags.add(new RecommendedTag("eins", 0.3, 0.2));
 		secondFixedTags.add(new RecommendedTag("drei", 0.2, 0.2));
 		secondFixedTags.add(new RecommendedTag("vier", 0.5, 0.2));
@@ -49,7 +49,7 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		merger.setSecondTagRecommender(second);
 		merger.setNumberOfTagsToRecommend(5);
 
-		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(null);
+		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendation(null);
 
 
 		/*
@@ -84,7 +84,7 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setResource(bookmark);
 
-		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(new PostWrapper<Bookmark>(post));
+		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendation(new PostWrapper<Bookmark>(post));
 
 		/*
 		 *  check containment and order of top tags
@@ -107,7 +107,7 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 	@Test
 	public void testAddRecommendedTags2() {
 		final String[] firstFixedTags = new String[]{"eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "eins"};
-		final SortedSet<RecommendedTag> secondFixedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		final SortedSet<RecommendedTag> secondFixedTags = new TreeSet<RecommendedTag>(new RecommendationResultComparator());
 		secondFixedTags.add(new RecommendedTag("a", 0.3, 0.2));
 		secondFixedTags.add(new RecommendedTag("b", 0.2, 0.2));
 		secondFixedTags.add(new RecommendedTag("c", 0.5, 0.2));
@@ -121,7 +121,7 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		merger.setSecondTagRecommender(second);
 		merger.setNumberOfTagsToRecommend(5);
 
-		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(null);
+		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendation(null);
 
 		/*
 		 *  check containment and order of top tags

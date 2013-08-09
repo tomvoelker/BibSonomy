@@ -1,7 +1,7 @@
 package org.bibsonomy.recommender.connector.factories;
 
 import recommender.core.interfaces.factories.TagRecommendationEntityFactory;
-import recommender.core.model.TagRecommendationEntity;
+import recommender.core.interfaces.model.TagRecommendationEntity;
 
 public class ConnectorTagRecommendationEntityFactory implements
 		TagRecommendationEntityFactory {

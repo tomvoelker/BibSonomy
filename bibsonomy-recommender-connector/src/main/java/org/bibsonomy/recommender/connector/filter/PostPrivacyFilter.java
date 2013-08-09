@@ -1,6 +1,5 @@
 package org.bibsonomy.recommender.connector.filter;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
@@ -9,28 +8,26 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.recommender.connector.model.GroupWrapper;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.connector.model.UserWrapper;
 
 import recommender.core.interfaces.filter.PrivacyFilter;
-import recommender.core.interfaces.model.RecommendationGroup;
-import recommender.core.model.TagRecommendationEntity;
+import recommender.core.interfaces.model.TagRecommendationEntity;
 
-public class PostPrivacyFilter implements PrivacyFilter {
+public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity> {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public TagRecommendationEntity filterPost(TagRecommendationEntity post) {
+	public TagRecommendationEntity filterEntity(TagRecommendationEntity post) {
 		
-		Set<Group> groups = new HashSet<Group>();
-		for(RecommendationGroup group : post.getGroups()) {
-			if(!(group instanceof GroupWrapper)) {
-				return null;
-			} else {
-				groups.add(((GroupWrapper) group).getGroup());
-			}
+		final Set<Group> groups;
+		if(post instanceof PostWrapper<?>) {
+			groups = ((PostWrapper<Resource>) post).getPost().getGroups();
+		} else {
+			groups = null;
 		}
 		
-		if (!groups.contains(GroupUtils.getPublicGroup())) {
+		if (groups == null || !groups.contains(GroupUtils.getPublicGroup())) {
 			/*
 			 * The post does not contain the public group -> no parts of it
 			 * are public.
@@ -54,8 +51,10 @@ public class PostPrivacyFilter implements PrivacyFilter {
 			 * create a copy of the post which is returned
 			 */
 			final Post<BibTex> postCopy = new Post<BibTex>();
-			postCopy.setDate(post.getDate());
-			postCopy.setDescription(post.getDescription());
+			if (post.getUser() instanceof UserWrapper) {
+				postCopy.setUser(((UserWrapper) post.getUser()).getUser());
+			}
+			postCopy.setContentId(Integer.parseInt(post.getId()));
 			
 			/*
 			 * bibtex
@@ -108,8 +107,10 @@ public class PostPrivacyFilter implements PrivacyFilter {
 			 * create a copy of the post which is returned
 			 */
 			final Post<Bookmark> postCopy = new Post<Bookmark>();
-			postCopy.setDate(post.getDate());
-			postCopy.setDescription(post.getDescription());
+			if (post.getUser() instanceof UserWrapper) {
+				postCopy.setUser(((UserWrapper) post.getUser()).getUser());
+			}
+			postCopy.setContentId(Integer.parseInt(post.getId()));
 			
 			/*
 			 * bookmark

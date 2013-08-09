@@ -15,30 +15,30 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.connector.database.DBLogConfigBibSonomy;
+import org.bibsonomy.recommender.connector.database.RecommenderBibTexDBLogic;
 import org.bibsonomy.recommender.connector.filter.PostPrivacyFilter;
+import org.bibsonomy.recommender.connector.model.BibsonomyRendererFactoryWrapper;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.connector.testutil.SelectCounter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import recommender.core.Recommender;
 import recommender.core.database.DBLogic;
 import recommender.core.interfaces.database.RecommenderDBAccess;
-import recommender.core.interfaces.filter.PrivacyFilter;
-import recommender.core.interfaces.tags.TagRecommenderConnector;
+import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.core.interfaces.tags.RecommenderConnector;
 import recommender.core.model.RecommendedTag;
-import recommender.core.model.TagRecommendationEntity;
-import recommender.impl.multiplexer.MultiplexingTagRecommender;
-import recommender.impl.multiplexer.RecommendedTagResultManager;
+import recommender.impl.multiplexer.MultiplexingRecommender;
+import recommender.impl.multiplexer.RecommendationResultManager;
 import recommender.impl.tags.simple.DummyTagRecommender;
-import recommender.impl.temp.copy.RecommendedTagComparator;
+import recommender.impl.temp.copy.RecommendationResultComparator;
 
 /**
  * @author fei
@@ -53,26 +53,27 @@ public class MultiplexingTagRecommenderTest {
 	private static final int MAXSTORERECOMMENDER = 50;
 	private static final int MAXSTORENROFTAGS    = 5;
 
-	private static DBLogic dbLogic;
+	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
 	private static RecommenderDBAccess dbAccess;
 
+	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
-		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogic.class);
-		dbAccess = RecommenderTestContext.getBeanFactory().getBean(RecommenderDBAccess.class);
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigBibSonomy.class);
+		dbAccess = RecommenderTestContext.getBeanFactory().getBean(RecommenderBibTexDBLogic.class);
 	}
 
 	//------------------------------------------------------------------------
 	// test cases
 	//------------------------------------------------------------------------
 	public class ResultStoreProducer extends Thread {
-		RecommendedTagResultManager store;
+		RecommendationResultManager<TagRecommendationEntity, RecommendedTag> store;
 		private final int nrOfTags;
 		private final Long qid;
 		private final Long sid;
 		private final long timeout;
 
-		public ResultStoreProducer(final RecommendedTagResultManager store, final Long qid, final Long sid, final int nrOfTags, final long timeout) {
+		public ResultStoreProducer(final RecommendationResultManager<TagRecommendationEntity, RecommendedTag> store, final Long qid, final Long sid, final int nrOfTags, final long timeout) {
 			this.store    = store;
 			this.nrOfTags = nrOfTags;
 			this.qid      = qid;
@@ -83,7 +84,7 @@ public class MultiplexingTagRecommenderTest {
 		@Override
 		public void run() {
 			final SortedSet<RecommendedTag> result = 
-				new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+				new TreeSet<RecommendedTag>(new RecommendationResultComparator<RecommendedTag>());
 			for( int i = 0; i < this.nrOfTags; i++ ) {
 				result.add(new RecommendedTag("TAG_"+ i, (1.0*i)/(this.nrOfTags+1), 0.5));
 			}
@@ -109,7 +110,7 @@ public class MultiplexingTagRecommenderTest {
 		}
 
 		// create store to test
-		final RecommendedTagResultManager store = new RecommendedTagResultManager();
+		final RecommendationResultManager<TagRecommendationEntity, RecommendedTag> store = new RecommendationResultManager<TagRecommendationEntity, RecommendedTag>();
 
 		//
 		// spawn MAXSTORERECOMMENDER for each query id
@@ -172,7 +173,7 @@ public class MultiplexingTagRecommenderTest {
 	@Test
 	public void testMultiThreading() throws Exception {
 		// create dummy recommenders
-		final List<TagRecommenderConnector> recos = new ArrayList<TagRecommenderConnector>(NROFRECOS);
+		final List<RecommenderConnector<TagRecommendationEntity, RecommendedTag>> recos = new ArrayList<RecommenderConnector<TagRecommendationEntity, RecommendedTag>>(NROFRECOS);
 		for( int i = 0; i < NROFRECOS; i++ ) {
 			final DummyTagRecommender reco = new DummyTagRecommender();
 			reco.setWait(MSTOWAIT);
@@ -188,10 +189,11 @@ public class MultiplexingTagRecommenderTest {
 		selector.setDbLogic(dbLogic);
 
 		// create multiplexer
-		final MultiplexingTagRecommender multi = new MultiplexingTagRecommender();
+		final MultiplexingRecommender<TagRecommendationEntity, RecommendedTag> multi = new MultiplexingRecommender<TagRecommendationEntity, RecommendedTag>();
 		multi.setDbLogic(dbLogic);
 		multi.setDbAccess(dbAccess);
-		multi.setPostPrivacyFilter(new PostPrivacyFilter());
+		multi.setPrivacyFilter(new PostPrivacyFilter());
+		multi.setRenderer(new BibsonomyRendererFactoryWrapper());
 		multi.setResultSelector(selector);
 		multi.setQueryTimeout(5*MSTOWAIT);
 
@@ -201,14 +203,12 @@ public class MultiplexingTagRecommenderTest {
 		// initialize multiplexer
 		multi.init();
 
-		final Recommender recommender = new Recommender();
-		recommender.setTagRecommender(multi);
 		// query recommender
 		final TagRecommendationEntity post = createPost();
-		recommender.getRecommendedTags(post);
+		multi.getRecommendation(post);
 
 		// shut down
-		for( final TagRecommenderConnector reco : recos ) {
+		for( final RecommenderConnector<TagRecommendationEntity, RecommendedTag> reco : recos ) {
 			reco.disconnect();
 		}
 

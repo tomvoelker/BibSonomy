@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
@@ -13,14 +15,18 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameParser;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.recommender.connector.model.ResourceWrapper;
+import org.bibsonomy.recommender.connector.model.TagWrapper;
+
+import recommender.core.interfaces.model.RecommendationTag;
 
 /**
  * @author Lukas
  * @version $Id$
  */
-public class BibTexResultParam {
+public class RecommendationBibTexParam {
 
-	private String contentId;
+	private String id;
 	private String intrahash;
 	private String interhash;
 	private String title;
@@ -31,6 +37,7 @@ public class BibTexResultParam {
 	private String bibtexKey;
 	private String authors;
 	private String date;
+	private String ownerName;
 	private int group;
 	
 	/**
@@ -109,14 +116,14 @@ public class BibTexResultParam {
 	/**
 	 * @return the contentId
 	 */
-	public String getContentId() {
-		return this.contentId;
+	public String getId() {
+		return this.id;
 	}
 	/**
 	 * @param contentId the contentId to set
 	 */
-	public void setContentId(String contentId) {
-		this.contentId = contentId;
+	public void setId(String id) {
+		this.id = id;
 	}
 	/**
 	 * @return the intrahash
@@ -155,15 +162,26 @@ public class BibTexResultParam {
 		this.authors = authors;
 	}
 	/**
+	 * @param ownerName the owne's name
+	 */
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+	/**
+	 * @return the owners name
+	 */
+	public String getOwnerName() {
+		return ownerName;
+	}
+	
+	/**
 	 * @return a post created with the database information
 	 */
-	public Post<BibTex> getCorrespondingPost() {
-		Post<BibTex> post = new Post<BibTex>();
-		List<Post<? extends Resource>> correspondingPosts = new ArrayList<Post<?>>();
+	public ResourceWrapper getCorrespondingRecommendationItem() {
+		
 		BibTex bib = new BibTex();
 		Set<Group> groups = new HashSet<Group>();
 		
-		correspondingPosts.add(post);
 		groups.add(new Group(this.group));
 		
 		bib.setAbstract(this.bibtexAbstract);
@@ -173,22 +191,31 @@ public class BibTexResultParam {
 		bib.setInterHash(this.interhash);
 		bib.setJournal(this.journal);
 		bib.setTitle(this.title);
-		bib.setPosts(correspondingPosts);
-		bib.setYear(date.split("-")[0]);
-		bib.setMonth(date.split("-")[1]);
-		bib.setDay(date.split("-")[2]);
+		Matcher dateDataFinder = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})").matcher(this.date);
+		if(dateDataFinder.find()) {
+			bib.setYear(dateDataFinder.group(1));
+			bib.setMonth(dateDataFinder.group(2));
+			bib.setDay(dateDataFinder.group(3));
+		}
 		try {
 			bib.setAuthor(PersonNameParser.parse(authors));
 		} catch (PersonListParserException ex) {
 			//do nothing, no author available
 		}
 
-		post.setGroups(groups);
-		post.setContentId(Integer.parseInt(contentId));
-		post.setTags(new HashSet<Tag>(tags));
+		ResourceWrapper wrapper = new ResourceWrapper(bib);
+		wrapper.setId(this.interhash+"-"+this.ownerName);
 		
-		post.setResource(bib);
-		return post;
+		if (tags != null) {
+			List<RecommendationTag> wrappedTags = new ArrayList<RecommendationTag>();
+			for (Tag t : tags) {
+				wrappedTags.add(new TagWrapper(t));
+			}
+			wrapper.setTags(wrappedTags);
+		}
+		
+		
+		return wrapper;
 	}
 	/**
 	 * @return the tags

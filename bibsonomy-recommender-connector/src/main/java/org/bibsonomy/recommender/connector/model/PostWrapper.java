@@ -10,10 +10,17 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 
-import recommender.core.interfaces.model.RecommendationGroup;
 import recommender.core.interfaces.model.RecommendationTag;
 import recommender.core.interfaces.model.RecommendationUser;
-import recommender.core.model.TagRecommendationEntity;
+import recommender.core.interfaces.model.TagRecommendationEntity;
+
+/**
+ * This class wraps a bibsonomy post to pass it to the recommender framework
+ * 
+ * @author Lukas
+ *
+ * @param <T>
+ */
 
 public class PostWrapper <T extends Resource> implements TagRecommendationEntity {
 
@@ -38,103 +45,95 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 	
 	@Override
 	public Date getDate() {
-		return this.post.getDate();
+		if(this.post != null) {
+			return this.post.getDate();
+		}
+		return new Date();
 	}
 
 	@Override
 	public void setDate(Date date) {
-		this.post.setDate(date);
-	}
-
-	@Override
-	public String getDescription() {
-		return this.post.getDescription();
-	}
-
-	@Override
-	public void setDescription(String description) {
-		this.post.setDescription(description);
-	}
-
-	@Override
-	public Set<RecommendationTag> getTags() {
-		HashSet<RecommendationTag> resultTags = new HashSet<RecommendationTag>();
-		for(Tag t : this.post.getTags()) {
-			resultTags.add(new TagWrapper(t));
+		if(this.post != null) {
+			this.post.setDate(date);
 		}
-		return resultTags;
 	}
 
 	@Override
-	public void setTags(Set<RecommendationTag> tags) {
-		HashSet<Tag> resultTags = new HashSet<Tag>();
-		for(RecommendationTag t : tags) {
-			resultTags.add(((TagWrapper) t).getTag());
+	public String getId() {
+		if(this.post != null) {
+			return ""+this.post.getContentId();
 		}
-		this.post.setTags(resultTags);
+		return null;
 	}
 
 	@Override
-	public Set<RecommendationGroup> getGroups() {
-		HashSet<RecommendationGroup> resultGroups = new HashSet<RecommendationGroup>();
-		for(Group g : this.post.getGroups()) {
-			resultGroups.add(new GroupWrapper(g));
+	public void setId(String id) {
+		if(this.post != null) {
+			this.post.setContentId(Integer.parseInt(id));
 		}
-		return resultGroups;
-	}
-
-	@Override
-	public void setGroups(Set<RecommendationGroup> groups) {
-		HashSet<Group> resultGroups = new HashSet<Group>();
-		for(RecommendationGroup g : groups) {
-			resultGroups.add(((GroupWrapper) g).getGroup());
-		}
-		this.post.setGroups(resultGroups);
-	}
-
-	@Override
-	public Integer getID() {
-		return this.post.getContentId();
-	}
-
-	@Override
-	public void setID(Integer id) {
-		this.post.setContentId(id);
 	}
 
 	@Override
 	public RecommendationUser getUser() {
-		return new UserWrapper(this.post.getUser());
+		if(this.post != null) {
+			return new UserWrapper(this.post.getUser());
+		}
+		return null;
 	}
 
 	@Override
 	public void setUser(RecommendationUser user) {
-		this.post.setUser(((UserWrapper) user).getUser());
+		if(this.post != null) {
+			this.post.setUser(((UserWrapper) user).getUser());
+		}
 	}
 
 	@Override
 	public String getTitle() {
-		return this.post.getResource().getTitle();
+		if(this.post != null) {
+			if (this.post.getResource() != null) {
+				return this.post.getResource().getTitle();
+			}
+		}
+		return "";
 	}
 
 	@Override
 	public void setTitle(String title) {
-		this.post.getResource().setTitle(title);
+		if(this.post != null) {
+			if (this.post.getResource() != null) {
+				this.post.getResource().setTitle(title);
+			}
+		}
 	}
 
 	@Override
 	public String getUrl() {
-		if (this.post.getResource() instanceof BibTex) {
-			return ((BibTex) this.post.getResource()).getUrl();
+		if(this.post != null) {
+			if (this.post.getResource() != null &&
+					this.post.getResource() instanceof BibTex) {
+				return ((BibTex) this.post.getResource()).getUrl();
+			}
 		}
 		return "";
 	}
 
 	@Override
 	public void setUrl(String url) {
-		if (this.post.getResource() instanceof BibTex) {
-			((BibTex) this.post.getResource()).setUrl(url);
+		if(this.post != null) {
+			if (this.post.getResource() != null && 
+					this.post.getResource() instanceof BibTex) {
+				((BibTex) this.post.getResource()).setUrl(url);
+			}
 		}
+	}
+
+	@Override
+	public String getUserName() {
+		if(this.post != null && this.post.getUser() != null) {
+			return this.post.getUser().getName();
+		}
+		return "";
 	}
 	
 }

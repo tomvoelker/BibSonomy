@@ -1,10 +1,17 @@
 package org.bibsonomy.recommender.connector.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
+import recommender.core.interfaces.model.ItemRecommendationEntity;
+import recommender.core.interfaces.model.RecommendationItem;
+import recommender.core.interfaces.model.RecommendationTag;
 import recommender.core.interfaces.model.RecommendationUser;
 
-public class UserWrapper implements RecommendationUser{
+public class UserWrapper implements RecommendationUser, ItemRecommendationEntity{
 
 	private User user;
 	
@@ -17,28 +24,39 @@ public class UserWrapper implements RecommendationUser{
 	 */
 	@Override
 	public String getId() {
-		return user.getOpenID();
+		if( user != null ) {
+			return user.getName();
+		}
+		return "";
 	}
 	/**
 	 * @param id the id to set
 	 */
 	@Override
 	public void setId(String id) {
-		this.user.setOpenID(id);
+		if( user != null ) {
+			this.user.setName(id);
+		}
 	}
+		
 	/**
 	 * @return the name
 	 */
 	@Override
 	public String getName() {
-		return this.user.getName();
+		if( user != null ) {
+			return this.user.getName();
+		}
+		return null;
 	}
 	/**
 	 * @param name the name to set
 	 */
 	@Override
 	public void setName(String name) {
-		this.user.setName(name);
+		if( user != null ) {
+			this.user.setName(name);
+		}
 	}
 
 	public User getUser() {
@@ -47,6 +65,32 @@ public class UserWrapper implements RecommendationUser{
 	
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Override
+	public String getUserName() {
+		if(this.user != null) {
+			return this.user.getName();
+		}
+		return "";
+	}
+
+	@Override
+	public List<RecommendationTag> getTags() {
+		if(this.user != null && this.user.getTags() != null) {
+			List<RecommendationTag> tags = new ArrayList<RecommendationTag>();
+			for(Tag t : this.user.getTags()) {
+				tags.add(new TagWrapper(t));
+			}
+			return tags;
+		}
+		return new ArrayList<RecommendationTag>();
+	}
+
+	@Override
+	public List<RecommendationItem> getItems() {
+		//TODO add implementation
+		return new ArrayList<RecommendationItem>();
 	}
 
 }
