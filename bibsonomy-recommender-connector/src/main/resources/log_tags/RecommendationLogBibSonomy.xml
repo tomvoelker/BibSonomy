@@ -461,10 +461,10 @@
 	<!--+
 	    | Connect postID with recommmendation
 	    +-->
-	<insert id="connectWithEntity" parameterClass="entityParam">
+	<insert id="connectWithEntity" parameterClass="postParam">
 	    INSERT INTO recommender_postmap
-	       (post_id, user_name, date )
-	    VALUES ( #entityId#, #userName#, #date# )
+	       (post_id, user_name, date, hash )
+	    VALUES ( #postID#, #userName#, #date#, #hash# )
 	</insert>
 
 	<!--+

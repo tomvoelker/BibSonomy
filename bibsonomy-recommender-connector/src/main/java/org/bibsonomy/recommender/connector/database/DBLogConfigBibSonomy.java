@@ -17,11 +17,16 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.database.params.BibRecQueryParam;
+import org.bibsonomy.recommender.connector.database.params.PostRecParam;
 import org.bibsonomy.recommender.connector.database.params.RecommendedTagParam;
+import org.bibsonomy.recommender.connector.filter.PostPrivacyFilter;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.connector.model.ResourceWrapper;
 
 import recommender.core.database.RecommenderDBSession;
+import recommender.core.database.params.EntityParam;
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecQuerySettingParam;
 import recommender.core.database.params.ResultParam;
@@ -74,6 +79,32 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 
 			recommenderSession.close();
 
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public void connectWithRecommendationEntity(TagRecommendationEntity entity,
+			String entityID) {
+		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
+		try {
+			
+			if(entity instanceof PostWrapper) {
+				Post post = ((PostWrapper) entity).getPost();
+				final PostRecParam postMap = new PostRecParam();
+				postMap.setUserName(entity.getUserName());
+				postMap.setDate(new Date());
+				postMap.setPostID(post.getContentId());
+				postMap.setHash(post.getResource().getIntraHash());
+				
+				// insert data
+				recommenderSession.insert("connectWithEntity", postMap);
+			} else {
+				log.error("TagRecommendationentity was not a PostWrapper, this should not happen!");
+			}
+
+		} finally {
+			recommenderSession.close();
 		}
 	}
 	
