@@ -48,28 +48,23 @@ public class SimplePingback implements Pingback {
 	 */
 	public String sendPingback(final Post<? extends Resource> post) {
 		/*
-		 * send only pings for public posts
+		 * extract URL
 		 */
-		if (GroupUtils.isPublicGroup(post.getGroups())) {
-			/*
-			 * extract URL
-			 */
-			final String linkAddress = getLinkAddress(post);
-			if (present(linkAddress)) {
-				final Link link = linkLoader.loadLink(linkAddress);
-				if (link.isSuccess()) {
-					log.debug("found pingback link");
-					if (link.isPingbackEnabled()) {
-						return "pingback: " + sendPingback(post, link);
-					} else if (link instanceof TrackbackLink) {
-						/*
-						 * check for trackback
-						 */
-						log.debug("found trackback link");
-						final TrackbackLink trackbackLink = (TrackbackLink) link;
-						if (trackbackLink.isTrackbackEnabled()) {
-							return "trackback: " + sendTrackback(post, trackbackLink);
-						}
+		final String linkAddress = getLinkAddress(post);
+		if (present(linkAddress)) {
+			final Link link = linkLoader.loadLink(linkAddress);
+			if (link.isSuccess()) {
+				log.debug("found pingback link");
+				if (link.isPingbackEnabled()) {
+					return "pingback: " + sendPingback(post, link);
+				} else if (link instanceof TrackbackLink) {
+					/*
+					 * check for trackback
+					 */
+					log.debug("found trackback link");
+					final TrackbackLink trackbackLink = (TrackbackLink) link;
+					if (trackbackLink.isTrackbackEnabled()) {
+						return "trackback: " + sendTrackback(post, trackbackLink);
 					}
 				}
 			}
@@ -120,6 +115,10 @@ public class SimplePingback implements Pingback {
 
 	private String sendTrackback(final Post<? extends Resource> post, final TrackbackLink link) {
 		try {
+			if(!present(trackbackClient)) {
+				log.error("Trackback to '" + link.getUrl() +"' failed because no trackback client was enabled!");
+				return "error (no trackback client available)";
+			}
 			if (log.isDebugEnabled()) {
 				log.debug("sending trackback for " + link.getUrl() + " to " + link.getPingbackUrl());
 			}

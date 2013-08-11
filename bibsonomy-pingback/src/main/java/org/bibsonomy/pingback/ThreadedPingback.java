@@ -50,7 +50,7 @@ public class ThreadedPingback extends SimplePingback implements Runnable {
 	public void clearQueue() throws InterruptedException {
 		log.debug("clearing queue (size = " + queue.size() + ")");
 		while (!this.queue.isEmpty()) {
-			super.sendPingback(this.queue.poll());
+			log.debug(super.sendPingback(this.queue.poll()));
 			Thread.sleep(100);// wait a bit between pings
 		}
 		log.debug("finished");
