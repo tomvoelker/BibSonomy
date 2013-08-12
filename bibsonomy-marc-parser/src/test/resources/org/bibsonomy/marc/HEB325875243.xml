@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">17</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB325875243</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB325875243</str>
+    <str name="fullrecord">00956nam a2200289 cb4500001001000000003000700010005001700017006001900034008004100053020003700094035002500131040003900156041000800195082003300203084002200236085001700258090000600275245007200281250004100353260003100394300001000425490003300435504002100468650005800489650005600547830006300603#30;325875243#30;DE-603#30;20130717232410.0#30;a           00    #30;130717s2013    xx            00    ger c#30;  #31;a9783774112308#31;9978-3-7741-1230-8#30;  #31;a(DE-599)HEB325875243#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;ager#30;04#31;81\x#31;a615.778#31;qDE-101#31;222/ger#30;  #31;a610#31;qDE-101#31;2sdnb#30;  #31;81\x#31;b615.778#30;  #31;nb#30;10#31;aTabellen für die Rezeptur#31;bPlausibilitätsprüfung in der Apotheke#30;  #31;a7., überarb. Aufl., Stand: Mai 2013#30;3 #31;aEschborn#31;bGovi-Verl.#31;c2013#30;  #31;a92 S.#30;1 #31;aDeutscher Arzneimittel-Codex#30;  #31;aLiteraturangaben#30; 7#31;0(DE-588)4011488-0#31;0(DE-603)085023396#31;aDermatikum#31;2gnd#30; 7#31;0(DE-588)4177965-4#31;0(DE-603)085841692#31;aRezeptur#31;2gnd#30; 0#31;aDeutscher Arzneimittel-Codex#31;w(DE-603)028938712#31;9tabefudir#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 32587524
+001@    $03 
+001A    $00030:17-07-13 
+001B    $t23:24:10.000 $01999:17-07-13 
+001C    $t08:34:30.000 $00030:17-07-13 
+001D    $00030:17-07-13 
+001U    $0utf8 
+001X    $00 
+002@    $0AFu 
+003@    $0325875243 
+004A    $A978-3-7741-1230-8 
+007A    $0325875243 $aHEB 
+010@    $ager 
+011@    $a2013 
+017A    $asf 
+021A    $dPlausibilitätsprüfung in der Apotheke $aTabellen für die Rezeptur 
+032@    $a7., überarb. Aufl., Stand: Mai 2013 
+033A    $pEschborn $nGovi-Verl. 
+034D    $a92 S. 
+036C    $aDeutscher Arzneimittel-Codex $xtabefudir 
+036D    $9028938712 $8Deutscher Arzneimittel-Codex $xtabefudir 
+041A    $#Dermaltherapeutikum $#Dermatologikum $#Hautmittel $74011488-0 $9085023396 $8Dermatikum 
+041A/01 $#Rezeptur Pharmazie $74177965-4 $9085841692 $8Rezeptur 
+045E    $c610 
+045F    $eDDC22ger $a615.778 
+045F/01 $a615.778 
+046M    $aLiteraturangaben 
+
+lok: 32587524 3
+101B    $t08:34:30.000 $017-07-13 
+101C    $017-07-13 
+101U    $0utf8 
+145S/01 $a018 
+
+exp: 32587524 3 1 #EPN
+201B/01 $t08:34:30.000 $017-07-13 
+201C/01 $017-07-13 
+201U/01 $0utf8 
+203@/01 $0697848663 
+208@/01 $bzBb $a17-07-13 
+209A/01 $f003 $ds $a09/VR 2010 D117-Tabellen $h09 VR 2010 D117 / B TB $x00 
+209B/01 $a3500 $x05 
+209C/01 $a13/SCh 86/54 $h13 SCH 86 54 
+209G/01 $a2005392556 $x00 
+209G/01 $aSonderstandort laufende Pharmakopöen in: Deutscher Arzneimittel-Codex, Neues Rezeptur-Formularium $x01 
+247C/01 $9102598274 $8601003-9 &lt;30/3&gt;Frankfurt, Universität Frankfurt, Bibliothek Naturwissenschaften (BNat) 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>
