@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import junit.framework.Assert;
 
@@ -38,15 +39,15 @@ public abstract class AbstractDataDownloadingTestCase {
 	
 	protected DualData downloadMarcWithPica(String hebisId) {
 		Document doc;
-		try {
-			//doc = parse(new URL("http://wastl.hebis.uni-frankfurt.de:8983/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));
-			doc = parse(readCached(hebisId));
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		doc = download(hebisId, false);
 		Node node = doc.selectSingleNode( "//str[@name='fullrecord']" );
+		if (node == null) {
+			doc = download(hebisId, true);
+			node = doc.selectSingleNode( "//str[@name='fullrecord']" );
+			if (node == null) {
+				throw new NoSuchElementException("no object with hebis id='" + hebisId + "' found");
+			}
+		}
         String name = node.getText();
         name = name.replace("#29;", "\u001D");
         name = name.replace("#30;", "\u001E");
@@ -59,12 +60,28 @@ public abstract class AbstractDataDownloadingTestCase {
         return new DualDataWrapper(marcData, picaData);
 	}
 
-	private InputStream readCached(String hebisId) throws MalformedURLException, IOException {
+	public Document download(String hebisId, boolean overwriteWithAlternative) {
+		try {
+			return parse(readCached(hebisId, overwriteWithAlternative));
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private InputStream readCached(String hebisId, boolean overwriteWithAlternative) throws MalformedURLException, IOException {
 		final String fileName = hebisId + ".xml";
-		InputStream rVal = this.getClass().getResourceAsStream(fileName);
+		InputStream rVal = (overwriteWithAlternative == true) ? null : this.getClass().getResourceAsStream(fileName);
 		if (rVal == null) {
 			final String absoluteFileName = "src/test/resources/" + getClass().getPackage().getName().replace('.','/') + "/"  + fileName;
-			InputStream is = new URL("http://solr.hebis.de/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true").openStream();
+			InputStream is;
+			if (overwriteWithAlternative == true) {
+				is = new URL("http://solr.hebis.de/solr/hebis/select?q=id%3A" + hebisId + "&wt=xml&indent=true").openStream();
+			} else {
+				//new URL("http://wastl.hebis.uni-frankfurt.de:8983/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));
+				is = new URL("http://solr.hebis.de/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true").openStream();
+			}
 			OutputStream os = new FileOutputStream(absoluteFileName);
 			IOUtils.copy(is, os);
 			is.close();
