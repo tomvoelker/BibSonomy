@@ -2,17 +2,22 @@ package org.bibsonomy.webapp.controller.resource;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
+import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -59,6 +64,23 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
 		
 		return this.workOnResource(command, format, longHash, requUser, groupingEntity);
+	}
+	
+	/**
+	 * Creates the Map with the Copy Metadata.
+	 */
+	private Map<String, List<String>> createCopyUserMap(final List<PostMetaData> metaDataList) {
+		Map<String, List<String>> res = new HashMap<String, List<String>>();
+		for (PostMetaData data : metaDataList) {
+			List<String> copyUsers = res.get(data.getValue());
+			// author does not yet exist ?
+			if ( copyUsers == null ) {
+				copyUsers = new ArrayList<String>();
+			} 
+			copyUsers.add(data.getUserName());
+			res.put(data.getValue(), copyUsers);
+		}
+		return res;
 	}
 	
 	protected String shortHash(final String longHash) {
@@ -156,6 +178,12 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			command.getListCommand(this.getResourceClass()).setList(Collections.singletonList(post));
 		}
 		
+		final List<PostMetaData> metaData = this.logic.getPostMetaData(HashID.INTER_HASH, goldHash, null, null);
+		if (metaData != null && metaData.size() > 0) {
+			// try to create the copy users map
+			command.setCopyUsersMap(this.createCopyUserMap(metaData));
+		}
+	
 		/*
 		 * post process and sort list (e.g., insert open URL)
 		 */

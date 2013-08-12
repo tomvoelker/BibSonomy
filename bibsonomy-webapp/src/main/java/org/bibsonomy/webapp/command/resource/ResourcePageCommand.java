@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command.resource;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Resource;
@@ -13,6 +14,8 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  */
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;
+	
+	private Map<String, List<String>> copyUsersMap;
 	
 	private List<DiscussionItem> discussionItems;
 	
@@ -76,5 +79,13 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	 */
 	public void setDiscussionItems(final List<DiscussionItem> discussionItems) {
 		this.discussionItems = discussionItems;
+	}
+
+	public Map<String, List<String>> getCopyUsersMap() {
+		return this.copyUsersMap;
+	}
+
+	public void setCopyUsersMap(Map<String, List<String>> copyUsersMap) {
+		this.copyUsersMap = copyUsersMap;
 	}
 }
