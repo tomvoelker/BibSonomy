@@ -160,6 +160,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
 		}
 		user.setApiKey(UserUtils.generateApiKey());
+		this.plugins.onUserUpdate(username, session);
 		this.update("updateApiKeyForUser", user, session);
 	}
 	
@@ -171,11 +172,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return the user's name
 	 */
 	public String updatePasswordForUser(final User user, final DBSession session) {
-		if (!present(this.getUserDetails(user.getName(), session).getName())) {
+		final String userName = user.getName();
+		if (!present(this.getUserDetails(userName, session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
 		}
+		this.plugins.onUserUpdate(userName, session);
 		this.update("updatePasswordForUser", user, session);
-		return user.getName();
+		return userName;
 	}
 	
 	/**
@@ -186,11 +189,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return the user's name
 	 */
 	public String updateUserSettingsForUser(final User user, final DBSession session) {
-		if (!present(this.getUserDetails(user.getName(), session).getName())) {
+		final String userName = user.getName();
+		if (!present(this.getUserDetails(userName, session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user settings for nonexistent user");
 		}
+		this.plugins.onUserUpdate(userName, session);
 		this.update("updateUserSettings", user, session);
-		return user.getName();
+		return userName;
 	}
 	
 	/**
@@ -200,11 +205,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return
 	 */
 	public String updateLimitedUser(final User user, final DBSession session) {
-		if (!present(this.getUserDetails(user.getName(), session).getName())) {
+		final String userName = user.getName();
+		if (!present(this.getUserDetails(userName, session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update role of a nonexistent user");
 		}
+		this.plugins.onUserUpdate(userName, session);
 		this.update("updateLimitedUser", user, session);
-		return user.getName();
+		return userName;
 	}
 	
 	/**
@@ -217,14 +224,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	public String updateUserProfile(final User user, final DBSession session) {
 		session.beginTransaction();
 		try {
-			if (!present(this.getUserDetails(user.getName(), session).getName())) {
+			final String userName = user.getName();
+			if (!present(this.getUserDetails(userName, session).getName())) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
 			}
 			this.checkUser(user, session);
+			this.plugins.onUserUpdate(userName, session);
 			this.update("updateUserProfile", user, session);
 			session.commitTransaction();
 			
-			return user.getName();
+			return userName;
 		} finally {
 			session.endTransaction();
 		}
@@ -487,6 +496,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		*/
 		
+		// TODO: log remote ids?
 		this.deleteRemoteUser(user.getName(), session);
 		for (RemoteUserId remoteUserId : user.getRemoteUserIds()) {
 			this.insertRemoteUserId(user, remoteUserId, session);
