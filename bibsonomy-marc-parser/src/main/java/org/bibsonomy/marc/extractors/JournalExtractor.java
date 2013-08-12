@@ -95,7 +95,7 @@ public class JournalExtractor implements AttributeExtractor {
 		try {
 			String name = r.getFirstPicaFieldValue("039B", "$8");
 			if (ValidationUtils.present(name)) {
-				name = trimAndNormalize(name.replaceAll(expr, ""));
+				name = ExtendedMarcRecord.trimAndNormalize(name.replaceAll(expr, ""));
 			} else if (!ValidationUtils.present((name = r.getFirstPicaFieldValue("039B", "$c")))) {
 				return null;
 			}
@@ -106,15 +106,8 @@ public class JournalExtractor implements AttributeExtractor {
 		return null;
 	}
 
-	protected String trimAndNormalize(String val) {
-		if (val == null) {
-			return null;
-		}
-		return Normalizer.normalize(val.trim(), Form.NFC);
-	}
-
 	private String getVolume(ExtendedMarcWithPicaRecord r) {
-		String volume = trimAndNormalize(r.getFirstPicaFieldValue("031A", "$d", ""));
+		String volume = ExtendedMarcRecord.trimAndNormalize(r.getFirstPicaFieldValue("031A", "$d", ""));
 		if (volume.length() > 0) {
 			return volume;
 		}
@@ -122,7 +115,7 @@ public class JournalExtractor implements AttributeExtractor {
 	}
 
 	private String getYear(ExtendedMarcWithPicaRecord r) {
-		String year = trimAndNormalize(r.getFirstPicaFieldValue("031A", "$j", ""));
+		String year = ExtendedMarcRecord.trimAndNormalize(r.getFirstPicaFieldValue("031A", "$j", ""));
 		if (year.length() > 0)
 			return year;
 		return null;

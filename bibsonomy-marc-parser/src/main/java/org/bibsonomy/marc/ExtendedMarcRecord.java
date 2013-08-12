@@ -1,6 +1,8 @@
 package org.bibsonomy.marc;
 
 import java.io.IOException;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.List;
 
 import org.bibsonomy.util.ValidationUtils;
@@ -37,7 +39,7 @@ public class ExtendedMarcRecord {
 		if (ValidationUtils.present(val)) {
 			try {
 				a.append(delimiter);
-				a.append(val);
+				a.append(trimAndNormalize(val));
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);
 			}
@@ -65,5 +67,12 @@ public class ExtendedMarcRecord {
 	 */
 	public Record getRecord() {
 		return this.record;
+	}
+	
+	public static String trimAndNormalize(String val) {
+		if (val == null) {
+			return null;
+		}
+		return Normalizer.normalize(val.trim(), Form.NFC);
 	}
 }
