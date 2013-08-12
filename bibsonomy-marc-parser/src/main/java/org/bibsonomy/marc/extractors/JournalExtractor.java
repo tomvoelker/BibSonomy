@@ -24,6 +24,7 @@
 package org.bibsonomy.marc.extractors;
 
 import java.text.Normalizer;
+import java.text.Normalizer.Form;
 
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
@@ -32,28 +33,56 @@ import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
- * extracts journal from a PICA Record
+ * extracts journal from a PICA Record.
+ * 
+ * Martina Sauer (Email 2013-08-09): Der Unterschied zwischen Volume/Band und
+ * Number/Heft ist folgender: bei Zeitschriften hast du in der Regel immer eine
+ * Band- bzw. Jahrgangszählung: 1. Jg. 1950, 2. Jg. 1951, 3. Jg. 1952 usw. Und
+ * dann gibt es aber immer noch die Hefte/Nummern, die wöchentlich,
+ * zweiwöchentlich, monatlich oder so erscheinen und die auch gezählt werden
+ * 
  * 
  * @author Lukas
  * @version $Id$
  */
 public class JournalExtractor implements AttributeExtractor {
 	final String expr = "--.+--[:]?";
+
 	private ExtendedMarcWithPicaRecord record = null;
-	
+
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) throws IllegalArgumentException {
-		if(src instanceof ExtendedMarcWithPicaRecord) {
-			record = (ExtendedMarcWithPicaRecord)src;
-			if(record.getFirstPicaFieldValue("002@", "$0", "").indexOf("o")==-1) return;
+		if (src instanceof ExtendedMarcWithPicaRecord) {
+			record = (ExtendedMarcWithPicaRecord) src;
+			final String nullNull2At = record.getFirstPicaFieldValue("002@", "$0", "");
+			if (ValidationUtils.present(nullNull2At) && (nullNull2At.indexOf("o") == -1)) {
+				return;
+			}
+			final boolean isAufsatz = (ValidationUtils.present(nullNull2At) && (nullNull2At.length() > 1) && (nullNull2At.charAt(1) == 'o'));
 			String next = null;
 			StringBuilder sb = new StringBuilder();
-			if(ValidationUtils.present((next=getName(record))))
+			if (ValidationUtils.present((next = getName(record)))) {
 				sb.append(next);
-			if(ValidationUtils.present((next=getVolume(record))))
+			}
+			if (ValidationUtils.present((next = getVolume(record)))) {
 				sb.append(' ').append(next);
-			if(ValidationUtils.present((next=getYear(record))))
+			}
+			/*
+			 * Keine Jahreszahlen bei Aufsätzen (Mail von Martina Sauer 2013-08-09:
+			 * Zum 1. Fall: das ist ein Aufsatz und da solltet ihr tatsächlich
+			 * auf die Jahresangabe aus 011@ verzichten und ausschließlich die
+			 * Angaben aus 031A nehmen. Aufsätze erkennt man daran, dass der
+			 * zweite Buchstabe in 002@ ein kleines o ist (siehe auch:
+			 * http://www.hebis.de/de/1publikationen/arbeitsmaterialien/hebis-handbuch/kategorien/kategorien_detail.php?we_editObject_ID=2253)
+			 * Was genau sich jeweils hinter den Subfeldern in 031A verbirgt, könnt
+			 * ihr hier
+			 * http://www.hebis.de/de/suchfelder/handbuch_suche.php?we_objectID=2297&pid=2566
+			 * sehen, also $b für den Tag und $c für den Monat ist genau richtig.
+			 * Und $e für das Heft bzw. die Nr. ist auch richtig.
+			 */
+			if (!isAufsatz && ValidationUtils.present((next = getYear(record)))) {
 				sb.append(" (").append(next).append(')');
+			}
 			if (sb.length() > 0) {
 				target.setJournal(Normalizer.normalize(sb.toString(), Normalizer.Form.NFC));
 			}
@@ -61,33 +90,42 @@ public class JournalExtractor implements AttributeExtractor {
 			throw new IllegalArgumentException("expects ExtendedMarcWithPicaRecord");
 		}
 	}
-	
+
 	private String getName(ExtendedMarcWithPicaRecord r) {
 		try {
 			String name = r.getFirstPicaFieldValue("039B", "$8");
-			if(ValidationUtils.present(name)) {
-				name = name.replaceAll(expr, "");
-			} else if(!ValidationUtils.present((name=r.getFirstPicaFieldValue("039B", "$c")))) {
+			if (ValidationUtils.present(name)) {
+				name = trimAndNormalize(name.replaceAll(expr, ""));
+			} else if (!ValidationUtils.present((name = r.getFirstPicaFieldValue("039B", "$c")))) {
 				return null;
-    		}
+			}
 			return name;
 		} catch (RuntimeException e) {
-			//field not present
+			// field not present
 		}
 		return null;
-    }
-    
+	}
+
+	protected String trimAndNormalize(String val) {
+		if (val == null) {
+			return null;
+		}
+		return Normalizer.normalize(val.trim(), Form.NFC);
+	}
+
 	private String getVolume(ExtendedMarcWithPicaRecord r) {
-    	String volume = r.getFirstPicaFieldValue("031A", "$d", "");
-    	if(volume.length() > 0) return volume;
-    	return null;
-    }
-    
+		String volume = trimAndNormalize(r.getFirstPicaFieldValue("031A", "$d", ""));
+		if (volume.length() > 0) {
+			return volume;
+		}
+		return null;
+	}
+
 	private String getYear(ExtendedMarcWithPicaRecord r) {
-    	String year = r.getFirstPicaFieldValue("031A", "$j", "");
-    	if(year.length() > 0) return year;
-    	return null;
-    }
+		String year = trimAndNormalize(r.getFirstPicaFieldValue("031A", "$j", ""));
+		if (year.length() > 0)
+			return year;
+		return null;
+	}
 
 }
-

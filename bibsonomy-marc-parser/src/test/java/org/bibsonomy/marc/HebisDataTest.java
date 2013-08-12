@@ -42,6 +42,7 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 		Assert.assertEquals("10", bib.getDay());
 		Assert.assertEquals("5", bib.getMonth());
 		Assert.assertEquals("article", bib.getEntrytype());
+		Assert.assertEquals("[Frankfurter Rundschau <Frankfurt, Main> / S-Ausgabe]: Frankfurter Rundschau", bib.getJournal());
 	}
 	
 	@Test
