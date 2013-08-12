@@ -1473,7 +1473,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 
         				me.append(tagOriginSpan);
         			}
-                });
+            });
 			
 			/*
 			 *	- create a listener for the tab key
@@ -1515,6 +1515,96 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 function endTagAutocompletion (textfield) {
 	textfield.autocomplete('disable');
 };
+
+
+/**
+ * Function to start the post autocompletion.
+ * 
+ * @param textfield - the textfield for the autocompletion - e.g. $("#inpf")
+ */
+function startPostAutocompletion (textfield) {
+		
+	if (textfield[0] == null)
+		return;
+	
+	var userInput		= null;	
+		
+	var autocompleteObj = textfield.autocomplete({		
+		source: function( request, response ) {
+			
+			userInput = textfield.val();
+					
+			/*
+			 * if the user typed nothing - do nothing 
+			 */
+			if (userInput.length != 0) {
+				$.ajax({
+					url: "/json/titleSuggestion/bibtex/" + userInput,
+					success: function( data ) {
+						
+						var tags = $.map( data.items, function(item) {
+								return { value: (item.name),
+										 label: (item.name),
+										 count: (item.members)};
+							});
+						
+						
+						response(tags);
+					},
+					error: function (data) {
+						console.log("Ajax Error in startPostAutocompletion - functions.js");
+					}
+				});
+			}
+		},
+		minLength: 1,
+		select: function( event, ui ) {
+			return false;
+		},
+		focus: function( event, ui ) {
+			return false;
+		},
+        open: function(event,ui) {
+				
+            var acData = $(this).data('autocomplete');
+            var styledTerm		= null;
+            var termHighlighted = userInput;
+			
+			acData
+            .menu
+            .element
+            .find('a')
+            .each(function() {
+                
+            	var me = $(this);                
+                
+                /*
+                 * Example: user types "goo" - we want to suggest "google"
+                 * We take "google" and replace "goo" with the span with thin letters.
+                 */
+				var recommendedTag = me.text();					
+				
+				var regex = /(\(.*?\))/;
+				regex.exec(recommendedTag);
+				recommendedTag = recommendedTag.replace(/(\s\(.*?\))/, "");
+				var usageCounter = RegExp.$1;
+				
+				me.empty(); // remove old content
+                
+				var styledTerm = $('<span class="ui-autocomplete-term"></span>').text(termHighlighted);
+                
+    			me.append(styledTerm).append(recommendedTag.substring(termHighlighted.length));
+            });
+			
+			$(this).autocomplete('widget').css('z-index', 110);
+		}
+    });
+	
+	autocompleteObj.autocomplete('enable');
+	
+  	return false;	
+}
+
 
 /**
  * Function to setup radio buttons on /export/ page for the number of posts to export

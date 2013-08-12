@@ -326,10 +326,15 @@ function switchNavi(scope, element) {
 	/*
 	 * Start autocompletion if 'tag' in Search-navibar is chosen, otherwise quit autocompletion
 	 */
+	
+	$("#inpf").autocomplete('disable');
+	
 	if (scope == "tag"){
 		startTagAutocompletion($("#inpf"), false, true, false, false);
-	} else {
-		endTagAutocompletion($("#inpf"));
+	}
+	
+	if(scope == "search") {
+		startPostAutocompletion($("#inpf"));
 	}
 	
 	return false;

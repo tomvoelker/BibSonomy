@@ -1,0 +1,22 @@
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/export/json"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	>
+
+	<jsp:directive.attribute name="title" type="java.util.List" required="true" />
+	  	<c:forEach items="${command.postSuggestionTitle}" var="entry" varStatus="status">
+            <!-- sphere -->
+            {  
+                "type" 		: "Suggestion",
+                "name" 		: "${entry.first}",
+                "rating" 	: "${entry.second}"		
+            }<c:if test="${not status.last}">,</c:if>
+		</c:forEach>
+</jsp:root>

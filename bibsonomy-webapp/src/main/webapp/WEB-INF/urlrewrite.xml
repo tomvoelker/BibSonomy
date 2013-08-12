@@ -219,7 +219,17 @@
 		<to>/$1</to>
 	</rule>
 	
-
+	<rule>
+		<name>/titleSuggestion/POSTTYPE/POSTPREFIX</name>
+		<note>
+			Handles /postType as modifier and rewrites it as a parameter
+		</note>
+		<from>^/+titleSuggestion/(.+)/(.+)$</from>
+		<set type="parameter" name="postType">$1</set>
+		<set type="parameter" name="postPrefix">$2</set>
+		<to last="true">/titleSuggestion</to>
+	</rule>
+	
 	<!--  store requested path for each query -->
 	<!-- 
 		WARNING: please never put this after the quick tag editing rules, because there

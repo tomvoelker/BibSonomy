@@ -97,12 +97,17 @@
 
 	<!-- provides access to the response for all controllers, which need it -->
 	<bean id="responseLogic" class="org.bibsonomy.webapp.util.ResponseLogic" scope="request"/>
-		
+	
 	<bean id="oauthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic" scope="singleton" factory-method="getInstance"/>
 
 	<bean id="cookieAge" class="java.lang.Integer">
 		<constructor-arg value="31536000" /> <!-- one year (= 3600 * 24 * 365 seconds) -->
 	</bean>
+	
+	<!-- provides access to the post suggestion --> 
+<!--  	<bean id="titleSuggestionLogic" class="org.bibsonomy.webapp.util.TitleSuggestionLogic"> -->
+<!-- 		<property name="sourceFilePath" value="${titleSuggestion.sourceFilePath}"/> -->
+<!-- 	</bean> -->
 
 	<!-- provides access to cookies -->
 	<bean id="cookieLogic" class="org.bibsonomy.webapp.util.CookieLogic" scope="request">
@@ -610,6 +615,18 @@
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
 				</entry>
+<!-- 				<entry key="/titleSuggestion"> -->
+<!-- 					<bean parent="controllerBase"> -->
+<!-- 						<property name="controllerBeanName" value="titleSuggestionController"/> -->
+<!-- 						<property name="allowedFields"> -->
+<!-- 							<list> -->
+<!-- 								<value>postType</value> -->
+<!-- 								<value>postPrefix</value> -->
+<!-- 							</list> -->
+<!-- 						</property> -->
+						
+<!-- 					</bean> -->
+<!-- 				</entry> -->
 				<entry key="/errors/403">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="error403PageController"/>
@@ -878,6 +895,10 @@
 	</bean>
 	
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
+	
+<!-- 	<bean id="titleSuggestionController" class="org.bibsonomy.webapp.controller.ajax.TitleSuggestionController" scope="request"> -->
+<!-- 			<property name="titleSuggestionLogic" ref="titleSuggestionLogic"/> -->
+<!-- 	</bean> -->
 	
     <!--  #################### PUMA Controller #################### -->
 	<bean id="pumaHomepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request" parent="multiResourceListControllerWithTags">
