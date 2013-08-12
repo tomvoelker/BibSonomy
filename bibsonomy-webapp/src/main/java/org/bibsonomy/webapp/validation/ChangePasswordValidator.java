@@ -12,9 +12,8 @@ import org.springframework.validation.ValidationUtils;
  */
 public class ChangePasswordValidator implements Validator<SettingsViewCommand> {
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return SettingsViewCommand.class.equals(clazz);
 	}
 
