@@ -26,6 +26,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -100,6 +101,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
@@ -1119,7 +1121,11 @@ public class DBLogic implements LogicInterface {
 				for (final User user: group.getUsers()) {
 					this.groupDBManager.addUserToGroup(groupName, user.getName(), session);
 				}
+				break;				
+			case UPDATE_USER_SHARED_DOCUMENTS:
+				this.groupDBManager.updateUserSharedDocuments(group, session);
 				break;
+				
 			default:
 				throw new UnsupportedOperationException("The given method is not yet implemented.");
 			}
@@ -2829,6 +2835,21 @@ public class DBLogic implements LogicInterface {
 					return;
 				}
 			}
+		} finally {
+			session.close();
+		}
+	}	
+	
+	@Override
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
+		final DBSession session = openSession();
+		
+		try {
+			// show metadata only to admins.
+			if (this.permissionDBManager.isAdmin(this.loginUser)) {
+				return this.publicationDBManager.getPostMetaData(hashType, resourceHash, userName, metaDataPluginKey, session);
+			}
+			return null;
 		} finally {
 			session.close();
 		}

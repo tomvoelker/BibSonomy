@@ -56,7 +56,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getAllGroups() {
 		final List<Group> allGroups = groupDb.getAllGroups(0, 100, this.dbSession);
-		assertEquals(3, allGroups.size());
+		assertEquals(4, allGroups.size());
 
 		for (final Group group : allGroups) {
 			if (group.getName().startsWith("testgroup")) {
@@ -142,14 +142,14 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getGroupsForUser() {
-		// testuser1 is a member of testgroup(1|2|3)
+		// testuser1 is a member of testgroup(1|2|3|4)
 		List<Group> groups = groupDb.getGroupsForUser("testuser1", this.dbSession);
-		assertEquals(6, groups.size());
+		assertEquals(7, groups.size());
 		assertStandardGroups(groups);
 
-		// testuser2 is a member of testgroup1
+		// testuser2 is a member of testgroup(1|4)
 		groups = groupDb.getGroupsForUser("testuser2", this.dbSession);
-		assertEquals(4, groups.size());
+		assertEquals(5, groups.size());
 		assertStandardGroups(groups);
 
 		// every user has got at least three groups: public, private and friends
@@ -161,7 +161,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// without special groups
 		groups = groupDb.getGroupsForUser("testuser1", true, this.dbSession);
-		assertEquals(3, groups.size());
+		assertEquals(4, groups.size());
 	}
 
 	/**
@@ -310,14 +310,39 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getGroupIdsForUser() {
-		// testuser1 is a member of 3 groups
-		assertEquals(3, groupDb.getGroupIdsForUser("testuser1", this.dbSession).size());
-		// testuser2 a member of 1 group
-		assertEquals(1, groupDb.getGroupIdsForUser("testuser2", this.dbSession).size());
+		// testuser1 is a member of 4 groups
+		assertEquals(4, groupDb.getGroupIdsForUser("testuser1", this.dbSession).size());
+		// testuser2 a member of 2 group
+		assertEquals(2, groupDb.getGroupIdsForUser("testuser2", this.dbSession).size());
 
 		// invalid users or testuser3 arent't members of any group
 		for (final String userName : new String[] { "", " ", null, "testuser3", ParamUtils.NOUSER_NAME }) {
 			assertEquals(0, groupDb.getGroupIdsForUser(userName, this.dbSession).size());
+		}
+	}
+	
+	/**
+	 * tests updateUserSharedDocuments
+	 */
+	@Test
+	public void updateUserSharedDocuments() {
+		final Group g1 = new Group(TESTGROUP1_ID);
+		g1.setUserSharedDocuments(true);
+		g1.setName("testuser1");
+		groupDb.updateUserSharedDocuments(g1, this.dbSession);
+		
+		List<Group> groups = groupDb.getGroupsForUser("testuser1", this.dbSession);
+		Group group = null;
+		for (Group g : groups) {
+			if (g.getGroupId() == TESTGROUP1_ID) {
+				group = g;
+				break;
+			}
+		}
+		if (group == null) {
+			fail("no group found");
+		} else {
+			assertTrue(group.isUserSharedDocuments());
 		}
 	}
 

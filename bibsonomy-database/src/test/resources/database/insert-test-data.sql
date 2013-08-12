@@ -239,20 +239,23 @@ INSERT INTO `groupids` VALUES
 ('friends',    2,           1, 0),
 ('testgroup1', 3,           0, 1),
 ('testgroup2', 4,           1, 0),
-('testgroup3', 5,           2, 0);
+('testgroup3', 5,           2, 0),
+('testgroup4', 6,           2, 1);
  
 -- 
 -- Data for table `groups`
 -- 
 
 INSERT INTO `groups` VALUES 
-('testuser1', 3, 3, '2007-01-01 01:01:01', 7),
-('testuser2', 3, 3, '2007-01-01 01:01:01', 7),
-('testuser1', 4, 3, '2007-01-01 01:01:01', 7),
-('testuser1', 5, 3, '2007-01-01 01:01:01', 7),
-('testgroup1', 3, 3, '2007-01-01 01:01:01', 7),
-('testgroup2', 4, 4, '2007-01-01 01:01:01', 7),
-('testgroup3', 5, 5, '2007-01-01 01:01:01', 7);
+('testuser1', 3, 3, '2007-01-01 01:01:01', 7, 1),
+('testuser2', 3, 3, '2007-01-01 01:01:01', 7, 0),
+('testuser1', 4, 3, '2007-01-01 01:01:01', 7, 1),
+('testuser1', 5, 3, '2007-01-01 01:01:01', 7, 0),
+('testuser1', 6, 3, '2007-01-01 01:01:01', 7, 0),
+('testuser2', 6, 3, '2007-01-01 01:01:01', 7, 0),
+('testgroup1', 3, 3, '2007-01-01 01:01:01', 7, 0),
+('testgroup2', 4, 4, '2007-01-01 01:01:01', 7, 0),
+('testgroup3', 5, 5, '2007-01-01 01:01:01', 7, 0);
 
 -- 
 -- Data for table `ids`
@@ -578,6 +581,7 @@ INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`us
 ('testgroup1',  'testgroup1@bibsonomy.org',  'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/group/testgroup1', 'Test Group 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
 ('testgroup2',  'testgroup2@bibsonomy.org',  'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/group/testgroup2', 'Test Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
 ('testgroup3',  'testgroup3@bibsonomy.org',  'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/group/testgroup3', 'Test Group 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
+('testgroup4',  'testgroup4@bibsonomy.org',  'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/group/testgroup4', 'Test Group 4', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
 ('testspammer', 'testspammer@bibsonomy.org', 'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
 ('testspammer2', 'testspammer@bibsonomy.org', 'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
 ('testuser1',   'testuser1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1),

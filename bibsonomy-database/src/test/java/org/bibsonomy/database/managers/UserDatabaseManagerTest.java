@@ -295,7 +295,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// get groups for this user. testuser should be member of testgroup1
 		List<Group> groups = groupDb.getGroupsForUser(user.getName(), true, this.dbSession);
 		assertNotNull(groups);
-		assertEquals(1, groups.size());
+		assertEquals(2, groups.size());
 		assertEquals("testgroup1", groups.get(0).getName());
 		
 		// calls the deleteUser method of the UserDataBaseManager class

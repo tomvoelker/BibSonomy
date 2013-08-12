@@ -4,7 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.MetaDataPluginKey;
-import org.bibsonomy.database.params.metadata.CopyPostParam;
+import org.bibsonomy.database.params.metadata.PostParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -21,7 +21,7 @@ public class MetaDataPlugin extends AbstractDatabasePlugin {
 	public void onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
-			final CopyPostParam param = createParam(post, MetaDataPluginKey.COPY_PUBLICATION);
+			final PostParam param = createParam(post, MetaDataPluginKey.COPY_PUBLICATION);
 			this.insert("logPostCopy", param, session);
 		}
 	}
@@ -30,13 +30,13 @@ public class MetaDataPlugin extends AbstractDatabasePlugin {
 	public void onBookmarkInsert(final Post<? extends Resource> post, final DBSession session) {
 		// check for copyFrom
 		if (present(post) && present(post.getCopyFrom())) {
-			final CopyPostParam param = createParam(post, MetaDataPluginKey.COPY_BOOKMARK);
+			final PostParam param = createParam(post, MetaDataPluginKey.COPY_BOOKMARK);
 			this.insert("logPostCopy", param, session);
 		}
 	}
 	
-	private static CopyPostParam createParam(final Post<? extends Resource> post, final MetaDataPluginKey key) {
-		final CopyPostParam param = new CopyPostParam();
+	private static PostParam createParam(final Post<? extends Resource> post, final MetaDataPluginKey key) {
+		final PostParam param = new PostParam();
 		param.setInterHash(post.getResource().getInterHash());
 		param.setIntraHash(post.getResource().getIntraHash());
 		param.setValue(post.getCopyFrom());

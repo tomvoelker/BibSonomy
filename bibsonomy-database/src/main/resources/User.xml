@@ -179,6 +179,13 @@
 		FROM user 
 		WHERE user_name = #userName#
 	</select>
+	
+	<update id="updateUserSharedDocuments" parameterClass="group">
+		UPDATE groups
+		SET userSharedDocuments = #userSharedDocuments#
+		WHERE `group` = #groupId#
+		AND user_name = #name#
+	</update>
 
 	<update id="updateApiKeyForUser" parameterClass="user">
 		UPDATE user 

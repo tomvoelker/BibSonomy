@@ -145,7 +145,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		final Collection<Group> postGroups = post.getGroups();
 
 		/*
-		 * Get the groups in which both users are.
+		 * Get the groups in which both users are. It is important 
+		 * to have postUserName as the second user, we will get 
+		 * his userSharedDocuments value in the group !
 		 */
 		final List<Group> commonGroups = this.groupDb.getCommonGroups(userName, postUserName, session);
 
@@ -161,7 +163,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			if (group.isSharedDocuments()) {
 				// both users are in a group which allows to share documents
 				if (postGroups.contains(publicGroup) || postGroups.contains(group)) {
-					return true;
+					// check if postUserName allows to share documents
+					if (group.isUserSharedDocuments()) return true;
 				}
 			}
 		}
@@ -199,9 +202,20 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			case USER:
 				final String loggedinUserName = loginUser.getName();
 				if (loggedinUserName != null) {
-					return loggedinUserName.equals(groupingName);
+					if (loggedinUserName.equals(groupingName))
+						return true;
 				}
-				break;
+				
+				final List<Group> commonGroups = this.groupDb.getCommonGroups(loginUser.getName(), groupingName, session);
+				/*
+				 * Find a common group of both users, which allows to share documents.
+				 */
+				for (final Group group : commonGroups) {
+					if (group.isSharedDocuments()) {
+						if (group.isUserSharedDocuments()) return true;
+					}
+				}
+				return false;
 			case GROUP:
 				final Group group = this.groupDb.getGroupByName(groupingName, session);
 				/*

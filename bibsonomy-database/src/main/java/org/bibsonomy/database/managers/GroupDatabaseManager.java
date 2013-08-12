@@ -253,6 +253,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Gets all groups in which both user A and user B are in. 
+	 * The userSharedDocuments values of userNameB will be returned.
 	 * 
 	 * @param userNameA - name of the first user.
 	 * @param userNameB - name of the second user.
@@ -272,7 +273,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		for (final Group a : userAGroups) {
 			for (final Group b : userBGroups) {
 				if (a.getGroupId() == b.getGroupId()) {
-					commonGroups.add(a);
+					commonGroups.add(b);
 				}
 			}
 		}
@@ -583,6 +584,16 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * store the bean
 		 */
 		this.update("updateGroupSettings", groupToUpdate, session);
+	}
+
+	/**
+	 * updates the user shared documents field for the given user. UserName is group.name.
+	 * 
+	 * @param groups
+	 * @return
+	 */
+	public void updateUserSharedDocuments(final Group group, final DBSession session) {
+		this.update("updateUserSharedDocuments", group, session);
 	}
 
 }

@@ -29,9 +29,11 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.common.enums.MetaDataPluginKey;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.ResourceParam;
+import org.bibsonomy.database.params.metadata.PostParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
@@ -46,6 +48,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -1633,5 +1636,28 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public void setValidator(final DatabaseModelValidator<R> validator) {
 		this.validator = validator;
+	}
+	
+	/**
+	 * returns a list of all metadata for the given post and MetaDataPluginKey.
+	 *
+	 * @param HashID
+	 * @param resourceHash
+	 * @param userName
+	 * @param metaDataPluginKey
+	 * @param session
+	 */
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey, final DBSession session) {
+		final PostParam param = new PostParam();
+		if(hashType.equals(HashID.INTER_HASH)) {
+			param.setInterHash(resourceHash);
+		} else {
+			param.setIntraHash(resourceHash);
+		}
+		param.setUserName(userName);
+		if(present(metaDataPluginKey)) {
+			param.setKey(MetaDataPluginKey.valueOf(metaDataPluginKey));
+		}
+		return this.queryForList("getPostMetaData", param, PostMetaData.class, session);
 	}
 }

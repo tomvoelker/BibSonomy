@@ -30,6 +30,7 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	protected static final int TESTGROUP1_ID = 3;
 	protected static final int TESTGROUP2_ID = 4;
 	protected static final int TESTGROUP3_ID = 5;
+	protected static final int TESTGROUP4_ID = 6;
 
 	protected static DBSessionFactory dbSessionFactory;
 	protected static DatabasePluginRegistry pluginRegistry;

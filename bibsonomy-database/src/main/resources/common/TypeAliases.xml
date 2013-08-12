@@ -27,6 +27,7 @@
 	<typeAlias alias="review"				type="org.bibsonomy.model.Review" />
 	<typeAlias alias="statisticsValues" type="org.bibsonomy.model.statistics.StatisticsValues" />
 	<typeAlias alias="statistics"				type="org.bibsonomy.model.statistics.Statistics" />
+	<typeAlias alias="postMetaData"				type="org.bibsonomy.model.metadata.PostMetaData" />
 	<typeAlias alias="personNameList"				type="java.util.List" />
 	<typeAlias alias="samlRemoteUserId"    type="org.bibsonomy.model.user.remote.SamlRemoteUserId" />
 	
@@ -66,7 +67,7 @@
 	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
 	<typeAlias alias="inboxParam"			type="org.bibsonomy.database.params.InboxParam" />
 	<typeAlias alias="loggingParam"			type="org.bibsonomy.database.params.LoggingParam" />
-	<typeAlias alias="metaDataCopyPostParam"	type="org.bibsonomy.database.params.metadata.CopyPostParam" />
+	<typeAlias alias="metaDataPostParam"	type="org.bibsonomy.database.params.metadata.PostParam" />
 	<typeAlias alias="wikiParam"			type="org.bibsonomy.database.params.WikiParam" />
 	
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />

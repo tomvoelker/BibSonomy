@@ -59,6 +59,7 @@ DELETE FROM `log_tas`;
 DELETE FROM `log_user`;
 DELETE FROM `openIDUser`;
 DELETE FROM `picked_concepts`;
+DELETE FROM `post_metadata`;
 DELETE FROM `popular_tags`;
 DELETE FROM `prediction`;
 DELETE FROM `pendingUser`;

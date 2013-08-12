@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MetaData">
+
+	<resultMap id="postMetaDataList" class="postMetaData">
+		<result property="userName"    	column="user_name"		javaType="String" />
+		<result property="interHash"  	column="inter_hash"		javaType="String" />
+		<result property="intraHash"    column="intra_hash"		javaType="String" />
+		<result property="key"      	column="key"			javaType="String" />
+		<result property="value"      	column="value"			javaType="String" />
+    	<result property="date"     	column="date"			javaType="Date" />
+	</resultMap>
+	
+	<select id="getPostMetaData" parameterClass="metaDataPostParam" resultMap="postMetaDataList">
+		SELECT `user_name`, `intra_hash`, `inter_hash`, `key`, `value`, `date` FROM post_metadata
+		<dynamic prepend="WHERE">
+			<isNotEmpty property="intraHash" prepend="AND"> 
+				`intra_hash` = #intraHash# 
+			</isNotEmpty>
+			<isNotEmpty property="interHash" prepend="AND"> 
+				`inter_hash` = #interHash# 
+			</isNotEmpty>
+			<isNotEmpty property="userName" prepend="AND"> 
+				`user_name` = #userName# 
+			</isNotEmpty>
+			<isNotEmpty property="key" prepend="AND"> 
+				`key` = #key# 
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY `date` ASC
+	</select>
+ 
+</sqlMap>

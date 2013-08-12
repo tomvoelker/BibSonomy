@@ -7,7 +7,7 @@ import org.bibsonomy.database.params.GenericParam;
  * @author clemensbaier
  * @version $Id$
  */
-public class CopyPostParam extends GenericParam {
+public class PostParam extends GenericParam {
 
 	private String interHash;
 	private String intraHash;

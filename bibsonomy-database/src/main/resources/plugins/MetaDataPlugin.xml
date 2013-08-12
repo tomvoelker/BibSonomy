@@ -3,7 +3,7 @@
 
 <sqlMap namespace="MetaDataPlugin">
 	
-	<insert id="logPostCopy" parameterClass="metaDataCopyPostParam">
+	<insert id="logPostCopy" parameterClass="metaDataPostParam">
 		INSERT INTO post_metadata (`user_name`, `intra_hash`, `inter_hash`, `key`, `value`)
 		VALUES (#userName#, #intraHash#, #interHash#, #key#, #value#)
 	</insert>

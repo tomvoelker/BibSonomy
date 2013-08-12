@@ -509,7 +509,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		final int count2 = publicationDb.getPostsForGroupCount(requestedUserName, loginUserName, 4, visibleGroupIDs, this.dbSession);
 		assertEquals(1, count2);
 		
-		final int count3 = publicationDb.getPostsForGroupCount(requestedUserName, loginUserName, 6, visibleGroupIDs, this.dbSession);
+		final int count3 = publicationDb.getPostsForGroupCount(requestedUserName, loginUserName, 7, visibleGroupIDs, this.dbSession);
 		assertEquals(0, count3);
 	}
 

@@ -4,10 +4,14 @@
 <sqlMap namespace="GroupCommon">
 
 	<resultMap id="group_basic"	class="group">
-		<result property="groupId"          column="group"             javaType="int" />
-		<result property="name"             column="group_name"        javaType="string" />
-		<result property="privlevel"        column="privlevel"         javaType="Privlevel"/>
-		<result property="sharedDocuments"  column="sharedDocuments"   javaType="boolean"/>
+		<result property="groupId"         	 	column="group"             javaType="int" />
+		<result property="name"             	column="group_name"        javaType="string" />
+		<result property="privlevel"        	column="privlevel"         javaType="Privlevel"/>
+		<result property="sharedDocuments"  	column="sharedDocuments"   javaType="boolean"/>
+	</resultMap>
+
+	<resultMap id="groupWithUserSharedDocuments" extends="group_basic" class="group">
+		<result property="userSharedDocuments" 	column="userSharedDocuments" javaType="boolean"/>
 	</resultMap>
 
 	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
@@ -17,6 +21,7 @@
 
 	<resultMap id="groupWithMembers" class="group" extends="group_basic" groupBy="name">
 		<result property="users"    resultMap="UserCommon.userForGroup" />
+		<result property="userSharedDocuments" 	column="userSharedDocuments" javaType="boolean"/>
 	</resultMap>
 	
 	<resultMap id="tagsets" class="tagset" groupBy="setName">
