@@ -14,9 +14,8 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserLoginValidator implements Validator<UserLoginCommand> {
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return UserLoginCommand.class.equals(clazz);
 	}
 

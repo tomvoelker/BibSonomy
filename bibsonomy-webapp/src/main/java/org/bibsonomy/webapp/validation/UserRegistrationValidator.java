@@ -13,9 +13,8 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserRegistrationValidator implements Validator<UserRegistrationCommand> {
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return UserRegistrationCommand.class.equals(clazz);
 	}
 

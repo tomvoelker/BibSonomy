@@ -12,8 +12,8 @@ import org.springframework.validation.Errors;
 public class LimitedAccountActivationValidation implements Validator<LimitedAccountActivationCommand>{
 
 	@Override
-	public boolean supports(Class<?> arg0) {
-		return LimitedAccountActivationCommand.class.equals(arg0);
+	public boolean supports(final Class<?> clazz) {
+		return LimitedAccountActivationCommand.class.equals(clazz);
 	}
 
 	@Override

@@ -15,9 +15,8 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserOpenIDRegistrationValidator implements Validator<UserIDRegistrationCommand>{
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(Class clazz) {
+	public boolean supports(Class<?> clazz) {
 		return UserIDRegistrationCommand.class.equals(clazz);
 	}
 

@@ -12,10 +12,9 @@ import org.springframework.validation.ValidationUtils;
  */
 public class DeleteUserValidator implements Validator<SettingsViewCommand>{
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(Class arg0) {
-		return SettingsViewCommand.class.equals(arg0);
+	public boolean supports(final Class<?> clazz) {
+		return SettingsViewCommand.class.equals(clazz);
 	}
 
 	@Override

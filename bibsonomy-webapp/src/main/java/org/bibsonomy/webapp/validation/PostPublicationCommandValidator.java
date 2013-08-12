@@ -15,9 +15,8 @@ import org.springframework.validation.Errors;
  */
 public class PostPublicationCommandValidator implements Validator<PostPublicationCommand> {
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return PostPublicationCommand.class.equals(clazz);
 	}
 

@@ -12,10 +12,9 @@ import org.springframework.validation.ValidationUtils;
  */
 public class PasswordChangeOnRemindValidator implements Validator<PasswordChangeOnRemindCommand>{
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(Class arg0) {
-		return PasswordChangeOnRemindCommand.class.equals(arg0);
+	public boolean supports(final Class<?> clazz) {
+		return PasswordChangeOnRemindCommand.class.equals(clazz);
 	}
 	
 	@Override

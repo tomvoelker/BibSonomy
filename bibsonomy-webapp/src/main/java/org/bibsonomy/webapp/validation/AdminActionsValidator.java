@@ -18,9 +18,8 @@ import org.springframework.validation.Errors;
  */
 public class AdminActionsValidator implements Validator<AdminAjaxCommand> {
 	
-	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return AdminAjaxCommand.class.equals(clazz);
 	}
 

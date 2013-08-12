@@ -16,9 +16,8 @@ import org.springframework.validation.ValidationUtils;
  */
 public class SyncSettingsValidator implements Validator<SettingsViewCommand> {
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return SettingsViewCommand.class.equals(clazz);
 	}
 

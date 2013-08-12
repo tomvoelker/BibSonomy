@@ -24,11 +24,9 @@ import org.springframework.validation.ValidationUtils;
  */
 public class PostValidator<RESOURCE extends Resource> implements Validator<EditPostCommand<RESOURCE>> {
 	private static final Log log = LogFactory.getLog(PostValidator.class);
-	
-	
-	@SuppressWarnings("rawtypes")
+
 	@Override
-	public boolean supports(final Class clazz) {
+	public boolean supports(final Class<?> clazz) {
 		return EditPostCommand.class.isAssignableFrom(clazz);
 	}
 
