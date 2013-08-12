@@ -44,28 +44,28 @@ close (FILE);
 
 print "Bookmark complete !\n";
 
-################ GET BIBTEX TITLE ################
+################ GET PUBLICATION (AKA BIBTEX) TITLE ################
 print "Reading publication title ...\n";
 
 # prepare statements
-# get all public bibtex title + rating from the bibtex table
-my $stm_select_bibtex_names = $slave->prepare("SELECT title, rating FROM bibtex b WHERE b.group=0");
+# get all public publication title + rating from the bibtex table
+my $stm_select_publication_names = $slave->prepare("SELECT title, rating FROM bibtex b WHERE b.group=0");
 
 # execute statements
-$stm_select_bibtex_names->execute();
+$stm_select_publication_names->execute();
 $slave->commit;
 
 # go over all public title + ratings and store it in a text file
 open (FILE, "> " . $ENV{'SUGGESTION_PATH'} . "/publication_title.txt") or die $!;
 binmode FILE, ":utf8";
-while (my @bibtex = $stm_select_bibtex_names->fetchrow_array ) {
-	if ($bibtex[0] ne "") {
-		my $title = $bibtex[0];
+while (my @publication = $stm_select_publication_names->fetchrow_array ) {
+	if ($publication[0] ne "") {
+		my $title = $publication[0];
 		$title =~ s/\r\n/ /;
 		$title =~ s/\s{1}\s+/ /;
 		$title =~ s/\R//g;
 		
-		$rating = $bibtex[1];
+		$rating = $publication[1];
 
 		print FILE "$title\n$rating\n";
 	}
