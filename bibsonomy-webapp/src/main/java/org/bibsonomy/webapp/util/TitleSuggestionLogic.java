@@ -3,9 +3,9 @@ package org.bibsonomy.webapp.util;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -22,96 +22,62 @@ import org.springframework.beans.factory.InitializingBean;
  * @version $Id$
  */
 public class TitleSuggestionLogic implements InitializingBean {
-	
 	private static final Log log = LogFactory.getLog(TitleSuggestionLogic.class);
+	
+	private static final int TOP_K = 20; // TODO: how many?
 
-	private SuggestTree bibtexTree;
-
+	private SuggestTree publicationTree;
 	private SuggestTree bookmarkTree;
 	
 	private String sourceFilePath;
 		
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		log.info("Startup SuggestTreeLogic ...");
-		
-		List<Pair<String, Integer>> bibtexTitleList 	= new ArrayList();
-		List<Pair<String, Integer>> bookmarkTitleList 	= new ArrayList();
-						
-		/*
-		 * Read and store the bibtex title
-		 */
-		try {
-			BufferedReader bibtexReader = new BufferedReader(new FileReader( sourceFilePath + "/bibtex_title.txt"));
-			String title = null;
-						
-			while ((title = bibtexReader.readLine()) != null) {
-				int rating = Integer.parseInt(bibtexReader.readLine());
-				bibtexTitleList.add(new Pair<String, Integer>(title, rating));
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			log.error(e);
-		}
-				
-		/*
-		 * Read and store the bookmark title
-		 */
-		try {
-			BufferedReader bookmarkReader = new BufferedReader(new FileReader(sourceFilePath + "/bookmark_title.txt"));
-			String title = null;
-						
-			while ((title = bookmarkReader.readLine()) != null) {
-				int rating = Integer.parseInt(bookmarkReader.readLine());
-				bookmarkTitleList.add(new Pair<String, Integer>(title, rating));
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			log.error(e);
-		}
+		publicationTree = buildTree("publication");
+		bookmarkTree = buildTree("bookmark");
+	}
 
-		log.info("SuggestTreeLogic: Reading complete - now filling tree !");
-		
-		bibtexTree 		= new SuggestTree(bibtexTitleList.size());
-		bookmarkTree 	= new SuggestTree(bookmarkTitleList.size());
-
-		for(Pair<String, Integer> temp : bibtexTitleList) {
-			bibtexTree.put(temp.getFirst(), temp.getSecond());
+	private SuggestTree buildTree(String file) {
+		log.info("building " + file + " tree");
+		final SuggestTree tree = new SuggestTree(TOP_K);
+		try {
+			final BufferedReader publicationReader = new BufferedReader(new FileReader(sourceFilePath + "/" + file + "_title.txt"));
+			String title = null;
+			
+			while ((title = publicationReader.readLine()) != null) {
+				int rating = Integer.parseInt(publicationReader.readLine());
+				tree.put(title, rating);
+			}
+			publicationReader.close();
+		} catch (IOException e) {
+			log.error("error while reading publication titles for suggestion tree", e);
 		}
-		
-		log.info("SuggestTreeLogic: Bibtex tree ready !");
-		
-		for(Pair<String, Integer> temp : bookmarkTitleList) {
-			bookmarkTree.put(temp.getFirst(), temp.getSecond());
-		}		
-				
-		log.info("SuggestTreeLogic: Bookmark tree ready !");
-		
-		log.info("SuggestTreeLogic: finished startup");
-		
+		log.info("finished building " + file + " tree done.");
+		return tree;
 	}
 
 	
 	/**
-	 * Get all bibtex suggestions to a given prefix.
+	 * Get all publication suggestions to a given prefix.
 	 * 
 	 * @param prefix
 	 * 		  The user input whereupon the autocompletion recommends.
 	 * @return
 	 * 		  A list of pairs whereby the String represents the recommendation and the Integer the rating.
 	 */
-	public List<Pair<String, Integer>> getBibtexSuggestion(String prefix) {
-		Node node = bibtexTree.getSuggestions(prefix);
-		
-		if(node == null) {
-			return new ArrayList<Pair<String, Integer>>();
+	public List<Pair<String, Integer>> getPublicationSuggestion(String prefix) {
+		return getSuggestion(this.publicationTree, prefix);
+	}
+
+
+	private List<Pair<String, Integer>> getSuggestion(final SuggestTree tree, String prefix) {
+		final Node node = tree.getSuggestions(prefix);		
+		final List<Pair<String, Integer>> suggestion = new LinkedList<Pair<String, Integer>>();
+		if (node == null) {
+			return suggestion;
 		}
 		
-		List<Pair<String, Integer>> suggestion = new ArrayList();
-		
-		for(int i = 0; i < node.size(); i++) {
+		for (int i = 0; i < node.size(); i++) {
 			suggestion.add(new Pair<String, Integer>(node.getSuggestion(i), node.getWeight(i)));
 		}
 		
@@ -127,58 +93,22 @@ public class TitleSuggestionLogic implements InitializingBean {
 	 * 		  A list of pairs whereby the String represents the recommendation and the Integer the rating.
 	 */
 	public List<Pair<String, Integer>> getBookmarkSuggestion(String prefix) {
-		Node node = bookmarkTree.getSuggestions(prefix);
-		
-		if(node == null) {
-			return new ArrayList<Pair<String, Integer>>();
-		}
-		
-		List<Pair<String, Integer>> suggestion = new ArrayList();
-		
-		for(int i = 0; i < node.size(); i++) {
-			suggestion.add(new Pair<String, Integer>(node.getSuggestion(i), node.getWeight(i)));
-		}
-		
-		return suggestion;
+		return getSuggestion(this.bookmarkTree, prefix);
 	}
 	
 	/**
-	 * Get all bibtex and bookmark suggestions to a given prefix.
+	 * Get all publication and bookmark suggestions to a given prefix.
 	 * 
 	 * @param prefix
 	 * 		  The user input whereupon the autocompletion recommends.
 	 * @return
 	 * 		  A list of pairs whereby the String represents the recommendation and the Integer the rating.
 	 */
-	public List<Pair<String, Integer>> getPostSuggestion(String prefix) {
+	public List<Pair<String, Integer>> getPostSuggestion(final String prefix) {
+		final List<Pair<String, Integer>> suggestion = new LinkedList<Pair<String,Integer>>();
 		
-		Node node = null;
-		
-		List<Pair<String, Integer>> suggestion = new ArrayList();
-		
-		/*
-		 * Get Bookmark suggestions
-		 */
-		
-		node = bookmarkTree.getSuggestions(prefix);
-		
-		if(node != null) {
-			for(int i = 0; i < node.size(); i++) {
-				suggestion.add(new Pair<String, Integer>(node.getSuggestion(i), node.getWeight(i)));
-			}
-		}
-		
-		/*
-		 * Get Bibtex suggestion
-		 */
-		
-		node = bibtexTree.getSuggestions(prefix);
-		
-		if(node != null) {
-			for(int i = 0; i < node.size(); i++) {
-				suggestion.add(new Pair<String, Integer>(node.getSuggestion(i), node.getWeight(i)));
-			}
-		}
+		suggestion.addAll(this.getPublicationSuggestion(prefix));
+		suggestion.addAll(this.getBookmarkSuggestion(prefix));
 		
 		Collections.sort(suggestion, new PairComperator());
 		
@@ -191,15 +121,12 @@ public class TitleSuggestionLogic implements InitializingBean {
 	public void setSourceFilePath(String sourceFilePath) {
 		this.sourceFilePath = sourceFilePath;
 	}
-
-	
 }
-
+// TODO: cleanup using Integer#compare method!
 class PairComperator implements Comparator<Pair<String, Integer>>{
 	 
 	@Override
 	public int compare(Pair<String, Integer> o1, Pair<String, Integer> o2) {
-		
 		if(o1.getSecond() < o2.getSecond()) {
 			return -1;
 		}
