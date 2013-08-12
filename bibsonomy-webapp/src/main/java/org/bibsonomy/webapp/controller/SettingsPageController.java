@@ -328,6 +328,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 		//this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null,  null, null, 1000, null);
 
+		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(groupName, null);
 		final String wikiText;
 
@@ -362,6 +363,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * convert the wiki syntax
 		 */
+		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(userName, null);
 		final String wikiText;
 

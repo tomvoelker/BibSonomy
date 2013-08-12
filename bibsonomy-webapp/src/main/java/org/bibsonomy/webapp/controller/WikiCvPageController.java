@@ -79,7 +79,8 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		requestedGroup.setUsers(groupUsers);
 
 		//this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
-
+		
+		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(groupName, null);
 		final String wikiText;
 
@@ -114,6 +115,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		/*
 		 * convert the wiki syntax
 		 */
+		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(userName, null);
 		final String wikiText;
 		

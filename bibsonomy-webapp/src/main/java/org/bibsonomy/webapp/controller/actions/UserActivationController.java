@@ -82,6 +82,9 @@ public class UserActivationController implements MinimalisticController<UserActi
 			/* 
 			 * FIXME: this check should be done by the userdatabasemanager in
 			 * the activate user method
+			 * FIXME: What is the activateUser method supposed to return so
+			 * that we know what failed? I.e. either something database related
+			 * or the actual logical check for the registration date? 
 			 * 
 			 * check, if activation code is invalid.
 			 * 
