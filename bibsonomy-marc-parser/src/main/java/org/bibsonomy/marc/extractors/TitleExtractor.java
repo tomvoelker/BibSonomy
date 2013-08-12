@@ -34,6 +34,19 @@ public class TitleExtractor implements AttributeExtractor {
 		// r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'h', ""); h
 		// is Medium (media type)
 		r.appendFirstFieldValueWithDelmiterIfPresent(sb, "245", 'b', " : ");
+		if (l == sb.length()) {
+			// nothing appended -> try pica
+			if (r instanceof ExtendedMarcWithPicaRecord) {
+				String fieldValue = ((ExtendedMarcWithPicaRecord) r).getFirstPicaFieldValue("021A", "$d", "   ");
+				fieldValue = ExtendedMarcRecord.trimAndNormalize(fieldValue);
+				if (ValidationUtils.present(fieldValue)) {
+					if (sb.length() > 0) {
+						sb.append(" : ");
+						sb.append(fieldValue);
+					}
+				}
+			}
+		}
 		if (l > 0) {
 			int semiI = sb.indexOf(";", l - 1);
 			if (semiI >= l) {
@@ -64,16 +77,17 @@ public class TitleExtractor implements AttributeExtractor {
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		final StringBuilder sb = new StringBuilder();
 		if (isDependentPart(src)) {
-			final String seriesName = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("036C", "$a", "").trim();
-			final String pieceName = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", "").trim();
+			final String seriesName = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("036C", "$a", ""));
+			final String pieceName = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", ""));
 			
 			sb.append(seriesName.replace("@", ""));
 			if (ValidationUtils.present(pieceName) && ValidationUtils.present(pieceName)) {
-				sb.append(": ");
+				sb.append(" : ");
 			}
 			sb.append(pieceName.replace("@", ""));
 		} else if (isIndependentPart(src)) {
-			sb.append(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", "").replace("@", "").trim());
+			sb.append(ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", "").replace("@", "")));
+			getSubtitle(sb, src);
 		}
 		if (sb.length() == 0) {
 			getShortTitle(sb, src);
