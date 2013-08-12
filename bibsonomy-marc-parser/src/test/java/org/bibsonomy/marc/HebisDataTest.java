@@ -3,16 +3,13 @@ package org.bibsonomy.marc;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.ValidationUtils;
-import org.hamcrest.Matcher;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.internal.matchers.IsCollectionContaining;
 
@@ -32,7 +29,13 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testDependentPartTitle() {
 		BibTex bib = get("HEB105811688");
-		Assert.assertEquals("Werkausgabe: Tractatus logico-philosophicus", bib.getTitle());
+		Assert.assertEquals("Werkausgabe : Tractatus logico-philosophicus", bib.getTitle());
+	}
+	
+	@Test
+	public void testAdditionalTitleStuff() {
+		BibTex bib = get("HEB325875243");
+		Assert.assertEquals("Tabellen für die Rezeptur : Plausibilitätsprüfung in der Apotheke", bib.getTitle());
 	}
 	
 	@Test
