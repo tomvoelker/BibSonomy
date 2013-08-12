@@ -42,5 +42,10 @@ public enum GroupUpdateOperation {
 	/**
 	 * Update the whole group
 	 */
-	UPDATE_ALL;
+	UPDATE_ALL,
+	
+	/**
+	 * Update the user specific shared documents flag
+	 */
+	UPDATE_USER_SHARED_DOCUMENTS;
 }
