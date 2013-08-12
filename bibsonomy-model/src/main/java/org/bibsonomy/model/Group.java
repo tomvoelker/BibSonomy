@@ -91,6 +91,11 @@ public class Group implements Serializable{
 	private boolean sharedDocuments;
 
 	/**
+	 * stores documents sharing setting for the current user.
+	 */
+	private boolean userSharedDocuments;
+	
+	/**
 	 * If you add a tagset to a group and a user marks this group as 
 	 * 'relevent for' a post, then the user has to tag one entry of this set
 	 * to his post. A tagset has the following form: Map<SetName,Tags>.
@@ -371,5 +376,13 @@ public class Group implements Serializable{
 	public int hashCode() {
 		if (this.name != null) return this.name.toLowerCase().hashCode();
 		return groupId;
+	}
+
+	public boolean isUserSharedDocuments() {
+		return userSharedDocuments;
+	}
+
+	public void setUserSharedDocuments(boolean userSharedDocuments) {
+		this.userSharedDocuments = userSharedDocuments;
 	}
 }

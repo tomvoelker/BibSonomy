@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -35,6 +36,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 
 /**
@@ -100,7 +102,11 @@ public interface PostLogicInterface {
 	 *            hashes of the resources, which is connected to the posts to delete
 	 */
 	public void deletePosts(String userName, List<String> resourceHashes);
-
+	
+	/**
+	 * Get the metadata for the post.
+	 */
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey);
 	/**
 	 * Add the posts to the database.
 	 * 

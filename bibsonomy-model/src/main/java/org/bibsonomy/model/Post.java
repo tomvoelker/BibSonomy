@@ -31,6 +31,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.bibsonomy.model.metadata.PostMetaData;
 /**
  * A post connects a given resource with a user and a certain date.
  * 
@@ -119,7 +121,11 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	private boolean isInboxPost = false;
 	
-	
+	/**
+	 * List of the collected metadata
+	 */
+	private List<PostMetaData> metaData;
+
 	/**
 	 * List of repositories where this post has been send to (PUMA specific)
 	 */
@@ -360,6 +366,22 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	public void setPicked(final boolean picked) {
 		this.picked = picked;
+	}
+	
+	/**
+	 * Return the metadata.
+	 */
+	public List<PostMetaData> getMetaData() {
+		return this.metaData;
+	}
+
+	/**
+	 * Set the metadata.
+	 * 
+	 * @param metaData
+	 */
+	public void setMetaData(List<PostMetaData> metaData) {
+		this.metaData = metaData;
 	}
 	
 	@Override
