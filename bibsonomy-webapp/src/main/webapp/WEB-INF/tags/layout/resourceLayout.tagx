@@ -48,15 +48,15 @@
 	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
 	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
 	<fmt:message key="feeds.burst" var="burstRssFeed"/>
-    <fmt:message key="feeds.swrc" var="swrcFeed"/>
-    <c:set var="requPath" value="${fn:escapeXml(requPath)}"/>    
-    <!--+
-    	| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
-    	+ -->
-    <c:set var="showPublication" value="${(mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
-    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstBookmarksListItem }" />
-    <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
-    <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
+	<fmt:message key="feeds.swrc" var="swrcFeed"/>
+	<c:set var="requPath" value="${fn:escapeXml(requPath)}"/>
+	<!--+
+		| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
+		+ -->
+	<c:set var="showPublication" value="${(mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
+	<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstBookmarksListItem }" />
+	<c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
+	<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 		
 	<!--+
 		+ main layout
@@ -86,27 +86,24 @@
 			</c:if>
 			<c:if test="${showBookmark}">
 				<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="/rss/${requPath}" />            	
-            </c:if>
-            <!-- UnAPI service -->
-            <link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
-            <jsp:invoke fragment="headerExt"/>
-            
-		</jsp:attribute>	
-
+			</c:if>
+			<!-- UnAPI service -->
+			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
+			<jsp:invoke fragment="headerExt"/>
+		</jsp:attribute>
 
 			
 		<!--+
 			| header for resource lists and sidebar
 			+-->
-		<jsp:attribute name="headerContainer">			
-
-			<c:if test="${discussionBox}">			
-		   		<!-- Headline -->
+		<jsp:attribute name="headerContainer">
+			<c:if test="${discussionBox}">
+				<!-- Headline -->
 				<div class="header">
 					${mtl:cleanBibtex(resource.title)}
 				</div>
 			</c:if>
-						
+			
 			<c:if test="${empty discussion}">
 				<parts:postHeader 
 					headerHideable="${false}"
@@ -125,12 +122,12 @@
 					addAsFirstPublicationsListItem="${addAsFirstPublicationsListItem}"
 					addAsFirstBookmarksListItem="${addAsFirstBookmarksListItem}"
 					command="${command}">
-						<!-- keep me -->
+					<!-- keep me -->
 				</parts:postHeader>	
-			</c:if>				
-		</jsp:attribute>	
+			</c:if>
+		</jsp:attribute>
 		
-			
+		<!-- TODO: remove?! -->
 		<!--+
 		  	+ footer for resource lists and sidebar
 		  	+-->
@@ -158,9 +155,7 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-
 			<jsp:invoke fragment="discussion" />
-			
 			<c:if test="${not empty discussion}">
 				<parts:postHeader 
 					headerHideable="${true}"
@@ -179,8 +174,8 @@
 					addAsFirstPublicationsListItem="${addAsFirstPublicationsListItem}"
 					addAsFirstBookmarksListItem="${addAsFirstBookmarksListItem}"
 					command="${command}">
-						<!-- keep me -->
-				</parts:postHeader>			
+					<!-- keep me -->
+				</parts:postHeader>
 			</c:if>
 			
 			<div id="hideableContent">
@@ -196,46 +191,40 @@
 							<jsp:invoke fragment="contentHeading" />
 						</div>
 					</c:if>
+					
 					<!-- bibtex/bookmark lists -->
-								
 					<resources:bookmarks listView="${command.bookmark}" 
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${requPath}" 
 							widthClassName="${bookmarksWidthClass}"
 							addAsFirstItem="${addAsFirstBookmarksListItem}">
-
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
 									<div class="footer">
-										<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>						
+										<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
 									</div>
 								</div>
-							</c:if>			
+							</c:if>
 						</jsp:attribute>
-					
-							
 					</resources:bookmarks> 
-							
+					
 					<resources:bibtexs listView="${command.bibtex}" 
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${requPath}" 
 							widthClassName="${publicationsWidthClass}"
 							addAsFirstItem="${addAsFirstPublicationsListItem}">
-
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="publicationsfooter" class="${publicationsWidthClass}">
 									<div class="footer">
-											<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>						
+											<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
 									</div>
-								</div>			
-							</c:if>			
+								</div>
+							</c:if>
 						</jsp:attribute>
-						
-							
 					</resources:bibtexs>
 				</c:otherwise>
 			</c:choose>
