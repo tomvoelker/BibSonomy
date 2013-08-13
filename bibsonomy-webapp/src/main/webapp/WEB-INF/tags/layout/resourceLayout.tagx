@@ -31,8 +31,6 @@
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="addAsFirstPublicationsListItem" fragment="true" required="false"/>
-	<jsp:directive.attribute name="addAsFirstBookmarksListItem" fragment="true" required="false"/>
 	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	
@@ -53,8 +51,8 @@
 	<!--+
 		| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
 		+ -->
-	<c:set var="showPublication" value="${(mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstPublicationsListItem) and empty command.goldStandardPublications.list }" />
-	<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all') or not empty addAsFirstBookmarksListItem }" />
+	<c:set var="showPublication" value="${(mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')) and empty command.goldStandardPublications.list }" />
+	<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
 	<c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
 	<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 		
@@ -119,8 +117,6 @@
 					showInboxActions="${showInboxActions}"
 					customBookmarksHeaderText="${customBookmarksHeaderText}"
 					customPublicationsHeaderText="${customPublicationsHeaderText}"
-					addAsFirstPublicationsListItem="${addAsFirstPublicationsListItem}"
-					addAsFirstBookmarksListItem="${addAsFirstBookmarksListItem}"
 					command="${command}">
 					<!-- keep me -->
 				</parts:postHeader>	
@@ -171,8 +167,6 @@
 					showInboxActions="${showInboxActions}"
 					customBookmarksHeaderText="${customBookmarksHeaderText}"
 					customPublicationsHeaderText="${customPublicationsHeaderText}"
-					addAsFirstPublicationsListItem="${addAsFirstPublicationsListItem}"
-					addAsFirstBookmarksListItem="${addAsFirstBookmarksListItem}"
 					command="${command}">
 					<!-- keep me -->
 				</parts:postHeader>
@@ -184,7 +178,7 @@
 				<c:when test="${not empty command.goldStandardPublications.list}">
 					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
 				</c:when>
-				<c:otherwise>	
+				<c:otherwise>
 					<!-- additional heading for content area -->
 					<c:if  test="${not empty contentHeading}">
 						<div id="fullscreen">
@@ -197,8 +191,7 @@
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${requPath}" 
-							widthClassName="${bookmarksWidthClass}"
-							addAsFirstItem="${addAsFirstBookmarksListItem}">
+							widthClassName="${bookmarksWidthClass}">
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
@@ -208,19 +201,18 @@
 								</div>
 							</c:if>
 						</jsp:attribute>
-					</resources:bookmarks> 
+					</resources:bookmarks>
 					
 					<resources:bibtexs listView="${command.bibtex}" 
 							loginUserName="${command.context.loginUser.name}" 
 							disableListNavigation="${disableListNavigation}" 
 							requPath="${requPath}" 
-							widthClassName="${publicationsWidthClass}"
-							addAsFirstItem="${addAsFirstPublicationsListItem}">
+							widthClassName="${publicationsWidthClass}">
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="publicationsfooter" class="${publicationsWidthClass}">
 									<div class="footer">
-											<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+										<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
 									</div>
 								</div>
 							</c:if>

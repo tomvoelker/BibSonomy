@@ -20,10 +20,8 @@
 
 	<jsp:output omit-xml-declaration="true" />
 	<jsp:output doctype-root-element="html"	doctype-system="about:legacy-compat" />
-  
 	<jsp:element name="html">
 		<jsp:body>
-
 			<parts:htmlHead requPath="${requPath}" pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}">
 				<jsp:attribute name="headerExt">
 					<base href="${properties['project.home']}embed/"/>
@@ -34,7 +32,7 @@
 						.post .metaContainer {
 							margin-left: 110px;
 							margin-right: 14px;
-						}						
+						}
 						.post .action {
 							left: 116px;
 						}
@@ -42,15 +40,12 @@
 				</jsp:attribute>
 			</parts:htmlHead>
 
-		    <c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-		    <c:set var="showPublication" value="${(showPublicationList or not empty addAsFirstPublicationsListItem)}" />
-		    <c:set var="showBookmarkList" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-		    <c:set var="showBookmark" value="${showBookmarkList or not empty addAsFirstBookmarksListItem }" />
-		    <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
-		    <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
+			<c:set var="showPublication" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+			<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+			<c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
+			<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
 			<body style="min-width:0px;">
-			
 				<c:if test="${not empty command.bookmark.list}">
 					<resources:bookmarks listView="${command.bookmark}" 
 									loginUserName="${command.context.loginUser.name}" 
@@ -60,7 +55,6 @@
 					/>
 				</c:if>
 			
-			
 				<c:if test="${not empty command.bibtex.list}">
 					<resources:bibtexs listView="${command.bibtex}" 
 									loginUserName="${command.context.loginUser.name}" 
@@ -69,7 +63,6 @@
 									widthClassName="${publicationsWidthClass}"
 					/>
 				</c:if>
-			
 			
 				<!--+
 					| This adds the ?format=embed parameter to all URLs that start with a slash "/"
@@ -94,7 +87,6 @@
 				//</mtl:cdata>
 				
 				</script>
-			
 			</body>
 		</jsp:body>
 	</jsp:element>
