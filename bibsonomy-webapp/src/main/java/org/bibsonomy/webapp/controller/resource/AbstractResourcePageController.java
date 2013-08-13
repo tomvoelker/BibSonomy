@@ -76,9 +76,9 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			// author does not yet exist ?
 			if ( copyUsers == null ) {
 				copyUsers = new ArrayList<String>();
+				res.put(data.getValue(), copyUsers);
 			} 
 			copyUsers.add(data.getUserName());
-			res.put(data.getValue(), copyUsers);
 		}
 		return res;
 	}
