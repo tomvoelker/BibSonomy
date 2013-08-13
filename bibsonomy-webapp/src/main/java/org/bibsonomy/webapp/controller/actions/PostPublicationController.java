@@ -45,9 +45,6 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
-	/**
-	 * the log...
-	 */
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
 
 	/**
@@ -72,7 +69,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 	@Override
 	public PostPublicationCommand instantiateCommand() {
-		/**
+		/*
 		 * initialize post & resource
 		 */
 		final PostPublicationCommand command = new PostPublicationCommand();
@@ -110,11 +107,17 @@ public class PostPublicationController extends AbstractEditPublicationController
 			log.debug("user has manually entered post data -> forwarding to edit post controller");
 			return super.workOn(command);
 		}
-
+		final String selection = command.getSelection();
+		final boolean hasSelection = present(selection);
+		final boolean hasFile = present(command.getFile());
+		
 		/*
-		 * This variable will hold the information contained in the bibtex/endnote-file or selection field
+		 * check for valid ckey
 		 */
-		String snippet = null;
+		if ((hasFile || hasSelection) && !context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+			return Views.ERROR;
+		}
 
 		/*
 		 * This handles the cases
@@ -123,20 +126,23 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * 3) the user selected a file to upload posts (might be empty)
 		 * DOI/ISBN or manual input are handled in EditPostController
 		 */
-		final String selection = command.getSelection();
-		if (present(selection)) {
+		/*
+		 * This variable will hold the information contained in the bibtex/endnote-file or selection field
+		 */
+		String snippet = null;
+		if (hasSelection) {
 			/*
 			 * The user has entered text into the snippet selection - we use that
 			 */
 			log.debug("user has filled selection");
 			snippet = this.publicationImporter.handleSelection(selection);
-		} else if (present(command.getFile())) {
-			/*
-			 * The user uploads a BibTeX or EndNote file
-			 */
-			log.debug("user uploads a file");
-			// get the (never empty) content or add corresponding errors
-			snippet = this.publicationImporter.handleFileUpload(command, this.errors);
+		} else if (hasFile) {
+				/*
+				 * The user uploads a BibTeX or EndNote file
+				 */
+				log.debug("user uploads a file");
+				// get the (never empty) content or add corresponding errors
+				snippet = this.publicationImporter.handleFileUpload(command, this.errors);
 		} else {
 			/*
 			 * nothing given -> 
@@ -157,7 +163,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * it's content is now stored in snippet
 		 * -> check if valid
 		 */
-
 		if (errors.hasErrors()) {
 			log.debug("errors found, returning to view");
 			if (log.isDebugEnabled()) {
@@ -181,7 +186,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * FIXME: why aren't commas, etc. removed?
 		 */
-
 		List<Post<BibTex>> posts = null;
 
 		try {
@@ -530,10 +534,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 		return new PostPublicationCommand();
 	}
 
-	public PublicationImporter getPublicationImporter() {
-		return this.publicationImporter;
-	}
-
+	/**
+	 * @param publicationImporter the publicationImporter to set
+	 */
 	public void setPublicationImporter(PublicationImporter publicationImporter) {
 		this.publicationImporter = publicationImporter;
 	}
