@@ -16,11 +16,16 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.importer.DBLP.DBLPException;
 
 
-public class HTTPUpdate {
+/**
+ * @author rja
+ * @version $Id$
+ */
+public abstract class HTTPUpdate {
 	private static final Log log = LogFactory.getLog(HTTPUpdate.class);
 
 	private static final Pattern SESSION_ID_PATTERN = Pattern.compile("JSESSIONID=([0-9A-Fa-f]{32});.*");
-	private static final Pattern CKEY_PATTERN = Pattern.compile(".*ckey=([0-9A-Fa-f]{32}).*");
+	// Note: there's another simple check for the occurrence of "ckey" in openSession() 
+	private static final Pattern CKEY_PATTERN = Pattern.compile(".*ckey\\s*=\\s*\"([0-9A-Fa-f]{32})\".*");
 
 	protected final String baseURL;
 	private final String userCookie;
@@ -30,10 +35,12 @@ public class HTTPUpdate {
 	
 	
 	
-	public HTTPUpdate (final String baseURL, final String user, final String cookie) throws MalformedURLException, IOException {
+	public HTTPUpdate (final String baseURL, final String user, final String cookie) throws MalformedURLException, IOException, DBLPException {
 		this.baseURL = baseURL;
 		this.userCookie = cookie;
 		openSession();
+		
+		if (this.cKey == null) throw new DBLPException("Could not get ckey");
 	}
 	
 
@@ -74,8 +81,7 @@ public class HTTPUpdate {
 		 * configure connection
 		 */
 		final URL url = new URL("http://www.bibsonomy.org/myBibSonomy");
-		HttpURLConnection urlConn = null;
-		urlConn = (HttpURLConnection) url.openConnection();
+		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setRequestProperty("Cookie", userCookie);
@@ -99,7 +105,8 @@ public class HTTPUpdate {
 				
 			}
 		}
-		sessionCookie = "JSESSIONID=" + sessionID + "; ";
+		this.sessionCookie = "JSESSIONID=" + sessionID + "; ";
+		
 		/*
 		 * read result to extract ckey
 		 */
@@ -107,10 +114,10 @@ public class HTTPUpdate {
 		String line = null;
 		
 		while ((line = buf.readLine()) != null) {
-			if (line.contains("ckey=")) {
+			if (line.contains("ckey")) {
 				final Matcher matcher = CKEY_PATTERN.matcher(line);
 				if (matcher.matches()) {
-					cKey = matcher.group(1);
+					this.cKey = matcher.group(1);
 					break;
 				}
 			}

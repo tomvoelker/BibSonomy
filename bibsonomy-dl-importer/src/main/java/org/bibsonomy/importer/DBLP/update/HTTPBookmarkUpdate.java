@@ -29,7 +29,7 @@ public class HTTPBookmarkUpdate extends HTTPUpdate {
 	
 	private static final String dblpHomeUrlHash = "4f5c70202dd14bb2186b0872fe494886"; // TODO: it's not useful, to have this as a constant here :-(
 
-	public HTTPBookmarkUpdate (final String baseURL, final String user, final String cookie) throws MalformedURLException, IOException {
+	public HTTPBookmarkUpdate (final String baseURL, final String user, final String cookie) throws MalformedURLException, IOException, DBLPException {
 		super (baseURL, user, cookie);
 	}
 	

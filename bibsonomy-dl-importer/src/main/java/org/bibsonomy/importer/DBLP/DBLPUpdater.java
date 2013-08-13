@@ -110,11 +110,9 @@ public class DBLPUpdater {
 			log.info("DBLP Update finished");
 			log.info(presult.getEval().eval());
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			log.fatal("DBLPUpdater: ", e);
 			dbhandler.close();
 		}
-
 	}
-
 }

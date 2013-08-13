@@ -36,7 +36,7 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 
 	private static final Log log = LogFactory.getLog(HTTPBibtexUpdate.class);
 
-	public HTTPBibtexUpdate (final String baseURL, final String user, final String cookie) throws MalformedURLException, IOException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public HTTPBibtexUpdate (final String baseURL, final String user, final String cookie) throws MalformedURLException, IOException, ClassCastException, ClassNotFoundException, InstantiationException, IllegalAccessException, DBLPException {
 		super (baseURL, user, cookie);
 	}
 
