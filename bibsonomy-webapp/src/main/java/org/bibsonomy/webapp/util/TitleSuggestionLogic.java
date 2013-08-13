@@ -135,6 +135,7 @@ class PairComperator implements Comparator<Pair<String, Integer>>{
 			return 1;
 		}
 		
-		return 0;
+		// returning 0 is dangerous (for example if someone uses a TreeSet)
+		return System.identityHashCode(o1.getFirst()) - System.identityHashCode(o2.getFirst());
 	}
 } 
