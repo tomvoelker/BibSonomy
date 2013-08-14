@@ -23,6 +23,9 @@
 
 package org.bibsonomy.util.upload;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 
@@ -31,17 +34,22 @@ import org.bibsonomy.model.User;
  * @version $Id$
  */
 public interface FileUploadInterface {
+	
+	/**
+	 * the extension of a BibTeX file
+	 */
+	public static final String BIBTEX_EXTENSION = "bib";
 
 	/**
 	 * browser bookmark export extensions
 	 */
-	public static final String[] BROWSER_IMPORT_EXTENSIONS = { "html", "htm" };
+	public static final Collection<String> BROWSER_IMPORT_EXTENSIONS = Arrays.asList("html", "htm");
 	
 	/**
 	 * all extensions allowed for document upload
 	 * pdf, ps, djv, djvu, txt extensions
 	 */
-	public static final String[] FILE_UPLOAD_EXTENSIONS = { 
+	public static final Collection<String> DOCUMENT_EXTENSIONS = Arrays.asList(
 		"pdf", "ps", 
 		"djv", "djvu", 
 		"txt", "tex",
@@ -50,22 +58,22 @@ public interface FileUploadInterface {
 		"jpg", "jpeg", "tif", "tiff", "png",
 		"htm", "html",
 		"epub"
-		};
+		);
 	
 	/**
 	 * png, jpg extensions
 	 */
-	public static final String[] PICTURE_EXTENSIONS = { "png", "jpg", "jpeg" };
+	public static final Collection<String> PICTURE_EXTENSIONS = Arrays.asList("png", "jpg", "jpeg");
 	
 	/**
 	 * layout defintion extension
 	 */
-	public static final String[] LAYOUT_EXTENSIONS = { "layout" };
+	public static final Collection<String> LAYOUT_EXTENSIONS = Arrays.asList("layout");
 	
 	/**
 	 * bibtex, endnote extension
 	 */
-	public static final String[] BIBTEX_ENDNOTE_EXTENSIONS = {"bib", "endnote", "ris"};
+	public static final Collection<String> BIBTEX_ENDNOTE_EXTENSIONS = Arrays.asList(BIBTEX_EXTENSION, "endnote", "ris");
 	
 	/**
 	 * Writes the uploaded file to the disk and returns the file together

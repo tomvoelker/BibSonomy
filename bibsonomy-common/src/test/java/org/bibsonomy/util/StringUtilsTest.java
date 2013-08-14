@@ -77,11 +77,11 @@ public class StringUtilsTest {
 	 */
 	@Test
 	public void matchExtension() {
-		assertTrue(StringUtils.matchExtension("test.ps", "ps"));
-		assertTrue(StringUtils.matchExtension("test.ps", "PS"));
-		assertTrue(StringUtils.matchExtension("ps", "ps"));
-		assertFalse(StringUtils.matchExtension("test.ps", "dvi"));
-		assertFalse(StringUtils.matchExtension("test.ps", "dvi", "DOC", "pdf"));
+		assertTrue(StringUtils.matchExtension("test.ps", Sets.asSet("ps")));
+		assertTrue(StringUtils.matchExtension("test.ps", Sets.asSet("PS")));
+		assertTrue(StringUtils.matchExtension("ps", Sets.asSet("ps")));
+		assertFalse(StringUtils.matchExtension("test.ps", Sets.asSet("dvi")));
+		assertFalse(StringUtils.matchExtension("test.ps", Sets.asSet("dvi", "DOC", "pdf")));
 	}
 
 	/**

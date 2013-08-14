@@ -90,7 +90,7 @@
 		<property name="logicInterfaceFactory" ref="restLogicFactory" />
 		<property name="urlRenderer" ref="restUrlRenderer" />
 		<property name="rendererFactory" ref="rendererFactory" />
-
+		<property name="extensionChecker" ref="extensionChecker" />
 		<!-- open social stuff -->
 		<property name="oauthValidator" ref="oauthRequestValidator" />
 		<property name="oauthLogicFactory" ref="oauthLogicFactory" />

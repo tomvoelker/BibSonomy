@@ -25,6 +25,7 @@ package org.bibsonomy.util.upload.impl;
 
 import java.io.IOException;
 
+import org.bibsonomy.util.upload.ExtensionChecker;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,15 +39,15 @@ public class FileUploadFactory {
 
     private boolean tempPath = false;
 	
-    /**
-     * TODO: improve documentation
-     * 
-     * @param items
-     * @param allowedExt
-     * @return TODO
-     */
-	public FileUploadInterface getFileUploadHandler(final MultipartFile file, final String[] allowedExt) throws IOException {
-		return new HandleFileUpload(file, allowedExt, this.docpath, this.tempPath);
+	/**
+	 * TODO: improve doc
+	 * @param file
+	 * @param extensionChecker
+	 * @return TODO
+	 * @throws IOException
+	 */
+	public FileUploadInterface getFileUploadHandler(final MultipartFile file, final ExtensionChecker extensionChecker) throws IOException {
+		return new HandleFileUpload(file, extensionChecker, this.docpath, this.tempPath);
 	}
 	
 	/**

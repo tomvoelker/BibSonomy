@@ -23,6 +23,9 @@
 
 package org.bibsonomy.common.exceptions;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * @author rja
  * @version $Id$
@@ -30,7 +33,7 @@ package org.bibsonomy.common.exceptions;
 public class UnsupportedFileTypeException extends RuntimeException {
 	private static final long serialVersionUID = 6493856479182895955L;
 	
-	private final String[] allowedExt;
+	private final Collection<String> allowedExt;
 
 	/**
 	 * Constructs a new unsupported file type exception with the specified
@@ -39,9 +42,8 @@ public class UnsupportedFileTypeException extends RuntimeException {
 	 * 
 	 * @param allowedExt
 	 * 				the supported file type extensions.
-	 *            
 	 */
-	public UnsupportedFileTypeException(final String[] allowedExt) {
+	public UnsupportedFileTypeException(final Collection<String> allowedExt) {
 		super("Please check your file. Only " + getExceptionExtensions(allowedExt) + " files are accepted.");
 		this.allowedExt = allowedExt;
 	}
@@ -55,24 +57,29 @@ public class UnsupportedFileTypeException extends RuntimeException {
 	 * @param allowedExt
 	 * @return
 	 */
-	private static String getExceptionExtensions(final String[] allowedExt) {
+	private static String getExceptionExtensions(final Collection<String> allowedExt) {
 		final StringBuilder buf = new StringBuilder();
-		for (int i = 0; i < allowedExt.length - 1; i++) {
-			buf.append(allowedExt[i].toUpperCase() + ", ");
+		Iterator<String> iterator = allowedExt.iterator();
+		if (allowedExt.size() == 1) {
+			return iterator.next().toUpperCase();
 		}
-		
-		if (allowedExt.length > 1) {
-			buf.append("or ");
+		while (iterator.hasNext()) {
+			final String extension = iterator.next().toUpperCase();
+			if (!iterator.hasNext()) {
+				buf.append("or ");
+			}
+			buf.append(extension);
+			if (iterator.hasNext()) {
+				buf.append(", ");
+			}
 		}
-		buf.append(allowedExt[allowedExt.length - 1].toUpperCase());
-		
 		return buf.toString();
 	}
 
 	/**
 	 * @return the allowed Extensions
 	 */
-	public String[] getAllowedExt() {
+	public Collection<String> getAllowedExt() {
 		return allowedExt;
 	}
 }

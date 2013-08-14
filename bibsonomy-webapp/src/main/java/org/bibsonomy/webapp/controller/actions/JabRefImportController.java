@@ -13,6 +13,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
+import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.webapp.command.actions.JabRefImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -152,9 +153,9 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 		if (fileItem != null && fileItem.getSize() > 0) {
 			log.debug("writing layout part " + layoutPart + " with file " + fileItem.getOriginalFilename());
 			try {
-				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);				
+				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);
 				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(fileItem, FileUploadInterface.LAYOUT_EXTENSIONS);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(fileItem, new ListExtensionChecker(FileUploadInterface.LAYOUT_EXTENSIONS));
 				/*
 				 * write file to disk
 				 */

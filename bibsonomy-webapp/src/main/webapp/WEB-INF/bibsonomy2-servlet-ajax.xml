@@ -253,6 +253,7 @@
 		<property name="docPath" value="${project.document.path}"/>
 		<property name="tempPath" value="${project.document.temp}"/>
 		<property name="messageSource" ref="messageSource"/>
+		<property name="extensionChecker" ref="extensionChecker" />
 	</bean>	
 		
 	<!-- controller for handling recommendation requests -->

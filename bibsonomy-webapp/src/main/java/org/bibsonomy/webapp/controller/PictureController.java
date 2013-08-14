@@ -19,6 +19,7 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
+import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.webapp.command.actions.PictureCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -241,7 +242,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 			 * a file is given --> save it
 			 */
 			try {
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), FileUploadInterface.PICTURE_EXTENSIONS);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), new ListExtensionChecker(FileUploadInterface.PICTURE_EXTENSIONS));
 				final File file = uploadFileHandler.writeUploadedFile().getFile();
 
 				/*
@@ -362,13 +363,6 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	}
 
 	/**
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
 	 * This controller needs an admin logic to check the profile privacy level 
 	 * and the friends of the requested user - something the login user is not
 	 * allowed to do.
@@ -408,24 +402,10 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	}
 
 	/**
-	 * @return the uploadFactory
-	 */
-	public FileUploadFactory getUploadFactory() {
-		return uploadFactory;
-	}
-
-	/**
 	 * @param sizeOfLargestSide the sizeOfLargestSide to set
 	 */
 	public void setSizeOfLargestSide(int sizeOfLargestSide) {
 		this.sizeOfLargestSide = sizeOfLargestSide;
-	}
-
-	/**
-	 * @return the sizeOfLargestSide
-	 */
-	public int getSizeOfLargestSide() {
-		return sizeOfLargestSide;
 	}
 
 	/**
@@ -434,12 +414,4 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	public void setDefaultFileName(String defaultFileName) {
 		this.defaultFileName = defaultFileName;
 	}
-
-	/**
-	 * @return the defaultFileName
-	 */
-	public String getDefaultFileName() {
-		return defaultFileName;
-	}
-
 }

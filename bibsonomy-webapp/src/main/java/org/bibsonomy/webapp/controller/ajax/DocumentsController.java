@@ -14,7 +14,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.util.upload.FileUploadInterface;
+import org.bibsonomy.util.upload.ExtensionChecker;
 import org.bibsonomy.webapp.command.ajax.AjaxDocumentCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -35,7 +35,6 @@ import org.springframework.context.MessageSource;
 public class DocumentsController extends AjaxController implements MinimalisticController<AjaxDocumentCommand> {
 	private static final Log log = LogFactory.getLog(DocumentsController.class);
 
-	private static final String ALLOWED_EXTENSIONS = StringUtils.implodeStringArray(FileUploadInterface.FILE_UPLOAD_EXTENSIONS, ", ");
 	private static final String FORBIDDEN_SYMBOLS = ".*[<>/\\\\].*";
 
 	/**
@@ -44,6 +43,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	private String docPath;
 	private String tempPath;
 	private MessageSource messageSource;
+	private ExtensionChecker extensionChecker;
 
 	/**
 	 * max file size, currently 50mb
@@ -130,8 +130,8 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * unsupported file extensions
 		 */
-		if (!StringUtils.matchExtension(newName, FileUploadInterface.FILE_UPLOAD_EXTENSIONS)) {
-			return getXmlRenameError("error.upload.failed.filetype", new Object[] {ALLOWED_EXTENSIONS}, command.getFileID(), fileName, locale);	
+		if (!this.extensionChecker.checkExtension(newName)) {
+			return getXmlRenameError("error.upload.failed.filetype", new Object[] { StringUtils.implodeStringCollection(this.extensionChecker.getAllowedExtensions(), ", ")}, command.getFileID(), fileName, locale);	
 		}
 		
 		if (!present(document)) {
@@ -236,8 +236,8 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * unsupported file extensions
 		 */
-		if (!StringUtils.matchExtension(fileItem.getName(), FileUploadInterface.FILE_UPLOAD_EXTENSIONS)) {
-			return getXmlError("error.upload.failed.filetype", new Object[] {ALLOWED_EXTENSIONS}, fileID, fileItem.getName(), locale);	
+		if (!this.extensionChecker.checkExtension(fileItem.getName())) {
+			return getXmlError("error.upload.failed.filetype", new Object[] { StringUtils.implodeStringCollection(this.extensionChecker.getAllowedExtensions(), ", ")}, fileID, fileItem.getName(), locale);	
 		}
 
 		/*
@@ -342,6 +342,13 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	 */
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	/**
+	 * @param extensionChecker the extensionChecker to set
+	 */
+	public void setExtensionChecker(ExtensionChecker extensionChecker) {
+		this.extensionChecker = extensionChecker;
 	}
 
 }

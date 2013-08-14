@@ -1,8 +1,6 @@
 package org.bibsonomy.webapp.util.importer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.util.upload.FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS;
-import static org.bibsonomy.util.upload.FileUploadInterface.FILE_UPLOAD_EXTENSIONS;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,9 +15,12 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.upload.ExtensionChecker;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
+import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,13 +37,16 @@ public class PublicationImporter {
 	
 	/**
 	 * the factory used to get an instance of a FileUploadHandler.
+	 * it is the tmp fileupload factory
 	 */
 	private FileUploadFactory uploadFactory;
+	private ExtensionChecker extensionChecker;
 	
 	/**
 	 * converter from Endnote to BibTeX
 	 */
 	private EndnoteToBibtexConverter endnoteToBibtexConverter;
+	
 	
 	/**
 	 * Handles an uploaded file and returns its contents - if necessary 
@@ -68,17 +72,16 @@ public class PublicationImporter {
 				errors.reject("error.upload.failed.noFileSelected");
 				return null;
 			}
-
-			//check if uploaded file is one of allowed files, otherwise it can be a endnote or bibtex file
-			if (StringUtils.matchExtension(uploadedFile.getName(), FILE_UPLOAD_EXTENSIONS)) {
+			
+			// check if uploaded file is one of allowed files, otherwise it can be a endnote or bibtex file
+			if (StringUtils.matchExtension(uploadedFile.getName(), FileUploadInterface.DOCUMENT_EXTENSIONS)) {
 				log.debug("the file is in pdf format");
-
-				this.handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(uploadedFile, FILE_UPLOAD_EXTENSIONS).writeUploadedFile());
+				this.handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(uploadedFile, this.extensionChecker).writeUploadedFile());
 				keepTempFile = true;
 				return null;
 			}
 
-			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(uploadedFile, FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
+			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(uploadedFile, new ListExtensionChecker(FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS));
 
 			final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
 			file = uploadedDocument.getFile();
@@ -86,8 +89,7 @@ public class PublicationImporter {
 			final String fileName = uploadedDocument.getFileName();
 
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
-
-			if (!StringUtils.matchExtension(fileName, BIBTEX_ENDNOTE_EXTENSIONS[0])) {
+			if (!StringUtils.matchExtension(fileName, Sets.asSet(FileUploadInterface.BIBTEX_EXTENSION))) {
 				/*
 				 * In case the uploaded file is in EndNote or RIS format, we convert it to BibTeX.
 				 */
@@ -110,9 +112,9 @@ public class PublicationImporter {
 			errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
 		} catch (final UnsupportedFileTypeException e) {
 			/*
-			 * FIXME add also extensions form FILE_UPLOAD_EXTENSIONS to the message? 
+			 * FIXME add also extensions form DOCUMENT_EXTENSION to the message? 
 			 */
-			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringArray(BIBTEX_ENDNOTE_EXTENSIONS, ", ")}, e.getMessage());
+			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringCollection(FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS, ", ")}, e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
@@ -173,5 +175,12 @@ public class PublicationImporter {
 	 */
 	public void setEndnoteToBibtexConverter(final EndnoteToBibtexConverter endnoteToBibtexConverter) {
 		this.endnoteToBibtexConverter = endnoteToBibtexConverter;
+	}
+
+	/**
+	 * @param extensionChecker the extensionChecker to set
+	 */
+	public void setExtensionChecker(ExtensionChecker extensionChecker) {
+		this.extensionChecker = extensionChecker;
 	}
 }

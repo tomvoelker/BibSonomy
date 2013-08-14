@@ -40,6 +40,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
+import org.bibsonomy.util.upload.ExtensionChecker;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,9 +70,13 @@ public class HandleFileUpload implements FileUploadInterface {
 
 	/**
 	 * default constructor
+	 * @param file 
+	 * @param checker 
+	 * @param docPath 
+	 * @param isTempPath 
+	 * @throws IOException 
 	 */
-	protected HandleFileUpload(final MultipartFile file, final String[] allowedExt, final String docPath, final boolean isTempPath) throws IOException {
-		
+	protected HandleFileUpload(final MultipartFile file, final ExtensionChecker checker, final String docPath, final boolean isTempPath) throws IOException {
 		if (!present(file)) {
 			throw new IOException("no file given");
 		}
@@ -87,8 +92,8 @@ public class HandleFileUpload implements FileUploadInterface {
 		}
 		
 		// check file extensions which we accept
-		if (!present(document.getFileName()) || !StringUtils.matchExtension(this.document.getFileName(), allowedExt)) {
-			throw new UnsupportedFileTypeException(allowedExt);
+		if (!present(document.getFileName()) || !checker.checkExtension(this.document.getFileName())) {
+			throw new UnsupportedFileTypeException(checker.getAllowedExtensions());
 		}
 
 		// create hash over file content

@@ -25,6 +25,8 @@ package org.bibsonomy.common.exceptions;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 /**
@@ -37,13 +39,13 @@ public class UnsupportedFileTypeExceptionTest {
 	public void testUnsupportedFileTypeException() {
 		
 		try {
-			throw new UnsupportedFileTypeException(new String[] {"pdf", "ps", "djv", "djvu"});
+			throw new UnsupportedFileTypeException(Arrays.asList("pdf", "ps", "djv", "djvu"));
 		} catch (UnsupportedFileTypeException e) {
 			assertEquals("Please check your file. Only PDF, PS, DJV, or DJVU files are accepted.", e.getMessage());
 		}
 		
 		try {
-			throw new UnsupportedFileTypeException(new String[] { "html" });
+			throw new UnsupportedFileTypeException(Arrays.asList("html"));
 		} catch (UnsupportedFileTypeException e) {
 			assertEquals("Please check your file. Only HTML files are accepted.", e.getMessage());
 		}

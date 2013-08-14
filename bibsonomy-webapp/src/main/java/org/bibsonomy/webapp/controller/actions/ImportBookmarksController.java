@@ -29,6 +29,7 @@ import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
+import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -128,7 +129,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				/*
 				 * import posts/relations from Firefox, Safari, Opera, Chrome
 				 */
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), FileUploadInterface.BROWSER_IMPORT_EXTENSIONS);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), new ListExtensionChecker(FileUploadInterface.BROWSER_IMPORT_EXTENSIONS));
 				final Document document = uploadFileHandler.writeUploadedFile();
 				final FileBookmarkImporter fileImporter = new BrowserImporter();
 				fileImporter.initialize(document.getFile(), loginUser, command.getGroup());

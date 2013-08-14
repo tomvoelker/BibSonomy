@@ -26,10 +26,12 @@ package org.bibsonomy.util.file;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.enums.PreviewSize;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.StringUtils;
 
 
@@ -38,10 +40,19 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class FileUtil {
+	private static final Set<String> DJV_EXTENSIONS = Sets.asSet("djv", "djvu");
+	private static final Set<String> TIFF_EXTENSIONS = Sets.asSet("tif", "tiff");
+	private static final Set<String> PNG_EXTENSIONS = Sets.asSet("png");
+	private static final Set<String> PLAIN_EXTENSIONS = Sets.asSet("txt", "tex");
+	private static final Set<String> PDF_EXTENSIONS = Sets.asSet("pdf");
+	private static final Set<String> POST_SCRIPT_EXTENSIONS = Sets.asSet("ps");
+
 	/**
 	 * default file extension for JPEG images
 	 */
 	public static final String EXTENSION_JPG = "jpg";
+
+	private static final Set<String> JPEG_EXTENSIONS = Sets.asSet(EXTENSION_JPG, "jpeg");
 
 	/**
 	 * content type for JPEG images
@@ -168,23 +179,29 @@ public class FileUtil {
 	 * @return - the MIME content type of the file.
 	 */
 	public static String getContentType(final String filename) {
-		if (StringUtils.matchExtension(filename, "ps")) {
+		if (StringUtils.matchExtension(filename, POST_SCRIPT_EXTENSIONS)) {
 			return "application/postscript";
-		} else if (StringUtils.matchExtension(filename, "pdf")) {
-			return "application/pdf";
-		} else if (StringUtils.matchExtension(filename, "txt", "tex")) {
-			return "text/plain";
-		} else if (StringUtils.matchExtension(filename, "djv", "djvu")) {
-			return "image/vnd.djvu";
-		} else if (StringUtils.matchExtension(filename, EXTENSION_JPG, "jpeg")) {
-			return CONTENT_TYPE_IMAGE_JPEG;
-		} else if (StringUtils.matchExtension(filename, "png")) {
-			return "image/png";	
-		} else if (StringUtils.matchExtension(filename, "tif", "tiff")) {
-			return "image/tiff";
-		} else {
-			return "application/octet-stream";
 		}
+		if (StringUtils.matchExtension(filename, PDF_EXTENSIONS)) {
+			return "application/pdf";
+		}
+		if (StringUtils.matchExtension(filename, PLAIN_EXTENSIONS)) {
+			return "text/plain";
+		}
+		if (StringUtils.matchExtension(filename, DJV_EXTENSIONS)) {
+			return "image/vnd.djvu";
+		}
+		if (StringUtils.matchExtension(filename, JPEG_EXTENSIONS)) {
+			return CONTENT_TYPE_IMAGE_JPEG;
+		}
+		if (StringUtils.matchExtension(filename, PNG_EXTENSIONS)) {
+			return "image/png";	
+		}
+		if (StringUtils.matchExtension(filename, TIFF_EXTENSIONS)) {
+			return "image/tiff";
+		}
+		
+		return "application/octet-stream";
 	}
 	
 	/**
