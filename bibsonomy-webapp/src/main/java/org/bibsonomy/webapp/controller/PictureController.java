@@ -2,11 +2,8 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -17,6 +14,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
+import org.bibsonomy.util.file.profilepicture.PictureScaler;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
 import org.bibsonomy.util.upload.impl.ListExtensionChecker;
@@ -64,8 +62,8 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * Path to the picture folder
 	 */
 	private String path;
-	private int sizeOfLargestSide;
 	private String defaultFileName;
+	private PictureScaler pictureScaler;
 
 	@Override
 	public PictureCommand instantiateCommand() {
@@ -248,7 +246,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 				/*
 				 * scale picture
 				 */
-				final BufferedImage scaledPicture = scalePicture(file);
+				final RenderedImage scaledPicture = this.pictureScaler.scalePicture(ImageIO.read(file));
 
 				/*
 				 * delete temporary file
@@ -300,59 +298,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 
 	@Override
 	public void setErrors(final Errors errors) {
-		/*
-		 * here: check for binding errors
-		 */
 		this.errors = errors;
-	}
-	
-	/**
-	 * Scales the picture to a standard size.
-	 * 
-	 * @param imageFile
-	 * @return ready to write BufferedImage
-	 * @throws IOException
-	 */
-	private BufferedImage scalePicture(final File imageFile) throws IOException {
-		final Image image = ImageIO.read(imageFile);
-		final Image scaledImage;
-		final int width = image.getWidth(null);
-		final int height = image.getHeight(null);
-		if (height > sizeOfLargestSide || width > sizeOfLargestSide) {
-			/*
-			 * convert picture to the standard size with fixed aspect ratio
-			 */
-			if (width > height) {
-				/*
-				 *  _________        ____
-				 * |         | ---> |____|
-				 * |_________|
-				 * 
-				 */
-				scaledImage = image.getScaledInstance(sizeOfLargestSide, -1, Image.SCALE_SMOOTH);
-			} else {
-				/*
-			 	*  ____        __
-			 	* |    | ---> |  |
-			 	* |    |      |__|
-			 	* |    |
-			 	* |____|
-			 	*/
-				scaledImage = image.getScaledInstance(-1, sizeOfLargestSide, Image.SCALE_SMOOTH);
-			}
-		} else {
-			scaledImage = image;
-		}
-
-		/*
-		 * create new BufferedImage with converted picture
-		 */
-		final BufferedImage outImage = new BufferedImage(scaledImage.getWidth(null), scaledImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
-		final Graphics g = outImage.getGraphics();
-		g.drawImage(scaledImage, 0, 0, null);
-		g.dispose();
-
-		return outImage;
 	}
 
 	/**
@@ -402,10 +348,10 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	}
 
 	/**
-	 * @param sizeOfLargestSide the sizeOfLargestSide to set
+	 * @param pictureScaler the pictureScaler to set
 	 */
-	public void setSizeOfLargestSide(int sizeOfLargestSide) {
-		this.sizeOfLargestSide = sizeOfLargestSide;
+	public void setPictureScaler(PictureScaler pictureScaler) {
+		this.pictureScaler = pictureScaler;
 	}
 
 	/**
