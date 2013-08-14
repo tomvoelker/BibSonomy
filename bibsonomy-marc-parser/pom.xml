@@ -25,7 +25,7 @@
 			<artifactId>bibsonomy-common</artifactId>
 			<scope>test</scope>
 			<type>test-jar</type>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
@@ -61,28 +61,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<distributionManagement>
-		<site>
-			<!-- copy site documentation via scp to gromit -->
-			<id>bibsonomy-marc-parser-website-documentation</id>
-			<url>
-				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
-			</url>
-		</site>
-	</distributionManagement>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<!-- create javadoc with linked sources -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.6.1</version>
-				<configuration>
-					<linksource>true</linksource>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 </project>
