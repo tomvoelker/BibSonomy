@@ -28,7 +28,6 @@ import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.wiki.TemplateManager;
-import org.springframework.context.MessageSource;
 
 /**
  * Used to retrieve users from the database.
@@ -45,8 +44,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Tag BIBSONOMY_FRIEND_SYSTEM_TAG = new Tag(NetworkRelationSystemTag.BibSonomyFriendSystemTag);
 	
 	private static final UserDatabaseManager singleton = new UserDatabaseManager();
-	
-	private MessageSource messageSource;
+
 	
 	/**
 	 * @return UserDatabaseManager
@@ -1177,13 +1175,4 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	public void setValidator(final DatabaseModelValidator<User> validator) {
 		this.validator = validator;
 	}
-
-	public final MessageSource getMessageSource() {
-		return this.messageSource;
-	}
-
-	public final void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-
 }
