@@ -37,10 +37,12 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -551,5 +553,28 @@ public class BibtexUtilsTest {
 		
 		assertEquals(	"  testkey1 = {test value 2324234},\n" +
 						"  testkey2 = {test 2}", BibTexUtils.serializeMapToBibTeX(testMap));
+	}
+	
+	@Test
+	public void testDummyAuthors() {
+		final Post<BibTex> post = EndnoteUtilsTest.createPost();
+		post.getResource().setAuthor(createPersonList("HEB12334", "noauthor"));
+		post.getResource().setEditor(createPersonList("HEB12334", "noeditor"));
+		post.getResource().setYear("noyear");
+		final String withDummies = BibTexUtils.toBibtexString(post.getResource(), BibTexUtils.getFlags(false, false, false, false));
+		Assert.assertTrue(withDummies, withDummies.contains("noauthor"));
+		Assert.assertTrue(withDummies, withDummies.contains("noeditor"));
+		Assert.assertTrue(withDummies, withDummies.contains("noyear"));
+		
+		final String withoutDummies = BibTexUtils.toBibtexString(post.getResource(), BibTexUtils.getFlags(false, false, false, true));
+		Assert.assertFalse(withoutDummies, withoutDummies.contains("noauthor"));
+		Assert.assertFalse(withoutDummies, withoutDummies.contains("noeditor"));
+		Assert.assertFalse(withoutDummies, withoutDummies.contains("noyear"));
+	}
+
+	private List<PersonName> createPersonList(String fname, String lname) {
+		final List<PersonName> rVal = new ArrayList<PersonName>();
+		rVal.add(new PersonName(fname, lname));
+		return rVal;
 	}
 }

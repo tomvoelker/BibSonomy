@@ -30,7 +30,7 @@ public class EndnoteUtilsTest {
 		Assert.assertEquals(expected, rendered);
 	}
 
-	public Post<BibTex> createPost() {
+	public static Post<BibTex> createPost() {
 		BibTex b = new BibTex();
 		b.setEntrytype("article");
 		b.setAuthor(new ArrayList<PersonName>());

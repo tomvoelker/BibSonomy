@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,6 +86,8 @@ public class BibTexUtils {
 	 * keys from the database.
 	 */
 	public static final int SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS = 0x04;
+	/** Enable skipping required bibtex fields containing only dummy values (ie. noauthor / nodate). This gives incomplete but semantically correct bibtex data. */
+	public static final int SERIALIZE_BIBTEX_OPTION_SKIP_DUMMY_VALUE_FIELDS = 0x08;
 	
 
 	/**
@@ -426,6 +430,18 @@ public class BibTexUtils {
 	 * @return String bibtexString 
 	 */
 	public static String toBibtexString(final BibTex bib, final int flags) {
+		if (hasFlag(flags, SERIALIZE_BIBTEX_OPTION_SKIP_DUMMY_VALUE_FIELDS)) {
+			return runWithRemovedOrReplacedDummyValues(bib, false, new Callable<String>() {
+				@Override
+				public String call() throws Exception {
+					return toBibtexStringInternal(bib, flags);
+				}
+			});
+		}
+		return toBibtexStringInternal(bib, flags);
+	}
+	
+	private static String toBibtexStringInternal(final BibTex bib, final int flags) {
 		/*
 		 * get all values to generate the BibTeX first to sort all entries
 		 * alphabetically
@@ -998,11 +1014,12 @@ public class BibTexUtils {
 	 * @param generatedBibtexKeys - Should the BibTeX key be generated or should the original be taken?
 	 * @return An int containing the flags.
 	 */
-	public static int getFlags(final boolean plainMiscField, final boolean firstLastNames, final boolean generatedBibtexKeys) {
+	public static int getFlags(final boolean plainMiscField, final boolean firstLastNames, final boolean generatedBibtexKeys, final boolean skipDummyValueFields) {
 		int flags = 0;
-		if (plainMiscField)      flags |= SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD;
-		if (firstLastNames)      flags |= SERIALIZE_BIBTEX_OPTION_FIRST_LAST;
-		if (generatedBibtexKeys) flags |= SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS;
+		if (plainMiscField)       { flags |= SERIALIZE_BIBTEX_OPTION_PLAIN_MISCFIELD; }
+		if (firstLastNames)       { flags |= SERIALIZE_BIBTEX_OPTION_FIRST_LAST; }
+		if (generatedBibtexKeys)  { flags |= SERIALIZE_BIBTEX_OPTION_GENERATED_BIBTEXKEYS; }
+		if (skipDummyValueFields) { flags |= SERIALIZE_BIBTEX_OPTION_SKIP_DUMMY_VALUE_FIELDS; }
 
 		return flags;
 	}
@@ -1017,5 +1034,59 @@ public class BibTexUtils {
 	 */
 	private static boolean hasFlag(final int flags, final int testFlag) {
 		return (flags & testFlag) != 0;
+	}
+	
+	/**
+	 * Temporarily and safely replaces/removes dummy field values in the given {@link BibTex} object, runs the given {@link Runnable} and finally tidies up
+	 * 
+	 * @param bib given {@link BibTex}
+	 * @param replace whether to replace (true) or skip (false) fields with dummy values
+	 * @param r {@link Callable} o run with replaced value
+	 */
+	public static <T> T runWithRemovedOrReplacedDummyValues(BibTex bib, boolean replace, Callable<T> r) {
+		final String year = bib.getYear();
+		try {
+			if ("noyear".equalsIgnoreCase(bib.getYear())) {
+				bib.setYear("");
+			}
+			bib.setYear(null);
+			final List<PersonName> authors = bib.getAuthor();
+			try {
+				bib.setAuthor(createNoDummyPersonList(authors, "noauthor", replace));
+				final List<PersonName> editors = bib.getEditor();
+				try {
+					bib.setEditor(createNoDummyPersonList(editors, "noeditor", replace));
+					return r.call();
+				} finally {
+					bib.setEditor(editors);
+				}
+			} finally {
+				bib.setAuthor(authors);
+			}
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			bib.setYear(year);
+		}
+		
+	}
+
+	private static List<PersonName> createNoDummyPersonList(List<PersonName> persons, String dummyValue, boolean replace) {
+		if (persons == null) {
+			return persons;
+		}
+		List<PersonName> rVal = new ArrayList<PersonName>();
+		for (PersonName p : persons) {
+			if (dummyValue.equals(p.getLastName())) {
+				if (replace) {
+					rVal.add(new PersonName("", "N.N."));
+				}
+			} else {
+				rVal.add(p);
+			}
+		}
+		return rVal;
 	}
 }
