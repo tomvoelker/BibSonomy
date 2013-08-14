@@ -139,7 +139,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		final StringBuffer buf = layoutRenderer.renderLayout(layout, publicationPosts, formatEmbedded);
 		/*
 		 * set the content type headers
-		 */				
+		 */
 		response.setContentType(layout.getMimeType());
 		response.setCharacterEncoding("UTF-8");
 		String extension = layout.getExtension();
@@ -147,7 +147,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * If an extension is given, which is differrent from ".html", this suggests to the 
 		 * browser to show a file dialog.
 		 */
-		if (command.isDownload() || !extension.equalsIgnoreCase(".html")) {
+		if (command.isDownload() || !".html".equalsIgnoreCase(extension)) {
 			if (!present(extension)) {
 				extension = "." + command.getFormat();
 			}
