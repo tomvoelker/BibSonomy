@@ -705,7 +705,6 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException(); // TODO: implement me
 	}
 }
