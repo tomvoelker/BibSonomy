@@ -1012,6 +1012,7 @@ public class BibTexUtils {
 	 * @param plainMiscField - Should the plain misc field be used or should it be parsed and cleaned?
 	 * @param firstLastNames - Order of names should be First, Last?
 	 * @param generatedBibtexKeys - Should the BibTeX key be generated or should the original be taken?
+	 * @param skipDummyValueFields whether to skip fields with dummy values such as 'noauthor'
 	 * @return An int containing the flags.
 	 */
 	public static int getFlags(final boolean plainMiscField, final boolean firstLastNames, final boolean generatedBibtexKeys, final boolean skipDummyValueFields) {
@@ -1042,6 +1043,7 @@ public class BibTexUtils {
 	 * @param bib given {@link BibTex}
 	 * @param replace whether to replace (true) or skip (false) fields with dummy values
 	 * @param r {@link Callable} o run with replaced value
+	 * @return the return value of the callable object
 	 */
 	public static <T> T runWithRemovedOrReplacedDummyValues(BibTex bib, boolean replace, Callable<T> r) {
 		final String year = bib.getYear();

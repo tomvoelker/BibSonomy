@@ -22,12 +22,35 @@ public class EndnoteUtilsTest {
 			"%E Günter, Günter\n" + //
 			"%K test\n" + //
 			"%T Newcastle working papers in linguistics\n";
+	
+	private static final String expectedWithDummies = "%0 Journal Article\n" + //
+			"%1 schoolofenglishliterature2009newcastle\n" + //
+			"%A noauthor, HEB12334\n" + //
+			"%D noyear\n" + //
+			"%E noeditor, HEB12334\n" + //
+			"%K test\n" + //
+			"%T Newcastle working papers in linguistics\n";
+	
+	private static final String expectedWithSkippedDummies = "%0 Journal Article\n" + //
+			"%1 schoolofenglishliterature2009newcastle\n" + //
+			"%K test\n" + //
+			"%T Newcastle working papers in linguistics\n";
 
 	@Test
 	public void testIt() throws IOException {
 		Post<BibTex> post = createPost();
-		String rendered = EndnoteUtils.toEndnoteString(post);
+		String rendered = EndnoteUtils.toEndnoteString(post, false);
 		Assert.assertEquals(expected, rendered);
+	}
+	
+	@Test
+	public void testSkipDummyValues() throws IOException {
+		Post<BibTex> post = createPost();
+		post.getResource().setAuthor(BibtexUtilsTest.createPersonList("HEB12334", "noauthor"));
+		post.getResource().setEditor(BibtexUtilsTest.createPersonList("HEB12334", "noeditor"));
+		post.getResource().setYear("noyear");
+		Assert.assertEquals(expectedWithDummies, EndnoteUtils.toEndnoteString(post, false));
+		Assert.assertEquals(expectedWithSkippedDummies, EndnoteUtils.toEndnoteString(post, true));
 	}
 
 	public static Post<BibTex> createPost() {

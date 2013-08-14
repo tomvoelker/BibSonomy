@@ -572,7 +572,7 @@ public class BibtexUtilsTest {
 		Assert.assertFalse(withoutDummies, withoutDummies.contains("noyear"));
 	}
 
-	private List<PersonName> createPersonList(String fname, String lname) {
+	protected static List<PersonName> createPersonList(String fname, String lname) {
 		final List<PersonName> rVal = new ArrayList<PersonName>();
 		rVal.add(new PersonName(fname, lname));
 		return rVal;

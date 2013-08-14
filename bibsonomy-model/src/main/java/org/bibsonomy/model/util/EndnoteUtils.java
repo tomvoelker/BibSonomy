@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
@@ -106,9 +107,24 @@ public class EndnoteUtils {
 	 *            target {@link Appendable}
 	 * @param post
 	 *            {@link Post} to be rendered as endnote
+	 * @param skipDummyValues whether to skip fields with dummy values such as 'noauthor'
 	 * @throws IOException
 	 */
-	public static void append(Appendable a, Post<BibTex> post) throws IOException {
+	public static void append(final Appendable a, final Post<BibTex> post, final boolean skipDummyValues) throws IOException {
+		if (skipDummyValues == false) {
+			appendInternal(a, post);
+			return;
+		}
+		BibTexUtils.runWithRemovedOrReplacedDummyValues(post.getResource(), false, new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				appendInternal(a, post);
+				return null;
+			}
+		});
+	}
+	
+	private static void appendInternal(Appendable a, Post<BibTex> post) throws IOException {
 		final BibTex bib = post.getResource();
 		
 		a.append("%0 ").append(getRISEntryType(bib.getEntrytype())).append('\n');
@@ -186,12 +202,13 @@ public class EndnoteUtils {
 	 * Renders Endnote
 	 * 
 	 * @param post the post to be rendered
+	 * @param skipDummyValues whether to skip fields with dummyvalues like 'noauthor'
 	 * @return The Endnote-serialized publication
 	 */
-	public static String toEndnoteString(final Post<BibTex> post) {
+	public static String toEndnoteString(final Post<BibTex> post, final boolean skipDummyValues) {
 		StringWriter sw = new StringWriter();
 		try {
-			EndnoteUtils.append(sw, post);
+			EndnoteUtils.append(sw, post, skipDummyValues);
 		} catch (IOException ex) {
 			// newver happens
 		}
