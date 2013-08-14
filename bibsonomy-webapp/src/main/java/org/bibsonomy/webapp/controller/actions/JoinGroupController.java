@@ -117,7 +117,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 				throw new AccessDeniedException("This action is only possible for a group. Please log in as a group!");
 			}
 			final User deniedUser = adminLogic.getUserDetails(deniedUserName);
-			if (!present(deniedUser)) {
+			if (!present(deniedUser.getName())) {
 				errors.reject("joinGroup.deny.noUser");
 				return Views.ERROR;
 			}
