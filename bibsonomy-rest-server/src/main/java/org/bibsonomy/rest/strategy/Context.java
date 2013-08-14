@@ -24,6 +24,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.util.URLDecodingStringTokenizer;
+import org.bibsonomy.util.upload.ExtensionChecker;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -48,6 +49,8 @@ public final class Context {
 	 * the logic
 	 */
 	private final LogicInterface logic;
+	
+	private final ExtensionChecker extensionChecker;
 
 	/**
 	 * the factory that provides instances of the renderer
@@ -87,6 +90,7 @@ public final class Context {
 	 * @param doc 
 	 * @param uploadAccessor 
 	 * @param logic 
+	 * @param extensionChecker
 	 * @param parameterMap
 	 *            map of the attributes
 	 * @param additionalInfos 
@@ -96,9 +100,10 @@ public final class Context {
 	 *             if '/' is requested
 	 */
 	public Context(final HttpMethod httpMethod, final String url, final RenderingFormat renderingFormat, final RendererFactory rendererFactory, final Reader doc, final UploadedFileAccessor uploadAccessor,
-			final LogicInterface logic, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
+			final LogicInterface logic, ExtensionChecker extensionChecker, final Map<?, ?> parameterMap, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
+		this.extensionChecker = extensionChecker;
 
 		this.rendererFactory = rendererFactory;
 
@@ -243,6 +248,13 @@ public final class Context {
 	 */
 	public LogicInterface getLogic() {
 		return this.logic;
+	}
+
+	/**
+	 * @return the extensionChecker
+	 */
+	public ExtensionChecker getExtensionChecker() {
+		return this.extensionChecker;
 	}
 
 	/**

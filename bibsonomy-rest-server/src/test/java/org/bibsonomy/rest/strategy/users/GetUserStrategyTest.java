@@ -24,7 +24,7 @@ public class GetUserStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetUserStrategy() throws Exception {
-		final Context ctx = new Context(HttpMethod.GET, "/api/users/mbork", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, new HashMap<String, String>(), null);
+		final Context ctx = new Context(HttpMethod.GET, "/api/users/mbork", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, null, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ctx.perform(baos);
 

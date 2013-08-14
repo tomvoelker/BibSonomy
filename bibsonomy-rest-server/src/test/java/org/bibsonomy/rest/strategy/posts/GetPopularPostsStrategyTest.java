@@ -24,7 +24,7 @@ public class GetPopularPostsStrategyTest extends AbstractContextTest {
 	 */
 	@Test
 	public void testGetPopularPostsStrategy() throws Exception {
-		final Context c = new Context(HttpMethod.GET, "/api/posts/popular", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, new HashMap<String, String>(), null);
+		final Context c = new Context(HttpMethod.GET, "/api/posts/popular", RenderingFormat.XML, new RendererFactory(this.urlRenderer), this.is, null, this.db, null, new HashMap<String, String>(), null);
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		c.perform(baos);
 

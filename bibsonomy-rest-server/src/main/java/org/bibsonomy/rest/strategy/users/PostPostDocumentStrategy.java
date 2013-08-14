@@ -8,6 +8,7 @@ import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.upload.ExtensionChecker;
 import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.FileUploadFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	private final MultipartFile file;
 	
 	private final FileUploadFactory fileUploadFactory;
+	private final ExtensionChecker extensionChecker;
 	
 	/**
 	 * @param context
@@ -40,6 +42,8 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 		this.fileUploadFactory = new FileUploadFactory();
 		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get(RestServlet.DOCUMENTS_PATH_KEY));
 		this.fileUploadFactory.setTempPath(false);
+		
+		this.extensionChecker = context.getExtensionChecker();
 	}
 	
 	@Override
@@ -52,8 +56,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() {
 		try {
-			final FileUploadInterface up = this.fileUploadFactory.getFileUploadHandler(this.file, FileUploadInterface.FILE_UPLOAD_EXTENSIONS);
-			
+			final FileUploadInterface up = this.fileUploadFactory.getFileUploadHandler(this.file, this.extensionChecker);
 			final Document document = up.writeUploadedFile();
 			
 			/*

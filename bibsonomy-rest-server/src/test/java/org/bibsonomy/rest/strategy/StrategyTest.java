@@ -20,7 +20,7 @@ public class StrategyTest {
 	@Test
 	public void testChooseGroupingEntity() {
 		final Map<String, String[]> parameterMap = new HashMap<String, String[]>();
-		final Context ctx = new Context(HttpMethod.GET, "/api/users/egal/posts", RenderingFormat.XML, new RendererFactory(new UrlRenderer("/")), null, null, null, parameterMap, null);
+		final Context ctx = new Context(HttpMethod.GET, "/api/users/egal/posts", RenderingFormat.XML, new RendererFactory(new UrlRenderer("/")), null, null, null, null, parameterMap, null);
 
 		parameterMap.put("user", new String[] { "" });
 		assertEquals(GroupingEntity.USER, ctx.getStrategy().chooseGroupingEntity());

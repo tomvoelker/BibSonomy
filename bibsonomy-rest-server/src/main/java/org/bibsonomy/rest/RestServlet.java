@@ -47,6 +47,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
+import org.bibsonomy.util.upload.ExtensionChecker;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -104,7 +105,8 @@ public final class RestServlet extends HttpServlet {
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
 
 	private LogicInterfaceFactory logicFactory;
-
+	private ExtensionChecker extensionChecker;
+	
 	private UrlRenderer urlRenderer;
 	private RendererFactory rendererFactory;
 
@@ -116,6 +118,7 @@ public final class RestServlet extends HttpServlet {
 
 	/** logic interface factory for handling oauth requests */
 	private ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
+	
 
 	/**
 	 * @param oauthLogicFactory the oauthLogicFactory to set
@@ -164,6 +167,13 @@ public final class RestServlet extends HttpServlet {
 	@Required
 	public void setDocumentPath(final String documentPath) {
 		additionalInfos.put(DOCUMENTS_PATH_KEY, documentPath);
+	}
+	
+	/**
+	 * @param extensionChecker the extensionChecker to set
+	 */
+	public void setExtensionChecker(ExtensionChecker extensionChecker) {
+		this.extensionChecker = extensionChecker;
 	}
 
 	/**
@@ -251,7 +261,7 @@ public final class RestServlet extends HttpServlet {
 
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(getMainInputStream(request), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, uploadAccessor, logic, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, uploadAccessor, logic, this.extensionChecker, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();
