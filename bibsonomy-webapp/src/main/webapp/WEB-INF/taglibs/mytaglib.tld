@@ -285,7 +285,7 @@
 	<function>
 		<name>toEndnoteString</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String toEndnoteString(org.bibsonomy.model.Post)</function-signature>
+		<function-signature>String toEndnoteString(org.bibsonomy.model.Post, java.lang.Boolean)</function-signature>
 	</function>
 
 	<function>

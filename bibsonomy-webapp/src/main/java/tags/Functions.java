@@ -526,8 +526,13 @@ public class Functions  {
 		return BibTexUtils.toBibtexString(post, flags, urlGenerator) + "\n\n";
 	}
 	
-	public static String toEndnoteString(final Post<BibTex> post) {
-		return  EndnoteUtils.toEndnoteString(post);
+	/**
+	 * @param post the post to be rendered
+	 * @param skipDummyValues whether to skip fields containing dummyValues like noauthor
+	 * @return an endnote string
+	 */
+	public static String toEndnoteString(final Post<BibTex> post, final Boolean skipDummyValues) {
+		return  EndnoteUtils.toEndnoteString(post, skipDummyValues);
 	}
 	
 	/**

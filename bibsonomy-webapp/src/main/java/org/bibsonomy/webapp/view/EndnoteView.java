@@ -34,7 +34,7 @@ public class EndnoteView extends AbstractPublicationView<PublicationViewCommand>
 			} else {
 				writer.append('\n');
 			}
-			EndnoteUtils.append(writer, post);
+			EndnoteUtils.append(writer, post, command.isSkipDummyValues());
 		}
 	}
 }
