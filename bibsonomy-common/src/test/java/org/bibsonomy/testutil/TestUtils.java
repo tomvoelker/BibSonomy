@@ -24,6 +24,8 @@
 package org.bibsonomy.testutil;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,6 +35,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.bibsonomy.util.StringUtils;
 import org.junit.Ignore;
 
 /**
@@ -84,16 +87,17 @@ public final class TestUtils {
 	 */
 	public static String readEntryFromFile(final String fileName) throws IOException {
 		final InputStream stream = TestUtils.class.getClassLoader().getResourceAsStream(fileName);
-		return toString(stream);
+		return StringUtils.getStringFromReader(new BufferedReader(new InputStreamReader(stream)));
 	}
-
-	public static String toString(final InputStream stream) throws IOException {
-		final StringBuffer resultString = new StringBuffer();
-		final BufferedReader in = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
-		String line = null;
-		while ((line = in.readLine()) != null) {
-			resultString.append(line + "\n");
-		}
-		return resultString.toString();
+	
+	/**
+	 * 
+	 * @param file
+	 * @return the file contents as string
+	 * @throws IOException
+	 */
+	public static String readEntryFromFile(final File file) throws IOException {
+		final InputStream stream = new FileInputStream(file.getPath());
+		return StringUtils.getStringFromReader(new BufferedReader(new InputStreamReader(stream)));
 	}
 }
