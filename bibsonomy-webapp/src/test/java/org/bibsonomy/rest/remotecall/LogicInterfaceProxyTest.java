@@ -73,6 +73,8 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.util.upload.FileUploadInterface;
+import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
 import org.eclipse.jetty.server.AbstractConnector;
@@ -168,6 +170,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			restServlet.setUrlRenderer(urlRenderer);
 			restServlet.setRendererFactory(new RendererFactory(urlRenderer));
 			restServlet.setDocumentPath(getTmpDir());
+			restServlet.setExtensionChecker(new ListExtensionChecker(FileUploadInterface.DOCUMENT_EXTENSIONS));
 			
 			try {
 				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
