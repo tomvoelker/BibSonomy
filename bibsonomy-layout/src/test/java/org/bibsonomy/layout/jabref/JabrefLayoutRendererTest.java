@@ -26,9 +26,9 @@ package org.bibsonomy.layout.jabref;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class JabrefLayoutRendererTest {
 	
 	@Parameters
 	public static Collection<Object[]> data() {
-		final File folder = new File("src/test/resources/jabref-layout-tests");
+		final File folder = new File(JabrefLayoutRendererTest.class.getResource("/jabref-layout-tests").getFile());
 		final File[] listOfFiles = folder.listFiles(new FilenameFilter() {
 			
 			@Override
@@ -87,53 +87,46 @@ public class JabrefLayoutRendererTest {
 	
     @Test
     public void testRender() throws Exception {
-	    String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
-	    String layoutName = fileName;
-	    String entryType = "article";
-	    
+		String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
+		String layoutName = fileName;
+		String entryType = "article";
+		
 		if (fileName.contains(LAYOUT_ENTRYTYPE_SPLIT)) {
-	    	String[] parts = fileName.split(LAYOUT_ENTRYTYPE_SPLIT);
+			String[] parts = fileName.split(LAYOUT_ENTRYTYPE_SPLIT);
 	    	layoutName = parts[0];
 	    	entryType = parts[1];
 	    }
 	    final JabrefLayout layout = RENDERER.getLayout(layoutName, "foo");
-	    final StringBuffer renderedLayout = RENDERER.renderLayout(layout, getPosts(entryType), false);
-	    assertEquals("layout: " + layoutName + ", entrytype: " + entryType, TestUtils.toString(new FileInputStream(this.layoutTest)).trim(), renderedLayout.toString().replaceAll("\\r", "").trim());
-    }
+		final StringBuffer renderedLayout = RENDERER.renderLayout(layout, getPosts(entryType), false);
+	    assertEquals("layout: " + layoutName + ", entrytype: " + entryType, TestUtils.readEntryFromFile(this.layoutTest).trim(), renderedLayout.toString().replaceAll("\\r", "").trim());
+	}
 
     private List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException {
-    	final List<Post<BibTex>> posts = new LinkedList<Post<BibTex>>();
-
     	final User u = new User();
     	u.setName("Wiglaf Droste");
 
-		/*
-		 * next one
-		 */
-		final BibTex b2 = new BibTex(); 
-		b2.setEntrytype(entryType);
-		b2.setBibtexKey("benz2009managing"); 
-		b2.setAddress("New York, NY, USA");
-		b2.setAuthor(PersonNameUtils.discoverPersonNames("Dominik Benz and Folke Eisterlehner and Andreas Hotho and Robert Jäschke and Beate Krause and Gerd Stumme"));
-		b2.setBooktitle("HT '09: Proceedings of the 20th ACM Conference on Hypertext and Hypermedia");
-		b2.setEditor(PersonNameUtils.discoverPersonNames("Ciro Cattuto and Giancarlo Ruffo and Filippo Menczer"));
-		b2.setPages("323--324");
-		b2.setPublisher("ACM");
-		b2.setTitle("Managing publications and bookmarks with BibSonomy");
-		b2.setUrl("http://portal.acm.org/citation.cfm?doid=1557914.1557969#");
-		b2.setYear("2009");
-		b2.setMisc("isbn = {978-1-60558-486-7},\ndoi = {10.1145/1557914.1557969}");
-		b2.setMonth("jun");
-		b2.setPrivnote("This is a test note"); 
-		b2.setAbstract("In this demo we present BibSonomy, a social bookmark and publication sharing system.");
-		final Post<BibTex> p2 = new Post<BibTex>();
-		p2.setResource(b2);
-		p2.setUser(u);
-		p2.setDescription("Our demo at HT 2009");
+		final BibTex publication = new BibTex(); 
+		publication.setEntrytype(entryType);
+		publication.setBibtexKey("benz2009managing"); 
+		publication.setAddress("New York, NY, USA");
+		publication.setAuthor(PersonNameUtils.discoverPersonNames("Dominik Benz and Folke Eisterlehner and Andreas Hotho and Robert Jäschke and Beate Krause and Gerd Stumme"));
+		publication.setBooktitle("HT '09: Proceedings of the 20th ACM Conference on Hypertext and Hypermedia");
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Ciro Cattuto and Giancarlo Ruffo and Filippo Menczer"));
+		publication.setPages("323--324");
+		publication.setPublisher("ACM");
+		publication.setTitle("Managing publications and bookmarks with BibSonomy");
+		publication.setUrl("http://portal.acm.org/citation.cfm?doid=1557914.1557969#");
+		publication.setYear("2009");
+		publication.setMisc("isbn = {978-1-60558-486-7},\ndoi = {10.1145/1557914.1557969}");
+		publication.setMonth("jun");
+		publication.setPrivnote("This is a test note"); 
+		publication.setAbstract("In this demo we present BibSonomy, a social bookmark and publication sharing system.");
+		final Post<BibTex> post = new Post<BibTex>();
+		post.setResource(publication);
+		post.setUser(u);
+		post.setDescription("Our demo at HT 2009");
 		
-		posts.add(p2);
-	
-		return posts;
+		return Collections.singletonList(post);
     }
 }
 
