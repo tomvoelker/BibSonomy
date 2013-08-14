@@ -24,7 +24,10 @@
 package org.bibsonomy.scraper.converter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
@@ -36,6 +39,42 @@ import org.junit.Test;
 public class RisToBibtexConverterTest {
 
 	private static final String PATH_TO_FILES = "org/bibsonomy/scraper/converter/";
+	
+	/**
+	 * Test RIS to BibTeX Conversion
+	 * @throws IOException 
+	 */
+	@Test
+	public void testRisToBibtex() throws IOException {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1.ris");
+
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1_risBibtex.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		assertEquals (expectedBibTeX, bibTeX);
+	}
+	
+	/**
+	 * another RIS to BibTeX test
+	 * @throws IOException
+	 */
+	@Test
+	public void testRisToBibtex2() throws IOException {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "WorldCat_53972111.ris");
+
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "WorldCat_53972111.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		assertEquals (expectedBibTeX, bibTeX);
+	}
 	
 	/**
 	 * http://www.agu.org/pubs/crossref/2008/2008JD010287.shtml
@@ -53,6 +92,9 @@ public class RisToBibtexConverterTest {
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
 		final String bibTeX = ris2bConverter.risToBibtex(ris);
 
-		assertEquals (expectedBibTeX, bibTeX);
+		assertEquals(expectedBibTeX, bibTeX);
+		
+		// test canHandle
+		assertFalse(RisToBibtexConverter.canHandle(expectedBibTeX));
 	}
 }
