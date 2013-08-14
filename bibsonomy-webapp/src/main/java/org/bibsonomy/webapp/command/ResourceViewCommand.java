@@ -39,6 +39,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
 	private boolean formatEmbedded; // 
+	private boolean skipDummyValues; // 
 	
 	// TODO: could be a list of SortKeys
 	private String sortPage = DEFAULT_SORTPAGE;
@@ -388,5 +389,19 @@ public class ResourceViewCommand extends BaseCommand {
 	 */
 	public void setUrlGenerator(String urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+	/**
+	 * @see PublicationViewCommand#isSkipDummyValues()
+	 * @return the skipDummyValues
+	 */
+	public boolean isSkipDummyValues() {
+		return this.skipDummyValues;
+	}
+	/**
+	 * @see PublicationViewCommand#isSkipDummyValues()
+	 * @param skipDummyValues the skipDummyValues to set
+	 */
+	public void setSkipDummyValues(boolean skipDummyValues) {
+		this.skipDummyValues = skipDummyValues;
 	}
 }

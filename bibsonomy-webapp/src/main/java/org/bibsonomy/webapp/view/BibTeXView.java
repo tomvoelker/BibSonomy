@@ -42,17 +42,14 @@ public class BibTeXView extends AbstractPublicationView<BibtexViewCommand> {
 		 * and the allowed fields (don't change their name, they are already 
 		 * used)
 		 */
-		final int flags = BibTexUtils.getFlags(false, command.isFirstLastNames(), command.isGeneratedBibtexKeys());
+		final int flags = BibTexUtils.getFlags(false, command.isFirstLastNames(), command.isGeneratedBibtexKeys(), command.isSkipDummyValues());
 		return flags;
 	}
 	
 	@Override
 	protected void render(final BibtexViewCommand command, final OutputStreamWriter writer) throws IOException {
 		final int flags = getFlags(command);
-		URLGenerator urlGenerator = urlGenerators.get(command.getUrlGenerator());
-		if (urlGenerator == null) {
-			urlGenerator = urlGenerators.get("default");
-		}
+		final URLGenerator urlGenerator = getUrlGenerator(command.getUrlGenerator());
 		/*
 		 * write posts
 		 */
@@ -61,6 +58,15 @@ public class BibTeXView extends AbstractPublicationView<BibtexViewCommand> {
 		}
 	}
 	
+	protected URLGenerator getUrlGenerator(String urlGenerator) {
+		// hier könnte man auch direkt einen urlGenerator aus einer (parametrisierten und cachenden) factory ziehen
+		URLGenerator rVal = urlGenerators.get(urlGenerator);
+		if (rVal == null) {
+			rVal = urlGenerators.get("default");
+		}
+		return rVal;
+	}
+
 	/**
 	 * @return the urlGenerators
 	 */
