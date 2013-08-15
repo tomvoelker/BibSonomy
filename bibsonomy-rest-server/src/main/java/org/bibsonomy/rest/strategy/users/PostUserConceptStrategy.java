@@ -11,15 +11,15 @@ import org.bibsonomy.rest.strategy.Context;
  * Handle a concept creation request
  * 
  * @author Stefan Stützer
- * @version $Id$
+ * @version $Id: PostUserConceptStrategy.java,v 1.2 2013-02-13 21:03:21
+ *          nosebrain Exp $
  */
 public class PostUserConceptStrategy extends AbstractCreateStrategy {
-
 	private final String userName;
-	
+
 	/**
 	 * @param context - the context
-	 * @param userName -  the owner of the new concept
+	 * @param userName - the owner of the new concept
 	 */
 	public PostUserConceptStrategy(final Context context, final String userName) {
 		super(context);
@@ -29,11 +29,11 @@ public class PostUserConceptStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() {
 		final Tag concept = this.getRenderer().parseTag(this.doc);
-		return this.getLogic().createConcept(concept, GroupingEntity.USER, this.userName);				
+		return this.getLogic().createConcept(concept, GroupingEntity.USER, this.userName);
 	}
 
 	@Override
 	protected void render(final Writer writer, final String resourceHash) {
-		this.getRenderer().serializeResourceHash(writer, resourceHash);	
+		this.getRenderer().serializeResourceHash(writer, resourceHash);
 	}
 }
