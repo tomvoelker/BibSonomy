@@ -450,6 +450,8 @@ function renameRequestSuccessful(data) {
 		return $(this).text() == oldName;
 	});
 	
+	var children = toRename.children();
+	
 	// XXX: java is encoding whitespace as +, javascript as %20 :(
 	var encodedOldName = encodeURIComponent(oldName).replace(/%20/g, '+');
 	var encodedNewName = encodeURIComponent(newName).replace(/%20/g, '+');
@@ -478,6 +480,7 @@ function renameRequestSuccessful(data) {
 	});
 	
 	toRename.text(newName);
+	toRename.append(children);
 	toRename.siblings().filter('a:last').data('filename', newName);
 	
 	/*
