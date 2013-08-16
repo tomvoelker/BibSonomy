@@ -84,4 +84,15 @@ public class JSONRendererTest extends AbstractRendererTest {
 		final BibTex publication = (BibTex) post.getResource();
 		assertEquals("Test JSON Post", publication.getTitle());
 	}
+	
+	/**
+	 * tests {@link EnumDeserializer}
+	 * @throws IOException
+	 */
+	@Test
+	public void testEnum() throws IOException {
+		final String file = TestUtils.readEntryFromFile("jsonrenderer/StatusTest.json");
+		String parseStat = RENDERER.parseStat(new StringReader(file));
+		assertEquals("fail", parseStat);
+	}
 }

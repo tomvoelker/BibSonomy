@@ -37,6 +37,8 @@ import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.cfg.DeserializerFactoryConfig;
+import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.Impl;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
@@ -55,7 +57,8 @@ public class JSONRenderer extends AbstractRenderer {
 	 */
 	public JSONRenderer(final UrlRenderer urlRenderer) {
 		super(urlRenderer);
-		this.mapper = new ObjectMapper();
+		final DeserializerFactory deserializeFactory = new DeserializerFactory(new DeserializerFactoryConfig());
+		this.mapper = new ObjectMapper(null, null, new Impl(deserializeFactory));
 		this.mapper.setSerializationInclusion(Include.NON_NULL);
 		this.mapper.setSerializationInclusion(Include.NON_EMPTY);
 		
