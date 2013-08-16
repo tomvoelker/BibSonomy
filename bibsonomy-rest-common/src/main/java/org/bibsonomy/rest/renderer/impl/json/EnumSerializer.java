@@ -31,6 +31,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
 
 /**
+ * this {@link EnumSerializer} serializes all enums to their lowercase string
+ * representation to be backwards compatible with the old json output produced
+ * by Jersey JSON (the old library used to serialize JSON)
+ * 
  * @author dzo
  * @version $Id$
  */
