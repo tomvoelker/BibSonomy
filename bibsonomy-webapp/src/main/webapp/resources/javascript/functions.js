@@ -1559,6 +1559,13 @@ function startPostAutocompletion (textfield) {
 		},
 		minLength: 1,
 		select: function( event, ui ) {
+			
+			var item 		= ui.item;
+			var textArea  	= $(event.target);
+			var text 		= item.value;
+			
+			textArea.val(text);
+			
 			return false;
 		},
 		focus: function( event, ui ) {
@@ -1600,9 +1607,7 @@ function startPostAutocompletion (textfield) {
 		}
     });
 	
-	autocompleteObj.autocomplete('enable');
-	
-  	return false;	
+	autocompleteObj.autocomplete('enable');	
 }
 
 
