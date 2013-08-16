@@ -16,8 +16,8 @@ import org.bibsonomy.model.Resource;
  * @author rja
  * @version $Id$
  */
-public class ThreadedPingback extends SimplePingback implements Runnable {
-	private static final Log log = LogFactory.getLog(ThreadedPingback.class);
+public class ThreadedPingbackImpl extends SimplePingback implements Runnable, ThreadedPingBack {
+	private static final Log log = LogFactory.getLog(ThreadedPingbackImpl.class);
 	
 	private final Queue<Post<? extends Resource>> queue = new ConcurrentLinkedQueue<Post<? extends Resource>>();
 	private final long waitTime = 1000;
@@ -47,6 +47,7 @@ public class ThreadedPingback extends SimplePingback implements Runnable {
 	 * Clears the queue by sending pingbacks to all URLs in the queue.
 	 * @throws InterruptedException 
 	 */
+	@Override
 	public void clearQueue() throws InterruptedException {
 		log.debug("clearing queue (size = " + queue.size() + ")");
 		while (!this.queue.isEmpty()) {

@@ -24,7 +24,7 @@ import com.malethan.pingback.impl.ApachePingbackClient;
  */
 public class ThreadedPingbackTest extends AbstractClientTest {
 
-	private ThreadedPingback pingback;
+	private ThreadedPingbackImpl pingback;
 
 	@Override
 	@Before
@@ -33,7 +33,7 @@ public class ThreadedPingbackTest extends AbstractClientTest {
 		/*
 		 * set up pingback
 		 */
-		this.pingback = new ThreadedPingback();
+		this.pingback = new ThreadedPingbackImpl();
 		this.pingback.setLinkLoader(new HttpClientLinkLoader());
 		this.pingback.setPingbackClient(new ApachePingbackClient());
 		this.pingback.setUrlGenerator(new URLGenerator(baseUrl + "/"));
@@ -60,7 +60,7 @@ public class ThreadedPingbackTest extends AbstractClientTest {
 	@Test
 	public void testBeanScheduling() throws InterruptedException {
 		final ApplicationContext ctx = new ClassPathXmlApplicationContext("testBeanConfig.xml", ThreadedPingbackTest.class);
-		final ThreadedPingback myPingback = ctx.getBean("pingback", ThreadedPingback.class);
+		final ThreadedPingbackImpl myPingback = ctx.getBean("pingback", ThreadedPingbackImpl.class);
 
 		
 		myPingback.sendPingback(getPost("http://www.biblicious.org/0"));

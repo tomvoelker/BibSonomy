@@ -13,7 +13,7 @@
 
 	<bean id="linkLoader" class="org.bibsonomy.pingback.HttpClientLinkLoader" />
 
-	<bean id="pingback" class="org.bibsonomy.pingback.ThreadedPingback">
+	<bean id="pingback" class="org.bibsonomy.pingback.ThreadedPingbackImpl">
 		<property name="urlGenerator" ref="urlGenerator" />
 		<property name="pingbackClient" ref="pingbackClient" />
 		<property name="linkLoader" ref="linkLoader" />
