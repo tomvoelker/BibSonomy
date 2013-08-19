@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.importer.xml;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.InputStream;
 import java.util.Map;
 
@@ -44,8 +46,24 @@ public class XMLUnitTestImporter implements IUnitTestImporter {
 	 */
 	private static final String UNIT_TEST_DATA_XML_FILE_NAME = "UnitTestData.xml";
 	
+	private Map<String, ScraperUnitTest> unitTests;
+	
 
+	@Override
 	public Map<String, ScraperUnitTest> getUnitTests() throws Exception{
+		if(!present(this.unitTests)) {
+			this.initUnitTests();
+		}
+		return this.unitTests;
+	}
+	
+	/**
+	 * Helper method whcih initializes the Unit tests if they are not already loaded.
+	 * 
+	 * @throws Exception
+	 */
+	private void initUnitTests() throws Exception {
+		
 		final XMLReader xmlreader;
 		xmlreader = XMLReaderFactory.createXMLReader();
 
@@ -67,7 +85,7 @@ public class XMLUnitTestImporter implements IUnitTestImporter {
 				
 			}
 		}
-		return handler.getTests();
+		this.unitTests = handler.getTests();
 	}
 	
 }
