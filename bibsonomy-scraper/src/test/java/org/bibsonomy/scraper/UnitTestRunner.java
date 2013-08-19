@@ -29,6 +29,8 @@ import java.util.Map;
 
 import junit.framework.TestResult;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
@@ -45,6 +47,8 @@ public class UnitTestRunner {
 	 * Importer which reads the tests from a external sources.
 	 */
 	private static IUnitTestImporter IMPORTER = new XMLUnitTestImporter();
+	
+	private static final Log log = LogFactory.getLog(UnitTestRunner.class);
 
 	/**
 	 * Runs a single URLSCraperUnitTest, which is referenced by its ID.
@@ -61,11 +65,15 @@ public class UnitTestRunner {
 			final Map<String, ScraperUnitTest> unitTests = IMPORTER.getUnitTests();
 			final ScraperUnitTest test = unitTests.get(testId);
 			if (present(test)) {
-				final TestResult result = test.run();
-				test.setTestResult(result);
-				if (result.errorCount() > 0 || result.failureCount() > 0) {
-					test.printTestFailure();
-					return false;
+				if(test.isEnabled()) {
+					final TestResult result = test.run();
+					test.setTestResult(result);
+					if (result.errorCount() > 0 || result.failureCount() > 0) {
+						test.printTestFailure();
+						return false;
+					}
+				} else {
+					log.warn("Scrapertest with id " + test.getScraperTestId() + " is disabled in XML Configuration.");
 				}
 				return true;
 			}
