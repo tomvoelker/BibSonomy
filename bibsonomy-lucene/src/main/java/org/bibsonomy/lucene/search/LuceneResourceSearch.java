@@ -664,7 +664,8 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		
 		if (present(negatedTags)) {
 			for (final String negatedTag : negatedTags) {
-				mainQuery.add(new TermQuery(new Term(LuceneFieldNames.TAS, this.parseTag(negatedTag))), Occur.MUST_NOT);
+				final Query negatedSearchQuery = this.parseSearchQuery(LuceneFieldNames.TAS, negatedTag);
+				mainQuery.add(negatedSearchQuery, Occur.MUST_NOT);
 			}
 		}
 
