@@ -203,8 +203,10 @@
 		SELECT w.item AS user_name, ROUND(SUM(weight),5) * 10000 AS weight
 		FROM rankings r
 			JOIN weights w USING (id)
+			JOINT user u ON (w.item = u.user_name)
 			WHERE (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>) AND r.dim = 0
 			AND w.dim = 1 AND w.itemtype = 0
+			AND u.role != 3
 		GROUP BY w.item
 		HAVING weight > 1
 		ORDER BY 2 DESC
@@ -215,9 +217,11 @@
 		SELECT w.item AS user_name, ROUND(weight,5) * 10000 AS weight
 		FROM rankings r
 			JOIN weights w USING (id)
+			JOIN user u ON (w.item = u.user_name)
 			WHERE r.item=#requestedUserName# AND r.dim = 1
 			AND w.dim = 1
 			AND w.item != #requestedUserName#
+			AND u.role != 3
 			<isNotNull property="userName">
 			AND w.item NOT IN (SELECT f_user_name FROM followers WHERE user_name=#userName#)
 			</isNotNull> 
@@ -228,9 +232,13 @@
 	<select id="getRelatedUsersBySimilarity" resultMap="UserCommon.userWithWeight" parameterClass="userParam">
 		SELECT u2 AS user_name, sim * 10 AS weight 
 		FROM useruser_similarity 
+		JOIN user user1 ON (u1 = user1.user_name)
+		JOIN user user2 ON (u2 = user2.user_name)
 		WHERE measure_id = #userRelation.id# 
 		AND u1 = #requestedUserName#
 		AND u2 != #requestedUserName#
+		AND user1.role != 3
+		AND user2.role != 3
 		<isNotNull property="userName">		
 		AND u2 NOT IN (SELECT f_user_name FROM followers WHERE user_name=#userName#)
 		</isNotNull>
