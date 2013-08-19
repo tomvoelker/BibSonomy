@@ -4,6 +4,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 
+import main.java.org.bibsonomy.webapp.command.ajax.PrivateNoteAjaxCommand;
+import main.java.org.bibsonomy.webapp.util.ErrorAware;
+import main.java.org.bibsonomy.webapp.util.MinimalisticController;
+import main.java.org.bibsonomy.webapp.util.RequestWrapperContext;
+import main.java.org.bibsonomy.webapp.view.Views;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -11,12 +17,6 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.ajax.PrivateNoteAjaxCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
-import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
@@ -56,6 +56,9 @@ public class PrivateNoteAjaxController extends AjaxController implements Minimal
 		
 		final BibTex bib = (BibTex) post.getResource();
 		bib.setPrivnote(command.getPrivateNote());
+		
+		//need this to update change date
+		post.setChangeDate(null);
 		
 		this.logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		
