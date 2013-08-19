@@ -57,9 +57,6 @@ public class PrivateNoteAjaxController extends AjaxController implements Minimal
 		final BibTex bib = (BibTex) post.getResource();
 		bib.setPrivnote(command.getPrivateNote());
 		
-		//need this to update change date
-		post.setChangeDate(null);
-		
 		this.logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		
 		command.setResponseString("");		
