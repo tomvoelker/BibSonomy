@@ -1306,8 +1306,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			
 			/*
 			 * set change date to null, so that it will be set to current timestamp (Database schema)
+			 * Disabled temporarily
 			 */
-			post.setChangeDate(null);
+			//post.setChangeDate(null);
 			
 			/*
 			 * now execute the postupdate operation
