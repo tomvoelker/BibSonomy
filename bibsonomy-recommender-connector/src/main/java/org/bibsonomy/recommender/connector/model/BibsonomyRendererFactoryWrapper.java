@@ -26,7 +26,7 @@ public class BibsonomyRendererFactoryWrapper implements RecommendationRenderer<T
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void serializeTagRecommendationEntity(Writer writer,
+	public void serializeRecommendationEntity(Writer writer,
 			TagRecommendationEntity post, ViewModel model) {
 		if(post instanceof PostWrapper<?>) {
 			this.renderer.serializePost(writer, ((PostWrapper) post).getPost(),
@@ -35,13 +35,13 @@ public class BibsonomyRendererFactoryWrapper implements RecommendationRenderer<T
 	}
 
 	@Override
-	public SortedSet<recommender.core.model.RecommendedTag> parseRecommendedTagList(Reader reader)
+	public SortedSet<recommender.core.model.RecommendedTag> parseRecommendationResultList(Reader reader)
 			throws BadRequestOrResponseException {
 		return RecommendationUtilities.getRecommendedTagsFromBibRecTags(this.renderer.parseRecommendedTagList(reader));
 	}
 
 	@Override
-	public recommender.core.model.RecommendedTag parseRecommendedTag(Reader reader)
+	public recommender.core.model.RecommendedTag parseRecommendationResult(Reader reader)
 			throws BadRequestOrResponseException {
 		RecommendedTag result = this.renderer.parseRecommendedTag(reader);
 		return new recommender.core.model.RecommendedTag(result.getName(), result.getScore(), result.getConfidence());

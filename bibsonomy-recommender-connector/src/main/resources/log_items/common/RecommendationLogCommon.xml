@@ -61,11 +61,6 @@
 		<result property="tag"          column="tag"             javaType="string"/>
 	</resultMap>
 	
-	<resultMap id="queryGuess" class="queryGuess">
-		<result property="qid"    column="query_id"   javaType="long" />
-		<result property="diff"   column="diff"       javaType="long" />
-	</resultMap>
-	
 	<resultMap id="entityParam" class="entityParam">
 		<result property="entityId" column="entity_id" javaType="string" />
 		<result property="date" column="date" jdbcType="DATETIME" />
