@@ -25,6 +25,7 @@ package org.bibsonomy.services.renderer;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.Layout;
@@ -75,6 +76,8 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @param clazz
 	 * @return <code>true</code>, if this renderer supports the given resource type.
 	 */
-	public boolean supportsResourceType(final Class<? extends Resource> clazz);	
+	public boolean supportsResourceType(final Class<? extends Resource> clazz);
+
+	public Map<String, LAYOUT> getLayouts();	
 }
 
