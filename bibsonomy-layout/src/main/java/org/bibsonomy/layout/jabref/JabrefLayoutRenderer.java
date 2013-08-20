@@ -322,7 +322,8 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @return all layouts
 	 */
-	public Map<String, JabrefLayout> getJabrefLayouts(){
+	@Override
+	public Map<String, JabrefLayout> getLayouts(){
 		return this.layouts.getLayoutMap();
 	}
 
