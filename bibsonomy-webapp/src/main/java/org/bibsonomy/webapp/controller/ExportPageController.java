@@ -30,7 +30,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 */
 	@Override
 	public View workOn(final ExportPageCommand command) {
-		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
+		command.setLayoutMap(this.layoutRenderer.getLayouts());
 		
 		if (command.getFormatEmbedded()) {
 			return Views.EXPORT_EMBEDDED;
