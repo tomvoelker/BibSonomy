@@ -203,7 +203,7 @@
 		SELECT w.item AS user_name, ROUND(SUM(weight),5) * 10000 AS weight
 		FROM rankings r
 			JOIN weights w USING (id)
-			JOINT user u ON (w.item = u.user_name)
+			JOIN user u ON (w.item = u.user_name)
 			WHERE (<iterate property="tagIndex" conjunction=" OR ">r.item = #tagIndex[].tagName#</iterate>) AND r.dim = 0
 			AND w.dim = 1 AND w.itemtype = 0
 			AND u.role != 3
