@@ -104,10 +104,10 @@ function formatPublications(self, type){
     var tags = $('#reqTags').val();
     var reqUser = $('#reqUser').val();
     $(self).parent().parent().parent().next().empty();
-    $.get("/layout/" + layout + "/" + type + "/" + reqUser + "/" + tags, function(data){
+    $.get("/layout/" + layout + "/" + type + "/" + reqUser + "/" + tags + "?formatEmbedded=true", function(data){
         $(self).parent().parent().parent().next().html(data);
     });
-    handleSuccessStatus("Loading " + layout + " style")
+    handleSuccessStatus("Loading " + layout + " style");
     return false;
 }
 
