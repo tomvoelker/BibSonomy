@@ -159,13 +159,13 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/*
 		 * first: try embedded begin layout, if requested.
 		 */
-		if (embeddedLayout) {
+		if (embeddedLayout && layout.hasEmbeddedLayout()) {
 			beginLayout = layout.getSubLayout(LayoutPart.EMBEDDEDBEGIN);
 		} 
 		/*
 		 * second: if not available, take normal begin layout
 		 */
-		if (beginLayout == null) {
+		else {
 			beginLayout = layout.getSubLayout(LayoutPart.BEGIN);
 		}
 		/*
@@ -223,13 +223,13 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/*
 		 * first: try embedded end layout, if requested.
 		 */
-		if (embeddedLayout) {
+		if (embeddedLayout && layout.hasEmbeddedLayout()) {
 			endLayout = layout.getSubLayout(LayoutPart.EMBEDDEDEND);
 		} 
 		/*
 		 * second: if not available, take normal begin layout
 		 */
-		if (endLayout == null) {
+		else {
 			endLayout = layout.getSubLayout(LayoutPart.END);
 		}
 		/*
