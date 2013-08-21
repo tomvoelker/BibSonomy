@@ -12,7 +12,7 @@
 <tr id="rev_\format{\bibtexkey}" class="review noshow">
 	<td colspan="6"><b>Review</b>: \format[HTMLChars,XMLEscaper]{\review}</td>
 </tr>\end{review}
-<tr id="bib_{\bibtexkey}" class="bibtex noshow">
+<tr id="bib_\format{\bibtexkey}" class="bibtex noshow">
 <td colspan="6">
 <b>BibTeX</b>:
 <pre>
