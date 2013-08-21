@@ -77,7 +77,11 @@ public interface LayoutRenderer<LAYOUT extends Layout> {
 	 * @return <code>true</code>, if this renderer supports the given resource type.
 	 */
 	public boolean supportsResourceType(final Class<? extends Resource> clazz);
-
-	public Map<String, LAYOUT> getLayouts();	
+	
+	/**
+	 * TODO: should be a list?
+	 * @return all layyouts supported by this LayoutRenderer 
+	 */
+	public Map<String, LAYOUT> getLayouts();
 }
 
