@@ -105,14 +105,25 @@ public class PublicationListTag extends SharedTag {
 		if (dropdownMenuEnabled) {
 			// Standard selected layout is plain.
 			final String selectedLayout = "plain";
+			
 			// TODO: Mehrere moegliche Layouts einbinden
 			// (<a href='/export/").append(this.getGroupingEntity().toString()).append("/").append(requestedName).append("/").append(tags).append("' title='show all export formats (including RSS, CVS, ...)''>all formats</a>):
-			renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' style='font-size:80%;'>" +
-					this.messageSource.getMessage("bibtex.citation_format", new Object[]{}, this.locale) +
-					": <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"").append(this.getGroupingEntity().toString()).append("\")'>");
+			renderedHTML.append("<div><span id='citation_formats'><form name='citation_format_form' action='' " +
+					"style='font-size:80%;'>" +	this.messageSource.getMessage("bibtex.citation_format", new Object[]{}, this.locale) +
+					": <select size='1' name='layout' class='layout' onchange='return formatPublications(this,\"")
+					.append(this.getGroupingEntity().toString()).append("\")'>");
 			
-			for (final String layout : RENDERABLE_LAYOUTS) {
-				renderedHTML.append("<option value='" + layout + "'" + (selectedLayout.equals(layout) ? " selected" : "") + ">" + layout + "</option>");
+			for (final String layoutName : this.layoutRenderer.getLayouts().keySet()) {
+				try {
+					Layout layout = this.layoutRenderer.getLayout(layoutName, requestedName);
+					if (layout.getMimeType().equals("text/html") && layout.hasEmbeddedLayout())
+						renderedHTML.append("<option value='" + layoutName + "'" + (selectedLayout.equals(layoutName)
+								? " selected" : "") + ">" + layoutName + "</option>");
+				} catch (LayoutRenderingException e) {
+					log.error(e.getMessage());
+				} catch (final IOException e) {
+					log.error(e.getMessage());
+				}
 			}
 			renderedHTML.append("</select><input id='reqUser' type='hidden' value='").append(requestedName).append("' /><input id='reqTags' type='hidden' value='").append(tags).append("' /></form></span></div>");
 		}
@@ -121,7 +132,8 @@ public class PublicationListTag extends SharedTag {
 		/*
 		 * get the publications, maybe restricted to a certain interval of years.
 		 * 
-		 * FIXME: We want these working in a different way. We want 
+		 * FIXME: We want these working in a different way. We want the publication's year,
+		 * not the BibSonomy year of the posting.
 		 */
 		final Date startYear = null;
 		final Date endYear = null;
@@ -155,14 +167,18 @@ public class PublicationListTag extends SharedTag {
 		 * and finally use the chosen layout (plain by def.)
 		 */
 		try {
-			final Layout layout;
+			Layout layout;
 			if (null != tagAttributes.get(LAYOUT)) {
 				layout = this.layoutRenderer.getLayout(tagAttributes.get(LAYOUT).toLowerCase(), requestedName);
+				
+				if (!layout.getMimeType().equals("text/html")) {
+					layout = this.layoutRenderer.getLayout(DEFAULT_LAYOUT, requestedName);
+				}
 			} else {
 				layout = this.layoutRenderer.getLayout(DEFAULT_LAYOUT, requestedName);
 			}
 			
-			renderedHTML.append("<div id='publications'>" + this.layoutRenderer.renderLayout(layout, posts, false) + "</div>"); // class='entry bibtex'
+			renderedHTML.append("<div id='publications'>" + this.layoutRenderer.renderLayout(layout, posts, true) + "</div>"); // class='entry bibtex'
 		} catch (final LayoutRenderingException e) {
 			log.error(e.getMessage());
 		} catch (final IOException e) {
