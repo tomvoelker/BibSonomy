@@ -273,6 +273,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		for (final Group groupOfUserA : groupsOfUserA) {
 			for (final Group groupOfUserB : groupsOfUserB) {
 				if (groupOfUserA.getGroupId() == groupOfUserB.getGroupId()) {
+					/*
+					 * we add the group of user b to result test
+					 * because we need the attribute of user b
+					 * if he shares documents with other
+					 * group members
+					 */
 					commonGroups.add(groupOfUserB);
 				}
 			}
@@ -310,7 +316,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session a db session
 	 * @return groupid of group, GroupID.GROUP_INVALID otherwise
 	 */
-	public Integer getGroupIdByGroupName(final String groupname, final DBSession session) {		
+	public Integer getGroupIdByGroupName(final String groupname, final DBSession session) {
 		return this.getGroupIdByGroupNameAndUserName(groupname, null, session);
 	}
 
