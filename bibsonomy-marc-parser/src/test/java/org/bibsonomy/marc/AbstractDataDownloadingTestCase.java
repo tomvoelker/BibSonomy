@@ -31,13 +31,13 @@ public abstract class AbstractDataDownloadingTestCase {
 	
 	private final MarcToBibTexReader reader = new MarcToBibTexReader();
 
-	protected BibTex get(String hebisId) {
-		Collection<ImportResource> bibs = reader.read(new ImportResource(downloadMarcWithPica(hebisId)));
+	protected BibTex get(final String hebisId) {
+		final Collection<ImportResource> bibs = reader.read(new ImportResource(downloadMarcWithPica(hebisId)));
 		Assert.assertEquals(1, bibs.size());
 		return bibs.iterator().next();
 	}
 	
-	protected DualData downloadMarcWithPica(String hebisId) {
+	protected DualData downloadMarcWithPica(final String hebisId) {
 		Document doc;
 		doc = download(hebisId, false);
 		Node node = doc.selectSingleNode( "//str[@name='fullrecord']" );
@@ -48,29 +48,29 @@ public abstract class AbstractDataDownloadingTestCase {
 				throw new NoSuchElementException("no object with hebis id='" + hebisId + "' found");
 			}
 		}
-        String name = node.getText();
-        name = name.replace("#29;", "\u001D");
-        name = name.replace("#30;", "\u001E");
-        name = name.replace("#31;", "\u001F");
-        
-        ByteArrayData marcData = new ByteArrayData(name.getBytes(), "application/marc");
-        
-        String picaString = doc.selectSingleNode( "//str[@name='raw_fullrecord']" ).getText();
-        ByteArrayData picaData = new ByteArrayData(picaString.getBytes(), "application/pica");
-        return new DualDataWrapper(marcData, picaData);
+		String name = node.getText();
+		name = name.replace("#29;", "\u001D");
+		name = name.replace("#30;", "\u001E");
+		name = name.replace("#31;", "\u001F");
+		
+		final ByteArrayData marcData = new ByteArrayData(name.getBytes(), "application/marc");
+		
+		final String picaString = doc.selectSingleNode( "//str[@name='raw_fullrecord']" ).getText();
+		final ByteArrayData picaData = new ByteArrayData(picaString.getBytes(), "application/pica");
+		return new DualDataWrapper(marcData, picaData);
 	}
 
-	public Document download(String hebisId, boolean overwriteWithAlternative) {
+	public Document download(final String hebisId, final boolean overwriteWithAlternative) {
 		try {
 			return parse(readCached(hebisId, overwriteWithAlternative));
-		} catch (RuntimeException e) {
+		} catch (final RuntimeException e) {
 			throw e;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private InputStream readCached(String hebisId, boolean overwriteWithAlternative) throws MalformedURLException, IOException {
+	private InputStream readCached(final String hebisId, final boolean overwriteWithAlternative) throws MalformedURLException, IOException {
 		final String fileName = hebisId + ".xml";
 		InputStream rVal = (overwriteWithAlternative == true) ? null : this.getClass().getResourceAsStream(fileName);
 		if (rVal == null) {
@@ -82,7 +82,7 @@ public abstract class AbstractDataDownloadingTestCase {
 				//new URL("http://wastl.hebis.uni-frankfurt.de:8983/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true"));
 				is = new URL("http://solr.hebis.de/solr/hebis_neu/select?q=id%3A" + hebisId + "&wt=xml&indent=true").openStream();
 			}
-			OutputStream os = new FileOutputStream(absoluteFileName);
+			final OutputStream os = new FileOutputStream(absoluteFileName);
 			IOUtils.copy(is, os);
 			is.close();
 			os.close();
@@ -91,12 +91,10 @@ public abstract class AbstractDataDownloadingTestCase {
 		return rVal;
 	}
 
-	public static Document parse(InputStream is) throws DocumentException, IOException {
-        SAXReader reader = new SAXReader();
-        Document document = reader.read(is);
-        is.close();
-        return document;
-    }
-	
-	
+	public static Document parse(final InputStream is) throws DocumentException, IOException {
+		final SAXReader reader = new SAXReader();
+		final Document document = reader.read(is);
+		is.close();
+		return document;
+	}
 }
