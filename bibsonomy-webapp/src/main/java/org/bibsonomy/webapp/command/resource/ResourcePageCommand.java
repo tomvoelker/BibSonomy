@@ -81,10 +81,16 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 		this.discussionItems = discussionItems;
 	}
 
+	/**
+	 * @return the copyUsersMap
+	 */
 	public Map<String, List<String>> getCopyUsersMap() {
 		return this.copyUsersMap;
 	}
 
+	/**
+	 * @param copyUsersMap the copyUsersMap to set
+	 */
 	public void setCopyUsersMap(Map<String, List<String>> copyUsersMap) {
 		this.copyUsersMap = copyUsersMap;
 	}
