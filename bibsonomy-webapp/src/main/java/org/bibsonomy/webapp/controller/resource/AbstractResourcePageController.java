@@ -179,7 +179,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		}
 		
 		final List<PostMetaData> metaData = this.logic.getPostMetaData(HashID.INTER_HASH, goldHash, null, null);
-		if (metaData != null && metaData.size() > 0) {
+		if (present(metaData)) {
 			// try to create the copy users map
 			command.setCopyUsersMap(this.createCopyUserMap(metaData));
 		}
