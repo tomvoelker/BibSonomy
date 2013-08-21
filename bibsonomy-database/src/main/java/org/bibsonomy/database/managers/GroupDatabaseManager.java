@@ -261,8 +261,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return The list of groups both given users are in.
 	 */
 	public List<Group> getCommonGroups(final String userNameA, final String userNameB, final DBSession session) {
-		final List<Group> userAGroups = this.getGroupsForUser(userNameA, true, session);
-		final List<Group> userBGroups = this.getGroupsForUser(userNameB, true, session);
+		final List<Group> groupsOfUserA = this.getGroupsForUser(userNameA, true, session);
+		final List<Group> groupsOfUserB = this.getGroupsForUser(userNameB, true, session);
 
 		/*
 		 * It is not very efficient, to do this in two cascaded loops, but users
@@ -270,10 +270,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * probably no much more efficient way to do it.
 		 */
 		final List<Group> commonGroups = new LinkedList<Group>();
-		for (final Group a : userAGroups) {
-			for (final Group b : userBGroups) {
-				if (a.getGroupId() == b.getGroupId()) {
-					commonGroups.add(b);
+		for (final Group groupOfUserA : groupsOfUserA) {
+			for (final Group groupOfUserB : groupsOfUserB) {
+				if (groupOfUserA.getGroupId() == groupOfUserB.getGroupId()) {
+					commonGroups.add(groupOfUserB);
 				}
 			}
 		}
@@ -589,8 +589,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * updates the user shared documents field for the given user. UserName is group.name.
 	 * 
-	 * @param groups
-	 * @return
+	 * @param group
+	 * @param session
 	 */
 	public void updateUserSharedDocuments(final Group group, final DBSession session) {
 		this.update("updateUserSharedDocuments", group, session);
