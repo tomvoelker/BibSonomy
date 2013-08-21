@@ -159,6 +159,8 @@ public abstract class Layout {
 		this.publicLayout = publicLayout;
 	}
 	
+	public abstract boolean hasEmbeddedLayout();
+	
 	@Override
 	public String toString() {
 		return name + "(" + displayName + ", '" + mimeType + ", " + extension + ")";
