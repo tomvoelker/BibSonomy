@@ -108,6 +108,7 @@ public class JabrefLayout extends org.bibsonomy.model.Layout {
 		this.userLayout = userLayout;
 	}
 	
+	@Override
 	public boolean hasEmbeddedLayout() {
 		return (this.getSubLayout(LayoutPart.EMBEDDEDBEGIN) != null) && (this.getSubLayout(LayoutPart.EMBEDDEDEND) != null);
 	}
