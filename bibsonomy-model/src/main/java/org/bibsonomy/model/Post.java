@@ -369,21 +369,19 @@ public class Post<T extends Resource> implements Serializable {
 	}
 	
 	/**
-	 * Return the metadata.
+	 * @return the metaData
 	 */
 	public List<PostMetaData> getMetaData() {
 		return this.metaData;
 	}
 
 	/**
-	 * Set the metadata.
-	 * 
-	 * @param metaData
+	 * @param metaData the metaData to set
 	 */
 	public void setMetaData(List<PostMetaData> metaData) {
 		this.metaData = metaData;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "\n" + (user == null ? "" : user.getName()) + "\n\ttagged\n\t\t" + resource + "\n\twith\n" + tags;
