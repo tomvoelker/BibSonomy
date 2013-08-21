@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -339,11 +340,8 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				break;
 			}
 		}
-		if (group == null) {
-			fail("no group found");
-		} else {
-			assertTrue(group.isUserSharedDocuments());
-		}
+		assertNotNull("no group found", group);
+		assertTrue(group.isUserSharedDocuments());
 	}
 
 	/**
