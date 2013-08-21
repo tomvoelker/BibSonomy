@@ -13,7 +13,7 @@
 	</select>
 
 	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="string">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, 0 as userSharedDocuments, u.user_realname AS realname, u.user_homepage AS homepage
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname AS realname, u.user_homepage AS homepage
 		FROM groupids i 
 		  JOIN user u ON (i.group_name = u.user_name)
 		WHERE i.group_name = #groupname#
@@ -40,14 +40,14 @@
 		 WHERE g.user_name = #username#
 		)
 		UNION
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, 0 AS userSharedDocuments
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, FALSE AS userSharedDocuments
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2)
 		ORDER BY `group`
 	</select>
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
-		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, 0 as userSharedDocuments 
+		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments, FALSE as userSharedDocuments 
 		  FROM groupids i JOIN grouptas t USING (`group`) 
 		  WHERE t.content_id = #contentId# 
 	</select>	

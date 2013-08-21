@@ -2843,13 +2843,8 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
 		final DBSession session = openSession();
-		
 		try {
-			// show metadata only to admins.
-			if (this.permissionDBManager.isAdmin(this.loginUser)) {
-				return this.publicationDBManager.getPostMetaData(hashType, resourceHash, userName, metaDataPluginKey, session);
-			}
-			return null;
+			return this.publicationDBManager.getPostMetaData(hashType, resourceHash, userName, metaDataPluginKey, session);
 		} finally {
 			session.close();
 		}

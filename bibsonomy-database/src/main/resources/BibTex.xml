@@ -569,7 +569,7 @@
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
-		       SELECT content_id, date, 1 AS userSharedDocuments             <!-- currUsers publications, ... -->
+		       SELECT content_id, date, TRUE AS userSharedDocuments             <!-- currUsers publications, ... -->
 		       FROM bibtex b, groups g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
@@ -577,7 +577,7 @@
 		      )) as ids			      
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb	
-		LEFT JOIN document d ON bb.content_id = d.content_id AND bb.userSharedDocuments = 1
+		LEFT JOIN document d ON bb.content_id = d.content_id AND bb.userSharedDocuments = TRUE
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
@@ -605,13 +605,13 @@
 		             AND g.group = #groupId#
 		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
-		       SELECT content_id, date, 1 AS userSharedDocuments               <!-- currUsers publications, ... -->
+		       SELECT content_id, date, TRUE AS userSharedDocuments               <!-- currUsers publications, ... -->
 		       FROM bibtex b, groups g
 		       WHERE b.user_name = #userName#
 		             AND g.user_name = b.user_name    <!-- only, if currUser ... -->
 		             AND g.group = #groupId#          <!-- is in this group       -->
 		      )) as ids			           
-			  JOIN document d ON ids.content_id = d.content_id AND ids.userSharedDocuments = 1 
+			  JOIN document d ON ids.content_id = d.content_id AND ids.userSharedDocuments = TRUE 
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb		
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
@@ -646,7 +646,7 @@
 	<select id="getBibTexForGroupByTagWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, g.group_name, h.ctr as count, g.group, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h, <include refid="selectContentIDs"/>
-		LEFT JOIN document d ON bb.content_id = d.content_id AND bb.userSharedDocuments = 1 
+		LEFT JOIN document d ON bb.content_id = d.content_id AND bb.userSharedDocuments = TRUE 
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
