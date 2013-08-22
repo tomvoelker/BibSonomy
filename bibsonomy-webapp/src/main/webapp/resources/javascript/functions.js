@@ -1169,7 +1169,7 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 			 */
 			if (userInput.length != 0) {
 				$.ajax({
-					url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + userInput,
+					url: "/json/prefixtags/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(userInput),
 					dataType: "jsonp",
 					success: function( data ) {
 						/*
@@ -1539,7 +1539,7 @@ function startPostAutocompletion (textfield) {
 			 */
 			if (userInput.length != 0) {
 				$.ajax({
-					url: "/json/titleSuggestion?postType=bibtex&postPrefix=" + userInput,
+					url: "/json/titleSuggestion?postType=bibtex&postPrefix=" + encodeURIComponent(userInput),
 					success: function( data ) {
 						
 						var tags = $.map( data.items, function(item) {
