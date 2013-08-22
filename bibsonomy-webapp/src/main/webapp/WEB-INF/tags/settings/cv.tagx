@@ -40,6 +40,7 @@
 								<c:choose>
 									<c:when test="${command.isGroup}">
 										<select class="changeLayout">
+										    <option data-layout='LAYOUT_CURRENT' value="${curr}">${curr}</option>
 											<option data-layout="LAYOUT_G_DEFAULT_I_EN" value="${def1en}">${def1en}</option>
 											<option data-layout="LAYOUT_G_DEFAULT_I_GER" value="${def1ger}">${def1ger}</option>
 										</select>
