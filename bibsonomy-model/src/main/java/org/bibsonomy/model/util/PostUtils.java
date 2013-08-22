@@ -56,6 +56,7 @@ public class PostUtils {
 	public static void populatePost(final Post<? extends Resource> post, final User user) {
 		populatePostWithUser(post, user);
 		populatePostWithDate(post, user);
+		populatePostWithChangeDate(post, user);
 	}
 
 	/**
@@ -79,8 +80,20 @@ public class PostUtils {
 	 */
 	public static void populatePostWithDate(final Post<? extends Resource> post, final User loginUser) {
 		if (!Role.SYNC.equals(loginUser.getRole()) || !present(post.getDate())) {
-	    	post.setDate(new Date());
-	    }
+			post.setDate(new Date());
+		}
+	}
+	
+	/**
+	 * overwrites the change date of the post if the user is not allowed to set it
+	 * 
+	 * @param post
+	 * @param loginUser
+	 */
+	public static void populatePostWithChangeDate(final Post<? extends Resource> post, final User loginUser) {
+		if (!Role.SYNC.equals(loginUser.getRole()) || !present(post.getChangeDate())) {
+			post.setChangeDate(new Date());
+		}
 	}
 	
 	/**
