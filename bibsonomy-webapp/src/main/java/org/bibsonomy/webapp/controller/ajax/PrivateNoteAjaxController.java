@@ -24,8 +24,8 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class PrivateNoteAjaxController extends AjaxController implements MinimalisticController<PrivateNoteAjaxCommand>, ErrorAware {
-
 	private static final Log log = LogFactory.getLog(PrivateNoteAjaxController.class);
+	
 	private Errors errors;
 	
 	@Override
@@ -57,12 +57,9 @@ public class PrivateNoteAjaxController extends AjaxController implements Minimal
 		final BibTex bib = (BibTex) post.getResource();
 		bib.setPrivnote(command.getPrivateNote());
 		
-		//need this to update change date
-		post.setChangeDate(null);
-		
 		this.logic.updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL);
 		
-		command.setResponseString("");		
+		command.setResponseString("");
 		return Views.AJAX_JSON;
 	}
 
