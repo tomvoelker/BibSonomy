@@ -92,6 +92,8 @@ public class Group implements Serializable{
 
 	/**
 	 * stores documents sharing setting for the current user.
+	 * TODO: this attribute has nothing to do with a group
+	 * it is specific to one member of the group
 	 */
 	private boolean userSharedDocuments;
 	
