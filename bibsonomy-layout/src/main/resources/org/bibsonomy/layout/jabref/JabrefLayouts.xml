@@ -54,6 +54,7 @@
 			Ein HTML-Layout ohne Kopf- und Fußzeile, aber mit einer formatierten Ausgabe.
 			Geeignet, um Publikationslisten auf anderen HTML-Seiten einzubetten.
 		</description>
+		<directory>simplehtml</directory>
 		<baseFileName>simplehtml</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
@@ -69,6 +70,7 @@
 			Ein HTML-Layout ohne Kopf- und Fußzeile, aber mit einer formatierten Ausgabe.
 			Geeignet, um Publikationslisten auf anderen HTML-Seiten einzubetten, gruppiert nach Jahren.
 		</description>
+		<directory>simplehtmlyear</directory>
 		<baseFileName>simplehtmlyear</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
@@ -81,6 +83,7 @@
 		<description xml:lang="de">
 			Ausgabe für die CV-Seite
 		</description>
+		<directory>plain</directory>
 		<baseFileName>plain</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
