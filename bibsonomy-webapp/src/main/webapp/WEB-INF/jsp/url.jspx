@@ -21,7 +21,7 @@
 	<c:set var="bookmark" value="${command.bookmark.list[0].resource}" />
 
 	<c:if test="${goldstandardPresent}">
-		<c:set var="bookmark" value="${command.goldStandardBookmarks.list[0].resource}" />				
+		<c:set var="bookmark" value="${command.goldStandardBookmarks.list[0].resource}" />
 	</c:if>
 	
 	<c:set var="public" value="${false}"/>
@@ -87,8 +87,8 @@
 								<jspx:attribute name="title"><fmt:message key="copyusers.title" /></jspx:attribute>
 								<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
 							<jspx:body><fmt:message key="copyusers"/></jspx:body>
-							</jspx:element>		
-						</span>				
+							</jspx:element>
+						</span>
 						<ul class="tagcloud sidebar_collapse_content">
 							<li>
 								<table style="display: inline-block; vertical-align: top;">
@@ -96,7 +96,7 @@
 										<c:forEach var="entry" items="${command.copyUsersMap}">
 											<tr>
 												<td valign="top"><a href="/user/${fn:escapeXml(entry.key)}"><c:out value="${entry.key}"/></a></td>
-			      								<td valign="top"> → </td>
+												<td valign="top"> → </td>
 												<td style="text-align: left;">
 													<c:forEach var="user" items="${entry.value}">
 														<a href="/user/${fn:escapeXml(user)}"><c:out value="${user}"/></a><c:out value=" "/>
@@ -107,8 +107,8 @@
 									</tbody>
 								</table>
 							</li>
-						</ul> 	
-					</li>					
+						</ul>
+					</li>
 				</c:if>
 			</ul>
 		</jsp:attribute>
@@ -116,8 +116,8 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-		        	<!-- short info, what the basket is -->
-		            <fmt:message key="discussion.info"><fmt:param><fmt:message key="discussion.info.bookmark"></fmt:message></fmt:param></fmt:message>                
+					<!-- short info about discussion -->
+					<fmt:message key="discussion.info"><fmt:param><fmt:message key="discussion.info.bookmark"></fmt:message></fmt:param></fmt:message>                
 		
 					<!-- quick links on what you can do -->
 					
@@ -128,17 +128,8 @@
 					</ul>
 				</jsp:attribute>
 			</parts:infobox>
-         </jsp:attribute>
-		
-		<!--+
-			+ page options
-			+ -->
-		<!-- 
-		<jsp:attribute name="customPageOptions">
-			FIXME: put page actions here!
 		</jsp:attribute>
-		 -->
-				
+		
 		<!--+
 			+ content heading
 			+ -->
