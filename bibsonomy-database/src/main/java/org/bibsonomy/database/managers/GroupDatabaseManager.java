@@ -274,7 +274,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			for (final Group groupOfUserB : groupsOfUserB) {
 				if (groupOfUserA.getGroupId() == groupOfUserB.getGroupId()) {
 					/*
-					 * we add the group of user b to result test
+					 * we add the group of user b to the result list
 					 * because we need the attribute of user b
 					 * if he shares documents with other
 					 * group members
