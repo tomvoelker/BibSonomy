@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
@@ -22,19 +21,19 @@ import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * Controller for the cv page: - /cv/name
+ * Controller for the cv page: 
+ * - /cv/user/<USERNAME>
+ * - /cv/group/<GROUPNAME>
  * 
  * @author Bernd Terbrack
  * @version $Id$
  */
 public class WikiCvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
-
 	private static final Log log = LogFactory.getLog(WikiCvPageController.class);
+	
+	
 	private CVWikiModel wikiRenderer;
 
-	/**
-	 * implementation of {@link MinimalisticController} interface
-	 */
 	@Override
 	public View workOn(final CvPageViewCommand command) {
 		log.debug("cvPageController accessed.");
@@ -42,23 +41,25 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		final String requestedUser = command.getRequestedUser();
 		final User requestedUserWithDetails = this.logic.getUserDetails(requestedUser);
 		
-		//prevent showing cv pages of deleted users
-		if(!present(requestedUserWithDetails.getName()) || requestedUserWithDetails.getRole() == Role.DELETED) {
+		// prevent showing cv pages of deleted and not existiing users
+		if (!present(requestedUserWithDetails.getName())) {
 			throw new ObjectNotFoundException(requestedUser);
 		}
 		
 		try {
 			final Group requestedGroup = this.logic.getGroupDetails(requestedUser);
-			/* Check if the group is present. If it should be a user. If its no
-			   user the we will catch the exception and return an error message
-			   to the user. */
+			/*
+			 * Check if the group is present. If it should be a user. If its no
+			 * user the we will catch the exception and return an error message
+			 * to the user
+			 */
 			if (present(requestedGroup)) {
-				return handleGroupCV(this.logic.getGroupDetails(requestedUser), command);
+				return handleGroupCV(requestedGroup, command);
 			}
 			
 			return handleUserCV(requestedUserWithDetails, command);
 		} catch (RuntimeException e) {
-			//If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
+			// If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
 			throw new MalformedURLSchemeException("Something went wrong! You are most likely looking for a non existant user/group.");
 		} catch (Exception e) {
 			throw new MalformedURLSchemeException("Something went wrong while working on your request. Please try again.");
@@ -78,7 +79,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		final List<User> groupUsers = this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000);
 		requestedGroup.setUsers(groupUsers);
 
-		//this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
+		this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
 		
 		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(groupName, null);
@@ -119,13 +120,15 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		final Wiki wiki = this.logic.getWiki(userName, null);
 		final String wikiText;
 		
-		boolean bool1 = !requestedUser.isSpammer();
-		// If that is null, then the requestedUser is no registered user, as should be the case with any unregistered user.
-		boolean bool2 = requestedUser.getToClassify() != null;
-		Integer bool3 = requestedUser.getToClassify();
-		
-		if (present(wiki) && (requestedUser.equals(command.getContext().getLoginUser())
-				|| bool1 && (!bool2 || bool2 && bool3 != 1))) {
+		/*
+		 * only show cv wiki if the user is no spammer and classified by at least
+		 * one classifier as no spammer
+		 * always show own wiki to the loggedin user
+		 */
+		final boolean isNoSpammer = !requestedUser.isSpammer();
+		final boolean isClassified = requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1;
+		final boolean ownCVPage = requestedUser.equals(command.getContext().getLoginUser());
+		if (present(wiki) && (ownCVPage || isNoSpammer && isClassified)) {
 			wikiText = wiki.getWikiText();
 		} else {
 			wikiText = "";
