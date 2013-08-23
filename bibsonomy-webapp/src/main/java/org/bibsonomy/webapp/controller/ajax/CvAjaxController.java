@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.htmlcleaner.Utils;
 
 import java.util.List;
 import java.util.Locale;
