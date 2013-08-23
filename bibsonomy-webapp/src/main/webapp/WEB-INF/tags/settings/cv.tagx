@@ -22,7 +22,6 @@
 	<fmt:message key="cv.defaultlayout" var="defaultlayouts" />
 	<fmt:message key="cv.heading" var="heading" />
 	<fmt:message key="cv.admin.layout" var="layout" />
-	<fmt:message key="cv.admin.topic" var="topic" />
 	<fmt:message key="cv.admin.preview" var="preview" />
 	<fmt:message key="cv.admin.preview_pub" var="pPrev" />
 	<fmt:message key="cv.admin.save" var="save" />
@@ -34,6 +33,10 @@
 			<h2><c:out value="${heading}" /></h2>
 			<form:form>
 				<div id="defaultLayoutForm">
+					<fmt:message key="cv.admin.topic" >
+						<fmt:param>/cv/user/${fn:escapeXml(command.context.loginUser.name)}</fmt:param>
+					</fmt:message>
+			    	
 				    <fieldset class="fsInner">
 				    	<div class="fsRow">
 				    		<div class="fsRow" style="float:left">
