@@ -16,8 +16,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.AjaxCvCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
-import org.bibsonomy.webapp.util.ValidationAwareController;
-import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
@@ -28,14 +26,13 @@ import org.springframework.validation.Errors;
 
 /**
  * TODO: use json as reponse format
- * TODO: add validation? if not remove {@link ValidationAwareController} interface
  * 
  * Ajax controller for the CV page. - /ajax/cv
  * 
  * @author Bernd Terbrack
  * @version $Id$
  */
-public class CvAjaxController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware, ValidationAwareController<AjaxCvCommand> {
+public class CvAjaxController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(CvAjaxController.class);
 
 	private static final String SAVE_OPTION = "save";
@@ -204,17 +201,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-
-	@Override
-	public boolean isValidationRequired(final AjaxCvCommand command) {
-		return false;
-	}
-
-	@Override
-	public Validator<AjaxCvCommand> getValidator() {
-		return null;
-	}
-
+	
 	/**
 	 * @param wikiRenderer
 	 *            the wikiRenderer to set
