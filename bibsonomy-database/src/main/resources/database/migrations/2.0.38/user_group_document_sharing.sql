@@ -1,0 +1,1 @@
+ALTER TABLE groups ADD COLUMN `userSharedDocuments` tinyint(1) default '0';
