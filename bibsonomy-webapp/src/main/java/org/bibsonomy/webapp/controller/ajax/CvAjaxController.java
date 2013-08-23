@@ -21,7 +21,6 @@ import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
 import org.bibsonomy.wiki.TemplateManager;
 import org.bibsonomy.wiki.enums.DefaultLayout;
-import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 /**
@@ -42,7 +41,6 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	private LogicInterface notLoggedInUserLogic;
 	private Errors errors;
 	private CVWikiModel wikiRenderer;
-	private MessageSource messageSource;
 
 	@Override
 	public AjaxCvCommand instantiateCommand() {
@@ -174,14 +172,12 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * 
 	 * @return XML success string.
 	 */
-	private String generateXMLSuccessString(final AjaxCvCommand command, final String... wikiText) {
-		return (wikiText.length > 1) ? "<root><status>ok</status><ckey>"
+	private String generateXMLSuccessString(final AjaxCvCommand command, final String wikiText, final String renderedWikiText) {
+		return "<root><status>ok</status><ckey>"
 				+ command.getContext().getCkey() + "</ckey><wikitext>"
-				+ Utils.escapeXmlChars(wikiText[0])
-				+ "</wikitext><renderedwikitext><![CDATA[" + wikiText[1]
-				+ "]]></renderedwikitext></root>" : "<root><status>ok</status><ckey>"
-				+ command.getContext().getCkey() + "</ckey></root>";
-
+				+ Utils.escapeXmlChars(wikiText)
+				+ "</wikitext><renderedwikitext><![CDATA[" + renderedWikiText
+				+ "]]></renderedwikitext></root>";
 	}
 
 	@Override
@@ -194,14 +190,6 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		this.errors = errors;
 	}
 
-	/**
-	 * @param messageSource
-	 *            the messageSource to set
-	 */
-	public void setMessageSource(final MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
 	/**
 	 * @param wikiRenderer
 	 *            the wikiRenderer to set
