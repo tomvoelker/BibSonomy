@@ -20,7 +20,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
 	@Override
-	public ExportPageCommand instantiateCommand() {		
+	public ExportPageCommand instantiateCommand() {
 		return new ExportPageCommand();
 	}
 
