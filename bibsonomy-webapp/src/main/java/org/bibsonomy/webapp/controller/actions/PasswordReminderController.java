@@ -43,7 +43,7 @@ import org.springframework.validation.Errors;
 public class PasswordReminderController implements ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(PasswordReminderController.class);
 	
-	private int maxMinutesPasswordReminderValid = 60; 
+	private int maxMinutesPasswordReminderValid = 60;
 	private LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
@@ -65,7 +65,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 */
 		if (!this.authConfig.contains(AuthMethod.INTERNAL))  {
 			errors.reject("error.method_not_allowed");
-			return Views.ERROR;			
+			return Views.ERROR;
 		}
 		
 		// get locale
@@ -85,7 +85,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		/*
 		 * check captcha
 		 */
-		CaptchaUtil.checkCaptcha(this.captcha, this.errors, this.log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
+		CaptchaUtil.checkCaptcha(this.captcha, this.errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
 
 		/*
 		 * If the user name is null, we get an exception on getUserDetails.
@@ -103,7 +103,11 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * check, if user name exists
 		 */
 		final User existingUser = adminLogic.getUserDetails(user.getName());
-
+		
+		/*
+		 * note. we have to check here also the deleted role because we use
+		 * a admin logic to get the user details
+		 */
 		if (existingUser == null || existingUser.getName() == null || Role.DELETED.equals(existingUser.getRole()) || Role.LIMITED.equals(existingUser.getRole())) {
 			/*
 			 * user does not exist or has been deleted (we should not sent 
