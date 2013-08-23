@@ -6,6 +6,7 @@ import info.bliki.htmlcleaner.Utils;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -175,7 +176,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	private String generateXMLSuccessString(final AjaxCvCommand command, final String wikiText, final String renderedWikiText) {
 		return "<root><status>ok</status><ckey>"
 				+ command.getContext().getCkey() + "</ckey><wikitext>"
-				+ Utils.escapeXmlChars(wikiText)
+				+ StringEscapeUtils.escapeXml(wikiText)
 				+ "</wikitext><renderedwikitext><![CDATA[" + renderedWikiText
 				+ "]]></renderedwikitext></root>";
 	}

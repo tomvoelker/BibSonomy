@@ -66,7 +66,7 @@
 								    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
 						    	</div>
 								<div id="statusField">
-<!-- 									<div style="display: inline-block;" id="statusText">.</div> -->
+									<div id="statusText"><!-- keep me --></div>
 <!-- 									<div style="float:right; display: inline-block"> -->
 									<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
 <!-- 									</div> -->

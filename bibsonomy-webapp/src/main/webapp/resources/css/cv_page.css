@@ -80,10 +80,9 @@ text-align:center;
 }
 
 .error {
-/*	background-color: red;*/
-}
-
-.loading {
-/*	background-color: yellow;*/
+	background-color: red;
+	color: black;
+	display: inline-block;
+	padding: 5px;
 }
 

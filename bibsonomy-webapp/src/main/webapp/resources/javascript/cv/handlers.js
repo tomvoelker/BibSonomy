@@ -6,20 +6,17 @@
  */
 $(function(){
 
-	/**
+	/*
      * Handler for the layout-links
      */
     $('.changeLayout').change(function(e){
-    	
-    	
         e.preventDefault();
-        
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/ajax/cv",
             data: {
                 layout: $(this).find("option:selected").attr("data-layout"),
-                ckey: $('#ckey').val()
+                ckey: ckey
             },
             success: function(data){
                 var status = $("status", data).text();
@@ -33,8 +30,7 @@ $(function(){
                         wikiArea.empty();
                         wikiArea.append(renderedWikiText);
                         handleSuccessStatus("changing layout to " + $(this).find("option:selected").text());
-                    }
-                    else {
+                    } else {
                         wikiTextArea.val(wikiText);
                         handleError("We do not want empty CVses! No, my preciousssss")
                     }
@@ -51,25 +47,18 @@ $(function(){
      * Handler for the ajax loading gif's
      */
     $('#loadingDiv').ajaxStart(function(){
-//        $('#statusField').show();
         $('#loadingDiv').show();
         $('#saveButtonField').hide();
-        handleLoadingStatus("");
-//        $('#errorField').hide();
     }).ajaxSuccess(function(){
         $('#loadingDiv').hide();
         $('#saveButtonField').show();
-//        $('#statusField').hide();
     }).ajaxError(function() {
-//        handleError("");
         $('#loadingDiv').hide();
         // this now enforces the preview buttons to be shown.
         $('#saveButtonField').hide();
+        // TODO: Handle Errors correctly.
+//        handleError("Rendering error.");
     });
-    // FIXME: UNUSED
-//    $('.toggleImage').click(function(e){
-//    	alert($(e).html);
-//    });
 	
     
     /**
@@ -91,44 +80,85 @@ $(function(){
 			$('#hideAdminField').show();
 		});
 	});
-	
-	/**
-	 * Handler for the layout form 
-	 * @param {Object} e
-	 * 
-	 * FIXME: unused!
-	 */
-//	$('#layoutButton').click(function() {
-//		$('#layouts').toggle("blind");
-//	});
-    
-    /**
-     * Handler for the textfield shortcuts
-     * @param {Object} e
-     * 
-     * TODO: Document me.
-     */
-    $('#wikiTextArea').keydown(function(e){
-        if (e.ctrlKey) {
-            if (e.keyCode == 13) { //ENTER
-                e.preventDefault();
-                submitWiki('preview');
+});
+
+/**
+ * In case an error happens, do this
+ * @param {Object} e
+ */
+function handleError(e){
+    $('#statusText').text(e);
+    $('#statusField').removeClass('error success').addClass('error');
+}
+
+function handleSuccessStatus(e) {
+//	$('#statusText').text("Success: " + e);
+    $('#statusField').removeClass('error success').addClass('success');
+}
+
+/**
+ * Method to send a renderRequest to the server
+ * @param {Object} renderOptions
+ */
+function submitWiki(renderOptions){
+    $.ajax({
+        type: "POST",
+        url: "/ajax/cv",
+        data: {
+            ckey: $('#ckey').val(),
+            wikiText: $('#wikiTextArea').val(),
+            renderOptions: renderOptions
+        },
+        success: function(data){
+            var status = $("status", data).text();
+            if ("ok" == status) {
+                var wikiArea = $('#wikiArea');
+                var renderedWikiText = $("renderedwikitext", data).text();
+                wikiArea.empty();
+                wikiArea.append(renderedWikiText);
+                handleSuccessStatus(renderOptions);
+            } else {
+                handleError(data.globalErrors[0].message);
             }
-            else 
-                if (e.keyCode == 80) { //"p"
-                    e.preventDefault();
-                    submitWiki('preview');
-                }
-                else 
-                    if (e.keyCode == 83) { //"s"
-                        e.preventDefault();
-                        submitWiki('save');
-                    }
-                    else 
-                        if (e.keyCode == 46) { //DELETE
-                            e.preventDefault();
-                            clearCVTextField();
-                        }
         }
     });
-});
+    return false;
+}
+
+/**
+ * Method which is called on an external publication layout change
+ * @param {Object} self
+ * @param {Object} type
+ */
+function formatPublications(self, type){
+    var layout = $(self).val();
+    var tags = $('#reqTags').val();
+    var reqUser = $('#reqUser').val();
+    $(self).parent().parent().parent().next().empty();
+    $.get("/layout/" + layout + "/" + type + "/" + reqUser + "/" + tags + "?formatEmbedded=true", function(data){
+        $(self).parent().parent().parent().next().html(data);
+    });
+    handleSuccessStatus("Loading " + layout + " style");
+    return false;
+}
+
+/**
+ * Method used on clear cv-textfield request
+ */
+function clearCVTextField(){
+    var wikiTextArea = $('#wikiTextArea');
+    wikiTextArea.val("");
+    handleSuccessStatus("Clear");
+    submitWiki("preview");
+    return false;
+}
+
+/**
+ * Method for the bookmark details (show/hide)
+ * @param {Object} element
+ */
+function toggleDetails(self){
+    var details = $(self).next();
+    details.toggle();
+    return false;
+}
