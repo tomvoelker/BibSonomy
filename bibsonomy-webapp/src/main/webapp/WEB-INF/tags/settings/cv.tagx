@@ -61,7 +61,7 @@
 									</c:otherwise>
 								</c:choose>
 							</div>
-						    <div style="float: right; height: 30px; width: 80px; text-align:center">
+						    <div style="float: right; height: 30px; width: 80px; text-align: right">
 						    	<div id="saveButtonField">
 								    <input type="button" href='#' onclick="return submitWiki('save');" value="${save}" />
 						    	</div>
