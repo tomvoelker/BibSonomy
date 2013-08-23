@@ -571,9 +571,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			// update user (does not incl. userSettings)
 			UserUtils.updateUser(existingUser, user);
 			
-			this.plugins.onUserUpdate(existingUser.getName(), session);
-			
 			this.checkUser(existingUser, session);
+			
+			this.plugins.onUserUpdate(existingUser.getName(), session);
 			
 			/*
 			 * FIXME: OpenID and LdapId and RemoteId (saml) were updated in existingUser
