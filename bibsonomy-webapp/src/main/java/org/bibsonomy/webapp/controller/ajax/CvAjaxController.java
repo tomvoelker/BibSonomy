@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.ajax;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
@@ -50,7 +49,6 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	@Override
 	public View workOn(final AjaxCvCommand command) {
 		log.debug("workOn CvAjaxController");
-		final Locale locale = requestLogic.getLocale();
 
 		// -- Validating the request --
 		/*
@@ -76,9 +74,8 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		
 		/* if we chose to render the layout as it is publicly viewable
 		 * (i.e. also for users who are not logged in), do this.
-		 * what, if I am a spammer?
 		 */
-		if (PUBLIC_PREVIEW.equals(renderOptions)) { // && !this.logic.getAuthenticatedUser().isSpammer()) {
+		if (PUBLIC_PREVIEW.equals(renderOptions)) {
 			interfaceToUse = this.notLoggedInUserLogic;
 		} else {
 			interfaceToUse = this.logic;
@@ -115,7 +112,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 		 * Return the rendered wiki.
 		 */
 		try {
-			return renderLayout(command, locale, wikiText, interfaceToUse);
+			return renderLayout(command, wikiText, interfaceToUse);
 		} catch (final Exception e) {
 			return handleError("error.405");
 		}
@@ -128,7 +125,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 	 * @return some view. Actually it is more important that the ajax response string contains
 	 * the rendered layout.
 	 */
-	private View renderLayout(final AjaxCvCommand command, final Locale locale, final String wikiText, final LogicInterface interfaceToUse) {
+	private View renderLayout(final AjaxCvCommand command, final String wikiText, final LogicInterface interfaceToUse) {
 		log.debug("ajax -> getLayout");
 		
 		this.wikiRenderer.setLogic(interfaceToUse);
@@ -149,6 +146,7 @@ public class CvAjaxController extends AjaxController implements MinimalisticCont
 				currentWikiText = TemplateManager.getTemplate(command.getLayout().getRef());
 			}
 		}
+		// TODO: render json output
 		command.setResponseString(generateXMLSuccessString(command, currentWikiText, wikiRenderer.render(currentWikiText)));
 
 		return Views.AJAX_XML;
