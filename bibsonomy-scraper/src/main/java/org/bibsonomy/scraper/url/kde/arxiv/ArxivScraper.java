@@ -66,8 +66,13 @@ public class ArxivScraper extends AbstractUrlScraper {
 				final Matcher matcherID = patternID.matcher(sc.getUrl().toString());
 				if(matcherID.find()) {
 					final String id = matcherID.group(1);
+					//remove individual versions, if it is embedded with id
+					String vId = "";
+					String version = id.substring(id.length()-2);
+					if(version.contains("v")) vId = id.substring(0,id.length()-2);
+					else vId = id;
 					// build url for oai_dc export
-					String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + id + "&metadataPrefix=oai_dc";
+					String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + vId + "&metadataPrefix=oai_dc";
 					
 					// download oai_dc reference
 					String reference = WebUtils.getContentAsString(exportURL);
