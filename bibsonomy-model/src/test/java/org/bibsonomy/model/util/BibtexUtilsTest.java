@@ -558,8 +558,8 @@ public class BibtexUtilsTest {
 	@Test
 	public void testDummyAuthors() {
 		final Post<BibTex> post = EndnoteUtilsTest.createPost();
-		post.getResource().setAuthor(createPersonList("HEB12334", "noauthor"));
-		post.getResource().setEditor(createPersonList("HEB12334", "noeditor"));
+		post.getResource().setAuthor(createPersonList("noauthor", "HEB12334"));
+		post.getResource().setEditor(createPersonList("noeditor", "HEB12334"));
 		post.getResource().setYear("noyear");
 		final String withDummies = BibTexUtils.toBibtexString(post.getResource(), BibTexUtils.getFlags(false, false, false, false));
 		Assert.assertTrue(withDummies, withDummies.contains("noauthor"));

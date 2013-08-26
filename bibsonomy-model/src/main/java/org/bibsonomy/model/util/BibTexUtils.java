@@ -32,6 +32,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1047,41 +1048,70 @@ public class BibTexUtils {
 	 */
 	public static <T> T runWithRemovedOrReplacedDummyValues(BibTex bib, boolean replace, Callable<T> r) {
 		final String year = bib.getYear();
+		final List<PersonName> authors = bib.getAuthor();
+		final List<PersonName> editors = bib.getEditor();
 		try {
 			if ("noyear".equalsIgnoreCase(bib.getYear())) {
 				bib.setYear("");
 			}
-			bib.setYear(null);
-			final List<PersonName> authors = bib.getAuthor();
-			try {
-				bib.setAuthor(createNoDummyPersonList(authors, "noauthor", replace));
-				final List<PersonName> editors = bib.getEditor();
-				try {
-					bib.setEditor(createNoDummyPersonList(editors, "noeditor", replace));
-					return r.call();
-				} finally {
-					bib.setEditor(editors);
-				}
-			} finally {
-				bib.setAuthor(authors);
-			}
+			bib.setAuthor(createNoDummyPersonList(authors, "noauthor", replace));
+			bib.setEditor(createNoDummyPersonList(editors, "noeditor", replace));
+			return r.call();
 		} catch (RuntimeException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
+			bib.setEditor(editors);
+			bib.setAuthor(authors);
 			bib.setYear(year);
 		}
-		
 	}
 
+	public static <T> T runWithRemovedOrReplacedDummyValues(Collection<Post<BibTex>> bibs, boolean replace, Callable<T> r) {
+		final List<String> years = new ArrayList<String>();
+		final List<List<PersonName>> authors = new ArrayList<List<PersonName>>();
+		final List<List<PersonName>> editors = new ArrayList<List<PersonName>>();
+		
+		for (Post<BibTex> pb : bibs) {
+			final BibTex b = pb.getResource();
+			years.add(b.getYear());
+			authors.add(b.getAuthor());
+			editors.add(b.getEditor());
+		}
+		try {
+			for (Post<BibTex> pb : bibs) {
+				final BibTex bib = pb.getResource();
+				if ("noyear".equalsIgnoreCase(bib.getYear())) {
+					bib.setYear("");
+				}
+				bib.setAuthor(createNoDummyPersonList(bib.getAuthor(), "noauthor", replace));
+				bib.setEditor(createNoDummyPersonList(bib.getEditor(), "noeditor", replace));
+			}
+			return r.call();
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			int i = 0;
+			for (Post<BibTex> pb : bibs) {
+				final BibTex b = pb.getResource();
+				b.setYear(years.get(i));
+				b.setAuthor(authors.get(i));
+				b.setEditor(editors.get(i));
+				++i;
+			}
+		}
+	}
+	
 	private static List<PersonName> createNoDummyPersonList(List<PersonName> persons, String dummyValue, boolean replace) {
 		if (persons == null) {
 			return persons;
 		}
 		List<PersonName> rVal = new ArrayList<PersonName>();
 		for (PersonName p : persons) {
-			if (dummyValue.equals(p.getLastName())) {
+			if (dummyValue.equals(p.getFirstName())) {
 				if (replace) {
 					rVal.add(new PersonName("", "N.N."));
 				}

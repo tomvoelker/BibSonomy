@@ -25,9 +25,9 @@ public class EndnoteUtilsTest {
 	
 	private static final String expectedWithDummies = "%0 Journal Article\n" + //
 			"%1 schoolofenglishliterature2009newcastle\n" + //
-			"%A noauthor, HEB12334\n" + //
+			"%A HEB12334, noauthor\n" + //
 			"%D noyear\n" + //
-			"%E noeditor, HEB12334\n" + //
+			"%E HEB12334, noeditor\n" + //
 			"%K test\n" + //
 			"%T Newcastle working papers in linguistics\n";
 	
@@ -46,8 +46,8 @@ public class EndnoteUtilsTest {
 	@Test
 	public void testSkipDummyValues() throws IOException {
 		Post<BibTex> post = createPost();
-		post.getResource().setAuthor(BibtexUtilsTest.createPersonList("HEB12334", "noauthor"));
-		post.getResource().setEditor(BibtexUtilsTest.createPersonList("HEB12334", "noeditor"));
+		post.getResource().setAuthor(BibtexUtilsTest.createPersonList("noauthor", "HEB12334"));
+		post.getResource().setEditor(BibtexUtilsTest.createPersonList("noeditor", "HEB12334"));
 		post.getResource().setYear("noyear");
 		Assert.assertEquals(expectedWithDummies, EndnoteUtils.toEndnoteString(post, false));
 		Assert.assertEquals(expectedWithSkippedDummies, EndnoteUtils.toEndnoteString(post, true));
