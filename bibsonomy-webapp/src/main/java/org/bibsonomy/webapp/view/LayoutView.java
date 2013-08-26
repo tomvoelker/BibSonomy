@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
 import org.springframework.beans.factory.annotation.Required;
@@ -81,7 +83,18 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 					/*
 					 * render publication posts
 					 */
-					renderResponse(layout, requPath, publicationPosts, loginUserName, response, formatEmbedded, command);
+					if (command.isSkipDummyValues()) {
+						BibTexUtils.runWithRemovedOrReplacedDummyValues(command.getBibtex().getList(), true, new Callable<Void>() {
+							@Override
+							public Void call() throws Exception {
+								renderResponse(layout, requPath, publicationPosts, loginUserName, response, formatEmbedded, command);
+								return null;
+							}
+						});
+					} else {
+						renderResponse(layout, requPath, publicationPosts, loginUserName, response, formatEmbedded, command);
+					}
+					
 				} else {
 					/*
 					 * we could not find a suitable renderer - this should never happen!

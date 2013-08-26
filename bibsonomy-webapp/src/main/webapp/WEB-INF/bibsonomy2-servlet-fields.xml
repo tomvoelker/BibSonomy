@@ -67,6 +67,7 @@
 		<value>generatedBibtexKeys</value>
 		<value>download</value>
 		<value>urlGenerator</value>
+		<value>skipDummyValues</value>
 	</util:list>
 	
 	<!-- all fields which are NEVER allowed to be set by the user -->
