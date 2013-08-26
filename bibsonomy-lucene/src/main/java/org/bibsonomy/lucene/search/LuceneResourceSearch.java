@@ -165,7 +165,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 				 * get document from index and
 				 * convert document to bibsonomy post model	
 				 */
-				final Document doc = this.searcher.doc(topDocs.scoreDocs[i].doc); 
+				final Document doc = this.searcher.doc(topDocs.scoreDocs[i].doc);
 				final Post<R> post = this.resourceConverter.writePost(doc);
 		
 				// set tag count
@@ -184,7 +184,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 						} else {
 							oldCnt += 1;
 						}
-						tagCounter.put(tag, oldCnt);							
+						tagCounter.put(tag, oldCnt);
 					}
 				}
 			}
@@ -608,10 +608,10 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		
 		// set ordering
 		final Sort sort;
-		if (Order.ADDED.equals(order)) {
-			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
-		} else {
+		if (Order.RANK.equals(order)) {
 			sort = new Sort(SortField.FIELD_SCORE, new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
+		} else {
+			sort = new Sort(new SortField(LuceneFieldNames.DATE, SortField.LONG, true));
 		}
 		// all done
 		log.debug("[Full text] Search query: " + mainQuery.toString());
