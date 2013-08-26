@@ -1089,7 +1089,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		param.setUserName(user.getName());
 		param.setDate(user.getRegistrationDate());
 
-		param.setWikiText(TemplateManager.getTemplate("defaulten"));
+		// Hier wird standardmaessig ein Benutzer-Wiki angelegt!
+		param.setWikiText(TemplateManager.getTemplate("user1en"));
 		// hier passiert keine Sicherung, da die session-transactions in den umfassenden
 		// Methoden bereits eroeffnet wurden.
 		this.insert("insertWiki", param, session);

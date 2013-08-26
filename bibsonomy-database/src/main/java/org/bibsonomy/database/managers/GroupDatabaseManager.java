@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
+import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
@@ -26,6 +28,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.wiki.TemplateManager;
 
 /**
  * Used to retrieve groups from the database.
@@ -414,6 +417,24 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		group.setGroupId(newGroupId);
 		this.insert("insertGroup", group, session);
 		this.addUserToGroup(group.getName(), group.getName(), session);
+		this.insertDefaultWiki(group, session);
+	}
+
+    /**
+     * Inserts a default wiki for a newly created group.
+     * 
+     * @param group 
+     * @param session
+     */
+	private void insertDefaultWiki(final Group group, final DBSession session) {
+		WikiParam param = new WikiParam();
+		param.setUserName(group.getName());
+		param.setDate(new Date());
+
+		param.setWikiText(TemplateManager.getTemplate("group1en"));
+		// hier passiert keine Sicherung, da die session-transactions in den umfassenden
+		// Methoden bereits eroeffnet wurden.
+		this.update("updateWikiForUser", param, session);
 	}
 
 	/**
