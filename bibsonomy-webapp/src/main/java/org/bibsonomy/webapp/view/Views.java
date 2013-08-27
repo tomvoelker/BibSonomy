@@ -56,21 +56,9 @@ public enum Views implements View {
 	DEVICE_AUTHORIZE("actions/user/allowDeviceSupport"),
 
 	/**
-	 * the user specific curriculum vitae page
-	 */
-	// TODO: Remove -> Old JSP CV
-	@Deprecated
-	CVPAGE("cvpage"),
-
-	/**
-	 * the user specific curriculum vitae page / Wiki-Based!
+	 * the user and group specific curriculum vitae page / Wiki-Based!
 	 */
 	WIKICVPAGE("wikicvpage"),
-	
-	/**
-	 * the user specific curriculum vitae page / Wiki-Based!
-	 */
-	GROUPCVPAGE("groupcvpage"),
 
 	/**
 	 * user-user page to highlight the relevant posts / tags of user 2 to user 1
