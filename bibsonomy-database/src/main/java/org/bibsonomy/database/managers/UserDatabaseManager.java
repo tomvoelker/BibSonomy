@@ -286,22 +286,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		user.setApiKey(UserUtils.generateApiKey());
 		
-		// Generates the activationCode
+		// generates the activationCode
 		user.setActivationCode(UserUtils.generateActivationCode(user));
 		
-		/*
-		 * The spammer column in MySQL is defined as
-		 * 
-		 * `spammer` tinyint(1) NOT NULL default '0'
-		 * 
-		 * This means, it can't take NULL values. NULL in the user object
-		 * means, we don't know the spammer status, or won't change it.
-		 * On insert we have to map this to 0 or 1 for the database to not
-		 * throw an exception. This is done here:
-		 * null, false map to 0  
-		 * true maps to 1
-		 * 
-		 */
 		user.setSpammer(user.isSpammer());
 		/*
 		 * The reason for the next statement is similar to user.setSpammer().
@@ -320,24 +307,23 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		/*
 		 * probably, we should add here more code to check for null values!
-		 */		
-		
+		 */
 		this.checkUser(user, session);
 		
-		/** no email validation for openid/ldap/remoteId(currently only saml) users */
+		/* no email validation for openid/ldap/remoteId(currently only saml) users */
 		if (present(user.getOpenID()) || present(user.getLdapId()) || (user.getRemoteUserIds().size() > 0)) {
-		    this.insert("insertUser", user, session);
+			this.insert("insertUser", user, session);
 		} else {
-		    this.insert("insertPendingUser", user, session);
+			this.insert("insertPendingUser", user, session);
 		}
-		
+			
 		/*
 		 * insert openID of user in separate table if present
 		 */
 		if (present(user.getOpenID())) {
 			this.insertOpenIDUser(user, session);
 		}
-
+		
 		/*
 		 * insert ldapUserId of user in separate table if present
 		 */
@@ -351,7 +337,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		for (RemoteUserId ruid : user.getRemoteUserIds()) {
 			this.insertRemoteUserId(user, ruid, session);
 		}
-		
 	}
 	
 	/**
@@ -366,6 +351,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		} else {
 			throw new IllegalArgumentException("Only SamlRemoteUserIds can be inserted!");
 		}
+		
+		this.insertDefaultWiki(user, session);
 		/*
 		else if (remoteUserId instanceof OpenIdRemoteUserId) {
 			this.insertOpenIdUserId(new OpenIdRemoteUserParam(user, remoteUserId), session);
@@ -512,7 +499,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		session.beginTransaction();
 		try {
 			this.insert("insertOpenIDUser", user, session);
-			// this.insertDefaultWiki(user, session);
+			this.insertDefaultWiki(user, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -526,8 +513,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void insertLdapUserId(final User user, final DBSession session) {
-		// TODO: default wiki missing
 		this.insert("insertLdapUser", user, session);
+		this.insertDefaultWiki(user, session);
 	}
 
 	/**
@@ -1069,7 +1056,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	        this.insert("activateUser", user.getName(), session);
 	        this.deletePendingUser(user.getName(), session);
 	        
-	        this.insertDefaultWiki(user, session);
+	        // this.insertDefaultWiki(user, session);
 	        session.commitTransaction();
     	} finally {
     		session.endTransaction();
