@@ -40,7 +40,7 @@ public class PublicationListTag extends SharedTag {
 	private static final String LAYOUT = "layout";
 	private static final String KEYS = "keys";
 	private static final String ORDER = "order";
-	private static final String QUANTITY = "qty";
+	private static final String LIMIT = "limit";
 	private static final String FROMYEAR = "fromyear";
 	private static final String TOYEAR = "toyear";
 
@@ -49,7 +49,7 @@ public class PublicationListTag extends SharedTag {
 
 	private static final String TAG_NAME = "publications";
 
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(TAGS, LAYOUT, KEYS, ORDER, QUANTITY)); //, FROMYEAR, TOYEAR));
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(TAGS, LAYOUT, KEYS, ORDER, LIMIT)); //, FROMYEAR, TOYEAR));
 	
 	// TODO: Hard coding that is a bit ewww.
 	// How can I get these layouts from bibsonomy-layout?
@@ -153,9 +153,9 @@ public class PublicationListTag extends SharedTag {
 		/*
 		 * after the publications being sorted, cut the quantity if the user wants to
 		 */
-		if (tagAttributes.get(QUANTITY) != null) {
+		if (tagAttributes.get(LIMIT) != null) {
 			try {
-				posts = posts.subList(0, Integer.parseInt(tagAttributes.get(QUANTITY)));
+				posts = posts.subList(0, Integer.parseInt(tagAttributes.get(LIMIT)));
 			} catch (final IndexOutOfBoundsException e) {
 				log.debug(e);
 			} catch (final Exception e) {

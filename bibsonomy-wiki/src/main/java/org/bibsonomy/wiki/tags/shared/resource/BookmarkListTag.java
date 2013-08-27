@@ -23,6 +23,7 @@ import org.bibsonomy.wiki.tags.SharedTag;
  */
 public class BookmarkListTag extends SharedTag {
 	private static final String REQUESTED_TAGS = "tags";
+	private static final String LIMIT = "limit";
 	private static final String TAG_NAME = "bookmarks";
 
 	private static final Set<String> ALLOWED_ATTRIBUTES = new HashSet<String>(Arrays.asList(REQUESTED_TAGS));
@@ -54,9 +55,19 @@ public class BookmarkListTag extends SharedTag {
  		} else {
  			tags = tagAttributes.get(REQUESTED_TAGS);
  		}
- 		final List<Post<Bookmark>> posts;
+ 		List<Post<Bookmark>> posts;
+ 		
+ 		// TODO: Remove duplicates, if rendered for group
  		posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, null, null, null, null, 0, Integer.MAX_VALUE);
 		
+		if (tagAttributes.get(LIMIT) != null) {
+			try {
+				posts = posts.subList(0, Integer.parseInt(tagAttributes.get(LIMIT)));
+			} catch (final Exception e) {
+				// Do nothing
+			}
+		}
+
  		
         renderedHTML.append("<div class='align' id='bookmarks'>");
         renderedHTML.append("<ul id='bookmarklist' class='bookmarkList'>");

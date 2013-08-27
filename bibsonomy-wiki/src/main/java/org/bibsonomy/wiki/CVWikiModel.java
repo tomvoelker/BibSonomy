@@ -1,5 +1,6 @@
 package org.bibsonomy.wiki;
 
+import info.bliki.htmlcleaner.BaseToken;
 import info.bliki.wiki.filter.WikipediaParser;
 import info.bliki.wiki.model.AbstractWikiModel;
 import info.bliki.wiki.model.Configuration;
@@ -100,7 +101,9 @@ public class CVWikiModel extends AbstractWikiModel {
 
 		// This only generates a HTML node 
 		final WPTag headTagNode = new WPTag("h" + headLevel);
-		headTagNode.addChild(localStack.getNodeList().get(0));
+		for (BaseToken t : localStack.getNodeList()) {
+			headTagNode.addChild(t);
+		}
 		
 		headTagNode.addAttribute("class", "mw-headline level" + headLevel, true);
 		
