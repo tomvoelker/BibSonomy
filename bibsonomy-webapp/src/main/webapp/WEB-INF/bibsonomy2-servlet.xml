@@ -367,9 +367,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>	
-				<!-- Wiki Config -->
-				<!-- -->
+				</entry>
 				<entry key="/cvpage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="cvPageController"/>
@@ -382,42 +380,16 @@
 						</property>
 					</bean>
 				</entry>
-				<!-- -->
-				<!-- JSP Config TODO: Delete me  - -> 
-				<entry key="/cvpage">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="cvPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>requestedUser</value>
-								<value>layout</value>
-							</list>
-						</property>
-					</bean>
-				</entry>	<!- -  -->
-				<entry key="/groupcvpage">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="groupCvPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>requestedUser</value>
-								<value>layout</value>
-								<value>requestedGroup</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-
 				<entry key="/relations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRelationsController"/>
 					</bean>
-				</entry>				
+				</entry>
 				<entry key="/export">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="exportPageController"/>
 					</bean>
-				</entry>				
+				</entry>
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
@@ -427,7 +399,7 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupPageController"/>
 					</bean>
-				</entry>	
+				</entry>
 				<entry key="/reporting">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupReportingPageController"/>
@@ -439,7 +411,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>	
+				</entry>
 				<entry key="/viewable">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="viewablePageController"/>
@@ -459,17 +431,17 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="authorsPageController"/>
 					</bean>
-				</entry>				
+				</entry>
 				<entry key="/concept">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="conceptPageController"/>
 					</bean>
-				</entry>	
+				</entry>
 				<entry key="/friends">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="friendsPageController"/>
 					</bean>
-				</entry>	
+				</entry>
 				<entry key="/friend">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="friendPageController"/>
@@ -499,12 +471,12 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bibtexkeyPageController"/>
 					</bean>
-				</entry>		
+				</entry>
 				<entry key="/url">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="bookmarkPageController"/>
 					</bean>
-				</entry>	
+				</entry>
 				<entry key="/bibtex">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="publicationPageController"/>
@@ -721,35 +693,10 @@
 		<property name="logic" ref="logic"/>
 		<property name="urlScheme" value="${project.urlScheme}" />
 	</bean>
-	<!-- Wiki Config -->
-	<!-- -->
+	
 	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.WikiCvPageController" scope="request" parent="resourceController">
 		<property name="supportedResources" ref="allResources"/>
 		<property name="wikiRenderer" ref="wikiRenderer"/>
-		<property name="forcedResources">
-			<set>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</set>
-		</property>
-	</bean>
-	
-	<!-- JSP Config TODO: Delete me - ->
-	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request" parent="resourceController">
-		<property name="supportedResources" ref="allResources"/>
-		<property name="forcedResources">
-			<set>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</set>
-		</property>
-	</bean> <!- -  -->
-	
-	<bean id="groupCvPageController" class="org.bibsonomy.webapp.controller.GroupCvPageController" scope="request" parent="resourceController">
-		<property name="supportedResources" ref="allResources"/>
-		<property name="entries">
-			<value>3</value>
-		</property>
 		<property name="forcedResources">
 			<set>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
