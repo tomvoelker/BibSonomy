@@ -23,9 +23,8 @@
 	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="my" minimizedContentWidth="${true}">		
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
-	    	<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
-	    </jsp:attribute>
-	    
+			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
+		</jsp:attribute>
 		<!--+
 			| page content
 			+-->	
@@ -57,12 +56,10 @@
 			</c:choose>
 			
 		</jsp:attribute>
-
-
 		
-        <jsp:attribute name="heading">
+		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.settings"/>
-        </jsp:attribute>
+		</jsp:attribute>
 	
 		<!--+
 			| infobox
@@ -82,43 +79,38 @@
 		<!--+
 			| sidebar
 			+-->
-        <jsp:attribute name="sidebar">
-        
-	        <ul>
+		<jsp:attribute name="sidebar">
+			<ul>
 				<!-- loginUser.groups -->
-				<li>    
+				<li>
 					<span class="sidebar_h "><a href="/groups"><fmt:message key="groups"/></a></span>
 					<ul class="sidebar_collapse_content">
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
-			  			<li>
-			  				</li>
-						
-		                  <a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
-		                  <c:choose>
-		                  	<c:when test="${group.sharedDocuments}">
-			                  <c:choose>
-			                  	<c:when test="${! group.userSharedDocuments}">
-									<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
-					                <a
-					    	        	class="action" 
-					    	            href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-					    	            title="${shareDocumentsTitle}">
-					    		   	  <fmt:message key="groups.actions.shareDocuments"/>
-					                </a>
-								</c:when>
-								<c:when test="${group.userSharedDocuments}">
-									<fmt:message var="unshareDocumentsTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
-					                <a
-					    	        	class="action" 
-					    	            href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-					    	            title="${unshareDocumentsTitle}">
-					    		   	  <fmt:message key="groups.actions.unshareDocuments"/>
-					                </a>
-								</c:when>
-				              </c:choose>
-				            </c:when>
-		                  </c:choose>
-					</c:forEach></ul>
+						<li>
+						<a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
+							<c:if test="${group.sharedDocuments}">
+								<c:choose>
+									<c:when test="${! group.userSharedDocuments}">
+										<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
+										<a class="action" 
+											href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"
+											title="${shareDocumentsTitle}">
+											<fmt:message key="groups.actions.shareDocuments"/>
+										</a>
+									</c:when>
+									<c:otherwise>
+										<fmt:message var="unshareDocumentsTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
+											<a class="action" 
+												href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings"
+												title="${unshareDocumentsTitle}">
+												<fmt:message key="groups.actions.unshareDocuments"/>
+											</a>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+						</li>
+					</c:forEach>
+					</ul>
 				</li>
 
 				<!-- loginUser.friends -->
