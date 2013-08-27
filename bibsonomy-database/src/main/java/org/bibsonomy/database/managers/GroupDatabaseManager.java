@@ -397,8 +397,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (present(this.getGroupByName(normedGroupName, session))) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is already a group with this name ('" + groupName + "').");
 		}
-
-		this.insertGroup(group, session);
+		try {
+			session.beginTransaction();
+			this.insertGroup(group, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 
 	private String getNormedGroupName(final String groupName) {
@@ -445,7 +450,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void insertTagSet(final TagSet tagset, final String groupname, final DBSession session) {
-
 		final Group group = this.getGroupByName(groupname, session);
 		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
