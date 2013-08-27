@@ -5,7 +5,7 @@
 <members />
 
 ==Recently added bookmarks==
-<bookmarks tags="myown" />
+<bookmarks tags="myown" limit="3" />
 
 ==Recently added publications==
-<publications order="asc" keys="year" qty="3" />
+<publications order="asc" keys="year" limit="3" />
