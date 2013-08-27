@@ -288,21 +288,21 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.requestLogic = requestLogic;
 	}
 
-
-
 	private void workOnCVTab(final SettingsViewCommand command) {
-		log.debug("cvPageController accessed.");
-
+		log.debug("settings: cv tab accessed.");
 		try {
-			final String requestedUser = command.getContext().getLoginUser().getName();
+			final User loginUser = command.getContext().getLoginUser();
+			final String requestedUser = loginUser.getName();
 			final Group requestedGroup = this.logic.getGroupDetails(requestedUser);
-			/* Check if the group is present. If it should be a user. If its no
-			   user the we will catch the exception and return an error message
-			   to the user. */
+			/*
+			 * check if the group is present. If it should be a user. If its no
+			 * user the we will catch the exception and return an error message
+			 * to the user
+			 s*/
 			if (present(requestedGroup)) {
-				handleGroupCV(this.logic.getGroupDetails(requestedUser), command);
+				handleGroupCV(requestedGroup, command);
 			} else {
-				handleUserCV(this.logic.getUserDetails(requestedUser), command);
+				handleUserCV(loginUser, command);
 			}
 		} catch (RuntimeException e) {
 			//If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
@@ -313,11 +313,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	}
 
 
-	 /** Handles the group cv page request
+	/**
+	 *Handles the group cv page request
 	 * 
 	 * @param reqGroup
 	 * @param command
-	 * @return The group-cv-page view
 	 */
 	private void handleGroupCV(final Group requestedGroup, final SettingsViewCommand command) {
 		final String groupName = requestedGroup.getName();
@@ -325,9 +325,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 		final List<User> groupUsers = this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000);
 		requestedGroup.setUsers(groupUsers);
-
-		//this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null,  null, null, 1000, null);
-
+		
 		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(groupName, null);
 		final String wikiText;
@@ -341,11 +339,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * set the group to render
 		 */
-		this.wikiRenderer.setRequestedGroup(requestedGroup); //FIXME: not thread-safe!
+		this.wikiRenderer.setRequestedGroup(requestedGroup);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
-
-		//return Views.WIKICVPAGE;
 	}
 
 	/**
@@ -353,13 +349,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * 
 	 * @param reqUser
 	 * @param command
-	 * @return The user-cv-page view
 	 */
 	private void handleUserCV(final User requestedUser, final SettingsViewCommand command) {
 		command.setUser(requestedUser);
 		final String userName = requestedUser.getName();
-		//this.setTags(command, Resource.class, GroupingEntity.USER, userName, null, new LinkedList<String>(), null, 1000, null);
-
+		
 		/*
 		 * convert the wiki syntax
 		 */
@@ -367,8 +361,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final Wiki wiki = this.logic.getWiki(userName, null);
 		final String wikiText;
 
-		if (present(wiki) && (requestedUser.equals(command.getContext().getLoginUser())
-				|| !requestedUser.isSpammer() && requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1)) {
+		if (present(wiki)) {
 			wikiText = wiki.getWikiText();
 		} else {
 			wikiText = "";
@@ -380,9 +373,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.wikiRenderer.setRequestedUser(requestedUser); // FME: not thread-safe!
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
-
-		//return Views.WIKICVPAGE;
-
 	}
 	
 	/**
