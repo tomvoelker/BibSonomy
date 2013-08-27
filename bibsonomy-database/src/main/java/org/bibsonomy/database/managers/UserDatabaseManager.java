@@ -289,6 +289,19 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// generates the activationCode
 		user.setActivationCode(UserUtils.generateActivationCode(user));
 		
+		/*
+		 * The spammer column in MySQL is defined as
+		 * 
+		 * `spammer` tinyint(1) NOT NULL default '0'
+		 * 
+		 * This means, it can't take NULL values. NULL in the user object
+		 * means, we don't know the spammer status, or won't change it.
+		 * On insert we have to map this to 0 or 1 for the database to not
+		 * throw an exception. This is done here:
+		 * null, false map to 0  
+		 * true maps to 1
+		 * 
+		 */
 		user.setSpammer(user.isSpammer());
 		/*
 		 * The reason for the next statement is similar to user.setSpammer().
