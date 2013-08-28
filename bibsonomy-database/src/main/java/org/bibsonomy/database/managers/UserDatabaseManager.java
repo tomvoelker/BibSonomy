@@ -1060,7 +1060,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	        this.insert("activateUser", user.getName(), session);
 	        this.deletePendingUser(user.getName(), session);
 	        this.insertDefaultWiki(user, session);
-	        // this.insertDefaultWiki(user, session);
 	        session.commitTransaction();
     	} finally {
     		session.endTransaction();
