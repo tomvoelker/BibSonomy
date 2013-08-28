@@ -3,9 +3,17 @@ package org.bibsonomy.wiki.tags.group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.wiki.tags.GroupTag;
 
+/**
+ * renders all members of the group
+ * (image and name)
+ * @author tni
+ */
 public class MembersTag extends GroupTag {
 	private static final String TAG_NAME = "members";
 
+	/**
+	 * default constructor
+	 */
 	public MembersTag() {
 		super(TAG_NAME);
 	}
@@ -17,11 +25,9 @@ public class MembersTag extends GroupTag {
 	/**
 	 * creates a list of pictures of all members of this group (except for the group owner itself) as well as their names.
 	 * The HTML div container is of the class imageContainer.
-	 */
-	@Override
-	/*
 	 * TODO: Fix this with the new group concept.
 	 */
+	@Override
 	protected String renderGroupTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
 		for (final User user : this.requestedGroup.getUsers()) {

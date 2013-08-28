@@ -3,9 +3,16 @@ package org.bibsonomy.wiki.tags.group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.wiki.tags.GroupTag;
 
+/**
+ * renders the group image of the group
+ * @author tni
+ */
 public class GroupImageTag extends GroupTag {
 	private static final String TAG_NAME = "groupimage";
 
+	/**
+	 * default constructor
+	 */
 	public GroupImageTag() {
 		super(TAG_NAME);
 	}
@@ -13,11 +20,11 @@ public class GroupImageTag extends GroupTag {
 	private String renderImage(final String userName) {
 		return "<img src='/picture/user/" + userName + "' />";
 	}
-
-	@Override
+	
 	/*
 	 * TODO: Rebuild this with the new group concept.
 	 */
+	@Override
 	protected String renderGroupTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
 		if (!this.requestedGroup.getUsers().isEmpty()) {
