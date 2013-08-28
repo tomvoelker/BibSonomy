@@ -1,10 +1,8 @@
 package org.bibsonomy.wiki.tags.shared;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
@@ -19,7 +17,7 @@ public class DesignTag extends SharedTag {
 	/** The style attribute, which defines the used CSS file. */
 	private final static String STYLE = "style";
 	/** The list of allowed attributes for this tag. */
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(STYLE));
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(STYLE);
 	
 	/**
 	 * standard constructor.

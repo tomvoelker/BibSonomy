@@ -78,6 +78,7 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	/**
 	 * Default Constructor
+	 * @param locale 
 	 */
 	public CVWikiModel(final Locale locale) {
 		super(Configuration.DEFAULT_CONFIGURATION, locale, null, null);
@@ -123,6 +124,7 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	@Override
 	public void parseInternalImageLink(final String imageNamespace, final String rawImageLink) {
+		// noop
 	}
 
 	/**
@@ -189,10 +191,16 @@ public class CVWikiModel extends AbstractWikiModel {
 		this.requestedGroup = requestedGroup;
 	}
 
+	/**
+	 * @return the messageSource
+	 */
 	public MessageSource getMessageSource() {
 		return messageSource;
 	}
 
+	/**
+	 * @param messageSource the messageSource to set
+	 */
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}

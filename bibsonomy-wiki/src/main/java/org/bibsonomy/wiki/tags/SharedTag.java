@@ -1,10 +1,9 @@
 package org.bibsonomy.wiki.tags;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.Utils;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Used for rending tags which are available for both users and groups, i.e. shared tags.
@@ -14,7 +13,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
  */
 public abstract class SharedTag extends AbstractTag {
 	
-	public static final String EMPTY_NAME = "";
+	private static final String EMPTY_NAME = "";
 
 	/**
 	 * Create new shared tag.
@@ -51,6 +50,7 @@ public abstract class SharedTag extends AbstractTag {
 	 * 
 	 * If the requesting user isn't allowed to see the real name of the requested
 	 * user / group, we return the ordinary username instead.
+	 * @return the realname
 	 */
 	protected String getRequestedRealName() {
 		switch (getGroupingEntity()) {
@@ -78,6 +78,10 @@ public abstract class SharedTag extends AbstractTag {
 		}
 	}
 
+	/**
+	 * internal render method
+	 * @return the string to append to the output
+	 */
 	protected abstract String renderSharedTag();
 
 }

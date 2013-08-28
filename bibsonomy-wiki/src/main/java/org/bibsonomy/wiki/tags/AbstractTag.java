@@ -1,7 +1,6 @@
 package org.bibsonomy.wiki.tags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.Messages;
 import info.bliki.htmlcleaner.Utils;
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
@@ -11,8 +10,6 @@ import info.bliki.wiki.tags.util.INoBodyParsingTag;
 import java.io.IOException;
 import java.util.Locale;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
@@ -21,7 +18,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.CVWikiModel;
-
 import org.springframework.context.MessageSource;
 
 

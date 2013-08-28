@@ -1,12 +1,8 @@
 package org.bibsonomy.wiki;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +10,12 @@ import java.util.Set;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
+/**
+ * 
+ * manager that hold all cv wiki templates
+ * 
+ * @author tni
+ */
 public class TemplateManager {
 
 	static {

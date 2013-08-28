@@ -13,10 +13,10 @@ public class InterestsTag extends UserTag {
 	private static final String TAG_NAME = "interests";
 	
 	/**
-	 * 
+	 * default constructor
 	 */
 	public InterestsTag() {
-        super(TAG_NAME);
+		super(TAG_NAME);
 	}
 
 	@Override

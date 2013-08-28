@@ -1,7 +1,15 @@
 package org.bibsonomy.wiki.tags;
 
+/**
+ * abstract class for group tags
+ * @author tni
+ */
 public abstract class GroupTag extends AbstractTag {
 
+	/**
+	 * default constructor
+	 * @param name
+	 */
 	public GroupTag(final String name) {
 		super(name);
 	}
@@ -12,6 +20,10 @@ public abstract class GroupTag extends AbstractTag {
 		return this.requestedGroup != null  ? this.renderGroupTag() : errorString;
 	}
 
+	/**
+	 * internal render method
+	 * @return the text to append
+	 */
 	protected abstract String renderGroupTag();
 
 }

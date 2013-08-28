@@ -2,10 +2,9 @@ package org.bibsonomy.wiki.tags.shared;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
@@ -17,8 +16,8 @@ import org.bibsonomy.wiki.tags.SharedTag;
  */
 public class NameTag extends SharedTag {
 	
-	protected final static String PLAIN = "plain";
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(PLAIN));
+	private final static String PLAIN = "plain";
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(PLAIN);
 	
 	/*
 	 * TODO: DISCUSS: should we use the homepage link for the real name?
@@ -27,7 +26,7 @@ public class NameTag extends SharedTag {
 	private static final String TAG_NAME = "name";
 	
 	/**
-	 * dafault construtor
+	 * default constructor
 	 */
 	public NameTag() {
 		super(TAG_NAME);
@@ -40,8 +39,6 @@ public class NameTag extends SharedTag {
 	
 	@Override
 	protected String renderSharedTag() {
-		// TODO: Include parameter for enabling or disabling link to user page.
-		
 		final String name = this.getRequestedRealName();
 		
 		if (present(name)) {
