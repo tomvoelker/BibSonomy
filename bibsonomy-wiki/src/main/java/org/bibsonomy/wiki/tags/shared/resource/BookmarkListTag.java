@@ -3,13 +3,13 @@ package org.bibsonomy.wiki.tags.shared.resource;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
@@ -26,7 +26,7 @@ public class BookmarkListTag extends SharedTag {
 	private static final String LIMIT = "limit";
 	private static final String TAG_NAME = "bookmarks";
 
-	private static final Set<String> ALLOWED_ATTRIBUTES = new HashSet<String>(Arrays.asList(REQUESTED_TAGS));
+	private static final Set<String> ALLOWED_ATTRIBUTES = Sets.asSet(REQUESTED_TAGS, LIMIT);
 
 	/**
 	 * sets the tag
