@@ -286,8 +286,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		user.setApiKey(UserUtils.generateApiKey());
 		
-		// generates the activationCode
-		user.setActivationCode(UserUtils.generateActivationCode(user));
 		
 		/*
 		 * The spammer column in MySQL is defined as
@@ -326,7 +324,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/* no email validation for openid/ldap/remoteId(currently only saml) users */
 		if (present(user.getOpenID()) || present(user.getLdapId()) || (user.getRemoteUserIds().size() > 0)) {
 			this.insert("insertUser", user, session);
+			this.insertDefaultWiki(user, session);
 		} else {
+			// generates the activationCode
+			user.setActivationCode(UserUtils.generateActivationCode(user));
 			this.insert("insertPendingUser", user, session);
 		}
 			
@@ -364,8 +365,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		} else {
 			throw new IllegalArgumentException("Only SamlRemoteUserIds can be inserted!");
 		}
-		
-		this.insertDefaultWiki(user, session);
 		/*
 		else if (remoteUserId instanceof OpenIdRemoteUserId) {
 			this.insertOpenIdUserId(new OpenIdRemoteUserParam(user, remoteUserId), session);
@@ -509,14 +508,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void insertOpenIDUser(final User user, final DBSession session) {
-		session.beginTransaction();
-		try {
-			this.insert("insertOpenIDUser", user, session);
-			this.insertDefaultWiki(user, session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
+		this.insert("insertOpenIDUser", user, session);
 	}
 	
 	/**
@@ -527,7 +519,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private void insertLdapUserId(final User user, final DBSession session) {
 		this.insert("insertLdapUser", user, session);
-		this.insertDefaultWiki(user, session);
 	}
 
 	/**
@@ -1068,7 +1059,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
     	try {
 	        this.insert("activateUser", user.getName(), session);
 	        this.deletePendingUser(user.getName(), session);
-	        
+	        this.insertDefaultWiki(user, session);
 	        // this.insertDefaultWiki(user, session);
 	        session.commitTransaction();
     	} finally {
