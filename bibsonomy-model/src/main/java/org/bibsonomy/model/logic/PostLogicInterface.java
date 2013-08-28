@@ -105,7 +105,7 @@ public interface PostLogicInterface {
 	
 	/**
 	 * Get the metadata for the post.
-	 * @param hashType the hashtype (TODO: remove; is part of resourceHash)
+	 * @param hashType the hashtype (TODO: merge with resourceHash to hash)
 	 * @param resourceHash the hash of the resource
 	 * @param userName the user name
 	 * @param metaDataPluginKey the kind of meta data
