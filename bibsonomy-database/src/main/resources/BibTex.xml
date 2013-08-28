@@ -273,7 +273,7 @@
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr as count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		  FROM (
 			SELECT b.*
-		      	FROM bibtex b
+		      	FROM bibtex b FORCE INDEX (group_date_content_id_idx)
 		      	  JOIN user u USING (user_name)
 		      	WHERE b.group = #groupId#
 	      	  	  AND u.to_classify = FALSE
