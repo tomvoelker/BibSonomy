@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +17,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.wiki.tags.SharedTag;
 
@@ -31,33 +31,23 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * @version $Id$
  */
 public class PublicationListTag extends SharedTag {
+	private static final Log log = LogFactory.getLog(PublicationListTag.class);
 
 	private static final String DEFAULT_LAYOUT = "plain";
-
-	private static final Log log = LogFactory.getLog(PublicationListTag.class);
 
 	private static final String TAGS = "tags";
 	private static final String LAYOUT = "layout";
 	private static final String KEYS = "keys";
 	private static final String ORDER = "order";
 	private static final String LIMIT = "limit";
-	private static final String FROMYEAR = "fromyear";
-	private static final String TOYEAR = "toyear";
 
-	private static final Set<String> ALLOWED_SORTPAGE_JABREF_LAYOUTS = new HashSet<String>(Arrays.asList("year", "author", "title"));
-	private static final Set<String> ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS = new HashSet<String>(Arrays.asList("asc", "desc"));
+	private static final Set<String> ALLOWED_SORTPAGE_JABREF_LAYOUTS = Sets.asSet("year", "author", "title");
+	private static final Set<String> ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS = Sets.asSet("asc", "desc");
 
 	private static final String TAG_NAME = "publications";
 
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = new HashSet<String>(Arrays.asList(TAGS, LAYOUT, KEYS, ORDER, LIMIT)); //, FROMYEAR, TOYEAR));
-	
-	// TODO: Hard coding that is a bit ewww.
-	// How can I get these layouts from bibsonomy-layout?
-	private final static String HARVARD = "harvardhtml";
-	private final static String PLAIN = "plain";
-	private final static String DIN1505 = "din1505";
-	private final static String SIMPLEHTML = "simplehtml";
-	private final static Set<String> RENDERABLE_LAYOUTS = new HashSet<String>(Arrays.asList(PLAIN, HARVARD, DIN1505, SIMPLEHTML));
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(TAGS, LAYOUT, KEYS, ORDER, LIMIT);
+
 
 	/**
 	 * sets the tag name
