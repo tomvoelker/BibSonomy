@@ -18,4 +18,21 @@
 			<type>war</type>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>deploy-to-puma-iais_dev</id>
+			<!-- change tomcat deploy destination when -Ddeploy-to=puma-ff-puma is given as parameter. -->
+			<activation>
+				<property>
+					<name>deploy-to</name>
+					<value>puma_iais_dev</value>
+				</property>
+			</activation>
+			<properties>
+				<maven.tomcat.server>puma_iais_dev</maven.tomcat.server>
+				<maven.tomcat.url>http://iais-dev.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
+				<maven.tomcat.path>/bibsonomy-webapp</maven.tomcat.path>
+			</properties>
+		</profile>
+	</profiles>
 </project>
