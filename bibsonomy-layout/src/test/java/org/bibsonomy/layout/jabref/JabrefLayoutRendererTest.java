@@ -79,7 +79,12 @@ public class JabrefLayoutRendererTest {
 		RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
 	}
 	
-	private final File layoutTest;
+	private File layoutTest;
+	private String layoutName;
+	private String entryType;
+	
+	private String renderedLayout;
+	private String resultLayout;
 	
 	public JabrefLayoutRendererTest(File layoutTest) {
 		this.layoutTest = layoutTest;
@@ -88,8 +93,8 @@ public class JabrefLayoutRendererTest {
     @Test
     public void testRender() throws Exception {
 		String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
-		String layoutName = fileName;
-		String entryType = "article";
+		layoutName = fileName;
+		entryType = "article";
 		
 		if (fileName.contains(LAYOUT_ENTRYTYPE_SPLIT)) {
 			String[] parts = fileName.split(LAYOUT_ENTRYTYPE_SPLIT);
@@ -97,11 +102,58 @@ public class JabrefLayoutRendererTest {
 	    	entryType = parts[1];
 	    }
 	    final JabrefLayout layout = RENDERER.getLayout(layoutName, "foo");
-		final StringBuffer renderedLayout = RENDERER.renderLayout(layout, getPosts(entryType), false);
-	    assertEquals("layout: " + layoutName + ", entrytype: " + entryType, TestUtils.readEntryFromFile(this.layoutTest).trim(), renderedLayout.toString().replaceAll("\\r", "").trim());
+		renderedLayout = RENDERER.renderLayout(layout, getPosts(entryType), false).toString().replaceAll("\\r", "").trim();
+		resultLayout = TestUtils.readEntryFromFile(layoutTest).trim();
+		
+		this.prepareTest();
+	    assertEquals("layout: " + layoutName + ", entrytype: " + entryType, resultLayout, renderedLayout);
+	}
+    
+    private void prepareTest() {
+		//FIXME - use an EnumType for Layouts
+		StringBuilder sb;
+		int index;
+		
+		if (layoutName.equals("html")) {
+			/*
+			 * Deletes Lines containing a current timestamp ("Generated on ... TIME")
+			 */
+			sb = new StringBuilder(renderedLayout);
+			index = sb.indexOf("title=\"Generated on");
+			if (index!=-1) {
+				index+=7;
+				int index2 = sb.indexOf("\"", index);
+				sb.delete(index, index2);
+				renderedLayout = sb.toString();
+			}
+			
+			index = sb.indexOf(">Generated on");
+			if (index!=-1) {
+				index++;
+				int index2 = sb.indexOf("<", index);
+				sb.delete(index, index2);
+				renderedLayout = sb.toString();
+			}	
+		}
+		else if (layoutName.equals("tablerefs") || layoutName.equals("tablerefsabsbib") || layoutName.equals("tablerefsabsbibsort")) {
+			/*
+			 * Deletes Lines containing a current timestamp ("Created by ... TIME")
+			 */
+			sb = new StringBuilder(resultLayout);
+			index = sb.indexOf("<small>Created by");
+			int index2 = sb.lastIndexOf("</small>");
+			sb.delete(index, index2);
+			resultLayout = sb.toString();
+			
+			sb = new StringBuilder(renderedLayout);
+			index = sb.indexOf("<small>Created by");
+			index2 = sb.lastIndexOf("</small>");
+			sb.delete(index, index2);
+			renderedLayout = sb.toString();
+		}
 	}
 
-    private List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException {
+    public static List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException {
     	final User u = new User();
     	u.setName("Wiglaf Droste");
 
