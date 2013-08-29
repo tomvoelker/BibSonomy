@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE dblp SYSTEM "http://www.informatik.uni-trier.de/~ley/db/about/dblp.dtd">
+<!-- This file was exported from BibSonomy, http://www.bibsonomy.org -->
+
+<dblp><other mdate="&ltxxx&gt20013&lt/xxx&gt" key="&ltxxx&gttestuser2013test&lt/xxx&gt">
+       <author>&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt;</author>
+<author>&lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;</author> 
+    <editor>&lt;xxx&gt;TestEditorOne EditorOne&lt;/xxx&gt; and &lt;xxx&gt;TestEditorTwo EditorTwo&lt;/xxx&gt;</editor>
+    <address>&lt;xxx&gt;TestState&lt;/xxx&gt;&#44; &lt;xxx&gt;TestCountry&lt;/xxx&gt;</address>
+
+    <title>&lt;xxx&gt;alert &#34;ScriptTest&#34;&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;</title>
+    <booktitle>&lt;xxx&gt;BookTitleTest&lt;/xxx&gt;</booktitle>
+    <pages>&ltxxx&gt323&#x2013;324&lt/xxx&gt</pages>
+    <year>&ltxxx&gt20013&lt/xxx&gt</year>
+
+
+
+    <month>&lt;xxx&gt;jun&lt;/xxx&gt;</month>
+    <url>&lt;xxx&gt;http://www.test.de&lt;/xxx&gt;</url>
+
+    <publisher>&lt;xxx&gt;PublisherTest&lt;/xxx&gt;</publisher>
+
+
+
+
+    <isbn>&lt;xxx&gt;978&#45;1&#45;60558&#45;486&#45;7&lt;/xxx&gt;</isbn>
+
+
+</other>
+ 
+
+
+
+</dblp>

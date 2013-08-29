@@ -1,0 +1,115 @@
+<!-- jabref.sf.net generated HTML layout  -->
+<!-- 2006-01-17 wegner added PMID linkout -->
+<html>
+<header>
+	<title>BibSonomy Output</title>
+	<style type="text/css">
+body {
+    font-family:Georgia, Garamond, Serif;
+    background-color:#ddd;
+}
+
+.bibtex_entry {
+    border:2px solid black;
+    margin:1em;
+}
+
+.bibtex_header {
+    border-bottom:solid gray 2px;
+}
+.bibtex_key {
+    font-size:small;
+    color:#555;
+    display:inline;
+	font-weight:bold;
+}
+
+.bibtex_content {
+    padding-bottom:1em;
+}
+
+.bibtex_author {
+    font-weight:bold;
+    padding-bottom:1em;
+}
+
+.bibtex_title {
+    font-weight:bold;
+    padding-bottom:1em;
+}
+
+.bibtex_url, .bibtex_pmid, .bibtex_doi, .bibtex_citeseer {
+    display:inline;
+	font-size:small;
+	float:right;
+	padding-left:1em;
+	padding-right:1em;
+}
+
+.bibtex_url a, .bibtex_pdf a, .bibtex_pmid a,.bibtex_pmid a:visited, .bibtex_doi a, .bibtex_pdf a:visited, .bibtex_citeseer a , .bibtex_url a:visited, .bibtex_doi a:visited, .bibtex_citeseer a:visited {
+	text-decoration:none;
+	font-weight:bold;
+	color:darkblue;
+
+}
+
+.bibtex_journal, .bibtex_year, .bibtex_volume, .bibtex_pages, .bibtex_publisher {
+    display:inline;
+}
+	</style>
+</header>
+<body>
+
+
+<hr><div class="bibtex_entry">
+
+	<div class="bibtex_header">
+		<div class="bibtex_key">
+			<a name="benz2009managing">benz2009managing</a>
+		</div>
+
+		
+
+		
+		<div class="bibtex_url">
+			<a href="http://portal.acm.org/citation.cfm?doid=1557914.1557969#">url</a>
+		</div>
+		
+	</div>
+
+	<div class="bibtex_content">
+
+		
+		<div class="bibtex_title">
+			Managing publications and bookmarks with BibSonomy
+		</div>
+ 		
+
+		
+		<div class="bibtex_author">
+			Benz, D.; Eisterlehner, F.; Hotho, A.; Jäschke, R.; Krause, B. &amp; Stumme, G.
+		</div>
+		
+
+		
+		<div class="bibtex_publisher">
+			ACM
+		</div>,
+		
+
+		
+		<div class="bibtex_pages">
+			pp. 323-324
+		</div>,
+		
+
+		<div class="bibtex_year">
+			2009
+		</div>
+	</div>
+</div>
+<hr>
+<p style="font-size: smaller;"></p>
+
+</body>
+</html>

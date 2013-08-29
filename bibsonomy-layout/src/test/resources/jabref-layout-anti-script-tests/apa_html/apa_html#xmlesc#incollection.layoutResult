@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>BibSonomy Publication Export (APA style)</title>
+</head>
+<body>
+&ltxxx&gtTestUser TestUserUser&lt/xxx&gt & &ltxxx&gtTestUser FriendOne&lt/xxx&gt
+
+ (&ltxxx&gt20013&lt/xxx&gt). 
+&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt. 
+In 
+
+&ltxxx&gtTestEditorOne EditorOne&lt/xxx&gt & &ltxxx&gtTestEditorTwo EditorTwo&lt/xxx&gt (ed.),
+
+<i> &ltxxx&gtBookTitleTest&lt/xxx&gt</i>
+
+
+ (pp. &ltxxx&gt323--324&lt/xxx&gt)
+. 
+
+&ltxxx&gtPublisherTest&lt/xxx&gt
+. 
+
+ISBN: &ltxxx&gt978-1-60558-486-7&lt/xxx&gt.
+
+<br/>
+<br/>
+</body>
+</html>
