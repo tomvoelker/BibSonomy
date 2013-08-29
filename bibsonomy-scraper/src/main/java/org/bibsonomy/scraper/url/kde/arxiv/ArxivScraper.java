@@ -50,13 +50,12 @@ public class ArxivScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "arXiv";
 	private static final String SITE_URL = "http://arxiv.org/";
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-	
 	private static final String ARXIV_HOST = "arxiv.org";
 	
 	private static final Pattern patternID = Pattern.compile("abs/([^?]*)");
-
+	private static final Pattern patternVer = Pattern.compile("(.+?)v\\d+");
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	
+
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		
 		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(ARXIV_HOST)) {
@@ -73,7 +72,7 @@ public class ArxivScraper extends AbstractUrlScraper {
 					*/
 					String vId = "";
 					
-					Matcher verID = Pattern.compile("([^?]*)v\\d+").matcher(id);
+					Matcher verID = patternVer.matcher(id);
 					if(verID.find()) vId = verID.group(1);
 					else vId = id;
 									
