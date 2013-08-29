@@ -1,16 +1,16 @@
 <p>
-\format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[XMLEscaper]{\year}), 
-\format[HTMLChars,XMLEscaper]{\title}, <i>in</i>
+\format[HTMLChars,AntiScriptInjection,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
+\format[HTMLChars,AntiScriptInjection]{\title}, <i>in</i>
 \begin{editor}
-\format[HTMLChars,XMLEscaper,AuthorFirstFirst,AuthorAndsReplacer]{\editor}, ed.,
+\format[HTMLChars,AntiScriptInjection,AuthorFirstFirst,AuthorAndsReplacer]{\editor}, ed.,
 \end{editor}
 \begin{booktitle}
-'\format[HTMLChars,XMLEscaper]{\booktitle}'
+'\format[HTMLChars,AntiScriptInjection]{\booktitle}'
 \end{booktitle}
 \begin{publisher}
-, \format[HTMLChars,XMLEscaper]{\publisher}, \format[HTMLChars,XMLEscaper]{\address}
+, \format[HTMLChars,AntiScriptInjection]{\publisher}, \format[HTMLChars,AntiScriptInjection]{\address}
 \end{publisher}
 \begin{pages}
-, pp. \format[XMLEscaper]{\pages}
+, pp. \format[AntiScriptInjection]{\pages}
 \end{pages}.
 </p>

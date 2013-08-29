@@ -2,7 +2,7 @@
 
 	<div class="bibtex_header">
 		<div class="bibtex_key">
-			<a name="\bibtexkey">\bibtexkey</a>
+			<a name="\format[AntiScriptInjection]{\bibtexkey}">\format[AntiScriptInjection]{\bibtexkey}</a>
 		</div>
 
 		\begin{pdf}
@@ -13,7 +13,7 @@
 
 		\begin{url}
 		<div class="bibtex_url">
-			<a href="\url">url</a>
+			<a href="\format[AntiScriptInjection]{\url}">url</a>
 		</div>
 		\end{url}
 	</div>
@@ -22,24 +22,24 @@
 
 		\begin{title}
 		<div class="bibtex_title">
-			\format[HTMLChars,RemoveLatexCommands]{\title}
+			\format[HTMLChars,RemoveLatexCommands,AntiScriptInjection]{\title}
 		</div>
 		\end{title}
 
 		\begin{author}
 		<div class="bibtex_author">
-			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}
+			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
 		</div>
 		\end{author}
 
 		\begin{school}
 		<div class="bibtex_journal">
-			\format[HTMLChars]{\school}
+			\format[HTMLChars,AntiScriptInjection]{\school}
 		</div>,
 		\end{school}
 
 		<div class="bibtex_year">
-			\year
+			\format[AntiScriptInjection]{\year}
 		</div>
 	</div>
 </div>

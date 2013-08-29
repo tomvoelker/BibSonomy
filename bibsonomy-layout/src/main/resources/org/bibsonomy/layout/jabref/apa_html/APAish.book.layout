@@ -1,19 +1,19 @@
 \begin{author}
-\format[HTMLChars,XMLEscaper,AuthorLastFirstAbbrOxfordCommas,Replace( and,\,)]{\author}
+\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrOxfordCommas,Replace( and,\,)]{\author}
 \end{author}
 \begin{editor}
- & \format[HTMLChars,XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (eds.)
+ & \format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (eds.)
 \end{editor}
- (\format[XMLEscaper]{\year}).
-<i> \format[HTMLChars,XMLEscaper]{\title}</i>\begin{volume}, Vol. \format[XMLEscaper]{\volume}\end{volume}. 
+ (\format[AntiScriptInjection]{\year}).
+<i> \format[HTMLChars,AntiScriptInjection]{\title}</i>\begin{volume}, Vol. \format[AntiScriptInjection]{\volume}\end{volume}. 
 \begin{location}
-\format[HTMLChars,XMLEscaper]{\location}: 
+\format[HTMLChars,AntiScriptInjection]{\location}: 
 \end{location}
 \begin{publisher}
-\format[HTMLChars,XMLEscaper]{\publisher}.
+\format[HTMLChars,AntiScriptInjection]{\publisher}.
 \end{publisher}
 \begin{isbn}
-ISBN: \format[HTMLChars,XMLEscaper]{\isbn} 
+ISBN: \format[HTMLChars,AntiScriptInjection]{\isbn} 
 \end{isbn}
 <br/>
 <br/>

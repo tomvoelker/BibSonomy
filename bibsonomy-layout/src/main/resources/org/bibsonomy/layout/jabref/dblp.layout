@@ -1,12 +1,12 @@
-<\format[ToLowerCase]{\bibtextype} mdate="\year" key="\bibtexkey">
+<\format[ToLowerCase]{\bibtextype} mdate="\format[AntiScriptInjection]{\year}" key="\format[AntiScriptInjection]{\bibtexkey}">
 \begin{author}       \format[XMLChars,org.bibsonomy.layout.jabref.SeparatedAuthorsFormatter]{\author} \end{author}
 \begin{editor}    <editor>\format[XMLChars,AuthorFirstFirst]{\editor}</editor>\end{editor}
 \begin{address}    <address>\format[XMLChars]{\address}</address>\end{address}
 
 \begin{title}    <title>\format[XMLChars]{\title}</title>\end{title}
 \begin{booktitle}    <booktitle>\format[XMLChars]{\booktitle}</booktitle>\end{booktitle}
-\begin{pages}    <pages>\format[FormatPagesForXML]{\pages}</pages>\end{pages}
-\begin{year}    <year>\year</year>\end{year}
+\begin{pages}    <pages>\format[FormatPagesForXML,AntiScriptInjection]{\pages}</pages>\end{pages}
+\begin{year}    <year>\format[AntiScriptInjection]{\year}</year>\end{year}
 \begin{journal}    <journal>\format[XMLChars]{\journal}</journal>\end{journal}
 \begin{volume}    <volume>\format[XMLChars]{\volume}</volume>\end{volume}
 \begin{number}    <number>\format[XMLChars]{\number}</number>\end{number}

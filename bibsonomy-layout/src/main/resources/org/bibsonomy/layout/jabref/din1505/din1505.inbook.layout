@@ -1,15 +1,15 @@
 <div style="margin-bottom:1em">
-\begin{author}\format[AuthorLastFirst,HTMLChars,XMLEscaper,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\end{author}\begin{editor}\format[XMLEscaper,IfNotEmptyInsertDIN1505T2NameSeparator]{\author}\format[XMLEscaper,AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
-<i>\format[XMLEscaper]{\title}</i>
-In: \begin{booktitle}<i>\format[XMLEscaper]{\booktitle}</i>\end{booktitle}\begin{volume}.
-\format[XMLEscaper]{\volume}\end{volume}\begin{number}.
-\format[XMLEscaper]{\number}\end{number}\begin{edition}.
-\format[XMLEscaper]{\edition}\end{edition}\begin{address}.
-\format[XMLEscaper]{\address}\end{address}
-: <span style="font-variant: small-caps">\format[XMLEscaper]{\publisher}</span>,
-\format[XMLEscaper]{\year}\begin{series}
-(\format[XMLEscaper]{\series})\end{series}\begin{note}.
-- \format[XMLEscaper]{\note}\end{note}\begin{isbn}.
-- ISBN-\format[XMLEscaper]{\isbn}\end{isbn}\begin{pages},
-S. \format[XMLEscaper]{\pages}\end{pages}
+\begin{author}\format[AuthorLastFirst,HTMLChars,AntiScriptInjection,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\end{author}\begin{editor}\format[AntiScriptInjection,IfNotEmptyInsertDIN1505T2NameSeparator]{\author}\format[AntiScriptInjection,AuthorLastFirst,HTMLChars,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
+<i>\format[AntiScriptInjection]{\title}</i>
+In: \begin{booktitle}<i>\format[AntiScriptInjection]{\booktitle}</i>\end{booktitle}\begin{volume}.
+\format[AntiScriptInjection]{\volume}\end{volume}\begin{number}.
+\format[AntiScriptInjection]{\number}\end{number}\begin{edition}.
+\format[AntiScriptInjection]{\edition}\end{edition}\begin{address}.
+\format[AntiScriptInjection]{\address}\end{address}
+: <span style="font-variant: small-caps">\format[AntiScriptInjection]{\publisher}</span>,
+\format[AntiScriptInjection]{\year}\begin{series}
+(\format[AntiScriptInjection]{\series})\end{series}\begin{note}.
+- \format[AntiScriptInjection]{\note}\end{note}\begin{isbn}.
+- ISBN-\format[AntiScriptInjection]{\isbn}\end{isbn}\begin{pages},
+S. \format[AntiScriptInjection]{\pages}\end{pages}
 </div>

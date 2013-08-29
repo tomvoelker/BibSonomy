@@ -1,36 +1,36 @@
-<tr id="\format[XMLEscaper]{\bibtexkey}" class="entry">
-	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars,XMLEscaper]{\author}</td>
-	<td>\format[Replace(\n, ),HTMLChars,XMLEscaper]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
-	<td>\format[XMLEscaper]{\year}</td>
-	<td>\format[HTMLChars,XMLEscaper]{\journal}\format[HTMLChars,XMLEscaper]{\booktitle}\begin{school}<i>School</i>: \format[HTMLChars,XMLEscaper]{\school}\end{school} &nbsp;</td>
-	<td>\format[XMLEscaper,ToLowerCase]{\bibtextype}</td>
-	<td>\begin{doi}<a href="\format[XMLEscaper,DOICheck]{\doi}">DOI</a>\end{doi}\begin{url}<a href="\format[XMLEscaper]{\url}">URL</a>\end{url} &nbsp;</td>
+<tr id="\format[AntiScriptInjection]{\bibtexkey}" class="entry">
+	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars,AntiScriptInjection]{\author}</td>
+	<td>\format[Replace(\n, ),HTMLChars,AntiScriptInjection]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
+	<td>\format[AntiScriptInjection]{\year}</td>
+	<td>\format[HTMLChars,AntiScriptInjection]{\journal}\format[HTMLChars,AntiScriptInjection]{\booktitle}\begin{school}<i>School</i>: \format[HTMLChars,AntiScriptInjection]{\school}\end{school} &nbsp;</td>
+	<td>\format[AntiScriptInjection,ToLowerCase]{\bibtextype}</td>
+	<td>\begin{doi}<a href="\format[AntiScriptInjection,DOICheck]{\doi}">DOI</a>\end{doi}\begin{url}<a href="\format[AntiScriptInjection]{\url}">URL</a>\end{url} &nbsp;</td>
 </tr>\begin{abstract}
-<tr id="abs_\format{\bibtexkey}" class="abstract noshow">
-	<td colspan="6"><b>Abstract</b>: \format[HTMLChars,XMLEscaper]{\abstract}</td>
+<tr id="abs_\format[AntiScriptInjection]{\bibtexkey}" class="abstract noshow">
+	<td colspan="6"><b>Abstract</b>: \format[HTMLChars,AntiScriptInjection]{\abstract}</td>
 </tr>\end{abstract}\begin{review}
-<tr id="rev_\format{\bibtexkey}" class="review noshow">
-	<td colspan="6"><b>Review</b>: \format[HTMLChars,XMLEscaper]{\review}</td>
+<tr id="rev_\format[AntiScriptInjection]{\bibtexkey}" class="review noshow">
+	<td colspan="6"><b>Review</b>: \format[HTMLChars,AntiScriptInjection]{\review}</td>
 </tr>\end{review}
-<tr id="bib_\format{\bibtexkey}" class="bibtex noshow">
+<tr id="bib_\format[AntiScriptInjection]{\bibtexkey}" class="bibtex noshow">
 <td colspan="6">
 <b>BibTeX</b>:
 <pre>
-@\format[XMLEscaper,ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
-  author = {\format[XMLEscaper]{\author}}\end{author}\begin{title},
-  title = {\format[XMLEscaper]{\title}}\end{title}\begin{booktitle},
-  booktitle = {\format[XMLEscaper]{\booktitle}}\end{booktitle}\begin{journal},
-  journal = {\format[XMLEscaper]{\journal}}\end{journal}\begin{publisher},
-  publisher = {\format[XMLEscaper]{\publisher}}\end{publisher}\begin{school},
-  school = {\format[XMLEscaper]{\school}}\end{school}\begin{year},
-  year = {\format[XMLEscaper]{\year}}\end{year}\begin{volume},
-  volume = {\format[XMLEscaper]{\volume}}\end{volume}\begin{number},
-  number = {\format[XMLEscaper]{\number}}\end{number}\begin{pages},
-  pages = {\format[XMLEscaper]{\pages}}\end{pages}\begin{edition},
-  edition = {\format[XMLEscaper]{\edition}}\end{edition}\begin{note},
-  note = {\format[XMLEscaper]{\note}}\end{note}\begin{url},
-  url = {\format[XMLEscaper]{\url}}\end{url}\begin{doi},
-  doi = {\format[DOICheck]{\doi}}\end{doi}
+@\format[ToLowerCase,AntiScriptInjection]{\bibtextype}{\format[AntiScriptInjection]{\bibtexkey},\begin{author}
+  author = {\format[AntiScriptInjection]{\author}}\end{author}\begin{title},
+  title = {\format[AntiScriptInjection]{\title}}\end{title}\begin{booktitle},
+  booktitle = {\format[AntiScriptInjection]{\booktitle}}\end{booktitle}\begin{journal},
+  journal = {\format[AntiScriptInjection]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[AntiScriptInjection]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[AntiScriptInjection]{\school}}\end{school}\begin{year},
+  year = {\format[AntiScriptInjection]{\year}}\end{year}\begin{volume},
+  volume = {\format[AntiScriptInjection]{\volume}}\end{volume}\begin{number},
+  number = {\format[AntiScriptInjection]{\number}}\end{number}\begin{pages},
+  pages = {\format[AntiScriptInjection]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[AntiScriptInjection]{\edition}}\end{edition}\begin{note},
+  note = {\format[AntiScriptInjection]{\note}}\end{note}\begin{url},
+  url = {\format[AntiScriptInjection]{\url}}\end{url}\begin{doi},
+  doi = {\format[DOICheck,AntiScriptInjection]{\doi}}\end{doi}
 }
 </pre></td>
 </tr>

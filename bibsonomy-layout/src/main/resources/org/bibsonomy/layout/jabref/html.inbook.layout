@@ -2,12 +2,12 @@
 
 	<div class="bibtex_header">
 		<div class="bibtex_key">
-			<a name="\bibtexkey">\bibtexkey</a>
+			<a name="\format[AntiScriptInjection]{\bibtexkey}">\format[AntiScriptInjection]{\bibtexkey}</a>
 		</div>
 
 		\begin{doi}
 		<div class="bibtex_doi">
-			<a href="http://dx.doi.org/\doi">doi</a>
+			<a href="http://dx.doi.org/\format[AntiScriptInjection]{\doi}">doi</a>
 		</div>
 		\end{doi}
 
@@ -25,7 +25,7 @@
 
 		\begin{url}
 		<div class="bibtex_url">
-			<a href="\url">url</a>
+			<a href="\format[AntiScriptInjection]{\url}">url</a>
 		</div>
 		\end{url}
 	</div>
@@ -34,19 +34,19 @@
 
 		\begin{title}
 		<div class="bibtex_title">
-			In: \format[HTMLChars,RemoveLatexCommands]{\title}
+			In: \format[HTMLChars,RemoveLatexCommands,AntiScriptInjection]{\title}
 		</div>
 		\end{title}
 
 		\begin{author}
 		<div class="bibtex_author">
-			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}
+			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
 		</div>
 		\end{author}
 
 		\begin{publisher}
 		<div class="bibtex_journal">
-			\format[HTMLChars]{\publisher}
+			\format[HTMLChars,AntiScriptInjection]{\publisher}
 		</div>,
 		\end{publisher}
 
@@ -58,12 +58,12 @@
 
 		\begin{pages}
 		<div class="bibtex_pages">
-			pp. \format[FormatPagesForHTML]{\pages}
+			pp. \format[FormatPagesForHTML,AntiScriptInjection]{\pages}
 		</div>,
 		\end{pages}
 
 		<div class="bibtex_year">
-			\year
+			\format[AntiScriptInjection]{\year}
 		</div>
 	</div>
 </div>

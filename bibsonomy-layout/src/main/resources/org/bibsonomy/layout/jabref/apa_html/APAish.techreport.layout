@@ -1,18 +1,18 @@
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author}
- (\format[XMLEscaper]{\year}). 
-<i> \format[HTMLChars,XMLEscaper]{\title}</i>
- (\format[XMLEscaper]{\type}\format[XMLEscaper]{\number}). 
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
+ (\format[AntiScriptInjection]{\year}). 
+<i> \format[HTMLChars,AntiScriptInjection]{\title}</i>
+ (\format[AntiScriptInjection]{\type}\format[AntiScriptInjection]{\number}). 
 \begin{organization}
-\format[XMLEscaper]{\organization}
+\format[AntiScriptInjection]{\organization}
 \end{organization}
 \begin{institution}
-\format[XMLEscaper]{\institution}
+\format[AntiScriptInjection]{\institution}
 \end{institution}. 
 \begin{howpublished}
-\format[XMLEscaper]{\howpublished} .
+\format[AntiScriptInjection]{\howpublished} .
 \end{howpublished}
 \begin{note}
- (\format[XMLEscaper]{\note}) 
+ (\format[AntiScriptInjection]{\note}) 
 \end{note}
 <br/>
 <br/>

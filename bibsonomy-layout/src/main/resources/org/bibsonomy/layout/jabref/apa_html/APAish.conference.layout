@@ -1,25 +1,25 @@
 \begin{author}
-\format[HTMLChars,XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
 \end{author}
- (\format[XMLEscaper]{\year}). 
-\format[HTMLChars,XMLEscaper]{\title}. 
+ (\format[AntiScriptInjection]{\year}). 
+\format[HTMLChars,AntiScriptInjection]{\title}. 
 In 
 \begin{editor}
-\format[HTMLChars,XMLEscaper,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}
+\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}
  (ed.), 
 \end{editor}
-<i> \format[HTMLChars,XMLEscaper]{\booktitle}</i>
+<i> \format[HTMLChars,AntiScriptInjection]{\booktitle}</i>
 \begin{volume}
-, Vol. \format[XMLEscaper]{\volume}
+, Vol. \format[AntiScriptInjection]{\volume}
 \end{volume}
 \begin{pages}
- (pp. \format[XMLEscaper]{\pages})
+ (pp. \format[AntiScriptInjection]{\pages})
 \end{pages}. 
 \begin{publisher}
-\format[HTMLChars,XMLEscaper]{\publisher}.
+\format[HTMLChars,AntiScriptInjection]{\publisher}.
 \end{publisher}
 \begin{isbn}
-ISBN: \format[HTMLChars,XMLEscaper]{\isbn}
+ISBN: \format[HTMLChars,AntiScriptInjection]{\isbn}
 \end{isbn}
 <br/>
 <br/>

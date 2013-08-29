@@ -1,13 +1,13 @@
 <p>
-\format[HTMLChars,XMLEscaper,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[XMLEscaper]{\year}), 
-'\format[HTMLChars,XMLEscaper]{\title}', <i> \format[HTMLChars]{\journal}</i>
+\format[HTMLChars,AntiScriptInjection,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
+'\format[HTMLChars,AntiScriptInjection]{\title}', <i> \format[HTMLChars]{\journal}</i>
 \begin{volume}
- <b>\format[XMLEscaper]{\volume}</b>
+ <b>\format[AntiScriptInjection]{\volume}</b>
 \end{volume}
 \begin{number}
-(\format[XMLEscaper]{\number})
+(\format[AntiScriptInjection]{\number})
 \end{number}
 \begin{pages}
-, \format[XMLEscaper]{\pages}
+, \format[AntiScriptInjection]{\pages}
 \end{pages}.
 </p>

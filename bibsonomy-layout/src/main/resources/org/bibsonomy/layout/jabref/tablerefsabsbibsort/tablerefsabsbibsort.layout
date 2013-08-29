@@ -1,35 +1,35 @@
-<tr id="\format[XMLEscaper]{\bibtexkey}" class="entry">
-	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,NoSpaceBetweenAbbreviations,HTMLChars,XMLEscaper]{\author}</td>
-	<td>\format[Replace(\n, ),HTMLChars,XMLEscaper]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[XMLEscaper]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
-	<td>\format[XMLEscaper]{\year}</td>
-	<td>\format[HTMLChars,XMLEscaper]{\journal}\begin{volume}<br/>Vol. \format[XMLEscaper]{\volume}\end{volume}\begin{number}(\format[XMLEscaper,FormatPagesForHTML]{\number})\end{number}\format[HTMLChars,XMLEscaper]{\booktitle}\begin{pages}, pp. \format[XMLEscaper,FormatPagesForHTML]{\pages}\end{pages}\begin{school}<i>School</i>: \format[HTMLChars,XMLEscaper]{\school}\end{school}\begin{howpublished}\format[HTMLChars,XMLEscaper]{\howpublished}\end{howpublished}&nbsp;</td>
-	<td>\format[XMLEscaper,ToLowerCase]{\bibtextype}</td>
-	<td>\begin{doi}<a href="\format[XMLEscaper,DOICheck]{\doi}">DOI</a> \end{doi}\begin{url}<a href="\format[XMLEscaper]{\url}">URL</a>\end{url}&nbsp;</td>
+<tr id="\format[AntiScriptInjection]{\bibtexkey}" class="entry">
+	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,NoSpaceBetweenAbbreviations,HTMLChars,AntiScriptInjection]{\author}</td>
+	<td>\format[Replace(\n, ),HTMLChars,AntiScriptInjection]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
+	<td>\format[AntiScriptInjection]{\year}</td>
+	<td>\format[HTMLChars,AntiScriptInjection]{\journal}\begin{volume}<br/>Vol. \format[AntiScriptInjection]{\volume}\end{volume}\begin{number}(\format[AntiScriptInjection,FormatPagesForHTML]{\number})\end{number}\format[HTMLChars,AntiScriptInjection]{\booktitle}\begin{pages}, pp. \format[AntiScriptInjection,FormatPagesForHTML]{\pages}\end{pages}\begin{school}<i>School</i>: \format[HTMLChars,AntiScriptInjection]{\school}\end{school}\begin{howpublished}\format[HTMLChars,AntiScriptInjection]{\howpublished}\end{howpublished}&nbsp;</td>
+	<td>\format[AntiScriptInjection,ToLowerCase]{\bibtextype}</td>
+	<td>\begin{doi}<a href="\format[AntiScriptInjection,DOICheck]{\doi}">DOI</a> \end{doi}\begin{url}<a href="\format[AntiScriptInjection]{\url}">URL</a>\end{url}&nbsp;</td>
 </tr>\begin{abstract}
-<tr id="abs_\format{\bibtexkey}" class="abstract noshow">
-	<td colspan="6"><b>Abstract</b>: \format[HTMLChars,XMLEscaper]{\abstract}</td>
+<tr id="abs_\format[AntiScriptInjection]{\bibtexkey}" class="abstract noshow">
+	<td colspan="6"><b>Abstract</b>: \format[HTMLChars,AntiScriptInjection]{\abstract}</td>
 </tr>\end{abstract}\begin{review}
 <tr id="rev_\format{\bibtexkey}" class="review noshow">
-	<td colspan="6"><b>Review</b>: \format[HTMLChars,XMLEscaper]{\review}</td>
+	<td colspan="6"><b>Review</b>: \format[HTMLChars,AntiScriptInjection]{\review}</td>
 </tr>\end{review}
-<tr id="bib_\format[XMLEscaper]{\bibtexkey}" class="bibtex noshow">
+<tr id="bib_\format[AntiScriptInjection]{\bibtexkey}" class="bibtex noshow">
 <td colspan="6"><b>BibTeX</b>:
 <pre>
-@\format[XMLEscaper,ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
-  author = {\format[HTMLChars,XMLEscaper]{\author}}\end{author}\begin{title},
-  title = {\format[HTMLChars,XMLEscaper]{\title}}\end{title}\begin{booktitle},
-  booktitle = {\format[HTMLChars,XMLEscaper]{\booktitle}}\end{booktitle}\begin{journal},
-  journal = {\format[HTMLChars,XMLEscaper]{\journal}}\end{journal}\begin{publisher},
-  publisher = {\format[HTMLChars,XMLEscaper]{\publisher}}\end{publisher}\begin{school},
-  school = {\format[HTMLChars,XMLEscaper]{\school}}\end{school}\begin{year},
-  year = {\format[HTMLChars,XMLEscaper]{\year}}\end{year}\begin{volume},
-  volume = {\format[HTMLChars,XMLEscaper]{\volume}}\end{volume}\begin{number},
-  number = {\format[HTMLChars,XMLEscaper]{\number}}\end{number}\begin{pages},
-  pages = {\format[HTMLChars,XMLEscaper]{\pages}}\end{pages}\begin{edition},
-  edition = {\format[HTMLChars,XMLEscaper]{\edition}}\end{edition}\begin{note},
-  note = {\format[HTMLChars,XMLEscaper]{\note}}\end{note}\begin{url},
-  url = {\format[HTMLChars,XMLEscaper]{\url}}\end{url}\begin{doi},
-  doi = {\format[DOICheck]{\doi}}\end{doi}
+@\format[ToLowerCase,AntiScriptInjection]{\bibtextype}{\format[AntiScriptInjection]{\bibtexkey},\begin{author}
+  author = {\format[HTMLChars,AntiScriptInjection]{\author}}\end{author}\begin{title},
+  title = {\format[HTMLChars,AntiScriptInjection]{\title}}\end{title}\begin{booktitle},
+  booktitle = {\format[HTMLChars,AntiScriptInjection]{\booktitle}}\end{booktitle}\begin{journal},
+  journal = {\format[HTMLChars,AntiScriptInjection]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[HTMLChars,AntiScriptInjection]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[HTMLChars,AntiScriptInjection]{\school}}\end{school}\begin{year},
+  year = {\format[HTMLChars,AntiScriptInjection]{\year}}\end{year}\begin{volume},
+  volume = {\format[HTMLChars,AntiScriptInjection]{\volume}}\end{volume}\begin{number},
+  number = {\format[HTMLChars,AntiScriptInjection]{\number}}\end{number}\begin{pages},
+  pages = {\format[HTMLChars,AntiScriptInjection]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[HTMLChars,AntiScriptInjection]{\edition}}\end{edition}\begin{note},
+  note = {\format[HTMLChars,AntiScriptInjection]{\note}}\end{note}\begin{url},
+  url = {\format[HTMLChars,AntiScriptInjection]{\url}}\end{url}\begin{doi},
+  doi = {\format[DOICheck,AntiScriptInjection]{\doi}}\end{doi}
 }
 </pre></td>
 </tr>

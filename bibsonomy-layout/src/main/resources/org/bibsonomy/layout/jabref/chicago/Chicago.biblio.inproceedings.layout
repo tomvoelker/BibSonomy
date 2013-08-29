@@ -1,4 +1,4 @@
 <p>
 \begin{author}
-\format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars,XMLEscaper]{\title}.&quot; \end{title}Paper presented at the meeting of the \format[HTMLChars,XMLEscaper]{\booktitle}, \begin{address}\format[HTMLChars,XMLEscaper]{\address},\end{address} \begin{year}\format[HTMLChars,XMLEscaper]{\year}. \end{year}
+\format[HTMLChars,AntiScriptInjection,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars,AntiScriptInjection]{\title}.&quot; \end{title}Paper presented at the meeting of the \format[HTMLChars,AntiScriptInjection]{\booktitle}, \begin{address}\format[HTMLChars,AntiScriptInjection]{\address},\end{address} \begin{year}\format[HTMLChars,AntiScriptInjection]{\year}. \end{year}
 </p>

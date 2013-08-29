@@ -1,49 +1,49 @@
 <p>
-\format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\author} \format[HTMLChars,XMLEscaper]{\title}.
+\format[HTMLChars,AntiScriptInjection,AuthorLastFirstCommas]{\author} \format[HTMLChars,AntiScriptInjection]{\title}.
 
 \begin{journal}
-}<i> \format[HTMLChars,XMLEscaper]{\journal}</i>{ }<b> \format[XMLEscaper]{\volume}</b>{
+}<i> \format[HTMLChars,AntiScriptInjection]{\journal}</i>{ }<b> \format[AntiScriptInjection]{\volume}</b>{
 \end{journal}
 
 \begin{number}
- (\format[XMLEscaper]{\number}) 
+ (\format[AntiScriptInjection]{\number}) 
 \end{number}
 
 \begin{editor}
- \format[HTMLChars,XMLEscaper,AuthorLastFirstCommas]{\editor}, eds.
+ \format[HTMLChars,AntiScriptInjection,AuthorLastFirstCommas]{\editor}, eds.
 \end{editor}
 
 \begin{booktitle}
-<i> \format[HTMLChars,XMLEscaper]{\booktitle}</i>
+<i> \format[HTMLChars,AntiScriptInjection]{\booktitle}</i>
 \end{booktitle}
 
 \begin{organization}
-, \format[XMLEscaper]{\organization}
+, \format[AntiScriptInjection]{\organization}
 \end{organization}
 
 \begin{institution}
-, \format[XMLEscaper]{\institution}
+, \format[AntiScriptInjection]{\institution}
 \end{institution}
 
 \begin{publisher}
-, \format[HTMLChars,XMLEscaper]{\publisher}
+, \format[HTMLChars,AntiScriptInjection]{\publisher}
 \end{publisher}
 
 \begin{howpublished}
-, \format[XMLEscaper]{\howpublished}
+, \format[AntiScriptInjection]{\howpublished}
 \end{howpublished}
 
 \begin{address}
-, \format[HTMLChars,XMLEscaper]{\address}
+, \format[HTMLChars,AntiScriptInjection]{\address}
 \end{address}
 
-(\format[XMLEscaper]{\year}).
+(\format[AntiScriptInjection]{\year}).
 \begin{note}
-, \format[XMLEscaper]{\note}
+, \format[AntiScriptInjection]{\note}
 \end{note}
 
 \begin{pages}
-, \format[XMLEscaper]{\pages}
+, \format[AntiScriptInjection]{\pages}
 \end{pages}
 
 .

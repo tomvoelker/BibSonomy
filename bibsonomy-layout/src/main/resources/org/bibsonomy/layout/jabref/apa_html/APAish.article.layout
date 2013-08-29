@@ -1,9 +1,9 @@
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author}
- (\format[XMLEscaper]{\year}). 
-\format[HTMLChars,XMLEscaper]{\title}. <i>\format[HTMLChars,XMLEscaper]{\journal}</i>, 
-\begin{volume}\format[XMLEscaper]{\volume}\end{volume}\begin{pages}, \format[XMLEscaper]{\pages}\end{pages}. 
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
+ (\format[AntiScriptInjection]{\year}). 
+\format[HTMLChars,AntiScriptInjection]{\title}. <i>\format[HTMLChars,AntiScriptInjection]{\journal}</i>, 
+\begin{volume}\format[AntiScriptInjection]{\volume}\end{volume}\begin{pages}, \format[AntiScriptInjection]{\pages}\end{pages}. 
 \begin{doi}
- doi: \format[HTMLChars,XMLEscaper]{\doi}
+ doi: \format[HTMLChars,AntiScriptInjection]{\doi}
 \end{doi}
 <br/>
 <br/>

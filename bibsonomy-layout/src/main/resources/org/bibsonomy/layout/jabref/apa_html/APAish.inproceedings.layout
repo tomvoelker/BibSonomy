@@ -1,25 +1,25 @@
 \begin{author}
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\author} 
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author} 
 \end{author}
 \begin{year}
-(\format[XMLEscaper]{\year}). 
+(\format[AntiScriptInjection]{\year}). 
 \end{year}
 \begin{title}
-\format[HTMLChars,XMLEscaper]{\title}. 
+\format[HTMLChars,AntiScriptInjection]{\title}. 
 \end{title}
 \begin{editor}
-In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,XMLEscaper]{\editor} (eds.), 
+In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor} (eds.), 
 \end{editor}
 \begin{booktitle}
-<i>\format[HTMLChars,XMLEscaper]{\booktitle}</i>\end{booktitle}\begin{pages} (p./pp. \format[XMLEscaper]{\pages})\end{pages},
+<i>\format[HTMLChars,AntiScriptInjection]{\booktitle}</i>\end{booktitle}\begin{pages} (p./pp. \format[AntiScriptInjection]{\pages})\end{pages},
 \begin{month}
-\format[HTMLChars,XMLEscaper]{\tech} 
-\format[HTMLChars,XMLEscaper]{\month}, 
+\format[HTMLChars,AntiScriptInjection]{\tech} 
+\format[HTMLChars,AntiScriptInjection]{\month}, 
 \end{month}
 \begin{location}
-\format[HTMLChars,XMLEscaper]{\location}\end{location}\begin{publisher}: \format[HTMLChars,XMLEscaper]{\publisher}\end{publisher}.
+\format[HTMLChars,AntiScriptInjection]{\location}\end{location}\begin{publisher}: \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}.
 \begin{isbn}
-ISBN: \format[HTMLChars,XMLEscaper]{\isbn} 
+ISBN: \format[HTMLChars,AntiScriptInjection]{\isbn} 
 \end{isbn}
 <br/>
 <br/>
