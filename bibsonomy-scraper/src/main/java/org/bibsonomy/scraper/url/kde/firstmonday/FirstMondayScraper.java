@@ -38,9 +38,6 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 
 /**
@@ -71,9 +68,10 @@ public class FirstMondayScraper extends AbstractUrlScraper{
 		try {
 				//The BibTex is eclosed in side pre tag
 				//jsoup is used for parsing
-				String bibTex = WebUtils.getContentAsString(bibTexUrl);
-				Document document = Jsoup.parse(bibTex);
-				bibTex = document.getElementsByTag("pre").text();
+				// FIXME: there is currently no jsoup in bibsonomy s this does not compile - why not use jtidy as it is already in the classpath?
+				String bibTex = null; //WebUtils.getContentAsString(bibTexUrl);
+				//Document document = Jsoup.parse(bibTex);
+				//bibTex = document.getElementsByTag("pre").text();
 		
 				if(present(bibTex)){
 					scrapingContext.setBibtexResult(bibTex);
