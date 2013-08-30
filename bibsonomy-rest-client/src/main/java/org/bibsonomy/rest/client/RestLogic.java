@@ -96,6 +96,7 @@ import org.bibsonomy.rest.client.queries.get.GetUserDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListOfGroupQuery;
 import org.bibsonomy.rest.client.queries.get.GetUserListQuery;
 import org.bibsonomy.rest.client.queries.post.AddUsersToGroupQuery;
+import org.bibsonomy.rest.client.queries.post.CreateConceptQuery;
 import org.bibsonomy.rest.client.queries.post.CreateGroupQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostDocumentQuery;
 import org.bibsonomy.rest.client.queries.post.CreatePostQuery;
@@ -396,7 +397,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
-		throw new UnsupportedOperationException();
+		return execute(new CreateConceptQuery(concept, concept.getName(), grouping, groupingName));
 	}
 
 	@Override

@@ -158,4 +158,12 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	public void setRenderingFormat(final RenderingFormat renderingFormat) {
 		this.renderingFormat = renderingFormat;
 	}
+
+
+	/**
+	 * @return the renderingFormat
+	 */
+	protected RenderingFormat getRenderingFormat() {
+		return this.renderingFormat;
+	}
 }

@@ -75,7 +75,11 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 		LOGGER.debug("POST Multipart: URL: " + url);
 		final PostMethod post = new PostMethod(url);
 
+		if (this.getRenderingFormat()  != null) {
+			post.addRequestHeader("Accept", this.getRenderingFormat().getMimeType());
+		}
 		post.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
+		
 		post.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
 
 		try {
