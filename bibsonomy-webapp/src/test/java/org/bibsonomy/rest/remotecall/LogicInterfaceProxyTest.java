@@ -69,6 +69,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
+import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -154,6 +155,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@BeforeClass
 	public static void initServer() {
+		initServer(RenderingFormat.XML);
+	}
+	
+	public static void initServer(RenderingFormat renderingFormat) {
 		try {
 			server = new Server();
 			final AbstractConnector connector = new SocketConnector();
@@ -186,13 +191,13 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			server.start();
 			connector.start();
 			
-			clientLogicFactory = new RestLogicFactory(apiUrl);
+			clientLogicFactory = new RestLogicFactory(apiUrl, renderingFormat);
 		} catch (final Exception ex) {
 			log.fatal(ex.getMessage(),ex);
 			throw new RuntimeException(ex);
 		}
 	}
-	
+
 	private static String getTmpDir() {
 		File f;
 		try {
@@ -926,10 +931,49 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
+	@Test
+	public void createConceptTest() {
+		createConcept(ModelUtils.getTag(), GroupingEntity.USER, "testUser");
+	}
+	
 	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-		return null;
+		EasyMock.expect(serverLogic.createConcept(CheckerDelegatingMatcher.check(new Checker<Tag>() {
+			@Override
+			public boolean check(Tag obj) {
+				Assert.assertEquals(concept.getName(), obj.getName());
+				Assert.assertNotNull(obj.getSubTags());
+				Assert.assertEquals(concept.getSubTags().size(), obj.getSubTags().size());
+				for (int i = 0; i < concept.getSubTags().size(); ++i) {
+					final Tag origSubTag = concept.getSubTags().get(i);
+					final Tag foundSubTag = obj.getSubTags().get(i);
+					Assert.assertEquals(origSubTag.getName(), foundSubTag.getName());
+					Assert.assertNotNull(foundSubTag.getSuperTags());
+					Assert.assertEquals(origSubTag.getSuperTags().size(), foundSubTag.getSuperTags().size());
+					for (int x = 0; x < origSubTag.getSuperTags().size(); ++x) {
+						Assert.assertEquals(origSubTag.getSuperTags().get(x).getName(), foundSubTag.getSuperTags().get(x).getName());
+					}
+				}
+				Assert.assertNotNull(obj.getSuperTags());
+				Assert.assertEquals(concept.getSuperTags().size(), obj.getSuperTags().size());
+				for (int i = 0; i < concept.getSuperTags().size(); ++i) {
+					final Tag origSuperTag = concept.getSuperTags().get(i);
+					final Tag foundSuperTag = obj.getSuperTags().get(i);
+					Assert.assertEquals(origSuperTag.getName(), foundSuperTag.getName());
+					Assert.assertNotNull(foundSuperTag.getSubTags());
+					Assert.assertEquals(origSuperTag.getSubTags().size(), foundSuperTag.getSubTags().size());
+					for (int x = 0; x < origSuperTag.getSubTags().size(); ++x) {
+						Assert.assertEquals(origSuperTag.getSubTags().get(x).getName(), foundSuperTag.getSubTags().get(x).getName());
+					}
+				}
+				return true;
+			}
+			
+		}), EasyMock.eq(grouping), EasyMock.eq(groupingName))).andReturn(concept.getName());;
+		EasyMock.replay(serverLogic);
+		assertEquals(concept.getName(), clientLogic.createConcept(concept, grouping, groupingName));
+		EasyMock.verify(serverLogic);
+		return concept.getName();
 	}
 
 	@Override
