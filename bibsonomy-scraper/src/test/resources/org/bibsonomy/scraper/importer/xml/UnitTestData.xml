@@ -1606,4 +1606,10 @@
 		<BibFile>ACSScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acs.ACSScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_263">
+		<TestDescription>FirstMondayScraper Test</TestDescription>
+		<URL>http://journals.uic.edu/ojs/index.php/fm/article/view/2874 </URL>
+		<BibFile>FirstMondayScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper</Scraper>
+	</URLTest>
 </test:Tests>
