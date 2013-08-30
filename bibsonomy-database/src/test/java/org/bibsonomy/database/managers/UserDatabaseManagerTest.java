@@ -42,8 +42,7 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @author Christian Schenk
  * @author Anton Wilhelm
- * @version $Id: UserDatabaseManagerTest.java,v 1.74 2013-08-19 12:34:43 lhanke
- *          Exp $
+ * @version $Id$
  */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
