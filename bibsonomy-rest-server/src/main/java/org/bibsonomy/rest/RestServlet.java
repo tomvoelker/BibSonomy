@@ -11,6 +11,7 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -307,7 +308,7 @@ public final class RestServlet extends HttpServlet {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 		} catch (final BadRequestOrResponseException e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final AccessDeniedException e) {
 			log.error(e.getMessage());
@@ -345,6 +346,16 @@ public final class RestServlet extends HttpServlet {
 			if (main != null) {
 				return main.getContentType();
 			}
+			return null;
+			/*
+			Iterator<String> fileNameIt = ((MultipartHttpServletRequest) request).getFileNames();
+			while (fileNameIt.hasNext()) {
+				MultipartFile mf = ((MultipartHttpServletRequest) request).getFile(fileNameIt.next());
+				if (mf != null) {
+					return mf.getContentType();
+				}
+			}
+			*/
 		}
 		return request.getContentType();
 	}
@@ -379,7 +390,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
-		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), request.getContentType());
+		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
 		final Renderer renderer = rendererFactory.getRenderer(mediaType);
 
 		// send error
