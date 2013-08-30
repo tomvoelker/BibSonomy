@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -15,12 +17,13 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.testutil.TestUtils;
+import org.bibsonomy.util.Sets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-
+// TODO: add baseclass with methods and fields shared with JabRefLayoutRendererTest
 @RunWith(Parameterized.class)
 public class JabrefLayoutAntiScriptInjectionTest {
 	/*		
@@ -33,8 +36,8 @@ public class JabrefLayoutAntiScriptInjectionTest {
 	 */
 	
 	//Layouts that will be tested
-	private static final String[] TESTEDLAYOUTS = new String[]{"apa_html","chicago","din1505","dblp","harvardhtml","simplehtml","simplehtmlyear",
-																"tablerefs","tablerefsabsbib","tablerefsabsbibsort","html"};
+	private static final Set<String> TESTEDLAYOUTS = Sets.asSet(new String[]{"apa_html","chicago","din1505","dblp","harvardhtml","simplehtml","simplehtmlyear",
+																"tablerefs","tablerefsabsbib","tablerefsabsbibsort","html"});
 	
 	@Parameters
 	public static Collection<Object[]> data() {
@@ -106,9 +109,10 @@ public class JabrefLayoutAntiScriptInjectionTest {
 			 * Deletes Lines containing a current timestamp ("Generated on ... TIME")
 			 */
 			sb = new StringBuilder(renderedLayout);
-			index = sb.indexOf("title=\"Generated on");
+			final String titleAttr = "title=\"";
+			index = sb.indexOf(titleAttr + "Generated on");
 			if (index!=-1) {
-				index+=7;
+				index += titleAttr.length();
 				int index2 = sb.indexOf("\"", index);
 				sb.delete(index, index2);
 				renderedLayout = sb.toString();
@@ -141,12 +145,7 @@ public class JabrefLayoutAntiScriptInjectionTest {
 	}
 	
 	private static boolean isTestedLayout(String layoutName) {
-		for (String  testedLayout : TESTEDLAYOUTS) {
-			if (layoutName.equals(testedLayout)) {
-				return true;
-			}
-		}
-		return false;
+		return TESTEDLAYOUTS.contains(layoutName);
 	}
 	
 	private String extractEntryType() {

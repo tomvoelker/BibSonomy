@@ -119,9 +119,10 @@ public class JabrefLayoutRendererTest {
 			 * Deletes Lines containing a current timestamp ("Generated on ... TIME")
 			 */
 			sb = new StringBuilder(renderedLayout);
-			index = sb.indexOf("title=\"Generated on");
+			final String titleAttr = "title=\"";
+			index = sb.indexOf(titleAttr + "Generated on");
 			if (index!=-1) {
-				index+=7;
+				index += titleAttr.length();
 				int index2 = sb.indexOf("\"", index);
 				sb.delete(index, index2);
 				renderedLayout = sb.toString();
