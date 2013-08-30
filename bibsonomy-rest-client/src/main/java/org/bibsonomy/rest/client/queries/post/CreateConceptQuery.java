@@ -68,7 +68,7 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 		
 		switch (grouping) {
 		case USER:
-			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);			
+			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
 			break;
 		case GROUP:
 			urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
