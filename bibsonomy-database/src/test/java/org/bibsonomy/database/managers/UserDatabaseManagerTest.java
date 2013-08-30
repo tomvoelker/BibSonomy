@@ -1,9 +1,9 @@
 package org.bibsonomy.database.managers;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +42,8 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @author Christian Schenk
  * @author Anton Wilhelm
- * @version $Id$
+ * @version $Id: UserDatabaseManagerTest.java,v 1.74 2013-08-19 12:34:43 lhanke
+ *          Exp $
  */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
@@ -51,20 +52,18 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static UserDatabaseManager userDb;
 	private static GroupDatabaseManager groupDb;
 	private static BibTexDatabaseManager bibTexDb;
-	
 
 	/**
 	 * set up managers
 	 */
 	@BeforeClass
-	public static void setup() {		
+	public static void setup() {
 		// managers
 		userDb = UserDatabaseManager.getInstance();
 		bibTexDb = BibTexDatabaseManager.getInstance();
 		groupDb = GroupDatabaseManager.getInstance();
 	}
 
-	
 	/**
 	 * tests getUsersBySearch
 	 */
@@ -73,7 +72,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<User> foundUsers = userDb.getUsersBySearch("testuser1", 10, this.dbSession);
 		assertEquals(1, foundUsers.size());
 	}
-	
+
 	/**
 	 * tests getFriendsOfUser
 	 */
@@ -83,45 +82,48 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(friends);
 		assertEquals(2, friends.size());
 	}
-	
-    /**
-     * tests getPendingUsers
-     */
-	@Ignore  // TODO: document FIXME: fix me
-    @Test
-    public void getPendingUsers() {
-        final List<User> users = userDb.getPendingUsers(0, Integer.MAX_VALUE, this.dbSession);
-        assertEquals(2,users.size());
-    }
-    
-    /**
-     * tests getPendingUserByActivationCode
-     */
-    @Test
-    public void getPendingUserByActivationCode() {
-        final List<User> users = userDb.getPendingUserByActivationCode("ac47d3f92b90c89e46170f7049beda37", 0, Integer.MAX_VALUE, this.dbSession);
-        assertEquals("ac47d3f92b90c89e46170f7049beda37",users.get(0).getActivationCode());
-    }
-    
-    /**
-     * tests getPendingUserByUsername
-     */
-    @Ignore // TODO: document FIXME: fix me
-    @Test
-    public void getPendingUserByUsername() {
-        final List<User> users = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession);
-        assertEquals("activationtestuser1",users.get(0).getName());
-    }
-	
+
+	/**
+	 * tests getPendingUsers
+	 */
+	@Ignore
+	// TODO: document FIXME: fix me
+	@Test
+	public void getPendingUsers() {
+		final List<User> users = userDb.getPendingUsers(0, Integer.MAX_VALUE, this.dbSession);
+		assertEquals(2, users.size());
+	}
+
+	/**
+	 * tests getPendingUserByActivationCode
+	 */
+	@Test
+	public void getPendingUserByActivationCode() {
+		final List<User> users = userDb.getPendingUserByActivationCode("ac47d3f92b90c89e46170f7049beda37", 0, Integer.MAX_VALUE, this.dbSession);
+		assertEquals("ac47d3f92b90c89e46170f7049beda37", users.get(0).getActivationCode());
+	}
+
+	/**
+	 * tests getPendingUserByUsername
+	 */
+	@Ignore
+	// TODO: document FIXME: fix me
+	@Test
+	public void getPendingUserByUsername() {
+		final List<User> users = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession);
+		assertEquals("activationtestuser1", users.get(0).getName());
+	}
+
 	/**
 	 * tests getAllUsers
 	 */
-    @Ignore // TODO: document FIXME: fix me
+	@Ignore
+	// TODO: document FIXME: fix me
 	@Test
 	public void getAllUsers() {
-        List<User> users = userDb.getAllUsers(0, 10, this.dbSession);
-	    // there're 6 users that aren't spammers
-        assertEquals(6, users.size());	       
+		List<User> users = userDb.getAllUsers(0, 10, this.dbSession);
+		// there're 6 users that aren't spammers
+		assertEquals(6, users.size());
 
 		// make sure limit and offset work
 		users = userDb.getAllUsers(0, 2, this.dbSession);
@@ -141,11 +143,12 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(user.getBasket());
 		assertEquals(Role.ADMIN, user.getRole());
 	}
-	
+
 	/**
 	 * Retrieve the names of users present in a group with given group ID
 	 */
-	@Ignore // FIXME: deleteUser() test deletes user "testuser2"
+	@Ignore
+	// FIXME: deleteUser() test deletes user "testuser2"
 	@Test
 	public void getUserNamesOfGroupId() {
 		final List<String> users = userDb.getUserNamesByGroupId(ParamUtils.TESTGROUP1, this.dbSession);
@@ -172,44 +175,49 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		newUser.setAlgorithm(null);
 		final String userName = userDb.createUser(newUser, this.dbSession);
 		assertEquals(RANDOM_TESTUSER, userName);
-        userDb.activateUser(newUser, this.dbSession);
+		userDb.activateUser(newUser, this.dbSession);
 
 		final User user = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
 		newUser.setActivationCode(null);
 		CommonModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "institution", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
 	}
 
+	/**
+	 * tests wrong usage of
+	 * {@link UserDatabaseManager#createUser(User, org.bibsonomy.database.common.DBSession)}
+	 */
 	@Test(expected = Exception.class)
 	public void createUserWrongUsage() {
 		userDb.createUser(null, this.dbSession);
 	}
-	
-    /**
-     * tests activateUser
-     */
+
+	/**
+	 * tests activateUser
+	 */
 	@Test
-    public void activateUser() {
-	    final User user = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession).get(0);
-	    userDb.activateUser(user, this.dbSession);
-        final User testuser = userDb.getUserDetails("activationtestuser1", this.dbSession);
-        assertEquals("Test Activation User 1", testuser.getRealname());
-    }
+	public void activateUser() {
+		final User user = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession).get(0);
+		userDb.activateUser(user, this.dbSession);
+		final User testuser = userDb.getUserDetails("activationtestuser1", this.dbSession);
+		assertEquals("Test Activation User 1", testuser.getRealname());
+	}
 
 	/**
 	 * tests updateUser
-	 * TODO: make sure that activateUser-Test is already completed
 	 */
 	@Test
 	public void changeUser() {
-		User newTestuser = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
-		assertEquals("New Testuser", newTestuser.getRealname());
+		final String testusername = "testuser1";
+		User newTestuser = userDb.getUserDetails(testusername, this.dbSession);
+		assertEquals("Test User 1", newTestuser.getRealname());
 		// FIXME: it should be possible to change almost all properties of a
 		// user - implement me...
-		newTestuser.setRealname("New TestUser");
+		final String newRealName = "New TestUser";
+		newTestuser.setRealname(newRealName);
 		final String userName = userDb.updateUser(newTestuser, this.dbSession);
-		assertEquals(RANDOM_TESTUSER, userName);
-		newTestuser = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
-		assertEquals("New TestUser", newTestuser.getRealname());
+		assertEquals(testusername, userName);
+		newTestuser = userDb.getUserDetails(testusername, this.dbSession);
+		assertEquals(newRealName, newTestuser.getRealname());
 
 		// you can't change the user's name
 		try {
@@ -227,28 +235,28 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void updateUserProfile() {
 		final String username = "testuser1";
 		final ProfilePrivlevel level = ProfilePrivlevel.FRIENDS;
-		final String newRealname = "Test User 12";
-		
+
 		/*
 		 * get user details
 		 */
 		final User testUser = userDb.getUserDetails(username, this.dbSession);
-		assertEquals("Test User 1", testUser.getRealname());
-		
+		final String newRealname = testUser.getRealname() + " 12";
+
 		/*
 		 * change profile
 		 */
 		testUser.setRealname(newRealname);
-		
+
 		final UserSettings testUserSettings = testUser.getSettings();
 		testUserSettings.setProfilePrivlevel(level);
-		testUserSettings.setTagboxTooltip(2); // to check if UpdateCore was executed
-		
+		testUserSettings.setTagboxTooltip(2); // to check if UpdateCore was
+												// executed
+
 		/*
 		 * update profile
 		 */
 		userDb.updateUserProfile(testUser, this.dbSession);
-		
+
 		/*
 		 * save user
 		 */
@@ -256,109 +264,117 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final UserSettings savedSettings = savedTestuser.getSettings();
 		assertEquals(level, savedSettings.getProfilePrivlevel());
 		assertEquals(newRealname, savedTestuser.getRealname());
-		
-		assertNotSame(2, savedSettings.getTagboxTooltip()); // check if more than the core was updated
+		// check if more than the core was updated
+		assertThat(2, not(equalTo(savedSettings.getTagboxTooltip())));
 	}
-	
+
 	/**
 	 * tests updateApiKeyForUser
 	 */
 	@Test
 	public void updateApiKeyForUser() {
-		final String apiKey = userDb.getApiKeyForUser(RANDOM_TESTUSER, this.dbSession);
+		final String testuser = "testuser1";
+		final String apiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(apiKey);
 		assertEquals(32, apiKey.length());
-		userDb.updateApiKeyForUser(RANDOM_TESTUSER, this.dbSession);
-		final String updatedApiKey = userDb.getApiKeyForUser(RANDOM_TESTUSER, this.dbSession);
+		userDb.updateApiKeyForUser(testuser, this.dbSession);
+		final String updatedApiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(updatedApiKey);
 		assertEquals(32, updatedApiKey.length());
-		assertNotSame(apiKey, updatedApiKey);
+		assertThat(apiKey, not(equalTo(updatedApiKey)));
 
 		try {
 			userDb.updateApiKeyForUser(ParamUtils.NOUSER_NAME, this.dbSession);
 			fail("expected exception");
 		} catch (final Exception ignore) {
+			// ok
 		}
 	}
-		
+
 	/**
 	 * tests deleteUser
 	 * 
-	 * This test flags a user which is not a group as spammer and all of his posts
-	 * will be also flagged
+	 * This test flags a user which is not a group as spammer and all of his
+	 * posts will be also flagged
 	 */
 	@Test
 	public void deleteUser() {
-		// create a new user object, use a name of the test databases, in this case "testuser2"
+		// create a new user object, use a name of the test databases, in this
+		// case "testuser2"
 		final User user = new User("testuser2");
-		
+
 		// get groups for this user. testuser should be member of testgroup1
 		List<Group> groups = groupDb.getGroupsForUser(user.getName(), true, this.dbSession);
 		assertNotNull(groups);
 		assertEquals(2, groups.size());
 		assertEquals("testgroup1", groups.get(0).getName());
-		
+
 		// calls the deleteUser method of the UserDataBaseManager class
-		// this method is overloaded so you have one method with a String parameter
+		// this method is overloaded so you have one method with a String
+		// parameter
 		// and the new one with a User object parameter
 		userDb.deleteUser(user.getName(), this.dbSession);
-		
+
 		// get the old user details out of the testdb
 		final User newTestuser = userDb.getUserDetails(user.getName(), this.dbSession);
-		
+
 		// the user have to be available in the test db ...
 		assertNotNull(newTestuser.getName());
-		
+
 		// after deleting the user, he shouldn't have any memberships in groups
 		// get groups for this user. testuser should be member of testgroup1
 		groups = groupDb.getGroupsForUser(user.getName(), true, this.dbSession);
 		assertEquals(0, groups.size());
-		
+
 		/*
 		 * TODO: reviews / comments
 		 */
-		
+
 		// but it should be flagged as spammer
 		assertEquals(true, newTestuser.getSpammer());
-				
-		// create a spammer group id by adding an old group id to the interger min value
+
+		// create a spammer group id by adding an old group id to the interger
+		// min value
 		final int groupid = Integer.MAX_VALUE + 1;
-		
+
 		// get posts for this user
 		final List<Post<BibTex>> posts = bibTexDb.getPostsForUser(user.getName(), user.getName(), HashID.INTER_HASH, groupid, new ArrayList<Integer>(), null, null, 10, 0, null, this.dbSession);
-		
-		// there should be at least more then one post with that negative group id
+
+		// there should be at least more then one post with that negative group
+		// id
 		assertNotNull(posts);
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void deleteGroup() {
 		// create a new user object which has a groupname
 		final User testUserIsGroup = new User("testgroup1");
-		// if anybody tries to delete a user which is a group should get an exception
+		// if anybody tries to delete a user which is a group should get an
+		// exception
 		userDb.deleteUser(testUserIsGroup.getName(), this.dbSession);
 	}
 
 	/**
-    	 * Test the user authentication via API key
-    	 */
-    @Test
+	 * Test the user authentication via API key
+	 */
+	@Test
 	public void validateUserAccessByAPIKey() {
-    	    // not logged in (wrong apikey) = unknown user
-    	    assertNull(userDb.validateUserAccessByAPIKey("testuser1", "ThisIsJustAFakeAPIKey", this.dbSession).getName());
-    	    // the correct key
-    	    assertEquals("testuser1", userDb.validateUserAccessByAPIKey("testuser1", "11111111111111111111111111111111", this.dbSession).getName());
-    	
-    	    // the user "testspammer" hasn't got an Api key
-    	    for (final String name : new String[] { "", " ", null, "testspammer" }) {
-    		for (final String key : new String[] { "", " ", null, "hurz" }) {
-    		    assertNull(userDb.validateUserAccessByAPIKey(name, key, this.dbSession).getName());
-    		}
-    	    }
-    	}
-	
+		final String apiKeyForUser = userDb.getApiKeyForUser("testuser1", this.dbSession);
+		// not logged in (wrong apikey) = unknown user
+		assertNull(userDb.validateUserAccessByAPIKey("testuser1", "ThisIsJustAFakeAPIKey", this.dbSession).getName());
+		// the correct key
+		assertEquals("testuser1", userDb.validateUserAccessByAPIKey("testuser1", apiKeyForUser, this.dbSession).getName());
+
+		// the user "testspammer" hasn't got an Api key
+		for (final String name : new String[] { "", " ", null, "testspammer" }) {
+			for (final String key : new String[] { "", " ", null, "hurz" }) {
+				assertNull(userDb.validateUserAccessByAPIKey(name, key, this.dbSession).getName());
+			}
+		}
+	}
+
 	/**
-	 * tests getRelatedUsersBySimilarity 
+	 * tests getRelatedUsersBySimilarity
 	 */
 	@Test
 	public void getRelatedUsersBySimilarity() {
@@ -370,103 +386,104 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, users.size());
 		assertEquals("testuser1", users.get(0).getName());
 		assertThat(users.get(0).getPrediction(), equalTo(10));
-		
+
 		/*
 		 * we don't have data for cosine similarity in the DB
 		 */
 		users = userDb.getRelatedUsersBySimilarity(requestedUserName, null, UserRelation.COSINE, 0, 10, this.dbSession);
 		assertEquals(0, users.size());
 	}
-	
+
 	/**
 	 * tests getUserFollowers
 	 */
 	@Test
-	public void getUserFollowers(){
+	public void getUserFollowers() {
 		final String authUser = "testuser2";
-		
+
 		final List<User> userFollowers = userDb.getUserRelation(authUser, UserRelation.OF_FOLLOWER, null, this.dbSession);
 		assertNotNull(userFollowers);
 		assertEquals(1, userFollowers.size());
 		assertEquals("testuser1", userFollowers.get(0).getName());
 	}
-	
+
 	/**
 	 * tests getUserFollowers
 	 */
 	@Test
-	public void getFollowersOfUser(){
+	public void getFollowersOfUser() {
 		final String authUser = "testuser1";
-		
+
 		final List<User> userFollowers = userDb.getUserRelation(authUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		assertNotNull(userFollowers);
 		assertEquals(2, userFollowers.size());
 		assertEquals("testuser2", userFollowers.get(0).getName());
 		assertEquals("testuser3", userFollowers.get(1).getName());
 	}
-	
+
 	/**
 	 * tests insert AND delete
 	 */
 	@Test
-	public void insertAndDeleteUserRelations(){
-		final String sourceUser="testuser3";
-		final String targetUser="testuser1";
-		
+	public void insertAndDeleteUserRelations() {
+		final String sourceUser = "testuser3";
+		final String targetUser = "testuser1";
+
 		userDb.createUserRelation(sourceUser, targetUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		userDb.createUserRelation(sourceUser, targetUser, UserRelation.OF_FRIEND, null, this.dbSession);
-		
+
 		// FIXME: not FOLLOWERS but followees!
 		List<User> followedByUser = userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		List<User> friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
-		
+
 		assertEquals(1, followedByUser.size());
 		assertEquals("testuser1", followedByUser.get(0).getName());
-		
+
 		assertEquals(1, friendsOfUser.size());
 		assertEquals("testuser1", friendsOfUser.get(0).getName());
-		
+
 		userDb.deleteUserRelation(sourceUser, targetUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		userDb.deleteUserRelation(sourceUser, targetUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
-		
+
 		followedByUser = userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
-		assertEquals(0, followedByUser.size());	
-		
+		assertEquals(0, followedByUser.size());
+
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, null, this.dbSession);
-		assertEquals(0, friendsOfUser.size());		
+		assertEquals(0, friendsOfUser.size());
 	}
 
 	/**
 	 * tests insert AND delete
 	 */
 	@Test
-	public void insertAndDeleteTaggedUserRelations(){
-		final String sourceUser  ="testuser_taggedrelations";
-		final String targetUser0 ="testuser_taggedrelations0";
-		final String targetUser1 ="testuser_taggedrelations1";
-		final String targetUser2 ="testuser_taggedrelations2";
-		
+	public void insertAndDeleteTaggedUserRelations() {
+		final String sourceUser = "testuser_taggedrelations";
+		final String targetUser0 = "testuser_taggedrelations0";
+		final String targetUser1 = "testuser_taggedrelations1";
+		final String targetUser2 = "testuser_taggedrelations2";
+
 		final String tag0 = "football";
 		final String tag1 = "sys:network:facebook";
 		final String tag2 = "this_tag_should_not_occur";
 		final String tag3 = "abc";
-		
-		//--------------------------------------------------------------------
+
+		// --------------------------------------------------------------------
 		// followers: tagged follower relations are not allowed
-		//--------------------------------------------------------------------
+		// --------------------------------------------------------------------
 		try {
 			userDb.createUserRelation(sourceUser, targetUser0, UserRelation.FOLLOWER_OF, tag1, this.dbSession);
 			fail("Tagged follower relations are not supported!");
 		} catch (final UnsupportedRelationException e) {
 			// nop
 		}
-		
+
 		final List<User> followedByUser = userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, null, this.dbSession);
 		assertEquals(0, followedByUser.size());
-		
-		//--------------------------------------------------------------------
-		// friends: allow tagged friendship relations as well as BibSonomy-Friendship relations (default)
-		//--------------------------------------------------------------------
+
+		// --------------------------------------------------------------------
+		// friends: allow tagged friendship relations as well as
+		// BibSonomy-Friendship relations (default)
+		// --------------------------------------------------------------------
 		// tag target user with tag0
 		userDb.createUserRelation(sourceUser, targetUser0, UserRelation.OF_FRIEND, tag0, this.dbSession);
 		List<User> friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, tag0, this.dbSession);
@@ -474,11 +491,11 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(targetUser0, friendsOfUser.get(0).getName());
 		assertEquals(1, friendsOfUser.get(0).getTags().size());
 		assertEquals(tag0, friendsOfUser.get(0).getTags().get(0).getName());
-		
+
 		// look for users tagged with tag2 (no one)
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, tag2, this.dbSession);
 		assertEquals(0, friendsOfUser.size());
-		
+
 		// additionally tag target user with tag1
 		userDb.createUserRelation(sourceUser, targetUser1, UserRelation.OF_FRIEND, tag1, this.dbSession);
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, tag0, this.dbSession);
@@ -487,8 +504,9 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, tag1, this.dbSession);
 		assertEquals(1, friendsOfUser.size());
 		assertEquals(targetUser1, friendsOfUser.get(0).getName());
-		
-		// there should be no BibSonomy friendship relation among source and target user
+
+		// there should be no BibSonomy friendship relation among source and
+		// target user
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
 		assertEquals(0, friendsOfUser.size());
 
@@ -497,8 +515,9 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag, this.dbSession);
 		assertEquals(1, friendsOfUser.size());
 		assertEquals(targetUser2, friendsOfUser.get(0).getName());
-		
-		// all together there should be three relations from source to target user
+
+		// all together there should be three relations from source to target
+		// user
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, null, this.dbSession);
 		assertEquals(3, friendsOfUser.size());
 
@@ -525,13 +544,13 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, friendsOfUser.size());
 		assertEquals(2, friendsOfUser.get(0).getTags().size());
 	}
-	
+
 	@Test
 	public void testMaxFieldLength() {
 		final User user = userDb.getUserDetails("testuser1", this.dbSession);
 		user.setHobbies("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
 		try {
-			userDb.updateUser(user , this.dbSession);
+			userDb.updateUser(user, this.dbSession);
 			fail("missing DatabaseException");
 		} catch (final DatabaseException e) {
 			final List<ErrorMessage> errorMessages = e.getErrorMessages("testuser1");
@@ -540,27 +559,27 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			assertNotNull(errorMessage.getMaxLengthForField("hobbies"));
 		}
 	}
-	
+
 	/**
 	 * Tests implementation of SamlRemoteIds
 	 */
 	@Test
 	public void samlUserTest() {
-		//Retrieve samlRemoteUserId of testuser1 
+		// Retrieve samlRemoteUserId of testuser1
 		User user = userDb.getUserDetails("testuser1", this.dbSession);
-		//Check if samlRemoteUserId was correctly retrieved
+		// Check if samlRemoteUserId was correctly retrieved
 		SamlRemoteUserId user_sruid = this.userHasSamlRemoteId(user, "samlUserId1", "saml");
 		if (user_sruid == null) {
 			fail("testuser1 does not have proper SamlRemoteId");
 			return;
 		}
-		//SamlRemoteUserId was correctly retrieved!
-		
-		//getUsernameByRemoteUser() Test
+		// SamlRemoteUserId was correctly retrieved!
+
+		// getUsernameByRemoteUser() Test
 		String username = userDb.getUsernameByRemoteUser(user_sruid, dbSession);
 		assertEquals(username, "testuser1");
-		
-		//We now change SamlRemoteUserId and call updateUser()
+
+		// We now change SamlRemoteUserId and call updateUser()
 		user_sruid.setUserId("samlUserId1_changed");
 		user_sruid.setIdentityProviderId("saml_changed");
 		userDb.updateUser(user, this.dbSession);
@@ -573,9 +592,11 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			fail("SamlRemoteId was not changed correctly");
 		}
 	}
-	
+
 	/**
-	 * This Method tests if a user has a SamlRemoteUserId containing samlUserId and identity_provider
+	 * This Method tests if a user has a SamlRemoteUserId containing samlUserId
+	 * and identity_provider
+	 * 
 	 * @param user
 	 * @param samlUserId
 	 * @param identity_provider
@@ -592,5 +613,4 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 		return user_sruid;
 	}
-	
 }
