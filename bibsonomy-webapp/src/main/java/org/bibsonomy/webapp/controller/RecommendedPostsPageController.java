@@ -9,6 +9,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.connector.model.RecommendedPost;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RecommendedPostsCommand;
@@ -53,7 +54,7 @@ public class RecommendedPostsPageController extends SingleResourceListController
 			listCommand.setStart(0);
 			
 			
-			setList(command, command.getContext().getLoginUser());
+			setList(command, command.getContext().getLoginUser(), resourceType);
 			
 		}
 		
@@ -64,30 +65,33 @@ public class RecommendedPostsPageController extends SingleResourceListController
 		return Views.RECOMMENDEDPAGE;
 	}
 	
-	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user) {
+	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user, Class<? extends Resource> resourceType) {
 		
-		/** get post recommendations */
-		SortedSet<RecommendedItem> result = bibtexRecommender.getRecommendation(new UserWrapper(user));
-		final ListCommand<Post<BibTex>> listCommand = cmd.getBibtex();
-		ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
-		
-		for(RecommendedItem item : result) {
-			posts.addAll(this.logic.getPosts(BibTex.class, GroupingEntity.USER, item.getId().split("-")[1], null, item.getId().split("-")[0], "", cmd.getFilter(), null, null, null, 0, 10));
+		if (resourceType == BibTex.class) {
+			/** get publication recommendations */
+			SortedSet<RecommendedItem> result = bibtexRecommender.getRecommendation(new UserWrapper(user));
+			final ListCommand<Post<BibTex>> listCommand = cmd.getBibtex();
+			ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+			for (RecommendedItem item : result) {
+				if (item.getItem() instanceof RecommendedPost) {
+					posts.add(((RecommendedPost<BibTex>) item.getItem()).getPost());
+				}
+			}
+			listCommand.setList(posts);
+		} else if(resourceType == Bookmark.class) { 
+			/** get bookmark recommendations */
+			SortedSet<RecommendedItem> resultBookmark = bookmarkRecommender.getRecommendation(new UserWrapper(user));
+			final ListCommand<Post<Bookmark>> bookmarkListCmd = cmd.getBookmark();
+			ArrayList<Post<Bookmark>> bookmarkPosts = new ArrayList<Post<Bookmark>>();
+			
+			for(RecommendedItem item : resultBookmark) {
+				if(item.getItem() instanceof RecommendedPost) {
+					bookmarkPosts.add(((RecommendedPost<Bookmark>) item.getItem()).getPost());
+				}
+			}
+			
+			bookmarkListCmd.setList(bookmarkPosts);
 		}
-		
-		listCommand.setList(posts);
-		
-		
-		/** get bookmark recommendations */
-		SortedSet<RecommendedItem> resultBookmark = bookmarkRecommender.getRecommendation(new UserWrapper(user));
-		final ListCommand<Post<Bookmark>> bookmarkListCmd = cmd.getBookmark();
-		ArrayList<Post<Bookmark>> bookmarkPosts = new ArrayList<Post<Bookmark>>();
-		
-		for(RecommendedItem item : resultBookmark) {
-			bookmarkPosts.addAll(this.logic.getPosts(Bookmark.class, GroupingEntity.USER, item.getId().split("-")[1], null, item.getId().split("-")[0], "", cmd.getFilter(), null, null, null, 0, 10));
-		}
-		
-		bookmarkListCmd.setList(bookmarkPosts);
 
 	}
 

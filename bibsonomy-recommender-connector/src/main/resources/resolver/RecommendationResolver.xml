@@ -6,7 +6,7 @@
 	<!-- +
 		 | Get list of tag names for given contentid
 		 + -->	
-	<select id="getTagsForCID" parameterClass="integer" resultMap="RecommendationLogCommon.tagName">
+	<select id="getTagsForCID" parameterClass="integer" resultMap="RecommendationBibCommon.tagName">
 		SELECT tag_name
 		FROM tas
 		WHERE content_id = #id#
@@ -25,7 +25,7 @@
 	<!-- +
 		 | Get list of pairs containing given user's most popular tag name and frequency
 		 + --> 
-	<select id="getMostPopularTagsForUser" parameterClass="getTagsForResParam" resultMap="RecommendationLogCommon.tagFrequency">
+	<select id="getMostPopularTagsForUser" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
 		SELECT t.tag_lower as first, COUNT(tag_lower) as second 
 		FROM tas t
 		WHERE t.user_name = #userName# 
@@ -38,7 +38,7 @@
 		  | Get list of pairs containing given bookmark's most popular tag name and frequency
 		  | - Only take public posts into account!
 		  + -->
-	<select id="getMostPopularTagsForBookmark" parameterClass="getTagsForResParam" resultMap="RecommendationLogCommon.tagFrequency">
+	<select id="getMostPopularTagsForBookmark" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
 		SELECT tag_lower as first, COUNT(tag_lower) as second 
 		  FROM tas t 
 		    JOIN bookmark b USING (content_id)
@@ -52,7 +52,7 @@
 	<!--  +
 		  | Get list of pairs containing given publication's most popular tag name and frequency
 		  + -->
-	<select id="getMostPopularTagsForBibTeX" parameterClass="getTagsForResParam" resultMap="RecommendationLogCommon.tagFrequency">
+	<select id="getMostPopularTagsForBibTeX" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
 		SELECT tag_lower as first, COUNT(tag_lower) as second 
 		  FROM tas t
 		    JOIN bibtex b USING (content_id) 
@@ -147,7 +147,7 @@
 	<!--+
 		| Get list of top five query_ids nearest to given post
 		+-->    
-	<select id="getNearestPostsForQuery" parameterClass="getTagsForResParam" resultMap="RecommendationLogCommon.postGuess">
+	<select id="getNearestPostsForQuery" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.postGuess">
 		SELECT DISTINCT content_id, ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) as diff
 		FROM tas 
 		WHERE user_name= #userName# 
@@ -206,7 +206,7 @@
 		LIMIT 1
 	</select>
 
-	<select id="getCompleteTagsForCID" resultMap="RecommendationLogCommon.tagByID" parameterClass="integer">
+	<select id="getCompleteTagsForCID" resultMap="RecommendationBibCommon.tagByID" parameterClass="integer">
 		SELECT tags.tag_id, tags.tag_name
 		FROM tas, tags 
 		WHERE tas.tag_name = tags.tag_name AND tas.content_id = #contentID#
@@ -223,24 +223,27 @@
 	<!-- +
 		 | try to get the count most actual bibtex entries
 		 + -->
-	<select id="getMostActualBibTex" resultMap="RecommendationLogCommon.recommendationBibTex" parameterClass="dummyItemRequestParam">
-		SELECT b.content_id, b.journal, b.bibtexAbstract, b.title, b.booktitle, b.author, b.group,
-			b.simhash1 AS interhash, b.simhash2 AS intrahash, b.date, b.user_name
-		FROM bibtex b JOIN user u USING (user_name)
-		WHERE b.group &lt; 1 AND u.role != 3 AND user_name != #requestingUserName# AND u.spammer != 1
-		ORDER BY change_date DESC
-		LIMIT #count# 
+	
+	<select id="getMostActualBibTex" resultMap="RecommendationBibCommon.bibtexPost" parameterClass="dummyItemRequestParam">
+		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, b.simhash1 AS interHash, b.simhash2 AS intraHash, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
+		 FROM (SELECT * FROM bibtex
+		 	WHERE `group`=0
+		 	AND user_name != #requestingUserName#
+		 	ORDER BY date DESC LIMIT #count#) b
+		  LEFT JOIN tas t USING (content_id) 
 	</select>
 	
 	<!-- +
 		 | try to get the count most actual bookmark entries
 		 + -->
-	<select id="getMostActualBookmark" resultMap="RecommendationLogCommon.recommendationBookmark" parameterClass="dummyItemRequestParam">
-		SELECT b.book_url_hash, b.book_description, b.group, u.user_name
-		FROM bookmark b JOIN user u USING (user_name)
-		WHERE b.group &lt; 1 AND u.role != 3 AND user_name != #requestingUserName# AND u.spammer != 1
-		ORDER BY change_date DESC
-		LIMIT #count# 
+	<select id="getMostActualBookmark" resultMap="RecommendationBibCommon.bookmarkPost" parameterClass="dummyItemRequestParam">
+		SELECT <include refid="bookmarkAttributes"/>, u.book_url, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
+		 FROM (SELECT * FROM bookmark
+		 	WHERE `group`=0
+		 	AND user_name != #requestingUserName#
+		 	ORDER BY date DESC LIMIT #count#) b
+		  LEFT JOIN tas t USING (content_id) 
+		  JOIN urls u USING (book_url_hash)
 	</select>
 	
 </sqlMap>
