@@ -20,6 +20,13 @@ public class EmergencyRepairingExtractor implements AttributeExtractor {
 	@Override
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		setDummyAuthorIfNeeded(target);
+		setDummyYearIfNeeded(target);
+	}
+
+	private void setDummyYearIfNeeded(BibTex target) {
+		if (target.getYear() == null) {
+			target.setYear("noyear");
+		}
 	}
 
 	public void setDummyAuthorIfNeeded(BibTex target) {
