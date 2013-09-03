@@ -59,7 +59,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 	protected boolean extractAndAddAuthorPersons(List<PersonName> authors, ExtendedMarcRecord src, String fieldName, Set<String> limitationsToAllowedRelatorCodes) {
 		boolean found = false;
 		for (DataField df : src.getDataFields(fieldName)) {
-			if (limitationsToAllowedRelatorCodes != null && !isMarkedAuthor(src, fieldName, limitationsToAllowedRelatorCodes)) {
+			if (limitationsToAllowedRelatorCodes != null && !isMarkedAuthor(df, limitationsToAllowedRelatorCodes)) {
 				continue;
 			}
 			final String primaryName = getSubfieldData(df, 'a');
@@ -117,7 +117,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 	protected boolean extractAndAddAuthorCorporations(List<PersonName> authors, ExtendedMarcRecord src, String fieldName, Set<String> limitationsToAllowedRelatorCodes) {
 		boolean found = false;
 		for (DataField df : src.getDataFields(fieldName)) {
-			if (limitationsToAllowedRelatorCodes != null && !isMarkedAuthor(src, fieldName, limitationsToAllowedRelatorCodes)) {
+			if (limitationsToAllowedRelatorCodes != null && !isMarkedAuthor(df, limitationsToAllowedRelatorCodes)) {
 				continue;
 			}
 			final String name = getSubfieldData(df, 'a');
@@ -137,7 +137,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 	protected boolean extractAndAddAuthorMeetings(List<PersonName> authors, ExtendedMarcRecord src, String fieldName, Set<String> limitationsToAllowedRelatorCodes) {
 		boolean found = false;
 		for (DataField df : src.getDataFields(fieldName)) {
-			if (limitationsToAllowedRelatorCodes != null && !isMarkedAuthor(src, fieldName, limitationsToAllowedRelatorCodes)) {
+			if (limitationsToAllowedRelatorCodes != null && !isMarkedAuthor(df, limitationsToAllowedRelatorCodes)) {
 				continue;
 			}			
 			final String name = getSubfieldData(df, 'a');
@@ -145,7 +145,7 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 				continue;
 			}
 			final StringBuilder lastName = new StringBuilder(name.trim());
-			final String date = src.getFirstFieldValue(fieldName, 'd');
+			final String date = getSubfieldData(df, 'd');
 			if (date != null) {
 				date.replace("(", "").replace(")", "");
 			}
@@ -157,8 +157,8 @@ public abstract class AbstractParticipantExtractor implements AttributeExtractor
 		return found;
 	}
 	
-	private boolean isMarkedAuthor(ExtendedMarcRecord src, String fieldName, Set<String> authorRelatorCodes) {
-		final String relatorCode = src.getFirstFieldValue("700", '4');
+	private boolean isMarkedAuthor(DataField df, Set<String> authorRelatorCodes) {
+		final String relatorCode = getSubfieldData(df, '4');
 		if (!ValidationUtils.present(relatorCode)) {
 			return false;
 		}
