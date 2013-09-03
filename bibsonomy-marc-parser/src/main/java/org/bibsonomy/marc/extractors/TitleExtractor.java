@@ -77,14 +77,40 @@ public class TitleExtractor implements AttributeExtractor {
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		final StringBuilder sb = new StringBuilder();
 		if (isDependentPart(src)) {
-			final String seriesName = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("036C", "$a", ""));
-			final String pieceName = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", ""));
+			final String seriesName = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("036C", "$a", "")).replace("@", "");
+			final String seriesSubName = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("036C", "$d", "")).replace("@", "");
+			final String pieceNr = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("036C", "$l", "")).replace("@", "").trim();
+			final String pieceName = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", "")).replace("@", "");
 			
-			sb.append(seriesName.replace("@", ""));
-			if (ValidationUtils.present(pieceName) && ValidationUtils.present(pieceName)) {
-				sb.append(" : ");
+			if (ValidationUtils.present(seriesName)) {
+				sb.append(seriesName);
 			}
-			sb.append(pieceName.replace("@", ""));
+			if (ValidationUtils.present(seriesSubName)) {
+				if (sb.length() > 0) {
+					sb.append(" ");
+				}
+				sb.append(seriesSubName);
+			}
+			
+			if (ValidationUtils.present(pieceName) || ValidationUtils.present(pieceNr)) {
+				if (sb.length() > 0) {
+					sb.append(" : ");
+				}
+				if (ValidationUtils.present(pieceNr)) {
+					sb.append(pieceNr);
+					if ((pieceNr.contains(".") == false) && (pieceNr.contains(" ") == false)) {
+						sb.append('.');
+					}
+				}
+				if (ValidationUtils.present(pieceName)) {
+					if (sb.length() > 0) {
+						sb.append(" ");
+					}
+					sb.append(pieceName);
+				}
+				
+			}
+			
 		} else if (isIndependentPart(src)) {
 			sb.append(ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("021A", "$a", "").replace("@", "")));
 			getSubtitle(sb, src);

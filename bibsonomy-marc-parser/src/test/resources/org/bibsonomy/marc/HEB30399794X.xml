@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">12</int>
+  <lst name="params">
+    <str name="spellcheck">true</str>
+    <str name="echoParams">all</str>
+    <str name="df">allfields</str>
+    <str name="spellcheck.maxResultsForSuggest">1000</str>
+    <str name="spellcheck.collateExtendedResults">true</str>
+    <str name="spellcheck.extendedResults">true</str>
+    <str name="spellcheck.maxCollationTries">1000</str>
+    <str name="spellcheck.maxCollations">2</str>
+    <str name="spellcheck.collate">true</str>
+    <str name="spellcheck.alternativeTermCount">5</str>
+    <str name="rows">10</str>
+    <str name="indent">true</str>
+    <str name="q">id:HEB30399794X</str>
+    <str name="wt">xml</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <str name="id">HEB30399794X</str>
+    <str name="fullrecord">00822nam a2200229 cc4500001001000000003000700010005001700017006001900034008004100053020003700094035002500131040003900156041001300195084001800208245011200226260003700338300001200375546002800387700007700415700007400492773002600566#30;30399794X#30;DE-603#30;20120713131534.0#30;a           00    #30;120704s2012    xx            00    eng c#30;  #31;a9780198144922#31;9978-0-19-814492-2#30;  #31;a(DE-599)HEB30399794X#30;  #31;aDE-603#31;bger#31;cDE-603#31;dDE-603#31;erakwb#30;  #31;aeng#31;agrc#30;  #31;aFH 40203#31;2rvk#30;10#31;aCallimachus, Aetia#31;bintroduction, text, translation, and commentary#31;n2#31;pCommentary#31;c[ed.] by Annette Harder#30;3 #31;aOxford#31;bOxford Univ. Press#31;c2012#30;  #31;a1061 S.#30;  #31;aTeilw. in griech. Schr.#30;1 #31;0(DE-588)115864601#31;0(DE-603)150002343#31;aHarder, Annette#31;d1952-#31;4edt#31;eHrsg.#30;0 #31;0(DE-588)118518488#31;0(DE-603)086859579#31;aCallimachus#31;dca. v300-v240#31;4ctb#30;08#31;q12#31;w(DE-603)263465675#30;#29;</str>
+    <str name="raw_recordtype">hebis_pp</str>
+    <str name="raw_fullrecord">alg: 30399794
+001@    $03,204-205 
+001A    $00026:04-07-12 
+001B    $t13:15:34.000 $00030:13-07-12 
+001C    $t08:10:58.000 $00026:04-07-12 
+001D    $00026:04-07-12 
+001U    $0utf8 
+001X    $00 
+002@    $0Afu 
+003@    $030399794X 
+004A    $A978-0-19-814492-2 
+007A    $030399794X $aHEB 
+010@    $aeng $agrc 
+011@    $a2012 
+021A    $aCommentary 
+028C    $#Harder, M. A. $#Harder, Marijke A. $#Harder, Marijke Annette $#Harder, M. Annette $7115864601 $BHrsg. $9150002343 $8Harder, Annette 
+028C/01 $#Callimachos &lt;Schriftsteller&gt; $#Kallimachos &lt;Schriftsteller&gt; $#Callimachus &lt;von Cyrene&gt; $#Kallimachos &lt;von Alexandria&gt; $#Callimachus &lt;Alexandrinus&gt; $#Callimachus &lt;Cyrenaeus&gt; $#Kallimachos &lt;von Kyrene&gt; $#Kallimachos &lt;Sohn des Battos&gt; $#Callimachus &lt;Cyrenensis&gt; $#Kallimachos &lt;Kyrēnaios&gt; $#Callimaque $#Kallimachus $#Callimachus &lt;Poeta&gt; $#Callimachus &lt;Epicus&gt; $#Callimachus &lt;Philologus&gt; $#Callimaco &lt;di Cirene&gt; $#Kallimachos &lt;Alexandrinischer Dichter&gt; $#Callimaco $#Callimaque &lt;de Cyrène&gt; $#Kallimachos $#Von Alexandria, Kallimachos $#Cyrenaeus, Callimachus $#Von Kyrene, Kallimachos $#Sohn des Battos, Kallimachos $#Cyrenensis, Callimachus $#Kyrenaios, Kallimachos $#Poeta, Callimachus $#Epicus, Callimachus $#Philologus, Callimachus $#Di Cirene, Callimaco $#De Cyréne, Callimaque $#Alexandrinus, Callimachus $#VonCyrene, Callimachus $#VonAlexandria, Kallimachos $#VonKyrene, Kallimachos $#DiCirene, Callimaco $#DeCyréne, Callimaque $#Cyrene, Callimachus &lt;&lt;von&gt;&gt; $#Alexandria, Kallimachos &lt;&lt;von&gt;&gt; $#Kyrene, Kallimachos &lt;&lt;von&gt;&gt; $#Cirene, Callimaco &lt;&lt;di&gt;&gt; $#Cyréne, Callimaque &lt;&lt;de&gt;&gt; $#VonCyrene, Callimachus $#|b|@Kallimachos $7118518488 $PCallimachus $9086859579 
+033A    $pOxford $nOxford Univ. Press 
+034D    $a1061 S. 
+036C    $dintroduction, text, translation, and commentary $aCallimachus, Aetia $l2 $h[ed.] by Annette Harder $x12 
+036D    $9263465675 $8Callimachus, Aetia $x12 
+045Z    $aFH 40203 
+046L    $aTeilw. in griech. Schr. 
+
+lok: 30399794 3
+101B    $t13:15:34.000 $013-07-12 
+101C    $013-07-12 
+101U    $0utf8 
+145S/01 $a035 
+
+exp: 30399794 3 1 #EPN
+201B/01 $t13:15:34.000 $013-07-12 
+201C/01 $013-07-12 
+201U/01 $0utf8 
+203@/01 $0645920665 
+208@/01 $bzCh $a13-07-12 
+209A/01 $f330 $db $a21/FH 40203 H259 A2-2 $h21 FH 40203 H259 A2 / B 2 $x00 
+209B/01 $a4408 $x05 
+209C/01 $aBzG-2012/4328 
+209G/01 $a1004209882 $x00 
+247C/01 $9102599378 $8601330-2 &lt;30/330&gt;Frankfurt, Universität Frankfurt, Bibliothekszentrum Geisteswissenschaften 
+
+lok: 30399794 204
+
+exp: 30399794 204 1 #EPN
+201B/01 $t10:20:56.000 $013-07-12 
+201C/01 $004-07-12 
+201U/01 $0utf8 
+203@/01 $0645186317 
+208@/01 $bz111 $a13-07-12 
+209A/01 $f111 $ds $aGr C 14 II 1-2 $h111 gr c 14 ii 1 / b 2 $x00 
+209G/01 $a61390588 $x00 
+247C/01 $9102597022 $8631111-8 &lt;26/111&gt;Gießen, Universität Gießen, Fachbibliothek Geschichts- und Kulturwissenschaften / Klassische Philologie 
+
+lok: 30399794 205
+
+exp: 30399794 205 1 #EPN
+201B/01 $t12:53:40.000 $006-03-13 
+201C/01 $021-02-13 
+201U/01 $0utf8 
+203@/01 $0664156428 
+208@/01 $bz $a06-03-13 
+209A/01 $f413 $df $aCallim G 537 $x00 
+209B/01 $a80 $x05 
+209C/01 $a44 2013/00350 
+209C/01 $anel1303c 
+209G/01 $a61022015 $x00 
+247C/01 $9102595488 $8351413-4 &lt;4/413&gt;Marburg, Universität Marburg, Seminar für Klassische Philologie 
+
+</str>
+    <str name="marctyp">ok</str>
+    <str name="recordtype">marc</str></doc>
+</result>
+<lst name="spellcheck">
+  <lst name="suggestions">
+    <bool name="correctlySpelled">false</bool>
+  </lst>
+</lst>
+</response>

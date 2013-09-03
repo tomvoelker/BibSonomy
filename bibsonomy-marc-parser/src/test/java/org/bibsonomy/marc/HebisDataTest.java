@@ -29,7 +29,7 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testDependentPartTitle() {
 		BibTex bib = get("HEB105811688");
-		Assert.assertEquals("Werkausgabe : Tractatus logico-philosophicus", bib.getTitle());
+		Assert.assertEquals("Werkausgabe [in 8 Bd.] : 1. Tractatus logico-philosophicus", bib.getTitle());
 	}
 	
 	@Test
@@ -145,6 +145,15 @@ public class HebisDataTest extends AbstractDataDownloadingTestCase {
 		//Assert.assertEquals("masterthesis", bib.getEntrytype());
 		Assert.assertEquals("phdthesis", bib.getEntrytype());
 		
+		
+	}
+	
+	@Test
+	public void testCallimachus() {
+		BibTex bib = get("HEB30399794X");
+		Assert.assertEquals( Arrays.asList(new PersonName("Annette", "Harder")), bib.getEditor());
+		Assert.assertEquals( Arrays.asList(new PersonName("", "Callimachus")), bib.getAuthor());
+		Assert.assertEquals( "Callimachus, Aetia introduction, text, translation, and commentary : 2. Commentary", bib.getTitle());
 		
 	}
 }
