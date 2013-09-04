@@ -1,9 +1,10 @@
 package org.bibsonomy.recommender.connector.database.params;
 
-public class DummyRecommendationRequestParam {
+public class ItemRecRequestParam {
 
 	private int count;
-	private String requestingUserName;
+	private String userName;
+	private String tag;
 	
 	/**
 	 * @return the count
@@ -20,16 +21,25 @@ public class DummyRecommendationRequestParam {
 	/**
 	 * @return the requestingUserName
 	 */
-	public String getRequestingUserName() {
-		return requestingUserName;
+	public String getUserName() {
+		return userName;
 	}
 	/**
 	 * @param requestingUserName the requestingUserName to set
 	 */
-	public void setRequestingUserName(String requestingUserName) {
-		this.requestingUserName = requestingUserName;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	
-	
-	
+	/**
+	 * @return the tag name
+	 */
+	public String getTag() {
+		return tag;
+	}
+	/**
+	 * @param tag the tagname to set
+	 */
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 }

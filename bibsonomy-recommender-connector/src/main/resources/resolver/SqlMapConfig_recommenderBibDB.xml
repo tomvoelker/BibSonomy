@@ -23,7 +23,7 @@
 	
 	<typeAlias alias="recommendationBibTexParam"   type="org.bibsonomy.recommender.connector.database.params.RecommendationBibTexParam" />
 	<typeAlias alias="recommendationBookmarkParam" type="org.bibsonomy.recommender.connector.database.params.RecommendationBookmarkParam" />
-	<typeAlias alias="dummyItemRequestParam"       type="org.bibsonomy.recommender.connector.database.params.DummyRecommendationRequestParam" />
+	<typeAlias alias="itemRecRequestParam"       type="org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam" />
 	
 	<typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 	

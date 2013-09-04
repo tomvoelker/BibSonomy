@@ -69,12 +69,12 @@
 	</resultMap>
 	
 	<resultMap id="recResponse"	class="recResultParam">
-		<result property="queryid" column="query_id" javaType="long" />
+		<result property="queryId" column="query_id" javaType="long" />
 		<result property="settingId" column="setting_id" javaType="long" />
 		<result property="recLatency" column="rec_latency" javaType="long" />
 		<result property="score" column="score" javaType="double"/>
 		<result property="confidence" column="confidence" javaType="double" />
-		<result property="resultTitle" column="resulttitle" javaType="string" />
-		<result property="resultId" column="resultid" javaType="string" />
+		<result property="resultTitle" column="responsetitle" javaType="string" />
+		<result property="resultId" column="responseid" javaType="string" />
 	</resultMap>
 </sqlMap>

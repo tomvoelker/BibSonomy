@@ -17,27 +17,6 @@
 	
 	</resultMap>
 	
-	<resultMap id="recommendationBibTex" class="recommendationBibTexParam">
-		<result property="id" column="content_id" javaType="string" />
-		<result property="bookTitle" column="booktitle" javaType="string" />
-		<result property="journal" column="journal" javaType="string" />
-		<result property="bibtexAbstract" column="bibtexAbstract" javaType="string" />
-		<result property="title" column="title" javaType="string" />
-		<result property="group" column="group" javaType="integer" />
-		<result property="interhash" column="interhash" javaType="string" />
-		<result property="intrahash" column="intrahash" javaType="string" />
-		<result property="authors" column="author" javaType="string" />
-		<result property="date" column="date" javaType="string" />
-		<result property="ownerName" column="user_name" javaType="string" />
-	</resultMap>
-	
-	<resultMap id="recommendationBookmark" class="recommendationBookmarkParam">
-		<result property="hash" column="book_url_hash" javaType="string" />
-		<result property="title" column="book_description" javaType="string" />
-		<result property="username" column="user_name" javaType="string" />
-		<result property="group" column="group" javaType="integer" />
-	</resultMap>
-	
 	<resultMap id="tagByID" class="tag">
 		<result property="id" column="tag_id" javaType="integer" />
 		<result property="name" column="tag_name" javaType="string" />

@@ -1,13 +1,17 @@
 package org.bibsonomy.recommender.connector.database;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam;
 import org.bibsonomy.recommender.connector.database.params.GetTagForResourceParam;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.connector.model.RecommendedPost;
 
 import recommender.core.database.AbstractDatabaseManager;
 import recommender.core.database.RecommenderDBSession;
@@ -211,5 +215,107 @@ private RecommenderDBSessionFactory mainFactory;
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getMostActualItems(int)
 	 */
 	@Override
-	public abstract List<RecommendationItem> getMostActualItems(int count, final ItemRecommendationEntity entity);
+	public abstract List<RecommendationItem> getMostActualItems(final int count, final ItemRecommendationEntity entity);
+	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getSimilarUsers(int, recommender.core.interfaces.model.ItemRecommendationEntity)
+	 */
+	public List<String> getSimilarUsers(final int count, final ItemRecommendationEntity entity) {
+		
+		final RecommenderDBSession mainSession = this.openMainSession();
+		try {
+			final ItemRecRequestParam param = new ItemRecRequestParam();
+			param.setUserName(entity.getUserName());
+			param.setCount(count);
+			
+			List<String> usernames = this.queryForList("getSimilarUsersByFolkrank", param, String.class, mainSession);
+			
+			if(usernames.size() == count) {
+				return usernames;
+			}
+			
+			final int tagsToEvaluate = 5;
+			param.setCount(tagsToEvaluate);
+			//in case of folkrank did not give enough information select similar users by a more simple strategy
+			List<String> mostImportantUserTags = this.queryForList("getMostImportantTagsOfUser", param, String.class, mainSession);
+			final List<String> usernamesSimple = new ArrayList<String>();
+			
+			//get all users which used at least one of the requesting user's important tags
+			param.setCount(count);
+			List<String> tempnames = new ArrayList<String>();
+			for(String tagname : mostImportantUserTags) {
+				param.setTag(tagname);
+				tempnames = this.queryForList("getSimilarUsersByEqualTags", param, String.class, mainSession);
+				for(String username : tempnames) {
+					if(!usernamesSimple.contains(username)) {
+						usernamesSimple.add(username);
+					}
+				}
+			}
+			
+			if(usernamesSimple.size() > usernames.size()) {
+				return usernamesSimple;
+			}
+			
+			return usernames;
+			
+		} finally {
+			mainSession.close();
+		}
+		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getItemsForUser(int, java.lang.String)
+	 */
+	@Override
+	public abstract List<RecommendationItem> getItemsForUser(int count, String username);
+	
+	/**
+	 * This method retrieves resources from the bibsonomy database by contentid.
+	 * This needed in the case the caching o the results fails and those have to be retrieved from the database.
+	 * In this case the loading of fully wrapped resource should take place.
+	 * 
+	 * @param ids a list of content ids for which to retrieve content
+	 * 
+	 * @return a list of all 
+	 */
+	public abstract List<RecommendationItem> getResourcesByIds(final List<Integer> ids);
+	
+	/**
+	 * This method should provide access to a maximum of count items belonging to the requesting user.
+	 * This merges his or her bibtex and bookmark resources to get a better overview of his preferences.
+	 * 
+	 * @param count the maximum count of items to return
+	 * @param username the username for whom to retrieve his items
+	 * 
+	 * @return a maximum of count items owned by the requesting user
+	 */
+	public List<RecommendationItem> getAllItemsOfQueryingUser(final int count, final String username) {
+		
+		final RecommenderDBSession mainSession = this.openMainSession();
+		try {
+			final ItemRecRequestParam param = new ItemRecRequestParam();
+			param.setCount(count);
+			param.setUserName(username);
+			List<Post<Bookmark>> bookmarkResults = (List<Post<Bookmark>>) this.queryForList("getBookmarkForUser", param, mainSession);
+			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			for(Post<Bookmark> bookmark : bookmarkResults) {
+				RecommendationItem item =  new RecommendedPost<Bookmark>(bookmark);
+				items.add(item);
+			}
+			List<Post<BibTex>> bibtexResults = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", param, mainSession);
+			for(Post<BibTex> bibtex : bibtexResults) {
+				RecommendationItem item =  new RecommendedPost<BibTex>(bibtex);
+				items.add(item);
+			}
+			
+			return items;
+		} finally {
+			mainSession.close();
+		}
+		
+	}
 }

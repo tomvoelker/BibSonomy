@@ -22,6 +22,22 @@
 		WHERE r.query_id = #id#
 	</select>	
 	
+	<!-- +
+		 | Get the setting id of a local recommender by it's qualified name
+		 + -->
+	<select id="getSidForLocalRecommender" parameterClass="string" resultClass="long">
+		SELECT setting_id from recommender_status
+		WHERE url = #qualifiedName#	
+	</select>
+	
+	<!-- +
+		 | Get the setting id of a distant recommender by it's url
+		 + -->
+	
+	<select id="getSidForDistantRecommender" parameterClass="string" resultClass="long">
+		SELECT setting_id from recommender_status
+		WHERE url = #url#
+	</select>
 	
 	<!-- +
 		 | Get list of recommenders which delivered tags in given query

@@ -159,6 +159,21 @@ public class DBAccessTest {
 	}
 	
 	/**
+	 * Test retrieving setting ids of registered recommenders by their qualified name or url
+	 */
+	@Test
+	public void testGetRecommenderSid() {
+		dbLogic.insertRecommenderSetting("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender", 
+				"foo", null);
+		Assert.assertTrue(dbLogic.getSettingIdForLocalRecommender("recommender.impl.tags.meta.TagsFromFirstWeightedBySecondTagRecommender") > -1);
+		Assert.assertTrue(dbLogic.getSettingIdForLocalRecommender("bar") == -1L);
+		dbLogic.insertRecommenderSetting("http://example.com", "foo", "abc".getBytes());
+		Assert.assertTrue(dbLogic.getSettingIdForDistantRecommender("http://example.com") > -1);
+		Assert.assertTrue(dbLogic.getSettingIdForDistantRecommender("bar") == -1L);
+		dbLogic.removeRecommender("http://example.com");
+	}
+	
+	/**
 	 * Test mapping post to recommendation
 	 */
 	@Test

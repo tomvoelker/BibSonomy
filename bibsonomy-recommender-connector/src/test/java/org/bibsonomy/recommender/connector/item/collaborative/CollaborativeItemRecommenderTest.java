@@ -1,0 +1,50 @@
+package org.bibsonomy.recommender.connector.item.collaborative;
+
+import java.util.SortedSet;
+
+import junit.framework.Assert;
+
+import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.connector.model.UserWrapper;
+import org.bibsonomy.recommender.connector.testutil.DummyDBAccess;
+import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import recommender.core.database.DBLogic;
+import recommender.core.interfaces.database.RecommenderDBAccess;
+import recommender.core.interfaces.model.ItemRecommendationEntity;
+import recommender.core.interfaces.model.RecommendedItem;
+import recommender.impl.database.DBLogConfigItemAccess;
+import recommender.impl.item.collaborative.CollaborativeItemRecommender;
+
+public class CollaborativeItemRecommenderTest {
+
+	private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
+	private static RecommenderDBAccess dbAccess;
+	
+	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
+
+	@BeforeClass
+	public static void setUp() {
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigItemAccess.class);
+		dbAccess = new DummyDBAccess();
+	}
+	
+	@Test
+	public void testCollaborativeIemRecommender() {
+		
+		CollaborativeItemRecommender reco = new CollaborativeItemRecommender();
+		reco.setDbAccess(dbAccess);
+		reco.setDbLogic(dbLogic);
+		reco.setNumberOfItemsToRecommend(RECOMMENDATIONS_TO_CALCULATE);
+		
+		User u = new User("foo");
+		
+		SortedSet<RecommendedItem> recommendations = reco.getRecommendation(new UserWrapper(u));
+		
+		Assert.assertEquals(recommendations.size(), RECOMMENDATIONS_TO_CALCULATE);
+		
+	}
+	
+}
