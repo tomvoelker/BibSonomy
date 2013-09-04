@@ -27,7 +27,9 @@
 		 + -->
 	<select id="getSidForLocalRecommender" parameterClass="string" resultClass="long">
 		SELECT setting_id from recommender_status
-		WHERE url = #qualifiedName#	
+		WHERE url = #qualifiedName#
+		AND status=1
+		AND local=1
 	</select>
 	
 	<!-- +
@@ -37,6 +39,8 @@
 	<select id="getSidForDistantRecommender" parameterClass="string" resultClass="long">
 		SELECT setting_id from recommender_status
 		WHERE url = #url#
+		AND status=1
+		AND local=0
 	</select>
 	
 	<!-- +
