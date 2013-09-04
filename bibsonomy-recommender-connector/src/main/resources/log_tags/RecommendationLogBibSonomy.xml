@@ -29,7 +29,7 @@
 		SELECT setting_id from recommender_status
 		WHERE url = #qualifiedName#
 		AND status=1
-		AND local=1
+		AND type=1
 	</select>
 	
 	<!-- +
@@ -40,7 +40,7 @@
 		SELECT setting_id from recommender_status
 		WHERE url = #url#
 		AND status=1
-		AND local=0
+		AND type=0
 	</select>
 	
 	<!-- +
