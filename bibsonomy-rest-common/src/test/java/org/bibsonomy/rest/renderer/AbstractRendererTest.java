@@ -44,8 +44,6 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
@@ -303,8 +301,8 @@ public abstract class AbstractRendererTest {
 		
 		final Document parsedDoc = this.getRenderer().parseDocument(new FileReader(tmpFile), NoDataAccessor.getInstance());
 		
-		Assert.assertEquals(filename, parsedDoc.getFileName());
-		Assert.assertEquals(md5hash, parsedDoc.getMd5hash());
+		assertEquals(filename, parsedDoc.getFileName());
+		assertEquals(md5hash, parsedDoc.getMd5hash());
 	}
 	
 	@Test
