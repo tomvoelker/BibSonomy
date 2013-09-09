@@ -44,10 +44,13 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
+import junit.framework.Assert;
+
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.PersonName;
@@ -64,6 +67,7 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
+import org.bibsonomy.rest.renderer.xml.DocumentType;
 import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.PostType;
@@ -268,6 +272,39 @@ public abstract class AbstractRendererTest {
 		assertEquals(bibKey, publication.getBibtexKey());
 		assertEquals(year, publication.getYear());
 		assertEquals(firstName, publication.getAuthor().get(0).getFirstName());
+	}
+	
+	@Test
+	public void testParseDocument() throws Exception {
+		
+		BibsonomyXML bibXML = new BibsonomyXML();
+		File tmpFile = File.createTempFile("bibsonomy", "junit");
+		this.marshalToFile(bibXML, tmpFile);
+		
+		try {
+			this.getRenderer().parseDocument(new FileReader(tmpFile), NoDataAccessor.getInstance());
+			fail("exception should have been thrown.");
+		} catch (final BadRequestOrResponseException e) {
+			e.getMessage();
+			assertEquals("Wrong exception thrown " + e.getMessage(), "The body part of the received document is erroneous - no valid document data defined.", e.getMessage());
+		}
+		
+		final String filename = "foobar";
+		final String md5hash = "hash";
+		
+		bibXML = new BibsonomyXML();
+		DocumentType docType = new DocumentType();
+		docType.setFilename(filename);
+		docType.setMd5Hash(md5hash);
+		bibXML.setDocument(docType);
+		
+		tmpFile = File.createTempFile("bibsonomy", "junit");
+		this.marshalToFile(bibXML, tmpFile);
+		
+		final Document parsedDoc = this.getRenderer().parseDocument(new FileReader(tmpFile), NoDataAccessor.getInstance());
+		
+		Assert.assertEquals(filename, parsedDoc.getFileName());
+		Assert.assertEquals(md5hash, parsedDoc.getMd5hash());
 	}
 	
 	@Test
