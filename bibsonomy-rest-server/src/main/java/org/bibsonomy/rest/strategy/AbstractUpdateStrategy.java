@@ -27,7 +27,14 @@ public abstract class AbstractUpdateStrategy extends Strategy {
 		render(writer, resourceID);
 	}
 
+	/**
+	 * @param writer
+	 * @param resourceID
+	 */
 	protected abstract void render(Writer writer, String resourceID);
 
+	/**
+	 * @return the resourceID of the updated resource
+	 */
 	protected abstract String update();
 }

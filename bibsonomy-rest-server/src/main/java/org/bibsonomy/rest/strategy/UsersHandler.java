@@ -28,6 +28,7 @@ import org.bibsonomy.rest.strategy.users.GetUserStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostStrategy;
 import org.bibsonomy.rest.strategy.users.PostRelatedusersForUserStrategy;
+import org.bibsonomy.rest.strategy.users.PutUpdateDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserStrategy;
 import org.bibsonomy.rest.strategy.users.PutPostStrategy;
@@ -193,6 +194,8 @@ public class UsersHandler implements ContextHandler {
 			return new GetPostDocumentStrategy(context, userName, resourceHash, filename);
 		case DELETE:
 			return new DeleteDocumentStrategy(context, userName, resourceHash, filename);
+		case PUT:
+			return new PutUpdateDocumentStrategy(context, userName, resourceHash, filename);
 		default:
 			throw new UnsupportedHttpMethodException(httpMethod, "Document-Get-Delete-Document");
 		}

@@ -18,6 +18,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.layout.csl.CslModelConverter;
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -273,6 +274,11 @@ public class CSLRenderer implements Renderer {
 
 	@Override
 	public void serializeReference(final Writer writer, final String referenceHash) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Document parseDocument(Reader reader, DataAccessor uploadFileAccessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
