@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -373,6 +374,18 @@ public interface Renderer {
 	 */
 	public Post<? extends Resource> parsePost(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException;
 
+	/**
+	 * Reads one {@link Document} from a {@link Reader}
+	 * 
+	 * @param reader
+	 * 			  the {@link Reader} to use.
+	 * @param uploadedFileAccessor provides access to referenced attachments in the read data
+	 * @return one {@link Document} object
+	 * @throws BadRequestOrResponseException
+	 * 				if the document within the reader is errorenous.
+	 */
+	public Document parseDocument(Reader reader, DataAccessor uploadFileAccessor) throws BadRequestOrResponseException;
+	
 	/**
 	 * Reads one standard {@link Post} from a {@link Reader}.
 	 * 

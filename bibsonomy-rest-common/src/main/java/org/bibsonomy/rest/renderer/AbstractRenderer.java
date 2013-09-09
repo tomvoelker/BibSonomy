@@ -760,6 +760,26 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
+	public Document parseDocument(Reader reader, DataAccessor uploadFileAccessor) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		
+		final DocumentType docType = xmlDoc.getDocument();
+		if (docType!= null) {
+			
+			final Document document = new Document();
+			document.setFileName(docType.getFilename());
+			document.setMd5hash(docType.getMd5Hash());
+				
+			return document;
+		}
+	
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no valid document data defined.");
+	}
+	
+	@Override
 	public Post<? extends Resource> parseCommunityPost(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 	
