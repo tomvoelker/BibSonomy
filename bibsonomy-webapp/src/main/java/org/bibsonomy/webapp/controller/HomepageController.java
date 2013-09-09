@@ -75,7 +75,7 @@ public class HomepageController extends SingleResourceListController implements 
 			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList("bibsonomynews"), null, null, null, null, null, null, 0, 3));
 			this.endTiming();
 			
-			return Views.HOMEPAGE; // TODO: make configurable 
+			return Views.HOMEPAGE; 
 		}
 		
 		this.endTiming();
@@ -96,4 +96,5 @@ public class HomepageController extends SingleResourceListController implements 
 	public HomepageCommand instantiateCommand() {
 		return new HomepageCommand();
 	}
+
 }

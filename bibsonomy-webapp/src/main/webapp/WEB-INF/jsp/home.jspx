@@ -5,10 +5,11 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:posts="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:home="urn:jsptagdir:/WEB-INF/tags/home"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -21,6 +22,12 @@
 			showPageOptions="${true}"
 			hideFooterContainer="${true}">
 			
+		<jsp:attribute name="headerExt">
+			<c:if test="${properties['project.theme'] eq 'puma'}">
+				<script type="text/javascript" src="/resources_puma/javascript/tools.js">&#160;</script>
+			</c:if>
+		</jsp:attribute>
+			
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 			
@@ -32,34 +39,14 @@
 		<!-- show info text if user not logged in -->
 		<jsp:attribute name="beforeMainContainer">
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
-				<div id="overlayInfobox">
-					<!-- FIXME: add theme! ??-->
-					<div class="close"><a onclick="$('#overlayInfobox').hide();"><fmt:message key="box.close"/></a></div>
-					<div class="content">
-						<!-- logo -->
-						<img src="/resources/image/logo.png" alt="${fn:escapeXml(properties['project.name'])}" 
-							style="float:left; margin: 10px;" width="98" height="120"/>
-						
-						<!-- project name -->
-						<div class="systemName">
-							<c:out value="${properties['project.name']}"/>
-						</div>
-						
-						<!-- introduction -->
-						<div class="systemAbout">
-							<fmt:message key="system.about">
-								<fmt:param value="${properties['project.name']}"/>
-							</fmt:message>
-						</div>
-						
-						<!-- registration -->
-						<div class="systemRegister">	
-							<h2><a href="/login"><fmt:message key="system.loginRegister"/></a></h2>
-						</div>
-						
-						<div class="systemInfoClear"> <!-- do not remove --></div>
-					</div>
-				</div>
+				<c:choose>
+					<c:when test="${properties['project.theme'] eq 'puma'}">
+						<home:pumahome command="${command}" />
+					</c:when>
+					<c:otherwise>
+						<home:bibhome command="${command}" />
+					</c:otherwise>
+				</c:choose>
 			</c:if>
 		</jsp:attribute>
 

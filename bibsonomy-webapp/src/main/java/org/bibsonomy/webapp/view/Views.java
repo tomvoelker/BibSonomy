@@ -665,8 +665,10 @@ public enum Views implements View {
 
 	/**
 	 * PUMA the first page you see when entering the application
+	 * @deprecated simply use HOME
 	 */
-	PUMAHOMEPAGE("pumahome"),
+	@Deprecated
+	PUMAHOMEPAGE("home"),
 
 	/**
 	 * PUMA, author agreement page, form filled in with publication data for
