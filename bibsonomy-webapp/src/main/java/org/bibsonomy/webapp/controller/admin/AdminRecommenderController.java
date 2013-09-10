@@ -28,8 +28,8 @@ import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendedItem;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
+import recommender.core.util.RecommenderUtil;
 import recommender.impl.multiplexer.MultiplexingRecommender;
-import recommender.impl.multiplexer.tags.util.RecommenderUtil;
 
 /**
  * @author bsc
@@ -37,9 +37,6 @@ import recommender.impl.multiplexer.tags.util.RecommenderUtil;
  */
 public class AdminRecommenderController implements MinimalisticController<AdminRecommenderViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminRecommenderController.class);
-	
-	private static final int RECOMMENDER_ITEM_TYPE_ID = 1;
-	private static final int RECOMMENDER_TAG_TYPE_ID = 0;
 	
 	private static final String CMD_EDITRECOMMENDER = "editRecommender";
 	private static final String CMD_UPDATE_RECOMMENDERSTATUS = "updateRecommenderstatus";
@@ -112,9 +109,12 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	 * Remove/add recommender page. 
 	 */
 	private void showAddTab(final AdminRecommenderViewCommand command) {
-		final List<Long> recs = this.dbTagLogic.getDistantRecommenderSettingIds();
-		final Map<Long, String> recMap = this.dbTagLogic.getRecommenderIdsForSettingIds(recs);
-		command.setActiveRecommenders(recMap);
+		final List<Long> tagRecs = this.dbTagLogic.getDistantRecommenderSettingIds();
+		final Map<Long, String> tagRecMap = this.dbTagLogic.getRecommenderIdsForSettingIds(tagRecs);
+		command.setActiveTagRecommenders(tagRecMap);
+		final List<Long> itemRecs = this.dbItemLogic.getDistantRecommenderSettingIds();
+		final Map<Long, String> itemRecMap = this.dbItemLogic.getRecommenderIdsForSettingIds(itemRecs);
+		command.setActiveItemRecommenders(itemRecMap);
 	}
 
 	/**
@@ -123,14 +123,16 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	 * command.activeRecs/command.disabledRecs
 	 */
 	private void showActivationTab(final AdminRecommenderViewCommand command) {
-		final Map<Long, String> activeRecs = this.dbTagLogic.getRecommenderIdsForSettingIds(this.dbTagLogic.getActiveRecommenderSettingIds());
-		activeRecs.putAll(this.dbItemLogic.getRecommenderIdsForSettingIds(this.dbItemLogic.getActiveRecommenderSettingIds()));
-		final Map<Long, String> disabledRecs = this.dbTagLogic.getRecommenderIdsForSettingIds(this.dbTagLogic.getDisabledRecommenderSettingIds());
-		disabledRecs.putAll(this.dbItemLogic.getRecommenderIdsForSettingIds(this.dbItemLogic.getDisabledRecommenderSettingIds()));
+		final Map<Long, String> activeTagRecs = this.dbTagLogic.getRecommenderIdsForSettingIds(this.dbTagLogic.getActiveRecommenderSettingIds());
+		final Map<Long, String> activeItemRecs = this.dbItemLogic.getRecommenderIdsForSettingIds(this.dbItemLogic.getActiveRecommenderSettingIds());
+		final Map<Long, String> disabledTagRecs = this.dbTagLogic.getRecommenderIdsForSettingIds(this.dbTagLogic.getDisabledRecommenderSettingIds());
+		final Map<Long, String> disabledItemRecs = this.dbItemLogic.getRecommenderIdsForSettingIds(this.dbItemLogic.getDisabledRecommenderSettingIds());
 
 		
-		command.setActiveRecommenders(activeRecs);
-		command.setDisabledRecommenders(disabledRecs);
+		command.setActiveItemRecommenders(activeItemRecs);
+		command.setDisabledItemRecommenders(disabledItemRecs);
+		command.setActiveTagRecommenders(activeTagRecs);
+		command.setDisabledTagRecommenders(disabledTagRecs);
 	}
 
 	/**
@@ -141,7 +143,8 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private void showStatusTab(final AdminRecommenderViewCommand command) {
 		final List<Recommender<TagRecommendationEntity, RecommendedTag>> tagRecommenderList = new ArrayList<Recommender<TagRecommendationEntity, RecommendedTag>>();
 		final List<Recommender<ItemRecommendationEntity, RecommendedItem>> itemRecommenderList = new ArrayList<Recommender<ItemRecommendationEntity, RecommendedItem>>();
-		final List<RecAdminOverview> recommenderInfoList = new ArrayList<RecAdminOverview>();
+		final List<RecAdminOverview> itemRecommenderInfoList = new ArrayList<RecAdminOverview>();
+		final List<RecAdminOverview> tagRecommenderInfoList = new ArrayList<RecAdminOverview>();
 		tagRecommenderList.addAll(this.tagRecommender.getLocalRecommenders());
 		tagRecommenderList.addAll(this.tagRecommender.getDistRecommenders());
 		itemRecommenderList.addAll(this.itemRecommender.getLocalRecommenders());
@@ -150,19 +153,19 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		for (final Recommender<TagRecommendationEntity, RecommendedTag> p : tagRecommenderList) {
 			final RecAdminOverview current = this.dbTagLogic.getRecommenderAdminOverview(RecommenderUtil.getRecommenderId(p));
 			current.setLatency(this.dbTagLogic.getAverageLatencyForRecommender(current.getSettingID(), command.getQueriesPerLatency()));
-			recommenderInfoList.add(current);
+			tagRecommenderInfoList.add(current);
 		}
 		
 		for (final Recommender<ItemRecommendationEntity, RecommendedItem> p : itemRecommenderList) {
 			final RecAdminOverview current = this.dbItemLogic.getRecommenderAdminOverview(RecommenderUtil.getRecommenderId(p));
 			current.setLatency(this.dbItemLogic.getAverageLatencyForRecommender(current.getSettingID(), command.getQueriesPerLatency()));
-			recommenderInfoList.add(current);
+			itemRecommenderInfoList.add(current);
 		}
 		
-		this.generateNamesForRecWorkingTypes(recommenderInfoList);
-		
 		/* Store info */
-		command.setRecOverview(recommenderInfoList);
+		command.setRecOverviewItem(itemRecommenderInfoList);
+		command.setRecOverviewTag(tagRecommenderInfoList);
+		
 	}
 
 	private void handleEditRecommender(final AdminRecommenderViewCommand command) {
@@ -189,24 +192,26 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	}
 
 	private void handleUpdateRecommenderStatus(final AdminRecommenderViewCommand command) {
-//		if (command.getActiveRecs() != null) {
-//			for (final Long sid : command.getActiveRecs()) {
-//				if (this.dbTagLogic.checkRecommenderInstanceType(sid) == RECOMMENDER_TAG_TYPE_ID) {
-//					this.tagRecommender.enableRecommender(sid);
-//				} else {
-//					this.itemRecommender.enableRecommender(sid);
-//				}
-//			}
-//		}
-//		if (command.getDisabledRecs() != null) {
-//			for (final Long sid : command.getDisabledRecs()) {
-//				if (this.dbTagLogic.checkRecommenderInstanceType(sid) == RECOMMENDER_TAG_TYPE_ID) {
-//					this.tagRecommender.disableRecommender(sid);
-//				} else {
-//					this.itemRecommender.disableRecommender(sid);
-//				}
-//			}
-//		}
+		if (command.getActiveItemRecs() != null) {
+			for (final Long sid : command.getActiveItemRecs()) {
+				this.itemRecommender.enableRecommender(sid);
+			}
+		}
+		if (command.getDisabledItemRecs() != null) {
+			for (final Long sid : command.getDisabledItemRecs()) {
+				this.itemRecommender.disableRecommender(sid);
+			}
+		}
+		if (command.getActiveTagRecs() != null) {
+			for (final Long sid : command.getActiveTagRecs()) {
+				this.tagRecommender.enableRecommender(sid);
+			}
+		}
+		if (command.getDisabledTagRecs() != null) {
+			for (final Long sid : command.getDisabledTagRecs()) {
+				this.tagRecommender.disableRecommender(sid);
+			}
+		}
 		command.setTab(Tab.ACTIVATE);
 		command.setAdminResponse("Successfully Updated Recommenderstatus!");
 	}
@@ -255,16 +260,6 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		}
 
 		command.setTab(Tab.ADD);
-	}
-
-	private void generateNamesForRecWorkingTypes(final List<RecAdminOverview> recos) {
-//		for(RecAdminOverview overview : recos) {
-//			if(overview.getRecWorkingType() == RECOMMENDER_TAG_TYPE_ID) {
-//				overview.setWorkingTypeString("tagrecommender");
-//			} else {
-//				overview.setWorkingTypeString("itemrecommender");
-//			}
-//		}
 	}
 	
 	@Override

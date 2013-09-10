@@ -94,8 +94,10 @@
 								<value>newrecurl</value>
 								<value>editSid</value>
 								<value>deleteRecIds</value>
-								<value>activeRecs</value>
-								<value>disabledRecs</value>
+								<value>activeItemRecs</value>
+								<value>disabledItemRecs</value>
+								<value>activeTagRecs</value>
+								<value>disabledTagRecs</value>
 								<value>tab</value>
 							</list>
 						</property>

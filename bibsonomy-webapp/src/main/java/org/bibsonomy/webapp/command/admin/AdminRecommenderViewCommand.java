@@ -19,12 +19,15 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  */
 public class AdminRecommenderViewCommand extends BaseCommand {
 	private MultiplexingRecommender mp;
-	private List<RecAdminOverview> recOverview; 
+	private List<RecAdminOverview> recOverviewItem;
+	private List<RecAdminOverview> recOverviewTag; 
 	private String action;
 	private String adminResponse;
 	private Long queriesPerLatency;
-	private List<Long> activeRecs;
-	private List<Long> disabledRecs;
+	private List<Long> activeItemRecs;
+	private List<Long> activeTagRecs;
+	private List<Long> disabledItemRecs;
+	private List<Long> disabledTagRecs;
 	private final Map<Integer, String> tabdescriptor;
 	/**
 	 * @author bsc
@@ -32,8 +35,10 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	 */
 	public enum Tab{ STATUS, ACTIVATE, ADD }
 	private Tab tab;
-	private Map<Long, String> activeRecommenders;
-	private Map<Long, String> disabledRecommenders;
+	private Map<Long, String> activeItemRecommenders;
+	private Map<Long, String> disabledItemRecommenders;
+	private Map<Long, String> activeTagRecommenders;
+	private Map<Long, String> disabledTagRecommenders;
 
 	private long editSid;
 	private List<String> deleteRecIds;
@@ -56,37 +61,71 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	}
 	
 	/**
-	 * @param activeRecommenders map {setting-id} -> {recommender-id}
+	 * @param activeItemRecommenders map {setting-id} -> {recommender-id}
 	 */
-	public void setActiveRecommenders(final Map<Long, String> activeRecommenders){
-		this.activeRecommenders = activeRecommenders;
+	public void setActiveItemRecommenders(final Map<Long, String> activeItemRecommenders){
+		this.activeItemRecommenders = activeItemRecommenders;
 	}
 	
 	/**
-	 * @param disabledRecommenders map {setting-id} -> {recommender-id}
+	 * @param disabledItemRecommenders map {setting-id} -> {recommender-id}
 	 */
-	public void setDisabledRecommenders(final Map<Long, String> disabledRecommenders){
-		this.disabledRecommenders = disabledRecommenders;
+	public void setDisabledItemRecommenders(final Map<Long, String> disabledItemRecommenders){
+		this.disabledItemRecommenders = disabledItemRecommenders;
 	}
 	
 	/**
-	 * @return Entryset of currently activated recommenders 
+	 * @return Entryset of currently activated item recommenders 
 	 */
-	public Set<Entry<Long, String>> getActiveRecommenders(){
-		if (this.activeRecommenders == null) {
+	public Set<Entry<Long, String>> getActiveItemRecommenders(){
+		if (this.activeItemRecommenders == null) {
 			return null;
 		}
-		return this.activeRecommenders.entrySet();
+		return this.activeItemRecommenders.entrySet();
 	}
 	
 	/**
-	 * @return Entryset of currently deactivated recommenders 
+	 * @return Entryset of currently deactivated item recommenders 
 	 */
-	public Set<Entry<Long, String>> getDisabledRecommenders(){
-		if (this.disabledRecommenders == null) {
+	public Set<Entry<Long, String>> getDisabledItemRecommenders(){
+		if (this.disabledItemRecommenders == null) {
 			return null;
 		}
-		return this.disabledRecommenders.entrySet();
+		return this.disabledItemRecommenders.entrySet();
+	}
+	
+	/**
+	 * @param activeTagRecommenders map {setting-id} -> {recommender-id}
+	 */
+	public void setActiveTagRecommenders(final Map<Long, String> activeTagRecommenders){
+		this.activeTagRecommenders = activeTagRecommenders;
+	}
+	
+	/**
+	 * @param disabledTagRecommenders map {setting-id} -> {recommender-id}
+	 */
+	public void setDisabledTagRecommenders(final Map<Long, String> disabledTagRecommenders){
+		this.disabledTagRecommenders = disabledTagRecommenders;
+	}
+	
+	/**
+	 * @return Entryset of currently activated item recommenders 
+	 */
+	public Set<Entry<Long, String>> getActiveTagRecommenders(){
+		if (this.activeTagRecommenders == null) {
+			return null;
+		}
+		return this.activeTagRecommenders.entrySet();
+	}
+	
+	/**
+	 * @return Entryset of currently deactivated item recommenders 
+	 */
+	public Set<Entry<Long, String>> getDisabledTagRecommenders(){
+		if (this.disabledTagRecommenders == null) {
+			return null;
+		}
+		return this.disabledTagRecommenders.entrySet();
 	}
 	
 	/**
@@ -131,16 +170,28 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	}
 	
 	/**
-	 * @param recOverview List of recommmenders contained in multiplexer
+	 * @param recOverviewItem List of item recommmenders contained in item-multiplexer
 	 */
-	public void setRecOverview(final List<RecAdminOverview> recOverview){
-		this.recOverview = recOverview;
+	public void setRecOverviewItem(final List<RecAdminOverview> recOverviewItem){
+		this.recOverviewItem = recOverviewItem;
 	}
 	/**
-	 * @return List of recommmenders contained in multiplexer
+	 * @return List of item recommmenders contained in item-multiplexer
 	 */
-	public List<RecAdminOverview> getRecOverview(){
-		return this.recOverview;
+	public List<RecAdminOverview> getRecOverviewItem(){
+		return this.recOverviewItem;
+	}
+	/**
+	 * @param recOverviewTag list of tag recommenders contained in tag-multiplexer
+	 */
+	public void setRecOverviewTag(List<RecAdminOverview> recOverviewTag) {
+		this.recOverviewTag = recOverviewTag;
+	}
+	/**
+	 * @return list of tag recommenders contained in tag-multiplexer
+	 */
+	public List<RecAdminOverview> getRecOverviewTag() {
+		return this.recOverviewTag;
 	}
 	/**
 	 * @param mp multiplexer
@@ -196,32 +247,58 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	}
 	
 	/**
-	 * @param activeRecs updated list of active setting-ids.
+	 * @param activeItemRecs updated list of active item recommender setting-ids.
 	 * This property can be set in the view by administrators and will be managed and set back to null by the controller. 
 	 */
-	public void setActiveRecs(final List<Long> activeRecs){
-		this.activeRecs = activeRecs;
+	public void setActiveItemRecs(final List<Long> activeItemRecs){
+		this.activeItemRecs = activeItemRecs;
 	}
 	/**
-	 * @return updated active recommenders
+	 * @return updated active item recommenders
 	 */
-	public List<Long> getActiveRecs(){
-		return this.activeRecs;
+	public List<Long> getActiveItemRecs(){
+		return this.activeItemRecs;
 	}
 	
 	/**
-	 * @param disabledRecs updated list of inactive setting-ids
+	 * @param disabledItemRecs updated list of inactive item recommender setting-ids
 	 */
-	public void setDisabledRecs(final List<Long> disabledRecs){
-		this.disabledRecs = disabledRecs;
+	public void setDisabledItemRecs(final List<Long> disabledItemRecs){
+		this.disabledItemRecs = disabledItemRecs;
 	}
 	/**
 	 * @return updated list of inactive setting-ids
 	 */
-	public List<Long> getDisabledRecs(){
-		return this.disabledRecs;
+	public List<Long> getDisabledItemRecs(){
+		return this.disabledItemRecs;
 	}
 	
+	/**
+	 * @param activeTagRecs updated list of active tag recommender setting-ids.
+	 * This property can be set in the view by administrators and will be managed and set back to null by the controller. 
+	 */
+	public void setActiveTagRecs(final List<Long> activeTagRecs){
+		this.activeTagRecs = activeTagRecs;
+	}
+	/**
+	 * @return updated active item recommenders
+	 */
+	public List<Long> getActiveTagRecs(){
+		return this.activeTagRecs;
+	}
+	
+	/**
+	 * @param disabledTagRecs updated list of inactive tag recommender setting-ids
+	 */
+	public void setDisabledTagRecs(final List<Long> disabledTagRecs){
+		this.disabledTagRecs = disabledTagRecs;
+	}
+	/**
+	 * @return updated list of inactive setting-ids
+	 */
+	public List<Long> getDisabledTagRecs(){
+		return this.disabledTagRecs;
+	}
 
 	/**
 	 * @param editSid setting-id of recommender to be edited
