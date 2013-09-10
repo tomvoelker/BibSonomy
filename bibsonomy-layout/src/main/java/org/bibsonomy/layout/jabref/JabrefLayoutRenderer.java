@@ -31,7 +31,7 @@ import java.util.Map;
 
 import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
-import net.sf.jabref.GlobalsSuper;
+import net.sf.jabref.Globals;
 import net.sf.jabref.JabRefPreferences;
 import net.sf.jabref.KeyCollisionException;
 import net.sf.jabref.export.layout.Layout;
@@ -80,7 +80,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 * initialize JabRef preferences. This is neccessary ... because they use global 
 		 * preferences and if we don't initialize them, we get NullPointerExceptions later 
 		 */
-		GlobalsSuper.prefs = JabRefPreferences.getInstance();
+		Globals.prefs = JabRefPreferences.getInstance();
 
 		// load default filters 
 		try {

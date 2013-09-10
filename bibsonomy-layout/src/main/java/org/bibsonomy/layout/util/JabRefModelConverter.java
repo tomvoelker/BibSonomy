@@ -41,7 +41,7 @@ import java.util.Set;
 
 import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.BibtexEntryType;
-import net.sf.jabref.GlobalsSuper;
+import net.sf.jabref.Globals;
 import net.sf.jabref.JabRefPreferences;
 
 import org.apache.commons.logging.Log;
@@ -203,7 +203,7 @@ public class JabRefModelConverter {
 				/*
 				 * try to convert the month abbrev like JabRef does it
 				 */
-				final String longMonth = GlobalsSuper.MONTH_STRINGS.get(month);
+				final String longMonth = Globals.MONTH_STRINGS.get(month);
 				if (present(longMonth)) {
 					entry.setField("month", longMonth);
 				} else {
