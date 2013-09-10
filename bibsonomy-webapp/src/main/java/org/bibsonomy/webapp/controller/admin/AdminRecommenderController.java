@@ -38,10 +38,13 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
 public class AdminRecommenderController implements MinimalisticController<AdminRecommenderViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminRecommenderController.class);
 	
-	private static final String CMD_EDITRECOMMENDER = "editRecommender";
+	private static final String CMD_EDITTAGRECOMMENDER = "editTagRecommender";
+	private static final String CMD_EDITITEMRECOMMENDER = "editItemRecommender";
 	private static final String CMD_UPDATE_RECOMMENDERSTATUS = "updateRecommenderstatus";
-	private static final String CMD_REMOVERECOMMENDER = "removerecommender";
-	private static final String CMD_ADDRECOMMENDER = "addrecommender";
+	private static final String CMD_REMOVETAGRECOMMENDER = "removetagrecommender";
+	private static final String CMD_REMOVEITEMRECOMMENDER = "removeitemrecommender";
+	private static final String CMD_ADDTAGRECOMMENDER = "addtagrecommender";
+	private static final String CMD_ADDITEMRECOMMENDER = "additemrecommender";
 	
 	private DBLogic<TagRecommendationEntity, RecommendedTag> dbTagLogic;
 	private DBLogic<ItemRecommendationEntity, RecommendedItem> dbItemLogic;
@@ -80,14 +83,20 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 
 		if (!present(command.getAction())) {
 			// Do nothing
-		} else if (CMD_ADDRECOMMENDER.equals(command.getAction())) {
-			this.handleAddRecommender(command);
-		} else if (CMD_REMOVERECOMMENDER.equals(command.getAction())) {
-			this.handleRemoveRecommender(command);
+		} else if (CMD_ADDTAGRECOMMENDER.equals(command.getAction())) {
+			this.handleAddTagRecommender(command);
+		} else if (CMD_ADDITEMRECOMMENDER.equals(command.getAction())) {
+			this.handleAddItemRecommender(command);
+		} else if (CMD_REMOVETAGRECOMMENDER.equals(command.getAction())) {
+			this.handleRemoveTagRecommender(command);
+		} else if (CMD_REMOVEITEMRECOMMENDER.equals(command.getAction())) {
+			this.handleRemoveItemRecommender(command);
 		} else if (CMD_UPDATE_RECOMMENDERSTATUS.equals(command.getAction())) {
 			this.handleUpdateRecommenderStatus(command);
-		} else if (CMD_EDITRECOMMENDER.equals(command.getAction())) {
-			this.handleEditRecommender(command);
+		} else if (CMD_EDITTAGRECOMMENDER.equals(command.getAction())) {
+			this.handleEditTagRecommender(command);
+		} else if (CMD_EDITITEMRECOMMENDER.equals(command.getAction())) {
+			this.handleEditItemRecommender(command);
 		}
 
 		command.setAction(null);
@@ -168,7 +177,8 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		
 	}
 
-	private void handleEditRecommender(final AdminRecommenderViewCommand command) {
+	private void handleEditTagRecommender(final AdminRecommenderViewCommand command) {
+		
 		try {
 			// TODO: add a validator?
 			if (!UrlUtils.isValid(command.getNewrecurl())) {
@@ -189,6 +199,36 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		}
 		command.setNewrecurl(null);
 		command.setTab(Tab.ADD);
+	}
+	
+	private void handleEditItemRecommender(final AdminRecommenderViewCommand command) {
+		
+		//FIXME: If remote item recommendations are supported uncomment the code below
+		// and delete the following three lines
+		command.setAdminResponse("Remote item recommendations are not supported yet!");
+		command.setTab(Tab.ADD);
+		return;
+		
+//		try {
+//			// TODO: add a validator?
+//			if (!UrlUtils.isValid(command.getNewrecurl())) {
+//				throw new MalformedURLException();
+//			}
+//			final URL newRecurl = new URL(command.getNewrecurl());
+//
+//			final long sid = command.getEditSid();
+//			final boolean recommenderEnabled = this.tagRecommender.disableRecommender(sid);
+//			this.dbTagLogic.updateRecommenderUrl(command.getEditSid(), newRecurl);
+//			if (recommenderEnabled) {
+//				this.tagRecommender.enableRecommender(sid);
+//			}
+//
+//			command.setAdminResponse("Changed url of recommender #" + command.getEditSid() + " to " + command.getNewrecurl() + ".");
+//		} catch (final MalformedURLException ex) {
+//			command.setAdminResponse("Could not edit recommender. Please check if '" + command.getNewrecurl() + "' is a valid url.");
+//		}
+//		command.setNewrecurl(null);
+//		command.setTab(Tab.ADD);
 	}
 
 	private void handleUpdateRecommenderStatus(final AdminRecommenderViewCommand command) {
@@ -216,7 +256,41 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		command.setAdminResponse("Successfully Updated Recommenderstatus!");
 	}
 
-	private void handleRemoveRecommender(final AdminRecommenderViewCommand command) {
+	private void handleRemoveItemRecommender(final AdminRecommenderViewCommand command) {
+		
+		//FIXME: If remote item recommendations are supported uncomment the code below
+		// and delete the following three lines
+		command.setAdminResponse("Remote item recommendations are not supported yet!");
+		command.setTab(Tab.ADD);
+		return;
+				
+//		try {
+//			int failures = 0;
+//			
+//			if((command.getDeleteRecIds() == null) || command.getDeleteRecIds().isEmpty()) {
+//				command.setAdminResponse("Please select a recommender first!");
+//			} else {
+//				for(final String urlString : command.getDeleteRecIds()) {
+//					final URL url = new URL(urlString);
+//					final boolean success = this.itemRecommender.removeRecommender(url);
+//					if(!success) {
+//						failures++;
+//					}
+//				}
+//				if (failures == 0) {
+//					command.setAdminResponse("Successfully removed all selected recommenders.");
+//				} else {
+//					command.setAdminResponse(failures + " recommender(s) could not be removed.");
+//				}
+//			}
+//		} catch (final MalformedURLException ex) {
+//			log.warn("Invalid url in removeRecommender ", ex);
+//		}
+//
+//		command.setTab(Tab.ADD);
+	}
+	
+	private void handleRemoveTagRecommender(final AdminRecommenderViewCommand command) {
 		try {
 			int failures = 0;
 			
@@ -243,14 +317,40 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		command.setTab(Tab.ADD);
 	}
 
-	private void handleAddRecommender(final AdminRecommenderViewCommand command) {
+	private void handleAddItemRecommender(final AdminRecommenderViewCommand command) {
+		
+		//FIXME: If remote item recommendations are supported uncomment the code below
+		// and delete the following three lines
+		command.setAdminResponse("Remote item recommendations are not supported yet!");
+		command.setTab(Tab.ADD);
+		return;
+		
+//		try {
+//			if (!UrlUtils.isValid(command.getNewrecurl())) {
+//				throw new MalformedURLException();
+//			}
+//
+//			this.itemRecommender.addRecommender(new URL(command.getNewrecurl()));
+//			command.setAdminResponse("Successfully added and activated new itemrecommender!");
+//
+//		} catch (final MalformedURLException e) {
+//			command.setAdminResponse("Could not add new recommender. Please check if '" + command.getNewrecurl() + "' is a valid url.");
+//		} catch (final Exception e) {
+//			log.error("Error testing 'set recommender'", e);
+//			command.setAdminResponse("Failed to add new recommender");
+//		}
+//
+//		command.setTab(Tab.ADD);
+	}
+	
+	private void handleAddTagRecommender(final AdminRecommenderViewCommand command) {
 		try {
 			if (!UrlUtils.isValid(command.getNewrecurl())) {
 				throw new MalformedURLException();
 			}
 
 			this.tagRecommender.addRecommender(new URL(command.getNewrecurl()));
-			command.setAdminResponse("Successfully added and activated new recommender!");
+			command.setAdminResponse("Successfully added and activated new tag recommender!");
 
 		} catch (final MalformedURLException e) {
 			command.setAdminResponse("Could not add new recommender. Please check if '" + command.getNewrecurl() + "' is a valid url.");

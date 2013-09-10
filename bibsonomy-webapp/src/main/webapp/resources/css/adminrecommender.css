@@ -87,13 +87,30 @@ label[for="queriesPerLatency"]{
     margin-left: 10px;
 }
 
-.compound input[type="submit"], #recActivationBtn{
+.compound input[type="submit"], .recActivationBtn{
 	clear: left;
-	display: block;
-    position: absolute;
-    right: 0px;
-    margin-top: 5px;
+	margin-top: 5px;
+	float: right;
 }
+
+.compound input[type="submit"], .recEditBtn{
+	clear: left;
+	margin-top: 5px;
+	float: right;
+}
+
+.compound input[type="submit"], .recRemoveBtn{
+	clear: left;
+	margin-top: 5px;
+	float: right;
+}
+
+.subcompound {
+	width:380px;
+	padding-right: 5px;
+	display:inline-block;
+}
+
 #recEditBtn{
 	display: block;
 	margin-top: 5px;
