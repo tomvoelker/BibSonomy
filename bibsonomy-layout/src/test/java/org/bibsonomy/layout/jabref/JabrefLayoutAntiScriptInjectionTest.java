@@ -96,7 +96,7 @@ public class JabrefLayoutAntiScriptInjectionTest {
 		//Prepare Layouts - Remove varying lines etc.
 		prepareTest();
 		
-		assertEquals("layout: " + layoutName + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
+		assertEquals("layout: " + layoutName + ", testfile: " + layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
 	}
 	
 	private void prepareTest() {

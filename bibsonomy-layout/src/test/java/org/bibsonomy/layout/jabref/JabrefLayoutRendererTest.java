@@ -106,7 +106,7 @@ public class JabrefLayoutRendererTest {
 		resultLayout = TestUtils.readEntryFromFile(layoutTest).trim();
 		
 		this.prepareTest();
-	    assertEquals("layout: " + layoutName + ", entrytype: " + entryType, resultLayout, renderedLayout);
+	    assertEquals("layout: " + layoutName + ", testfile: " + layoutTest + ", entrytype: " + entryType, resultLayout, renderedLayout);
 	}
     
     private void prepareTest() {
