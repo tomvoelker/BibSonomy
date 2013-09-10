@@ -1,21 +1,16 @@
 package org.bibsonomy.recommender.connector.model;
 
-import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.httpclient.util.DateParser;
-import org.apache.commons.httpclient.util.DateUtil;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.PersonNameParser;
-import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
-import org.bibsonomy.util.DateUtils;
-
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationTag;
 
+/**
+ * This class allows the library to work with BibSonomy resources as recommendation items.
+ * 
+ * @author lukas
+ *
+ */
 public class ResourceWrapper implements RecommendationItem {
 	
 	private Resource resource;

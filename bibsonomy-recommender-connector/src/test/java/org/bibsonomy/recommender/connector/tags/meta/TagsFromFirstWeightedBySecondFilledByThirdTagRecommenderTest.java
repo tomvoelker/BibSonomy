@@ -9,15 +9,15 @@ import java.util.TreeSet;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.junit.Test;
 
+import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
-import recommender.impl.tags.meta.TagsFromFirstWeightedBySecondFilledByThirdTagRecommender;
+import recommender.core.util.RecommendationResultComparator;
+import recommender.impl.tags.meta.ResultsFromFirstWeightedBySecondFilledByThirdRecommender;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
 import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
-import recommender.impl.temp.copy.RecommendationResultComparator;
 
 /**
  * @author rja
@@ -28,7 +28,7 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 	@Test
 	public void testAddRecommendedTags() {
 		final String[] firstFixedTags = new String[]{"eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "eins"};
-		final SortedSet<RecommendedTag> secondFixedTags = new TreeSet<RecommendedTag>(new RecommendationResultComparator());
+		final SortedSet<RecommendedTag> secondFixedTags = new TreeSet<RecommendedTag>(new RecommendationResultComparator<RecommendedTag>());
 		secondFixedTags.add(new RecommendedTag("eins", 0.3, 0.2));
 		secondFixedTags.add(new RecommendedTag("drei", 0.2, 0.2));
 		secondFixedTags.add(new RecommendedTag("vier", 0.5, 0.2));
@@ -41,11 +41,11 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		secondFixedTags.add(new RecommendedTag("net", 0.8, 0.2));
 
 
-		final TagsFromFirstWeightedBySecondFilledByThirdTagRecommender merger = new TagsFromFirstWeightedBySecondFilledByThirdTagRecommender();
+		final ResultsFromFirstWeightedBySecondFilledByThirdRecommender<TagRecommendationEntity, RecommendedTag> merger = new ResultsFromFirstWeightedBySecondFilledByThirdRecommender<TagRecommendationEntity, RecommendedTag>();
 
-		merger.setFirstTagRecommender(new FixedTagsTagRecommender(firstFixedTags));
-		merger.setSecondTagRecommender(new FixedTagsTagRecommender(secondFixedTags));
-		merger.setThirdTagRecommender(new FixedTagsTagRecommender(secondFixedTags));
+		merger.setFirstRecommender(new FixedTagsTagRecommender(firstFixedTags));
+		merger.setSecondRecommender(new FixedTagsTagRecommender(secondFixedTags));
+		merger.setThirdRecommender(new FixedTagsTagRecommender(secondFixedTags));
 		merger.setNumberOfTagsToRecommend(5);
 
 		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendation(null);
@@ -67,13 +67,13 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 	public void test2() {
 		final String[] usersTags = new String[]{"semantic", "web", "social", "net", "graph", "tool", "folksonomy", "holiday"};
 
-		final TagsFromFirstWeightedBySecondFilledByThirdTagRecommender merger = new TagsFromFirstWeightedBySecondFilledByThirdTagRecommender();
+		final ResultsFromFirstWeightedBySecondFilledByThirdRecommender<TagRecommendationEntity, RecommendedTag> merger = new ResultsFromFirstWeightedBySecondFilledByThirdRecommender<TagRecommendationEntity, RecommendedTag>();
 		final SimpleContentBasedTagRecommender simpleContentBasedTagRecommender = new SimpleContentBasedTagRecommender();
 		final FixedTagsTagRecommender fixedTagsTagRecommender = new FixedTagsTagRecommender(usersTags);
 
-		merger.setFirstTagRecommender(simpleContentBasedTagRecommender);
-		merger.setSecondTagRecommender(fixedTagsTagRecommender);
-		merger.setThirdTagRecommender(fixedTagsTagRecommender);
+		merger.setFirstRecommender(simpleContentBasedTagRecommender);
+		merger.setSecondRecommender(fixedTagsTagRecommender);
+		merger.setThirdRecommender(fixedTagsTagRecommender);
 		merger.setNumberOfTagsToRecommend(5);
 
 
@@ -103,14 +103,14 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		final String[] usersTags = new String[]{"semantic", "web", "social", "net", "graph", "tool", "folksonomy", "holiday"};
 		final String[] resourceTags = new String[]{"project"};
 
-		final TagsFromFirstWeightedBySecondFilledByThirdTagRecommender merger = new TagsFromFirstWeightedBySecondFilledByThirdTagRecommender();
+		final ResultsFromFirstWeightedBySecondFilledByThirdRecommender<TagRecommendationEntity, RecommendedTag> merger = new ResultsFromFirstWeightedBySecondFilledByThirdRecommender<TagRecommendationEntity, RecommendedTag>();
 		final SimpleContentBasedTagRecommender simpleContentBasedTagRecommender = new SimpleContentBasedTagRecommender();
 		final FixedTagsTagRecommender fixedTagsTagRecommender = new FixedTagsTagRecommender(usersTags);
 		final FixedTagsTagRecommender fillupTagRecommender = new FixedTagsTagRecommender(resourceTags);
 
-		merger.setFirstTagRecommender(simpleContentBasedTagRecommender);
-		merger.setSecondTagRecommender(fixedTagsTagRecommender);
-		merger.setThirdTagRecommender(fillupTagRecommender);
+		merger.setFirstRecommender(simpleContentBasedTagRecommender);
+		merger.setSecondRecommender(fixedTagsTagRecommender);
+		merger.setThirdRecommender(fillupTagRecommender);
 		merger.setNumberOfTagsToRecommend(5);
 
 

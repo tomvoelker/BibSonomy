@@ -22,7 +22,7 @@ import recommender.core.interfaces.model.RecommendedItem;
 import recommender.impl.database.DBLogConfigItemAccess;
 import recommender.impl.item.simple.DummyItemRecommender;
 import recommender.impl.multiplexer.MultiplexingRecommender;
-import recommender.impl.multiplexer.tags.strategy.SelectOneWithoutReplacement;
+import recommender.impl.multiplexer.strategy.SelectOneWithoutReplacement;
 
 public class ItemMultiplexerTest {
 

@@ -11,20 +11,30 @@ import java.util.Map;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.recommender.connector.database.RecommenderDBLogic;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
-import org.bibsonomy.recommender.connector.model.RecommendedPost;
-
-import recommender.core.interfaces.database.RecommenderDBAccess;
 import recommender.core.interfaces.model.RecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationResult;
 import recommender.core.interfaces.model.RecommendedItem;
 import recommender.impl.multiplexer.RecommendationResultManager;
-import recommender.impl.multiplexer.tags.strategy.SelectFixRecommenderWithFallback;
+import recommender.impl.multiplexer.strategy.SelectFixRecommenderWithFallback;
 
+/**
+ * This class adapts the SelectFixWithFallback algorithm by appending it with greedy loading in case of the
+ * resources were not cached.
+ * 
+ * @author lukas
+ *
+ * @param <E>
+ * @param <R>
+ */
 public class AdaptedSelectFixWithFallback<E extends RecommendationEntity, R extends RecommendationResult> extends SelectFixRecommenderWithFallback<E, R> {
 	
 	private RecommenderDBLogic dbAccess;
 	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.multiplexer.strategy.SelectFixRecommenderWithFallback#selectResult(java.lang.Long, recommender.impl.multiplexer.RecommendationResultManager, java.util.Collection)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void selectResult(Long qid,

@@ -14,7 +14,7 @@ import recommender.core.interfaces.database.RecommenderDBAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.temp.copy.common.Pair;
+import recommender.core.model.Pair;
 
 public class DummyDBAccess implements RecommenderDBAccess{
 

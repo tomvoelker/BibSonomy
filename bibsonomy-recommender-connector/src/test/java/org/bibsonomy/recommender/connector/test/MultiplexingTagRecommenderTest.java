@@ -31,14 +31,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
+import recommender.core.interfaces.RecommenderConnector;
 import recommender.core.interfaces.database.RecommenderDBAccess;
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.interfaces.tags.RecommenderConnector;
 import recommender.core.model.RecommendedTag;
+import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.multiplexer.MultiplexingRecommender;
 import recommender.impl.multiplexer.RecommendationResultManager;
 import recommender.impl.tags.simple.DummyTagRecommender;
-import recommender.impl.temp.copy.RecommendationResultComparator;
 
 /**
  * @author fei

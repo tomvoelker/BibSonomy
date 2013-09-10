@@ -1,21 +1,14 @@
 package org.bibsonomy.recommender.connector.model;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-
-import recommender.core.interfaces.model.RecommendationTag;
 import recommender.core.interfaces.model.RecommendationUser;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
- * This class wraps a bibsonomy post to pass it to the recommender framework
+ * This class wraps a BibSonomy post to pass it to the recommender framework.
  * 
  * @author Lukas
  *

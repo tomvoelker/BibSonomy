@@ -20,7 +20,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 
 	<typeAlias alias="recResultParam" type="recommender.core.database.params.ResultParam" />
 
-	<typeAlias alias="pair"            type="recommender.core.temp.copy.common.Pair" />
+	<typeAlias alias="pair"            type="recommender.core.model.Pair" />
 	<typeAlias alias="selectorMap"     type="recommender.core.database.params.SelectorQueryMapParam" />
 	<typeAlias alias="selectorSetting" type="recommender.core.database.params.SelectorSettingParam" />
 

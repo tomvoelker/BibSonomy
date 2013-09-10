@@ -6,7 +6,7 @@ import java.util.Collection;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
 import recommender.impl.multiplexer.RecommendationResultManager;
-import recommender.impl.multiplexer.tags.strategy.SelectAll;
+import recommender.impl.multiplexer.strategy.SelectAll;
 
 
 /**

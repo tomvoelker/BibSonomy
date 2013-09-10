@@ -10,6 +10,14 @@ import org.bibsonomy.model.Tag;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationTag;
 
+/**
+ * This class wraps a BibSonomy post as the result of a recommendation to
+ * allow greedy loading.
+ * 
+ * @author lukas
+ *
+ * @param <T>
+ */
 public class RecommendedPost<T extends Resource> implements RecommendationItem {
 	
 	private Post<T> post;

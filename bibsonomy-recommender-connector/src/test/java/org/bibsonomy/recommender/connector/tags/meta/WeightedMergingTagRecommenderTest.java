@@ -15,9 +15,9 @@ import org.junit.Test;
 import recommender.core.Recommender;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
-import recommender.impl.tags.meta.WeightedMergingTagRecommender;
+import recommender.core.util.RecommendationResultComparator;
+import recommender.impl.tags.meta.WeightedMergingRecommender;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
-import recommender.impl.temp.copy.RecommendationResultComparator;
 
 
 /**
@@ -28,20 +28,20 @@ public class WeightedMergingTagRecommenderTest {
 
 	@Test
 	public void testGetRecommendedTags() {
-		final WeightedMergingTagRecommender recommender = new WeightedMergingTagRecommender();
+		final WeightedMergingRecommender<TagRecommendationEntity, RecommendedTag> recommender = new WeightedMergingRecommender<TagRecommendationEntity, RecommendedTag>();
 
 		ArrayList<Recommender<TagRecommendationEntity, RecommendedTag>> tagRecommenders = new ArrayList<Recommender<TagRecommendationEntity,RecommendedTag>>(2);
 		tagRecommenders.add(new FixedTagsTagRecommender(this.getTags1()));
 		tagRecommenders.add(new FixedTagsTagRecommender(this.getTags2()));
 		
-		recommender.setTagRecommenders(tagRecommenders);
+		recommender.setRecommenders(tagRecommenders);
 
 		recommender.setWeights(new double[] { 0.4, 0.6 });
 
 
 		final SortedSet<RecommendedTag> recommendedTags = recommender.getRecommendation(new PostWrapper<Bookmark>(this.getPost()));
 
-		assertEquals(recommender.getNumberOfTagsToRecommend(), recommendedTags.size());
+		assertEquals(recommender.getNumberOfResultsToRecommend(), recommendedTags.size());
 
 		/*
 		 * for tag 'web': 0.4 * 0.4 + 0.3 * 0.6 = 0.34

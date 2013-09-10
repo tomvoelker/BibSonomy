@@ -65,7 +65,7 @@
 	
 	<!-- Get all important recommender-info for the admin statuspage  -->
 	<select id="recAdminOverview" resultMap="RecommendationLogCommon.recAdminOverview" parameterClass="String">
-		SELECT setting_id, rec_id, type, 0 AS rec_latency 
+		SELECT setting_id, rec_id, local, 0 AS rec_latency 
 		FROM recommender_settings JOIN recommender_status
 		USING (setting_id)
 		WHERE rec_id = #id#

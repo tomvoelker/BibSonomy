@@ -6,7 +6,7 @@ import java.util.Map;
 import org.bibsonomy.database.common.DBSession;
 
 import recommender.core.database.RecommenderDBSession;
-import recommender.core.temp.copy.common.ErrorMessage;
+import recommender.core.error.ErrorMessage;
 
 /**
  * wraps database access from recommender library on the bibsonomy database
