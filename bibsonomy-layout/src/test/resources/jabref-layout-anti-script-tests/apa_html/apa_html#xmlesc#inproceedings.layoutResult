@@ -22,7 +22,8 @@ In &ltxxx&gtTestEditorOne EditorOne&lt/xxx&gt &amp; &ltxxx&gtTestEditorTwo Edito
  
 &ltxxx&gtjun&lt/xxx&gt, 
 
-: &ltxxx&gtPublisherTest&lt/xxx&gt.
+
+&ltxxx&gtTestState&lt/xxx&gt, &ltxxx&gtTestCountry&lt/xxx&gt: &ltxxx&gtPublisherTest&lt/xxx&gt.
 
 ISBN: &ltxxx&gt978-1-60558-486-7&lt/xxx&gt 
 
