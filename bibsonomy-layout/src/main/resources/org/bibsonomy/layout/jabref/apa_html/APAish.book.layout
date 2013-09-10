@@ -3,7 +3,7 @@
 \end{author}
 \begin{author&&editor} & \end{author&&editor}
 \begin{editor}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (eds.)
+\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (\format[IfPlural(eds,ed)]{\editor}.)
 \end{editor}
  (\format[AntiScriptInjection]{\year}).
 <i> \format[HTMLChars,AntiScriptInjection]{\title}</i>\begin{volume} (Vol. \format[AntiScriptInjection]{\volume})\end{volume}. 

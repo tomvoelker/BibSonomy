@@ -8,7 +8,7 @@
 \format[HTMLChars,AntiScriptInjection]{\title}. 
 \end{title}
 \begin{editor}
-In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor} (eds.), 
+In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor} (\format[IfPlural(eds,ed)]{\editor}.), 
 \end{editor}
 \begin{booktitle}
 <i>\format[HTMLChars,AntiScriptInjection]{\booktitle}</i>\end{booktitle}\begin{pages} (p./pp. \format[AntiScriptInjection]{\pages})\end{pages},
