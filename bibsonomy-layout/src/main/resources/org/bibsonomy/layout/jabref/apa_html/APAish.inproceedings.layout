@@ -16,8 +16,8 @@ In \format[AuthorFirstAbbrLastCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInje
 \format[HTMLChars,AntiScriptInjection]{\tech} 
 \format[HTMLChars,AntiScriptInjection]{\month}, 
 \end{month}
-\begin{location}
-\format[HTMLChars,AntiScriptInjection]{\location}\end{location}\begin{publisher}: \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}.
+\begin{address}
+\format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{publisher}: \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}.
 \begin{isbn}
 ISBN: \format[HTMLChars,AntiScriptInjection]{\isbn} 
 \end{isbn}
