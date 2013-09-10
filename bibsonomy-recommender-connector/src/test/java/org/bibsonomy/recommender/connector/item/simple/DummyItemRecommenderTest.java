@@ -5,16 +5,15 @@ import java.util.SortedSet;
 import junit.framework.Assert;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.database.RecommenderBibTexDBLogic;
 import org.bibsonomy.recommender.connector.model.ResourceWrapper;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
-import org.bibsonomy.recommender.connector.testutil.DummyDBAccess;
+import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
-import recommender.core.interfaces.database.RecommenderDBAccess;
+import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendedItem;
 import recommender.impl.database.DBLogConfigItemAccess;
@@ -23,15 +22,14 @@ import recommender.impl.item.simple.DummyItemRecommender;
 public class DummyItemRecommenderTest {
 
 	private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
-	private static RecommenderDBAccess dbAccess;
+	private static RecommenderMainItemAccess dbAccess;
 	
 	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
 
-	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigItemAccess.class);
-		dbAccess = new DummyDBAccess();
+		dbAccess = new DummyMainItemAccess();
 	}
 	
 	@Test

@@ -9,14 +9,14 @@ import junit.framework.Assert;
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.filter.UserPrivacyFilter;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
-import org.bibsonomy.recommender.connector.testutil.DummyDBAccess;
+import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.Recommender;
 import recommender.core.database.DBLogic;
-import recommender.core.interfaces.database.RecommenderDBAccess;
+import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendedItem;
 import recommender.impl.database.DBLogConfigItemAccess;
@@ -27,21 +27,20 @@ import recommender.impl.multiplexer.strategy.SelectOneWithoutReplacement;
 public class ItemMultiplexerTest {
 
 	private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
-	private static RecommenderDBAccess dbAccess;
+	private static RecommenderMainItemAccess dbAccess;
 	
 	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
 
 	@BeforeClass
 	public static void setUp() {
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigItemAccess.class);
-		dbAccess = new DummyDBAccess();
+		dbAccess = new DummyMainItemAccess();
 	}
 	
 	@Test
 	public void testItemMUXBibTex() {
 		
 		MultiplexingRecommender<ItemRecommendationEntity, RecommendedItem> mux = new MultiplexingRecommender<ItemRecommendationEntity, RecommendedItem>();
-		mux.setDbAccess(dbAccess);
 		mux.setDbLogic(dbLogic);
 		
 		List<Recommender<ItemRecommendationEntity, RecommendedItem>> locals = new ArrayList<Recommender<ItemRecommendationEntity, RecommendedItem>>();

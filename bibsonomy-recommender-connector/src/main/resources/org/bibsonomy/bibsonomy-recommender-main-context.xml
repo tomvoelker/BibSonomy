@@ -27,7 +27,7 @@
     
     
     <!-- +
-    	 | factories for bookmark and bibtex recommendations
+    	 | factories for bookmark, bibtex and tag recommendations
     	 + -->
     	 
     <bean id="recommenderBibTexMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderBibTexDBLogic">
@@ -35,6 +35,10 @@
     </bean>
     
     <bean id="recommenderBookmarkMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderBookmarkDBLogic">
+    	<property name="mainFactory" ref="recommenderMainSessionFactoryWrapper" />
+    </bean>
+    
+    <bean id="recommenderTagMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainTagAccessImpl">
     	<property name="mainFactory" ref="recommenderMainSessionFactoryWrapper" />
     </bean>
     

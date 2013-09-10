@@ -12,7 +12,7 @@ import recommender.core.database.RecommenderDBSession;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
-public class RecommenderBookmarkDBLogic extends RecommenderDBLogic {
+public class RecommenderBookmarkDBLogic extends RecommenderMainItemAccessImpl {
 	
 	/*
 	 * (non-Javadoc)

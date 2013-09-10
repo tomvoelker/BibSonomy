@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import recommender.core.database.DBLogic;
-import recommender.core.interfaces.database.RecommenderDBAccess;
+import recommender.core.interfaces.database.RecommenderMainTagAccess;
 import recommender.core.interfaces.factories.RecommenderUserFactory;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.modifiers.EntityModifier;
@@ -28,7 +28,7 @@ public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEnti
 	/** used for mapping user names to ids and vice versa */
 	private DBLogic dbLogic;
 	
-	private RecommenderDBAccess dbAccess;
+	private RecommenderMainTagAccess dbAccess;
 	
 	/** used for caching name->id mappings */
 	private Map<String, Integer> nameMap;
@@ -75,7 +75,7 @@ public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEnti
 		this.dbLogic = dbLogic;
 	}
 	
-	public RecommenderDBAccess getDbAccess() {
+	public RecommenderMainTagAccess getDbAccess() {
 		return dbAccess;
 	}
 
@@ -90,7 +90,7 @@ public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEnti
 		return userFactory;
 	}
 	
-	public void setDbAccess(RecommenderDBAccess dbAccess) {
+	public void setDbAccess(RecommenderMainTagAccess dbAccess) {
 		this.dbAccess = dbAccess;
 	}
 	

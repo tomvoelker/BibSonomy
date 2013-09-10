@@ -15,7 +15,7 @@ import org.junit.Test;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
 import recommender.core.util.RecommendationResultComparator;
-import recommender.impl.tags.meta.ResultsFromFirstWeightedBySecondFilledByThirdRecommender;
+import recommender.impl.meta.ResultsFromFirstWeightedBySecondFilledByThirdRecommender;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
 import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
 

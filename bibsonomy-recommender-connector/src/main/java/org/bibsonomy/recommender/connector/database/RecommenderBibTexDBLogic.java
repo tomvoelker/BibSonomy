@@ -21,7 +21,7 @@ import recommender.core.interfaces.model.RecommendationItem;
  *
  */
 
-public class RecommenderBibTexDBLogic extends RecommenderDBLogic{
+public class RecommenderBibTexDBLogic extends RecommenderMainItemAccessImpl{
 			
 	/*
 	 * (non-Javadoc)

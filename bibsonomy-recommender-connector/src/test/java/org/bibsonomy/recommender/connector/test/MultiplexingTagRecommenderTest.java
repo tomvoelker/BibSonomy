@@ -32,7 +32,7 @@ import org.junit.Test;
 
 import recommender.core.database.DBLogic;
 import recommender.core.interfaces.RecommenderConnector;
-import recommender.core.interfaces.database.RecommenderDBAccess;
+import recommender.core.interfaces.database.RecommenderMainTagAccess;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
 import recommender.core.util.RecommendationResultComparator;

@@ -16,7 +16,7 @@ import recommender.core.Recommender;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
 import recommender.core.util.RecommendationResultComparator;
-import recommender.impl.tags.meta.WeightedMergingRecommender;
+import recommender.impl.meta.WeightedMergingRecommender;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
 
 
