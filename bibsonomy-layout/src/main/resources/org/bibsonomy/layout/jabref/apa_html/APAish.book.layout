@@ -5,10 +5,10 @@
  & \format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor} (eds.)
 \end{editor}
  (\format[AntiScriptInjection]{\year}).
-<i> \format[HTMLChars,AntiScriptInjection]{\title}</i>\begin{volume}, Vol. \format[AntiScriptInjection]{\volume}\end{volume}. 
-\begin{location}
-\format[HTMLChars,AntiScriptInjection]{\location}: 
-\end{location}
+<i> \format[HTMLChars,AntiScriptInjection]{\title}</i>\begin{volume} (Vol. \format[AntiScriptInjection]{\volume})\end{volume}. 
+\begin{address}
+\format[HTMLChars,AntiScriptInjection]{\address}: 
+\end{address}
 \begin{publisher}
 \format[HTMLChars,AntiScriptInjection]{\publisher}.
 \end{publisher}
