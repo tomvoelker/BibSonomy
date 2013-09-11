@@ -65,12 +65,12 @@ body {
 
 	<div class="bibtex_header">
 		<div class="bibtex_key">
-			<a name="&ltxxx&gttestuser2013test&lt/xxx&gt">&ltxxx&gttestuser2013test&lt/xxx&gt</a>
+			<a name="&lt;xxx&gt;testuser2013test&lt;/xxx&gt;">&lt;xxx&gt;testuser2013test&lt;/xxx&gt;</a>
 		</div>
 
 		
 		<div class="bibtex_doi">
-			<a href="http://dx.doi.org/&ltxxx&gt10.1145/1557914.1557969&lt/xxx&gt">doi</a>
+			<a href="http://dx.doi.org/&lt;xxx&gt;10.1145/1557914.1557969&lt;/xxx&gt;">doi</a>
 		</div>
 		
 
@@ -82,7 +82,7 @@ body {
 
 		
 		<div class="bibtex_url">
-			<a href="&ltxxx&gthttp://www.test.de&lt/xxx&gt">url</a>
+			<a href="&lt;xxx&gt;http://www.test.de&lt;/xxx&gt;">url</a>
 		</div>
 		
 	</div>
@@ -91,13 +91,13 @@ body {
 
 		
 		<div class="bibtex_title">
-			&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt
+			&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;
 		</div>
 		
 
 		
 		<div class="bibtex_author">
-			&ltxxx&gtTestUser TestUserUser&lt/xxx&gt &amp; &ltxxx&gtTestUser FriendOne&lt/xxx&gt
+			&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; &amp; &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;
 		</div>
 		
 
@@ -107,12 +107,12 @@ body {
 
 		
 		<div class="bibtex_pages">
-			pp. &ltxxx&gt323-324&lt/xxx&gt
+			pp. &lt;xxx&gt;323-324&lt;/xxx&gt;
 		</div>,
 		
 
 		<div class="bibtex_year">
-			&ltxxx&gt20013&lt/xxx&gt
+			&lt;xxx&gt;20013&lt;/xxx&gt;
 		</div>
 	</div>
 </div>

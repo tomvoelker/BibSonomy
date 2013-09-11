@@ -38,6 +38,7 @@ import java.util.List;
 import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.JabRefPreferences;
+import net.sf.jabref.export.layout.format.AndSymbolIfBothPresent;
 import net.sf.jabref.imports.BibtexParser;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
@@ -110,7 +111,10 @@ public class JabRefModelConverterTest {
 	final BibtexEntry entry = JabRefModelConverter.convertPost(post, new URLGenerator(PROJECT_HOME));
 	final BibtexEntry expected = BibtexParser.singleFromString(bibtexSource);
 
-	for (final String field : entry.getAllFields()) {	    
+	for (final String field : entry.getAllFields()) {
+		if (AndSymbolIfBothPresent.AUTHORS_AND_EDITORS.equals(field)) {
+			continue;
+		}
 	    Assert.assertEquals(expected.getField(field), entry.getField(field));
 	}
 	

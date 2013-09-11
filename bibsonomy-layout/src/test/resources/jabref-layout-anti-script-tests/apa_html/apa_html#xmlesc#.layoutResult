@@ -5,13 +5,13 @@
 <title>BibSonomy Publication Export (APA style)</title>
 </head>
 <body>
-&ltxxx&gtTestUser TestUserUser&lt/xxx&gt &amp; &ltxxx&gtTestUser FriendOne&lt/xxx&gt
- (&ltxxx&gt20013&lt/xxx&gt).
+&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; &amp; &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;
+ (&lt;xxx&gt;20013&lt;/xxx&gt;).
 
-<i>&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt</i>.
+<i>&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;</i>.
 
 
-&ltxxx&gtDescriptionTest&lt/xxx&gt.
+&lt;xxx&gt;DescriptionTest&lt;/xxx&gt;.
 
 <br/>
 <br/></body>

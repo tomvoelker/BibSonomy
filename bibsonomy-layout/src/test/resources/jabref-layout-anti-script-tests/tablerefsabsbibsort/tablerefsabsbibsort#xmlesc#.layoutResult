@@ -560,29 +560,29 @@ th.sort_asc, th.sort_des { border: 2px black solid; }
 </div>
 <table id="qstable" class="sortable" border="1">
 <thead><tr><th width="20%">Author</th><th width="30%">Title</th><th width="5%">Year</th><th width="30%">Journal/Proceedings</th><th width="10%">Reftype</th><th width="5%">DOI/URL</th></tr></thead>
-<tbody><tr id="&ltxxx&gttestuser2013test&lt/xxx&gt" class="entry">
-	<td>&ltxxx&gtTestUser TestUserUser&lt/xxx&gt &amp; &ltxxx&gtTestUser FriendOne&lt/xxx&gt</td>
-	<td>&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt <p class="infolinks">[<a href="javascript:toggleInfo('&ltxxx&gttestuser2013test&lt/xxx&gt','abstract')">Abstract</a>] [<a href="javascript:toggleInfo('&ltxxx&gttestuser2013test&lt/xxx&gt','bibtex')">BibTeX</a>]</p></td>
-	<td>&ltxxx&gt20013&lt/xxx&gt</td>
-	<td>&ltxxx&gtBookTitleTest&lt/xxx&gt, pp. &ltxxx&gt323-324&lt/xxx&gt&nbsp;</td>
+<tbody><tr id="&lt;xxx&gt;testuser2013test&lt;/xxx&gt;" class="entry">
+	<td>&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; &amp; &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;</td>
+	<td>&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt; <p class="infolinks">[<a href="javascript:toggleInfo('&lt;xxx&gt;testuser2013test&lt;/xxx&gt;','abstract')">Abstract</a>] [<a href="javascript:toggleInfo('&lt;xxx&gt;testuser2013test&lt;/xxx&gt;','bibtex')">BibTeX</a>]</p></td>
+	<td>&lt;xxx&gt;20013&lt;/xxx&gt;</td>
+	<td>&lt;xxx&gt;BookTitleTest&lt;/xxx&gt;, pp. &lt;xxx&gt;323-324&lt;/xxx&gt;&nbsp;</td>
 	<td>other</td>
-	<td><a href="&ltxxx&gt10.1145/1557914.1557969&lt/xxx&gt">DOI</a> <a href="&ltxxx&gthttp://www.test.de&lt/xxx&gt">URL</a>&nbsp;</td>
+	<td><a href="&lt;xxx&gt;10.1145/1557914.1557969&lt;/xxx&gt;">DOI</a> <a href="&lt;xxx&gt;http://www.test.de&lt;/xxx&gt;">URL</a>&nbsp;</td>
 </tr>
-<tr id="abs_&ltxxx&gttestuser2013test&lt/xxx&gt" class="abstract noshow">
-	<td colspan="6"><b>Abstract</b>: &ltxxx&gtAbstractTest&lt/xxx&gt</td>
+<tr id="abs_&lt;xxx&gt;testuser2013test&lt;/xxx&gt;" class="abstract noshow">
+	<td colspan="6"><b>Abstract</b>: &lt;xxx&gt;AbstractTest&lt;/xxx&gt;</td>
 </tr>
-<tr id="bib_&ltxxx&gttestuser2013test&lt/xxx&gt" class="bibtex noshow">
+<tr id="bib_&lt;xxx&gt;testuser2013test&lt;/xxx&gt;" class="bibtex noshow">
 <td colspan="6"><b>BibTeX</b>:
 <pre>
-@other{&ltxxx&gttestuser2013test&lt/xxx&gt,
-  author = {&ltxxx&gtTestUser TestUserUser&lt/xxx&gt and &ltxxx&gtTestUser FriendOne&lt/xxx&gt},
-  title = {&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt},
-  booktitle = {&ltxxx&gtBookTitleTest&lt/xxx&gt},
-  publisher = {&ltxxx&gtPublisherTest&lt/xxx&gt},
-  year = {&ltxxx&gt20013&lt/xxx&gt},
-  pages = {&ltxxx&gt323--324&lt/xxx&gt},
-  url = {&ltxxx&gthttp://www.test.de&lt/xxx&gt},
-  doi = {&ltxxx&gt10.1145/1557914.1557969&lt/xxx&gt}
+@other{&lt;xxx&gt;testuser2013test&lt;/xxx&gt;,
+  author = {&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; and &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;},
+  title = {&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;},
+  booktitle = {&lt;xxx&gt;BookTitleTest&lt;/xxx&gt;},
+  publisher = {&lt;xxx&gt;PublisherTest&lt;/xxx&gt;},
+  year = {&lt;xxx&gt;20013&lt;/xxx&gt;},
+  pages = {&lt;xxx&gt;323--324&lt;/xxx&gt;},
+  url = {&lt;xxx&gt;http://www.test.de&lt;/xxx&gt;},
+  doi = {&lt;xxx&gt;10.1145/1557914.1557969&lt;/xxx&gt;}
 }
 </pre></td>
 </tr>

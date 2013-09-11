@@ -1,25 +1,25 @@
 <p>
-&ltxxx&gtTestUser TestUserUser&lt/xxx&gt &amp; &ltxxx&gtTestUser FriendOne&lt/xxx&gt (&ltxxx&gt20013&lt/xxx&gt),
-'&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt'
+&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; &amp; &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt; (&lt;xxx&gt;20013&lt;/xxx&gt;),
+'&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;'
 
 
 
-, <i> in &ltxxx&gtTestEditorOne EditorOne&lt/xxx&gt &amp; &ltxxx&gtTestEditorTwo EditorTwo&lt/xxx&gt</i>, ed.,
+, <i> in &lt;xxx&gt;TestEditorOne EditorOne&lt;/xxx&gt; &amp; &lt;xxx&gt;TestEditorTwo EditorTwo&lt;/xxx&gt;</i>, ed.,
 
 
-'&ltxxx&gtBookTitleTest&lt/xxx&gt'
-
-
-
-
-, &ltxxx&gtPublisherTest&lt/xxx&gt
+'&lt;xxx&gt;BookTitleTest&lt;/xxx&gt;'
 
 
 
-, &ltxxx&gtTestState&lt/xxx&gt, &ltxxx&gtTestCountry&lt/xxx&gt
+
+, &lt;xxx&gt;PublisherTest&lt;/xxx&gt;
 
 
 
-, &ltxxx&gt323--324&lt/xxx&gt
+, &lt;xxx&gt;TestState&lt;/xxx&gt;, &lt;xxx&gt;TestCountry&lt;/xxx&gt;
+
+
+
+, &lt;xxx&gt;323--324&lt;/xxx&gt;
 .
 </p>

@@ -23,21 +23,15 @@
 
 package net.sf.jabref.export.layout.format;
 
-import java.util.regex.Pattern;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import net.sf.jabref.export.layout.LayoutFormatter;
 
-public class AntiScriptInjection implements LayoutFormatter{
-	
-	/*
-	 *		<   &lt;
-	 * 		>   &gt;
-	 * 
-	 */
-	
+public class XMLEscaper implements LayoutFormatter{
+
 	@Override
 	public String format(String arg0) {
-		return arg0.replace("<", "&lt;").replace(">", "&gt;");
+		return StringEscapeUtils.escapeXml(arg0);
 	}
 
 }

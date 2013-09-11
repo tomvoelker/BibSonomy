@@ -23,21 +23,34 @@
 
 package net.sf.jabref.export.layout.format;
 
-import java.util.regex.Pattern;
+import org.apache.commons.lang.StringUtils;
+import org.bibsonomy.model.BibTex;
 
+import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.export.layout.LayoutFormatter;
 
-public class AntiScriptInjection implements LayoutFormatter{
+/**
+ * This is an ugly hack which is needed to only print "&" between authors and editors if both authors and editors are present.
+ * XXX: replace with <code>\begin{author&&editor} & \end{author&&editor}</code> in later JabRef Versions.
+ * 
+ * @author Jens Illig
+ */
+public class AndSymbolIfBothPresent implements LayoutFormatter{
 	
-	/*
-	 *		<   &lt;
-	 * 		>   &gt;
-	 * 
-	 */
-	
+	private static final String SEPARATOR = "@SEPARATOR@";
+	public static final String AUTHORS_AND_EDITORS = "authorsAndEditors";
+
 	@Override
 	public String format(String arg0) {
-		return arg0.replace("<", "&lt;").replace(">", "&gt;");
+		final int i = StringUtils.indexOf(arg0, SEPARATOR);
+		if ((i > 0) && (i < (StringUtils.length(arg0) - SEPARATOR.length()))) {
+			return " & ";
+		}
+		return "";
+	}
+
+	public static void prepare(BibtexEntry entry) {
+		entry.setField(AUTHORS_AND_EDITORS, "" + StringUtils.trimToEmpty(entry.getField("author")) + SEPARATOR + StringUtils.trimToEmpty(entry.getField("editor")));
 	}
 
 }

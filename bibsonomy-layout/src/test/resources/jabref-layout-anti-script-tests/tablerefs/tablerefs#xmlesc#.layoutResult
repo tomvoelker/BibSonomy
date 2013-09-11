@@ -149,13 +149,13 @@ tr.noshow { display: none;}
 <div id="qs"><form action=""><p>QuickSearch: <input type="text" name="qsfield" id="qsfield" autocomplete="off" title="Allows plain text as wel as RegExp searches" /><input type="button" onclick="clearQS()" value="clear" />&nbsp; Number of matching entries: <span id="stat">0</span>.</p></form></div>
 <table id="qstable" border="1">
 <thead><tr><th width="20%">Author</th><th width="30%">Title</th><th width="5%">Year</th><th width="30%">Journal/Proceedings</th><th width="10%">Reftype</th><th width="5%">DOI/URL</th></tr></thead>
-<tbody><tr id="&ltxxx&gttestuser2013test&lt/xxx&gt" class="entry">
-	<td>&ltxxx&gtTestUser TestUserUser&lt/xxx&gt &amp; &ltxxx&gtTestUser FriendOne&lt/xxx&gt</td>
-	<td>&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt</td>
-	<td>&ltxxx&gt20013&lt/xxx&gt</td>
-	<td>&ltxxx&gtBookTitleTest&lt/xxx&gt  &ltxxx&gtTestEditorOne EditorOne&lt/xxx&gt &amp; &ltxxx&gtTestEditorTwo EditorTwo&lt/xxx&gt <i>(ed.)</i><br/> &nbsp;</td>
+<tbody><tr id="&lt;xxx&gt;testuser2013test&lt;/xxx&gt;" class="entry">
+	<td>&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; &amp; &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;</td>
+	<td>&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;</td>
+	<td>&lt;xxx&gt;20013&lt;/xxx&gt;</td>
+	<td>&lt;xxx&gt;BookTitleTest&lt;/xxx&gt;  &lt;xxx&gt;TestEditorOne EditorOne&lt;/xxx&gt; &amp; &lt;xxx&gt;TestEditorTwo EditorTwo&lt;/xxx&gt; <i>(ed.)</i><br/> &nbsp;</td>
 	<td>other</td>
-	<td><a href="&ltxxx&gt10.1145/1557914.1557969&lt/xxx&gt">DOI</a><a href="&ltxxx&gthttp://www.test.de&lt/xxx&gt">URL</a> &nbsp;</td>
+	<td><a href="&lt;xxx&gt;10.1145/1557914.1557969&lt;/xxx&gt;">DOI</a><a href="&lt;xxx&gt;http://www.test.de&lt;/xxx&gt;">URL</a> &nbsp;</td>
 </tr>
 </tbody>
 </table>

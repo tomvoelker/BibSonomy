@@ -6,7 +6,7 @@
 </head>
 <body>
 <div style="margin-bottom:1em">
-<span style="font-variant: small-caps">&amp;ltxxx&amp;gtTestUser TestUserUser&amp;lt/xxx&amp;gt ; &amp;ltxxx&amp;gtTestUser FriendOne&amp;lt/xxx&amp;gt</span>:
-<i>&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt</i>. &ltxxx&gtTestState&lt/xxx&gt, &ltxxx&gtTestCountry&lt/xxx&gt. , &ltxxx&gt20013&lt/xxx&gt
+<span style="font-variant: small-caps">&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; ; &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;</span>:
+<i>&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;</i>. &lt;xxx&gt;TestState&lt;/xxx&gt;, &lt;xxx&gt;TestCountry&lt;/xxx&gt;. , &lt;xxx&gt;20013&lt;/xxx&gt;
 </div></body>
 </html>

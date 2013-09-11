@@ -1,9 +1,9 @@
 <p>
 
-&ltxxx&gtTestUser TestUserUser&lt/xxx&gt and &ltxxx&gtTestUser FriendOne&lt/xxx&gt. 
-&quot;&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt.&quot; <i></i>
+&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; and &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;. 
+&quot;&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;.&quot; <i></i>
 
  
-(&ltxxx&gt20013&lt/xxx&gt): 
-&ltxxx&gt323--324&lt/xxx&gt.
+(&lt;xxx&gt;20013&lt;/xxx&gt;): 
+&lt;xxx&gt;323--324&lt;/xxx&gt;.
 </p>

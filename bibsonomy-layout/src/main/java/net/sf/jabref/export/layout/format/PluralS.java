@@ -23,21 +23,24 @@
 
 package net.sf.jabref.export.layout.format;
 
-import java.util.regex.Pattern;
+import org.apache.commons.lang.StringUtils;
 
 import net.sf.jabref.export.layout.LayoutFormatter;
 
-public class AntiScriptInjection implements LayoutFormatter{
-	
-	/*
-	 *		<   &lt;
-	 * 		>   &gt;
-	 * 
-	 */
+/**
+ * if argument contains " and ", this returns "s" otherwise "". this is useful for eds./ed. 
+ * XXX: replace with IfPlural in later JabRef Versions
+ * 
+ * @author Jens Illig
+ */
+public class PluralS implements LayoutFormatter{
 	
 	@Override
 	public String format(String arg0) {
-		return arg0.replace("<", "&lt;").replace(">", "&gt;");
+		if (StringUtils.contains(arg0, " and ")) {
+			return "s";
+		}
+		return "";
 	}
 
 }

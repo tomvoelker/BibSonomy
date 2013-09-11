@@ -6,9 +6,9 @@
 </head>
 <body>
 <div style="margin-bottom:1em">
-<span style="font-variant: small-caps">&ltxxx&gtTestUser TestUserUser&lt/xxx&gt ; &ltxxx&gtTestUser FriendOne&lt/xxx&gt</span>:
-&ltxxx&gtalert "ScriptTest"&lt/xxx&gt&ltxxx&gtTitleTest&lt/xxx&gt
-(&ltxxx&gt20013&lt/xxx&gt),
-S. &ltxxx&gt323--324&lt/xxx&gt
+<span style="font-variant: small-caps">&lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; ; &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;</span>:
+&lt;xxx&gt;alert "ScriptTest"&lt;/xxx&gt;&lt;xxx&gt;TitleTest&lt;/xxx&gt;
+(&lt;xxx&gt;20013&lt;/xxx&gt;),
+S. &lt;xxx&gt;323--324&lt;/xxx&gt;
 </div></body>
 </html>
