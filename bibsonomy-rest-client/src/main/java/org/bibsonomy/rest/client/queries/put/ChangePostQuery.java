@@ -114,7 +114,7 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return this.getRenderer().parseResourceHash(this.downloadedDocument); 
+			return this.getRenderer().parseResourceHash(this.downloadedDocument);
 		return this.getError();
 	}
 }

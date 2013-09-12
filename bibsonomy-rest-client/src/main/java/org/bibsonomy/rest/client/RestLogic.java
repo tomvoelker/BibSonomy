@@ -105,6 +105,7 @@ import org.bibsonomy.rest.client.queries.post.CreateSyncPlanQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.post.CreateUserRelationshipQuery;
 import org.bibsonomy.rest.client.queries.post.PickPostQuery;
+import org.bibsonomy.rest.client.queries.put.ChangeDocumentNameQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeSyncStatusQuery;
@@ -116,7 +117,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.ExceptionUtils;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * 
@@ -332,7 +332,7 @@ public class RestLogic implements LogicInterface {
 		for (final Post<?> post : posts) {
 			ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
 			final String hash = execute(query);
-			if (query.isSuccess() == false) {
+			if (!query.isSuccess()) {
 				collectedException.addToErrorMessages(post.getResource().getIntraHash(), new ErrorMessage(hash, hash));
 			}
 			// hashes are recalculated by the server
@@ -352,7 +352,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public String createDocument(final Document doc, final String resourceHash) {
-		if (!ValidationUtils.present(doc.getUserName())) {
+		if (!present(doc.getUserName())) {
 			doc.setUserName(this.authUser.getName());
 		}
 		CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc.getUserName(), resourceHash, doc.getFile());
@@ -701,7 +701,7 @@ public class RestLogic implements LogicInterface {
 	}
 	@Override
 	public void updateDocument(Document document, String resourceHash, String newName) {
-		throw new UnsupportedOperationException(); // TODO: implement
+		this.execute(new ChangeDocumentNameQuery(resourceHash, newName, document));
 	}
 
 	@Override
