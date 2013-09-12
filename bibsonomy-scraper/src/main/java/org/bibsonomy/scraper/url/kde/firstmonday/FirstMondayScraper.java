@@ -24,6 +24,7 @@ package org.bibsonomy.scraper.url.kde.firstmonday;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -38,54 +39,57 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-
-
+import org.bibsonomy.util.WebUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.tidy.Tidy;
 /**
  * @author Haile
  * @version $Id$
  */
 public class FirstMondayScraper extends AbstractUrlScraper{
 	private final Log log = LogFactory.getLog(FirstMondayScraper.class);
-	private static final String SITE_NAME = "First Monday";
+	
+	private static final String SITE_NAME = "Firtst Monday";
 	private static final String SITE_URL = "http://firstmonday.org";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	
 	private static final String BIBTEX_PATH = "/ojs/index.php/fm/rt/captureCite/";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "firstmonday.org/index"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "journals.uic.edu"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+(/\\d+)*?");
-
+	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
-		
-		final URL url = scrapingContext.getUrl();		
+
+		final URL url = scrapingContext.getUrl();
 		final String bibTexUrl= getBibTexURL(url);
-		
+
 		if (!present(bibTexUrl)) {
-			log.error("can't parse publication BibTex URL");
+			log.error("can't parse publication id");
 			return false;
 		}
 		try {
-				//The BibTex is eclosed in side pre tag
-				//jsoup is used for parsing
-				// FIXME: there is currently no jsoup in bibsonomy s this does not compile - why not use jtidy as it is already in the classpath?
-				String bibTex = null; //WebUtils.getContentAsString(bibTexUrl);
-				//Document document = Jsoup.parse(bibTex);
-				//bibTex = document.getElementsByTag("pre").text();
-		
-				if(present(bibTex)){
-					scrapingContext.setBibtexResult(bibTex);
-					return true;
-				} else {
-					throw new ScrapingFailureException("getting bibtex failed");
-				}
+			 Tidy tidy = new Tidy();
+		     final ByteArrayInputStream inputStream = new ByteArrayInputStream(WebUtils.getContentAsString(bibTexUrl).getBytes("UTF-8"));
+		     final Document doc = tidy.parseDOM(inputStream, null);  
+		     final Node title = doc.getElementsByTagName("pre").item(0);
+		     final String bibTex = title.getFirstChild().getNodeValue();
+		     
+			if (present(bibTex)) {
+				scrapingContext.setBibtexResult(bibTex);
+				return true;
+			} else {
+				throw new ScrapingFailureException("getting bibtex failed");
+			}
 		} catch (final Exception e) {
 			throw new InternalFailureException(e);
 		}
 	}
-	/*
-	 * Construct a url
-	 * return the url to scrapeInternal 
+	/**
+	 * extracts publication id from url
+	 * 
+	 * @param url
+	 * @return publication id
 	 */
 	private String getBibTexURL(final URL url) {
 		final String host = url.getHost();
@@ -97,20 +101,29 @@ public class FirstMondayScraper extends AbstractUrlScraper{
 		}else
 			return null;
 	}
-	@Override
-	public String getInfo() {
-		return INFO;
-	}	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.bibsonomy.scraper.AbstractUrlScraper#getUrlPatterns()
+	 */
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
 	}
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
+
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
+
+	@Override
+	public String getInfo() {
+		return INFO;
+	}
+	
 }
