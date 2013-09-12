@@ -84,9 +84,9 @@ public interface Renderer {
 	/**
 	 * serializes one {@link Document}
 	 * @param writer
-	 * @param newDocument
+	 * @param document
 	 */
-	public void serializeDocument(Writer writer, Document newDocument);
+	public void serializeDocument(Writer writer, Document document);
 	
 	/**
 	 * Serializes a {@link List} of {@link User}s.
