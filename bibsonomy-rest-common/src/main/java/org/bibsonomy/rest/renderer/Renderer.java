@@ -82,6 +82,13 @@ public interface Renderer {
 	public void serializePost(Writer writer, Post<? extends Resource> post, ViewModel model);
 
 	/**
+	 * serializes one {@link Document}
+	 * @param writer
+	 * @param newDocument
+	 */
+	public void serializeDocument(Writer writer, Document newDocument);
+	
+	/**
 	 * Serializes a {@link List} of {@link User}s.
 	 * 
 	 * @param writer

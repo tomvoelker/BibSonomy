@@ -168,6 +168,14 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlDoc.setPost(this.createXmlPost(post));
 		this.serialize(writer, xmlDoc);
 	}
+	
+	@Override
+	public void serializeDocument(Writer writer, Document document) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setDocument(this.createXmlDocument(document));
+		this.serialize(writer, xmlDoc);
+	}
 
 	protected PostType createXmlPost(final Post<? extends Resource> post) throws InternServerException {
 		final PostType xmlPost = new PostType();
@@ -239,9 +247,7 @@ public abstract class AbstractRenderer implements Renderer {
 				// … put them into the xml output
 				final DocumentsType xmlDocuments = new DocumentsType();
 				for (final Document document : documents){
-					final DocumentType xmlDocument = new DocumentType();
-					xmlDocument.setFilename(document.getFileName());
-					xmlDocument.setMd5Hash(document.getMd5hash());
+					final DocumentType xmlDocument = createXmlDocument(document);
 					xmlDocument.setHref(this.urlRenderer.createHrefForResourceDocument(userName, publication.getIntraHash(), document.getFileName()));
 					xmlDocuments.getDocument().add(xmlDocument);
 				}
@@ -289,6 +295,13 @@ public abstract class AbstractRenderer implements Renderer {
 	
 			xmlPost.setGoldStandardPublication(xmlPublication);
 		}
+	}
+
+	protected DocumentType createXmlDocument(final Document document) {
+		final DocumentType xmlDocument = new DocumentType();
+		xmlDocument.setFilename(document.getFileName());
+		xmlDocument.setMd5Hash(document.getMd5hash());
+		return xmlDocument;
 	}
 
 	protected void fillXmlPublicationDetails(final BibTex publication, final AbstractPublicationType xmlPublication) {
