@@ -16,9 +16,9 @@ import org.apache.lucene.document.Document;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
+import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
@@ -324,14 +324,16 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	private boolean isIndexCorrect(LuceneResourceIndex<R> index) {
 		int noDocsInLucene = index.getStatistics().getNumDocs();
-		int noPostInDB = dbLogic.getNumberOfPosts();
-		// First check if there ARE documents
+		/*
+		 * first check if there ARE documents and don't do a count on the database
+		 */
 		if (noDocsInLucene < 1) {
 			return false;
 		}
-		if (noDocsInLucene > (noPostInDB + DOC_TOLERANCE) || noDocsInLucene < (noPostInDB - DOC_TOLERANCE)) {
+		int noPostInDB = dbLogic.getNumberOfPosts();
+		if (Math.abs(noDocsInLucene - noPostInDB) > DOC_TOLERANCE) {
 			return false;
-		}		
+		}
 		return true;
 	}
 
