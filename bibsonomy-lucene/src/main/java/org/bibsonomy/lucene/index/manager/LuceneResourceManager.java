@@ -33,8 +33,7 @@ import org.bibsonomy.model.User;
  * requests for flagging/unflagging of spam users
  * 
  * @author fei
- * @version $Id: LuceneResourceManager.java,v 1.19 2012-06-06 18:17:51 nosebrain
- *          Exp $
+ * @version $Id$
  * @param <R>
  *            the resource to manage
  */
@@ -60,7 +59,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	/** flag indicating that an index-generation is currently running */
 	private boolean generatingIndex = false;
 
-	protected int alreadyRunning = 0; // das geht bestimmt irgendwie besser
+	private int alreadyRunning = 0; // das geht bestimmt irgendwie besser
 	private final int maxAlreadyRunningTrys = 20;
 
 	/** all known redundant resource indeces */
@@ -182,6 +181,13 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		this.alreadyRunning = 0;
 	}
 
+	/**
+	 * udpates the index for the current log data and last tas id and last log date
+	 * @param currentLogDate
+	 * @param lastTasId
+	 * @param lastLogDate
+	 * @return the lastTasId found by generating the new index
+	 */
 	protected int updateIndex(final long currentLogDate, int lastTasId, final long lastLogDate) {
 		/*
 		 * 1) flag/unflag spammer
@@ -310,6 +316,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		}
 	}
 
+	/**
+	 * regenerates the resource index with the specified id
+	 * @param id
+	 */
 	public void regenerateIndex(final int id) {
 		this.regenerateIndex(id, true);
 	}
@@ -342,7 +352,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * active on a redundant index.
 	 * 
 	 * @param id
-	 * 
+	 * @param async 
 	 */
 	public void regenerateIndex(final int id, final boolean async) {
 		// allow only one index-generation at a time
@@ -687,6 +697,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		this.generator = null;
 	}
 
+	/**
+	 * @return	a list of {@link LuceneIndexInfo} for each managed resource index
+	 * 			of this manager
+	 */
 	public List<LuceneIndexInfo> getIndicesInfos() {
 		final List<LuceneIndexInfo> lrii = new LinkedList<LuceneIndexInfo>();
 		
