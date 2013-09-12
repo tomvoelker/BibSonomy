@@ -85,7 +85,11 @@
 							<bform:captcha/>
 	             		
 	             			<div class="fsRow">
-				  				<form:label cssClass="fsLabel" path="acceptPrivacy" ><fmt:message key="register.acceptPrivacy"/>*</form:label>
+				  				<form:label cssClass="fsLabel" path="acceptPrivacy" >
+				  					<fmt:message key="register.acceptPrivacy">
+				  						<fmt:param value="${properties['project.name']}" />
+				  					</fmt:message>*
+				  				</form:label>
 				  				<form:checkbox path="acceptPrivacy" value="yes"/>
 				  				<div class="dissError"><form:errors path="acceptPrivacy" /></div>
 	            			</div>
