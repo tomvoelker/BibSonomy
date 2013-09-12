@@ -49,7 +49,6 @@ public class CSLRenderer implements Renderer {
 
 	@Override
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
-
 		final ListIterator<? extends Post<? extends Resource>> iter = posts.listIterator();
 		try {
 			writer.append(BEGIN);
@@ -81,47 +80,51 @@ public class CSLRenderer implements Renderer {
 		} catch (final IOException ex) {
 			LOGGER.error(ex);
 		}
-
+	}
+	
+	@Override
+	public void serializeDocument(Writer writer, Document newDocument) {
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeUsers(final Writer writer, final List<User> users, final ViewModel viewModel) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeUser(final Writer writer, final User user, final ViewModel viewModel) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeTags(final Writer writer, final List<Tag> tags, final ViewModel viewModel) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeTag(final Writer writer, final Tag tag, final ViewModel viewModel) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeRecommendedTags(final Writer writer, final Collection<RecommendedTag> tags) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeRecommendedTag(final Writer writer, final RecommendedTag tag) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeGroup(final Writer writer, final Group group, final ViewModel viewModel) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
@@ -149,42 +152,42 @@ public class CSLRenderer implements Renderer {
 
 	@Override
 	public void serializeResourceHash(final Writer writer, final String hash) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeUserId(final Writer writer, final String userId) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeURI(final Writer writer, final String uri) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeGroupId(final Writer writer, final String groupId) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeSynchronizationPosts(final Writer writer, final List<? extends SynchronizationPost> posts) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public void serializeSynchronizationData(final Writer writer, final SynchronizationData syncData) {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public SynchronizationData parseSynchronizationData(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override
 	public List<SynchronizationPost> parseSynchronizationPostList(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedMediaTypeException("CSL format supports only bibtex resources");
+		throw new UnsupportedMediaTypeException("CSL format supports only publication resources");
 	}
 
 	@Override

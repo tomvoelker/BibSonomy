@@ -50,87 +50,87 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Group parseGroup(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String parseGroupId(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Group> parseGroupList(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Post<? extends Resource> parsePost(final Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Post<? extends Resource>> parsePostList(final Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public RecommendedTag parseRecommendedTag(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public SortedSet<RecommendedTag> parseRecommendedTagList(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Set<String> parseReferences(final Reader reader) {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String parseResourceHash(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Post<? extends Resource> parseCommunityPost(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String parseStat(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Tag parseTag(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public String parseUserId(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public List<User> parseUserList(final Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -147,17 +147,17 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializeGroup(final Writer writer, final Group group, final ViewModel viewModel) {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void serializeGroupId(final Writer writer, final String groupId) {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -169,7 +169,6 @@ public class JabrefLayoutRenderer implements Renderer {
 	@Override
 	public void serializePost(final Writer writer, final Post<? extends Resource> post, final ViewModel model) {
 		serializePosts(writer, Collections.singletonList(post), model);
-		
 	}
 
 	@Override
@@ -187,6 +186,11 @@ public class JabrefLayoutRenderer implements Renderer {
 			throw new InternServerException(ex);
 		}
 	}
+	
+	@Override
+	public void serializeDocument(Writer writer, Document document) {
+		throw new UnsupportedOperationException();
+	}
 
 	@Override
 	public void serializeRecommendedTag(final Writer writer, final RecommendedTag tag) {
@@ -200,17 +204,17 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializeResourceHash(final Writer writer, final String hash) {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void serializeTag(final Writer writer, final Tag tag, final ViewModel viewModel) {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void serializeTags(final Writer writer, final List<Tag> tags, final ViewModel viewModel) {
-		throw new UnsupportedOperationException();	
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
