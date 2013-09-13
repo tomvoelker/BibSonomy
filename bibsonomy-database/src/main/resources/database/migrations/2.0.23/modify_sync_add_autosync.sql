@@ -1,0 +1,1 @@
+ALTER TABLE sync ADD `autosync` boolean default false;
