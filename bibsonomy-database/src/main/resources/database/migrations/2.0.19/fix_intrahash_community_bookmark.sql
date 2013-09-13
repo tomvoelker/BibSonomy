@@ -1,0 +1,1 @@
+UPDATE gold_standard SET simhash2 = simhash1 WHERE content_type = 1;

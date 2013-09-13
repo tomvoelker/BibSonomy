@@ -1,0 +1,1 @@
+UPDATE user SET role = 1 WHERE role = 2;
