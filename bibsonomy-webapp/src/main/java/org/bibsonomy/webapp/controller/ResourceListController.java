@@ -182,7 +182,7 @@ public abstract class ResourceListController {
 				SystemTagsExtractor.removeAllNonSystemTags(tags);
 			}
 
-			// check if limitation to a single resourcetype is requested			
+			// check if limitation to a single resourcetype is requested
 			Class<? extends Resource> resourcetype = Resource.class;
 			if (this.isPublicationOnlyRequested(cmd)) {
 				resourcetype = BibTex.class;
@@ -194,7 +194,7 @@ public abstract class ResourceListController {
 			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, max, search);
 
 			// when tags only are requested, we don't need any resources
-			this.setInitializeNoResources(true);	
+			this.setInitializeNoResources(true);
 		}
 	}
 
@@ -341,7 +341,7 @@ public abstract class ResourceListController {
 		this.initializeNoResources = initializeNoResources;
 	}
 
-	private Set<Class<? extends Resource>> getUserResourcesFromSettings() {		
+	private Set<Class<? extends Resource>> getUserResourcesFromSettings() {
 		final Set<Class<? extends Resource>> resources = new HashSet<Class<? extends Resource>>();
 		
 		if (this.userSettings.isShowBookmark()) {
@@ -416,7 +416,7 @@ public abstract class ResourceListController {
 						// controller supports resources requested by format
 						resourcesToInitialize.addAll(supportFormat);
 					}
-				}								
+				}
 			}
 			else if (!present(supportFormat) && present(supportParam)) {
 				// resources requested by URL param don't match resources supported by format -> empty list
