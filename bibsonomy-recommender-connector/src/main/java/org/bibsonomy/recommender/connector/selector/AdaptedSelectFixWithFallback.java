@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl;
-
+import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 
 import recommender.core.interfaces.model.RecommendationEntity;
@@ -31,7 +30,7 @@ import recommender.impl.multiplexer.strategy.SelectFixRecommenderWithFallback;
  */
 public class AdaptedSelectFixWithFallback<E extends RecommendationEntity, R extends RecommendationResult> extends SelectFixRecommenderWithFallback<E, R> {
 	
-	private AbstractRecommenderMainItemAccessImpl dbAccess;
+	private ExtendedMainAccess dbAccess;
 	
 	/*
 	 * (non-Javadoc)
@@ -66,7 +65,7 @@ public class AdaptedSelectFixWithFallback<E extends RecommendationEntity, R exte
 		
 	}
 	
-	public void setDbAccess(AbstractRecommenderMainItemAccessImpl dbAccess) {
+	public void setDbAccess(ExtendedMainAccess dbAccess) {
 		this.dbAccess = dbAccess;
 	}
 

@@ -1,0 +1,44 @@
+package org.bibsonomy.recommender.connector.database;
+
+import java.util.List;
+
+import org.bibsonomy.recommender.connector.filter.UserPrivacyFilter;
+
+import recommender.core.interfaces.database.RecommenderMainItemAccess;
+import recommender.core.interfaces.model.RecommendationItem;
+
+public interface ExtendedMainAccess extends RecommenderMainItemAccess {
+
+	/**
+	 * This method retrieves a list of resources from the bibsonomy database by contentid.
+	 * This is needed in case of caching the results fails and those have to be retrieved from the database.
+	 * In this case the loading of a fully wrapped resource should take place.
+	 * 
+	 * @param ids a list of content ids for which to retrieve content
+	 * 
+	 * @return the wrapped posts belonging to the specified ids
+	 */
+	public abstract List<RecommendationItem> getResourcesByIds(final List<Integer> ids);
+	
+	/**
+	 * This method should provide access to a maximum of count items belonging to the requesting user.
+	 * This merges his or her bibtex and bookmark resources to get a better overview of his preferences.
+	 * 
+	 * @param count the maximum count of items to return
+	 * @param username the username for whom to retrieve his items
+	 * 
+	 * @return a maximum of count items owned by the requesting user
+	 */
+	public List<RecommendationItem> getAllItemsOfQueryingUser(final int count, final String username);
+	
+	/**
+	 * This method allows the {@link UserPrivacyFilter} to substitute usernames
+	 * by ids to forward those to external recommendation services.
+	 * 
+	 * @param username the username to substitute
+	 * 
+	 * @return the corresponding id
+	 */
+	public Long getUserIdByName(final String username);
+	
+}

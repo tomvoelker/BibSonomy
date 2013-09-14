@@ -1,7 +1,7 @@
 package org.bibsonomy.recommender.connector.filter;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl;
+import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 
 import recommender.core.interfaces.filter.PrivacyFilter;
@@ -15,7 +15,7 @@ import recommender.core.interfaces.model.ItemRecommendationEntity;
  */
 public class UserPrivacyFilter implements PrivacyFilter<ItemRecommendationEntity>{
 
-	private AbstractRecommenderMainItemAccessImpl dbAccess;
+	private ExtendedMainAccess dbAccess;
 	
 	@Override
 	public ItemRecommendationEntity filterEntity(ItemRecommendationEntity entity) {
@@ -35,7 +35,7 @@ public class UserPrivacyFilter implements PrivacyFilter<ItemRecommendationEntity
 		
 	}
 
-	public void setDbAccess(AbstractRecommenderMainItemAccessImpl dbAccess) {
+	public void setDbAccess(ExtendedMainAccess dbAccess) {
 		this.dbAccess = dbAccess;
 	}
 	

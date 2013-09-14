@@ -11,11 +11,10 @@ import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import recommender.core.database.AbstractDatabaseManager;
 import recommender.core.database.RecommenderDBSession;
 import recommender.core.database.RecommenderDBSessionFactory;
-import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
-public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractDatabaseManager implements RecommenderMainItemAccess{
+public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractDatabaseManager implements ExtendedMainAccess {
 	private RecommenderDBSessionFactory mainFactory;
 	
 	protected RecommenderDBSession openMainSession() {
@@ -37,6 +36,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getSimilarUsers(int, recommender.core.interfaces.model.ItemRecommendationEntity)
 	 */
+	@Override
 	public List<String> getSimilarUsers(final int count, final ItemRecommendationEntity entity) {
 		
 		final RecommenderDBSession mainSession = this.openMainSession();
@@ -89,26 +89,18 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	@Override
 	public abstract List<RecommendationItem> getItemsForUser(int count, String username);
 	
-	/**
-	 * This method retrieves a list of resources from the bibsonomy database by contentid.
-	 * This is needed in case of caching the results fails and those have to be retrieved from the database.
-	 * In this case the loading of a fully wrapped resource should take place.
-	 * 
-	 * @param ids a list of content ids for which to retrieve content
-	 * 
-	 * @return the wrapped posts belonging to the specified ids
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getResourcesByIds(java.util.List)
 	 */
+	@Override
 	public abstract List<RecommendationItem> getResourcesByIds(final List<Integer> ids);
 	
-	/**
-	 * This method should provide access to a maximum of count items belonging to the requesting user.
-	 * This merges his or her bibtex and bookmark resources to get a better overview of his preferences.
-	 * 
-	 * @param count the maximum count of items to return
-	 * @param username the username for whom to retrieve his items
-	 * 
-	 * @return a maximum of count items owned by the requesting user
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getAllItemsOfQueryingUser(int, java.lang.String)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<RecommendationItem> getAllItemsOfQueryingUser(final int count, final String username) {
 		
@@ -136,6 +128,11 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 		
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getUserIdByName(java.lang.String)
+	 */
+	@Override
 	public Long getUserIdByName(final String username) {
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {

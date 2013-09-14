@@ -8,13 +8,13 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl;
+import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
-public class DummyMainItemAccess extends AbstractRecommenderMainItemAccessImpl{
+public class DummyMainItemAccess implements ExtendedMainAccess {
 
 	@Override
 	public List<RecommendationItem> getMostActualItems(int count,
