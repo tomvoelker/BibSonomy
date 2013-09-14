@@ -32,7 +32,7 @@
 	 
 	<bean id="postPrivacyFilter" class="org.bibsonomy.recommender.connector.filter.PostPrivacyFilter" />
 
-	<bean id="renderer" class="org.bibsonomy.recommender.connector.model.BibsonomyRendererFactoryWrapper" />
+	<bean id="renderer" class="org.bibsonomy.recommender.connector.model.BibsonomyTagRendererFactoryWrapper" />
 
 	<util:list id="localTagRecommenderList" list-class="java.util.ArrayList"> 		
   		<ref bean="mostPopularMixRecommender"/>
@@ -124,14 +124,18 @@
 		 | Initialization of item recommendations
 		 |
 		 + -->
-	<!--+
-	    | Multiplexing item recommender
+	
+	<!--+ 
+		|
+	    | For bookmark recommendations
+	    |
 	    +-->
+	
 	<bean id="multiplexingBookmarkRecommender" class="recommender.impl.multiplexer.MultiplexingRecommender" init-method="init" scope="singleton">
 	    <property name="queryTimeout" value="1500" />
 		<property name="resultModifiers" ref="resultFilterList" />
 		<property name="resultSelector" ref="selectFixBookmarkWithFallback" />
-		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbLogic" ref="bookmarkRecommenderLogic" />
 	    <property name="localRecommenders" ref="localBookmarkRecommenderList" />
 	    <property name="privacyFilter"  ref="userPrivacyFilter"/>
 	</bean>	
@@ -144,32 +148,43 @@
 	<!--+ 
 	    | strategy for select primary recommender if it delivered results, else select fallback
 	    +-->
-	<bean id="selectFixBookmarkWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
-		<property name="dbLogic" ref="itemRecommenderLogic"/>
-		<property name="dbAccess" ref="recommenderBookmarkMainLogic"/>
-		<property name="primaryRecommender" ref="cfBookmarkRecommender" />
-		<property name="fallbackRecommender" ref="dummyBookmarkRecommender" />
-	</bean> 
 	 
 	<bean id="dummyBookmarkRecommender" class="recommender.impl.item.simple.DummyItemRecommender">
-		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbLogic" ref="bookmarkRecommenderLogic" />
 		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
 		<property name="numberOfItemsToRecommend" value="5"/>
 	</bean>
 	
 	<bean id="cfBookmarkRecommender" class="org.bibsonomy.recommender.connector.collaborative.AdaptedCollaborativeItemRecommender">
-		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbLogic" ref="bookmarkRecommenderLogic" />
 		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
 		<property name="numberOfItemsToRecommend" value="5"/>
 		<property name="maxUsersToEvaluate" value="8"/>
 		<property name="maxItemsToEvaluate" value="20"/>
 	</bean>
+	
+	<bean id="bookmarkRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
+		<property name="resourceType" value="org.bibsonomy.model.Bookmark"/>
+	</bean>
+	    
+	<bean id="selectFixBookmarkWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
+		<property name="dbLogic" ref="bookmarkRecommenderLogic"/>
+		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
+		<property name="primaryRecommender" ref="cfBibTexRecommender" />
+		<property name="fallbackRecommender" ref="dummyBibTexRecommender" />
+	</bean>
+	
+	<!--+ 
+		|
+	    | For bibtex recommendations
+	    |
+	    +-->
 	    
 	<bean id="multiplexingBibTexRecommender" class="recommender.impl.multiplexer.MultiplexingRecommender" init-method="init" scope="singleton">
 	    <property name="queryTimeout" value="1500" />
 		<property name="resultModifiers" ref="resultFilterList" />
 		<property name="resultSelector" ref="selectFixBibTexWithFallback" />
-		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbLogic" ref="bibtexRecommenderLogic" />
 	    <property name="localRecommenders" ref="localBibTexRecommenderList" />
 	    <property name="privacyFilter"  ref="userPrivacyFilter"/>
 	</bean>	  	 
@@ -179,29 +194,37 @@
   		<ref bean="cfBibTexRecommender"/>
 	</util:list>
 	
-	<bean id="userPrivacyFilter" class="org.bibsonomy.recommender.connector.filter.UserPrivacyFilter" />
+	<bean id="userPrivacyFilter" class="org.bibsonomy.recommender.connector.filter.UserPrivacyFilter">
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+	</bean>
 	
 	<!--+ 
 	    | strategy for select primary recommender if it delivered results, else select fallback
 	    +-->
-	<bean id="selectFixBibTexWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
-		<property name="dbLogic" ref="itemRecommenderLogic"/>
-		<property name="dbAccess" ref="recommenderBibTexMainLogic"/>
-		<property name="primaryRecommender" ref="cfBibTexRecommender" />
-		<property name="fallbackRecommender" ref="dummyBibTexRecommender" />
-	</bean>
+	
 	
 	<bean id="dummyBibTexRecommender" class="recommender.impl.item.simple.DummyItemRecommender">
-		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbLogic" ref="bibtexRecommenderLogic" />
 		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
 		<property name="numberOfItemsToRecommend" value="5"/>
 	</bean>
 	
 	<bean id="cfBibTexRecommender" class="org.bibsonomy.recommender.connector.collaborative.AdaptedCollaborativeItemRecommender">
-		<property name="dbLogic" ref="itemRecommenderLogic" />
+		<property name="dbLogic" ref="bibtexRecommenderLogic" />
 		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
 		<property name="numberOfItemsToRecommend" value="5"/>
 		<property name="maxUsersToEvaluate" value="8"/>
 		<property name="maxItemsToEvaluate" value="20"/>
+	</bean>
+	
+	<bean id="bibtexRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
+		<property name="resourceType" value="org.bibsonomy.model.BibTex"/>
+	</bean>
+	    
+	<bean id="selectFixBibTexWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
+		<property name="dbLogic" ref="bibtexRecommenderLogic"/>
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
+		<property name="primaryRecommender" ref="cfBibTexRecommender" />
+		<property name="fallbackRecommender" ref="dummyBibTexRecommender" />
 	</bean>
 </beans>

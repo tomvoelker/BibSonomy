@@ -93,6 +93,18 @@
 						<property name="allowedFields" ref="publicationRequestParameters" />
 					</bean>
 				</entry>
+				<entry key="/ajax/addItemRecommenderFeedback">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="ajaxItemRecommenderFeedbackController" />
+						<property name="allowedFields" >
+							<list>
+								<value>intraHash</value>
+								<value>action</value>
+								<value>userName</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/ajax/handleGroupShare">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="groupShareAjaxController" />
@@ -262,6 +274,11 @@
 		<property name="recommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
+	</bean>
+	
+	<bean id="ajaxItemRecommenderFeedbackController" class="org.bibsonomy.webapp.controller.ajax.ItemRecommenderFeedbackController" scope="request" parent="ajaxController">
+		<property name="multiplexingBibTexRecommender" ref="multiplexingBibTexRecommender" />
+		<property name="multiplexingBookmarkRecommender" ref="multiplexingBookmarkRecommender" />
 	</bean>
 	
 	<bean id="userSearchController" class="org.bibsonomy.webapp.controller.ajax.UserSearchController" scope="request" parent="ajaxController" />

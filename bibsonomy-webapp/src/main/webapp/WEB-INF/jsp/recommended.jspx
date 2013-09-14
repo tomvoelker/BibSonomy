@@ -24,6 +24,10 @@
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 		
+		<jsp:attribute name="headerExt">
+			<script src="${resdir}/javascript/recommender_feedback.js" type="text/javascript"><!-- keep me --></script>
+		</jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
 			<ul>
 				<li>

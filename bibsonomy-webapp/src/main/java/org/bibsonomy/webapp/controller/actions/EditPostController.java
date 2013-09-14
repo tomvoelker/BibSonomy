@@ -546,7 +546,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * id using the contentid field. 
 			 */
 			entity.setId(""+postID);
-			recommender.setFeedback(entity);
+			recommender.setFeedback(entity, null);
 		} catch (final Exception ex) {
 			log.warn("Could not connect post with recommendation.");
 			/*

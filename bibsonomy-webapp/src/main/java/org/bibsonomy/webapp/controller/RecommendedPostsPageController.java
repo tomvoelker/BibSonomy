@@ -9,7 +9,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.model.RecommendedPost;
+import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RecommendedPostsCommand;
@@ -65,6 +65,7 @@ public class RecommendedPostsPageController extends SingleResourceListController
 		return Views.RECOMMENDEDPAGE;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user, Class<? extends Resource> resourceType) {
 		
 		if (resourceType == BibTex.class) {
@@ -73,8 +74,8 @@ public class RecommendedPostsPageController extends SingleResourceListController
 			final ListCommand<Post<BibTex>> listCommand = cmd.getBibtex();
 			ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 			for (RecommendedItem item : result) {
-				if (item.getItem() instanceof RecommendedPost) {
-					posts.add(((RecommendedPost<BibTex>) item.getItem()).getPost());
+				if (item.getItem() instanceof RecommendationPost) {
+					posts.add(((RecommendationPost<BibTex>) item.getItem()).getPost());
 				}
 			}
 			listCommand.setList(posts);
@@ -85,8 +86,8 @@ public class RecommendedPostsPageController extends SingleResourceListController
 			ArrayList<Post<Bookmark>> bookmarkPosts = new ArrayList<Post<Bookmark>>();
 			
 			for(RecommendedItem item : resultBookmark) {
-				if(item.getItem() instanceof RecommendedPost) {
-					bookmarkPosts.add(((RecommendedPost<Bookmark>) item.getItem()).getPost());
+				if(item.getItem() instanceof RecommendationPost) {
+					bookmarkPosts.add(((RecommendationPost<Bookmark>) item.getItem()).getPost());
 				}
 			}
 			

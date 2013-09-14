@@ -183,7 +183,7 @@
 	    <property name="tagRecommender" ref="multiplexingTagRecommender" />
 	    <property name="itemRecommender" ref="multiplexingBibTexRecommender" />
 	    <property name="dbTagLogic" ref="tagRecommenderLogic" />
-	    <property name="dbItemLogic" ref="itemRecommenderLogic" />
+	    <property name="dbItemLogic" ref="bibtexRecommenderLogic" />
 	</bean>
 	
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
