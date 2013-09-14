@@ -27,13 +27,16 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedPost;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -48,7 +51,7 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
  * This interface should be implemented by classes that intend to add additional
  * rendering capabilities to the system.<br/>
  * 
- * Note that it also includes funtionality to read the data, that has been
+ * Note that it also includes functionality to read the data, that has been
  * rendered with it.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -81,6 +84,30 @@ public interface Renderer {
 	 */
 	public void serializePost(Writer writer, Post<? extends Resource> post, ViewModel model);
 
+	/**
+	 * Serializes one {@link RecommendedPost}.
+	 * 
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param posts
+	 *            a list of {@link RecommendedPost} objects.
+	 * @param model
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeRecommendedPosts(Writer writer, List<? extends RecommendedPost<? extends Resource>> posts, ViewModel viewModel);
+	
+	/**
+	 * Serializes one {@link RecommendedPost}.
+	 * 
+	 * @param writer
+	 *            a {@link Writer} to use.
+	 * @param post
+	 *            one {@link RecommendedPost} object.
+	 * @param model
+	 *            the {@link ViewModel} encapsulates additional information,
+	 */
+	public void serializeRecommendedPost(Writer writer, RecommendedPost<? extends Resource> post, ViewModel viewModel);
+	
 	/**
 	 * serializes one {@link Document}
 	 * @param writer
@@ -370,6 +397,18 @@ public interface Renderer {
 	public List<Post<? extends Resource>> parsePostList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException;
 
 	/**
+	 * Reads a List of {@link RecommendedItem}s from a {@link Reader}
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return a {@link Map} of {@link Post} objects, which fit to the specified resourceType and are mapped
+	 * 		to their score(first)-confidence(second) pairs.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public <T extends Resource> List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException;
+	
+	/**
 	 * Reads one {@link Post} from a {@link Reader}.
 	 * 
 	 * @param reader
@@ -381,6 +420,18 @@ public interface Renderer {
 	 */
 	public Post<? extends Resource> parsePost(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException;
 
+	/**
+	 * Reads one {@link RecommendedItem} from a {@link Reader}
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Pair} which contains a {@link Post}(first) object which is conform to the specified resourceType
+	 * 	and another {@link Pair}(second) containing score(first) and confidence(second) of the recommendation.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public <T extends Resource> RecommendedPost<? extends Resource> parseRecommendedItem(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException;
+	
 	/**
 	 * Reads one {@link Document} from a {@link Reader}
 	 * 

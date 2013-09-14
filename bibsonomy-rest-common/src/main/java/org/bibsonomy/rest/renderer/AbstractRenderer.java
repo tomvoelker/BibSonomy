@@ -64,6 +64,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedPost;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -170,13 +171,57 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 	
 	@Override
+	public void serializeRecommendedPosts(Writer writer, List<? extends RecommendedPost<? extends Resource>> posts, ViewModel viewModel) {
+		final PostsType xmlPosts = new PostsType();
+		if (viewModel != null) {
+			xmlPosts.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
+			if (viewModel.getUrlToNextResources() != null) {
+				xmlPosts.setNext(viewModel.getUrlToNextResources());
+			}
+			xmlPosts.setStart(BigInteger.valueOf(viewModel.getStartValue()));
+		} else if (posts != null) {
+			xmlPosts.setStart(BigInteger.valueOf(0));
+			xmlPosts.setEnd(BigInteger.valueOf(posts.size()));
+		} else {
+			xmlPosts.setStart(BigInteger.valueOf(0));
+			xmlPosts.setEnd(BigInteger.valueOf(0));
+		}
+	
+		if (present(posts)) {
+			for (final RecommendedPost<? extends Resource> post : posts) {
+				xmlPosts.getPost().add(this.createRecommendedXmlPost(post));
+			}
+		}
+	
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setPosts(xmlPosts);
+		this.serialize(writer, xmlDoc);
+	}
+	
+	@Override
+	public void serializeRecommendedPost(Writer writer, RecommendedPost<? extends Resource> post, ViewModel viewModel) {
+		final BibsonomyXML xmlDoc = new BibsonomyXML();
+		xmlDoc.setStat(StatType.OK);
+		xmlDoc.setPost(this.createRecommendedXmlPost(post));
+		this.serialize(writer, xmlDoc);
+	}
+
+	@Override
 	public void serializeDocument(Writer writer, Document document) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setDocument(this.createXmlDocument(document));
 		this.serialize(writer, xmlDoc);
 	}
-
+	
+	protected PostType createRecommendedXmlPost(final RecommendedPost<? extends Resource> post) {
+		final PostType xmlPost = createXmlPost(post.getPost());
+		xmlPost.setScore(post.getScore());
+		xmlPost.setConfidence(post.getConfidence());
+		return xmlPost;
+	}
+	
 	protected PostType createXmlPost(final Post<? extends Resource> post) throws InternServerException {
 		final PostType xmlPost = new PostType();
 		this.fillXmlPost(xmlPost, post);
@@ -862,6 +907,52 @@ public abstract class AbstractRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of posts defined.");
 	}
 
+	@Override
+	public <T extends Resource> List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		if (xmlDoc.getPosts() != null) {
+			final List<RecommendedPost<? extends Resource>> items = new ArrayList<RecommendedPost<? extends Resource>>();
+			for (final PostType post : xmlDoc.getPosts().getPost()) {
+				try {
+					final Post<Resource> p = this.createPost(post, uploadedFileAcessor);
+					if(p.getResource().getClass().isAssignableFrom(resourceType)) {
+						final RecommendedPost<? extends Resource> recPost = new RecommendedPost<Resource>(p);
+						items.add(recPost);
+					}
+				} catch (final PersonListParserException ex) {
+					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+				}
+			}
+			return items;
+		}
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of posts defined.");
+	}
+	
+	@Override
+	public <T extends Resource> RecommendedPost<? extends Resource> parseRecommendedItem(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		
+		final PostType post = xmlDoc.getPost();
+		if (post != null) {
+			try {
+				final Post<Resource> p =  this.createPost(post, uploadedFileAccessor);
+				if(p.getClass().isAssignableFrom(resourceType)) {
+					return new RecommendedPost<Resource>(p);
+				}
+			} catch (final PersonListParserException ex) {
+				xmlDoc.setError("Error parsing the person names for entry with BibTeXKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
+			}
+		}
+	
+		if (xmlDoc.getError() != null) {
+			throw new BadRequestOrResponseException(xmlDoc.getError());
+		}
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
+	}
+	
 	@Override
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
