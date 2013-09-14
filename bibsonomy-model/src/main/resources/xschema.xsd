@@ -207,6 +207,8 @@
 		<xsd:attribute name="description" type="xsd:string" />
 		<xsd:attribute name="postingdate" type="xsd:dateTime" />
 		<xsd:attribute name="changedate" type="xsd:dateTime" />
+		<xsd:attribute name="score" type="probabilityValue" />
+		<xsd:attribute name="confidence" type="probabilityValue" />
 	</xsd:complexType>
 
 	<!--
