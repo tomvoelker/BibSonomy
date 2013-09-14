@@ -28,11 +28,15 @@
     
     <bean id="recommendationItemFactory" class="org.bibsonomy.recommender.connector.factories.ConnectorItemFactory" />
     
-    <bean id="itemRecommenderLogic" class="recommender.impl.database.DBLogConfigItemAccess">
+    <bean id="bibtexRecommenderLogic" class="recommender.impl.database.DBLogConfigItemAccess">
     	<property name="recommenderFactory" ref="itemRecommenderSessionFactoryWrapper" />
     	<property name="itemFactory" ref="recommendationItemFactory" />
     </bean>
     
+    <bean id="bookmarkRecommenderLogic" class="recommender.impl.database.DBLogConfigItemAccess">
+    	<property name="recommenderFactory" ref="itemRecommenderSessionFactoryWrapper" />
+    	<property name="itemFactory" ref="recommendationItemFactory" />
+    </bean>
     
     <!-- +
     	 | tagrecommender datasource and mappings setup for logging and configuration

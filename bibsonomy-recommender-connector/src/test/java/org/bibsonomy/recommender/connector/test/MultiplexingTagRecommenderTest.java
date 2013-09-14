@@ -21,9 +21,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.database.DBLogConfigBibSonomy;
-import org.bibsonomy.recommender.connector.database.RecommenderBibTexDBLogic;
 import org.bibsonomy.recommender.connector.filter.PostPrivacyFilter;
-import org.bibsonomy.recommender.connector.model.BibsonomyRendererFactoryWrapper;
+import org.bibsonomy.recommender.connector.model.BibsonomyTagRendererFactoryWrapper;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.connector.testutil.SelectCounter;
@@ -32,7 +31,6 @@ import org.junit.Test;
 
 import recommender.core.database.DBLogic;
 import recommender.core.interfaces.RecommenderConnector;
-import recommender.core.interfaces.database.RecommenderMainTagAccess;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
 import recommender.core.util.RecommendationResultComparator;
@@ -55,10 +53,9 @@ public class MultiplexingTagRecommenderTest {
 
 	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
 
-	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
-		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigBibSonomy.class);
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean("tagRecommenderLogic", DBLogConfigBibSonomy.class);
 	}
 
 	//------------------------------------------------------------------------
@@ -190,7 +187,7 @@ public class MultiplexingTagRecommenderTest {
 		final MultiplexingRecommender<TagRecommendationEntity, RecommendedTag> multi = new MultiplexingRecommender<TagRecommendationEntity, RecommendedTag>();
 		multi.setDbLogic(dbLogic);
 		multi.setPrivacyFilter(new PostPrivacyFilter());
-		multi.setRenderer(new BibsonomyRendererFactoryWrapper());
+		multi.setRenderer(new BibsonomyTagRendererFactoryWrapper());
 		multi.setResultSelector(selector);
 		multi.setQueryTimeout(5*MSTOWAIT);
 

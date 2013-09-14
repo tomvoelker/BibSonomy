@@ -3,26 +3,16 @@ package org.bibsonomy.recommender.connector.database;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam;
-import org.bibsonomy.recommender.connector.model.RecommendedPost;
-
+import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import recommender.core.database.RecommenderDBSession;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
-/**
- * 
- * This class implements the database access on the bibsonomy database
- *  for the recommendation library
- * 
- * @author Lukas
- *
- */
-
-public class RecommenderBibTexDBLogic extends RecommenderMainItemAccessImpl{
-			
+public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainItemAccessImpl {
+	
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getMostActualItems(int)
@@ -36,10 +26,10 @@ public class RecommenderBibTexDBLogic extends RecommenderMainItemAccessImpl{
 			final ItemRecRequestParam param = new ItemRecRequestParam();
 			param.setCount(count);
 			param.setUserName(entity.getUserName());
-			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getMostActualBibTex", param, mainSession);
+			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getMostActualBookmark", param, mainSession);
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
-			for(Post<BibTex> bibtex : results) {
-				RecommendationItem item =  new RecommendedPost<BibTex>(bibtex);
+			for(Post<Bookmark> bookmark : results) {
+				RecommendationItem item =  new RecommendationPost<Bookmark>(bookmark);
 				items.add(item);
 			}
 			
@@ -47,7 +37,6 @@ public class RecommenderBibTexDBLogic extends RecommenderMainItemAccessImpl{
 		} finally {
 			mainSession.close();
 		}
-		
 	}
 	
 	/*
@@ -62,10 +51,10 @@ public class RecommenderBibTexDBLogic extends RecommenderMainItemAccessImpl{
 			final ItemRecRequestParam param = new ItemRecRequestParam();
 			param.setCount(count);
 			param.setUserName(username);
-			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", param, mainSession);
+			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getBookmarkForUser", param, mainSession);
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
-			for(Post<BibTex> bibtex : results) {
-				RecommendationItem item =  new RecommendedPost<BibTex>(bibtex);
+			for(Post<Bookmark> bookmark : results) {
+				RecommendationItem item =  new RecommendationPost<Bookmark>(bookmark);
 				items.add(item);
 			}
 			
@@ -74,7 +63,7 @@ public class RecommenderBibTexDBLogic extends RecommenderMainItemAccessImpl{
 			mainSession.close();
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getItemsForUsers(int, java.util.List)
@@ -90,9 +79,9 @@ public class RecommenderBibTexDBLogic extends RecommenderMainItemAccessImpl{
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 			for(String username : usernames) {
 				param.setUserName(username);
-				List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", param, mainSession);
-				for(Post<BibTex> bibtex : results) {
-					RecommendationItem item =  new RecommendedPost<BibTex>(bibtex);
+				List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getBookmarkForUser", param, mainSession);
+				for(Post<Bookmark> bookmark : results) {
+					RecommendationItem item =  new RecommendationPost<Bookmark>(bookmark);
 					items.add(item);
 				}
 			}
@@ -111,15 +100,16 @@ public class RecommenderBibTexDBLogic extends RecommenderMainItemAccessImpl{
 	public List<RecommendationItem> getResourcesByIds(final List<Integer> ids) {
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 			for(Integer id : ids) {
-				Post<BibTex> bibtex = this.queryForObject("getBibTexById", id, Post.class, mainSession);
-				items.add(new RecommendedPost<BibTex>(bibtex));
+				Post<Bookmark> bookmark = this.queryForObject("getBookmarkById", id, Post.class, mainSession);
+				items.add(new RecommendationPost<Bookmark>(bookmark));
 			}
-			
 			return items;
+			
 		} finally {
 			mainSession.close();
 		}
 	}
+	
 }

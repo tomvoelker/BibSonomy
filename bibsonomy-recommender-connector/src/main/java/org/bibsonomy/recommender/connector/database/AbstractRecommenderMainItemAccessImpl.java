@@ -7,8 +7,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam;
-import org.bibsonomy.recommender.connector.model.RecommendedPost;
-
+import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import recommender.core.database.AbstractDatabaseManager;
 import recommender.core.database.RecommenderDBSession;
 import recommender.core.database.RecommenderDBSessionFactory;
@@ -16,7 +15,7 @@ import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
-public abstract class RecommenderMainItemAccessImpl extends AbstractDatabaseManager implements RecommenderMainItemAccess{
+public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractDatabaseManager implements RecommenderMainItemAccess{
 	private RecommenderDBSessionFactory mainFactory;
 	
 	protected RecommenderDBSession openMainSession() {
@@ -91,13 +90,13 @@ public abstract class RecommenderMainItemAccessImpl extends AbstractDatabaseMana
 	public abstract List<RecommendationItem> getItemsForUser(int count, String username);
 	
 	/**
-	 * This method retrieves resources from the bibsonomy database by contentid.
-	 * This needed in the case the caching o the results fails and those have to be retrieved from the database.
-	 * In this case the loading of fully wrapped resource should take place.
+	 * This method retrieves a list of resources from the bibsonomy database by contentid.
+	 * This is needed in case of caching the results fails and those have to be retrieved from the database.
+	 * In this case the loading of a fully wrapped resource should take place.
 	 * 
 	 * @param ids a list of content ids for which to retrieve content
 	 * 
-	 * @return a list of all 
+	 * @return the wrapped posts belonging to the specified ids
 	 */
 	public abstract List<RecommendationItem> getResourcesByIds(final List<Integer> ids);
 	
@@ -121,12 +120,12 @@ public abstract class RecommenderMainItemAccessImpl extends AbstractDatabaseMana
 			List<Post<Bookmark>> bookmarkResults = (List<Post<Bookmark>>) this.queryForList("getBookmarkForUser", param, mainSession);
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 			for(Post<Bookmark> bookmark : bookmarkResults) {
-				RecommendationItem item =  new RecommendedPost<Bookmark>(bookmark);
+				RecommendationItem item =  new RecommendationPost<Bookmark>(bookmark);
 				items.add(item);
 			}
 			List<Post<BibTex>> bibtexResults = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", param, mainSession);
 			for(Post<BibTex> bibtex : bibtexResults) {
-				RecommendationItem item =  new RecommendedPost<BibTex>(bibtex);
+				RecommendationItem item =  new RecommendationPost<BibTex>(bibtex);
 				items.add(item);
 			}
 			
@@ -135,6 +134,15 @@ public abstract class RecommenderMainItemAccessImpl extends AbstractDatabaseMana
 			mainSession.close();
 		}
 		
+	}
+	
+	public Long getUserIdByName(final String username) {
+		final RecommenderDBSession mainSession = this.openMainSession();
+		try {
+			return this.queryForObject("getUserIdByName", username, Long.class, mainSession);
+		} finally {
+			mainSession.close();
+		}
 	}
 	
 }

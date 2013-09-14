@@ -337,4 +337,13 @@
 		  JOIN urls u USING (book_url_hash)
 	</select>
 	
+	
+	<!-- +
+		 | allow the privacy filter to get the user ids
+		 + -->
+	<select id="getUserIdByName" resultClass="long" parameterClass="string">
+		SELECT id 
+		FROM user 
+		WHERE user_name=#user_name#
+	</select>
 </sqlMap>

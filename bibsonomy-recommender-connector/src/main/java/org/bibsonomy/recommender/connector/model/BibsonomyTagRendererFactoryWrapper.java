@@ -21,11 +21,11 @@ import recommender.core.interfaces.renderer.RecommendationRenderer;
  * @author lukas
  *
  */
-public class BibsonomyRendererFactoryWrapper implements RecommendationRenderer<TagRecommendationEntity, recommender.core.model.RecommendedTag> {
+public class BibsonomyTagRendererFactoryWrapper implements RecommendationRenderer<TagRecommendationEntity, recommender.core.model.RecommendedTag> {
 
 	private Renderer renderer;
 	
-	public BibsonomyRendererFactoryWrapper() {
+	public BibsonomyTagRendererFactoryWrapper() {
 		this.renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.XML);
 	}
 	

@@ -1,16 +1,22 @@
 package org.bibsonomy.recommender.connector.factories;
 
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.connector.model.ResourceWrapper;
-
+import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import recommender.core.interfaces.factories.RecommenderItemFactory;
 import recommender.core.interfaces.model.RecommendationItem;
 
+/**
+ * Create an empty post and pass it forward.
+ * 
+ * @author lukas
+ *
+ */
 public class ConnectorItemFactory implements RecommenderItemFactory{
 
 	@Override
 	public RecommendationItem getInstanceOfRecommendationItem() {
-		return new ResourceWrapper(new Resource() {
+		final Resource r = new Resource() {
 			
 			/**
 			 * for persistence
@@ -19,7 +25,12 @@ public class ConnectorItemFactory implements RecommenderItemFactory{
 
 			@Override
 			public void recalculateHashes() {}
-		});
+		};
+		
+		final Post<Resource> post = new Post<Resource>();
+		post.setResource(r);
+		
+		return new RecommendationPost<Resource>(post);
 	}
 
 }

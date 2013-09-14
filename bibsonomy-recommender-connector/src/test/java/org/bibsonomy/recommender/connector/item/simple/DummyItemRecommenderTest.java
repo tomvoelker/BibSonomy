@@ -5,7 +5,7 @@ import java.util.SortedSet;
 import junit.framework.Assert;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.model.ResourceWrapper;
+import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
@@ -28,10 +28,11 @@ public class DummyItemRecommenderTest {
 
 	@BeforeClass
 	public static void setUp() {
-		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigItemAccess.class);
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean("bibtexRecommenderLogic", DBLogConfigItemAccess.class);
 		dbAccess = new DummyMainItemAccess();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Test
 	public void testDummyItemRecommender() {
 		DummyItemRecommender rec = new DummyItemRecommender();
@@ -47,9 +48,9 @@ public class DummyItemRecommenderTest {
 		Assert.assertEquals(RECOMMENDATIONS_TO_CALCULATE, recommendations.size());
 		
 		for(RecommendedItem item : recommendations) {
-			Assert.assertNotNull(item.getItem().getId());
-			if(item.getItem() instanceof ResourceWrapper) {
-				Assert.assertNotNull(((ResourceWrapper) item.getItem()).getResource().getTitle());
+			Assert.assertNotNull(item.getId());
+			if(item.getItem() instanceof PostWrapper) {
+				Assert.assertNotNull(((PostWrapper) item.getItem()).getPost().getResource().getTitle());
 			}
 		}
 		

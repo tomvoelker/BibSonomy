@@ -486,7 +486,7 @@
 	    +-->
 	<insert id="connectWithEntity" parameterClass="entityParam">
 	    INSERT INTO recommender_entitymap
-	       (post_id, user_name, date )
+	       (entity_id, user_name, date )
 	    VALUES ( #entityId#, #userName#, #date# )
 	</insert>
 
@@ -505,6 +505,15 @@
 		REPLACE INTO recommender_recommendations 
 		   (query_id, score, confidence, responsetitle, responseid)
 		VALUES ( #queryId#, #score#, #confidence#, #resultTitle#, #resultId#)
+	</insert>
+	
+	<!-- +
+		 | insert presets
+		 + -->
+	<insert id="addRecommenderPreset" parameterClass="recResultParam">
+		INSERT INTO recommender_preset
+			(query_id, setting_id, entityId)
+		VALUES (#queryId#, #settingId#, #resultId#)
 	</insert>
 	
 	<!-- +

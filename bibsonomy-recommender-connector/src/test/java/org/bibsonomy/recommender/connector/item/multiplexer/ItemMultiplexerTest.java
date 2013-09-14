@@ -33,7 +33,7 @@ public class ItemMultiplexerTest {
 
 	@BeforeClass
 	public static void setUp() {
-		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigItemAccess.class);
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean("bibtexRecommenderLogic", DBLogConfigItemAccess.class);
 		dbAccess = new DummyMainItemAccess();
 	}
 	
@@ -50,7 +50,10 @@ public class ItemMultiplexerTest {
 		
 		locals.add(itemRec);
 		
-		mux.setPrivacyFilter(new UserPrivacyFilter());
+		UserPrivacyFilter filter = new UserPrivacyFilter();
+		filter.setDbAccess(new DummyMainItemAccess());
+		
+		mux.setPrivacyFilter(filter);
 		mux.setLocalRecommenders(locals);
 		
 		User lha = new User();

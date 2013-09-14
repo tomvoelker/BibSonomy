@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.recommender.connector.database.RecommenderMainItemAccessImpl;
+import org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl;
 import org.bibsonomy.recommender.connector.database.RecommenderMainTagAccessImpl;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 
@@ -38,7 +38,7 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 		
 		//take bibtex and bookmark resources of requesting user to generate a more significant description of the user preferences
 		if(dbAccess instanceof RecommenderMainTagAccessImpl) {
-			requestingUserItems.addAll(((RecommenderMainItemAccessImpl) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, entity.getUserName()));
+			requestingUserItems.addAll(((AbstractRecommenderMainItemAccessImpl) this.dbAccess).getAllItemsOfQueryingUser(maxItemsToEvaluate, entity.getUserName()));
 		} else {
 			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName())); 
 		}

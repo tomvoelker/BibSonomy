@@ -7,30 +7,20 @@ import java.util.List;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.recommender.connector.database.params.RecommendationBibTexParam;
-import org.bibsonomy.recommender.connector.model.RecommendedPost;
+import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl;
+import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
-import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
-public class DummyMainItemAccess implements RecommenderMainItemAccess{
+public class DummyMainItemAccess extends AbstractRecommenderMainItemAccessImpl{
 
 	@Override
 	public List<RecommendationItem> getMostActualItems(int count,
 			ItemRecommendationEntity entity) {
 		
-		ArrayList<RecommendationItem> items = new ArrayList<RecommendationItem>();
-		
-		for(int i = 0; i < count; i++) {
-			RecommendationBibTexParam param = new RecommendationBibTexParam();
-			param.setId("testitem"+i);
-			param.setTitle("testitem"+i);
-			param.setOwnerName("foo.bar");
-			items.add(param.getCorrespondingRecommendationItem());
-		}
-		
-		return items;
+		return getItemsForUser(count, "foo");
 	}
 
 	@Override
@@ -56,7 +46,7 @@ public class DummyMainItemAccess implements RecommenderMainItemAccess{
 			post.setDescription("");
 			post.setTags(new HashSet<Tag>());
 			post.setResource(b);
-			items.add(new RecommendedPost<BibTex>(post));
+			items.add(new RecommendationPost<BibTex>(post));
 		}
 		return items;
 	}
@@ -75,10 +65,37 @@ public class DummyMainItemAccess implements RecommenderMainItemAccess{
 				post.setDescription("");
 				post.setTags(new HashSet<Tag>());
 				post.setResource(b);
-				items.add(new RecommendedPost<BibTex>(post));
+				items.add(new RecommendationPost<BibTex>(post));
 			}
 		}
 		return items;
 	}
+
+	@Override
+	public List<RecommendationItem> getResourcesByIds(final List<Integer> ids) {
+		
+		final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+		for(Integer id : ids) {
+			final BibTex bib = new BibTex();
+			bib.setTitle(""+id);
+			final Post<BibTex> post = new Post<BibTex>();
+			post.setContentId(id);
+			post.setResource(bib);
+			post.setUser(new User("no_name"));
+			items.add(new RecommendationPost<BibTex>(post));
+		}
+		
+		return items;
+	}
 	
+	@Override
+	public List<RecommendationItem> getAllItemsOfQueryingUser(int count,
+			String username) {
+		return null;
+	}
+	
+	@Override
+	public Long getUserIdByName(String username) {
+		return (long) username.hashCode();
+	}
 }

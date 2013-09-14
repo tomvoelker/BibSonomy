@@ -17,19 +17,14 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.database.params.BibRecQueryParam;
 import org.bibsonomy.recommender.connector.database.params.PostRecParam;
 import org.bibsonomy.recommender.connector.database.params.RecommendedTagParam;
-import org.bibsonomy.recommender.connector.filter.PostPrivacyFilter;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
-import org.bibsonomy.recommender.connector.model.ResourceWrapper;
 
 import recommender.core.database.RecommenderDBSession;
-import recommender.core.database.params.EntityParam;
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecQuerySettingParam;
-import recommender.core.database.params.ResultParam;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.RecommendedTag;
 import recommender.impl.database.DBLogConfigTagAccess;
@@ -44,6 +39,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	private static final int CONTENT_TYPE_BOOKMARK = 1;
 	private static final int CONTENT_TYPE_BIBTEX = 2;
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Long addQuery(String userName, Date date,
 			TagRecommendationEntity entity, String entityID, int timeout) {
@@ -84,8 +80,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void connectWithRecommendationEntity(TagRecommendationEntity entity,
-			String entityID) {
+	public void addFeedback(TagRecommendationEntity entity, RecommendedTag result) {
 		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
 		try {
 			
@@ -129,6 +124,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void storeRecommendationEntity(String userName, Long qid,
 			TagRecommendationEntity entity, boolean update,

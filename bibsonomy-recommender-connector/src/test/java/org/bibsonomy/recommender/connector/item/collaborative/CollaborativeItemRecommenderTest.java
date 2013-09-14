@@ -27,7 +27,7 @@ public class CollaborativeItemRecommenderTest {
 
 	@BeforeClass
 	public static void setUp() {
-		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigItemAccess.class);
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean("bibtexRecommenderLogic", DBLogConfigItemAccess.class);
 		dbAccess = new DummyMainItemAccess();
 	}
 	

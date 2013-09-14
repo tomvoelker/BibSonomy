@@ -40,10 +40,9 @@ public class DBAccessTest {
 
 	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
 	
-	@SuppressWarnings("unchecked")
 	@BeforeClass
 	public static void setUp() {
-		dbLogic = RecommenderTestContext.getBeanFactory().getBean(DBLogConfigBibSonomy.class);
+		dbLogic = RecommenderTestContext.getBeanFactory().getBean("tagRecommenderLogic", DBLogConfigBibSonomy.class);
 	}
 	
 	/**

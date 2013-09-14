@@ -525,6 +525,15 @@
 	</insert>
 	
 	<!-- +
+		 | insert presets
+		 + -->
+	<insert id="addRecommenderPreset" parameterClass="recTagParam">
+		INSERT INTO recommender_preset
+			(query_id, setting_id, tag)
+		VALUES (#qid#, #sid#, #tagName#)
+	</insert>
+	
+	<!-- +
 		 | select saved presets
 		 + -->
 	
