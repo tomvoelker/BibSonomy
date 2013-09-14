@@ -15,6 +15,7 @@ import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedPost;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -266,5 +267,27 @@ public class JabrefLayoutRenderer implements Renderer {
 	public Document parseDocument(Reader reader, DataAccessor uploadFileAccessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public void serializeRecommendedPosts(Writer writer, List<? extends RecommendedPost<? extends Resource>> posts, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void serializeRecommendedPost(Writer writer, RecommendedPost<? extends Resource> post, ViewModel viewModel) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T extends Resource> List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T extends Resource> RecommendedPost<? extends Resource> parseRecommendedItem(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
+		throw new UnsupportedOperationException();
+	}
+
+	
 
 }
