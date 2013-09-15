@@ -40,8 +40,9 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UserRegistrationController implements ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware, CookieAware {
+    private String projectName;
 
-	/**
+    /**
 	 * After successful registration, the user is redirected to this page. 
 	 */
 	private String successRedirect = "/register_success";
@@ -303,7 +304,7 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 
 	@Override
 	public Validator<UserRegistrationCommand> getValidator() {
-		return new UserRegistrationValidator();
+		return new UserRegistrationValidator(projectName);
 	}
 
 	/** Give this controller an instance of {@link Captcha}.
@@ -348,5 +349,12 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 	public void setMailUtils(MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
 	}
+
+    /**
+     * @param projectName
+     */
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
 
 }

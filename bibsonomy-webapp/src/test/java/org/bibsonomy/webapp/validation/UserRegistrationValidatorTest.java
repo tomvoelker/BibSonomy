@@ -27,7 +27,7 @@ public class UserRegistrationValidatorTest {
 	 */
 	@BeforeClass
 	public static void setupValidator() {
-		validator = new UserRegistrationValidator();
+		validator = new UserRegistrationValidator("biblicious");
 	}	
 
 	/**

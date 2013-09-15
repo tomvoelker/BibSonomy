@@ -12,6 +12,18 @@ import org.springframework.validation.ValidationUtils;
  * @version $Id$
  */
 public class UserRegistrationValidator implements Validator<UserRegistrationCommand> {
+	
+private final String projectName;
+	
+	
+	/**
+	 * @param projectName
+	 */
+	public UserRegistrationValidator(String projectName) {
+		super();
+	this.projectName = projectName;
+	int x;
+}
 
 	@Override
 	public boolean supports(final Class<?> clazz) {
@@ -64,7 +76,7 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		 * check that the user accepts our privacy statement
 		 */
 		if (!command.isAcceptPrivacy()) {
-			errors.rejectValue("acceptPrivacy", "error.field.valid.acceptPrivacy");
+			errors.rejectValue("acceptPrivacy", "error.field.valid.acceptPrivacy", new Object[]{projectName}, null);
 		}
 		/*
 		 * check, that challenge response is given
