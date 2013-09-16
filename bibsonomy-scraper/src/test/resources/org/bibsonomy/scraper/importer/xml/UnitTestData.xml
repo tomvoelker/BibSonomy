@@ -79,6 +79,13 @@
 		<!-- Moved Temporarily (Other host, NasaADSScraper is responsible) -->
 		<Enabled>false</Enabled>
 	</URLTest>
+	<URLTest id="url_12">
+		<TestDescription>URL scraping test with citeseer publications</TestDescription>
+		<URL>http://citeseer.ist.psu.edu/brin98anatomy.html</URL>
+		<BibFile>CiteseerBasicScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.citeseer.CiteseerBasicScraper</Scraper>
+		<Enabled>false</Enabled>
+	</URLTest>
 	<URLTest id="url_13">
 		<TestDescription>URL scraping test with journals and proceedings from ieeexlpore</TestDescription>
 		<URL>http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&amp;arnumber=6136685&amp;contentType=Conference+Publications&amp;searchField%3DSearch_All%26queryText%3DEnergy+efficient+hierarchical+epidemics+in+peer-to-peer+systems</URL>

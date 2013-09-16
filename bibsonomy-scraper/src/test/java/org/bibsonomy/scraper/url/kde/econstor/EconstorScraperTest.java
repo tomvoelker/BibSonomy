@@ -42,7 +42,7 @@ public class EconstorScraperTest {
 	 */
 	@Test
 	public void urlTestRun() {
-		assertTrue(UnitTestRunner.runSingleTest("url_251"));
+		assertTrue(UnitTestRunner.runSingleTest("url_252"));
 	}
 
 }
