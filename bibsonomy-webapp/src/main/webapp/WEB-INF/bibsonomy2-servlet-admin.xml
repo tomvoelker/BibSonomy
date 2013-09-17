@@ -68,13 +68,12 @@
 						</property>
 					</bean>
 				</entry>
-				
 				<entry key="/admin/ajax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="adminAjaxController"/>
 						 <property name="allowedFields">
-                            <list>
-                                <value>action</value>
+							<list>
+								<value>action</value>
 								<value>userName</value>
 								<value>value</value>
 								<value>key</value>
@@ -82,8 +81,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>		
-							
+				</entry>
 				<entry key="/admin/recommender">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="adminRecommenderController" />
@@ -102,7 +100,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>			
+				</entry>
 				<entry key="/admin/group">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="adminGroupController" />
@@ -151,7 +149,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>		
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -179,11 +177,11 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" init-method="init" scope="singleton">
-	    <property name="tagRecommender" ref="multiplexingTagRecommender" />
-	    <property name="itemRecommender" ref="multiplexingBibTexRecommender" />
-	    <property name="dbTagLogic" ref="tagRecommenderLogic" />
-	    <property name="dbItemLogic" ref="bibtexRecommenderLogic" />
+	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" scope="request">
+		<property name="tagRecommender" ref="multiplexingTagRecommender" />
+		<property name="itemRecommender" ref="multiplexingBibTexRecommender" />
+		<property name="dbTagLogic" ref="tagRecommenderLogic" />
+		<property name="dbItemLogic" ref="bibtexRecommenderLogic" />
 	</bean>
 	
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">
@@ -195,5 +193,4 @@
 	</bean>
 	
 	<bean id="oauthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic" scope="singleton" factory-method="getInstance"/>
-		
 </beans>

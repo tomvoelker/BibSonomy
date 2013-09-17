@@ -51,16 +51,6 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	
 	private MultiplexingRecommender<TagRecommendationEntity, RecommendedTag> tagRecommender;
 	private MultiplexingRecommender<ItemRecommendationEntity, RecommendedItem> itemRecommender;
-	
-	/**
-	 * FIXME: why isn't this done by the {@link MultiplexingRecommender#init()} method?
-	 * Initialize multiplexer
-	 **/
-	public void init() {
-		/*
-		 * does nothing at all
-		 */
-	}
 
 	@Override
 	public View workOn(final AdminRecommenderViewCommand command) {
