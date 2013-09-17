@@ -29,21 +29,17 @@ public class InboxDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Tests the getNumInboxMessages method
 	 */
-	@Test
-	public void getInboxNumSize(){
-		int inboxSize = inboxDb.getNumInboxMessages("testuser2", this.dbSession);
-		assertNotNull(inboxSize);
-		assertEquals(3, inboxSize);
-	}
-	
 	/**
 	 * Test the creation and deletion of an inbox message
 	 */
 	@Test
 	public void createAndDeleteInboxItem(){
-		TestDatabaseManager testDatabaseManager = new TestDatabaseManager();
+		// test initial inboxSize from testData
+		int inboxSize = inboxDb.getNumInboxMessages("testuser2", this.dbSession);
+		assertNotNull(inboxSize);
+		assertEquals(3, inboxSize);
 		
-		int inboxSize = 0;
+		TestDatabaseManager testDatabaseManager = new TestDatabaseManager();
 		
 		// get actual inbox size
 		inboxSize = inboxDb.getNumInboxMessages("testuser2", this.dbSession);
