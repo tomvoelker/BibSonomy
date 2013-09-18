@@ -63,7 +63,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		/*
 		 * check if internal authentication is supported
 		 */
-		if (!this.authConfig.contains(AuthMethod.INTERNAL))  {
+		if (!this.authConfig.contains(AuthMethod.INTERNAL)) {
 			errors.reject("error.method_not_allowed");
 			return Views.ERROR;
 		}
