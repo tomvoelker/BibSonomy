@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
@@ -117,12 +117,11 @@ public class ChangePasswordController extends SettingsPageController implements 
 		/*
 		 * first, check given current password
 		 */
-		if (loginUser.getPassword().equals(StringUtils.getMD5Hash(oldPassword))) {
+		if (loginUser.getPassword().equals(UserUtils.getPassword(oldPassword, loginUser.getPasswordSalt()))) {
 			/*
-			 * compute hash for new password
+			 * hash and salt password
 			 */
-			final String newPasswordHash = StringUtils.getMD5Hash(newPassword);
-			loginUser.setPassword(newPasswordHash);
+			UserUtils.setupPassword(loginUser, newPassword);
 
 			/*
 			 * update password of user
@@ -134,12 +133,10 @@ public class ChangePasswordController extends SettingsPageController implements 
 			 */
 			final UserDetails userDetails = new UserAdapter(loginUser);
 			final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, newPasswordHash);
-
 			/*
-			 * FIXME: This does currently not work, because the rememberMeService 
-			 * sets the cookie only when the corresponding request parameter is
-			 * supplied. Since we can't change request parameters, we probably
-			 * have to add a checkbox to the password change form
+			 * rememberMeService sets the cookie only when the corresponding request parameter is
+			 * supplied. Since we can't change request parameters, we added a hidden field to the
+			 * password change form
 			 */
 			this.cookieLogic.updateRememberMeCookie(this.rememberMeServices, authentication);
 			log.debug("password of " + updatedUser + " has been changed successfully");

@@ -26,6 +26,7 @@ package org.bibsonomy.model.util;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -36,6 +37,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * @author Dominik Benz
@@ -44,11 +46,11 @@ import org.bibsonomy.util.HashUtils;
  */
 public class UserUtils {
 	
-	/**
-	 * the name of the dblp user
-	 */
+	/** the name of the dblp user */
 	public static final String DBLP_USER_NAME = "dblp";
 
+	/** the length of the password salt */
+	private static final int SALT_LENGTH = 16;
 
 	/**
 	 * Validates the correctness of the email-address. This is done by 
@@ -121,7 +123,6 @@ public class UserUtils {
 		return randomBytes;
 	}
 
-
 	/**
 	 * Helper function to set a user's groups by a list of group IDs
 	 * 
@@ -151,8 +152,33 @@ public class UserUtils {
 	public static String generateRandomPassword() {
 		final byte[] bytes = new byte[16];
 		new Random().nextBytes(bytes);
-		final String randomPassword = HashUtils.getMD5Hash(bytes);
-		return randomPassword;
+		return HashUtils.getMD5Hash(bytes);
+	}
+	
+	
+	/**
+	 * @param password the plaintext password
+	 * @param salt the salt
+	 * @return the correct hashed password for saving in the db
+	 */
+	public static String getPassword(final String password, final String salt) {
+		return StringUtils.getMD5Hash(StringUtils.getMD5Hash(password) + salt);
+	}
+	
+	/**
+	 * @param user
+	 * @param password
+	 */
+	public static void setupPassword(final User user, final String password) {
+		final String passwordSalt = generateSalt();
+		user.setPasswordSalt(passwordSalt);
+		user.setPassword(getPassword(password, passwordSalt));
+	}
+
+	private static String generateSalt() {
+		final byte[] bytes = new byte[SALT_LENGTH / 2];
+		new SecureRandom().nextBytes(bytes);
+		return HashUtils.toHexString(bytes);
 	}
 
 	/**
@@ -232,10 +258,11 @@ public class UserUtils {
 		// remember adding it here
 		// The problem with that idea is, that NOT ALL properties are updated (e.g. name, registrationDate)
 		existingUser.setEmail(!present(updatedUser.getEmail()) 	? existingUser.getEmail() : updatedUser.getEmail());
-		existingUser.setPassword(!present(updatedUser.getPassword()) ? existingUser.getPassword() : updatedUser.getPassword());		
-		existingUser.setRealname(!present(updatedUser.getRealname()) ? existingUser.getRealname() : updatedUser.getRealname());		
+		existingUser.setPassword(!present(updatedUser.getPassword()) ? existingUser.getPassword() : updatedUser.getPassword());
+		existingUser.setPasswordSalt(!present(updatedUser.getPasswordSalt()) ? existingUser.getPasswordSalt() : updatedUser.getPasswordSalt());
+		existingUser.setRealname(!present(updatedUser.getRealname()) ? existingUser.getRealname() : updatedUser.getRealname());
 		existingUser.setHomepage(!present(updatedUser.getHomepage()) ? existingUser.getHomepage() : updatedUser.getHomepage());
-		existingUser.setApiKey(!present(updatedUser.getApiKey()) ? existingUser.getApiKey()	: updatedUser.getApiKey());		
+		existingUser.setApiKey(!present(updatedUser.getApiKey()) ? existingUser.getApiKey()	: updatedUser.getApiKey());
 		existingUser.setBirthday(!present(updatedUser.getBirthday()) ? existingUser.getBirthday() : updatedUser.getBirthday());
 		existingUser.setGender(!present(updatedUser.getGender()) ? existingUser.getGender() : updatedUser.getGender());
 		existingUser.setHobbies(!present(updatedUser.getHobbies()) ? existingUser.getHobbies() : updatedUser.getHobbies());

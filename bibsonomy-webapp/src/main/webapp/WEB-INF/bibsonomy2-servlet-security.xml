@@ -251,7 +251,12 @@
 	
 	<bean id="databaseAuthenticator" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider" parent="abstractDatabaseAuthenticator">
 		<property name="passwordEncoder">
-			<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+			<bean class="org.bibsonomy.webapp.util.spring.security.encoding.Md5PasswordEncoder"/>
+		</property>
+		<property name="saltSource">
+			<bean class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+				<property name="userPropertyToUse" value="passwordSalt" />
+			</bean>
 		</property>
 	</bean>
 	

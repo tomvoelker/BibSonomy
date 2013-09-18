@@ -503,6 +503,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		srcUser.getSettings().setLogLevel(0);
 		srcUser.setOpenID("http://"+userName);
 		srcUser.setLdapId(null);
+		srcUser.setPasswordSalt(null);
 		return srcUser;
 	}
 	

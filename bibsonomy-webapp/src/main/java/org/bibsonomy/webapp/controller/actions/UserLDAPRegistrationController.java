@@ -1,7 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.validation.UserLDAPRegistrationValidator;
@@ -35,7 +35,7 @@ public class UserLDAPRegistrationController extends AbstractUserIDRegistrationCo
 		 * "internal" authentication is enabled, they can login with their LDAP
 		 * password using the internal authentication method.
 		 */
-		registerUser.setPassword(StringUtils.getMD5Hash(user.getPassword()));
+		UserUtils.setupPassword(registerUser, user.getPassword());
 	}
 
 	@Override

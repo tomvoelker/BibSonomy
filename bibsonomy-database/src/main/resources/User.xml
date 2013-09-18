@@ -79,6 +79,7 @@
 		UPDATE user
 		SET	<include refid="updateUserProfileAttributes"/>,
 			user_password = #password#,
+			user_password_salt = #passwordSalt#,
 			api_key = #apiKey#, 
 			ip_address= #IPAddress#,   
 			spammer = #spammer#,
@@ -195,7 +196,8 @@
 	
     <update id="updatePasswordForUser" parameterClass="user">
 		UPDATE user 
-		SET user_password = #password# 
+		SET user_password = #password#,
+		user_password_salt = #passwordSalt#
 		WHERE user_name = #name#
 	</update>
 

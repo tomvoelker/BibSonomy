@@ -13,8 +13,8 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.MailUtils;
-import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
@@ -40,14 +40,12 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UserRegistrationController implements ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware, CookieAware {
-    private String projectName;
-
-    /**
-	 * After successful registration, the user is redirected to this page. 
-	 */
-	private String successRedirect = "/register_success";
-
 	private static final Log log = LogFactory.getLog(UserRegistrationController.class);
+
+	private String projectName;
+
+	/** After successful registration, the user is redirected to this page. */
+	private String successRedirect = "/register_success";
 
 	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
@@ -210,7 +208,6 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 			this.logic = this.adminLogic;
 		}
 
-
 		/*
 		 * at this point:
 		 * - the form is filled with correct values
@@ -221,17 +218,12 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		 * - the user name does not exist in the DB
 		 * - we have an instance of the LogicInterface with admin access
 		 */
-
-
+		
 		/*
 		 * set the full inet address of the user
 		 */
 		registerUser.setIPAddress(inetAddress);
-
-		/*
-		 * hash password of user before storing it into database
-		 */
-		registerUser.setPassword(StringUtils.getMD5Hash(registerUser.getPassword()));
+		UserUtils.setupPassword(registerUser, registerUser.getPassword());
 
 		/*
 		 * create user in DB - he still needs to be activated
@@ -350,11 +342,11 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		this.mailUtils = mailUtils;
 	}
 
-    /**
-     * @param projectName
-     */
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
+	/**
+	 * @param projectName
+	 */
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
 
 }

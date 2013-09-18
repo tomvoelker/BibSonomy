@@ -11,7 +11,7 @@ import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.actions.PasswordChangeOnRemindCommand;
 import org.bibsonomy.webapp.exceptions.InvalidPasswordReminderException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -55,10 +55,10 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		/*
 		 * check if internal authentication is supported
 		 */
-		if (!authConfig.contains(AuthMethod.INTERNAL) )  {
+		if (!authConfig.contains(AuthMethod.INTERNAL)) {
 			errors.reject("error.method_not_allowed");
 			log.warn("authmethod " + AuthMethod.INTERNAL + " missing in config");
-			return Views.ERROR;			
+			return Views.ERROR;
 		}
 		
 		/*
@@ -89,10 +89,10 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		}
 		
 		final User user = adminLogic.getUserDetails(cred.username);
-				
+		
 		/*
 		 * check if the reminderPassword is correct
-		 */		
+		 */
 		if (!present(user.getReminderPassword()) || !user.getReminderPassword().equals(cred.reminderPassword) ) {
 			errors.reject("error.reminder_password_not_correct");
 			return Views.ERROR;
@@ -103,7 +103,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 */
 		if (this.hasExpired(user.getReminderPasswordRequestDate())) {
 			errors.reject("error.reminder_password_expired");
-			return Views.ERROR;			
+			return Views.ERROR;
 		}
 
 
@@ -122,8 +122,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		/*
 		 * set new password, reset old one 
 		 */
-		final String hashedPassword = StringUtils.getMD5Hash(command.getNewPassword());
-		user.setPassword(hashedPassword);
+		UserUtils.setupPassword(user, command.getNewPassword());
 		user.setReminderPassword("");
 
 		log.debug("writing the new password to the database");

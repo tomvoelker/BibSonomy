@@ -58,10 +58,17 @@ public class User implements Serializable {
 	 * The (nick-)name of this user. Is <code>null</code> if the user is not logged in (unknown). 
 	 */
 	private String name;
+	
 	/**
 	 * This user's password
 	 */
 	private String password;
+	
+	/**
+	 * this user's password salt
+	 */
+	private String passwordSalt;
+	
 	/**
 	 * The Api Key for this user
 	 */
@@ -350,6 +357,20 @@ public class User implements Serializable {
 	 */
 	public void setPassword(final String password) {
 		this.password = password;
+	}
+
+	/**
+	 * @return the passwordSalt
+	 */
+	public String getPasswordSalt() {
+		return this.passwordSalt;
+	}
+
+	/**
+	 * @param passwordSalt the passwordSalt to set
+	 */
+	public void setPasswordSalt(String passwordSalt) {
+		this.passwordSalt = passwordSalt;
 	}
 
 	/**
