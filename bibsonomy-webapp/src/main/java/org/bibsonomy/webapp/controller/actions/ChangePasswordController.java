@@ -132,7 +132,7 @@ public class ChangePasswordController extends SettingsPageController implements 
 			 * change the cookie
 			 */
 			final UserDetails userDetails = new UserAdapter(loginUser);
-			final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, newPasswordHash);
+			final Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, loginUser.getPassword());
 			/*
 			 * rememberMeService sets the cookie only when the corresponding request parameter is
 			 * supplied. Since we can't change request parameters, we added a hidden field to the
