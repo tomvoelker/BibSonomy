@@ -101,6 +101,13 @@ public class UserAdapter implements UserDetails {
 		return !Role.DELETED.equals(this.user.getRole()) ;
 	}
 	
+	/**
+	 * @return the passwordSalt
+	 */
+	public String getPasswordSalt() {
+		return this.user.getPasswordSalt();
+	}
+	
 	@Override
 	public String toString() {
 		return user == null ? "" : user.toString(); 
