@@ -98,7 +98,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 		this.validateResource(errors, command.getPost().getResource());
 		errors.popNestedPath(); // post
 		
-		this.validateGroups(errors, command);		
+		this.validateGroups(errors, command);
 	}
 	
 	/**
