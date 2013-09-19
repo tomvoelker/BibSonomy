@@ -41,7 +41,7 @@
 		</dependency>
 		<dependency>
 			<groupId>JabRef</groupId>
-			<artifactId>JabRef</artifactId>
+			<artifactId>JabRef_jaeschke</artifactId>
 			<version>2.4.3-20</version>
 		</dependency>
 		<dependency>
