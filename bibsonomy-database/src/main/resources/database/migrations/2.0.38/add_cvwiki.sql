@@ -32,7 +32,7 @@ INSERT IGNORE INTO user_wiki SELECT user_name, "== personal data ==
 <bookmarks />
 ", CURRENT_TIMESTAMP() AS date FROM user;
 
-UPDATE user_wiki, groupids SET user_wiki.user_wiki="==Grouppage of the group <name/>==
+UPDATE user_wiki, groupids SET user_wiki.user_wiki = "==Grouppage of the group <name/>==
 <groupimage />
 
 ==Members==
@@ -42,4 +42,14 @@ UPDATE user_wiki, groupids SET user_wiki.user_wiki="==Grouppage of the group <na
 <bookmarks tags=\"myown\" limit=\"3\" />
 
 ==Recently added publications==
-<publications order=\"asc\" keys=\"year\" limit=\"3\" />" WHERE user_wiki.user_name=groupids.group_name
+<publications order=\"asc\" keys=\"year\" limit=\"3\" />" WHERE user_wiki.user_name = groupids.group_name;
+
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `log_wiki` (
+  `user_name` varchar(30) NOT NULL,
+  `user_wiki` text,
+  `date` DATETIME,
+  PRIMARY KEY  (`user_name`,`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
