@@ -1,10 +1,20 @@
 package org.bibsonomy.recommender.connector.utilities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.connector.model.RecommendationPost;
+
+import recommender.core.interfaces.model.RecommendationItem;
+import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.impl.model.RecommendedItem;
 
 /**
  * This class provides procedures for the conversion of BibSonomy recommended
@@ -21,9 +31,9 @@ public class RecommendationUtilities {
 	 * @param tags the library's recommended tag representations
 	 * @return the BibSonomy's recommended tag representations
 	 */
-	public static SortedSet<RecommendedTag> getRecommendedTags(SortedSet<recommender.core.model.RecommendedTag> tags) {
+	public static SortedSet<RecommendedTag> getRecommendedTags(final SortedSet<recommender.impl.model.RecommendedTag> tags) {
 		SortedSet<RecommendedTag> bibRecTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		for(recommender.core.model.RecommendedTag tag : tags) {
+		for(recommender.impl.model.RecommendedTag tag : tags) {
 			RecommendedTag toAdd = new RecommendedTag(tag.getName(), tag.getScore(), tag.getConfidence());
 			bibRecTags.add(toAdd);
 		}
@@ -37,12 +47,64 @@ public class RecommendationUtilities {
 	 * @return the library's internal representations
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static SortedSet<recommender.core.model.RecommendedTag> getRecommendedTagsFromBibRecTags(SortedSet<RecommendedTag> tags) {
-		SortedSet<recommender.core.model.RecommendedTag> recTags = new TreeSet<recommender.core.model.RecommendedTag>(new recommender.core.util.RecommendationResultComparator());
+	public static SortedSet<recommender.impl.model.RecommendedTag> getRecommendedTagsFromBibRecTags(final SortedSet<RecommendedTag> tags) {
+		SortedSet<recommender.impl.model.RecommendedTag> recTags = new TreeSet<recommender.impl.model.RecommendedTag>(new recommender.core.util.RecommendationResultComparator());
 		for(RecommendedTag tag : tags) {
-			recommender.core.model.RecommendedTag toAdd = new recommender.core.model.RecommendedTag(tag.getName(), tag.getScore(), tag.getConfidence());
+			recommender.impl.model.RecommendedTag toAdd = new recommender.impl.model.RecommendedTag(tag.getName(), tag.getScore(), tag.getConfidence());
 			recTags.add(toAdd);
 		}
 		return recTags;
+	}
+	
+	/**
+	 * Wraps a list of {@link Post}s to a list of {@link RecommendationItem}s.
+	 * 
+	 * @param posts the posts to wrap
+	 * @return a list of {@link RecommendationItem}s containing the posts
+	 */
+	public static List<RecommendationItem> wrapPostList(final List<Post<? extends Resource>> posts) {
+		final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+		for(Post<? extends Resource> post : posts) {
+			items.add(new RecommendationPost(post));
+		}
+		return items;
+	}
+	
+	/**
+	 * Helper method for unwrapping {@link RecommendedItem}s containing BibSonomy {@link Post}s.
+	 * 
+	 * @param resourceType the type of the corresponding resources to unwrap
+	 * @param items a set of all items to unwrap
+	 * 
+	 * @return a list of all unwrapped posts
+	 */
+	@SuppressWarnings({ "unchecked" })
+	public static <T extends Resource> List<Post<T>> unwrapRecommendedItems(final Class<T> resourceType, final SortedSet<RecommendedItem> items) {
+		final List<Post<T>> posts = new ArrayList<Post<T>>();
+		for(RecommendedItem item : items) {
+			if(item.getItem() != null && item.getItem() instanceof RecommendationPost
+					&& ((RecommendationPost) item.getItem()).getPost() != null
+					&& ((RecommendationPost) item.getItem()).getPost().getResource() != null
+					&& resourceType.isAssignableFrom(((RecommendationPost) item.getItem()).getPost().getResource().getClass())) {
+				posts.add((Post<T>)((RecommendationPost) item.getItem()).getPost()); 
+			}
+		}
+		return posts; 
+	}
+	
+	/**
+	 * This method unwraps a TagRecommendationEntity to retrieve it's wrapped post.
+	 * 
+	 * @param entity the entity to unwrap
+	 * @return the wrapped post if contained, null otherwise
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Post<? extends Resource> unwrapTagRecommendationEntity(final TagRecommendationEntity entity) {
+		if(entity instanceof PostWrapper) {
+			if(((PostWrapper) entity).getPost() != null) {
+				return ((PostWrapper) entity).getPost();
+			}
+		}
+		return null;
 	}
 }

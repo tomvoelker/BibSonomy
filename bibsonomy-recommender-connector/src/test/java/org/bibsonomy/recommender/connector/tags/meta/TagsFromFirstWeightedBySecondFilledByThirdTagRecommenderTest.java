@@ -13,9 +13,9 @@ import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.junit.Test;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.model.RecommendedTag;
 import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.meta.ResultsFromFirstWeightedBySecondFilledByThirdRecommender;
+import recommender.impl.model.RecommendedTag;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
 import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
 
@@ -46,7 +46,7 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		merger.setFirstRecommender(new FixedTagsTagRecommender(firstFixedTags));
 		merger.setSecondRecommender(new FixedTagsTagRecommender(secondFixedTags));
 		merger.setThirdRecommender(new FixedTagsTagRecommender(secondFixedTags));
-		merger.setNumberOfTagsToRecommend(5);
+		merger.setNumberOfResultsToRecommend(5);
 
 		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendation(null);
 
@@ -74,7 +74,7 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		merger.setFirstRecommender(simpleContentBasedTagRecommender);
 		merger.setSecondRecommender(fixedTagsTagRecommender);
 		merger.setThirdRecommender(fixedTagsTagRecommender);
-		merger.setNumberOfTagsToRecommend(5);
+		merger.setNumberOfResultsToRecommend(5);
 
 
 		final Bookmark bookmark = new Bookmark();
@@ -111,7 +111,7 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		merger.setFirstRecommender(simpleContentBasedTagRecommender);
 		merger.setSecondRecommender(fixedTagsTagRecommender);
 		merger.setThirdRecommender(fillupTagRecommender);
-		merger.setNumberOfTagsToRecommend(5);
+		merger.setNumberOfResultsToRecommend(5);
 
 
 		final Bookmark bookmark = new Bookmark();

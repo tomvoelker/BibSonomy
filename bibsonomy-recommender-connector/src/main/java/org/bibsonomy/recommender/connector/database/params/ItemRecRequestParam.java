@@ -1,5 +1,11 @@
 package org.bibsonomy.recommender.connector.database.params;
 
+/**
+ * Parameter used to retrieve similar users from the database.
+ * 
+ * @author lukas
+ *
+ */
 public class ItemRecRequestParam {
 
 	private int count;

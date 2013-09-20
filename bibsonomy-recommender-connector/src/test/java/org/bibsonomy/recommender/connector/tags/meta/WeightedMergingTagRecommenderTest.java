@@ -14,9 +14,9 @@ import org.junit.Test;
 
 import recommender.core.Recommender;
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.model.RecommendedTag;
 import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.meta.WeightedMergingRecommender;
+import recommender.impl.model.RecommendedTag;
 import recommender.impl.tags.simple.FixedTagsTagRecommender;
 
 

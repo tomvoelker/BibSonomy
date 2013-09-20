@@ -18,9 +18,9 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 
 import recommender.core.error.BadRequestOrResponseException;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendedItem;
 import recommender.core.interfaces.renderer.RecommendationRenderer;
 import recommender.core.util.RecommendationResultComparator;
+import recommender.impl.model.RecommendedItem;
 
 /**
  * This class allows to trigger remote item recommendations on external services 
@@ -94,7 +94,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	
 	/**
 	 * Creates a {@link RecommendedItem} out of a {@link RecommendedPost}.
-	 * If the post's resource did not fir to the specified resourceType
+	 * If the post's resource did not fit to the specified resourceType
 	 * null is returned.
 	 * 
 	 * @param post the post to convert
@@ -106,7 +106,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 		if(resourceType.isAssignableFrom(post.getPost().getResource().getClass())) {
 			final RecommendedPost<T> casted = (RecommendedPost<T>) post;
 			this.validatePost(casted);
-			final RecommendedItem item = new RecommendedItem(new RecommendationPost<T>(casted.getPost()));
+			final RecommendedItem item = new RecommendedItem(new RecommendationPost(casted.getPost()));
 			item.setScore(casted.getScore());
 			item.setConfidence(casted.getConfidence());
 		}

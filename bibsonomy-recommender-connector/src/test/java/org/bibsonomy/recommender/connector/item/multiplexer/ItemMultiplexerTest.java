@@ -18,9 +18,9 @@ import recommender.core.Recommender;
 import recommender.core.database.DBLogic;
 import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendedItem;
 import recommender.impl.database.DBLogConfigItemAccess;
 import recommender.impl.item.simple.DummyItemRecommender;
+import recommender.impl.model.RecommendedItem;
 import recommender.impl.multiplexer.MultiplexingRecommender;
 import recommender.impl.multiplexer.strategy.SelectOneWithoutReplacement;
 
@@ -37,6 +37,9 @@ public class ItemMultiplexerTest {
 		dbAccess = new DummyMainItemAccess();
 	}
 	
+	/**
+	 * tests the item multiplexer for recommending bibtex resources 
+	 */
 	@Test
 	public void testItemMUXBibTex() {
 		
@@ -44,11 +47,16 @@ public class ItemMultiplexerTest {
 		mux.setDbLogic(dbLogic);
 		
 		List<Recommender<ItemRecommendationEntity, RecommendedItem>> locals = new ArrayList<Recommender<ItemRecommendationEntity, RecommendedItem>>();
-		DummyItemRecommender itemRec = new DummyItemRecommender();
-		itemRec.setDbAccess(dbAccess);
-		itemRec.setDbLogic(dbLogic);
+		DummyItemRecommender itemRec1 = new DummyItemRecommender();
+		itemRec1.setDbAccess(dbAccess);
+		itemRec1.setDbLogic(dbLogic);
+		DummyItemRecommender itemRec2 = new DummyItemRecommender();
+		itemRec2.setDbAccess(dbAccess);
+		itemRec2.setDbLogic(dbLogic);
 		
-		locals.add(itemRec);
+		// query at least two recommender
+		locals.add(itemRec1);
+		locals.add(itemRec2);
 		
 		UserPrivacyFilter filter = new UserPrivacyFilter();
 		filter.setDbAccess(new DummyMainItemAccess());
@@ -56,6 +64,7 @@ public class ItemMultiplexerTest {
 		mux.setPrivacyFilter(filter);
 		mux.setLocalRecommenders(locals);
 		
+		// dummy user
 		User lha = new User();
 		lha.setName("lha");
 		ItemRecommendationEntity entity = new UserWrapper(lha);

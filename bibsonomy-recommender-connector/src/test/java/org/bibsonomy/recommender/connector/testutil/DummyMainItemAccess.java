@@ -46,7 +46,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 			post.setDescription("");
 			post.setTags(new HashSet<Tag>());
 			post.setResource(b);
-			items.add(new RecommendationPost<BibTex>(post));
+			items.add(new RecommendationPost(post));
 		}
 		return items;
 	}
@@ -65,7 +65,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 				post.setDescription("");
 				post.setTags(new HashSet<Tag>());
 				post.setResource(b);
-				items.add(new RecommendationPost<BibTex>(post));
+				items.add(new RecommendationPost(post));
 			}
 		}
 		return items;
@@ -82,7 +82,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 			post.setContentId(id);
 			post.setResource(bib);
 			post.setUser(new User("no_name"));
-			items.add(new RecommendationPost<BibTex>(post));
+			items.add(new RecommendationPost(post));
 		}
 		
 		return items;

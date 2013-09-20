@@ -1,5 +1,11 @@
 package org.bibsonomy.recommender.connector.database.params;
 
+/**
+ * Parameter to retrieve tags belonging to a resource.
+ * 
+ * @author lukas
+ *
+ */
 public class GetTagForResourceParam {
 
 	private String userName;

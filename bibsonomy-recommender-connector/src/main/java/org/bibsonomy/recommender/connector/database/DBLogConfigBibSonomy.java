@@ -26,10 +26,14 @@ import recommender.core.database.RecommenderDBSession;
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecQuerySettingParam;
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.model.RecommendedTag;
 import recommender.impl.database.DBLogConfigTagAccess;
+import recommender.impl.model.RecommendedTag;
 
 /**
+ * This implements the old logging and configuration scheme for tag recommendations,
+ * known from bibsonmy-recommender.
+ * As a result the old tables can stay in use.
+ * 
  * @author Lukas
  * @version $Id$
  */
@@ -39,6 +43,10 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	private static final int CONTENT_TYPE_BOOKMARK = 1;
 	private static final int CONTENT_TYPE_BIBTEX = 2;
 	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.database.DBLogConfigAccess#addQuery(java.lang.String, java.util.Date, recommender.core.interfaces.model.RecommendationEntity, java.lang.String, int)
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Long addQuery(String userName, Date date,
@@ -78,6 +86,10 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.database.DBLogConfigTagAccess#addFeedback(recommender.core.interfaces.model.TagRecommendationEntity, recommender.core.model.RecommendedTag)
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void addFeedback(TagRecommendationEntity entity, RecommendedTag result) {
@@ -103,6 +115,10 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.database.DBLogConfigAccess#getQuery(java.lang.Long)
+	 */
 	@Override
 	public RecQueryParam getQuery(Long qid) {
 		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
@@ -124,6 +140,10 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.database.DBLogConfigAccess#storeRecommendationEntity(java.lang.String, java.lang.Long, recommender.core.interfaces.model.RecommendationEntity, boolean, recommender.core.database.RecommenderDBSession)
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void storeRecommendationEntity(String userName, Long qid,
@@ -205,6 +225,10 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.database.DBLogConfigAccess#logRecommendation(java.lang.Long, java.lang.Long, long, java.util.SortedSet, java.util.SortedSet)
+	 */
 	@Override
 	public boolean logRecommendation(Long qid, Long sid, long latency,
 			SortedSet<RecommendedTag> results, SortedSet<RecommendedTag> preset) {
@@ -258,6 +282,10 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.database.DBLogConfigTagAccess#getRecommendations(java.lang.Long, java.util.Collection)
+	 */
 	@Override
 	public void getRecommendations(Long qid,
 			Collection<RecommendedTag> recommendedTags) {
@@ -289,6 +317,10 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.database.DBLogConfigAccess#storeRecommendation(java.lang.Long, java.lang.Long, java.util.Collection)
+	 */
 	@Override
 	public int storeRecommendation(Long qid, Long rid,
 			Collection<RecommendedTag> results) {
@@ -321,6 +353,10 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.database.DBLogConfigAccess#addRecommendation(java.lang.Long, java.lang.Long, java.util.SortedSet, long)
+	 */
 	@Override
 	public int addRecommendation(Long queryId, Long settingsId,
 			SortedSet<RecommendedTag> results, long latency) {

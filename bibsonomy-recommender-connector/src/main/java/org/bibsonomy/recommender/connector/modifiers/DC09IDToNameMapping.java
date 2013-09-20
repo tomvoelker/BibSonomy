@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import recommender.core.database.DBLogic;
 import recommender.core.interfaces.database.RecommenderMainTagAccess;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.modifiers.EntityModifier;
@@ -23,8 +22,6 @@ public class DC09IDToNameMapping implements EntityModifier<TagRecommendationEnti
 	private static final String UNKOWNUSER = null;
 	
 	/** used for mapping user names to ids and vice versa */
-	private DBLogic dbLogic;
-	
 	private RecommenderMainTagAccess dbAccess;
 	
 	/** used for caching id->name mappings */
@@ -60,20 +57,6 @@ public class DC09IDToNameMapping implements EntityModifier<TagRecommendationEnti
 			
 		post.getUser().setName(userName);
 		log.debug("Mapping id "+ userID +" to name " + userName);
-	}
-
-	/**
-	 * @return the dbLogic
-	 */
-	public DBLogic getDbLogic() {
-		return this.dbLogic;
-	}
-
-	/**
-	 * @param dbLogic the dbLogic to set
-	 */
-	public void setDbLogic(DBLogic dbLogic) {
-		this.dbLogic = dbLogic;
 	}
 	
 	public RecommenderMainTagAccess getDbAccess() {

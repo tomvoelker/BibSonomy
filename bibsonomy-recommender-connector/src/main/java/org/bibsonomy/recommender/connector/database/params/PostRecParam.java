@@ -4,6 +4,8 @@ import java.util.Date;
 
 
 /**
+ * Parameter for insertion of tag recommender feedback.
+ * 
  * @author fei
  * @version $Id$
  */

@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.model.RecommendedTag;
+import recommender.impl.model.RecommendedTag;
 import recommender.impl.multiplexer.RecommendationResultManager;
 import recommender.impl.multiplexer.strategy.SelectAll;
 

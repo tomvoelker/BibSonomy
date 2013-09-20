@@ -5,10 +5,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 
-import recommender.core.database.DBLogic;
 import recommender.core.interfaces.database.RecommenderMainTagAccess;
-import recommender.core.interfaces.factories.RecommenderUserFactory;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.impl.modifiers.EntityModifier;
 
@@ -23,11 +25,7 @@ public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEnti
 	private static final Log log = LogFactory.getLog(DC09NameToIDMapping.class);
 	private static final Integer UNKNOWNID = Integer.MIN_VALUE;
 	
-	private RecommenderUserFactory userFactory;
-	
 	/** used for mapping user names to ids and vice versa */
-	private DBLogic dbLogic;
-	
 	private RecommenderMainTagAccess dbAccess;
 	
 	/** used for caching name->id mappings */
@@ -49,7 +47,8 @@ public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEnti
 	 * @param post the post for which tags will be queried
 	 */
 	@Override
-	public void alterEntity(TagRecommendationEntity post) {
+	public void alterEntity(TagRecommendationEntity entity) {
+		final Post<? extends Resource> post = RecommendationUtilities.unwrapTagRecommendationEntity(entity);
 		String userName = post.getUser().getName();
 		Integer userID = nameMap.get(userName);
 		if( userID == null )
@@ -57,37 +56,12 @@ public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEnti
 		
 		if( userID == null )
 			userID = UNKNOWNID;
-		post.setUser(userFactory.getRecommendationuserInstance(userID.toString()));
+		post.setUser(new User(userID.toString()));
 		log.debug("Mapping user "+userName+" to id "+userID);
-	}
-
-	/**
-	 * @return the dbLogic
-	 */
-	public DBLogic getDbLogic() {
-		return this.dbLogic;
-	}
-
-	/**
-	 * @param dbLogic the dbLogic to set
-	 */
-	public void setDbLogic(DBLogic dbLogic) {
-		this.dbLogic = dbLogic;
 	}
 	
 	public RecommenderMainTagAccess getDbAccess() {
 		return dbAccess;
-	}
-
-	/**
-	 * @param userFactory the userFactory to set
-	 */
-	public void setUserFactory(RecommenderUserFactory userFactory) {
-		this.userFactory = userFactory;
-	}
-	
-	public RecommenderUserFactory getUserFactory() {
-		return userFactory;
 	}
 	
 	public void setDbAccess(RecommenderMainTagAccess dbAccess) {

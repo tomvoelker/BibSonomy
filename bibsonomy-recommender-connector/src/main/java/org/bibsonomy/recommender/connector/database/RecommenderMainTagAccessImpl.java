@@ -16,6 +16,14 @@ import recommender.core.interfaces.database.RecommenderMainTagAccess;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.Pair;
 
+/**
+ * 
+ * This class implements the database access on the bibsonomy database
+ *  for the recommendation library to recommend tags.
+ * 
+ * @author Lukas
+ *
+ */
 public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implements RecommenderMainTagAccess {
 	private RecommenderDBSessionFactory mainFactory;
 	
@@ -135,7 +143,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Integer getNumberOfTasForRecommendationEntity(
+	public Integer getNumberOfTagAssignmentsForRecommendationEntity(
 			TagRecommendationEntity entity, String entityId) {
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {

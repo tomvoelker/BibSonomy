@@ -18,11 +18,11 @@ import recommender.core.interfaces.model.RecommendationTag;
  *
  * @param <T>
  */
-public class RecommendationPost<T extends Resource> implements RecommendationItem {
+public class RecommendationPost implements RecommendationItem {
 	
-	private Post<T> post;
+	private Post<? extends Resource> post;
 
-	public RecommendationPost(Post<T> post) {
+	public RecommendationPost(Post<? extends Resource> post) {
 		this.post = post;
 	}
 	
@@ -84,11 +84,11 @@ public class RecommendationPost<T extends Resource> implements RecommendationIte
 		}
 	}
 	
-	public Post<T> getPost() {
+	public Post<? extends Resource> getPost() {
 		return post;
 	}
 	
-	public void setPost(Post<T> post) {
+	public void setPost(Post<? extends Resource> post) {
 		this.post = post;
 	}
 

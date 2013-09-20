@@ -4,8 +4,13 @@ import org.bibsonomy.model.Tag;
 
 import recommender.core.interfaces.model.RecommendationTag;
 
-public class TagWrapper implements
-		recommender.core.interfaces.model.RecommendationTag {
+/**
+ * This class wraps a BibSonomy {@link Tag} to allow injection of those into the framework.
+ * 
+ * @author lukas
+ *
+ */
+public class TagWrapper implements RecommendationTag {
 
 	private Tag tag;
 
@@ -27,9 +32,7 @@ public class TagWrapper implements
 		this.tag.setName(name);
 	}
 
-	/*
-	 * FIXME: what about upper vs. lower case? (non-Javadoc)
-	 * 
+	/* 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -39,7 +42,6 @@ public class TagWrapper implements
 
 	@Override
 	public int compareTo(final recommender.core.interfaces.model.RecommendationTag tag) {
-		// FIXME: what about upper vs. lower case?
 		return this.tag.getName().toLowerCase().compareTo(tag.getName().toLowerCase());
 	}
 	

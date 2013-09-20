@@ -11,7 +11,7 @@ import org.bibsonomy.recommender.connector.model.PostWrapper;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationTag;
-import recommender.core.interfaces.model.RecommendedItem;
+import recommender.impl.model.RecommendedItem;
 import recommender.impl.item.collaborative.CollaborativeItemRecommender;
 
 /**

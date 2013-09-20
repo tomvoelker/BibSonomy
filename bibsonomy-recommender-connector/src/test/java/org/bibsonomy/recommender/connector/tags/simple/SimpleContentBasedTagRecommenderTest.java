@@ -13,7 +13,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.junit.Test;
 
-import recommender.core.model.RecommendedTag;
+import recommender.impl.model.RecommendedTag;
 import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
 
 /**

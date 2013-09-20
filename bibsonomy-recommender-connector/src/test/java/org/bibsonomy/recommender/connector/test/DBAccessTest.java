@@ -28,7 +28,7 @@ import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecSettingParam;
 import recommender.core.database.params.SelectorSettingParam;
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.model.RecommendedTag;
+import recommender.impl.model.RecommendedTag;
 import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**
@@ -143,18 +143,40 @@ public class DBAccessTest {
 	 * Test adding recommender response
 	 */
 	@Test
-	@Ignore
 	public void testAddRecommenderResult()  {
-		// TODO: implement a test
+		final Long qid = Long.valueOf(0);
+		final Long sid = Long.valueOf(0);
+		final Long latency = Long.valueOf(0);
+		
+		final SortedSet<RecommendedTag> recommendations = new TreeSet<RecommendedTag>();
+		recommendations.add(new RecommendedTag((new Date() + "tag"+System.currentTimeMillis()).replaceAll(" ", ""), 0.0, 0.0));
+		
+		final int count = dbLogic.addRecommendation(qid, sid, recommendations, latency);
+		
+		Assert.assertEquals(count, recommendations.size());
 	}	
 	
 	/**
 	 * Test registering an already known recommender
 	 */
 	@Test
-	@Ignore
 	public void testAddKnownRecommender() {
-		// TODO: implement a test
+		final Long qid = Long.valueOf(0);
+		final String recInfo = "TestCase-non-Recommender";
+		final String recMeta = "NON-NULL-META";
+		final String recId = "mypackage.classname";
+		// store and retrieve recommender informations
+		Long sid;
+		RecSettingParam retVal = null;
+		sid = dbLogic.addRecommender(qid, recId, recInfo, recMeta.getBytes());
+		retVal = dbLogic.getRecommender(sid);
+		assertEquals(recId, retVal.getRecId());
+		assertArrayEquals(recMeta.getBytes(), retVal.getRecMeta());
+		// store same recommender again and check if information stays valid
+		sid = dbLogic.addRecommender(qid, recId, recInfo, recMeta.getBytes());
+		retVal = dbLogic.getRecommender(sid);
+		assertEquals(recId, retVal.getRecId());
+		assertArrayEquals(recMeta.getBytes(), retVal.getRecMeta());
 	}
 	
 	/**

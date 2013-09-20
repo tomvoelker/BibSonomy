@@ -14,9 +14,9 @@ import org.junit.Test;
 import recommender.core.database.DBLogic;
 import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendedItem;
 import recommender.impl.database.DBLogConfigItemAccess;
 import recommender.impl.item.collaborative.CollaborativeItemRecommender;
+import recommender.impl.model.RecommendedItem;
 
 public class CollaborativeItemRecommenderTest {
 

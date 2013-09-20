@@ -424,7 +424,7 @@
 		       m.date as date,
 		       l.content_type as content_type,
 		FROM log_recommender l 
-		   JOIN recommender_entitymap m ON (
+		   JOIN recommender_feedback m ON (
 		   		m.entity_id=l.entity_id AND 
 		   		TIMESTAMPDIFF(HOUR, l.date, m.date) &lt; 12
 		   	) 
@@ -484,10 +484,10 @@
 	<!--+
 	    | Connect postID with recommmendation
 	    +-->
-	<insert id="connectWithEntity" parameterClass="entityParam">
-	    INSERT INTO recommender_entitymap
-	       (entity_id, user_name, date )
-	    VALUES ( #entityId#, #userName#, #date# )
+	<insert id="insertRecommenderFeedback" parameterClass="feedbackParam">
+	    INSERT INTO recommender_feedback
+	       (entity_id, result_id, user_name, date )
+	    VALUES ( #entityId#, #resultId#, #userName#, #date# )
 	</insert>
 
 	<!-- +

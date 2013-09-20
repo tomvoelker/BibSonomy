@@ -42,7 +42,7 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess{
 	}
 
 	@Override
-	public Integer getNumberOfTasForRecommendationEntity(
+	public Integer getNumberOfTagAssignmentsForRecommendationEntity(
 			TagRecommendationEntity entity, String entitiyId) {
 		// do nothing
 		return null;

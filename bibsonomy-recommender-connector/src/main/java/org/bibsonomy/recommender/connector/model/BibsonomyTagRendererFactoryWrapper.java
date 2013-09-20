@@ -16,12 +16,12 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.interfaces.renderer.RecommendationRenderer;
 
 /**
- * This class provides access to the BibSonomy renderer for webservice recommendations.
+ * This class provides access to the BibSonomy renderer for webservice tag recommendations.
  * 
  * @author lukas
  *
  */
-public class BibsonomyTagRendererFactoryWrapper implements RecommendationRenderer<TagRecommendationEntity, recommender.core.model.RecommendedTag> {
+public class BibsonomyTagRendererFactoryWrapper implements RecommendationRenderer<TagRecommendationEntity, recommender.impl.model.RecommendedTag> {
 
 	private Renderer renderer;
 	
@@ -48,7 +48,7 @@ public class BibsonomyTagRendererFactoryWrapper implements RecommendationRendere
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#parseRecommendationResultList(java.io.Reader)
 	 */
 	@Override
-	public SortedSet<recommender.core.model.RecommendedTag> parseRecommendationResultList(Reader reader)
+	public SortedSet<recommender.impl.model.RecommendedTag> parseRecommendationResultList(Reader reader)
 			throws BadRequestOrResponseException {
 		return RecommendationUtilities.getRecommendedTagsFromBibRecTags(this.renderer.parseRecommendedTagList(reader));
 	}
@@ -58,10 +58,10 @@ public class BibsonomyTagRendererFactoryWrapper implements RecommendationRendere
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#parseRecommendationResult(java.io.Reader)
 	 */
 	@Override
-	public recommender.core.model.RecommendedTag parseRecommendationResult(Reader reader)
+	public recommender.impl.model.RecommendedTag parseRecommendationResult(Reader reader)
 			throws BadRequestOrResponseException {
 		RecommendedTag result = this.renderer.parseRecommendedTag(reader);
-		return new recommender.core.model.RecommendedTag(result.getName(), result.getScore(), result.getConfidence());
+		return new recommender.impl.model.RecommendedTag(result.getName(), result.getScore(), result.getConfidence());
 	}
 
 	/*

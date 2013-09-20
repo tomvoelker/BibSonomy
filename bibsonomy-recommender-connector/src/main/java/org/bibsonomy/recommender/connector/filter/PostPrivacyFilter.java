@@ -10,37 +10,45 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
+import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 
 import recommender.core.interfaces.filter.PrivacyFilter;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 
 public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity> {
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * The methods checks if the post wrapped in an entity can be forwarded
+	 * to external services. If not, <code>null</code> is returned. 
+	 * Otherwise, a copy of the post is returned where only the public fields are set. 
+	 * Note that this is not necessarily a deep copy, i.e., the tags are not copied
+	 * but just linked.
+	 * 
+	 * <p>We do white listing here, i.e., we explicitly state, which attributes
+	 * to copy.</p>
+	 * 
+	 * @param post the entity to filter
+	 * @return The wrapped post containing only public parts or <code>null</code>, if
+	 * the post is not public at all.
+	 */
 	@Override
 	public TagRecommendationEntity filterEntity(TagRecommendationEntity post) {
 		
-		final Set<Group> groups;
-		if(post instanceof PostWrapper<?>) {
-			groups = ((PostWrapper<Resource>) post).getPost().getGroups();
-		} else {
-			groups = null;
+		final Post<? extends Resource> existingPost = RecommendationUtilities.unwrapTagRecommendationEntity(post);
+		
+		// in case of this is not a BibSonomy model type we can't filter
+		if(post == null) {
+			return post;
 		}
+		
+		final Set<Group> groups = existingPost.getGroups();
 		
 		if (groups == null || !groups.contains(GroupUtils.getPublicGroup())) {
 			/*
 			 * The post does not contain the public group -> no parts of it
 			 * are public.
 			 */
-			// FIXME: THIS IS BROKEN! FOR PUBLIC POSTS, THE CONDITION ABOVE EVALUATES TO TRUE
 			return null;
-			// return post;
-		}
-		
-		Post<Resource> existingPost = null;
-		
-		if(post instanceof PostWrapper<?>) {
-			existingPost = ((PostWrapper<Resource>) post).getPost();
 		}
 		
 		/*

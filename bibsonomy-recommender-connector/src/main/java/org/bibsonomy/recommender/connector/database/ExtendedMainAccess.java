@@ -7,6 +7,13 @@ import org.bibsonomy.recommender.connector.filter.UserPrivacyFilter;
 import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.RecommendationItem;
 
+/**
+ * This interface extends the main access interface of the recommender library.
+ * This is done to allow some bibsonomy specific data use and a greedy-loading approach.
+ * 
+ * @author lukas
+ *
+ */
 public interface ExtendedMainAccess extends RecommenderMainItemAccess {
 
 	/**

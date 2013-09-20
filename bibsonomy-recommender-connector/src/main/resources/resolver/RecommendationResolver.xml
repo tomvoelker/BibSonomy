@@ -224,26 +224,35 @@
 		 | try to get the count most actual bibtex entries
 		 + -->
 	
-	<select id="getMostActualBibTex" resultMap="RecommendationBibCommon.bibtexPost" parameterClass="itemRecRequestParam">
-		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, b.simhash1 AS interHash, b.simhash2 AS intraHash, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
-		 FROM (SELECT * FROM bibtex
-		 	WHERE `group`=0
-		 	AND user_name != #userName#
-		 	ORDER BY date DESC LIMIT #count#) b
-		  LEFT JOIN tas t USING (content_id) 
+	<select id="getMostActualBibTex" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1, bibhash h
+		      WHERE <include refid="bibtexSimHash3"/>
+		            <include refid="restrictToGroups"/>
+			  		<include refid="sysTagsEntryType"/>
+			  		<include refid="sysTagsYear"/>		            
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
+		WHERE b2.group = g.group
 	</select>
 	
 	<!-- +
 		 | try to get the count most actual bookmark entries
 		 + -->
-	<select id="getMostActualBookmark" resultMap="RecommendationBibCommon.bookmarkPost" parameterClass="itemRecRequestParam">
-		SELECT <include refid="bookmarkAttributes"/>, u.book_url, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
-		 FROM (SELECT * FROM bookmark
-		 	WHERE `group`=0
-		 	AND user_name != #userName#
-		 	ORDER BY date DESC LIMIT #count#) b
-		  LEFT JOIN tas t USING (content_id) 
-		  JOIN urls u USING (book_url_hash)
+	<select id="getMostActualBookmark" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
+		      FROM bookmark t1, urls u
+		      WHERE u.book_url_hash = t1.book_url_hash
+		            <include refid="restrictToGroups"/>
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
+		WHERE bb.group = g.group
 	</select>
 	
 	<select id="getSimilarUsersByFolkrank" resultClass="string" parameterClass="itemRecRequestParam">
@@ -265,9 +274,11 @@
 	
 	<select id="getSimilarUsersByEqualTags" resultClass="string" parameterClass="itemRecRequestParam">
 		SELECT u.user_name FROM 
-			(SELECT DISTINCT t.user_name 
+			(SELECT t.user_name, COUNT(t.tag_name) as tag_count
 			 FROM tas t 
-			 WHERE t.tag_name=#tag# AND t.user_name!=#userName#) t1 
+			 WHERE t.tag_name=#tag# AND t.user_name!=#userName#
+			 GROUP BY t.user_name
+			 ORDER BY tag_count DESC) t1 
 		JOIN user u ON (u.user_name=t1.user_name AND u.role!=3 AND u.spammer!=1)
 		LIMIT #count#
 	</select>
@@ -280,61 +291,30 @@
 		SELECT tag_name, COUNT(content_id) as count 
 		FROM tas WHERE user_name=#userName#
 		GROUP BY tag_name 
-		ORDER BY COUNT DESC 
+		ORDER BY count DESC 
 		LIMIT #count#
 	</select>
 	
-	<select id="getBibTexForUser" resultMap="RecommendationBibCommon.bibtexPost" parameterClass="itemRecRequestParam">
-		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, b.simhash1 AS interHash, b.simhash2 AS intraHash, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
-		 FROM (SELECT * FROM bibtex
-		 	WHERE `group`=0
-		 	AND user_name = #userName#
-		 	LIMIT #count#) b
-		  LEFT JOIN tas t USING (content_id) 
+	<select id="getBibTexById" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1, bibhash h
+		      WHERE t1.content_id = #requestedContentId#
+		      		AND <include refid="bibtexSimHash3"/>) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
+		WHERE b2.group = g.group
 	</select>
 	
-	<select id="getBookmarkForUsers" resultMap="RecommendationBibCommon.bookmarkPost" parameterClass="itemRecRequestParam">
-		SELECT <include refid="bookmarkAttributes"/>, u.book_url, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
-		 FROM (SELECT * FROM bookmark
-		 	WHERE `group`=0
-		 	AND #userName# LIKE CONCAT('%', CONCAT(user_name, '%'))
-		 	LIMIT #count#) b
-		  LEFT JOIN tas t USING (content_id) 
-		  JOIN urls u USING (book_url_hash)
-	</select>
-	
-	<select id="getBibTexForUsers" resultMap="RecommendationBibCommon.bibtexPost" parameterClass="itemRecRequestParam">
-		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, b.simhash1 AS interHash, b.simhash2 AS intraHash, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
-		 FROM (SELECT * FROM bibtex
-		 	WHERE `group`=0
-		 	AND #userName# LIKE CONCAT('%', CONCAT(user_name, '%'))
-		 	LIMIT #count#) b
-		  LEFT JOIN tas t USING (content_id) 
-	</select>
-	
-	<select id="getBookmarkForUser" resultMap="RecommendationBibCommon.bookmarkPost" parameterClass="itemRecRequestParam">
-		SELECT <include refid="bookmarkAttributes"/>, u.book_url, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
-		 FROM (SELECT * FROM bookmark
-		 	WHERE `group`=0
-		 	AND user_name = #userName#
-		 	LIMIT #count#) b
-		  LEFT JOIN tas t USING (content_id) 
-		  JOIN urls u USING (book_url_hash)
-	</select>
-	
-	<select id="getBibTexById" resultMap="RecommendationBibCommon.bibtexPost" parameterClass="integer">
-		SELECT <include refid="commonBibtexAttributes"/>, -1 AS scraperId, b.simhash1 AS interHash, b.simhash2 AS intraHash, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
-		 FROM (SELECT * FROM bibtex
-		 	WHERE content_id=#id#) b
-		  LEFT JOIN tas t USING (content_id) 
-	</select>
-	
-	<select id="getBookmarkById" resultMap="RecommendationBibCommon.bookmarkPost" parameterClass="integer">
-		SELECT <include refid="bookmarkAttributes"/>, u.book_url, t.change_date, t.tag_name, NULL AS `group`, NULL AS group_name
-		 FROM (SELECT * FROM bookmark
-		 	WHERE content_id=#id#) b
-		  LEFT JOIN tas t USING (content_id) 
-		  JOIN urls u USING (book_url_hash)
+	<select id="getBookmarkById" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
+		      FROM bookmark t1, urls u
+		      WHERE t1.content_id = #requestedContentId#
+		      		AND u.book_url_hash = t1.book_url_hash) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
+		WHERE bb.group = g.group
 	</select>
 	
 	

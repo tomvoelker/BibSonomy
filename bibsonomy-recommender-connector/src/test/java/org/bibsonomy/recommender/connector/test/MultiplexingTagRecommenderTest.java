@@ -25,18 +25,18 @@ import org.bibsonomy.recommender.connector.filter.PostPrivacyFilter;
 import org.bibsonomy.recommender.connector.model.BibsonomyTagRendererFactoryWrapper;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
-import org.bibsonomy.recommender.connector.testutil.SelectCounter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
 import recommender.core.interfaces.RecommenderConnector;
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.model.RecommendedTag;
 import recommender.core.util.RecommendationResultComparator;
+import recommender.impl.model.RecommendedTag;
 import recommender.impl.multiplexer.MultiplexingRecommender;
 import recommender.impl.multiplexer.RecommendationResultManager;
 import recommender.impl.tags.simple.DummyTagRecommender;
+import recommender.impl.test.testutil.SelectCounter;
 
 /**
  * @author fei

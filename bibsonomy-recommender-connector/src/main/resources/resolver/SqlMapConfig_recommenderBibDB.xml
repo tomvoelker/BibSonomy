@@ -8,24 +8,33 @@
 	<typeAlias alias="pair"                        type="recommender.core.model.Pair" />
 	<typeAlias alias="postGuess"                   type="org.bibsonomy.recommender.connector.database.params.PostGuess" />
 	<typeAlias alias="getTagsForResParam"          type="org.bibsonomy.recommender.connector.database.params.GetTagForResourceParam" />
-	<typeAlias alias="tasParam"                    type="org.bibsonomy.recommender.connector.database.params.TasParam" />
 	<typeAlias alias="timestamp"                   type="java.sql.Timestamp" />
 	<typeAlias alias="postRecParam"                type="org.bibsonomy.recommender.connector.database.params.PostRecParam" />
 	
-	<typeAlias alias="user"                        type="org.bibsonomy.model.User" />
-	<typeAlias alias="tag"                         type="org.bibsonomy.model.Tag" />
-	<typeAlias alias="group"                       type="org.bibsonomy.model.Group" />
-	<typeAlias alias="post"                        type="org.bibsonomy.model.Post" />
-	<typeAlias alias="resource"                    type="org.bibsonomy.model.Resource" />
-	<typeAlias alias="personNameList"	           type="java.util.List" />
-	<typeAlias alias="bibtex"                      type="org.bibsonomy.model.BibTex" />
-	<typeAlias alias="bookmark"                    type="org.bibsonomy.model.Bookmark" />
-	
-	<typeAlias alias="recommendationBibTexParam"   type="org.bibsonomy.recommender.connector.database.params.RecommendationBibTexParam" />
-	<typeAlias alias="recommendationBookmarkParam" type="org.bibsonomy.recommender.connector.database.params.RecommendationBookmarkParam" />
 	<typeAlias alias="itemRecRequestParam"       type="org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam" />
 	
+	<sqlMap resource="common/TypeAliases.xml" />
+	
 	<typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
+	
+	<sqlMap resource="common/Common.xml" />
+	<sqlMap resource="common/BookmarkCommon.xml" />
+	<sqlMap resource="common/BibTexCommon.xml" />
+	<sqlMap resource="common/BibTexExtraCommon.xml" />
+	<sqlMap resource="common/GoldStandardCommon.xml" />
+	<sqlMap resource="common/UserCommon.xml" />
+	<sqlMap resource="common/GroupCommon.xml" />
+	<sqlMap resource="common/TagCommon.xml" />
+	<sqlMap resource="common/DocumentCommon.xml" />
+	<sqlMap resource="common/RepositoryCommon.xml" />
+	<sqlMap resource="common/AuthorCommon.xml"/>
+	<sqlMap resource="common/SynchronizationCommon.xml" />
+	<sqlMap resource="common/DiscussionCommon.xml" />
+	<sqlMap resource="common/CommentCommon.xml" />
+	<sqlMap resource="common/ReviewCommon.xml" />
+
+	<sqlMap resource="BibTex.xml" />
+	<sqlMap resource="Bookmark.xml" />
 	
 	<sqlMap resource="resolver/common/RecommendationBibCommon.xml" />
 	<sqlMap resource="resolver/RecommendationResolver.xml" />

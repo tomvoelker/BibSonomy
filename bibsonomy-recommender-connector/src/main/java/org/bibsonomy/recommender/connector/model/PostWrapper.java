@@ -1,6 +1,5 @@
 package org.bibsonomy.recommender.connector.model;
 
-import java.util.Date;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -35,21 +34,6 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 	public void setPost(Post<T> post) {
 		this.post = post;
 	}
-	
-	@Override
-	public Date getDate() {
-		if(this.post != null) {
-			return this.post.getDate();
-		}
-		return new Date();
-	}
-
-	@Override
-	public void setDate(Date date) {
-		if(this.post != null) {
-			this.post.setDate(date);
-		}
-	}
 
 	@Override
 	public String getId() {
@@ -59,7 +43,6 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 		return null;
 	}
 
-	@Override
 	public void setId(String id) {
 		if(this.post != null) {
 			this.post.setContentId(Integer.parseInt(id));
@@ -74,7 +57,6 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 		return null;
 	}
 
-	@Override
 	public void setUser(RecommendationUser user) {
 		if(this.post != null) {
 			this.post.setUser(((UserWrapper) user).getUser());
@@ -91,7 +73,6 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 		return "";
 	}
 
-	@Override
 	public void setTitle(String title) {
 		if(this.post != null) {
 			if (this.post.getResource() != null) {
@@ -111,7 +92,6 @@ public class PostWrapper <T extends Resource> implements TagRecommendationEntity
 		return "";
 	}
 
-	@Override
 	public void setUrl(String url) {
 		if(this.post != null) {
 			if (this.post.getResource() != null && 

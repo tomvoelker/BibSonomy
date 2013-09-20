@@ -1,10 +1,13 @@
 package org.bibsonomy.recommender.connector.model;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
@@ -13,6 +16,11 @@ import recommender.core.interfaces.model.RecommendationUser;
 
 public class UserWrapper implements RecommendationUser, ItemRecommendationEntity{
 
+	/**
+	 * for persistence
+	 */
+	private static final long serialVersionUID = -5249217271896497855L;
+	
 	private User user;
 	
 	public UserWrapper(User user) {
@@ -89,7 +97,11 @@ public class UserWrapper implements RecommendationUser, ItemRecommendationEntity
 
 	@Override
 	public List<RecommendationItem> getItems() {
-		//TODO add implementation
+		if(present(this.user)) {
+			if(present(this.user.getPosts())) {
+				return RecommendationUtilities.wrapPostList(this.user.getPosts());
+			}
+		}
 		return new ArrayList<RecommendationItem>();
 	}
 

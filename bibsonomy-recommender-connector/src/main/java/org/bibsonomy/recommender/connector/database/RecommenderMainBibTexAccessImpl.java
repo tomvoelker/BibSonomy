@@ -3,10 +3,14 @@ package org.bibsonomy.recommender.connector.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
+
 import recommender.core.database.RecommenderDBSession;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
@@ -14,14 +18,13 @@ import recommender.core.interfaces.model.RecommendationItem;
 /**
  * 
  * This class implements the database access on the bibsonomy database
- *  for the recommendation library
+ * for the recommendation library to recommend bibtex posts.
  * 
  * @author Lukas
  *
  */
-
 public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItemAccessImpl{
-			
+	
 	/*
 	 * (non-Javadoc)
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getMostActualItems(int)
@@ -32,13 +35,20 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 		
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
-			final ItemRecRequestParam param = new ItemRecRequestParam();
-			param.setCount(count);
-			param.setUserName(entity.getUserName());
-			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getMostActualBibTex", param, mainSession);
+			BibTexParam bibtexParam = new BibTexParam();
+			bibtexParam.setGrouping(GroupingEntity.ALL);
+			final List<Integer> groups = new ArrayList<Integer>();
+			groups.add(GroupID.PUBLIC.getId());
+			bibtexParam.setGroups(groups);
+			bibtexParam.setOffset(0);
+			bibtexParam.setLimit(count);
+			bibtexParam.setSimHash(HashID.INTRA_HASH);
+			
+			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getMostActualBibTex", bibtexParam, mainSession);
+			
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
 			for(Post<BibTex> bibtex : results) {
-				RecommendationItem item =  new RecommendationPost<BibTex>(bibtex);
+				RecommendationItem item =  new RecommendationPost(bibtex);
 				items.add(item);
 			}
 			
@@ -58,16 +68,23 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	public List<RecommendationItem> getItemsForUser(final int count, final String username) {
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
-			final ItemRecRequestParam param = new ItemRecRequestParam();
-			param.setCount(count);
-			param.setUserName(username);
-			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", param, mainSession);
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
+			final BibTexParam bibtexParam = new BibTexParam();
+			bibtexParam.setRequestedUserName(username);
+			bibtexParam.setGrouping(GroupingEntity.ALL);
+			final List<Integer> groups = new ArrayList<Integer>();
+			groups.add(GroupID.PUBLIC.getId());
+			bibtexParam.setGroups(groups);
+			bibtexParam.setOffset(0);
+			bibtexParam.setLimit(count);
+			bibtexParam.setSimHash(HashID.INTRA_HASH);
+			
+			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", bibtexParam, mainSession);
+			
 			for(Post<BibTex> bibtex : results) {
-				RecommendationItem item =  new RecommendationPost<BibTex>(bibtex);
+				RecommendationItem item =  new RecommendationPost(bibtex);
 				items.add(item);
 			}
-			
 			return items;
 		} finally {
 			mainSession.close();
@@ -84,14 +101,23 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			List<String> usernames) {
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
-			final ItemRecRequestParam param = new ItemRecRequestParam();
-			param.setCount(count);
-			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			final BibTexParam bibtexParam = new BibTexParam();
+			bibtexParam.setGrouping(GroupingEntity.ALL);
+			final List<Integer> groups = new ArrayList<Integer>();
+			groups.add(GroupID.PUBLIC.getId());
+			bibtexParam.setGroups(groups);
+			bibtexParam.setOffset(0);
+			bibtexParam.setLimit(count);
+			bibtexParam.setSimHash(HashID.INTRA_HASH);
+			
+			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			
 			for(String username : usernames) {
-				param.setUserName(username);
-				List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", param, mainSession);
+				bibtexParam.setRequestedUserName(username);
+				List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", bibtexParam, mainSession);
+				
 				for(Post<BibTex> bibtex : results) {
-					RecommendationItem item =  new RecommendationPost<BibTex>(bibtex);
+					RecommendationItem item =  new RecommendationPost(bibtex);
 					items.add(item);
 				}
 			}
@@ -111,9 +137,12 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
 			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+			final BibTexParam param = new BibTexParam();
+			param.setSimHash(HashID.INTRA_HASH);
 			for(Integer id : ids) {
-				Post<BibTex> bibtex = this.queryForObject("getBibTexById", id, Post.class, mainSession);
-				items.add(new RecommendationPost<BibTex>(bibtex));
+				param.setRequestedContentId(id);
+				Post<BibTex> bibtex = this.queryForObject("getBibTexById", param, Post.class, mainSession);
+				items.add(new RecommendationPost(bibtex));
 			}
 			return items;
 		} finally {

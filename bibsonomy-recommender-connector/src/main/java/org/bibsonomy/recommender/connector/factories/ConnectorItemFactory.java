@@ -14,6 +14,10 @@ import recommender.core.interfaces.model.RecommendationItem;
  */
 public class ConnectorItemFactory implements RecommenderItemFactory{
 
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.core.interfaces.factories.RecommenderItemFactory#getInstanceOfRecommendationItem()
+	 */
 	@Override
 	public RecommendationItem getInstanceOfRecommendationItem() {
 		final Resource r = new Resource() {
@@ -30,7 +34,7 @@ public class ConnectorItemFactory implements RecommenderItemFactory{
 		final Post<Resource> post = new Post<Resource>();
 		post.setResource(r);
 		
-		return new RecommendationPost<Resource>(post);
+		return new RecommendationPost(post);
 	}
 
 }

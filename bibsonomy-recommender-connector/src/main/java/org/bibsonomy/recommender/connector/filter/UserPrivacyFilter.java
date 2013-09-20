@@ -17,6 +17,12 @@ public class UserPrivacyFilter implements PrivacyFilter<ItemRecommendationEntity
 
 	private ExtendedMainAccess dbAccess;
 	
+	/*
+	 * This method maps usernames to their ids as they are set in the database.
+	 * 
+	 * (non-Javadoc)
+	 * @see recommender.core.interfaces.filter.PrivacyFilter#filterEntity(recommender.core.interfaces.model.RecommendationEntity)
+	 */
 	@Override
 	public ItemRecommendationEntity filterEntity(ItemRecommendationEntity entity) {
 		
@@ -35,6 +41,9 @@ public class UserPrivacyFilter implements PrivacyFilter<ItemRecommendationEntity
 		
 	}
 
+	/**
+	 * @param dbAccess
+	 */
 	public void setDbAccess(ExtendedMainAccess dbAccess) {
 		this.dbAccess = dbAccess;
 	}
