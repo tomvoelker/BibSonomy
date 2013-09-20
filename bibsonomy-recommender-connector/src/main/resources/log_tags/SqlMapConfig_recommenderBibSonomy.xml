@@ -15,7 +15,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 	<typeAlias alias="entityParam"     type="recommender.core.database.params.EntityParam" />
     <typeAlias alias="latencyParam"    type="recommender.core.database.params.LatencyParam" />
     <typeAlias alias="recResultParam"  type="recommender.core.database.params.ResultParam" />
-    <typeAlias alias="recTag"          type="recommender.core.model.RecommendedTag" />
+    <typeAlias alias="recTag"          type="recommender.impl.model.RecommendedTag" />
 
 	<typeAlias alias="recAdminOverview" type="recommender.core.database.params.RecAdminOverview"/>
 
