@@ -60,12 +60,12 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	private LogicInterface adminLogic;
 	
 	/** default recommender for serving spammers */
-	private Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> spamTagRecommender;
+	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> spamTagRecommender;
 	
 	/**
 	 * Provides tag recommendations to the user.
 	 */
-	private Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> recommender;
+	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
 	
 	@Override
 	public View workOn(final AjaxRecommenderCommand<R> command) {
@@ -110,7 +110,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			// the user is a spammer
 			log.debug("Filtering out recommendation request from spammer");
 			if (this.spamTagRecommender != null)	{
-				final SortedSet<recommender.core.model.RecommendedTag> result = this.spamTagRecommender.getRecommendation(new PostWrapper<R>(command.getPost()));
+				final SortedSet<recommender.impl.model.RecommendedTag> result = this.spamTagRecommender.getRecommendation(new PostWrapper<R>(command.getPost()));
 				this.processRecommendedTags(command, RecommendationUtilities.getRecommendedTags(result));
 			} else {
 				command.setResponseString("");
@@ -120,7 +120,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			 * get the recommended tags for the post from the normal recommender
 			 */
 			if (this.recommender != null) {
-				final SortedSet<recommender.core.model.RecommendedTag> result = this.recommender.getRecommendation(new PostWrapper<R>(command.getPost()));
+				final SortedSet<recommender.impl.model.RecommendedTag> result = this.recommender.getRecommendation(new PostWrapper<R>(command.getPost()));
 				this.processRecommendedTags(command, RecommendationUtilities.getRecommendedTags(result));
 			} else {
 				command.setResponseString("");
@@ -170,7 +170,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	/**
 	 * @param recommender 
 	 */
-	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> recommender) {
+	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender) {
 		this.recommender = recommender;
 	}
 
@@ -184,7 +184,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	/**
 	 * @param spamTagRecommender the spamTagRecommender to set
 	 */
-	public void setSpamTagRecommender(final Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> spamTagRecommender) {
+	public void setSpamTagRecommender(final Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> spamTagRecommender) {
 		this.spamTagRecommender = spamTagRecommender;
 	}
 

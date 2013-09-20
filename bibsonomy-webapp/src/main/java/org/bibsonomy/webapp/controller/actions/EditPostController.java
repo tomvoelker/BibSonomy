@@ -71,7 +71,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 	
-	private Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> recommender;
+	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
 	private Pingback pingback;
 	private Captcha captcha;
 	
@@ -105,7 +105,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * set default values.
 		 */
-		command.setPostID(RecommenderStatisticsManager.getUnknownPID());
+		command.setPostID(RecommenderStatisticsManager.getUnknownEntityID());
 		return command;
 	}
 
@@ -545,7 +545,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * the post we provided at recommendation time, we give it the post
 			 * id using the contentid field. 
 			 */
-			entity.setId(""+postID);
 			recommender.setFeedback(entity, null);
 		} catch (final Exception ex) {
 			log.warn("Could not connect post with recommendation.");
@@ -681,7 +680,9 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
-		setRecommendationFeedback(new PostWrapper<RESOURCE>(post), command.getPostID());
+		final PostWrapper<RESOURCE> wrapper = new PostWrapper<RESOURCE>(post);
+		wrapper.setId(""+command.getPostID());
+		setRecommendationFeedback(wrapper, command.getPostID());
 		/*
 		 * Send a pingback/trackback for the public posted resource.
 		 */
@@ -799,7 +800,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * For each post process an unique identifier is generated. 
 		 * This is used for mapping posts to recommendations.
 		 */
-		if (command.getPostID() == RecommenderStatisticsManager.getUnknownPID()) {
+		if (command.getPostID() == RecommenderStatisticsManager.getUnknownEntityID()) {
 			command.setPostID(RecommenderStatisticsManager.getNewPID());
 		}
 	}
@@ -890,7 +891,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	/**
 	 * @return The tag recommender associated with this controller.
 	 */
-	public Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> getTagRecommender() {
+	public Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> getTagRecommender() {
 		return this.recommender;
 	}
 
@@ -900,7 +901,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param tagRecommender
 	 */
-	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.core.model.RecommendedTag> tagRecommender) {
+	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> tagRecommender) {
 		this.recommender = tagRecommender;
 	}
 

@@ -25,10 +25,10 @@ import recommender.core.Recommender;
 import recommender.core.database.DBLogic;
 import recommender.core.database.params.RecAdminOverview;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendedItem;
 import recommender.core.interfaces.model.TagRecommendationEntity;
-import recommender.core.model.RecommendedTag;
 import recommender.core.util.RecommenderUtil;
+import recommender.impl.model.RecommendedItem;
+import recommender.impl.model.RecommendedTag;
 import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**

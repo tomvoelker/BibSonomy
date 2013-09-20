@@ -1,16 +1,19 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.ArrayList;
-import java.util.SortedSet;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
+import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RecommendedPostsCommand;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
@@ -20,7 +23,7 @@ import org.bibsonomy.webapp.view.Views;
 
 import recommender.core.Recommender;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
-import recommender.core.interfaces.model.RecommendedItem;
+import recommender.impl.model.RecommendedItem;
 
 /**
  * Controller for triggering a post recommendation and return the sorted list of recommended posts
@@ -28,7 +31,7 @@ import recommender.core.interfaces.model.RecommendedItem;
  * @author Lukas
  * @version $Id$
  */
-public class RecommendedPostsPageController extends SingleResourceListController implements MinimalisticController<RecommendedPostsCommand>{
+public class RecommendedPostsPageController extends SingleResourceListController implements MinimalisticController<RecommendedPostsCommand> {
 
 	private Recommender<ItemRecommendationEntity, RecommendedItem> bibtexRecommender;
 	private Recommender<ItemRecommendationEntity, RecommendedItem> bookmarkRecommender;
@@ -65,35 +68,38 @@ public class RecommendedPostsPageController extends SingleResourceListController
 		return Views.RECOMMENDEDPAGE;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user, Class<? extends Resource> resourceType) {
+		
+		final ItemRecommendationEntity entity = new UserWrapper(user);
 		
 		if (resourceType == BibTex.class) {
 			/** get publication recommendations */
-			SortedSet<RecommendedItem> result = bibtexRecommender.getRecommendation(new UserWrapper(user));
 			final ListCommand<Post<BibTex>> listCommand = cmd.getBibtex();
-			ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
-			for (RecommendedItem item : result) {
-				if (item.getItem() instanceof RecommendationPost) {
-					posts.add(((RecommendationPost<BibTex>) item.getItem()).getPost());
-				}
-			}
+			List<Post<BibTex>> posts = RecommendationUtilities.unwrapRecommendedItems(BibTex.class, this.bibtexRecommender.getRecommendation(entity));
+			this.cleanVisibleTags(posts);
 			listCommand.setList(posts);
 		} else if(resourceType == Bookmark.class) { 
 			/** get bookmark recommendations */
-			SortedSet<RecommendedItem> resultBookmark = bookmarkRecommender.getRecommendation(new UserWrapper(user));
 			final ListCommand<Post<Bookmark>> bookmarkListCmd = cmd.getBookmark();
-			ArrayList<Post<Bookmark>> bookmarkPosts = new ArrayList<Post<Bookmark>>();
-			
-			for(RecommendedItem item : resultBookmark) {
-				if(item.getItem() instanceof RecommendationPost) {
-					bookmarkPosts.add(((RecommendationPost<Bookmark>) item.getItem()).getPost());
-				}
-			}
-			
-			bookmarkListCmd.setList(bookmarkPosts);
+			List<Post<Bookmark>> posts = RecommendationUtilities.unwrapRecommendedItems(Bookmark.class, this.bookmarkRecommender.getRecommendation(entity));
+			this.cleanVisibleTags(posts);
+			bookmarkListCmd.setList(posts);
 		}
 
+	}
+	
+	/**
+	 * Helper method to remove system tags from each given posts tags and
+	 * set the visible tags.
+	 * 
+	 * @param posts the posts to set the cleaned visible tags for
+	 */
+	private <T extends Resource> void cleanVisibleTags(Collection<Post<T>> posts) {
+		for(Post<T> post : posts) {
+			final Set<Tag> tags = post.getTags();
+			SystemTagsExtractor.removeAllSystemTags(tags);
+			post.setVisibleTags(tags);
+		}
 	}
 
 	/**
@@ -123,6 +129,4 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	public void setBookmarkRecommender(Recommender<ItemRecommendationEntity, RecommendedItem> bookmarkRecommender) {
 		this.bookmarkRecommender = bookmarkRecommender;
 	}
-
-	
 }
