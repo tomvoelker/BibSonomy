@@ -96,7 +96,7 @@
 					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
 				</li>
 			</c:if>
-				
+			
 			<!-- display similar users -->
 			<li>
 				<span class="sidebar_h">
@@ -120,7 +120,7 @@
 					<user:details user="${command.user}"/>
 				</li>
 			</c:if>
-		</ul>	
+		</ul>
 		</jsp:attribute> <!-- sidebar -->
 		
 	</layout:resourceLayout>
