@@ -908,17 +908,13 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	@Override
-	public <T extends Resource> List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
+	public List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getPosts() != null) {
 			final List<RecommendedPost<? extends Resource>> items = new ArrayList<RecommendedPost<? extends Resource>>();
 			for (final PostType post : xmlDoc.getPosts().getPost()) {
 				try {
-					final Post<Resource> p = this.createPost(post, uploadedFileAcessor);
-					if(p.getResource().getClass().isAssignableFrom(resourceType)) {
-						final RecommendedPost<? extends Resource> recPost = new RecommendedPost<Resource>(p);
-						items.add(recPost);
-					}
+					items.add(this.createRecommendedPost(post, uploadedFileAcessor));
 				} catch (final PersonListParserException ex) {
 					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 				}
@@ -932,16 +928,13 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 	
 	@Override
-	public <T extends Resource> RecommendedPost<? extends Resource> parseRecommendedItem(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
+	public RecommendedPost<? extends Resource> parseRecommendedItem(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		
 		final PostType post = xmlDoc.getPost();
 		if (post != null) {
 			try {
-				final Post<Resource> p =  this.createPost(post, uploadedFileAccessor);
-				if(p.getClass().isAssignableFrom(resourceType)) {
-					return new RecommendedPost<Resource>(p);
-				}
+				return this.createRecommendedPost(post, uploadedFileAccessor);
 			} catch (final PersonListParserException ex) {
 				xmlDoc.setError("Error parsing the person names for entry with BibTeXKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
 			}
@@ -1303,6 +1296,22 @@ public abstract class AbstractRenderer implements Renderer {
 		return post;
 	}
 
+	/**
+	 * converts an xml post to the model recommended post with score and confidence
+	 * 
+	 * @param xmlPost
+	 * @param uploadedFileAccessor 
+	 * @return the converted recommended post
+	 * @throws PersonListParserException 
+	 */
+	protected RecommendedPost<Resource> createRecommendedPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
+		final Post<Resource> post = this.createPost(xmlPost, uploadedFileAccessor);
+		final RecommendedPost<Resource> result = new RecommendedPost<Resource>(post);
+		result.setScore(xmlPost.getScore());
+		result.setConfidence(xmlPost.getConfidence());
+		return result;
+	}
+	
 	/**
 	 * converts an xml post to the model post
 	 * 

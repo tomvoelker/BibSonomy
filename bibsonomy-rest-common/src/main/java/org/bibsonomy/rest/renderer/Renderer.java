@@ -401,12 +401,11 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 *            the {@link Reader} to use.
-	 * @return a {@link Map} of {@link Post} objects, which fit to the specified resourceType and are mapped
-	 * 		to their score(first)-confidence(second) pairs.
+	 * @return a {@link List} of {@link RecommendedPost} objects
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	public <T extends Resource> List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException;
+	public List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException;
 	
 	/**
 	 * Reads one {@link Post} from a {@link Reader}.
@@ -425,12 +424,11 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 *            the {@link Reader} to use.
-	 * @return one {@link Pair} which contains a {@link Post}(first) object which is conform to the specified resourceType
-	 * 	and another {@link Pair}(second) containing score(first) and confidence(second) of the recommendation.
+	 * @return one {@link RecommendedPost} object
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
 	 */
-	public <T extends Resource> RecommendedPost<? extends Resource> parseRecommendedItem(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException;
+	public RecommendedPost<? extends Resource> parseRecommendedItem(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException;
 	
 	/**
 	 * Reads one {@link Document} from a {@link Reader}
