@@ -59,6 +59,7 @@
 						loginUser="${command.context.loginUser}" 
 						requestedUser="${command.requestedUser}" 
 						isOfFriendUser="${command.ofFriendUser}" 
+						isFollowerOfUser="${command.followerOfUser}"
 						isFriendOfUser="${command.friendOfUser}" />
 				</li>
 			</c:if>
