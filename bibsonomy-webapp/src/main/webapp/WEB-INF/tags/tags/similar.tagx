@@ -6,7 +6,7 @@
 
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedTagCommand" required="true" />
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
-
+	
 	<ul class="taglist sidebar_collapse_content">
 		<c:forEach var="tag" items="${cmd.relatedTags}">
 
@@ -15,28 +15,27 @@
 				<c:choose>
 					<c:when test="${tag.usercount > 30}">
 						<c:set var="tagclass" value="tagone" />
-					</c:when>			
+					</c:when>
 					<c:when test="${tag.usercount > 10}">
-						<c:set var="tagclass" value="tagten" />				
-					</c:when>							
+						<c:set var="tagclass" value="tagten" />
+					</c:when>
 					<c:otherwise>
 						<c:set var="tagclass" value="" />
 					</c:otherwise>
-				</c:choose>			
+				</c:choose>
 			</c:if>
-								
+			
 			<!-- construct url to tag -->
 			<c:url var="tagUrl"
-				   value="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}"/>
-						
-			<!-- set title -->	   
-			<c:set var="tagTitle" value="${tag.usercount}"/>	   
+				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+			<!-- set title -->
+			<c:set var="tagTitle" value="${tag.usercount}"/>
 			
-			<!-- display link -->							
+			<!-- display link -->
 			<li class="${tagclass}">
-		      <a title="${tagTitle}" href="${tagUrl}">${fn:escapeXml(tag.name)}</a>
-		      <c:out value=" "/>		      
-		    </li>
+				<a title="${tagTitle}" href="${tagUrl}">${fn:escapeXml(tag.name)}</a>
+				<c:out value=" " />
+			</li>
 		</c:forEach>
 	</ul> 	
 </jsp:root>

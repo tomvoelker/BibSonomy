@@ -11,6 +11,8 @@
 	<jsp:directive.attribute name="isPublication" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
 	
+	<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
+	
 	<!--+
 		+ select resource type
 		+-->	
@@ -20,7 +22,7 @@
 			<fmt:message key="navi.all"/>
 		</c:when>
 		<c:otherwise>
-			<a href="${mtl:setParam(requPathAndQuery, 'resourcetype', 'all')}"><fmt:message key="navi.all"/></a>
+			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'all')}"><fmt:message key="navi.all"/></a>
 		</c:otherwise>
 	</c:choose>,${mtl:ch('nbsp')}
 	<c:if test="${isBookmark}">
@@ -29,7 +31,7 @@
 				<fmt:message key="post.meta.show_bookmarks_only"/>
 			</c:when>
 			<c:otherwise>
-				<a href="${mtl:setParam(requPathAndQuery, 'resourcetype', 'bookmark')}"><fmt:message key="post.meta.show_bookmarks_only"/></a>
+				<a href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'bookmark')}"><fmt:message key="post.meta.show_bookmarks_only"/></a>
 			</c:otherwise>
 		</c:choose>
 	</c:if>
@@ -39,9 +41,9 @@
 				<fmt:message key="post.meta.show_publications_only"/>
 			</c:when>
 			<c:otherwise>
-				<a href="${mtl:setParam(requPathAndQuery, 'resourcetype', 'publication')}"><fmt:message key="post.meta.show_publications_only"/></a>
+				<a href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'publication')}"><fmt:message key="post.meta.show_publications_only"/></a>
 			</c:otherwise>
-		</c:choose>			
+		</c:choose>
 	</c:if>
 
 </jsp:root>

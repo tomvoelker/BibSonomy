@@ -10,7 +10,8 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	
 	<spring:theme code="image.login.base" var="image_login_base" text="${resdir}/image/login_logo_"/>
-
+	
+	<c:set var="escapedRequestPath" value="${fn:escapeXml(requPath)}" />
 
 	<script type="text/javascript">
 		var authMethodsCount = ${fn:length(authConfig)};
@@ -49,8 +50,8 @@
 	
 	
 	<!--+
-	    | dropdown selection list for choosing authentication method
-	    +-->
+		| dropdown selection list for choosing authentication method
+		+-->
 	<select name="loginSelect" id="loginSelect" onchange="quickSelectAuthMethod(this.value);">
 		<c:forEach var="authMethod" items="${authConfig}" varStatus="status">
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
@@ -62,53 +63,31 @@
 	</select>
 	
 	<!--+
-	    | set message strings
-	    +-->
+		| set message strings
+		+-->
 	<fmt:message key="navi.login" var="login"/>
 	<fmt:message key="navi.login.permanent" var="login_permanent"/>
 
 	<!--+
-	    | create a specialized login form for each authentication method
-	    +-->
+		| create a specialized login form for each authentication method
+		+-->
 	<div id="loginParts" class="login">
 		<c:forEach var="authMethod" items="${authConfig}" varStatus="status">
 			<c:set var="authMethodName" value="${fn:toLowerCase(authMethod)}" />
 			
 			<c:set var="visibility" value="${status.first ? 'loginVisible' : 'loginInvisible'}" />
-    		<div id="loginParts_${authMethod}">
-    			<!--+
-    				| database login method 
-    				+-->
-    			<c:if test="${authMethod == 'INTERNAL'}">
+			<div id="loginParts_${authMethod}">
+				<!--+
+					| database login method 
+					+-->
+				<c:if test="${authMethod == 'INTERNAL'}">
 					<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<form:form method="POST" action="/login_${authMethodName}" id="login_${authMethodName}">
 							<input type="text" size="15" name="username" id="un"  tabindex="1"/>&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
 							<input type="password" size="15" class="hiddenElement" name="password" style="width:150px;" id="pw" autocomplete="off" tabindex="2"/>
 							<input type="text" id="pw_form_copy" name="" autocomplete="off"/>
 							<input type="hidden" name="rememberMe" value="true" />
-							<input type="hidden" name="referer" value="${requPath}" />
-							<input type="hidden" name="selTab" value="${status.index}" />
-							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
-							<input type="submit" style="margin-left: 1em" class="jsLoginButtonNonPermanent" value="${login}"/>
-							<c:if test="${properties['project.theme'] eq 'puma'}">
-								<input type="submit" style="margin-left: 0.2em" class="jsLoginButtonPermanent" value="${login_permanent}"/>
-							</c:if>
-						</form:form>
-						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
-					</div>    			
-      			</c:if>
-
-    			<!--+
-    				| ldap login method 
-    				+-->
-      			<c:if test="${authMethod == 'LDAP'}">
-      				<div class="headlogin ${visibility}" id="headLogin${status.count}">
-						<form:form method="POST" action="/login_${authMethodName}" id="login_${authMethodName}">
-							<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
-							<input type="password" size="15" class="hiddenElement" name="password" style="width:100px;" id="pwldap" autocomplete="off"/>
-							<input type="text" id="pwldap_form_copy" name="" autocomplete="off"/>
-							<input type="hidden" name="rememberMe" value="true" />
-							<input type="hidden" name="referer" value="${requPath}" />
+							<input type="hidden" name="referer" value="${escapedRequestPath}" />
 							<input type="hidden" name="selTab" value="${status.index}" />
 							<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
 							<input type="submit" style="margin-left: 1em" class="jsLoginButtonNonPermanent" value="${login}"/>
@@ -118,30 +97,52 @@
 						</form:form>
 						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
 					</div>
-      			</c:if>
+				</c:if>
+	
+				<!--+
+					| ldap login method 
+					+-->
+				<c:if test="${authMethod == 'LDAP'}">
+					<div class="headlogin ${visibility}" id="headLogin${status.count}">
+					<form:form method="POST" action="/login_${authMethodName}" id="login_${authMethodName}">
+						<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
+						<input type="password" size="15" class="hiddenElement" name="password" style="width:100px;" id="pwldap" autocomplete="off"/>
+						<input type="text" id="pwldap_form_copy" name="" autocomplete="off"/>
+						<input type="hidden" name="rememberMe" value="true" />
+						<input type="hidden" name="referer" value="${escapedRequestPath}" />
+						<input type="hidden" name="selTab" value="${status.index}" />
+						<input type="image" src="${resdir}/image/grey.png" alt="${login}" />
+						<input type="submit" style="margin-left: 1em" class="jsLoginButtonNonPermanent" value="${login}"/>
+						<c:if test="${properties['project.theme'] eq 'puma'}">
+							<input type="submit" style="margin-left: 0.2em" class="jsLoginButtonPermanent" value="${login_permanent}"/>
+						</c:if>
+						</form:form>
+						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
+					</div>
+				</c:if>
 
-    			<!--+
-    				| openid login method 
-    				+-->
-      			<c:if test="${authMethod == 'OPENID'}">
-      				<div class="headlogin ${visibility}" id="headLogin${status.count}">
+				<!--+
+					| openid login method 
+					+-->
+				<c:if test="${authMethod == 'OPENID'}">
+					<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<form:form action="/login_${authMethodName}" method="POST">
 							<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
 							<input type="hidden" name="rememberMe" value="true" />
-							<input type="hidden" name="referer" value="${requPath}" />
+							<input type="hidden" name="referer" value="${escapedRequestPath}" />
 							<input type="hidden" name="selTab" value="${status.index}" />
 							<input type="submit" style="margin-left: 1em" value="${login}"/>
-		            	</form:form>
+						</form:form>
 						<div class="loginHelp"><fmt:message key="login.help.${fn:toLowerCase(authMethod)}"/></div>
-	            	</div>
-      			</c:if>
+					</div>
+				</c:if>
 
 				<c:if test="${authMethod == 'SAML'}">
 					<div class="headlogin ${visibility}" id="headLogin${status.count}">
 						<form:form action="/login_saml" method="POST">
 							<input type="hidden" name="selTab" value="${status.index}" />
 							<input type="hidden" name="rememberMe" value="false" />
-							<input type="hidden" name="referer" value="${requPath}" />
+							<input type="hidden" name="referer" value="${escapedRequestPath}" />
 							<input type="submit" style="margin-left: 1em" class="jsLoginButtonNonPermanent" value="${login}"/>
 							<input type="submit" style="margin-left: 0.2em" class="jsLoginButtonPermanent" value="${login_permanent}"/>
 						</form:form>
@@ -149,9 +150,6 @@
 				</c:if>
 				
 			</div>
-    	</c:forEach>
+		</c:forEach>
 	</div>
-
-
-
 </jsp:root>

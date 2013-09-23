@@ -11,13 +11,12 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false" description="Should navigation links (next/pref) be shown? Defaults to true if not set."/>
-    <jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="className"  type="java.lang.String" required="false"/>
-    <jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="listID"  type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="className"  type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="widthClassName"  type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="extTitle" type="java.lang.String" required="false" />
 
-	<jsp:directive.attribute name="formatButtons" fragment="true" required="true"/>
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
@@ -39,26 +38,25 @@
 		</c:if>
 		
 		
-        <!-- iterate over a list of resources and create the list -->
-        <ul class="posts ${widthClassName}">
+		<!-- iterate over a list of resources and create the list -->
+		<ul class="posts ${widthClassName}">
 			<c:if test="${not empty addAsFirstItem}">
 				<li class="first"><jsp:invoke fragment="addAsFirstItem"/></li>
 			</c:if>
 			<c:choose>
 				<c:when test="${not empty listView.list}">
-		                  <c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
-						  
-						  <c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
-						  
-		                    <!-- show one post -->
-		        			<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
-		    					<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
-		    					<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
-		    					<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>
-		     					<jsp:attribute name="documents"><jsp:invoke fragment="documents"/></jsp:attribute>
-		    				</rc:post>
-			            
-		                  </c:forEach>
+					<c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
+						<!-- TODO: use css selector for this and remove -->
+						<c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
+						
+						<!-- show one post -->
+						<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
+							<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
+							<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
+							<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>
+							<jsp:attribute name="documents"><jsp:invoke fragment="documents"/></jsp:attribute>
+						</rc:post>
+					</c:forEach>
 				</c:when>
 				<c:otherwise>
 					<!-- only show message "no posts available" when no artificial list items (e.g. discussions) are present -->
@@ -68,10 +66,10 @@
 						</span>
 					</c:if>
 				</c:otherwise>
-			</c:choose>		
+			</c:choose>
 			<c:if test="${not empty addAsLastItem}">
 				<li class="last"><jsp:invoke fragment="addAsLastItem"/></li>
 			</c:if>
-        </ul>
+		</ul>
 	</div>
 </jsp:root>

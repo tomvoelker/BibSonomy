@@ -32,16 +32,16 @@
 
 	<!-- disable tagbox minfreq links, if not specified -->
 	<c:if test="${empty tagboxMinfreqStyle}">
-    	<c:set var="tagboxMinfreqStyle" value="none"/>
-    </c:if>
+		<c:set var="tagboxMinfreqStyle" value="none"/>
+	</c:if>
 
 	<!-- preprocess tags to be highlighted (add space at beginning + end) -->
 	<c:if test="${not empty highlightTags}">
-    	<c:set var="highlightTags" value="${' '}${highlightTags}${' '}"/>
-    </c:if>
+		<c:set var="highlightTags" value="${' '}${highlightTags}${' '}"/>
+	</c:if>
 			
 	<!-- display of tag tooltips is disabled by default -->
-    <c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
+	<c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
 
 
 	<c:if test="${empty showPlain or showPlain eq 'false'}">
@@ -53,8 +53,8 @@
 		<c:choose>
 			<c:when test="${tagSizeMode eq 'user'}">
 				<c:set var="maxTagFrequency" value="${cmd.maxUserTagCount}" />
-				<c:set var="minTagFrequency" value="${cmd.minUserTagCount}" />	
-			</c:when>		
+				<c:set var="minTagFrequency" value="${cmd.minUserTagCount}" />
+			</c:when>
 			<c:otherwise>
 				<c:set var="maxTagFrequency" value="${cmd.maxTagCount}" />
 				<c:set var="minTagFrequency" value="${cmd.minTagCount}" />
@@ -70,29 +70,29 @@
 			
 			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, maxTagFrequency)}" />
 			
-			<!-- display the tag -->						
+			<!-- display the tag -->
 			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
 				<li class="${tagclass}">
 					<jspx:element name="a">
-						<jspx:attribute name="href">/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}</jspx:attribute>
+						<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}</jspx:attribute>
 						<jspx:attribute name="title"><c:if test="${empty suppressTitle or suppressTitle == false }">${tag.usercount}<c:out value=" "/>${posts}</c:if></jspx:attribute>
 						<c:if test="${not (tagSizeMode eq 'detail')}">
-							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute> 
+							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute>
 						</c:if>
 						<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
-						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tagNameWithSpaces)}">				
+						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tagNameWithSpaces)}">
 							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
-						</c:if>						
+						</c:if>
 						<c:if test="${showTooltips}">
 							<jspx:attribute name="onmouseover">javascript:preDoTooltip(event)</jspx:attribute>
-							<jspx:attribute name="onmouseout">javascript:hideTip()</jspx:attribute>					
+							<jspx:attribute name="onmouseout">javascript:hideTip()</jspx:attribute>
 						</c:if>	
 						<jspx:body>${fn:escapeXml(tag.name)}</jspx:body>
 					</jspx:element>
 				</li>
-				<c:out value=" "/>						
+				<c:out value=" " />
 			</c:if>
-		</c:forEach>		
+		</c:forEach>
 	</ul>
 </div>
 </jsp:root>

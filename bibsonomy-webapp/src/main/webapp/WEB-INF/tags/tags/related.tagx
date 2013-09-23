@@ -16,10 +16,10 @@
 				<c:choose>
 					<c:when test="${tag.usercount > 6}">
 						<c:set var="tagclass" value="tagten" />
-					</c:when>			
+					</c:when>
 					<c:when test="${tag.usercount > 2}">
-						<c:set var="tagclass" value="tagone" />				
-					</c:when>							
+						<c:set var="tagclass" value="tagone" />
+					</c:when>
 					<c:otherwise>
 						<c:set var="tagclass" value="" />
 					</c:otherwise>
@@ -31,32 +31,32 @@
 				<c:choose>
 					<c:when test="${relatedness > 0.1 and cmd.tagGlobalCount > 1}">
 						<c:set var="tagclass" value="tagten" />
-					</c:when>			
+					</c:when>
 					<c:when test="${relatedness > 0.03 and cmd.tagGlobalCount > 1}">
-						<c:set var="tagclass" value="tagone" />				
-					</c:when>							
+						<c:set var="tagclass" value="tagone" />
+					</c:when>
 					<c:otherwise>
 						<c:set var="tagclass" value="" />
 					</c:otherwise>
-				</c:choose>			
+				</c:choose>
 			</c:if>
 			
 		
 			<!-- localized messages -->
-			<fmt:message key="posts" var="posts" /> <!-- plural -->		
+			<fmt:message key="posts" var="posts" /> <!-- plural -->
 			<c:if test="${tag.usercount == 1}">
 				<fmt:message key="post" var="posts" /><!-- singular -->
 			</c:if>
 			
 			<!-- construct url to single tag -->
 			<c:url var="tagUrl"
-				   value="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}"/>
+				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${mtl:getQuery(escapedRequestPath)}"/>
 			
-			<!-- construct url to several tags -->	   
+			<!-- construct url to several tags -->
 			<c:url var="tagsUrl"
-				   value="/${mtl:getLowerPath(requPath)}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${mtl:getQuery(requPath)}"/>
+				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${mtl:getQuery(escapedRequestPath)}"/>
 			
-			<!-- set titles -->	   
+			<!-- set titles -->
 			<c:set var="tagTitle">
 				<c:choose>
 					<c:when test="${order eq 'folkrank'}">
@@ -72,24 +72,26 @@
 					</c:when>
 					<c:otherwise>${fn:escapeXml(tag.name)}</c:otherwise>
 				</c:choose>
-			</c:set>			
+			</c:set>
 			<c:set var="tagsTitle">
 				${fn:escapeXml(cmd.requestedTags)}
 				<c:out value=" "/>
 				${fn:escapeXml(tag.name)} 
-				<c:if test="${order ne 'folkrank'}">					
+				<c:if test="${order ne 'folkrank'}">
 					(${tag.usercount}<c:out value=" "/>${posts})
 				</c:if>
-			</c:set>				   				   
+			</c:set>
 			
-			<!-- display link -->							
+			<!-- display link -->
 			<li class="${tagclass}">
-		      <a title="${tagsTitle}" href="${tagsUrl}">
-		      	<fmt:message key="tag.addRelatedTag"/>${mtl:ch('nbsp')}
-		      </a>
-		      <a title="${tagTitle}" href="${tagUrl}">${fn:escapeXml(tag.name)}</a>
-		      <c:out value=" "/>		      
-		    </li>
+				<a title="${tagsTitle}" href="${tagsUrl}">
+					<fmt:message key="tag.addRelatedTag"/>${mtl:ch('nbsp')}
+				</a>
+				<a title="${tagTitle}" href="${tagUrl}">
+					<c:out value="${tag.name}" />
+				</a>
+				<c:out value=" "/>
+			</li>
 		</c:forEach>
-	</ul> 	
+	</ul>
 </jsp:root>

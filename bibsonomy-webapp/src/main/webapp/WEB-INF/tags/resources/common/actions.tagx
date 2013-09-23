@@ -36,20 +36,20 @@
 	<ul>
 		<li>
 			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
-		</li>				
- 	</ul>
- 	
- 	<!--+ 
+		</li>
+	</ul>
+	
+	<!--+ 
 		+ placeholder for extended bibtex export options 
-		+-->		
-	<c:if test="${isPublication}">	
+		+-->
+	<c:if test="${isPublication}">
 		<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
 	</c:if>	
-				
- 	<!--+ 
+	
+	<!--+ 
 		+ sort options
-		+-->	  				
- 	<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
+		+-->
+	<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
 	<ul>
 		<li>
 			<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/>
@@ -62,42 +62,42 @@
 				<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
 			</li>
 		</c:if>
-	</ul>		
-		
- 	<!--+ 
+	</ul>
+	
+	<!--+ 
 		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users
 		+-->
 	<c:if test="${command.context.userLoggedIn and isPublication}">
 		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
 		<ul>	
 			<li>
-				<rc:basket isBasket="${isBasket}"/>
+				<rc:basket isBasket="${isBasket}" />
 			</li>
-		</ul>	
- 	</c:if>
- 	
- 	<!--+
- 		+ inbox actions 
- 		+-->
- 	<c:if test="${command.context.userLoggedIn and showInboxActions}">
+		</ul>
+	</c:if>
+	
+	<!--+
+		+ inbox actions 
+		+-->
+	<c:if test="${command.context.userLoggedIn and showInboxActions}">
 		<div class="listOptionHeading"><fmt:message key="navi.inbox"/>:</div>
 		<ul>
 			<li>
-				<rc:inbox/>
+				<rc:inbox />
 			</li>
 		</ul>
- 	</c:if>
- 	
- 	<!--+ 
+	</c:if>
+	
+	<!--+ 
 		+ other options (batch edit, show/hide lists, entries per page)
-		+-->	  		
- 	<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
- 	<ul>
- 		<!-- edit -->
-  		<c:if test="${command.context.userLoggedIn}">
-	  		<li>
+		+-->
+	<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
+	<ul>
+		<!-- edit -->
+		<c:if test="${command.context.userLoggedIn}">
+			<li>
 				<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/>
-			</li>	
+			</li>
 		</c:if>
 		<!-- show / hide resource types -->
 		<c:if test="${not disableResourcetypeSelection}">
@@ -108,12 +108,12 @@
 		<!--  entries per page -->
 		<c:if test="${not disableListNavigation}">
 			<li>		
-				<c:if test="${isBookmark}">				
+				<c:if test="${isBookmark}">
 					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
 				<c:if test="${isPublication}">
 					<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
-				</c:if>			
+				</c:if>
 			</li>
 		</c:if>
 	</ul>

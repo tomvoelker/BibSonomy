@@ -17,9 +17,7 @@
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
-		
-			
-	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
+	
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
 		pageTitle="${pageTitle}" 
@@ -41,7 +39,7 @@
 			</div>
 			
 			<div id="publicationsheader" class="standard">
-				<h2 class="header standard"><fmt:message key="publications" /></h2>			
+				<h2 class="header standard"><fmt:message key="publications" /></h2>
 			</div>
 		</jsp:attribute>
 
@@ -52,7 +50,7 @@
 					</c:when>
 					<c:otherwise>
 						<c:set var="max">${command.listsBibTeX}</c:set>
-					</c:otherwise>		
+					</c:otherwise>
 				</c:choose>
 					<c:forEach var="bibtex" items="${max}" varStatus="status">
 						<c:choose>

@@ -32,22 +32,12 @@
 		extTitle="${extTitle}"
 		widthClassName="${widthClassName}"
 		addAsFirstItem="${addAsFirstItem}"
-		addAsLastItem="${addAsLastItem}"
-	>
-    
-    		<jsp:attribute name="formatButtons">
-			<!-- Buttons to show content of page in different formats -->
-			<c:url var="rssPath" value="/rss/${requPath}${requQueryString}" /><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}
-			<c:url var="bibPath" value="/bookbib/${requPath}${requQueryString}" /><a href="${bibPath}">BibTeX</a>${mtl:ch('nbsp')}
-            <c:url var="xmlPath" value="/xml/${requPath}${requQueryString}" /><a href="${xmlPath}">XML</a>
-		</jsp:attribute>
-    
+		addAsLastItem="${addAsLastItem}">
+		
 		<jsp:attribute name="title">     <bm:title   post="${post}"/></jsp:attribute>
 		<jsp:attribute name="desc">	     <bm:desc    post="${post}"/></jsp:attribute>
 		<jsp:attribute name="actions">   <bm:actions post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
 		<jsp:attribute name="documents"> <bm:documents  post="${post}"/></jsp:attribute>
-		
-    
 	</rc:list>
 	
 </jsp:root>

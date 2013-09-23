@@ -69,7 +69,7 @@
 							<ul>
 								<!-- TODO: config languages? -->
 								<c:forTokens var="lang" items="en,de" delims=",">
-									<li><a class="${lang eq locale.language ? 'active' : ''}" href="/${mtl:setParam(requPathAndQuery, 'lang', lang)}">${lang}</a></li>
+									<li><a class="${lang eq locale.language ? 'active' : ''}" href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', lang)}">${lang}</a></li>
 								</c:forTokens>
 							</ul>
 						</div><!-- #language -->
@@ -179,7 +179,7 @@
 								</div>
 							</div> <!-- #postcontainer -->
 						</c:when>
-						<c:otherwise>						
+						<c:otherwise>
 							<div id="postcontainer">
 								<c:if test="${not empty contentIntro}">
 									<div id="intro">
@@ -206,7 +206,7 @@
 <!--						</c:choose>-->
 <!--					</div>   #footercontainer -->
 	
-					
+				
 				</div><!-- #container -->
 			
 				<div id="legalnotices">
@@ -224,7 +224,7 @@
 					</c:if>
 				</div>
 				
-			</body>			
+			</body>
 		</jsp:body>
 	</jsp:element>
 </jsp:root>

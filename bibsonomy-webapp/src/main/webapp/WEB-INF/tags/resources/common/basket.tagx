@@ -10,19 +10,18 @@
 	<!--+
 		+ basket actions (pick all, unpick all, clear basket)
 		+-->	
-	<c:choose>  				
+	<c:choose>
 		<c:when test="${isBasket}">
-        	<fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
-      		<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
+			<fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
+			<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
 				<fmt:message key="basket.removeAll"/>
 			</a>
 		</c:when>
 		<c:otherwise>
 			<fmt:message var="pickPublications" key="post.meta.pick.title"/>
-			<a href="" title="${pickPublications}" onclick="return pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}	  			
+			<a href="" title="${pickPublications}" onclick="return pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}
 			<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
 			<a href="" title="${unPickPublications}" onclick="return unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
 		</c:otherwise>
 	</c:choose>
-
 </jsp:root>

@@ -12,23 +12,24 @@
 	<!--+
 		+ export actions for publications / bookmarks
 		+-->
+	<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
 	<c:if test="${isPublication}">
-		<c:url var="rssPath" value="/publrss${requPathAndQuery}" />
+		<c:url var="rssPath" value="/publrss${escapedRequestPathAndQuery}" />
 		<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
-		<c:url var="bibPath" value="/bib${requPathAndQuery}"/>
+		<c:url var="bibPath" value="/bib${fn:escapeXml(escapedRequestPathAndQuery)}"/>
 		<a href="${bibPath}" id="bibtexListExport"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
-		<c:url var="burstPath"  value="/burst/${requPathAndQuery}" />
+		<c:url var="burstPath"  value="/burst/${escapedRequestPathAndQuery}" />
 		<a href="${burstPath}"><fmt:message key="post.meta.rdf"/></a>,${mtl:ch('nbsp')}
-		<c:url var="morePath" value="/export${requPathAndQuery}" />
+		<c:url var="morePath" value="/export${escapedRequestPathAndQuery}" />
 		<a href="${morePath}"><fmt:message key="bibtex.more_dots"/></a>
 	</c:if>
 	<c:if test="${isBookmark}">
-		<c:url var="rssPath" value="/rss${requPathAndQuery}" />
+		<c:url var="rssPath" value="/rss${escapedRequestPathAndQuery}" />
 		<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
-		<c:url var="bibPath" value="/bookbib${requPathAndQuery}" />
+		<c:url var="bibPath" value="/bookbib${escapedRequestPathAndQuery}" />
 		<a href="${bibPath}"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
-		<c:url var="xmlPath" value="/xml${requPathAndQuery}" />
-		<a href="${xmlPath}"><fmt:message key="post.meta.xml"/></a>										
+		<c:url var="xmlPath" value="/xml${escapedRequestPathAndQuery}" />
+		<a href="${xmlPath}"><fmt:message key="post.meta.xml"/></a>
 	</c:if>	
 
 </jsp:root>
