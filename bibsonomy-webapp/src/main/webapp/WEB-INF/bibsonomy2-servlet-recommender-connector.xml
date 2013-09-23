@@ -32,7 +32,9 @@
 	 
 	<bean id="postPrivacyFilter" class="org.bibsonomy.recommender.connector.filter.PostPrivacyFilter" />
 
-	<bean id="renderer" class="org.bibsonomy.recommender.connector.model.BibsonomyTagRendererFactoryWrapper" />
+	<bean id="renderer" class="org.bibsonomy.recommender.connector.model.BibsonomyTagRendererFactoryWrapper">
+		<constructor-arg name="factory" ref="rendererFactory" />
+	</bean>
 
 	<util:list id="localTagRecommenderList" list-class="java.util.ArrayList"> 		
   		<ref bean="mostPopularMixRecommender"/>
@@ -134,8 +136,14 @@
 		<property name="dbLogic" ref="bookmarkRecommenderLogic" />
 	    <property name="localRecommenders" ref="localBookmarkRecommenderList" />
 	    <property name="privacyFilter"  ref="userPrivacyFilter"/>
+	    <property name="renderer" ref="bookmarkRenderer" />
 	</bean>	
 	    
+	<bean id="bookmarkRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
+		<constructor-arg name="factory" ref="rendererFactory" />
+		<property name="resourceType" value="org.bibsonomy.model.Bookmark" />
+	</bean>    
+	
 	<util:list id="localBookmarkRecommenderList" list-class="java.util.ArrayList"> 		
   		<ref bean="dummyBookmarkRecommender"/>
   		<ref bean="cfBookmarkRecommender"/>
@@ -158,10 +166,6 @@
 		<property name="maxUsersToEvaluate" value="3"/>
 		<property name="maxItemsToEvaluate" value="15"/>
 	</bean>
-	
-	<bean id="bookmarkRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
-		<property name="resourceType" value="org.bibsonomy.model.Bookmark"/>
-	</bean>
 	    
 	<bean id="selectFixBookmarkWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
 		<property name="dbLogic" ref="bookmarkRecommenderLogic"/>
@@ -183,7 +187,13 @@
 		<property name="dbLogic" ref="bibtexRecommenderLogic" />
 	    <property name="localRecommenders" ref="localBibTexRecommenderList" />
 	    <property name="privacyFilter"  ref="userPrivacyFilter"/>
+	    <property name="renderer" ref="bibtexRenderer" />
 	</bean>	  	 
+	
+	<bean id="bibtexRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
+		<constructor-arg name="factory" ref="rendererFactory" />
+		<property name="resourceType" value="org.bibsonomy.model.BibTex" />
+	</bean>  
 	
 	<util:list id="localBibTexRecommenderList" list-class="java.util.ArrayList"> 		
   		<ref bean="dummyBibTexRecommender"/>
@@ -211,10 +221,6 @@
 		<property name="numberOfItemsToRecommend" value="5"/>
 		<property name="maxUsersToEvaluate" value="3"/>
 		<property name="maxItemsToEvaluate" value="15"/>
-	</bean>
-	
-	<bean id="bibtexRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
-		<property name="resourceType" value="org.bibsonomy.model.BibTex"/>
 	</bean>
 	    
 	<bean id="selectFixBibTexWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
