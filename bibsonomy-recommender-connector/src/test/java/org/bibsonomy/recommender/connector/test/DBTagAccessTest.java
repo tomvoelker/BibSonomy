@@ -20,7 +20,6 @@ import org.bibsonomy.recommender.connector.database.DBLogConfigBibSonomy;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import recommender.core.database.DBLogic;
@@ -32,11 +31,13 @@ import recommender.impl.model.RecommendedTag;
 import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**
- * Test case for recommender's DBAccess class
+ * Test cases for recommender's DBAccess class, with old 
+ * BibSonomy TagRecommender tables.
+ * 
  * @author fei
  * @version $Id$
  */
-public class DBAccessTest {
+public class DBTagAccessTest {
 
 	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
 	
@@ -212,15 +213,6 @@ public class DBAccessTest {
 		
 		assertEquals(qid, id);
 	}
-
-	/**
-	 * Test getting post data for recommender query
-	 */
-	@Test
-	@Ignore
-	public void testGetPostDataForQuery() {
-	}
-
 	
 	//------------------------------------------------------------------------
 	// private helpers

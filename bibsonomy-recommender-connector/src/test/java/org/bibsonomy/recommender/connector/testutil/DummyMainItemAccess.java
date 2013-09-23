@@ -57,16 +57,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 		int counter = 0;
 		List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 		for(String user : usernames) {
-			for(int i = 0; i < count; i++) {
-				Post<BibTex> post = new Post<BibTex>();
-				BibTex b = new BibTex();
-				b.setTitle("item"+counter++ +user);
-				b.setAbstract("");
-				post.setDescription("");
-				post.setTags(new HashSet<Tag>());
-				post.setResource(b);
-				items.add(new RecommendationPost(post));
-			}
+			items.addAll(this.getItemsForUser(counter++, user));
 		}
 		return items;
 	}
@@ -91,7 +82,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 	@Override
 	public List<RecommendationItem> getAllItemsOfQueryingUser(int count,
 			String username) {
-		return null;
+		return this.getItemsForUser(count, username);
 	}
 	
 	@Override

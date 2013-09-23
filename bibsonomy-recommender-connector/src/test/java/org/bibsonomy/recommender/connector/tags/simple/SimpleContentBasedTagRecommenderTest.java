@@ -17,6 +17,9 @@ import recommender.impl.model.RecommendedTag;
 import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
 
 /**
+ * Test of the {@link SimpleContentBasedTagRecommender} on base of
+ * BibSonomy's implementation of the recommender's model classes.
+ * 
  * @author rja
  * @version $Id$
  */

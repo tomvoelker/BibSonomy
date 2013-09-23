@@ -21,6 +21,9 @@ import recommender.impl.tags.simple.FixedTagsTagRecommender;
 
 
 /**
+ * Tests the {@link WeightedMergingRecommender} based on the connector's implementation
+ * of the recomender's model interface.
+ * 
  * @author rja
  * @version $Id$
  */
