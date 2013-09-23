@@ -16,7 +16,7 @@
 	<c:if test="${isPublication}">
 		<c:url var="rssPath" value="/publrss${escapedRequestPathAndQuery}" />
 		<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
-		<c:url var="bibPath" value="/bib${fn:escapeXml(escapedRequestPathAndQuery)}"/>
+		<c:url var="bibPath" value="/bib${escapedRequestPathAndQuery}"/>
 		<a href="${bibPath}" id="bibtexListExport"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
 		<c:url var="burstPath"  value="/burst/${escapedRequestPathAndQuery}" />
 		<a href="${burstPath}"><fmt:message key="post.meta.rdf"/></a>,${mtl:ch('nbsp')}
