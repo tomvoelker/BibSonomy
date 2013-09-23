@@ -33,13 +33,12 @@
 		</jsp:attribute>
 		
 		<!--  create sidebar -->
-		<jsp:attribute name="sidebar">	
-		<ul>	
-		
+		<jsp:attribute name="sidebar">
+		<ul>
 				<!-- we need to switch if the user already follows this user or not 
 				<c:if test="${command.context.loginUser.name != command.requestedUser}">
 				<c:choose>
-					<c:when test="${command.followerOfUser eq true}">
+					<c:when test="${command.followerOfUser}">
 					<div style="margin-top: 10px">
 						<div id="removeLink">
 							<fmt:message key="follow.info.text2"/>
@@ -67,9 +66,7 @@
 				<br/>
 				</c:if>
 				-->
-
-			
-			<!-- display user's tag relations 			
+			<!-- display user's tag relations 
 			<li>
 				<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
 				<span class="sidebar_h">
@@ -80,7 +77,6 @@
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
 			-->
-						
 			<!-- display tags -->
 			<li>
 				<span class="sidebar_h">
@@ -101,8 +97,8 @@
 					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
 				</span>
 				<users:related cmd="${command.relatedUserCommand}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
-			</li>			
-      	</ul>		
+			</li>
+		</ul>
 		</jsp:attribute>
 		
 		<!--  heading for the content pane of the given page -->
@@ -119,8 +115,8 @@
 							<fmt:param value="${userPageLink}"/>
 						</fmt:message>
 						${mtl:ch('nbsp')}
-						<c:choose>				
-							<c:when test="${command.followerOfUser eq true}">
+						<c:choose>
+							<c:when test="${command.followerOfUser}">
 								<span id="removeLink">
 									<a style="cursor: pointer;" 
 									   onclick="javascript:updateUserRelation('remove','${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
@@ -140,17 +136,16 @@
 									<a style="cursor: pointer;" 
 									   onclick="javascript:updateUserRelation('remove','${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
 									   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
-									   <fmt:message key="follow.link.text.removeLong"/></a>							
+									   <fmt:message key="follow.link.text.removeLong"/></a>
 								</span>
 								<span id="followLink">
-									<a style="cursor: pointer;" 
+									<a style="cursor: pointer;"
 									   onclick="javascript:updateUserRelation('add','${command.requestedUser}', 'sys:network:bibsonomy-follower', '${command.context.ckey}');return false;"
 									   href="/ajax/handleUserRelation?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
 									   <fmt:message key="follow.link.text.followLong"/></a>
 								</span>
 							</c:otherwise>
-						</c:choose>				
-
+						</c:choose>
 					</jsp:attribute>
 				</parts:infobox>
 			</c:if>
