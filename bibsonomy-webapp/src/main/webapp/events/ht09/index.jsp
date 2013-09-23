@@ -36,7 +36,7 @@
     <div class="topic">Hypertext 2009. As Tagcloud.</div>
     
     <div id="logos">
-      <a href="http://www.ht2009.org/"><img src="/resources/image/ht09_logo.jpg"></a>
+      <a href="http://www.ht2009.org/"><img src="assets/ht09_logo.jpg"></a>
     </div>
   
     
