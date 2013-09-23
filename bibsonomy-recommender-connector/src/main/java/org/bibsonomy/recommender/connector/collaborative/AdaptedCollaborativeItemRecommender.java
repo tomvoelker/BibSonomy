@@ -43,6 +43,8 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName())); 
 		}
 		
+		this.calculateRequestingUserTitleSet(requestingUserItems);
+		
 		List<RecommendationItem> userItems = new ArrayList<RecommendationItem>();
 		
 		userItems.addAll(this.dbAccess.getItemsForUsers(maxItemsToEvaluate, similarUsers));
