@@ -3,10 +3,11 @@ package org.bibsonomy.recommender.connector.collaborative;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
+import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
@@ -43,19 +44,21 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 			requestingUserItems.addAll(this.dbAccess.getItemsForUser(maxItemsToEvaluate, entity.getUserName())); 
 		}
 		
-		this.calculateRequestingUserTitleSet(requestingUserItems);
+		final Set<String> requestingUserTitles = calculateRequestingUserTitleSet(requestingUserItems);
 		
 		List<RecommendationItem> userItems = new ArrayList<RecommendationItem>();
 		
 		userItems.addAll(this.dbAccess.getItemsForUsers(maxItemsToEvaluate, similarUsers));
 		
-		final List<RecommendedItem> results = this.calculateSimilarItems(userItems, requestingUserItems);
+		final List<RecommendedItem> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
 		
 		recommendations.addAll(results);
 	}
 	
-	
-	@SuppressWarnings("rawtypes")
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.impl.item.collaborative.CollaborativeItemRecommender#calculateTokens(recommender.core.interfaces.model.RecommendationItem)
+	 */
 	@Override
 	protected List<String> calculateTokens(RecommendationItem item) {
 
@@ -69,14 +72,14 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 			tokens.add(titleToken.toLowerCase());
 		}
 		//add description and abstract terms to tokens
-		if(item instanceof PostWrapper && ((PostWrapper) item).getPost() != null) {
-			if(((PostWrapper) item).getPost().getDescription() != null) {
-				for(String token : ((PostWrapper) item).getPost().getDescription().split(TOKEN_DELIMITER)) {
+		if(item instanceof RecommendationPost && ((RecommendationPost) item).getPost() != null) {
+			if(((RecommendationPost) item).getPost().getDescription() != null) {
+				for(String token : ((RecommendationPost) item).getPost().getDescription().split(TOKEN_DELIMITER)) {
 					tokens.add(token);
 				}
 			}
-			if(((PostWrapper) item).getPost().getResource() instanceof BibTex) {
-				BibTex b = (BibTex) ((PostWrapper) item).getPost().getResource();
+			if(((RecommendationPost) item).getPost().getResource() instanceof BibTex) {
+				BibTex b = (BibTex) ((RecommendationPost) item).getPost().getResource();
 				if(b.getAbstract() != null) {
 					for(String token : b.getAbstract().split(TOKEN_DELIMITER)) {
 						tokens.add(token);
