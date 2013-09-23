@@ -14,8 +14,6 @@ import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
-import org.bibsonomy.rest.renderer.UrlRenderer;
-
 import recommender.core.error.BadRequestOrResponseException;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.renderer.RecommendationRenderer;
@@ -36,8 +34,8 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 
 	private Renderer renderer;
 	
-	public BibsonomyItemRendererFactoryWrapper() {
-		this.renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.XML);
+	public BibsonomyItemRendererFactoryWrapper(final RendererFactory factory) {
+		this.renderer = factory.getRenderer(RenderingFormat.XML);
 	}
 	
 	private Class<T> resourceType;
@@ -61,7 +59,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	@Override
 	public SortedSet<RecommendedItem> parseRecommendationResultList(
 			Reader reader) throws BadRequestOrResponseException {
-		final List<RecommendedPost<? extends Resource>> posts = this.renderer.parseRecommendedItemList(resourceType, reader, NoDataAccessor.getInstance());
+		final List<RecommendedPost<? extends Resource>> posts = this.renderer.parseRecommendedItemList(reader, NoDataAccessor.getInstance());
 		final SortedSet<RecommendedItem> items = new TreeSet<RecommendedItem>(new RecommendationResultComparator<RecommendedItem>());
 		for(RecommendedPost<? extends Resource> post : posts) {
 			final RecommendedItem item = this.createRecommendedItem(post);
@@ -79,7 +77,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	@Override
 	public RecommendedItem parseRecommendationResult(Reader reader)
 			throws BadRequestOrResponseException {
-		final RecommendedPost<? extends Resource> post = this.renderer.parseRecommendedItem(resourceType, reader, NoDataAccessor.getInstance());
+		final RecommendedPost<? extends Resource> post = this.renderer.parseRecommendedItem(reader, NoDataAccessor.getInstance());
 		return createRecommendedItem(post);
 	}
 
@@ -109,6 +107,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 			final RecommendedItem item = new RecommendedItem(new RecommendationPost(casted.getPost()));
 			item.setScore(casted.getScore());
 			item.setConfidence(casted.getConfidence());
+			return item;
 		}
 		return null;
 	}

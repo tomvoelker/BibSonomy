@@ -9,8 +9,6 @@ import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
-import org.bibsonomy.rest.renderer.UrlRenderer;
-
 import recommender.core.error.BadRequestOrResponseException;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.interfaces.renderer.RecommendationRenderer;
@@ -25,8 +23,8 @@ public class BibsonomyTagRendererFactoryWrapper implements RecommendationRendere
 
 	private Renderer renderer;
 	
-	public BibsonomyTagRendererFactoryWrapper() {
-		this.renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.XML);
+	public BibsonomyTagRendererFactoryWrapper(final RendererFactory factory) {
+		this.renderer = factory.getRenderer(RenderingFormat.XML);
 	}
 	
 	/*

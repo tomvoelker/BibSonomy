@@ -75,14 +75,14 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 		if(item instanceof RecommendationPost && ((RecommendationPost) item).getPost() != null) {
 			if(((RecommendationPost) item).getPost().getDescription() != null) {
 				for(String token : ((RecommendationPost) item).getPost().getDescription().split(TOKEN_DELIMITER)) {
-					tokens.add(token);
+					tokens.add(token.toLowerCase());
 				}
 			}
 			if(((RecommendationPost) item).getPost().getResource() instanceof BibTex) {
 				BibTex b = (BibTex) ((RecommendationPost) item).getPost().getResource();
 				if(b.getAbstract() != null) {
 					for(String token : b.getAbstract().split(TOKEN_DELIMITER)) {
-						tokens.add(token);
+						tokens.add(token.toLowerCase());
 					}
 				}
 			}
