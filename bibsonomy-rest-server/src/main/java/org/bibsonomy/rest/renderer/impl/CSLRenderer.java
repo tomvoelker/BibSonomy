@@ -297,12 +297,12 @@ public class CSLRenderer implements Renderer {
 	}
 
 	@Override
-	public <T extends Resource> List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
+	public List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public <T extends Resource> RecommendedPost<? extends Resource> parseRecommendedItem(Class<T> resourceType, Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
+	public RecommendedPost<? extends Resource> parseRecommendedItem(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
