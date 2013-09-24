@@ -44,6 +44,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 			b.setTitle("item"+counter++ +username);
 			b.setAbstract("");
 			post.setDescription("");
+			post.setContentId(i);
 			post.setTags(new HashSet<Tag>());
 			post.setResource(b);
 			items.add(new RecommendationPost(post));
