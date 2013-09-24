@@ -16,6 +16,8 @@ import recommender.core.interfaces.model.RecommendationItem;
 
 public class DummyMainItemAccess implements ExtendedMainAccess {
 
+	private static int id_generator;
+	
 	@Override
 	public List<RecommendationItem> getMostActualItems(int count,
 			ItemRecommendationEntity entity) {
@@ -44,7 +46,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 			b.setTitle("item"+counter++ +username);
 			b.setAbstract("");
 			post.setDescription("");
-			post.setContentId(i);
+			post.setContentId(id_generator++);
 			post.setTags(new HashSet<Tag>());
 			post.setResource(b);
 			items.add(new RecommendationPost(post));

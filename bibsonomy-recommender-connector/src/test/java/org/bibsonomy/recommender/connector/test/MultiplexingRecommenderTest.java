@@ -26,7 +26,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import recommender.core.Recommender;
@@ -120,7 +119,6 @@ public class MultiplexingRecommenderTest {
 	 * for item recommendations.
 	 * @throws Exception
 	 */
-	@Ignore
 	@Test
 	public void testItemMultiThreading() throws Exception {
 		
@@ -129,6 +127,7 @@ public class MultiplexingRecommenderTest {
 		// create multiplexer
 		MultiplexingRecommender<ItemRecommendationEntity, RecommendedItem> mux = new MultiplexingRecommender<ItemRecommendationEntity, RecommendedItem>();
 		mux.setDbLogic(dbItemLogic);
+		mux.setQueryTimeout(MSTOWAIT);
 		
 		List<Recommender<ItemRecommendationEntity, RecommendedItem>> locals = new ArrayList<Recommender<ItemRecommendationEntity, RecommendedItem>>();
 		
