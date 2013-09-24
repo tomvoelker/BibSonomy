@@ -26,6 +26,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import recommender.core.Recommender;
@@ -119,6 +120,7 @@ public class MultiplexingRecommenderTest {
 	 * for item recommendations.
 	 * @throws Exception
 	 */
+	@Ignore
 	@Test
 	public void testItemMultiThreading() throws Exception {
 		
