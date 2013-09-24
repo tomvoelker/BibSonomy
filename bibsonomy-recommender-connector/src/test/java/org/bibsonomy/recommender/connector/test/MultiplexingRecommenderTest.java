@@ -136,7 +136,6 @@ public class MultiplexingRecommenderTest {
 		reco.setDbLogic(dbItemLogic);
 		locals.add(reco);
 		
-		
 		UserPrivacyFilter filter = new UserPrivacyFilter();
 		filter.setDbAccess(new DummyMainItemAccess());
 		
