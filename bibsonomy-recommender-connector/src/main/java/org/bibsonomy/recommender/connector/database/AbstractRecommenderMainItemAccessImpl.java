@@ -1,12 +1,10 @@
 package org.bibsonomy.recommender.connector.database;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.BibTex;
@@ -29,6 +27,9 @@ import recommender.core.interfaces.model.RecommendationItem;
  */
 public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractDatabaseManager implements ExtendedMainAccess {
 	
+	private static final int RETRIEVE_USERS_PER_TAG = 6;
+	private static final int USE_USERS_PER_TAG = 2;
+	private static final int TAGS_TO_EVALUATE = 2;
 	private RecommenderDBSessionFactory mainFactory;
 	
 	protected RecommenderDBSession openMainSession() {
@@ -66,22 +67,54 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 				return usernames;
 			}
 			
-			final int tagsToEvaluate = 2;
-			param.setCount(tagsToEvaluate);
+			// try to get similar users per cosine similarity
+			usernames = this.queryForList("getSimilarUsersByCosineSimilarity", param, String.class, mainSession);
+			
+			if(usernames.size() == count) {
+				return usernames;
+			}
+			
+			final int tagsToRetrieve = 100;
+			param.setCount(tagsToRetrieve);
 			// in case of folkrank did not give enough information select similar users by a more simple strategy
 			List<String> mostImportantUserTags = this.queryForList("getMostImportantTagsOfUser", param, String.class, mainSession);
+			Iterator<String> it = mostImportantUserTags.iterator();
+			
+			// take not the top tags because they might be not meaningful
+			int counter = 0;
+			while(it.hasNext()) {
+				it.next();
+				if(!(mostImportantUserTags.size()/2 + TAGS_TO_EVALUATE > counter && mostImportantUserTags.size()/2 <= counter)) {
+					it.remove();
+				}
+				counter++;
+			}
+			
 			final List<String> usernamesSimple = new ArrayList<String>();
 			
 			// get all users which used at least one of the requesting user's important tags
-			param.setCount(count);
+			param.setCount(RETRIEVE_USERS_PER_TAG);
 			List<String> tempnames = new ArrayList<String>();
 			for(String tagname : mostImportantUserTags) {
 				param.setTag(tagname);
 				tempnames = this.queryForList("getSimilarUsersByEqualTags", param, String.class, mainSession);
+				counter = 0;
 				for(String username : tempnames) {
-					if(!usernamesSimple.contains(username)) {
-						usernamesSimple.add(username);
+					// prevent from evaluating too much users
+					if(usernamesSimple.size() >= count) {
+						break;
 					}
+					// take not the top users because they might spammed this tag
+					if(tempnames.size()/2 + USE_USERS_PER_TAG > counter && tempnames.size()/2 <= counter) {
+						if(!usernamesSimple.contains(username)) {
+							usernamesSimple.add(username);
+						}
+					}
+					counter++;
+				}
+				// prevent from evaluating too much users
+				if(usernamesSimple.size() >= count) {
+					break;
 				}
 			}
 			
@@ -131,15 +164,11 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 			// get bookmarks of user
 			final BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setRequestedUserName(username);
-			bookmarkParam.setGrouping(GroupingEntity.ALL);
-			Collection<Integer> groups = new ArrayList<Integer>();
-			bookmarkParam.setGroups(groups);
-			groups.add(GroupID.PUBLIC.getId());
+			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
 			bookmarkParam.setOffset(0);
 			bookmarkParam.setLimit(count);
-			bookmarkParam.setSimHash(HashID.INTRA_HASH);
 			
-			List<Post<Bookmark>> bookmarkResults = (List<Post<Bookmark>>) this.queryForList("getBookmarkForUser", bookmarkParam, mainSession);
+			List<Post<Bookmark>> bookmarkResults = (List<Post<Bookmark>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 			for(Post<Bookmark> bookmark : bookmarkResults) {
 				RecommendationItem item =  new RecommendationPost(bookmark);
@@ -149,13 +178,11 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 			//get publications of user
 			final BibTexParam bibtexParam = new BibTexParam();
 			bibtexParam.setRequestedUserName(username);
-			bibtexParam.setGrouping(GroupingEntity.ALL);
-			bibtexParam.setGroups(groups);
+			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 			bibtexParam.setOffset(0);
 			bibtexParam.setLimit(count);
-			bibtexParam.setSimHash(HashID.INTRA_HASH);
 			
-			List<Post<BibTex>> bibtexResults = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", bibtexParam, mainSession);
+			List<Post<BibTex>> bibtexResults = (List<Post<BibTex>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
 			for(Post<BibTex> bibtex : bibtexResults) {
 				RecommendationItem item =  new RecommendationPost(bibtex);
 				items.add(item);

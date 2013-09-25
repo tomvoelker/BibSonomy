@@ -34,7 +34,6 @@ import recommender.impl.model.RecommendedTag;
  * known from bibsonmy-recommender.
  * As a result the old tables can stay in use.
  * 
- * @author Lukas
  * @version $Id$
  */
 public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {

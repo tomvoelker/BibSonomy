@@ -45,7 +45,7 @@ public class CollaborativeItemRecommenderTest {
 	private static final String[] USER_NAMES = {"cfUser1", "cfUser2"}; 
 	private static final String WINNER_TITLE = "winner title";
 	
-	private int id_generator;
+	private static int id_generator = 0;
 	
 	@BeforeClass
 	public static void setUp() {
@@ -71,7 +71,7 @@ public class CollaborativeItemRecommenderTest {
 		SortedSet<RecommendedItem> recommendations = reco.getRecommendation(new UserWrapper(u));
 		
 		// checks if the count of items correct
-		Assert.assertEquals(recommendations.size(), RECOMMENDATIONS_TO_CALCULATE);
+		Assert.assertEquals(RECOMMENDATIONS_TO_CALCULATE, recommendations.size());
 		
 		// new dbAccess to make the database results non random
 		dbAccess = new DummyCollaborativeMainAccess();
@@ -171,6 +171,16 @@ public class CollaborativeItemRecommenderTest {
 				items.add(new RecommendationPost(post));
 			}
 			return items;
+		}
+		
+		/*
+		 * (non-Javadoc)
+		 * @see org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess#getResourcesByIds(java.util.List)
+		 */
+		@Override
+		public List<RecommendationItem> getResourcesByIds(List<Integer> ids) {
+			// no new items are returned to prevent the similar dummy items to be overwritten
+			return new ArrayList<RecommendationItem>();
 		}
 	}
 	

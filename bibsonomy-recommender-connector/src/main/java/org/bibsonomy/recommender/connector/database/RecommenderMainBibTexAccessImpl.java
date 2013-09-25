@@ -37,9 +37,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 		try {
 			BibTexParam bibtexParam = new BibTexParam();
 			bibtexParam.setGrouping(GroupingEntity.ALL);
-			final List<Integer> groups = new ArrayList<Integer>();
-			groups.add(GroupID.PUBLIC.getId());
-			bibtexParam.setGroups(groups);
+			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 			bibtexParam.setOffset(0);
 			bibtexParam.setLimit(count);
 			bibtexParam.setSimHash(HashID.INTRA_HASH);
@@ -70,17 +68,13 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 		try {
 			final BibTexParam bibtexParam = new BibTexParam();
 			bibtexParam.setRequestedUserName(username);
-			bibtexParam.setGrouping(GroupingEntity.ALL);
-			final List<Integer> groups = new ArrayList<Integer>();
-			groups.add(GroupID.PUBLIC.getId());
-			bibtexParam.setGroups(groups);
 			bibtexParam.setOffset(0);
 			bibtexParam.setLimit(count);
-			bibtexParam.setSimHash(HashID.INTRA_HASH);
+			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 			
 			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
-			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", bibtexParam, mainSession);
-			
+			// only get reduced data, because it's enough for calculation
+			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
 			for(Post<BibTex> bibtex : results) {
 				RecommendationItem item =  new RecommendationPost(bibtex);
 				items.add(item);
@@ -102,20 +96,16 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
 			final BibTexParam bibtexParam = new BibTexParam();
-			bibtexParam.setGrouping(GroupingEntity.ALL);
-			final List<Integer> groups = new ArrayList<Integer>();
-			groups.add(GroupID.PUBLIC.getId());
-			bibtexParam.setGroups(groups);
+			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 			bibtexParam.setOffset(0);
 			bibtexParam.setLimit(count);
-			bibtexParam.setSimHash(HashID.INTRA_HASH);
 			
 			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 			
 			for(String username : usernames) {
 				bibtexParam.setRequestedUserName(username);
-				List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForUser", bibtexParam, mainSession);
-				
+				// only get reduced data, because it's enough for calculation
+				List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getReducedUserBibTex", bibtexParam, mainSession);
 				for(Post<BibTex> bibtex : results) {
 					RecommendationItem item =  new RecommendationPost(bibtex);
 					items.add(item);

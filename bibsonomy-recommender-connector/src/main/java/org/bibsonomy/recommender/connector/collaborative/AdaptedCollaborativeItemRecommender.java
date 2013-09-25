@@ -2,10 +2,14 @@ package org.bibsonomy.recommender.connector.collaborative;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
@@ -22,8 +26,7 @@ import recommender.impl.item.collaborative.CollaborativeItemRecommender;
  * @author lukas
  *
  */
-public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecommender{
-
+public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecommender {
 
 	/*
 	 * (non-Javadoc)
@@ -49,8 +52,31 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 		List<RecommendationItem> userItems = new ArrayList<RecommendationItem>();
 		
 		userItems.addAll(this.dbAccess.getItemsForUsers(maxItemsToEvaluate, similarUsers));
-		
+	
 		final List<RecommendedItem> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
+		
+		// in case of ExtendedMainAccess was injected the complete post data has to be retrieved
+		if(dbAccess instanceof ExtendedMainAccess) {
+			final Map<Integer, RecommendedItem> ids = new HashMap<Integer, RecommendedItem>();
+			for(RecommendedItem item : results) {
+				if( item.getItem() != null && item.getItem() instanceof RecommendationPost ) {
+					final Post<? extends Resource> post = ((RecommendationPost) item.getItem()).getPost();
+					if(post != null) {
+						ids.put(post.getContentId(), item);
+					}
+				}
+			}
+			
+			final List<RecommendationItem> completedItems = ((ExtendedMainAccess) this.dbAccess).getResourcesByIds(new ArrayList<Integer>(ids.keySet()));
+			for(RecommendationItem item : completedItems) {
+				if(item instanceof RecommendationPost) {
+					final Post<? extends Resource> completedPost = ((RecommendationPost) item).getPost();
+					if(completedPost != null) {
+						ids.get(completedPost.getContentId()).setItem(item);
+					}
+				}
+			}
+		}
 		
 		recommendations.addAll(results);
 	}
@@ -89,5 +115,4 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 		}
 		return tokens;
 	}
-	
 }

@@ -268,6 +268,14 @@
 		LIMIT #count#
 	</select>
 	
+	<select id="getSimilarUsersByCosineSimilarity" resultClass="string" parameterClass="itemRecRequestParam">
+		SELECT u2 FROM useruser_similarity 
+		WHERE u1 = "s_nkeha" 
+			AND measure_id=1 
+		ORDER BY sim DESC 
+		LIMIT #count# OFFSET 1;
+	</select>
+	
 	<!-- +
 		 | get all users which used at least one equal tag to the requesting user
 		 + -->
@@ -317,6 +325,33 @@
 		WHERE bb.group = g.group
 	</select>
 	
+	<select id="getReducedUserBookmark" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, NULL AS `group`, 
+				NULL AS group_name, NULL AS rating, NULL as number_of_ratings, -1 as scraperid
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
+		      FROM bookmark t1, urls u
+		      WHERE t1.user_name = #requestedUserName#
+		      		AND t1.group = #groupId#
+		      		AND u.book_url_hash = t1.book_url_hash
+		      		ORDER BY date DESC
+		       LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON (bb.content_id = t.content_id)
+		GROUP BY bb.content_id
+	</select>
+	
+	<select id="getReducedUserBibTex" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid="commonBibtexAttributes2"/>, b2.change_date, t.tag_name, NULL AS `group`, 
+				NULL AS group_name, 1 AS count, NULL AS rating, NULL as number_of_ratings, -1 as scraperid
+		FROM (SELECT * FROM bibtex b1
+			WHERE b1.group = #groupId#
+			AND b1.user_name=#requestedUserName#
+			ORDER BY date DESC
+			LIMIT #limit# OFFSET #offset#) b2
+		LEFT OUTER JOIN tas AS t ON (b2.content_id = t.content_id)
+		GROUP BY b2.content_id
+	</select>
 	
 	<!-- +
 		 | allow the privacy filter to get the user ids

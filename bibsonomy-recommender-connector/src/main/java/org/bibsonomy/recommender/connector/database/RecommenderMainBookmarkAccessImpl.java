@@ -1,7 +1,6 @@
 package org.bibsonomy.recommender.connector.database;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -38,9 +37,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		try {
 			BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setGrouping(GroupingEntity.ALL);
-			final List<Integer> groups = new ArrayList<Integer>();
-			groups.add(GroupID.PUBLIC.getId());
-			bookmarkParam.setGroups(groups);
+			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
 			bookmarkParam.setOffset(0);
 			bookmarkParam.setLimit(count);
 			bookmarkParam.setSimHash(HashID.INTRA_HASH);
@@ -70,15 +67,12 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		try {
 			final BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setRequestedUserName(username);
-			bookmarkParam.setGrouping(GroupingEntity.ALL);
-			Collection<Integer> groups = new ArrayList<Integer>();
-			bookmarkParam.setGroups(groups);
-			groups.add(GroupID.PUBLIC.getId());
+			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
 			bookmarkParam.setOffset(0);
 			bookmarkParam.setLimit(count);
-			bookmarkParam.setSimHash(HashID.INTRA_HASH);
 			
-			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getBookmarkForUser", bookmarkParam, mainSession);
+			// only get reduced data, because it's enough for calculation
+			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
 			
 			for(Post<Bookmark> bookmark : results) {
@@ -103,19 +97,15 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		final RecommenderDBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam bookmarkParam = new BookmarkParam();
-			bookmarkParam.setGrouping(GroupingEntity.ALL);
-			Collection<Integer> groups = new ArrayList<Integer>();
-			bookmarkParam.setGroups(groups);
-			groups.add(GroupID.PUBLIC.getId());
+			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
 			bookmarkParam.setOffset(0);
 			bookmarkParam.setLimit(count);
-			bookmarkParam.setSimHash(HashID.INTRA_HASH);
 			
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 			for(String username : usernames) {
 				bookmarkParam.setRequestedUserName(username);
-				
-				List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getBookmarkForUser", bookmarkParam, mainSession);
+				// only get reduced data, because it's enough for calculation
+				List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getReducedUserBookmark", bookmarkParam, mainSession);
 				for(Post<Bookmark> bookmark : results) {
 					RecommendationItem item =  new RecommendationPost(bookmark);
 					items.add(item);
