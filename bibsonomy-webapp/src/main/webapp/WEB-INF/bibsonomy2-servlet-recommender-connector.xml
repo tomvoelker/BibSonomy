@@ -164,7 +164,7 @@
 		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
 		<property name="numberOfItemsToRecommend" value="5"/>
 		<property name="maxUsersToEvaluate" value="3"/>
-		<property name="maxItemsToEvaluate" value="15"/>
+		<property name="maxItemsToEvaluate" value="12"/>
 	</bean>
 	    
 	<bean id="selectFixBookmarkWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
@@ -220,7 +220,7 @@
 		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
 		<property name="numberOfItemsToRecommend" value="5"/>
 		<property name="maxUsersToEvaluate" value="3"/>
-		<property name="maxItemsToEvaluate" value="15"/>
+		<property name="maxItemsToEvaluate" value="12"/>
 	</bean>
 	    
 	<bean id="selectFixBibTexWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
