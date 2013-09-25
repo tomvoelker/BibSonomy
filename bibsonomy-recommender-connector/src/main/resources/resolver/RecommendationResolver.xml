@@ -270,7 +270,7 @@
 	
 	<select id="getSimilarUsersByCosineSimilarity" resultClass="string" parameterClass="itemRecRequestParam">
 		SELECT u2 FROM useruser_similarity 
-		WHERE u1 = "s_nkeha" 
+		WHERE u1 = #userName# 
 			AND measure_id=1 
 		ORDER BY sim DESC 
 		LIMIT #count# OFFSET 1;
