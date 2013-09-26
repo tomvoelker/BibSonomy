@@ -3,6 +3,7 @@ package org.bibsonomy.recommender.connector.database;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -22,16 +23,16 @@ import org.bibsonomy.recommender.connector.database.params.PostRecParam;
 import org.bibsonomy.recommender.connector.database.params.RecommendedTagParam;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 
-import recommender.core.database.RecommenderDBSession;
 import recommender.core.database.params.RecQueryParam;
 import recommender.core.database.params.RecQuerySettingParam;
 import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.core.model.Pair;
 import recommender.impl.database.DBLogConfigTagAccess;
 import recommender.impl.model.RecommendedTag;
 
 /**
  * This implements the old logging and configuration scheme for tag recommendations,
- * known from bibsonmy-recommender.
+ * known from bibsonomy-recommender.
  * As a result the old tables can stay in use.
  * 
  * @version $Id$
@@ -67,22 +68,11 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		}
 		
 		recQuery.setQueryTimeout(timeout);
+		final Long queryId = (Long) this.manager.processInsertQuery("addRecommenderQuery", recQuery);
 
-		// insert recommender query
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			final Long queryId = (Long) recommenderSession.insert(
-					"addRecommenderQuery", recQuery);
+		this.storeRecommendationEntity(userName, queryId, entity, true);
 
-			this.storeRecommendationEntity(userName, queryId, entity, true,
-					recommenderSession);
-
-			return queryId;
-		} finally {
-
-			recommenderSession.close();
-
-		}
+		return queryId;
 	}
 	
 	/*
@@ -92,25 +82,18 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void addFeedback(TagRecommendationEntity entity, RecommendedTag result) {
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			
-			if(entity instanceof PostWrapper) {
-				Post post = ((PostWrapper) entity).getPost();
-				final PostRecParam postMap = new PostRecParam();
-				postMap.setUserName(entity.getUserName());
-				postMap.setDate(new Date());
-				postMap.setPostID(post.getContentId());
-				postMap.setHash(post.getResource().getIntraHash());
-				
-				// insert data
-				recommenderSession.insert("connectWithEntity", postMap);
-			} else {
-				log.error("TagRecommendationentity was not a PostWrapper, this should not happen!");
-			}
-
-		} finally {
-			recommenderSession.close();
+		if(entity instanceof PostWrapper) {
+			Post post = ((PostWrapper) entity).getPost();
+			final PostRecParam postMap = new PostRecParam();
+			postMap.setUserName(entity.getUserName());
+			postMap.setDate(new Date());
+			postMap.setPostID(post.getContentId());
+			postMap.setHash(post.getResource().getIntraHash());
+		
+			// insert data
+			this.manager.processInsertQuery("connectWithEntity", postMap);
+		} else {
+			log.error("TagRecommendationentity was not a PostWrapper, this should not happen!");
 		}
 	}
 	
@@ -120,11 +103,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 */
 	@Override
 	public RecQueryParam getQuery(Long qid) {
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			
-			BibRecQueryParam param = this.queryForObject("getQueryByID", qid,
-					BibRecQueryParam.class, recommenderSession);
+			BibRecQueryParam param = this.manager.processQueryForObject(BibRecQueryParam.class, "getQueryByID", qid);
 			RecQueryParam result = new RecQueryParam();
 			result.setEntity_id(""+param.getPost_id());
 			result.setContentType(""+param.getContentType());
@@ -134,9 +113,6 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 			result.setUserName(param.getUserName());
 			
 			return result;
-		} finally {
-			recommenderSession.close();
-		}
 	}
 	
 	/*
@@ -146,17 +122,15 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void storeRecommendationEntity(String userName, Long qid,
-			TagRecommendationEntity entity, boolean update,
-			RecommenderDBSession session) {
-		
+			TagRecommendationEntity entity, boolean update) {
 		if(PostWrapper.class.isAssignableFrom(entity.getClass())) {
 			Post post = ((PostWrapper) entity).getPost();
 			if(post != null && Bookmark.class.isAssignableFrom(post.getResource().getClass())) {
 				Post<Bookmark> bookmarkPost = (Post<Bookmark>) post;
-				storeBookmarkPost(userName, qid, bookmarkPost, "", update, session);
+				storeBookmarkPost(userName, qid, bookmarkPost, "", update);
 			} else if(post != null && BibTex.class.isAssignableFrom(post.getResource().getClass())) {
 				Post<BibTex> bibtexPost = (Post<BibTex>) post;
-				storeBibTexPost(userName, qid, bibtexPost, "", update, session);
+				storeBibTexPost(userName, qid, bibtexPost, "", update);
 			}
 		}
 		
@@ -170,7 +144,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 * @param update
 	 * @param session
 	 */
-	private void storeBibTexPost(final String userName, final Long qid, final Post<BibTex> post, final String oldHash, final boolean update, final RecommenderDBSession session) {
+	private void storeBibTexPost(final String userName, final Long qid, final Post<BibTex> post, final String oldHash, final boolean update) {
 		log.warn("storeBibTexPost not tested.");
 		final BibTexParam param = new BibTexParam();
 		param.setResource(post.getResource());
@@ -178,15 +152,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		param.setDescription(post.getDescription());
 		param.setDate(post.getDate());
 		param.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
-		
-		try {
-			session.beginTransaction();
-			session.insert("insertBibTex", param);
-			session.commitTransaction();
-		} finally {
-			// all done -> close session
-			session.endTransaction();
-		}
+		this.manager.processInsertQuery("insertBibTex", param);
 	}
 
 	/**
@@ -197,7 +163,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 * @param update
 	 * @param session
 	 */
-	private void storeBookmarkPost(final String userName, final Long qid, final Post<Bookmark> post, final String oldHash, final boolean update, final RecommenderDBSession session) {
+	private void storeBookmarkPost(final String userName, final Long qid, final Post<Bookmark> post, final String oldHash, final boolean update) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setResource(post.getResource());
 		param.setDate(post.getDate());
@@ -213,15 +179,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 			final int groupId =  groups.iterator().next().getGroupId();
 			param.setGroupId(groupId);
 		}
-		
-		try {
-			session.beginTransaction();
-			session.insert("insertBookmark", param);
-			session.commitTransaction();
-		} finally {
-			// all done -> close session
-			session.endTransaction();
-		}
+		this.manager.processInsertQuery("insertBookmark", param);
 	}
 	
 	/*
@@ -230,30 +188,19 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 */
 	@Override
 	public boolean logRecommendation(Long qid, Long sid, long latency,
-			SortedSet<RecommendedTag> results, SortedSet<RecommendedTag> preset) {
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			recommenderSession.beginTransaction();
-
-			// log each recommended tag
-			final RecommendedTagParam response = new RecommendedTagParam();
-			response.setQid(qid);
-			response.setSid(sid);
-			response.setLatency(latency);
-			for (final RecommendedTag result : results) {
-				response.setTagName(result.getName());
-				response.setConfidence(result.getConfidence());
-				response.setScore(result.getScore());
-				this.insert("addRecommenderResponse", response,
-						recommenderSession);
-			}
-
-			recommenderSession.commitTransaction();
-			return false;
-		} finally {
-			recommenderSession.endTransaction();
-			recommenderSession.close();
+		SortedSet<RecommendedTag> results, SortedSet<RecommendedTag> preset) {
+		// log each recommended tag
+		final RecommendedTagParam response = new RecommendedTagParam();
+		response.setQid(qid);
+		response.setSid(sid);
+		response.setLatency(latency);
+		for (final RecommendedTag result : results) {
+			response.setTagName(result.getName());
+			response.setConfidence(result.getConfidence());
+			response.setScore(result.getScore());
+			this.manager.processInsertQuery("addRecommenderResponse", response);
 		}
+		return false;
 	}
 	
 	/*
@@ -261,24 +208,14 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 * @see recommender.core.database.DBLogic#getRecommendations(java.lang.Long, java.lang.Long, java.util.Collection)
 	 */
 	@Override
-	public void getRecommendations(Long qid, Long sid,
-			Collection<RecommendedTag> recommendedTags) {
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			// TODO ugly inefficient implementation
-			log.warn("Inefficient implementation");
-
-			// print out newly added recommendations
-			final RecQuerySettingParam queryMap = new RecQuerySettingParam();
-			queryMap.setQid(qid);
-			queryMap.setSid(sid);
-			final List<RecommendedTag> queryResult = this.queryForList(
-					"getRecommendationsByQidSid", queryMap,
-					RecommendedTag.class, recommenderSession);
-			recommendedTags.addAll(queryResult);
-		} finally {
-			recommenderSession.close();
-		}
+	public void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) {
+		// print out newly added recommendations
+		final RecQuerySettingParam queryMap = new RecQuerySettingParam();
+		queryMap.setQid(qid);
+		queryMap.setSid(sid);
+		final List<RecommendedTag> queryResult = this.manager.processQueryForList(RecommendedTag.class,
+				"getRecommendationsByQidSid", queryMap);
+		recommendedTags.addAll(queryResult);
 	}
 
 	/*
@@ -288,17 +225,9 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	@Override
 	public void getRecommendations(Long qid,
 			Collection<RecommendedTag> recommendedTags) {
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			// TODO ugly inefficient implementation
-			log.warn("Inefficient implementation");
-			final List<RecommendedTag> queryResult = this.queryForList(
-					"getRecommendationsByQid", qid, RecommendedTag.class,
-					recommenderSession);
+			final List<RecommendedTag> queryResult = this.manager.processQueryForList(RecommendedTag.class,
+					"getRecommendationsByQid", qid);
 			recommendedTags.addAll(queryResult);
-		} finally {
-			recommenderSession.close();
-		}
 	}
 
 	/*
@@ -307,13 +236,7 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 */
 	@Override
 	public List<RecommendedTag> getSelectedResults(Long qid) {
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			return this.queryForList("getSelectedRecommendationsByQid", qid,
-					RecommendedTag.class, recommenderSession);
-		} finally {
-			recommenderSession.close();
-		}
+			return this.manager.processQueryForList(RecommendedTag.class, "getSelectedRecommendationsByQid", qid);
 	}
 	
 	/*
@@ -321,35 +244,22 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	 * @see recommender.impl.database.DBLogConfigAccess#storeRecommendation(java.lang.Long, java.lang.Long, java.util.Collection)
 	 */
 	@Override
-	public int storeRecommendation(Long qid, Long rid,
-			Collection<RecommendedTag> results) {
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			recommenderSession.beginTransaction();
-			recommenderSession.startBatch();
+	public int storeRecommendation(Long qid, Long rid, Collection<RecommendedTag> results) {
+		// set store applied selection strategie's id
+		this.setResultSelectorToQuery(qid, rid);
 
-			// set store applied selection strategie's id
-			this.setResultSelectorToQuery(qid, rid);
-
-			// insert recommender response
-			// #qid#, #score#, #confidence#, #tagName# )
+		final List<Pair<String, Object>> executionList = new ArrayList<Pair<String, Object>>();
+		// insert recommender response
+		for (final RecommendedTag result : results) {
 			final RecommendedTagParam response = new RecommendedTagParam();
 			response.setQid(qid);
 			response.setSid(rid);
-			for (final RecommendedTag result : results) {
-				response.setScore(result.getScore());
-				response.setConfidence(result.getConfidence());
-				response.setTagName(result.getName());
-				this.insert("addSelectedResult", response, recommenderSession);
-			}
-			recommenderSession.executeBatch();
-			recommenderSession.commitTransaction();
-
-			return results.size();
-		} finally {
-			recommenderSession.endTransaction();
-			recommenderSession.close();
+			response.setScore(result.getScore());
+			response.setConfidence(result.getConfidence());
+			response.setTagName(result.getName());
+			executionList.add(new Pair<String, Object>("addSelectedResult", response));
 		}
+		return this.manager.processBatchOfInsertQueries(executionList);
 	}
 	
 	/*
@@ -362,32 +272,19 @@ public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 		if (results == null) {
 			return 0;
 		}
-
-		final RecommenderDBSession recommenderSession = this.openRecommenderSession();
-		try {
-			recommenderSession.beginTransaction();
-			recommenderSession.startBatch();
-			
-			// log each recommended tag
+		final List<Pair<String, Object>> executionList = new ArrayList<Pair<String,Object>>();
+		// log each recommended tag
+		for (final RecommendedTag result : results) {
 			final RecommendedTagParam response = new RecommendedTagParam();
 			response.setQid(queryId);
 			response.setSid(settingsId);
 			response.setLatency(latency);
-			for (final RecommendedTag result : results) {
-				response.setTagName(result.getName());
-				response.setConfidence(result.getConfidence());
-				response.setScore(result.getScore());
-				this.insert("addRecommenderResponse", response,
-						recommenderSession);
-			}
-			
-			recommenderSession.executeBatch();
-			recommenderSession.commitTransaction();
-			return results.size();
-		} finally {
-			recommenderSession.endTransaction();
-			recommenderSession.close();
+			response.setTagName(result.getName());
+			response.setConfidence(result.getConfidence());
+			response.setScore(result.getScore());
+			executionList.add(new Pair<String, Object>("addRecommenderResponse", response));
 		}
+		return this.manager.processBatchOfInsertQueries(executionList);
 	}
 	
 }

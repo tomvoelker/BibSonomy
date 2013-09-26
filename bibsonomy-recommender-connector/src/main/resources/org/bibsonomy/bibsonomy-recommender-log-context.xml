@@ -22,20 +22,20 @@
 		<property name="client" ref="itemRecommenderSqlMapClient" />
 	</bean>
     
-    <bean id="itemRecommenderSessionFactoryWrapper" class="org.bibsonomy.recommender.connector.database.session.SQLMapRecommenderDBSessionFactoryWrapper">
-    	<property name="sessionFactory" ref="itemRecommenderSessionFactory" />
+    <bean id="itemRecommenderManagerImpl" class="org.bibsonomy.recommender.connector.database.session.RecommenderDatabaseManagerImpl">
+    	<property name="factory" ref="itemRecommenderSessionFactory" />
     </bean>
     
     <bean id="recommendationItemFactory" class="org.bibsonomy.recommender.connector.factories.ConnectorItemFactory" />
     
     <bean id="bibtexRecommenderLogic" class="recommender.impl.database.DBLogConfigItemAccess">
-    	<property name="recommenderFactory" ref="itemRecommenderSessionFactoryWrapper" />
     	<property name="itemFactory" ref="recommendationItemFactory" />
+    	<property name="manager" ref="itemRecommenderManagerImpl" />
     </bean>
     
     <bean id="bookmarkRecommenderLogic" class="recommender.impl.database.DBLogConfigItemAccess">
-    	<property name="recommenderFactory" ref="itemRecommenderSessionFactoryWrapper" />
     	<property name="itemFactory" ref="recommendationItemFactory" />
+    	<property name="manager" ref="itemRecommenderManagerImpl" />
     </bean>
     
     <!-- +
@@ -52,12 +52,12 @@
 		<property name="client" ref="tagRecommenderSqlMapClient" />
 	</bean>
     
-    <bean id="tagRecommenderSessionFactoryWrapper" class="org.bibsonomy.recommender.connector.database.session.SQLMapRecommenderDBSessionFactoryWrapper">
-    	<property name="sessionFactory" ref="tagRecommenderSessionFactory" />
+     <bean id="tagRecommenderManagerImpl" class="org.bibsonomy.recommender.connector.database.session.RecommenderDatabaseManagerImpl">
+    	<property name="factory" ref="tagRecommenderSessionFactory" />
     </bean>
     
     <bean id="tagRecommenderLogic" class="org.bibsonomy.recommender.connector.database.DBLogConfigBibSonomy">
-    	<property name="recommenderFactory" ref="tagRecommenderSessionFactoryWrapper" />
+    	<property name="manager" ref="tagRecommenderManagerImpl" />
     </bean>
     
 </beans>

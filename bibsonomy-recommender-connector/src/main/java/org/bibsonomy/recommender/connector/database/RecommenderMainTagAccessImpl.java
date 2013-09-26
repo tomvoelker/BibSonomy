@@ -3,15 +3,15 @@ package org.bibsonomy.recommender.connector.database;
 import java.util.List;
 
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.database.params.GetTagForResourceParam;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 
-import recommender.core.database.AbstractDatabaseManager;
-import recommender.core.database.RecommenderDBSession;
-import recommender.core.database.RecommenderDBSessionFactory;
 import recommender.core.interfaces.database.RecommenderMainTagAccess;
 import recommender.core.interfaces.model.TagRecommendationEntity;
 import recommender.core.model.Pair;
@@ -25,13 +25,13 @@ import recommender.core.model.Pair;
  *
  */
 public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implements RecommenderMainTagAccess {
-	private RecommenderDBSessionFactory mainFactory;
+	private DBSessionFactory mainFactory;
 	
-	protected RecommenderDBSession openMainSession() {
+	protected DBSession openMainSession() {
 		return this.mainFactory.getDatabaseSession();
 	}
 	
-	public void setMainFactory(RecommenderDBSessionFactory mainFactory) {
+	public void setMainFactory(DBSessionFactory mainFactory) {
 		this.mainFactory = mainFactory;
 	}
 
@@ -43,7 +43,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	@Override
 	public List<Pair<String, Integer>> getMostPopularTagsForUser(
 			String username, int range) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			final GetTagForResourceParam param = new GetTagForResourceParam();
 			param.setUserName(username);
@@ -63,7 +63,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	@Override
 	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(
 			TagRecommendationEntity entity, String entityId, int range) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			final GetTagForResourceParam param = new GetTagForResourceParam();
 			param.setId(Integer.parseInt(entityId));
@@ -90,7 +90,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@Override
 	public Integer getNumberOfTagsForUser(String username) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			return this.queryForObject("getNumberOfTagsForUser", username, Integer.class, mainSession);
 		} finally {
@@ -104,7 +104,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@Override
 	public Integer getNumberOfTaggingsForUser(String username) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			return this.queryForObject("getNumberOfTasForUser", username, Integer.class, mainSession);
 		} finally {
@@ -120,7 +120,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	@Override
 	public Integer getNumberOfTagsForRecommendationEntity(
 			TagRecommendationEntity entity, String entityId) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			if (entity instanceof PostWrapper<?>) {
 				if (((PostWrapper<Resource>) entity).getPost() != null && ((PostWrapper<Resource>) entity).getPost().getResource() instanceof BibTex) {
@@ -145,7 +145,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	@Override
 	public Integer getNumberOfTagAssignmentsForRecommendationEntity(
 			TagRecommendationEntity entity, String entityId) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			if (entity instanceof PostWrapper<?>) {
 				if (((PostWrapper) entity).getPost() != null && ((PostWrapper) entity).getPost().getResource() instanceof BibTex) {
@@ -168,7 +168,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@Override
 	public Integer getUserIDByName(String userName) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			return this.queryForObject("getUserIDByName", userName, Integer.class, mainSession);
 		} finally {
@@ -182,7 +182,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@Override
 	public String getUserNameByID(int userID) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			return this.queryForObject("getUserNameByID", userID, String.class, mainSession);
 		} finally {
@@ -196,7 +196,7 @@ public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implem
 	 */
 	@Override
 	public List<String> getTagNamesForRecommendationEntity(Integer entitiyId) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			return this.queryForList("getTagNamesForCID", entitiyId, String.class, mainSession);
 		} finally {

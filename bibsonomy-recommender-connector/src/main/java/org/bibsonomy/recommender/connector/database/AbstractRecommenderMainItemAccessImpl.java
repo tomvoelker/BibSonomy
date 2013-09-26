@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.database.common.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.BibTex;
@@ -13,9 +16,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.recommender.connector.database.params.ItemRecRequestParam;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
-import recommender.core.database.AbstractDatabaseManager;
-import recommender.core.database.RecommenderDBSession;
-import recommender.core.database.RecommenderDBSessionFactory;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
@@ -30,13 +30,13 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	private static final int RETRIEVE_USERS_PER_TAG = 6;
 	private static final int USE_USERS_PER_TAG = 2;
 	private static final int TAGS_TO_EVALUATE = 2;
-	private RecommenderDBSessionFactory mainFactory;
+	private DBSessionFactory mainFactory;
 	
-	protected RecommenderDBSession openMainSession() {
+	protected DBSession openMainSession() {
 		return this.mainFactory.getDatabaseSession();
 	}
 	
-	public void setMainFactory(RecommenderDBSessionFactory mainFactory) {
+	public void setMainFactory(DBSessionFactory mainFactory) {
 		this.mainFactory = mainFactory;
 	}
 	
@@ -54,7 +54,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	@Override
 	public List<String> getSimilarUsers(final int count, final ItemRecommendationEntity entity) {
 		
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			final ItemRecRequestParam param = new ItemRecRequestParam();
 			param.setUserName(entity.getUserName());
@@ -159,7 +159,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	@SuppressWarnings("unchecked")
 	public List<RecommendationItem> getAllItemsOfQueryingUser(final int count, final String username) {
 		
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			// get bookmarks of user
 			final BookmarkParam bookmarkParam = new BookmarkParam();
@@ -201,7 +201,7 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	 */
 	@Override
 	public Long getUserIdByName(final String username) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			return this.queryForObject("getUserIdByName", username, Long.class, mainSession);
 		} finally {

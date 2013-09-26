@@ -20,10 +20,6 @@
     <bean id="recommenderMainSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
 		<property name="client" ref="recommenderMainSqlMapClient" />
 	</bean>
-	
-	    <bean id="recommenderMainSessionFactoryWrapper" class="org.bibsonomy.recommender.connector.database.session.SQLMapRecommenderDBSessionFactoryWrapper">
-    	<property name="sessionFactory" ref="recommenderMainSessionFactory" />
-    </bean>
     
     
     <!-- +
@@ -31,15 +27,15 @@
     	 + -->
     	 
     <bean id="recommenderBibTexMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainBibTexAccessImpl">
-    	<property name="mainFactory" ref="recommenderMainSessionFactoryWrapper" />
+    	<property name="mainFactory" ref="recommenderMainSessionFactory" />
     </bean>
     
     <bean id="recommenderBookmarkMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainBookmarkAccessImpl">
-    	<property name="mainFactory" ref="recommenderMainSessionFactoryWrapper" />
+    	<property name="mainFactory" ref="recommenderMainSessionFactory" />
     </bean>
     
     <bean id="recommenderTagMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainTagAccessImpl">
-    	<property name="mainFactory" ref="recommenderMainSessionFactoryWrapper" />
+    	<property name="mainFactory" ref="recommenderMainSessionFactory" />
     </bean>
     
 </beans>

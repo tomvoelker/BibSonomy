@@ -6,12 +6,12 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
-import recommender.core.database.RecommenderDBSession;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
@@ -33,7 +33,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	@Override
 	public List<RecommendationItem> getMostActualItems(final int count, final ItemRecommendationEntity entity) {
 		
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setGrouping(GroupingEntity.ALL);
@@ -63,7 +63,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RecommendationItem> getItemsForUser(final int count, final String username) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setRequestedUserName(username);
@@ -94,7 +94,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	@Override
 	public List<RecommendationItem> getItemsForUsers(int count,
 			List<String> usernames) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			final BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
@@ -124,7 +124,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RecommendationItem> getResourcesByIds(final List<Integer> ids) {
-		final RecommenderDBSession mainSession = this.openMainSession();
+		final DBSession mainSession = this.openMainSession();
 		try {
 			final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 			final BookmarkParam param = new BookmarkParam();
