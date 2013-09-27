@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.item.collaborative;
+package org.bibsonomy.recommender.connector.item.content;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.connector.collaborative.AdaptedCollaborativeItemRecommender;
+import org.bibsonomy.recommender.connector.content.AdaptedContentBasedItemRecommender;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
@@ -24,18 +24,18 @@ import recommender.core.interfaces.database.RecommenderMainItemAccess;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.impl.database.DBLogConfigItemAccess;
-import recommender.impl.item.collaborative.CollaborativeItemRecommender;
+import recommender.impl.item.content.ContentBasedItemRecommender;
 import recommender.impl.model.RecommendedItem;
 
 /**
- * This class tests the {@link AdaptedCollaborativeItemRecommender} extension of
- * the library's version {@link CollaborativeItemRecommender}.
+ * This class tests the {@link AdaptedContentBasedItemRecommender} extension of
+ * the library's version {@link ContentBasedItemRecommender}.
  * It checks whether additional bibtex and bookmark information is used.
  * 
  * @author lukas
  *
  */
-public class CollaborativeItemRecommenderTest {
+public class ContentBasedItemRecommenderTest {
 
 	private static DBLogic<ItemRecommendationEntity, RecommendedItem> bibtexDBLogic;
 	
@@ -57,11 +57,11 @@ public class CollaborativeItemRecommenderTest {
 	 * BibTex resources.
 	 */
 	@Test
-	public void testAdaptedCollaborativeIemRecommender() {
+	public void testAdaptedContentBasedItemRecommender() {
 		
 		RecommenderMainItemAccess dbAccess = new DummyMainItemAccess();
 		
-		AdaptedCollaborativeItemRecommender reco = new AdaptedCollaborativeItemRecommender();
+		AdaptedContentBasedItemRecommender reco = new AdaptedContentBasedItemRecommender();
 		reco.setDbAccess(dbAccess);
 		reco.setDbLogic(bibtexDBLogic);
 		reco.setNumberOfItemsToRecommend(RECOMMENDATIONS_TO_CALCULATE);

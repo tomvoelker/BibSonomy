@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.recommender.connector.filter.UserPrivacyFilter;
 
 import recommender.core.interfaces.database.RecommenderMainItemAccess;
+import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 
 /**
@@ -47,5 +48,14 @@ public interface ExtendedMainAccess extends RecommenderMainItemAccess {
 	 * @return the corresponding id
 	 */
 	public Long getUserIdByName(final String username);
+	
+	/**
+	 * This method fetches similar users from database and returns them.
+	 * 
+	 * @param count the count of similar users to fetch
+	 * @param entity the entity to get similar users for
+	 * @return a list of similar users
+	 */
+	public List<String> getSimilarUsers(final int count, final ItemRecommendationEntity entity);
 	
 }

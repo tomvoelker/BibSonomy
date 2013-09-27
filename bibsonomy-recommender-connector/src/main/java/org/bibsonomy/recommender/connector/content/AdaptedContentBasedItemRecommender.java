@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.connector.collaborative;
+package org.bibsonomy.recommender.connector.content;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,7 @@ import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.model.RecommendationTag;
 import recommender.impl.model.RecommendedItem;
-import recommender.impl.item.collaborative.CollaborativeItemRecommender;
+import recommender.impl.item.content.ContentBasedItemRecommender;
 
 /**
  * This class is an extension to the default CFFiltering algorithm in the recommender library.
@@ -26,7 +26,7 @@ import recommender.impl.item.collaborative.CollaborativeItemRecommender;
  * @author lukas
  *
  */
-public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecommender {
+public class AdaptedContentBasedItemRecommender extends ContentBasedItemRecommender {
 
 	/*
 	 * (non-Javadoc)
@@ -37,7 +37,6 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 			Collection<RecommendedItem> recommendations,
 			ItemRecommendationEntity entity) {
 
-		final List<String> similarUsers = this.dbAccess.getSimilarUsers(maxUsersToEvaluate, entity);
 		final List<RecommendationItem> requestingUserItems = new ArrayList<RecommendationItem>();
 		
 		//take bibtex and bookmark resources of requesting user to generate a more significant description of the user preferences
@@ -51,7 +50,7 @@ public class AdaptedCollaborativeItemRecommender extends CollaborativeItemRecomm
 		
 		List<RecommendationItem> userItems = new ArrayList<RecommendationItem>();
 		
-		userItems.addAll(this.dbAccess.getItemsForUsers(maxItemsToEvaluate, similarUsers));
+		userItems.addAll(this.dbAccess.getItemsForContentBasedFiltering(maxItemsToEvaluate, entity));
 	
 		final List<RecommendedItem> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
 		

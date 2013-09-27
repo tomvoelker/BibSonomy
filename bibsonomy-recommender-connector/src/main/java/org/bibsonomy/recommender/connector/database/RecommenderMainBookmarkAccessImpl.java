@@ -1,6 +1,9 @@
 package org.bibsonomy.recommender.connector.database;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -91,8 +94,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getItemsForUsers(int, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
-	public List<RecommendationItem> getItemsForUsers(int count,
+	private List<RecommendationItem> getItemsForUsers(int count,
 			List<String> usernames) {
 		final DBSession mainSession = this.openMainSession();
 		try {
@@ -139,6 +141,19 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		} finally {
 			mainSession.close();
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemsForContentBasedFiltering(int, recommender.core.interfaces.model.ItemRecommendationEntity)
+	 */
+	@Override
+	public Collection<RecommendationItem> getItemsForContentBasedFiltering(final int maxItemsToEvaluate, final ItemRecommendationEntity entity) {
+		final List<String> similarUsers = this.getSimilarUsers(USERS_TO_EVALUATE, entity);
+		if(present(similarUsers)) {
+			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
+		}
+		return new ArrayList<RecommendationItem>();
 	}
 	
 }

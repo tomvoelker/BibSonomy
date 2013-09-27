@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.connector.testutil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
+import org.bibsonomy.util.ValidationUtils;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
 import recommender.core.interfaces.model.RecommendationItem;
@@ -54,13 +56,11 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 		return items;
 	}
 
-	@Override
 	public List<RecommendationItem> getItemsForUsers(int count,
 			List<String> usernames) {
-		int counter = 0;
 		List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 		for(String user : usernames) {
-			items.addAll(this.getItemsForUser(counter++, user));
+			items.addAll(this.getItemsForUser(count, user));
 		}
 		return items;
 	}
@@ -91,5 +91,14 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 	@Override
 	public Long getUserIdByName(String username) {
 		return (long) username.hashCode();
+	}
+
+	@Override
+	public Collection<RecommendationItem> getItemsForContentBasedFiltering(int maxItemsToEvaluate, ItemRecommendationEntity entity) {
+		final List<String> similarUsers = this.getSimilarUsers(3, entity);
+		if(ValidationUtils.present(similarUsers)) {
+			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
+		}
+		return new ArrayList<RecommendationItem>();
 	}
 }

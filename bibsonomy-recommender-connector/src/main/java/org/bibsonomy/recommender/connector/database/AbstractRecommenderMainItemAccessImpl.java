@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.connector.database;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,6 +31,9 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	private static final int RETRIEVE_USERS_PER_TAG = 6;
 	private static final int USE_USERS_PER_TAG = 2;
 	private static final int TAGS_TO_EVALUATE = 2;
+	
+	protected static final int USERS_TO_EVALUATE = 3;
+	
 	private DBSessionFactory mainFactory;
 	
 	protected DBSession openMainSession() {
@@ -146,13 +150,6 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	
 	/*
 	 * (non-Javadoc)
-	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getItemsForUsers(int, java.util.List)
-	 */
-	@Override
-	public abstract List<RecommendationItem> getItemsForUsers(int count, List<String> usernames);
-	
-	/*
-	 * (non-Javadoc)
 	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getAllItemsOfQueryingUser(int, java.lang.String)
 	 */
 	@Override
@@ -208,5 +205,12 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 			mainSession.close();
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getItemsForContentBasedFiltering(int, recommender.core.interfaces.model.ItemRecommendationEntity)
+	 */
+	@Override
+	public abstract Collection<RecommendationItem> getItemsForContentBasedFiltering(int maxItemsToEvaluate, ItemRecommendationEntity entity);
 	
 }
