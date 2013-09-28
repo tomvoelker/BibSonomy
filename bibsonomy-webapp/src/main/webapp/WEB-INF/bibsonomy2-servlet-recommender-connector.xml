@@ -142,6 +142,7 @@
 	<bean id="bookmarkRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
 		<constructor-arg name="factory" ref="rendererFactory" />
 		<property name="resourceType" value="org.bibsonomy.model.Bookmark" />
+		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
 	</bean>    
 	
 	<util:list id="localBookmarkRecommenderList" list-class="java.util.ArrayList"> 		
@@ -168,8 +169,8 @@
 	<bean id="selectFixBookmarkWithFallback" class="org.bibsonomy.recommender.connector.selector.AdaptedSelectFixWithFallback" scope="singleton">
 		<property name="dbLogic" ref="bookmarkRecommenderLogic"/>
 		<property name="dbAccess" ref="recommenderBookmarkMainLogic" />
-		<property name="primaryRecommender" ref="cbBibTexRecommender" />
-		<property name="fallbackRecommender" ref="dummyBibTexRecommender" />
+		<property name="primaryRecommender" ref="cbBookmarkRecommender" />
+		<property name="fallbackRecommender" ref="dummyBookmarkRecommender" />
 	</bean>
 	
 	<!--+ 
@@ -191,6 +192,7 @@
 	<bean id="bibtexRenderer" class="org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWrapper">
 		<constructor-arg name="factory" ref="rendererFactory" />
 		<property name="resourceType" value="org.bibsonomy.model.BibTex" />
+		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
 	</bean>  
 	
 	<util:list id="localBibTexRecommenderList" list-class="java.util.ArrayList"> 		
