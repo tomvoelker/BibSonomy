@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -13,6 +12,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
@@ -40,6 +40,7 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		try {
 			BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setGrouping(GroupingEntity.ALL);
+			bookmarkParam.setUserName(entity.getUserName());
 			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
 			bookmarkParam.setOffset(0);
 			bookmarkParam.setLimit(count);
@@ -156,4 +157,57 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		return new ArrayList<RecommendationItem>();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemByUserWithHash(java.lang.String, java.lang.String)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public RecommendationItem getItemByUserWithHash(String hash, String username) {
+		final DBSession mainSession = this.openMainSession();
+		try {
+			final BookmarkParam param = new BookmarkParam();
+			param.setHash(hash);
+			param.setRequestedUserName(username);
+			param.setSimHash(HashID.INTRA_HASH);
+			param.setOffset(0);
+			param.setLimit(1);
+			
+			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBookmarkByHashForUser", param, Post.class, mainSession);
+			
+			if(post != null) {
+				return new RecommendationPost(post);
+			}
+			return null;
+		} finally {
+			mainSession.close();
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemByTitle(java.lang.String)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public RecommendationItem getItemByTitle(String title) {
+		final DBSession mainSession = this.openMainSession();
+		try {
+			final BookmarkParam param = new BookmarkParam();
+			param.setTitle(title);
+			param.setSimHash(HashID.INTRA_HASH);
+			param.setGroupId(GroupID.PUBLIC.getId());
+			param.setOffset(0);
+			param.setLimit(1);
+			
+			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBookmarkByTitle", param, Post.class, mainSession);
+			
+			if(post != null) {
+				return new RecommendationPost(post);
+			}
+			return null;
+		} finally {
+			mainSession.close();
+		}
+	}
 }

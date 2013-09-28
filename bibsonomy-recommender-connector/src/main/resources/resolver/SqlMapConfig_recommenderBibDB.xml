@@ -37,5 +37,6 @@
 	<sqlMap resource="Bookmark.xml" />
 	
 	<sqlMap resource="resolver/common/RecommendationBibCommon.xml" />
-	<sqlMap resource="resolver/RecommendationResolver.xml" />
+	<sqlMap resource="resolver/item/RecommendationItemResolver.xml" />
+	<sqlMap resource="resolver/tag/RecommendationTagResolver.xml" />
 </sqlMapConfig>

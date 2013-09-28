@@ -58,4 +58,22 @@ public interface ExtendedMainAccess extends RecommenderMainItemAccess {
 	 */
 	public List<String> getSimilarUsers(final int count, final ItemRecommendationEntity entity);
 	
+	/**
+	 * This method tries to retrieve an item by it's given intrahash and username from the database.
+	 * It returns the found item or null otherwise.
+	 * 
+	 * @param hash the intrahash of the resource
+	 * @param username the username of the item's owner
+	 * @return the item or null otherwise
+	 */
+	public RecommendationItem getItemByUserWithHash(final String hash, final String username);
+	
+	/**
+	 * Retrieves any item which title fits to the given title.
+	 * 
+	 * @param title the title of the item to retrieve
+	 * @return the item or null if no item with this title was found
+	 */
+	public RecommendationItem getItemByTitle(final String title);
+	
 }

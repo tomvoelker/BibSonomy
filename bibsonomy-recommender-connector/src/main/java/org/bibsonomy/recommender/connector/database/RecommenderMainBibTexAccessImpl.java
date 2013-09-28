@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -13,6 +12,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 
 import recommender.core.interfaces.model.ItemRecommendationEntity;
@@ -26,7 +26,7 @@ import recommender.core.interfaces.model.RecommendationItem;
  * @author Lukas
  *
  */
-public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItemAccessImpl{
+public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItemAccessImpl {
 	
 	/*
 	 * (non-Javadoc)
@@ -41,6 +41,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			BibTexParam bibtexParam = new BibTexParam();
 			bibtexParam.setGrouping(GroupingEntity.ALL);
 			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
+			bibtexParam.setUserName(entity.getUserName());
 			bibtexParam.setOffset(0);
 			bibtexParam.setLimit(count);
 			bibtexParam.setSimHash(HashID.INTRA_HASH);
@@ -153,5 +154,60 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
 		}
 		return new ArrayList<RecommendationItem>();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemByUserWithHash(java.lang.String, java.lang.String)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public RecommendationItem getItemByUserWithHash(String hash, String username) {
+		final DBSession mainSession = this.openMainSession();
+		try {
+			final BibTexParam param = new BibTexParam();
+			param.setHash(hash);
+			param.setRequestedUserName(username);
+			param.setSimHash(HashID.INTRA_HASH);
+			param.setGrouping(GroupingEntity.USER);
+			param.setOffset(0);
+			param.setLimit(1);
+			
+			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBibTexByHashForUser", param, Post.class, mainSession);
+			
+			if(post != null) {
+				return new RecommendationPost(post);
+			}
+			return null;
+		} finally {
+			mainSession.close();
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getItemByTitle(java.lang.String)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public RecommendationItem getItemByTitle(String title) {
+		final DBSession mainSession = this.openMainSession();
+		try {
+			final BibTexParam param = new BibTexParam();
+			param.setTitle(title);
+			param.setSimHash(HashID.INTRA_HASH);
+			param.setGroupId(GroupID.PUBLIC.getId());
+			param.setOffset(0);
+			param.setLimit(1);
+			
+			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBibTexByTitle", param, Post.class, mainSession);
+			
+			if(post != null) {
+				return new RecommendationPost(post);
+			}
+			return null;
+		} finally {
+			mainSession.close();
+		}
 	}
 }

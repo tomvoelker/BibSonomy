@@ -11,11 +11,14 @@ import java.util.TreeSet;
 import org.bibsonomy.model.RecommendedPost;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
+import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+
 import recommender.core.error.BadRequestOrResponseException;
 import recommender.core.interfaces.model.ItemRecommendationEntity;
+import recommender.core.interfaces.model.RecommendationItem;
 import recommender.core.interfaces.renderer.RecommendationRenderer;
 import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.model.RecommendedItem;
@@ -33,6 +36,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 		RecommendationRenderer<ItemRecommendationEntity, RecommendedItem> {
 
 	private Renderer renderer;
+	private ExtendedMainAccess dbAccess;
 	
 	public BibsonomyItemRendererFactoryWrapper(final RendererFactory factory) {
 		this.renderer = factory.getRenderer(RenderingFormat.XML);
@@ -103,11 +107,14 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 		// ignore posts which do not belong to the specified resourceType 
 		if(resourceType.isAssignableFrom(post.getPost().getResource().getClass())) {
 			final RecommendedPost<T> casted = (RecommendedPost<T>) post;
-			this.validatePost(casted);
-			final RecommendedItem item = new RecommendedItem(new RecommendationPost(casted.getPost()));
-			item.setScore(casted.getScore());
-			item.setConfidence(casted.getConfidence());
-			return item;
+			final RecommendationItem validatedPost = this.validatePost(casted);
+			// was the post valid?
+			if(present(validatedPost)) {
+				final RecommendedItem item = new RecommendedItem(validatedPost);
+				item.setScore(casted.getScore());
+				item.setConfidence(casted.getConfidence());
+				return item;
+			}
 		}
 		return null;
 	}
@@ -116,10 +123,25 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 * Checks whether the post is contained in BibSonomy's database 
 	 * and if the attributes of the post are consistent to BibSonomy's model. 
 	 * 
-	 * @param post the post to validate
+	 * @param post the post to validate or null if the post is not valid
 	 */
-	private void validatePost(RecommendedPost<T> post) {
-		//TODO: implement consistency check
+	private RecommendationItem validatePost(RecommendedPost<T> post) {
+		RecommendationItem validated = null;
+		if(present(post.getPost()) && present(post.getPost().getResource())) {
+			// first check if the post is saved in our database like we fetched it
+			if(present(post.getPost().getResource().getIntraHash()) && present(post.getPost().getUser().getName())) {
+				validated = this.dbAccess.getItemByUserWithHash(post.getPost().getResource().getIntraHash(), post.getPost().getUser().getName());
+				if(present(validated)) {
+					return validated;
+				}
+			}
+			// we have no exact matching post in our database, so try to find a public resource with the same title
+			if(present(post.getPost().getResource().getTitle())) {
+				validated = this.dbAccess.getItemByTitle(post.getPost().getResource().getTitle());
+			}
+		}
+		// return the validated item or null, if no valid item could be found
+		return validated;
 	}
 
 	public void setResourceType(Class<T> resourceType) {
@@ -128,6 +150,10 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	
 	public void setRenderer(Renderer renderer) {
 		this.renderer = renderer;
+	}
+	
+	public void setDbAccess(ExtendedMainAccess dbAccess) {
+		this.dbAccess = dbAccess;
 	}
 
 }

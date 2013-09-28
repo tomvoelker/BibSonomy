@@ -213,4 +213,17 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	@Override
 	public abstract Collection<RecommendationItem> getItemsForContentBasedFiltering(int maxItemsToEvaluate, ItemRecommendationEntity entity);
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getItemByTitle(java.lang.String)
+	 */
+	@Override
+	public abstract RecommendationItem getItemByTitle(String title);
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.ExtendedMainAccess#getItemByUserWithHash(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public abstract RecommendationItem getItemByUserWithHash(String hash, String username);
 }

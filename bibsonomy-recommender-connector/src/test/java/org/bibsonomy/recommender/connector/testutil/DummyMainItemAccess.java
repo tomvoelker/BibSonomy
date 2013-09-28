@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.database.ExtendedMainAccess;
@@ -100,5 +100,28 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
 		}
 		return new ArrayList<RecommendationItem>();
+	}
+	
+	@Override
+	public RecommendationItem getItemByTitle(String title) {
+		Post<Resource> post = new Post<Resource>();
+		Resource res = new BibTex();
+		res.setTitle(title);
+		post.setContentId(id_generator++);
+		post.setUser(new User("testuser"+id_generator++));
+		post.setResource(res);
+		return new RecommendationPost(post);
+	}
+	
+	@Override
+	public RecommendationItem getItemByUserWithHash(String hash, String username) {
+		Post<Resource> post = new Post<Resource>();
+		Resource res = new BibTex();
+		res.setTitle("dummy title");
+		res.setIntraHash(hash);
+		post.setContentId(id_generator++);
+		post.setUser(new User(username));
+		post.setResource(res);
+		return new RecommendationPost(post);
 	}
 }

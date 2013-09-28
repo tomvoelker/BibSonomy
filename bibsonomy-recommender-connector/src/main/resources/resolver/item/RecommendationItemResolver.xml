@@ -2,224 +2,6 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
  "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RecommendationLog">
-	
-	<!-- +
-		 | Get list of tag names for given contentid
-		 + -->	
-	<select id="getTagsForCID" parameterClass="integer" resultMap="RecommendationBibCommon.tagName">
-		SELECT tag_name
-		FROM tas
-		WHERE content_id = #id#
-	</select>
-
-	<!-- +
-		 | Get list of tag names for given contentid
-		 + -->	
-	<select id="getTagNamesForCID" parameterClass="integer" resultClass="string">
-		SELECT tag_name
-		FROM tas
-		WHERE content_id = #id#
-	</select>
-
-
-	<!-- +
-		 | Get list of pairs containing given user's most popular tag name and frequency
-		 + --> 
-	<select id="getMostPopularTagsForUser" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
-		SELECT t.tag_lower as first, COUNT(tag_lower) as second 
-		FROM tas t
-		WHERE t.user_name = #userName# 
-		GROUP BY tag_lower 
-		ORDER BY COUNT(tag_lower) DESC 
-		LIMIT #range#
-	</select>
-	
-	<!--  +
-		  | Get list of pairs containing given bookmark's most popular tag name and frequency
-		  | - Only take public posts into account!
-		  + -->
-	<select id="getMostPopularTagsForBookmark" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
-		SELECT tag_lower as first, COUNT(tag_lower) as second 
-		  FROM tas t 
-		    JOIN bookmark b USING (content_id)
-		  WHERE b.content_id = #id#
-		    AND b.group = 0
-		  GROUP BY tag_lower 
-		  ORDER BY COUNT(tag_lower) DESC 
-		  LIMIT #range#
-	</select>
-	
-	<!--  +
-		  | Get list of pairs containing given publication's most popular tag name and frequency
-		  + -->
-	<select id="getMostPopularTagsForBibTeX" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
-		SELECT tag_lower as first, COUNT(tag_lower) as second 
-		  FROM tas t
-		    JOIN bibtex b USING (content_id) 
-		WHERE b.content_id = #id#
-		  AND b.group = 0 
-		GROUP BY tag_lower 
-		ORDER BY COUNT(tag_lower) DESC 
-		LIMIT #range#
-	</select>	
-		
-	<!-- +
-		 | Get number of tags used by 
-		 + --> 
-	<select id="getNumberOfTagsForUser" parameterClass="string" resultClass="integer">
-		SELECT COUNT(DISTINCT tag_lower) 
-		FROM tas 
-		WHERE user_name = #userName#
-	</select>
-
-	<!-- +
-		 | Get number of TAS  
-		 + --> 
-	<select id="getNumberOfTasForUser" parameterClass="string" resultClass="integer">
-		SELECT COUNT(*) 
-		FROM tas 
-		WHERE user_name = #userName#
-	</select>	
-
-	<!-- +
-		 | Get number of tags for bookmark 
-		 + --> 
-	<select id="getNumberOfTagsForBookmark" parameterClass="string" resultClass="integer">
-		SELECT COUNT(DISTINCT tag_lower) 
-		  FROM tas 
-		    JOIN bookmark b USING (content_id)  
-		  WHERE b.content_id = #entityId#
-		    AND b.group = 0
-	</select>
-
-	<!-- +
-		 | Get number of TAS for bookmark 
-		 + --> 
-	<select id="getNumberOfTasForBookmark" parameterClass="string" resultClass="integer">
-		SELECT COUNT(*) 
-		  FROM tas 
-		    JOIN bookmark b USING (content_id)  
-		  WHERE b.content_id = #entityId#
-		    AND b.group = 0
-	</select>	
-	
-	<!-- +
-		 | Get number of tags used by 
-		 + --> 
-	<select id="getNumberOfTagsForBibTeX" parameterClass="string" resultClass="integer">
-		SELECT COUNT(DISTINCT tag_lower) 
-		  FROM tas
-		    JOIN bibtex b USING (content_id) 
-		  WHERE b.content_id = #entityId#
-		    AND b.group = 0
-	</select>
-	
-	<!-- +
-		 | Get number of TAS 
-		 + --> 
-	<select id="getNumberOfTasForBibTeX" parameterClass="string" resultClass="integer">
-		SELECT COUNT(*) 
-		  FROM tas
-		    JOIN bibtex b USING (content_id) 
-		  WHERE b.content_id = #entityId#
-		    AND b.group = 0
-	</select>	
-
-	<!-- +
-		 | Get user name for given user id 
-		 + --> 
-	<select id="getUserNameByID" parameterClass="integer" resultClass="string">
-		SELECT user_name 
-		  FROM user 
-		  WHERE id = #id#
-	</select>	
-
-	<!-- +
-		 | Get user id for given user name 
-		 + --> 
-	<select id="getUserIDByName" parameterClass="string" resultClass="integer">
-		SELECT id 
-		  FROM user 
-		  WHERE user_name = #name#
-	</select>	
-
-
-	<!--+
-		| Get list of top five query_ids nearest to given post
-		+-->    
-	<select id="getNearestPostsForQuery" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.postGuess">
-		SELECT DISTINCT content_id, ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) as diff
-		FROM tas 
-		WHERE user_name= #userName# 
-		   AND ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) &lt; 3600 
-		ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) ASC
-		LIMIT 5
-	</select>
-	
-	<!--+
-	    | try to get latest content id for given post data
-	    +-->
-	<select id="lookupBookmarkContentID-1" resultClass="integer" parameterClass="postRecParam">
-		SELECT content_id 
-		FROM bookmark
-		WHERE 
-			book_url_hash = #hash# AND
-			user_name = #userName# AND
-			date = #date#
-		LIMIT 1
-	</select>
-	<!--+
-	    | try to get old content id for given post data
-	    +-->
-	<select id="lookupBookmarkContentID-2" resultClass="integer" parameterClass="postRecParam">
-		SELECT content_id 
-		FROM log_bookmark
-		WHERE 
-			book_url_hash = #hash# AND
-			user_name = #userName# AND
-			date = #date#
-		LIMIT 1
-	</select>
-
-	<!--+
-	    | try to get latest content id for given post data
-	    +-->
-	<select id="lookupBibTeXContentID-1" resultClass="integer" parameterClass="postRecParam">
-		SELECT content_id 
-		FROM bibtex
-		WHERE 
-			simhash2 = #hash# AND
-			user_name = #userName# AND
-			date = #date#
-		LIMIT 1
-	</select>
-	<!--+
-	    | try to get old content id for given post data
-	    +-->
-	<select id="lookupBibTeXContentID-2" resultClass="integer" parameterClass="postRecParam">
-		SELECT content_id 
-		FROM log_bibtex
-		WHERE 
-			simhash2 = #hash# AND
-			user_name = #userName# AND
-			date = #date#
-		LIMIT 1
-	</select>
-
-	<select id="getCompleteTagsForCID" resultMap="RecommendationBibCommon.tagByID" parameterClass="integer">
-		SELECT tags.tag_id, tags.tag_name
-		FROM tas, tags 
-		WHERE tas.tag_name = tags.tag_name AND tas.content_id = #contentID#
-		GROUP BY tag_name
-	</select>
-	
-	
-	<!-- +
-		 |
-		 | ITEM-RECOMMENDER SETTINGS
-		 |
-		 + -->
-	
 	<!-- +
 		 | try to get the count most actual bibtex entries
 		 + -->
@@ -231,7 +13,8 @@
 		      WHERE <include refid="bibtexSimHash3"/>
 		            <include refid="restrictToGroups"/>
 			  		<include refid="sysTagsEntryType"/>
-			  		<include refid="sysTagsYear"/>		            
+			  		<include refid="sysTagsYear"/>	
+			  		AND t1.user_name != #userName#    
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
@@ -249,6 +32,7 @@
 		      FROM bookmark t1, urls u
 		      WHERE u.book_url_hash = t1.book_url_hash
 		            <include refid="restrictToGroups"/>
+		            AND t1.user_name != #userName#
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
@@ -338,7 +122,6 @@
 		      		ORDER BY date DESC
 		       LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON (bb.content_id = t.content_id)
-		GROUP BY bb.content_id
 	</select>
 	
 	<select id="getReducedUserBibTex" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
@@ -350,7 +133,38 @@
 			ORDER BY date DESC
 			LIMIT #limit# OFFSET #offset#) b2
 		LEFT OUTER JOIN tas AS t ON (b2.content_id = t.content_id)
-		GROUP BY b2.content_id
+	</select>
+	
+	<select id="getBibTexByTitle" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1, bibhash h,  user u
+		      WHERE t1.title = #title#
+		      		AND <include refid="bibtexSimHash3"/>
+		      		AND t1.group=#groupId#
+		      		AND t1.user_name = u.user_name
+		      		AND u.role != 3
+		      		AND u.spammer != 1) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
+		WHERE b2.group = g.group
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getBookmarkByTitle" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.change_date, t1.user_name
+		      FROM bookmark t1, urls u, user u1
+		      WHERE t1.book_description = #title#
+		      		AND u.book_url_hash = t1.book_url_hash
+		      		AND t1.group=#groupId#
+		      		AND t1.user_name = u1.user_name
+		      		AND u1.role != 3
+		      		AND u1.spammer != 1) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
+		WHERE bb.group = g.group
+		LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<!-- +
@@ -361,4 +175,5 @@
 		FROM user 
 		WHERE user_name=#user_name#
 	</select>
+	
 </sqlMap>

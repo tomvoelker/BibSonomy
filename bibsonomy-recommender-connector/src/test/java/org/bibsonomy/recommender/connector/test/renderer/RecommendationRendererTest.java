@@ -24,6 +24,7 @@ import org.bibsonomy.recommender.connector.model.BibsonomyItemRendererFactoryWra
 import org.bibsonomy.recommender.connector.model.BibsonomyTagRendererFactoryWrapper;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
+import org.bibsonomy.recommender.connector.testutil.DummyMainItemAccess;
 import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -172,6 +173,7 @@ public class RecommendationRendererTest {
 	@Test
 	public void testItemRecomendationResultRenderer() {
 		final BibsonomyItemRendererFactoryWrapper<BibTex> renderer = new BibsonomyItemRendererFactoryWrapper<BibTex>(factory);
+		renderer.setDbAccess(new DummyMainItemAccess());
 		renderer.setResourceType(BibTex.class);
 		
 		final Post<BibTex> post = new Post<BibTex>();
