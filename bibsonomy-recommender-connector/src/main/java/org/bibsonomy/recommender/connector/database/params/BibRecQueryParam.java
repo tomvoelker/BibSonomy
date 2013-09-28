@@ -6,9 +6,6 @@ import recommender.core.interfaces.model.RecommendationEntity;
 
 /**
  * Parameter used to insert tag recommender queries.
- * 
- * @author lukas
- *
  */
 public class BibRecQueryParam {
 	

@@ -19,10 +19,8 @@ import recommender.core.model.Pair;
 /**
  * 
  * This class implements the database access on the bibsonomy database
- *  for the recommendation library to recommend tags.
+ * for the recommendation library to recommend tags.
  * 
- * @author Lukas
- *
  */
 public class RecommenderMainTagAccessImpl extends AbstractDatabaseManager implements RecommenderMainTagAccess {
 	private DBSessionFactory mainFactory;

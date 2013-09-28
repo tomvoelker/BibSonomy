@@ -2,9 +2,6 @@ package org.bibsonomy.recommender.connector.database.params;
 
 /**
  * Parameter for insertion of recommended tags.
- * 
- * @author lukas
- *
  */
 public class RecommendedTagParam {
 	private Long qid;           /// query id

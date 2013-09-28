@@ -10,7 +10,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
- * @author Lukas
  * @version $Id$
  */
 public class TagRecLogEntry {
