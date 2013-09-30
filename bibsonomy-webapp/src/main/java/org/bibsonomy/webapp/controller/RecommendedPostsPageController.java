@@ -1,10 +1,12 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.TagCloudSort;
+import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -12,11 +14,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 import org.bibsonomy.webapp.command.ListCommand;
-import org.bibsonomy.webapp.command.RecommendedPostsCommand;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.TagCloudCommand;
+import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -31,18 +35,20 @@ import recommender.impl.model.RecommendedItem;
  * @author Lukas
  * @version $Id$
  */
-public class RecommendedPostsPageController extends SingleResourceListController implements MinimalisticController<RecommendedPostsCommand> {
+public class RecommendedPostsPageController extends SingleResourceListController implements MinimalisticController<TagResourceViewCommand> {
 
 	private Recommender<ItemRecommendationEntity, RecommendedItem> bibtexRecommender;
 	private Recommender<ItemRecommendationEntity, RecommendedItem> bookmarkRecommender;
 	
+	private static final int TAGS_ON_SITE = 20;
+	
 	@Override
-	public RecommendedPostsCommand instantiateCommand() {
-		return new RecommendedPostsCommand();
+	public TagResourceViewCommand instantiateCommand() {
+		return new TagResourceViewCommand();
 	}
 
 	@Override
-	public View workOn(RecommendedPostsCommand command) {
+	public View workOn(TagResourceViewCommand command) {
 		
 		// check the user logged in, only logged in users can receive recommendations
 		if(!command.getContext().isUserLoggedIn()) {
@@ -50,6 +56,8 @@ public class RecommendedPostsPageController extends SingleResourceListController
 		}
 		
 		final String format = command.getFormat();
+		// no sorting, recommender gives sorted results
+		command.setSortPage(null);
 		
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
 
@@ -58,16 +66,69 @@ public class RecommendedPostsPageController extends SingleResourceListController
 			
 			
 			setList(command, command.getContext().getLoginUser(), resourceType);
-			
+			this.postProcessAndSortList(command, resourceType);
 		}
 		
-		setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, 50, null);
+		//initialize tag cloud by number of occurences in the recommended posts
+		getTagCloud(command);
 		
 		this.endTiming();
 		
 		return Views.RECOMMENDEDPAGE;
 	}
 	
+	/**
+	 * private helper calculates a cloud with size scaled by the number of
+	 * occurences of a tag in the recommended posts
+	 * 
+	 * @param command
+	 */
+	private void getTagCloud(final TagResourceViewCommand command) {
+		
+		final TagCloudCommand tagCloudCommand = command.getTagcloud();
+		
+		//count the number of occurences
+		final List<Tag> tags = new ArrayList<Tag>();
+		for(Post<BibTex> post : command.getBibtex().getList()) {
+			for(Tag tag : post.getTags()) {
+				if(!tags.contains(tag)) {
+					final Tag copy = new Tag(tag);
+					copy.setUsercount(1);
+					tags.add(copy);
+				} else {
+					final Tag temp = tags.get(tags.indexOf(tag));
+					temp.setUsercount(temp.getUsercount()+1);
+				}
+			}
+		}
+		for(Post<Bookmark> post : command.getBookmark().getList()) {
+			for(Tag tag : post.getTags()) {
+				if(!tags.contains(tag)) {
+					tags.add(tag);
+				} else {
+					final Tag temp = tags.get(tags.indexOf(tag));
+					temp.setUsercount(temp.getUsercount()+1);
+				}
+			}
+		}
+		
+		tagCloudCommand.setTags(tags);
+		
+		tagCloudCommand.setMaxCount(TAGS_ON_SITE);
+		
+		// set tag cloud settings
+		tagCloudCommand.setStyle(TagCloudStyle.getStyle(this.userSettings.getTagboxStyle()));
+		tagCloudCommand.setSort(TagCloudSort.getSort(this.userSettings.getTagboxSort()));
+		tagCloudCommand.setMaxFreq(TagUtils.getMaxUserCount(tagCloudCommand.getTags()));
+	}
+	
+	/**
+	 * private helper, triggering recommendations
+	 * 
+	 * @param cmd the command object
+	 * @param user the requesting user
+	 * @param resourceType the resourcetype to get recommendations for
+	 */
 	private <T extends Resource> void setList(SimpleResourceViewCommand cmd, User user, Class<? extends Resource> resourceType) {
 		
 		final ItemRecommendationEntity entity = new UserWrapper(user);
@@ -97,7 +158,7 @@ public class RecommendedPostsPageController extends SingleResourceListController
 	private <T extends Resource> void cleanVisibleTags(Collection<Post<T>> posts) {
 		for(Post<T> post : posts) {
 			final Set<Tag> tags = post.getTags();
-			SystemTagsExtractor.removeAllSystemTags(tags);
+			SystemTagsExtractor.removeHiddenSystemTags(tags);
 			post.setVisibleTags(tags);
 		}
 	}
