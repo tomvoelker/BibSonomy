@@ -5,10 +5,14 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -40,13 +44,13 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 		try {
 			BookmarkParam bookmarkParam = new BookmarkParam();
 			bookmarkParam.setGrouping(GroupingEntity.ALL);
-			bookmarkParam.setUserName(entity.getUserName());
 			bookmarkParam.setGroupId(GroupID.PUBLIC.getId());
+			bookmarkParam.setUserName(entity.getUserName());
 			bookmarkParam.setOffset(0);
-			bookmarkParam.setLimit(count);
+			bookmarkParam.setLimit(2*count);
 			bookmarkParam.setSimHash(HashID.INTRA_HASH);
 			
-			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getMostActualBookmark", bookmarkParam, mainSession);
+			List<Post<Bookmark>> results = (List<Post<Bookmark>>) this.queryForList("getBookmarkForHomepage", bookmarkParam, mainSession);
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
 			
 			for(Post<Bookmark> bookmark : results) {
@@ -155,6 +159,40 @@ public class RecommenderMainBookmarkAccessImpl extends AbstractRecommenderMainIt
 			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
 		}
 		return new ArrayList<RecommendationItem>();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getTaggedItems(int, java.util.Set)
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public List<RecommendationItem> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags) {
+		final DBSession mainSession = this.openMainSession();
+		final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+		try {
+			final BookmarkParam param = new BookmarkParam();
+			param.setLimit(maxItemsToEvaluate/tags.size());
+			param.setOffset(0);
+			param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+			param.setGroupId(GroupID.PUBLIC.getId());
+			param.setCaseSensitiveTagNames(false);
+			final List<TagIndex> tagIndeces = new ArrayList<TagIndex>();
+			TagIndex index;
+			for(String tag : tags) {
+				tagIndeces.clear();
+				index = new TagIndex(tag, 1);
+				tagIndeces.add(index);
+				param.setTagIndex(tagIndeces);
+				List<Post> bibtexs = this.queryForList("getBookmarkByTagNames", param, Post.class, mainSession);
+				for(Post post : bibtexs) {
+					items.add(new RecommendationPost(post));
+				}
+			}
+			return items;
+		} finally {
+			mainSession.close();
+		}
 	}
 	
 	/*

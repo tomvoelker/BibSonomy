@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -212,6 +213,13 @@ public abstract class AbstractRecommenderMainItemAccessImpl extends AbstractData
 	 */
 	@Override
 	public abstract Collection<RecommendationItem> getItemsForContentBasedFiltering(int maxItemsToEvaluate, ItemRecommendationEntity entity);
+	
+	/*
+	 * (non-Javadoc)
+	 * @see recommender.core.interfaces.database.RecommenderMainItemAccess#getTaggedItems(int, java.util.Set)
+	 */
+	@Override
+	public abstract List<RecommendationItem> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags);
 	
 	/*
 	 * (non-Javadoc)

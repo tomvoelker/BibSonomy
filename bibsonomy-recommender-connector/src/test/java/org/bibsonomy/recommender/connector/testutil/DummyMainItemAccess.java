@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -100,6 +102,13 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
 		}
 		return new ArrayList<RecommendationItem>();
+	}
+	
+	@Override
+	public List<RecommendationItem> getTaggedItems(int maxItemsToEvaluate,
+			Set<String> tags) {
+		// do nothing
+		return null;
 	}
 	
 	@Override

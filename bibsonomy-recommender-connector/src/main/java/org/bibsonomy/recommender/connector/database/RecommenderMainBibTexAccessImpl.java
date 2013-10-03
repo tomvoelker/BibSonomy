@@ -5,10 +5,14 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -43,10 +47,10 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 			bibtexParam.setUserName(entity.getUserName());
 			bibtexParam.setOffset(0);
-			bibtexParam.setLimit(count);
+			bibtexParam.setLimit(2*count);
 			bibtexParam.setSimHash(HashID.INTRA_HASH);
 			
-			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getMostActualBibTex", bibtexParam, mainSession);
+			List<Post<BibTex>> results = (List<Post<BibTex>>) this.queryForList("getBibTexForHomepage", bibtexParam, mainSession);
 			
 			List<RecommendationItem> items = new ArrayList<RecommendationItem>(results.size());
 			for(Post<BibTex> bibtex : results) {
@@ -154,6 +158,40 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
 		}
 		return new ArrayList<RecommendationItem>();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.recommender.connector.database.AbstractRecommenderMainItemAccessImpl#getTaggedItems(int, java.util.Set)
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public List<RecommendationItem> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags) {
+		final DBSession mainSession = this.openMainSession();
+		final List<RecommendationItem> items = new ArrayList<RecommendationItem>();
+		try {
+			final BibTexParam param = new BibTexParam();
+			param.setLimit(maxItemsToEvaluate/tags.size());
+			param.setOffset(0);
+			param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+			param.setGroupId(GroupID.PUBLIC.getId());
+			param.setCaseSensitiveTagNames(false);
+			final List<TagIndex> tagIndeces = new ArrayList<TagIndex>();
+			TagIndex index;
+			for(String tag : tags) {
+				tagIndeces.clear();
+				index = new TagIndex(tag, 1);
+				tagIndeces.add(index);
+				param.setTagIndex(tagIndeces);
+				List<Post> bibtexs = this.queryForList("getBibTexByTagNames", param, Post.class, mainSession);
+				for(Post post : bibtexs) {
+					items.add(new RecommendationPost(post));
+				}
+			}
+			return items;
+		} finally {
+			mainSession.close();
+		}
 	}
 	
 	/*

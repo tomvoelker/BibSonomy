@@ -2,42 +2,6 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
  "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="RecommendationLog">
-	<!-- +
-		 | try to get the count most actual bibtex entries
-		 + -->
-	
-	<select id="getMostActualBibTex" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
-		FROM (SELECT t1.*, h.ctr AS count
-		      FROM bibtex t1, bibhash h
-		      WHERE <include refid="bibtexSimHash3"/>
-		            <include refid="restrictToGroups"/>
-			  		<include refid="sysTagsEntryType"/>
-			  		<include refid="sysTagsYear"/>	
-			  		AND t1.user_name != #userName#    
-		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
-		WHERE b2.group = g.group
-	</select>
-	
-	<!-- +
-		 | try to get the count most actual bookmark entries
-		 + -->
-	<select id="getMostActualBookmark" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.change_date, <include refid="reviewRatingsRows" />
-		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
-		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
-		      FROM bookmark t1, urls u
-		      WHERE u.book_url_hash = t1.book_url_hash
-		            <include refid="restrictToGroups"/>
-		            AND t1.user_name != #userName#
-		      ORDER BY date DESC
-		      LIMIT #limit# OFFSET #offset#) AS bb
-		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
-		WHERE bb.group = g.group
-	</select>
 	
 	<select id="getSimilarUsersByFolkrank" resultClass="string" parameterClass="itemRecRequestParam">
 		SELECT w.item AS user_name, ROUND(weight,5) * 10000 AS weight
