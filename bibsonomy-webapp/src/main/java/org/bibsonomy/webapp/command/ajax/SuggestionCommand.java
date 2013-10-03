@@ -7,9 +7,9 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
 /**
  * @author nilsraabe
- * @version $Id$
+ * @version 
  */
-public class TitleSuggestionCommand extends SimpleResourceViewCommand {
+public class SuggestionCommand extends SimpleResourceViewCommand {
 
 
 	private List<Pair<String, Integer>> postSuggestionTitle;

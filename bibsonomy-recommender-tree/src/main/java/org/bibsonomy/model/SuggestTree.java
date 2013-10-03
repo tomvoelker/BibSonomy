@@ -1,7 +1,9 @@
-package org.bibsonomy.services.recommender;
+package org.bibsonomy.model;
+
 /**
  * @version $Id$
  */
+
 /*
  * Copyright 2011-2013 Nicolai Diethelm
  *

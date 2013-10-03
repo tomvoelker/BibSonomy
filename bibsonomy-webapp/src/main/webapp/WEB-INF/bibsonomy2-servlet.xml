@@ -105,7 +105,7 @@
 	</bean>
 	
 	<!-- provides access to the post suggestion --> 
- 	<bean id="titleSuggestionLogic" class="org.bibsonomy.webapp.util.TitleSuggestionLogic">
+ 	<bean id="suggestionLogic" class="org.bibsonomy.logic.SuggestionLogic">
 		<property name="sourceFilePath" value="${titleSuggestion.sourceFilePath}"/>
 	</bean>
 
@@ -587,9 +587,9 @@
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
 				</entry>
-				<entry key="/titleSuggestion">
+				<entry key="/suggestion">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="titleSuggestionController"/>
+						<property name="controllerBeanName" value="suggestionController"/>
 						<property name="allowedFields">
 							<list>
 								<value>postType</value>
@@ -842,8 +842,8 @@
 	
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
 	
-	<bean id="titleSuggestionController" class="org.bibsonomy.webapp.controller.ajax.TitleSuggestionController" scope="request">
-			<property name="titleSuggestionLogic" ref="titleSuggestionLogic"/>
+	<bean id="suggestionController" class="org.bibsonomy.webapp.controller.ajax.SuggestionController" scope="request">
+			<property name="suggestionLogic" ref="suggestionLogic"/>
 	</bean>
 
 	<!--  #################### static views #################### -->

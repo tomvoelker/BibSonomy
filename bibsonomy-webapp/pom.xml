@@ -579,6 +579,10 @@
 			<artifactId>bibsonomy-recommender-connector</artifactId>
 			<version>2.0.39-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-recommender-tree</artifactId>			
+		</dependency>
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
@@ -587,4 +591,13 @@
 		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
 		<tomcat.version>7.0.29</tomcat.version>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-recommender-tree</artifactId>
+				<version>2.0.39-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

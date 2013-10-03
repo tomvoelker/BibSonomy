@@ -1539,7 +1539,7 @@ function startPostAutocompletion (textfield) {
 			 */
 			if (userInput.length != 0) {
 				$.ajax({
-					url: "/json/titleSuggestion?postType=bibtex&postPrefix=" + encodeURIComponent(userInput),
+					url: "/json/suggestion?postType=bibtex&postPrefix=" + encodeURIComponent(userInput),
 					success: function( data ) {
 						
 						var tags = $.map( data.items, function(item) {
