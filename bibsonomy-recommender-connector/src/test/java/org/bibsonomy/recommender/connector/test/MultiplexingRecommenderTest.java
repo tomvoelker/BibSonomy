@@ -52,7 +52,7 @@ import recommender.impl.tags.simple.DummyTagRecommender;
 public class MultiplexingRecommenderTest {
 
 	private static final int NROFRECOS = 10;
-	private static final int MSTOWAIT = 500;
+	private static final int MSTOWAIT = 1000;
 	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
 	
 	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbTagLogic;
