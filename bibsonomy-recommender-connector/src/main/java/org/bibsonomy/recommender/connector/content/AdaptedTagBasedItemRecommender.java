@@ -29,7 +29,6 @@ public class AdaptedTagBasedItemRecommender extends TagBasedItemRecommender {
 	protected void addRecommendedItemsInternal(
 			Collection<RecommendedItem> recommendations,
 			ItemRecommendationEntity entity) {
-		final Long time = System.currentTimeMillis();
 		final List<RecommendationItem> requestingUserItems = new ArrayList<RecommendationItem>();
 		
 		//take bibtex and bookmark resources of requesting user to generate a more significant description of the user preferences
@@ -66,7 +65,6 @@ public class AdaptedTagBasedItemRecommender extends TagBasedItemRecommender {
 		final List<RecommendedItem> results = this.calculateSimilarItems(userItems, requestingUserItems, requestingUserTitles);
 		
 		recommendations.addAll(results);
-		System.out.println("Needed " + (System.currentTimeMillis() - time) + "ms and added " + results.size() + " results!");
 	}
 	
 	/*
