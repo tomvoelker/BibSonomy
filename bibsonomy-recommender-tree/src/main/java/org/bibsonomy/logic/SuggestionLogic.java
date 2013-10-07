@@ -170,11 +170,11 @@ class PairComperator implements Comparator<Pair<String, Integer>>{
 	 
 	@Override
 	public int compare(Pair<String, Integer> o1, Pair<String, Integer> o2) {
-		if(Integer.compare(o1.getSecond(), o2.getSecond()) < 0) {
+		if(o1.getSecond().compareTo(o2.getSecond()) < 0) {
 			return -1;
 		}
 		
-		if(Integer.compare(o1.getSecond(), o2.getSecond()) > 0) {
+		if(o1.getSecond().compareTo(o2.getSecond()) > 0) {
 			return 1;
 		}
 		

@@ -64,9 +64,9 @@ public class SuggestionLogicTest {
 		 * Test the bookmarkSuggestion
 		 */
 		
-		Queue<Pair<String, Integer>> predefinedBookmarkSuggestion = new LinkedList<>();
+		Queue<Pair<String, Integer>> predefinedBookmarkSuggestion = new LinkedList<Pair<String, Integer>>();
 		
-		predefinedBookmarkSuggestion.add(new Pair<>("Common Lisp the Language, 2nd Edition", 0));
+		predefinedBookmarkSuggestion.add(new Pair<String, Integer>("Common Lisp the Language, 2nd Edition", 0));
 		
 		for(Pair<String, Integer> temp : bookmarkSuggestion) {
 
@@ -81,10 +81,10 @@ public class SuggestionLogicTest {
 		 * Test the publicationSuggestion
 		 */
 		
-		Queue<Pair<String, Integer>> predefinedPublicationSuggestion = new LinkedList<>();
+		Queue<Pair<String, Integer>> predefinedPublicationSuggestion = new LinkedList<Pair<String, Integer>>();
 		
-		predefinedPublicationSuggestion.add(new Pair<>("Communication the other Half of Office automation.", 3));
-		predefinedPublicationSuggestion.add(new Pair<>("Communications Policy for Composite Processes.", 2));
+		predefinedPublicationSuggestion.add(new Pair<String, Integer>("Communication the other Half of Office automation.", 3));
+		predefinedPublicationSuggestion.add(new Pair<String, Integer>("Communications Policy for Composite Processes.", 2));
 
 		
 		for(Pair<String, Integer> temp : publicationSuggestion) {
@@ -99,11 +99,11 @@ public class SuggestionLogicTest {
 		 * Test the postSuggestion
 		 */
 		
-		Queue<Pair<String, Integer>> predefinedPostSuggestion = new LinkedList<>();
+		Queue<Pair<String, Integer>> predefinedPostSuggestion = new LinkedList<Pair<String, Integer>>();
 		
-		predefinedPostSuggestion.add(new Pair<>("Common Lisp the Language, 2nd Edition", 0));
-		predefinedPostSuggestion.add(new Pair<>("Communications Policy for Composite Processes.", 2));
-		predefinedPostSuggestion.add(new Pair<>("Communication the other Half of Office automation.", 3));
+		predefinedPostSuggestion.add(new Pair<String, Integer>("Common Lisp the Language, 2nd Edition", 0));
+		predefinedPostSuggestion.add(new Pair<String, Integer>("Communications Policy for Composite Processes.", 2));
+		predefinedPostSuggestion.add(new Pair<String, Integer>("Communication the other Half of Office automation.", 3));
 
 
 		for(Pair<String, Integer> temp : postSuggestion) {
