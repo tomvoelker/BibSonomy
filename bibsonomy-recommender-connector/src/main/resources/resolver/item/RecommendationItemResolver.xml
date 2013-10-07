@@ -108,10 +108,10 @@
 		      		AND t1.group=#groupId#
 		      		AND t1.user_name = u.user_name
 		      		AND u.role != 3
-		      		AND u.spammer != 1) AS b2
+		      		AND u.spammer != 1
+		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
 		WHERE b2.group = g.group
-		LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getBookmarkByTitle" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
@@ -125,10 +125,46 @@
 		      		AND t1.group=#groupId#
 		      		AND t1.user_name = u1.user_name
 		      		AND u1.role != 3
-		      		AND u1.spammer != 1) AS bb
+		      		AND u1.spammer != 1
+		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, groupids AS g
 		WHERE bb.group = g.group
-		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getBibTexByHashForUserId" resultMap="BibTexCommon.bibtexPostWithPickStatus" parameterClass="bibtexParam">
+		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, <include refid="reviewRatingsRows" />, IF(col.content_id IS NULL, FALSE, TRUE) AS picked 
+		  FROM (SELECT t1.* FROM bibtex t1, user u
+		      WHERE simhash$simHash$ = #hash#
+		            <include refid="inGroups"/>
+		            AND id = #requestedUserName#
+		            AND t1.user_name = u.user_name
+		            AND u.role != 3
+		            AND u.spammer != 1
+		      ORDER BY date DESC) AS b2
+		    LEFT OUTER JOIN tas t ON (b2.content_id = t.content_id) 
+		    <include refid="reviewRatingsJoinPublication2" />
+		    LEFT JOIN bibhash h ON (<include refid="bibtexSimHash2"/>)
+		    LEFT JOIN groupids g ON (b2.group = g.group)
+		    LEFT OUTER JOIN collector col ON (b2.content_id = col.content_id AND col.user_name = #userName#)
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
+	
+	<select id="getBookmarkByHashForUserId" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*,bb.content_id, t.tag_name, title, description, bb.user_name, bb.date, t.change_date,
+		       bb.book_url_hash AS interhash, bb.book_url_hash AS intrahash, u.book_url, u.book_url_ctr AS count, g.group_name, <include refid="reviewRatingsRows" />
+		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, change_date, content_id, t1.group
+		      FROM bookmark t1, user u
+		      WHERE book_url_hash = #hash#
+		            <include refid="inGroups"/>
+		            AND t1.id = #requestedUserName#
+		            AND t1.user_name = u.user_name
+		            AND u.role != 3
+		            AND u.spammer != 1
+		      ORDER BY date DESC) AS bb
+		LEFT OUTER JOIN tas t ON bb.content_id = t.content_id <include refid="reviewRatingsJoinBookmark2" />, urls u, groupids g
+		WHERE bb.book_url_hash = u.book_url_hash
+		      AND bb.group = g.group
+		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
 	<!-- +

@@ -98,8 +98,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 * @see recommender.core.interfaces.database.RecommenderDBAccess#getItemsForUsers(int, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
-	private List<RecommendationItem> getItemsForUsers(int count,
-			List<String> usernames) {
+	private List<RecommendationItem> getItemsForUsers(final int count, final List<String> usernames) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BibTexParam bibtexParam = new BibTexParam();
@@ -200,18 +199,18 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public RecommendationItem getItemByUserWithHash(String hash, String username) {
+	public RecommendationItem getItemByUserIdWithHash(final String hash, final String userId) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BibTexParam param = new BibTexParam();
 			param.setHash(hash);
-			param.setRequestedUserName(username);
+			param.setRequestedUserName(userId);
 			param.setSimHash(HashID.INTRA_HASH);
 			param.setGrouping(GroupingEntity.USER);
 			param.setOffset(0);
 			param.setLimit(1);
 			
-			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBibTexByHashForUser", param, Post.class, mainSession);
+			Post<? extends Resource> post = (Post<? extends Resource>) this.queryForObject("getBibTexByHashForUserId", param, Post.class, mainSession);
 			
 			if(post != null) {
 				return new RecommendationPost(post);
@@ -228,7 +227,7 @@ public class RecommenderMainBibTexAccessImpl extends AbstractRecommenderMainItem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public RecommendationItem getItemByTitle(String title) {
+	public RecommendationItem getItemByTitle(final String title) {
 		final DBSession mainSession = this.openMainSession();
 		try {
 			final BibTexParam param = new BibTexParam();

@@ -130,14 +130,16 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 		if(present(post.getPost()) && present(post.getPost().getResource())) {
 			// first check if the post is saved in our database like we fetched it
 			if(present(post.getPost().getResource().getIntraHash()) && present(post.getPost().getUser().getName())) {
-				validated = this.dbAccess.getItemByUserWithHash(post.getPost().getResource().getIntraHash(), post.getPost().getUser().getName());
+				// username should be the id, because we don't provide real usernames for external services
+				validated = this.dbAccess.getItemByUserIdWithHash(post.getPost().getResource().getIntraHash(), post.getPost().getUser().getName());
 				if(present(validated)) {
 					return validated;
 				}
 			}
 			// we have no exact matching post in our database, so try to find a public resource with the same title
 			if(present(post.getPost().getResource().getTitle())) {
-				validated = this.dbAccess.getItemByTitle(post.getPost().getResource().getTitle());
+				// FIXME: This is not fast enough! Index for title is not present in mysql. Maybe add one?
+				//validated = this.dbAccess.getItemByTitle(post.getPost().getResource().getTitle());
 			}
 		}
 		// return the validated item or null, if no valid item could be found

@@ -63,10 +63,10 @@ public interface ExtendedMainAccess extends RecommenderMainItemAccess {
 	 * It returns the found item or null otherwise.
 	 * 
 	 * @param hash the intrahash of the resource
-	 * @param username the username of the item's owner
+	 * @param userId the id of the item's owner
 	 * @return the item or null otherwise
 	 */
-	public RecommendationItem getItemByUserWithHash(final String hash, final String username);
+	public RecommendationItem getItemByUserIdWithHash(final String hash, final String userId);
 	
 	/**
 	 * Retrieves any item which title fits to the given title.

@@ -23,15 +23,13 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 	private static int id_generator;
 	
 	@Override
-	public List<RecommendationItem> getMostActualItems(int count,
-			ItemRecommendationEntity entity) {
+	public List<RecommendationItem> getMostActualItems(final int count, final ItemRecommendationEntity entity) {
 		
 		return getItemsForUser(count, "foo");
 	}
 
 	@Override
-	public List<String> getSimilarUsers(int count,
-			ItemRecommendationEntity entity) {
+	public List<String> getSimilarUsers(final int count, final ItemRecommendationEntity entity) {
 		int counter = 0;
 		List<String> user = new ArrayList<String>();
 		for(int i = 0; i < count; i++) {
@@ -41,7 +39,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 	}
 	
 	@Override
-	public List<RecommendationItem> getItemsForUser(int count, String username) {
+	public List<RecommendationItem> getItemsForUser(final int count, final String username) {
 		List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 		int counter = 0;
 		for(int i = 0; i < count; i++) {
@@ -58,8 +56,7 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 		return items;
 	}
 
-	public List<RecommendationItem> getItemsForUsers(int count,
-			List<String> usernames) {
+	public List<RecommendationItem> getItemsForUsers(final int count, final List<String> usernames) {
 		List<RecommendationItem> items = new ArrayList<RecommendationItem>();
 		for(String user : usernames) {
 			items.addAll(this.getItemsForUser(count, user));
@@ -85,18 +82,17 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 	}
 	
 	@Override
-	public List<RecommendationItem> getAllItemsOfQueryingUser(int count,
-			String username) {
+	public List<RecommendationItem> getAllItemsOfQueryingUser(final int count, final String username) {
 		return this.getItemsForUser(count, username);
 	}
 	
 	@Override
-	public Long getUserIdByName(String username) {
+	public Long getUserIdByName(final String username) {
 		return (long) username.hashCode();
 	}
 
 	@Override
-	public Collection<RecommendationItem> getItemsForContentBasedFiltering(int maxItemsToEvaluate, ItemRecommendationEntity entity) {
+	public Collection<RecommendationItem> getItemsForContentBasedFiltering(final int maxItemsToEvaluate, final ItemRecommendationEntity entity) {
 		final List<String> similarUsers = this.getSimilarUsers(3, entity);
 		if(ValidationUtils.present(similarUsers)) {
 			return this.getItemsForUsers(maxItemsToEvaluate/similarUsers.size(), similarUsers);
@@ -105,14 +101,13 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 	}
 	
 	@Override
-	public List<RecommendationItem> getTaggedItems(int maxItemsToEvaluate,
-			Set<String> tags) {
+	public List<RecommendationItem> getTaggedItems(final int maxItemsToEvaluate, final Set<String> tags) {
 		// do nothing
 		return null;
 	}
 	
 	@Override
-	public RecommendationItem getItemByTitle(String title) {
+	public RecommendationItem getItemByTitle(final String title) {
 		Post<Resource> post = new Post<Resource>();
 		Resource res = new BibTex();
 		res.setTitle(title);
@@ -123,13 +118,13 @@ public class DummyMainItemAccess implements ExtendedMainAccess {
 	}
 	
 	@Override
-	public RecommendationItem getItemByUserWithHash(String hash, String username) {
+	public RecommendationItem getItemByUserIdWithHash(final String hash, final String userId) {
 		Post<Resource> post = new Post<Resource>();
 		Resource res = new BibTex();
 		res.setTitle("dummy title");
 		res.setIntraHash(hash);
 		post.setContentId(id_generator++);
-		post.setUser(new User(username));
+		post.setUser(new User(userId));
 		post.setResource(res);
 		return new RecommendationPost(post);
 	}
