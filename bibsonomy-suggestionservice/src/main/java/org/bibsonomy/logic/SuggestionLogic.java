@@ -110,7 +110,7 @@ public class SuggestionLogic implements InitializingBean {
 		}
 		
 		for (int i = 0; i < node.size(); i++) {
-			suggestion.add(new Pair<String, Integer>(node.getSuggestion(i), node.getWeight(i)));
+			suggestion.add(new Pair<String, Integer>(node.getSuggestion(i), Integer.valueOf(node.getWeight(i))));
 		}
 		
 		return suggestion;
