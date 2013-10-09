@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>BibSonomy</name>
 	<groupId>org.bibsonomy</groupId>
@@ -229,8 +230,8 @@
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
 		<module>bibsonomy-recommender-connector</module>
-    <module>bibsonomy-recommender-tree</module>
-  </modules>
+		<module>bibsonomy-suggestionservice</module>
+	</modules>
 	<build>
 		<pluginManagement>
 			<plugins>
