@@ -19,7 +19,6 @@ import org.bibsonomy.services.filesystem.TempFileLogic;
 import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 
 /**
@@ -31,7 +30,7 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	private String defaultFileName;
 	
 	private TempFileLogic tempFileLogic;
-	private final ExtensionChecker extensionChecker = new ListExtensionChecker(FileUploadInterface.PICTURE_EXTENSIONS);
+	private final ExtensionChecker extensionChecker = new ListExtensionChecker(PICTURE_EXTENSIONS);
 	
 	private PictureScaler pictureScaler;
 	private LogicInterface adminLogic;
