@@ -150,17 +150,35 @@ public class SystemTagsExtractor {
      * @param posts
      * @param loginUserName
      */
-    public static <T extends Resource> void handleHiddenSystemTags(Collection<Post<T>> posts, String loginUserName) {
-	for (Post<T> post: posts) {
-	    if (!present(loginUserName) || !present(post.getUser()) || !loginUserName.equals(post.getUser().getName())) {
-		removeHiddenSystemTags(post.getTags());
-		post.setVisibleTags(post.getTags());
-	    } else {
-		post.setHiddenSystemTags(new HashSet<Tag>());
-		post.setVisibleTags(new HashSet<Tag>());
-		separateHiddenSystemTags(post);
-	    }
+	public static <T extends Resource> void handleHiddenSystemTags(Collection<Post<T>> posts, String loginUserName) {
+		for (Post<T> post: posts) {
+			if (!present(loginUserName) || !present(post.getUser()) || !loginUserName.equals(post.getUser().getName())) {
+				removeHiddenSystemTags(post.getTags());
+				post.setVisibleTags(post.getTags());
+			} else {
+				post.setHiddenSystemTags(new HashSet<Tag>());
+				post.setVisibleTags(new HashSet<Tag>());
+				separateHiddenSystemTags(post);
+			}
+		}
 	}
-    }
+
+	/**
+	 * extracts all systemtag of the specified tag type from the provided tags
+	 * @param tags
+	 * @param tagType
+	 * @return the system tags
+	 */
+	public static List<SystemTag> extractSystemTags(Set<Tag> tags, String tagType) {
+		final List<SystemTag> systemTags = new LinkedList<SystemTag>();
+		for (final Tag tag : tags) {
+			final String tagName = tag.getName();
+			if (tagType != null && tagType.equals(SystemTagsUtil.extractType(tagName))) {
+				systemTags.add(SystemTagFactory.getInstance().createSystemTag(tag));
+			}
+		}
+		
+		return systemTags;
+	}
 
 }

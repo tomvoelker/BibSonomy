@@ -594,7 +594,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
 
-		log.error("no resource searcher is set");	
+		log.error("no resource searcher is set");
 		return new LinkedList<Post<R>>();
 	}
 	
@@ -1171,6 +1171,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.insertPost(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
+			
+			this.createdPost(post, session);
 			/*
 			 * systemTags perform after create
 			 */
@@ -1184,6 +1186,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return true;
 	}
 	
+	/**
+	 * this method is called after a post and his tags were saved to the database
+	 * and before the executable system tags are called
+	 * 
+	 * @param post
+	 * @param session
+	 */
+	protected void createdPost(Post<R> post, DBSession session) {
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.CrudableContent#updatePost(org.bibsonomy.model.Post, java.lang.String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.util.DBSession)
@@ -1310,7 +1322,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				this.workOnOperation(post, oldPost, operation, session);
 			} else {
 				this.performUpdateAll(post, oldPost, session);
-			}		
+			}
 			/*
 			 * systemTags perform after Update
 			 */
@@ -1339,7 +1351,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	protected void checkPost(final Post<R> post, final DBSession session) {
 		final R resource = post.getResource();
-		this.validator.validateFieldLength(resource, resource.getIntraHash(), session);			
+		this.validator.validateFieldLength(resource, resource.getIntraHash(), session);
 	}
 
 	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, final DBSession session) {
@@ -1374,11 +1386,22 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * add the tags
 			 */
 			this.tagDb.insertTags(post, session);
+			
+			this.updatedPost(post, session);
 
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
+	}
+
+	/**
+	 * called after a post was updated (only if updateOperation {@link PostUpdateOperation#UPDATE_ALL}
+	 * @param post
+	 * @param session
+	 */
+	protected void updatedPost(Post<R> post, DBSession session) {
+		// noop
 	}
 
 	/**
@@ -1409,7 +1432,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			this.tagDb.insertTags(post, session);
 
-			session.commitTransaction();			
+			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}

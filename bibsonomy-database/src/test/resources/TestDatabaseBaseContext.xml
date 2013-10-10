@@ -8,4 +8,6 @@
 		<property name="locations" value="classpath:database-test.properties" />
 		<property name="ignoreUnresolvablePlaceholders" value ="true"/>
 	</bean>
+	
+	<bean id="fileLogic" class="org.bibsonomy.testutil.DummyFileLogic" />
 </beans>

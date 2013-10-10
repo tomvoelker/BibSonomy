@@ -1,11 +1,8 @@
 package org.bibsonomy.database.systemstags.executable;
 
-import java.util.List;
-
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -60,15 +57,6 @@ public interface ExecutableSystemTag extends SystemTag {
 	 * @return the new instance
 	 */
 	public ExecutableSystemTag newInstance();
-
-	/**
-	 * 
-	 * @param resourceHash
-	 * @param documents
-	 * @param session
-	 * @param docPath
-	 */
-	public <T extends Resource> void performDocuments(String resourceHash, List<Document> documents, DBSession session);
 	
 	/**
 	 * 

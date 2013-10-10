@@ -1,7 +1,5 @@
 package org.bibsonomy.database.systemstags.executable;
 
-import java.util.List;
-
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -13,7 +11,6 @@ import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.SentSystemTag;
-import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -99,20 +96,20 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		// 1. delete all tags from the database (will be replaced by new ones)
 		tagDb.deleteTags(post, session);
 		// 2. rename this tag for the receiver (store senderName)
-		this.tag.setName("from:" + sender);	
+		this.tag.setName("from:" + sender);
 		try {
 		  // FIXME: move permission checks to inbox manager
 			// 3. store the inboxMessage with tag from:senderName 
 			InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session);
 			log.debug("message was created");
 			// 4. rename this tag for the sender (store receiverName)
-			this.tag.setName(SentSystemTag.NAME + SystemTagsUtil.DELIM + receiver);	
+			this.tag.setName(SentSystemTag.NAME + SystemTagsUtil.DELIM + receiver);
 		} catch (final UnsupportedResourceTypeException urte) {
 			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
 			log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
 		}
 		// 5. store the tags for the sender with the confirmation tag: sent:userName
-		tagDb.insertTags(post, session);		
+		tagDb.insertTags(post, session);
 	}
 
 
@@ -158,11 +155,6 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	public boolean isInstance(final String tagName) {
 		// the send tag must have an argument, the prefix is not required
 		return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
-	}
-
-	@Override
-	public <T extends Resource> void performDocuments(final String resourceHash, final List<Document> documents, final DBSession session) {
-		// nop
 	}
 	
 	@Override

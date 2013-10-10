@@ -2,9 +2,12 @@ package org.bibsonomy.database.systemstags.executable;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +21,7 @@ import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -26,6 +30,8 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.file.FileSystemFile;
+import org.bibsonomy.services.filesystem.FileLogic;
 
 /**
  * System tag 'sys:for:&lt;groupname&gt;'
@@ -45,9 +51,8 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	private static boolean toHide = true;
 
 	private DBSessionFactory dbSessionFactory = null;
+	private FileLogic fileLogic;
 	
-	private String docPath;
-
 	@Override
 	public ForGroupTag newInstance() {
 		return new ForGroupTag();
@@ -64,62 +69,124 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	}
 
 	/**
-	 * @param docPath the docPath to set
-	 */
-	public void setDocPath(final String docPath) {
-		this.docPath = docPath;
-	}
-
-	/**
 	 * @param dbSessionFactory the dbSessionFactory to set
 	 */
 	public void setdbSessionFactory(final DBSessionFactory dbSessionFactory) {
 		this.dbSessionFactory = dbSessionFactory;
 	}
 
+	/**
+	 * @param fileLogic the fileLogic to set
+	 */
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
+	}
+
 	@Override
 	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
-		log.debug("performing after access");
+		log.debug("performing before create");
 		// we assume, that the post itself is valid
-		this.perform(post, post.getTags(), session);
+		this.copyPostToGroup(post, post.getTags(), session);
 	}
 
 	@Override
 	public <T extends Resource> void performAfterCreate(final Post<T> post, final DBSession session) {
-		// nothing is performed after post is created
-		log.debug("performing after access");
+		if (post.getResource() instanceof BibTex) {
+			if (!this.hasPermissions(this.getArgument(), post.getUser().getName(), session)) {
+				/*
+				 *  user is not allowed to use this tag
+				 */
+				return;
+			}
+			final BibTex publication = (BibTex) post.getResource();
+			this.copyDocuments(publication.getIntraHash(), post.getUser().getName(), publication.getDocuments(), session);
+		}
+	}
+
+	private <T extends Resource> void copyDocuments(final String intraHash, final String userName, final List<Document> documents, DBSession session) {
+		final String groupName = this.getArgument();
+		if (!this.hasPermissions(groupName, userName, session)) {
+			/*
+			 *  user is not allowed to use this tag
+			 */
+			return;
+		}
+		final LogicInterface groupDBLogic = this.getGroupDbLogic();
+		if (!present(groupDBLogic.getGroupDetails(groupName))) {
+			return;
+		}
+		
+		if (present(documents)) {
+			for (final Document document : documents) {
+				final Document existingGroupDoc = groupDBLogic.getDocument(groupName, intraHash, document.getFileName());
+				if (!present(existingGroupDoc)) {
+					final File file = this.fileLogic.getFileForDocument(document);
+					try {
+						final Document groupDocument = this.fileLogic.saveDocumentFile(groupName, new FileSystemFile(file));
+						groupDocument.setFileName(document.getFileName());
+						groupDBLogic.createDocument(groupDocument, intraHash);
+					} catch (final Exception e) {
+						// TODO: error handling
+						throw new RuntimeException(e);
+					}
+				} else {
+					/*
+					 * only if files are different create a copy
+					 */
+					if (!document.getMd5hash().equals(existingGroupDoc.getMd5hash())) {
+						final File file = this.fileLogic.getFileForDocument(document);
+						try {
+							final Document groupDocument = this.fileLogic.saveDocumentFile(groupName, new FileSystemFile(file));
+							String oldFileName = document.getFileName();
+							final SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
+							
+							final String newFileName = oldFileName.replace(".", "_" + sdf.format(new Date()) + ".");
+							groupDocument.setFileName(newFileName);
+							groupDBLogic.createDocument(groupDocument, intraHash);
+						} catch (final Exception e) {
+							// TODO: error handling
+							throw new RuntimeException(e);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public <T extends Resource> void performBeforeUpdate(final Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
-//		String hash = null;
-//		Resource resource = null;
-		if (operation == PostUpdateOperation.UPDATE_TAGS) {
-			/*
-			 *  in this case, newPost is not a valid post but contains the new tags, while oldPost is a valid post containing the old tags
-			 */
-			this.perform(oldPost, newPost.getTags(), session);
-//			hash = newPost.getResource().getIntraHash();
-//			resource = oldPost.getResource();
+		/*
+		 * e.g PostUpdateOperation TagOnly as only a dummy as new post
+		 * so we have to choose here the correct post
+		 */
+		final Post<T> post;
+		if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
+			post = newPost;
 		} else {
-			/*
-			 *  in this case, newPost is a valid post containing the new tags
-			 */
-			this.perform(newPost, newPost.getTags(), session);
-//			hash = newPost.getResource().getIntraHash();
-//			resource = newPost.getResource();
+			post = oldPost;
 		}
-		
-//		if(resource instanceof BibTex) {
-//			
-//			performDocuments(hash, ((BibTex)resource).getDocuments(), session);
-//		}
+		this.copyPostToGroup(post, newPost.getTags(), session);
 	}
 
 	@Override
-	public <T extends Resource> void performAfterUpdate(final Post<T> oldPost, final Post<T> newPost, final PostUpdateOperation operation, final DBSession session) {
-		// nothing is performed after post was updated
-		log.debug("performing after access");
+	public <T extends Resource> void performAfterUpdate(final Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
+		log.debug("performing after update");
+		if (oldPost.getResource() instanceof BibTex) {
+			final BibTex oldPublication = (BibTex) oldPost.getResource();
+			final List<Document> documents = new LinkedList<Document>(oldPublication.getDocuments());
+			final List<Document> newDocuments = ((BibTex) newPost.getResource()).getDocuments();
+			if (present(newDocuments)) {
+				for (final Document newDocument : newDocuments) {
+					/*
+					 * to secure only add temp docs of newPost
+					 */
+					if (newDocument.isTemp()) {
+						documents.add(newDocument);
+					}
+				}
+			}
+			this.copyDocuments(newPost.getResource().getIntraHash(), newPost.getUser().getName(), documents, session);
+		}
 	}
 
 	/**
@@ -128,9 +195,10 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	 * @param userPost the post to store (we ignore its tags)
 	 * @param userTags the tags for the post
 	 * @param session
+	 * @return <code>true</code> if the post was created for the grou
 	 */
-	private <T extends Resource> void perform(final Post<T> userPost, final Set<Tag> userTags, final DBSession session) {
-		log.debug("performing after access");
+	protected <T extends Resource> boolean copyPostToGroup(final Post<T> userPost, final Set<Tag> userTags, final DBSession session) {
+		log.debug("copy post to group");
 		final String groupName = this.getArgument(); // the group's name
 		final String userName = userPost.getUser().getName();
 		final String intraHash = userPost.getResource().getIntraHash();
@@ -139,7 +207,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			/*
 			 *  user is not allowed to use this tag
 			 */
-			return;
+			return false;
 		}
 		/*
 		 * Make a DBLogic for the group
@@ -155,12 +223,12 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			 *  intention to use a systemTag, he will never know if there
 			 *  was a typo! 
 			 */
-			return; // this tag can not be used => abort
+			return false; // this tag can not be used => abort
 		}
 		try {
-			if (present( groupDBLogic.getPostDetails(intraHash, groupName) )) {
+			if (present(groupDBLogic.getPostDetails(intraHash, groupName) )) {
 				log.debug("Given post already owned by group. Skipping...");
-				return;
+				return false;
 			}
 		} catch (final Exception ex) {
 			// ignore
@@ -185,7 +253,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 * adding this tag also guarantees, that the new post will
 		 * have an empty tag set (which would be illegal)!
 		 */
-		groupTags.add(new Tag("from:"+userName));
+		groupTags.add(new Tag("from:" + userName));
 		groupPost.setTags(groupTags);
 		/*
 		 *  Copy Groups: the visibility of the postCopy is:
@@ -220,9 +288,10 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			}
 		}
 		log.debug("copied post was stored successfully");
+		return true;
 	}
 
-	private LogicInterface getGroupDbLogic() {
+	protected LogicInterface getGroupDbLogic() {
 		final DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
 		logicFactory.setDbSessionFactory(this.dbSessionFactory);
 		return logicFactory.getLogicAccess(this.getArgument(), "");
@@ -242,10 +311,10 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			 *  We decided to ignore errors in systemTags. Thus the user is free use any tag.
 			 *  The drawback: If it is the user's intention to use a systemTag, he will never know if there was a typo! 
 			 */
-			return false;			
+			return false;
 		} 
 		if (!permissionDb.isMemberOfGroup(userName, groupName, session)) {
-			return false;			
+			return false;
 		}
 		return true;
 	}
@@ -258,53 +327,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 	@Override
 	public boolean isInstance(final String tagName) {
 		// the send tag must have an argument, the prefix is not required
-		return SystemTagsUtil.hasTypeAndArgument(tagName) && NAME.equals(SystemTagsUtil.extractType(tagName));
-	}
-
-	@Override
-	public <T extends Resource> void performDocuments(final String resourceHash, final List<Document> documents, final DBSession session) {
-//		session.beginTransaction();
-//		try {
-//			final String groupName = this.getArgument();
-//			Post<? extends Resource> groupPost = this.getGroupDbLogic().getPostDetails(resourceHash, groupName);
-//			DocumentDatabaseManager docDbManager = DocumentDatabaseManager.getInstance();
-//			for (Document doc : documents) {
-//				//check if post already has document with same filename
-//				final Document existingGroupDoc = docDbManager.getDocumentForPost(groupName, resourceHash, doc.getFileName(), session);
-//				if(!present(existingGroupDoc)) {
-//					/*
-//					 * no existing files with this name -> create copy and append to post 
-//					 */
-//					Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
-//					docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
-//				} else {
-//					/*
-//					 * check if md5 hash has been changed -> file has been changed
-//					 */
-//					if(!doc.getMd5hash().equals(existingGroupDoc.getMd5hash())) {
-//						Document document = DocumentUtils.copyDocument(doc, groupName, docPath);
-//						
-//						
-//						SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
-//						String oldFileName = document.getFileName();
-//						
-//						String date = sdf.format(new Date());
-//						
-//						
-//						
-//						String newFileName = oldFileName.replace(".", "_" + date + ".");
-//						
-//						docDbManager.addDocument(groupName, groupPost.getContentId(), document.getFileHash(), newFileName, document.getMd5hash(), session);
-//					}
-//					/*
-//					 * if md5 hash not changed -> same file -> do nothing
-//					 */
-//				}
-//			}
-//			session.commitTransaction();
-//		} finally {
-//			session.endTransaction();
-//		}
+		return SystemTagsUtil.hasTypeAndArgument(tagName) && this.getName().equals(SystemTagsUtil.extractType(tagName));
 	}
 
 	@Override

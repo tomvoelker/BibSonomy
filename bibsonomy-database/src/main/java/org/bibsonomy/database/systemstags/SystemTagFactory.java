@@ -9,6 +9,7 @@ import java.util.Set;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
+import org.bibsonomy.model.Tag;
 
 /**
  * @author Andreas Koch
@@ -175,8 +176,8 @@ public class SystemTagFactory {
 	/**
 	 * Determines whether a tag (given by name) is a systemTag
 	 * 
-	 * @param tagType
-	 * @return <code>true</code> iff it's a search system tag
+	 * @param tagName
+	 * @return <code>true</code> iff it's a markup system tag
 	 */
 	public boolean isMarkUpSystemTag(final String tagName) {
 		final String tagType = SystemTagsUtil.extractType(tagName);
@@ -191,5 +192,27 @@ public class SystemTagFactory {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * returns all 
+	 * @param tag
+	 * @return the correct system tag repesentation of the tag
+	 */
+	public SystemTag createSystemTag(final Tag tag) {
+		final String tagName = tag.getName();
+		final MarkUpSystemTag markup = SystemTagsUtil.createMarkUpSystemTag(tagName);
+		if (present(markup)) {
+			return markup;
+		}
+		final ExecutableSystemTag exec = SystemTagsUtil.createExecutableTag(tag);
+		if (present(exec)) {
+			return exec;
+		}
+		final SearchSystemTag search = SystemTagsUtil.createSearchSystemTag(tagName);
+		if (present(search)) {
+			return search;
+		}
+		return null;
 	}
 }

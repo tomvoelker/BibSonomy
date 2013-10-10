@@ -637,7 +637,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			user.setPassword("inactive"); // FIXME: this must be documented and refactored into a constant!
 			user.setRole(Role.DELETED);   // this is new - use it to check if a user has been deleted!
 			user.setSpammer(true);        // FIXME: Why is this necessary here, and is not performed by the flagSpammer method below?
-			
+			user.setPasswordSalt(null);
 			this.plugins.onUserDelete(userName, session);
 			
 			this.updateUser(user, session);

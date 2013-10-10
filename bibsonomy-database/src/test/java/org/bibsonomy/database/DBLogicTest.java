@@ -50,7 +50,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
-import org.bibsonomy.util.file.FileUtil;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -625,7 +624,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		final String documentFileName = "testdocument_x.pdf";
 		final String newDocumentName = "testdocument_x_renamed.pdf";
 		Document document = new Document();
-		document.setFileHash(FileUtil.getRandomFileHash(documentFileName));
+		document.setFileHash("11111111111111111111111111111111");
 		document.setFileName(documentFileName);
 		document.setMd5hash("00000000000000000000000000000000");
 		document.setUserName(TEST_USER_1);

@@ -204,6 +204,7 @@
 	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
 		<property name="resourceSearch" ref="lucenePublicationSearch" />
 		<property name="chain" ref="publicationChain" />
+		<property name="fileLogic" ref="fileLogic" />
 	</bean>
 	
 	<bean id="tagRelationDatabaseManager" class="org.bibsonomy.database.managers.TagRelationDatabaseManager" factory-method="getInstance">

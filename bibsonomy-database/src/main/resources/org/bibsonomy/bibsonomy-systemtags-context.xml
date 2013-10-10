@@ -28,15 +28,19 @@
 	<util:set id="executableSystemTagSet" set-class="java.util.HashSet">
 		<ref bean="forGroupTag"/>
 		<ref bean="forFriendTag"/>
+		<ref bean="reportTag" />
 	</util:set>
 	
 	<!--+
 	    | beans for the executable systemTags
 	    +-->
 	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag">
-		<property name="docPath" value="${project.document.path}"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="fileLogic" ref="fileLogic" />
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
+	
+	<bean id="reportTag" class="org.bibsonomy.database.systemstags.executable.ReportTag" parent="forGroupTag" />
+	
 	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag"/>
 	
 	<!--+
@@ -83,6 +87,7 @@
 		<ref bean="jabrefSystemTag"/>
 		<ref bean="hiddenSystemTag"/>
 		<ref bean="externalSystemTag"/>
+		<ref bean="reportedSystemTag" />
 	</util:set>
 	
 	<!--+
@@ -95,5 +100,5 @@
 	<bean id="jabrefSystemTag" class="org.bibsonomy.database.systemstags.markup.JabrefSystemTag"/>
 	<bean id="hiddenSystemTag" class="org.bibsonomy.database.systemstags.markup.HiddenTagSystemTag"/>
 	<bean id="externalSystemTag" class="org.bibsonomy.database.systemstags.markup.ExternalSystemTag"/>
-
+	<bean id="reportedSystemTag" class="org.bibsonomy.database.systemstags.markup.ReportedSystemTag" />
 </beans>

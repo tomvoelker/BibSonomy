@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +23,11 @@ import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
+import org.bibsonomy.model.util.file.FileSystemFile;
+import org.bibsonomy.services.filesystem.FileLogic;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -55,6 +59,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	/** database manager */
 	private final BibTexExtraDatabaseManager extraDb;
 	private final DocumentDatabaseManager docDb;
+	
+	private FileLogic fileLogic;
 	
 	private BibTexDatabaseManager() {
 		this.docDb = DocumentDatabaseManager.getInstance();
@@ -316,10 +322,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			 * throw the exception - otherwise, clients would enter an infinite loop. 
 			 */
 			if (!resourceHash.equals(newIntraHash)) {
-			    /*
-			     *  
-			     */
-			    throw new ResourceMovedException(resourceHash, BibTex.class, newIntraHash, userName, loggedPost.getDate());
+				throw new ResourceMovedException(resourceHash, BibTex.class, newIntraHash, userName, loggedPost.getDate());
 			}
 		}
 		
@@ -365,6 +368,43 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		 * store the post
 		 */
 		super.insertPost(param, session); // insert post and update/insert hashes
+	}
+	
+	@Override
+	protected void createdPost(final Post<BibTex> post, final DBSession session) {
+		super.createdPost(post, session);
+		
+		this.handleDocuments(post, session);
+	}
+	
+	@Override
+	protected void updatedPost(Post<BibTex> post, DBSession session) {
+		super.updatedPost(post, session);
+		
+		this.handleDocuments(post, session);
+	}
+
+	private void handleDocuments(final Post<BibTex> post, final DBSession session) {
+		final List<Document> documents = post.getResource().getDocuments();
+		if (present(documents)) {
+			for (final Document document : documents) {
+				if (document.isTemp()) {
+					try {
+						final String fileName = document.getFileHash();
+						log.debug("adding temp file " + fileName);
+						final File file = this.fileLogic.getTempFile(fileName);
+						final String username = post.getUser().getName();
+						final Document savedDocument = this.fileLogic.saveDocumentFile(username, new FileSystemFile(file));
+						savedDocument.setFileName(document.getFileName());
+						this.docDb.addDocument(username, post.getContentId(), savedDocument.getFileHash(), savedDocument.getFileName(), savedDocument.getMd5hash(), session);
+						document.setFileHash(savedDocument.getFileHash());
+						// TODO: delete file? this.fileLogic.deleteTempFile(fileName);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+			}
+		}
 	}
 	
 	private void insertScraperMetadata(final ScraperMetadata scraperMetadata, final DBSession session) {
@@ -417,8 +457,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		insert.setGroupId(groupId);
 
 		// inform plugin
-		this.plugins.onPublicationInsert(post, session);	
-				
+		this.plugins.onPublicationInsert(post, session);
 		return insert;
 	}
 	
@@ -524,5 +563,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	    param.setRepositoryName(post.getRepositorys().get(0).getId());
 	    
 	    this.insert("insertRepository", param, session);
+	}
+
+	/**
+	 * @param fileLogic the fileLogic to set
+	 */
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 }

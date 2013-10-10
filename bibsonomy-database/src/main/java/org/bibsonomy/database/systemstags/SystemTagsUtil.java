@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -346,9 +347,12 @@ public class SystemTagsUtil {
 		}
 		return false;
 	}
-
-
 	
+	/**
+	 * TODO: improve documentation
+	 * @param tagName
+	 * @return
+	 */
 	public static boolean hasTypeAndArgument(final String tagName) {
 		if (!present(tagName)) {
 			return false;
@@ -357,6 +361,23 @@ public class SystemTagsUtil {
 		if (sysTagMatcher.lookingAt()) {
 			return present(sysTagMatcher.group(2)) &&   // type
 			present(sysTagMatcher.group(4));	// argument
+		}
+		return false;
+	}
+	
+	public static boolean containsSystemTag(Set<Tag> tags, String tagType, String argument) {
+		final List<SystemTag> systemTags = SystemTagsExtractor.extractSystemTags(tags, tagType);
+		for (SystemTag systemTag : systemTags) {
+			final String sysArgument = systemTag.getArgument();
+			if (sysArgument == null) {
+				if (argument == null) {
+					return true;
+				}
+			} else {
+				if (sysArgument.equals(argument)) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}
