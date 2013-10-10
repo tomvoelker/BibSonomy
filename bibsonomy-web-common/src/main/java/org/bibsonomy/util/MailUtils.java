@@ -58,13 +58,11 @@ public class MailUtils {
 	
 	private MessageSource messageSource;
 
-	/**
-	 * Stores the properties for mailing (mail host). 
-	 */
-	final Properties props = new Properties();
-	
+	/** Stores the properties for mailing (mail host). */
+	private final Properties props = new Properties();
 
-	/** Sends the registration mail to the user and to the project admins.
+	/**
+	 * Sends the registration mail to the user.
 	 * 
 	 * @param userName - the name of the user which registered. 
 	 * @param userEmail - the email address of the user which registered.
@@ -244,7 +242,7 @@ public class MailUtils {
 	 * @param from
 	 * @throws MessagingException
 	 */
-	private void sendMail(final String[] recipients, final String subject, final String message, final String from) throws MessagingException {
+	public void sendMail(final String[] recipients, final String subject, final String message, final String from) throws MessagingException {
 		final boolean debug = false;
 
 		// create some properties and get the default Session
