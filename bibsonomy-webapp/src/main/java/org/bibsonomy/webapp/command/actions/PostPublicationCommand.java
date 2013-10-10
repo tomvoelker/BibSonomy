@@ -126,7 +126,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * @param title the message key of the tab to add (clickable text header)
 	 */
 	private void addTab(final Integer id, final String title) {
-		tabs.add(new TabCommand(id, title));		
+		tabs.add(new TabCommand(id, title));
 	}
 
 	/**
