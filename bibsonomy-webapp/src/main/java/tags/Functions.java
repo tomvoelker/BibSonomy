@@ -35,13 +35,13 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.JSONUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
-import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.springframework.format.datetime.DateFormatter;
 
@@ -253,7 +253,7 @@ public class Functions  {
 	 * @return <code>true</code> iff the url is a link to a pdf or ps file
 	 */
 	public static boolean isLinkToDocument(final String url) {
-		return StringUtils.matchExtension(url, FileUploadInterface.DOCUMENT_EXTENSIONS);
+		return StringUtils.matchExtension(url, FileLogic.DOCUMENT_EXTENSIONS);
 	}
 
 	/**
