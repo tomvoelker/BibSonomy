@@ -29,7 +29,6 @@ import org.bibsonomy.services.importer.FileBookmarkImporter;
 import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 import org.bibsonomy.util.file.ServerUploadedFile;
-import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -53,7 +52,7 @@ import org.springframework.validation.Errors;
 public class ImportBookmarksController implements ErrorAware, ValidationAwareController<ImportCommand> {
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
 
-	private static final ListExtensionChecker EXTENSION_CHECKER = new ListExtensionChecker(FileUploadInterface.BROWSER_IMPORT_EXTENSIONS);
+	private static final ListExtensionChecker EXTENSION_CHECKER = new ListExtensionChecker(FileLogic.BROWSER_IMPORT_EXTENSIONS);
 
 	/**
 	 * logic interface for the database connectivity

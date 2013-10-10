@@ -19,7 +19,6 @@ import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.ServerUploadedFile;
-import org.bibsonomy.util.upload.FileUploadInterface;
 import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.springframework.validation.Errors;
@@ -34,7 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PublicationImporter {
 	private static final Log log = LogFactory.getLog(PublicationImporter.class);
 	
-	private static final ListExtensionChecker EXTENSION_CHECKER_BIBTEX_ENDNOTE = new ListExtensionChecker(FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
+	private static final ListExtensionChecker EXTENSION_CHECKER_BIBTEX_ENDNOTE = new ListExtensionChecker(FileLogic.BIBTEX_ENDNOTE_EXTENSIONS);
 
 	
 	private FileLogic fileLogic;
@@ -69,7 +68,7 @@ public class PublicationImporter {
 			final String fileName = uploadedFile.getOriginalFilename();
 			
 			// check if uploaded file is one of allowed files, otherwise it can be a endnote or bibtex file
-			if (StringUtils.matchExtension(uploadedFile.getName(), FileUploadInterface.DOCUMENT_EXTENSIONS)) {
+			if (StringUtils.matchExtension(uploadedFile.getName(), FileLogic.DOCUMENT_EXTENSIONS)) {
 				log.debug("the file is in pdf format");
 				file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), this.fileLogic.getDocumentExtensionChecker());
 				if (!present(command.getFileName())) {
@@ -83,7 +82,7 @@ public class PublicationImporter {
 			file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), EXTENSION_CHECKER_BIBTEX_ENDNOTE);
 
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
-			if (!StringUtils.matchExtension(fileName, Sets.asSet(FileUploadInterface.BIBTEX_EXTENSION))) {
+			if (!StringUtils.matchExtension(fileName, Sets.asSet(FileLogic.BIBTEX_EXTENSION))) {
 				/*
 				 * In case the uploaded file is in EndNote or RIS format, we convert it to BibTeX.
 				 */
@@ -108,7 +107,7 @@ public class PublicationImporter {
 			/*
 			 * FIXME add also extensions form DOCUMENT_EXTENSION to the message? 
 			 */
-			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringCollection(FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS, ", ")}, e.getMessage());
+			errors.reject("error.upload.failed.filetype", new Object[] {StringUtils.implodeStringCollection(FileLogic.BIBTEX_ENDNOTE_EXTENSIONS, ", ")}, e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
