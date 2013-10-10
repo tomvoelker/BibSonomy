@@ -104,6 +104,9 @@ public class Group implements Serializable{
 	 */
 	private List<TagSet> tagSets;
 	
+	/** stores setting regarding publication reporting */
+	private GroupPublicationReportingSettings publicationReportingSettings;
+	
 	/**
 	 * constructor
 	 */
@@ -316,6 +319,34 @@ public class Group implements Serializable{
 	}
 
 	/**
+	 * @return the userSharedDocuments
+	 */
+	public boolean isUserSharedDocuments() {
+		return this.userSharedDocuments;
+	}
+
+	/**
+	 * @param userSharedDocuments the userSharedDocuments to set
+	 */
+	public void setUserSharedDocuments(boolean userSharedDocuments) {
+		this.userSharedDocuments = userSharedDocuments;
+	}
+
+	/**
+	 * @return the publicationReportingSettings
+	 */
+	public GroupPublicationReportingSettings getPublicationReportingSettings() {
+		return this.publicationReportingSettings;
+	}
+
+	/**
+	 * @param publicationReportingSettings the publicationReportingSettings to set
+	 */
+	public void setPublicationReportingSettings(GroupPublicationReportingSettings publicationReportingSettings) {
+		this.publicationReportingSettings = publicationReportingSettings;
+	}
+
+	/**
 	 * Compares two groups. Two groups are equal, if their groupId is equal.
 	 * 
 	 * @param other
@@ -378,13 +409,5 @@ public class Group implements Serializable{
 	public int hashCode() {
 		if (this.name != null) return this.name.toLowerCase().hashCode();
 		return groupId;
-	}
-
-	public boolean isUserSharedDocuments() {
-		return userSharedDocuments;
-	}
-
-	public void setUserSharedDocuments(boolean userSharedDocuments) {
-		this.userSharedDocuments = userSharedDocuments;
 	}
 }
