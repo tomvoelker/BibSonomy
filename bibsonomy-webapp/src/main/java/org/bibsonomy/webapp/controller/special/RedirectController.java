@@ -189,7 +189,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		if ("myBibSonomy".equals(myPage) || "myPUMA".equals(myPage)) {
 			return userPage;
 		}
-		if ("myown".equals(myPage)) {
+		if ("myown".equalsIgnoreCase(myPage)) {
 			return userPage + "/myown";
 		}
 		if ("myBibTeX".equals(myPage)) {
@@ -200,6 +200,9 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		}
 		if ("myDuplicates".equals(myPage)) {
 			return userPage + "?filter=" + FilterEntity.DUPLICATES;
+		}
+		if ("myNotReported".equals(myPage)) {
+			return userPage + "/myown+sys:not:reported:*";
 		}
 		
 		log.error("Unknown /my* page called: " + myPage);
