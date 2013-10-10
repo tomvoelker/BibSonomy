@@ -1,4 +1,4 @@
-package org.bibsonomy.model;
+package net.sourceforge.suggesttree;
 
 /**
  * @version $Id$

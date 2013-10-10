@@ -8,10 +8,11 @@
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.39-SNAPSHOT</version>
 	</parent>
+	<packaging>war</packaging>
 	<artifactId>bibsonomy-suggestionservice</artifactId>
 	<name>BibSonomy Suggestion Service</name>
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<wtpversion>1.5</wtpversion>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -19,13 +20,14 @@
 			<artifactId>commons-logging</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-common</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.1.2</version>
 		</dependency>
 	</dependencies>
 </project>
