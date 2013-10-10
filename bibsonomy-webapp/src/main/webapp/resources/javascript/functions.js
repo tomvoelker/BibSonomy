@@ -1523,32 +1523,25 @@ function endTagAutocompletion (textfield) {
  * @param textfield - the textfield for the autocompletion - e.g. $("#inpf")
  */
 function startPostAutocompletion (textfield) {
-		
 	if (textfield[0] == null)
 		return;
 	
-	var userInput		= null;	
-		
-	var autocompleteObj = textfield.autocomplete({		
+	var userInput = null;
+	var autocompleteObj = textfield.autocomplete({
 		source: function( request, response ) {
-			
 			userInput = textfield.val();
-					
 			/*
 			 * if the user typed nothing - do nothing 
 			 */
 			if (userInput.length != 0) {
 				$.ajax({
-					url: "/json/suggestion?postType=bibtex&postPrefix=" + encodeURIComponent(userInput),
+					url: "/suggestionservice?prefix=" + encodeURIComponent(userInput),
 					success: function( data ) {
-						
-						var tags = $.map( data.items, function(item) {
+						var tags = $.map( data, function(item) {
 								return { value: (item.name),
 										 label: (item.name),
 										 count: (item.members)};
 							});
-						
-						
 						response(tags);
 					},
 					error: function (data) {
@@ -1559,10 +1552,9 @@ function startPostAutocompletion (textfield) {
 		},
 		minLength: 1,
 		select: function( event, ui ) {
-			
-			var item 		= ui.item;
-			var textArea  	= $(event.target);
-			var text 		= item.value;
+			var item = ui.item;
+			var textArea = $(event.target);
+			var text = item.value;
 			
 			textArea.val(text);
 			
@@ -1571,43 +1563,34 @@ function startPostAutocompletion (textfield) {
 		focus: function( event, ui ) {
 			return false;
 		},
-        open: function(event,ui) {
-				
-            var acData = $(this).data('autocomplete');
-            var styledTerm		= null;
-            var termHighlighted = userInput;
+		open: function(event,ui) {
+			var acData = $(this).data('autocomplete');
+			var styledTerm		= null;
+			var termHighlighted = userInput;
 			
-			acData
-            .menu
-            .element
-            .find('a')
-            .each(function() {
-                
-            	var me = $(this);                
-                
-                /*
-                 * Example: user types "goo" - we want to suggest "google"
-                 * We take "google" and replace "goo" with the span with thin letters.
-                 */
-				var recommendedTag = me.text();					
-				
-				var regex = /(\(.*?\))/;
-				regex.exec(recommendedTag);
-				recommendedTag = recommendedTag.replace(/(\s\(.*?\))/, "");
-				var usageCounter = RegExp.$1;
-				
-				me.empty(); // remove old content
-                
-				var styledTerm = $('<span class="ui-autocomplete-term"></span>').text(termHighlighted);
-                
-    			me.append(styledTerm).append(recommendedTag.substring(termHighlighted.length));
-            });
+			acData.menu.element.find('a').each(function() {
 			
-			$(this).autocomplete('widget').css('z-index', 110);
+			var me = $(this);
+			
+			/*
+			 * Example: user types "goo" - we want to suggest "google"
+			 * We take "google" and replace "goo" with the span with thin letters.
+			*/
+			var recommendedTag = me.text();
+			var regex = /(\(.*?\))/;
+			regex.exec(recommendedTag);
+			recommendedTag = recommendedTag.replace(/(\s\(.*?\))/, "");
+			var usageCounter = RegExp.$1;
+			
+			me.empty(); // remove old content
+			
+			var styledTerm = $('<span class="ui-autocomplete-term"></span>').text(termHighlighted);
+			me.append(styledTerm).append(recommendedTag.substring(termHighlighted.length));
+		});
 		}
-    });
-	
-	autocompleteObj.autocomplete('enable');	
+	});
+	$(this).autocomplete('widget').css('z-index', 110);
+	autocompleteObj.autocomplete('enable');
 }
 
 
