@@ -25,7 +25,6 @@ package org.bibsonomy.util.file;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -154,15 +153,6 @@ public class FileUtil {
 	 */
 	public static File getFileDirAsFile(final String filePath, final String fileName) {
 		return new File(filePath, fileName.substring(0, 2));
-	}
-	
-	/**
-	 * Generates random hash for file
-	 * @param fileName
-	 * @return The hash for the file
-	 */
-	public static String getRandomFileHash(String fileName) {
-		return StringUtils.getMD5Hash(fileName + Math.random() + RANDOM_FILE_DATE_FORMAT.format(new Date()));
 	}
 	
 	/**
