@@ -74,7 +74,8 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.util.HashUtils;
-import org.bibsonomy.util.upload.FileUploadInterface;
+import org.bibsonomy.util.file.ServerFileLogic;
+import org.bibsonomy.util.file.document.ServerDocumentFileLogic;
 import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
@@ -175,7 +176,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			restServlet.setUrlRenderer(urlRenderer);
 			restServlet.setRendererFactory(new RendererFactory(urlRenderer));
 			restServlet.setDocumentPath(getTmpDir());
-			restServlet.setExtensionChecker(new ListExtensionChecker(FileUploadInterface.DOCUMENT_EXTENSIONS));
+			restServlet.setFileLogic(createFileLogic());
 			
 			try {
 				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
@@ -196,6 +197,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			log.fatal(ex.getMessage(),ex);
 			throw new RuntimeException(ex);
 		}
+	}
+
+	protected static ServerFileLogic createFileLogic() {
+		final ServerFileLogic fileLogic = new ServerFileLogic();
+		ServerDocumentFileLogic documentLogic = new ServerDocumentFileLogic("");
+		documentLogic.setExtensionChecker(new ListExtensionChecker(Arrays.asList("pdf", "ps")));
+		fileLogic.setDocumentFileLogic(documentLogic);
+		return fileLogic;
 	}
 
 	private static String getTmpDir() {
