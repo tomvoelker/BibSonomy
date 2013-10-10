@@ -1,0 +1,100 @@
+package org.bibsonomy.util.file;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
+import org.bibsonomy.model.util.file.UploadedFile;
+import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
+import org.bibsonomy.util.StringUtils;
+
+/**
+ * @author dzo
+ * @version $Id$
+ */
+public abstract class AbstractServerFileLogic {
+	private static final Log log = LogFactory.getLog(AbstractServerFileLogic.class);
+	
+	/**
+	 * Used to compute the file hash.
+	 */
+	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	/** the base path of the files */
+	protected final String path;
+	
+	/**
+	 * default constructor
+	 * @param path
+	 */
+	public AbstractServerFileLogic(String path) {
+		this.path = path;
+	}
+	
+	/**
+	 * writes a file to the filesystem
+	 * @param file
+	 * @param extensionChecker
+	 * @return the file written to the file system read only
+	 * @throws Exception
+	 */
+	protected File writeFile(final UploadedFile file, ExtensionChecker extensionChecker) throws Exception {
+		final String filename = file.getFileName();
+		
+		this.checkFile(extensionChecker, filename);
+		
+		final String fileHash = getFileHash(filename);
+		final String documentPath = this.getFilePath(fileHash);
+		return writeFile(file, documentPath);
+	}
+	/**
+	 * check file extensions which we accept
+	 * 
+	 * @param extensionChecker
+	 * @param filename
+	 */
+	protected void checkFile(ExtensionChecker extensionChecker, final String filename) {
+		if (!present(filename) || !extensionChecker.checkExtension(filename)) {
+			throw new UnsupportedFileTypeException(extensionChecker.getAllowedExtensions());
+		}
+	}
+	
+	/**
+	 * writes file to the specified path
+	 * @param file
+	 * @param documentPath
+	 * @return the written file
+	 * @throws Exception
+	 */
+	protected File writeFile(final UploadedFile file, final String documentPath) throws Exception {
+		final File fileInFileSytem = new File(documentPath);
+
+		try {
+			file.transferTo(fileInFileSytem);
+		} catch (final Exception ex) {
+			log.error("Could not write uploaded file.", ex);
+			throw ex;
+		}
+		fileInFileSytem.setReadOnly();
+		return fileInFileSytem;
+	}
+
+	/**
+	 * @param filename
+	 * @return the filehash based on the filename
+	 */
+	protected String getFileHash(String filename) {
+		return StringUtils.getMD5Hash(filename + Math.random() + df.format(new Date()));
+	}
+	
+	/**
+	 * @param fileHash
+	 * @return the file path with the filehash
+	 */
+	protected abstract String getFilePath(String fileHash);
+}

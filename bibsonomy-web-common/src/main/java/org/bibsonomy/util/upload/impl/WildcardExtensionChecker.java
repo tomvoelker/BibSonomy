@@ -2,8 +2,8 @@ package org.bibsonomy.util.upload.impl;
 
 import java.util.Collection;
 
+import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 import org.bibsonomy.util.Sets;
-import org.bibsonomy.util.upload.ExtensionChecker;
 
 /**
  * {@link ExtensionChecker} which always returns true

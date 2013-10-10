@@ -1,0 +1,119 @@
+package org.bibsonomy.util.file;
+
+import java.io.File;
+
+import org.bibsonomy.common.enums.LayoutPart;
+import org.bibsonomy.common.enums.PreviewSize;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.util.file.UploadedFile;
+import org.bibsonomy.services.filesystem.DocumentFileLogic;
+import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.services.filesystem.JabRefFileLogic;
+import org.bibsonomy.services.filesystem.ProfilePictureLogic;
+import org.bibsonomy.services.filesystem.TempFileLogic;
+import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
+
+/**
+ * @author dzo
+ * @version $Id$
+ */
+public class ServerFileLogic implements FileLogic {
+	
+	private ProfilePictureLogic profileFileLogic;
+	private TempFileLogic tempFileLogic;
+	private JabRefFileLogic jabRefFileLogic;
+	private DocumentFileLogic documentFileLogic;
+	
+	@Override
+	public File getFileForDocument(Document document) {
+		return this.documentFileLogic.getFileForDocument(document);
+	}
+	
+	@Override
+	public File getPreviewFile(Document document, PreviewSize preview) {
+		return this.documentFileLogic.getPreviewFile(document, preview);
+	}
+	
+	@Override
+	public Document saveDocumentFile(String name, UploadedFile file) throws Exception {
+		return this.documentFileLogic.saveDocumentFile(name, file);
+	}
+	
+	@Override
+	public boolean deleteFileForDocument(String fileHash) {
+		return this.documentFileLogic.deleteFileForDocument(fileHash);
+	}
+	
+	@Override
+	public void saveProfilePictureForUser(String username, UploadedFile pictureFile) throws Exception {
+		this.profileFileLogic.saveProfilePictureForUser(username, pictureFile);
+	}
+
+	@Override
+	public void deleteProfilePictureForUser(String username) {
+		this.profileFileLogic.deleteProfilePictureForUser(username);
+	}
+
+	@Override
+	public File getProfilePictureForUser(String loggedinUser, String username) {
+		return this.profileFileLogic.getProfilePictureForUser(null, username);
+	}
+	
+	@Override
+	public Document writeJabRefLayout(String username, UploadedFile file, LayoutPart layoutPart) throws Exception {
+		return this.jabRefFileLogic.writeJabRefLayout(username, file, layoutPart);
+	}
+	
+	@Override
+	public boolean deleteJabRefLayout(String hash) {
+		return this.jabRefFileLogic.deleteJabRefLayout(hash);
+	}
+
+	@Override
+	public File writeTempFile(UploadedFile file, ExtensionChecker extensionChecker) throws Exception {
+		return this.tempFileLogic.writeTempFile(file, extensionChecker);
+	}
+
+	@Override
+	public void deleteTempFile(String name) {
+		this.tempFileLogic.deleteTempFile(name);
+	}
+
+	/**
+	 * @param profileFileLogic the profileFileLogic to set
+	 */
+	public void setProfileFileLogic(ProfilePictureLogic profileFileLogic) {
+		this.profileFileLogic = profileFileLogic;
+	}
+
+	/**
+	 * @param tempFileLogic the tempFileLogic to set
+	 */
+	public void setTempFileLogic(TempFileLogic tempFileLogic) {
+		this.tempFileLogic = tempFileLogic;
+	}
+
+	/**
+	 * @param jabRefFileLogic the jabRefFileLogic to set
+	 */
+	public void setJabRefFileLogic(JabRefFileLogic jabRefFileLogic) {
+		this.jabRefFileLogic = jabRefFileLogic;
+	}
+
+	/**
+	 * @param documentFileLogic the documentFileLogic to set
+	 */
+	public void setDocumentFileLogic(DocumentFileLogic documentFileLogic) {
+		this.documentFileLogic = documentFileLogic;
+	}
+	
+	@Override
+	public ExtensionChecker getDocumentExtensionChecker() {
+		return this.documentFileLogic.getDocumentExtensionChecker();
+	}
+
+	@Override
+	public File getTempFile(String name) {
+		return this.tempFileLogic.getTempFile(name);
+	}
+}
