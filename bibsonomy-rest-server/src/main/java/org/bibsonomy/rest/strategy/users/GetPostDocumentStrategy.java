@@ -2,23 +2,22 @@ package org.bibsonomy.rest.strategy.users;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.util.upload.FileDownloadInterface;
-import org.bibsonomy.util.upload.impl.HandleFileDownload;
+import org.bibsonomy.services.filesystem.FileLogic;
 
 /**
  * Handle a document request
@@ -31,7 +30,7 @@ public class GetPostDocumentStrategy extends Strategy {
 	
 	private final String userName;
 	private final Document document;
-	private final Map<String, String> additionalInfos;
+	private final FileLogic fileLogic;
 
 	/**
 	 * @param context
@@ -48,8 +47,7 @@ public class GetPostDocumentStrategy extends Strategy {
 		if (this.document == null) {
 			throw new NoSuchResourceException("can't find document!");
 		}
-		
-		this.additionalInfos = context.getAdditionalInfos();
+		this.fileLogic = context.getFileLogic();
 	}
 	
 	@Override
@@ -69,12 +67,12 @@ public class GetPostDocumentStrategy extends Strategy {
 	public void perform(final ByteArrayOutputStream outStream){
 		try {
 			// get the bufferedstream of the file
-			final FileDownloadInterface download = new HandleFileDownload(this.additionalInfos.get(RestServlet.DOCUMENTS_PATH_KEY), this.document.getFileHash());
-			final BufferedInputStream buf = download.getBuf();
+			final File file = this.fileLogic.getFileForDocument(this.document);
+			final BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
 			
 			// write the bytes of the file to the writer
 			int readBytes = 0;
-			while ((readBytes = buf.read()) != -1){
+			while ((readBytes = buf.read()) != -1) {
 				outStream.write(readBytes);
 			}
 			

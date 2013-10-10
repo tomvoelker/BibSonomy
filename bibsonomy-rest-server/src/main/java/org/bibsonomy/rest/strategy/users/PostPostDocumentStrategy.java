@@ -4,13 +4,11 @@ import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.upload.ExtensionChecker;
-import org.bibsonomy.util.upload.FileUploadInterface;
-import org.bibsonomy.util.upload.impl.FileUploadFactory;
+import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -24,9 +22,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	private final String userName;
 	private final String resourceHash;
 	private final MultipartFile file;
-	
-	private final FileUploadFactory fileUploadFactory;
-	private final ExtensionChecker extensionChecker;
+	private final FileLogic fileLogic;
 	
 	/**
 	 * @param context
@@ -39,11 +35,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 		this.resourceHash = resourceHash;
 		this.file = context.getUploadAccessor().getUploadedFileByName("file");
 		
-		this.fileUploadFactory = new FileUploadFactory();
-		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get(RestServlet.DOCUMENTS_PATH_KEY));
-		this.fileUploadFactory.setTempPath(false);
-		
-		this.extensionChecker = context.getExtensionChecker();
+		this.fileLogic = context.getFileLogic();
 	}
 	
 	@Override
@@ -56,16 +48,8 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() {
 		try {
-			final FileUploadInterface up = this.fileUploadFactory.getFileUploadHandler(this.file, this.extensionChecker);
-			final Document document = up.writeUploadedFile();
-			
-			/*
-			 * add user name to document (needed by createDocument) 
-			 */
-			document.setUserName(this.userName);
-			
+			final Document document = this.fileLogic.saveDocumentFile(this.userName, new ServerUploadedFile(this.file));
 			return this.getLogic().createDocument(document, this.resourceHash);
-			
 		} catch (final Exception ex) {
 			throw new BadRequestOrResponseException(ex.getMessage());
 		}

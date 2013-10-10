@@ -48,7 +48,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
-import org.bibsonomy.util.upload.ExtensionChecker;
+import org.bibsonomy.services.filesystem.FileLogic;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -106,7 +106,7 @@ public final class RestServlet extends HttpServlet {
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
 
 	private LogicInterfaceFactory logicFactory;
-	private ExtensionChecker extensionChecker;
+	private FileLogic fileLogic;
 	
 	private UrlRenderer urlRenderer;
 	private RendererFactory rendererFactory;
@@ -169,12 +169,12 @@ public final class RestServlet extends HttpServlet {
 	public void setDocumentPath(final String documentPath) {
 		additionalInfos.put(DOCUMENTS_PATH_KEY, documentPath);
 	}
-	
+
 	/**
-	 * @param extensionChecker the extensionChecker to set
+	 * @param fileLogic the fileLogic to set
 	 */
-	public void setExtensionChecker(ExtensionChecker extensionChecker) {
-		this.extensionChecker = extensionChecker;
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 
 	/**
@@ -262,7 +262,7 @@ public final class RestServlet extends HttpServlet {
 
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(getMainInputStream(request), REQUEST_ENCODING);
-			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, uploadAccessor, logic, this.extensionChecker, request.getParameterMap(), additionalInfos);
+			final Context context = new Context(method, request.getRequestURI(), renderingFormat, rendererFactory, reader, uploadAccessor, logic, this.fileLogic, request.getParameterMap(), additionalInfos);
 
 			// validate request
 			context.canAccess();

@@ -4,12 +4,14 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
 
+import org.apache.commons.io.FilenameUtils;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.upload.ExtensionChecker;
+import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 
 /**
  * strategy for renaming documents
@@ -18,15 +20,14 @@ import org.bibsonomy.util.upload.ExtensionChecker;
  * @version $Id$
  */
 public class PutUpdateDocumentStrategy extends AbstractUpdateStrategy {
+	private static final String[][] consistentSuffixes = {{"jpg","jpeg","png", "tif", "tiff"}, {"djv", "djvu"}, {"txt", "tex"},
+		{"doc", "docx", "ppt", "pptx", "xls", "xlsx"}, {"ods", "odt", "odp"}, {"htm", "html"}};
 
-	private static final String SUFFIX_DELIMITER = "\\.";
 	private final String oldFilename;
 	private final String resourceHash;
 	private final String userName;
 	private final ExtensionChecker extensionChecker;
 	
-	private static final String[][] consistentSuffixes = {{"jpg","jpeg","png", "tif", "tiff"}, {"djv", "djvu"}, {"txt", "tex"},
-		{"doc", "docx", "ppt", "pptx", "xls", "xlsx"}, {"ods", "odt", "odp"}, {"htm", "html"}};
 	
 	/**
 	 * @param context
@@ -39,34 +40,35 @@ public class PutUpdateDocumentStrategy extends AbstractUpdateStrategy {
 		this.userName = userName;
 		this.resourceHash = resourceHash;
 		this.oldFilename = oldFilename;
-		this.extensionChecker = context.getExtensionChecker();
+		this.extensionChecker = context.getFileLogic().getDocumentExtensionChecker();
 	}
 	
 	@Override
 	protected void render(Writer writer, String resourceID) {
-		
 		this.getRenderer().serializeResourceHash(writer, resourceHash);
-		
 	}
-
+	
 	@Override
 	protected String update() {
-		
+		/*
+		 * check if document exists
+		 */
 		final Document toUpdate = this.getLogic().getDocument(this.userName, this.resourceHash, this.oldFilename);
 		
-		if(!present(toUpdate)) {
+		if (!present(toUpdate)) {
 			throw new ObjectNotFoundException(oldFilename);
 		}
 		
 		final Document sentDocument = this.getRenderer().parseDocument(this.doc, this.getUploadAccessor());
 		final String newFilename = sentDocument.getFileName();
 		
-		if(!present(newFilename)) {
+		if (!present(newFilename)) {
 			throw new BadRequestOrResponseException("No new filename was specified.");
 		}
 		
+		// FIXME: duplicate code @see DocumentsController
 		// check for consistent suffixes
-		if(!this.checkConsistency(newFilename)) {
+		if (!this.checkConsistency(newFilename)) {
 			throw new BadRequestOrResponseException("The file suffixes are inconsistent!");
 		}
 		
@@ -81,7 +83,7 @@ public class PutUpdateDocumentStrategy extends AbstractUpdateStrategy {
 		}
 		
 		if (!toUpdate.getUserName().equals(this.userName)) {
-			throw new BadRequestOrResponseException("Only the owner of the file is allowed to change it!");
+			throw new AccessDeniedException("Only the owner of the file is allowed to change it!");
 		}
 		
 		this.getLogic().updateDocument(toUpdate, resourceHash, newFilename);
@@ -96,28 +98,25 @@ public class PutUpdateDocumentStrategy extends AbstractUpdateStrategy {
 	 * @return true if the suffixes are consistent, false if not
 	 */
 	private boolean checkConsistency(String newFilename) {
-		String[] parts = this.oldFilename.split(SUFFIX_DELIMITER); 
-		final String oldSuffix = parts[parts.length-1];
+		final String newSuffix = FilenameUtils.getExtension(newFilename);
+		final String oldSuffix = FilenameUtils.getExtension(this.oldFilename);
 		
-		parts = newFilename.split(SUFFIX_DELIMITER);
-		final String newSuffix = parts[parts.length-1];
-		
-		if(oldSuffix.equalsIgnoreCase(newSuffix)) {
+		if (oldSuffix.equalsIgnoreCase(newSuffix)) {
 			return true;
 		}
 		
 		boolean foundOld = false;
 		boolean foundNew = false;
-		for(int i = 0; i < consistentSuffixes.length; i++) {
-			for(int j = 0; j < consistentSuffixes[i].length; j++) {
-				if(oldSuffix.equalsIgnoreCase(consistentSuffixes[i][j])) {
+		for (int i = 0; i < consistentSuffixes.length; i++) {
+			for (int j = 0; j < consistentSuffixes[i].length; j++) {
+				if (oldSuffix.equalsIgnoreCase(consistentSuffixes[i][j])) {
 					foundOld = true;
 				}
 				else if(newSuffix.equalsIgnoreCase(consistentSuffixes[i][j])) {
 					foundNew = true;
 				}
 			}
-			if(foundOld || foundNew) {
+			if (foundOld || foundNew) {
 				return foundOld && foundNew;
 			}
 		}
