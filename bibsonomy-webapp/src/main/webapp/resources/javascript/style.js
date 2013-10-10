@@ -333,9 +333,10 @@ function switchNavi(scope, element) {
 		startTagAutocompletion($("#inpf"), false, true, false, false);
 	}
 	
-	if(scope == "search") {
+	// TODO: finish suggestion service
+	/*if(scope == "search") {
 		startPostAutocompletion($("#inpf"));
-	}
+	}*/
 	
 	return false;
 }
