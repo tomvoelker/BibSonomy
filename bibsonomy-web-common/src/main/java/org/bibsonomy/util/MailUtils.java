@@ -62,7 +62,7 @@ public class MailUtils {
 	private final Properties props = new Properties();
 
 	/**
-	 * Sends the registration mail to the user.
+	 * Sends the activation mail to the user.
 	 * 
 	 * @param userName - the name of the user which registered. 
 	 * @param userEmail - the email address of the user which registered.
@@ -75,7 +75,7 @@ public class MailUtils {
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
-		final String messageBody    = messageSource.getMessage("mail.activation.body", messagesParameters, locale);
+		final String messageBody = messageSource.getMessage("mail.activation.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.activation.subject", messagesParameters, locale);
 
 		/*
@@ -106,7 +106,7 @@ public class MailUtils {
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
-		final String messageBody    = messageSource.getMessage("mail.registration.body", messagesParameters, locale);
+		final String messageBody = messageSource.getMessage("mail.registration.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.registration.subject", messagesParameters, locale);
 
 		/*
@@ -123,7 +123,8 @@ public class MailUtils {
 	}
 	
 	/** 
-	 * Sends the registration mail to the user and to the group admins.
+	 * Sends the join request mail to the group admins.
+	 * 
 	 * @param groupName the name of the group to join
 	 * @param groupMail the mail address of the group
 	 * @param loginUser the n
@@ -163,7 +164,7 @@ public class MailUtils {
 	}
 	
 	/** 
-	 * Sends the registration mail to the user and to the group admins.
+	 * Sends the join group denied mail to the user who requested to join the group.
 	 * @param groupName 
 	 * @param deniedUserName 
 	 * @param deniedUserEMail 
@@ -186,7 +187,7 @@ public class MailUtils {
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
-		final String messageBody    = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
+		final String messageBody = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.denied.subject", messagesParameters, locale);
 
 		/*
@@ -194,7 +195,7 @@ public class MailUtils {
 		 */
 		final String[] recipient = {deniedUserEMail};
 		try {
-			sendMail(recipient,  messageSubject, messageBody, projectJoinGroupRequestFromAddress);
+			sendMail(recipient, messageSubject, messageBody, projectJoinGroupRequestFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send Deny JoinGrouprequest mail: " + e.getMessage());
@@ -214,10 +215,10 @@ public class MailUtils {
 	 * @param tmppw 
 	 * @return true, if the mail could be send without errors
 	 */
-	public boolean sendPasswordReminderMail (final String userName, final String userEmail, final String inetAddress, final Locale locale, final int maxmin, final String tmppw){
+	public boolean sendPasswordReminderMail(final String userName, final String userEmail, final String inetAddress, final Locale locale, final int maxmin, final String tmppw){
 		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail, maxmin, tmppw};
 		
-		final String messageBody	= messageSource.getMessage("reminder.mail.body", messagesParameters, locale);
+		final String messageBody = messageSource.getMessage("reminder.mail.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("reminder.mail.subject", messagesParameters, locale);
 		
 		/*
