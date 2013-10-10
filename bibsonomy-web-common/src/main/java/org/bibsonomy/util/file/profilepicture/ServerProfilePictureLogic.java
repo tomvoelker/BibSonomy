@@ -17,9 +17,9 @@ import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.ProfilePictureLogic;
 import org.bibsonomy.services.filesystem.TempFileLogic;
 import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
+import org.bibsonomy.services.filesystem.extension.ListExtensionChecker;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 
 /**
  * @author dzo

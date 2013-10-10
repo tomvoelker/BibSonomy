@@ -10,11 +10,11 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.JabRefFileLogic;
 import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
+import org.bibsonomy.services.filesystem.extension.ListExtensionChecker;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.file.AbstractServerFileLogic;
 import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 
 /**
  * @author dzo
