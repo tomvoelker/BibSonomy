@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,16 +21,19 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
+import org.bibsonomy.database.systemstags.markup.ReportedSystemTag;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.EndnoteUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.JSONUtils;
@@ -300,6 +304,9 @@ public class Functions  {
 	 * @return an url string with the requested parameter set
 	 */
 	public static String setParam(final String url, final String paramName, final String paramValue) {
+		if (url == null) {
+			return url;
+		}
 		return UrlUtils.setParam(url, paramName, paramValue); 
 	}
 
@@ -706,5 +713,25 @@ public class Functions  {
 	 */
 	public static boolean hasTagMyown(final Post<? extends Resource> post) {
 		return SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME);
+	}
+	
+	/**
+	 * checks if post has system tag reported for the specified group
+	 * TODO: merge with hasTagMyown!
+	 * @param tags
+	 * @param group
+	 * @return <code>true</code> iff post was already reported
+	 */
+	public static boolean hasReportedSystemTag(final Set<Tag> tags, final String group) {
+		return SystemTagsUtil.containsSystemTag(tags, ReportedSystemTag.NAME, group);
+	}
+	
+	/**
+	 * wrapper for {@link UserUtils#userIsGroup(User)}
+	 * @param user
+	 * @return @see {@link UserUtils#userIsGroup(User)}
+	 */
+	public static boolean userIsGroup(final User user) {
+		return UserUtils.userIsGroup(user);
 	}
 }

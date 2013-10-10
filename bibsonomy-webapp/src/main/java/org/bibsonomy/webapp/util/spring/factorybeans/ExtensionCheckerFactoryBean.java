@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.util.spring.factorybeans;
 
 import java.util.Arrays;
 
-import org.bibsonomy.util.upload.ExtensionChecker;
+import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.util.upload.impl.WildcardExtensionChecker;
 import org.springframework.beans.factory.FactoryBean;

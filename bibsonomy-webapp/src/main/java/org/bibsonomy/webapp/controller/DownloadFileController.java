@@ -2,11 +2,14 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.QRCodeRenderer;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
@@ -25,23 +28,18 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class DownloadFileController implements MinimalisticController<DownloadFileCommand>, ErrorAware {
-	Log log = LogFactory.getLog(DownloadFileController.class);
+	private static final Log log = LogFactory.getLog(DownloadFileController.class);
 	
 	/**
 	 * logical interface to BibSonomy's core functionality
 	 */
 	private LogicInterface logic = null;
+	private FileLogic fileLogic;
 	
 	/**
 	 * qr code renderer
 	 */
 	private QRCodeRenderer qrCodeRenderer;
-	
-
-	/**
-	 * document path
-	 */
-	private String docpath = null;
 
 	/**
 	 * hold current errors
@@ -74,21 +72,24 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 		 */
 		final PreviewSize preview = command.getPreview();
 		if (present(preview)) {
-			command.setPathToFile(FileUtil.getUserDocumentPreviewPath(this.docpath, document.getFileHash(), document.getFileName(), preview));
+			final File previewFile = this.fileLogic.getPreviewFile(document, preview);
+			command.setPathToFile(previewFile.getAbsolutePath());
 			/*
 			 * preview images are always JPEGs!
 			 */
 			command.setContentType(FileUtil.CONTENT_TYPE_IMAGE_JPEG);
-			command.setFilename(command.getFilename() + "." + FileUtil.CONTENT_TYPE_IMAGE_JPEG);		
+			command.setFilename(command.getFilename() + "." + FileUtil.CONTENT_TYPE_IMAGE_JPEG);
 			
 		} else {
 			
-			final String filePath = FileUtil.getFilePath(this.docpath, document.getFileHash());
+			final File file = fileLogic.getFileForDocument(document);
+			final String filePath = file.getAbsolutePath();
 			
 			/*
+			 * TODO: move to document logic?
 			 * check if document has property qrcode
 			 */
-			if(command.isQrcode()) {
+			if (command.isQrcode()) {
 				
 				final String qrFilePath;
 				
@@ -136,13 +137,6 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 		this.logic = logic;
 	}
 
-	/**
-	 * @param docpath
-	 */
-	public void setDocpath(final String docpath) {
-		this.docpath = docpath;
-	}
-
 	@Override
 	public Errors getErrors() {
 		return this.errors;
@@ -155,5 +149,10 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 		this.qrCodeRenderer = qrCodeRenderer;
 	}
 
-	
+	/**
+	 * @param fileLogic the fileLogic to set
+	 */
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
+	}
 }

@@ -2,38 +2,30 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.awt.image.RenderedImage;
 import java.io.File;
-import java.util.List;
 
-import javax.imageio.ImageIO;
-
-import org.bibsonomy.common.enums.ProfilePrivlevel;
-import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.services.filesystem.ProfilePictureLogic;
 import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.util.file.profilepicture.PictureScaler;
-import org.bibsonomy.util.upload.FileUploadInterface;
-import org.bibsonomy.util.upload.impl.FileUploadFactory;
-import org.bibsonomy.util.upload.impl.ListExtensionChecker;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.actions.PictureCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * this controller returns handles picture upload and download
  * @author wla
  * @version $Id$
  */
-public class PictureController implements MinimalisticController<PictureCommand>, ErrorAware {
+public class PictureController implements MinimalisticController<PictureCommand>, ErrorAware, RequestAware {
 
 	static {
 		/*
@@ -43,27 +35,11 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		 */
 		System.setProperty("java.awt.headless", "true");
 	}
-
-	private static final String FILE_EXTENSION = ".jpg";
-	/**
-	 * We need an admin logic to check the friends and the privlevel of the
-	 * requested user.
-	 */
-	private LogicInterface adminLogic;
+	
+	private FileLogic fileLogic;
 	private RequestLogic requestLogic;
-	/**
-	 * the factory used to get an instance of a FileUploadHandler.
-	 */
-	private FileUploadFactory uploadFactory;
 
 	private Errors errors = null;
-
-	/**
-	 * Path to the picture folder
-	 */
-	private String path;
-	private String defaultFileName;
-	private PictureScaler pictureScaler;
 
 	@Override
 	public PictureCommand instantiateCommand() {
@@ -78,7 +54,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 			 * picture download
 			 */
 			return downloadPicture(command);
-		} else if("POST".equals(method)) {
+		} else if ("POST".equals(method)) {
 			/*
 			 *  picture upload
 			 */
@@ -102,111 +78,12 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	private View downloadPicture(final PictureCommand command) {
 		final String requestedUserName = command.getRequestedUser();
 		final String loginUserName = command.getContext().getLoginUser().getName();
-		final User requestedUser = adminLogic.getUserDetails(requestedUserName);
-
-		/* 
-		 * if the owner of the picture wasn't found
-		 * FIXME: we check presence of user name not user, because getUserDetails
-		 * ALWAYS returns a user! This is probably not a good idea ... 
-		 */
-		if (!present(requestedUser.getName())) {
-			return Views.ERROR;
-		}
-
-		if (pictureVisible(requestedUser, loginUserName)) {
-			setProfilePicture(command, requestedUserName);
-		} else {
-			setDummyPicture(command);
-		}
+		
+		final File profilePicture = this.fileLogic.getProfilePictureForUser(loginUserName, requestedUserName);
+		command.setPathToFile(profilePicture.getAbsolutePath());
+		command.setContentType(FileUtil.getContentType(profilePicture.getName()));
+		command.setFilename(requestedUserName + ProfilePictureLogic.FILE_EXTENSION);
 		return Views.DOWNLOAD_FILE;
-	}
-
-	/**
-	 * Checks if the loginUser may see the profile picture of the requested user.
-	 * Depends on the profile privlevel of the requested user.
-	 * 
-	 * @param requestedUser
-	 * @param loginUserName
-	 * @return
-	 */
-	private boolean pictureVisible(final User requestedUser, final String loginUserName) {
-		final String requestedUserName = requestedUser.getName();
-		/*
-		 * login user may always see his/her photo
-		 */
-		if (requestedUserName.equals(loginUserName)) return true;
-		/*
-		 * Check the visibility depending on the profile privacy level.
-		 */
-		final ProfilePrivlevel visibility = requestedUser.getSettings().getProfilePrivlevel();
-		switch(visibility) {
-		case PRIVATE:
-			return requestedUserName.equals(loginUserName);
-		case PUBLIC:
-			return true;
-		case FRIENDS:
-			if (present(loginUserName)) {
-				final List<User> friends = adminLogic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND, null);
-				for (final User friend : friends) {
-					if (loginUserName.equals(friend.getName())) {
-						return true;
-					}
-				}
-			}
-			//$FALL-THROUGH$
-		default:
-			return false;
-		}
-	}
-
-	/**
-	 * This method searches for user picture and selects it to show
-	 * 
-	 * @param command
-	 * @param requestedUserName
-	 */
-	private void setProfilePicture(final PictureCommand command, final String requestedUserName) {
-		/*
-		 * verify existence of picture, and set it to view 
-		 */
-		final File picture = new File(getPicturePath(requestedUserName));
-		if (picture.exists()) { 
-			command.setPathToFile(picture.getAbsolutePath());
-			command.setContentType(FileUtil.getContentType(picture.getName()));
-			command.setFilename(requestedUserName + FILE_EXTENSION);
-		} else {
-			setDummyPicture(command);
-		}
-	}
-
-	/**
-	 * Constructs the path to the picture, given the user name.
-	 * 
-	 * @param userName
-	 * @return
-	 */
-	private String getPicturePath(final String userName) {
-		/*
-		 * pattern of the name of picture file: "hash(username).jpg"
-		 */
-		final String fileName = StringUtils.getMD5Hash(userName) + FILE_EXTENSION;
-
-		/*
-		 * pictures are in the different folders, named by the fist
-		 * two signs of hash
-		 */
-		return FileUtil.getFilePath(path, fileName);
-	}
-
-
-	/**
-	 * this method selects a dummy picture to show
-	 * @param command
-	 */
-	private void setDummyPicture(final PictureCommand command) {
-		command.setPathToFile(path + defaultFileName);
-		command.setContentType(FileUtil.getContentType(command.getPathToFile()));
-		command.setFilename(defaultFileName);
 	}
 
 	/**
@@ -235,36 +112,13 @@ public class PictureController implements MinimalisticController<PictureCommand>
 
 		final String loginUserName = context.getLoginUser().getName();
 
-		if (present(command.getFile()) && command.getFile().getSize() > 0) {
+		final MultipartFile file = command.getFile();
+		if (present(file) && file.getSize() > 0) {
 			/*
 			 * a file is given --> save it
 			 */
 			try {
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), new ListExtensionChecker(FileUploadInterface.PICTURE_EXTENSIONS));
-				final File file = uploadFileHandler.writeUploadedFile().getFile();
-
-				/*
-				 * scale picture
-				 */
-				final RenderedImage scaledPicture = this.pictureScaler.scalePicture(ImageIO.read(file));
-
-				/*
-				 * delete temporary file
-				 */
-				file.delete();
-
-				/*
-				 * check existence of target folder
-				 */
-				final File directory = FileUtil.getFileDirAsFile(path, StringUtils.getMD5Hash(loginUserName));
-				if (!directory.exists()) {
-					directory.mkdir();
-				}
-				
-				/*
-				 * write scaled image to disk
-				 */
-				ImageIO.write(scaledPicture, "jpeg", new File(getPicturePath(loginUserName)));
+				this.fileLogic.saveProfilePictureForUser(loginUserName, new ServerUploadedFile(file));
 			} catch (Exception ex) {
 				errors.reject("error.upload.failed", new Object[] { ex.getLocalizedMessage() }, "Sorry, we could not process your upload request, an unknown error occurred.");
 				return Views.ERROR;
@@ -273,22 +127,10 @@ public class PictureController implements MinimalisticController<PictureCommand>
 			/*
 			 * no file given, but POST request --> delete picture
 			 */
-			deleteUserPicture(loginUserName);
+			this.fileLogic.deleteProfilePictureForUser(loginUserName);
 		}
 
 		return null;
-	}
-
-	/**
-	 * Deletes the picture from the file system
-	 * 
-	 * @param userName
-	 */
-	private void deleteUserPicture(final String userName) {
-		final File picture = new File(getPicturePath(userName));
-		if (picture.exists()) {
-			picture.delete();
-		}
 	}
 
 	@Override
@@ -302,62 +144,17 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	}
 
 	/**
-	 * @param path the path to set
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	/**
-	 * This controller needs an admin logic to check the profile privacy level 
-	 * and the friends of the requested user - something the login user is not
-	 * allowed to do.
-	 * 
-	 * @param adminLogic the adminLogic to set
-	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
-	}
-
-	/**
-	 * @return the adminLogic
-	 */
-	public LogicInterface getAdminLogic() {
-		return adminLogic;
-	}
-
-	/**
 	 * @param requestLogic the requestLogic to set
 	 */
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
 	/**
-	 * @return the requestLogic
+	 * @param fileLogic the fileLogic to set
 	 */
-	public RequestLogic getRequestLogic() {
-		return requestLogic;
-	}
-
-	/**
-	 * @param uploadFactory the uploadFactory to set
-	 */
-	public void setUploadFactory(FileUploadFactory uploadFactory) {
-		this.uploadFactory = uploadFactory;
-	}
-
-	/**
-	 * @param pictureScaler the pictureScaler to set
-	 */
-	public void setPictureScaler(PictureScaler pictureScaler) {
-		this.pictureScaler = pictureScaler;
-	}
-
-	/**
-	 * @param defaultFileName the defaultFileName to set
-	 */
-	public void setDefaultFileName(String defaultFileName) {
-		this.defaultFileName = defaultFileName;
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 }

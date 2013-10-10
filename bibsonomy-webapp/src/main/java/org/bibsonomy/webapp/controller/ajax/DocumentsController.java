@@ -6,21 +6,20 @@ import java.io.File;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.util.upload.ExtensionChecker;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.ajax.AjaxDocumentCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Handles document upload for publication posts.
@@ -37,13 +36,8 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 
 	private static final String FORBIDDEN_SYMBOLS = ".*[<>/\\\\].*";
 
-	/**
-	 * Path to the documents folder
-	 */
-	private String docPath;
-	private String tempPath;
 	private MessageSource messageSource;
-	private ExtensionChecker extensionChecker;
+	private FileLogic fileLogic;
 
 	/**
 	 * max file size, currently 50mb
@@ -93,9 +87,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 				response = deleteDocument(command, locale);	
 			}
 		} else if ("POST".equals(method)) {
-			
-			if(command.getAction() != null && 
-					command.getAction().equalsIgnoreCase("rename")) {
+			if ("rename".equalsIgnoreCase(command.getAction())) {
 				/*
 				 * rename file
 				 */
@@ -130,8 +122,8 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * unsupported file extensions
 		 */
-		if (!this.extensionChecker.checkExtension(newName)) {
-			return getXmlRenameError("error.upload.failed.filetype", new Object[] { StringUtils.implodeStringCollection(this.extensionChecker.getAllowedExtensions(), ", ")}, command.getFileID(), fileName, locale);	
+		if (!this.fileLogic.getDocumentExtensionChecker().checkExtension(newName)) {
+			return getXmlRenameError("error.upload.failed.filetype", new Object[] { StringUtils.implodeStringCollection(this.fileLogic.getDocumentExtensionChecker().getAllowedExtensions(), ", ")}, command.getFileID(), fileName, locale);	
 		}
 		
 		if (!present(document)) {
@@ -178,7 +170,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * delete temporary saved file
 		 */
-		new File(tempPath + command.getFileHash().substring(32)).delete();
+		this.fileLogic.deleteTempFile(command.getFileHash().substring(32));
 		return "<root><status>ok</status><fileid>" + command.getFileID() + "</fileid></root>";
 	}
 
@@ -213,7 +205,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * delete file on disk
 		 */
-		new File(FileUtil.getFilePath(docPath, document.getFileHash())).delete();
+		this.fileLogic.deleteFileForDocument(document.getFileHash());
 		final String response = messageSource.getMessage("bibtex.actions.filedeleted", new Object[] {fileName}, locale); 
 		return "<root><status>deleted</status><response>" + response + "</response></root>";
 	}
@@ -231,65 +223,47 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		/*
 		 * the uploaded file
 		 */
-		final FileItem fileItem = command.getFile().getFileItem();
+		final MultipartFile file = command.getFile();
 		final int fileID = command.getFileID();
 		/*
 		 * unsupported file extensions
 		 */
-		if (!this.extensionChecker.checkExtension(fileItem.getName())) {
-			return getXmlError("error.upload.failed.filetype", new Object[] { StringUtils.implodeStringCollection(this.extensionChecker.getAllowedExtensions(), ", ")}, fileID, fileItem.getName(), locale);	
+		final String fileName = file.getOriginalFilename();
+		if (!this.fileLogic.getDocumentExtensionChecker().checkExtension(fileName)) {
+			return getXmlError("error.upload.failed.filetype", new Object[] { StringUtils.implodeStringCollection(this.fileLogic.getDocumentExtensionChecker().getAllowedExtensions(), ", ")}, fileID, fileName, locale);	
 		}
 
 		/*
 		 * wrong file size
 		 */
-		final long size = fileItem.getSize();
+		// TODO: move file size check to ServerDocumentFileLogic!
+		final long size = file.getSize();
 		if (size >= this.maxFileSize) {
-			return getXmlError("error.upload.failed.size", new Object[] {maxFileSizeMB}, fileID, fileItem.getName(), locale);
+			return getXmlError("error.upload.failed.size", new Object[] {maxFileSizeMB}, fileID, fileName, locale);
 		} else if (size == 0) {
-			return getXmlError("error.upload.failed.size0", null, fileID, fileItem.getName(), locale);
+			return getXmlError("error.upload.failed.size0", null, fileID, fileName, locale);
 		}
-
-		final File uploadFile;
-		String fileHash = FileUtil.getRandomFileHash(fileItem.getName());
-		if (command.isTemp()) { // /editPublication
-			uploadFile = new File(this.tempPath + fileHash);
-		} else { // /bibtex/....
-			uploadFile = new File(FileUtil.getFilePath(this.docPath, fileHash));
-		}
-		final String md5Hash = HashUtils.getMD5Hash(fileItem.get());
+		final String intraHash = command.getIntraHash();
+		final String hash;
 		try {
-			//should be uploadFile after debugging
-			fileItem.write(uploadFile);
+			if (command.isTemp()) { // /editPublication
+				final File writtenFile = this.fileLogic.writeTempFile(new ServerUploadedFile(file), this.fileLogic.getDocumentExtensionChecker());
+				hash = writtenFile.getName();
+			} else { // /bibtex/....
+				final Document document = this.fileLogic.saveDocumentFile(command.getContext().getLoginUser().getName(), new ServerUploadedFile(file));
+				this.logic.createDocument(document, intraHash);
+				hash = document.getMd5hash();
+			}
 		} catch (final Exception ex) {
 			log.error("Could not write uploaded file.", ex);
-			return getXmlError("error.500", null, fileID, fileItem.getName(), locale);
-		}
-
-		final String intraHash = command.getIntraHash();
-		if (!command.isTemp()) {
-			final Document document = new Document();
-			document.setFileName(fileItem.getName());
-			document.setFileHash(fileHash);
-			document.setMd5hash(md5Hash);
-			document.setUserName(command.getContext().getLoginUser().getName());
-
-			/*
-			 * add document to the data base
-			 */
-			this.logic.createDocument(document, intraHash);
-
-			/*
-			 * clear fileHash (randomFileName), so only md5Hash over the file content will be sent back
-			 */
-			fileHash = "";
+			return getXmlError("error.500", null, fileID, fileName, locale);
 		}
 
 		return "<root>" +
 		"<status>ok</status>" +
 		"<fileid>" + fileID + "</fileid>" +
-		"<filehash>" + md5Hash + fileHash + "</filehash>" +
-		"<filename>" + fileItem.getName() + "</filename>" +
+		"<filehash>" + hash + "</filehash>" +
+		"<filename>" + fileName + "</filename>" +
 		"<intrahash>" + intraHash + "</intrahash>" +
 		"</root>";
 	}
@@ -322,22 +296,6 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	}
 
 	/**
-	 * @param docPath
-	 *            path to the documents folder to set
-	 */
-	public void setDocPath(String docPath) {
-		this.docPath = docPath;
-	}
-
-	/**
-	 * @param tempPath
-	 *            the tempPath to set
-	 */
-	public void setTempPath(String tempPath) {
-		this.tempPath = tempPath;
-	}
-
-	/**
 	 * @param messageSource the messageSource to set
 	 */
 	public void setMessageSource(MessageSource messageSource) {
@@ -345,10 +303,10 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	}
 
 	/**
-	 * @param extensionChecker the extensionChecker to set
+	 * @param fileLogic the fileLogic to set
 	 */
-	public void setExtensionChecker(ExtensionChecker extensionChecker) {
-		this.extensionChecker = extensionChecker;
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 
 }

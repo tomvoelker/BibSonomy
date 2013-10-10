@@ -5,11 +5,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
-import org.bibsonomy.database.util.DocumentUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
@@ -18,6 +18,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -46,9 +47,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	private static final String SESSION_ATTRIBUTE_SCRAPER_METADATA = "scraperMetaData";
 
 	private Scraper scraper;
-	
-	private String docPath;
-	protected String tempPath;
 
 	@Override
 	protected View getPostView() {
@@ -73,7 +71,39 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		if ((present(url) || present(selection))) {
 			handleScraper(command, url, selection);
 		}
+	}
+	
+	@Override
+	protected void preparePost(EditPostCommand<BibTex> command, Post<BibTex> post) {
+		super.preparePost(command, post);
 		
+		/*
+		 * link the temp documents with the post
+		 */
+		final List<String> fileNames = command.getFileName();
+		if (!present(fileNames)) {
+			return;
+		}
+		final BibTex publication = post.getResource();
+		if (publication.getDocuments() == null) {
+			publication.setDocuments(new LinkedList<Document>());
+		}
+		for (final String compoundFileName : fileNames) {
+			final String fileHash = compoundFileName.substring(0, 32);
+			final String fileName = compoundFileName.substring(32);
+			/*
+			 * copy temporary file to documents directory
+			 */
+			final Document document = new Document();
+			document.setTemp(true);
+			document.setFileName(fileName);
+			document.setFileHash(fileHash);
+			/*
+			 * add document to the resource the logic will
+			 * move the file to the correct position
+			 */
+			publication.getDocuments().add(document);
+		}
 	}
 
 	private void handleScraper(final COMMAND command, final String url, String selection) {
@@ -134,7 +164,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 						/*
 						 * store scraping context and scraping metadata
 						 */
-						handleScraperMetadata(command, scrapingContext);						
+						handleScraperMetadata(command, scrapingContext);
 					} else {
 						/*
 						 * the parser did not return any result ...
@@ -193,33 +223,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		}
 	}
 
-	@Override
-	protected void createOrUpdateSuccess(final COMMAND command, final User loginUser, final Post<BibTex> post) {
-		super.createOrUpdateSuccess(command, loginUser, post);
-		this.handleAddFiles(command, loginUser.getName());
-	}
-	
-	/**
-	 * The temporary files will be stored on the file system and in the database 
-	 */
-	private void handleAddFiles(final EditPublicationCommand command, final String userName) {
-		final List<String> fileNames = command.getFileName();
-		if (!present(fileNames)) {
-			return;
-		}
-		final String intraHash = command.getPost().getResource().getIntraHash();
-		for (final String compoundFileName: fileNames) {
-			/*
-			 * copy temporary file to documents directory
-			 */
-			final Document document = DocumentUtils.getPersistentDocument(this.tempPath, this.docPath, userName, compoundFileName);
-			/*
-			 * add document to the database
-			 */
-			this.logic.createDocument(document, intraHash);
-		}
-	}
-
 	/** 
 	 * This controller exchanges the resource by a parsed version of it and 
 	 * additionally adds scraper metadata from the session (if available).
@@ -266,7 +269,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 
 	@Override
 	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
-		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredPublication", "You already have this publication in your collection. ");
+		errors.rejectValue("post.resource.title", "error.field.valid.alreadyStoredPublication", "You already have this publication in your collection.");
 	}
 
 	/**
@@ -275,18 +278,4 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	public void setScraper(final Scraper scraper) {
 		this.scraper = scraper;
 	}
-	/**
-	 * @param docPath the docPath to set
-	 */
-	public void setDocPath(final String docPath) {
-		this.docPath = docPath;
-	}
-
-	/**
-	 * @param tempPath the tempPath to set
-	 */
-	public void setTempPath(final String tempPath) {
-		this.tempPath = tempPath;
-	}
-
 }

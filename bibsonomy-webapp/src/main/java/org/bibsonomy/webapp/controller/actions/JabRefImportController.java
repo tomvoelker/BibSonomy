@@ -1,19 +1,14 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.io.File;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
-import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
-import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.util.upload.FileUploadInterface;
-import org.bibsonomy.util.upload.impl.FileUploadFactory;
-import org.bibsonomy.util.upload.impl.ListExtensionChecker;
+import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.actions.JabRefImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -48,12 +43,8 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	 * logic database interface
 	 */
 	private LogicInterface logic;
-
-
-	/**
-	 * the factory used to get an instance of a FileUploadHandler.
-	 */
-	private FileUploadFactory uploadFactory;
+	
+	private FileLogic fileLogic;
 
 	/**
 	 * An instance of the (new!) layout renderer. We need it here to unload
@@ -101,8 +92,8 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 				log.debug("deleting layout " + document.getFileName() + " for user " + userName);
 				
 				this.logic.deleteDocument(document, null);
-
-				new File(FileUtil.getFilePath(this.uploadFactory.getDocpath(), hash)).delete();
+				this.fileLogic.deleteJabRefLayout(hash);
+				
 				/*
 				 * delete layout object from exporter
 				 */
@@ -153,15 +144,12 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 		if (fileItem != null && fileItem.getSize() > 0) {
 			log.debug("writing layout part " + layoutPart + " with file " + fileItem.getOriginalFilename());
 			try {
-				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);
-				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(fileItem, new ListExtensionChecker(FileUploadInterface.LAYOUT_EXTENSIONS));
 				/*
 				 * write file to disk
 				 */
-				final Document uploadedFile = uploadFileHandler.writeUploadedFile(hashedName, loginUser);
+				final Document uploadedFile = this.fileLogic.writeJabRefLayout(loginUser.getName(), new ServerUploadedFile(fileItem), layoutPart);
 				/*
-				 * store row in database
+				 * store document in database
 				 */
 				this.logic.createDocument(uploadedFile, null);
 			} catch (Exception ex) {
@@ -194,15 +182,14 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
-
-	/**
-	 * @param uploadFactory
-	 */
-	@Required
-	public void setUploadFactory(FileUploadFactory uploadFactory) {
-		this.uploadFactory = uploadFactory;
-	}
 	
+	/**
+	 * @param fileLogic the fileLogic to set
+	 */
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
+	}
+
 	/**
 	 * @param jabrefLayoutRenderer the jabrefLayoutRenderer to set
 	 */

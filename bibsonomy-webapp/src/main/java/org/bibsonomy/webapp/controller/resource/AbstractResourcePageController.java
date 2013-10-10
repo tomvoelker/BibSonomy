@@ -221,7 +221,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 */
 				throw new ObjectNotFoundException(shortHash);
 			}
-			firstResource = resourceList.get(0).getResource();	
+			firstResource = resourceList.get(0).getResource();
 			/*
 			 * TODO: As first Resource we'd like to use the post, which is the one, that the user clicked on
 			 * (as long as no goldstandard exists).
@@ -233,8 +233,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 */
 		handleDiskussionItems(goldStandard, command.getContext().getLoginUser());
 		
-		
-		this.endTiming();		
+		this.endTiming();
 		return this.handleFormat(command, format, longHash, requUser, groupingEntity, goldHash, goldStandard, firstResource);
 	}
 
@@ -300,7 +299,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	 */
 	protected void handleDiskussionItems(Post<G> goldStandard, User loginUser) {
 		/*
-		 * do nothing for bookmarks
+		 * by default do nothing
 		 */
 	}
 	

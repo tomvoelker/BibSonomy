@@ -360,7 +360,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * ckey is given, so user is already editing the post -> parse tags
 		 */
-		this.cleanAndValidatePost(command, post);
+		this.preparePost(command, post);
 		/*
 		 * check, if the post has changed
 		 */
@@ -489,7 +489,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @param command
 	 * @param post
 	 */
-	private void cleanAndValidatePost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	protected void preparePost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
 		try {
 			/*
 			 * we use addAll here because there might already be system tags 
@@ -605,7 +605,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * parses the tags, 
 		 */
-		this.cleanAndValidatePost(command, post);
+		this.preparePost(command, post);
 
 		/*
 		 * return to form until validation passes
@@ -843,7 +843,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			return true;
 		}
 		
-		return false;		
+		return false;
 	}
 
 	// FIXME: find a more suitable name for this method

@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.command.ajax;
 
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author wla
@@ -20,7 +20,7 @@ public class AjaxDocumentCommand extends AjaxCommand {
 
 	private boolean temp;
 	
-	private CommonsMultipartFile file;
+	private MultipartFile file;
 
 	/**
 	 * @param intraHash the intraHash to set
@@ -67,14 +67,14 @@ public class AjaxDocumentCommand extends AjaxCommand {
 	/**
 	 * @param file the file to set
 	 */
-	public void setFile(CommonsMultipartFile file) {
+	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
 
 	/**
 	 * @return the file
 	 */
-	public CommonsMultipartFile getFile() {
+	public MultipartFile getFile() {
 		return file;
 	}
 

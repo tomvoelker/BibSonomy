@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,16 +20,16 @@ import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.importer.bookmark.file.BrowserImporter;
 import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.services.importer.FileBookmarkImporter;
 import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.util.upload.FileUploadInterface;
-import org.bibsonomy.util.upload.impl.FileUploadFactory;
 import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -51,7 +52,8 @@ import org.springframework.validation.Errors;
  */
 public class ImportBookmarksController implements ErrorAware, ValidationAwareController<ImportCommand> {
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
-	
+
+	private static final ListExtensionChecker EXTENSION_CHECKER = new ListExtensionChecker(FileUploadInterface.BROWSER_IMPORT_EXTENSIONS);
 
 	/**
 	 * logic interface for the database connectivity
@@ -64,9 +66,9 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	private DeliciousImporterFactory importerFactory;
 
 	/**
-	 * the factory used to get an instance of a FileUploadHandler.
+	 * the file logic to use
 	 */
-	private FileUploadFactory uploadFactory;
+	private FileLogic fileLogic;
 
 	private Errors errors = null;
 
@@ -129,15 +131,14 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				/*
 				 * import posts/relations from Firefox, Safari, Opera, Chrome
 				 */
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(command.getFile(), new ListExtensionChecker(FileUploadInterface.BROWSER_IMPORT_EXTENSIONS));
-				final Document document = uploadFileHandler.writeUploadedFile();
+				final File file = this.fileLogic.writeTempFile(new ServerUploadedFile(command.getFile()), EXTENSION_CHECKER);
 				final FileBookmarkImporter fileImporter = new BrowserImporter();
-				fileImporter.initialize(document.getFile(), loginUser, command.getGroup());
+				fileImporter.initialize(file, loginUser, command.getGroup());
 				posts = fileImporter.getPosts();
 				/*
 				 * clear temporary file
 				 */
-				document.getFile().delete();
+				this.fileLogic.deleteTempFile(file.getName());
 			} else {
 				log.info("unknown import type '" + importType + "'");
 			}
@@ -191,7 +192,6 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	 * @param posts
 	 */
 	private void storePosts(final ImportCommand command, final List<Post<Bookmark>> posts) {
-
 		// stores all newly added bookmarks
 		final Map<String, String> newBookmarkEntries = new HashMap<String, String>();
 
@@ -227,7 +227,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 								updatedBookmarkEntries.put(createdPostHash.get(0), title);
 							} else {
 								nonCreatedBookmarkEntries.put(hash, title);
-							}							
+							}
 						} else {
 							// something else went wrong => don't handle this
 							throw de;
@@ -305,9 +305,9 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 	}
 
 	/**
-	 * @param uploadFactory
+	 * @param fileLogic the fileLogic to set
 	 */
-	public void setUploadFactory(final FileUploadFactory uploadFactory) {
-		this.uploadFactory = uploadFactory;
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 }

@@ -26,7 +26,7 @@
 	<c:if test="${not empty jsOpenAccess}"> 
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
-  		
+	
 	<script type="text/javascript" src="${resdir}/javascript/bibtexdetails.js"><!-- keep me --></script>
 	<div id="icons" style="display:none">
 		<img id="icon_expand" alt="" src="${resdir}/image/icon_expand.png"/>
@@ -50,7 +50,7 @@
 				<!-- preview picture of first document -->
 				<a class="preview publication" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
 					<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}?preview=SMALL" alt="${fn:escapeXml(publication.documents[0].fileName)}"/>
-				</a>	
+				</a>
 			</div>
 		</c:if>
 		
@@ -59,12 +59,12 @@
 			+-->
 		<c:if test="${not empty jsOpenAccess}"> <!-- is there any openaccess javascript code defined in theme*.properties? -->
 			<c:if test="${isOwnEntry}"> <!-- only if publication is own one -->
-			    <c:if test="${mtl:hasTagMyown(post)}"> <!-- only if publication is tagged with myown system tag -->	
+				<c:if test="${mtl:hasTagMyown(post) and (properties['publication.reporting.mode'] eq 'ALL' or properties['publication.reporting.mode'] eq 'GROUP' and mtl:userIsGroup(command.context.loginUser))}"> <!-- only if publication is tagged with myown system tag -->	
 					<editpub:openaccess referer="${referer}" bibtex="${publication}"/>
 				</c:if>
 			</c:if>
 		</c:if>
-								
+		
 		<!--+
 			| discussion and rating
 			+-->
@@ -273,7 +273,7 @@
 		<c:if test="${not empty publication.abstract}">
 			<h3><a class="foldUnfold" href="#abstract"><img id="abstractImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.abstract"/></a></h3>
 			<div id="abstract" style="font-size:90%"><c:out value="${mtl:cleanBibtex(publication.abstract)}" /></div>
-		</c:if>				
+		</c:if>
 		
 		<!--+
 			| description
@@ -299,7 +299,7 @@
 			  		<input style="float:right;" type="submit" value="${save}" id="makeP" onclick="javascript: return updatePrivNote($(this))"/>    
 			  	</form>
 			</div>
-		</c:if>			
+		</c:if>
 													
 	</div>
 	

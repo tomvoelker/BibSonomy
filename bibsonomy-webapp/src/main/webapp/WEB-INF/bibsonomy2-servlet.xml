@@ -665,7 +665,7 @@
 
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
 		<property name="logic" ref="logic" />
-		<property name="docpath" value="${project.document.path}"/>
+		<property name="fileLogic" ref="fileLogic" />
 		<property name="qrCodeRenderer" ref="qrCodeRenderer" />
 	</bean>
 	

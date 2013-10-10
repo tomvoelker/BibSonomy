@@ -13,19 +13,21 @@ import net.sf.json.JSONObject;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.SwordException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Repository;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
 
+import de.unikassel.puma.common.ReportingMode;
 import de.unikassel.puma.openaccess.sword.PumaData;
 import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.ajax.SwordServiceCommand;
@@ -38,6 +40,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 	
 	private SwordService swordService;
 	private MessageSource messageSource;
+	private ReportingMode mode;
 
 	@Override
 	public SwordServiceCommand instantiateCommand() {
@@ -47,13 +50,17 @@ public class SwordServiceController extends AjaxController implements Minimalist
 	@Override
 	public View workOn(final SwordServiceCommand command) {
 		if (!command.getContext().isUserLoggedIn()) {
-			throw new AccessDeniedException("error.method_not_allowed");
+			throw new AccessDeniedException("please log in");
+		}
+		
+		final User user = command.getContext().getLoginUser();
+		if (ReportingMode.GROUP.equals(this.mode) && !UserUtils.userIsGroup(user)) {
+			throw new AccessDeniedException("you are not allowed to report publications");
 		}
 		
 		String message = "error.sword.sentsuccessful";
 		int statuscode = 1; // statuscode = 1: ok; = 0: error 
 
-		final User user = command.getContext().getLoginUser();
 		
 		final Post<BibTex> post = this.getPostToHash(command.getResourceHash(), user.getName());
 		
@@ -63,7 +70,7 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		
 		// add some metadata to post
 		final PumaData<BibTex> pumaData = new PumaData<BibTex>();
-		pumaData.setPost(post);		
+		pumaData.setPost(post);
 		
 		// get additional metadata
 		final Map<String, List<String>> metadataMap = this.logic.getExtendedFields(BibTex.class, command.getContext().getLoginUser().getName(), post.getResource().getIntraHash(), null);
@@ -84,8 +91,8 @@ public class SwordServiceController extends AjaxController implements Minimalist
 
 //			if (availableClassifications.contains(item.getKey())) {
 //				pumaData.addClassification(item.getKey(), item.getValue());
-//			}	
-		}		
+//			}
+		}
 
 		try {
 			// TODO: do not throw an exception if transfer was ok
@@ -163,4 +170,10 @@ public class SwordServiceController extends AjaxController implements Minimalist
 		this.swordService = swordService;
 	}
 
+	/**
+	 * @param mode the mode to set
+	 */
+	public void setMode(ReportingMode mode) {
+		this.mode = mode;
+	}
 }

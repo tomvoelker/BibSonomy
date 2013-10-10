@@ -11,15 +11,15 @@ import java.util.ArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
-import org.bibsonomy.model.Document;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
+import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.upload.ExtensionChecker;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.util.upload.FileUploadInterface;
-import org.bibsonomy.util.upload.impl.FileUploadFactory;
 import org.bibsonomy.util.upload.impl.ListExtensionChecker;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.springframework.validation.Errors;
@@ -32,15 +32,12 @@ import org.springframework.web.multipart.MultipartFile;
  * @version $Id$
  */
 public class PublicationImporter {
-	
 	private static final Log log = LogFactory.getLog(PublicationImporter.class);
 	
-	/**
-	 * the factory used to get an instance of a FileUploadHandler.
-	 * it is the tmp fileupload factory
-	 */
-	private FileUploadFactory uploadFactory;
-	private ExtensionChecker extensionChecker;
+	private static final ListExtensionChecker EXTENSION_CHECKER_BIBTEX_ENDNOTE = new ListExtensionChecker(FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS);
+
+	
+	private FileLogic fileLogic;
 	
 	/**
 	 * converter from Endnote to BibTeX
@@ -54,39 +51,36 @@ public class PublicationImporter {
 	 * 
 	 * @param command
 	 * @param errors 
-	 * @return
+	 * @return the file contents null if only a file was uploaded
 	 */
 	public String handleFileUpload(final PostPublicationCommand command, final Errors errors) {
 		boolean keepTempFile = false;
-
 		/*
 		 * get temp file
 		 */
 		File file = null;
 		String fileContent = null;
 		try {
-
 			final MultipartFile uploadedFile = command.getFile();
-
 			if (!present(uploadedFile) || !present(uploadedFile.getName())) {
 				errors.reject("error.upload.failed.noFileSelected");
 				return null;
 			}
+			final String fileName = uploadedFile.getOriginalFilename();
 			
 			// check if uploaded file is one of allowed files, otherwise it can be a endnote or bibtex file
 			if (StringUtils.matchExtension(uploadedFile.getName(), FileUploadInterface.DOCUMENT_EXTENSIONS)) {
 				log.debug("the file is in pdf format");
-				this.handleNonSnippetFile(command, this.uploadFactory.getFileUploadHandler(uploadedFile, this.extensionChecker).writeUploadedFile());
+				file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), this.fileLogic.getDocumentExtensionChecker());
+				if (!present(command.getFileName())) {
+					command.setFileName(new ArrayList<String>());
+				}
+				command.getFileName().add(HashUtils.getMD5Hash(uploadedFile.getBytes()) + file.getName() + fileName);
 				keepTempFile = true;
 				return null;
 			}
-
-			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(uploadedFile, new ListExtensionChecker(FileUploadInterface.BIBTEX_ENDNOTE_EXTENSIONS));
-
-			final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
-			file = uploadedDocument.getFile();
-
-			final String fileName = uploadedDocument.getFileName();
+			
+			file = this.fileLogic.writeTempFile(new ServerUploadedFile(uploadedFile), EXTENSION_CHECKER_BIBTEX_ENDNOTE);
 
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 			if (!StringUtils.matchExtension(fileName, Sets.asSet(FileUploadInterface.BIBTEX_EXTENSION))) {
@@ -121,9 +115,9 @@ public class PublicationImporter {
 			/*
 			 * clear temporary file, but keep pdf's
 			 */
-			if ((file != null) && !keepTempFile) {
+			if (file != null && !keepTempFile) {
 				log.debug("deleting uploaded temp file");
-				file.delete();
+				this.fileLogic.deleteTempFile(file.getName());
 			}
 		}
 		return null;
@@ -149,26 +143,6 @@ public class PublicationImporter {
 		 */
 		return selection;
 	}
-	
-	/**
-	 * Attach the uploaded file to the command. This is required to attach the file to the new post
-	 * 
-	 * @param command
-	 * @param document
-	 */
-	private void handleNonSnippetFile(final PostPublicationCommand command, final Document document) {
-		if (!present(command.getFileName())) {
-			command.setFileName(new ArrayList<String>());
-		}
-		command.getFileName().add(document.getMd5hash() + document.getFile().getName() + document.getFileName());
-	}
-
-	/**
-	 * @param uploadFactory the uploadFactory to set
-	 */
-	public void setUploadFactory(final FileUploadFactory uploadFactory) {
-		this.uploadFactory = uploadFactory;
-	}
 
 	/**
 	 * @param endnoteToBibtexConverter the endnoteToBibtexConverter to set
@@ -178,9 +152,9 @@ public class PublicationImporter {
 	}
 
 	/**
-	 * @param extensionChecker the extensionChecker to set
+	 * @param fileLogic the fileLogic to set
 	 */
-	public void setExtensionChecker(ExtensionChecker extensionChecker) {
-		this.extensionChecker = extensionChecker;
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 }

@@ -17,9 +17,9 @@
 				<entry key="/generalAjax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="generalAjaxController"/>
-						 <property name="allowedFields">
-                            <list>
-                                <value>action</value>
+						<property name="allowedFields">
+							<list>
+								<value>action</value>
 								<value>pageURL</value>
 								<value>q</value>
 								<value>requestedUser</value>
@@ -27,8 +27,7 @@
 						</property>
 					</bean>
 				</entry>
-				
-        		<entry key="/ajax/additionalURLs">
+				<entry key="/ajax/additionalURLs">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="additionalURLController" />
 						<property name="allowedFields">
@@ -162,8 +161,8 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="editGoldstandardReferencesController"/>
 						 <property name="allowedFields">
-                            <list>
-                                <value>action</value>
+							<list>
+								<value>action</value>
 								<value>hash</value>
 								<value>references</value>
 							</list>
@@ -261,10 +260,8 @@
 
 
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
-		<property name="docPath" value="${project.document.path}"/>
-		<property name="tempPath" value="${project.document.temp}"/>
+		<property name="fileLogic" ref="fileLogic" />
 		<property name="messageSource" ref="messageSource"/>
-		<property name="extensionChecker" ref="extensionChecker" />
 	</bean>	
 		
 	<!-- controller for handling recommendation requests -->
