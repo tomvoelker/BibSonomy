@@ -184,11 +184,6 @@
 			<version>1.2.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.directwebremoting</groupId>
-			<artifactId>dwr</artifactId>
-			<version>2.0.10</version>
-		</dependency>
-		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-server</artifactId>
 		</dependency>
@@ -226,6 +221,10 @@
 					<artifactId>servlet-api</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-recommender-connector</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
@@ -568,16 +567,6 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>de.uni-kassel.cs</groupId>
-			<artifactId>recommender-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-recommender-connector</artifactId>
-			<version>2.0.39-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<properties>
