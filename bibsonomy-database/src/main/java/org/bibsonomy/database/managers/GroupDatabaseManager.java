@@ -233,10 +233,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of groups the user is member of
 	 */
 	public List<Group> getGroupsForUser(final String userName, final boolean removeSpecialGroups, final DBSession session) {
+		final List<Group> groupsForUser = this.getGroupsForUser(userName, session);
 		if (removeSpecialGroups) {
-			return this.removeSpecialGroups(this.getGroupsForUser(userName, session));
+			return this.removeSpecialGroups(groupsForUser);
 		}
-		return this.getGroupsForUser(userName, session);
+		return groupsForUser;
 	}
 
 	/**
