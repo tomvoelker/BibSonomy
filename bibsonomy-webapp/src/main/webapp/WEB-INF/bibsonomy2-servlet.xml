@@ -10,47 +10,47 @@
 	<!-- conversion service to convert strings to objects -->
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
-	        <list>
-	        	<!-- strings to enums (a generic converter) -->
-	            <bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
-	            
-	            <!-- converts a string to a class (and "bookmark", "publication" to resource classes) -->
-	            <bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
-	            
-	            <!-- 
-	            	converts strings to urls (empty strings are converted to null)
-	            	if you do not add this converter the ObjectToObjectConverter tries
-	            	to call the url constructor and fails instead of returning null
-	            	 -->
-	            <bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
-	            
-	            <!-- convert a string to a list of persons and vice versa -->
-	            <bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
-	            <bean class="org.bibsonomy.web.spring.converter.PersonListToStringConverter" />
-	           	
-	           	<!-- add a custom date converter to support binding of date fields. -->
-	            <bean class="org.bibsonomy.web.spring.converter.StringToDateConverter">
-	            	<property name="formats">
-	            		<list>
-	            			<!-- this format (ISO 8601) is used by
-	            				- the DBLP update (to set the date of bookmarks)
-	            				- the getPosts() parameters startDate and endDate
-	            			 -->
-	            			<bean class="org.joda.time.format.DateTimeFormat" factory-method="forPattern">
-	            				<constructor-arg value="yyyy-MM-dd'T'HH:mm:ssZ" />
-	            			</bean>
-	            			<!-- 
-	            				this simpler format is used by
-	            				- the birthday on /settings
-	            				 -->
-	            			<bean class="org.joda.time.format.DateTimeFormat" factory-method="forPattern">
-	            				<constructor-arg value="yyyy-MM-dd" />
-	            			</bean>
-	            		</list>
-	            	</property>
-	            </bean>
-	        </list>
-	    </property>
+			<list>
+				<!-- strings to enums (a generic converter) -->
+				<bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
+				
+				<!-- converts a string to a class (and "bookmark", "publication" to resource classes) -->
+				<bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
+				
+				<!-- 
+					converts strings to urls (empty strings are converted to null)
+					if you do not add this converter the ObjectToObjectConverter tries
+					to call the url constructor and fails instead of returning null
+				 -->
+				<bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
+				
+				<!-- convert a string to a list of persons and vice versa -->
+				<bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
+				<bean class="org.bibsonomy.web.spring.converter.PersonListToStringConverter" />
+				
+				<!-- add a custom date converter to support binding of date fields. -->
+				<bean class="org.bibsonomy.web.spring.converter.StringToDateConverter">
+					<property name="formats">
+						<list>
+							<!-- this format (ISO 8601) is used by
+								- the DBLP update (to set the date of bookmarks)
+								- the getPosts() parameters startDate and endDate
+							 -->
+							<bean class="org.joda.time.format.DateTimeFormat" factory-method="forPattern">
+								<constructor-arg value="yyyy-MM-dd'T'HH:mm:ssZ" />
+							</bean>
+							<!-- 
+								this simpler format is used by
+								- the birthday on /settings
+							 -->
+							<bean class="org.joda.time.format.DateTimeFormat" factory-method="forPattern">
+								<constructor-arg value="yyyy-MM-dd" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
@@ -104,11 +104,6 @@
 		<constructor-arg value="31536000" /> <!-- one year (= 3600 * 24 * 365 seconds) -->
 	</bean>
 	
-	<!-- provides access to the post suggestion --> 
- 	<bean id="suggestionLogic" class="org.bibsonomy.logic.SuggestionLogic">
-		<property name="sourceFilePath" value="${titleSuggestion.sourceFilePath}"/>
-	</bean>
-
 	<!-- provides access to cookies -->
 	<bean id="cookieLogic" class="org.bibsonomy.webapp.util.CookieLogic" scope="request">
 		<property name="requestLogic" ref="requestLogic"/>
@@ -144,7 +139,7 @@
 	    to be a user with role "admin". 
 	 -->
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="singleton">
-	    <!-- name the admin user will have when accessing the logic interface -->
+			<!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
@@ -161,7 +156,7 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
 	</bean>
-    <bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
+	<bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
 	
 	<bean id="qrCodeRenderer" class="org.bibsonomy.util.QRCodeRenderer" scope="singleton">
 		<property name="projectHome" value="${project.home}" />
@@ -196,12 +191,12 @@
 		<property name="defaultLocale" value="${project.defaultLocale}" />
 	</bean>
 	
-    <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
-      <property name="defaultThemeName" value="${project.theme}" />
-    </bean>
-    
+	<bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
+		<property name="defaultThemeName" value="${project.theme}" />
+	</bean>
+	    
 	<bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
-    	<property name="basenamePrefix" value="theme_"/>
+		<property name="basenamePrefix" value="theme_"/>
 	</bean>
 	
 	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
@@ -229,7 +224,7 @@
 
 	<!-- to resolve messages -->  
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<!-- matches messages.properties, messages_de.properties, ... -->   
+		<!-- matches messages.properties, messages_de.properties, ... -->
 		<property name="basenames">
 			<list>
 				<value>classpath:/projects/${project.name}_messages</value>
@@ -258,7 +253,7 @@
 	
 	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->
 	<bean id="nonJSPViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
-    	<property name="order" value="1"/>
+		<property name="order" value="1"/>
 	</bean>
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
@@ -283,10 +278,10 @@
 	<!-- WURFL -->
 	<bean id="wurfl.model" class="net.sourceforge.wurfl.core.resource.DefaultWURFLModel">
 		<constructor-arg index="0">
-    		<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
-      			<constructor-arg value="classpath:wurfl.zip" />
-   			</bean>
-  		</constructor-arg>
+			<bean class="net.sourceforge.wurfl.core.resource.SpringXMLResource">
+				<constructor-arg value="classpath:wurfl.zip" />
+			</bean>
+		</constructor-arg>
 	</bean>
 	<bean id="wurfl.matcherManager" class="net.sourceforge.wurfl.core.handlers.matchers.MatcherManager">
 		<constructor-arg ref="wurfl.model" />
@@ -307,9 +302,9 @@
 			<list>
 				<ref local="localeChangeInterceptor"/>
 				<!-- 
-   		         Wraps the request into a context and provides access to loginUser, ckey, etc.
-		         Will be put into the command by the controllerBase
-		        -->
+				  Wraps the request into a context and provides access to loginUser, ckey, etc.
+				  Will be put into the command by the controllerBase
+				-->
 				<ref local="requestWrapperContextInterceptor"/>
 				<ref local="mobileDetectionHandlerInterceptor"/>
 			</list>
@@ -512,7 +507,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>			 
+				</entry>
 				<entry key="/redirect">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="redirectController"/>
@@ -554,7 +549,7 @@
 				</entry>
 				<entry key="/tags">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="popularTagsPageController"/>						
+						<property name="controllerBeanName" value="popularTagsPageController"/>
 					</bean>
 				</entry>
 				<entry key="/mySearch">
@@ -585,17 +580,6 @@
 				<entry key="/scraperinfo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="scraperInfoController"/>
-					</bean>
-				</entry>
-				<entry key="/suggestion">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="suggestionController"/>
-						<property name="allowedFields">
-							<list>
-								<value>postType</value>
-								<value>postPrefix</value>
-							</list>
-						</property>
 					</bean>
 				</entry>
 				<entry key="/errors/403">
@@ -634,8 +618,8 @@
 	</bean>
 	
 	
-  	<!--  #################### controller #################### -->
- 	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
+	<!--  #################### controller #################### -->
+	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
@@ -842,10 +826,6 @@
 	
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
 	
-	<bean id="suggestionController" class="org.bibsonomy.webapp.controller.ajax.SuggestionController" scope="request">
-			<property name="suggestionLogic" ref="suggestionLogic"/>
-	</bean>
-
 	<!--  #################### static views #################### -->
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"/>
@@ -873,20 +853,20 @@
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
 	
 	<!-- webapp -->
-	<import resource="bibsonomy2-servlet-fields.xml"/>
-	<import resource="bibsonomy2-servlet-recommender-connector.xml"/>	
-	<import resource="bibsonomy2-servlet-actions.xml"/>
-	<import resource="bibsonomy2-servlet-ajax.xml"/>	
-	<import resource="bibsonomy2-servlet-admin.xml"/>
+	<import resource="bibsonomy2-servlet-fields.xml" />
+	<import resource="bibsonomy2-servlet-recommender-connector.xml" />
+	<import resource="bibsonomy2-servlet-actions.xml" />
+	<import resource="bibsonomy2-servlet-ajax.xml" />	
+	<import resource="bibsonomy2-servlet-admin.xml" />
 	<import resource="bibsonomy2-servlet-database.xml" />
-	<import resource="bibsonomy2-servlet-lucene.xml"/>
-	<import resource="bibsonomy2-servlet-security.xml"/>
-	<import resource="bibsonomy2-servlet-opensocial.xml"/>
-	<import resource="bibsonomy2-servlet-saml.xml"/>
-	<import resource="bibsonomy2-servlet-rest.xml"/>
-	<import resource="bibsonomy2-servlet-cronjobs.xml"/>
-	<import resource="bibsonomy2-servlet-synchronization.xml"/>
+	<import resource="bibsonomy2-servlet-lucene.xml" />
+	<import resource="bibsonomy2-servlet-security.xml" />
+	<import resource="bibsonomy2-servlet-opensocial.xml" />
+	<import resource="bibsonomy2-servlet-saml.xml" />
+	<import resource="bibsonomy2-servlet-rest.xml" />
+	<import resource="bibsonomy2-servlet-cronjobs.xml" />
+	<import resource="bibsonomy2-servlet-synchronization.xml" />
 	<import resource="bibsonomy-servlet-logging.xml" />
-	<import resource="bibsonomy2-servlet-bibsonomy.xml"/>
-	<import resource="bibsonomy2-servlet-puma.xml"/>
+	<import resource="bibsonomy2-servlet-bibsonomy.xml" />
+	<import resource="bibsonomy2-servlet-puma.xml" />
 </beans>

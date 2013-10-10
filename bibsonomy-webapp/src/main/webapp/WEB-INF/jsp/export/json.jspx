@@ -139,13 +139,7 @@
 	  <!-- spheres -->
 	  <mtl:exists path="command.spheres">
 		<json:spheres sphere="${entry}" />
-	  </mtl:exists>
-	  
-	  <!-- title suggestion -->
-	  <mtl:exists path="command.postSuggestionTitle">
-		<json:postTitle title="${command.postSuggestionTitle}"/>
-	  </mtl:exists>
-	  
+	  </mtl:exists>	  
    ]
 }
 <c:if test="${not empty command.callback}">)</c:if>
