@@ -1,6 +1,8 @@
 package org.bibsonomy.services.filesystem;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.bibsonomy.model.util.file.UploadedFile;
 
@@ -12,6 +14,9 @@ public interface ProfilePictureLogic {
 	
 	/** the profile picture file extension */
 	public static final String FILE_EXTENSION = ".jpg";
+	
+	/** all allowed file extensions for upload */
+	public static final Collection<String> PICTURE_EXTENSIONS = Arrays.asList("png", FILE_EXTENSION, "jpeg");
 	
 	/**
 	 * saves a profile picture for the provided username
