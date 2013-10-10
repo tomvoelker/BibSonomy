@@ -33,35 +33,40 @@ import java.util.Date;
  * @version $Id$
  */
 public class Document {
-	/**
-	 * the filename
-	 */
+	/** the filename */
 	private String fileName;
+	
+	/** is the document a temporary file in the filesystem? */
+	private boolean temp;
 
-	/**
-	 * the username of the document
-	 */
+	/** the username of the document */
 	private String userName;
 
-	/**
-	 * the hash of the file
-	 */
+	/** the hash of the file */
 	private String fileHash;
 	
-	/**
-	 * md5hash over content of the file 
-	 */
+	/** md5hash over content of the file  */
 	private String md5hash;
 	
-	/**
-	 * The date at which the document has been saved.
-	 */
+	/** The date at which the document has been saved. */
 	private Date date;
 	
-	/**
-	 * The actual file ... sometimes it's contained in the document!
-	 */
+	/** The actual file ... sometimes it's contained in the document! */
 	private File file;
+
+	/**
+	 * @return the temp
+	 */
+	public boolean isTemp() {
+		return this.temp;
+	}
+
+	/**
+	 * @param temp the temp to set
+	 */
+	public void setTemp(boolean temp) {
+		this.temp = temp;
+	}
 
 	/**
 	 * @return md5hash
