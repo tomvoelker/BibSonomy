@@ -38,6 +38,7 @@ import net.sf.jabref.export.layout.Layout;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.util.JabRefModelConverter;
 import org.bibsonomy.model.BibTex;
@@ -150,7 +151,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * @throws LayoutRenderingException - if a layout could not be found
 	 */
 	private StringBuffer renderDatabase(final BibtexDatabase database, final List<BibtexEntry> sorted, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
-		final StringBuffer output = new StringBuffer();  
+		final StringBuffer output = new StringBuffer();
 
 		/* 
 		 * *************** rendering the header ***************** 

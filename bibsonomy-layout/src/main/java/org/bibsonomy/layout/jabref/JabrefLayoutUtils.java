@@ -25,6 +25,7 @@ package org.bibsonomy.layout.jabref;
 
 import java.io.InputStream;
 
+import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.util.StringUtils;
 
 /**
@@ -39,7 +40,7 @@ public class JabrefLayoutUtils {
 	/**
 	 * The file extension of layout filter file names.
 	 */
-	protected final static String layoutFileExtension = ".layout";
+	public final static String layoutFileExtension = "layout";
 
 	/** Builds the hash for the custom layout files of the user. Depending on the 
 	 * layout part the hash differs.
@@ -49,7 +50,7 @@ public class JabrefLayoutUtils {
 	 * @return
 	 */
 	public static String userLayoutHash (final String user, final LayoutPart part) {
-		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + part + layoutFileExtension).toLowerCase();
+		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + part + "." + layoutFileExtension).toLowerCase();
 	}
 	
 	/** Builds the name of a custom user layout, for the map and elsewhere. Typically "custom_" + userName.
@@ -80,11 +81,11 @@ public class JabrefLayoutUtils {
 	 * @return
 	 */
 	protected static String getLayoutFileName(final String layout, final String part) {
-		return layout + "." + part + layoutFileExtension;
+		return layout + "." + part + "." + layoutFileExtension;
 	}
 
 	protected static String getLayoutFileName(final String layout) {
-		return layout + layoutFileExtension;
+		return layout + "." + layoutFileExtension;
 	}
 }
 

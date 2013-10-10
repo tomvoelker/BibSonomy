@@ -40,6 +40,7 @@ import net.sf.jabref.export.layout.LayoutHelper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.util.file.FileUtil;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -141,7 +142,7 @@ public class JabrefLayouts {
 			 * iterate over all subLayouts
 			 */
 			for (final String subLayout: subLayouts) {
-				final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + JabrefLayoutUtils.layoutFileExtension;
+				final String fileName = filePath + jabrefLayout.getBaseFileName() + subLayout + "." + JabrefLayoutUtils.layoutFileExtension;
 				log.debug("trying to load sublayout " + fileName + "...");
 				final Layout layout = loadLayout(fileName);
 				if (layout != null) {

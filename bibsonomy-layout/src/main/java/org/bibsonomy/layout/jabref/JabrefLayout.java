@@ -26,6 +26,8 @@ package org.bibsonomy.layout.jabref;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bibsonomy.common.enums.LayoutPart;
+
 import net.sf.jabref.export.layout.Layout;
 
 
