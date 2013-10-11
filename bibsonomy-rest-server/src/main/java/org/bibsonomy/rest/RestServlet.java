@@ -11,7 +11,6 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -159,15 +158,6 @@ public final class RestServlet extends HttpServlet {
 	 */
 	public void setRendererFactory(final RendererFactory rendererFactory) {
 		this.rendererFactory = rendererFactory;
-	}
-
-	/**
-	 * Sets the base path to the documents. 
-	 * @param documentPath
-	 */
-	@Required
-	public void setDocumentPath(final String documentPath) {
-		additionalInfos.put(DOCUMENTS_PATH_KEY, documentPath);
 	}
 
 	/**
