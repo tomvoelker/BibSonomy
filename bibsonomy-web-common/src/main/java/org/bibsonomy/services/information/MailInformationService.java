@@ -22,7 +22,7 @@ import org.springframework.context.MessageSource;
  * @author dzo
  * @version $Id$
  */
-public abstract class MailInformationService implements InformationService {
+public class MailInformationService implements InformationService {
 	private static final Log log = LogFactory.getLog(MailInformationService.class);
 	
 	/** the logic must be an admin logic */
