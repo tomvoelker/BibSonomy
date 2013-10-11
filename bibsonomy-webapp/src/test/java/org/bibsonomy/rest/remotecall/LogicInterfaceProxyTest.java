@@ -202,7 +202,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	protected static ServerFileLogic createFileLogic() {
 		final ServerFileLogic fileLogic = new ServerFileLogic();
 		ServerDocumentFileLogic documentLogic = new ServerDocumentFileLogic("");
-		documentLogic.setExtensionChecker(new ListExtensionChecker(Arrays.asList("pdf", "ps")));
+		documentLogic.setExtensionChecker(new ListExtensionChecker(Arrays.asList("pdf", "ps", "txt")));
 		fileLogic.setDocumentFileLogic(documentLogic);
 		return fileLogic;
 	}
