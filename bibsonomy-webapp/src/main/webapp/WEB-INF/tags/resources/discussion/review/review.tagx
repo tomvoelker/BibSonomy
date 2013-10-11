@@ -6,25 +6,25 @@
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment">
-    
-    <jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="true" />
-    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
-    <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-    <jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true" />
-    
-    <c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
-    
-    <discussionItem:discussionItem resource="${resource}" discussionItem="${review}" loginUser="${loginUser}" schemaOrgMarkUp="${schemaOrgMarkUp}">
-    	<jsp:attribute name="content">
-    		<div class="rating" data-rating="${review.rating}">
+	
+	<jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="true" />
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true" />
+	
+	<c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
+	
+	<discussionItem:discussionItem resource="${resource}" discussionItem="${review}" loginUser="${loginUser}" schemaOrgMarkUp="${schemaOrgMarkUp}">
+		<jsp:attribute name="content">
+			<div class="rating" data-rating="${review.rating}">
 				<review:reviewStars rating="${review.rating}"/>
 				<c:if test="${schemaOrgMarkUp}">
 					<meta itemprop="reviewRating" content="${review.rating}"/>
 				</c:if>
 			</div>
 			<!-- use schema.org markup or not -->
-  			<c:choose>
-   				<c:when test="${schemaOrgMarkUp}">
+			<c:choose>
+				<c:when test="${schemaOrgMarkUp}">
 					<div class="review text" itemprop="reviewBody">
 						<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
 					</div>
@@ -34,12 +34,12 @@
 						<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
 					</div>
 				</c:otherwise>
-			</c:choose>			
+			</c:choose>
 
 			<c:if test="${ownReview}">
 				<!-- This form is only displayed where a goldstandard post exists. Therefore the postUserName ist the goldStandardPostUserName "" -->
 				<review:reviewForm review="${review}" resource="${resource}" userName="${loginUser.name}" postUserName=""/>
 			</c:if>
-    	</jsp:attribute>
-    </discussionItem:discussionItem>
+		</jsp:attribute>
+	</discussionItem:discussionItem>
 </jsp:root>
