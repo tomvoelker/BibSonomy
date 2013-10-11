@@ -175,7 +175,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			final UrlRenderer urlRenderer = new UrlRenderer(apiUrl);
 			restServlet.setUrlRenderer(urlRenderer);
 			restServlet.setRendererFactory(new RendererFactory(urlRenderer));
-			restServlet.setDocumentPath(getTmpDir());
 			restServlet.setFileLogic(createFileLogic());
 			
 			try {
@@ -201,7 +200,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 	protected static ServerFileLogic createFileLogic() {
 		final ServerFileLogic fileLogic = new ServerFileLogic();
-		ServerDocumentFileLogic documentLogic = new ServerDocumentFileLogic("");
+		ServerDocumentFileLogic documentLogic = new ServerDocumentFileLogic(getTmpDir());
 		documentLogic.setExtensionChecker(new ListExtensionChecker(Arrays.asList("pdf", "ps", "txt")));
 		fileLogic.setDocumentFileLogic(documentLogic);
 		return fileLogic;
