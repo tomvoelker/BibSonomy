@@ -7,15 +7,14 @@
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
 	
-   	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
-  	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
-   	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
-   	
-   	<ul class="subdiscussionItems">
-    	<c:if test="${not empty discussionItems}">
-    		<c:forEach var="discussionItem" items="${discussionItems}">
-    			<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
+	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	
+	<ul class="subdiscussionItems">
+		<c:if test="${not empty discussionItems}">
+			<c:forEach var="discussionItem" items="${discussionItems}">
+				<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
 				<c:if test="${discussionItem.anonymous}">
 					<c:set var="class" value="${class} anonymous" />
 				</c:if>
@@ -23,20 +22,20 @@
 				<c:choose>
 					<c:when test="${'Review' eq discussionItem.class.simpleName}">
 						<c:choose>
-			    			<!-- check if user has reviewed this resource -->
-				    		<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
-				    			<li id="ownReview" class="${class}">
-<!-- 				    			<li id="ownReview" class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
-				    				<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
-				    			</li>
-				    		</c:when>
-			    			<c:otherwise>
-			    				<li class="${class}">
-<!-- 			    				<li class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
-			    					<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
-			    				</li>
-			    			</c:otherwise>
-			    		</c:choose>	   
+							<!-- check if user has reviewed this resource -->
+							<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
+								<li id="ownReview" class="${class}">
+<!-- 								<li id="ownReview" class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
+									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="${class}">
+<!-- 								<li class="${class}" itemprop="reviews" itemscope="itemscope" itemtype="http://schema.org/Review"> -->
+									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
+								</li>
+							</c:otherwise>
+						</c:choose>
 					</c:when>
 					<c:when test="${'Comment' eq discussionItem.class.simpleName}">
 						<li class="${class}">
@@ -57,8 +56,8 @@
 						WARN: no view for ${discussionItem.class.simpleName}
 					</c:otherwise>
 				</c:choose>
-    		</c:forEach>
-    	</c:if>
-		<!-- placeholder -->
-    </ul>
+			</c:forEach>
+		</c:if>
+		<!-- placeholder keep me -->
+	</ul>
 </jsp:root>
