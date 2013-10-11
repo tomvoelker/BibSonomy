@@ -22,7 +22,7 @@ import org.springframework.context.MessageSource;
  * @author dzo
  * @version $Id$
  */
-public class MailInformationService implements InformationService {
+public abstract class MailInformationService implements InformationService {
 	private static final Log log = LogFactory.getLog(MailInformationService.class);
 	
 	/** the logic must be an admin logic */
@@ -44,15 +44,34 @@ public class MailInformationService implements InformationService {
 			return; // user doesn't what to be informed
 		}
 		final Locale locale = LocaleUtils.toLocale(userToInform.getSettings().getDefaultLanguage());
-		final String template = this.messageSource.getMessage(this.templateKey, null, locale);
+		final String template = getTemplate(username, locale);
 		final StringTemplate stringTemplate = new StringTemplate(template, DefaultTemplateLexer.class);
 		this.setAttributes(stringTemplate, userToInform, post);
 		
 		try {
-			this.mailer.sendMail(new String[]{ getMailAddress(userToInform) }, this.messageSource.getMessage(this.subjectKey, null, locale), template.toString(), this.fromAddress);
+			this.mailer.sendMail(new String[]{ getMailAddress(userToInform) }, getSubject(locale), template.toString(), this.fromAddress);
 		} catch (final MessagingException e) {
 			log.error("error sending mail message to " + username, e);
 		}
+	}
+
+	/**
+	 * the subject of the mail
+	 * @param locale
+	 * @return the subject for the specified locale
+	 */
+	protected String getSubject(final Locale locale) {
+		return this.messageSource.getMessage(this.subjectKey, null, locale);
+	}
+
+	/**
+	 * return the template for the specified locale
+	 * @param username 
+	 * @param locale
+	 * @return the template
+	 */
+	protected String getTemplate(final String username, final Locale locale) {
+		return this.messageSource.getMessage(this.templateKey, null, locale);
 	}
 	
 	/**
