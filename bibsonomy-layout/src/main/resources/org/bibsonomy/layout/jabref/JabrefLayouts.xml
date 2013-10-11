@@ -284,6 +284,23 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<!--
+	-->
+	<layout name="mms" public="false">
+		<displayName>HTML table (with Abstract &amp; BibTeX, sortable) for MDC</displayName>
+		<description xml:lang="en">
+		  Custom output format provided by AONO MEDIA for
+		  Medical Device Certification.
+		</description>
+		<description xml:lang="de">
+		  Benutzerdefiniertes Ausgabeformat, das von der Firma
+		  AONO MEDIA für die Webseite der Medical Device
+		  Certification angeboten wird.
+		</description>
+		<baseFileName>mdc</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 	<layout name="ebie" public="false">
 		<displayName>Electronic Business and Integration Engineering</displayName>
 		<description xml:lang="en">

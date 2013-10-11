@@ -9,7 +9,7 @@
 <tr id="abs_\format[AntiScriptInjection]{\bibtexkey}" class="abstract noshow">
 	<td colspan="6"><b>Abstract</b>: \format[HTMLChars,AntiScriptInjection]{\abstract}</td>
 </tr>\end{abstract}\begin{review}
-<tr id="rev_\format{\bibtexkey}" class="review noshow">
+<tr id="rev_\format[AntiScriptInjection]{\bibtexkey}" class="review noshow">
 	<td colspan="6"><b>Review</b>: \format[HTMLChars,AntiScriptInjection]{\review}</td>
 </tr>\end{review}
 <tr id="bib_\format[AntiScriptInjection]{\bibtexkey}" class="bibtex noshow">
