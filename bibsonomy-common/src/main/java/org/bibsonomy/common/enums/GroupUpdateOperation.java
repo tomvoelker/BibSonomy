@@ -23,29 +23,25 @@
 
 package org.bibsonomy.common.enums;
 
+
 /**
  * @author cvo
  * @version $Id$
  */
 public enum GroupUpdateOperation {
 	
-	/**
-	 * Update the settings of a group.
-	 */
+	/** Update the settings of a group. */
 	UPDATE_SETTINGS,
 	
-	/**
-	 * Adds new user to a group.
-	 */
+	/** Adds new user to a group. */
 	ADD_NEW_USER,
 	
-	/**
-	 * Update the whole group
-	 */
+	/** Update the whole group */
 	UPDATE_ALL,
 	
-	/**
-	 * Update the user specific shared documents flag
-	 */
-	UPDATE_USER_SHARED_DOCUMENTS;
+	/** Update the user specific shared documents flag */
+	UPDATE_USER_SHARED_DOCUMENTS,
+	
+	/** update the publication reporting settings for a group */
+	UPDATE_GROUP_REPORTING_SETTINGS;
 }
