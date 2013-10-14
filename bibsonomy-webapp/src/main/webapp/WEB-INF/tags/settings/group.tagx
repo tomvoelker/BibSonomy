@@ -135,22 +135,22 @@
 			</form:form>
 			<!-- group reporting settings -->
 			<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
-				<h2><fmt:message key="settings.group.settings.reporting"/></h2>
+				<h2><fmt:message key="settings.group.reporting"/></h2>
 				<fieldset class="fsOuter">
 					<form:form id="groupSettings" method="post" action="/updateGroupSettings">
-						<bform:fieldset maximized="${true}" legendKey="TODO">
+						<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.mail">
 							<jsp:attribute name="content">
 								<bform:input path="group.publicationReportingSettings.reportingMailAddress" noHelp="${true}" />
 								<bform:textarea path="group.publicationReportingSettings.reportingMailTemplate" noHelp="${true}" rows="10" />
 							</jsp:attribute>
 						</bform:fieldset>
 						
-						<bform:fieldset maximized="${true}" legendKey="TODO">
+						<bform:fieldset maximized="${true}" legendKey="settings.group.reporting.address">
 							<jsp:attribute name="content">
 								<bform:input path="group.publicationReportingSettings.externalReportingUrl" noHelp="${true}" />
 							</jsp:attribute>
 						</bform:fieldset>
-						<bform:submit messageKey="TODO" />
+						<bform:submit messageKey="settings.group.reporting.update" />
 						<input type="hidden" name="action" value="updateGroupReportingSettings" />
 					</form:form>
 				</fieldset>
