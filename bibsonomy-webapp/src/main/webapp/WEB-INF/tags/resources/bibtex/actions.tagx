@@ -33,9 +33,12 @@
 					<a class="item edit" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
 					<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP'}">
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
-							<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name)}">
-								<!-- TODO: config in group publication reporting setting -->
-								<a href="http://localhost:9999/report?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${requPath}">report to ${group.name}</a>
+							<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
+							<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name) and not empty reportingUrl}">
+								<fmt:message key="group.reporting" var="reportDesc">
+									<fmt:param value="${group.name}" />
+								</fmt:message>
+								<a href="${reportingUrl}?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}" title="${reportDesc}"><img src="${resdir}/image/report.png" /></a>
 							</c:if>
 						</c:forEach>
 					</c:if>
