@@ -4,7 +4,7 @@
 <sqlMap namespace="Group">
 
 	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname AS realname, u.user_homepage AS homepage
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
 		FROM groupids i 
 		  JOIN user u ON (i.group_name = u.user_name)
 		WHERE i.group > 2
@@ -117,11 +117,11 @@
 		WHERE `group` = #groupId#
 	</select>
 
-	<insert id="updateGroupSettings" parameterClass="group">
+	<update id="updateGroupSettings" parameterClass="group">
 		UPDATE groupids 
 		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#
 		WHERE `group` = #groupId#
-	</insert>
+	</update>
 	
 	<update id="updateGroupPublicationReportingSettings" parameterClass="group">
 		UPDATE groupids

@@ -20,13 +20,13 @@
 		<result property="reportingMailTemplate" column="publ_reporting_mail_template" javaType="string"/>
 		<result property="externalReportingUrl" column="publ_reporting_external_url" javaType="string" />
 	</resultMap>
-
+	
 	<resultMap id="group" class="group" extends="group_basic" groupBy="name">
 		<result property="realname"         column="realname"          javaType="string" />
 		<result property="homepage"         column="homepage"          javaType="url" />
 		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 	</resultMap>
-
+	
 	<resultMap id="groupWithMembers" class="group" extends="group_basic" groupBy="name">
 		<result property="users"    resultMap="UserCommon.userForGroup" />
 		<result property="userSharedDocuments" 	column="userSharedDocuments" javaType="boolean"/>
