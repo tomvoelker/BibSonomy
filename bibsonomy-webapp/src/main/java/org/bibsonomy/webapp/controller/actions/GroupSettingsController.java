@@ -10,6 +10,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupPublicationReportingSettings;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
@@ -41,7 +42,11 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 
 	@Override
 	public SettingsViewCommand instantiateCommand() {
-		return new SettingsViewCommand();
+		final SettingsViewCommand command = new SettingsViewCommand();
+		final Group group = new Group();
+		group.setPublicationReportingSettings(new GroupPublicationReportingSettings());
+		command.setGroup(group);
+		return command;
 	}
 
 	@Override
@@ -97,6 +102,12 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		}
 		
 		final String groupName = groupToUpdate.getName();
+		if ("updateGroupReportingSettings".equals(command.getAction())) {
+			groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
+			this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS);
+			return returnSettingsView(command, groupToUpdate, groupName);
+		}
+		
 		// update the bean
 		groupToUpdate.setPrivlevel(priv);
 		groupToUpdate.setSharedDocuments(sharedDocs);
@@ -122,6 +133,10 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 				// TODO: what exceptions can be thrown?!
 			}
 		}
+		return returnSettingsView(command, groupToUpdate, groupName);
+	}
+
+	protected View returnSettingsView(final SettingsViewCommand command, final Group groupToUpdate, final String groupName) {
 		/*
 		 * we have to re-fetch the group details (especially members) here
 		 */
