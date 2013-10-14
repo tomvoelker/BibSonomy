@@ -230,7 +230,7 @@ INSERT INTO `followers` VALUES
 -- 
 -- Data for table `groupids`
 -- 
-INSERT INTO `groupids` VALUES 
+INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) VALUES 
 ('public',     -2147483648, 1, 0),
 ('private',    -2147483647, 1, 0),
 ('friends',    -2147483646, 1, 0),
