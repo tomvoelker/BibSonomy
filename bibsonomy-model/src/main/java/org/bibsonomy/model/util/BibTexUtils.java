@@ -236,10 +236,10 @@ public class BibTexUtils {
 	/** electronic */
 	public static final String ELECTRONIC = "electronic";
 
-	/** electronic */
+	/** conference */
 	public static final String CONFERENCE = "conference";
 
-	/** electronic */
+	/** booklet */
 	public static final String BOOKLET = "booklet";
 
 	/** book */
