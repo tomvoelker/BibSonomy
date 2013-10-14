@@ -39,7 +39,14 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory" />
 	</bean>
 	
-	<bean id="reportTag" class="org.bibsonomy.database.systemstags.executable.ReportTag" parent="forGroupTag" />
+	<bean id="reportTag" class="org.bibsonomy.database.systemstags.executable.ReportTag" parent="forGroupTag">
+		<property name="services">
+			<list>
+				<!-- FIXME: here we need a class that is definied in bibsonomy-web-common -->
+				<ref bean="reportInformationService"/>
+			</list>
+		</property>
+	</bean>
 	
 	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag"/>
 	

@@ -27,4 +27,5 @@
 	<alias name="dummySearch" alias="lucenePublicationSearch" />
 	<alias name="dummySearch" alias="luceneGoldStandardPublicationSearch" />
 	
+	<bean id="reportInformationService" class="org.bibsonomy.testutil.DummyInformationService" />
 </beans>
