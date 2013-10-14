@@ -107,6 +107,13 @@ public class MailInformationService implements InformationService {
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
+	
+	/**
+	 * @param subjectKey the subjectKey to set
+	 */
+	public void setSubjectKey(String subjectKey) {
+		this.subjectKey = subjectKey;
+	}
 
 	/**
 	 * @param templateKey the templateKey to set
