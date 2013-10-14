@@ -627,5 +627,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public void updateUserSharedDocuments(final Group group, final DBSession session) {
 		this.update("updateUserSharedDocuments", group, session);
 	}
+	
+	/**
+	 * updates the groups publication reporting settings
+	 * @param group
+	 * @param session
+	 */
+	public void updateGroupPublicationReportingSettings(final Group group, final DBSession session) {
+		this.update("updateGroupPublicationReportingSettings", group, session);
+	}
 
 }

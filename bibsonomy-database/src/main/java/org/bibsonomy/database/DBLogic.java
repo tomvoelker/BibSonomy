@@ -1097,9 +1097,9 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		final String groupName = group.getName();
-		if (! present(groupName) ) {
+		if (!present(groupName)) {
 			throw new ValidationException("No group name given.");
-		}		
+		}
 		/*
 		 * only logged-in group owners and admins are allowed to perform update operations 
 		 */
@@ -1107,7 +1107,7 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupName);
 
 		/*
-		 * peform operations
+		 * perform operations
 		 */
 		final DBSession session = this.openSession();
 		try	{
@@ -1121,11 +1121,13 @@ public class DBLogic implements LogicInterface {
 				for (final User user: group.getUsers()) {
 					this.groupDBManager.addUserToGroup(groupName, user.getName(), session);
 				}
-				break;				
+				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.groupDBManager.updateUserSharedDocuments(group, session);
 				break;
-				
+			case UPDATE_GROUP_REPORTING_SETTINGS:
+				this.groupDBManager.updateGroupPublicationReportingSettings(group, session);
+				break;
 			default:
 				throw new UnsupportedOperationException("The given method is not yet implemented.");
 			}
@@ -1133,12 +1135,8 @@ public class DBLogic implements LogicInterface {
 		finally	{
 			session.close();
 		}
-
 		return groupName;
 	}
-
-	
-	
 	
 	/*
 	 * (non-Javadoc)

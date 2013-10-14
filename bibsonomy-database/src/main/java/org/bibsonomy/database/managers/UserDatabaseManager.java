@@ -114,6 +114,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		user.getInbox().setNumPosts(inboxMessages);
 		/*
 		 * get the settings of the user
+		 * TODO: user settings are stored in the same table with attributes like name
+		 * Can't we fetch the settings with the getUserDetails query?
 		 */
 		user.setSettings(this.getUserSettings(lowerCaseUsername, session));
 		
@@ -132,7 +134,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private UserSettings getUserSettings(final String username, final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setUserName(username);
-		return this.queryForObject("getUserSettings", param, UserSettings.class, session);		
+		return this.queryForObject("getUserSettings", param, UserSettings.class, session);
 	}
 	
 	/**
