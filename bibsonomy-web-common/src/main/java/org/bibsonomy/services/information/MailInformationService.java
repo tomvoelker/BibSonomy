@@ -49,11 +49,13 @@ public class MailInformationService implements InformationService {
 		this.setAttributes(stringTemplate, userToInform, post);
 		
 		try {
-			this.mailer.sendMail(new String[]{ getMailAddress(userToInform) }, getSubject(locale), template.toString(), this.fromAddress);
+			this.mailer.sendMail(new String[]{ getMailAddress(userToInform) }, getSubject(locale), stringTemplate.toString(), this.fromAddress);
 		} catch (final MessagingException e) {
 			log.error("error sending mail message to " + username, e);
 		}
 	}
+	
+	
 
 	/**
 	 * the subject of the mail
@@ -134,5 +136,12 @@ public class MailInformationService implements InformationService {
 	 */
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	/**
+	 * @param fromAddress the fromAddress to set
+	 */
+	public void setFromAddress(String fromAddress) {
+		this.fromAddress = fromAddress;
 	}
 }

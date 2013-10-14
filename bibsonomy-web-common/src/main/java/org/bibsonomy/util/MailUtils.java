@@ -244,15 +244,11 @@ public class MailUtils {
 	 * @throws MessagingException
 	 */
 	public void sendMail(final String[] recipients, final String subject, final String message, final String from) throws MessagingException {
-		final boolean debug = false;
-
 		// create some properties and get the default Session
 		final Session session = Session.getDefaultInstance(props, null);
-		session.setDebug(debug);
-
+		
 		// create a message
 		final MimeMessage msg = new MimeMessage(session);
-		
 
 		// set the from and to address
 		final InternetAddress addressFrom = new InternetAddress(from);
@@ -263,9 +259,6 @@ public class MailUtils {
 			addressTo[i] = new InternetAddress(recipients[i]);
 		}
 		msg.setRecipients(Message.RecipientType.TO, addressTo);
-
-		// Optional : You can also set your custom headers in the Email if you Want
-		//msg.addHeader("X-Sent-By", "Bibsonomy-Bot");
 
 		// Setting the Subject and Content Type
 		msg.setSubject(subject);
