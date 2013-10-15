@@ -4,15 +4,15 @@
 <sqlMap namespace="Tag">
 
 	<select id="getTagById" resultMap="TagCommon.tagWithDetails" parameterClass="int">
-		SELECT t.tag_id, TAS.tag_name, count(TAS.tag_name) as tag_ctr 
+		SELECT t.tag_id, TAS.tag_name, count(TAS.tag_name) as tag_ctr
 		  FROM tags t JOIN tas TAS USING (tag_name) 
-		WHERE (TAS.user_name=#requestedUserName# OR TAS.group=0) AND			  
+		WHERE (TAS.user_name=#requestedUserName# OR TAS.group=0) AND
 			  t.tag_id = #id#
 		GROUP BY TAS.tag_name
 	</select>
 
 	<select id="getTagByName" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT t1.tag_name, count(t1.tag_name) as tag_ctr 
+		SELECT t1.tag_name, count(t1.tag_name) as tag_ctr
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/> AND
 			  (t1.user_name=#requestedUserName# OR
@@ -23,10 +23,10 @@
 
 	<select id="getTagByCount" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT DISTINCT T.tag_name, T.tag_ctr  
-		  FROM tags T JOIN tas TAS USING (tag_name) 
+		  FROM tags T JOIN tas TAS USING (tag_name)
 		  WHERE T.tag_ctr=#count# 
 		    AND (TAS.group=0 OR TAS.user_name=#requestedUserName#)
-		  LIMIT #limit# OFFSET #offset#	      
+		  LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getAllTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
@@ -35,18 +35,18 @@
 			type (bibtex, bookmark, all); that's why we can safely use offset/limit values 
 			here, as nobody can crawl ALL tags via this query (which is visible via the api/tags).
 		 -->
-		SELECT tag_lower AS tag_name, tag_ctr 
+		SELECT tag_lower AS tag_name, tag_ctr
 		  FROM popular_tags
 		  WHERE content_type = #contentType#
 		    AND tag_lower != 'imported'
 		  ORDER BY tag_ctr DESC
-		  LIMIT #limit# OFFSET #offset#		 
+		  LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getTagsByExpression" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr 
+		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr
 		FROM tas t1
-		WHERE t1.user_name = #requestedUserName# 
+		WHERE t1.user_name = #requestedUserName#
 			  AND
 			  t1.tag_name LIKE #regex#
 			  <include refid="getTagsByResourceType"/>
@@ -54,7 +54,7 @@
 		<isEqual property="order" compareValue="FREQUENCY">
 	  		ORDER BY tag_ctr DESC
 	  	</isEqual>
-		LIMIT #limit# OFFSET #offset#		
+		LIMIT #limit# OFFSET #offset#
 	</select>
 
  	<select id="getTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
@@ -116,7 +116,7 @@
 		  FROM tas t1, groups g, friends f
 		  WHERE <include refid="matchGroupMemberTrust"/>    <!-- currUser is friend of a group member -->
 		        AND t1.user_name = f.user_name AND g.group = #groupId# AND t1.group = #groupTypeFriends#
-		        <include refid="getTagsByResourceType"/>)     
+		        <include refid="getTagsByResourceType"/>)
 		 UNION ALL
 		 (SELECT t1.tag_name
 		  FROM tas t1, groups g
@@ -157,7 +157,11 @@
 		  ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr + 1
 	</insert>
 
-
+	<!-- NOTE: ignore only works if no strict mode is enabled in MySQL
+		 Using an ignore inserts the max value to tag_ctr if tag_ctr is 0
+		 => the counters must be recalculated else the tag
+		 can't be used again by other users because the insertTag statment
+		 fails -->
 	<update id="updateTagDec" parameterClass="string">
 		UPDATE IGNORE tags 
 		  SET tag_ctr = tag_ctr - 1 
@@ -176,7 +180,7 @@
 		    JOIN tas t1 USING (content_id)
 		    JOIN groups g ON g.user_name = t.user_name
 		    JOIN groupids i ON i.group = g.group
-		  WHERE i.group_name = #requestedGroupName#		
+		  WHERE i.group_name = #requestedGroupName#
 		    <include refid="restrictToGroups"/>
 		    AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_lower = LOWER(#tagIndex[].tagName#)</iterate>)
 		    AND (<iterate property="tagIndex" conjunction=" AND ">t1.tag_lower != LOWER(#tagIndex[].tagName#)</iterate>)	
@@ -404,11 +408,11 @@
 	<select id="getTagsByTaggedUserRelation" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT t1.tag_name, count(t1.tag_name) AS tag_ctr, t.tag_ctr_public AS tag_ctr_global   
 		FROM tas t1, tags t, <include refid="relationTagFromQuery"/>     <!-- bookmarks from users which are tagged accordingly --> 
-        WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
+		WHERE <include refid="relationTagTagWhereQuery"/>         <!-- to see users which are tagged accordingly by the currUser -->
 		  AND <include refid="relationTagUsernameWhereQuery"/>    <!--                            ++++                           -->
 		  AND <include refid="relationTagTasWhereQuery"/>         <!-- take all rows, which are owned by a related user -->
 		  AND t1.tag_name = t.tag_name
-              <include refid="getTagsByResourceType"/>
+		  <include refid="getTagsByResourceType"/>
 		  <include refid="restrictToGroups"/>
 		GROUP BY t1.tag_name 
 		<isEqual property="order" compareValue="FREQUENCY">
