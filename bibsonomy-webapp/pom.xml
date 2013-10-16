@@ -32,6 +32,16 @@
 						yuicompressor-maven-plugin are overwritten by this plugin 
 					-->
 					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<directory>src/main/webapp</directory>
+							<includes>
+								<include>**/*.tagx</include>
+								<include>**/*.jspx</include>
+							</includes>
+						</resource>
+					</webResources>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -116,6 +126,26 @@
 						</aggregation>
 					</aggregations>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.lesscss</groupId>
+				<artifactId>lesscss-maven-plugin</artifactId>
+				<version>1.3.3</version>
+				<configuration>
+					<sourceDirectory>${project.basedir}/src/main/webapp/resources/css</sourceDirectory>
+					<outputDirectory>${project.build.directory}/${project.build.finalName}/resources/css</outputDirectory>
+					<compress>true</compress>
+					<includes>
+						<include>style.less</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 		<resources>
@@ -580,5 +610,7 @@
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
 		<tomcat.version>7.0.29</tomcat.version>
+		<stylesheetType>text/css</stylesheetType>
+		<stylesheetExtension>css</stylesheetExtension>
 	</properties>
 </project>

@@ -22,14 +22,16 @@
 		+-->
 	<!-- TODO: extract into separate JSP file? -->
 	<c:set var="resdir" scope="application" value="/resources" />
-
-    <!--+
-      	| setting theme variables    
-     	+-->
-    <spring:theme code="stylesheet.main" var="stylesheet_main" text="${resdir}/css/style.css"/>
-	<spring:theme code="stylesheet.additional" var="additionalCSS" text=""/> 
-	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text=""/> 
-	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
+	
+	<c:set var="stylesheetType" value="text/less" scope="request"/>
+	<c:set var="stylesheetExtension" value="less" scope="request" />
+	
+	<!--+
+		| setting theme variables
+		+-->
+	<spring:theme code="stylesheet.additional" var="additionalCSS" text="" /> 
+	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text="" />
+	<spring:theme code="javascript.additional" var="additionalJS" text="" />
 	
 	<!--+ 
 		| To have the locale available on all pages we set the scope to "request".
@@ -49,14 +51,13 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />
 		<meta charset="UTF-8" />
-
 		<!-- FIXME: do we really need the complete jquery-ui.css? -->
 		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
-		<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
+		<link rel="stylesheet" type="${stylesheetType}" href="${resdir}/css/style.${stylesheetExtension}" />
 		<c:if test="${not empty personalized and personalized == true}">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
+			<link rel="stylesheet" type="${stylesheetType}" href="${resdir}/css/personalized.css" />
 		</c:if>
-					
+		
 		<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
 		<!--+
 			|
@@ -75,10 +76,10 @@
 		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
 		<script type="text/javascript">
 				<![CDATA[
-					var projectName	= "${properties['project.name']}";
-					var ckey				= "${command.context.ckey}";
-					var currUser		= "${loginUser.name}";
-					var requUser		= ${(requestedUser ne '') ? requestedUserString : "null"};
+					var projectName = "${properties['project.name']}";
+					var ckey = "${command.context.ckey}";
+					var currUser = "${loginUser.name}";
+					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
 					$(function() {
 						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq});
 					});
@@ -119,7 +120,6 @@
 		</c:if>
 		<!-- End Piwik Tracking Code --> 
 	
-
 <!--				<meta name="email" content="${properties['project.email']}"/> -->
 		<parts:meta fieldName="author" />
 <!--				<parts:meta fieldName="copyright" /> -->
@@ -137,7 +137,5 @@
 		<c:if test="${not empty additionalPrintCSS}">
 			<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" />
 		</c:if>
-
 	</head>
-
 </jsp:root>

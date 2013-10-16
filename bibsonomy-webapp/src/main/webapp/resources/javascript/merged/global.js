@@ -24,3 +24,4 @@ includeJavaScript("/resources/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js");
 includeJavaScript("/resources/javascript/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/userRelation.js");
 includeJavaScript("/resources/javascript/addToSpheres.js");
+includeJavaScript("/resources/javascript/less/less.js");
