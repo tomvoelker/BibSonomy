@@ -1,11 +1,11 @@
-@CHARSET "UTF-8";
+@import "color.less";
 
 body {
 	background-color: #c6c6c6;
 	font-size: 12px;
-    font-family: Arial, Helvetica, sans-serif;
-    overflow-y: hidden;
-    min-width: 900px;
+	font-family: Arial, Helvetica, sans-serif;
+	overflow-y: hidden;
+	min-width: 900px;
 } 
 
 ul {
@@ -15,7 +15,7 @@ ul {
 }
 
 a {
-	color: #006699;
+	color: @main-color;
 	text-decoration: none;
 }
 
@@ -52,7 +52,7 @@ a img {
 }
 
 #header {
-	background-color: #006699;
+	background-color: @main-color;
 	height: 85px;
 	position: relative;
 }
@@ -140,11 +140,11 @@ a img {
 }		
 	
 #logo a {
-	color: white;
+	color: @header-link-color;
 }
 
 .systemName {
-    color: #006699;
+    color: @main-color;
     float: left;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 70px;
@@ -240,7 +240,7 @@ a img {
 }
 
 #language a {
-	color: white;
+	color: @header-link-color;
 	text-decoration: none;
 }
 
@@ -273,7 +273,7 @@ a img {
 
 
 #navigation, #navigation2 {
-	background-color: #c6c6c6;
+	background-color: @navigation-color;
 	height: 29px;
 }
 
@@ -416,7 +416,7 @@ a img {
 	background: #f0f0f0;
 	border-left: 2px solid #c6c6c6;
 	border-right: 2px solid #c6c6c6;
-	border-right: 2px solid #C6C6C6;	
+	border-right: 2px solid #C6C6C6;
 }
 
 /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
@@ -482,7 +482,6 @@ a img {
 #navigation ul li.pulldown:hover > a {
 	background-image: url("/resources/image/pulldown-marker-medium_white.png");
 }
-
 
 #navigation ul li a, #navigation2 a {
 	color: black;
@@ -625,7 +624,7 @@ a img {
 .toggler {
 	margin-right: .3em;
 	cursor: pointer;
-	color: #069;
+	color: @main-color;
 }
 
 #sidebox {
@@ -842,7 +841,7 @@ ul.news {
 }
 
 .tagcloud a,.taglist a {
-	color: #069;
+	color: @main-color;
 }
 
 .tagcloud a:hover,.taglist a:hover {
@@ -997,7 +996,7 @@ ul.news {
 
 .tab .selected,
 .tab .ui-state-active {
-	border-color: #069;
+	border-color: @main-color;
 }
 
 .tabs .tab  li {
@@ -1009,11 +1008,11 @@ ul.news {
 	position: relative;
 	top: 1px;
 	background: white;
-	color: #069;
+	color: @main-color;
 }
 
 .tab_content {
-	border: 1px solid #069;
+	border: 1px solid @main-color;
 	clear: both;
 	padding: 0.5em 1em;
 	/* min-width: 725px; */
@@ -1029,7 +1028,7 @@ ul.news {
  * forms using field sets (e.g., on /editBookmark) 
  */
 .fsOuter,.fsInner,.fsVisible {
-	border: 1px solid #069;
+	border: 1px solid @main-color;
 	background-color: #eee;
 }
 
@@ -1038,7 +1037,7 @@ ul.news {
  * <groupboxes>
  */
 #fsgroupBoxleft, #fsgroupBoxright {
-	border: 1px solid #069;
+	border: 1px solid @main-color;
 	background-color: #eee;
 	padding: 10px;
 	min-height: 15ex;
@@ -1150,7 +1149,7 @@ div.widehelp:hover div {
 
 div.help>a,div.help>b, div.help>span {
 	font-weight: bold;
-	color: #006699;
+	color: @main-color;
 }
 
 /* --- post lists -----------------------------------------------------------*/
@@ -1389,7 +1388,7 @@ Most actions appear in three ways
 }
 
 .post .action .litem:hover, #resultlist .litem:hover, #pageOptions .litem:hover{
-	color:#006699;
+	color: @main-color;
 }
 
 
@@ -1528,7 +1527,7 @@ form.editTags input[type=text] {
 
 .pgroup .private {
 	font-weight: bold;
-	background-color: #006699;
+	background-color: @main-color;
 	padding: 0 3px;
 	color: #ffffff;
 }
@@ -1549,7 +1548,7 @@ form.editTags input[type=text] {
 
 .post.odd {
 	background-color: #f8f8f8;
-}		
+}
 
 .post.even {
 	background-color: white;
@@ -1563,9 +1562,9 @@ form.editTags input[type=text] {
 
 
 .post .pre_pic {
-    border: 1px solid #DDDDDD;
-    box-shadow: 0px 0px 6px #999999;
-    margin-top: -14px;        
+	border: 1px solid #DDDDDD;
+	box-shadow: 0px 0px 6px #999999;
+	margin-top: -14px;
 }
 
 #preview{
@@ -1635,7 +1634,7 @@ form.editTags input[type=text] {
 
 #bookmarksheader .header, #publicationsheader .header, #panelheader .header, #headercontainer .header {
 	text-transform: uppercase;
-	color: #006699;
+	color: @main-color;
 	font-weight: bold;
 	font-size: 120%;
 	padding-left: 128px;
@@ -2298,7 +2297,7 @@ font-weight: normal;
 	display: block;
 	position: absolute;
 	top: 3em+5px;
-	border: 1px solid #069;
+	border: 1px solid @main-color;
 	background-color: #fff;
 	color: #000;
 	padding: 5px;
@@ -2327,7 +2326,6 @@ font-weight: normal;
 }
 
 .hiddenSystemTag {
-/* 	cursor: pointer; */
 	float: left;
 	margin-right: 2px;
 }
@@ -2361,7 +2359,7 @@ font-weight: normal;
 }
 
 input[type=text],input[type=password],input[type=file],textarea,select {
-	border: 1px solid #069;
+	border: 1px solid @main-color;
 	padding: 2px;
 	font-family: monospace;
 	font-weight: normal;
@@ -2381,9 +2379,9 @@ div.reviewTextBox textarea {
  * error boxes
  */ 
 .errorcontainer {
-	border: 1px solid rgb(0, 102, 153);
+	border: 1px solid @main-color;
 	padding: 1em;
-    margin: 0 2px 1em;
+	margin: 0 2px 1em;
 }
 
 #error {
@@ -2513,7 +2511,7 @@ div.reviewTextBox textarea {
 #copiedTags li, #recommendedTags li, #suggestedTags li {
 	display: inline;
 	cursor: pointer;
-	color: #006699;		
+	color: @main-color;
 }
 
 .fsSmall {
@@ -2538,7 +2536,7 @@ div.reviewTextBox textarea {
 	min-height:16px;
 	margin-top: 2px;
 	margin-bottom: 2px;
-	border: 1px solid #069;
+	border: 1px solid @main-color;
 	padding: 2px;
 	font-family: monospace;
 	font-weight: normal;
@@ -2771,7 +2769,7 @@ table.report td.value {
 	#legalnotices {
 	    position: static;
 	    padding: 2px 5px;
-	    background-color: #C6C6C6;
+	    background-color: @legal-background-color;
 	    padding: 3px 6px; 
 	}
 	
