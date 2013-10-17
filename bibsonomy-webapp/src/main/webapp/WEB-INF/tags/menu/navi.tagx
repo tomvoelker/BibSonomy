@@ -7,7 +7,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	
@@ -20,16 +20,16 @@
 		 	| myProjectName
 		 	+-->
 		<c:if test="${not empty loginUserName}">
-			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}" id="mySystem" touch="false">
+			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}" id="mySystem" data-touch="false">
 				<a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a>
 				<ul>
 					<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
 					<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li>
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
-						<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>		        
-						<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>		        					
+						<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>
+						<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>
 						<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
-				        <li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
+						<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
 					</c:if>
 					<li class="separator">${mtl:ch('nbsp')}</li>
 					
@@ -38,22 +38,22 @@
 					<li><a href="/inbox"><fmt:message key="navi.inbox"/></a></li>
 					<li class="separator">${mtl:ch('nbsp')}</li>
 					
-				    <li><a href="/spheres"><fmt:message key="navi.spheres"/></a></li>
+					<li><a href="/spheres"><fmt:message key="navi.spheres"/></a></li>
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
 						<li><a href="/friends"><fmt:message key="navi.friends"/></a></li>
-				        <li><a href="/followers"><fmt:message key="navi.followees"/></a></li>
+						<li><a href="/followers"><fmt:message key="navi.followees"/></a></li>
 						<li class="separator">${mtl:ch('nbsp')}</li>
 					</c:if>
 	
 					<li><a href="/concepts/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
-				        <li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
+						<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
 						<li><a href="/mySearch"><fmt:message key="navi.browse"/></a></li>
-				        <li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
+						<li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
 						<li class="separator">${mtl:ch('nbsp')}</li>
-					</c:if>					
-			        <li><a href="/settings"><fmt:message key="navi.settings"/></a></li>
-				  </ul>
+					</c:if>
+					<li><a href="/settings"><fmt:message key="navi.settings"/></a></li>
+				</ul>
 			</li>
 			<!--+
 				| post a post
@@ -68,12 +68,11 @@
 		</c:if>
 		<!--+
 			| groups
-			+-->		
+			+-->
 		<c:choose>
 			<c:when test="${not empty loginUser.groups}">
 				<li class="pulldown ${activeTab eq 'groups' ? 'active' : ''}">
 					<span><fmt:message key="navi.groups"/></span>
-
 					<table>
 						<tr>
 							<td colspan="6"><a href="/groups"><fmt:message key="navi.groups.all"/></a></td>
@@ -93,7 +92,7 @@
 								<td><a href="/discussed/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></td>
 							</tr>
 						</c:forEach>
-					</table>  	
+					</table>
 				</li>
 			</c:when>
 			<c:otherwise>
@@ -114,11 +113,4 @@
 			</ul>
 		</li>
 	</ul>
-	
-	<!-- Function, to fix the functionality of the  menubar if the user is a touchable device -->	
-	<script type="text/javascript">
-			<![CDATA[
-				touchableMenubar();
-			]]>
-	</script>    
 </jsp:root>

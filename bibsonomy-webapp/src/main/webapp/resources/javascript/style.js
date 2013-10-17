@@ -9,6 +9,11 @@ var userMinFreq = 1;
  */
 var currentSortStyle = null;
 
+$(function() {
+	/* Function, to fix the functionality of the  menubar if the user is a touchable device */
+	touchableMenubar();
+});
+
 /**
  * XXX: variable "tagbox_minfreq_style" is defined in cloud.tagx!
  * 
@@ -21,7 +26,6 @@ var currentSortStyle = null;
  * @return
  */
 function init_tagbox(tagbox, show, sort, minfreq) {
-
 	var styleList = $("<ul class='floatul'></ul>")
 	.append(getStyleItem(tagbox, styleList, style_sort[sort], style_sort))
 	.append(getStyleItem(tagbox, styleList, style_show[show], style_show));
@@ -432,28 +436,24 @@ function initSidebarHeader() {
  * If the user is a touchable device, we fix the functionality of the menubar for the touchable device. 
  */
 function touchableMenubar() {
-
 	var touchOS = ('ontouchstart' in document.documentElement) ? true : false;
-	
-		if(touchOS) {
+		if (touchOS) {
 			$("#mySystem").click(function() {
-				
-				var touch = $("#mySystem").attr('touch');	
-				
-				if(touch == "true") {
+				var touch = $("#mySystem").data('touch');
+				if (touch == "true") {
 					return true;
 				} else {
-					$("#mySystem").attr("touch","true");
+					$("#mySystem").data("touch", "true");
 					return false;
-				}							
+				}
 			});
 			
 			$("#addPost").click(function(){
-				$("#mySystem").attr("touch","false");
-			});		
+				$("#mySystem").data("touch", "false");
+			});
 	
 			$("#popular").click(function(){
-				$("#mySystem").attr("touch","false");
-			});					
+				$("#mySystem").data("touch", "false");
+			});
 		}
 }
