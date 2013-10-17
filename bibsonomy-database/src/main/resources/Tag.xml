@@ -157,15 +157,11 @@
 		  ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr + 1
 	</insert>
 
-	<!-- NOTE: ignore only works if no strict mode is enabled in MySQL
-		 Using an ignore inserts the max value to tag_ctr if tag_ctr is 0
-		 => the counters must be recalculated else the tag
-		 can't be used again by other users because the insertTag statment
-		 fails -->
+	<!-- tag_ctr is unsigned => check if tag_ctr is greater than 0 -->
 	<update id="updateTagDec" parameterClass="string">
-		UPDATE IGNORE tags 
+		UPDATE tags 
 		  SET tag_ctr = tag_ctr - 1 
-		  WHERE tag_name = #tagName#
+		  WHERE tag_name = #tagName# AND tag_ctr > 0
 	</update>
 	
 	<!--+ 

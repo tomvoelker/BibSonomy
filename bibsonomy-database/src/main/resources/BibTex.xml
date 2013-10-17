@@ -40,8 +40,8 @@
 		AND h.type= #simHash#		
 		<include refid="restrictToGroups"/>
 		<include refid="sysTagsEntryType"/>
-		ORDER BY date DESC 			
-	</select>	
+		ORDER BY date DESC
+	</select>
 
 	<select id="getBibTexByTagNames" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>,t.change_date, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
@@ -839,15 +839,15 @@
 		INSERT INTO bibhash(hash, type, ctr) VALUES (#hash#, #simHash#, 1)
 		ON DUPLICATE KEY UPDATE ctr = ctr + 1
 	</insert>
-
+	
+	<!-- check if ctr is greater 0 because ctr is unsigned -->
 	<update id="updateBibTexHash" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #simHash#
+		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #simHash# WHERE ctr > 0
 	</update>
-
+	
 	<delete id="deleteBibTex">
 		DELETE FROM bibtex WHERE content_id = #requestedContentId#
 	</delete>
-
 	
 	<select id="getBibTexByConceptForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributes"/>, b.interHash, b.intraHash, t.change_date, t.tag_name, b.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
