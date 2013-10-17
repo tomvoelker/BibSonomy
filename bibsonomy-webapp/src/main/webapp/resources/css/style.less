@@ -1,5 +1,7 @@
 @import "color.less";
 
+/* TODO: split in multiple files */
+
 body {
 	background-color: #c6c6c6;
 	font-size: 12px;
@@ -17,14 +19,14 @@ ul {
 a {
 	color: @main-color;
 	text-decoration: none;
+	
+	img {
+		border:0;
+	}
 }
 
 a:hover {
 	text-decoration: underline;
-}
-
-a img { 
-	border:0; 
 }
 
 .floatclear {
@@ -58,18 +60,18 @@ a img {
 }
 
 #overlayInfobox {
-    background-color: #FFFFFF;
-    border: 2px solid #666666;
-    box-shadow: 0 0 5px 0;
-    left: 20px;
-    margin-top: 100px;
-    position: absolute;
-    right: 320px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
-    z-index: 299;
-    opacity: 0.95;
-    max-width: 780px;
-    min-width: 580px;
-    filter: alpha(opacity=95);
+	background-color: #FFFFFF;
+	border: 2px solid #666666;
+	box-shadow: 0 0 5px 0;
+	left: 20px;
+	margin-top: 100px;
+	position: absolute;
+	right: 320px;    /* left + sidebar, see also  @media screen and (max-width: 899px) */ 
+	z-index: 299;
+	opacity: 0.95;
+	max-width: 780px;
+	min-width: 580px;
+	filter: alpha(opacity=95);
 	-moz-border-radius:10px; /* Firefox */
 	-webkit-border-radius:10px; /* Safari, Chrome */
 	-khtml-border-radius:10px; /* Konqueror */
@@ -82,28 +84,28 @@ a img {
 	}
 }
 
-.close a {
-	cursor: pointer;
-	padding-left: 4px;
-	padding-bottom: 1px;
-	padding-right: 3px;
-	border: 2px solid #666;
-	border-right:none; 
-	color: white;
-	background-color: red;
-	font-weight: bold;
-	-moz-border-radius-bottomleft:10px; /* Firefox */
-	-webkit-border-bottom-left-radius:10px; /* Safari, Chrome */
-	-khtml-border-bottom-left-radius:10px; /* Konqueror */
-	border-bottom-left-radius:10px; /* CSS3 */
-	-moz-border-radius-topright:10px; /* Firefox */
-	-webkit-border-top-right-radius:10px; /* Safari, Chrome */
-	-khtml-border-top-right-radius:10px; /* Konqueror */
-	border-top-right-radius:10px; /* CSS3 */
-}
-
 .close {
 	text-align: right;
+	
+	a {
+		cursor: pointer;
+		padding-left: 4px;
+		padding-bottom: 1px;
+		padding-right: 3px;
+		border: 2px solid #666;
+		border-right:none; 
+		color: white;
+		background-color: red;
+		font-weight: bold;
+		-moz-border-radius-bottomleft:10px; /* Firefox */
+		-webkit-border-bottom-left-radius:10px; /* Safari, Chrome */
+		-khtml-border-bottom-left-radius:10px; /* Konqueror */
+		border-bottom-left-radius:10px; /* CSS3 */
+		-moz-border-radius-topright:10px; /* Firefox */
+		-webkit-border-top-right-radius:10px; /* Safari, Chrome */
+		-khtml-border-top-right-radius:10px; /* Konqueror */
+		border-top-right-radius:10px; /* CSS3 */
+	}
 }
 
 #fscontent {
@@ -138,14 +140,14 @@ a img {
 }
 
 .systemName {
-    color: @main-color;
-    float: left;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 70px;
-    font-weight: bold;
-    margin-top: 30px;
-    height: 120px;
-    margin-right: 20px;
+	color: @main-color;
+	float: left;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 70px;
+	font-weight: bold;
+	margin-top: 30px;
+	height: 120px;
+	margin-right: 20px;
 }
 
 
@@ -225,7 +227,6 @@ a img {
 			width: auto;
 			float: left;
 			list-style: none;
-			padding-left: 2px;
 			background-image: url("/resources/image/dot.png");
 			background-repeat: no-repeat;
 			background-position: 0 .5em;
@@ -370,7 +371,6 @@ a img {
 	& > ul table {
 		border-left: 2px solid #c6c6c6;
 		border-right: 2px solid #c6c6c6;
-		border-right: 2px solid #c6c6c6;
 	}
 	
 	& > ul table td {
@@ -378,7 +378,7 @@ a img {
 	} 
 	
 	ul li.active {
-		color: #006699; 
+		color: #000000; 
 		text-decoration: none;
 		background-color: white;
 	}
@@ -401,10 +401,6 @@ a img {
 	
 	& > ul > li > table td:hover a {
 		color: white;
-	}
-	
-	& > ul > li.active a {
-		color: #red;
 	}
 	
 	ul li.pulldown {
@@ -471,7 +467,6 @@ a img {
 	background: #f0f0f0;
 	border-left: 2px solid #c6c6c6;
 	border-right: 2px solid #c6c6c6;
-	border-right: 2px solid #C6C6C6;
 }
 
 /* The persistent hover state does however create a global style for links even before they're hovered. Here we undo these effects. */
@@ -1727,15 +1722,13 @@ form.editTags input[type=text] {
 
 }
 
-
 .listOptions, .pageOptions { 
 	border:2px solid #c6c6c6; 
 	z-index:70;
 	top:141px;
-	position:absolute;
+	position: absolute;
 	box-shadow: 4px 4px 6px gray;
 	background-color: #eee;
-	position: absolute;
 	margin-top: .5em;
 	padding: .5em;
 	display:none;	
@@ -1793,7 +1786,6 @@ form.editTags input[type=text] {
 /** header for one column content */
 #panelheader {
 	width: 100%;
-	height: 100%;
 	background-color: #ffffff;
 	margin-left: 0px;
 	height: 60px;
@@ -1816,7 +1808,6 @@ form.editTags input[type=text] {
 	display: block;
 }
 
-
 #footercontainer {
 	position:absolute;
 	height:30px;
@@ -1827,7 +1818,6 @@ form.editTags input[type=text] {
 	right: 0;
 	background-color: #FFFFFF;
 }
-
 
 #container.noPageNavigation>#footercontainer {
 	display: none;
@@ -2290,7 +2280,7 @@ font-weight: normal;
 }
 
 .listhButtons a {
-	border: 1px solid #006699;
+	border: 1px solid @main-color;
 	background-color: #fff;
 	color: #000;
 	padding-left: 2px;
@@ -2317,8 +2307,6 @@ font-weight: normal;
 /* end of login css code */
 
 
-
-
 .listOptionHeading {
 	margin-top: 15px;
 	font-weight:bold;
@@ -2329,9 +2317,8 @@ font-weight: normal;
 	padding-left: 1em;
 }
 
-
 #bibtexListExportOptions {
-	display:none;
+	display: none;
 }
 
 .italic {
@@ -2339,7 +2326,7 @@ font-weight: normal;
 }
 
 .reqinput {
-	background-color: #e5f3fa;
+	background-color: fadeout(@main-color, 90%);
 }
 
 input[type=text],input[type=password],input[type=file],textarea,select {
@@ -2392,23 +2379,19 @@ div.reviewTextBox textarea {
 }
 
 .fsOuter legend {
-    text-align:left;
+	text-align:left;
+	
+	img {
+		padding-right: .5em;
+	}
 }
-
-.fsOuter legend img {
-    padding-right: .5em;
-}
-
 
 .fsOuter, .fsInner, .fsVisible {
-    position: relative;
+	position: relative;
 }
-.fsOuter, .fsInner{
-	/* min-width: 650px; */
-	/* min-width: 560px; */
-}
+
 .fsOuter {
-    padding: 10px 10px 10px 10px;
+	padding: 10px 10px 10px 10px;
 }
 
 .fsContainerRight {
@@ -2449,17 +2432,17 @@ div.reviewTextBox textarea {
 
 .fsFloatInput {
 	margin-left: 10px;
-    margin-right: 5px;
+	margin-right: 5px;
 }
 
 .fsInput, #inpf, .fsFloatInput {
-    margin-bottom: 2px;
+	margin-bottom: 2px;
 }
 
 .fsInputReco {
-    background-image: url(/resources/image/reco.png);
-    background-position: right;
-    background-repeat: no-repeat;
+	background-image: url(/resources/image/reco.png);
+	background-position: right;
+	background-repeat: no-repeat;
 }
 
 .fsInputRecoHelp {
@@ -2468,14 +2451,14 @@ div.reviewTextBox textarea {
 }
 
 .fsRow {
-   position: relative; 
-   clear: both;
+	position: relative; 
+	clear: both;
 }
 
 .fsLabel {
-  padding-right: 5px;
-  width: 20%;
-  float: left;
+	padding-right: 5px;
+	width: 20%;
+	float: left;
 }
 
 .tagInput {
@@ -2483,9 +2466,9 @@ div.reviewTextBox textarea {
 }
 
 #copiedTags, .fsSuggestion, .fsInput, .tagInput, #suggestedTags, #recommendedTags {	
-  float: left;
-  width: 73%;
-  background-color: white;
+	float: left;
+	width: 73%;
+	background-color: white;
 }
 
 #recommendedTags, #copiedTags {
@@ -2528,15 +2511,15 @@ div.reviewTextBox textarea {
 }
 
 .fsSuggestion {
-    font-size: 80%;
-    margin-left: 20%;
-    padding-left: 1em;
-    margin-top: 0px;
-    padding-top: 0px;
+	font-size: 80%;
+	margin-left: 20%;
+	padding-left: 1em;
+	margin-top: 0px;
+	padding-top: 0px;
 }
 
 #fsReloadButton {
-    float: right;
+	float: right;
 	width: 20px;
 	height: 20px;
 }
@@ -2746,15 +2729,14 @@ table.report td.value {
 	}
 	
 	#navigation > ul {
-	    margin-bottom: 0;
+		margin-bottom: 0;
 	}
 	
 	
 	#legalnotices {
-	    position: static;
-	    padding: 2px 5px;
-	    background-color: @legal-background-color;
-	    padding: 3px 6px; 
+		position: static;
+		background-color: @legal-background-color;
+		padding: 3px 6px; 
 	}
 	
 	.tab_content {
@@ -2762,9 +2744,9 @@ table.report td.value {
 	}
 	
 	#fullscreen{
-	    background-color: #ffffff;
-	    float: left;
-	    width: 100%;
+		background-color: #ffffff;
+		float: left;
+		width: 100%;
 	}
 	
 	#sidebarheader {
@@ -2869,7 +2851,7 @@ table.report td.value {
 	add-on button classes
 */
 .post\.resource\.chrome\.installButton {
-	background: -moz-linear-gradient(center top , #5689DB 0%, #4D7BD6 100%) repeat scroll 0 0 transparent;
+	background: -moz-linear-gradient(#5689DB 0%, #4D7BD6 100%) repeat scroll 0 0 transparent;
 	background-attachment: scroll;
 	background-clip: border-box;
 	background-color: transparent;
@@ -2878,7 +2860,7 @@ table.report td.value {
     border-radius: 2px 2px 2px 2px;
     border: 1px solid #2D53AF;
     box-shadow: 0 2px 0 0 rgba(255, 255, 255, 0.06) inset, 0 2px 3px 0 rgba(0, 0, 0, 0.2);
-	color: #FFFFFF!important;;
+	color: #FFFFFF !important;
     cursor: pointer;
 	display: inline-block;
     font-size: 13px;
