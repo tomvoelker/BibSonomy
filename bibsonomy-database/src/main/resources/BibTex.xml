@@ -842,7 +842,7 @@
 	
 	<!-- check if ctr is greater 0 because ctr is unsigned -->
 	<update id="updateBibTexHash" parameterClass="bibtexParam">
-		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #simHash# WHERE ctr > 0
+		UPDATE bibhash SET ctr = ctr - 1 WHERE hash = #hash# AND type = #simHash# AND ctr > 0
 	</update>
 	
 	<delete id="deleteBibTex">
