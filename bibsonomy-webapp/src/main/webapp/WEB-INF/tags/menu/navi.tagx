@@ -112,5 +112,19 @@
 				<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
 			</ul>
 		</li>
+		
+		<c:if test="${loginUser.role eq 'ADMIN' }">
+			<li class="pulldown ${activeTab eq 'admin' ? 'active' : ''}" id="systemAdmin" data-touch="false">
+				<a href="/admin">Admin</a>
+				<ul>
+					<li><a href="/admin/spam">Spam</a></li>
+					<li><a href="/admin/group">Groups</a></li>
+					<li><a href="/admin/lucene">Lucene</a></li>
+					<li><a href="/admin/recommender">Recommender</a></li>
+					<li><a href="/admin/oauth">OAuth Consumer</a></li>
+					<li><a href="/admin/sync">Synchronization</a></li>
+				</ul>
+			</li>
+		</c:if>
 	</ul>
 </jsp:root>
