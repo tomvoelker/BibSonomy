@@ -52,7 +52,7 @@
 		<meta charset="UTF-8" />
 		<!-- FIXME: do we really need the complete jquery-ui.css? -->
 		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
-		<link rel="stylesheet" type="text/${stylesheetExtension}" href="${resdir}/css/style.${stylesheetExtension}" />
+		<mtl:styleSheet path="${resdir}/css/style.css" />
 		<c:if test="${not empty personalized and personalized == true}">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 		</c:if>

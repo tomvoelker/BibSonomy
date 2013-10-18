@@ -93,6 +93,18 @@
 	</tag>
 	
 	<tag>
+		<name>styleSheet</name>
+		<info>renders the link to the less file or css file</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.StyleSheetTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>path</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
 		<name>publicationReference</name>
 		<info>Replaces wiki-style links with html links</info>
 		<tagclass>org.bibsonomy.webapp.util.tags.PublicationReferenceTag</tagclass>

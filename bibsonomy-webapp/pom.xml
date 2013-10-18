@@ -32,16 +32,6 @@
 						yuicompressor-maven-plugin are overwritten by this plugin 
 					-->
 					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
-					<webResources>
-						<resource>
-							<filtering>true</filtering>
-							<directory>src/main/webapp</directory>
-							<includes>
-								<include>**/*.tagx</include>
-								<include>**/*.jspx</include>
-							</includes>
-						</resource>
-					</webResources>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -610,6 +600,5 @@
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
 		<tomcat.version>7.0.29</tomcat.version>
-		<stylesheetExtension>css</stylesheetExtension>
 	</properties>
 </project>
