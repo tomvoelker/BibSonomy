@@ -64,6 +64,11 @@ body, #header {
 	background-image: url("/resources_puma/image/pulldown-marker-medium_white.png");
 }
 
+#navigation ul li.pulldown.active span,
+#navigation ul li.pulldown.active > a {
+	background-image: url("/resources/image/pulldown-marker-000000.png");
+}
+
 #navigation > ul > li > a {
 	color: white;
 }
