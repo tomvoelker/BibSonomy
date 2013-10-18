@@ -610,7 +610,6 @@
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<project.downloaded-resources.directory>${project.build.directory}/downloaded-resources</project.downloaded-resources.directory>
 		<tomcat.version>7.0.29</tomcat.version>
-		<stylesheetType>text/css</stylesheetType>
 		<stylesheetExtension>css</stylesheetExtension>
 	</properties>
 </project>

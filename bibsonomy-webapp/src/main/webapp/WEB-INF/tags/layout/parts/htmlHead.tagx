@@ -23,7 +23,6 @@
 	<!-- TODO: extract into separate JSP file? -->
 	<c:set var="resdir" scope="application" value="/resources" />
 	
-	<c:set var="stylesheetType" value="text/less" scope="request"/>
 	<c:set var="stylesheetExtension" value="less" scope="request" />
 	
 	<!--+
@@ -53,9 +52,9 @@
 		<meta charset="UTF-8" />
 		<!-- FIXME: do we really need the complete jquery-ui.css? -->
 		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
-		<link rel="stylesheet" type="${stylesheetType}" href="${resdir}/css/style.${stylesheetExtension}" />
+		<link rel="stylesheet" type="text/${stylesheetExtension}" href="${resdir}/css/style.${stylesheetExtension}" />
 		<c:if test="${not empty personalized and personalized == true}">
-			<link rel="stylesheet" type="${stylesheetType}" href="${resdir}/css/personalized.css" />
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 		</c:if>
 		
 		<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
