@@ -17,18 +17,21 @@ public class StyleSheetTag extends RequestContextAwareTag {
 	
 	@Override
 	protected int doStartTagInternal() throws Exception {
-		final String fullPath = FilenameUtils.getFullPath(this.path);
-		final String fileNameWithoutExtension = FilenameUtils.getBaseName(this.path);
-		String extension = FilenameUtils.getExtension(this.path);
-		URL resource = this.pageContext.getServletContext().getResource(this.path);
+		final String styleSheetPath;
+		
+		final URL resource = this.pageContext.getServletContext().getResource(this.path);
 		/*
 		 * if css file does not exists use the less file
 		 */
-		if (resource == null) {
-			extension = "less";
+		if (resource != null) {
+			styleSheetPath = this.path;
+		} else {
+			final String fullPath = FilenameUtils.getFullPath(this.path);
+			final String fileNameWithoutExtension = FilenameUtils.getBaseName(this.path);
+			styleSheetPath = FilenameUtils.concat(fullPath, fileNameWithoutExtension) + ".less";
 		}
-		final String styleSheetPath = FilenameUtils.concat(fullPath, fileNameWithoutExtension) + "." + extension;
-		this.pageContext.getOut().print("<link rel=\"stylesheet\" type=\"text/" + extension + "\" href=\"" + styleSheetPath + "\" />");
+		
+		this.pageContext.getOut().print("<link rel=\"stylesheet\" type=\"text/" + FilenameUtils.getExtension(styleSheetPath) + "\" href=\"" + styleSheetPath + "\" />");
 		return SKIP_BODY;
 	}
 
