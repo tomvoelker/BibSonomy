@@ -222,11 +222,13 @@
 	</bean>
 	
 
-	<!-- to resolve messages -->  
+	<!-- to resolve messages -->
 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<!-- matches messages.properties, messages_de.properties, ... -->
 		<property name="basenames">
 			<list>
+				<!-- can be used by overlays -->
+				<value>classpath:/custom/messages</value>
 				<value>classpath:/projects/${project.name}_messages</value>
 				<value>classpath:/themes/${project.theme}_messages</value>
 				<value>classpath:/messages</value>
