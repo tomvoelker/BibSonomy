@@ -2627,9 +2627,8 @@ table.report td.value {
 }
 
 #groupsList tr:hover:not(.groupsNewChar) {
-	background-color: #006699;
+	background-color: @main-color;
 	color: white;
-	
 }
 
 #groupsList tr:hover:not(.groupsNewChar) td>a{
@@ -2645,16 +2644,16 @@ table.report td.value {
 }
 
 .loginHelp {
-    color: black;
-    height: 350px;
-    width: 410px;
-    position: absolute;
-    background-color: #FFFFFF;
-    border: 2px solid #666666;
-    border-radius: 10px 10px 10px 10px;
-    box-shadow: 0 0 5px 0;
-    opacity: 0.95;
-    margin-top: 8px;
+	color: black;
+	height: 350px;
+	width: 410px;
+	position: absolute;
+	background-color: #FFFFFF;
+	border: 2px solid #666666;
+	border-radius: 10px 10px 10px 10px;
+	box-shadow: 0 0 5px 0;
+	opacity: 0.95;
+	margin-top: 8px;
 	font-size: 120%;
 	padding: 10px;
 	text-align: left;
@@ -2662,34 +2661,12 @@ table.report td.value {
 }
 
 
-#loginParts_LDAP .loginHelp {
-	display: none;
-}
-
-#loginParts_INTERNAL:hover .loginHelp {
-	display: none;
-}
-
-#loginParts_INTERNAL .loginHelp {
-	display: none;
-}
-
-#loginParts_HTTPBASIC:hover .loginHelp {
-	display: none;
-}
-
-#loginParts_HTTPBASIC .loginHelp {
-	display: none;
-}
-
-#loginParts_OPENID:hover .loginHelp {
-	display: none;
-}
-
+#loginParts_LDAP .loginHelp, #loginParts_INTERNAL:hover .loginHelp,
+#loginParts_INTERNAL .loginHelp, #loginParts_HTTPBASIC:hover .loginHelp,
+#loginParts_HTTPBASIC .loginHelp, #loginParts_OPENID:hover .loginHelp, 
 #loginParts_OPENID .loginHelp {
 	display: none;
 }
-
 
 .posts .first h2 {
 	margin-top: 0;
