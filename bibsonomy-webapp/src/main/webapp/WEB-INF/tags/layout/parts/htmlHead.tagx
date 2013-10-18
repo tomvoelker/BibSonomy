@@ -23,8 +23,6 @@
 	<!-- TODO: extract into separate JSP file? -->
 	<c:set var="resdir" scope="application" value="/resources" />
 	
-	<c:set var="stylesheetExtension" value="less" scope="request" />
-	
 	<!--+
 		| setting theme variables
 		+-->
