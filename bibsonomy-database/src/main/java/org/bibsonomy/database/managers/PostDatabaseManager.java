@@ -1251,14 +1251,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			}
 			
 			/*
-			 * perform system tags before update
-			 */
-			final List<ExecutableSystemTag> executableSystemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), oldPost.getTags());
-			for (final ExecutableSystemTag systemTag : executableSystemTags) {
-				systemTag.performBeforeUpdate(post, oldPost, operation, session);
-			}
-
-			/*
 			 * Only when we update the complete post, we must recalculate the hash, because the
 			 * hash might have changed and otherwise we could not check if a post with the new
 			 * hash already exists. 
@@ -1266,16 +1258,24 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
 				post.getResource().recalculateHashes();
 			}
-
+			
+			/*
+			 * perform system tags before update
+			 */
+			final List<ExecutableSystemTag> executableSystemTags = SystemTagsExtractor.extractExecutableSystemTags(post.getTags(), oldPost.getTags());
+			for (final ExecutableSystemTag systemTag : executableSystemTags) {
+				systemTag.performBeforeUpdate(post, oldPost, operation, session);
+			}
+			
 			/*
 			 * the current intra hash of the resource
 			 */
 			final String intraHash = post.getResource().getIntraHash();
-
+			
 			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
 			 */
-			Post<R> newPostInDB = null; 
+			Post<R> newPostInDB = null;
 			try {
 				newPostInDB = this.getPostDetails(loginUser.getName(), intraHash, userName, new ArrayList<Integer>(), session);
 			} catch (final ResourceMovedException ex) {
