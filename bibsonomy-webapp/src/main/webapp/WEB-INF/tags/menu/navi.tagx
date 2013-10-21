@@ -44,7 +44,7 @@
 						<li><a href="/followers"><fmt:message key="navi.followees"/></a></li>
 						<li class="separator">${mtl:ch('nbsp')}</li>
 					</c:if>
-	
+					
 					<li><a href="/concepts/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
 					<c:if test="${not command.context.loginUser.settings.simpleInterface}">
 						<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
@@ -115,14 +115,14 @@
 		
 		<c:if test="${loginUser.role eq 'ADMIN' }">
 			<li class="pulldown ${activeTab eq 'admin' ? 'active' : ''}" id="systemAdmin" data-touch="false">
-				<a href="/admin">Admin</a>
+				<a href="/admin">admin</a>
 				<ul>
-					<li><a href="/admin/spam">Spam</a></li>
-					<li><a href="/admin/group">Groups</a></li>
-					<li><a href="/admin/lucene">Lucene</a></li>
-					<li><a href="/admin/recommender">Recommender</a></li>
-					<li><a href="/admin/oauth">OAuth Consumer</a></li>
-					<li><a href="/admin/sync">Synchronization</a></li>
+					<li><a href="/admin/spam">spam</a></li>
+					<li><a href="/admin/group">groups</a></li>
+					<li><a href="/admin/lucene">full text search</a></li>
+					<li><a href="/admin/recommender">recommenders</a></li>
+					<li><a href="/admin/oauth">OAuth consumers</a></li>
+					<li><a href="/admin/sync">synchronization</a></li>
 				</ul>
 			</li>
 		</c:if>
