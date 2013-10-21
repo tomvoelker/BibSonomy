@@ -66,16 +66,20 @@ public class DublinCoreScraper implements Scraper {
 		// get the page content to find the dublin core data
 		final String page = scrapingContext.getPageContent();
 		if (present(page)) {
-			// set scraper found
-			scrapingContext.setScraper(this);
-			// get bibtex information out of the DC metatags in the page
-			scrapingContext.setBibtexResult(DublinCoreToBibtexConverter.getBibTeX(page));
-			
-			if(!present(scrapingContext.getBibtexResult())) {
-				throw new ScrapingException("Not enough Dublin Core metadata found!");
+			// try to extract Dublin Core metadata 
+			final String result = DublinCoreToBibtexConverter.getBibTeX(page);
+			/*
+			 * We are not greedy, since many pages contain Dublin Core but often 
+			 * not enough: if we would return true for all of them, we would 
+			 * disable all following scrapers (in particular, the IE scraper). 
+			 */
+			if (present (result)) {
+				// set scraper found
+				scrapingContext.setScraper(this);
+				// get bibtex information out of the DC metatags in the page
+				scrapingContext.setBibtexResult(result);
+				return true;
 			}
-			
-			return true;
 		}
 		return false;
 	}
