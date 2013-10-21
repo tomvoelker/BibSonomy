@@ -12,37 +12,36 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
-	<!-- autors -->
-    <bib:author publication="${post.resource}"/>
+	<!-- authors -->
+	<bib:author publication="${post.resource}" useAbsoluteURL="${true}"/>
 
 	<!-- year -->
 	<bib:year publication="${post.resource}" braces="true"/>
 	
-	<!-- title -->    
-   	<a href="${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
+	<!-- title -->
+	<a href="${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i><c:out value="${mtl:cleanBibtex(post.resource.title)}"/>.</i></a>
 
 	<!-- inbook / incollection data -->
-  	<c:choose>
-    	<c:when test="${not empty post.resource.journal}">
-      		<bib:journal publication="${post.resource}"/>      		
-      		<bib:volume publication="${post.resource}"/>
-      		<bib:series publication="${post.resource}"/>
-    	</c:when>
-    	<c:otherwise>
-      		<bib:booktitle publication="${post.resource}"/>
-    	</c:otherwise>
-  	</c:choose> 
-  	
-  	<!-- pages -->
-  	<bib:page publication="${post.resource}"/>
-	  
-    <!-- address -->
-   <bib:address publication="${post.resource}"/>
-       
-    <!-- publisher -->
-    <bib:publisher publication="${post.resource}"/>
-    
-    <!-- tags & url -->
-    <output:tagsUrl post="${post}"/>
-     
+	<c:choose>
+		<c:when test="${not empty post.resource.journal}">
+			<bib:journal publication="${post.resource}"/>
+			<bib:volume publication="${post.resource}"/>
+			<bib:series publication="${post.resource}"/>
+		</c:when>
+		<c:otherwise>
+			<bib:booktitle publication="${post.resource}"/>
+		</c:otherwise>
+	</c:choose> 
+	
+	<!-- pages -->
+	<bib:page publication="${post.resource}"/>
+	
+	<!-- address -->
+	<bib:address publication="${post.resource}"/>
+	
+	<!-- publisher -->
+	<bib:publisher publication="${post.resource}"/>
+	
+	<!-- tags & url -->
+	<output:tagsUrl post="${post}"/>
 </jsp:root>
