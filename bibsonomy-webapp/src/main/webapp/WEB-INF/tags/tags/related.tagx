@@ -50,11 +50,11 @@
 			
 			<!-- construct url to single tag -->
 			<c:url var="tagUrl"
-				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${mtl:getQuery(escapedRequestPath)}"/>
+				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 			
 			<!-- construct url to several tags -->
 			<c:url var="tagsUrl"
-				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${mtl:getQuery(escapedRequestPath)}"/>
+				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 			
 			<!-- set titles -->
 			<c:set var="tagTitle">
