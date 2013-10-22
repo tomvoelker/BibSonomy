@@ -126,8 +126,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 						groupDocument.setFileName(document.getFileName());
 						groupDBLogic.createDocument(groupDocument, intraHash);
 					} catch (final Exception e) {
-						// TODO: error handling
-						throw new RuntimeException(e);
+						log.error("error while updating document of group post", e);
 					}
 				} else {
 					/*
@@ -144,8 +143,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 							groupDocument.setFileName(newFileName);
 							groupDBLogic.createDocument(groupDocument, intraHash);
 						} catch (final Exception e) {
-							// TODO: error handling
-							throw new RuntimeException(e);
+							log.error("error while copying document to group post", e);
 						}
 					}
 				}
