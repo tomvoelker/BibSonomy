@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,8 +35,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -53,11 +52,12 @@ public class ACSScraper extends AbstractUrlScraper {
 	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String ACS_HOST_NAME  = "http://pubs.acs.org";
-	private static final String ACS_PATH = "/doi/(abs|pdf|full|pdfplus)/";
+	private static final String DOI_PATH = "doi/(abs|pdf|full|pdfplus)/";
+	private static final String ACS_PATH = "/" + DOI_PATH;
 	private static final String ACS_BIBTEX_PATH = "/action/downloadCitation";
 	private static final String ACS_BIBTEX_PARAMS = "?include=abs&format=bibtex&doi=";
 
-	private static Pattern PATTERN_GETTING_DOI_PATH = Pattern.compile("doi/(abs|pdf|full|pdfplus)/([^\\?]*)");
+	private static Pattern PATTERN_GETTING_DOI_PATH = Pattern.compile(DOI_PATH + "([^\\?]*)");
 	private static Pattern PATTERN_GETTING_DOI_QUERY = Pattern.compile("doi=([^\\&]*)");
 	
 	private static final Pattern pathPatternAbstract = Pattern.compile(ACS_PATH + ".*");
@@ -71,23 +71,15 @@ public class ACSScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, pathPatternAbstract));
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		final String path = sc.getUrl().getPath();
 		sc.setScraper(this);
-		URL citationURL = sc.getUrl();
-
-		/*if (path.startsWith(ACS_ABSTRACT_PATH)) {
-			final String id = path.substring(path.indexOf("/abs/") + 5, path.indexOf(".html"));
-			try {
-				citationURL = new URL(ACS_HOST_NAME + ACS_BIBTEX_PATH + "?jid=" + id);
-			} catch (MalformedURLException ex) {
-				throw new InternalFailureException(ex);
-			}
-		} */
+		final URL citationURL = sc.getUrl();
 
 		String bibResult = null;
 
@@ -100,28 +92,30 @@ public class ACSScraper extends AbstractUrlScraper {
 			// get doi from url
 			String doi = null;
 			Matcher matcherPath = PATTERN_GETTING_DOI_PATH.matcher(citationURL.toString());
-			if(matcherPath.find())
+			if (matcherPath.find()) {
 				doi = matcherPath.group(2);
-			else{
+			} else{
 				Matcher matcherQuery = PATTERN_GETTING_DOI_QUERY.matcher(citationURL.toString());
-				if(matcherQuery.find())
+				if (matcherQuery.find()) {
 					doi = matcherQuery.group(1);
+				}
 			}
 			
-			if(doi != null){
-				String cookie = getCookie(citationURL);
+			if (doi != null){
+				final String cookie = getCookie(citationURL);
 				bibResult = getACSContent(new URL(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS + doi), cookie);
 			}
 			
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
-		}				
+		}
 
-		if(bibResult != null) {
+		if (bibResult != null) {
 			sc.setBibtexResult(bibResult);
 			return true;
-		}else
-			throw new ScrapingFailureException("getting bibtex failed");
+		}
+		
+		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
 	/** FIXME: refactor
@@ -176,8 +170,7 @@ public class ACSScraper extends AbstractUrlScraper {
 	 * @return
 	 * @throws IOException
 	 */
-	private String getACSContent(URL queryURL, String cookie) throws IOException{
-
+	private String getACSContent(URL queryURL, String cookie) throws IOException {
 		/*
 		 * get BibTex-File from ACS
 		 */
@@ -204,17 +197,20 @@ public class ACSScraper extends AbstractUrlScraper {
 		return out.toString();
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	
+	@Override
 	public String getSupportedSiteName() {
 		return "ACS Publication";
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return ACS_HOST_NAME;
 	}
-
 
 }
