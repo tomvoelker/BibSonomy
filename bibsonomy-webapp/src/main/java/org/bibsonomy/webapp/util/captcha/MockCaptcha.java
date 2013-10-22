@@ -9,15 +9,13 @@ import java.util.Locale;
 public class MockCaptcha implements Captcha {
 
 	@Override
-	public CaptchaResponse checkAnswer(String challenge, String response, String hostInetAddress) {
+	public CaptchaResponse checkAnswer(final String challenge, final String response, final String hostInetAddress) {
 		return new MockCaptchaResponse();
 	}
 
 	@Override
-	public String createCaptchaHtml(Locale locale) {
-		return "<input type='hidden' name='recaptcha_response_field' value='foo'/>" +
-			   "<strong>Captcha will be always true due to use of " + MockCaptcha.class.getName() + ".</strong>";
-		
+	public String createCaptchaHtml(final Locale locale) {
+		return "";
 	}
 
 }
