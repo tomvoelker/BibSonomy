@@ -3,17 +3,17 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
 
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
     <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
@@ -105,10 +105,10 @@
 								<c:if test="${not empty detailedInformation}">
 									<jsp:invoke fragment="detailedInformation"/>
 								</c:if>
-                                
-                                <!--
-                                   | a Captcha for our spammers ... 
-                                   -->         
+								
+								<!--
+									| a Captcha for our spammers ...
+									 -->
 								<c:if test="${not empty command.captchaHTML}">
 									<bform:fieldset maximized="true" legendKey="captcha">
 										<jsp:attribute name="content">
@@ -121,11 +121,10 @@
 													</fmt:message>
 												</p>
 											</c:if>
-											<span class="fsLabel"><fmt:message key="captcha"/></span>
-						              		<span class="fsInput">${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></span>
-						              	</jsp:attribute>
-						            </bform:fieldset>
-						        </c:if>
+											<bform:captcha />
+										</jsp:attribute>
+									 </bform:fieldset>
+								</c:if>
 
                                 <!--
                                    | buttons 
@@ -190,7 +189,7 @@
 		<jsp:attribute name="sidebar">
  			<ul>
             	<li>
-             		<!-- display user's tag relations -->     
+             		<!-- display user's tag relations -->
               		<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
               		<span class="sidebar_h">
                 		<a href="/concepts/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
