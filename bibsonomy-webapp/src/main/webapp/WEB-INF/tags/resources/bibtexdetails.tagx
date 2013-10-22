@@ -62,7 +62,7 @@
 				<c:if test="${(properties['publication.reporting.mode'] eq 'ALL' or properties['publication.reporting.mode'] eq 'GROUP' and mtl:userIsGroup(command.context.loginUser))}"> <!-- only if publication is tagged with myown system tag -->	
 					<editpub:openaccess referer="${referer}" bibtex="${publication}"/>
 				</c:if>
-				<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
+				<c:if test="${properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
 					<c:forEach var="group" items="${command.context.loginUser.groups}">
 						<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
 						<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name) and not empty reportingUrl}">
@@ -168,7 +168,7 @@
 					    		<c:out value="${command.context.loginUser.openURL}"/>?<c:out value="${mtl:shorten(publication.openURL, 30)}"/>
 					    	</a>
 				    	</td>
-				    </tr>															
+				    </tr>
 				</c:if> 
 				<!--+ 
 				 	| internal link

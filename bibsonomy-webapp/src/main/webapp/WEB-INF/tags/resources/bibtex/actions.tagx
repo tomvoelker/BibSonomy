@@ -31,7 +31,7 @@
 				<c:otherwise><!-- user is post's owner -->
 					<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
 					<a class="item edit" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
-					<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP'}">
+					<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
 							<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
 							<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name) and not empty reportingUrl}">
