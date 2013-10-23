@@ -15,7 +15,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -732,14 +731,5 @@ public class Functions  {
 	 */
 	public static boolean userIsGroup(final User user) {
 		return UserUtils.userIsGroup(user);
-	}
-	
-	/**
-	 * wrapper for {@link StringEscapeUtils#escapeXml(String)}
-	 * @param string
-	 * @return @see {@link StringEscapeUtils#escapeXml(String)}
-	 */
-	public static String escapeXML(final String string) {
-		return StringEscapeUtils.escapeXml(string);
 	}
 }
