@@ -40,13 +40,14 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * @author wbi
+ * @author hagen
  * @version $Id$
  */
 public class BMJOpenScraper extends CitationManagerScraper {
 
+	private static final String BMJOPEN_BMJ_COM_HOST = "bmjopen.bmj.com";
 	private static final String SITE_NAME = "BMJ Open";
-	private static final String SITE_URL = "http://bmjopen.bmj.com/";
+	private static final String SITE_URL = "http://" + BMJOPEN_BMJ_COM_HOST + "/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"([^\"]++)\"[^>]*+>Download to citation manager</a>");
@@ -55,17 +56,20 @@ public class BMJOpenScraper extends CitationManagerScraper {
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
 	static {
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?" + "bmjopen.bmj.com"), AbstractUrlScraper.EMPTY_PATTERN));
+		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?" + BMJOPEN_BMJ_COM_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
@@ -80,6 +84,7 @@ public class BMJOpenScraper extends CitationManagerScraper {
 		return URL_PATTERNS;
 	}
 	
+	// TODO: merge with some code of PharmacognosyResearchScraper
 	@Override
 	protected String buildDownloadLink(URL url, String content) throws ScrapingFailureException {
 		
@@ -129,13 +134,10 @@ public class BMJOpenScraper extends CitationManagerScraper {
 		
 		//build download link for BibTeX
 		try {
-			url = new URL(url, m2.group(1).replace("&amp;", "&"));
+			return new URL(url, m2.group(1).replace("&amp;", "&")).toExternalForm();
 		} catch (MalformedURLException ex) {
 			throw new ScrapingFailureException(ex);
 		}
-		
-		//done
-		return url.toExternalForm();
 	}
 
 }

@@ -32,7 +32,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #58 & #59 for DBLPScraper
- * @author wbi
+ * @author hagen
  * @version $Id$
  */
 @Category(RemoteTest.class)
