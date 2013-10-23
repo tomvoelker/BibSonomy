@@ -139,7 +139,6 @@ public class UserTest {
 	 * Tests remote id setters and lists
 	 */
 	@Test
-	@Ignore
 	public void testRemoteIds() {
 		final User srcUser = ModelUtils.getUser();
 		Assert.assertEquals("preCondition1", "test-ldapId", srcUser.getLdapId());
@@ -191,9 +190,9 @@ public class UserTest {
 		
 		Assert.assertEquals("http://huhu", srcUser.getOpenID());
 	}
-	/*
+	
+	/**
 	 * FIXME: merge with testRemoteIds()
-	 * 
 	 */
 	@Test
 	@Ignore
@@ -219,8 +218,7 @@ public class UserTest {
 	@Test
 	public void testRemoteUserIdProviderOverwrites() {
 		final User user = new User();
-
-
+		
 		final String indentityProviderId = "provider1";
 		final String userId = "u_id1_1";
 		user.setRemoteUserId(new SamlRemoteUserId(indentityProviderId, userId));
@@ -231,7 +229,5 @@ public class UserTest {
 		user.setRemoteUserId(new SamlRemoteUserId(indentityProviderId, userId3));
 		assertEquals(2 /* 4 */, user.getRemoteUserIds().size());
 		assertTrue(user.getRemoteUserIds().contains(new SamlRemoteUserId(indentityProviderId, userId3)));
-		
 	}
-	
 }
