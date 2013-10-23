@@ -20,12 +20,7 @@
     	pageTitle="${command.pageTitle}" 
     	activeTab="groups"
     	minimizedContentWidth="${true}">
-    	<!--+
-    	 	| html header extension: page specific stylesheet
-    	 	+-->
-		<jsp:attribute name="headerExt">
-	    	<link rel="stylesheet" type="text/css" href="${resdir}/css/groups.css" />
-	    </jsp:attribute>
+
     	<!--+
     	 	| heading
     	 	+-->

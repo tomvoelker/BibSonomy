@@ -1,5 +1,7 @@
 @import "color.less";
 
+@import "groups.less"; /** used on /groups */
+
 /* TODO: split in multiple files */
 
 body {
@@ -2623,15 +2625,6 @@ table.report td.value {
 .reportingTableHeaderDescription {
 	font-size: 80%;
 	color: #888888;
-}
-
-#groupsList tr:hover:not(.groupsNewChar) {
-	background-color: @main-color;
-	color: white;
-}
-
-#groupsList tr:hover:not(.groupsNewChar) td>a{
-	color: white;
 }
 
 #post\.resource\.entrytype {
