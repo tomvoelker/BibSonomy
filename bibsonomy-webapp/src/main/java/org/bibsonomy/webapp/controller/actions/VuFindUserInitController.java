@@ -196,16 +196,16 @@ public class VuFindUserInitController implements MinimalisticController<OAuthCom
 		this.adminLogic = adminLogic;
 	}
 	
-    protected AuthenticationManager getAuthenticationManager() {
-        return this.authenticationManager;
-    }
+	protected AuthenticationManager getAuthenticationManager() {
+		return this.authenticationManager;
+	}
 
-    /**
-     * @param authenticationManager
-     */
-    public void setAuthenticationManager(final AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+	/**
+	 * @param authenticationManager
+	 */
+	public void setAuthenticationManager(final AuthenticationManager authenticationManager) {
+		this.authenticationManager = authenticationManager;
+	}
 
 	/**
 	 * @return the loginTool
