@@ -28,7 +28,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +40,7 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * @author wbi
+ * @author hagen
  * @version $Id$
  */
 public class PharmacognosyResearchScraper extends CitationManagerScraper {
@@ -52,20 +52,23 @@ public class PharmacognosyResearchScraper extends CitationManagerScraper {
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("href=\"(citation.asp[^\"]++)\"");
 	private static final Pattern CITATION_MANAGER_PATTERN = Pattern.compile("href=\"(citeman.asp\\?(?:[^;\"]++;)++t=6)\"");
 	
-	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
+	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
 	
 	static {
 		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?" + "www.phcogres.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
@@ -82,18 +85,16 @@ public class PharmacognosyResearchScraper extends CitationManagerScraper {
 	
 	@Override
 	protected String buildDownloadLink(URL url, String content) throws ScrapingFailureException {
-		
 		// get the "download to citation manager" page
 		String downloadPage;
 		
-		//if the page requested to scrape is the citmgr page, nothing else is to do
+		// if the page requested to scrape is the citmgr page, nothing else is to do
 		if (url.toExternalForm().contains("citation.asp")) {
 			downloadPage = content;
 		}
 		
 		//otherwise try to find the citmgr page via a link on the requested page
 		else {
-
 			// get link to "download to citation manager" page
 			final Matcher downloadLinkMatcher = getDownloadLinkPattern().matcher(content);
 			
@@ -117,25 +118,21 @@ public class PharmacognosyResearchScraper extends CitationManagerScraper {
 			
 			//is the citmgr page present?
 			if (!present(downloadPage)) throw new ScrapingFailureException("couldn't get download page");
-			
 		}
 		
-		//get download link for BibTeX
-		Matcher m2 = CITATION_MANAGER_PATTERN.matcher(downloadPage);
+		// get download link for BibTeX
+		final Matcher bibtedDownloadLinkMatcher = CITATION_MANAGER_PATTERN.matcher(downloadPage);
 		
-		//throw exception if download link to BibTeX not found
-		if (!m2.find())
+		// throw exception if download link to BibTeX not found
+		if (!bibtedDownloadLinkMatcher.find())
 			throw new ScrapingFailureException("Download link for BibTeX is not available");
 		
-		//build download link for BibTeX
+		// build download link for BibTeX
 		try {
-			url = new URL(url, m2.group(1).replace("&amp;", "&"));
+			return new URL(url, bibtedDownloadLinkMatcher.group(1).replace("&amp;", "&")).toExternalForm();
 		} catch (MalformedURLException ex) {
 			throw new ScrapingFailureException(ex);
 		}
-		
-		//done
-		return url.toExternalForm();
 	}
 
 }
