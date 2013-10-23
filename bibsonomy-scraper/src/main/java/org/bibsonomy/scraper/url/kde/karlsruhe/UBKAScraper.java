@@ -67,14 +67,14 @@ public class UBKAScraper extends AbstractUrlScraper {
 	private static final String UBKA_SEARCH_PATH = "/hylib-bin/suche.cgi";
 
 
-	//bibtex id (fix value)
-	private static final String UBKA_PARAM_BIBTEX   = "bibtex=1";
-	//opac id (fix value)
-	private static final String UBKA_PARAM_OPACDB   = "opacdb=UBKA_OPAC";
-	//output id (free value, must be set)
+	// bibtex id (fix value)
+	private static final String UBKA_PARAM_BIBTEX = "bibtex=1";
+	// opac id (fix value)
+	private static final String UBKA_PARAM_OPACDB = "opacdb=UBKA_OPAC";
+	// output id (free value, must be set)
 	private static final String UBKA_PARAM_PRINTMAB = "printMAB=1";
-	//query id (user dependent value)
-	private static final String UBKA_PARAM_ND    	= "nd";
+	// query id (user dependent value)
+	private static final String UBKA_PARAM_ND = "nd";
 
 	private static final Pattern UBKA_BIB_PATTERN   = Pattern.compile(".*<td valign=\"top\"\\s*>\\s*(@[A-Za-z]+&nbsp;\\s*\\{.+}\\s).*", Pattern.MULTILINE | Pattern.DOTALL);
 	private static final Pattern UBKA_COMMA_PATTERN = Pattern.compile("(.*keywords\\s*=\\s*\\{)(.*?)(\\},?<br>.*)", Pattern.MULTILINE | Pattern.DOTALL);	
@@ -95,15 +95,15 @@ public class UBKAScraper extends AbstractUrlScraper {
 			 */	
 			final String result;
 
-			if(sc.getUrl().getQuery().contains(UBKA_PARAM_BIBTEX)){
+			if (sc.getUrl().getQuery().contains(UBKA_PARAM_BIBTEX)){
 				//current publication must be published as bibtex
 				result = this.extractBibtexFromUBKA(sc.getPageContent());
 			} else {
 				//publication is not published as bibtex
 				try {
-					final URL expURL = new URL(UBKA_SEARCH_NAME + "?" +  
+					final URL expURL = new URL(UBKA_SEARCH_NAME + "?" + 
 							UBKA_PARAM_OPACDB + "&" +
-							UBKA_PARAM_ND + "=" + this.extractQueryParamValue(sc.getUrl().getQuery(),UBKA_PARAM_ND) + "&" +
+							UBKA_PARAM_ND + "=" + this.extractQueryParamValue(sc.getUrl().getQuery(), UBKA_PARAM_ND) + "&" +
 							UBKA_PARAM_PRINTMAB + "&" + 
 							UBKA_PARAM_BIBTEX);
 					//download page and extract bibtex
@@ -125,14 +125,12 @@ public class UBKAScraper extends AbstractUrlScraper {
 				sc.setScraper(this);
 
 				return true;
-			} else {
-				throw new ScrapingFailureException("getting bibtex failed");
 			}
-
-		} else {
-			throw new PageNotSupportedException("This UBKA URL is not supported!");
+			
+			throw new ScrapingFailureException("getting bibtex failed");
 		}
-
+		
+		throw new PageNotSupportedException("This UBKA URL is not supported!");
 	}
 
 	/**
@@ -148,21 +146,19 @@ public class UBKAScraper extends AbstractUrlScraper {
 			if (m.matches()) { // we got the entry
 				// replace &nbsp; spaces
 				String bib = UBKA_SPACE_PATTERN.matcher(m.group(1)).replaceAll(" ");
-
-				//TODO: decode Tex Macros, Tex Entities. Also @see AandAScraper.
-
+				// TODO: decode Tex Macros, Tex Entities. Also @see AandAScraper.
 				// replace comma in keywords={bla, bla, bla bla}
 				final Matcher m2 = UBKA_COMMA_PATTERN.matcher(bib);
 				if (m2.matches()){
-					return m2.group(1) + m2.group(2).replaceAll(",", " ") + m2.group(3);	        
+					return m2.group(1) + m2.group(2).replaceAll(",", " ") + m2.group(3);
 				}
 
-				return bib;			
+				return bib;
 			}
 		} catch (final PatternSyntaxException pse) {
 			throw new InternalFailureException(pse);
 		}
-		return null;		
+		return null;
 	}
 
 	/**
@@ -202,6 +198,7 @@ public class UBKAScraper extends AbstractUrlScraper {
 	public String getInfo() {
 		return info;
 	}
+	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;

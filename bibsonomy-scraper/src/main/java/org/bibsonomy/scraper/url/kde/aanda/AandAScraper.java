@@ -49,14 +49,11 @@ import org.w3c.dom.NodeList;
 public class AandAScraper extends AbstractUrlScraper{
 
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
-
 	private static final String SITE_URL = "http://www.aanda.org/";
-
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aanda.org");
-	
-	private static final String downloadUrl = "http://www.aanda.org/index.php?option=com_makeref&task=output&type=bibtex&doi=";
+	private static final String downloadUrl = SITE_URL + "index.php?option=com_makeref&task=output&type=bibtex&doi=";
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
 
@@ -72,6 +69,10 @@ public class AandAScraper extends AbstractUrlScraper{
 			if (present(doi)) {
 				// BibtexScraper will extract the bibtex from the download location
 				final ScrapingContext scForBibtexScraper = new ScrapingContext(new URL(downloadUrl + doi));
+				/*
+				 * TODO: it would be nicer that the scraper can reenvoke the scraper
+				 * chain with the new scraping context
+				 */
 				if (new BibtexScraper().scrape(scForBibtexScraper)) {
 					// TODO: decode Tex Macros, Tex Entities. Also @see UBKAScraper.
 					sc.setBibtexResult(scForBibtexScraper.getBibtexResult());
