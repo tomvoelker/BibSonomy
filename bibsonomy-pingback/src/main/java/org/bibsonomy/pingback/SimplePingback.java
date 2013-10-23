@@ -8,7 +8,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.UrlUtils;
@@ -46,6 +45,7 @@ public class SimplePingback implements Pingback {
 	 * @return The return status from the corresponding pingback/trackback clients 
 	 * or <code>null</code> if no pingback/trackback link was discovered.
 	 */
+	@Override
 	public String sendPingback(final Post<? extends Resource> post) {
 		/*
 		 * extract URL
@@ -130,23 +130,35 @@ public class SimplePingback implements Pingback {
 			return "error (" + e.getMessage() + ")";
 		}
 	}
-
+	
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
 	@Required
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
 
+	/**
+	 * @param pingbackClient the pingbackClient to set
+	 */
 	@Required
 	public void setPingbackClient(PingbackClient pingbackClient) {
 		this.pingbackClient = pingbackClient;
 	}
-
+	
+	/**
+	 * @param linkLoader the linkLoader to set
+	 */
 	@Required
 	public void setLinkLoader(LinkLoader linkLoader) {
 		this.linkLoader = linkLoader;
 	}
-
-	//@Required
+	
+	/**
+	 * @param trackbackClient the trackbackClient to set
+	 */
+	@Required
 	public void setTrackbackClient(PingbackClient trackbackClient) {
 		this.trackbackClient = trackbackClient;
 	}

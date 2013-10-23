@@ -8,6 +8,13 @@ import com.malethan.pingback.Link;
  */
 public class TrackbackLink extends Link {
 
+	/**
+	 * default constructor 
+	 * @param title
+	 * @param url
+	 * @param pingbackUrl
+	 * @param success
+	 */
 	public TrackbackLink(String title, String url, String pingbackUrl, boolean success) {
 		super(title, url, pingbackUrl, success);
 	}
@@ -17,6 +24,10 @@ public class TrackbackLink extends Link {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @return <code>true</code> if trackpack is enabled
+	 */
 	public boolean isTrackbackEnabled() {
 		return super.isPingbackEnabled();
 	}

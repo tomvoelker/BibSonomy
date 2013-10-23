@@ -28,7 +28,7 @@ import com.malethan.pingback.PingbackException;
 /**
  * 
  * Sends pings according to the trackback protocol:
- * @see http://www.sixapart.com/pronet/docs/trackback_spec
+ * @see "http://www.sixapart.com/pronet/docs/trackback_spec"
  * 
  * 
  * @author rja
@@ -47,6 +47,9 @@ public class TrackbackClient implements PingbackClient {
 
 	private final HttpClient httpClient;
 
+	/**
+	 * default constructor
+	 */
 	public TrackbackClient() {
 		this.httpClient = HttpClientHolder.getInstance().getHttpClient();
 	}
@@ -61,7 +64,7 @@ public class TrackbackClient implements PingbackClient {
 	 * 
 	 *   title=Foo+Bar&url=http://www.bar.com/&excerpt=My+Excerpt&blog_name=Foo
 	 * </pre>
-	 * @see http://www.sixapart.com/pronet/docs/trackback_spec#Sending_a_TrackBack_Ping
+	 * @see "http://www.sixapart.com/pronet/docs/trackback_spec#Sending_a_TrackBack_Ping"
 	 * 
 	 * @see com.malethan.pingback.PingbackClient#sendPingback(java.lang.String, com.malethan.pingback.Link)
 	 */
@@ -138,11 +141,19 @@ public class TrackbackClient implements PingbackClient {
 				throw new PingbackException("request error: " + e, PingbackClient.UPSTREAM_PROBLEM, trackbackUrl, trackbackLink.getUrl());
 			}
 			throw new PingbackException("unknown error", PingbackClient.UNKOWN_ERROR, trackbackUrl, trackbackLink.getUrl());
-		} else {
-			throw new IllegalArgumentException("Only instances of " + TrackbackLink.class.getSimpleName() + " are supported as 'link' argument.");
 		}
+		
+		throw new IllegalArgumentException("Only instances of " + TrackbackLink.class.getSimpleName() + " are supported as 'link' argument.");
 	}
-
+	
+	/**
+	 * FIXME: merge with {@link HttpClientHolder#readPortionOfPage}
+	 * 
+	 * reads only {@value #MAX_HTTP_BODY_CHARS} chars from the reader
+	 * @param reader
+	 * @return the first {@value #MAX_HTTP_BODY_CHARS} from the reader
+	 * @throws IOException
+	 */
 	protected String readContent(final BufferedReader reader) throws IOException {
 		final StringBuilder content = new StringBuilder();
 		String line;

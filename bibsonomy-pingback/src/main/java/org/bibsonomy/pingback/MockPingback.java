@@ -2,7 +2,6 @@ package org.bibsonomy.pingback;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.services.Pingback;
 
 /**
  * @author jensi
@@ -17,6 +16,7 @@ public class MockPingback implements ThreadedPingBack {
 
 	@Override
 	public void clearQueue() {
+		// noop
 	}
 
 }

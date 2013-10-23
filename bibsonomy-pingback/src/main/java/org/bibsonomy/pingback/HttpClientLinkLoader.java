@@ -43,6 +43,9 @@ public class HttpClientLinkLoader implements LinkLoader {
 
 	private final HttpClient httpClient;
 
+	/**
+	 * default constructor
+	 */
 	public HttpClientLinkLoader() {
 		this.httpClient = HttpClientHolder.getInstance().getHttpClient();
 	}
@@ -114,7 +117,7 @@ public class HttpClientLinkLoader implements LinkLoader {
 	 * @param linkUrl
 	 * @param headContent
 	 * @param reader
-	 * @return
+	 * @return the trackback url
 	 * @throws IOException
 	 */
 	protected String getTrackbackUrl(final String linkUrl, final String headContent, final BufferedReader reader) throws IOException {
@@ -144,6 +147,12 @@ public class HttpClientLinkLoader implements LinkLoader {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * reads only {@link #MAX_HTML_BODY_CHARS} from the reader
+	 * @param reader
+	 * @return the {@link #MAX_HTML_BODY_CHARS} from the reader
+	 * @throws IOException
+	 */
 	protected String readPortionOfPage(final BufferedReader reader) throws IOException {
 		final StringBuilder content = new StringBuilder();
 		String line;
@@ -153,6 +162,13 @@ public class HttpClientLinkLoader implements LinkLoader {
 		return content.toString();
 	}
 
+	/**
+	 *  TODO: move to WebUtils!
+	 * reads only the head section of the page
+	 * @param reader
+	 * @return content from start till end of head
+	 * @throws IOException
+	 */
 	protected String readHeadSectionOfPage(final BufferedReader reader) throws IOException {
 		final StringBuilder content = new StringBuilder();
 		String line = reader.readLine();
@@ -162,11 +178,22 @@ public class HttpClientLinkLoader implements LinkLoader {
 		}
 		return content.toString();
 	}
-
+	
+	/**
+	 * TODO: move to WebUtils!
+	 * checks if line contains head end element 
+	 * @param line
+	 * @return <code>true</code> iff line contains head end element
+	 */
 	protected boolean reachedEndOfHeadSection(final String line) {
 		return END_OF_HTML_HEAD_PATTERN.matcher(line).matches();
 	}
 
+	/**
+	 * extracts the pingback url from html
+	 * @param html
+	 * @return the pingback url; if not found null
+	 */
 	protected String getPingbackUrlFromHtml(final String html) {
 		final Matcher matcher = PINGBACK_URL_PATTERN.matcher(html);
 		if (matcher.find()) {
