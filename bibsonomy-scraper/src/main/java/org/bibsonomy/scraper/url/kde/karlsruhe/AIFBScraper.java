@@ -43,49 +43,49 @@ import org.bibsonomy.util.WebUtils;
  */
 public class AIFBScraper extends AbstractUrlScraper {
 	
-	private static final String SITE_NAME		= "Institut AIFB Universität Karlsruhe";
-	private static final String AIFB_SITE_NAME	= "AIFB";
-	private static final String AIFB_HOST_NAME	= "http://www.aifb.kit.edu";
-	private static final String AIFB_HOST		= "aifb.kit.edu";
-	private static final String AIFB_WEB		= "/web/";
-	private static final String info			= "This scraper parses institute, research group and " +
-												  "people-specific pages from the " +
-												  href("http://www.aifb.uni-karlsruhe.de/", SITE_NAME);
+	private static final String SITE_NAME = "Institut AIFB Universität Karlsruhe";
+	private static final String AIFB_SITE_NAME = "AIFB";
+	private static final String AIFB_HOST_NAME = "http://www.aifb.kit.edu";
+	private static final String AIFB_HOST = "aifb.kit.edu";
+	private static final String AIFB_WEB = "/web/";
+	private static final String info =	"This scraper parses institute, research group and " +
+										"people-specific pages from the " +
+										href("http://www.aifb.uni-karlsruhe.de/", SITE_NAME);
 	
-    private static final String DOWNLOAD_HREF_STRING	= "<a href=\"(.+?format%3Dkiteva[^\"]+)\"";
-    private static final Pattern DOWNLOAD_HREF_PATTERN	= Pattern.compile(DOWNLOAD_HREF_STRING);
-    
-    private static final String URL		 = "url";
-    
-    private static final String WC				= ".*";
-    private static final String ARTICLE			= "Article\\d+";
-    private static final String INPROCEEDINGS	= "Inproceedings\\d+";
-    private static final String BOOK			= "Book\\d+";
-    private static final String INCOLLECTION	= "Incollection\\d+";
-    private static final String PROCEEDINGS		= "Proceedings\\d+";
-    private static final String PHDTHESIS		= "Phdthesis\\d+";
-    private static final String TECHREPORT		= "Techreport\\d+";
-    private static final String DELIVERABLE		= "Deliverable\\d+";
-    private static final String UNPUBLISHED		= "Unpublished\\d+";
-    
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
+	private static final String DOWNLOAD_HREF_STRING = "<a href=\"(.+?format%3Dkiteva[^\"]+)\"";
+	private static final Pattern DOWNLOAD_HREF_PATTERN = Pattern.compile(DOWNLOAD_HREF_STRING);
 
-    static {
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + ARTICLE)));
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INPROCEEDINGS)));
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + BOOK)));
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INCOLLECTION)));
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PROCEEDINGS)));
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PHDTHESIS)));
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + TECHREPORT)));
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + DELIVERABLE)));
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + UNPUBLISHED)));
-    }
+	private static final String URL = "url";
+
+	private static final String WC = ".*";
+	private static final String ARTICLE = "Article\\d+";
+	private static final String INPROCEEDINGS = "Inproceedings\\d+";
+	private static final String BOOK = "Book\\d+";
+	private static final String INCOLLECTION = "Incollection\\d+";
+	private static final String PROCEEDINGS = "Proceedings\\d+";
+	private static final String PHDTHESIS = "Phdthesis\\d+";
+	private static final String TECHREPORT = "Techreport\\d+";
+	private static final String DELIVERABLE = "Deliverable\\d+";
+	private static final String UNPUBLISHED = "Unpublished\\d+";
+
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + ARTICLE)));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INPROCEEDINGS)));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + BOOK)));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + INCOLLECTION)));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PROCEEDINGS)));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + PHDTHESIS)));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + TECHREPORT)));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + DELIVERABLE)));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + AIFB_HOST), Pattern.compile(AIFB_WEB + UNPUBLISHED)));
+	}
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		String bibtex = null;		
+		String bibtex = null;
 		Matcher _m = DOWNLOAD_HREF_PATTERN.matcher(sc.getPageContent());
 		
 		if (_m.find()) {
@@ -95,15 +95,16 @@ public class AIFBScraper extends AbstractUrlScraper {
 				throw new InternalFailureException(e);
 			}
 		}
-				
+		
 		if (bibtex != null) {
 			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, URL, sc.getUrl().toString());
 			sc.setBibtexResult(bibtex.toString());
 			return true;
-		}		
+		}
 		return false;
 	}
 	
+	@Override
 	public String getInfo() {
 		return info;
 	}
@@ -112,11 +113,13 @@ public class AIFBScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return AIFB_SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return AIFB_HOST_NAME;
 	}

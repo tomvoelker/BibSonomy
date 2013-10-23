@@ -25,13 +25,11 @@ package org.bibsonomy.scraper.url.kde.karlsruhe;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -52,18 +50,14 @@ public class BibliographyScraper extends AbstractUrlScraper {
 	private static final String BIBTEX_END_BLOCK = "</pre>";
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH + ".*")));
-
 	
-	public String getInfo() {
-		return INFO;
-	}
-
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 			sc.setScraper(this);
 			
 			String page = sc.getPageContent();
 			
-			if(page.indexOf(BIBTEX_START_BLOCK) > -1){
+			if (page.indexOf(BIBTEX_START_BLOCK) > -1) {
 				// cut off first part
 				page = page.substring(page.indexOf(BIBTEX_START_BLOCK)+20);
 				
@@ -89,21 +83,27 @@ public class BibliographyScraper extends AbstractUrlScraper {
 				sc.setBibtexResult(page);
 				return true;
 			}else
-				throw new ScrapingException("Can't find bibtex in scraped page.");			
+				throw new ScrapingException("Can't find bibtex in scraped page.");
 
 	}
-
+	
+	@Override
+	public String getInfo() {
+		return INFO;
+	}
+	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
 		return SITE_URL;
 	}
 }
