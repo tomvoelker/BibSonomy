@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -43,6 +44,9 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.format.datetime.DateFormatter;
 
 /**
@@ -72,6 +76,8 @@ public class Functions  {
 	private static final DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM");
 	private static final DateFormat dmyDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
+	private static final DateTimeFormatter W3CDTF_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
+	
 	/*
 	 * used by computeTagFontSize. 
 	 * 
@@ -80,8 +86,8 @@ public class Functions  {
 	 * - offset: controls size of smallest tag ( 10 -> 100%)
 	 * - default: default tag size returned in case of an error during computation
 	 */
-	private static final int TAGCLOUD_SIZE_SCALING_FACTOR = 45; 
-	private static final int TAGCLOUD_SIZE_OFFSET= 10;	
+	private static final int TAGCLOUD_SIZE_SCALING_FACTOR = 45;
+	private static final int TAGCLOUD_SIZE_OFFSET= 10;
 	private static final int TAGCLOUD_SIZE_DEFAULT = 100;
 	
 	// load special characters
@@ -90,7 +96,7 @@ public class Functions  {
 			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
 		} catch (final Exception e) {
 			throw new RuntimeException(e.getMessage());
-		}	    	    		
+		}
 	}
 
 	/**
@@ -574,14 +580,7 @@ public class Functions  {
 	 */
 	public static String formatDateW3CDTF(final Date date) {
 		if (present(date)) {
-			/*
-			 * gives us 2012-11-07T14:43:16+0100 
-			 */
-			final String string = ISO8601_FORMAT_HELPER.format(date);
-			/*
-			 * 
-			 */
-			return string.substring(0, string.length() - 2) + ":" + string.substring(string.length() - 2);
+			return W3CDTF_FORMAT.print(new DateTime(date));
 		}
 		return "";
 	}
@@ -733,5 +732,14 @@ public class Functions  {
 	 */
 	public static boolean userIsGroup(final User user) {
 		return UserUtils.userIsGroup(user);
+	}
+	
+	/**
+	 * wrapper for {@link StringEscapeUtils#escapeXml(String)}
+	 * @param string
+	 * @return @see {@link StringEscapeUtils#escapeXml(String)}
+	 */
+	public static String escapeXML(final String string) {
+		return StringEscapeUtils.escapeXml(string);
 	}
 }
