@@ -29,8 +29,8 @@
 <html>
   <head>
     <meta http-equiv="content-Type" content="text/html; charset=UTF-8" >
-    <link rel="stylesheet" type="text/css" href="/resources/css/style.css" >
-    <link rel="stylesheet" type="text/css" href="/resources/css/statphys23.css" >
+    <link rel="stylesheet" type="text/css" href="/resources/css/old_style.css" >
+    <link rel="stylesheet" type="text/css" href="assets/statphys23.css" >
     <!-- link rel="stylesheet" type="text/css" href="http://pil.phys.uniroma1.it/~ciro/bibsonomy_statphy23.css"-->
     <link rel="icon" href="/resources/image/favicon.png" type="image/png">
     <script type="text/javascript" src="/resources/javascript/functions.js"></script>
