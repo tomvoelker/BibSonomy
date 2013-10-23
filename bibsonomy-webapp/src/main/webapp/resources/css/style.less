@@ -1,6 +1,8 @@
 @import "color.less";
-
 @import "groups.less"; /** used on /groups */
+@import "goldstandards.less"; /** used on interhash sites */
+@import "discussion.less";
+@import "forms.less";
 
 /* TODO: split in multiple files */
 
@@ -1336,7 +1338,7 @@ Most actions appear in three ways
 }
  
 .deleteDocument { 
-    background-repeat: no-repeat;
+	background-repeat: no-repeat;
 	background: url("/resources/image/post_actions.png");
     margin-left: 4px;
     display: inline-block;
@@ -1373,7 +1375,12 @@ Most actions appear in three ways
 }
 
 
-.post .action .unpick, #pageOptions .unpick 			{ background-position: 0 0; width: 20px; height: 18px; } 
+.post .action .unpick, #pageOptions .unpick {
+	background-position: 0 0;
+	width: 20px;
+	height: 18px;
+}
+
 .post .action .unpick:hover, #pageOptions .unpick:hover	{ background-position: 0 -824px; width: 20px; height: 18px; } 
 .post .action .iunpick, #pageOptions .iunpick			{ background-position: 0 -905px; width: 20px; height: 18px; } 
 
@@ -1403,98 +1410,108 @@ Most actions appear in three ways
 
 
 
-
-
-
-
 /***** POST RATINGS ****/
 
-.post .rating {
-	margin-top: 1ex;
-	position: absolute;
-	bottom: 1.3ex;
-	right: 8px;
-}
-
-.post .footer {
-	clear: both;
-}
-
-.post .ptags {
-	margin-top: 2px;
-	margin-bottom: 5ex;
-}
-
-.ptags li {
-	margin-bottom: 0.5ex;
-	color: black;
-	padding-right: 0.5ex;
-	display: inline;
-}
-
-.ptags .hiddenSystemTag img {
-	padding-right: 0.5ex;
-}
-
-.post .ptags ul.tags {
-	display: inline-block;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	-o-text-overflow: ellipsis;  /* necessary for opera 9+10 */
-	float: left;
-	max-width: 86%;
-	white-space: nowrap;
-}
-
-.ptags a {
-	background-color: #eee;
-	padding-left: 1px;
-	padding-right: 1px;
-}
-
-.ptags a:hover {
-	background-color: #c9c9c9;
-}
-
-/* .post .ptags span.editTags { */
-.post .ptags span {
-	display: inline-block;
-	background-repeat: no-repeat;
-	background: url("/resources/image/post_actions.png");
-	vertical-align: text-bottom;
-	background-color: inherit;
-	float:left;
-}
-
-.post .ptags span.ieditTags		{ background-position: 0 -85px; width: 16px; height: 16px;} 
-.post .ptags span.editTags:hover{ background-position: 0 -123px; width: 16px; height: 16px; cursor:pointer;} 
-.post .ptags span.editTags		{ background-position: 0 -162px; width: 16px; height: 16px; cursor:pointer;}
-
-.post form.editTags {
-}
+/** TODO: merge to .post .ptags */
+.ptags {
+	a {
+		background-color: #eee;
+		padding-left: 1px;
+		padding-right: 1px;
+	}
 	
+	a:hover {
+		background-color: #c9c9c9;
+	}
+	
+	li {
+		margin-bottom: 0.5ex;
+		color: black;
+		padding-right: 0.5ex;
+		display: inline;
+	}
+	
+	.hiddenSystemTag img {
+		padding-right: 0.5ex;
+	}
+}
+
+.post {
+	.footer {
+		clear: both;
+	}
+	
+	.rating {
+		margin-top: 1ex;
+		position: absolute;
+		bottom: 1.3ex;
+		right: 8px;
+	}
+	
+	.ptags {
+		margin-top: 2px;
+		margin-bottom: 5ex;
+	
+		ul.tags {
+			display: inline-block;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			-o-text-overflow: ellipsis;  /* necessary for opera 9+10 */
+			float: left;
+			max-width: 86%;
+			white-space: nowrap;
+		}
+		
+		span {
+			display: inline-block;
+			background-repeat: no-repeat;
+			background: url("/resources/image/post_actions.png");
+			vertical-align: text-bottom;
+			background-color: inherit;
+			float:left;
+		}
+		span.ieditTags {
+			background-position: 0 -85px;
+			width: 16px;
+			height: 16px;
+		}
+		
+		span.editTags:hover {
+			background-position: 0 -123px;
+			width: 16px;
+			height: 16px;
+			cursor:pointer;
+		}
+		
+		span.editTags {
+			background-position: 0 -162px;
+			width: 16px;
+			height: 16px;
+			cursor:pointer;
+		}
+	}
+}
+
+
 form.editTags input[type=text] {
 	width: 60%;
-}	
-	
+}
+
 .ptags {
 	background: none;
 	color: #006699;
-}
-
-.ptags .editTags:hover {
-	color: #006699;
-}
-
-.ptags a.systemtags {
-	background: none;
-}
-
-.ptags a.systemtags:hover {
-	background: none;
-}
-
-.post .ptime {
+	
+	.editTags:hover {
+		color: #006699;
+	}
+	
+	a.systemtags {
+		background: none;
+	}
+	
+	a.systemtags:hover {
+		background: none;
+	}
 }
 
 .puser, .ptime, .pgroup {
@@ -1504,27 +1521,26 @@ form.editTags input[type=text] {
 .pgroup {
 	padding-left: 0.5ex;
 	
-}
-
-.pgroup .private {
-	font-weight: bold;
-	background-color: @main-color;
-	padding: 0 3px;
-	color: #ffffff;
-}
-
-.pgroup .friends {
-	font-weight: bold;
-	background-color: #660099;
-	padding: 0 3px;
-	color: #ffffff;
-}
-
-.pgroup .other {
-	font-weight: bold;
-	background-color: #669900;
-	padding: 0 3px;
-	color: #ffffff;
+	.private {
+		font-weight: bold;
+		background-color: @main-color;
+		padding: 0 3px;
+		color: #ffffff;
+	}
+	
+	.friends {
+		font-weight: bold;
+		background-color: #660099;
+		padding: 0 3px;
+		color: #ffffff;
+	}
+	
+	.other {
+		font-weight: bold;
+		background-color: #669900;
+		padding: 0 3px;
+		color: #ffffff;
+	}
 }
 
 .post.odd {
@@ -1548,7 +1564,7 @@ form.editTags input[type=text] {
 	margin-top: -14px;
 }
 
-#preview{
+#preview {
 	position:absolute;
 	border:1px solid #ccc;
 	background:#eee;
@@ -1566,19 +1582,19 @@ form.editTags input[type=text] {
 }
 
 .stars-off-0\.75 {
-    float: left;
-    position: relative;
-    width: 60px;
+	float: left;
+	position: relative;
+	width: 60px;
 }
 
 .stars-off-0\.75, .stars-on-0\.75 {
-    background: url("/resources/image/stars.gif") repeat-x scroll 0 -24px transparent;
-    height: 12px;
+	background: url("/resources/image/stars.gif") repeat-x scroll 0 -24px transparent;
+	height: 12px;
 }
 
 .stars-on-0\.75 {
-    background-position: 0 -36px;
-    position: absolute;
+	background-position: 0 -36px;
+	position: absolute;
 }
 
 .reviewInfo {
@@ -1659,7 +1675,7 @@ form.editTags input[type=text] {
 	margin-top: 10px;
 	margin-right: 10px;
 	float: right;
-	cursor: pointer;	
+	cursor: pointer;
 }
 
 #bookmarksheader .config, #publicationsheader .config, #panelheader .config {
@@ -1687,7 +1703,7 @@ form.editTags input[type=text] {
 	padding: 3ex 1em 1ex 1em;
 }
 
-.bookmarksContainer .posts {
+bookmarksContainer .posts {
 	background-color: #ffffff;
 }
 
@@ -1780,6 +1796,7 @@ form.editTags input[type=text] {
 	display:none;
 }
 
+
 	
 #publicationsheader, #publicationsfooter {
 	margin-left: 0px;
@@ -1825,7 +1842,6 @@ form.editTags input[type=text] {
 	display: none;
 }
 
-	
 #container.noPageNavigation>#postcontainer {
 	bottom: 6px;
 }
@@ -1846,7 +1862,6 @@ form.editTags input[type=text] {
 	height: 30px;
 	width: 100%;
 	background-color: white;
-	
 }
 
 #postcontainer {
@@ -1856,7 +1871,7 @@ form.editTags input[type=text] {
 	top: 185px;
 	margin-right: 303px;
 	overflow: scroll;
-	overflow-x:hidden;	
+	overflow-x:hidden;
 	background-color: #fff;
 	right: 0;
 }
@@ -1865,7 +1880,7 @@ form.editTags input[type=text] {
 .nextprev {
 	width: 100%;
 }
-	
+
 .listnav {
 	border:1px solid #c6c6c6;
 	margin:2px;
@@ -1880,8 +1895,6 @@ form.editTags input[type=text] {
 	background-color: #c6c6c6;
 }
 
-
-
 .listnavSelected {
 	border:1px solid #c6c6c6;
 	background-color: #c6c6c6;
@@ -1892,7 +1905,6 @@ form.editTags input[type=text] {
 	text-align:center;
 	font-weight:bold;
 }
-
 
 #pageNavigation {
 	clear: both;
@@ -2326,16 +2338,6 @@ font-weight: normal;
 	font-style: italic;
 }
 
-.reqinput {
-	background-color: fadeout(@main-color, 90%);
-}
-
-input[type=text],input[type=password],input[type=file],textarea,select {
-	border: 1px solid @main-color;
-	padding: 2px;
-	font-family: monospace;
-	font-weight: normal;
-}
 
 div.fsRow textarea {
 	width: 73%;
@@ -2368,105 +2370,11 @@ div.reviewTextBox textarea {
 }
 
 
-/* ****************************************************************************
- * forms and fieldsets
- * ****************************************************************************/
-#fsform {
-    width:100%;
-}
-
-.fsHelp {
-	margin-left: 10px;	
-}
-
-.fsOuter legend {
-	text-align:left;
-	
-	img {
-		padding-right: .5em;
-	}
-}
-
-.fsOuter, .fsInner, .fsVisible {
-	position: relative;
-}
-
-.fsOuter {
-	padding: 10px 10px 10px 10px;
-}
-
-.fsContainerRight {
-	float:right;
-	width:50%;
-}
-
-.fsContainerLeft {
-	width:50%;
-	margin-right:50%;
-}
-
-.fsRight, .fsLeft {
-	margin:10px;
-}
-
-.fsInner, .fsHidden, .fsVisible {
-    margin: 8px 0 0 0;
-}
-
-.fsHidden {
-	border: none;
-    margin-left: 1px;
-}
-
-.fsHidden > div {
-	display: none;
-}
-
-.fsLabel {
-    text-align: right;
-}
-
-.fsFloatLabel, .fsLabel {
-    font-weight: bold;
-    font-size: 90%;
-}
-
-.fsFloatInput {
-	margin-left: 10px;
-	margin-right: 5px;
-}
-
-.fsInput, #inpf, .fsFloatInput {
-	margin-bottom: 2px;
-}
-
-.fsInputReco {
-	background-image: url(/resources/image/reco.png);
-	background-position: right;
-	background-repeat: no-repeat;
-}
-
-.fsInputRecoHelp {
-	font-size: 11px;
-	font-weight: bold; 
-}
-
-.fsRow {
-	position: relative; 
-	clear: both;
-}
-
-.fsLabel {
-	padding-right: 5px;
-	width: 20%;
-	float: left;
-}
-
 .tagInput {
 	margin-bottom: 10px;
 }
 
-#copiedTags, .fsSuggestion, .tagInput, #suggestedTags, #recommendedTags {	
+#copiedTags, .tagInput, #suggestedTags, #recommendedTags {
 	float: left;
 	width: 73%;
 	background-color: white;
@@ -2482,64 +2390,6 @@ div.reviewTextBox textarea {
 	color: @main-color;
 }
 
-.fsSmall {
-  max-width: 15em;
-}
-
-.fsMedium {
-	max-width: 35%;
-}
-
-.fsDiffMissingColor{
-	background-color:Tomato;
-}
-
-.fsDiffAddColor{
-	background-color:GreenYellow;
-}
-
-.fsDiffField {
-	float: left;
-	width: 73%;
-	min-height:16px;
-	margin-top: 2px;
-	margin-bottom: 2px;
-	border: 1px solid @main-color;
-	padding: 2px;
-	font-family: monospace;
-	font-weight: normal;
-	background-color: #eee;
-}
-
-.fsSuggestion {
-	font-size: 80%;
-	margin-left: 20%;
-	padding-left: 1em;
-	margin-top: 0px;
-	padding-top: 0px;
-}
-
-#fsReloadButton {
-	float: right;
-	width: 20px;
-	height: 20px;
-}
-
-.fsConfirm {
-}
-
-.fsWaitingText {
-	font-style: italic;
-}
-
-.fsScraperSelectedText {
-	resize: none;
-	margin-top: 0px;
-	padding: 0px;
-	border: 0px;
-	background-color: #EEEEEE;
-}
-
 .ui-autocomplete-subtext{
 	font-size:10px;
 }
@@ -2549,7 +2399,7 @@ div.reviewTextBox textarea {
 	overflow-y: scroll; 
 }
 
-.ui-menu-item{
+.ui-menu-item {
 	font-weight: bold; 
 	font-size:11px;
 }
@@ -2594,7 +2444,7 @@ ul.documents > li.fileError {
 }
 
 table.td-top td {
-	vertical-align: top;	
+	vertical-align: top;
 }
 
 /* reporting */
@@ -2826,21 +2676,21 @@ table.report td.value {
 	background-color: transparent;
 	background-image: -webkit-linear-gradient(top, #5689DB 0%, #4D7BD6 100%);
 	background-origin: padding-box;
-    border-radius: 2px 2px 2px 2px;
-    border: 1px solid #2D53AF;
-    box-shadow: 0 2px 0 0 rgba(255, 255, 255, 0.06) inset, 0 2px 3px 0 rgba(0, 0, 0, 0.2);
+	border-radius: 2px 2px 2px 2px;
+	border: 1px solid #2D53AF;
+	box-shadow: 0 2px 0 0 rgba(255, 255, 255, 0.06) inset, 0 2px 3px 0 rgba(0, 0, 0, 0.2);
 	color: #FFFFFF !important;
-    cursor: pointer;
+	cursor: pointer;
 	display: inline-block;
-    font-size: 13px;
-    font-weight: bold;
-    line-height: 28px;
-    outline: 0 none;
-    padding: 0 4px;
-    text-align: center;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    text-decoration: none!important;
-    min-width: 170px;
+	font-size: 13px;
+	font-weight: bold;
+	line-height: 28px;
+	outline: 0 none;
+	padding: 0 4px;
+	text-align: center;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	text-decoration: none!important;
+	min-width: 170px;
 }
 
 .post\.resource\.firefox\.installButton {
