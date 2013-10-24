@@ -249,13 +249,6 @@ public class RequestLogic {
 	}
 
 	/**
-	 * @return a new UrlBuilder with the currently requested url
-	 */
-	public String getApplicationUrl() {
-		return UrlUtils.buildFullRequestUrl(request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(), null);
-	}
-
-	/**
 	 * simply creates a session if there is none yet
 	 */
 	public void ensureSession() {
