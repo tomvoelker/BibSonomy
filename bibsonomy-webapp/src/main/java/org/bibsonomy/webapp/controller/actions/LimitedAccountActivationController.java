@@ -1,24 +1,13 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.HashUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
-import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.actions.LimitedAccountActivationCommand;
-import org.bibsonomy.webapp.controller.ResourceListController;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -33,39 +22,26 @@ import org.springframework.validation.Errors;
  * @author nilsraabe
  * @version $Id$
  */
-public class LimitedAccountActivationController extends ResourceListController implements ErrorAware, ValidationAwareController<LimitedAccountActivationCommand>{
-
-	/**
-	 * After successful activation, the user is redirected to this page. 
-	 */
+public class LimitedAccountActivationController implements ErrorAware, ValidationAwareController<LimitedAccountActivationCommand>{
+	
+	/** after successful activation, the user is redirected to this page. */
 	private String successRedirect;
+	
+	private String projectHome;
 
-	/**
-	 * like the homepage, only 50 tags are shown in the tag cloud
-	 */
-	private static final int MAX_TAGS  = 50;
-	private Errors errors              = null;
-	private static final Log log       = LogFactory.getLog(LimitedAccountActivationController.class);
+	private Errors errors= null;
 	
 	private LogicInterface adminLogic;
 	
-	private RequestLogic requestLogic;
-	
 	@Override
 	public LimitedAccountActivationCommand instantiateCommand() {
-
-		log.debug("UserSamlActivationCommand in UserSamlActivationController initialized");
-		
 		return new LimitedAccountActivationCommand();
 	}
 
 	@Override
 	public View workOn(LimitedAccountActivationCommand command) {
-
-		log.debug("UserSamlActivationController starts WorkOn()");
-		
 		final RequestWrapperContext context = command.getContext();
-
+		
 		/*
 		 * only users which are logged in might post -> send them to
 		 * login page
@@ -73,8 +49,8 @@ public class LimitedAccountActivationController extends ResourceListController i
 		if (!context.isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
 		}
-		User loginUser = AuthenticationUtils.getUser();
 		
+		final User loginUser = command.getContext().getLoginUser();
 		if (!command.isSubmitted()) {
 			final User u = command.getRegisterUser();
 			u.setName(loginUser.getName());
@@ -91,12 +67,6 @@ public class LimitedAccountActivationController extends ResourceListController i
 		}
 		
 		if (!command.isSubmitted() || errors.hasErrors()) {
-			/**
-			 * Set the tags and the news in the sidebar
-			 */
-			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList("bibsonomynews"), null, null, null, null, null, null, 0, 3));
-			
 			return Views.LIMITED_ACCOUNT_ACTIVATION;
 		}
 		
@@ -105,24 +75,21 @@ public class LimitedAccountActivationController extends ResourceListController i
 			return Views.ERROR;
 		}
 		
-		final String redirectUrl;
-		try {
-			final String hash = HashUtils.getMD5Hash((getRequestLogic().getApplicationUrl() + "/register_saml_success+" + loginUser.getName()).getBytes("UTF-8"));
-			redirectUrl = new UrlBuilder(successRedirect).addParameter("hash", hash).asString();
-		} catch (UnsupportedEncodingException ex) {
-			log.error("limited account activation failed",ex);
-			errors.reject("error.internal", new Object[] {""}, "error");
-			return Views.LIMITED_ACCOUNT_ACTIVATION;
-		}
-		
-		
 		final User ru = command.getRegisterUser();
 		loginUser.setRole(Role.DEFAULT);
 		loginUser.setEmail(ru.getEmail());
 		loginUser.setHomepage(ru.getHomepage());
 		loginUser.setRealname(ru.getRealname());
-		adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_LIMITED_USER);
-
+		this.adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_LIMITED_USER);
+		
+		/*
+		 * redirect on success
+		 * add the hash of the application and username as "hash" parameter
+		 * to the redirect
+		 * TODO: document why we add the hash here!
+		 */
+		final String hash = StringUtils.getMD5Hash(this.projectHome + "register_saml_success+" + loginUser.getName());
+		final String redirectUrl = new UrlBuilder(this.successRedirect).addParameter("hash", hash).asString();
 		return new ExtendedRedirectView(redirectUrl);
 	}
 
@@ -147,27 +114,6 @@ public class LimitedAccountActivationController extends ResourceListController i
 	}
 
 	/**
-	 * @return the adminLogic
-	 */
-	public LogicInterface getAdminLogic() {
-		return this.adminLogic;
-	}
-
-	/**
-	 * @param adminLogic the adminLogic to set
-	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
-	}
-
-	/**
-	 * @return the successRedirect
-	 */
-	public String getSuccessRedirect() {
-		return this.successRedirect;
-	}
-
-	/**
 	 * @param successRedirect the successRedirect to set
 	 */
 	public void setSuccessRedirect(String successRedirect) {
@@ -175,16 +121,16 @@ public class LimitedAccountActivationController extends ResourceListController i
 	}
 
 	/**
-	 * @return the requestLogic
+	 * @param projectHome the projectHome to set
 	 */
-	public RequestLogic getRequestLogic() {
-		return this.requestLogic;
+	public void setProjectHome(String projectHome) {
+		this.projectHome = projectHome;
 	}
 
 	/**
-	 * @param requestLogic the requestLogic to set
+	 * @param adminLogic the adminLogic to set
 	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
 	}
 }
