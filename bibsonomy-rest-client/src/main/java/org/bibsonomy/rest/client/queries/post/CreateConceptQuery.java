@@ -36,14 +36,14 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 
 /**
- * Use this Class to create a new concept
+ * use this query to create a new concept
  * 
  * @author Stefan Stützer
  * @version $Id$
  */
 public class CreateConceptQuery extends AbstractQuery<String> {
 	private final Tag concept;
-	private final String conceptName;	
+	private final String conceptName;
 	private final GroupingEntity grouping;
 	private final String groupingName;
 	
@@ -57,7 +57,7 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 		this.concept = concept;
 		this.conceptName = conceptName;
 		this.grouping = grouping;
-		this.groupingName = groupingName;		
+		this.groupingName = groupingName;
 	}
 	
 	@Override
@@ -75,7 +75,7 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 			break;
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept change query");
-		}		
+		}
 		
 		urlBuilder.addPathElement(this.groupingName).addPathElement(RESTConfig.CONCEPTS_URL).addPathElement(this.conceptName);
 		this.downloadedDocument = performRequest(HttpMethod.POST, urlBuilder.asString(), StringUtils.toDefaultCharset(sw.toString()));
@@ -85,7 +85,7 @@ public class CreateConceptQuery extends AbstractQuery<String> {
 	@Override
 	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess())
-			return this.getRenderer().parseResourceHash(this.downloadedDocument); 
+			return this.getRenderer().parseResourceHash(this.downloadedDocument);
 		return this.getError();
 	}
 }
