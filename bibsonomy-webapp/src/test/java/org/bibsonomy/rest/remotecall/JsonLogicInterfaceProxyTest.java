@@ -6,6 +6,9 @@ import org.junit.BeforeClass;
 
 
 /**
+ * TODO: parameterize for {@link LogicInterfaceProxyTest}
+ * and remove this test class
+ * 
  * @author jensi
  * @version $Id$
  */
