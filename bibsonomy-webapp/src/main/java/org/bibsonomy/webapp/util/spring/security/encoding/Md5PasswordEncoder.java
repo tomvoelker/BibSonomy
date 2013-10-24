@@ -6,7 +6,7 @@ import org.bibsonomy.util.StringUtils;
 
 
 /**
- * TODO: document me
+ * this MD5Passwordencoder salts the hashed password
  * 
  * @author dzo
  * @version $Id$
