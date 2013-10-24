@@ -13,73 +13,72 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserRegistrationValidator implements Validator<UserRegistrationCommand> {
 
-    private final String projectName;
+	private final String projectName;
 
-    /**
-     * @param projectName
-     */
-    public UserRegistrationValidator(final String projectName) {
-        super();
-        this.projectName = projectName;
-    }
+	/**
+	 * @param projectName
+	 */
+	public UserRegistrationValidator(final String projectName) {
+		super();
+		this.projectName = projectName;
+	}
 
-    @Override
-    public boolean supports(final Class<?> clazz) {
-        return UserRegistrationCommand.class.equals(clazz);
-    }
+	@Override
+	public boolean supports(final Class<?> clazz) {
+		return UserRegistrationCommand.class.equals(clazz);
+	}
 
-    /**
-     * Validates the given userObj.
-     * 
-     * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
-     */
-    @Override
-    public void validate(final Object userObj, final Errors errors) {
-        /*
-         * To ensure that the received command is not null, we throw an
-         * exception, if this assertion fails.
-         */
-        Assert.notNull(userObj);
-        final UserRegistrationCommand command = (UserRegistrationCommand) userObj;
+	/**
+	 * Validates the given userObj.
+	 * 
+	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
+	 *      org.springframework.validation.Errors)
+	 */
+	@Override
+	public void validate(final Object userObj, final Errors errors) {
+		/*
+		 * To ensure that the received command is not null, we throw an
+		 * exception, if this assertion fails.
+		 */
+		Assert.notNull(userObj);
+		final UserRegistrationCommand command = (UserRegistrationCommand) userObj;
 
-        /*
-         * Check the user data.
-         */
-        final User user = command.getRegisterUser();
-        Assert.notNull(user);
+		/*
+		 * Check the user data.
+		 */
+		final User user = command.getRegisterUser();
+		Assert.notNull(user);
 
-        /*
-         * validate user
-         */
-        errors.pushNestedPath("registerUser");
-        ValidationUtils.invokeValidator(new UserValidator(), user, errors);
-        errors.popNestedPath();
+		/*
+		 * validate user
+		 */
+		errors.pushNestedPath("registerUser");
+		ValidationUtils.invokeValidator(new UserValidator(), user, errors);
+		errors.popNestedPath();
 
-        /*
-         * Check the validity of the supplied passwords.
-         * Both passwords must be non-empty and must match each other.
-         */
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "registerUser.password", "error.field.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordCheck", "error.field.required");
-        if (!errors.hasFieldErrors("registerUser.password") &&
-                !errors.hasFieldErrors("passwordCheck") &&
-                !command.getPasswordCheck().equals(user.getPassword())) {
-            /*
-             * passwords are not empty and don't match
-             */
-            errors.rejectValue("passwordCheck", "error.field.valid.passwordCheck", "passwords don't match");
-        }
+		/*
+		 * Check the validity of the supplied passwords. Both passwords must be
+		 * non-empty and must match each other.
+		 */
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "registerUser.password", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordCheck", "error.field.required");
+		if (!errors.hasFieldErrors("registerUser.password") && !errors.hasFieldErrors("passwordCheck") && !command.getPasswordCheck().equals(user.getPassword())) {
+			/*
+			 * passwords are not empty and don't match
+			 */
+			errors.rejectValue("passwordCheck", "error.field.valid.passwordCheck", "passwords don't match");
+		}
 
-        /*
-         * check that the user accepts our privacy statement
-         */
-        if (!command.isAcceptPrivacy()) {
-            errors.rejectValue("acceptPrivacy", "error.field.valid.acceptPrivacy", new Object[] { this.projectName }, null);
-        }
-        /*
-         * check, that challenge response is given
-         */
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");
-    }
+		/*
+		 * check that the user accepts our privacy statement
+		 */
+		if (!command.isAcceptPrivacy()) {
+			errors.rejectValue("acceptPrivacy", "error.field.valid.acceptPrivacy", new Object[] { this.projectName }, null);
+		}
+		/*
+		 * check, that challenge response is given
+		 */
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");
+	}
 
 }
