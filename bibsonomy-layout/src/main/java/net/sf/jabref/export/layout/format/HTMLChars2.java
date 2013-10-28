@@ -20,21 +20,6 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
 package net.sf.jabref.export.layout.format;
 
 import net.sf.jabref.GlobalsSuper;
@@ -47,12 +32,13 @@ import net.sf.jabref.export.layout.LayoutFormatter;
  */
 public class HTMLChars2 implements LayoutFormatter {
 
+	@Override
 	public String format(String field) {
 		int i;
 		field = field.replaceAll("&|\\\\&", "&amp;").replaceAll("[\\n]{2,}", "<p>")
                 .replaceAll("\\n", "<br>").replace("&amp;lt;", "&lt;").replace("&amp;gt;", "&gt;");
 
-		StringBuffer sb = new StringBuffer();
+		final StringBuffer sb = new StringBuffer();
 		StringBuffer currentCommand = null;
 		
 		char c;
@@ -66,8 +52,8 @@ public class HTMLChars2 implements LayoutFormatter {
 			} else if (c == '\\') {
 				if (incommand){
 					/* Close Command */
-					String command = currentCommand.toString();
-					Object result = GlobalsSuper.HTMLCHARS.get(command);
+					final String command = currentCommand.toString();
+					final Object result = GlobalsSuper.HTMLCHARS.get(command);
 					if (result != null) {
 						sb.append((String) result);
 					} else {
@@ -95,20 +81,20 @@ public class HTMLChars2 implements LayoutFormatter {
 						if (i >= field.length() - 1)
 							break testCharCom;
 
-						String command = currentCommand.toString();
+						final String command = currentCommand.toString();
 						i++;
 						c = field.charAt(i);
 						// System.out.println("next: "+(char)c);
 						String combody;
 						if (c == '{') {
-							IntAndString part = getPart(field, i, false);
+							final IntAndString part = getPart(field, i, false);
 							i += part.i;
 							combody = part.s;
 						} else {
 							combody = field.substring(i, i + 1);
 							// System.out.println("... "+combody);
 						}
-						Object result = GlobalsSuper.HTMLCHARS.get(command + combody);
+						final Object result = GlobalsSuper.HTMLCHARS.get(command + combody);
 
 						if (result != null)
 							sb.append((String) result);
@@ -118,8 +104,8 @@ public class HTMLChars2 implements LayoutFormatter {
 					} else { 
 						//	Are we already at the end of the string?
 						if (i + 1 == field.length()){
-							String command = currentCommand.toString();
-                            Object result = GlobalsSuper.HTMLCHARS.get(command);
+							final String command = currentCommand.toString();
+                            final Object result = GlobalsSuper.HTMLCHARS.get(command);
 							/* If found, then use translated version. If not,
 							 * then keep
 							 * the text of the parameter intact.
@@ -143,27 +129,27 @@ public class HTMLChars2 implements LayoutFormatter {
 					// if (i >= field.length()-1)
 					// break testContent;
 
-					String command = currentCommand.toString();
+					final String command = currentCommand.toString();
                                                 
                     // Then test if we are dealing with a italics or bold
 					// command.
 					// If so, handle.
 					if (command.equals("em") || command.equals("emph") || command.equals("textit")) {
-						IntAndString part = getPart(field, i, true);
+						final IntAndString part = getPart(field, i, true);
 
 						i += part.i;
 						sb.append("<em>").append(part.s).append("</em>");
 					} else if (command.equals("textbf")) {
-						IntAndString part = getPart(field, i, true);
+						final IntAndString part = getPart(field, i, true);
 						i += part.i;
 						sb.append("<b>").append(part.s).append("</b>");
 					} else if (c == '{') {
-						IntAndString part = getPart(field, i, true);
+						final IntAndString part = getPart(field, i, true);
 						i += part.i;
 						argument = part.s;
 						if (argument != null) {
 							// handle common case of general latex command
-							Object result = GlobalsSuper.HTMLCHARS.get(command + argument);
+							final Object result = GlobalsSuper.HTMLCHARS.get(command + argument);
 							// System.out.print("command: "+command+", arg: "+argument);
 							// System.out.print(", result: ");
 							// If found, then use translated version. If not, then keep
@@ -179,7 +165,7 @@ public class HTMLChars2 implements LayoutFormatter {
                         // This end brace terminates a command. This can be the case in
                         // constructs like {\aa}. The correct behaviour should be to
                         // substitute the evaluated command and swallow the brace:
-                        Object result = GlobalsSuper.HTMLCHARS.get(command);
+                        final Object result = GlobalsSuper.HTMLCHARS.get(command);
                         if (result != null) {
                             sb.append((String) result);
                         } else {
@@ -187,7 +173,7 @@ public class HTMLChars2 implements LayoutFormatter {
                             sb.append(command);
                         }
                     } else {
-						Object result = GlobalsSuper.HTMLCHARS.get(command);
+						final Object result = GlobalsSuper.HTMLCHARS.get(command);
 						if (result != null) {
 							sb.append((String) result);
 						} else {
@@ -219,11 +205,11 @@ public class HTMLChars2 implements LayoutFormatter {
 		return sb.toString();
 	}
 
-	private IntAndString getPart(String text, int i, boolean terminateOnEndBraceOnly) {
+	private IntAndString getPart(final String text, int i, final boolean terminateOnEndBraceOnly) {
 		char c;
 		int count = 0;
 		
-		StringBuffer part = new StringBuffer();
+		final StringBuffer part = new StringBuffer();
 		
 		// advance to first char and skip wihitespace
 		i++;
@@ -254,7 +240,7 @@ public class HTMLChars2 implements LayoutFormatter {
 
 		String s;
 
-		public IntAndString(int i, String s) {
+		public IntAndString(final int i, final String s) {
 			this.i = i;
 			this.s = s;
 		}
