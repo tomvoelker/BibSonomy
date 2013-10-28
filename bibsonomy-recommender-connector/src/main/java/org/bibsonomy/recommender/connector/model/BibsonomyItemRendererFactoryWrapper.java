@@ -24,6 +24,7 @@ import recommender.core.util.RecommendationResultComparator;
 import recommender.impl.model.RecommendedItem;
 
 /**
+ * TODO: remove bibsonomy from name
  * This class allows to trigger remote item recommendations on external services 
  * and integrate the results into the multiplexing recommendation process.
  * 
@@ -49,8 +50,8 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#serializeRecommendationEntity(java.io.Writer, recommender.core.interfaces.model.RecommendationEntity)
 	 */
 	@Override
-	public void serializeRecommendationEntity(Writer writer,
-			ItemRecommendationEntity entity) {
+	public void serializeRecommendationEntity(final Writer writer,
+			final ItemRecommendationEntity entity) {
 		if(entity instanceof UserWrapper) {
 			this.renderer.serializeUser(writer, ((UserWrapper) entity).getUser(), new org.bibsonomy.rest.ViewModel());
 		}
@@ -62,10 +63,10 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 */
 	@Override
 	public SortedSet<RecommendedItem> parseRecommendationResultList(
-			Reader reader) throws BadRequestOrResponseException {
+			final Reader reader) throws BadRequestOrResponseException {
 		final List<RecommendedPost<? extends Resource>> posts = this.renderer.parseRecommendedItemList(reader, NoDataAccessor.getInstance());
 		final SortedSet<RecommendedItem> items = new TreeSet<RecommendedItem>(new RecommendationResultComparator<RecommendedItem>());
-		for(RecommendedPost<? extends Resource> post : posts) {
+		for(final RecommendedPost<? extends Resource> post : posts) {
 			final RecommendedItem item = this.createRecommendedItem(post);
 			if(present(item)) {
 				items.add(this.createRecommendedItem(post));
@@ -79,7 +80,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#parseRecommendationResult(java.io.Reader)
 	 */
 	@Override
-	public RecommendedItem parseRecommendationResult(Reader reader)
+	public RecommendedItem parseRecommendationResult(final Reader reader)
 			throws BadRequestOrResponseException {
 		final RecommendedPost<? extends Resource> post = this.renderer.parseRecommendedItem(reader, NoDataAccessor.getInstance());
 		return createRecommendedItem(post);
@@ -90,7 +91,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 * @see recommender.core.interfaces.renderer.RecommendationRenderer#parseStat(java.io.Reader)
 	 */
 	@Override
-	public String parseStat(Reader reader) throws BadRequestOrResponseException {
+	public String parseStat(final Reader reader) throws BadRequestOrResponseException {
 		return this.renderer.parseStat(reader);
 	}
 	
@@ -103,7 +104,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 * @return the {@link RecommendedItem} or null if the post had a wrong type
 	 */
 	@SuppressWarnings("unchecked")
-	private RecommendedItem createRecommendedItem(RecommendedPost<? extends Resource> post) {
+	private RecommendedItem createRecommendedItem(final RecommendedPost<? extends Resource> post) {
 		// ignore posts which do not belong to the specified resourceType 
 		if(resourceType.isAssignableFrom(post.getPost().getResource().getClass())) {
 			final RecommendedPost<T> casted = (RecommendedPost<T>) post;
@@ -125,7 +126,7 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 	 * 
 	 * @param post the post to validate or null if the post is not valid
 	 */
-	private RecommendationItem validatePost(RecommendedPost<T> post) {
+	private RecommendationItem validatePost(final RecommendedPost<T> post) {
 		RecommendationItem validated = null;
 		if(present(post.getPost()) && present(post.getPost().getResource())) {
 			// first check if the post is saved in our database like we fetched it
@@ -146,15 +147,15 @@ public class BibsonomyItemRendererFactoryWrapper<T extends Resource> implements
 		return validated;
 	}
 
-	public void setResourceType(Class<T> resourceType) {
+	public void setResourceType(final Class<T> resourceType) {
 		this.resourceType = resourceType;
 	}
 	
-	public void setRenderer(Renderer renderer) {
+	public void setRenderer(final Renderer renderer) {
 		this.renderer = renderer;
 	}
 	
-	public void setDbAccess(ExtendedMainAccess dbAccess) {
+	public void setDbAccess(final ExtendedMainAccess dbAccess) {
 		this.dbAccess = dbAccess;
 	}
 

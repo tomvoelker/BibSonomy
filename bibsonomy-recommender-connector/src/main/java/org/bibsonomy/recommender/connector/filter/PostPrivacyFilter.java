@@ -32,7 +32,7 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 	 * the post is not public at all.
 	 */
 	@Override
-	public TagRecommendationEntity filterEntity(TagRecommendationEntity post) {
+	public TagRecommendationEntity filterEntity(final TagRecommendationEntity post) {
 		
 		final Post<? extends Resource> existingPost = RecommendationUtilities.unwrapTagRecommendationEntity(post);
 		
@@ -141,7 +141,6 @@ public class PostPrivacyFilter implements PrivacyFilter<TagRecommendationEntity>
 		}
 		
 		return null;
-		
 	}
 
 }
