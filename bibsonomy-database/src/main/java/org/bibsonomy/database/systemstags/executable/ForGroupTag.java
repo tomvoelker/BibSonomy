@@ -200,7 +200,8 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		log.debug("copy post to group");
 		final String groupName = this.getArgument(); // the group's name
 		final String userName = userPost.getUser().getName();
-		final String intraHash = userPost.getResource().getIntraHash();
+		T resource = userPost.getResource();
+		final String intraHash = resource.getIntraHash();
 
 		if (!this.hasPermissions(groupName, userName, session)) {
 			/*
@@ -238,7 +239,17 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 *  FIXME: How do we properly clone a post?
 		 */
 		final Post<T> groupPost = new Post<T>();
-		groupPost.setResource(userPost.getResource());
+		groupPost.setResource(resource);
+		/*
+		 * we must unset the documents else the group saves
+		 * temp files
+		 */
+		List<Document> documents = null;
+		if (resource instanceof BibTex) {
+			final BibTex publication = (BibTex) resource;
+			documents = publication.getDocuments();
+			publication.setDocuments(null);
+		}
 		groupPost.setDescription(userPost.getDescription());
 		groupPost.setDate(new Date());
 		groupPost.setUser(new User(groupName));
@@ -286,6 +297,11 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 				}
 			}
 		}
+		
+		if (resource instanceof BibTex) {
+			final BibTex publication = (BibTex) resource;
+			publication.setDocuments(documents);
+		}
 		log.debug("copied post was stored successfully");
 		return true;
 	}
@@ -312,10 +328,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			 */
 			return false;
 		} 
-		if (!permissionDb.isMemberOfGroup(userName, groupName, session)) {
-			return false;
-		}
-		return true;
+		return permissionDb.isMemberOfGroup(userName, groupName, session);
 	}
 
 	/*
