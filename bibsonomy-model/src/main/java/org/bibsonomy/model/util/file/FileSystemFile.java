@@ -37,17 +37,20 @@ import java.nio.channels.FileChannel;
 public class FileSystemFile implements UploadedFile {
 	
 	private final File file;
+	private final String fileName;
 	
 	/**
 	 * @param file the file 
+	 * @param fileName the fileName
 	 */
-	public FileSystemFile(final File file) {
+	public FileSystemFile(final File file, final String fileName) {
 		this.file = file;
+		this.fileName = fileName;
 	}
 	
 	@Override
 	public String getFileName() {
-		return file.getName();
+		return this.fileName;
 	}
 
 	@Override
