@@ -5,7 +5,7 @@ import org.bibsonomy.model.BibTex;
 
 /**
  * Class handling ajax requests for given post's recommendations.
- *    
+ * 
  * @author fei
  * @version $Id$
  */
