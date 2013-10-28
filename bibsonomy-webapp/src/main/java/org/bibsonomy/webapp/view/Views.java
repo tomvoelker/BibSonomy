@@ -664,13 +664,6 @@ public enum Views implements View {
 	ERROR503("errors/503"),
 
 	/**
-	 * PUMA the first page you see when entering the application
-	 * @deprecated simply use HOME
-	 */
-	@Deprecated
-	PUMAHOMEPAGE("home"),
-
-	/**
 	 * PUMA, author agreement page, form filled in with publication data for
 	 * printing
 	 */
