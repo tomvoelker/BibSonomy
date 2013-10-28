@@ -118,12 +118,13 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		
 		if (present(documents)) {
 			for (final Document document : documents) {
-				final Document existingGroupDoc = groupDBLogic.getDocument(groupName, intraHash, document.getFileName());
+				final String fileName = document.getFileName();
+				final Document existingGroupDoc = groupDBLogic.getDocument(groupName, intraHash, fileName);
 				if (!present(existingGroupDoc)) {
 					final File file = this.fileLogic.getFileForDocument(document);
 					try {
-						final Document groupDocument = this.fileLogic.saveDocumentFile(groupName, new FileSystemFile(file));
-						groupDocument.setFileName(document.getFileName());
+						final Document groupDocument = this.fileLogic.saveDocumentFile(groupName, new FileSystemFile(file, fileName));
+						groupDocument.setFileName(fileName);
 						groupDBLogic.createDocument(groupDocument, intraHash);
 					} catch (final Exception e) {
 						log.error("error while updating document of group post", e);
@@ -135,8 +136,8 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 					if (!document.getMd5hash().equals(existingGroupDoc.getMd5hash())) {
 						final File file = this.fileLogic.getFileForDocument(document);
 						try {
-							final Document groupDocument = this.fileLogic.saveDocumentFile(groupName, new FileSystemFile(file));
-							String oldFileName = document.getFileName();
+							final Document groupDocument = this.fileLogic.saveDocumentFile(groupName, new FileSystemFile(file, fileName));
+							String oldFileName = fileName;
 							final SimpleDateFormat sdf = new SimpleDateFormat("yyyy_mm_dd_hh_mm_ss");
 							
 							final String newFileName = oldFileName.replace(".", "_" + sdf.format(new Date()) + ".");

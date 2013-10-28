@@ -394,7 +394,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 						log.debug("adding temp file " + fileName);
 						final File file = this.fileLogic.getTempFile(fileName);
 						final String username = post.getUser().getName();
-						final Document savedDocument = this.fileLogic.saveDocumentFile(username, new FileSystemFile(file));
+						final Document savedDocument = this.fileLogic.saveDocumentFile(username, new FileSystemFile(file, document.getFileName()));
 						savedDocument.setFileName(document.getFileName());
 						this.docDb.addDocument(username, post.getContentId(), savedDocument.getFileHash(), savedDocument.getFileName(), savedDocument.getMd5hash(), session);
 						document.setFileHash(savedDocument.getFileHash());
