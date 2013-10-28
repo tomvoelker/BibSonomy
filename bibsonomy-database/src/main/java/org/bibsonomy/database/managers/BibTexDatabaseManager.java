@@ -396,8 +396,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 						final String username = post.getUser().getName();
 						final Document savedDocument = this.fileLogic.saveDocumentFile(username, new FileSystemFile(file, document.getFileName()));
 						savedDocument.setFileName(document.getFileName());
-						this.docDb.addDocument(username, post.getContentId(), savedDocument.getFileHash(), savedDocument.getFileName(), savedDocument.getMd5hash(), session);
-						document.setFileHash(savedDocument.getFileHash());
+						final String savedFileHash = savedDocument.getFileHash();
+						final String savedMD5Hash = savedDocument.getMd5hash();
+						this.docDb.addDocument(username, post.getContentId(), savedFileHash, savedDocument.getFileName(), savedMD5Hash, session);
+						document.setFileHash(savedFileHash);
+						document.setMd5hash(savedMD5Hash);
 						// TODO: delete file? this.fileLogic.deleteTempFile(fileName);
 					} catch (Exception e) {
 						throw new RuntimeException(e);
