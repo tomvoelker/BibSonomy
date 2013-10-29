@@ -44,6 +44,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.importer.bookmark.service.util.FilterInvalidXMLCharsInputStream;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -227,38 +228,10 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			final URLConnection connection = apiURL.openConnection();
 			connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
 			connection.setRequestProperty(HEADER_AUTHORIZATION, encodeForAuthorization());
-			inputStream = connection.getInputStream();
-			// Get a JAXP parser factory object
-			final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			// Tell the factory what kind of parser we want 
-			dbf.setValidating(false);
-			// Use the factory to get a JAXP parser object
+			//We wrap the InputStream to filter out invalid XML Chars
+			inputStream = new FilterInvalidXMLCharsInputStream(connection.getInputStream());
 			
-			final DocumentBuilder parser = dbf.newDocumentBuilder();
-			
-			// Tell the parser how to handle errors.  Note that in the JAXP API,
-			// DOM parsers rely on the SAX API for error handling
-			parser.setErrorHandler(new ErrorHandler() {
-				@Override
-				public void warning(SAXParseException e) {
-					log.warn(e);
-				}
-				@Override
-				public void error(SAXParseException e) {
-					log.error(e);
-				}
-				@Override
-				public void fatalError(SAXParseException e)
-				throws SAXException {
-					log.fatal(e);
-					throw e;   // re-throw the error
-				}
-			});
-			
-			// Finally, use the JAXP parser to parse the file.  
-			// This call returns a Document object. 
-			
-			final Document document = parser.parse(inputStream);
+			final Document document = this.parseInputStream(inputStream);
 			
 			return document;
 			
@@ -268,7 +241,42 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			}
 		}
 			
-	}	
+	}
+	
+	public Document parseInputStream(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
+		// Get a JAXP parser factory object
+		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		// Tell the factory what kind of parser we want 
+		dbf.setValidating(false);
+		// Use the factory to get a JAXP parser object
+
+		final DocumentBuilder parser = dbf.newDocumentBuilder();
+
+		// Tell the parser how to handle errors.  Note that in the JAXP API,
+		// DOM parsers rely on the SAX API for error handling
+		parser.setErrorHandler(new ErrorHandler() {
+			@Override
+			public void warning(SAXParseException e) {
+				log.warn(e);
+			}
+			@Override
+			public void error(SAXParseException e) {
+				log.error(e);
+			}
+			@Override
+			public void fatalError(SAXParseException e)
+					throws SAXException {
+				log.fatal(e);
+				throw e;   // re-throw the error
+			}
+		});
+		
+		// Finally, use the JAXP parser to parse the file.  
+		// This call returns a Document object. 
+
+		final Document document = parser.parse(inputStream);
+		return document;
+	}
 	
 	/**
 	 * Encode the username and password for BASIC authentication
