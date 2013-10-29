@@ -3,7 +3,7 @@ package org.bibsonomy.importer.bookmark.service.util;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.sun.org.apache.xml.internal.utils.XMLChar;
+import org.apache.xml.utils.XMLChar;
 
 /**
  * This class wraps an InputStream filtering out invalid XML characters.
