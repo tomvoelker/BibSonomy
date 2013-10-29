@@ -74,10 +74,4 @@
 		</ul>
 	</div>
 
-	<script type="text/javascript">
-		<![CDATA[
-			startPostAutocompletion($("#inpf"));
-		]]>
-	</script>    	
-
 </jsp:root>
