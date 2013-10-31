@@ -693,7 +693,12 @@ public enum Views implements View {
 	/**
 	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.
 	 */
-	RECOMMENDEDPAGE("recommended");
+	RECOMMENDEDPAGE("recommended"),
+	
+	/**
+	 * PostHistory-Page. page with post history
+	 */
+	POSTHISTORYPAGE("postHistory");
 
 	/*
 	 * both bookmarks and publications
