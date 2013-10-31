@@ -352,6 +352,11 @@
 						<property name="controllerBeanName" value="discussedPageController" />
 					</bean>
 				</entry>
+				<entry key="/postHistory">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postHistoryController" />
+					</bean>
+				</entry>
 				<entry key="/userinfo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userInfoController" />
@@ -673,6 +678,14 @@
 	
 	<bean id="discussedPageController" class="org.bibsonomy.webapp.controller.DiscussedPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
+	</bean>
+	
+	<bean id="postHistoryController" class="org.bibsonomy.webapp.controller.PostHistoryController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources">
+			<set>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</set>
+		</property>
 	</bean>
 
 	<bean id="userInfoController" class="org.bibsonomy.webapp.controller.UserInfoController" scope="request">
