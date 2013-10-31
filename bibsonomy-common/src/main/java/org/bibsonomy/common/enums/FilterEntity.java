@@ -76,6 +76,16 @@ public enum FilterEntity {
 	/**
 	 * Return only posts which are discussed by users - all non spammer users are shown
 	 */
-	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER;
+	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER,
+	
+	/**
+	 * Returns all (old and current) versions of a BibTex
+	 */
+	POSTS_HISTORY_BIBTEX,
+	
+	/**
+	 * Returns all (old and current) versions of a GoldStandard 
+	 */
+	POSTS_HISTORY_GOLD;
 
 }
