@@ -22,6 +22,7 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexWithRepository" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage" parent="publicationChainElement" />
