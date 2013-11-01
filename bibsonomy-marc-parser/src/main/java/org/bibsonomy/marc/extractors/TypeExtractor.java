@@ -123,7 +123,7 @@ public class TypeExtractor implements AttributeExtractor {
 			fields = src.getControlFields("007");
 		} catch (IllegalArgumentException e) {
 		}
-		String tmp = src.getFirstFieldValue("300", 'a');
+		
 		List<String> phys = new ArrayList<String>();
 		String type = "misc";
 
@@ -133,6 +133,7 @@ public class TypeExtractor implements AttributeExtractor {
 				if (ValidationUtils.present(data)) {
 					if (data.charAt(0) == 'c') {
 						// cd or dvd
+						String tmp = src.getFirstFieldValue("300", 'a');
 						if (data.startsWith("co") && (tmp != null) && (tmp.toUpperCase().indexOf("DVD") == -1)) {
 							phys.add("cocd");
 						} else {
