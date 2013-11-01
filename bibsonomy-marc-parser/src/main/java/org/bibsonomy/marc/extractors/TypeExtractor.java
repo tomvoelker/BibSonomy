@@ -133,9 +133,9 @@ public class TypeExtractor implements AttributeExtractor {
 				if (ValidationUtils.present(data)) {
 					if (data.charAt(0) == 'c') {
 						// cd or dvd
-						if (data.startsWith("co") && (tmp.toUpperCase().indexOf("DVD") == -1))
+						if (data.startsWith("co") && (tmp != null) && (tmp.toUpperCase().indexOf("DVD") == -1)) {
 							phys.add("cocd");
-						else {
+						} else {
 							if (data.length() > 2) {
 								phys.add(data.substring(0,2));
 							} else {
