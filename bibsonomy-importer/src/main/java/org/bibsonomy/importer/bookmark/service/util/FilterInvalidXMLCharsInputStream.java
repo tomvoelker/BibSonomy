@@ -6,7 +6,7 @@ import java.io.InputStream;
 import org.apache.xml.utils.XMLChar;
 
 /**
- * This class wraps an InputStream filtering out invalid XML characters.
+ * This class wraps an InputStream filtering out invalid UTF-8/16 encoded XML characters.
  * 
  * @author MarcelM
  */
