@@ -197,7 +197,9 @@
     <update id="updatePasswordForUser" parameterClass="user">
 		UPDATE user 
 		SET user_password = #password#,
-		user_password_salt = #passwordSalt#
+		user_password_salt = #passwordSalt#,
+		tmp_password = NULL,
+		tmp_request_date = '1815-12-10 00:00:00'
 		WHERE user_name = #name#
 	</update>
 
