@@ -120,14 +120,15 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		}
 
 		/*
-		 * set new password, reset old one 
+		 * set new password
 		 */
 		UserUtils.setupPassword(user, command.getNewPassword());
-		user.setReminderPassword("");
-
+		
 		log.debug("writing the new password to the database");
 		/*
 		 * update user in database
+		 * - sets new password
+		 * - removes temporary password
 		 */
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
 
