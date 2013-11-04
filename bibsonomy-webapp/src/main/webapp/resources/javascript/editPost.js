@@ -217,6 +217,7 @@ function handler(event) {
  * @return
  */
 function handleRecommendedTags(xml) {
+	
 		var tagSuggestions = [];
 	
 		// lookup and clear target node
@@ -227,10 +228,16 @@ function handleRecommendedTags(xml) {
 		
 		// lookup tags
 		var root = xml.getElementsByTagName('tags').item(0);
+		
+		// Internet Explorer 9 parses xml as an HTML document with stylesheets for the actual XML
 		if (root == null) {
-			// FIXME: DEBUG
-			//alert("Invalid Ajax response: <tags/> not found.");
-			return;
+			
+			var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+			xmlDoc.async = "false";
+			xmlDoc.loadXML(xml.documentElement.innerHTML);
+			
+			root = xmlDoc;
+			
 		}
 		// append each tag to target field
 		for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
