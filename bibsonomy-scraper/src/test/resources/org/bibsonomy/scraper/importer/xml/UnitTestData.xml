@@ -1621,4 +1621,10 @@
 		<BibFile>FirstMondayScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_264">
+		<TestDescription>BloodJournalScraper Test</TestDescription>
+		<URL>http://bloodjournal.hematologylibrary.org/content/113/23/5703</URL>
+		<BibFile>BloodJournalScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.bloodjournal.BloodJournalScraper</Scraper>
+	</URLTest>
 </test:Tests>
