@@ -174,13 +174,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>artifactory-cs-kassel-proxy</id>
-			<url>http://localhost:8088/artifactory/repo</url>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>dev.bibsonomy.org</id>
 			<name>Official Source Code Releases of selected BibSonomy Modules</name>
 			<url>http://dev.bibsonomy.org/maven2/</url>
@@ -190,10 +183,6 @@
 		<pluginRepository>
 			<id>artifactory-cs-kassel</id>
 			<url>http://artifactory.cs.uni-kassel.de/artifactory/repo</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>artifactory-cs-kassel-proxy</id>
-			<url>http://localhost:8088/artifactory/repo</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<properties>
