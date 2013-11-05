@@ -155,7 +155,7 @@ public class JabRefModelConverter {
 						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName())) {
 					final String value = ((String) o);
 					if (present(value))
-						entry.setField(pd.getName().toLowerCase(), value);
+						entry.setField(pd.getName().toLowerCase(), BibTexUtils.cleanBibTex(value));
 				}
 			}
 
@@ -179,7 +179,7 @@ public class JabRefModelConverter {
 					for (final String key : bibtex.getMiscFields().keySet()) {
 						if ("id".equals(key)) {
 							// id is used by jabref
-							entry.setField("misc_id", bibtex.getMiscField(key));
+							entry.setField("misc_id", BibTexUtils.cleanBibTex(bibtex.getMiscField(key)));
 							continue;
 						}
 
@@ -188,7 +188,7 @@ public class JabRefModelConverter {
 							// control
 							continue;
 
-						entry.setField(key, bibtex.getMiscField(key));
+						entry.setField(key, BibTexUtils.cleanBibTex(bibtex.getMiscField(key)));
 					}
 
 			}
@@ -196,8 +196,8 @@ public class JabRefModelConverter {
 			/*
 			 * handle author and editor
 			 */
-			entry.setField("author", PersonNameUtils.serializePersonNames(bibtex.getAuthor()));
-			entry.setField("editor", PersonNameUtils.serializePersonNames(bibtex.getEditor()));
+			entry.setField("author", BibTexUtils.cleanBibTex(PersonNameUtils.serializePersonNames(bibtex.getAuthor())));
+			entry.setField("editor", BibTexUtils.cleanBibTex(PersonNameUtils.serializePersonNames(bibtex.getEditor())));
 
 			final String month = bibtex.getMonth();
 			if (present(month)) {
@@ -208,13 +208,13 @@ public class JabRefModelConverter {
 				if (present(longMonth)) {
 					entry.setField("month", longMonth);
 				} else {
-					entry.setField("month", month);
+					entry.setField("month", BibTexUtils.cleanBibTex(month));
 				}
 			}
 
 			final String bibAbstract = bibtex.getAbstract();
 			if (present(bibAbstract))
-				entry.setField("abstract", bibAbstract);
+				entry.setField("abstract", BibTexUtils.cleanBibTex(bibAbstract));
 
 			/*
 			 * concatenate tags using the JabRef keyword separator
@@ -222,7 +222,7 @@ public class JabRefModelConverter {
 			final Set<Tag> tags = post.getTags();
 			final StringBuffer tagsBuffer = new StringBuffer();
 			for (final Tag tag : tags) {
-				tagsBuffer.append(tag.getName()	+ jabRefKeywordSeparator);
+				tagsBuffer.append(tag.getName() + jabRefKeywordSeparator);
 			}
 			/*
 			 * remove last separator
@@ -250,8 +250,8 @@ public class JabRefModelConverter {
 			// set comment + description
 			final String description = post.getDescription();
 			if (present(description)) {
-				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
-				entry.setField("comment", post.getDescription());
+				entry.setField(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION, BibTexUtils.cleanBibTex(post.getDescription()));
+				entry.setField("comment", BibTexUtils.cleanBibTex(post.getDescription()));
 			}
 
 			if (present(post.getDate())) {
