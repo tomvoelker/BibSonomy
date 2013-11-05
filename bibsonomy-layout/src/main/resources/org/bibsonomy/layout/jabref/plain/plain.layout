@@ -2,14 +2,14 @@
 
 \begin{author}
 	<span class="entry_author">
-		\author.
+		\format[CleanLatexMarkup]{\author}.
 	</span>
 \end{author}
 
 \begin{title}
 	<span class="entry_title">
 		<a href="/bibtex/2\intraHash/\username">
-			\title
+			\format[CleanLatexMarkup]{\title}
 		</a>.
 	</span>
 \end{title}
@@ -17,25 +17,25 @@
 \begin{journal}
 	In
 	<span class="entry_journal"> 
-		\journal, 
+		\format[CleanLatexMarkup]{\journal}, 
 	</span>
 \end{journal}
 
 \begin{booktitle}
 	<span class="entry_booktitle"> 
-		\booktitle. 
+		\format[CleanLatexMarkup]{\booktitle}. 
 	</span>
 \end{booktitle}
 
 \begin{editor}
 	<span class="entry_editor"> 
-		editor(s) \editor. 
+		editor(s) \format[CleanLatexMarkup]{\editor}. 
 	</span>
 \end{editor}
  
 <span class="entry_series">
 	\begin{series} 
-		\series, 
+		\format[CleanLatexMarkup]{\series}, 
 	\end{series}
 	
 	\begin{volume}
@@ -53,13 +53,13 @@
 
 \begin{publisher}
 	<span class="entry_publisher"> 
-		\publisher, 
+		\format[CleanLatexMarkup]{\publisher}, 
 	</span>
 \end{publisher}
 
 \begin{address}
 	<span class="entry_address"> 
-		\address, 
+		\format[CleanLatexMarkup]{\address}, 
 	</span>
 \end{address}
 
