@@ -23,11 +23,10 @@
 
 package net.sf.jabref.export.layout.format;
 
-import org.apache.commons.lang.StringUtils;
-import org.bibsonomy.model.BibTex;
-
 import net.sf.jabref.BibtexEntry;
 import net.sf.jabref.export.layout.LayoutFormatter;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This is an ugly hack which is needed to only print "&" between authors and editors if both authors and editors are present.
