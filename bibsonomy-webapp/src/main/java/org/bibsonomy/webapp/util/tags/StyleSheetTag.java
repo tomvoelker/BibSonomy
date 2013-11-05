@@ -26,9 +26,9 @@ public class StyleSheetTag extends RequestContextAwareTag {
 		if (resource != null) {
 			styleSheetPath = this.path;
 		} else {
-			final String fullPath = FilenameUtils.getFullPath(this.path);
+			final String fullPath = this.path.substring(0, this.path.lastIndexOf("/") + 1);
 			final String fileNameWithoutExtension = FilenameUtils.getBaseName(this.path);
-			styleSheetPath = FilenameUtils.concat(fullPath, fileNameWithoutExtension) + ".less";
+			styleSheetPath = fullPath + fileNameWithoutExtension + ".less";
 		}
 		
 		this.pageContext.getOut().print("<link rel=\"stylesheet\" type=\"text/" + FilenameUtils.getExtension(styleSheetPath) + "\" href=\"" + styleSheetPath + "\" />");
