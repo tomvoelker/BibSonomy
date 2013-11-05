@@ -26,6 +26,10 @@ public class HomepageController extends SingleResourceListController implements 
 	private static final int POSTS_PER_RESOURCETYPE = 5;
 
 	private static final Log log = LogFactory.getLog(HomepageController.class);
+	
+	private String newsGroup = "kde";
+	
+	private String newsTag = "bibsonomynews";
 
 	/*
 	 * on the homepage, only 50 tags are shown in the tag cloud
@@ -72,7 +76,7 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * add news posts (= latest blog posts) FIXME: make configurable
 			 */
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList("bibsonomynews"), null, null, null, null, null, null, 0, 3));
+			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null, null, null, null, null, 0, 3));
 			this.endTiming();
 			
 			return Views.HOMEPAGE; 
@@ -95,6 +99,20 @@ public class HomepageController extends SingleResourceListController implements 
 	@Override
 	public HomepageCommand instantiateCommand() {
 		return new HomepageCommand();
+	}
+
+	/**
+	 * @param newsGroup the newsGroup to set
+	 */
+	public void setNewsGroup(String newsGroup) {
+		this.newsGroup = newsGroup;
+	}
+
+	/**
+	 * @param newsTag the newsTag to set
+	 */
+	public void setNewsTag(String newsTag) {
+		this.newsTag = newsTag;
 	}
 
 }

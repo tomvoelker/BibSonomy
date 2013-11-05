@@ -643,6 +643,8 @@
 	
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>
+		<property name="newsGroup" value="${news.group}"/>
+		<property name="newsTag" value="${news.tag}"/>
 	</bean>
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
