@@ -27,6 +27,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * extracts bookmarks fromt the export files of Firefox, Chrome, IE and Opera
+ * @author rja, haile
+ */
 public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 	private static final Log log = LogFactory.getLog(BrowserImporter.class);
 
@@ -53,7 +57,10 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 	private void getBookmarksFromBrowser(File bookmarkFile, User currUser, String groupName) throws FileNotFoundException {
 		final Document document = XmlUtils.getDOM(new FileInputStream(bookmarkFile));
 		try {
-			//if getChildNodes().item(0) returns value the browser is safari otherwise other browsers
+			/* 
+			 * if getChildNodes().item(0) returns value the browser
+			 * is safari otherwise other browsers
+			 */
 			final NodeList childNotes = document.getElementsByTagName("body").item(0).getChildNodes();
 			final Node checkFolder = childNotes.item(0);
 			if (checkFolder != null) {
@@ -86,7 +93,6 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 	 *            <String> upperTags
 	 * @param LinkedList
 	 *            <Bookmark>bookmarks
-	 * @return
 	 */
 	private void createBookmarks(final Node folder, final Vector<String> upperTags, final User user, final String groupName) {
 		// the post gets today's time
@@ -127,7 +133,7 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 				// only containing a name?
 				// yes, keep tag
 				if (secondGen.getLength() == 1 && "h3".equals(secondGen.item(0).getNodeName())) {
-					sepTag = secondGen.item(0).getFirstChild().getNodeValue().replaceAll("->|<-|\\s", "_");
+					sepTag = cleanTag(secondGen.item(0).getFirstChild().getNodeValue());
 				} else if (secondGen.getLength() > 1) { // filtert dd-knoten,
 					// die nur einen
 					// p-knoten besitzen
@@ -147,7 +153,7 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 								myTags = tags;
 							}
 							// add a found tag
-							myTags.add(son.getFirstChild().getNodeValue().replaceAll("->|<-|\\s", "_"));
+							myTags.add(cleanTag(son.getFirstChild().getNodeValue()));
 						}
 						// all dl-nodes are new folders
 						if ("dl".equals(son.getNodeName())) {
@@ -180,15 +186,12 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 					if (upperTags != null) {
 						// only 1 tag found -> add a tag
 						if (upperTags.size() == 1) {
-
-							// bookmark.setTags(upperTags.elementAt(0));
 							post.addTag(upperTags.elementAt(0));
 						} else {
 							// more tags found -> add relations
 							for (int tagCount = 0; tagCount < upperTags.size() - 1; tagCount++) {
-								String upper = upperTags.elementAt(tagCount);
-								String lower = upperTags.elementAt(tagCount + 1);
-								// bookmark.addTagRelation(lower, upper);
+								final String upper = upperTags.elementAt(tagCount);
+								final String lower = upperTags.elementAt(tagCount + 1);
 								post.addTag(upper);
 								post.addTag(lower);
 							}
@@ -208,7 +211,7 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 							 */
 							final StringTokenizer token = new StringTokenizer(tagNode.getNodeValue(), ",");
 							while (token.hasMoreTokens()) {
-								post.addTag(token.nextToken());
+								post.addTag(cleanTag(token.nextToken()));
 							}
 						} else {
 							// really no tags found -> set imported tag
@@ -227,13 +230,21 @@ public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
 					// descriptions are saved in a sibling of of a node
 					// containing a link
 					if (currentNode.getNextSibling() != null && "dd".equals(currentNode.getNextSibling().getNodeName())) {
-						// bookmark.setExtended(currentNode.getNextSibling().getFirstChild().getNodeValue());
 						post.setDescription(currentNode.getNextSibling().getFirstChild().getNodeValue());
 					}
 					posts.add(post);
 				}
 			}
 		}
+	}
+	
+	/**
+	 * cleans the tag by replacing white spaches and upper and lower prefixes
+	 * @param tag
+	 * @return the cleaned tag
+	 */
+	protected String cleanTag(final String tag) {
+		return tag.replaceAll("->|<-|\\s", "_");
 	}
 
 	@Override
