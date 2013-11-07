@@ -98,7 +98,7 @@ public class TrackbackClient implements PingbackClient {
 					final HttpEntity entity = response.getEntity();
 					if (present(entity)) {
 						final Header contentType = entity.getContentType();
-						if (present(contentType) && contentType.getValue().contains("application/x-www-form-urlencoded")) {
+						if (present(contentType) && (contentType.getValue().contains("text/xml") || contentType.getValue().contains("application/x-www-form-urlencoded"))) {
 							final BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
 							try {
 								final String content = readContent(reader);
