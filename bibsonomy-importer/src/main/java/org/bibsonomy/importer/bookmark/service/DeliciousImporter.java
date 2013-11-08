@@ -60,19 +60,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * 
  * Imports bookmarks and relations from Delicious. To get an instance of this 
  * class, use the {@link DeliciousImporterFactory}.
  * 
- * This currently works only with the /v1-API. 
- * 
- * @see http://www.delicious.com/help/api writes:
+ * @see "https://github.com/avos/delicious-api"
+ * The doc writes:
  * "All /v1 api's require https requests and HTTP-Auth.
- * To access data from accounts created using a Yahoo! ID, use the same API's as
- * below, but change the path to /v2, and make HTTP requests using OAuth as 
- * provided by the Yahoo! Developer Network."
- * 
- * 
  * 
  * @author:  rja
  * @version: $Id$
@@ -80,25 +73,21 @@ import org.xml.sax.SAXParseException;
  * 
  */
 public class DeliciousImporter implements RemoteServiceBookmarkImporter, RelationImporter {
-
 	private static final Log log = LogFactory.getLog(DeliciousImporter.class);
-
-	/**
-	 * The URL to contact Delicious.
-	 */
-	private final URL apiURL;
-	private final String userAgent;
-
-
-	private String password;
-	private String userName;
 	
 	private static final String HEADER_USER_AGENT = "User-Agent";
 	private static final String HEADER_AUTHORIZATION = "Authorization";
 	private static final String HEADER_AUTH_BASIC = "Basic ";
 	private static final String UTF8 = "UTF-8";
 	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-	
+
+	/** The URL to contact Delicious. */
+	private final URL apiURL;
+	private final String userAgent;
+
+
+	private String password;
+	private String userName;
 
 
 	/**
@@ -231,19 +220,15 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			//We wrap the InputStream to filter out invalid XML Chars
 			inputStream = new FilterInvalidXMLCharsInputStream(connection.getInputStream());
 			
-			final Document document = this.parseInputStream(inputStream);
-			
-			return document;
-			
+			return this.parseInputStream(inputStream);
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
 			}
 		}
-			
 	}
 	
-	public Document parseInputStream(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
+	private Document parseInputStream(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
 		// Get a JAXP parser factory object
 		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		// Tell the factory what kind of parser we want 

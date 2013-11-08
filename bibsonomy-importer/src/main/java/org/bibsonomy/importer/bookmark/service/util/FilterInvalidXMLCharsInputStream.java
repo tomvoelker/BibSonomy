@@ -10,24 +10,29 @@ import org.apache.xml.utils.XMLChar;
  * 
  * @author MarcelM
  */
-public class FilterInvalidXMLCharsInputStream extends InputStream{
+public class FilterInvalidXMLCharsInputStream extends InputStream {
 	
 	private final InputStream orig;
 	
-	public FilterInvalidXMLCharsInputStream(InputStream orig) {
+	/**
+	 * constructor
+	 * @param orig
+	 */
+	public FilterInvalidXMLCharsInputStream(final InputStream orig) {
 		this.orig = orig;
 	}
 	
 	@Override
 	public int read() throws IOException {
-		int c = orig.read();
-		//Check for End of File
+		final int c = orig.read();
+		// check for EOF
 		if (c == -1) {
 			return c;
 		}
 		if (XMLChar.isValid(c)) {
 			return c;
 		}
+		// skip the current data and read the next one
 		return this.read();
 	}
 	
