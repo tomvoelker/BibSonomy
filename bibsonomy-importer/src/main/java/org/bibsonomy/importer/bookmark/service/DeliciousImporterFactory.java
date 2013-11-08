@@ -42,27 +42,27 @@ public class DeliciousImporterFactory {
 	private String bundlesPath = "/v1/tags/bundles/all";
 	private String postsPath   = "/v1/posts/all";
 	
-	/*
-	 * TODO: there was a reason we use "-1" as port ... please document it 
-	 * here
-	 */
+	/** the port to use -1 => use the default port of the protocol*/
 	private int port = -1;
 	private String protocol = "https";
 	private String host = "api.del.icio.us";
 	
 	private String userAgent = "Wget/1.9.1";
 	
-
+	/**
+	 * @return the relation importer
+	 * @throws MalformedURLException
+	 */
 	public RelationImporter getRelationImporter() throws MalformedURLException {
 		return new DeliciousImporter(buildURL(bundlesPath), userAgent);
 	}
-
+	
+	/**
+	 * @return the book
+	 * @throws MalformedURLException
+	 */
 	public RemoteServiceBookmarkImporter getBookmarkImporter() throws MalformedURLException {
 		return new DeliciousImporter(buildURL(postsPath), userAgent);
-	}
-
-	public String getUserAgent() {
-		return userAgent;
 	}
 
 	/**
@@ -76,45 +76,40 @@ public class DeliciousImporterFactory {
 	}
 	
 	private URL buildURL(final String path) throws MalformedURLException {
-		return new URL (protocol, host, port, path);
+		return new URL(protocol, host, port, path);
 	}
 
-	public String getBundlesPath() {
-		return bundlesPath;
-	}
-
+	/**
+	 * @param bundlesPath the bundlesPath to set
+	 */
 	public void setBundlesPath(String bundlesPath) {
 		this.bundlesPath = bundlesPath;
 	}
 
-	public String getPostsPath() {
-		return postsPath;
-	}
-
+	/**
+	 * @param postsPath the postsPath to set
+	 */
 	public void setPostsPath(String postsPath) {
 		this.postsPath = postsPath;
 	}
 
-	public int getPort() {
-		return port;
-	}
-
+	/**
+	 * @param port the port to set
+	 */
 	public void setPort(int port) {
 		this.port = port;
 	}
 
-	public String getProtocol() {
-		return protocol;
-	}
-
+	/**
+	 * @param protocol the protocol to set
+	 */
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
 
-	public String getHost() {
-		return host;
-	}
-
+	/**
+	 * @param host the host to set
+	 */
 	public void setHost(String host) {
 		this.host = host;
 	}
