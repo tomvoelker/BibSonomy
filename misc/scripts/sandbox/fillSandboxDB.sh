@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# This Script fills the sandbox with a dump of the system and updates the dates of all posts                                                     
+# It expects the dump to be in the directory $sandboxInitDir together with all documentes and previews                                           
+
 database="sandbox_puma"
 dbUser="sandbox_puma"
 dbPw="sandbox48idfd7qUU823op2r"
