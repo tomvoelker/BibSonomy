@@ -7,7 +7,9 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<fmt:message key="navi.postBookmark" var="postBookmark"/>
+    <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The resourcetype to control which messages are displayed (post bookmark or post publication)."/>
+ 
+ 	<fmt:message key="navi.postBookmark" var="postBookmark"/>
 	<fmt:message key="image.button.postBookmark" var="buttonImage"/>
 	<!-- TODO: why not simply use de/en instead of weird toLowercase operations on i18n-values -->
 	<fmt:message var="exampleString" key="example"/>
@@ -32,10 +34,20 @@
 	</script>
 	<ul id="post.resource.hint.buttons.div">
 		<li id="post.resource.hint"><fmt:message key="post.resource.hint"/></li>
-		<ul id="post.resource.hint.buttons">
-			<li><buttons:postPublication/></li>
-			<li><buttons:postPublicationPopUp/></li>
-		</ul>
+		<c:choose>
+			<c:when test="${resourceType eq 'publication'}">
+				<ul id="post.resource.hint.buttons">
+					<li><buttons:postPublication/></li>
+					<li><buttons:postPublicationPopUp/></li>
+				</ul>
+			</c:when>
+			<c:otherwise>
+				<ul id="post.resource.hint.buttons">
+					<li><buttons:postBookmark/></li>
+					<li><buttons:postBookmarkPopUp/></li>
+				</ul>
+			</c:otherwise>
+		</c:choose>
 		<li id="post.resource.hint1"><fmt:message key="post.resource.hint1"/></li>
 	</ul>
 </jsp:root>
