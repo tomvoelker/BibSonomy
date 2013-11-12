@@ -22,6 +22,7 @@ function confirmDeleteByUser(messageKey) {
 	// get confirmation
 	if (confirmDelete) {
 		var message = getString("delete.confirm." + messageKey);
+		message += "\n" + getString("delete.confirm");
 		return confirm(message);
 	}
 	return true;
