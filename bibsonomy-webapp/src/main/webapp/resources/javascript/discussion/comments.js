@@ -291,7 +291,9 @@ function updateComment() {
 }
 
 function deleteComment() {
-	// TODO: confirm?
+	if (!confirmDeleteByUser("comment")) {
+		return false;
+	}
 	
 	var deleteLink = $(this);
 	// display spinner
@@ -312,4 +314,5 @@ function deleteComment() {
 		},
 		// TODO: handle error
 	});
+	return false;
 }

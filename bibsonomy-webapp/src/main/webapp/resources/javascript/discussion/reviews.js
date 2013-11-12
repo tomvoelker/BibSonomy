@@ -243,19 +243,19 @@ function createReview() {
 		success:	function(response) {
 						var reload = (response.reload);
 						if(reload == "true") {
-			 				window.location.reload();
-			 			}
+							window.location.reload();
+						}
 						// display review
-			 			var reviewView = $('#newReview').remove();
-			 			
-			 			reviewView.attr("id", "ownReview");
-			 			updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
-			 			
-			 			// get root discussion item list
-			 			$(DISCUSSION_SELECTOR + ' .subdiscussionItems:first').prepend(reviewView);
-			 			
-			 			updateHash(reviewView, response.hash);
-			 			highlight(reviewView);
+						var reviewView = $('#newReview').remove();
+						
+						reviewView.attr("id", "ownReview");
+						updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
+						
+						// get root discussion item list
+						$(DISCUSSION_SELECTOR + ' .subdiscussionItems:first').prepend(reviewView);
+						
+						updateHash(reviewView, response.hash);
+						highlight(reviewView);
 						
 						/*
 						 * update update form
@@ -291,7 +291,7 @@ function createReview() {
 		     			var oldCount = getReviewCount();
 		     			var oldAvg = getAvg();
 		     			var newCount = oldCount + 1;
-		     			var newAvg = (oldAvg * oldCount + reviewRating) / newCount;	     			
+		     			var newAvg = (oldAvg * oldCount + reviewRating) / newCount;
 		     			setReviewCount(newCount);
 		     			setAvg(newAvg);
 		     			plotRatingDistribution();
@@ -387,7 +387,9 @@ function updateReview() {
 }
 
 function deleteReview() {
-	// TODO: confirm?
+	if (!confirmDeleteByUser("review")) {
+		return false;
+	}
 	var deleteLink = $(this);
 	$(this).siblings('.deleteInfo').show();
 	
@@ -412,12 +414,12 @@ function deleteReview() {
 			     			if (newCount > 0) {
 			     				newAvg = (oldAvg * oldCount - oldReviewRating) / newCount;	 
 			     			}
-			     			    			
+			     			
 			     			setReviewCount(oldCount - 1);
 			     			setAvg(newAvg);
 			     			plotRatingDistribution();
 			     			addReviewActions();
-						});						
+						});
 					},
 		// TODO: handle error
 	});
