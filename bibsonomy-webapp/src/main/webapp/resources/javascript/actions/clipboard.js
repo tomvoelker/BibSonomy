@@ -39,6 +39,7 @@ function pickUnpickPublication(element) {
 }
 
 
+
 /**
  * picks/unpicks publications in AJAX style
  * 
@@ -46,6 +47,11 @@ function pickUnpickPublication(element) {
  * @return
  */
 function updateBasket (param) {
+	var isUnpick = param.search(/action=unpick/) != -1;
+	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
+		return false;
+	}
+	
 	$.ajax({
 		type: 'POST',
 		url: "/ajax/pickUnpickPost?ckey=" + ckey,
@@ -55,7 +61,7 @@ function updateBasket (param) {
 		/*
 		 * update the number of clipboard items
 		 */
-		if (location.pathname.startsWith("/clipboard") && param.search(/action=unpick/) != -1) {
+		if (location.pathname.startsWith("/clipboard") && !isUnpick) {
 			// special case for the /clipboard page
 			window.location.reload();
 		} else {

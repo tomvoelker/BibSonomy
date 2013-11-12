@@ -9,20 +9,23 @@ var getPos = null;
 var setPos = null;
 var getSetPos = 0;
 
-function confirmDelete(type) {
-	var message = getString("delete.confirm." + type);
-	// get confirmation
-	if (confirmDelete) return confirm(message);
-	return true;
-}
+
 
 $(function() {
 	$('a.confirmdelete').click(function() {
-		var type = $(this).data('type');
-		return confirmDelete(type);
+		var messageKey = $(this).data('type');
+		return confirmDeleteByUser(messageKey);
 	});
 });
 
+function confirmDeleteByUser(messageKey) {
+	// get confirmation
+	if (confirmDelete) {
+		var message = getString("delete.confirm." + messageKey);
+		return confirm(message);
+	}
+	return true;
+}
 
 /**
  * This method is called on document.ready. Thus, methods that should 
