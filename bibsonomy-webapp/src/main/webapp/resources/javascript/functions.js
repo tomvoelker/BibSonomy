@@ -317,14 +317,9 @@ function fadeNextList(target) {
  * @return
  */
 function confirmDelete(type) {
-	var message = '';
-	switch(type) {
-		case 'post': message=getString("post.meta.delete.confirm");
-		case 'document': message=getString("post.meta.confirm.delete.document");
-	}
-
+	var message = getString("delete.confirm." + type);
 	// get confirmation
-	if(confirmDelete) return confirm(message);
+	if (confirmDelete) return confirm(message);
 	return true;
 }
 
