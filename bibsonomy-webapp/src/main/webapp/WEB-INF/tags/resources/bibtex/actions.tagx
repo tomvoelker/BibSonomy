@@ -79,9 +79,8 @@
 						<c:param name="resourceHash" value="${post.resource.intraHash}" />
 						<c:param name="ckey" value="${ckey}" />
 					</c:url>
-					<c:choose>
-						<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
-								onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
+					<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
+						onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="bibtex.actions.delete.inactive" var="deleteTitle"/>
