@@ -212,7 +212,7 @@ function renameSelected() {
 	//do an ajaxsubmit of the renameForm
 	$(renameForm).ajaxSubmit({
 		dataType: "xml",
-		success: renameRequestSuccessful	
+		success: renameRequestSuccessful
 	});
 }
 
@@ -222,8 +222,7 @@ function renameSelected() {
  * @return
  */
 function deleteLinkClicked () {
-	
-	if(!confirmDelete("document")) return;
+	if (!confirmDeleteByUser("document")) return false;
 	
 	var button = $(this);
 	$.get($(button).attr("href"), {}, function(data) {
