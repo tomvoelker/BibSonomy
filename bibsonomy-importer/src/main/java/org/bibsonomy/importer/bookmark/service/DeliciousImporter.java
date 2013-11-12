@@ -27,6 +27,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -44,7 +45,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.importer.bookmark.service.util.FilterInvalidXMLCharsInputStream;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -52,10 +52,12 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
+import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsReader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -217,9 +219,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			final URLConnection connection = apiURL.openConnection();
 			connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
 			connection.setRequestProperty(HEADER_AUTHORIZATION, encodeForAuthorization());
-			//We wrap the InputStream to filter out invalid XML Chars
-			inputStream = new FilterInvalidXMLCharsInputStream(connection.getInputStream());
-			
+			inputStream = connection.getInputStream();
 			return this.parseInputStream(inputStream);
 		} finally {
 			if (inputStream != null) {
@@ -258,8 +258,8 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		
 		// Finally, use the JAXP parser to parse the file.  
 		// This call returns a Document object. 
-
-		final Document document = parser.parse(inputStream);
+		final InputSource source = new InputSource(new FilterInvalidXMLCharsReader(new InputStreamReader(inputStream, "UTF-8")));
+		final Document document = parser.parse(source);
 		return document;
 	}
 	
