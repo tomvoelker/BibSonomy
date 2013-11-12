@@ -15,6 +15,7 @@ function includeJavaScript(jsFile) {
 
 includeJavaScript("/resources/jquery/jquery-1.8.3.js");
 includeJavaScript("/resources/javascript/functions.js");
+includeJavaScript("/resources/javascript/actions/clipboard.js");
 includeJavaScript("/resources/javascript/ajaxUtils.js");
 includeJavaScript("/resources/javascript/fileUpload.js");
 includeJavaScript("/resources/javascript/style.js");

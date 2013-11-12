@@ -29,21 +29,21 @@
 				<!-- EDIT -->
 				<c:otherwise><!-- user is post's owner -->
 					<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
-    	   			<a class="item edit" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
+					<a class="item edit" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
 				</c:otherwise>
 			</c:choose>
 		</c:when>
 		<c:otherwise>
 			<!-- For signed out users we always show the inactive copy button -->
 			<fmt:message key="bookmark.actions.copy.inactive" var="copyTitle" />
- 	   		<span class="item icopy" title="${copyTitle}"><!-- Keep Me--></span>
-    	</c:otherwise>
+ 			<span class="item icopy" title="${copyTitle}"><!-- Keep Me--></span>
+		</c:otherwise>
 	</c:choose>
 
 
 	<!--+
 		| REMOVE/DELETE
-		+ -->					         
+		+ -->
 	<c:choose>
 		<c:when test="${post.inboxPost}">
 			<!-- INBOX REMOVE -->
@@ -55,11 +55,11 @@
 				<c:param name="clear" value="false" />
 			</c:url>
 			<fmt:message key="bookmark.actions.removeMessage.title" var="removeTitle" />
-		    	<a class="item remove" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-		    			onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
+			<a class="item remove deleteconfirm" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
+					data-type="post"><!-- Keep Me --></a>
 		</c:when>
 		<c:otherwise>
-			<!-- REGULAR POST DELETE -->					
+			<!-- REGULAR POST DELETE -->
 			<c:choose>
 				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
 					<fmt:message key="bookmark.actions.delete.title" var="deleteTitle" />
@@ -67,15 +67,15 @@
 						<c:param name="resourceHash" value="${post.resource.intraHash}" />
 						<c:param name="ckey" value="${ckey}" />
 					</c:url>
-			    			<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"
-			    				onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
-             	</c:when>                
+					<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"
+							onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
+				</c:when>
 				<c:otherwise>
 					<fmt:message key="bookmark.actions.delete.inactive" var="deleteTitle"/>
-        	  		<span class="item idelete" title="${deleteTitle}"><!-- Keep Me --></span>
-        		</c:otherwise>
-        	</c:choose>
-        </c:otherwise>		
+					<span class="item idelete" title="${deleteTitle}"><!-- Keep Me --></span>
+				</c:otherwise>
+			</c:choose>
+		</c:otherwise>
 	</c:choose>
 
 		

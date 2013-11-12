@@ -79,8 +79,8 @@
 						<c:param name="resourceHash" value="${post.resource.intraHash}" />
 						<c:param name="ckey" value="${ckey}" />
 					</c:url>
-					<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
-						onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
+					<a class="item delete confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
+						data-type="post"><!-- Keep Me --></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="bibtex.actions.delete.inactive" var="deleteTitle"/>
@@ -107,7 +107,7 @@
 			<fmt:message key="bibtex.actions.gold" var="goldTitle" />
 			<a class="item community" href="${editGoldStandardLink}" title="${goldTitle}"><!-- Keep Me --></a>
 		</c:if>
-	</c:if>	
+	</c:if>
 
 
 	<!--+
@@ -133,7 +133,7 @@
 			<fmt:message key="bibtex.actions.pick.inactive" var="pickUnpickTitle"/>
 			<span class="item i${pickUnpick}" title="${pickUnpickTitle}"><!-- Keep Me --></span>
 		</c:otherwise>
-	</c:choose>		
+	</c:choose>
 
 	<!--+
 		| RESOURCE LINKS (URL, DOI, BIBTEX, OPEN URL)

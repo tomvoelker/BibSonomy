@@ -9,6 +9,19 @@ var getPos = null;
 var setPos = null;
 var getSetPos = 0;
 
+function confirmDelete(type) {
+	var message = getString("delete.confirm." + type);
+	// get confirmation
+	if (confirmDelete) return confirm(message);
+	return true;
+}
+
+$(function() {
+	$('a.confirmdelete').click(function() {
+		var type = $(this).data('type');
+		return confirmDelete(type);
+	});
+});
 
 
 /**
@@ -310,19 +323,6 @@ function fadeNextList(target) {
 	});
 }
 
-
-/**
- * Ask the user if he/she really wants to delete the post.
- * 
- * @return
- */
-function confirmDelete(type) {
-	var message = getString("delete.confirm." + type);
-	// get confirmation
-	if (confirmDelete) return confirm(message);
-	return true;
-}
-
 /**
  * if window is small, maximizes the "general" div to 95%
  * 
@@ -557,9 +557,9 @@ function ajax_updateRelations(data) {
 		var requestrelations = xml.getElementsByTagName("relation");
 
 		// iterate over the relations
-		for(x=0; x<requestrelations.length; x++){       		    
+		for(x=0; x<requestrelations.length; x++){
 			// one relation
-			var rel = requestrelations[x];		    
+			var rel = requestrelations[x];
 			// the upper tag of the relation
 			var upper = rel.getElementsByTagName("upper")[0].firstChild.nodeValue;
 
@@ -590,78 +590,7 @@ function ajax_updateRelations(data) {
 			$("#relations").append(rel_item);
 		}
 	}
-} 
-
-
-
-function pickAll() {
-	return pickUnpickAll("pickAll");
 }
-
-function unpickAll() {
-	return pickUnpickAll("unpickAll");
-}
-
-/**
- * Pick or unpick all publications from the current post list.
- * 
- * @param pickUnpick
- * @return
- */
-function pickUnpickAll(pickUnpick) {
-	var param  = "";
-	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
-		var href = $(this).attr("href");
-		if (!href.match(/^.*\/documents[\/?].*/)){
-			param += href.replace(/^.*bibtex./, "") + " ";
-		}
-	}
-	);
-	return updateBasket("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
-}    
-
-/**
- * pick or unpick a single publication
- * 
- * @param element
- * @return
- */
-function pickUnpickPublication(element) {
-	/*
-	 * pick/unpick publication
-	 */
-	return updateBasket((element===null||element.getAttribute("href")===null)?"":element.getAttribute("href").replace(/^.*?\?/, ""));
-}
-
-
-/**
- * picks/unpicks publications in AJAX style
- * 
- * @param param
- * @return
- */
-function updateBasket (param) {
-	$.ajax({
-		type: 'POST',
-		url: "/ajax/pickUnpickPost?ckey=" + ckey,
-		data : param,
-		dataType : "text",
-		success: function(data) {
-		/*
-		 * update the number of clipboard items
-		 */
-			
-		if (location.pathname.startsWith("/clipboard") && param.search(/action=unpick/) != -1) {
-			// special case for the /clipboard page
-			window.location.reload();
-		} else {
-			$("#pickctr").empty().append(data); 
-		}
-
-	}
-	});
-	return false;
-} 
 
 /**
  * Edit tags for a post in-place.
@@ -933,7 +862,7 @@ function addListOptions() {
 		/*
 		 * Function to hide the list options
 		 */
-		var callbackHide = function() {		    
+		var callbackHide = function() {
 			setTo(setTimeout(function(){ optBox.hide("fade", {}, 500); optBoxAnchor.css("background-position", "0px -235px");}, 400));
 		};
 		
@@ -949,7 +878,6 @@ function addListOptions() {
 
 				// hide extended bibtex export options each time when opening the menu
 				$("#bibtexListExportOptions").hide();
-								
 			}
 			window.clearTimeout(getTo());
 		};	
