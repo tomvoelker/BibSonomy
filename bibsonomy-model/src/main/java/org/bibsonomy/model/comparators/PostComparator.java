@@ -149,7 +149,7 @@ public abstract class PostComparator implements Serializable {
 		}
 		if (comp == 0) throw new SortKeyIsEqualException();
 		return (comp > 0 ? 1 : 0);
-	}		
+	}
 	
 	/**
 	 * Compare two dates following a specified order
@@ -162,14 +162,13 @@ public abstract class PostComparator implements Serializable {
 	 */
 	protected int compare (final Date d1, final Date d2, final SortOrder order) throws SortKeyIsEqualException {
 		int comp = 0;
-		if (order.equals(SortOrder.ASC)) {
+		if (SortOrder.ASC.equals(order)) {
 			comp = DateUtils.secureCompareTo(d1, d2);
-		}
-		else {
+		} else {
 			comp = DateUtils.secureCompareTo(d2, d1);
 		}
 		if (comp == 0) throw new SortKeyIsEqualException();
 		return comp;
-	}	
+	}
 	
 }
