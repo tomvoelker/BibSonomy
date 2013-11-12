@@ -31,20 +31,10 @@
 		           <c:param name="ckey" value="${ckey}" />
 		        </c:url>
 		                
-		        <c:choose>
-					 SHOW A CONFIRM WINDOW 
-		           	<c:when test="${command.context.loginUser.settings.confirmDelete}">
-		              	 <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" onclick="javascript: return confirmDelete();">
-		               		<fmt:message key="post.actions.delete"/>
-		                 </a>
-		           	</c:when>
-					 JUST DELETE 
-		          	<c:otherwise>
-		             	<a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}">
-		              		<fmt:message key="post.actions.delete"/>
-		               	</a>
-		           	</c:otherwise>
-		         </c:choose>
+				 SHOW A CONFIRM WINDOW 
+              	 <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" onclick="javascript: return confirmDelete('post');">
+	               		<fmt:message key="post.actions.delete"/>
+                 </a>
 		      </li>-->
 		</c:if>
 	</c:if>

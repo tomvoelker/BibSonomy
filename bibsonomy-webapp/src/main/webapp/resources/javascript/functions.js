@@ -316,9 +316,16 @@ function fadeNextList(target) {
  * 
  * @return
  */
-function confirmDelete() {
+function confirmDelete(type) {
+	var message = '';
+	switch(type) {
+		case 'post': message=getString("post.meta.delete.confirm");
+		case 'document': message=getString("post.meta.confirm.delete.document");
+	}
+
 	// get confirmation
-	return confirm(getString("post.meta.delete.confirm"));
+	if(confirmDelete) return confirm(message);
+	return true;
 }
 
 /**
@@ -1207,15 +1214,23 @@ function startTagAutocompletion (textfield, isPost, multiTags, sendAllowed, show
 							 */
 							$("#recommendedTags li, .tagbox li a").each(function(index, item) {
 								var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
+								var tags = name.split(",");
+								
 								if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
-									recommendedTags.push(name);
+									if(name.indexOf(",")>-1)
+										for(var i in tags) 
+											if(recommendedTags.indexOf(tags[i])==-1) recommendedTags.push(tags[i]);
+									else recommendedTags.push(name);
 								}
 							});
 
 							$("#copiedTags li, .tagbox li a").each(function(index, item) {
 								var name = item.innerHTML.substring(0, item.innerHTML.length - 1);
 								if(textfieldValue.indexOf(name) == -1 && name.search(regex) == 0 ) {
-									copiedTags.push(name);
+									if(name.indexOf(",")>-1) 
+										for(var i in tags) 
+											if(copiedTags.indexOf(tags[i])==-1) copiedTags.push(tags[i]);
+									else copiedTags.push(name);
 								}
 							});
 							

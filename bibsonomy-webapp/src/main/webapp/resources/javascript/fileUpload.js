@@ -222,6 +222,9 @@ function renameSelected() {
  * @return
  */
 function deleteLinkClicked () {
+	
+	if(!confirmDelete("document")) return;
+	
 	var button = $(this);
 	$.get($(button).attr("href"), {}, function(data) {
 		var status=$("status", data).text();

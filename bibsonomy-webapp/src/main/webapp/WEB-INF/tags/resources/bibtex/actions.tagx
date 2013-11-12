@@ -67,17 +67,8 @@
 			<c:param name="clear" value="false" />
 		</c:url>
 			<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-			<c:choose>
-				<!-- SHOW A CONFIRM WINDOW -->
-				<c:when test="${command.context.loginUser.settings.confirmDelete}">
 					<a class="item remove" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-						onclick="javascript: return confirmDelete();"><!-- Keep Me --></a>
-				</c:when>
-				<!-- JUST DELETE WITHOUT FURTHER CONFIRMATION -->
-				<c:otherwise>
-					<a class="item remove" href="${fn:escapeXml(message_remove)}" title="${removeTitle}"><!-- Keep Me --></a>
-				</c:otherwise>
-			</c:choose>
+						onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
 		</c:when>
 		<c:otherwise>
 			<!-- REGULAR POST DELETE -->
@@ -89,16 +80,8 @@
 						<c:param name="ckey" value="${ckey}" />
 					</c:url>
 					<c:choose>
-						<c:when test="${command.context.loginUser.settings.confirmDelete}">
-							<!-- SHOW A CONFIRM WINDOW -->
-							<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
-								onclick="javascript: return confirmDelete();"><!-- Keep Me --></a>
-						</c:when>
-						<c:otherwise>
-							<!-- JUST DELETE WITHOUT FURTHER CONFIRMATION-->
-							<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"><!-- Keep Me --></a>
-						</c:otherwise>
-					</c:choose>
+						<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
+								onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="bibtex.actions.delete.inactive" var="deleteTitle"/>
