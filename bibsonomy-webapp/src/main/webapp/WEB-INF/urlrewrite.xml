@@ -806,6 +806,7 @@
 		<to last="true">/bibtex</to>
 	</rule>
 	
+	<!-- FIXME: remove |publication! -->
 	<!-- ToKill -->
 	<rule><!-- /[32]/USERNAME -->
 		<name>/postHistory/HASH/USER</name>
