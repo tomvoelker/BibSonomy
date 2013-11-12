@@ -12,6 +12,9 @@
  *            ckey
  */
 function deleteUrl(self, url, hash, ckey) {
+	if (!confirmDeleteByUser("extraurl")) {
+		return false;
+	}
     $.ajax({
         type: "GET",
         url: "/ajax/additionalURLs",
