@@ -32,7 +32,7 @@
 					<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
 					<a class="item edit" href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
 					<c:if test="${mtl:userIsGroup(command.context.loginUser)}">
-						<!-- TOOD: get the group the group user represents -->
+						<!-- TODO: get the group the group user represents -->
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
 							<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
 							<c:if test="${not empty reportingUrl and group.name eq command.context.loginUser.name}">
