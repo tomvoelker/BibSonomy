@@ -9,12 +9,13 @@
  * @param {Object}
  *            hash
  * @param {Object}
- *            ckey
+ *            ckey TODO: use the global ckey variable definied in htmlHead.tagx
  */
 function deleteUrl(self, url, hash, ckey) {
 	if (!confirmDeleteByUser("extraurl")) {
 		return false;
 	}
+	// TODO: don't use a get method to delete something
     $.ajax({
         type: "GET",
         url: "/ajax/additionalURLs",
@@ -26,7 +27,7 @@ function deleteUrl(self, url, hash, ckey) {
         },
 		 success: function(data){
 			var status = $("status", data).text();
-            if("ok" == status) {
+            if ("ok" == status) {
 					$(self).parent().remove();
             } else {
         	   alert(data.globalErrors[0].message);
