@@ -5,6 +5,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -21,8 +23,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.util.EscapingPrintWriter;
 import org.bibsonomy.rest.utils.HeaderUtils;
+import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
 
 /**
  * @author dzo
@@ -172,18 +174,19 @@ public class RESTUtils {
 	 * @param encoding
 	 * @return the writer for the stream
 	 */
-	public static Writer getOutputWriterForStream(final OutputStream stream, final String encoding) {
+	public static Writer getOutputWriterForStream(OutputStream stream, final String encoding) {
 		if (!present(stream)) {
 			return null;
 		}
+		
 		try {
 			// returns InputStream with correct encoding
-			return new EscapingPrintWriter(stream, encoding);
+			return new PrintWriter(new FilterInvalidXMLCharsWriter(new OutputStreamWriter(stream, encoding), true));
 		} catch (final UnsupportedEncodingException ex) {
 			// returns InputStream with default encoding if a exception
 			// is thrown with utf-8 support
 			log.fatal("Could not get output writer for stream with encoding " + encoding, ex);
-			return new EscapingPrintWriter(stream);
+			return new PrintWriter(new FilterInvalidXMLCharsWriter(new OutputStreamWriter(stream), true));
 		}
 	}
 
