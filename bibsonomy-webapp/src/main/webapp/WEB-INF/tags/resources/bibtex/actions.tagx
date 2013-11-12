@@ -59,7 +59,7 @@
 	<c:choose>
 		<c:when test="${post.inboxPost}">
 		<!-- INBOX REMOVE -->
-		<!-- Inobx can be viewed only by signed in users and only in the own inbox-->
+		<!-- Inbox can be viewed only by signed in users and only in the own inbox-->
 		<c:url var="message_remove" value="/removeMessage">
 			<c:param name="hash" value="${post.resource.intraHash}" />
 			<c:param name="user" value="${post.user.name}" />
@@ -67,11 +67,11 @@
 			<c:param name="clear" value="false" />
 		</c:url>
 			<fmt:message key="bibtex.actions.removeMessage.title" var="removeTitle" />
-					<a class="item remove" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-						onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
+					<a class="item remove confirmdelete" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
+						data-type="inboxpost"><!-- Keep Me --></a>
 		</c:when>
 		<c:otherwise>
-			<!-- REGULAR POST DELETE -->
+			<!-- POST DELETE -->
 			<c:choose>
 				<c:when test="${command.context.userLoggedIn and loginUserName eq post.user.name}">
 					<fmt:message key="bibtex.actions.delete.title" var="deleteTitle"/>
