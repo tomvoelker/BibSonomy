@@ -51,6 +51,7 @@
 	<sqlMap resource="BibTex.xml" />
 	<sqlMap resource="BibTexExtra.xml" />
 	<sqlMap resource="GoldStandard.xml" />
+	<sqlMap resource="History.xml" />
 	<sqlMap resource="User.xml" />
 	<sqlMap resource="Group.xml" />
 	<sqlMap resource="Document.xml" />

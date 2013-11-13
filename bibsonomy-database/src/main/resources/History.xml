@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="History">
+	<update id="updateBibTexHistory" parameterClass="bibtexParam">
+		UPDATE log_bibtex
+		SET current_content_id = #newContentId#
+		WHERE current_content_ID = #requestedContentId# OR
+			new_content_id = #newContentId#
+	</update>
+	
+	<select id="getBibTexHistory" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPost" >
+		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1 FORCE INDEX(user_name_date_content_id_idx), bibhash h
+		      WHERE <include refid="bibtexSimHash3"/>
+		            AND t1.user_name = #requestedUserName#	
+		            <include refid="restrictToGroups"/>
+			  		<include refid="sysTagsEntryType"/>
+			  		<include refid="sysTagsYear"/>		            
+		      ORDER BY date DESC) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
+		WHERE b2.simhash2 = #hash# 
+		  AND b2.user_name = #requestedUserName# 
+		UNION
+		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM log_bibtex t1, bibhash h
+		      WHERE <include refid="bibtexSimHash3"/>
+		            AND t1.user_name = #requestedUserName#	
+		            <include refid="restrictToGroups"/>
+			  		<include refid="sysTagsEntryType"/>
+			  		<include refid="sysTagsYear"/>		            
+		      ORDER BY date DESC) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g,
+		bibtex b
+		WHERE b.content_id = b2.current_content_id
+		  AND b.simhash2 = #hash# 
+		  AND b.user_name = #requestedUserName#
+		ORDER BY content_id
+	    LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<!-- <insert id="insertGoldStandardHistory" parameterClass="bibtexParam">
+		INSERT INTO history_goldstandard (history_id, goldstandard_id) VALUES
+			(#requestedContentId#,  #requestedContentId#);
+	</insert>
+	
+	<update id="updateGoldStandardHistory" parameterClass="bibtexParam">
+		UPDATE history_goldstandard h
+		SET goldstandard_id = (SELECT g.content_id
+							  FROM gold_standard g
+							  WHERE simhash1 = #hash#
+							  LIMIT 1)
+		WHERE h.goldstandard_id =  #requestedContentId#
+	</update>
+	
+	<select id="getGoldStandardHistory" parameterClass="bibtexParam" resultMap="GoldStandardPublicationCommon.goldStandardPost" >
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings 
+		FROM (gold_standard b, gold_standard_publication_references r)
+		WHERE r.publication = #hash# 
+		  AND b.simhash1 = r.reference
+		UNION
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings 
+		FROM (log_gold_standard b, gold_standard_publication_references r, gold_standard b2)
+		WHERE r.publication = #hash# 
+		  AND b2.simhash1 = r.reference
+		  AND h.goldstandard_id = b2.content_id
+		  AND h.history_id = b.content_id
+	</select>
+	-->
+</sqlMap>

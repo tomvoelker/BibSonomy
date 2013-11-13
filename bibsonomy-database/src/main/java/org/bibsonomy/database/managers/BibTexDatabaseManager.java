@@ -421,6 +421,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	@Override
 	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
 		this.plugins.onPublicationUpdate(oldContentId, newContentId, session);
+		/* 
+		 * rewrites the history
+		 */
+		BibTexParam param = new BibTexParam();
+		param.setNewContentId(newContentId);
+		param.setRequestedContentId(oldContentId);
+		this.update("updateBibTexHistory", param, session);
 	}
 	
 	/*

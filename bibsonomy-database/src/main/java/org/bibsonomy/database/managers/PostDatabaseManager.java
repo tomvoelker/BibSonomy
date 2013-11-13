@@ -225,40 +225,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "ByConceptForGroup", param, session);
 	}
 
-	/** 
-	 * Returns a list of Posts which are previous versions of the given post
-	 * 
-	 * @param resourceHash
-	 * @param requestedUserName
-	 * @param loginUserName
-	 * @param filter
-	 * @param limit
-	 * @param offset
-	 * @param systemTags
-	 * @param session	a database session
-	 * @return list of  posts
-	 */		
-	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final String loginUserName, final FilterEntity filter, 
-			int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		//TODO: Rework for changed history structure
-		/*final P param;
-		//group param
-		if (limit != 1)
-			limit = 1000;
-		param = this.createParam(limit, offset);
-		param.setUserName(loginUserName);
-		param.setHash(resourceHash);
-		param.setRequestedUserName(requestedUserName);
-		param.setFilter(filter);
-		param.addAllToSystemTags(systemTags);
-		if (filter.equals(FilterEntity.POSTS_HISTORY_GOLD))
-			return this.postList("getGoldStandardHistory", param, session);
-		else if (filter.equals(FilterEntity.POSTS_HISTORY_BIBTEX))
-			return this.postList("getBibTexHistory", param, session);  
-		else*/
-		return new LinkedList<Post<R>>();
-	}	
-	
+
 	/**
 	 * <em>/concept/user/MaxMustermann/EinTag</em><br/><br/>
 	 * 
@@ -943,6 +910,40 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return present(result) ? result : 0;
 	}
 
+	/** 
+	 * Returns a list of Posts which are previous versions of the given post
+	 * 
+	 * @param resourceHash
+	 * @param requestedUserName
+	 * @param loginUserName
+	 * @param filter
+	 * @param limit
+	 * @param offset
+	 * @param systemTags
+	 * @param session	a database session
+	 * @return list of  posts
+	 */		
+	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final String loginUserName, final FilterEntity filter, 
+			int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param;
+		//group param
+		if (limit != 1)
+			limit = 1000;
+		param = this.createParam(limit, offset);
+		param.setUserName(loginUserName);
+		param.setHash(resourceHash);
+		param.setRequestedUserName(requestedUserName);
+		param.setFilter(filter);
+		param.addAllToSystemTags(systemTags);
+		
+		/*if (filter.equals(FilterEntity.POSTS_HISTORY_GOLD))
+			return this.postList("getGoldStandardHistory", param, session);
+		else */if (filter.equals(FilterEntity.POSTS_HISTORY_BIBTEX))
+			return this.postList("getBibTexHistory", param, session);  
+		else
+			return new LinkedList<Post<R>>();
+	}
+	
 	/**
 	 * Get posts of users which the logged-in users is following.
 	 * 
