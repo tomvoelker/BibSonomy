@@ -23,23 +23,18 @@
 
 package org.bibsonomy.layout.jabref;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-import org.apache.commons.io.FilenameUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.testutil.TestUtils;
+import org.bibsonomy.util.Sets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,108 +47,30 @@ import org.junit.runners.Parameterized.Parameters;
  * $Author$
  */
 @RunWith(Parameterized.class)
-public class JabrefLayoutRendererTest {
-	private static final String LAYOUT_ENTRYTYPE_SPLIT = "#";
+public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
+	
+	//Layouts that will be tested
+	private static final Set<String> TESTEDLAYOUTS = 
+		Sets.asSet(new String[]{"apa_html", "chicago", "din1505", "din1505year", "harvardhtml", "simplehtml", "simplehtmlyear",
+								"tablerefs", "tablerefsabsbib", "tablerefsabsbibsort", "dblp", "html"});
+	private static final String TESTCASEFOLDERPATH = "/jabref-layout-tests";
+	private static final String LAYOUT_ENTRYTYPE_SPLITSUFFIX = "";
+	
+	public JabrefLayoutRendererTest(File layoutTest, String layoutName) {
+		super(layoutTest, layoutName);
+	}
 	
 	@Parameters
 	public static Collection<Object[]> data() {
-		final File folder = new File(JabrefLayoutRendererTest.class.getResource("/jabref-layout-tests").getFile());
-		final File[] listOfFiles = folder.listFiles(new FilenameFilter() {
-			
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".layoutResult");
-			}
-		});
-		
-		final Collection<Object[]> files = new LinkedList<Object[]>();
-		for (File file : listOfFiles) {
-			files.add(new Object[] { file });
-		}
-		return files;
+		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, LAYOUT_ENTRYTYPE_SPLITSUFFIX);
 	}
 	
-	private static final JabrefLayoutRenderer RENDERER = new JabrefLayoutRenderer();
-	static {
-		RENDERER.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
-		RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
-	}
-	
-	private File layoutTest;
-	private String layoutName;
-	private String entryType;
-	
-	private String renderedLayout;
-	private String resultLayout;
-	
-	public JabrefLayoutRendererTest(File layoutTest) {
-		this.layoutTest = layoutTest;
-	}
-	
-    @Test
+	@Override
+	@Test
     public void testRender() throws Exception {
-		String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
-		layoutName = fileName;
-		entryType = "article";
-		
-		if (fileName.contains(LAYOUT_ENTRYTYPE_SPLIT)) {
-			String[] parts = fileName.split(LAYOUT_ENTRYTYPE_SPLIT);
-	    	layoutName = parts[0];
-	    	entryType = parts[1];
-	    }
-	    final JabrefLayout layout = RENDERER.getLayout(layoutName, "foo");
-		renderedLayout = RENDERER.renderLayout(layout, getPosts(entryType), false).toString().replaceAll("\\r", "").trim();
-		resultLayout = TestUtils.readEntryFromFile(layoutTest).trim();
-		
-		this.prepareTest();
-	    assertEquals("layout: " + layoutName + ", testfile: " + layoutTest + ", entrytype: " + entryType, resultLayout, renderedLayout);
+		testRender(getPosts(this.entryType));
 	}
-    
-    private void prepareTest() {
-		//FIXME - use an EnumType for Layouts
-		StringBuilder sb;
-		int index;
-		
-		if (layoutName.equals("html")) {
-			/*
-			 * Deletes Lines containing a current timestamp ("Generated on ... TIME")
-			 */
-			sb = new StringBuilder(renderedLayout);
-			final String titleAttr = "title=\"";
-			index = sb.indexOf(titleAttr + "Generated on");
-			if (index!=-1) {
-				index += titleAttr.length();
-				int index2 = sb.indexOf("\"", index);
-				sb.delete(index, index2);
-				renderedLayout = sb.toString();
-			}
-			
-			index = sb.indexOf(">Generated on");
-			if (index!=-1) {
-				index++;
-				int index2 = sb.indexOf("<", index);
-				sb.delete(index, index2);
-				renderedLayout = sb.toString();
-			}	
-		}
-		else if (layoutName.equals("tablerefs") || layoutName.equals("tablerefsabsbib") || layoutName.equals("tablerefsabsbibsort")) {
-			/*
-			 * Deletes Lines containing a current timestamp ("Created by ... TIME")
-			 */
-			sb = new StringBuilder(resultLayout);
-			index = sb.indexOf("<small>Created by");
-			int index2 = sb.lastIndexOf("</small>");
-			sb.delete(index, index2);
-			resultLayout = sb.toString();
-			
-			sb = new StringBuilder(renderedLayout);
-			index = sb.indexOf("<small>Created by");
-			index2 = sb.lastIndexOf("</small>");
-			sb.delete(index, index2);
-			renderedLayout = sb.toString();
-		}
-	}
-
+	
     public static List<Post<BibTex>> getPosts(String entryType) throws PersonListParserException {
     	final User u = new User();
     	u.setName("Wiglaf Droste");
@@ -181,5 +98,5 @@ public class JabrefLayoutRendererTest {
 		
 		return Collections.singletonList(post);
     }
+    
 }
-

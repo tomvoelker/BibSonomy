@@ -51,12 +51,15 @@ public class JabrefBasicLayoutTestBuilder {
 	/*
 	 * Specify the Layout and entryType, for which you want to create a TestCase/result-File
 	 */
-	private String layoutName = "html";
-	private String[] entryTypes = {"article"};
+	private String layoutName = "simplehtmlyear";
+	private String[] entryTypes = {""};
 		//{"article","book","booklet","conference","electronic","inbook","incollection","inproceedings","","manual","mastersthesis","phdthesis","proceedings","techreport","unpublished"};
 	
 	private String outputFolderPath = "src/test/resources/temp/";
-	private String testNameTag = "";
+	
+	private static final String LAYOUT_ENTRYTYPE_SPLIT = "#";
+	private static final String LAYOUT_ENTRYTYPE_SPLITSUFFIX = "xmlesc#";
+	
 	
 	/*
 	 * 
@@ -79,11 +82,11 @@ public class JabrefBasicLayoutTestBuilder {
 			List<Post<BibTex>> testCasePost = JabrefLayoutRendererTest.getPosts(entryType);//JabrefLayoutAntiScriptInjectionTest.getTestCasePost(entryType);
 			
 			StringBuffer sb = RENDERER.renderLayout(layout, testCasePost, false);
-			String renderedLayout = sb.toString();
+			String renderedLayout = sb.toString().replaceAll("\\r", "").trim();
 			
 			renderedLayout = modifyLayout(renderedLayout);
 			
-			File resultFile = new File(outputFolderPath + layoutName + "#" + testNameTag + entryType + ".layoutResult");
+			File resultFile = new File(outputFolderPath + layoutName + LAYOUT_ENTRYTYPE_SPLIT  + LAYOUT_ENTRYTYPE_SPLITSUFFIX + entryType + ".layoutResult");
 			resultFile.createNewFile();
 			
 			FileWriter fw = new FileWriter(resultFile);
