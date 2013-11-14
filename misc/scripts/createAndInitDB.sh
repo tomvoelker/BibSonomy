@@ -15,7 +15,6 @@ PREFIX=$2;
 ROOT_PASSWORD=""
 BASE_PASSWORD=""
 BASE_ROPASSWORD=""
-ADMIN_USER_PASSWORD=""
 
 PASSWORD=${PREFIX}$BASE_PASSWORD
 ROPASSWORD=${PREFIX}$BASE_ROPASSWORD
@@ -36,13 +35,15 @@ GRANT ALL PRIVILEGES ON ${BASE_NAME}puma.* TO '${BASE_NAME}puma'@'$HOST';
 CREATE USER '${BASE_NAME}puma_ro'@'$HOST' IDENTIFIED BY '$ROPASSWORD';
 GRANT SELECT ON ${BASE_NAME}puma.* TO '${BASE_NAME}puma_ro'@'$HOST';
 
-CREATE USER '${BASE_NAME}opensocial'@'$HOST' IDENTIFIED BY '$PASSWORD';
+CREATE USER '${BASE_NAME}osocial'@'$HOST' IDENTIFIED BY '$PASSWORD';
 CREATE DATABASE IF NOT EXISTS ${BASE_NAME}puma_opensocial;
-GRANT ALL PRIVILEGES ON ${BASE_NAME}puma_opensocial.* TO '${BASE_NAME}opensocial'@'$HOST';
+GRANT ALL PRIVILEGES ON ${BASE_NAME}puma_opensocial.* TO '${BASE_NAME}osocial'@'$HOST';
 
-CREATE USER '${BASE_NAME}recommender'@'$HOST' IDENTIFIED BY '$PASSWORD';
+CREATE USER '${BASE_NAME}reco'@'$HOST' IDENTIFIED BY '$PASSWORD';
 CREATE DATABASE IF NOT EXISTS ${BASE_NAME}puma_recommender;
-GRANT ALL PRIVILEGES ON ${BASE_NAME}puma_recommender.* TO '${BASE_NAME}recommender'@'$HOST';
+GRANT ALL PRIVILEGES ON ${BASE_NAME}puma_recommender.* TO '${BASE_NAME}reco'@'$HOST';
+CREATE DATABASE IF NOT EXISTS ${BASE_NAME}puma_item_recommender;
+GRANT ALL PRIVILEGES ON ${BASE_NAME}puma_item_recommender.* TO '${BASE_NAME}reco'@'$HOST';
 
 CREATE USER '${BASE_NAME}logger'@'$HOST' IDENTIFIED BY '$PASSWORD';
 CREATE DATABASE IF NOT EXISTS ${BASE_NAME}logging;
@@ -55,8 +56,10 @@ mysql -u root -p${ROOT_PASSWORD} -e "$commands"
 
  mysql -u root -p${ROOT_PASSWORD} -D ${BASE_NAME}puma < bibsonomy-db-schema.sql
  mysql -u root -p${ROOT_PASSWORD} -D ${BASE_NAME}puma < bibsonomy-db-init.sql
+ mysql -u root -p${ROOT_PASSWORD} -D ${BASE_NAME}puma < bibsonomy-db-init-user.sql
  mysql -u root -p${ROOT_PASSWORD} -D ${BASE_NAME}puma_opensocial < opensocial-db-schema.sql
  mysql -u root -p${ROOT_PASSWORD} -D ${BASE_NAME}puma_recommender < recommender-db-schema.sql
+ mysql -u root -p${ROOT_PASSWORD} -D ${BASE_NAME}puma_item_recommender < item-recommender-db-schema.sql
  mysql -u root -p${ROOT_PASSWORD} -D ${BASE_NAME}logging < logging-db-schema.sql
 
 
