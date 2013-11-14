@@ -86,7 +86,7 @@
   		  <link>${properties['project.home']}bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</link>
   		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
   		  <dc:date>${mtl:formatDateW3CDTF(post.date)}</dc:date>
-  		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/><c:out value=" "/></c:forEach></dc:subject>
+  		  <dc:subject><c:forEach var="tag" items="${post.tags}"><c:out value="${fn:escapeXml(mtl:removeInvalidXmlChars(tag.name))}"/><c:out value=" "/></c:forEach></dc:subject>
 
           <!-- The HTML description of the item. -->
   		  <content:encoded><jsp:invoke fragment="content"/></content:encoded>
@@ -95,7 +95,7 @@
   		  <taxo:topics>
 	        <rdf:Bag>
 	          <c:forEach var="tag" items="${post.tags}">
-	            <rdf:li rdf:resource="${properties['project.home']}tag/${fn:escapeXml(mtl:removeXmlControlChars(tag.name))}"/>
+	            <rdf:li rdf:resource="${properties['project.home']}tag/${fn:escapeXml(mtl:removeInvalidXmlChars(tag.name))}"/>
 	          </c:forEach>  
 	        </rdf:Bag>
 	      </taxo:topics>

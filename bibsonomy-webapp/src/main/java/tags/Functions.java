@@ -685,8 +685,8 @@ public class Functions  {
 	 * @param s - the string from which the control characters are to be removed
 	 * @return the string with control characters removed.
 	 */
-	public static String removeXmlControlChars(final String s) {
-		return XmlUtils.removeXmlControlCharacters(s);
+	public static String removeInvalidXmlChars(final String s) {
+		return XmlUtils.removeInvalidXmlChars(s);
 	}
 	
 	/**

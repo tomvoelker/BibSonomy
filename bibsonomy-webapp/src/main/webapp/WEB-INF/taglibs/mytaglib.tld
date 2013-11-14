@@ -325,9 +325,9 @@
 	</function>
 
 	<function>
-		<name>removeXmlControlChars</name>
+		<name>removeInvalidXmlChars</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String removeXmlControlChars(java.lang.String)</function-signature>
+		<function-signature>String removeInvalidXmlChars(java.lang.String)</function-signature>
 	</function>
 
 	<function>
