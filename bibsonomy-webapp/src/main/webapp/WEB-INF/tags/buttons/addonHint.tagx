@@ -16,18 +16,14 @@
 	<script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var result = installBookmarkletButton({
-				textElementId:"post\\.resource\\.hint", 
-				buttonElementId:"post\\.resource\\.hint\\.buttons",
-				sidebarInlay:true,
-				emptyParent:true
-			});
-			if (result != null) {
+			var result = displayBookmarkletButton();
+			if ((result != null) {
 				var browsername = result.name.toLowerCase();
-				var availablePlugins = "${properties['project.plugin.available']}";
-				if (availablePlugins.indexOf(browsername) >= 0) {
-					$("#post\\.resource\\.hint1").html(getString("bookmarklet.legacyNotice")+" "+getString("bookmarklet.legacyNotice.further2"));
-					$("#post\\.resource\\.bookmarklet\\.screenshot").attr("src", "/resources/image/bookmarklet_screenshot_"+browsername+"_${fn:toLowerCase(exampleString)}.png").show();
+				var availableAddons = "${properties['project.addons.available']}";
+				if (availableAddons.indexOf(browsername) >= 0) {
+					$("#post\\.resource\\.hint\\.buttons").hide();
+					$("#post\\.resource\\.hint\\.addons").show();
+					$("#post\\.resource\\.hint\\.addons\\."+browsername).show();
 				}
 			}
 		});
@@ -49,5 +45,28 @@
 			</c:otherwise>
 		</c:choose>
 		<li id="post.resource.hint1"><fmt:message key="post.resource.hint1"/></li>
+	</ul>
+	<ul id="post.resource.hint.addons" class="initiallyHidden">
+				<li id="post.resource.hint.addons.chrome" class="initiallyHidden">
+					<h4>
+						<fmt:message key="bookmarklet.titleChrome"/>
+					</h4>
+					<ul>
+						<a href="${project.addons.chrome.url}" class="post.resource.chrome.installButton">
+							<span></span
+						</a>
+					</ul>
+				</li>
+				<li id="post.resource.hint.addons.firefox" class="initiallyHidden">
+					<h4>
+						<fmt:message key="bookmarklet.titleFirefox"/>
+					</h4>
+					<ul>
+						<a href="${project.addons.firefox.url}" class="post.resource.firefox.installButton">
+							<span></span
+						</a>
+					</ul>
+				</li>
+				<li><fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;<fmt:message key="bookmarklet.legacyNotice.further2"/></li>
 	</ul>
 </jsp:root>

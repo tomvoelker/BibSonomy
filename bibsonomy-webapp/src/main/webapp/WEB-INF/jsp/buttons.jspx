@@ -28,6 +28,8 @@
             <script type="text/javascript">
             <![CDATA[
 		    	$(document).ready(function(){
+					var availableAddons = "{project.addons.available}".split(",");
+		    		if(!availableAddons.length) return;
 		    		var index=-1;
 		    		var url = window.location.href;
 		    		var browser = BookmarkletButton.getButtonForAgent();
@@ -72,19 +74,14 @@
 		           		<div style="margin-left:15px;display:none">
 			           		<p><img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/></p>
 			           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
-			           		<!-- 
-			           			TODO: put URL into configuration or elsewhere
-			           		 -->
-			           		<p><a href="https://addons.mozilla.org/de/firefox/addon/bibsonomy-buttons/" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
+			           		<p><a href="${project.addons.url.firefox}" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
 		           		</div>
 		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Chrome</h3>
 		           		<div style="margin-left:15px;display:none">
 			           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
 			           		<p><fmt:message key="bookmarklet.addon.text3"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
-			           		<!-- 
-			           			TODO: put URL into configuration or elsewhere
-			           		 -->
-			           		<p><a href="https://chrome.google.com/webstore/detail/bibsonomy-buttons/lbbnooihfnhphbgeajgmpmaedkdjgeid" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
+
+			           		<p><a href="${project.addons.url.chrome}" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
 		           		</div>
 		           		<p><i><fmt:message key="note"/>: <fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;<fmt:message key="bookmarklet.legacyNotice.further1"/></i></p>
 	           		</div>

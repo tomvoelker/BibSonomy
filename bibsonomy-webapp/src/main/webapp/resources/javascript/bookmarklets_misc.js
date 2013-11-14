@@ -13,9 +13,7 @@ var BookmarkletButton = {
 		},
 		browsers: [
 		           {
-		        	   // TODO: put URL into configuration or elsewhere
 		        	   	name: "Chrome",
-		        	   	url:	"https://chrome.google.com/webstore/detail/bibsonomy-buttons/lbbnooihfnhphbgeajgmpmaedkdjgeid",
 		        	   	satisfies: function(){
 		        	   		return $.browser.webkit&&navigator!=undefined
 		        	   		&&navigator.userAgent.indexOf("Epiphany")==-1
@@ -23,9 +21,7 @@ var BookmarkletButton = {
 		        	   	}
 		           },
 			       {
-		        	   	// TODO: put URL into configuration or elsewhere
 		        	   	name: "Firefox",
-			        	url:	"https://addons.mozilla.org/de/firefox/addon/bibsonomy-buttons/",
 			        	version: "8",
 			        	satisfies: function(){
 			        		return $.browser.mozilla
@@ -39,7 +35,7 @@ var BookmarkletButton = {
 					return this.browsers[i]; 
 			return null;
 		},
-		createButton: function(options) {
+		showButton: function(options) {
 			var browser = null;
 			
 			if(options!=undefined&&options.name!=undefined)
@@ -50,45 +46,7 @@ var BookmarkletButton = {
 			if(browser==null)
 				return null;
 
-			return {
-				browser:browser,
-				button:$("<a></a>").attr(
-					{
-						"class":"post.resource."+browser.name.toLowerCase()+".installButton",
-						"href":browser.url
-					}
-				).html("<span>"+getString("bookmarklet.buttonText"+browser.name)+"</span>")
+			return browser;
 			};
 		}
 }
-
-function installBookmarkletButton (options){
-	var result = BookmarkletButton.createButton();
-	if(result==null)
-		return false;
-	
-	if(options.emptyParent) {
-		$("#"+options.buttonElementId).html('');
-		$("#"+options.textElementId).html('');
-	}
-
-	if(options.sidebarInlay) 
-		button = $("<li></li>").append($("<p></p>").html(result.button));
-
-    $("#"+options.buttonElementId).append(result.button);
-   	if(options.textElementId!=undefined) {
-   		var param = new Array(projectName);
-  		$("#"+options.textElementId).append(
-			"<h4>"
-			+getString("bookmarklet.title"+result.browser.name, param)
-			+"</h4>"
-			+getString("bookmarklet.sidebarNotice", param));
-   	}
-   	return result.browser;
-}
-
-/* FIXME: pseudo call for getString to include messages bookmarklet.legacyNotice(.further2) by generate_localized_messages.pl
- * getString("bookmarklet.legacyNotice")
- * getString("bookmarklet.legacyNotice.further2")
- */
-	

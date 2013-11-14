@@ -62,10 +62,39 @@
 								<fmt:message key="image.register.success" var="successImage"/>
 								<img src="${successImage}" alt="${dragButtons}" title="${dragButtons}"/>
 							</span>
-							<div id="post.resource.bookmarklet.installInfo" class="initiallyHidden">
-	 							<p id="post.resource.bookmarklet.text"><!-- keep --></p>     
-								<img id="post.resource.bookmarklet.screenshot"/>
-								<p id="post.resource.bookmarklet.installButton"><!-- keep --></p>
+							<div id="post.resource.addons.installInfo" class="initiallyHidden">
+								<span id="post.resource.addons.installInfo.chrome" class="initiallyHidden">
+		 							<p>
+										<h4>
+											<fmt:message key="bookmarklet.titleChrome"/>
+										</h4>
+										<fmt:message key="bookmarklet.sidebarNotice">
+											<fmt:param value="${project.name}"/>
+										</fmt:message>
+									</p>
+									<img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/>
+									<p>
+										<a class="post.resource.firefox.installButton" href="${project.addons.chrome.url}">
+											<fmt:message key="bookmarklet.buttonTextFirefox"/>
+										</a>
+									</p>
+								</span>
+								<span id="post.resource.addons.installInfo.firefox" class="initiallyHidden">
+									<p>
+										<h4>
+											<fmt:message key="bookmarklet.titleFirefox"/>
+										</h4>
+										<fmt:message key="bookmarklet.sidebarNotice">
+											<fmt:param value="${project.name}"/>
+										</fmt:message>
+									</p>
+									<img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/>
+									<p>
+										<a class="post.resource.firefox.installButton" href="${project.addons.firefox.url}">
+											<fmt:message key="bookmarklet.buttonTextFirefox"/>
+										</a>
+									</p>
+								</span>
 								<p><fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;<fmt:message key="bookmarklet.legacyNotice.further2"/></p>
 							</div>
 						</li>
@@ -88,17 +117,17 @@
 				$(document).ready(function(){
 					
 					var browser = "";
-					if((browser=installBookmarkletButton(
+					if((browser=displayBookmarkletButton(
 						{
 							buttonElementId:"post\\.resource\\.bookmarklet\\.installButton",
 							textElementId:"post\\.resource\\.bookmarklet\\.text"
 						}
 					))) {
 							var browsername = browser.name.toLowerCase();
-							var availablePlugins = "${properties['project.plugin.available']}";
+							var availablePlugins = "${properties['project.addons.available']}";
 							if (availablePlugins.indexOf(browsername) >= 0) {
-								$("#post\\.resource\\.bookmarklet\\.screenshot").attr("src", "/resources/image/bookmarklet_screenshot_"+browsername+"_${fn:toLowerCase(exampleString)}.png").show();
-								$("#post\\.resource\\.bookmarklet\\.installInfo").show();
+								$("#post\\.resource\\.addons\\.installInfo").show();
+								$("#post\\.resource\\.addons\\.installInfo."+browsername).show();
 								$("#post\\.resource\\.bookmarklet\\.howto").hide();
 							}
 					}
