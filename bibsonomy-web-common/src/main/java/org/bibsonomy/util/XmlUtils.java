@@ -26,9 +26,12 @@ package org.bibsonomy.util;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -41,6 +44,23 @@ import org.w3c.tidy.Tidy;
  * @version $Id$
  */
 public class XmlUtils {
+	/**
+	 * removes all invalid xml chars from the string
+	 * @param s the string to be cleaned
+	 * @return the cleaned string
+	 */
+	public static String removeInvalidXmlChars(final String s) {
+		final StringWriter stringWriter = new StringWriter();
+		try {
+			final Writer writer = new FilterInvalidXMLCharsWriter(stringWriter);
+			writer.write(s);
+			writer.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return stringWriter.toString();
+	}
+	
 	/**
 	 * Parses a page and returns the DOM
 	 * 
