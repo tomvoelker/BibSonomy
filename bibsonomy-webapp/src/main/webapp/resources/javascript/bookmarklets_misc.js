@@ -47,6 +47,5 @@ var BookmarkletButton = {
 				return null;
 
 			return browser;
-			};
+			}
 		}
-}
