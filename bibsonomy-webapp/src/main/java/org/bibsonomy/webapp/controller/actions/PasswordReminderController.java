@@ -33,6 +33,7 @@ import org.bibsonomy.webapp.validation.PasswordReminderValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
@@ -59,7 +60,9 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	
 	@Override
 	public View workOn(final PasswordReminderCommand command) {
-
+		if (command.getContext().isUserLoggedIn()) {
+			throw new AccessDeniedException("only not loggedin users can request a reminder password");
+		}
 		/*
 		 * check if internal authentication is supported
 		 */
@@ -108,17 +111,12 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * note. we have to check here also the deleted role because we use
 		 * a admin logic to get the user details
 		 */
-		if (existingUser == null || existingUser.getName() == null || Role.DELETED.equals(existingUser.getRole()) || Role.LIMITED.equals(existingUser.getRole())) {
+		if (existingUser == null || existingUser.getName() == null || Role.DELETED.equals(existingUser.getRole()) || Role.LIMITED.equals(existingUser.getRole()) || !user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
 			/*
 			 * user does not exist or has been deleted (we should not sent 
 			 * reminders to deleted users!)
 			 */
-			errors.rejectValue("userName", "error.field.valid.user.name");
-		} else if (!user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
-			/*
-			 * user exists but email address does not match
-			 */
-			errors.rejectValue("userEmail", "error.field.valid.user.email");
+			errors.rejectValue("userName", "error.passReminder.invalidUsernameOrMail");
 		} else if (present(existingUser.getLdapId())) {
 			/*
 			 * user exists and e-mail-address is fine but user has an LDAP ID
