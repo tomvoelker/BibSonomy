@@ -86,16 +86,31 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	
 	@Override
 	public File getProfilePictureForUser(String loggedinUser, String username) {
-		if (!this.pictureVisible(username, loggedinUser)) {
+		File file = getVisibleProfilePictureForUser(loggedinUser, username);
+		
+		if (file == null)
 			return this.getDefaultFile();
+		
+		//else:
+		file.setReadOnly(); // never modify files outside the logic!
+		return file;
+	}
+	
+	private File getVisibleProfilePictureForUser(String loggedinUser, String username) {
+		if (!this.pictureVisible(username, loggedinUser)) {
+			return null;
 		}
 		
 		final File file = this.getProfilePicture(username);
 		if (!file.exists()) {
-			return this.getDefaultFile();
+			return null;
 		}
-		file.setReadOnly(); // never modify files outside the logic!
+		
 		return file;
+	}
+	
+	public boolean hasVisibleProfilePicture(String loggedinUser, String username) {
+		return getVisibleProfilePictureForUser(loggedinUser, username) != null;
 	}
 
 	@Override

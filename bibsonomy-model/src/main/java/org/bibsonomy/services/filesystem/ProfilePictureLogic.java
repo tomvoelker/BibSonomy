@@ -50,6 +50,15 @@ public interface ProfilePictureLogic {
 	public void saveProfilePictureForUser(final String username, final UploadedFile pictureFile) throws Exception;
 	
 	/**
+	 * Returns a boolean if the requested profile picture is visible for the
+	 * loggedinUser.
+	 * @param loggedinUser the logged in user.
+	 * @param username the username whose profile picture was requested
+	 * @return true, if the profile pic is visible for loggedinUser
+	 */
+	public boolean hasVisibleProfilePicture(String loggedinUser, String username);
+	
+	/**
 	 * deletes the profile picture of user (identified by username)
 	 * @param username
 	 */
