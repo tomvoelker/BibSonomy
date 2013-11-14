@@ -16,10 +16,14 @@ import org.junit.Test;
  */
 public class FilterInvalidXMLCharsReaderTest {
 
+	/**
+	 * tests {@link FilterInvalidXMLCharsReader#read()}
+	 * @throws IOException
+	 */
 	@Test
 	public void testRead() throws IOException {
 		final BufferedReader reader = new BufferedReader(new FilterInvalidXMLCharsReader(new StringReader("This is \uFFFE\uFFFF my test string")));
 		final String result = StringUtils.getStringFromReader(reader);
-		assertEquals("This is  my test string", result);
+		assertEquals("This is  my test string", result.trim());
 	}
 }
