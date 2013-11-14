@@ -139,4 +139,9 @@ public class ServerFileLogic implements FileLogic {
 	public File getTempFile(String name) {
 		return this.tempFileLogic.getTempFile(name);
 	}
+
+	@Override
+	public boolean hasVisibleProfilePicture(String loggedinUser, String username) {
+		return profileFileLogic.hasVisibleProfilePicture(loggedinUser, username);
+	}
 }

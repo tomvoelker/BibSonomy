@@ -93,4 +93,9 @@ public class DummyFileLogic implements FileLogic {
 		return null;
 	}
 
+	@Override
+	public boolean hasVisibleProfilePicture(String loggedinUser, String username) {
+		return false;
+	}
+
 }
