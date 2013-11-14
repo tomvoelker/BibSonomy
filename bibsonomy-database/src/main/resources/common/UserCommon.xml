@@ -36,6 +36,7 @@
 		<result property="reminderPasswordRequestDate" column="tmp_request_date"  javaType="date" />
 		<result property="ldapId" 			column="ldapUserId"		javaType="string" />
 		<result property="openID" 			column="openID"  		javaType="string" />
+		<result property="gravatarAddress"	column="gravatarAddress" javaType="string" />
 	</resultMap>
 	
 	<resultMap id="samlRemoteUserId" class="samlRemoteUserId">
@@ -83,7 +84,8 @@
 		user_name, user_realname,
 		user_password, user_password_salt, api_key, openurl, tmp_password, tmp_request_date,
 		role, ip_address, reg_date, spammer, updated_by, updated_at, to_classify, 
-		user_email, user_homepage, birthday, gender, hobbies, interests, place, profession, institution
+		user_email, user_homepage, birthday, gender, hobbies, interests, place, profession, institution,
+		gravatarAddress
 	</sql>
 	
 	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
@@ -107,7 +109,7 @@
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
-		#settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#
+		#settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#, #gravatarAddress#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
@@ -121,7 +123,8 @@
 		institution = #institution#, 
 		interests = #interests#,
 		hobbies = #hobbies#,
-		place = #place#
+		place = #place#,
+		gravatarAddress = #gravatarAddress#
 	</sql>
 	
 	<sql id="updateUserSettingsAttributes">

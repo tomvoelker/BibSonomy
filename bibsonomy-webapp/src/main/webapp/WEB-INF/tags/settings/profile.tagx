@@ -119,6 +119,13 @@
 	    	  		<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
 					<img style="clear:both;" src="/picture/user/${mtl:encodeURI(user.name)}"/>
 				</div>
+				
+				<div class="fsRow">
+					<!-- CUTTD: message, help, input-value -->
+					<!--<form:label cssClass="fsLabel" path="user.gravatarAddress"><fmt:message key="settings.picture.gravatar.gravatarAddress" /></form:label>-->
+					<!--<buttons:help message="settings.picture.gravatar.help"/>-->
+					<bform:input path="user.gravatarAddress"/>
+				</div>
 	    	  
 	    	  	<div class="fsRow">
 		        	<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.file"/></form:label>

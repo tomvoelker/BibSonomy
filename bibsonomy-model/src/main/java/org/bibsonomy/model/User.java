@@ -34,9 +34,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.Basket;
+import org.bibsonomy.model.Inbox;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
 import org.bibsonomy.util.UrlUtils;
+
+
 
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
@@ -127,6 +134,12 @@ public class User implements Serializable {
 	 * TODO: should be of type url
 	 */
 	private String openURL;
+	
+	/**
+	 * User's Gravatar email address representing his or her picture and profile.</br>
+	 * (cf. {@link https://de.gravatar.com/site/implement/})
+	 */
+	private String gravatarAddress;
 
 	/* ****************************** system properties ****************************** */
 	/**
@@ -235,6 +248,7 @@ public class User implements Serializable {
 	 */
 	public User() {
 		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
+		gravatarAddress = ""; //TODO: for debug only. remove once load from db is implemented.
 	}
 
 	/**
@@ -552,6 +566,28 @@ public class User implements Serializable {
 	 */
 	public void setOpenURL(final String openURL) {
 		this.openURL = openURL;
+	}
+	
+	/**
+	 * Returns user's Gravatar email address.<br/>
+	 * (cf. {@link https://de.gravatar.com/site/implement/})
+	 * 
+	 * @return Gravatar address as String
+	 */
+	public String getGravatarAddress ()
+	{
+		return gravatarAddress;
+	}
+	
+	/**
+	 * Sets user's Gravatar email address.<br/>
+	 * (cf. {@link https://de.gravatar.com/site/implement/})
+	 * 
+	 * @param address :	Gravatar address as String
+	 */
+	public void setGravatarAddress ( final String address )
+	{
+		gravatarAddress = address;
 	}
 	
 	/**
