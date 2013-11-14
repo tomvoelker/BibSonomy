@@ -83,7 +83,7 @@
 							<insertNewLine>true</insertNewLine>
 							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
 							<includes>
-								<include>${project.build.webapp.resourcedir}/jquery/jquery-1.8.3.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>

@@ -13,7 +13,7 @@ function includeJavaScript(jsFile) {
 	document.write('<script type="text/javascript" src="' + jsFile + '"></scr' + 'ipt>');
 }
 
-includeJavaScript("/resources/jquery/jquery-1.8.3.js");
+includeJavaScript("/resources/jquery/jquery.js");
 includeJavaScript("/resources/javascript/functions.js");
 includeJavaScript("/resources/javascript/actions/clipboard.js");
 includeJavaScript("/resources/javascript/ajaxUtils.js");
