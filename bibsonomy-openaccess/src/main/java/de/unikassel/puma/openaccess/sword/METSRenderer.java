@@ -35,7 +35,6 @@ import de.unikassel.puma.openaccess.sword.renderer.xml.PumaPost;
 import de.unikassel.puma.openaccess.sword.renderer.xml.PumaUserType;
 
 /**
- * 
  * @author: sven
  * @version $Id$
  */
@@ -94,21 +93,26 @@ public class METSRenderer extends JAXBRenderer {
 			final BibTex bibtexResource = (BibTex) resource;
 			bibtexResource.parseMiscField();
 			if (null != myPost.getBibtex()) {
-				if (null != bibtexResource.getMiscField("isbn")) {
-					myPost.setISBN(bibtexResource.getMiscField("isbn"));
-				} 
-				if (null != bibtexResource.getMiscField("issn")) {
-					myPost.setISSN(bibtexResource.getMiscField("issn"));
-				} 
-				if (null != bibtexResource.getMiscField("doi")) {
-					myPost.setDOI(bibtexResource.getMiscField("doi"));
-				} 
-				if (null != bibtexResource.getMiscField("location")) {
-					myPost.setLocation(bibtexResource.getMiscField("location"));
-				} 
-				if (null != bibtexResource.getMiscField("dcc")) {
-					myPost.setDCC(bibtexResource.getMiscField("dcc"));
-				} 
+				final String isbn = bibtexResource.getMiscField("isbn");
+				if (present(isbn)) {
+					myPost.setISBN(isbn);
+				}
+				final String issn = bibtexResource.getMiscField("issn");
+				if (present(issn)) {
+					myPost.setISSN(issn);
+				}
+				final String doi = bibtexResource.getMiscField("doi");
+				if (present(doi)) {
+					myPost.setDOI(doi);
+				}
+				final String location = bibtexResource.getMiscField("location");
+				if (present(location)) {
+					myPost.setLocation(location);
+				}
+				final String dcc = bibtexResource.getMiscField("dcc");
+				if (present(dcc)) {
+					myPost.setDCC(dcc);
+				}
 			}
 
 			if (present(pumaData.getAuthor())) {
@@ -143,7 +147,7 @@ public class METSRenderer extends JAXBRenderer {
 				}
 			}
 
-			if (null != pumaData.getClassification()) {					
+			if (null != pumaData.getClassification()) {
 				for (final Entry<String, List<String>> entry : pumaData.getClassification().entrySet()) {
 					for (final String listValue : entry.getValue() ) {
 						final PumaPost.Classification pptClassification = new PumaPost.Classification();
@@ -235,8 +239,8 @@ public class METSRenderer extends JAXBRenderer {
 				throw new BadRequestOrResponseException(
 						"Error while parsing XML (Line " + ex.getLineNumber() + ", Column "
 						+ ex.getColumnNumber() + ": " + ex.getMessage()
-				);				
-			}						
+				);
+			}
 			throw new InternServerException(e.toString());
 		}
 	}

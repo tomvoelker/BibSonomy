@@ -1,6 +1,9 @@
 package de.unikassel.puma.openaccess.sword;
 
-import java.io.StringWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -15,7 +18,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.util.XmlUtils;
+import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
 
 import de.unikassel.puma.openaccess.sword.renderer.xml.DivType;
 import de.unikassel.puma.openaccess.sword.renderer.xml.DivType.Fptr;
@@ -105,9 +108,9 @@ public class MetsBibTexMLGenerator {
 		this.post.getPost().setResource(pumaData.getPost().getResource());
 		this.post.getPost().setTags(pumaData.getPost().getTags());
 		this.post.getPost().setUser(pumaData.getPost().getUser());
-
+		
 		this.post.setClassification(pumaData.getClassification());
-
+		
 		this.post.setAuthor(pumaData.getAuthor());
 		this.post.setExaminstitution(pumaData.getExaminstitution());
 		this.post.setAdditionaltitle(pumaData.getAdditionaltitle());
@@ -117,13 +120,13 @@ public class MetsBibTexMLGenerator {
 		this.post.setAdditionaltitle(pumaData.getAdditionaltitle());
 	}
 
-	public String generateMets() {
+	public void writeMets(OutputStream outputStream) throws IOException {
 		/*
-		 * Helfer
+		 * helper
 		 */
-		final StringWriter sw = new StringWriter();
+		final Writer writer = new FilterInvalidXMLCharsWriter(new OutputStreamWriter(outputStream, "UTF-8"));
 		final ObjectFactory objectFactory = new ObjectFactory();
-
+		
 		/*
 		 * METS
 		 */
@@ -132,14 +135,12 @@ public class MetsBibTexMLGenerator {
 		mets.setOBJID("sword-mets");
 		mets.setLABEL("DSpace SWORD Item");
 		mets.setPROFILE("DSpace METS SIP Profile 1.0");
-
-
+		
 		/*
 		 * METS Hdr
 		 */
 		final MetsHdr metsHdr = objectFactory.createMetsTypeMetsHdr();
-
-
+		
 		final GregorianCalendar c = new GregorianCalendar();
 		XMLGregorianCalendar currentDate;
 		try {
@@ -148,105 +149,98 @@ public class MetsBibTexMLGenerator {
 		} catch (final DatatypeConfigurationException e) {
 			log.warn("DatatypeConfigurationException");
 		}
-
+		
 		mets.setMetsHdr(metsHdr);
-
+		
 		final List<Agent> metsHdrAgentList = metsHdr.getAgent();
 		final Agent metsHdrAgent = new Agent();
 		metsHdrAgent.setROLE("CUSTODIAN");
 		metsHdrAgent.setTYPE("ORGANIZATION");
 		metsHdrAgent.setName("PUMA");
-
+		
 		metsHdrAgentList.add(metsHdrAgent);
-
+		
 		final List<MdSecType> dmdSec = mets.getDmdSec();
-
+		
 		final MdSecType mdSec = objectFactory.createMdSecType();
 		mdSec.setID("sword-mets-dmd-1");
 		mdSec.setGROUPID("sword-mets-dmd-1_group-1");
 		dmdSec.add(mdSec);
-
+		
 		final MdWrap mdWrap = objectFactory.createMdSecTypeMdWrap();
 		mdWrap.setMIMETYPE("text/xml");
 		mdWrap.setMDTYPE("OTHER");
 		mdWrap.setOTHERMDTYPE("BIBTEXML");
 		mdSec.setMdWrap(mdWrap);
-
+		
 		final XmlData xmlData = objectFactory.createMdSecTypeMdWrapXmlData();
 		mdWrap.setXmlData(xmlData);
-
+		
 		/*
 		 * METS FileSec
 		 */
 		final FileSec metsFileSec = objectFactory.createMetsTypeFileSec();
 		mets.setFileSec(metsFileSec);
-
+		
 		final FileGrp metsFileSecFileGrp = objectFactory.createMetsTypeFileSecFileGrp();
 		final List<FileType> fileItemList = new ArrayList<FileType>(); 
-
+		
 		metsFileSecFileGrp.setID("sword-mets-fgrp-1");
 		metsFileSecFileGrp.setUSE("CONTENT");
 		int filenumber = 0;
 		for (final Document doc : this.post.getPost().getResource().getDocuments()) {
 			final FileType fileItem = new FileType();
-			//			fileItem.setGROUPID("sword-mets-fgid-0");
+			// fileItem.setGROUPID("sword-mets-fgid-0");
 			fileItem.setID("sword-mets-file-".concat(String.valueOf(filenumber)));
 			// TODO: if file is not pdf, set MIMEtype to something like binary data
 			fileItem.setMIMETYPE("application/pdf");
-
+			
 			final FLocat fileLocat = new FLocat();
 			fileLocat.setLOCTYPE("URL");
 			fileLocat.setHref(doc.getFileName());
 			fileItem.getFLocat().add(fileLocat);
-
+			
 			// add fileitem to filepointerlist for struct section
 			fileItemList.add(fileItem);
-
+			
 			metsFileSecFileGrp.getFile().add(fileItem);
 			filenumber++;
 		}
-
+		
 		metsFileSec.getFileGrp().add(metsFileSecFileGrp);
-
+		
 		/*
 		 * METS structMap
 		 */
 		final StructMapType structMap = new StructMapType();
-
+		
 		structMap.setID("sword-mets-struct-1");
 		structMap.setLABEL("structure");
 		structMap.setTYPE("LOGICAL");
-
+		
 		final DivType div1 = new DivType();
 		div1.setID("sword-mets-div-1");
 		div1.getDMDID().add(mdSec);   // TODO check if msSec is correct, or this must be a string?
 		div1.setTYPE("SWORD Object");
-
+		
 		final DivType div2 = new DivType();
 		div2.setID("sword-mets-div-2");
 		div2.setTYPE("File");
-
+		
 		for (final FileType fItem : fileItemList) {
 			final Fptr fptr = new Fptr();
 			fptr.setFILEID(fItem);
 			div2.getFptr().add(fptr);
-		}	
-
+		}
+		
 		div1.getDiv().add(div2);
 		structMap.setDiv(div1);
 		mets.getStructMap().add(structMap);
-
-		/*
-		 * unser Post
-		 */
+		
+		/* our post */
 		final PumaPost pumaPost = this.xmlRenderer.createPumaPost(this.post, this.user);
-
 		xmlData.getAny().add(pumaPost);
-
-		this.xmlRenderer.serializeMets(sw, mets);
-
-		log.debug(sw.toString());
-		return XmlUtils.removeXmlControlCharacters(sw.toString());
-	}	
+		this.xmlRenderer.serializeMets(writer, mets);
+	}
 
 }

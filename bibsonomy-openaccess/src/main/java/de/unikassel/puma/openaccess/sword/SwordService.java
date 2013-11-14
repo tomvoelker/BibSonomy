@@ -182,28 +182,27 @@ public class SwordService {
 					zipOutputStream.closeEntry();
 									
 					// close the current file input stream
-					in.close();			
+					in.close();
 				}
 
 				// write meta data into zip archive
 				final ZipEntry zipEntry = new ZipEntry("mets.xml");
-				zipOutputStream.putNextEntry(zipEntry);				
+				zipOutputStream.putNextEntry(zipEntry);
 
 				// create XML-Document
-						
+				
 				final MetsBibTexMLGenerator metsBibTexMLGenerator = new MetsBibTexMLGenerator(this.urlRenderer);
 				metsBibTexMLGenerator.setUser(user);
 				metsBibTexMLGenerator.setFilenameList(fileList);
 				
 				metsBibTexMLGenerator.setMetadata((PumaData<BibTex>) pumaData);
-				zipOutputStream.write(metsBibTexMLGenerator.generateMets().getBytes("UTF-8"));
-				
+				metsBibTexMLGenerator.writeMets(zipOutputStream);
 				zipOutputStream.closeEntry();
-							
+				
 				// close zip archive  
 				zipOutputStream.close();
-										
-				log.debug("saved to " + swordZipFile.getPath());		
+				
+				log.debug("saved to " + swordZipFile.getPath());
 			} catch (final MalformedURLException e) {
 				log.info("MalformedURLException! " + e.getMessage());
 			} catch (final IOException e) {
