@@ -708,4 +708,10 @@ public class RestLogic implements LogicInterface {
 	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
 		throw new UnsupportedOperationException(); // TODO: implement me
 	}
+	
+	@Override
+	public void deleteOpenID(String userName) {
+		throw new UnsupportedOperationException();
+		
+	}
 }
