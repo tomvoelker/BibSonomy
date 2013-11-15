@@ -16,8 +16,8 @@
 	<script type="text/javascript" src="/resources/javascript/bookmarklets_misc.js"><!-- keep me !--></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			var result = displayBookmarkletButton();
-			if ((result != null) {
+			var result = BookmarkletButton.getButtonForAgent();
+			if (result != null) {
 				var browsername = result.name.toLowerCase();
 				var availableAddons = "${properties['project.addons.available']}";
 				if (availableAddons.indexOf(browsername) >= 0) {
@@ -53,7 +53,7 @@
 					</h4>
 					<ul>
 						<a href="${project.addons.chrome.url}" class="post.resource.chrome.installButton">
-							<span></span
+							<span></span>
 						</a>
 					</ul>
 				</li>
@@ -63,7 +63,7 @@
 					</h4>
 					<ul>
 						<a href="${project.addons.firefox.url}" class="post.resource.firefox.installButton">
-							<span></span
+							<span></span>
 						</a>
 					</ul>
 				</li>
