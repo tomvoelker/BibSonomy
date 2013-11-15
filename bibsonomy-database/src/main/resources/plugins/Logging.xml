@@ -96,12 +96,12 @@
 								openurl, reg_date, ip_address, tmp_password, tmp_request_date, tagbox_style, 
 								tagbox_sort, tagbox_minfreq, tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, spammer_suggest,
 								birthday, gender, profession, institution, interests, hobbies, place,  profilegroup, api_key, 
-								updated_by, updated_at, lang, role, timestamp, to_classify, show_bookmark, show_bibtex, simple_interface)
+								updated_by, updated_at, lang, role, timestamp, to_classify, show_bookmark, show_bibtex, simple_interface, gravatarAddress
 		(SELECT user_name, user_email, user_password, user_password_salt, user_homepage, user_realname, spammer,
 				openurl, reg_date, ip_address, tmp_password, tmp_request_date, tagbox_style,
 				tagbox_sort, tagbox_minfreq, tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, spammer_suggest,
 				birthday, gender, profession, institution, interests, hobbies, place, profilegroup, api_key, 
-				updated_by, updated_at, lang, role, UNIX_TIMESTAMP(NOW()), to_classify, show_bookmark, show_bibtex, simple_interface
+				updated_by, updated_at, lang, role, UNIX_TIMESTAMP(NOW()), to_classify, show_bookmark, show_bibtex, simple_interface, gravatarAddress
 		 FROM user WHERE user_name = #userName#) 
 	</insert>
 	

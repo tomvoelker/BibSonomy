@@ -1,0 +1,4 @@
+ALTER TABLE `user` ADD COLUMN `gravatarAddress` VARCHAR(255) NULL DEFAULT NULL;
+ALTER TABLE `pendingUser` ADD COLUMN `gravatarAddress` VARCHAR(255) NULL DEFAULT NULL;
+ALTER TABLE `log_user` ADD COLUMN  `gravatarAddress` varchar(255) NULL DEFAULT NULL;
+
