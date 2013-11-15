@@ -2865,4 +2865,16 @@ public class DBLogic implements LogicInterface {
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 		}
 	}
+	
+	@Override
+	public void deleteOpenID(final String userName){
+		final DBSession session = openSession();
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+		try{
+			this.userDBManager.deleteOpenIDUser(userName, session);
+		}
+		finally {
+			session.close();
+		}
+	}
 }

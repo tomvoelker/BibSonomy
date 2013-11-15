@@ -529,7 +529,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param user user authenticating via OpenID
 	 * @param session
 	 */
-	private void deleteOpenIDUser(final String userName, final DBSession session) {
+	public void deleteOpenIDUser(final String userName, final DBSession session) {
 		this.delete("deleteOpenIDUser", userName, session);
 	}
 	
