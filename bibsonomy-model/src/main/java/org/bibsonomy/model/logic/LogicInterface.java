@@ -682,4 +682,9 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
 	
+	/**
+	 * Delete OpenID-attribute from an user
+	 * @param userName name of the user
+	 */
+	public void deleteOpenID(final String userName);
 }
