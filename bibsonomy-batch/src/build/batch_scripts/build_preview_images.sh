@@ -1,15 +1,32 @@
 #!/bin/bash
 
 #
-# builds for each uploaded file (if possible) a preview image
+# Builds for each uploaded file (if possible) a preview image. Only
+# previews for files that were added after the last run of the script
+# are created.
+# To create missing files for all documents or for documents created
+# after a certain date, perform the following command:
+# 
+#   touch --date "2013-08-20" bibsonomy_docs/timestamp_preview
 #
+# with an adapted date and (possibly) file path.
+# 
 # parameters:
 # 1) folder with the documents
 # 2) task \in {"force", "delete"}
+#    - Where "force" means that a file is always created, regardless, 
+#      if it already exists. Note that the time constraint is still 
+#      followed, however! This means, only documents created after the
+#      last run are considered. 
+#    - "delete" is not yet implemented.
+#    - Providing another task does the regular job of the script: just
+#      update what needs to be updated.
 #
 # Version: $Id$
 #
 # Changes:
+# 2013-11-15 (rja)
+# - added documentation
 # 2012-01-30 (rja)
 # - changed size of SMALL previews to 80x80
 # 2011-12-08 (rja)
@@ -26,12 +43,12 @@
 # 2011-11-24 (rja)
 # - initial version
 # 
-# TODO: merge thumbnail generation into one method
-# 
-# TODO: improve file name pattern for "find" (five times [0-9a-f] at
-# the end ensures that no preview images match - currently)
-#
-# TODO: refactor "find" operation into one line
+# - TODO: merge thumbnail generation into one method
+# - TODO: improve file name pattern for "find" (five times [0-9a-f] at
+#   the end ensures that no preview images match - currently)
+# - TODO: refactor "find" operation into one line
+# - TODO: improve command line parameters: provide one for regular operation 
+#         and one to select the date after that everything shall be generated
 
 if [ $# -lt 2 ]; then
     echo "usage:"
