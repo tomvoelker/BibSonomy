@@ -104,12 +104,12 @@
 		<isNotNull property="reminderPassword">#reminderPassword#,#reminderPasswordRequestDate#,</isNotNull>
 		<isNull property="reminderPassword">NULL,DEFAULT(tmp_request_date),</isNull>
 		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, 
-		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#,
+		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#, #gravatarAddress#,
 		#settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#, 
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
-		#settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#, #gravatarAddress#
+		#settings.showBookmark#, #settings.showBibtex#, #settings.simpleInterface#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
