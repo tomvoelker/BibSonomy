@@ -123,12 +123,6 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 			 * and thus shall not use the reminder
 			 */
 			errors.reject("error.passReminder.ldap", "You are registered using LDAP and thus don't have a password we could send you a reminder for.");
-		} else if (present(existingUser.getOpenID())) {
-			/*
-			 * user exists and e-mail-address is fine but user has an OpenID
-			 * and thus shall not use the reminder
-			 */
-			errors.reject("error.passReminder.openid", "You are registered using OpenID and thus don't have a password we could send you a reminder for.");
 		} else if (existingUser.getRemoteUserIds().size() > 0) {
 			/*
 			 * user exists and e-mail-address is fine but user has a remoteId
@@ -186,6 +180,20 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * need to create a new pass and put it into the DB and send it per mail.
 		 */
 
+		
+		if (present(existingUser.getOpenID())){
+			if(!command.isAcknowledgeOpenIDDeletion()){
+				errors.rejectValue("acknowledgeOpenIDDeletion", "error.field.value.acknowledge");
+			}
+			if(errors.hasErrors()) {
+				command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
+				return Views.PASSWORD_REMINDER;
+			}
+		
+		//delete OpenID attribute
+			adminLogic.deleteOpenID(existingUser.getName()); 
+		}
+			
 		/*
 		 * create the random pw and set it to the user object
 		 */
@@ -198,7 +206,13 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 
 		// update db
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
-
+		
+		/* delete OpenID from db ( funktion schreiben ?)
+		 * view verändern: nachricht, dass openID zugang weg // evtl neues view
+		 * 
+		 */
+		
+		
 		// send mail
 		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, UrlUtils.safeURIEncode(reminderHash));		
 

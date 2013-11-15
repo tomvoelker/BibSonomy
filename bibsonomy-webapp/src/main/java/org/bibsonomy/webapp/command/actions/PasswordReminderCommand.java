@@ -20,6 +20,11 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	private String userName;
 	
 	/**
+	 * checks if User knows that he deletes his OpenID access
+	 */
+	private boolean acknowledgeOpenIDDeletion;
+
+	/**
 	 * The user's email address.
 	 */
 	private String userEmail;
@@ -138,4 +143,17 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 		return success;
 	}
 	
+	/**
+	 * @return if acknowledged
+	 */
+	public boolean isAcknowledgeOpenIDDeletion() {
+		return this.acknowledgeOpenIDDeletion;
+	}
+
+	/**
+	 * @param acknowledgeOpenIDDeletion thing to set
+	 */
+	public void setAcknowledgeOpenIDDeletion(boolean acknowledgeOpenIDDeletion) {
+		this.acknowledgeOpenIDDeletion = acknowledgeOpenIDDeletion;
+	}
 }
