@@ -32,7 +32,7 @@
 		        </c:url>
 		                
 				 SHOW A CONFIRM WINDOW 
-              	 <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" onclick="javascript: return confirmDelete('post');">
+              	 <a class="confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="communitypost">
 	               		<fmt:message key="post.actions.delete"/>
                  </a>
 		      </li>-->

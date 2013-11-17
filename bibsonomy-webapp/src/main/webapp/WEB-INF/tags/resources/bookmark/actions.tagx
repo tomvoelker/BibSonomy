@@ -47,7 +47,7 @@
 	<c:choose>
 		<c:when test="${post.inboxPost}">
 			<!-- INBOX REMOVE -->
-			<!-- Inobx can be viewed only by signed in users -->
+			<!-- Inbox can be viewed only by signed in users -->
 			<c:url var="message_remove" value="/removeMessage">
 				<c:param name="hash" value="${post.resource.intraHash}" />
 				<c:param name="user" value="${post.user.name}" />
@@ -56,7 +56,7 @@
 			</c:url>
 			<fmt:message key="bookmark.actions.removeMessage.title" var="removeTitle" />
 			<a class="item remove deleteconfirm" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-					data-type="post"><!-- Keep Me --></a>
+					data-type="inboxpost"><!-- Keep Me --></a>
 		</c:when>
 		<c:otherwise>
 			<!-- REGULAR POST DELETE -->
@@ -67,8 +67,8 @@
 						<c:param name="resourceHash" value="${post.resource.intraHash}" />
 						<c:param name="ckey" value="${ckey}" />
 					</c:url>
-					<a class="item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"
-							onclick="javascript: return confirmDelete('post');"><!-- Keep Me --></a>
+					<a class="confirmdelete item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"
+							data-type="post"><!-- Keep Me --></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="bookmark.actions.delete.inactive" var="deleteTitle"/>
