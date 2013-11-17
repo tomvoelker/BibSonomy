@@ -1627,4 +1627,10 @@
 		<BibFile>BloodJournalScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bloodjournal.BloodJournalScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_265">
+		<TestDescription>IGIGlobalScraper Test</TestDescription>
+		<URL>http://www.igi-global.com/article/linked-data-story-far/37496</URL>
+		<BibFile>IGIGlobalScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.igiglobal.IGIGlobalScraper</Scraper>
+	</URLTest>
 </test:Tests>
