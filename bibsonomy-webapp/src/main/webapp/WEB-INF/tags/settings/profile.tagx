@@ -1,22 +1,21 @@
 <jsp:root version="2.0"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:jsp="http://java.sun.com/JSP/Page"
-  xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  xmlns:form="http://www.springframework.org/tags/form"
-  xmlns:spring="http://www.springframework.org/tags"
-  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-  >
-  
-  <jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
-  
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
+	
+	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+
 	<!-- ############################################# profile tab ############################################# -->	
 	<c:set var="user" value="${command.user}" />
- 
+	
 	<p>
 		<fmt:message key="settings.profileInfo">
 			<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
@@ -30,22 +29,22 @@
 		| profile, contact, about 
 		| 
 	 	+-->
-   	<fieldset class="fsOuter">
+	<fieldset class="fsOuter">
 
-		<form:form name="account" method="post" action="/updateUserProfile">		
+		<form:form name="account" method="post" action="/updateUserProfile">
 	
 		<!--+
 			| username, realname, gender, birthday, place, profile privacy level
 			+-->
-    	<bform:fieldset maximized="${true}" legendKey="settings.generalInformation">
-    		<jsp:attribute name="content">
-			    <div class="fsRow">
+		<bform:fieldset maximized="${true}" legendKey="settings.generalInformation">
+			<jsp:attribute name="content">
+				<div class="fsRow">
 					<form:label cssClass="fsLabel" path="user.name" ><fmt:message key="user.name"/></form:label>
 					<form:input cssClass="fsInput fsSmall" path="user.name" tabindex="2" disabled="true"/>
-	  		    </div>
-	  		    <bform:input path="user.realname" noHelp="${true}" small="${true}"/>
-			    <div class="fsRow">
-			      	<form:label cssClass="fsLabel" path="user.gender"><fmt:message key="user.gender"/></form:label>
+				</div>
+				<bform:input path="user.realname" noHelp="${true}" small="${true}"/>
+				<div class="fsRow">
+					<form:label cssClass="fsLabel" path="user.gender"><fmt:message key="user.gender"/></form:label>
 					<fmt:message var="male" key="settings.male"/>
 					<fmt:message var="female" key="settings.female"/>
 					<form:select cssClass="fsInput fsSmall" path="user.gender">
@@ -53,16 +52,16 @@
 						<form:option label="${female}" value="f"/>
 					</form:select>
 					<div class="dissError"><form:errors path="user.gender" /></div>
-			    </div>
-	 		    <div class="fsRow">
+				</div>
+				<div class="fsRow">
 					<form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="user.birthday"/></form:label>
 					<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
 					<input class="fsInput fsSmall" name="user.birthday" id="user.birthday" value="${userBirthday}" type="text"/>
 					<div class="dissError"><form:errors path="user.birthday" /></div>		      
 					<form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
-			    </div>
-	  		    <bform:input path="user.place" noHelp="${true}" small="${true}"/>
-			    <div class="fsRow">
+				</div>
+				<bform:input path="user.place" noHelp="${true}" small="${true}"/>
+				<div class="fsRow">
 					<form:label cssClass="fsLabel" path="user.settings.profilePrivlevel"><fmt:message key="settings.profileViewableFor"/></form:label>
 					<form:select cssClass="fsInput fsSmall" path="user.settings.profilePrivlevel">
 						<form:option label="public" value="PUBLIC"/>
@@ -77,12 +76,12 @@
 		<!--+ 
 		 	| Contact (email, homepage, OpenURL)
 		 	+-->
-    	<bform:fieldset maximized="${true}" legendKey="settings.contact">
-    		<jsp:attribute name="content">
-    			<bform:input path="user.email" required="${true}" />
-    			<bform:input path="user.homepage"/>
-    			<bform:input path="user.openURL" helpPage="/OpenURL"/>
-		    </jsp:attribute>
+		<bform:fieldset maximized="${true}" legendKey="settings.contact">
+			<jsp:attribute name="content">
+				<bform:input path="user.email" required="${true}" />
+				<bform:input path="user.homepage"/>
+				<bform:input path="user.openURL" helpPage="/OpenURL"/>
+			</jsp:attribute>
 		</bform:fieldset>
 
 		<!--+ 
@@ -97,53 +96,43 @@
 			</jsp:attribute>
 		</bform:fieldset>
 
-        <input type="hidden" name="action" value="update"/>
-        <input type="hidden" name="selTab" value="0"/>
+		<input type="hidden" name="action" value="update"/>
+		<input type="hidden" name="selTab" value="0"/>
 		<bform:submit messageKey="settings.saveChanges"/>
-        
-      	</form:form>
-      
+		
+		</form:form>
 	</fieldset> 
-      
-    
-    <fieldset class="fsOuter" style="margin-top: 2em">  
-      
+	
+	<fieldset class="fsOuter" style="margin-top: 2em">
 		<!--+
-    	  	| photo 
-      		+-->
+			| photo 
+			+-->
 		<form:form id="settingImportForm" action="/picture/user/${mtl:encodeURI(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">
-      	<bform:fieldset maximized="${true}" legendKey="settings.picture.header">
-      		<jsp:attribute name="content">
+		<bform:fieldset maximized="${true}" legendKey="settings.picture.header">
+			<jsp:attribute name="content">
 			
-	    	  	<div class ="fsRow">
-	    	  		<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
+				<div class ="fsRow">
+					<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
 					<img style="clear:both;" src="/picture/user/${mtl:encodeURI(user.name)}"/>
 				</div>
 				
 				<div class="fsRow">
-					<!-- CUTTD: message, help, input-value -->
-					<!--<form:label cssClass="fsLabel" path="user.gravatarAddress"><fmt:message key="settings.picture.gravatar.gravatarAddress" /></form:label>-->
-					<!--<buttons:help message="settings.picture.gravatar.help"/>-->
 					<bform:input path="user.gravatarAddress"/>
 				</div>
-	    	  
-	    	  	<div class="fsRow">
-		        	<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.file"/></form:label>
-		        	<buttons:help message="settings.picture.help"/>
-		        	<input type="file" name="file" class="fsInput fsSmall"/>
-			    </div>
 				
+				<div class="fsRow">
+					<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.file"/></form:label>
+					<buttons:help message="settings.picture.help"/>
+					<input type="file" name="file" class="fsInput fsSmall"/>
+				</div>
 			</jsp:attribute>
-		</bform:fieldset>		    
+		</bform:fieldset>
 
 		<div class="fsRow">
-			<fmt:message var="upload" key = "settings.picture.upload" />	
-	   		<input type="submit" class="fsSubmit" value="${upload}" />
+			<fmt:message var="upload" key = "settings.picture.upload" />
+			<input type="submit" class="fsSubmit" value="${upload}" />
 		</div>
-
-
 		</form:form>
-		
 	</fieldset>
 
 </jsp:root>
