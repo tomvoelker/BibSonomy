@@ -125,7 +125,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		final NodeList postList = document.getElementsByTagName("post");
 		for (int i = 0; i < postList.getLength(); i++) {
 			final Element resource = (Element)postList.item(i);
-								
+			
 			final Post<Bookmark> post = new Post<Bookmark>();
 			final Bookmark bookmark = new Bookmark();
 			
@@ -165,7 +165,6 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			}
 			post.setResource(bookmark);
 			posts.add(post);
-			
 		}
 		
 		return posts;
@@ -178,26 +177,25 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	public List<Tag> getRelations() throws IOException {
 		final List<Tag> relations = new LinkedList<Tag>();
 		//open a connection to delicious and retrieve a document
-		final Document document;
 		try {
-			document = getDocument();
+			final Document document = getDocument();
+			final NodeList bundles = document.getElementsByTagName("bundle");
+			for(int i = 0; i < bundles.getLength(); i++){
+				final Element resource = (Element)bundles.item(i);
+				try {
+					final Tag tag = new Tag(resource.getAttribute("name"));
+					tag.getSubTags().addAll(TagUtils.parse(resource.getAttribute("tags")));
+					relations.add(tag);
+				} catch (Exception e) {
+					throw new IOException(e);
+				}
+			}
+			return relations;
 		} catch (SAXException e) {
 			return relations;
 		} catch (ParserConfigurationException e) {
 			throw new IOException(e);
 		}
-		final NodeList bundles = document.getElementsByTagName("bundle");
-		for(int i = 0; i < bundles.getLength(); i++){
-			final Element resource = (Element)bundles.item(i);
-			try {
-				final Tag tag = new Tag(resource.getAttribute("name"));
-				tag.getSubTags().addAll(TagUtils.parse(resource.getAttribute("tags")));
-				relations.add(tag);
-			} catch (Exception e) {
-				throw new IOException(e);
-			}
-		}
-		return relations;
 	}
 
 	@Override
@@ -215,12 +213,16 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	 */
 	private Document getDocument() throws IOException, SAXException, ParserConfigurationException {
 		InputStream inputStream = null;
-		try {		
+		try {
 			final URLConnection connection = apiURL.openConnection();
 			connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
 			connection.setRequestProperty(HEADER_AUTHORIZATION, encodeForAuthorization());
 			inputStream = connection.getInputStream();
-			return this.parseInputStream(inputStream);
+			/*
+			 * get the content encoding fall back to UTF-8
+			 */
+			final String encoding = connection.getContentEncoding();
+			return this.parseInputStream(inputStream, present(encoding) ? encoding : "UTF-8");
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
@@ -228,7 +230,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		}
 	}
 	
-	private Document parseInputStream(InputStream inputStream) throws ParserConfigurationException, SAXException, IOException {
+	private Document parseInputStream(final InputStream inputStream, final String encoding) throws ParserConfigurationException, SAXException, IOException {
 		// Get a JAXP parser factory object
 		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		// Tell the factory what kind of parser we want 
@@ -258,8 +260,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		
 		// Finally, use the JAXP parser to parse the file.  
 		// This call returns a Document object. 
-		// FIXME: what if we get ISO-x oder UTF-16? this should be the xmlfile encoding (or at least http-body-encoding
-		final InputSource source = new InputSource(new FilterInvalidXMLCharsReader(new InputStreamReader(inputStream, "UTF-8")));
+		final InputSource source = new InputSource(new FilterInvalidXMLCharsReader(new InputStreamReader(inputStream, encoding)));
 		final Document document = parser.parse(source);
 		return document;
 	}
@@ -270,13 +271,11 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	 * @return Basic + Base64 encoded(username + ':' + password)
 	 */
 	protected String encodeForAuthorization() {
-		String retVal = HEADER_AUTH_BASIC;
 		try {
-			retVal += new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()), UTF8 );
-		} catch (UnsupportedEncodingException e1) {
-			retVal += new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()));
+			return HEADER_AUTH_BASIC + new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()), UTF8 );
+		} catch (UnsupportedEncodingException e) {
+			return HEADER_AUTH_BASIC + new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()));
 		}
-		return retVal;
 	}
 	
 }
