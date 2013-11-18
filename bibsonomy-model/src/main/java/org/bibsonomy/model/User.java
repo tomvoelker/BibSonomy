@@ -34,11 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.model.Basket;
-import org.bibsonomy.model.Inbox;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
 import org.bibsonomy.util.UrlUtils;
@@ -137,7 +132,7 @@ public class User implements Serializable {
 	
 	/**
 	 * User's Gravatar email address representing his or her picture and profile.</br>
-	 * (cf. {@link https://de.gravatar.com/site/implement/})
+	 * (cf. {@link "https://de.gravatar.com/site/implement/"})
 	 */
 	private String gravatarAddress;
 
@@ -570,7 +565,7 @@ public class User implements Serializable {
 	
 	/**
 	 * Returns user's Gravatar email address.<br/>
-	 * (cf. {@link https://de.gravatar.com/site/implement/})
+	 * (cf. {@link "https://de.gravatar.com/site/implement/"})
 	 * 
 	 * @return Gravatar address as String
 	 */
@@ -581,7 +576,7 @@ public class User implements Serializable {
 	
 	/**
 	 * Sets user's Gravatar email address.<br/>
-	 * (cf. {@link https://de.gravatar.com/site/implement/})
+	 * (cf. {@link "https://de.gravatar.com/site/implement/"})
 	 * 
 	 * @param address :	Gravatar address as String
 	 */
