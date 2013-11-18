@@ -45,16 +45,11 @@ import org.bibsonomy.util.WebUtils;
  * @version $Id$
  */
 public class EprintScraper implements Scraper {
-
-	private static final String INFO = "Scraper for repositories which use " + AbstractUrlScraper.href("http://www.eprints.org/", "eprints");
-
-	/*
-	 * pattern identifying eprints pages
-	 */
+	/** pattern identifying eprints pages */
 	private static final Pattern PATTERN = Pattern.compile("<\\s*link(?=.*rel=\"alternate\")(?=.*href=\"(http://.*eprint.*bib)\")(?=.*type=\"text/plain\")(?=.*title=\"BibTeX\").*>");
 
+	private static final String INFO = "Scraper for repositories which use " + AbstractUrlScraper.href("http://www.eprints.org/", "eprints");
 	private static final String SITE_NAME = "EprintsScraper";
-
 	private static final String SITE_URL = "http://www.eprints.org/";
 
 	@Override
@@ -92,7 +87,7 @@ public class EprintScraper implements Scraper {
 					}
 					return false;
 				}
-				return false;				
+				return false;
 			} catch (final IOException ex) {
 				throw new InternalFailureException(ex);
 			}
