@@ -1,10 +1,10 @@
 ==personal data==
 <image style="float:right;padding-right:15px"/>
 ;Name: <name />
-;Ort: <location />
-;Geburtstag: <birthday />
-;Beruf: <profession />
-;Institut: <institution />
+;Location: <location />
+;Birthday: <birthday />
+;Profession: <profession />
+;Institute: <institution />
 
 ==scientific interests==
 <interests />
