@@ -37,7 +37,8 @@ public class SystemPropertiesContextListener implements ServletContextListener {
 	private static final String DEFAULT_PORT = "80";
 	
 
-	public void contextInitialized(final ServletContextEvent event) {		
+	@Override
+	public void contextInitialized(final ServletContextEvent event) {
 		String hostName = DEFAULT_HOST;
 		String hostPort = DEFAULT_PORT;
 		try {
@@ -94,6 +95,7 @@ public class SystemPropertiesContextListener implements ServletContextListener {
 		System.setProperty(SHINDIG_PORT, hostPort);
 	}
 
+	@Override
 	public void contextDestroyed(final ServletContextEvent event) {
 		// noop
 	}
