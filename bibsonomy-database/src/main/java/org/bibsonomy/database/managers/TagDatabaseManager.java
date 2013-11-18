@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,7 +51,8 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(TagDatabaseManager.class);
-
+	
+	private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s");
 	private static final int MAX_TAG_SIZE = 5;
 
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
@@ -303,7 +306,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 		param.setUserName(user.getName());
 		final List<Post<? extends Resource>> posts = (List<Post<? extends Resource>>) this.queryForList("getTASByTagNames", param, session);
-		if (log.isDebugEnabled() == true) {
+		if (log.isDebugEnabled()) {
 			log.debug("################################################################################");
 			log.debug(posts);
 			log.debug("################################################################################");
@@ -453,9 +456,23 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param tag 
 	 * @param session 
 	 */
-	public void insertTag(final Tag tag, final DBSession session) {
+	protected void insertTag(final Tag tag, final DBSession session) {
+		this.validateTag(tag);
 		// TODO not tested
 		this.insert("insertTag", tag, session);
+	}
+	
+	// TODO: add to some validation layer
+	private void validateTag(Tag tag) {
+		final String tagName = tag.getName();
+		if (!present(tagName)) {
+			throw new IllegalArgumentException("tag name must be set");
+		}
+		
+		final Matcher whitespaceMatcher = WHITESPACE_PATTERN.matcher(tag.getName());
+		if (whitespaceMatcher.find()) {
+			throw new IllegalArgumentException("tag name contains whitespace(s)");
+		}
 	}
 
 	/**
@@ -887,11 +904,11 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setSimHash(hashId);
-		param.addGroups(visibleGroupIDs);		
+		param.addGroups(visibleGroupIDs);
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
-		param.setOffset(offset);		
+		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByBibtexHash", param, Tag.class, session);
 	}	

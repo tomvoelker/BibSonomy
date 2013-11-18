@@ -61,6 +61,33 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<Tag> tags = tagDb.getTagsViewable(param.getContentTypeConstant(), param.getUserName(), param.getGroupId(), param.getOrder(), param.getLimit(), param.getOffset(), this.dbSession);
 		assertEquals(10, tags.size());
 	}
+	
+	/**
+	 * tests {@link TagDatabaseManager#insertTag(Tag, org.bibsonomy.database.common.DBSession)}
+	 * with <code>null</code>
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void insertTagEmpty() {
+		tagDb.insertTag(new Tag(), this.dbSession);
+	}
+	
+	/**
+	 * tests {@link TagDatabaseManager#insertTag(Tag, org.bibsonomy.database.common.DBSession)}
+	 * with empty tag
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void insertTagEmpty2() {
+		tagDb.insertTag(new Tag(""), this.dbSession);
+	}
+	
+	/**
+	 * tests {@link TagDatabaseManager#insertTag(Tag, org.bibsonomy.database.common.DBSession)}
+	 * with whitespace
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void insertTagWhitespace() {
+		tagDb.insertTag(new Tag("this taghasawhitepace"), this.dbSession);
+	}
 
 	/**
 	 * tests getTagsByUser with order by Order.FREQUENCY
