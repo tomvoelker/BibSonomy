@@ -75,12 +75,13 @@ import org.xml.sax.SAXParseException;
  * 
  */
 public class DeliciousImporter implements RemoteServiceBookmarkImporter, RelationImporter {
+
 	private static final Log log = LogFactory.getLog(DeliciousImporter.class);
 	
+	private static final String DELICIOUS_DEFAULT_ENCODING = "UTF-8";
 	private static final String HEADER_USER_AGENT = "User-Agent";
 	private static final String HEADER_AUTHORIZATION = "Authorization";
 	private static final String HEADER_AUTH_BASIC = "Basic ";
-	private static final String UTF8 = "UTF-8";
 	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 	/** The URL to contact Delicious. */
@@ -222,7 +223,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			 * get the content encoding fall back to UTF-8
 			 */
 			final String encoding = connection.getContentEncoding();
-			return this.parseInputStream(inputStream, present(encoding) ? encoding : "UTF-8");
+			return this.parseInputStream(inputStream, present(encoding) ? encoding : DELICIOUS_DEFAULT_ENCODING);
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();
@@ -261,8 +262,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		// Finally, use the JAXP parser to parse the file.  
 		// This call returns a Document object. 
 		final InputSource source = new InputSource(new FilterInvalidXMLCharsReader(new InputStreamReader(inputStream, encoding)));
-		final Document document = parser.parse(source);
-		return document;
+		return parser.parse(source);
 	}
 	
 	/**
@@ -272,7 +272,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	 */
 	protected String encodeForAuthorization() {
 		try {
-			return HEADER_AUTH_BASIC + new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()), UTF8 );
+			return HEADER_AUTH_BASIC + new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()), DELICIOUS_DEFAULT_ENCODING);
 		} catch (UnsupportedEncodingException e) {
 			return HEADER_AUTH_BASIC + new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()));
 		}
