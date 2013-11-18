@@ -103,9 +103,8 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 		String viewstate = "";
 		if(m_viewstate.find())
 			viewstate = m_viewstate.group(1);
-	
-	   	final HttpClient Client = new HttpClient();
-	   	final PostMethod post = new PostMethod(url);
+
+		PostMethod post = new PostMethod(url);
 	   	
 	   	post.addParameters(new NameValuePair[]{
 	   			new NameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."),
@@ -118,7 +117,7 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 	   			new NameValuePair("__VIEWSTATE",viewstate)	
 	   	});
 
-		result = WebUtils.getPostContentAsString(Client, post);
+		result = WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);
 	
 	   	return result.toString();
 	}			
