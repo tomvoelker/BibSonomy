@@ -258,6 +258,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		
 		// Finally, use the JAXP parser to parse the file.  
 		// This call returns a Document object. 
+		// FIXME: what if we get ISO-x oder UTF-16? this should be the xmlfile encoding (or at least http-body-encoding
 		final InputSource source = new InputSource(new FilterInvalidXMLCharsReader(new InputStreamReader(inputStream, "UTF-8")));
 		final Document document = parser.parse(source);
 		return document;
