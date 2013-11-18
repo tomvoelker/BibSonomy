@@ -28,7 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * extracts bookmarks fromt the export files of Firefox, Chrome, IE and Opera
+ * extracts bookmarks from the export files of Firefox, Chrome, IE and Opera
  * @author rja, haile
  */
 public class BrowserImporter implements FileBookmarkImporter, RelationImporter{
