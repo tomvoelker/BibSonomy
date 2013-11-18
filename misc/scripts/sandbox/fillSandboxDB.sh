@@ -5,7 +5,7 @@
 
 database="sandbox_puma"
 dbUser="sandbox_puma"
-dbPw="sandbox48idfd7qUU823op2r"
+dbPw="INSERT PASSWORD"
 dbHost="p210.puma.bibliothek.uni-kassel.de"
 pumaDataDir=/home/puma/pumadata
 sandboxInitDir=/home/puma/init_sandbox
@@ -21,7 +21,7 @@ showTables="$mysqlConnection -e \"show tables\""
 IFS=$'\n'
 
 for table in $(eval $showTables); do
-  eval $mysqlConnection -e "\"DELETE FROM ${table}\""
+  eval $mysqlConnection -e "\"TRUNCATE ${table}\""
 done
 
 # Enter all default data into the database
