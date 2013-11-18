@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.bibsonomy.common.Pair;
@@ -67,8 +66,8 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 		
 		try {
 			final String inRIS = getCitationInRIS(url.toString());
-			RisToBibtexConverter con = new RisToBibtexConverter();
-			String bibtex = con.risToBibtex(inRIS);
+			final RisToBibtexConverter con = new RisToBibtexConverter();
+			final String bibtex = con.risToBibtex(inRIS);
 			
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(bibtex);
@@ -80,47 +79,44 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 			throw new InternalFailureException(e);
 		}
 	}
-	private String getCitationInRIS(String url) throws Exception {
-	   	String result = "";
-	   	String html = WebUtils.getContentAsString(url);
-	   	
-	    Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
+	private String getCitationInRIS(final String url) throws Exception {
+		final String html = WebUtils.getContentAsString(url);
+		
+		Matcher m_eventvalidation = EVENTVALIDATION.matcher(html);
 		String eventvalidation = "";
 		if(m_eventvalidation.find())
 			eventvalidation = m_eventvalidation.group(1);
-	   	 
+		
 		Matcher m_eventtarget = EVENTTARGET.matcher(html);
 		String eventtarget = "";
 		if(m_eventtarget.find())
 			eventtarget = m_eventtarget.group(1);
-	   	 
+	
 		Matcher m_eventargument = EVENTARGUMENT.matcher(html);
 		String eventargument = "";
-		if(m_eventargument.find())
+		if (m_eventargument.find())
 			eventargument = m_eventargument.group(1);
-	   	 
+		
 		Matcher m_viewstate = VIEWSTATE.matcher(html);
 		String viewstate = "";
 		if(m_viewstate.find())
 			viewstate = m_viewstate.group(1);
 
-		PostMethod post = new PostMethod(url);
-	   	
-	   	post.addParameters(new NameValuePair[]{
-	   			new NameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."),
-	   			new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"),
-	   			new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y", "7"),
-	   			new NameValuePair("ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase", "Full text search term(s)"),
-	   			new NameValuePair("__EVENTVALIDATION", eventvalidation),
-	   			new NameValuePair("__EVENTTARGET",eventtarget),
-	   			new NameValuePair("__EVENTARGUMENT",eventargument),
-	   			new NameValuePair("__VIEWSTATE",viewstate)	
-	   	});
+		final PostMethod post = new PostMethod(url);
+		post.addParameters(new NameValuePair[] {
+				new NameValuePair("ctl00$ctl00$ucBookstoreSearchTop$txtSearch", "Search title, author, ISBN..."),
+				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.x", "30"),
+				new NameValuePair("ctl00$ctl00$cphMain$cphFeatured$ucCiteContent$lnkSubmitToEndNote.y", "7"),
+				new NameValuePair("ctl00$ctl00$cphMain$cphSidebarRightTop$ucInfoSciOnDemandSidebar$txtSearchPhrase", "Full text search term(s)"),
+				new NameValuePair("__EVENTVALIDATION", eventvalidation),
+				new NameValuePair("__EVENTTARGET", eventtarget),
+				new NameValuePair("__EVENTARGUMENT", eventargument),
+				new NameValuePair("__VIEWSTATE", viewstate)
+		});
 
-		result = WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);
+		return WebUtils.getPostContentAsString(WebUtils.getHttpClient(), post);
+	}
 	
-	   	return result.toString();
-	}			
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
