@@ -9,21 +9,10 @@
 	number of shindig.host server Make sure you escape all HTML values for
 	the web.xml to be parsed correctly.
 -->
-<!-- 
-<context-param>
-	<param-name>system.properties</param-name>
-	<param-value>
-		shindig.host=folke.biblicious.org
-		shindig.port=80
 
-		aKey=/shindig/gadgets/proxy?container=default&amp;url=
-     </param-value>
-</context-param>
- -->
 <context-param>
 	<param-name>spring-application-context-name</param-name>
-	<param-value>
-	</param-value>
+	<param-value></param-value>
 </context-param>
 
 <!--+
@@ -296,9 +285,3 @@
 	<url-pattern>/oauth/*</url-pattern>
 </servlet-mapping>
  -->
- 
-<!--<servlet-mapping>
-	<servlet-name>default</servlet-name>
-	<url-pattern>/resources</url-pattern>
-</servlet-mapping>-->
-    
