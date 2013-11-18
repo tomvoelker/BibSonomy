@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,11 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 	private MultipartFile file;
 	
 	private boolean delete;
+
+	private String gravatarAddress;
+	
+	// for test
+	private User user;
 
 	/**
 	 * @param RequestedUser the getRequestedUser to set
@@ -54,6 +60,24 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 		return filename;
 	}
 
+	/**
+	 * Sets user's Gravatar email address to be set.
+	 * 
+	 * @param address
+	 */
+	public void setGravatarAddress ( String address )
+	{
+		gravatarAddress = address;
+	}
+	
+	/**
+	 * Returns user's Gravatar email address to be set.
+	 * @return gravAddress
+	 */
+	public String getGravatarAddress ()
+	{
+		return gravatarAddress;
+	}
 
 	/**
 	 * @param pathToFile the pathToFile to set
@@ -113,6 +137,14 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 		return delete;
 	}
 
-
+	public User getUser ()
+	{
+		return user;
+	}
+	
+	public void setUser ( User u )
+	{
+		user = u;
+	}
 	
 }
