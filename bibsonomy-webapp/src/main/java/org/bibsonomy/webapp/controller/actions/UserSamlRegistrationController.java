@@ -37,10 +37,8 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 	}
 	
 	@Override
-	public UserIDRegistrationCommand instantiateCommand() {
-		final UserIDRegistrationCommand command = new SamlUserIDRegistrationCommand();
-		command.setRegisterUser(new User());
-		return command;
+	protected UserIDRegistrationCommand instantiateCommandInternal() {
+		return new SamlUserIDRegistrationCommand();
 	}
 	
 	@Override
@@ -86,13 +84,12 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 		//	authentication = new SessionAuthenticationToken(user, user.getAuthorities());
 		
 		return null;
-		//return new OpenIDAuthenticationToken(new UserAdapter(user), new UserAdapter(user).getAuthorities(), user.getOpenID(), null);
 	}
 	
 	@Override
 	protected View logOn(User user) {
-		SAMLCredential creds = VuFindUserInitController.getSamlCreds();
-		Authentication auth = getAuthenticationManager().authenticate(new SamlCredAuthToken(creds));
+		final SAMLCredential creds = VuFindUserInitController.getSamlCreds();
+		final Authentication auth = getAuthenticationManager().authenticate(new SamlCredAuthToken(creds));
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		return new ExtendedRedirectView("/register_saml_success");
 	}
@@ -100,13 +97,6 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 	@Override
 	public Validator<UserIDRegistrationCommand> getValidator() {
 		return new UserSamlRegistrationValidator(new SamlAuthenticationTool(getRequestLogic(), Arrays.asList("step")), getRequestLogic());
-	}
-
-	/**
-	 * @return the attributeExtractor
-	 */
-	public SamlUserAttributeMapping getAttributeExtractor() {
-		return this.attributeExtractor;
 	}
 
 	/**

@@ -330,13 +330,17 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	}
 
 	@Override
-	public UserIDRegistrationCommand instantiateCommand() {
-		final UserIDRegistrationCommand command = new UserIDRegistrationCommand();
+	public final UserIDRegistrationCommand instantiateCommand() {
+		final UserIDRegistrationCommand command = instantiateCommandInternal();
 		/*
 		 * add user to command
 		 */
 		command.setRegisterUser(new User());
 		return command;
+	}
+
+	protected UserIDRegistrationCommand instantiateCommandInternal() {
+		return new UserIDRegistrationCommand();
 	}
 
 	@Override
