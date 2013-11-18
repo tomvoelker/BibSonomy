@@ -13,13 +13,10 @@
 	<c:set var="discussionItemUserName" value="${discussionItem.user.name}" />
 	
 	<c:set var="ownDiscussionItem" value="${loginUser.name eq discussionItemUserName}" />
-<!-- 	<c:set var="anonymous" value="${discussionItem.anonymous and not ownDiscussionItem}" /> -->
 	<c:set var="anonymous" value="${discussionItem.anonymous}" />
 	
 	<c:set var="class" value="${fn:toLowerCase(discussionItem.class.simpleName)}" />
-
-
-    
+	
 	<c:choose>
 		<c:when test="${anonymous}">
 			<img src="${resdir}/image/anonymous.png" alt="anonymous" class="commentPicture" />
@@ -63,10 +60,8 @@
 					</div>
 			</div>
 		</c:otherwise>
-	</c:choose>	
+	</c:choose>
 	
-
-		
 	<!-- actions -->
 	<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
 	

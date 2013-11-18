@@ -43,7 +43,7 @@
 				</span>
 			</c:when>
 			<c:otherwise>
-				<span class="${class}er">				
+				<span class="${class}er">
 					<c:choose>
 						<c:when test="${anonymous}">
 							<c:choose>
@@ -62,9 +62,10 @@
 				</span>
 			</c:otherwise>
 		</c:choose>
+		<c:out value=" " />
 		<discussionItem:discussionItemMeta discussionItem="${discussionItem}"/>
 	</div>
 	
 	<jsp:invoke fragment="content"/>
-		
+	
 </jsp:root>
