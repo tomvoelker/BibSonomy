@@ -2,8 +2,6 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Bookmark;
@@ -21,14 +19,12 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
+	
 	private static final int POSTS_PER_RESOURCETYPE_LOGGED_IN = 20;
-
 	private static final int POSTS_PER_RESOURCETYPE = 5;
-
-	private static final Log log = LogFactory.getLog(HomepageController.class);
+	
 	
 	private String newsGroup = "kde";
-	
 	private String newsTag = "bibsonomynews";
 
 	/*
@@ -38,7 +34,6 @@ public class HomepageController extends SingleResourceListController implements 
 
 	@Override
 	public View workOn(final HomepageCommand command) {
-		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(format);
 		
@@ -59,7 +54,7 @@ public class HomepageController extends SingleResourceListController implements 
 				if (Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
 					entriesPerPage = listCommand.getEntriesPerPage();
 				} else {
-					entriesPerPage = POSTS_PER_RESOURCETYPE_LOGGED_IN;	
+					entriesPerPage = POSTS_PER_RESOURCETYPE_LOGGED_IN;
 				}
 			} else {
 				entriesPerPage = POSTS_PER_RESOURCETYPE;
@@ -67,7 +62,7 @@ public class HomepageController extends SingleResourceListController implements 
 			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			postProcessAndSortList(command, resourceType);
 		}
-												
+		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			command.setPageTitle("home"); // TODO: i18n
@@ -79,12 +74,12 @@ public class HomepageController extends SingleResourceListController implements 
 			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, newsGroup, Arrays.asList(newsTag), null, null, null, null, null, null, 0, 3));
 			this.endTiming();
 			
-			return Views.HOMEPAGE; 
+			return Views.HOMEPAGE;
 		}
 		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(format);	
+		return Views.getViewByFormat(format);
 	}
 
 	/**
