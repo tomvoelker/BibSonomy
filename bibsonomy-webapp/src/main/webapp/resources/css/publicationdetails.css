@@ -1,0 +1,111 @@
+@CHARSET "UTF-8";
+
+.morecontent span {
+    display: none;
+}
+
+/*
+.preview_meta {
+
+	margin-top: -32px;
+	padding: 3px;
+	text-align: left;
+	background: #fff;
+	width: 40px;
+}
+*/
+.bibtexpreviewimage {
+	float:left;
+	margin-left: 1em; 
+	border: 1px solid #ddd; 
+	text-align: center;
+	padding: 1em;
+}
+
+.preview_meta .removeDoc {
+	background: url("/resources/image/post_actions.png");
+	background-position: 0 -275px; width: 13px; height: 18px;
+}
+.preview_meta p {
+	padding: 0;
+	margin: 0;
+}
+
+.preview_meta p.publication_action_buttons {
+	padding: 0;
+	margin: 0;
+	text-align: left;
+	position:relative; 
+	z-index:100;
+	padding: 2px;	
+	clear: left;
+}
+.preview_meta p .removeDoc, 
+.preview_meta p .renameDoc {
+	display: block;
+	float: left;
+	margin: 0;
+	padding: 0;
+	width: 15px; 
+ 	height: 18px;
+	background-repeat: none;
+}
+
+.preview_meta .removeDoc span, 
+.preview_meta .renameDoc span {
+	display: none;	
+}
+
+.post .action .idelete, #pageOptions .idelete, .post .action .iremove, #pageOptions .iremove											
+{ background-position: 0 -197px; width: 13px; height: 18px; } 
+.post .action .delete:hover, #pageOptions .delete:hover, .post .action .remove:hover, #pageOptions .remove:hover, .deleteDocument:hover	
+{ background-position: 0 -237px; width: 13px; height: 18px; } 
+.post .action .delete, #pageOptions .delete, .post .action .remove, #pageOptions .remove, .deleteDocument							
+{ background-position: 0 -275px; width: 13px; height: 18px; }
+
+#innercontent .title {
+	margin-top: -5px;
+	margin-left: -40px;
+	padding-top: 5px;
+	padding-left: 40px;
+	background: url("/resources/image/publication.png") top left no-repeat;
+	/*background-position: 0px -57px;*/
+}
+
+#innercontent .title h1 {
+	font-size: 150%; 
+	padding: 0; 
+	margin: 0;
+}
+
+.headerLogo.image {
+	display:none;
+}
+
+#innercontent h4, h3 {
+	margin: 1.5em 0 0.5em 0;
+	
+}
+
+#innercontent input.renameDocInput {
+	border-color: #fff;
+	width: 90px;
+	float: left;
+}
+
+ input.renameDocInput:hover,
+ input.renameDocInput:focus {
+	border: 1px #006699 solid !important;
+}
+
+.removeDocLink { 
+	display:block;
+	float: left;
+	background: url("/resources/image/post_actions.png");
+	background-position: 0 -275px; 
+	background-repeat: no-repeat;
+	width: 13px; 
+	height: 18px; 
+}
+.removeDocLink:hover {background-position: 0 -237px;}
+.removeDocLink span {display:none;}
