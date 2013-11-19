@@ -1,6 +1,5 @@
 package org.bibsonomy.wiki.tags.shared;
 
-import java.net.URL;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.wiki.tags.UserTag;
 
@@ -24,7 +23,7 @@ public class HomepageTag extends UserTag {
 	protected String renderUserTag() {
 		final String homepage = this.requestedUser.getHomepage() == null ? ""
 				: this.renderString(this.requestedUser.getHomepage().toString());
-		return ValidationUtils.present(homepage) ? "<div id='homepage'><a href=\"" + homepage + "\">" + homepage + "</a></div>" : "";
+		return ValidationUtils.present(homepage) ? "<div id='homepage'><a href=\"" + homepage + "\" rel=\"nofollow me\">" + homepage + "</a></div>" : "";
 	}
 
 }
