@@ -59,12 +59,10 @@ public class TemplateManager {
 					templates.put(r.getFilename().split("\\.")[0], content);
 					reader.close();
 				} catch (IOException e) {
-					e.printStackTrace();
 				}
 				
 			}
 		} catch (IOException e) {
-			// DO NOTHING
 		}
 	}
 }
