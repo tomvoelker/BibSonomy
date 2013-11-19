@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.util.captcha;
 import org.apache.commons.logging.Log;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
 /**
  * Methods to handle captchas.
@@ -36,6 +37,10 @@ public class CaptchaUtil {
 				/*
 				 * invalid response from user
 				 */
+				/*
+				 * check, that challenge response is given
+				 */
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");
 				errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha", "The provided security token is invalid.");
 			} else if (res.getErrorMessage() != null) {
 				/*

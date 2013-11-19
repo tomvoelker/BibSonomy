@@ -75,10 +75,6 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		if (!command.isAcceptPrivacy()) {
 			errors.rejectValue("acceptPrivacy", "error.field.valid.acceptPrivacy", new Object[] { this.projectName }, null);
 		}
-		/*
-		 * check, that challenge response is given
-		 */
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");
 	}
 
 }

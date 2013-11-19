@@ -26,10 +26,5 @@ public class PasswordReminderValidator implements Validator<PasswordReminderComm
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userName", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userEmail", "error.field.required");
-		
-		/*
-		 * check, that challenge response is given
-		 */
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");
 	}
 }
