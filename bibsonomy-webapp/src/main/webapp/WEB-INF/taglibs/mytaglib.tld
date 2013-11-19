@@ -54,6 +54,23 @@
 	</tag>
 
 	<tag>
+		<name>strShorten</name>
+		<info>Shortens a string</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.StringShortenerTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxlen</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
+	</tag>
+	
+	<tag>
 		<name>renderJabRefLayout</name>
 		<info>renders the JabRef layout</info>
 		<tagclass>org.bibsonomy.webapp.util.tags.JabrefLayoutRendererTag</tagclass>
