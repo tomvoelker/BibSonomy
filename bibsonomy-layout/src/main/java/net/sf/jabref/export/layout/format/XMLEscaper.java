@@ -23,10 +23,14 @@
 
 package net.sf.jabref.export.layout.format;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 import net.sf.jabref.export.layout.LayoutFormatter;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
+/**
+ * {@link LayoutFormatter} that escapes XML entities
+ * @author mme, jil
+ */
 public class XMLEscaper implements LayoutFormatter{
 
 	@Override

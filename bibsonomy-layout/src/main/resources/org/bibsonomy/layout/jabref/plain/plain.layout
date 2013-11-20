@@ -2,14 +2,14 @@
 
 \begin{author}
 	<span class="entry_author">
-		\format[CleanLatexMarkup]{\author}.
+		\format[HTMLChars,AntiScriptInjection]{\author}.
 	</span>
 \end{author}
 
 \begin{title}
 	<span class="entry_title">
 		<a href="/bibtex/2\intraHash/\username">
-			\format[CleanLatexMarkup]{\title}
+			\format[HTMLChars,AntiScriptInjection]{\title}
 		</a>.
 	</span>
 \end{title}
@@ -17,56 +17,56 @@
 \begin{journal}
 	In
 	<span class="entry_journal"> 
-		\format[CleanLatexMarkup]{\journal}, 
+		\format[HTMLChars,AntiScriptInjection]{\journal}, 
 	</span>
 \end{journal}
 
 \begin{booktitle}
 	<span class="entry_booktitle"> 
-		\format[CleanLatexMarkup]{\booktitle}. 
+		\format[HTMLChars,AntiScriptInjection]{\booktitle}. 
 	</span>
 \end{booktitle}
 
 \begin{editor}
 	<span class="entry_editor"> 
-		editor(s) \format[CleanLatexMarkup]{\editor}. 
+		editor(s) \format[HTMLChars,AntiScriptInjection]{\editor}. 
 	</span>
 \end{editor}
  
 <span class="entry_series">
 	\begin{series} 
-		\format[CleanLatexMarkup]{\series}, 
+		\format[HTMLChars,AntiScriptInjection]{\series}, 
 	\end{series}
 	
 	\begin{volume}
-		(\volume)
+		(\format[HTMLChars,AntiScriptInjection]{\volume})
 	\end{volume}
 	
 	\begin{number}
-		\number:
+		\format[HTMLChars,AntiScriptInjection]{\number}:
 	\end{number}
 	
 	\begin{pages}
-		\pages,
+		\format[HTMLChars,AntiScriptInjection]{\pages},
 	\end{pages}
 </span>
 
 \begin{publisher}
 	<span class="entry_publisher"> 
-		\format[CleanLatexMarkup]{\publisher}, 
+		\format[HTMLChars,AntiScriptInjection]{\publisher}, 
 	</span>
 \end{publisher}
 
 \begin{address}
 	<span class="entry_address"> 
-		\format[CleanLatexMarkup]{\address}, 
+		\format[HTMLChars,AntiScriptInjection]{\address}, 
 	</span>
 \end{address}
 
 \begin{year}
 	Year 
 	<span class="entry_year"> 
-		\year. 
+		\format[HTMLChars,AntiScriptInjection]{\year}. 
 	</span>
 \end{year}
 
