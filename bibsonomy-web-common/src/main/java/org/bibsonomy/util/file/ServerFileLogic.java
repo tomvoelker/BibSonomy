@@ -79,7 +79,7 @@ public class ServerFileLogic implements FileLogic {
 
 	@Override
 	public File getProfilePictureForUser(String loggedinUser, String username) {
-		return this.profileFileLogic.getProfilePictureForUser(null, username);
+		return this.profileFileLogic.getProfilePictureForUser(loggedinUser, username);
 	}
 	
 	@Override
