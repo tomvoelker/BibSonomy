@@ -1495,7 +1495,6 @@ public class DBLogic implements LogicInterface {
 
 		try {
 			final User existingUser = userDBManager.getUserDetails(user.getName(), session);
-			final List<User> pendingUserList = userDBManager.getPendingUserByUsername(user.getName(), 0, Integer.MAX_VALUE, session);
 			if (update) {
 				/*
 				 * update the user
@@ -1510,10 +1509,11 @@ public class DBLogic implements LogicInterface {
 				return this.userDBManager.updateUser(user, session);
 			}
 
+			final List<User> pendingUserList = userDBManager.getPendingUserByUsername(user.getName(), 0, Integer.MAX_VALUE, session);
 			/*
 			 * create a new user
 			 */
-			if (present(existingUser.getName()) || pendingUserList.size() > 0) {
+			if (present(existingUser.getName()) || present(pendingUserList)) {
 				/*
 				 * error: user name already exists
 				 */
