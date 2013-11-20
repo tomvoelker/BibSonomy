@@ -81,12 +81,13 @@
 						</div>
 
 						<script type="text/javascript">
-< ![CDATA[
+<![CDATA[
 		function toggleGroupBox() {
 			document.getElementById("post.groups.other2").disabled = !document.getElementById("post.groups.other").checked;
 		}
 toggleGroupBox();
-]] >						</script>
+]]>
+						</script>
 						<div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 					</div>
 
