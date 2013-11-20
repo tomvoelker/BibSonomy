@@ -276,7 +276,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void checkUser(final User user, final DBSession session) {
-		this.validator.validateFieldLength(user, user.getName(), session);	
+		this.validator.validateFieldLength(user, user.getName(), session);
 	}
 
 	/**
@@ -324,7 +324,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.checkUser(user, session);
 		
 		/* no email validation for openid/ldap/remoteId(currently only saml) users */
-		if (present(user.getOpenID()) || present(user.getLdapId()) || (user.getRemoteUserIds().size() > 0)) {
+		if (present(user.getOpenID()) || present(user.getLdapId()) || (present(user.getRemoteUserIds()))) {
 			this.insert("insertUser", user, session);
 			this.insertDefaultWiki(user, session);
 		} else {
