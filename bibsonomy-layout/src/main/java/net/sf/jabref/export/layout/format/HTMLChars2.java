@@ -26,6 +26,7 @@ import net.sf.jabref.GlobalsSuper;
 import net.sf.jabref.export.layout.LayoutFormatter;
 
 /**
+ * TODO: document the difference between this class and {@link HTMLChars}
  * This formatter escapes characters so they are suitable for HTML.
  * 
  * @version $Revision$ ($Date$)
