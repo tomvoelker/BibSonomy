@@ -79,13 +79,15 @@ public enum FilterEntity {
 	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER,
 	
 	/**
-	 * Returns all (old and current) versions of a BibTex
+	 * TODO: rename to POSTS_HISTORY
+	 * Returns all (old and current) versions of a post
 	 */
 	POSTS_HISTORY_BIBTEX,
 	
 	/**
 	 * Returns all (old and current) versions of a GoldStandard 
 	 */
+	@Deprecated // TODO: remove and use POSTS_HISTORY
 	POSTS_HISTORY_GOLD;
 
 }
