@@ -23,10 +23,12 @@
 
 package net.sf.jabref.export.layout.format;
 
-import java.util.regex.Pattern;
-
 import net.sf.jabref.export.layout.LayoutFormatter;
 
+/**
+ * 
+ * @author mme
+ */
 public class AntiScriptInjection implements LayoutFormatter{
 	
 	/*
@@ -34,7 +36,6 @@ public class AntiScriptInjection implements LayoutFormatter{
 	 * 		>   &gt;
 	 * 
 	 */
-	
 	@Override
 	public String format(String arg0) {
 		return arg0.replace("<", "&lt;").replace(">", "&gt;");
