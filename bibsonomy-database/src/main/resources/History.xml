@@ -5,7 +5,7 @@
 	<update id="updateBibTexHistory" parameterClass="bibtexParam">
 		UPDATE log_bibtex
 		SET current_content_id = #newContentId#
-		WHERE current_content_ID = #requestedContentId# OR
+		WHERE current_content_id = #requestedContentId# OR
 			new_content_id = #newContentId#
 	</update>
 	
@@ -17,7 +17,7 @@
 		            AND t1.user_name = #requestedUserName#	
 		            <include refid="restrictToGroups"/>
 			  		<include refid="sysTagsEntryType"/>
-			  		<include refid="sysTagsYear"/>		            
+			  		<include refid="sysTagsYear"/>
 		      ORDER BY date DESC) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
 		WHERE b2.simhash2 = #hash# 
@@ -30,7 +30,7 @@
 		            AND t1.user_name = #requestedUserName#	
 		            <include refid="restrictToGroups"/>
 			  		<include refid="sysTagsEntryType"/>
-			  		<include refid="sysTagsYear"/>		            
+			  		<include refid="sysTagsYear"/>
 		      ORDER BY date DESC) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g,
 		bibtex b
