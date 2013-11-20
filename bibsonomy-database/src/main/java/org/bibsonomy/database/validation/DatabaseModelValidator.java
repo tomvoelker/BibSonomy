@@ -40,14 +40,16 @@ public class DatabaseModelValidator<T> {
 			/*
 			 * loop through all properties
 			 */
-			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {			
+			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
 				final Method getter = d.getReadMethod();
 
-				if (present(getter)) {					
+				if (present(getter)) {
 					final Object value = getter.invoke(model, (Object[])null);
 
 					/*
 					 * check max length
+					 * TODO: get type handler and convert url to string and than
+					 * check for valid length
 					 */
 					if (value instanceof String) {
 						final String stringValue = (String) value;
