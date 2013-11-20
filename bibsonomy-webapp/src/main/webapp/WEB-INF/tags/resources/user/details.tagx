@@ -54,7 +54,12 @@
       <tr><th>profession</th><td><c:out value="${user.profession}"/></td></tr>
       <tr><th>institution</th><td><c:out value="${user.institution}"/></td></tr>
 
+      <tr><th colspan="2">settings</th></tr>
+      <tr><th>profilePrivlevel</th><td><c:out value="${user.settings.profilePrivlevel}"/></td></tr>
+      <tr><th>simpleInterface</th><td><c:out value="${user.settings.simpleInterface}"/></td></tr>
+      <tr><th>defaultLanguage</th><td><c:out value="${user.settings.defaultLanguage}"/></td></tr>
+      <tr><th>logLevel</th><td><c:out value="${user.settings.logLevel}"/></td></tr>
+
     </table>
-      
 	
 </jsp:root>
