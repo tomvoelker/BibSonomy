@@ -44,6 +44,7 @@ public class FileUtil {
 	private static final Set<String> PNG_EXTENSIONS = Sets.asSet("png");
 	private static final Set<String> PLAIN_EXTENSIONS = Sets.asSet("txt", "tex");
 	private static final Set<String> PDF_EXTENSIONS = Sets.asSet("pdf");
+	private static final Set<String> SVG_EXTENSIONS = Sets.asSet("svg");
 	private static final Set<String> POST_SCRIPT_EXTENSIONS = Sets.asSet("ps");
 
 	/**
@@ -189,6 +190,9 @@ public class FileUtil {
 		}
 		if (StringUtils.matchExtension(filename, TIFF_EXTENSIONS)) {
 			return "image/tiff";
+		}
+		if (StringUtils.matchExtension(filename, SVG_EXTENSIONS)) {
+			return "image/svg+xml";
 		}
 		
 		return "application/octet-stream";
