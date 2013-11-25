@@ -22,6 +22,9 @@ import org.bibsonomy.webapp.view.Views;
 import recommender.impl.database.RecommenderStatisticsManager;
 
 /**
+ * TODO: check inheritance to ResourceListController
+ * TODO: make generic
+ * 
  * @author pba
  * @version $Id$
  */
@@ -48,9 +51,10 @@ public class DiffPublicationController extends ResourceListController implements
 		final String format = command.getFormat();
 		this.startTiming(format);
 		final String requestedUser = command.getUser();
+		// TODO: rename property. we do not update the post here
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
 		
-		/*
+		/* TODO: why we have to set the post id for recommendation?
 		 * this is the post we're working on for now ...
 		 */
 		final Post<BibTex> post = command.getPost();
@@ -59,7 +63,7 @@ public class DiffPublicationController extends ResourceListController implements
 		}
 
 		final int historyIndex = command.getHistoryIndex();
-		if (present(historyIndex)&&present(intraHashToUpdate)) {
+		if (present(historyIndex) && present(intraHashToUpdate)) {
 			LOGGER.debug("intra hash to diff found -> handling diff of existing post");
 			final List<?> dbPosts = logic.getPosts(post.getResource().getClass(), GroupingEntity.ALL, command.getUser(), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, historyIndex, historyIndex+1);
 			command.setPostDiff((Post<BibTex>) dbPosts.get(0));
