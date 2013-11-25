@@ -43,6 +43,7 @@ import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
 import org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper;
 import org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper;
+import org.bibsonomy.scraper.url.kde.bloodjournal.BloodJournalScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
@@ -62,6 +63,7 @@ import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
+import org.bibsonomy.scraper.url.kde.igiglobal.IGIGlobalScraper;
 import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
 import org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper;
 import org.bibsonomy.scraper.url.kde.inspire.InspireScraper;
@@ -237,6 +239,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new HindawiScraper());
 		addScraper(new AsmScraper());
 		addScraper(new FirstMondayScraper());
+		addScraper(new BloodJournalScraper());
+		addScraper(new IGIGlobalScraper());
 	}
 
 }
