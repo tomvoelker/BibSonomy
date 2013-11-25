@@ -8,7 +8,7 @@ import org.bibsonomy.webapp.util.View;
 
 /**
  * some symbols for views in the application, along with information which views
- * are capable to display publication / bookmark only
+ * are capable to display publication /  only
  * 
  * @author Jens Illig
  * @author rja
@@ -138,11 +138,39 @@ public enum Views implements View {
 	 * requested user
 	 */
 	FRIENDPAGE("friend"),
-
+	
+	/**
+	 * url page, displays all s for a given url hash
+	 */
+	URLPAGE("url"),
+	
 	/**
 	 * bibtex page shows all publications with the given inter-/intrahash
+	 * TODO: rename to PUBLICATION_PAGE
 	 */
 	BIBTEXPAGE("bibtex"),
+	
+	/**
+	 * details of a publication
+	 * TODO: rename to PUBLICATION_DETAILS
+	 */
+	BIBTEXDETAILS("bibtexdetails"),
+
+	
+	/**
+	 * Diff-Page. page with diff of two post
+	 */
+	DIFFPAGE("actions/post/diff"),
+	
+	/**
+	 * DiffPublication-Page. page with diff of two post
+	 */
+	DIFFPUBLICATIONPAGE("actions/post/diffPublication"),
+	
+	/**
+	 * PostHistory-Page. page with post history
+	 */
+	POSTHISTORYPAGE("postHistory"),
 
 	/**
 	 * all the posts the user has picked in his basket
@@ -156,20 +184,10 @@ public enum Views implements View {
 	USERRELATED("userRelations"),
 
 	/**
-	 * details of a publication
-	 */
-	BIBTEXDETAILS("bibtexdetails"),
-
-	/**
 	 * bibtexkey page does something with the bibtexkey, perhaps shows the
 	 * details for a given bibtexkex
 	 */
 	BIBTEXKEYPAGE("bibtexkey"),
-
-	/**
-	 * url page, displays all bookmarks for a given url hash
-	 */
-	URLPAGE("url"),
 
 	/**
 	 * popular page
@@ -257,7 +275,7 @@ public enum Views implements View {
 	AJAX_XML("ajax/snippetXML"),
 
 	/**
-	 * used by editBookmark to get the details for a given Url
+	 * used by edit to get the details for a given Url
 	 */
 	AJAX_GET_TITLE_FOR_URL("ajax/jsonURLDetails"),
 
@@ -381,9 +399,9 @@ public enum Views implements View {
 	LOGIN("actions/login"),
 
 	/**
-	 * The dialog to EDIT a bookmark (big dialog).
+	 * The dialog to EDIT a  (big dialog).
 	 */
-	EDIT_BOOKMARK("actions/post/editBookmark"),
+	EDIT_("actions/post/edit"),
 
 	/**
 	 * The dialog to EDIT a publication (big dialog).
@@ -391,9 +409,9 @@ public enum Views implements View {
 	EDIT_PUBLICATION("actions/post/editPublication"),
 
 	/**
-	 * the dialog to EDIT a gold standard bookmark
+	 * the dialog to EDIT a gold standard 
 	 */
-	EDIT_GOLD_STANDARD_BOOKMARK("actions/post/editGoldStandardBookmark"),
+	EDIT_GOLD_STANDARD_("actions/post/editGoldStandard"),
 
 	/**
 	 * The dialog to EDIT a gold standard publication (big dialog)
@@ -403,7 +421,7 @@ public enum Views implements View {
 	/**
 	 * The dialog to enter a URL for posting (small dialog).
 	 */
-	POST_BOOKMARK("actions/post/postBookmark"),
+	POST_("actions/post/post"),
 
 	/**
 	 * The dialog to post one or more publications (tabbed view)
@@ -451,7 +469,7 @@ public enum Views implements View {
 	BATCHEDITBIB("actions/edit/batcheditbib"),
 
 	/**
-	 * to edit the tags of bookmarks
+	 * to edit the tags of s
 	 */
 	BATCHEDITURL("actions/edit/batchediturl"),
 
@@ -484,7 +502,7 @@ public enum Views implements View {
 	OAUTH_AUTHORIZATION_SUCCESS("opensocial/authorizationSuccess"),
 
 	/* *****************************************************
-	 * query independent views to show bookmark or publication lists
+	 * query independent views to show  or publication lists
 	 * ****************************************************
 	 */
 
@@ -504,9 +522,9 @@ public enum Views implements View {
 	BURST("export/bibtex/burst"),
 
 	/**
-	 * rss bookmark outout for bookmarks
+	 * rss  outout for s
 	 */
-	RSS("export/bookmark/rssfeed"),
+	RSS("export//rssfeed"),
 
 	/**
 	 * rss output for publications
@@ -534,29 +552,29 @@ public enum Views implements View {
 	APARSS("export/bibtex/aparssfeed"),
 
 	/**
-	 * xml output for bookmarks
+	 * xml output for s
 	 */
-	XML("export/bookmark/xmlOutput"),
+	XML("export//xmlOutput"),
 
 	/**
-	 * JSON for both bookmarks and publications
+	 * JSON for both s and publications
 	 */
 	JSON("export/json"),
 	
 	/**
-	 * HTML-rendered posts lists for both bookmarks and publications 
+	 * HTML-rendered posts lists for both s and publications 
 	 */
 	POSTS("export/posts"),
 
 	/**
-	 * html output for bookmarks
+	 * html output for s
 	 */
-	BOOKPUBL("export/bookmark/bookpubl"),
+	BOOKPUBL("export//bookpubl"),
 
 	/**
-	 * BibTeX output for bookmarks
+	 * BibTeX output for s
 	 */
-	BOOKBIB("export/bookmark/bibtex"),
+	BOOKBIB("export//bibtex"),
 
 	/**
 	 * An XML file printing all output formats supported by UnAPI. Basically, a
@@ -679,29 +697,14 @@ public enum Views implements View {
 	 * TODO: in deveplopment TODODZO
 	 */
 	LINK_CLOUD("linkcloud"),
-	
-	/**
-	 * DiffBookmark-Page. page with diff of two post
-	 */
-	DIFFBOOKMARKPAGE("actions/post/diffBookmark"),
-	
-	/**
-	 * DiffPublication-Page. page with diff of two post
-	 */
-	DIFFPUBLICATIONPAGE("actions/post/diffPublication"),
 
 	/**
-	 * Recommended posts page. Showing recommendations for bibtexs and bookmarks.
+	 * Recommended posts page. Showing recommendations for bibtexs and s.
 	 */
-	RECOMMENDEDPAGE("recommended"),
-	
-	/**
-	 * PostHistory-Page. page with post history
-	 */
-	POSTHISTORYPAGE("postHistory");
+	RECOMMENDEDPAGE("recommended");
 
 	/*
-	 * both bookmarks and publications
+	 * both s and publications
 	 */
 	public static final String FORMAT_STRING_CSV = "csv";
 	public static final String FORMAT_STRING_JSON = "json";
@@ -733,7 +736,7 @@ public enum Views implements View {
 	public static final String FORMAT_STRING_PUBLRSS = "publrss";
 	public static final String FORMAT_STRING_PUBLRSSN = "publrssN";
 	/*
-	 * bookmarks
+	 * s
 	 */
 	public static final String FORMAT_STRING_XML = "xml";
 	public static final String FORMAT_STRING_RSS = "rss";
@@ -771,14 +774,14 @@ public enum Views implements View {
 
 	/**
 	 * Helper method to identify those formats whose corresponding view displays
-	 * ONLY bookmark posts
+	 * ONLY  posts
 	 * 
 	 * @param format
 	 *            the name of the format
-	 * @return true if the corresponding view displays only bookmark posts,
+	 * @return true if the corresponding view displays only  posts,
 	 *         false otherwise
 	 */
-	public static boolean isBookmarkOnlyFormat(final String format) {
+	public static boolean isOnlyFormat(final String format) {
 		return FORMAT_STRING_XML.equals(format) || FORMAT_STRING_RSS.equals(format) || FORMAT_STRING_BOOKBIB.equals(format) || "batchediturl".equals(format) || FORMAT_STRING_BOOKPUBL.equals(format);
 	}
 
