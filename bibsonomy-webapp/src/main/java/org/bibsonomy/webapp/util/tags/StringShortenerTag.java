@@ -3,6 +3,8 @@ package org.bibsonomy.webapp.util.tags;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 /**
+ * TODO: document the use of this tag
+ * 
  * @author sbo <sbo@cs.uni-kassel.de>
  * @version $Id$
  */
