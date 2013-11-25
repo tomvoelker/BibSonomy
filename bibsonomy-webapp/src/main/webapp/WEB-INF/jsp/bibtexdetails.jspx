@@ -18,6 +18,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
+	<!-- TODO: remove as soon as new layout is ready -->
 	<c:choose>
 		<c:when test="${not empty param.cleanlayout}">
 			<resource:publicationdetailslayoutclean />
