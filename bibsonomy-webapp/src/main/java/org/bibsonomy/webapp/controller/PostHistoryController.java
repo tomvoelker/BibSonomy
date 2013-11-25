@@ -2,8 +2,6 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
@@ -20,7 +18,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class PostHistoryController extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<BibTex>> {
 
-	private static final Log LOGGER = LogFactory.getLog(PostHistoryController.class);
+	
 	@Override
 	public ResourcePageCommand<BibTex> instantiateCommand() {
 		return new ResourcePageCommand<BibTex>();
@@ -28,7 +26,6 @@ public class PostHistoryController extends SingleResourceListControllerWithTags 
 
 	@Override
 	public View workOn(ResourcePageCommand<BibTex> command) {
-		LOGGER.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(format);
 		
