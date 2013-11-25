@@ -93,6 +93,7 @@
 	float: left;
 }
 
+/** FIXME: convert to less and use color variable main-color */
  input.renameDocInput:hover,
  input.renameDocInput:focus {
 	border: 1px #006699 solid !important;
