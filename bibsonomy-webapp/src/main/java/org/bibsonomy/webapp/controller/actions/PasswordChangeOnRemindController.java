@@ -25,6 +25,7 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.text.BasicTextEncryptor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
@@ -50,6 +51,9 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 
 	@Override
 	public View workOn(final PasswordChangeOnRemindCommand command) {
+		if (command.getContext().isUserLoggedIn()) {
+			throw new AccessDeniedException("you can't change a password while loggedin");
+		}
 		log.debug("starting work");
 		
 		/*
