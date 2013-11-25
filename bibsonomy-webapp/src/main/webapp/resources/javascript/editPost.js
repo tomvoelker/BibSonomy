@@ -20,7 +20,7 @@ var collect;
 
 
 $(function() {
-	/**
+	/*
 	 * TODO: remove unused code of old autocompletion -> initTagAutocompletion($('#inpf_tags')); 
 	 */
 	startTagAutocompletion($('#inpf_tags'), false, true, true, true);
@@ -229,9 +229,10 @@ function handleRecommendedTags(xml) {
 		// lookup tags
 		var root = xml.getElementsByTagName('tags').item(0);
 		
-		// Internet Explorer 9 parses xml as an HTML document with stylesheets for the actual XML
+		
 		if (root == null) {
-			
+			// Internet Explorer 9 parses xml as an HTML document with stylesheets for the actual XML
+			// TODO: remove when using json as output format!
 			var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
 			xmlDoc.async = "false";
 			xmlDoc.loadXML(xml.documentElement.innerHTML);
