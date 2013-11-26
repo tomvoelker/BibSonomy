@@ -154,7 +154,7 @@ public class RestLogic implements LogicInterface {
 	 * @param renderingFormat
 	 * @param progressCallbackFactory
 	 */
-	RestLogic(final String username, final String apiKey, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, FileFactory fileFactory) {
+	RestLogic(final String username, final String apiKey, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, final FileFactory fileFactory) {
 		this(apiURL, renderingFormat, progressCallbackFactory, null, createUser(username, apiKey), fileFactory);
 	}
 
@@ -166,11 +166,11 @@ public class RestLogic implements LogicInterface {
 	 * @param renderingFormat
 	 * @param progressCallbackFactory
 	 */
-	RestLogic(final AuthenticationAccessor accessor, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, FileFactory fileFactory) {
+	RestLogic(final AuthenticationAccessor accessor, final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, final FileFactory fileFactory) {
 		this(apiURL, renderingFormat, progressCallbackFactory, accessor, new User(RESTConfig.USER_ME), fileFactory);
 	}
 
-	private RestLogic(String apiURL, RenderingFormat renderingFormat, ProgressCallbackFactory progressCallbackFactory, AuthenticationAccessor accessor, User loggedinUser, FileFactory fileFactory) {
+	private RestLogic(final String apiURL, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, final AuthenticationAccessor accessor, final User loggedinUser, final FileFactory fileFactory) {
 		this.apiURL = apiURL;
 		this.fileFactory = fileFactory;
 		this.rendererFactory = new RendererFactory(new UrlRenderer(this.apiURL));
@@ -330,7 +330,7 @@ public class RestLogic implements LogicInterface {
 		final List<String> resourceHashes = new LinkedList<String>();
 		final DatabaseException collectedException = new DatabaseException();
 		for (final Post<?> post : posts) {
-			ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
+			final ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
 			final String hash = execute(query);
 			if (!query.isSuccess()) {
 				collectedException.addToErrorMessages(post.getResource().getIntraHash(), new ErrorMessage(hash, hash));
@@ -355,7 +355,7 @@ public class RestLogic implements LogicInterface {
 		if (!present(doc.getUserName())) {
 			doc.setUserName(this.authUser.getName());
 		}
-		CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc.getUserName(), resourceHash, doc.getFile());
+		final CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc.getUserName(), resourceHash, doc.getFile());
 		return execute(createPostDocumentQuery);
 	}
 
@@ -371,7 +371,7 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public void deleteDocument(final Document document, final String resourceHash) {
-		DeletePostDocumentQuery deletePostDocumentQuery = new DeletePostDocumentQuery(document.getUserName(), resourceHash, document.getFileName());
+		final DeletePostDocumentQuery deletePostDocumentQuery = new DeletePostDocumentQuery(document.getUserName(), resourceHash, document.getFileName());
 		execute(deletePostDocumentQuery);
 	}
 
@@ -696,22 +696,16 @@ public class RestLogic implements LogicInterface {
 	}
 	
 	@Override
-	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId) {
+	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
 		throw new UnsupportedOperationException();
 	}
 	@Override
-	public void updateDocument(Document document, String resourceHash, String newName) {
+	public void updateDocument(final Document document, final String resourceHash, final String newName) {
 		this.execute(new ChangeDocumentNameQuery(resourceHash, newName, document));
 	}
 
 	@Override
-	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
 		throw new UnsupportedOperationException(); // TODO: implement me
-	}
-	
-	@Override
-	public void deleteOpenID(String userName) {
-		throw new UnsupportedOperationException();
-		
 	}
 }
