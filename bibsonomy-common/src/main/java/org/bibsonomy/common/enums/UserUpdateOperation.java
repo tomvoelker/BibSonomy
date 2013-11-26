@@ -70,5 +70,10 @@ public enum UserUpdateOperation {
 	/**
 	 * used for upgrading a limited user account
 	 */
-	UPDATE_LIMITED_USER;
+	UPDATE_LIMITED_USER,
+	
+	/**
+	 * used for deleting openID access of an user
+	 */
+	DELETE_OPENID_AND_UPDATE_ALL;
 }
