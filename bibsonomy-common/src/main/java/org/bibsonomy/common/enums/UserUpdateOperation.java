@@ -75,5 +75,5 @@ public enum UserUpdateOperation {
 	/**
 	 * used for deleting openID access of an user
 	 */
-	DELETE_OPENID_AND_UPDATE_ALL;
+	DELETE_OPENID;
 }
