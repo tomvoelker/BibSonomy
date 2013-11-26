@@ -187,10 +187,11 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 			if(!command.isAcknowledgeOpenIDDeletion()){
 				errors.rejectValue("acknowledgeOpenIDDeletion", "error.field.value.acknowledge");
 			}
-			if(errors.hasErrors()) {
+			if (errors.hasErrors()) {
 				command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 				return Views.PASSWORD_REMINDER;
 			}
+			this.adminLogic.updateUser(user, UserUpdateOperation.DELETE_OPENID);
 		}
 			
 		/*
@@ -204,7 +205,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		final String reminderHash = this.encryptReminderHash(user.getName(), tempPassword);
 
 		// update db and delete OpenID Access if there is any
-		adminLogic.updateUser(user, UserUpdateOperation.DELETE_OPENID_AND_UPDATE_ALL);
+		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 		
 		// send mail
 		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, UrlUtils.safeURIEncode(reminderHash));		
