@@ -1428,12 +1428,13 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * only logged in users can update user settings.
 		 */
+		final String username = user.getName();
 		if(!UserUpdateOperation.ACTIVATE.equals(operation)) {
 			this.ensureLoggedIn();
 			/*
 			 * only admins can change settings of /other/ users
 			 */
-			this.permissionDBManager.ensureIsAdminOrSelf(loginUser, user.getName());
+			this.permissionDBManager.ensureIsAdminOrSelf(loginUser, username);
 		}
 		final DBSession session = openSession();
 
@@ -1441,14 +1442,14 @@ public class DBLogic implements LogicInterface {
 			switch (operation) {
 			case UPDATE_PASSWORD:
 				return this.userDBManager.updatePasswordForUser(user, session);
-
+			case DELETE_OPENID:
+				this.userDBManager.deleteOpenIDUser(username, session);
+				return username;
 			case UPDATE_SETTINGS:
 				return this.userDBManager.updateUserSettingsForUser(user, session);
-
 			case UPDATE_API:
-				this.userDBManager.updateApiKeyForUser(user.getName(), session);
+				this.userDBManager.updateApiKeyForUser(username, session);
 				break;
-
 			case UPDATE_CORE:
 				return this.userDBManager.updateUserProfile(user, session);
 				
@@ -2863,18 +2864,6 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureAdminAccess(loginUser);
 			// add public spam group to the groups of the loggedin users
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
-		}
-	}
-	
-	@Override
-	public void deleteOpenID(final String userName){
-		final DBSession session = openSession();
-		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		try{
-			this.userDBManager.deleteOpenIDUser(userName, session);
-		}
-		finally {
-			session.close();
 		}
 	}
 }
