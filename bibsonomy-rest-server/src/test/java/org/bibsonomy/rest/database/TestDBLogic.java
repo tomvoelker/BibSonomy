@@ -150,7 +150,7 @@ public class TestDBLogic implements LogicInterface {
 	 * note: the regex is currently not considered
 	 */
 	@Override
-	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, Date startDate, Date endDate, final int start, final int end) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
 		switch (grouping) {
@@ -187,7 +187,7 @@ public class TestDBLogic implements LogicInterface {
 	 * @param startDate TODO
 	 * @param endDate TODO*/
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, Date startDate, Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
 		switch (grouping) {
@@ -871,7 +871,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, Date startDate, Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return new Statistics(0);
 	}
@@ -888,7 +888,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Date startDate, Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -1080,30 +1080,25 @@ public class TestDBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId) {
+	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
 		return null;
 	}
 
 	@Override
-	public List<Tag> getTagRelation(int start, int end, TagRelation relation, List<String> tagNames) {
+	public List<Tag> getTagRelation(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public void updateDocument(Document document, String resourceHash, String newName) {
+	public void updateDocument(final Document document, final String resourceHash, final String newName) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void deleteOpenID(String userName) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }
