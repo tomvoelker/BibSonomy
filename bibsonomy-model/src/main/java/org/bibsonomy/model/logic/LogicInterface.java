@@ -299,7 +299,8 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * 
 	 * @param user  the user to update
 	 * @param operation the user operation
-	 * @return userid the user id of the updated user
+	 * @return userid the user id of the updated user TODO: the user id doesn't change at all
+	 * why should we return it (errors are handled in antoher way)
 	 */
 	public String updateUser(User user, final UserUpdateOperation operation);
 
@@ -681,10 +682,4 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return the new size of the inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
-	
-	/**
-	 * Delete OpenID-attribute from an user
-	 * @param userName name of the user
-	 */
-	public void deleteOpenID(final String userName);
 }
