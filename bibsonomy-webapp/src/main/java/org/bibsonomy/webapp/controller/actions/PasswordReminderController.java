@@ -180,7 +180,9 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * need to create a new pass and put it into the DB and send it per mail.
 		 */
 
-		
+		/*
+		 * check if user acknowledged the deletion of his OpenID access
+		 */
 		if (present(existingUser.getOpenID())){
 			if(!command.isAcknowledgeOpenIDDeletion()){
 				errors.rejectValue("acknowledgeOpenIDDeletion", "error.field.value.acknowledge");
@@ -189,9 +191,6 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 				command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 				return Views.PASSWORD_REMINDER;
 			}
-		
-		//delete OpenID attribute
-			adminLogic.deleteOpenID(existingUser.getName()); 
 		}
 			
 		/*
@@ -204,14 +203,8 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		// create reminder hash
 		final String reminderHash = this.encryptReminderHash(user.getName(), tempPassword);
 
-		// update db
-		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
-		
-		/* delete OpenID from db ( funktion schreiben ?)
-		 * view verändern: nachricht, dass openID zugang weg // evtl neues view
-		 * 
-		 */
-		
+		// update db and delete OpenID Access if there is any
+		adminLogic.updateUser(user, UserUpdateOperation.DELETE_OPENID_AND_UPDATE_ALL);
 		
 		// send mail
 		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, UrlUtils.safeURIEncode(reminderHash));		
