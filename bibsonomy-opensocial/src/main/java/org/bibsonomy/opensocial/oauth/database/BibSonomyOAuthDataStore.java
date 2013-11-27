@@ -21,6 +21,7 @@ import com.google.inject.name.Named;
 
 
 /**
+ * TODO: remove BibSonomy from class name
  * {@link OAuthDataStore} implementation that is used during both 2 and 3-legged OAuth authorizations.
  * 
  * This class is used when BibSonomy acts as a OAuth provider - i.e. for accessing information
@@ -54,13 +55,13 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	 * properties of our OAuth service provider 
 	 * FIXME: configure via spring 
 	 */
-	private OAuthServiceProvider serviceProvider;
+	private final OAuthServiceProvider serviceProvider;
 	
 	/** singleton pattern */
 	private static BibSonomyOAuthDataStore instance;
 	
 	@Inject
-	public BibSonomyOAuthDataStore(@Named("shindig.oauth.base-url") String baseUrl) {
+	public BibSonomyOAuthDataStore(@Named("shindig.oauth.base-url") final String baseUrl) {
 		this.serviceProvider = new OAuthServiceProvider(baseUrl + "requestToken", baseUrl + "authorize", baseUrl + "accessToken");
 	}
 	
@@ -86,7 +87,8 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	 * @param userId A user id
 	 * @throws OAuthProblemException when the implementing class wants to control the error response
 	 */
-	public void authorizeToken(OAuthEntry entry, String userId) throws OAuthProblemException {
+	@Override
+	public void authorizeToken(final OAuthEntry entry, final String userId) throws OAuthProblemException {
 		if (present(entry) && present(userId)) {
 			entry.setAuthorized(true);
 			entry.setUserId(userId);
@@ -102,7 +104,8 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	/**
 	 * convert the so far temporary request token to an authorized access token 
 	 */
-	public OAuthEntry convertToAccessToken(OAuthEntry entry) throws OAuthProblemException {
+	@Override
+	public OAuthEntry convertToAccessToken(final OAuthEntry entry) throws OAuthProblemException {
 		if (!present(entry)) {
 			throw new IllegalArgumentException("no OAuth entry given");
 		}
@@ -111,7 +114,7 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 			throw new OAuthProblemException("Token must be a request token");
 		}
 
-	    OAuthEntry accessEntry = new OAuthEntry(entry);
+	    final OAuthEntry accessEntry = new OAuthEntry(entry);
 	    
 	    accessEntry.setUserId(entry.getUserId());
 
@@ -132,7 +135,8 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	/** 
 	 * disable a given request/access token 
 	 */
-	public void disableToken(OAuthEntry entry) {
+	@Override
+	public void disableToken(final OAuthEntry entry) {
 		if (!present(entry)) {
 			throw new IllegalArgumentException("no OAuth entry given");
 		}
@@ -155,8 +159,9 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	 * @return An OAuthEntry containing a valid request token.
 	 * @throws OAuthProblemException when the implementing class wants to control the error response
 	 */
-	public OAuthEntry generateRequestToken(String consumerKey, String oauthVersion, String signedCallbackUrl) throws OAuthProblemException {
-		OAuthEntry entry = new OAuthEntry();
+	@Override
+	public OAuthEntry generateRequestToken(final String consumerKey, final String oauthVersion, final String signedCallbackUrl) throws OAuthProblemException {
+		final OAuthEntry entry = new OAuthEntry();
 		entry.setAppId(consumerKey);
 		entry.setConsumerKey(consumerKey);
 		// FIXME: use prject home
@@ -196,14 +201,15 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	 * @return the consumer object corresponding to the specified key.
 	 * @throws OAuthProblemException when the implementing class wants to signal errors
 	 */
-	public OAuthConsumer getConsumer(String consumerKey) throws OAuthProblemException {
-		OAuthConsumerInfo consumerInfo = this.authLogic.readConsumer(consumerKey);
+	@Override
+	public OAuthConsumer getConsumer(final String consumerKey) throws OAuthProblemException {
+		final OAuthConsumerInfo consumerInfo = this.authLogic.readConsumer(consumerKey);
 		if (!present(consumerInfo)) {
 			return null;
 		}
 
 		// null below is for the callbackUrl, which we don't have in the db
-		OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerInfo.getConsumerSecret(), serviceProvider);
+		final OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerInfo.getConsumerSecret(), serviceProvider);
 		
 		// set the public key
 		if (present(consumerInfo.getKeyName())) {
@@ -226,16 +232,19 @@ public class BibSonomyOAuthDataStore implements OAuthDataStore {
 	 * @param oauthToken a non-null oauthToken
 	 * @return a valid OAuthEntry or null if no match
 	 */
-	public OAuthEntry getEntry(String oauthToken) {
+	@Override
+	public OAuthEntry getEntry(final String oauthToken) {
 		return this.authLogic.readProviderToken(oauthToken);
 	}
 
-	public SecurityToken getSecurityTokenForConsumerRequest(String consumerKey, String userId) throws OAuthProblemException {
+	@Override
+	public SecurityToken getSecurityTokenForConsumerRequest(final String consumerKey, final String userId) throws OAuthProblemException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void removeToken(OAuthEntry entry) {
+	@Override
+	public void removeToken(final OAuthEntry entry) {
 		// TODO Auto-generated method stub
 
 	}

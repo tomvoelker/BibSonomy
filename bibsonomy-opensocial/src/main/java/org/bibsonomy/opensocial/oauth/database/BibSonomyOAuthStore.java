@@ -10,6 +10,7 @@ import org.apache.shindig.gadgets.oauth.OAuthRequestException;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
 
 /**
+ * TODO: remove BibSonomy from class name
  * Class for managing OAuth information for accessing external providers where
  * BibSonomy acts as a consumer.
  * 
@@ -18,10 +19,6 @@ import org.apache.shindig.gadgets.oauth.OAuthStore;
  * @author fei
  */
 public class BibSonomyOAuthStore implements OAuthStore {
-	
-	// FIXME: configure via spring
-	IOAuthLogic authLogic = IbatisOAuthLogic.getInstance();
-	
 	/** singleton pattern */
 	private static BibSonomyOAuthStore instance;
 	
@@ -33,30 +30,36 @@ public class BibSonomyOAuthStore implements OAuthStore {
 		return instance;
 	}
 	
+	// FIXME: configure via spring
+	private final IOAuthLogic authLogic = IbatisOAuthLogic.getInstance();
 	private String defaultCallbackUrl;
 	private BasicOAuthStoreConsumerKeyAndSecret defaultKey;
 	
-	public ConsumerInfo getConsumerKeyAndSecret(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider)throws GadgetException {
+	@Override
+	public ConsumerInfo getConsumerKeyAndSecret(final SecurityToken securityToken, final String serviceName, final OAuthServiceProvider provider)throws GadgetException {
 		try {
 			return this.authLogic.readAuthentication(securityToken, serviceName, provider);
-		} catch (OAuthRequestException e) {
+		} catch (final OAuthRequestException e) {
 			throw new GadgetException(Code.INVALID_PARAMETER, e.getMessage());
 		}
 	}
 
-	public TokenInfo getTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) throws GadgetException {
+	@Override
+	public TokenInfo getTokenInfo(final SecurityToken securityToken, final ConsumerInfo consumerInfo, final String serviceName, final String tokenName) throws GadgetException {
 		return this.authLogic.readToken(securityToken, consumerInfo, serviceName, tokenName);
 	}
 
-	public void removeToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) throws GadgetException {
+	@Override
+	public void removeToken(final SecurityToken securityToken, final ConsumerInfo consumerInfo, final String serviceName, final String tokenName) throws GadgetException {
 		this.authLogic.deleteToken(securityToken, consumerInfo, serviceName, tokenName);
 	}
 
-	public void setTokenInfo(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName, TokenInfo tokenInfo) throws GadgetException {
+	@Override
+	public void setTokenInfo(final SecurityToken securityToken, final ConsumerInfo consumerInfo, final String serviceName, final String tokenName, final TokenInfo tokenInfo) throws GadgetException {
 		this.authLogic.createToken(securityToken, consumerInfo, serviceName, tokenName, tokenInfo);
 	}
 
-	public void setDefaultCallbackUrl(String defaultCallbackUrl) {
+	public void setDefaultCallbackUrl(final String defaultCallbackUrl) {
 		this.defaultCallbackUrl = defaultCallbackUrl;
 	}
 
@@ -64,7 +67,7 @@ public class BibSonomyOAuthStore implements OAuthStore {
 		return defaultCallbackUrl;
 	}
 
-	public void setDefaultKey(BasicOAuthStoreConsumerKeyAndSecret defaultKey) {
+	public void setDefaultKey(final BasicOAuthStoreConsumerKeyAndSecret defaultKey) {
 		this.defaultKey = defaultKey;
 	}
 

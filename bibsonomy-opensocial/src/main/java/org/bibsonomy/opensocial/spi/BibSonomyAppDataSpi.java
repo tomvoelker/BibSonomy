@@ -12,23 +12,27 @@ import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 /**
+ * TODO: remove BibSonomy from class name
  * class for managing application (i.e. gadget) specific personal data store
  *  
  * @author fei
  */
 public class BibSonomyAppDataSpi implements AppDataService {
 
-	public Future<Void> deletePersonData(UserId userId, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws ProtocolException {
+	@Override
+	public Future<Void> deletePersonData(final UserId userId, final GroupId groupId, final String appId, final Set<String> fields, final SecurityToken token) throws ProtocolException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Future<DataCollection> getPersonData(Set<UserId> userIds, GroupId groupId, String appId, Set<String> fields, SecurityToken token) throws ProtocolException {
+	@Override
+	public Future<DataCollection> getPersonData(final Set<UserId> userIds, final GroupId groupId, final String appId, final Set<String> fields, final SecurityToken token) throws ProtocolException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Future<Void> updatePersonData(UserId userId, GroupId groupId, String appId, Set<String> fields, Map<String, String> values, SecurityToken token) throws ProtocolException {
+	@Override
+	public Future<Void> updatePersonData(final UserId userId, final GroupId groupId, final String appId, final Set<String> fields, final Map<String, String> values, final SecurityToken token) throws ProtocolException {
 		// TODO Auto-generated method stub
 		return null;
 	}

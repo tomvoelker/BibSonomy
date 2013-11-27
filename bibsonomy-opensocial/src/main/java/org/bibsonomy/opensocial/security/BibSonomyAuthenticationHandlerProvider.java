@@ -17,31 +17,33 @@
  */
 package org.bibsonomy.opensocial.security;
 
-import com.google.common.collect.Lists;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import java.util.List;
 
 import org.apache.shindig.auth.AnonymousAuthenticationHandler;
 import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.auth.UrlParameterAuthenticationHandler;
 import org.apache.shindig.social.core.oauth.OAuthAuthenticationHandler;
 
-import java.util.List;
+import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
+ * TODO: remove BibSonomy from class name
  * Guice provider of an ordered list of Auntentication Providers
  */
 public class BibSonomyAuthenticationHandlerProvider implements Provider<List<AuthenticationHandler>> {
   protected List<AuthenticationHandler> handlers;
 
   @Inject
-  public BibSonomyAuthenticationHandlerProvider(SpringSecurityAuthenticationHandler springSecurityHandler, UrlParameterAuthenticationHandler urlParam,
-      OAuthAuthenticationHandler threeLeggedOAuth,
-      AnonymousAuthenticationHandler anonymous) {
+  public BibSonomyAuthenticationHandlerProvider(final SpringSecurityAuthenticationHandler springSecurityHandler, final UrlParameterAuthenticationHandler urlParam,
+      final OAuthAuthenticationHandler threeLeggedOAuth,
+      final AnonymousAuthenticationHandler anonymous) {
     handlers = Lists.newArrayList(springSecurityHandler, urlParam, threeLeggedOAuth, anonymous);
   }
 
-  public List<AuthenticationHandler> get() {
+  @Override
+public List<AuthenticationHandler> get() {
     return handlers;
   }
 }
