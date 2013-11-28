@@ -272,7 +272,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void updateApiKeyForUser() {
-		final String testuser = "testuser1";
+		final String testuser = "testuser3";
 		final String apiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(apiKey);
 		assertEquals(32, apiKey.length());
