@@ -1,39 +1,39 @@
-\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <p>
-\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars]{\author} (\year),
-'\format[HTMLChars]{\title}'
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author} (\format[AntiScriptInjection]{\year}),
+'\format[HTMLChars,AntiScriptInjection]{\title}'
 \begin{journal}
-, <i>\format[HTMLChars]{\journal}</i> <b>\volume</b>
+, <i>\format[HTMLChars,AntiScriptInjection]{\journal}</i> <b>\format[AntiScriptInjection]{\volume}</b>
 \end{journal}
 \begin{number}
-(\number)
+(\format[AntiScriptInjection]{\number})
 \end{number}
 \begin{editor}
-, <i> in \format[AuthorFirstFirst,AuthorAndsReplacer,HTMLChars]{\editor}</i>, ed.,
+, <i> in \format[AuthorFirstFirst,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}</i>, ed.,
 \end{editor}
 \begin{booktitle}
-'\format[HTMLChars]{\booktitle}'
+'\format[HTMLChars,AntiScriptInjection]{\booktitle}'
 \end{booktitle}
 \begin{organization}
-, \organization
+, \format[AntiScriptInjection]{\organization}
 \end{organization}
 \begin{institution}
-, Technical report, \institution
+, Technical report, \format[AntiScriptInjection]{\institution}
 \end{institution}
 \begin{publisher}
-, \format[HTMLChars]{\publisher}
+, \format[HTMLChars,AntiScriptInjection]{\publisher}
 \end{publisher}
 \begin{howpublished}
-, \howpublished
+, \format[AntiScriptInjection]{\howpublished}
 \end{howpublished}
 \begin{address}
-, \format[HTMLChars]{\address}
+, \format[HTMLChars,AntiScriptInjection]{\address}
 \end{address}
 \begin{note}
-, \note
+, \format[AntiScriptInjection]{\note}
 \end{note}
 \begin{pages}
-, \pages
+, \format[AntiScriptInjection]{\pages}
 \end{pages}.
 <br/>
 
@@ -42,7 +42,7 @@
 <a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
 <a onclick="toggleBibtex2('\username', '\intrahash', '\biburl?format=endnote'); return false;" href="\biburl?format=endnote">[Endnote]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
-\format[Replace("\n, "),HTMLChars]{\abstract}
+\format[Replace("\n, "),HTMLChars,AntiScriptInjection]{\abstract}
 </div>
 <div style="position:relative">						
 	<div id="bib_\intrahash\username" style="display:inline;position:relativ;"></div>

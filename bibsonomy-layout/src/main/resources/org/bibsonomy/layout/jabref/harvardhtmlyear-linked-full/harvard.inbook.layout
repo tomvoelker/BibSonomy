@@ -1,20 +1,20 @@
-\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\year">\year</a></h3>\endgroup{year}
+\begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <p>
 \begin{author}
-\format[HTMLChars,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author}
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
 \end{author}
- (\year), <i>\format[HTMLChars]{\title}</i>
+ (\format[AntiScriptInjection]{\year}), <i>\format[HTMLChars,AntiScriptInjection]{\title}</i>
 \begin{publisher}
-, \format[HTMLChars]{\publisher}
+, \format[HTMLChars,AntiScriptInjection]{\publisher}
 \end{publisher}
 \begin{address}
-, \format[HTMLChars]{\address}
+, \format[HTMLChars,AntiScriptInjection]{\address}
 \end{address}
 \begin{chapter}
-, chapter \chapter
+, chapter \format[AntiScriptInjection]{\chapter}
 \end{chapter}
 \begin{pages}
-, pp. \pages
+, pp. \format[AntiScriptInjection]{\pages}
 \end{pages}.
 <br/>
 <a href="\pdfurl" target="_blank"> [Volltext] </a>&nbsp;
@@ -22,7 +22,7 @@
 <a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
 <a onclick="toggleBibtex2('\username', '\intrahash', '\biburl?format=endnote'); return false;" href="\biburl?format=endnote">[Endnote]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
-\format[Replace("\n, "),HTMLChars]{\abstract}
+\format[Replace("\n, "),HTMLChars,AntiScriptInjection]{\abstract}
 </div>
 <div style="position:relative">						
 	<div id="bib_\intrahash\username" style="display:inline;position:relativ;"></div>
