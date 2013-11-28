@@ -40,15 +40,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+
 @RunWith(Parameterized.class)
 public class JabrefLayoutAntiScriptInjectionTest extends AbstractJabrefLayoutTest{
 
 	//Layouts that will be tested
 	private static final Set<String> TESTEDLAYOUTS = 
-		Sets.asSet(new String[]{"apa_html","chicago","din1505","dblp","harvardhtml","simplehtml","simplehtmlyear",
-								"tablerefs","tablerefsabsbib","tablerefsabsbibsort","html"});
+		Sets.asSet(new String[]{"apa_html", "chicago", "din1505", "din1505year", "harvardhtml", "harvardhtmlyear",
+								"harvardhtmlyear-linked", "harvardhtmlyear-linked-full",
+								"simplehtml", "simplehtmlyear", "tablerefs", "tablerefsabsbib", "tablerefsabsbibsort", "dblp", "html"});
 	private static final String TESTCASEFOLDERPATH = "/jabref-layout-anti-script-tests";
-	private static final String ENTRY_TYPESPLIT_SUFFIX = "xmlesc#";
+	private static final String ENTRYTYPE_SPLITSUFFIX = "xmlesc#";
 	
 	public JabrefLayoutAntiScriptInjectionTest(File layoutTest, String layoutName) {
 		super(layoutTest, layoutName);
@@ -56,7 +58,7 @@ public class JabrefLayoutAntiScriptInjectionTest extends AbstractJabrefLayoutTes
 	
 	@Parameters
 	public static Collection<Object[]> data() {
-		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, ENTRY_TYPESPLIT_SUFFIX);
+		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, ENTRYTYPE_SPLITSUFFIX);
 	}
 	
 	@Override
