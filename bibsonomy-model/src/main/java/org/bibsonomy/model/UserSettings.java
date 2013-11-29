@@ -111,7 +111,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * Shall the web interface ask the user before it really deletes something?
 	 */
-	private boolean confirmDelete;
+	private boolean confirmDelete = true;
 	
 	/**
 	 * User wants maxCount (true) or maxFreq (false)
