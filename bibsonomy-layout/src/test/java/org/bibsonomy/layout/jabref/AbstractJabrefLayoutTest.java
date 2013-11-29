@@ -154,7 +154,7 @@ public abstract class AbstractJabrefLayoutTest {
 			sb.delete(index, index2);
 			renderedLayout = sb.toString();
 		}
-		else if (layoutName.equals("din1505year") || layoutName.equals("simplehtmlyear") || layoutName.equals("harvardhtmlyear")) {
+		else if (layoutName.equals("din1505year") || layoutName.equals("simplehtmlyear") || layoutName.startsWith("harvardhtmlyear")) {
 			/*
 			 * Deletes randomly appearing bibsonomy quicknav_group
 			 */
