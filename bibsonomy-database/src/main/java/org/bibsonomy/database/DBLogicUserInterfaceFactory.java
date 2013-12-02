@@ -9,8 +9,6 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.model.util.UserUtils;
 
 /**
@@ -19,14 +17,12 @@ import org.bibsonomy.model.util.UserUtils;
  * @author Jens Illig
  * @version $Id$
  */
-public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
+public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
 	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 
 	protected DBSessionFactory dbSessionFactory;
-	
-	private BibTexReader bibtexReader = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -39,12 +35,12 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.dbSessionFactory, this.bibtexReader);
+				return new DBLogic(loggedInUser, this.dbSessionFactory, this.bibtexReader, this.getFileLogic());
 			}
 			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), this.dbSessionFactory, this.bibtexReader);
+		return new DBLogic(new User(), this.dbSessionFactory, this.bibtexReader, this.getFileLogic());
 	}
 	
 	/**
@@ -93,19 +89,5 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 */
 	protected DBSession openSession() {
 		return this.dbSessionFactory.getDatabaseSession();
-	}
-	
-	/**
-	 * @return the bibtexReader
-	 */
-	public BibTexReader getBibtexReader() {
-		return this.bibtexReader;
-	}
-
-	/**
-	 * @param bibtexReader the bibtexReader to set
-	 */
-	public void setBibtexReader(BibTexReader bibtexReader) {
-		this.bibtexReader = bibtexReader;
 	}
 }

@@ -27,6 +27,7 @@ import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.testutil.DummyFileLogic;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,7 +67,7 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 
 		final User loginUser = new User();
 		loginUser.setName(userName);
-		dbLogic = new DBLogic(loginUser, getDbSessionFactory(), null);
+		dbLogic = new DBLogic(loginUser, getDbSessionFactory(), null, new DummyFileLogic());
 	}
 
 	private HashMap<String, SynchronizationPost> listToMap(final List<SynchronizationPost> posts) {

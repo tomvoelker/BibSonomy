@@ -49,6 +49,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.testutil.DummyFileLogic;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -99,14 +100,14 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	protected LogicInterface getDbLogic(final String userName) {
 		final User user = new User();
 		user.setName(userName);
-		return new DBLogic(user, getDbSessionFactory(), null);
+		return new DBLogic(user, getDbSessionFactory(), null, new DummyFileLogic());
 	}
 	
 	protected LogicInterface getAdminDbLogic(final String userName) {
 		final User user = new User();
 		user.setName(userName);
 		user.setRole(Role.ADMIN);
-		return new DBLogic(user, getDbSessionFactory(), null);
+		return new DBLogic(user, getDbSessionFactory(), null, new DummyFileLogic());
 	}
 	
 	private static void assertList(final List<Post<BibTex>> posts, final Set<String> checkUserNameOneOf, final Order checkOrder, final Set<String> checkTags, final String checkInterHash, final Set<Integer> mustBeInGroups, final Set<Integer> mustNotBeInGroups) {
@@ -907,7 +908,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 
 	private <R extends Resource> void postAndAssertGroup(Group group, Group expectedGroup, String userName, Class<R> resourceType) {
 		
-		final LogicInterface dbl = new DBLogic( getAdminDbLogic(TEST_USER_1).getUserDetails(userName), getDbSessionFactory(), null);
+		final LogicInterface dbl = new DBLogic( getAdminDbLogic(TEST_USER_1).getUserDetails(userName), getDbSessionFactory(), null, new DummyFileLogic());
 		final Post<R> post = ModelUtils.generatePost(resourceType);
 		
 		post.getUser().setName(userName);
@@ -1052,7 +1053,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void testValidateGroups() {
 		final User user = new User(TEST_USER_2);
-		final DBLogic logic = new DBLogic(user, dbSessionFactory, null);
+		final DBLogic logic = new DBLogic(user, dbSessionFactory, null, new DummyFileLogic());
 		
 		/*
 		 * test empty group, public group must be added

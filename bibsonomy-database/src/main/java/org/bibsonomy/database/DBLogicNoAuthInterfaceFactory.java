@@ -14,15 +14,14 @@ import org.bibsonomy.model.util.BibTexReader;
  * XXX: Please remove this class once this is not necessary anymore.
  * 
  * dbe, 20071203
+ * tni: TEMPORARY???
  * 
  * @author Dominik Benz
  */
-public class DBLogicNoAuthInterfaceFactory implements LogicInterfaceFactory {
+public class DBLogicNoAuthInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 
 	private DBSessionFactory dbSessionFactory;
 	
-	private BibTexReader bibtexReader = null;
-
 	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
 		if (loginName != null) {
@@ -31,10 +30,10 @@ public class DBLogicNoAuthInterfaceFactory implements LogicInterfaceFactory {
 			 * it's name such that the user is seen as logged in (users which
 			 * are not logged in cause a user object with empty name).
 			 */
-			return new DBLogic(new User(loginName), this.dbSessionFactory, this.bibtexReader);
+			return new DBLogic(new User(loginName), this.dbSessionFactory, this.bibtexReader, this.getFileLogic());
 		}
 		// guest access
-		return new DBLogic(new User(), this.dbSessionFactory, this.bibtexReader);
+		return new DBLogic(new User(), this.dbSessionFactory, this.bibtexReader, this.getFileLogic());
 	}
 
 	/**
@@ -52,18 +51,4 @@ public class DBLogicNoAuthInterfaceFactory implements LogicInterfaceFactory {
 		return dbSessionFactory.getDatabaseSession();
 	}
 	
-	
-	/**
-	 * @return the bibtexReader
-	 */
-	public BibTexReader getBibtexReader() {
-		return this.bibtexReader;
-	}
-
-	/**
-	 * @param bibtexReader the bibtexReader to set
-	 */
-	public void setBibtexReader(BibTexReader bibtexReader) {
-		this.bibtexReader = bibtexReader;
-	}
 }
