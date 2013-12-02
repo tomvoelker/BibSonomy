@@ -31,6 +31,7 @@ import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.testutil.TestServerBuilder;
+import org.bibsonomy.testutil.DummyFileLogic;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.AfterClass;
@@ -253,7 +254,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 	
 	private static class SyncDBLogic extends DBLogic {
 		public SyncDBLogic(final User user, final DBSessionFactory dbSessionFactory) {
-			super(user, dbSessionFactory, null);
+			super(user, dbSessionFactory, null, new DummyFileLogic());
 		}
 	}
 	
