@@ -1,8 +1,60 @@
 @CHARSET "UTF-8";
 
+
+#innercontent {
+	font-size: 110%;
+}
+
+/*
+ * subcolumns 
+ */
+ 
+.subcolumns {
+	width: 100%;
+	overflow: hidden;
+	padding-bottom: 1em
+}
+
+.c20l, c20r {
+	width: 20%;
+} 
+
+.c80l, .c80r {
+	width: 80%;
+}
+
+.c33l, .c33r {
+	width: 33.333%;
+}
+
+.c66l, .c66r {
+	width: 66.666%;
+}
+
+.c50l, .c50r {
+	width: 50%;
+}
+.c20l, .c33l, .c50l, .c66l, .c80l {
+	float: left;
+}
+
+.c20r, .c33r, .c50r, .c66r, .c80r {
+	float: right;
+	margin-left: -5px;
+}
+
+.subcr {
+	padding: 0 0 0 1em;
+}
+
+.subcl {
+	padding: 0 1em 0 0;
+}
+
 .morecontent span {
     display: none;
 }
+
 
 /*
 .preview_meta {
@@ -15,17 +67,132 @@
 }
 */
 .bibtexpreviewimage {
-	float:left;
-	margin-left: 1em; 
-	border: 1px solid #ddd; 
-	text-align: center;
-	padding: 1em;
+
+}
+
+/** FIXME: convert to less and use color variable main-color */
+.bibtexpreviewimage .pre_pic {
+	width: 220px;
+	padding: 0;
+	margin: 0;
+}
+
+.bibtexpreviewimage a {
+	width: 220px;
+	text-align: left;
+	padding: 0;
+	margin: 0;
+	position:relative;
+	display:block;
+	background:#fff;
+	border:1px solid #a9a9a9;
+	margin-bottom:20px;
+	-webkit-box-shadow:0 3px 8px rgba(0,0,0,0.3);
+	-moz-box-shadow:0 3px 8px rgba(0,0,0,0.3);
+	box-shadow:0 3px 8px rgba(0,0,0,0.3);
+}
+
+.btn > span {
+	display: none;
+} 
+
+a.btn {
+	margin-right: 6px;
+}
+
+.renameDocForm {
+	margin-top: 5px;
+	height: 25px;
+	border-bottom: 1px #aaa solid;
+}
+
+
+input.renameDocInput {
+	width: 130px;
+	float: left;
+	border: 1px solid #fff;
+}
+
+ input.renameDocInput:hover,
+ input.renameDocInput:focus {
+	border: 1px #006699 solid !important;
+}
+
+.renameBtn {
+	background: url("/resources/image/post_actions.png");
+	background-position: 0 -159px;
+	width: 22px;
+	height: 18px;
+	border: none;
+	cursor: pointer;
+}
+
+.okBtn {
+	background: url("/resources/image/post_actions.png");
+	background-position: 0 -1269px;
+	width: 22px;
+	height: 18px;
+	border: none;
+	cursor: pointer;
+}
+
+.removeDocBtn { 
+	display:block;
+	float: left;
+	background: url("/resources/image/post_actions.png");
+	background-position: 0 -275px; 
+	background-repeat: no-repeat;
+	width: 13px; 
+	height: 18px; 
+}
+.okBtn:hover {
+
+	background-position: 69px -1269px;
+}
+
+
+.downloadBtn {
+	
+	background: url("/resources/image/post_actions.png");
+	background-position: 0 -1221px;
+	width: 16px;
+	height: 22px;
+	border: none;
+	text-decoration: none;
+}
+
+
+.downloadQRBtn {
+	background: url("/resources/image/post_actions.png");
+	background-position: 0 -1247px;
+	width: 20px;
+	height: 22px;
+	border: none;
+	text-decoration: none;
+	margin-right: 0 !important;
+}
+.downloadQRBtn:hover {
+	background-position: 69px -1247px;
+}
+.renameBtn:hover {
+		background-position: 0 -120px;
+}
+
+.downloadBtn:hover {
+	background-position: 69px -1221px;
+}
+
+
+.renameDocForm > * {
+	float: left;
+	display: block;
 }
 
 .preview_meta .removeDoc {
 	background: url("/resources/image/post_actions.png");
 	background-position: 0 -275px; width: 13px; height: 18px;
 }
+
 .preview_meta p {
 	padding: 0;
 	margin: 0;
@@ -40,35 +207,18 @@
 	padding: 2px;	
 	clear: left;
 }
-.preview_meta p .removeDoc, 
-.preview_meta p .renameDoc {
-	display: block;
-	float: left;
-	margin: 0;
-	padding: 0;
-	width: 15px; 
- 	height: 18px;
-	background-repeat: none;
-}
 
 .preview_meta .removeDoc span, 
 .preview_meta .renameDoc span {
 	display: none;	
 }
 
-.post .action .idelete, #pageOptions .idelete, .post .action .iremove, #pageOptions .iremove											
-{ background-position: 0 -197px; width: 13px; height: 18px; } 
-.post .action .delete:hover, #pageOptions .delete:hover, .post .action .remove:hover, #pageOptions .remove:hover, .deleteDocument:hover	
-{ background-position: 0 -237px; width: 13px; height: 18px; } 
-.post .action .delete, #pageOptions .delete, .post .action .remove, #pageOptions .remove, .deleteDocument							
-{ background-position: 0 -275px; width: 13px; height: 18px; }
-
 #innercontent .title {
 	margin-top: -5px;
 	margin-left: -40px;
 	padding-top: 5px;
 	padding-left: 40px;
-	background: url("/resources/image/publication.png") top left no-repeat;
+	/*background: url("/resources/image/publication.png") top left no-repeat;*/
 	/*background-position: 0px -57px;*/
 }
 
@@ -87,26 +237,82 @@
 	
 }
 
-#innercontent input.renameDocInput {
-	border-color: #fff;
-	width: 90px;
-	float: left;
-}
-
-/** FIXME: convert to less and use color variable main-color */
- input.renameDocInput:hover,
- input.renameDocInput:focus {
-	border: 1px #006699 solid !important;
-}
-
-.removeDocLink { 
-	display:block;
-	float: left;
-	background: url("/resources/image/post_actions.png");
-	background-position: 0 -275px; 
-	background-repeat: no-repeat;
-	width: 13px; 
-	height: 18px; 
-}
 .removeDocLink:hover {background-position: 0 -237px;}
 .removeDocLink span {display:none;}
+
+.taglist li {
+	display: inline;
+	float: left; 
+	height: 30px !important;
+}
+
+.taglist .tagitem {
+	background: transparent url("/resources/image/bg_tag_left.png") top left no-repeat;
+	height:20px;
+	font-size: 13px;
+	line-height: 20px;
+	padding: 2px 0 3px 1.5em;
+}
+
+.taglist span.tagitem_rightborder {
+	background: transparent url("/resources/image/bg_tag_right.png") top right no-repeat;
+	font-size: 13px;
+	line-height: 20px;
+	font-family: 'Arial', sans-serif;
+	height:20px;
+	padding: 2px 0.5em 3px 0;
+	margin: 0.5em 0.5em 0.5em 0;
+}
+
+.taglist .comma {
+	display: none;
+}
+
+
+.subcolumns h4 {
+	margin-left: -0.5em !important;
+}
+
+#linkBox {
+	font-size: 80% !important;
+}
+
+div#ownerAvatar{
+	display: block;
+	float:left; 
+	width: 68px; 
+	text-align: center;
+	padding-top: 5px;
+
+}
+
+div#titletext {
+	width: auto;
+	min-width: 454px;
+	max-width: 630px; 
+	margin-left: 78px;
+	display: block;
+	position: relative;
+}
+
+div#ownerAvatar a {
+
+}
+
+div#ownerAvatar a img {
+	width: 64px; 
+	height: 64px;
+	padding: 1px;
+	border: 1px solid #a9a9a9; 
+}
+
+.addUrl:before, .addDocument:before {
+	content:"+ ";
+}
+
+.addDocument {
+	display: block;
+	line-height: 13px;
+	padding: 5px 3px 3px 3px;
+	margin: 2px 0;
+}
