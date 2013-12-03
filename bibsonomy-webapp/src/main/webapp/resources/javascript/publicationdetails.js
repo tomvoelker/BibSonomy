@@ -66,7 +66,7 @@ $(function() {
         if(content.length > showChar) {
  
             var c = content.substr(0, showChar);
-            var h = content.substr(showChar-1, content.length - showChar);
+            var h = content.substr(showChar, content.length - showChar);
  
             var html = c + '<span class="moreellipses">' + dots + ' </span><span class="morecontent"><span>' + h + '</span> <a href="" class="morelink">' + moretext + '</a></span>';
             $(this).html(html);
@@ -91,7 +91,7 @@ $(function() {
     	var button = $(this);
 		$.get($(button).attr("href"), {}, function(data) {
 			var status=$("status", data).text();
-			if (status=="error") {
+			if(status=="error") {
 				alert($("reason", data).text());
 			} else {
 				alert($("response", data).text());
@@ -103,26 +103,130 @@ $(function() {
 	});
     
 	/*
-	 * handler for presses enter button 
-	 *
-	$(".renameDocInput").keypress(function(event) {
-		if(event.which == 13) {
-			//renameSelected($(this));
-			return false;
-		}
-	});
-	*/
-	$(".renameDocForm").submit(function(event) {
+	 * handler for press rename button 
+	 */
+	$(".renameBtn").click(function(event) {
+		
 		event.preventDefault();
-		renameSelected($(this));
-		$(this).find('input').blur();
+		var field = $(this).prev();
+		var okBtn = $(this).next();
+		field.focus();
+		field.select();
+		$(this).hide();
+		okBtn.show();
 		return false;
 	});
 	
+	/*
+	$(".renameDocInput").focusout(function() {
+		$(this).next().next().hide();
+		$(this).next().show();
+	});
+	*/
+	$(".renameDocInput").focusin(function() {
+		
+		$(this).next().hide();
+		$(this).next().next().show();
+		return false;
+	});
+	
+	
+	$(".renameDocForm").submit(function(event) {
+		
+		event.preventDefault();
+		renameSelected($(this));
+		
+		return false;
+		
+	});
+	
+	$('input[type=file]').click();
+	
 });
 
+function addDocument() {
+	/*
+	 * load jQuery form plugin which is needed for ajaxSubmit()
+	 * 
+	 * FIXME: ensure that script is loaded before user can do something
+	 */
+	$.getScript('/resources/jquery/plugins/form/jquery.form.js');
 	
+	/*
+	 * when upload form already exists, remove it 
+	 */
+	if ($("#upForm").length) $("#upForm").remove();
+	
+	/*
+	 * remove rename form if it already exists 
+	 */
+	if ($("#renameForm").length) $("#renameForm").remove();
+
+	/*
+	 * build upload form
+	 */
+	var upForm = "<form id='upForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data'>" + 
+	"<input id='upFile' type='file' name='file'/></form>";
+
+	/*
+	 * append form
+	 */
+	var inputDiv = $("#inputDiv");
+	if (inputDiv.length) {
+		/*
+		 * on /bibtex/... pages
+		 */
+		inputDiv.append($(upForm));
+	} else {
+		/*
+		 * on other pages 
+		 * 
+		 * this = a
+		 * parent = headline DIV
+		 */
+		$(this).parent().append($(upForm));
+	}
+
+	/*
+	 * attach handler that is called when the user selected a file
+	 */
+	$("#upFile").change(fileSelected);
+	$("#upFile").click();
+	return false;
+}
+
+
 /**
+ * handle answer of file upload ajax-request
+ * 
+ * @param data
+ */
+function uploadRequestSuccessful(data) {
+	var status = $("status", data).text();
+
+	/*
+	 * remove progress icon and upload form
+	 */
+	var upParent = $("#upProgress").parent(); // used below to reach document icon
+	$("#upProgress").remove();
+	$("#upForm").remove();
+
+	if (status == "error") {
+		alert($("reason", data).text());
+		return;
+	}
+	if (status == "ok") {
+		var fileHash  = $("filehash", data).text();
+		var intrahash = $("intrahash", data).text();
+		var fileName  = $("filename", data).text();
+		
+		var href = "/bibtex/" + intrahash + "/" + encodeURIComponent(currUser);
+		
+		document.location.href=$(location).attr('href');
+	}
+}
+
+/*
  * renames a document
  */
 function renameSelected(obj) {
@@ -170,6 +274,9 @@ function renameSelected(obj) {
 		dataType: "xml",
 		success: renameRequestSuccess	
 	});
+	obj.find('input').blur();
+	obj.find('.okBtn').hide();
+	obj.find('.renameBtn').show();
 }
 
 
@@ -260,11 +367,11 @@ function renameRequestSuccess(data) {
 	var encodedOldName = encodeURIComponent(oldName).replace(/%20/g, '+');
 	var encodedNewName = encodeURIComponent(newName).replace(/%20/g, '+');
 	var newHref = toRename.parent().attr("action").replace(encodedOldName, encodedNewName);	
-	var newDelHref = toRename.parent().next().attr('href').replace(encodedOldName, encodedNewName);	
+	var newDelHref = toRename.parent().find('.removeDocLink').attr('href').replace(encodedOldName, encodedNewName);	
 	
 	toRename.parent().attr("action", newHref);
-	toRename.parent().next().attr('href', newDelHref);
-	toRename.parent().next().attr('data-filename', newName);
+	toRename.parent().find('.removeDocLink').attr('href', newDelHref);
+	toRename.parent().find('.removeDocLink').attr('data-filename', newName);
 	
 	/*
 	 * print status 
