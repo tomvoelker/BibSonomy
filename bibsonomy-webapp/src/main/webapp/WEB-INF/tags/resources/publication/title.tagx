@@ -3,6 +3,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
@@ -12,9 +13,14 @@
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}" />
 	<c:set var="year" value="${mtl:cleanBibtex(post.resource.year)}" />
 		
-	<h1>
-		<c:out value="${bibTitle}" /> <span style="font-size: 85%; padding-left: 1em"><a href="/user/${mtl:encodeURI(post.user.name)}">@${mtl:encodeURI(post.user.name)}</a></span>
-	</h1>
-	<p style="margin-top: 0.5em;"><bib:author publication="${post.resource}" /> (${year})</p>
-
+	
+	<div id="ownerAvatar" >
+		<a class="img" href="/user/${mtl:encodeURI(post.user.name)}" title="@${mtl:encodeURI(post.user.name)}">
+			<img alt="@${mtl:encodeURI(post.user.name)}" src="http://www.biblicious.org/picture/user/${fn:escapeXml(post.user.name)}" class="commentPicture"/>
+		</a>
+	</div>
+	<div id="titletext" style="">
+		<h1 id="pubtitle"><c:out value="${bibTitle}" /></h1>
+		<p style="margin-top: 0.5em;"><bib:desc publication="${post.resource}"/></p>
+	</div>
 </jsp:root>
