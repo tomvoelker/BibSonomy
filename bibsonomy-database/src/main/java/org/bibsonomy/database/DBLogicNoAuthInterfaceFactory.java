@@ -19,8 +19,6 @@ import org.bibsonomy.model.util.BibTexReader;
  * @author Dominik Benz
  */
 public class DBLogicNoAuthInterfaceFactory extends AbstractDBLogicInterfaceFactory {
-
-	private DBSessionFactory dbSessionFactory;
 	
 	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
@@ -30,25 +28,10 @@ public class DBLogicNoAuthInterfaceFactory extends AbstractDBLogicInterfaceFacto
 			 * it's name such that the user is seen as logged in (users which
 			 * are not logged in cause a user object with empty name).
 			 */
-			return new DBLogic(new User(loginName), this.dbSessionFactory, this.bibtexReader, this.getFileLogic());
+			return new DBLogic(new User(loginName), this.getDbSessionFactory(), this.bibtexReader, this.getFileLogic());
 		}
 		// guest access
-		return new DBLogic(new User(), this.dbSessionFactory, this.bibtexReader, this.getFileLogic());
+		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader, this.getFileLogic());
 	}
 
-	/**
-	 * @param dbSessionFactory
-	 *            the {@link DBSessionFactory} to use
-	 */
-	public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
-		this.dbSessionFactory = dbSessionFactory;
-	}
-
-	/**
-	 * Returns a new database session.
-	 */
-	protected DBSession openSession() {
-		return dbSessionFactory.getDatabaseSession();
-	}
-	
 }

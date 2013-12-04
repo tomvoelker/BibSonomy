@@ -22,8 +22,6 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
 	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 
-	protected DBSessionFactory dbSessionFactory;
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -35,12 +33,12 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.dbSessionFactory, this.bibtexReader, this.getFileLogic());
+				return new DBLogic(loggedInUser, this.getDbSessionFactory(), this.bibtexReader, this.getFileLogic());
 			}
 			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), this.dbSessionFactory, this.bibtexReader, this.getFileLogic());
+		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader, this.getFileLogic());
 	}
 	
 	/**
@@ -74,20 +72,5 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 	 */
 	protected User getLoggedInUserAccess(final String loginName, final String password, final DBSession session) {
 		return this.userDBManager.validateUserAccessByPassword(loginName, password, session);
-	}
-	
-	/**
-	 * @param dbSessionFactory
-	 *            the {@link DBSessionFactory} to use
-	 */
-	public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
-		this.dbSessionFactory = dbSessionFactory;
-	}
-
-	/**
-	 * Returns a new database session.
-	 */
-	protected DBSession openSession() {
-		return this.dbSessionFactory.getDatabaseSession();
 	}
 }

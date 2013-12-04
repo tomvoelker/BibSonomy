@@ -1,5 +1,7 @@
 package org.bibsonomy.database;
 
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.services.filesystem.FileLogic;
@@ -11,6 +13,7 @@ import org.bibsonomy.services.filesystem.FileLogic;
 public abstract class AbstractDBLogicInterfaceFactory implements LogicInterfaceFactory {
 	protected BibTexReader bibtexReader = null;
 	protected FileLogic fileLogic;
+	protected DBSessionFactory dbSessionFactory;
 
 	/**
 	 * @return the bibtexReader
@@ -20,7 +23,7 @@ public abstract class AbstractDBLogicInterfaceFactory implements LogicInterfaceF
 	}
 
 	public FileLogic getFileLogic() {
-		return fileLogic;
+		return this.fileLogic;
 	}
 
 	/**
@@ -34,6 +37,22 @@ public abstract class AbstractDBLogicInterfaceFactory implements LogicInterfaceF
 		this.fileLogic = fileLogic;
 	}
 
-	
-	
+	/**
+	 * @param dbSessionFactory
+	 *            the {@link DBSessionFactory} to use
+	 */
+	public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
+		this.dbSessionFactory = dbSessionFactory;
+	}
+
+	public DBSessionFactory getDbSessionFactory() {
+		return this.dbSessionFactory;
+	}
+
+	/**
+	 * Returns a new database session.
+	 */
+	protected DBSession openSession() {
+		return this.getDbSessionFactory().getDatabaseSession();
+	}
 }
