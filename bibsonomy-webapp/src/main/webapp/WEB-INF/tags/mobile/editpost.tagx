@@ -139,10 +139,10 @@ toggleGroupBox();
 						}
 					});
 
-					]] >
-							//</mtl:cdata>
-					</script>
-				</div>
+					]]>
+					//</mtl:cdata>
+				</script>
+			</div>
 		</jsp:attribute>
 	</mobile:simple>
 </jsp:root>
