@@ -177,23 +177,27 @@ public class URLGenerator {
 		 * no user given
 		 */
 		if (!present(user) || !present(user.getName())){
+			/*
+			 * FIXME: why are we using the inter hash here but in 
+			 * getPulicationUrl(String intraHash, String userName) we are using
+			 * the intra hash when no user name is available?
+			 */
 			return this.getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTER_HASH_ID + publication.getInterHash());
 		}
 		return this.getUrl(projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName()));
 	}
 
 	/**
-	 * Constructs a new publication URL for the given publication and username.
+	 * Constructs a new publication URL for the given publication and user name.
 	 * If you have the resource as object, please use {@link #getPublicationUrl(BibTex, User)}. 
 	 * @param intraHash
 	 * @param userName
-	 * @return The URL pointing to the post of that user for the publication represented by the given intrahash. 
+	 * @return The URL pointing to the post of that user for the publication represented by the given intra hash. 
 	 */
 	public String getPublicationUrl(final String intraHash, final String userName) {
-		String url = projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash; 
+		final String url = projectHome + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash; 
 		if (present(userName)) {
-			url += "/" + UrlUtils.safeURIEncode(userName);
-			
+			return this.getUrl(url + "/" + UrlUtils.safeURIEncode(userName));
 		}
 		return this.getUrl(url);
 	}
