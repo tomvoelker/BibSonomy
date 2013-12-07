@@ -151,16 +151,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Generate an API key for an existing user.
 	 * 
-	 * @param username 
+	 * @param user 
 	 * @param session 
 	 */
-	public void updateApiKeyForUser(final String username, final DBSession session) {
-		final User user = new User(username);
+	public void updateApiKeyForUser(final User user, final DBSession session) {
 		if (!present(this.getUserDetails(user.getName(), session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
 		}
 		user.setApiKey(UserUtils.generateApiKey());
-		this.plugins.onUserUpdate(username, session);
+		this.plugins.onUserUpdate(user.getName(), session);
 		this.update("updateApiKeyForUser", user, session);
 	}
 	

@@ -273,17 +273,18 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void updateApiKeyForUser() {
 		final String testuser = "testuser3";
+		final User user = new User(testuser);
 		final String apiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(apiKey);
 		assertEquals(32, apiKey.length());
-		userDb.updateApiKeyForUser(testuser, this.dbSession);
+		userDb.updateApiKeyForUser(user, this.dbSession);
 		final String updatedApiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(updatedApiKey);
 		assertEquals(32, updatedApiKey.length());
 		assertThat(apiKey, not(equalTo(updatedApiKey)));
 
 		try {
-			userDb.updateApiKeyForUser(ParamUtils.NOUSER_NAME, this.dbSession);
+			userDb.updateApiKeyForUser(new User(ParamUtils.NOUSER_NAME), this.dbSession);
 			fail("expected exception");
 		} catch (final Exception ignore) {
 			// ok
