@@ -360,6 +360,19 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="mittelalter">
+		<displayName>Mittelalterliche Geschichte Universität Kassel</displayName>
+		<description xml:lang="en">
+			HTML output format according to the Chair of Mittelalterliche Geschichte of Kassel University
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabeformat gemäß dem Lehrstuhl Mittelalterliche Geschichte der Universität Kassel
+		</description>
+		<directory>mittelalter</directory>
+		<baseFileName>mittelalter</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 	<layout name="din1505year">
 		<displayName>DIN 1505, grouped by year</displayName>
 		<description xml:lang="en">
