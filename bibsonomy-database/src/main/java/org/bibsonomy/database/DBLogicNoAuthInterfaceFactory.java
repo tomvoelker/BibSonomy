@@ -1,11 +1,7 @@
 package org.bibsonomy.database;
 
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.util.BibTexReader;
 
 /**
  * This is a temporary logic interface factory to enable logic interface access
@@ -28,10 +24,10 @@ public class DBLogicNoAuthInterfaceFactory extends AbstractDBLogicInterfaceFacto
 			 * it's name such that the user is seen as logged in (users which
 			 * are not logged in cause a user object with empty name).
 			 */
-			return new DBLogic(new User(loginName), this.getDbSessionFactory(), this.bibtexReader, this.getFileLogic());
+			return new DBLogic(new User(loginName), this.getDbSessionFactory(), this.bibtexReader);
 		}
 		// guest access
-		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader, this.getFileLogic());
+		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader);
 	}
 
 }

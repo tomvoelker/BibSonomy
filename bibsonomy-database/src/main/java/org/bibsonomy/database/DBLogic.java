@@ -114,7 +114,6 @@ import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 
 /**
@@ -165,7 +164,6 @@ public class DBLogic implements LogicInterface {
 	private final SynchronizationDatabaseManager syncDBManager;
 	
 	private final BibTexReader bibtexReader;
-	private final FileLogic fileLogic;
 	private final User loginUser;
 
 	/**
@@ -175,10 +173,9 @@ public class DBLogic implements LogicInterface {
 	 *            - the user which wants to use the logic.
 	 * @param dbSessionFactory
 	 */
-	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader, final FileLogic fileLogic) {
+	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
 		this.loginUser = loginUser;
 		this.bibtexReader = bibtexReader;
-		this.fileLogic = fileLogic;
 
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
 		// publication db manager

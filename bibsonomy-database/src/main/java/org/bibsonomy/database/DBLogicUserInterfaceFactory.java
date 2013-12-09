@@ -33,12 +33,12 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.getDbSessionFactory(), this.bibtexReader, this.getFileLogic());
+				return new DBLogic(loggedInUser, this.getDbSessionFactory(), this.bibtexReader);
 			}
 			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader, this.getFileLogic());
+		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader);
 	}
 	
 	/**
