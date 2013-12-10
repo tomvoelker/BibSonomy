@@ -118,6 +118,10 @@ public class CoinsScraper implements Scraper {
 				} else if (present(aulast)) {
 					author = aulast;
 				}
+				// some pages use both formats! :-(
+				if (tuples.containsKey("rtf.au")) {
+					author = author + " and " + tuples.get("rft.au");
+				}
 			}
 
 			// get title
