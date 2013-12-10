@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.scraper.url.kde.coins;
+package org.bibsonomy.scraper.generic;
 
 import static org.junit.Assert.assertTrue;
 
@@ -63,4 +63,13 @@ public class CoinsScraperTest {
 		assertTrue(UnitTestRunner.runSingleTest("url_230"));
 	}
 
+	
+	/**
+	 * starts URL test with id url_266
+	 */
+	@Test
+	public void url4TestRun(){
+		assertTrue(UnitTestRunner.runSingleTest("url_266"));
+	}
+	
 }
