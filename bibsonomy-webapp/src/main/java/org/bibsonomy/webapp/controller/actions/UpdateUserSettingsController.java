@@ -91,10 +91,6 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 	
 	private void updateApiKey(final User user) {
 		this.logic.updateUser(user, UserUpdateOperation.UPDATE_API);
-		/* 
-		 * FIXME: the api key is not updated in the user object => view shows old
-		 * api key! 
-		 */
 		log.debug("api key of " + user.getName() + " has been changed successfully");
 	}
 	
