@@ -57,6 +57,8 @@
 						loginUserName="${command.context.loginUser.name}"
 						disableListNavigation="${disableListNavigation}"
 						requPath="${requPath}" widthClassName="${publicationsWidthClass}" />
+			</div>
+		</div>
 
 		</jsp:attribute>
 	</layout:paneLayout>
