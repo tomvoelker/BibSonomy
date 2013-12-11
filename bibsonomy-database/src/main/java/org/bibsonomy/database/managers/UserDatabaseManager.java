@@ -26,6 +26,7 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.wiki.TemplateManager;
 
@@ -61,6 +62,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private DatabaseModelValidator<User> validator;
 	
 	private Chain<List<User>, UserParam> chain;
+	
+	private FileLogic fileLogic;
 
 	private UserDatabaseManager() {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
@@ -1166,5 +1169,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setValidator(final DatabaseModelValidator<User> validator) {
 		this.validator = validator;
+	}
+	/**
+	 * @param fileLogic the fileLogic to set
+	 */
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 }
