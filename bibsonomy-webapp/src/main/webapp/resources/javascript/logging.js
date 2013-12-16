@@ -273,7 +273,7 @@ function log_sendRequest(e) {
 		'&username=' + encodeURIComponent(currUser);
 
 		// post data
-		http_request.open('POST', LOGGING_SERVICE, true);
+		http_request.open('POST', LOGGING_SERVICE, false);
 		http_request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		http_request.send(senddata);
 	}
