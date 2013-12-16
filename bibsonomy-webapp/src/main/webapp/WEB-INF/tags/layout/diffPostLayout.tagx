@@ -16,7 +16,7 @@
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
 
 <!-- FIXME: some code duplicate of editGoldStandardPostLayout -->
-    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.DiffPublicationCommand" required="true"/>
     <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
     <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
@@ -74,9 +74,10 @@
 	             <div id="fsform">
 	                <fieldset class="fsOuter">
 
+								<!-- DiffPublicationCommand not contains diffPost -->
                                 <!-- 
                                     | user is posting an existing resource ...
-                                     -->
+                                     command does not contain field diffPost
                                 <c:if test="${not empty command.diffPost}">
                                 	<fieldset class="fsInner">
                                 		<legend>
@@ -86,7 +87,7 @@
                		                    <buttons:help message="post.edit.existent.help"/>
                                   	</fieldset>
                                 </c:if>
-                                
+                                -->
                                    <!--
                                    | general information 
                                    -->
@@ -101,7 +102,7 @@
                                 </c:if>
 								<!--
 									| a Captcha for our spammers ...
-									 -->
+									 TODO: check if uncomment needed
 								<c:if test="${not empty command.captchaHTML}">
 									<bform:fieldset maximized="true" legendKey="captcha">
 										<jsp:attribute name="content">
@@ -118,7 +119,7 @@
 										</jsp:attribute>
 									 </bform:fieldset>
 								</c:if>
-                                
+                                -->
                                 <div>
 									<form:hidden path="post.resource.interHash"/>
 	                                <input type="hidden" name="user" value="${command.user}"/>

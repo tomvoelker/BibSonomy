@@ -4,7 +4,8 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
-	xmlns:jsp="http://java.sun.com/JSP/Page">
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="listView"
 		type="org.bibsonomy.webapp.command.ListCommand" required="true" />
@@ -14,8 +15,6 @@
 		type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="requPath" type="java.lang.String"
 		required="true" />
-	<jsp:directive.attribute name="listIndex" type="java.lang.String"
-		required="false" />
 	<jsp:directive.attribute name="extTitle" type="java.lang.String"
 		required="false" />
 	<jsp:directive.attribute name="widthClassName" type="java.lang.String"
@@ -25,60 +24,54 @@
 	<jsp:directive.attribute name="addAsLastItem" fragment="true"
 		required="false" />
 
-	<c:if test="${empty listIndex}">
-		<c:set var="listIndex" value="0" />
-	</c:if>
-
 	<c:choose>
 		<c:when test="${not empty listView.list}">
-			<c:set var="newestPost" value="${listView.list[0]}" />
-			<c:forEach var="post" items="${listView.list}" varStatus="loopStatus">
-				<c:set var="additionalItemClasses"
-					value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
 
-				<!-- show one post -->
-				<c:choose>
-					<c:when test="${loopStatus.index == 0}">
-						<rc:diff post="${post}" loginUserName="${loginUserName}"
-							additionalItemClasses="${additionalItemClasses}">
-							<jsp:attribute name="title">
+			<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
+			<c:set var="newestPost" value="${listView.list[fieldlength]}" />
+			<rc:diff post="${newestPost}" loginUserName="${loginUserName}"
+				additionalItemClasses="${'odd'}">
+				<jsp:attribute name="title">
 							<c:choose>
-								<c:when test="${empty post.user.name}">
-									<bibgs:title post="${post}" />
+								<c:when test="${empty newestPost.user.name}">
+									<bibgs:title post="${newestPost}" />
 								</c:when>
 								<c:otherwise>
-									<bib:title post="${post}" />
+									<bib:title post="${newestPost}" />
 								</c:otherwise>
 							</c:choose>
 						</jsp:attribute>
-							<!-- TODO visibility zu sichtbar ueberschreiben -->
-							<jsp:attribute name="actions" />
-							<jsp:attribute name="desc">
+				<jsp:attribute name="desc">
 							<bib:fullDescription publication="${newestPost.resource}" />
 						</jsp:attribute>
-						</rc:diff>
-					</c:when>
-					<c:otherwise>
-						<rc:diff post="${post}" loginUserName="${loginUserName}"
-							additionalItemClasses="${additionalItemClasses}">
-							<jsp:attribute name="title">
-									<rc:changeDate  postIndex="${loopStatus.index}"
-									post="${post}" loginUserName="${loginUserName}" />
-								</jsp:attribute>
-							<!-- TODO visibility zu sichtbar ueberschreiben -->
-							<jsp:attribute name="actions">
-		    						<bib:diffAction postIndex="${loopStatus.index}"
-									post="${newestPost}" loginUserName="${loginUserName}"
-									disableResourceLinks="${false}" />
-								</jsp:attribute>
-							<jsp:attribute name="desc">
-									<rc:postDescDiff publication="${post}"
-									newestPub="${newestPost}" />
-								</jsp:attribute>
-						</rc:diff>
-					</c:otherwise>
+			</rc:diff>
+			<!--+
+			| history
+			+-->
+			<h3 class="header">
+				<fmt:message key="post.resource.history.headline" />
+			</h3>
+			<!-- newest post is index 0 and do not contain to history list -->
+			<c:forEach var="index" begin="1" end="${fieldlength}"
+				varStatus="loopStatus" step="1">
+				<c:set var="additionalItemClasses"
+					value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
 
-				</c:choose>
+				<rc:diff post="${listView.list[fieldlength-index]}"
+					loginUserName="${loginUserName}"
+					additionalItemClasses="${additionalItemClasses}">
+					<jsp:attribute name="title">
+									<rc:changeDate postIndex="${(fieldlength-index)}"
+							post="${listView.list[(fieldlength-index)]}"
+							newestPub="${newestPost}" loginUserName="${loginUserName}" />
+							</jsp:attribute>
+					<jsp:attribute name="desc">
+									<rc:postDescDiff
+							publication="${listView.list[(fieldlength-index)]}"
+							newestPub="${newestPost}" />
+								</jsp:attribute>
+				</rc:diff>
+
 			</c:forEach>
 		</c:when>
 		<c:otherwise>

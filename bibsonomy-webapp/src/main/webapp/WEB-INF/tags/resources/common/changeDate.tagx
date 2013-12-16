@@ -9,15 +9,17 @@
 
 	<jsp:directive.attribute name="postIndex" type="java.lang.Integer"  required="true" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="newestPub" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
 
 	<!--  display changeDate for HistoryView ( like title ) -->
-	<c:url var="diffLink" value="/diffPublication">
-		<c:param name="intraHashToUpdate" value="${post.resource.intraHash}" />
-		<c:param name="user" value="${post.user.name}" />
-		<c:param name="historyIndex" value="${postIndex}" />
+	<c:url var="diffLink" value="/editPublication">
+		<c:param name="intraHashToUpdate" value="${newestPub.resource.intraHash}" />
+		<c:param name="user" value="${newestPub.user.name}" />
+		<c:param name="compareVersion" value="${postIndex}" />
 	</c:url>
+	<!-- TODO: change return changeDate to return this.changeDate in model/Post.java -->
 	<c:set var="changeDate" value="${mtl:cleanBibtex(post.changeDate)}"/>
-	<a href="${diffLink}" title="${fn:escapeXml(changedate)}"><c:out value="${changeDate}" /></a>
+	<a href="${diffLink}" title="${changeDate}"><c:out value="${changeDate}" /></a>
 </jsp:root>

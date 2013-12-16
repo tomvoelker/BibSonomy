@@ -352,7 +352,7 @@
 						<property name="controllerBeanName" value="discussedPageController" />
 					</bean>
 				</entry>
-				<entry key="/postHistory">
+				<entry key="/history">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postHistoryController" />
 					</bean>
