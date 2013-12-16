@@ -68,9 +68,6 @@
 	<c:if test="${mtl:cleanBibtex(publication.resource.type) != mtl:cleanBibtex(newestPub.resource.type)}">
 		<em><c:out value="type" />,<c:out value=" "/></em>
 	</c:if>
-	<c:if test="${mtl:cleanBibtex(publication.resource.volume) != mtl:cleanBibtex(newestPub.resource.volume)}">
-		<em><c:out value="volume" />,<c:out value=" "/></em>
-	</c:if>
-	<!-- Missing: misc, bbitexAbstract, entryType, annote, crossref, editor, scraperid, url, privnote, miscFields, openURL, title-->
+	<!-- Missing: title, misc, bbitexAbstract, entryType, annote, crossref, editor, scraperid, url, privnote, miscFields, openURL, title-->
 	
 </jsp:root>
