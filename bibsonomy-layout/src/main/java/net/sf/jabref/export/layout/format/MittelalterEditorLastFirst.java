@@ -36,7 +36,7 @@ public class MittelalterEditorLastFirst extends MittelalterEditorNamesFormatter 
 	
 	@Override
 	protected String getPersonName(final Author a) {
-		return a.getLastFirst(false);
+		return "<span style=\"font-variant: small-caps\">" + a.getLast() + "</span>, " + a.getFirst();
 	}
 
 	@Override
