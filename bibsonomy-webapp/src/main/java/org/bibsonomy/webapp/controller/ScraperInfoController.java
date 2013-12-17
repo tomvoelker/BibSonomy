@@ -14,7 +14,7 @@ import org.bibsonomy.webapp.view.Views;
  * - /scraperinfo
  * 
  * @author ema
-  */
+ */
 public class ScraperInfoController implements MinimalisticController<ScraperInfoCommand>{
 
 	/*

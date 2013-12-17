@@ -34,7 +34,7 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class HeadWorker extends HttpWorker<HeadMethod> {
 
 	/**

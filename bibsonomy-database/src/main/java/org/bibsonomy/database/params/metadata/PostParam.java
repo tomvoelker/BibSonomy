@@ -5,7 +5,7 @@ import org.bibsonomy.database.params.GenericParam;
 
 /**
  * @author clemensbaier
-  */
+ */
 public class PostParam extends GenericParam {
 
 	private String interHash;

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 /**
  * @author jensi
-  */
+ */
 public class JsonToMapFactoryBeanTest {
 	@Test
 	public void testMap() throws Exception {

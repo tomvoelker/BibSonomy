@@ -42,7 +42,7 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 /**
  * Some methods for handling strings.
  * @author 
-  */
+ */
 public class StringUtils {
 	
 	private static final String DEFAULT_CHARSET = "UTF-8";

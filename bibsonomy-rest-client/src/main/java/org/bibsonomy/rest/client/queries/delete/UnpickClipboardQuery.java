@@ -30,7 +30,7 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * @author wla
-  */
+ */
 public class UnpickClipboardQuery extends AbstractQuery<Integer> {
 
 	private boolean clearAll;

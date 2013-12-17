@@ -41,7 +41,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
-  */
+ */
 public class InformaWorldScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Informaworld";

@@ -20,7 +20,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
  * Filter triggers a login process if the given request-parameter-name is set to true
  * 
  * @author jensi
-  */
+ */
 public class ParameterTriggeredAutoLoginFilter implements Filter {
 
 	private String loginParameterName;

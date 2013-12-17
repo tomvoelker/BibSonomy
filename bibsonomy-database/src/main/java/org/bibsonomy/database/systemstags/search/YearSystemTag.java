@@ -8,7 +8,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author dzo
-  */
+ */
 public class YearSystemTag extends AbstractSearchSystemTagImpl {
 
 	/**

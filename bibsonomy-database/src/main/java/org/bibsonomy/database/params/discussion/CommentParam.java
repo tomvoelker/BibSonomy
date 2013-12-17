@@ -5,7 +5,7 @@ import org.bibsonomy.model.Comment;
 
 /**
  * @author dzo
-  */
+ */
 public class CommentParam extends DiscussionItemParam<Comment> {
 	
 	/**

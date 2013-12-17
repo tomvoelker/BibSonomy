@@ -2,7 +2,7 @@ package de.unikassel.puma.openaccess.classification;
 
 /**
  * @author philipp
-  */
+ */
 public class PublicationClassification {
 
 	final String id;

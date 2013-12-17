@@ -30,7 +30,7 @@ package org.bibsonomy.common.enums;
  * the table useruser_similarity_measures.
  * 
  * @author Dominik Benz
-  */
+ */
 public enum UserRelation {
 	/** users related based on computation of jaccard similarity */
 	JACCARD(0),

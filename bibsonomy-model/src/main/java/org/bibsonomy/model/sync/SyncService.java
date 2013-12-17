@@ -32,7 +32,7 @@ import org.bibsonomy.model.Resource;
 
 /** 
  * @author wla
-  */
+ */
 public class SyncService {
 	
 	private String name;

@@ -28,7 +28,7 @@ package org.bibsonomy.common.errors;
  * Use this ErrorMessage if a Post was to be updated but could not because no original was found
  * 
  * @author sdo
-  */
+ */
 public class UpdatePostErrorMessage extends ErrorMessage {
 
 

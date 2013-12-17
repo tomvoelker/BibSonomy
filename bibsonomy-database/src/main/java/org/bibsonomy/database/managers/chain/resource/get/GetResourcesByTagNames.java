@@ -18,7 +18,7 @@ import org.bibsonomy.model.enums.Order;
  * Returns a list of bookmarks for given tag/tags.
  * 
  * @author Miranda Grahl
-  * @param <R> 
+ * @param <R> 
  * @param <P> 
  */
 public class GetResourcesByTagNames<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

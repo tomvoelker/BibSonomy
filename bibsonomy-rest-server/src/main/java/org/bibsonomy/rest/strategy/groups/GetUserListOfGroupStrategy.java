@@ -11,7 +11,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class GetUserListOfGroupStrategy extends AbstractGetListStrategy<List<User>> {
 
 	private final String groupName;

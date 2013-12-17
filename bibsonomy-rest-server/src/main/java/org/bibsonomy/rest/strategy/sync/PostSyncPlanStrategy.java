@@ -17,7 +17,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author wla
-  */
+ */
 public class PostSyncPlanStrategy extends AbstractCreateStrategy {
 
 	private final URI serviceURI;

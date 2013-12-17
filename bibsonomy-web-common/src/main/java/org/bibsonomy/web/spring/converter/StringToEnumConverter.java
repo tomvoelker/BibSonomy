@@ -29,7 +29,7 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * @author dzo
-  * @param <T> 
+ * @param <T> 
  */
 public class StringToEnumConverter<T extends Enum<T>> implements Converter<String, T> {
 

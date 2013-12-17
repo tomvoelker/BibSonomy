@@ -23,7 +23,7 @@ import de.unikassel.puma.webapp.command.ajax.OpenAccessCommand;
 
 /**
  * @author clemens
-  */
+ */
 public class OpenAccessController extends AjaxController implements MinimalisticController<OpenAccessCommand> {
 
 	private static final String GET_SENT_REPOSITORIES = "GET_SENT_REPOSITORIES";

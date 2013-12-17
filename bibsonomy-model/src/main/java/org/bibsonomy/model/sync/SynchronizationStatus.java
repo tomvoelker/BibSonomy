@@ -27,7 +27,7 @@ package org.bibsonomy.model.sync;
  * The different states a synchronization can be in. 
  * 
  * @author rja
-  */
+ */
 public enum SynchronizationStatus {
 	/*
 	 * NOTE: column is a varchar(8), so please use short names

@@ -12,7 +12,7 @@ import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class GetGroupStrategy extends Strategy {
 
 	private final String groupName;

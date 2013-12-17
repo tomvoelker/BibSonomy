@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.util;
 
 /**
  * @author rja
-  */
+ */
 public interface ResponseAware {
 	
 	/** The responseLogic to access the response.

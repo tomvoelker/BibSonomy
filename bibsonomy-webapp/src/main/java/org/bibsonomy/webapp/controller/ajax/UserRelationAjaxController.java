@@ -24,7 +24,7 @@ import org.springframework.validation.Errors;
  * and handles the add and remove actions of general user relations
  * 
  * @author Christian Kramer, Folke Mitzlaff
-  */
+ */
 public class UserRelationAjaxController extends AjaxController implements MinimalisticController<UserRelationAjaxCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(UserRelationAjaxController.class);
 	

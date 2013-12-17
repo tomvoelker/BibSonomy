@@ -25,7 +25,7 @@ package org.bibsonomy.model;
 
 /**
  * @author philipp
-  */
+ */
 public class Classification {
 
 	/*

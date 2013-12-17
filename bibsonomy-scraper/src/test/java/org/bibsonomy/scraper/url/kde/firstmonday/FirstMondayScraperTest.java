@@ -31,7 +31,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author Haile
-  */
+ */
 @Category(RemoteTest.class)
 public class FirstMondayScraperTest {
 	/**

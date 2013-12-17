@@ -11,7 +11,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author fei
-  */
+ */
 public class RecLogEntry {
 	private String userName;
 	private Long qid;           /// query id

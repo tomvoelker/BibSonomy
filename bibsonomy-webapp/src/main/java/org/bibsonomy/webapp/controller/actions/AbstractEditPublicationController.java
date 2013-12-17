@@ -38,7 +38,7 @@ import bibtex.parser.ParseException;
  * 
  * @author rja
  * @author dzo
-  * 
+ * 
  * @param <COMMAND> 
  */
 public abstract class AbstractEditPublicationController<COMMAND extends EditPublicationCommand> extends EditPostController<BibTex, COMMAND> {

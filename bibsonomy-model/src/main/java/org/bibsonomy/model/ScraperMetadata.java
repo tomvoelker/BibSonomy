@@ -30,7 +30,7 @@ import java.net.URL;
  * represents meta data for scrapers 
  * 
  * @author rja
-  */
+ */
 public class ScraperMetadata implements Serializable {
 	private static final long serialVersionUID = -314704072107016413L;
 	

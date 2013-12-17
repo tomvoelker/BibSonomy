@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author L3S
-  */
+ */
 @Category(RemoteTest.class)
 public class EconstorScraperTest {
 	/**

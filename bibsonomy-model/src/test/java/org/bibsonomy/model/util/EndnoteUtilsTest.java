@@ -35,7 +35,7 @@ import org.junit.Test;
 
 /**
  * @author Jens Illig
-  */
+ */
 public class EndnoteUtilsTest {
 	private static final String expected = "%0 Journal Article\n" + //
 			"%1 schoolofenglishliterature2009newcastle\n" + //

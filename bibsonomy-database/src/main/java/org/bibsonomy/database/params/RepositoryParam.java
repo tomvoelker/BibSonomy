@@ -3,7 +3,7 @@ package org.bibsonomy.database.params;
 
 /**
  * @author philipp
-  */
+ */
 public class RepositoryParam {    
     
     private String intraHash;

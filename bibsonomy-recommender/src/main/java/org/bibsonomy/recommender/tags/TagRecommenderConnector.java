@@ -7,7 +7,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * @author fei
-  */
+ */
 public interface TagRecommenderConnector extends TagRecommender {
 	/**
 	 * Initialize object.

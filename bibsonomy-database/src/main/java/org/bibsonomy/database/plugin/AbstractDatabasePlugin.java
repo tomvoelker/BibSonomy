@@ -20,7 +20,7 @@ import org.bibsonomy.model.Resource;
  * @author Christian Schenk
  * @author Anton Wilhelm
  * @author Stefan Stützer
-  */
+ */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
 	@Override

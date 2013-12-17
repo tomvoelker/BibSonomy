@@ -2,7 +2,7 @@ package de.unikassel.puma.openaccess.sherparomeo;
 
 /**
  * @author rja
-  */
+ */
 public interface SherpaRomeoInterface {
     
     /**

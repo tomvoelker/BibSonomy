@@ -12,7 +12,7 @@ import org.junit.Test;
  * Simple test for encryption library.
  * 
  * @author dbenz
-  */
+ */
 public class EncryptionTest {
 
 	private static final Log LOGGER = LogFactory.getLog(EncryptionTest.class);

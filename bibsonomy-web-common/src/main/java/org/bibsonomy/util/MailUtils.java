@@ -41,7 +41,7 @@ import org.springframework.context.MessageSource;
 
 /**
  * @author rja
-  */
+ */
 public class MailUtils {
 
 	private static final Log log = LogFactory.getLog(MailUtils.class);

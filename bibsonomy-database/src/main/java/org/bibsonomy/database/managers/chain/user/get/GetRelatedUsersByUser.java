@@ -15,7 +15,7 @@ import org.bibsonomy.model.User;
  * Get related users for a given user.
  * 
  * @author Dominik Benz
-  */
+ */
 public class GetRelatedUsersByUser extends UserChainElement {
 
 	@Override

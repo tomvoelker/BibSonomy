@@ -42,7 +42,7 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for repositories which use eprint
  * 
  * @author tst
-  */
+ */
 public class EprintScraper implements Scraper {
 	/** pattern identifying eprints pages */
 	private static final Pattern PATTERN = Pattern.compile("<\\s*link(?=.*rel=\"alternate\")(?=.*href=\"(http://.*eprint.*bib)\")(?=.*type=\"text/plain\")(?=.*title=\"BibTeX\").*>");

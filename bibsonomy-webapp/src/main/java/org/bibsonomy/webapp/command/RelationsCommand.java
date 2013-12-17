@@ -6,7 +6,7 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author Christian Kramer
-  */
+ */
 public class RelationsCommand extends ResourceViewCommand{
 	
 	private List<Tag> tagRelations;

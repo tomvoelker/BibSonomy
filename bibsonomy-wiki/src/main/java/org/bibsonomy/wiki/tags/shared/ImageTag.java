@@ -19,7 +19,7 @@ import org.bibsonomy.wiki.tags.SharedTag;
  *   <img src="/picture/user/(USERNAME|GROUPNAME)/" style=STYLE/>
  * 
  * @author Bernd
-  */
+ */
 public class ImageTag extends SharedTag {
 	private static final String TAG_NAME = "image";
 	// We don't want any attributes. For now. ;)

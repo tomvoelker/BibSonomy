@@ -49,7 +49,7 @@ import org.junit.Test;
  * Testcase for the BibtexUtils class
  * 
  * @author Dominik Benz
-  */
+ */
 public class BibtexUtilsTest {
 
 	private static final String FIELD_VALUE = "http://www.slac.stanford.edu/spires/find/hep?key=6368328";

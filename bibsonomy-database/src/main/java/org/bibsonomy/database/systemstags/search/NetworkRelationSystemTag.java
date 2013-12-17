@@ -7,7 +7,7 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
  * such as facebook, BibSonomy, etc.  
  * 
  * @author fmi
-  */
+ */
 public class NetworkRelationSystemTag extends UserRelationSystemTag {
 
 	/**

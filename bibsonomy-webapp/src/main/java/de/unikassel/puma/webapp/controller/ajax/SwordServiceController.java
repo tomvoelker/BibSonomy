@@ -34,7 +34,7 @@ import de.unikassel.puma.webapp.command.ajax.SwordServiceCommand;
 
 /**
  * @author philipp
-  */
+ */
 public class SwordServiceController extends AjaxController implements MinimalisticController<SwordServiceCommand> {
 	
 	private SwordService swordService;

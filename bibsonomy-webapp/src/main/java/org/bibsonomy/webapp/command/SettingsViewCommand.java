@@ -14,7 +14,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author Steffen Kress
-  */
+ */
 public class SettingsViewCommand extends TabsCommand<Object> implements Serializable {
 	/**
 	 * 

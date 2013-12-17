@@ -8,7 +8,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Christian
-  */
+ */
 public class ExportPageController implements MinimalisticController<ExportPageCommand> {
 	
 	private JabrefLayoutRenderer layoutRenderer;

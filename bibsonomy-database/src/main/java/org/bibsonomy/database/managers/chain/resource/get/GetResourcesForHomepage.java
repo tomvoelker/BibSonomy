@@ -17,7 +17,7 @@ import org.bibsonomy.model.enums.Order;
  * Returns a list of resource entries for the homepage.
  * 
  * @author Miranda Grahl
-  * @param <R> 
+ * @param <R> 
  * @param <P> 
  */
 public class GetResourcesForHomepage<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

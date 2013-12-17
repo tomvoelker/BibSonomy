@@ -37,7 +37,7 @@ import org.bibsonomy.util.file.FileUtil;
 
 /**
  * @author dzo
-  */
+ */
 public class ServerDocumentFileLogic extends AbstractServerFileLogic implements DocumentFileLogic {
 	
 	private ExtensionChecker extensionChecker;

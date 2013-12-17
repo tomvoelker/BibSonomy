@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 /**
  * @author philipp
-  */
+ */
 public class ExtendedFieldList {
     
     private String key;

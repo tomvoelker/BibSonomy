@@ -42,7 +42,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to receive an ordered list of all posts.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 
 	private final int start;

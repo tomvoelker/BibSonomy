@@ -4,7 +4,7 @@ import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 
 /**
  * @author sdo
-  */
+ */
 public class MyOwnSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag {
 
 	public static final String NAME = "myown";

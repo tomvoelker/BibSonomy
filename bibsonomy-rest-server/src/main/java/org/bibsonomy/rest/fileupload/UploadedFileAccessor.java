@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * fails!
  * 
  * @author Jens Illig
-  */
+ */
 public class UploadedFileAccessor implements DataAccessor {
 	private final HttpServletRequest request;
 

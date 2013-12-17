@@ -26,7 +26,7 @@ package org.bibsonomy.model.sync;
 
 /**
  * @author wla
-  */
+ */
 public enum ConflictResolutionStrategy {
     /**
      * client changes will be applied to server account

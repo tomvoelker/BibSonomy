@@ -32,7 +32,7 @@ package org.bibsonomy.common.enums;
  * </ul>
  * 
  * @author Christian Schenk
-  */
+ */
 public enum Privlevel {
 	/** the member list is public */
 	PUBLIC(0),

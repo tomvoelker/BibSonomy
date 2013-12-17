@@ -4,7 +4,7 @@ package org.bibsonomy.webapp.command;
  * Bean for Concept Sites
  * 
  * @author Michael Wagner
-  */
+ */
 public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	
 	/** the user whose resources are requested */

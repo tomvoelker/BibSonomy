@@ -11,7 +11,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
  * 
  * @author Robert Jaeschke
  * @author Stefan Stützer
-  */
+ */
 public class AdminParam {
 
 	/** An inetAddress whose status should be get/set/deleted. */

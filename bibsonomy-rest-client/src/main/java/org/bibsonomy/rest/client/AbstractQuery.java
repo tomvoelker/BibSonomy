@@ -46,7 +46,7 @@ import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  * @param <T> 
+ * @param <T> 
  */
 public abstract class AbstractQuery<T> {
 	

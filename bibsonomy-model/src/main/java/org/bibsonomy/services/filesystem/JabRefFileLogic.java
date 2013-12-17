@@ -29,7 +29,7 @@ import org.bibsonomy.model.util.file.UploadedFile;
 
 /**
  * @author dzo
-  */
+ */
 public interface JabRefFileLogic {
 	
 	/**

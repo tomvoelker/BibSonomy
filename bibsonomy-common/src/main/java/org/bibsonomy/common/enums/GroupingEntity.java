@@ -33,7 +33,7 @@ import org.bibsonomy.util.EnumUtils;
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author dbenz
-  */
+ */
 public enum GroupingEntity {
 	/**
 	 * for constrainting the user which is somehow related to the entities

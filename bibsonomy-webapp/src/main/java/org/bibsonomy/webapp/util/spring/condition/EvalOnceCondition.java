@@ -4,7 +4,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * @author jensi
-  */
+ */
 public class EvalOnceCondition implements Condition, InitializingBean {
 	private Condition delegate;
 	private boolean value;

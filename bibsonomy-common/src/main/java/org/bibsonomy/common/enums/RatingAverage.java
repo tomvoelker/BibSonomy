@@ -25,7 +25,7 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author dzo
-  */
+ */
 public enum RatingAverage {
 	/**
 	 * 1/n * ∑{i = 1}{n}(a_i)

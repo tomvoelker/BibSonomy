@@ -25,7 +25,7 @@ import org.dom4j.io.SAXReader;
 
 /**
  * @author jensi
-  */
+ */
 public abstract class AbstractDataDownloadingTestCase {
 	
 	private final MarcToBibTexReader reader = new MarcToBibTexReader();

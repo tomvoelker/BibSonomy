@@ -7,7 +7,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author Stefan Stützer
-  */
+ */
 public class UserIDRegistrationCommand extends BaseCommand implements Serializable {
 	
 	/**

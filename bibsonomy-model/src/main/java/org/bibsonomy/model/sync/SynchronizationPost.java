@@ -28,7 +28,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author wla
-  */
+ */
 public class SynchronizationPost extends SynchronizationResource {
 
 	/**

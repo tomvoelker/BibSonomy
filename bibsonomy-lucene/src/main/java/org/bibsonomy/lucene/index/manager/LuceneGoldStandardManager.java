@@ -21,7 +21,7 @@ import org.bibsonomy.model.Resource;
  * to query for the latest content id
  * 
  * @author dzo
-  * @param <R> 
+ * @param <R> 
  */
 public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> extends LuceneResourceManager<GoldStandardPublication> {
 	

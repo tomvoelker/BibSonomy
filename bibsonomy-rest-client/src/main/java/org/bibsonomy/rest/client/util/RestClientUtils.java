@@ -39,7 +39,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author dzo
-  */
+ */
 public class RestClientUtils {
 	private static final Log log = LogFactory.getLog(RestClientUtils.class);
 	

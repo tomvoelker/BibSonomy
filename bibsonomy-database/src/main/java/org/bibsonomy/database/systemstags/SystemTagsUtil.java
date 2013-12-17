@@ -18,7 +18,7 @@ import org.bibsonomy.model.Tag;
  * Helper class to encapsulate methods to create and work with systemTags
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
-  */
+ */
 public class SystemTagsUtil {
 	/**
 	 *  the pattern matches a string and devides it into tree parts

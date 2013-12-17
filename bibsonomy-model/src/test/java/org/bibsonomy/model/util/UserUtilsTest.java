@@ -42,7 +42,7 @@ import org.junit.Test;
  * Testcase for the UserUtils class
  * 
  * @author Christian Schenk
-  */
+ */
 public class UserUtilsTest {
 
 	/**

@@ -7,7 +7,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 
 /**
  * @author Dominik Benz
-  */
+ */
 public abstract class AbstractDeleteStrategy extends Strategy {
 	
 	/**

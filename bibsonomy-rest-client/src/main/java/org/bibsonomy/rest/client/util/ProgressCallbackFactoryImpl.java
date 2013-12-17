@@ -27,7 +27,7 @@ package org.bibsonomy.rest.client.util;
  * default implementation
  * 
  * @author dzo
-  */
+ */
 public class ProgressCallbackFactoryImpl implements ProgressCallbackFactory {
 
 	@Override

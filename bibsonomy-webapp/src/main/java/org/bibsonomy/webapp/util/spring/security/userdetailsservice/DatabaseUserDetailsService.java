@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * @author dzo
-  */
+ */
 public class DatabaseUserDetailsService implements UserDetailsService {
 	
 	protected LogicInterface adminLogic;

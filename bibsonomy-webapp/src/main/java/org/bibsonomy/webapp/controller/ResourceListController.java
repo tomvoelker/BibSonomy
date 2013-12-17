@@ -42,7 +42,7 @@ import org.springframework.beans.factory.annotation.Required;
  * These are currently the bookmark an the bibtex list
  * 
  * @author Jens Illig
-  */
+ */
 public abstract class ResourceListController {
 	/** default values for sorting when jabref layouts are to be rendered */
 	private static final String DEFAULT_SORTPAGE_JABREF_LAYOUTS = "year|author|title";

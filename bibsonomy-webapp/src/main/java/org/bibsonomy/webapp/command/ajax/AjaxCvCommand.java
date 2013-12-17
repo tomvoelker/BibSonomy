@@ -7,7 +7,7 @@ import org.bibsonomy.wiki.enums.DefaultLayout;
  * a date attribute here.
  * 
  * @author Bernd
-  */
+ */
 public class AjaxCvCommand extends AjaxCommand {
 	
 	/**

@@ -4,7 +4,7 @@ package de.unikassel.puma.openaccess.sword;
  * bean for configuring sword
  * 
  * @author sven
-  */
+ */
 @Deprecated // TODO: move into swordSerice
 public class SwordConfig {
 	/** temp directory to build zip-file for sword-deposit */

@@ -26,7 +26,7 @@ import org.bibsonomy.webapp.view.Views;
  * /tag/TAGNAME
  * 
  * @author Michael Wagner
-  */
+ */
 public class TagPageController extends SingleResourceListControllerWithTags implements MinimalisticController<TagResourceViewCommand>{
 	
 	@Override

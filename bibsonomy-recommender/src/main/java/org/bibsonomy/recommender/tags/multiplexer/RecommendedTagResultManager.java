@@ -13,7 +13,7 @@ import org.bibsonomy.model.RecommendedTag;
  * speeding up the recommender multiplexer by caching recommendations
  *  
  * @author fei
-  */
+ */
 public class RecommendedTagResultManager {
 	private static final Log log = LogFactory.getLog(RecommendedTagResultManager.class);
 	

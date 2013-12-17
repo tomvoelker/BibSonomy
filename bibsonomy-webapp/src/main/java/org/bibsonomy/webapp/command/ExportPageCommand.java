@@ -6,7 +6,7 @@ import org.bibsonomy.layout.jabref.JabrefLayout;
 
 /**
  * @author daill
-  */
+ */
 public class ExportPageCommand extends ResourceViewCommand{
 	
 	private Map<String, JabrefLayout> layoutMap;

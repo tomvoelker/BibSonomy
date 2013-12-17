@@ -2,7 +2,7 @@ package org.bibsonomy.database.systemstags;
 
 /**
  * @author markus
-  */
+ */
 public class ScheduledTagsManager {
 
 	

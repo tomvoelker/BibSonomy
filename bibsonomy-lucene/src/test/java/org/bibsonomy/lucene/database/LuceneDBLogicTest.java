@@ -38,7 +38,7 @@ import org.junit.Test;
 /**
  * 
  * @author fei
-  */
+ */
 public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 
 	private static final String LUCENE_MAGIC_AUTHOR = "luceneAuthor";

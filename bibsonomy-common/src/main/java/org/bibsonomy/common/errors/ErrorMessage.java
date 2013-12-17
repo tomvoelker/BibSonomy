@@ -27,7 +27,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author sdo
-  */
+ */
 public class ErrorMessage {
 
 	private String defaultMessage;

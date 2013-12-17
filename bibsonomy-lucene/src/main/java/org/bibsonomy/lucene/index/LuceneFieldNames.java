@@ -3,7 +3,7 @@ package org.bibsonomy.lucene.index;
 /**
  * 
  * @author fmi
-  */
+ */
 public abstract class LuceneFieldNames {
 
 	// FIXME: configure these fieldnames via spring

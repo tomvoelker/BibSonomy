@@ -22,7 +22,7 @@ import org.bibsonomy.webapp.view.Views;
  * - /concepts/USER
  * 
  * @author Christian Voigtmann
-  */
+ */
 public class UserRelationsController extends SingleResourceListControllerWithTags implements MinimalisticController<UserRelationCommand> {
 	private static final Log LOGGER = LogFactory.getLog(AuthorPageController.class);
 

@@ -25,7 +25,7 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author rja
-  */
+ */
 public class LayoutRenderingException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;

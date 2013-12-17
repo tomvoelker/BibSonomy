@@ -12,7 +12,7 @@ import java.util.Properties;
  * 
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class MySQLHelper {
 

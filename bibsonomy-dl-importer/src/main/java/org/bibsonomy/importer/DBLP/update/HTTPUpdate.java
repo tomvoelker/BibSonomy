@@ -18,7 +18,7 @@ import org.bibsonomy.importer.DBLP.DBLPException;
 
 /**
  * @author rja
-  */
+ */
 public abstract class HTTPUpdate {
 	private static final Log log = LogFactory.getLog(HTTPUpdate.class);
 

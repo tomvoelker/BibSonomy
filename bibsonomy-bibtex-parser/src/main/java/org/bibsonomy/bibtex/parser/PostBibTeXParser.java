@@ -52,7 +52,7 @@ import bibtex.parser.ParseException;
  * 
  * 
  * @author rja
-  */
+ */
 public class PostBibTeXParser extends SimpleBibTeXParser {
 
 	/**

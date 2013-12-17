@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  * 30 * 4 Zeichen). 
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class ToFieldParser {
 	// FIXME: we can't allow "-" because we need it as separator

@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  * @author rja
-  */
+ */
 public class HTTPUpdateTest {
 
 	@Test

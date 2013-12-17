@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  * @author rja
-  */
+ */
 public class ContentNegotiationFilterTest {
 
 	private static final int PORT = 31416;

@@ -45,7 +45,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
  * {@link Renderer} rendering JSON using Jackson
  * 
  * @author dzo
-  */
+ */
 public class JSONRenderer extends AbstractRenderer {
 
 	private final ObjectMapper mapper;

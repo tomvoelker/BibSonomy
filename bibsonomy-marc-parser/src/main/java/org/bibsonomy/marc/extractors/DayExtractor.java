@@ -10,7 +10,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
-  */
+ */
 public class DayExtractor implements AttributeExtractor {
 
 	@Override

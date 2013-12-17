@@ -19,7 +19,7 @@ import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author wla
-  */
+ */
 public class GetSyncDataStrategy extends Strategy {
 	
 	private static final Log log = LogFactory.getLog(GetSyncDataStrategy.class);

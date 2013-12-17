@@ -27,7 +27,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author dzo
-  * @param <R> the resource of the controller
+ * @param <R> the resource of the controller
  * @param <G> the gold standard resource of the controller
  */
 public abstract class AbstractResourcePageController<R extends Resource, G extends R> extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<R>> {

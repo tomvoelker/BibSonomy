@@ -30,7 +30,7 @@ import org.bibsonomy.util.EnumUtils;
  * 
  * @author Stefan Stützer
  * @author Beate Krause
-  */
+ */
 public enum ClassifierSettings {
 	/** the classification algorithm */
 	ALGORITHM,

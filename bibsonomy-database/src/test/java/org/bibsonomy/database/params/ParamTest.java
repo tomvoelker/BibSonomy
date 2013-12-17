@@ -8,7 +8,7 @@ import org.junit.Test;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class ParamTest {
 
 	/**

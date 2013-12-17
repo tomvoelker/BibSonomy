@@ -8,7 +8,7 @@ import org.bibsonomy.model.BibTex;
 
 /**
  * @author Lukas
-  */
+ */
 public class PublisherExtractor implements AttributeExtractor {
 	
 	@Override

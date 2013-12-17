@@ -39,7 +39,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
-  */
+ */
 public class BioMedCentralScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "BioMed Central";

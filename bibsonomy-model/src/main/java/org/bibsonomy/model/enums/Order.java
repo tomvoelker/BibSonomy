@@ -30,7 +30,7 @@ package org.bibsonomy.model.enums;
  * same. Check their usage and if possible, remove one of them.
  * 
  * @author Jens Illig
-  */
+ */
 public enum Order {
 	/** for ordering by adding time (desc) */
 	ADDED,

@@ -4,7 +4,7 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 
 /** Wrapper around {@link ReCaptchaResponse}
  * @author rja
-  */
+ */
 public class ReCaptchaResponseWrapper implements CaptchaResponse {
 	
 	private final ReCaptchaResponse response;

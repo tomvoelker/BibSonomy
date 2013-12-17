@@ -28,7 +28,7 @@ package org.bibsonomy.util;
  * contains additional size of found free square.
  * 
  * @author pbu
-  */
+ */
 public class Point implements Comparable<Point> {
 
 	/**

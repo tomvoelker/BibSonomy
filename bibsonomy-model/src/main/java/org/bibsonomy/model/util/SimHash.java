@@ -34,7 +34,7 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * Similarity hashes for publications are calculated here.
-  */
+ */
 public class SimHash {
 	
 	/**

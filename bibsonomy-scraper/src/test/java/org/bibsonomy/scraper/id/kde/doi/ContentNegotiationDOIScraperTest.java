@@ -35,7 +35,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author lha
-  */
+ */
 @Category(RemoteTest.class)
 public class ContentNegotiationDOIScraperTest {
 	

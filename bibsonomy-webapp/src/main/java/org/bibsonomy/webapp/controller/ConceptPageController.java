@@ -22,7 +22,7 @@ import org.bibsonomy.webapp.view.Views;
  *   - concept/group/GROUP/CONCEPT
  * 
  * @author Michael Wagner
-  */
+ */
 public class ConceptPageController extends SingleResourceListController implements MinimalisticController<ConceptResourceViewCommand>{
 
 	@Override

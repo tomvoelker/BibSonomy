@@ -33,7 +33,7 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
 
 /**
  * @author bsc
-  */
+ */
 public class AdminRecommenderController implements MinimalisticController<AdminRecommenderViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminRecommenderController.class);
 	

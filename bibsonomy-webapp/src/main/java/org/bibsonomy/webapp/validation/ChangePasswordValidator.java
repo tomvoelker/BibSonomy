@@ -8,7 +8,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author cvo
-  */
+ */
 public class ChangePasswordValidator implements Validator<SettingsViewCommand> {
 
 	@Override

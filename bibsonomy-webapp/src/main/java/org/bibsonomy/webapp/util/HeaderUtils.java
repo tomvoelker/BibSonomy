@@ -13,7 +13,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author rja
-  */
+ */
 public class HeaderUtils {
 
 	/**

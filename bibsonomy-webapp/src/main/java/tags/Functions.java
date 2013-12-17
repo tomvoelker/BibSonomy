@@ -54,7 +54,7 @@ import org.springframework.format.datetime.DateFormatter;
  * Some taglib functions
  * 
  * @author Dominik Benz
-  */
+ */
 public class Functions  {
 	private static final Log log = LogFactory.getLog(Functions.class);
 	

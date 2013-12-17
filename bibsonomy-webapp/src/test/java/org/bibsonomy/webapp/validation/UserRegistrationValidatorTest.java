@@ -16,7 +16,7 @@ import org.springframework.validation.MapBindingResult;
 
 /**
  * @author rja
-  */
+ */
 public class UserRegistrationValidatorTest {
 	
 	private static UserRegistrationValidator validator;

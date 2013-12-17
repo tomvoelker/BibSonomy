@@ -11,7 +11,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author bkr
-  */
+ */
 public class AdminActionsValidatorTest {
 
 	/**

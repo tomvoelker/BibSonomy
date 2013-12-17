@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.util.spring.factorybeans;
 
 /**
  * @author jensi
-  */
+ */
 import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.springframework.beans.factory.InitializingBean;
 

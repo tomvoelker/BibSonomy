@@ -97,7 +97,7 @@ import org.bibsonomy.util.ReflectionUtils;
  *  
  * @author dzo
  * 
-  * @param <R> the resource
+ * @param <R> the resource
  * @param <P> the param
  */
 public abstract class PostDatabaseManager<R extends Resource, P extends ResourceParam<R>> extends AbstractDatabaseManager implements CrudableContent<R, P> {

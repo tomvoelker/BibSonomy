@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * @author rja
-  * @param <T> 
+ * @param <T> 
  */
 public interface TabsCommandInterface<T> {
 

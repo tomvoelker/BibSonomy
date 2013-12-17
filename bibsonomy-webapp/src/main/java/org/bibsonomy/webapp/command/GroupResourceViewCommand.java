@@ -7,7 +7,7 @@ import org.bibsonomy.model.Group;
  * Bean for Group-Sites
  *
  * @author  Stefan Stuetzer
-  */
+ */
 public class GroupResourceViewCommand extends TagResourceViewCommand {
 
 	/** the group whose resources are requested*/

@@ -28,7 +28,7 @@ import java.util.TreeMap;
 
 /**
  * @author C. Kramer
-  */
+ */
 public class PicaRecord {
 	private final Map<String, Row> rows = new TreeMap<String, Row>();
 

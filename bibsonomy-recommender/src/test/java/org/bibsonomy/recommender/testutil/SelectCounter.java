@@ -9,7 +9,7 @@ import org.bibsonomy.recommender.tags.multiplexer.strategy.SelectAll;
 
 /**
  * @author fei
-  */
+ */
 public class SelectCounter extends SelectAll {
 	
 	private int recoCounter;

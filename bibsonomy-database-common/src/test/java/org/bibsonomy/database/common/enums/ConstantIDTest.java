@@ -12,7 +12,7 @@ import org.junit.Test;
 
 /**
  * @author rja
-  */
+ */
 public class ConstantIDTest {
 
 	@Test

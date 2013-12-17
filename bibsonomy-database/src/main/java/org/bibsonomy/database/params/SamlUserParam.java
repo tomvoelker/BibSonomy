@@ -7,7 +7,7 @@ import org.bibsonomy.model.user.remote.SamlRemoteUserId;
  * used to store {@link SamlRemoteUserId}s which do not themselves have a backlink to the user object
  * 
  * @author jensi
-  */
+ */
 public class SamlUserParam {
 	
 	protected SamlRemoteUserId samlRemoteUserId;

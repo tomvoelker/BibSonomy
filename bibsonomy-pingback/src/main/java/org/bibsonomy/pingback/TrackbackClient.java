@@ -32,7 +32,7 @@ import com.malethan.pingback.PingbackException;
  * 
  * 
  * @author rja
-  */
+ */
 public class TrackbackClient implements PingbackClient {
 	private static final Log log = LogFactory.getLog(TrackbackClient.class);
 

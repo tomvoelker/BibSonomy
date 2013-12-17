@@ -14,7 +14,7 @@ import org.bibsonomy.rest.strategy.sync.PutSyncStatusStrategy;
 
 /**
  * @author wla
-  */
+ */
 public class SynchronizationHandler implements ContextHandler {
 		
 	@Override

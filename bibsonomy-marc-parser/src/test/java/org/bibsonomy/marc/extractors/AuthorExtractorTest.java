@@ -8,7 +8,7 @@ import org.junit.Test;
 
 /**
  * @author Lukas
-  */
+ */
 public class AuthorExtractorTest extends AbstractExtractorTest{
 	
 	@Test

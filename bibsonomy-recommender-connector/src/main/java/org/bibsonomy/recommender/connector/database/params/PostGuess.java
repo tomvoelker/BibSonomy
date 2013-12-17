@@ -2,7 +2,7 @@ package org.bibsonomy.recommender.connector.database.params;
 
 /**
  * @author fei
-  */
+ */
 public class PostGuess {
 	private Integer contentID;
 	private Long diff;

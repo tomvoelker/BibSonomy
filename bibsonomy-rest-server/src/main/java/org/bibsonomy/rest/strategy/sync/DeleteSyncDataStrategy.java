@@ -15,7 +15,7 @@ import org.bibsonomy.rest.utils.RestSyncUtils;
 
 /**
  * @author wla
-  */
+ */
 public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 
 	private final URI serviceURI;

@@ -28,7 +28,7 @@ import org.junit.BeforeClass;
  * Blackbox tests for the REST-API.
  * 
  * @author Christian Schenk
-  */
+ */
 public abstract class AbstractWebServiceTest {
 	private static final Log log = LogFactory.getLog(AbstractWebServiceTest.class);
 

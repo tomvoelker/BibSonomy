@@ -7,7 +7,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author nilsraabe
-  */
+ */
 public class LimitedAccountActivationValidation implements Validator<LimitedAccountActivationCommand>{
 
 	@Override

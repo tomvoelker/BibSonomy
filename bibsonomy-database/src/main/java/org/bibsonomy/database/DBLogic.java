@@ -125,7 +125,7 @@ import org.bibsonomy.sync.SynchronizationDatabaseManager;
  * @author Dominik Benz
  * @author Robert Jäschke
  * 
-  */
+ */
 public class DBLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(DBLogic.class);
 

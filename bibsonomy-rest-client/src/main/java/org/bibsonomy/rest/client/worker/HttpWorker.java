@@ -39,7 +39,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  * @param <M> the http method used by the http worker
+ * @param <M> the http method used by the http worker
  */
 public abstract class HttpWorker<M extends HttpMethod> {
 

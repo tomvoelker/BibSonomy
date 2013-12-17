@@ -19,7 +19,7 @@ import org.junit.Test;
  * Performance tests for database methods.
  * 
  * @author Christian Schenk
-  */
+ */
 @Ignore
 public class PerformanceTest extends AbstractDatabaseManagerTest {
 

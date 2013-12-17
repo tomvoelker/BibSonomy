@@ -35,7 +35,7 @@ import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author wbi
-  */
+ */
 public class CreatePostDocumentQuery extends AbstractQuery<String> {
 
 	private final File file;

@@ -23,7 +23,7 @@ import org.junit.Test;
  * 
  * @author Jens Illig
  * @author Christian Schenk
-  */
+ */
 public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static GroupDatabaseManager groupDb;

@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 /**
  * @author fei
-  */
+ */
 public class PostParam extends ListParam {
 	private Timestamp timestamp;
 	private String userName;

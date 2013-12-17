@@ -41,7 +41,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for citeulike.org
  * @author tst
-  */
+ */
 public class CiteulikeScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "CiteUlike";

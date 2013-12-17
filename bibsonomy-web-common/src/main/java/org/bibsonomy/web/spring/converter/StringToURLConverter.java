@@ -34,7 +34,7 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * @author dzo
-  */
+ */
 public class StringToURLConverter implements Converter<String, URL> {
 
 	@Override

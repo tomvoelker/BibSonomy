@@ -50,7 +50,7 @@ import org.bibsonomy.util.ExceptionUtils;
  * 
  * @author Jens Illig
  * @author Christian Schenk
-  */
+ */
 public final class CommonModelUtils {
 
 	private static final Log log = LogFactory.getLog(CommonModelUtils.class);

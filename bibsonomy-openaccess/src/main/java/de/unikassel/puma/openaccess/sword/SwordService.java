@@ -38,7 +38,7 @@ import org.springframework.beans.factory.annotation.Required;
  * Sword main
  * 
  * @author:  sven
-  * 
+ * 
  */
 public class SwordService {
 	private static final Log log = LogFactory.getLog(SwordService.class);

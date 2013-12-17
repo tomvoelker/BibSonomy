@@ -37,7 +37,7 @@ import org.springframework.validation.Errors;
  * 
  * 
  * @author rja
-  */
+ */
 public abstract class AbstractUserIDRegistrationController implements ErrorAware, ValidationAwareController<UserIDRegistrationCommand>, RequestAware, CookieAware {
 	private static final Log log = LogFactory.getLog(AbstractUserIDRegistrationController.class);
 	

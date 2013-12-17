@@ -34,7 +34,7 @@ import org.junit.Test;
 
 /**
  * @author rja
-  */
+ */
 public class XMLUnitTestImporterTest {
 
 	@Test

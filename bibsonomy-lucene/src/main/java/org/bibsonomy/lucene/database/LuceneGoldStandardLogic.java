@@ -5,7 +5,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 
 /**
  * @author dzo
-  */
+ */
 public class LuceneGoldStandardLogic extends LuceneDBLogic<GoldStandardPublication> {
 	
 	@Override

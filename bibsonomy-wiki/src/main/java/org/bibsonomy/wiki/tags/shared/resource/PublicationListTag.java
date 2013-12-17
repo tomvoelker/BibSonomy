@@ -28,7 +28,7 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * 
  * @author philipp
  * @author Bernd Terbrack
-  */
+ */
 public class PublicationListTag extends SharedTag {
 	private static final Log log = LogFactory.getLog(PublicationListTag.class);
 

@@ -7,7 +7,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 
 /**
  * @author dzo
-  */
+ */
 public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlugin {
 	
 	@Override

@@ -40,7 +40,7 @@ import org.bibsonomy.services.filesystem.FileLogic;
  * @author Christian Schenk
  * @author Daniel Zoller
  * 
-  */
+ */
 public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexParam> {
 	private static final Log log = LogFactory.getLog(BibTexDatabaseManager.class);
 	

@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author schwass
-  */
+ */
 @Category(RemoteTest.class)
 public class TaylorAndFrancisScraperTest {
 

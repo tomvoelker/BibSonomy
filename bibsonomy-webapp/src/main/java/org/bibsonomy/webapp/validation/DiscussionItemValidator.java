@@ -10,7 +10,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author dzo
-  * @param <D> 
+ * @param <D> 
  */
 public abstract class DiscussionItemValidator<D extends DiscussionItem> implements Validator<DiscussionItemAjaxCommand<D>> {
 

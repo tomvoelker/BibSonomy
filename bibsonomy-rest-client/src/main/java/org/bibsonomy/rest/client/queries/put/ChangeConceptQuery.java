@@ -38,7 +38,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to update an existing concept
  * 
  * @author Stefan Stützer
-  */
+ */
 public class ChangeConceptQuery extends AbstractQuery<String> {
 
 	private final Tag concept;	

@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 
 /**
  * @author dzo
-  */
+ */
 public class DeserializerFactory extends BeanDeserializerFactory {
 	private static final long serialVersionUID = -3016780764419888216L;
 	

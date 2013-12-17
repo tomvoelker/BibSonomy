@@ -38,7 +38,7 @@ import org.junit.Test;
  * semantically correct.
  * 
  * @author Anton Wilhelm
-  */
+ */
 @Ignore // FIXME adapt to new test db
 public class LoggingTest extends AbstractDatabaseManagerTest {
 	

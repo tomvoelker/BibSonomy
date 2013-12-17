@@ -19,7 +19,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author fba
-  * @param <RESOURCE> 
+ * @param <RESOURCE> 
  */
 public class PostValidator<RESOURCE extends Resource> implements Validator<EditPostCommand<RESOURCE>> {
 	private static final Log log = LogFactory.getLog(PostValidator.class);

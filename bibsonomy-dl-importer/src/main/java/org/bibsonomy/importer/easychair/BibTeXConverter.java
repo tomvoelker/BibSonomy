@@ -21,7 +21,7 @@ import org.bibsonomy.model.Tag;
  * Converts an EasyChair XML file into BibTeX.
  * 
  * @author rja
-  */
+ */
 public class BibTeXConverter {
 
 	/**

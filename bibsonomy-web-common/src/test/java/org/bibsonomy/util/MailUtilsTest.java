@@ -36,7 +36,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 
 /**
  * @author Robert Jäschke
-  */
+ */
 public class MailUtilsTest {
 
 	private MailUtils mailUtils;

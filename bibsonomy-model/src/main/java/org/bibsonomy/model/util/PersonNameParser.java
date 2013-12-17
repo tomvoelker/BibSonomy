@@ -35,7 +35,7 @@ import org.bibsonomy.model.PersonName;
  * http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
  * 
  * @author henkel
-  */
+ */
 public class PersonNameParser {
 
 	private static final String COMMA = ",".intern();

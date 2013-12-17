@@ -10,7 +10,7 @@ import org.bibsonomy.model.User;
  * Command for ajax requests from admin page
  * 
  * @author Stefan Stützer
-  */
+ */
 public class AdminAjaxCommand extends AjaxCommand {
 	
 	/** list of bookmarks of an user */

@@ -25,7 +25,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  *   
  * 
  * @author rja
-  */
+ */
 public class WeightedMergingTagRecommender extends AbstractTagRecommender {
 
 	private TagRecommender[] tagRecommenders;

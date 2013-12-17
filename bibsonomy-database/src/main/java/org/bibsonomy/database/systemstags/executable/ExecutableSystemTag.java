@@ -8,7 +8,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
-  */
+ */
 public interface ExecutableSystemTag extends SystemTag {
 
 	/**

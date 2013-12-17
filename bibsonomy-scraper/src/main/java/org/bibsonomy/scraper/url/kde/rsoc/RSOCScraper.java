@@ -32,7 +32,7 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author wbi
-  */
+ */
 public class RSOCScraper extends CitationManagerScraper {
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download to citation manager</a>");
 	private static final String SITE_NAME = "Royal Society Publishing";

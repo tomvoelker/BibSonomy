@@ -11,7 +11,7 @@ import org.springframework.security.saml.log.SAMLLogger;
  * Unfortunately the provided SAMLLogger does not log exceptions, so we need this class.
  * 
  * @author Jens Illig
-  */
+ */
 public class SamlExceptionLogger implements SAMLLogger {
 	private static final Log log = LogFactory.getLog(SamlExceptionLogger.class);
 	private SAMLLogger regularSamlLogger;

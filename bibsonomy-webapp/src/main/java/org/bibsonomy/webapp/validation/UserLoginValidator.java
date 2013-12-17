@@ -10,7 +10,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author rja
-  */
+ */
 public class UserLoginValidator implements Validator<UserLoginCommand> {
 
 	@Override

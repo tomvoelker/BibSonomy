@@ -18,7 +18,7 @@ import org.bibsonomy.model.statistics.StatisticsValues;
  * 
  * @author Jens Illig
  * @author Dominik Benz
-  */
+ */
 public class SimpleResourceViewCommand extends ResourceViewCommand implements BibtexViewCommand, LayoutViewCommand {
 	// TODO: rename to bookmarks
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);

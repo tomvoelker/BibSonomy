@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.command.actions;
 
 /**
  * @author ice
-  */
+ */
 public interface DownloadCommand {
 
 	/**

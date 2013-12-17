@@ -19,7 +19,7 @@ import org.junit.Test;
  * tests for {@link BrowserImporter}
  * 
  * @author dzo
-  */
+ */
 public class BrowserImporterTest {
 
 	@Test

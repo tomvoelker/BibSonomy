@@ -42,7 +42,7 @@ import org.bibsonomy.util.UrlUtils;
  * Generates the URLs used by the web application.
  * 
  * @author rja
-  */
+ */
 public class URLGenerator {
 
 	/**

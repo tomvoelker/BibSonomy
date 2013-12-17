@@ -42,7 +42,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
-  */
+ */
 public class CambridgeScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "Cambridge Journals";

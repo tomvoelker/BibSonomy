@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * @author Lukas
-  */
+ */
 @Category(RemoteTest.class)
 public class DublinCoreScraperTest {
 

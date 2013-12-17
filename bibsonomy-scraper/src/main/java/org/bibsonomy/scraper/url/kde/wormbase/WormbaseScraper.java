@@ -44,7 +44,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for http://www.wormbase.org
  * @author tst
-  */
+ */
 public class WormbaseScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Wormbase";

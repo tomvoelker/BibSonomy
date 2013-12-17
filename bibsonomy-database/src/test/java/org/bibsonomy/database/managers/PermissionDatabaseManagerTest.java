@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * @author Robert Jäschke
-  */
+ */
 public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static PermissionDatabaseManager permissionDb;

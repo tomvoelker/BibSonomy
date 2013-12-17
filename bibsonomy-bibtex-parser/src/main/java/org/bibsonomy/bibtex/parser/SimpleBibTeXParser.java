@@ -64,7 +64,7 @@ import bibtex.parser.ParseException;
  * in a local field.
  * 
  * @author rja
-  */
+ */
 public class SimpleBibTeXParser {
 
 	/**

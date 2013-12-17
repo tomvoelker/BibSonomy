@@ -9,7 +9,7 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
 /**
  * @author dzo
-  * @param <R> the resource
+ * @param <R> the resource
  */
 public class ResourcePageCommand<R extends Resource> extends TagResourceViewCommand {
 	private String requestedHash;

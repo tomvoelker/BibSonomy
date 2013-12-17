@@ -26,7 +26,7 @@ import org.bibsonomy.util.ReflectionUtils;
  *  - insert<DISCUSSIONITEM>
  * 
  * @author dzo
-  * @param <D> 
+ * @param <D> 
  */
 public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(DiscussionItemDatabaseManager.class);	

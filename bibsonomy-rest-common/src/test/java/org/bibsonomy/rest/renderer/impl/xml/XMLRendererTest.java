@@ -30,7 +30,7 @@ import org.custommonkey.xmlunit.XMLAssert;
 
 /**
  * @author dzo
-  */
+ */
 public class XMLRendererTest extends AbstractRendererTest {
 	
 	private final static XMLRenderer RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));

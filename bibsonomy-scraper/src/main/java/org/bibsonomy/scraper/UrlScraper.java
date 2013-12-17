@@ -31,7 +31,7 @@ import org.bibsonomy.common.Pair;
 
 /**
  * @author rja
-  */
+ */
 public interface UrlScraper extends Scraper {
 
 	/**

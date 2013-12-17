@@ -12,7 +12,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * </ul>
  *  
  * @author rja
-  */
+ */
 public class RedirectCommand extends BaseCommand {
 
 	/**

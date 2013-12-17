@@ -15,7 +15,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 /**
  * @author jensi
-  */
+ */
 public class RelayStateSettingEntryPoint implements AuthenticationEntryPoint {
 	private AuthenticationEntryPoint entryPoint;
 

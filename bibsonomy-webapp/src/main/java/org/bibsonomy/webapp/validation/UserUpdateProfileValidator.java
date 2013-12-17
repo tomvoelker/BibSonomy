@@ -16,7 +16,7 @@ import org.springframework.validation.Errors;
 /**
  * 
  * @author cvo
-  */
+ */
 public class UserUpdateProfileValidator implements Validator<SettingsViewCommand> {
 	private static final Set<String> ALLOWED_GENDERS = Sets.asSet("f", "m");
 	

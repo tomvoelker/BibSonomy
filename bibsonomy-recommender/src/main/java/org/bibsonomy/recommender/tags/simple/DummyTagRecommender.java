@@ -19,7 +19,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * Dummy recommender for simulating different latency periods.
  * 
  * @author fei
-  */
+ */
 public class DummyTagRecommender implements TagRecommender, TagRecommenderConnector {
 	private static final Log log = LogFactory.getLog(DummyTagRecommender.class);
 	

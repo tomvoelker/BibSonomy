@@ -15,7 +15,7 @@ import org.bibsonomy.model.Post;
  * Returns a list of BibTexs contained in a certain user's basket
  * 
  * @author Dominik Benz
-  */
+ */
 public class GetBibtexFromBasketForUser extends ResourceChainElement<BibTex, BibTexParam> {
 	
 	@Override

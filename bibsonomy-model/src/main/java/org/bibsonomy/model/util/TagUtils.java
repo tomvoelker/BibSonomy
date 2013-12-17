@@ -46,7 +46,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Dominik Benz
-  */
+ */
 public class TagUtils {
 	private static final Log log = LogFactory.getLog(TagUtils.class); 
 	

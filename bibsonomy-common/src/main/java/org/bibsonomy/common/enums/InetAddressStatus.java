@@ -25,7 +25,7 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author Robert Jäschke
-  */
+ */
 public enum InetAddressStatus {
 	/**
 	 * The IP is blocked - write access is not allowed at all (neither

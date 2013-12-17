@@ -5,7 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 /**
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class ToField {
 

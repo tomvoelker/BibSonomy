@@ -33,7 +33,7 @@ import org.bibsonomy.model.Post;
  * Allows to import lists of bookmarks from remote services. 
  * 
  * @author rja
-  */
+ */
 public interface RemoteServiceBookmarkImporter {
 
 	/**

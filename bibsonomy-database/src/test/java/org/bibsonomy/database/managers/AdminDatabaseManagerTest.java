@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * @author Robert Jäschke
  * @author Stefan Stützer
-  */
+ */
 public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static AdminDatabaseManager adminDb;

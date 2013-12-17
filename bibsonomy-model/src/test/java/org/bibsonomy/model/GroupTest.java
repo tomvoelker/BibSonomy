@@ -35,7 +35,7 @@ import org.junit.Test;
 /**
  * Testcase for the Group class
  * 
-  */
+ */
 public class GroupTest {
 
 	/**

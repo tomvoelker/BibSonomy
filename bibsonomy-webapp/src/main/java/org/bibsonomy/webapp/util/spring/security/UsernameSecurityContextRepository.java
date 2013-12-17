@@ -27,7 +27,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
  * UserdetailsSerivce {@link #service}
  * 
  * @author dzo
-  */
+ */
 public class UsernameSecurityContextRepository implements SecurityContextRepository {	
 	private static final String ATTRIBUTE_LOGIN_USER_NAME = "LOGIN_USER_NAME";
 

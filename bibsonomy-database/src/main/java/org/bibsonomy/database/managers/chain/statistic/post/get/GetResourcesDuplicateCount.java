@@ -12,7 +12,7 @@ import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author Stefan Stützer
-  */
+ */
 public class GetResourcesDuplicateCount extends StatisticChainElement {
 
 	@Override

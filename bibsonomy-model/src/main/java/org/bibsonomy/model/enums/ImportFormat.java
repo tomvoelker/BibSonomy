@@ -25,7 +25,7 @@ package org.bibsonomy.model.enums;
 
 /**
  * @author Jens Illig
-  * 
+ * 
  * TODO: merge with RenderingFormat
  */
 public enum ImportFormat {

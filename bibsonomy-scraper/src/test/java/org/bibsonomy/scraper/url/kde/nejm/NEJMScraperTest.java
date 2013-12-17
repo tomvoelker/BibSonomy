@@ -32,7 +32,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author clemens
-  */
+ */
 @Category(RemoteTest.class)
 public class NEJMScraperTest {
 

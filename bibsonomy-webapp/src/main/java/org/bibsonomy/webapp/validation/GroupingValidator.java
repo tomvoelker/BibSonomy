@@ -15,7 +15,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author dzo
-  */
+ */
 public class GroupingValidator implements Validator<GroupingCommand> {
 	private static final Log log = LogFactory.getLog(GroupingValidator.class);
 	

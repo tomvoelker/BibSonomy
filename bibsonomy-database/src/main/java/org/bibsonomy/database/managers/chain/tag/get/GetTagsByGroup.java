@@ -17,7 +17,7 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Dominik Benz
  * @author Miranda Grahl
-  */
+ */
 public class GetTagsByGroup extends TagChainElement {
 
 	@Override

@@ -14,7 +14,7 @@ import org.bibsonomy.webapp.view.Views;
  * TODO: adapt or delete http://www.bibsonomy.org/help/doc/inside.html 
  * 
  * @author janus
-  */
+ */
 public class HashExampleController implements MinimalisticController<HashExampleCommand> {
 
     @Override

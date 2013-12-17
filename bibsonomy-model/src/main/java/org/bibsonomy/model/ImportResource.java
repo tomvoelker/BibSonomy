@@ -27,7 +27,7 @@ import org.bibsonomy.model.util.data.Data;
 
 /**
  * @author jensi
-  * 
+ * 
  * XXX: find solution without subclassing bibtex
  */
 public final class ImportResource extends BibTex {

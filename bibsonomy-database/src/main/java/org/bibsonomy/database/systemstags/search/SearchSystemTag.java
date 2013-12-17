@@ -7,7 +7,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author dzo
-  */
+ */
 public interface SearchSystemTag extends SystemTag {
 
 	/**

@@ -45,7 +45,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class GetWorker extends HttpWorker<GetMethod> {
 
 	protected static final Log log = LogFactory.getLog(GetWorker.class);

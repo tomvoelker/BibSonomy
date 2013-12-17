@@ -35,7 +35,7 @@ import org.bibsonomy.model.Tag;
  * independent of their scores!   
  * 
  * @author rja
-  */
+ */
 public class RecommendedTagComparator implements Comparator<RecommendedTag> {
 
 	@Override

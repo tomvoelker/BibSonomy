@@ -38,7 +38,7 @@ import org.springframework.core.convert.converter.ConditionalGenericConverter;
 
 /**
  * @author rja
-  */
+ */
 public class StringToPersonListTest {
 	
 	@Test

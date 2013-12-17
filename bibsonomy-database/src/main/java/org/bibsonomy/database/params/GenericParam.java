@@ -37,7 +37,7 @@ import org.bibsonomy.model.enums.Order;
  * @author Miranda Grahl
  * @author Christian Kramer
  * @author Christian Schenk
-  */
+ */
 public abstract class GenericParam {
 	/**
 	 * A set of tags

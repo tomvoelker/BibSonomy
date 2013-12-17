@@ -38,7 +38,7 @@ import org.springframework.validation.Errors;
  * This controller handles the additional URL requests for a given Post
  * 
  * @author Bernd Terbrack
-  */
+ */
 public class AdditionalURLController extends AjaxController implements MinimalisticController<AjaxURLCommand>, ErrorAware, ValidationAwareController<AjaxURLCommand> {
 
 	private static final Log log = LogFactory.getLog(AdditionalURLController.class);

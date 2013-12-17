@@ -10,7 +10,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Lukas
-  */
+ */
 public class VolumeExtractor implements AttributeExtractor {
 
 	@Override

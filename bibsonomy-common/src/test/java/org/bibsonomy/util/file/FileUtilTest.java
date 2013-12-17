@@ -31,7 +31,7 @@ import org.junit.Test;
 
 /**
  * @author Jens Illig
-  */
+ */
 public class FileUtilTest {
 	
 	/**

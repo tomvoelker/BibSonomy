@@ -13,7 +13,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author PlatinAge
-  */
+ */
 public class DiffBookmarkMockupController extends EditPostController<Bookmark, DiffBookmarkCommand> {
 	private static final Log LOGGER = LogFactory.getLog(DiffBookmarkMockupController.class);
 

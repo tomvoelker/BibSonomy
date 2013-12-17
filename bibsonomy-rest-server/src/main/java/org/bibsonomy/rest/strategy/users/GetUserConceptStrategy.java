@@ -15,7 +15,7 @@ import org.bibsonomy.rest.strategy.Strategy;
  * Handle user concept request
  * 
  * @author Stefan Stützer
-  */
+ */
 public class GetUserConceptStrategy extends Strategy {
 
 	private final String conceptName; 

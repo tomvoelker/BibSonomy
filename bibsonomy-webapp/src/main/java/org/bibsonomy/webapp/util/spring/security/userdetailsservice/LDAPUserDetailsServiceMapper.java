@@ -16,7 +16,7 @@ import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
  * maps ldap users to BibSonomy system users
  * 
  * @author dzo
-  */
+ */
 public class LDAPUserDetailsServiceMapper implements UserDetailsContextMapper {
 	
 	private UserDetailsService userDetailsService;

@@ -66,7 +66,7 @@ import org.bibsonomy.webapp.view.Views;
  *
  * 
  * @author fei
-  */
+ */
 public abstract class OAuthProtocolController implements MinimalisticController<OAuthCommand>, RequestAware, ResponseAware {
 	private static final Log log = LogFactory.getLog(OAuthProtocolController.class);
 	

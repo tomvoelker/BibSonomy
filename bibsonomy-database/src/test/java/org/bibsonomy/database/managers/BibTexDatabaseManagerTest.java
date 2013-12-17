@@ -55,7 +55,7 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
-  */
+ */
 public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	
 	private static BibTexDatabaseManager publicationDb;

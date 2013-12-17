@@ -9,7 +9,7 @@ import org.bibsonomy.rest.strategy.users.PutPostStrategy;
 
 /**
  * @author dzo
-  */
+ */
 public class PutCommunityPostStrategy extends PutPostStrategy {
 
 	/**

@@ -12,7 +12,7 @@ import org.apache.ftpserver.ftplet.FtpFile;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class BibSonomyFtpFile implements FtpFile {
 
 	private final String name;

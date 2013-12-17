@@ -11,7 +11,7 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
 /**
  * @author nilsraabe
-  */
+ */
 public class LimitedAccountActivationCommand  extends SimpleResourceViewCommand implements Serializable{
 	private static final long serialVersionUID = -4665591098903280881L;
 

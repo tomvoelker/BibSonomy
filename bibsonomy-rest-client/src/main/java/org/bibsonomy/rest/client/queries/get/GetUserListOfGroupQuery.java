@@ -40,7 +40,7 @@ import org.bibsonomy.util.UrlBuilder;
  * group.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class GetUserListOfGroupQuery extends AbstractQuery<List<User>> {
 
 	private final String groupname;

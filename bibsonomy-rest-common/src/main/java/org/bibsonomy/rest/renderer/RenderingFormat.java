@@ -31,7 +31,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
  * The supported rendering formats.
  * 
  * @author Christian Schenk
-  */
+ */
 public class RenderingFormat {
 
 	/**

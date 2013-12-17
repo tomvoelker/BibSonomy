@@ -32,7 +32,7 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author wla
-  */
+ */
 public class CreateReferenceQuery extends AbstractQuery<String> {
 
 	private final static String URL_PREFIX = "/posts/community/";

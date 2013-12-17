@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 
 /**
  * @author dzo
-  */
+ */
 public class LoginUrlAuthenticationEntryPoint extends org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint {
 
 	private static final String NOTICE_PARAM_NAME = "notice";

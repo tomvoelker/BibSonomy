@@ -26,7 +26,7 @@ import org.bibsonomy.model.UserSettings;
  * 
  * @author Miranda Grahl
  * @author Christian Schenk
-  */
+ */
 public final class ParamUtils {
 
 	/** username of a user who doesn't exist */

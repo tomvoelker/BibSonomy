@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * @author philipp
-  */
+ */
 public abstract class ClassificationTextParser implements ClassificationParser {
 
 	protected Map<String , ClassificationObject> classifications = null;

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.FactoryBean;
 
 /**
  * @author dzo
-  */
+ */
 public class ExtensionCheckerFactoryBean implements FactoryBean<ExtensionChecker>{
 	
 	private String allowedExtensions;

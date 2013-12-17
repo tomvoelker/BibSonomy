@@ -42,7 +42,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wla
-  */
+ */
 public class FASEBJournalScraper extends AbstractUrlScraper {
 
 	private final Log log = LogFactory.getLog(FASEBJournalScraper.class);

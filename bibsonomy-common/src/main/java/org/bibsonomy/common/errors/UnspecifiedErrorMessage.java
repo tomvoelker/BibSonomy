@@ -28,7 +28,7 @@ package org.bibsonomy.common.errors;
  * Add the Exception, that occurred.
  * 
  * @author sdo
-  */
+ */
 public class UnspecifiedErrorMessage extends ErrorMessage {
 	private final Exception ex;
 	

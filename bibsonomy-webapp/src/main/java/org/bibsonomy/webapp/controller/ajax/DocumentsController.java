@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
  * errors
  * 
  * @author wla
-  */
+ */
 public class DocumentsController extends AjaxController implements MinimalisticController<AjaxDocumentCommand> {
 	private static final Log log = LogFactory.getLog(DocumentsController.class);
 

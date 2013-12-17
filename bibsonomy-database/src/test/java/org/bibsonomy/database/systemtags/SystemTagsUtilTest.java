@@ -22,7 +22,7 @@ import org.junit.Test;
  * Tests SystemTagsUtil
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
-  */
+ */
 public class SystemTagsUtilTest {
 
 

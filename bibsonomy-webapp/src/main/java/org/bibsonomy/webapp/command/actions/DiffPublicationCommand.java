@@ -6,7 +6,7 @@ import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 
 /**
  * @author pba
-  */
+ */
 public class DiffPublicationCommand extends ResourcePageCommand<BibTex>{
 	
 	private Post<BibTex> post;

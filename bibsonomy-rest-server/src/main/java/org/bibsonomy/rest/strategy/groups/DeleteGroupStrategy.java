@@ -6,7 +6,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class DeleteGroupStrategy extends AbstractDeleteStrategy {
 	private final String groupName;
 	

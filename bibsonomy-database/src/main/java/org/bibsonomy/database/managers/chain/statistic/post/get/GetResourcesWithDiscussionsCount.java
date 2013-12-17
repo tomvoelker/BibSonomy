@@ -16,7 +16,7 @@ import org.bibsonomy.model.statistics.Statistics;
  * Gets count of resources of a special user
  * 
  * @author Stefan Stützer
-  */
+ */
 public class GetResourcesWithDiscussionsCount extends StatisticChainElement {
 
 	@Override

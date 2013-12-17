@@ -29,7 +29,7 @@ import java.io.File;
  * Decides where to store files.
  * 
  * @author Jens Illig
-  */
+ */
 public interface FileFactory {
 	/**
 	 * @param fileName simple fileName without directory path

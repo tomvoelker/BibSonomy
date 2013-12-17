@@ -12,7 +12,7 @@ import org.bibsonomy.model.Post;
 
 /**
  * @author philipp
-  */
+ */
 public class GetBibtexWithRepository extends ResourceChainElement<BibTex, BibTexParam> {
 
     @Override

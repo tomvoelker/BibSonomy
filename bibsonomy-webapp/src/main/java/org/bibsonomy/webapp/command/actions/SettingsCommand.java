@@ -4,7 +4,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author cvo
-  */
+ */
 public class SettingsCommand extends BaseCommand {
 
 	private int logLevel;

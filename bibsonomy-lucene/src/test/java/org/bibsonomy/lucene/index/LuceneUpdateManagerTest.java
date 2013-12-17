@@ -41,7 +41,7 @@ import org.junit.Test;
 
 /**
  * @author fei
-  */
+ */
 public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	private static final Log log = LogFactory.getLog(LuceneUpdateManagerTest.class);
 	

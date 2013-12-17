@@ -55,7 +55,7 @@ import de.intarsys.tools.locator.FileLocator;
  * can monitor it.
  * 
  * @author pbu
-  */
+ */
 public class QRCodeEmbedder implements Callable<String> {
 	
 	/**

@@ -66,7 +66,7 @@ import org.bibsonomy.util.WebUtils;
  * like this -> http://scripts.iucr.org/cgi-bin/biblio?Action=download&cnor=ck5030&saveas=BIBTeX
  * 
  * @author tst
-  */
+ */
 public class IucrScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "International Union of Crystallography";

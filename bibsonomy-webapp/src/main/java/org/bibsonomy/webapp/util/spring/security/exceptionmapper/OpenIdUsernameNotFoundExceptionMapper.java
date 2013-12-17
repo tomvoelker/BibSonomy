@@ -15,7 +15,7 @@ import org.springframework.security.openid.OpenIDAuthenticationToken;
 
 /**
  * @author rja
-  */
+ */
 public class OpenIdUsernameNotFoundExceptionMapper extends UsernameNotFoundExceptionMapper {
 
 	/**

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 /**
  * @author jensi
-  */
+ */
 public class TitleExtractorTest extends AbstractExtractorTest {
 	@Test
 	public void testTrimming() {

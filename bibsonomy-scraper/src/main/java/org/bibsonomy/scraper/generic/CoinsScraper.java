@@ -43,7 +43,7 @@ import org.bibsonomy.util.UrlUtils;
  * Scraper for Pages with a span element which matches to the COinS specification.
  *  
  * @author tst
-  */
+ */
 public class CoinsScraper implements Scraper {
 
 	private static final String SITE_NAME = "CoinsScraper";

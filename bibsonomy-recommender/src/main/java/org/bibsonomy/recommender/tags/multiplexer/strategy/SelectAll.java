@@ -10,7 +10,7 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 
 /**
  * @author fei
-  */
+ */
 public class SelectAll extends SimpleSelector {
 	private static final Log log = LogFactory.getLog(SelectAll.class);
 	

@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author sst
-  */
+ */
 public class LoggingServlet extends HttpServlet {
 	private static final long serialVersionUID = 7035035642527692979L;
 

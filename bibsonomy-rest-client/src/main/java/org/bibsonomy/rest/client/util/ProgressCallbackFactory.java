@@ -25,7 +25,7 @@ package org.bibsonomy.rest.client.util;
 
 /**
  * @author dzo
-  */
+ */
 public interface ProgressCallbackFactory {
 	
 	/**

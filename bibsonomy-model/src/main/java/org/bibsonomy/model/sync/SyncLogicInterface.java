@@ -32,7 +32,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author wla
-  */
+ */
 public interface SyncLogicInterface {
 	
 	/* ********************************************************************

@@ -35,7 +35,7 @@ import org.springframework.validation.Errors;
  * </p>
  * 
  * @author rja
-  */
+ */
 public class RedirectController implements MinimalisticController<RedirectCommand>, RequestAware, ErrorAware {
 	private static final Log log = LogFactory.getLog(RedirectController.class);
   

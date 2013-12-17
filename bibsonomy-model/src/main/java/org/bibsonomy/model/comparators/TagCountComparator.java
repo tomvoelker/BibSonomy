@@ -33,7 +33,7 @@ import org.bibsonomy.model.Tag;
  * sorts tags according to their global count values
  * 
  * @author fei
-  */
+ */
 public class TagCountComparator implements Comparator<Tag> {
 
 	/**

@@ -25,7 +25,7 @@ package org.bibsonomy.services.database;
 
 /**
  * @author dzo
-  */
+ */
 public interface DatabaseSchemaInformation {
 
 	/**

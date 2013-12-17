@@ -8,7 +8,7 @@ import org.bibsonomy.model.BibTex;
  * get URL for bibtex resource
  * 
  * @author Lukas
-  */
+ */
 public class URLExtractor implements AttributeExtractor {
 
 	@Override

@@ -73,7 +73,7 @@ import org.junit.Ignore;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Christian Kramer
  * @author Jens Illig
-  */
+ */
 @Ignore
 public class TestDBLogic implements LogicInterface {	
 	

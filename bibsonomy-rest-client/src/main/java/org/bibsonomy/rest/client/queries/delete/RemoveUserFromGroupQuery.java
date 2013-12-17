@@ -37,7 +37,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to remove an user from a group.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class RemoveUserFromGroupQuery extends AbstractQuery<String> {
 	private final String userName;
 	private final String groupName;

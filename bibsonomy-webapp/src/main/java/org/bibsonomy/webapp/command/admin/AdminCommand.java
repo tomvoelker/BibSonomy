@@ -12,7 +12,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * Command bean for admin page 
  * 
  * @author Beate Krause
-  */
+ */
 public class AdminCommand extends BaseCommand{
 
 	/** Privacy options for the group */

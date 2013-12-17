@@ -13,7 +13,7 @@ import org.bibsonomy.database.systemstags.search.NotTagSystemTag;
 
 /**
  * @author mba
-  */
+ */
 public class ChainUtils {
 
 	public static boolean useResourceSearch(final GenericParam param) {

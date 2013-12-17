@@ -17,7 +17,7 @@ import bibtex.parser.ParseException;
 
 /**
  * @author jensi
-  */
+ */
 public class HebisDataTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testHEB291478336() {

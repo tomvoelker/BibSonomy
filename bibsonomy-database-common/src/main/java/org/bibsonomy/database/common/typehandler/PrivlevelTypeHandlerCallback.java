@@ -18,7 +18,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * @author Ken Weiner
  * @author Christian Schenk
  * @author Robert Jaeschke
-  */
+ */
 public class PrivlevelTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override

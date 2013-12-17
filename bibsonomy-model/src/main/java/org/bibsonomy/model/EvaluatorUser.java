@@ -28,7 +28,7 @@ import org.bibsonomy.common.enums.Role;
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
  * 
-  */
+ */
 public class EvaluatorUser extends User {
 	private static final long serialVersionUID = 222500173040042092L;
 

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Required;
  * Controller for ajax requests
  * 
  * @author Stefan Stützer
-  */
+ */
 public abstract class AjaxController implements RequestAware, ResponseAware {
 
 	protected LogicInterface logic;	

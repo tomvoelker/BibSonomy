@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * @author rja
-  */
+ */
 public class URLGeneratorTest {
 
 	private static URLGenerator ug = new URLGenerator("http://www.bibsonomy.org/");

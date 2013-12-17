@@ -9,7 +9,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author jensi
-  */
+ */
 public class AbstractExtractor implements AttributeExtractor {
 
 	@Override

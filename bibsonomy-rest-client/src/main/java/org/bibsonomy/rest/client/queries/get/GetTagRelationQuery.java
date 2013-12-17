@@ -42,7 +42,7 @@ import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author niebler
-  */
+ */
 public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	
 	private final TagRelation relation;

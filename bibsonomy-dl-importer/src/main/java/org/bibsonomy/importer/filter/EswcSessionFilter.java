@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * Adds the ESWC sessions as tags.
  * 
  * @author rja
-  */
+ */
 public class EswcSessionFilter implements PostFilterChainElement {
 
 	private final HashMap<Integer, String> paperSessionMap = new HashMap<Integer, String>();

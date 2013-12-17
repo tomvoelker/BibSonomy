@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.util.EnumResolver;
 
 /**
  * @author dzo
-  */
+ */
 public class EnumDeserializer extends com.fasterxml.jackson.databind.deser.std.EnumDeserializer {
 	private static final long serialVersionUID = 6805828183224444369L;
 	

@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #196
  * @author clemens
-  */
+ */
 @Category(RemoteTest.class)
 public class InspireScraperTest {
 	/**

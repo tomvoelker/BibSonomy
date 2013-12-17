@@ -44,7 +44,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for RIS citations from Metapress.com
  * @author tst
-  */
+ */
 public class MetapressScraper extends AbstractUrlScraper {
 
 	private static final String SITE_URL = "http://metapress.com/";

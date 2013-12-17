@@ -4,7 +4,7 @@ import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 
 /**
  * @author philipp
-  */
+ */
 public class SwordServiceCommand extends AjaxCommand {
 
 	private String resourceHash;

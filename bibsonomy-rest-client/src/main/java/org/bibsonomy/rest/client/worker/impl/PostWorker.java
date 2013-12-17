@@ -49,7 +49,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  * TODO: merge duplicate code with PostWorker
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class PostWorker extends HttpWorker<PostMethod> {
 
 	private static final String CONTENT_TYPE = "multipart/form-data";

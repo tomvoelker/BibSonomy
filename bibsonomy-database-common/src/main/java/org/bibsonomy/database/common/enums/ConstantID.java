@@ -10,7 +10,7 @@ import org.bibsonomy.model.Resource;
  * 
  * @author Christian Schenk
  * @author Christian Kramer
-  */
+ */
 public enum ConstantID {
 	/*
 	 * SQL constants

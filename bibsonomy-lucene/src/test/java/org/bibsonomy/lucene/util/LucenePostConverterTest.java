@@ -26,7 +26,7 @@ import org.junit.Test;
 
 /**
  * @author fei
-  */
+ */
 public class LucenePostConverterTest {
 	private static LuceneResourceConverter<BibTex> bibTexConverter;
 	private static LuceneResourceConverter<Bookmark> bookmarkConverter;

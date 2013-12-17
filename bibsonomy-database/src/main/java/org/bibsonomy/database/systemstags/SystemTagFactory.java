@@ -13,7 +13,7 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author Andreas Koch
-  */
+ */
 public class SystemTagFactory {
 	
 	private static final SystemTagFactory singleton = new SystemTagFactory();

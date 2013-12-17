@@ -43,7 +43,7 @@ import org.bibsonomy.services.filesystem.FileLogic;
  *  Precondition: 
  *   User is member of given group 
  * @author fei
-  */
+ */
 public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag, Cloneable {
 
 	private static final String NAME = "for";

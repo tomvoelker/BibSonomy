@@ -38,7 +38,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
-  */
+ */
 public class BMJScraper extends CitationManagerScraper {
 
 	private static final String SITE_NAME = "BMJ";

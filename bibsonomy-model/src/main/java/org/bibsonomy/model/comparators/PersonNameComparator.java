@@ -29,7 +29,7 @@ import org.bibsonomy.model.PersonName;
 
 /**
  * @author dzo
-  */
+ */
 public class PersonNameComparator implements Comparator<PersonName> {
 
 	@Override

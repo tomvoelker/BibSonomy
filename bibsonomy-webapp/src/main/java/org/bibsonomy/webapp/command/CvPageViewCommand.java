@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.command;
 
 /**
  * @author philipp
-  */
+ */
 public class CvPageViewCommand extends UserResourceViewCommand {
 	private boolean isGroup = false;
 	private String wikiText;

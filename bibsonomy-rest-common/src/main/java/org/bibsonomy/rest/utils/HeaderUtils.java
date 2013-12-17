@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * @author dzo
  * @author rja
-  */
+ */
 public class HeaderUtils {
 	private final static Log log = LogFactory.getLog(HeaderUtils.class);
 	

@@ -44,7 +44,7 @@ import org.bibsonomy.util.UrlBuilder;
  * example.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class ChangePostQuery extends AbstractQuery<String> {
 	private final Post<? extends Resource> post;
 	private final String username;

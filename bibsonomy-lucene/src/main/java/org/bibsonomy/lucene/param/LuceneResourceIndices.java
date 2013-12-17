@@ -8,7 +8,7 @@ import java.util.List;
  * 
  * @author Sven Stefani
  * @author bsc
-  */
+ */
 public class LuceneResourceIndices {
 	/**
 	 * the name of the resource the index contains

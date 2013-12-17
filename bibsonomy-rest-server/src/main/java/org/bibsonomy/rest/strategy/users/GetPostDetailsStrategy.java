@@ -15,7 +15,7 @@ import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class GetPostDetailsStrategy extends Strategy {
 
 	private final String userName;

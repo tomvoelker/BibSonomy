@@ -30,7 +30,7 @@ import org.bibsonomy.services.URLGenerator;
 
 /**
  * @author rja
-  */
+ */
 public class JabrefLayoutRenderer implements Renderer {
 
 	/*

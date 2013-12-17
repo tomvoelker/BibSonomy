@@ -12,7 +12,7 @@ import static org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy.c
 
 /**
  * @author dbe
-  */
+ */
 public class PostRelatedusersForUserStrategy extends AbstractCreateStrategy {
 	
 	private String userName;

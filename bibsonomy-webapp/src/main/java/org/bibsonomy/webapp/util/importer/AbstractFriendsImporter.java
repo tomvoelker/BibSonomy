@@ -8,7 +8,7 @@ import org.bibsonomy.model.User;
  * base class for different user relation importers
  * 
  * @author fei
-  * @param <U> type of the imported user
+ * @param <U> type of the imported user
  */
 public abstract class AbstractFriendsImporter<U> {
 

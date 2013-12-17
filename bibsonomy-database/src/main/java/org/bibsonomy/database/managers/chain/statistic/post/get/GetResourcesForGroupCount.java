@@ -18,7 +18,7 @@ import org.bibsonomy.model.statistics.Statistics;
  * Counts of resources within a group
  * 
  * @author Stefan Stützer
-  */
+ */
 public class GetResourcesForGroupCount extends StatisticChainElement {
 
 	@Override

@@ -5,7 +5,7 @@ import java.util.Set;
 
 /**
  * @author dzo
-  */
+ */
 public class EditGoldstandardReferencesCommand extends AjaxCommand {
 	private String hash;
 	private Set<String> references;

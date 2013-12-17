@@ -4,7 +4,7 @@ package org.bibsonomy.batch.repair.old;
  * The name of a person.
  * 
  * @author Jens Illig
-  */
+ */
 public class OldPersonName {
 	public static final String LAST_FIRST_DELIMITER = ",";
 	private String name;

@@ -34,7 +34,7 @@ import org.bibsonomy.model.User;
  * Compare BibSonomy users based on their user name
  * 
  * @author fei
-  */
+ */
 public class UserComparator implements Comparator<User> {
 	@Override
 	public int compare(User u1, User u2) {

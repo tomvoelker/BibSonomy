@@ -24,7 +24,7 @@ import org.bibsonomy.model.enums.Order;
  * @author Miranda Grahl
  * @author Jens Illig
  * @author nosebrain
-  * @param <R> 
+ * @param <R> 
  * @param <P> 
  */
 public class GetResourcesByFriends<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

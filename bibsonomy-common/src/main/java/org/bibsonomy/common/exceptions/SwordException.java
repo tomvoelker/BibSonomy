@@ -26,7 +26,7 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class SwordException extends Exception {
 
 	private static final long serialVersionUID = 1L;

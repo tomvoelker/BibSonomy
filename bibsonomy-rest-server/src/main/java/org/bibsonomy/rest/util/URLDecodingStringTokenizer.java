@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author wla
-  */
+ */
 public class URLDecodingStringTokenizer extends StringTokenizer {
 
 	/**

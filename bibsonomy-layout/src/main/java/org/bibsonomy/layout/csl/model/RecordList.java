@@ -30,7 +30,7 @@ import java.util.HashMap;
  * the entry's ID as key.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
-  */
+ */
 public class RecordList extends HashMap<String,Record> {
 
     public RecordList() {

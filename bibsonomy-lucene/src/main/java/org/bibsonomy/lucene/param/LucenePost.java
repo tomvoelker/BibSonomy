@@ -10,7 +10,7 @@ import org.bibsonomy.model.Resource;
  * Lucene Post class, extending the model class with index management fields.
  * 
  * @author fei
-  *
+ *
  * @param <R>
  */
 public class LucenePost<R extends Resource> extends Post<R> {

@@ -7,7 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * this class wraps a single application context for the lucene modul
  * 
  * @author fei
-  */
+ */
 public class LuceneSpringContextWrapper {
 	private static final String CONFIG_LOCATION = "LuceneTestContext.xml";
 	

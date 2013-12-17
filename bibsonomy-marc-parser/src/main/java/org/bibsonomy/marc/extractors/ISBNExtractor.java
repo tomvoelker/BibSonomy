@@ -30,7 +30,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
-  */
+ */
 public class ISBNExtractor implements AttributeExtractor {
 
 	@Override

@@ -11,7 +11,7 @@ import org.bibsonomy.model.enums.Order;
  * Bean for Tag Sites
  * 
  * @author Michael Wagner
-  */
+ */
 public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	
 	/** tags to search for */

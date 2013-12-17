@@ -7,7 +7,7 @@ import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
  * Bean for providing the bibtexkey
  * 
  * @author Flori
-  */
+ */
 public class BibtexkeyCommand extends PublicationPageCommand {
 	
 	/** String to search for */

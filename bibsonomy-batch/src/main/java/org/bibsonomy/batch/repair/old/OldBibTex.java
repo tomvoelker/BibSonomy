@@ -17,7 +17,7 @@ import org.bibsonomy.model.util.BibTexUtils;
  * BibTex fields like the author, publisher etc.
  * 
  * @author Christian Schenk
-  */
+ */
 public class OldBibTex extends Resource {
 	/**
 	 * For persistence (Serializable) 

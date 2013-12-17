@@ -7,7 +7,7 @@ import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author DaiLL
-  * 
+ * 
  * Catches all possibilities of requesting statistics in case of no match without throwing an error.
  */
 public class DefaultCatchAllCount extends StatisticChainElement {

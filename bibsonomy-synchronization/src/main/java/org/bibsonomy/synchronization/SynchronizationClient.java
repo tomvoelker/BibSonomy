@@ -26,7 +26,7 @@ import org.bibsonomy.model.util.ResourceUtils;
  * 
  * 
  * @author wla
-  */
+ */
 public class SynchronizationClient extends AbstractSynchronizationClient {
 	private static final Log log = LogFactory.getLog(SynchronizationClient.class);
 

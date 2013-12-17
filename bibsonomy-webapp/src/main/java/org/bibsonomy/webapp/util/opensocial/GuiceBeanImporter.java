@@ -13,7 +13,7 @@ import com.google.inject.Injector;
  * Class for making shindig beans available to the spring configuration
  * 
  * @author fei
-  */
+ */
 public class GuiceBeanImporter implements ServletContextAware{
 	
 	/** the servlet context */

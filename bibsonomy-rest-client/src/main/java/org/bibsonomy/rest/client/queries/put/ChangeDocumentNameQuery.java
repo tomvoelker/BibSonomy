@@ -39,7 +39,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * query to rename a document
  * 
  * @author dzo
-  */
+ */
 public class ChangeDocumentNameQuery extends AbstractQuery<String> {
 	private String resourceHash;
 	private String newFileName;

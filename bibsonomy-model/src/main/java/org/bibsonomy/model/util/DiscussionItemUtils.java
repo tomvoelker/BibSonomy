@@ -33,7 +33,7 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author dzo
-  */
+ */
 public class DiscussionItemUtils {
 	
 	private static final DateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");

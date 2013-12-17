@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Waldemar Biller <biller@cs.uni-kassel.de>
-  */
+ */
 public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 
 	private static final String PARAM_IS_MOBILE = "isMobile";

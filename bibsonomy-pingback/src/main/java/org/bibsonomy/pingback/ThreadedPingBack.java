@@ -4,7 +4,7 @@ import org.bibsonomy.services.Pingback;
 
 /**
  * @author jensi
-  */
+ */
 public interface ThreadedPingBack extends Pingback {
 
 	/**

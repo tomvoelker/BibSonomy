@@ -41,7 +41,7 @@ import org.springframework.beans.factory.DisposableBean;
  * Class for encapsulating webservice queries to recommenders
  * 
  * @author fei
-  */
+ */
 public class WebserviceTagRecommender implements TagRecommenderConnector, DisposableBean {
 	private static final Log log = LogFactory.getLog(WebserviceTagRecommender.class);
 	

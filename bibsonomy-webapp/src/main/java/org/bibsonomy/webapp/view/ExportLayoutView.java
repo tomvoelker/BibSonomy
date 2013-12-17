@@ -22,7 +22,7 @@ import org.springframework.web.servlet.view.AbstractView;
  * This view is used in conjunction with the BibSonomy Typo3-PlugIn.
  * 
  * @author mwa
-  */
+ */
 @SuppressWarnings("deprecation")
 public class ExportLayoutView extends AbstractView {
 	private static final Log log = LogFactory.getLog(ExportLayoutView.class);

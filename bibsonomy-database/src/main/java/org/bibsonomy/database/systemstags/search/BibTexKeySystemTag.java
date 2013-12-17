@@ -5,7 +5,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
-  */
+ */
 public class BibTexKeySystemTag extends AbstractSearchSystemTagImpl {
 
 	/**

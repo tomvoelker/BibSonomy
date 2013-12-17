@@ -28,7 +28,7 @@ import java.io.Reader;
 
 /**
  * @author jensi
-  */
+ */
 public interface Data {
 	/**
 	 * @return mimetype string of the data

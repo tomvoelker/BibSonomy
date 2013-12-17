@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
  * http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
  * 
  * @author rja
-  */
+ */
 public class ServiceUnavailableException extends AuthenticationException {
 	private static final long serialVersionUID = -526729562785871024L;
 	

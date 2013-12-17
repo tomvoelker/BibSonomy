@@ -6,7 +6,7 @@ import java.util.Date;
  * Class for lucene queries
  * 
  * @author Jens Illig
-  */
+ */
 public class LuceneParam {
 	
 	private String userName;

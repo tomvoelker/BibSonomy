@@ -39,7 +39,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author Steffen
-  */
+ */
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(SettingsPageController.class);
 	

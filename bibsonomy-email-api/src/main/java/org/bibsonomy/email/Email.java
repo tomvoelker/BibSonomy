@@ -10,7 +10,7 @@ import org.bibsonomy.model.util.TagUtils;
  * The parsed email.
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class Email {
 

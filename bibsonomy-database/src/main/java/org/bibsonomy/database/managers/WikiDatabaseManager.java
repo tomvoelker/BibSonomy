@@ -13,7 +13,7 @@ import org.bibsonomy.model.Wiki;
  * concerning all requests about the CVWiki.
  * 
  * @author philipp
-  */
+ */
 public class WikiDatabaseManager extends AbstractDatabaseManager {
     private static final WikiDatabaseManager singleton = new WikiDatabaseManager();
 

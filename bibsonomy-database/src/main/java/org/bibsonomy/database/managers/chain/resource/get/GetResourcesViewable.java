@@ -21,7 +21,7 @@ import org.bibsonomy.model.enums.Order;
  * groupmembers excluded public option regarding setting a post).
  * 
  * @author Miranda Grahl
-  * @param <R> 
+ * @param <R> 
  * @param <P> 
  */
 public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

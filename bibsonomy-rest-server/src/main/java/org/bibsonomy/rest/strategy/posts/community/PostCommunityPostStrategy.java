@@ -9,7 +9,7 @@ import org.bibsonomy.rest.strategy.users.PostPostStrategy;
  * strategy for creating standard posts
  * 
  * @author dzo
-  */
+ */
 public class PostCommunityPostStrategy extends PostPostStrategy {
 
 	/**

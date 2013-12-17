@@ -38,7 +38,7 @@ import org.springframework.core.convert.ConversionFailedException;
 
 /**
  * @author dzo
-  */
+ */
 public class StringToDateConverterTest {
 	
 	private static final StringToDateConverter CONVERTER = new StringToDateConverter();

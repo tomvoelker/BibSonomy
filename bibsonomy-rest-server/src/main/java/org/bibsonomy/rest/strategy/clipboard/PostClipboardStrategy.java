@@ -19,7 +19,7 @@ import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author wla
-  */
+ */
 public class PostClipboardStrategy extends Strategy {
 
 	protected final String resourceHash;

@@ -2,7 +2,7 @@ package org.bibsonomy.database.common.enums;
 
 /**
  * @author clemensbaier
-  */
+ */
 public enum MetaDataPluginKey {
 	/**
 	 * a publication was copied

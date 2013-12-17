@@ -16,7 +16,7 @@ import org.junit.Ignore;
 
 /**
  * @author rja
-  */
+ */
 @Ignore
 public class TestServlet extends HttpServlet {
 	private static final String TRACKBACK_ARTICLE_PATH = "/article";

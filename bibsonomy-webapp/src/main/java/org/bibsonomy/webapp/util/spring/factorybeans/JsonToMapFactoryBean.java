@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author jensi
-  */
+ */
 public class JsonToMapFactoryBean implements FactoryBean<Map<String, String>>{
 
 	private final String jsonObject;

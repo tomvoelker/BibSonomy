@@ -37,7 +37,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * support the given {@link ScrapingContext} or not. 
  * 
  * @author rja
-  */
+ */
 public abstract class AbstractUrlScraper implements UrlScraper {
 
 	/**

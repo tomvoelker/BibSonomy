@@ -11,7 +11,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author matthias gerecht
-  */
+ */
 public class GetResourcesByParent<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P>  {
 
     //@Override

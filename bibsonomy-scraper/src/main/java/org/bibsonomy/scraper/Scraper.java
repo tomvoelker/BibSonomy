@@ -30,7 +30,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * Interface for Screen Scrapers.
  * @author rja
-  */
+ */
 public interface Scraper {
 	
 	/** Try to retrieve BibTeX entries from the passed context data.

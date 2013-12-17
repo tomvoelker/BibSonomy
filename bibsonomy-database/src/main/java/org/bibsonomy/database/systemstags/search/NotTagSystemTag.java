@@ -5,7 +5,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author mba
-  */
+ */
 public class NotTagSystemTag extends AbstractSearchSystemTagImpl {
 	
 	public static final String NAME = "not";

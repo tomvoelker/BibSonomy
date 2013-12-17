@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #24 #25 for ProlaScraper
  * @author tst
-  */
+ */
 @Category(RemoteTest.class)
 public class ProlaScraperTest {
 	

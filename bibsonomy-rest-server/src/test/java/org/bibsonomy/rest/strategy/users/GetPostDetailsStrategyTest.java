@@ -16,7 +16,7 @@ import org.junit.Test;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class GetPostDetailsStrategyTest extends AbstractContextTest {
 
 	/**

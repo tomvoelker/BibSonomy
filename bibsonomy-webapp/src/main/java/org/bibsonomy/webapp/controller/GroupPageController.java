@@ -28,7 +28,7 @@ import org.bibsonomy.webapp.view.Views;
  * group/GROUP and group/GROUP/TAGS
  * 
  * @author Stefan Stuetzer
-  */
+ */
 public class GroupPageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(GroupPageController.class);
 

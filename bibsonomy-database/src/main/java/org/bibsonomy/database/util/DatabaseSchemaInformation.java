@@ -8,7 +8,7 @@ import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
  * @author dzo
-  */
+ */
 public class DatabaseSchemaInformation extends AbstractDatabaseSchemaInformation {
 	
 	private static final String PUBLICATION_COMMON_ID = "BibTexCommon.bibtex_common";

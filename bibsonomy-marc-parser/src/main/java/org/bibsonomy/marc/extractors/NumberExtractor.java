@@ -10,7 +10,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Jens Illig
-  */
+ */
 public class NumberExtractor implements AttributeExtractor {
 
 	@Override

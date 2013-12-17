@@ -25,7 +25,7 @@ import org.springframework.validation.MapBindingResult;
 
 /**
  * @author jensi
-  */
+ */
 public class PublicationRenderingControllerTest {
 
 	/** test bibtex generation for uploaded files which are read by some {@link BibTexReader} 

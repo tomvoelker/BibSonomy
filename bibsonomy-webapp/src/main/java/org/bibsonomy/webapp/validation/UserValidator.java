@@ -11,7 +11,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author rja
-  */
+ */
 public class UserValidator implements Validator<User> {
 
 	

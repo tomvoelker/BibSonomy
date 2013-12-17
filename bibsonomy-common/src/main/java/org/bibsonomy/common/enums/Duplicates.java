@@ -27,7 +27,7 @@ package org.bibsonomy.common.enums;
  * Different options to display duplicate posts.
  * 
  * @author dbe
-  */
+ */
 public enum Duplicates {	
 	/** display duplicates */
 	YES,

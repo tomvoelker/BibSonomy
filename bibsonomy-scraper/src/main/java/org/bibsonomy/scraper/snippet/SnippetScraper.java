@@ -42,7 +42,7 @@ import bibtex.parser.ParseException;
 
 /**
  * scrapes BibTex from the selected text
-  */
+ */
 public class SnippetScraper implements Scraper {
     private static final String info = "SnippetScraper: This scraper checks passed snippets for " +
     								   "valid BibTeX entries. Author: KDE";

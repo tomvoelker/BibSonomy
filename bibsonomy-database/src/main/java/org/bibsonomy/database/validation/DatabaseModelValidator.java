@@ -15,7 +15,7 @@ import org.bibsonomy.services.database.DatabaseSchemaInformation;
 
 /**
  * @author dzo
-  * @param <T> the model to validate
+ * @param <T> the model to validate
  */
 public class DatabaseModelValidator<T> {
 	private static final Log log = LogFactory.getLog(DatabaseModelValidator.class);

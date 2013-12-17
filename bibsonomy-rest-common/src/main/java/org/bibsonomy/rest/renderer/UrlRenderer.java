@@ -30,7 +30,7 @@ import org.bibsonomy.rest.RESTConfig;
  * TODO: url encoding missing?!
  * 
  * @author rja
-  */
+ */
 public class UrlRenderer {
 	private static final String PARTS_DELIMITER = "/";
 	

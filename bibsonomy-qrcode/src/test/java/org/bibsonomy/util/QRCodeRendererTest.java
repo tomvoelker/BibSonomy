@@ -36,7 +36,7 @@ import org.junit.Test;
 
 /**
  * @author pbu
-  */
+ */
 public class QRCodeRendererTest {
 
 	@Test

@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Test case for recommender's DBAccess class
  * @author fei
-  */
+ */
 public class DBAccessTest {
 
 	private static DBLogic dbLogic;

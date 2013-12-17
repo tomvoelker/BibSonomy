@@ -8,7 +8,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 /**
  * @author fba
-  */
+ */
 public class BookmarkValidator implements Validator<Bookmark> {
 	
 	@Override

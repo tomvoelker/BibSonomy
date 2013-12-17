@@ -33,7 +33,7 @@ import au.com.bytecode.opencsv.CSVWriter;
  * View which uses an {@link LayoutRenderer} to render the output.
  * 
  * @author rja
-  */
+ */
 @SuppressWarnings("deprecation")
 public class CSVView extends AbstractView {
 	private static final Log log = LogFactory.getLog(CSVView.class);

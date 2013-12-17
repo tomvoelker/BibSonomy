@@ -8,7 +8,7 @@ import org.bibsonomy.model.User;
 /**
  * 
  * @author Christian Kramer
-  */
+ */
 public class FollowersViewCommand extends TagResourceViewCommand {
 	private List<User> followersOfUser;
 	private List<User> userIsFollowing;

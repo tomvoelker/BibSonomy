@@ -33,7 +33,7 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author clemens
-  */
+ */
 public class PNASScraper extends CitationManagerScraper {
 	private static final String SITE_NAME = "PNAS";
 	private static final String SITE_URL = "http://www.pnas.org/";

@@ -41,7 +41,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for ams.allenpress.com
  * @author tst
-  */
+ */
 public class AmsScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "American Meteorological Society";

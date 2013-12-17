@@ -42,7 +42,7 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @author Christian Schenk
  * @author Anton Wilhelm
-  */
+ */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/* name of testuser to be created / updated */

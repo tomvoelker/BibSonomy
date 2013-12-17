@@ -3,7 +3,7 @@ package org.bibsonomy.recommender.tags.database.params;
 
 /**
  * @author bsc
-  */
+ */
 public class RecAdminOverview {
 	
 	private Long settingID, latency;

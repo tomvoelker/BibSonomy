@@ -32,7 +32,7 @@ import org.bibsonomy.model.BibTex;
 
 /**
  * @author Lukas
-  */
+ */
 public class SeriesExtractor implements AttributeExtractor {
 
 	@Override

@@ -35,7 +35,7 @@ import org.bibsonomy.rest.renderer.impl.xml.XMLRenderer;
  * {@link org.bibsonomy.rest.renderer.Renderer}-interface.
  * 
  * @author Christian Schenk
-  */
+ */
 public class RendererFactory {
 
 	/**

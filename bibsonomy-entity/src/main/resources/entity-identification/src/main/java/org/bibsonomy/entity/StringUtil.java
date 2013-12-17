@@ -2,7 +2,7 @@ package org.bibsonomy.entity;
 
 /**
  * @author rja
-  */
+ */
 public class StringUtil {
 	/**
 	 * Small test :-)

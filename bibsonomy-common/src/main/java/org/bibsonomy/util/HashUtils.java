@@ -28,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * @author rja
-  */
+ */
 public class HashUtils {
 	
 	/**

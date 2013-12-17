@@ -27,7 +27,7 @@ package org.bibsonomy.model.statistics;
  * Statistics about certain elements of the model, e.g., posts of a user.
  * 
  * @author rja
-  */
+ */
 public class Statistics {
 
 	private int count = 0;

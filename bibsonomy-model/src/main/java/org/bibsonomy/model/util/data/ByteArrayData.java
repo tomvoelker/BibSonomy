@@ -30,7 +30,7 @@ import java.io.Reader;
 
 /**
  * @author jensi
-  */
+ */
 public class ByteArrayData implements Data {
 	private final byte[] data;
 	private final String type;

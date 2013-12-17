@@ -25,7 +25,7 @@ package org.bibsonomy.model.sync;
 
 /**
  * @author wla
-  */
+ */
 public enum SynchronizationAction {
 	/**
 	 * server post must be updated

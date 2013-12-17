@@ -5,7 +5,7 @@ package org.bibsonomy.lucene.param.typehandler;
  * convert date objects to a standardized string representation
  * 
  * @author fei
-  */
+ */
 public class LuceneIntegerFormatter extends AbstractTypeHandler<Integer> {
 
 	@Override

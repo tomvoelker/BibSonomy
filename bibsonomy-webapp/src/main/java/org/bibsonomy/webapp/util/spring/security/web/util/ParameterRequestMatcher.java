@@ -8,7 +8,7 @@ import org.springframework.security.web.util.RequestMatcher;
  * {@link RequestMatcher} that checks if a certain request-parameter is set to a specific value
  * 
  * @author jensi
-  */
+ */
 public class ParameterRequestMatcher implements RequestMatcher {
 	
 	private String parameterName;

@@ -8,7 +8,7 @@ import java.util.Map;
  * spammers have been flagged recently
  * @author sts
  * @author bkr
-  */
+ */
 public class AdminStatisticsCommand {
 
 	private final Map<Long, Integer> numAdminSpammer = new HashMap<Long, Integer>();

@@ -27,7 +27,7 @@ package org.bibsonomy.model.logic;
  * Common interface of factories for objects of a LogicInterface implementation.
  * 
  * @author Jens Illig
-  */
+ */
 public interface LogicInterfaceFactory {
 	/**
 	 * @param loginName name of the user, who wants to access the system

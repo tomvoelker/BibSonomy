@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
-  */
+ */
 public class UrlBuilderTest {
 	
 	@Test

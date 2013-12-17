@@ -30,7 +30,7 @@ import java.util.Date;
 
 /**
  * @author wla
-  */
+ */
 public class RestSyncUtils {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");

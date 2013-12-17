@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * @author philipp
-  */
+ */
 public class ClassificationObject {
 
 	private final Map<String , ClassificationObject> children;

@@ -8,7 +8,7 @@ import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class RemoveUserFromGroupStrategy extends Strategy {
 	private final String groupName;
 	private final String userName;

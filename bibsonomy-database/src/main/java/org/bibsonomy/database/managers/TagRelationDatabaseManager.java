@@ -23,7 +23,7 @@ import org.bibsonomy.util.ExceptionUtils;
  * Used to deal with tag concepts in the database.
  * 
  * @author Jens Illig
-  */
+ */
 public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	private static final Log log = LogFactory.getLog(TagRelationDatabaseManager.class);

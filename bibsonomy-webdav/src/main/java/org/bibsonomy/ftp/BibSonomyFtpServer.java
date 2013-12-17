@@ -7,7 +7,7 @@ import org.apache.ftpserver.listener.ListenerFactory;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class BibSonomyFtpServer {
 
 	/**

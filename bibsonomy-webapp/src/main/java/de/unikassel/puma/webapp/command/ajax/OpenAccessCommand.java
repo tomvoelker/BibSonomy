@@ -4,7 +4,7 @@ import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 
 /**
  * @author clemens
-  */
+ */
 public class OpenAccessCommand extends AjaxCommand {
 
 	/**

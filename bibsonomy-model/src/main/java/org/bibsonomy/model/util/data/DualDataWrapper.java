@@ -30,7 +30,7 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author jensi
-  */
+ */
 public class DualDataWrapper implements DualData {
 
 	private final Data first;

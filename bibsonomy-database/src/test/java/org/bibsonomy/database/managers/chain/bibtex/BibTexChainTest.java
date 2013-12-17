@@ -46,7 +46,7 @@ import org.junit.Test;
  * 
  * @author Miranda Grahl
  * @author Christian Schenk
-  */
+ */
 public class BibTexChainTest extends AbstractDatabaseManagerTest {
 	
 	protected static Chain<List<BibTex>, BibTexParam> bibtexChain;

@@ -2,7 +2,7 @@ package org.bibsonomy.database.common.enums;
 
 /**
  * @author dzo
-  */
+ */
 public enum DiscussionItemType {
 	
 	/**

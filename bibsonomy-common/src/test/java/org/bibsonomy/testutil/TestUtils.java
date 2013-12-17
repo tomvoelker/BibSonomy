@@ -40,7 +40,7 @@ import org.junit.Ignore;
 
 /**
  * @author dzo
-  */
+ */
 @Ignore
 public final class TestUtils {
 	private TestUtils() {}

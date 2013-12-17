@@ -17,7 +17,7 @@ import org.springframework.security.core.AuthenticationException;
  * @see TeerGrube
  * 
  * @author dzo
-  */
+ */
 public class UsernamePasswordAuthenticationFilter extends org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter {
 	private static final Log log = LogFactory.getLog(UsernamePasswordAuthenticationFilter.class);
 	

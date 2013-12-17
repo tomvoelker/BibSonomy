@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author sdo
-  */
+ */
 public abstract class AbstractSystemTagImpl implements SystemTag {
 	protected static final Log log = LogFactory.getLog(SystemTag.class);
 

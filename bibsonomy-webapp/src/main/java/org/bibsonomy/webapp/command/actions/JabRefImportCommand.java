@@ -5,7 +5,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author cvo
-  */
+ */
 public class JabRefImportCommand extends BaseCommand{
 	
 	/** the file to import **/

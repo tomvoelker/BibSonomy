@@ -27,7 +27,7 @@ package org.bibsonomy.common.enums;
  * Defines different possibilities of classifiers of a user
  * 
  * @author Stefan Stützer
-  */
+ */
 public enum Classifier {
 	/** An automatic classifier algorithm */
 	CLASSIFIER(0),

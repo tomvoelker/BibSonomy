@@ -16,7 +16,7 @@ import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author Stefan Stützer
-  */
+ */
 public class GetResourcesByTagNamesCount extends StatisticChainElement {
 
 	@Override

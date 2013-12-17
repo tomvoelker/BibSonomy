@@ -10,7 +10,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
-  */
+ */
 public class TagRecLogEntry {
 
 	private String userName;

@@ -9,7 +9,7 @@ import org.bibsonomy.model.BibTex;
 
 /**
  * @author jensi
-  */
+ */
 public class CompositeAttributeExtractor implements AttributeExtractor {
 	
 	private static final List<AttributeExtractor> extractors;

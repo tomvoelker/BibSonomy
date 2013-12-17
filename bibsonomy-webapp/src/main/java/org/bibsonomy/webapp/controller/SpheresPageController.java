@@ -44,7 +44,7 @@ import org.springframework.security.access.AccessDeniedException;
  * 		- /spheres/RELATION/TAG
  * 
  * @author Nils Raabe, Folke Mitzlaff
-  */
+ */
 public class SpheresPageController extends SingleResourceListControllerWithTags implements MinimalisticController<SphereResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(SpheresPageController.class);
 

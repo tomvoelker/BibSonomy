@@ -41,7 +41,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Lukas
-  */
+ */
 public class WebOfKnowledgeScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "Web of Knowledge";

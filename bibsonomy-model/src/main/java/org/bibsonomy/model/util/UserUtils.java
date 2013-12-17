@@ -42,7 +42,7 @@ import org.bibsonomy.util.StringUtils;
 /**
  * @author Dominik Benz
  * @author Miranda Grahl
-  */
+ */
 public class UserUtils {
 	
 	/** the name of the dblp user */

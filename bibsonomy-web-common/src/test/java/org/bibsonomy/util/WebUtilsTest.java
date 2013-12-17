@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * @author rja
-  */
+ */
 public class WebUtilsTest {
 	
 	@Test

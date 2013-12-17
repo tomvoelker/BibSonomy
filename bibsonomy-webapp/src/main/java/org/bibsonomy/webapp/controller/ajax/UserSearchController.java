@@ -19,7 +19,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author bsc
-  */
+ */
 public class UserSearchController extends AjaxController implements MinimalisticController<UserSearchCommand> {
 	private static final Log log = LogFactory.getLog(UserSearchController.class);
 	

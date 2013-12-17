@@ -44,7 +44,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * SCraper for papers from http://www.eric.ed.gov/
  * @author tst
-  */
+ */
 public class EricScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_URL = "http://www.eric.ed.gov/";

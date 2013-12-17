@@ -37,7 +37,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * Scraping Logger for access on http://pion.co.uk/
  * @author tst
-  */
+ */
 public class PionScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Pion";

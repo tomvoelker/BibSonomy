@@ -7,7 +7,7 @@ import org.bibsonomy.model.User;
  * Bean for User-Sites
  *
  * @author  Dominik Benz
-  */
+ */
 public class UserResourceViewCommand extends TagResourceViewCommand {
 
 	/** the group whode resources are requested*/

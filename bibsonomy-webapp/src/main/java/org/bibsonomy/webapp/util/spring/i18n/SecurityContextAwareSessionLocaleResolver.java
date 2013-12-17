@@ -13,7 +13,7 @@ import org.springframework.web.util.WebUtils;
 
 /**
  * @author dzo
-  */
+ */
 public class SecurityContextAwareSessionLocaleResolver extends SessionLocaleResolver {
 	
 	@Override

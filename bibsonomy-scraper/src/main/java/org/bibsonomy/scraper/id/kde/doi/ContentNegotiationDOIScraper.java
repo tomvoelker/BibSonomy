@@ -50,7 +50,7 @@ import org.bibsonomy.util.id.DOIUtils;
  * So this Scraper gets BibTex information if the basic URL was a DOI URL and none of the URL scrapers did match the redirected URL
  * 
  * @author lha
-  */
+ */
 public class ContentNegotiationDOIScraper implements Scraper {
 
 	private static final String SITE_NAME = "ContentNegotiationDOIScraper";

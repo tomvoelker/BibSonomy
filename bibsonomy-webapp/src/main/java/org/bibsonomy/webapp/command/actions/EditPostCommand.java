@@ -13,7 +13,7 @@ import org.bibsonomy.webapp.command.PostCommand;
 
 /**
  * @author fba
-  * @param <RESOURCE> The type of resource this command handles.
+ * @param <RESOURCE> The type of resource this command handles.
  */
 public class EditPostCommand<RESOURCE extends Resource> extends PostCommand implements GroupingCommand, CaptchaCommand {
 	/**

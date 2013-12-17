@@ -9,7 +9,7 @@ import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;
  * Default tag recommender.
  * 
  * @author rja
-  */
+ */
 public class DefaultTagRecommender extends CompositeTagRecommender {
 
 	/**

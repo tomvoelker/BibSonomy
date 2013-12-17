@@ -28,7 +28,7 @@ import org.springframework.validation.Errors;
  * Ajax controller for the CV page. - /ajax/cv
  * 
  * @author Bernd Terbrack
-  */
+ */
 public class CvAjaxController extends AjaxController implements MinimalisticController<AjaxCvCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(CvAjaxController.class);
 

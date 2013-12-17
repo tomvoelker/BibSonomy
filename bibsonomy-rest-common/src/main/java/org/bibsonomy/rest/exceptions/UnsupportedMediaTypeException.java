@@ -25,7 +25,7 @@ package org.bibsonomy.rest.exceptions;
 
 /**
  * @author wla
-  */
+ */
 public class UnsupportedMediaTypeException extends RuntimeException {
 
 	private static final long serialVersionUID = 5751835838177248791L;

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @see FactoryBean
  * @see Role
  * @author rja
-  */
+ */
 public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implements FactoryBean<LogicInterface> {
 
 	private final User user;

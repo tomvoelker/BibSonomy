@@ -4,7 +4,7 @@ import org.bibsonomy.webapp.command.ajax.AjaxCommand;
 
 /**
  * @author philipp
-  */
+ */
 public class PublicationClassificationCommand extends AjaxCommand {
 
 	private String classificationName = "";

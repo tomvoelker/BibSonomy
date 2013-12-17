@@ -20,7 +20,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * with the top tags from {@link #secondTagRecommender}.
  * 
  * @author rja
-  */
+ */
 public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagRecommender {
 	private static final Log log = LogFactory.getLog(TagsFromFirstWeightedBySecondTagRecommender.class);
 

@@ -79,7 +79,7 @@ import org.junit.Test;
 /**
  * @author Manuel Bork
  * @author Christian Schenk
-  */
+ */
 public abstract class AbstractRendererTest {
 	private static final String XML_IS_INVALID_MSG = ModelValidationUtils.DOCUMENT_NOT_VALID_ERROR_MESSAGE;
 	

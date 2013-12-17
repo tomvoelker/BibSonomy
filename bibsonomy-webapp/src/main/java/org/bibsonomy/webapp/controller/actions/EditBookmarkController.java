@@ -11,7 +11,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author fba
-  */
+ */
 public class EditBookmarkController extends EditPostController<Bookmark, EditBookmarkCommand> {
 	
 	@Override

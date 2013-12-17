@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * user object.
  * 
  * @author rja
-  */
+ */
 public abstract class UsernameNotFoundExceptionMapper {
 
 	private String redirectUrl;

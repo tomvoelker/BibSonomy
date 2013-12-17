@@ -8,7 +8,7 @@ import org.springframework.beans.factory.FactoryBean;
 
 /**
  * @author dzo
-  */
+ */
 public class ConfigurationFactoryBean implements FactoryBean<Configuration> {
 	
 	/** path to the config */

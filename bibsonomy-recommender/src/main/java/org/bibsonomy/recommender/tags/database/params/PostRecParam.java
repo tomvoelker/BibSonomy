@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * @author fei
-  */
+ */
 public class PostRecParam {
 	private int postID;
 	private String userName;

@@ -8,7 +8,7 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
 /**
  * @author pbu
  * @author dzo
-  */
+ */
 public class BatchEditCommand extends TagResourceViewCommand {
 
 	/**

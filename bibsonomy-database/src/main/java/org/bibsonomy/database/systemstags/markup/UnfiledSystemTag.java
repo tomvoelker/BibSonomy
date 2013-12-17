@@ -5,7 +5,7 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 
 /**
  * @author sdo
-  */
+ */
 public class UnfiledSystemTag  extends AbstractSystemTagImpl implements MarkUpSystemTag {
 
 	public static final String NAME = "unfiled";

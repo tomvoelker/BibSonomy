@@ -22,7 +22,7 @@ import org.springframework.validation.Errors;
  *    - ajax/goldstandards/references
  * 
  * @author dzo
-  */
+ */
 public class EditGoldstandardReferencesController extends AjaxController implements MinimalisticController<EditGoldstandardReferencesCommand>, ErrorAware {
 	
 	@Override

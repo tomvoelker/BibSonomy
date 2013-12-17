@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
  * @see "https://jira.springsource.org/browse/SPR-9456"
  * 
  * @author dzo
-  */
+ */
 public class LocaleChangeInterceptor extends org.springframework.web.servlet.i18n.LocaleChangeInterceptor {
 	private static final Log log = LogFactory.getLog(LocaleChangeInterceptor.class);
 	

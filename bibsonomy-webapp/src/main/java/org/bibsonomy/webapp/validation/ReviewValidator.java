@@ -13,7 +13,7 @@ import org.springframework.validation.Errors;
  * 		- rating
  * 
  * @author dzo
-  */
+ */
 public class ReviewValidator extends DiscussionItemValidator<Review> {
 	
 	@Override

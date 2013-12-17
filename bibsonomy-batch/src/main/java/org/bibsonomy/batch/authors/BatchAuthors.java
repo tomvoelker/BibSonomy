@@ -30,7 +30,7 @@ import org.bibsonomy.util.tex.TexDecode;
 
 /**
  * @author claus
-  */
+ */
 public class BatchAuthors {
 	private static Logger logger = Logger.getLogger(BatchAuthors.class);
 

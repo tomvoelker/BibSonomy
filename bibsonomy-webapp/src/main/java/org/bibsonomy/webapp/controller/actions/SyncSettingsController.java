@@ -22,7 +22,7 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 
 /**
  * @author wla
-  */
+ */
 public class SyncSettingsController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, ValidationAwareController<SettingsViewCommand> {
 	
 	@Override

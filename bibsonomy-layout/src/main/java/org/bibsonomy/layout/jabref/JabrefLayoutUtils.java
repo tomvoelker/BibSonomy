@@ -31,7 +31,7 @@ import org.bibsonomy.util.StringUtils;
 /**
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class JabrefLayoutUtils {
 

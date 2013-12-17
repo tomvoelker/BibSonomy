@@ -33,7 +33,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
-  */
+ */
 public class YearExtractor implements AttributeExtractor{
 	
 	@Override

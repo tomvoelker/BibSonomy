@@ -46,7 +46,7 @@ import bibtex.parser.ParseException;
 
 /**
  * @author wbi
-  */
+ */
 public class DBLPScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "University of Trier Digital Bibliography & Library Project";
 	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";

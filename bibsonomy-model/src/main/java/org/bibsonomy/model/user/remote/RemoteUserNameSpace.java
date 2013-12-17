@@ -27,7 +27,7 @@ package org.bibsonomy.model.user.remote;
  * Entity that states where a userid resides.
  * 
  * @author jensi
-  */
+ */
 public interface RemoteUserNameSpace {
 
 }

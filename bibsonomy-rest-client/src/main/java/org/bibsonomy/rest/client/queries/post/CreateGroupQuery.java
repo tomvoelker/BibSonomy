@@ -39,7 +39,7 @@ import org.bibsonomy.util.StringUtils;
  * Use this Class to create a new group in bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class CreateGroupQuery extends AbstractQuery<String> {
 	private final Group group;
 

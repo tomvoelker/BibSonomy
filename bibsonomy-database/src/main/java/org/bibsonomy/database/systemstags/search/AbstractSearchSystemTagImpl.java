@@ -7,7 +7,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
-  */
+ */
 public abstract class AbstractSearchSystemTagImpl extends AbstractSystemTagImpl implements SearchSystemTag {
 
 	protected static boolean isPublicationClass(final Class<? extends Resource> clazz) {

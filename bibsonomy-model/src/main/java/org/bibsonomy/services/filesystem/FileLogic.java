@@ -29,7 +29,7 @@ import java.util.Collection;
 /**
  * combines all logics to one simple interface to implement
  * @author dzo
-  */
+ */
 public interface FileLogic extends ProfilePictureLogic, TempFileLogic, JabRefFileLogic, DocumentFileLogic {
 
 	/** allowed browser bookmark export extensions */

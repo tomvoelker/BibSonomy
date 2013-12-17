@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * @author Jens Illig
-  */
+ */
 public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static GeneralDatabaseManager generalDb;
 	private static BibTexDatabaseManager bibTexDb;

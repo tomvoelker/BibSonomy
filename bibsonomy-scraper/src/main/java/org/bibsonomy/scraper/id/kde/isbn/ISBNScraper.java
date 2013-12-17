@@ -42,7 +42,7 @@ import org.bibsonomy.util.id.ISBNUtils;
  * or AmazonScraper for download.
  *  
  * @author tst
-  */
+ */
 public class ISBNScraper implements Scraper {
 	
 	private static final String INFO = "ISBN/ISSN support in scraped snippet";

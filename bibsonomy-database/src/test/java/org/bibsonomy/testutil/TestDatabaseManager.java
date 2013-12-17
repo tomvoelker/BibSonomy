@@ -21,7 +21,7 @@ import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
  * @author dzo
-  */
+ */
 @Ignore
 public class TestDatabaseManager extends AbstractDatabaseManager {
 	private static SqlMapClient SQL_MAP = null;

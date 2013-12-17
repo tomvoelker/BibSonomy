@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * 
  * @author:  rja
-  * $Author$2
+ * $Author$2
  * 
  */
 public class ToFieldParserTest {

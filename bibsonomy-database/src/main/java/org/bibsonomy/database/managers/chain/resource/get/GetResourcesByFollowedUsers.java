@@ -15,7 +15,7 @@ import org.bibsonomy.model.Resource;
  * Returns all resources of users you are following.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
-  * @param <R> 
+ * @param <R> 
  * @param <P> 
  */
 public class GetResourcesByFollowedUsers<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

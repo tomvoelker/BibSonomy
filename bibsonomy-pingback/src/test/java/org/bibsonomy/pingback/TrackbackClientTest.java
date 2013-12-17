@@ -16,7 +16,7 @@ import com.malethan.pingback.PingbackException;
 
 /**
  * @author rja
-  */
+ */
 public class TrackbackClientTest extends AbstractClientTest {
 
 	private TrackbackClient trackbackClient;

@@ -9,7 +9,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * This command encapsulates the user and other details for the registration page. 
  * 
  * @author rja
-  */
+ */
 public class UserRegistrationCommand extends BaseCommand implements Serializable, CaptchaCommand {
 	private static final long serialVersionUID = 1371638749968299277L;
 	

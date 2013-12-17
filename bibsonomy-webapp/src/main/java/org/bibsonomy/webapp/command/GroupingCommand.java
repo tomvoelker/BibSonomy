@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * @author dzo
-  */
+ */
 public interface GroupingCommand {
 
 	/**

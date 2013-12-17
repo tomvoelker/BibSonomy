@@ -18,7 +18,7 @@ import org.junit.Test;
 
 /**
  * @author dbenz
-  */
+ */
 public class FunctionsTest {
 
 	@Test

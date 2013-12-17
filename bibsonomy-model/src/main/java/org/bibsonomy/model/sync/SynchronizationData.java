@@ -30,7 +30,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author wla
-  */
+ */
 public class SynchronizationData {
 
 	private URI service;

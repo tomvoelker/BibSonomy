@@ -7,7 +7,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Stefan Stützer
-  */
+ */
 public class DeleteUserConceptStrategy extends AbstractDeleteStrategy {
 
 	private final String conceptName;

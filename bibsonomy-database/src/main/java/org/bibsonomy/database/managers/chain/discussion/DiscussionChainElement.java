@@ -9,7 +9,7 @@ import org.bibsonomy.model.DiscussionItem;
 
 /**
  * @author dzo
-  */
+ */
 public abstract class DiscussionChainElement extends ChainElement<List<DiscussionItem>, DiscussionItemParam<?>> {
 	
 	protected final DiscussionDatabaseManager discussionDatabaseManager;

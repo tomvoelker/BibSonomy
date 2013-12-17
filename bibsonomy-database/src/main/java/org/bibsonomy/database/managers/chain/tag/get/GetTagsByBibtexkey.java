@@ -14,7 +14,7 @@ import org.bibsonomy.model.Tag;
  * Retrieve tags by bibtexkey
  * 
  * @author Dominik Benz
-  */
+ */
 public class GetTagsByBibtexkey extends TagChainElement {
 
 	@Override

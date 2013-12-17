@@ -7,7 +7,7 @@ import org.bibsonomy.wiki.tags.UserTag;
  * This is a simple institution-tag.
  * Usage: <institution />
  * @author Bernd
-  */
+ */
 public class InstitutionTag extends UserTag {
 	private static final String TAG_NAME = "institution";
 	

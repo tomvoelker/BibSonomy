@@ -12,7 +12,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
  * 
-  */
+ */
 public class ContentTypeTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override

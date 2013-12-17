@@ -4,7 +4,7 @@ import org.bibsonomy.model.User;
 
 /** 
  * @author dzo
-  */
+ */
 public class UserInfoCommand extends BaseCommand {
 	
 	private String requestedUser;

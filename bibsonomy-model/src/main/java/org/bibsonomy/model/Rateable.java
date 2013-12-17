@@ -26,7 +26,7 @@ package org.bibsonomy.model;
 
 /**
  * @author dzo
-  */
+ */
 public interface Rateable {
 
 	/**

@@ -28,7 +28,7 @@ package org.bibsonomy.common.enums;
  * the <code>update(...)</code> method in the LogicInterface.
  * 
  * @author cvo
-  */
+ */
 public enum UserUpdateOperation {
 
 	/**

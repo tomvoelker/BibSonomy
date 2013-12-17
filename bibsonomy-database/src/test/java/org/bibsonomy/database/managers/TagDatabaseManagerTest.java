@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author Christian Schenk
  * @author Clemens Baier
  * 
-  */
+ */
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static TagDatabaseManager tagDb;

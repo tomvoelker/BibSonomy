@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.command.ajax;
 
 /**
  * @author bernd
-  */
+ */
 public class AjaxURLCommand extends AjaxCommand {
 	/**
 	 * the hash of the resource

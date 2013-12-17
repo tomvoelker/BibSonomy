@@ -39,7 +39,7 @@ import org.springframework.context.MessageSource;
 /**
  * @author philipp
  * @author Bernd Terbrack
-  */
+ */
 public class CVWikiModel extends AbstractWikiModel {
 
 	static {

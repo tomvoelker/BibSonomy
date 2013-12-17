@@ -42,7 +42,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author schwass
-  */
+ */
 public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Taylor & Francis Online";

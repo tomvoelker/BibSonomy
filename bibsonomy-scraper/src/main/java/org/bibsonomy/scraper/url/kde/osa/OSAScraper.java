@@ -46,7 +46,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
-  */
+ */
 public class OSAScraper extends AbstractUrlScraper {
 
 	

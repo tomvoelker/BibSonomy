@@ -37,7 +37,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author dzo
-  * @param <D> 
+ * @param <D> 
  */
 public abstract class DiscussionItemAjaxController<D extends DiscussionItem> extends AjaxController implements ValidationAwareController<DiscussionItemAjaxCommand<D>>, ErrorAware {
 	private static final Log log = LogFactory.getLog(DiscussionItemAjaxController.class);

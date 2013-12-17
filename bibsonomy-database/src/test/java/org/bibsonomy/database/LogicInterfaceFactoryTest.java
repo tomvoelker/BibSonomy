@@ -12,7 +12,7 @@ import org.junit.Test;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 
 	private static DBLogicUserInterfaceFactory userFactory;

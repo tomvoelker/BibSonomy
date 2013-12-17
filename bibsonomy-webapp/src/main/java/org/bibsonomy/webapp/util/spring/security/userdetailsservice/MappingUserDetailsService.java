@@ -12,7 +12,7 @@ import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 
 /**
  * @author jensi
-  */
+ */
 public class MappingUserDetailsService implements SAMLUserDetailsService {	
 	/**
 	 * {@link UserDetailsService} property that knows how to load the {@link UserDetails}

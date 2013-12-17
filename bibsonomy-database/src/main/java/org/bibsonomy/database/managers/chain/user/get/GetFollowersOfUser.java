@@ -15,7 +15,7 @@ import org.bibsonomy.model.User;
  * This chain element gets all follower of the logged in user.
  * 
  * @author Christian Kramer
-  */
+ */
 public class GetFollowersOfUser extends UserChainElement{
 
 	@Override

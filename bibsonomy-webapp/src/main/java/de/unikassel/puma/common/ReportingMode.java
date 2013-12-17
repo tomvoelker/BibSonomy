@@ -2,7 +2,7 @@ package de.unikassel.puma.common;
 
 /**
  * @author dzo
-  */
+ */
 public enum ReportingMode {
 	/**
 	 * all users are allowed to report publications

@@ -35,7 +35,7 @@ import org.bibsonomy.model.util.SimHash;
  * but java doesn't support multiple inheritance
  * 
  * @author dzo
-  */
+ */
 public class GoldStandardBookmark extends Bookmark implements GoldStandard<Bookmark> {
 	private static final long serialVersionUID = -1280809960981056354L;
 	

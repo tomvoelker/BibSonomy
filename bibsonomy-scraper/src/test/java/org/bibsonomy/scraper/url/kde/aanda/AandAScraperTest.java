@@ -32,7 +32,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author DaiLL
-  */
+ */
 @Category(RemoteTest.class)
 public class AandAScraperTest {
 	/**

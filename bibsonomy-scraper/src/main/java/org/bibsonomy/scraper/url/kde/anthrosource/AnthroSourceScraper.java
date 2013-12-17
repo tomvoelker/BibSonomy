@@ -36,7 +36,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * @author wbi
-  */
+ */
 public class AnthroSourceScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "AnthroSource";

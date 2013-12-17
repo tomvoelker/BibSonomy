@@ -19,7 +19,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Steffen Kress
-  */
+ */
 public class FriendPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(FriendPageController.class);
 

@@ -12,7 +12,7 @@ import org.junit.Before;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public abstract class AbstractContextTest {
 
 	protected LogicInterface db;

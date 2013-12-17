@@ -59,7 +59,7 @@ import org.springframework.validation.Errors;
  * @author pbu
  * @author dzo
  * @author ema
-  */
+ */
 public class BatchEditController implements MinimalisticController<BatchEditCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(BatchEditController.class);
 

@@ -37,7 +37,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to delete a specified user.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class DeleteUserQuery extends AbstractQuery<String> {
 	private final String userName;
 

@@ -47,7 +47,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
-  */
+ */
 public class TagDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(TagDatabaseManager.class);
 	

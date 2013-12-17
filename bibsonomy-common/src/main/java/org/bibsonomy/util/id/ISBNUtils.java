@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author rja
-  */
+ */
 public class ISBNUtils {
 	/*
 	 * pattern to match ISBN 10 and 13

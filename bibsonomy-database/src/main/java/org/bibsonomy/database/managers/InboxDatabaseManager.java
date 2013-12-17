@@ -19,7 +19,7 @@ import org.bibsonomy.model.Tag;
  * s.a. counting, creating and deleting messages from a users inbox
  * 
  * @author sdo
-  */
+ */
 public class InboxDatabaseManager extends AbstractDatabaseManager {
 	private final static InboxDatabaseManager singleton = new InboxDatabaseManager(); 
 	

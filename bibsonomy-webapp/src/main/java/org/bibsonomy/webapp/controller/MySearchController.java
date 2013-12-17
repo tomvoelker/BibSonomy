@@ -32,7 +32,7 @@ import org.springframework.security.access.AccessDeniedException;
  *   - /mysearch/GROUP
  * 
  * @author Christian Voigtmann
-  */
+ */
 public class MySearchController extends SingleResourceListControllerWithTags implements MinimalisticController<MySearchCommand> {
 
 	@Override

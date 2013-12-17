@@ -7,7 +7,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author wla
-  */
+ */
 public class AdminSyncCommand extends BaseCommand {
 	
 	private List<SyncService> avlServer;

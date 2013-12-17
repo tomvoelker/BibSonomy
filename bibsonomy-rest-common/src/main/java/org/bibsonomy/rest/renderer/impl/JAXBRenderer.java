@@ -51,7 +51,7 @@ import org.xml.sax.SAXParseException;
  * @author dzo
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * 
-  */
+ */
 public abstract class JAXBRenderer extends AbstractRenderer {
 	private static final Log log = LogFactory.getLog(JAXBRenderer.class);
 

@@ -4,7 +4,7 @@ import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 /**
  * @author sdo
-  */
+ */
 public class RelevantForSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag {
 
 	public static final String NAME = "relevantfor";

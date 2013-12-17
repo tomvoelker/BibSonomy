@@ -27,7 +27,7 @@ package org.bibsonomy.common.enums;
  * Defines possible filter entities
  * 
  * @author Stefan Stützer
-  */
+ */
 public enum FilterEntity {
 
 	/**

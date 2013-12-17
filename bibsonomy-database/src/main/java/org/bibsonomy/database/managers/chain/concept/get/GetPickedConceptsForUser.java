@@ -13,7 +13,7 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author Stefan Stützer
-  */
+ */
 public class GetPickedConceptsForUser extends ConceptChainElement {
 
 	@Override

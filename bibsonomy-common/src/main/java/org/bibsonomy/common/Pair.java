@@ -26,7 +26,7 @@ package org.bibsonomy.common;
 /**
  *  
  * @author ?
-  * 
+ * 
  * @param <T>
  * @param <U>
  */

@@ -21,7 +21,7 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
 /**
  * @author wla
-  */
+ */
 public class AutoSync {
 	private static final Log log = LogFactory.getLog(AutoSync.class);
 

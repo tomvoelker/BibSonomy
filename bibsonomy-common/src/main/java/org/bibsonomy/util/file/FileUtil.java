@@ -36,7 +36,7 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author rja
-  */
+ */
 public class FileUtil {
 	private static final Set<String> DJV_EXTENSIONS = Sets.asSet("djv", "djvu");
 	private static final Set<String> TIFF_EXTENSIONS = Sets.asSet("tif", "tiff");

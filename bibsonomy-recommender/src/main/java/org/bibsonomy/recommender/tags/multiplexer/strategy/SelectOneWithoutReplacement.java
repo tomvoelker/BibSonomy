@@ -17,7 +17,7 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
  * This selection strategy selects exactly one recommender.
  *  
  * @author fei
-  */
+ */
 public class SelectOneWithoutReplacement extends SimpleSelector {
 	private static final Log log = LogFactory.getLog(SelectOneWithoutReplacement.class);
 	

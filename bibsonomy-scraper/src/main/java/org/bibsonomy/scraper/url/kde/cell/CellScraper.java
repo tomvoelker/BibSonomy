@@ -43,7 +43,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author tst
-  */
+ */
 public class CellScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "Cell";

@@ -38,7 +38,7 @@ import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
  * Simply add the test id to TEST_ID and run main.
  * 
  * @author tst
-  */
+ */
 public class ReplaceBibtexFile {
 	
 	private static final String PATH_TO_BIBS = "src/test/resources/org/bibsonomy/scraper/data/";

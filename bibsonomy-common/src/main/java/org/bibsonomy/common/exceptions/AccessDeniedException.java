@@ -28,7 +28,7 @@ package org.bibsonomy.common.exceptions;
  * you must use the AccessDeniedException from the Spring Security package
  * 
  * @author dzo
-  */
+ */
 public class AccessDeniedException extends RuntimeException {
 	private static final long serialVersionUID = -2496286544331707252L;
 	

@@ -38,7 +38,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * Use this Class to change details of an existing group in bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class ChangeGroupQuery extends AbstractQuery<String> {
 	private final Group group;
 	private final String groupName;

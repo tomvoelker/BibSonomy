@@ -27,7 +27,7 @@ package org.bibsonomy.common.enums;
  * The working mode of an automatic classify algorithm
  * 
  * @author Stefan Stützer
-  */
+ */
 public enum ClassifierMode {
 	/** day mode */
 	DAY("D"),

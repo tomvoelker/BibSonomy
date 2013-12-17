@@ -3,7 +3,7 @@ package org.bibsonomy.recommender.tags.database.params;
 /**
  * Parameter class for storing recommender results in database
  * @author fei
-  */
+ */
 public class SelectorTagParam {
 	private Long qid;           /// query id
 	private Long rid;           /// settings id

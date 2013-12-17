@@ -17,7 +17,7 @@ import org.springframework.context.MessageSource;
 
 /**
  * @author wla
-  */
+ */
 public class SyncUtils {
 	/**
 	 * prefix of key to access the sync plan stored in the session

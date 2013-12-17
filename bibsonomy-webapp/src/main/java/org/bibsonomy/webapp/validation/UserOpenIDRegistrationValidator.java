@@ -11,7 +11,7 @@ import org.springframework.validation.ValidationUtils;
  * Validator for UserOpenIDRegistrationController
  * 
  * @author Stefan Stützer
-  */
+ */
 public class UserOpenIDRegistrationValidator implements Validator<UserIDRegistrationCommand>{
 
 	@Override

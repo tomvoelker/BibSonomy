@@ -15,7 +15,7 @@ import java.util.Map;
  * 
  * @author Jens Illig
  * @author Christian Schenk
-  */
+ */
 public abstract class AbstractDatabaseManager {
 
 	/**

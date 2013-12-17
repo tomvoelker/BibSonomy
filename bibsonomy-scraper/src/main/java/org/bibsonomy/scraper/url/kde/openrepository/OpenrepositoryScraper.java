@@ -56,7 +56,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for openrepository pages
  * @author tst
-  */
+ */
 public class OpenrepositoryScraper extends AbstractUrlScraper {
 
 	private static final String SITE_URL = "http://openrepository.com/";

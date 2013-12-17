@@ -19,7 +19,7 @@ import org.bibsonomy.model.util.GroupUtils;
 /**
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class EmailPostingService {
 	private static final Log log = LogFactory.getLog(EmailPostingService.class);

@@ -14,7 +14,7 @@ import de.unikassel.puma.openaccess.sherparomeo.model.Romeoapi;
 
 /**
  * @author rja
-  */
+ */
 public class SherpaRomeoImplTest {
 
 	private static final SherpaRomeoImpl SHERPA_ROMEO_IMPL = new SherpaRomeoImpl();

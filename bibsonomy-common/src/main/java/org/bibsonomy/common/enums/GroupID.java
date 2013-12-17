@@ -27,7 +27,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * Constant group ids.
-  */
+ */
 public enum GroupID {
 	
 	/** the public group */

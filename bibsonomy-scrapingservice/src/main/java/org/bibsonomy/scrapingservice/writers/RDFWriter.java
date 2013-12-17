@@ -42,7 +42,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * @author rja
-  */
+ */
 public class RDFWriter {
 
 	/*

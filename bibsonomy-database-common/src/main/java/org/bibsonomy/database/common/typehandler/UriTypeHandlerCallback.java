@@ -20,7 +20,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * Type Handler Callbacks</a>
  * 
  * @author Robert Jäschke
-  */
+ */
 public class UriTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	private static final Log log = LogFactory.getLog(UriTypeHandlerCallback.class);
 

@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class TestRestServlet {
 
 	private RestServlet servlet;

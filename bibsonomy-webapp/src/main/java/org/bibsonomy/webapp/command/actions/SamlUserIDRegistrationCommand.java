@@ -4,7 +4,7 @@ import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 
 /**
  * @author jensi
-  */
+ */
 public class SamlUserIDRegistrationCommand extends UserIDRegistrationCommand {
 	private static final long serialVersionUID = -2989822342885077454L;
 

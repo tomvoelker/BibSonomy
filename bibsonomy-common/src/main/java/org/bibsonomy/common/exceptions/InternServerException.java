@@ -25,7 +25,7 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class InternServerException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;

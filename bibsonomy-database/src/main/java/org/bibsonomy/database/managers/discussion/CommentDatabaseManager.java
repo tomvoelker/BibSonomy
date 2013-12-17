@@ -12,7 +12,7 @@ import org.bibsonomy.model.Comment;
  * Used to create, read, update and delete comments from the database.
  * 
  * @author dzo
-  */
+ */
 public class CommentDatabaseManager extends DiscussionItemDatabaseManager<Comment> {
 	
 	private static final CommentDatabaseManager INSTANCE = new CommentDatabaseManager();

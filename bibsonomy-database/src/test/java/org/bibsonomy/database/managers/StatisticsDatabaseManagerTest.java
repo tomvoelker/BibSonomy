@@ -18,7 +18,7 @@ import org.junit.Test;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static StatisticsDatabaseManager statisticsDb;

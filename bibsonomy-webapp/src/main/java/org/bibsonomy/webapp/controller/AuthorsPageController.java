@@ -12,7 +12,7 @@ import org.bibsonomy.webapp.view.Views;
  *  - /authors
  * 
  * @author Christian Claus
-  */
+ */
 public class AuthorsPageController implements MinimalisticController<AuthorsCommand> {
 
 	private LogicInterface logic;

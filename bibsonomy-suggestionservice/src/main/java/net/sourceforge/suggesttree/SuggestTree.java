@@ -1,7 +1,7 @@
 package net.sourceforge.suggesttree;
 
 /**
-  */
+ */
 
 /*
  * Copyright 2011-2013 Nicolai Diethelm

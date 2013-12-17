@@ -35,7 +35,7 @@ import org.bibsonomy.model.enums.Order;
  * Interface for resource search operations
  * 
  * @author fei, dzo
-  *
+ *
  * @param <R>
  */
 public interface ResourceSearch<R extends Resource> {

@@ -10,7 +10,7 @@ import org.bibsonomy.model.Post;
  * Fills the home page
  * 
  * @author Robert
-  */
+ */
 public class HomepageCommand extends SimpleResourceViewCommand{
 	
 	/**

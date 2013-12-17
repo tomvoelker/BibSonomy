@@ -27,7 +27,7 @@ import java.util.Collection;
 
 /**
  * @author dzo
-  */
+ */
 public interface ExtensionChecker {
 	
 	/**

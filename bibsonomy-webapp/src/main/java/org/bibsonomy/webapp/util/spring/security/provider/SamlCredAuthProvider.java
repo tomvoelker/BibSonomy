@@ -21,7 +21,7 @@ import org.springframework.security.saml.SAMLCredential;
  * to the original URL.
  * 
  * @author jensi
-  */
+ */
 public class SamlCredAuthProvider extends SAMLAuthenticationProvider {
 
 	@Override

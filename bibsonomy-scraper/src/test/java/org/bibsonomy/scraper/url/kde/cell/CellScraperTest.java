@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #144 #145 for CellScraper
  * @author tst
-  */
+ */
 @Category(RemoteTest.class)
 public class CellScraperTest {
 	

@@ -28,7 +28,7 @@ import org.bibsonomy.services.filesystem.FileLogic;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class Context {
 
 	private static final Map<String, ContextHandler> urlHandlers = new HashMap<String, ContextHandler>();

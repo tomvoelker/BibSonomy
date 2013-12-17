@@ -25,7 +25,7 @@ import org.bibsonomy.model.Resource;
 /**
  * 
  * @author sven
-  *
+ *
  * @param <T>
  */
 public class PumaData<T extends Resource> implements Serializable {

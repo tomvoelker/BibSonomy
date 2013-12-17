@@ -27,7 +27,7 @@ import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class ViewModel {
 
 	/**

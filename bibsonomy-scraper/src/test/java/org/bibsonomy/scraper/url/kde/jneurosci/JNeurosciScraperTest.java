@@ -32,7 +32,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author hagen
-  */
+ */
 @Category(RemoteTest.class)
 public class JNeurosciScraperTest {
 

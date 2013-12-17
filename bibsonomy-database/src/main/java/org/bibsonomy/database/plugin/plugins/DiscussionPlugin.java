@@ -7,7 +7,7 @@ import org.bibsonomy.model.DiscussionItem;
 
 /**
  * @author dzo
-  */
+ */
 public class DiscussionPlugin extends AbstractDatabasePlugin {
 	
 	/* (non-Javadoc)

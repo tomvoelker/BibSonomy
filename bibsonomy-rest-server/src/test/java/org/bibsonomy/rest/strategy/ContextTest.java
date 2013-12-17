@@ -44,7 +44,7 @@ import org.junit.Test;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class ContextTest extends AbstractContextTest {
 	private static final String NOT_SPLITTED_MSG = "tag parameters are not correctly splitted!";
 	private Map<String, String[]> parameterMap;

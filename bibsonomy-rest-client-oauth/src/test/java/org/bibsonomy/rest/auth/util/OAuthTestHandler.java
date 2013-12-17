@@ -44,7 +44,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
  * sample how to use {@link OAuthAPIAccessor} 
  * 
  * @author dzo
-  */
+ */
 public class OAuthTestHandler extends AbstractHandler {
 
 	/** the port of the app */

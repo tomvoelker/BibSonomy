@@ -4,7 +4,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author fei
-  */
+ */
 public class OpenSocialCommand extends BaseCommand {
 	/** Security token used for authentication */
 	private String securityToken;

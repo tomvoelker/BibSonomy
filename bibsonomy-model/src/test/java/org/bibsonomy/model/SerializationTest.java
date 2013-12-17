@@ -37,7 +37,7 @@ import org.junit.Test;
  * TODO: more tests
  * 
  * @author dzo
-  */
+ */
 public class SerializationTest {
 	
 	private static List<Object> testValues;

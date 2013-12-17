@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  * @author dzo
-  */
+ */
 public interface PictureScaler {
 	
 	/**

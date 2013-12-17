@@ -58,7 +58,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author rja
-  */
+ */
 public class WebUtils {
 	private static final Log log = LogFactory.getLog(WebUtils.class);
 

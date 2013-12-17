@@ -10,7 +10,7 @@ import org.bibsonomy.model.Tag;
  * of tags
  * 
  * @author Stefan Stuetzer
-  */
+ */
 public class RelatedTagCommand extends BaseCommand {
 
 	/** the requested tag(s) for whose to find related tags*/

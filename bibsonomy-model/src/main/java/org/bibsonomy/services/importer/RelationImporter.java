@@ -33,7 +33,7 @@ import org.bibsonomy.model.Tag;
  * can implement together with {@link RemoteServiceBookmarkImporter} or {@link FileBookmarkImporter}.
  * 
  * @author rja
-  */
+ */
 public interface RelationImporter {
 
 	/**

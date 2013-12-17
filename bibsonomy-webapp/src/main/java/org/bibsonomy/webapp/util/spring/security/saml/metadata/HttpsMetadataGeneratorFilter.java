@@ -8,7 +8,7 @@ import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
 
 /**
  * @author jensi
-  */
+ */
 public class HttpsMetadataGeneratorFilter extends MetadataGeneratorFilter {
 
 	private boolean useHttps;

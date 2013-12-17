@@ -16,7 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author daill
-  */
+ */
 public class DeleteUserController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(DeleteUserController.class);
 	

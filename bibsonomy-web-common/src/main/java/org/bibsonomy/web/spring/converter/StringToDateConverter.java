@@ -41,7 +41,7 @@ import org.springframework.core.convert.converter.Converter;
  * Converter for converting strings to date format
  * 
  * @author dzo
-  */
+ */
 public class StringToDateConverter implements Converter<String, Date> {
 	private static final Log log = LogFactory.getLog(StringToDateConverter.class);
 	

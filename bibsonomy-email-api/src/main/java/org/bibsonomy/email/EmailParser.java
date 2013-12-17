@@ -46,7 +46,7 @@ import org.bibsonomy.model.util.TagUtils;
  * is ignored.</p>
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class EmailParser {
 	private static final Log log = LogFactory.getLog(EmailParser.class);

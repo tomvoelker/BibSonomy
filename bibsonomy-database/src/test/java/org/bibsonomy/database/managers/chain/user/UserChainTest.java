@@ -29,7 +29,7 @@ import org.junit.Test;
  * Tests the correct reaction of reach chain element of the user chain.
  * 
  * @author Dominik Benz
-  */
+ */
 public class UserChainTest extends AbstractDatabaseManagerTest {
 	
 	protected static Chain<List<User>, UserParam> userChain;

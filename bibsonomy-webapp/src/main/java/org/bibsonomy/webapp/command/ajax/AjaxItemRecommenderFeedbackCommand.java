@@ -5,7 +5,7 @@ package org.bibsonomy.webapp.command.ajax;
  * post to the server.
  * 
  * @author lukas
-  */
+ */
 public class AjaxItemRecommenderFeedbackCommand extends AjaxCommand {
 
 	private String intraHash;

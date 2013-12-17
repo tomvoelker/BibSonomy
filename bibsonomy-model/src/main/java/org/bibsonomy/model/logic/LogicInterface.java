@@ -74,7 +74,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Jens Illig <illig@innofinity.de>
  * @author Christian Kramer
-  */
+ */
 public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
 
 	/**

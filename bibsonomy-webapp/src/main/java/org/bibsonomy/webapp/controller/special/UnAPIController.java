@@ -18,7 +18,7 @@ import org.springframework.validation.Errors;
  * Controller for UnAPI requests according to the <a href="http://unapi.info/specs/">UnAPI</a> spec.
  * 
  * @author rja
-  */
+ */
 public class UnAPIController implements MinimalisticController<UnAPICommand>, ResponseAware, ErrorAware {
 	private ResponseLogic responseLogic;
 	private Errors errors;

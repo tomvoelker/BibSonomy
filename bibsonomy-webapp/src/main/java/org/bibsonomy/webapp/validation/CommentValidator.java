@@ -7,7 +7,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author dzo
-  */
+ */
 public class CommentValidator extends DiscussionItemValidator<Comment> {
 
 	@Override

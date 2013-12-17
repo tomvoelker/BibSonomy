@@ -45,7 +45,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to post a post. ;)
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class CreatePostQuery extends AbstractQuery<String> {
 	private final Post<? extends Resource> post;
 	private final String username;

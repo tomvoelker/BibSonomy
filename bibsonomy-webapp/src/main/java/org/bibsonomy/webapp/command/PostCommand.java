@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.command;
 
 /**
  * @author fba
-  */
+ */
 public class PostCommand extends ResourceViewCommand {
 	private ConceptsCommand concepts = new ConceptsCommand();
 

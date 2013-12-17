@@ -29,7 +29,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
  * @author Dominik Benz
  * @author bkr
  * @author dzo
-  */
+ */
 @Deprecated
 public final class JNDIBinder {
 	private static final Log log = LogFactory.getLog(JNDIBinder.class);

@@ -38,7 +38,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Test for DOIScraper class (no url test)
  * @author tst
-  */
+ */
 @Category(RemoteTest.class)
 public class DOIScraperTest {
 	private static final DOIScraper SCRAPER = new DOIScraper();

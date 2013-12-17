@@ -12,7 +12,7 @@ import org.bibsonomy.webapp.util.View;
  * 
  * @author Jens Illig
  * @author rja
-  */
+ */
 public enum Views implements View {
 
 	/* *****************************************************

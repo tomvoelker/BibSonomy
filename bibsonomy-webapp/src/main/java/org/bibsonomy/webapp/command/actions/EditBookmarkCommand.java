@@ -4,7 +4,7 @@ import org.bibsonomy.model.Bookmark;
 
 /**
  * @author fba
-  */
+ */
 public class EditBookmarkCommand extends EditPostCommand<Bookmark> {
 	/**
 	 * Sets the URL of the post. 

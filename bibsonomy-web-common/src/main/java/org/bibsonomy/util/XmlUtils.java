@@ -41,7 +41,7 @@ import org.w3c.tidy.Tidy;
  * Some utility functions for working with XML
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
-  */
+ */
 public class XmlUtils {
 	/**
 	 * removes all invalid xml chars from the string

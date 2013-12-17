@@ -6,7 +6,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author daill
-  */
+ */
 public class PasswordChangeOnRemindCommand extends BaseCommand implements Serializable{
 
 	/**

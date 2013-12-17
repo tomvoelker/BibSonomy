@@ -14,7 +14,7 @@ import org.bibsonomy.lucene.database.params.LuceneParam;
 /**
  * 
  * @author dzo
-  */
+ */
 public class LuceneInfoDBLogic extends AbstractDatabaseManager implements LuceneInfoLogic {	
 	private DBSessionFactory sessionFactory;
 	

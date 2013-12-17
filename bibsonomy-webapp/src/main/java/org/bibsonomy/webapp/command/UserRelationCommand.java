@@ -4,7 +4,7 @@ import org.bibsonomy.model.User;
 
 /**
  * @author Christian Voigtmann
-  */
+ */
 public class UserRelationCommand extends ResourceViewCommand {
 
 	private User user;

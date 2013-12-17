@@ -14,7 +14,7 @@ import org.bibsonomy.model.User;
  * database manager for crud reviews
  * 
  * @author dzo
-  */
+ */
 public class ReviewDatabaseManager extends DiscussionItemDatabaseManager<Review> {
 	
 	private static final ReviewDatabaseManager INSTANCE = new ReviewDatabaseManager();

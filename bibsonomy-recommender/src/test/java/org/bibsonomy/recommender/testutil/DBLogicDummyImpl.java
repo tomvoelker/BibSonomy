@@ -23,7 +23,7 @@ import org.bibsonomy.recommender.tags.database.params.TasEntry;
 
 /**
  * @author rja
-  */
+ */
 public class DBLogicDummyImpl implements DBLogic {
 
 	private final Map<Pair<Long, Long>, Collection<RecommendedTag>> recoMap = new HashMap<Pair<Long,Long>, Collection<RecommendedTag>>(); 

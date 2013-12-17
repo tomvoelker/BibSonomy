@@ -19,7 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * 
  * @author fei
-  */
+ */
 public class UserRealnameResolverTest {
 	
 	private static UserRealnameResolver resolver;

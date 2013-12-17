@@ -32,7 +32,7 @@ import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 
 /**
  * @author dzo
-  */
+ */
 public interface DocumentFileLogic {
 	
 	/**

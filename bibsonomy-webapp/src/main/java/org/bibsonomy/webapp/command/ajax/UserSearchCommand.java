@@ -8,7 +8,7 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
 /**
  * @author bsc
-  */
+ */
 public class UserSearchCommand extends SimpleResourceViewCommand {
 	private String search;
 	private int limit;

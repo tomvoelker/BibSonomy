@@ -6,7 +6,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  * Defines a command which has access to the RequestWrapperContext
  * 
  * @author Dominik Benz
-  */
+ */
 public interface ContextCommand {
 
 	/**

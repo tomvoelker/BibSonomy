@@ -10,7 +10,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class PostUserStrategy extends AbstractCreateStrategy {
 	
 	/**

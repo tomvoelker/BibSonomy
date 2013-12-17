@@ -5,7 +5,7 @@ import org.bibsonomy.model.Post;
 
 /**
  * @author jensi
-  */
+ */
 public interface PublicationViewCommand {
 	/**
 	 * @return the bibtex ListView

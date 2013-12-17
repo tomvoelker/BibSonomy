@@ -4,7 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author philipp
-  */
+ */
 @Deprecated // TODO remove and config 
 public class PublicationClassificatorSingleton {
 	

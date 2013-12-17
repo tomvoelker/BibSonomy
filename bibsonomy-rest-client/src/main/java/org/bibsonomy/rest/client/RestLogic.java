@@ -120,7 +120,7 @@ import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * 
-  */
+ */
 public class RestLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class); // FIXME: who configs the logging?
 

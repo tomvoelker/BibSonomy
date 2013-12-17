@@ -28,7 +28,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author dzo
-  */
+ */
 public interface InformationService {
 	
 	/**

@@ -26,7 +26,7 @@ import recommender.impl.database.RecommenderStatisticsManager;
  * TODO: make generic
  * 
  * @author pba
-  */
+ */
 public class DiffPublicationController extends ResourceListController implements MinimalisticController<DiffPublicationCommand> {
 	private static final Log LOGGER = LogFactory.getLog(PostHistoryController.class);
 

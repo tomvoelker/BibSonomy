@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  * @author Christian Claus
-  */
+ */
 public class TeXDecodeTest {
 	
 	/**

@@ -12,7 +12,7 @@ import org.bibsonomy.model.Resource;
  * @author Dominik Benz
  * @author Miranda Grahl
  * @author Christian Kramer
-  */
+ */
 public class TagParam extends GenericParam {
 
 	// FIXME Probably a duplicate: previously newContentId from GenericParam was used

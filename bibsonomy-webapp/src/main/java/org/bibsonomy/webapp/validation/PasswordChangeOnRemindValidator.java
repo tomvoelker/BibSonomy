@@ -8,7 +8,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author daill
-  */
+ */
 public class PasswordChangeOnRemindValidator implements Validator<PasswordChangeOnRemindCommand>{
 
 	@Override

@@ -12,7 +12,7 @@ import org.bibsonomy.util.TagStringUtils;
  * 
  * 
  * @author jil
-  */
+ */
 public class TermProcessingIterator implements Iterator<String> {
 	private final Iterator<String> words;
 	private String next;

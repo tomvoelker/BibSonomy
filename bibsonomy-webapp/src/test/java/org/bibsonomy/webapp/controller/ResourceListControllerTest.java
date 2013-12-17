@@ -22,7 +22,7 @@ import org.junit.Test;
  * tests the {@link ResourceListController#getListsToInitialize(String, Set)} method
  * 
  * @author dzo
-  */
+ */
 public class ResourceListControllerTest {	
 	
 	private static class TestResourceListController extends ResourceListController {

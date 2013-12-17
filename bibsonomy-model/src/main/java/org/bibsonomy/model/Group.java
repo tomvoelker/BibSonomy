@@ -34,7 +34,7 @@ import org.bibsonomy.common.enums.Privlevel;
 /**
  * A group groups users.
  * 
-  */
+ */
 public class Group implements Serializable{
 
 	/**

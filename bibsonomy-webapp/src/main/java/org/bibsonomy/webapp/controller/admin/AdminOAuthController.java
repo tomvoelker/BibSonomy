@@ -27,7 +27,7 @@ import org.springframework.validation.Errors;
  * Controller for managing OAuth consumer keys
  * 
  * @author Folke Mitzlaff
-  **/
+ **/
 public class AdminOAuthController implements ValidationAwareController<OAuthAdminCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(AdminOAuthController.class);
 	

@@ -26,7 +26,7 @@ import org.bibsonomy.webapp.view.Views;
  * - /bibtexkey/BIBKEY/USER
  *
  * @author Flori, Dominik Benz
-  */
+ */
 public class BibtexkeyPageController extends SingleResourceListController implements MinimalisticController<BibtexkeyCommand> {
 	private static final Log log = LogFactory.getLog(BibtexkeyPageController.class);
 

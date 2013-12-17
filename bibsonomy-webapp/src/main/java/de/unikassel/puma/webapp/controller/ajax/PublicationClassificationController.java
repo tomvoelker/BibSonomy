@@ -26,7 +26,7 @@ import de.unikassel.puma.webapp.command.ajax.PublicationClassificationCommand;
 
 /**
  * @author philipp
-  */
+ */
 public class PublicationClassificationController extends AjaxController implements MinimalisticController<PublicationClassificationCommand> {
 
 	private static final String GET_AVAILABLE_CLASSIFICATIONS = "AVAILABLE_CLASSIFICATIONS";

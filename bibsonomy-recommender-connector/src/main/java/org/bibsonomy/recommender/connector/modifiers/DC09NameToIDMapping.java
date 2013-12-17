@@ -19,7 +19,7 @@ import recommender.impl.modifiers.EntityModifier;
  * used in the ECMLPKDD09 discovery challenge's datasets.
  * 
  * @author fei
-  */
+ */
 public class DC09NameToIDMapping implements EntityModifier<TagRecommendationEntity> {
 	private static final Log log = LogFactory.getLog(DC09NameToIDMapping.class);
 	private static final Integer UNKNOWNID = Integer.MIN_VALUE;

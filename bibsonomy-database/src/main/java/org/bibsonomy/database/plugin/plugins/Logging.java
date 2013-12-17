@@ -27,7 +27,7 @@ import org.bibsonomy.model.DiscussionItem;
  * @author Anton Wilhelm
  * @author Daniel Zoller
  * 
-  */
+ */
 public class Logging extends AbstractDatabasePlugin {
 
 	/*

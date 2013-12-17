@@ -29,7 +29,7 @@ import org.bibsonomy.rest.client.worker.HttpWorker;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class DeleteWorker extends HttpWorker<DeleteMethod> {
 
 	/**

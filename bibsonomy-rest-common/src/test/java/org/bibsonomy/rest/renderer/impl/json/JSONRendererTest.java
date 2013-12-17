@@ -42,7 +42,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
-  */
+ */
 public class JSONRendererTest extends AbstractRendererTest {
 	private static final JSONRenderer RENDERER = new JSONRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 

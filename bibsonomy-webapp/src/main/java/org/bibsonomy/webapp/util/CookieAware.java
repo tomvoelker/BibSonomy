@@ -5,7 +5,7 @@ package org.bibsonomy.webapp.util;
  * Interface to allow controllers access to the cookie logic. 
  * 
  * @author rja
-  */
+ */
 public interface CookieAware {
 
 	

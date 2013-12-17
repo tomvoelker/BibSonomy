@@ -6,7 +6,7 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
  * TODO: document the use of this tag
  * 
  * @author sbo <sbo@cs.uni-kassel.de>
-  */
+ */
 public class StringShortenerTag extends RequestContextAwareTag {
 
 	/**

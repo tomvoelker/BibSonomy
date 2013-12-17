@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #125 for WormbaseScraper
  * @author tst
-  */
+ */
 @Category(RemoteTest.class)
 public class WormbaseScraperTest {
 

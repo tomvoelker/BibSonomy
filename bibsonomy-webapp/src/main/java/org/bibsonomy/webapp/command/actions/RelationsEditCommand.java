@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.command.actions;
 
 /**
  * @author philipp
-  */
+ */
 public class RelationsEditCommand {
 	
 	private String upper = "";

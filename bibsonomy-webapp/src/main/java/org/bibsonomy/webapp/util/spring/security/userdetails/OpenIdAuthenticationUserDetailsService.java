@@ -12,7 +12,7 @@ import org.springframework.security.openid.OpenIDAuthenticationToken;
 
 /**
  * @author dzo
-  */
+ */
 public class OpenIdAuthenticationUserDetailsService extends DatabaseUserDetailsService implements AuthenticationUserDetailsService<OpenIDAuthenticationToken> {
 
 	@Override

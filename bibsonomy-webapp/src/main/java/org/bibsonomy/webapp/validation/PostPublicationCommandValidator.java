@@ -11,7 +11,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author ema
-  */
+ */
 public class PostPublicationCommandValidator implements Validator<PostPublicationCommand> {
 
 	@Override

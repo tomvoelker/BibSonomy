@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
-  */
+ */
 public class LuceneGoldStandardManagerTest extends AbstractDatabaseManagerTest {
     private static LuceneGoldStandardManager<GoldStandardPublication> manager;
     private static LuceneResourceSearch<GoldStandardPublication> searcher;

@@ -2,7 +2,7 @@ package org.bibsonomy.recommender.tags.database.params;
 
 /**
  * @author fei
-  */
+ */
 public class QueryGuess {
 	private Long qid;
 	private Long diff;

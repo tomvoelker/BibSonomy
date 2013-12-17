@@ -37,7 +37,7 @@ import org.junit.experimental.categories.Category;
  * Enabled tests in xml configuration, when http://www.eric.ed.gov is reachable again.
  * 
  * @author tst
-  */
+ */
 @Category(RemoteTest.class)
 public class EricScraperTest {
 	

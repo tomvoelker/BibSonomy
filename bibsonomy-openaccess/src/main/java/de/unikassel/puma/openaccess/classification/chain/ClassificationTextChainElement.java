@@ -13,7 +13,7 @@ import de.unikassel.puma.openaccess.classification.ClassificationTextParser;
 
 /**
  * @author philipp
-  */
+ */
 public class ClassificationTextChainElement implements ClassificationSource {
 
 	private final ClassificationTextParser classificationParser;

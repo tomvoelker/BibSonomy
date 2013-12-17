@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * @author dzo
-  */
+ */
 public interface GoldStandardPostLogicInterface extends PostLogicInterface {
 	
 	/**

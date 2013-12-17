@@ -34,7 +34,7 @@ import org.junit.experimental.categories.Category;
  * Scraper URL test #192 for ScienceMagScraper
  * 
  * @author clemens
-  */
+ */
 @Category(RemoteTest.class)
 public class ScienceMagScraperTest {
 

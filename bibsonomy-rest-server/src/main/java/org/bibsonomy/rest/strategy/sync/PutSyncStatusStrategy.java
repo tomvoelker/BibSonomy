@@ -19,7 +19,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author wla
-  */
+ */
 public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 
 	private final URI serviceURI;

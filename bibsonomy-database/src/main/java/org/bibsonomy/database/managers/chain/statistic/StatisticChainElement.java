@@ -7,7 +7,7 @@ import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author Stefan Stützer
-  */
+ */
 public abstract class StatisticChainElement extends ChainElement<Statistics, StatisticsParam> {
 
 	protected final StatisticsDatabaseManager db;

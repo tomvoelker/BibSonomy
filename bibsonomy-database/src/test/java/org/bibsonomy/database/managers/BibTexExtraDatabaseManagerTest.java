@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  * @author Christian Schenk
-  */
+ */
 // FIXME adapt to new test db
 public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	

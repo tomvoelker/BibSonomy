@@ -70,7 +70,7 @@ import org.xml.sax.SAXParseException;
  * "All /v1 api's require https requests and HTTP-Auth.
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class DeliciousImporter implements RemoteServiceBookmarkImporter, RelationImporter {
 

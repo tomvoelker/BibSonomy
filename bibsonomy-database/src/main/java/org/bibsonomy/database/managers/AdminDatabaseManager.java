@@ -26,7 +26,7 @@ import org.bibsonomy.model.User;
  * @author Stefan Stützer
  * @author Beate Krause
  * 
-  */
+ */
 public class AdminDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(AdminDatabaseManager.class);
 	

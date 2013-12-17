@@ -3,7 +3,7 @@ package org.bibsonomy.recommender.tags.database.params;
 /**
  * Bean for recommender settings
  * @author fei
-  */
+ */
 public class RecSettingParam {
 	private Long setting_id;
 	private String recId;

@@ -40,7 +40,7 @@ import org.bibsonomy.util.StringUtils;
  * Base class to compare posts
  * 
  * @author dbenz
-  */
+ */
 public abstract class PostComparator implements Serializable {
 	private static final long serialVersionUID = -359261836667807271L;
 	

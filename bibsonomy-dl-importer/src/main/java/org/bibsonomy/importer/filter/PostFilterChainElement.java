@@ -7,7 +7,7 @@ import org.bibsonomy.model.Post;
  * Describes a chain element which can filter {@link BibTex} posts.
  * 
  * @author rja
-  */
+ */
 public interface PostFilterChainElement {
 
 	public void filterPost(final Post<BibTex> post);

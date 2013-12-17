@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #139 #140 for ScientificcommonsScraper 
  * @author tst
-  */
+ */
 @Category(RemoteTest.class)
 public class ScientificcommonsScraperTest {
 	

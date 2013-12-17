@@ -10,7 +10,7 @@ import org.bibsonomy.model.Post;
  * appended by the content_id (which is the EasyChair paper id). 
  * 
  * @author rja
-  */
+ */
 public class EswcUrlFilter implements PostFilterChainElement {
 
 	

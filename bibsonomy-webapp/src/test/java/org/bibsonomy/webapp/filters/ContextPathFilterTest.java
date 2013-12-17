@@ -8,7 +8,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author rja
-  */
+ */
 public class ContextPathFilterTest {
 
 	@Test

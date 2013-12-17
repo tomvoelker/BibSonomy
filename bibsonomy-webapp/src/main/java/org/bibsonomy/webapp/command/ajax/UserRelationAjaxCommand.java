@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * @author Christian Kramer, Folke Mitzlaff
-  */
+ */
 public class UserRelationAjaxCommand extends AjaxCommand {
 	/**
 	 * name of the requested user

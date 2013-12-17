@@ -7,7 +7,7 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
  * The External System Tag marks a post relevant for some external system. 
  * For example the tag sys:external:vufind would marks posts that are created through the system VuFind.
  * @author sdo
-  */
+ */
 public class ExternalSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag {
 
 	public static final String NAME = "external";

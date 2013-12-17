@@ -19,7 +19,7 @@ import org.bibsonomy.model.Resource;
  * Returns a list of resources for a given user.
  * 
  * @author Sven Stefani
-  * @param <R> 
+ * @param <R> 
  * @param <P> 
  */
 public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

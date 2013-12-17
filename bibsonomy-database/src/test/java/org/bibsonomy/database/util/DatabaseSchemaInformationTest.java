@@ -12,7 +12,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
-  */
+ */
 public class DatabaseSchemaInformationTest extends AbstractDatabaseTest {
 	private static DatabaseSchemaInformation dBSchemaInformation;
 	

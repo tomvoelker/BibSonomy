@@ -5,7 +5,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * @author rja
-  */
+ */
 public class ExtendedRedirectView extends RedirectView implements View {
 
 	/** Constructs a new redirect view.

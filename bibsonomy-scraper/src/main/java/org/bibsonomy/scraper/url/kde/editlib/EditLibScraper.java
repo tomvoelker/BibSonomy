@@ -39,7 +39,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
-  */
+ */
 public class EditLibScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Ed/ITLib";

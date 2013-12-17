@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * used by the search to retrieve friends and group members
  * @author dzo
-  */
+ */
 public interface LuceneInfoLogic {
 	
 	/**

@@ -35,7 +35,7 @@ import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author hagen
-  */
+ */
 public class OpenUniversityScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_NAME = "The Open University";

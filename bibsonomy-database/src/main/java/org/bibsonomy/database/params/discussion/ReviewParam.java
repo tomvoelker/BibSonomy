@@ -6,7 +6,7 @@ import org.bibsonomy.model.Review;
 /**
  * 
  * @author dzo
-  */
+ */
 public class ReviewParam extends DiscussionItemParam<Review> {
 	
 	/**

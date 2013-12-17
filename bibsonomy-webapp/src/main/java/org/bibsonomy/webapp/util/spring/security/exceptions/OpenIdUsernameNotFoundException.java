@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * found in the database. 
  * 
  * @author rja
-  */
+ */
 public class OpenIdUsernameNotFoundException extends UsernameNotFoundException {
 
 	/**

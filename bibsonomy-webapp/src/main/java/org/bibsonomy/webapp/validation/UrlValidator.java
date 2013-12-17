@@ -12,7 +12,7 @@ import org.springframework.validation.ValidationUtils;
  * FIXME: duplicate of {@link BookmarkValidator}.
  * 
  * @author rja
-  */
+ */
 public class UrlValidator implements Validator<AjaxURLCommand> {
 	
 	@Override

@@ -29,7 +29,7 @@ package org.bibsonomy.common.enums;
  * TODO: Think about combining it with TagSimilarity.
  * 
  * @author niebler
-  */
+ */
 public enum TagRelation {
 	/** Co-Occurring tags. */
 	RELATED,

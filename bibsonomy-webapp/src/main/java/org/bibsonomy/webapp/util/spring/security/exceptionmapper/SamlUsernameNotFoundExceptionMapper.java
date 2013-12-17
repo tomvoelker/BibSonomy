@@ -10,7 +10,7 @@ import org.springframework.security.saml.SAMLCredential;
 
 /**
  * @author jensi
-  */
+ */
 public class SamlUsernameNotFoundExceptionMapper extends UsernameNotFoundExceptionMapper {
 	
 	private UserAttributeMapping<SAMLCredential, ?> attributeExtractor;

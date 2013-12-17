@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.command;
 
 /**
  * @author jensi
-  */
+ */
 public interface BibtexViewCommand extends PublicationViewCommand {
 
 	/**

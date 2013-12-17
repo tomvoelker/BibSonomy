@@ -4,7 +4,7 @@ package org.bibsonomy.webapp.config;
  * Some configuration parameters for the webapp
  * 
  * @author dbenz
-  */
+ */
 public class Parameters {
 	
 	/**

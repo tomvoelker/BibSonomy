@@ -6,7 +6,7 @@ import org.mortbay.jetty.testing.ServletTester;
 
 /**
  * @author rja
-  */
+ */
 public abstract class AbstractClientTest {
 
 	private ServletTester tester;

@@ -12,7 +12,7 @@ import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
 /**
  * @author philipp
-  */
+ */
 public class ACMClassification extends ClassificationXMLParser {
 
 	private static final String NAME = "ACM";

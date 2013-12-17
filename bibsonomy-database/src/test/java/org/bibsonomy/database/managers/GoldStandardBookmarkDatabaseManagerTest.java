@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
-  */
+ */
 public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static final GoldStandardBookmarkDatabaseManager manager = GoldStandardBookmarkDatabaseManager.getInstance();

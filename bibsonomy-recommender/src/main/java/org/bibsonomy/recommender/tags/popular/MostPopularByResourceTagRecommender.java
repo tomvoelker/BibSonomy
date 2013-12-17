@@ -19,7 +19,7 @@ import org.bibsonomy.recommender.tags.database.DBLogic;
  * recommendation for the post.  
  * 
  * @author fei
-  */
+ */
 public class MostPopularByResourceTagRecommender extends AbstractTagRecommender {
 	private static final Log log = LogFactory.getLog(MostPopularByResourceTagRecommender.class);
 

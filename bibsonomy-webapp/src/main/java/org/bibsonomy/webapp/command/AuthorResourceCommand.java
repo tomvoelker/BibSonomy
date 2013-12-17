@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.command;
 
 /**
  * @author daill
-  */
+ */
 public class AuthorResourceCommand extends TagResourceViewCommand {
 	
 	// the requested Author

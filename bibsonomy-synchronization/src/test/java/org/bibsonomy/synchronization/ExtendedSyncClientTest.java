@@ -30,7 +30,7 @@ import org.junit.Test;
 
 /**
  * @author wla
-  */
+ */
 public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 
 	/**

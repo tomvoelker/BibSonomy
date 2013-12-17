@@ -43,7 +43,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
-  */
+ */
 public class LiebertScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Liebert Online";

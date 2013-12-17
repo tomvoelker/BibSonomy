@@ -23,7 +23,7 @@ import org.bibsonomy.util.WebUtils;
  * and provides the title of web pages.
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class UrlProvider {
 	private static final String HTTP_COLON = "://";

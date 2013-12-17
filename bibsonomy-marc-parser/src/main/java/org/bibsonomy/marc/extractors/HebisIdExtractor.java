@@ -30,7 +30,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Jens Illig
-  */
+ */
 public class HebisIdExtractor implements AttributeExtractor{
 
 	@Override

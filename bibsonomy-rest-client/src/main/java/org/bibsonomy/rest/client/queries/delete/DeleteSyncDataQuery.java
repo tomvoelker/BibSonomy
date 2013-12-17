@@ -38,7 +38,7 @@ import org.bibsonomy.util.UrlUtils;
 
 /**
  * @author wla
-  */
+ */
 /**
  * @author wla
  *

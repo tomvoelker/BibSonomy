@@ -22,7 +22,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * Only useful for the Hypertext 2009 CSV format.
  * 
  * @author rja
-  */
+ */
 public class CSVPostListReader implements PostListReader {
 
 	private final BufferedReader reader;

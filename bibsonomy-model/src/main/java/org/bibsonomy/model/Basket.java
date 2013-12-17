@@ -31,7 +31,7 @@ import java.io.Serializable;
  * TODO: implement full basket functionality
  * 
  * @author Dominik Benz
-  */
+ */
 public class Basket implements Serializable {
 	private static final long serialVersionUID = -3051707370037449963L;
 

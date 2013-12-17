@@ -10,7 +10,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Writes CData tags around the given content
  * 
  * @author rja
-  */
+ */
 public class CData extends TagSupport {
 
 	/**

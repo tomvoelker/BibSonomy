@@ -15,7 +15,7 @@ import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
 /**
  * @author philipp
-  */
+ */
 public class ClassificationXMLChainElement implements ClassificationSource {
 
 	private final ClassificationXMLParser classificationParser;

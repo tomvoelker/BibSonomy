@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
  * TODO: add a validator for the command (should check file extension, …)
  * 
  * @author cvo
-  */
+ */
 public class JabRefImportController implements MinimalisticController<JabRefImportCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
 	

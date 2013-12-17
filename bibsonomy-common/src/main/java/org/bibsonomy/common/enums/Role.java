@@ -25,7 +25,7 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author Robert Jäschke
-  */
+ */
 public enum Role {
 	/** Is allowed to use admin pages. */
 	ADMIN(0),

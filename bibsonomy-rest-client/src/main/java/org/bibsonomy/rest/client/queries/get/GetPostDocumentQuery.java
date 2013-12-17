@@ -39,7 +39,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Downloads a document for a specific post.
  * 
  * @author Waldemar Biller <wbi@cs.uni-kassel.de>
-  */
+ */
 public class GetPostDocumentQuery extends AbstractQuery<Document> {
 
 	private final Document document;

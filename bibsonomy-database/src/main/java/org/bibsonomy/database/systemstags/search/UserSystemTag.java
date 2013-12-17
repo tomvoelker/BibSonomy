@@ -6,7 +6,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
-  */
+ */
 public class UserSystemTag extends AbstractSearchSystemTagImpl {
 
 	/**

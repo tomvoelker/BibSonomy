@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * @author philipp
-  */
+ */
 public class WikiParam {
     
     private String userName;

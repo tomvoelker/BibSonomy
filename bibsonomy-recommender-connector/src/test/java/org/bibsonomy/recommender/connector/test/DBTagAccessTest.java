@@ -35,7 +35,7 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  * BibSonomy TagRecommender tables.
  * 
  * @author fei
-  */
+ */
 public class DBTagAccessTest {
 
 	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;

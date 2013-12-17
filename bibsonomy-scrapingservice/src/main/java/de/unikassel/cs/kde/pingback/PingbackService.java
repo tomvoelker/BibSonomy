@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author rja
-  */
+ */
 public class PingbackService {
 
 	private final Log log = LogFactory.getLog(PingbackService.class);

@@ -12,7 +12,7 @@ import net.oauth.server.OAuthServlet;
  * Logic to access the Response.
  * 
  * @author rja
-  */
+ */
 public class ResponseLogic {
 
 	private HttpServletResponse response;

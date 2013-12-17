@@ -11,7 +11,7 @@ import org.bibsonomy.rest.strategy.Context;
  * Handle a concept creation request
  * 
  * @author Stefan Stützer
-  */
+ */
 public class PostUserConceptStrategy extends AbstractCreateStrategy {
 	private final String userName;
 

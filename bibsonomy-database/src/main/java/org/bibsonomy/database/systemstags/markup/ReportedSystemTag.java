@@ -5,7 +5,7 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 
 /**
  * @author dzo
-  */
+ */
 public class ReportedSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag {
 
 	/**

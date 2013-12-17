@@ -40,7 +40,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
-  */
+ */
 public class NEJMScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "The New England Journal of Medicine";

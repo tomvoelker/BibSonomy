@@ -5,7 +5,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * @author bsc
-  */
+ */
 public class RecommenderUtil {
 	/**
 	 * Get the Recommenderid of a given TagRecommender.

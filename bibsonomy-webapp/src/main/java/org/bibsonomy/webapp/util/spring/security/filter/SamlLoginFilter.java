@@ -23,7 +23,7 @@ import org.springframework.security.web.savedrequest.RequestCache;
 
 /**
  * @author jensi
-  */
+ */
 public class SamlLoginFilter extends AbstractAuthenticationProcessingFilter {
 	
 	private AuthenticationEntryPoint authenticationEntryPoint;

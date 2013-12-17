@@ -65,7 +65,7 @@ import org.bibsonomy.util.tex.TexDecode;
  * Some BibTex utility functions.
  * 
  * @author Dominik Benz
-  */
+ */
 public class BibTexUtils {
 	private static final Log log = LogFactory.getLog(BibTexUtils.class);
 	

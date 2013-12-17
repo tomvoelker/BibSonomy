@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 /**
  * @author dzo
-  */
+ */
 public class SessionAuthenticationToken extends AbstractAuthenticationToken {
 	private static final long serialVersionUID = 1434519528252232694L;
 	

@@ -31,7 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * class for accessing credentials as provided by spring security
  * 
  * @author fei, dzo
-  */
+ */
 public class AuthenticationUtils {
 
 	/**

@@ -29,7 +29,7 @@ import org.bibsonomy.model.DiscussionItem;
 
 /**
  * @author dzo
-  */
+ */
 public interface DiscussionLogicInterface {
 	
 	/**

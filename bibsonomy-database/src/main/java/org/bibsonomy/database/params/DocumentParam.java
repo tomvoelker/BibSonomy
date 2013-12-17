@@ -4,7 +4,7 @@ import org.bibsonomy.common.enums.HashID;
 
 /**
  * @author Christian Kramer
-  */
+ */
 public class DocumentParam extends GenericParam {
 
 	/**

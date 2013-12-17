@@ -24,7 +24,7 @@ import de.unikassel.puma.openaccess.classification.chain.parser.JELClassificatio
 
 /**
  * @author philipp
-  */
+ */
 public class PublicationClassificator {
 	
 	private static final Log log = LogFactory.getLog(PublicationClassificator.class);

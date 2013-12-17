@@ -12,7 +12,7 @@ import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class GetTagDetailsStrategy extends Strategy {
 	private final Tag tag;
 	private final String tagName;

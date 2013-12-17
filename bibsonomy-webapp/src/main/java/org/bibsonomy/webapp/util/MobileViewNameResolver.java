@@ -8,7 +8,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Waldemar Biller <biller@cs.uni-kassel.de>
-  */
+ */
 public abstract class MobileViewNameResolver {
 
 	/**

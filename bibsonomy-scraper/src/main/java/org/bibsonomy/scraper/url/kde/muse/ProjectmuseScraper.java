@@ -40,7 +40,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for muse.jhu.edu
  * @author tst
-  */
+ */
 public class ProjectmuseScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Project MUSE";

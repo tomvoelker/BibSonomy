@@ -38,7 +38,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
-  */
+ */
 public class NberScraper extends AbstractUrlScraper {
 
 	private static final String SITE_URL = "http://www.nber.org/";

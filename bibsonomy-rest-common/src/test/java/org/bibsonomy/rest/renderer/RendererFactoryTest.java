@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class RendererFactoryTest {
 
 	private final RendererFactory rendererFactory = new RendererFactory(new UrlRenderer("/"));

@@ -41,7 +41,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
-  */
+ */
 public class PharmacognosyResearchScraper extends CitationManagerScraper {
 
 	private static final String SITE_NAME = "Pharmacognosy Research";

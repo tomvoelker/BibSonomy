@@ -28,7 +28,7 @@ import org.bibsonomy.rest.client.RestLogicFactory;
  * shown.
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class LogicFactory {
 

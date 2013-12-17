@@ -18,7 +18,7 @@ import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class GroupsHandler implements ContextHandler {
 
 	@Override

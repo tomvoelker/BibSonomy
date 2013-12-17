@@ -28,7 +28,7 @@ import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
 
 /**
  * @author dzo
-  */
+ */
 public class RESTUtils {
 	private static final Log log = LogFactory.getLog(RESTUtils.class);
 

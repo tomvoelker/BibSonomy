@@ -36,7 +36,7 @@ import org.bibsonomy.util.UrlUtils;
 
 /**
  * @author wla
-  * @param <T> 
+ * @param <T> 
  */
 public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 

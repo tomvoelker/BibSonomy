@@ -14,7 +14,7 @@ import org.bibsonomy.model.ResultList;
  * @param <T> type of the entities in the list 
  *  
  * @author Jens Illig
-  */
+ */
 public class ListCommand<T> {
 	private int numPreviousPages = 2;
 	private int numNextPages = 2;

@@ -27,7 +27,7 @@ import org.bibsonomy.webapp.view.Views;
  * FIXME: This is just a starting point.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
-  */
+ */
 public class GroupReportingPageController implements MinimalisticController<GroupReportingCommand> {
 	
 	/** logic interface */

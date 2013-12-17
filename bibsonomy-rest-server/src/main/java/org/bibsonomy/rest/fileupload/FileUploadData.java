@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author jensi
-  */
+ */
 public class FileUploadData implements Data {
 	private final MultipartFile uploadedFile;
 	

@@ -16,7 +16,7 @@ import org.bibsonomy.model.Tag;
  * Removes stopwords from the list of tags.
  * 
  * @author rja
-  */
+ */
 public class KeywordStopWordRemovalFilter implements PostFilterChainElement {
 
 	private final HashSet<String> stopWords = new HashSet<String>();

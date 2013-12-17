@@ -9,7 +9,7 @@ import org.bibsonomy.webapp.view.LayoutView;
  * {@link PublicationRendererCommand} in {@link LayoutView}.
  * 
  * @author jensi
-  */
+ */
 public interface LayoutViewCommand extends PublicationViewCommand {
 	/**
 	 * The context contains the loginUser, the ckey, and other things which can

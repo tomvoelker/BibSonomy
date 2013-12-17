@@ -27,7 +27,7 @@ import org.bibsonomy.util.ObjectUtils;
 
 /**
  * @author jensi
-  */
+ */
 public class SamlRemoteUserId implements RemoteUserId {
 	private static final long serialVersionUID = -4075334406626749850L;
 	private String identityProviderId;

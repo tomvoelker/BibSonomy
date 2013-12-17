@@ -18,7 +18,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
-  */
+ */
 public class GroupingCommandUtilsTest {
 
 	private static final String GROUP_NAME_1 = "testgroup1";

@@ -46,7 +46,7 @@ import org.bibsonomy.util.id.DOIUtils;
  * 
  * @author rja
  * @author tst
-  */
+ */
 public class DOIScraper implements Scraper {
 
 	private static final String SITE_NAME = "DOIScraper";

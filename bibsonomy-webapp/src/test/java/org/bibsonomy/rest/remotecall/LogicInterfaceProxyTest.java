@@ -111,7 +111,7 @@ import org.springframework.web.multipart.support.MultipartFilter;
  *  so that we don't have to modify several locations when a new property 
  *  is added that is to be excluded
  * 
-  * @author Jens Illig
+ * @author Jens Illig
  * @author Christian Kramer
  */
 public class LogicInterfaceProxyTest implements LogicInterface {

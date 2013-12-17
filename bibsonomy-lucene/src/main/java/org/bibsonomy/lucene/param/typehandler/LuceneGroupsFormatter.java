@@ -9,7 +9,7 @@ import org.bibsonomy.model.Group;
  * convert date objects to a standardized string representation
  * 
  * @author fei
-  */
+ */
 public class LuceneGroupsFormatter extends LuceneCollectionFormatter<Group> {
 
 	@Override

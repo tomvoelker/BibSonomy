@@ -10,7 +10,7 @@ import java.util.SortedSet;
  * which are needed by the mySearch.jspx side.
  * 
  * @author Christian Voigtmann
-  */
+ */
 public class MySearchCommand extends SimpleResourceViewCommand{
 
 	/**

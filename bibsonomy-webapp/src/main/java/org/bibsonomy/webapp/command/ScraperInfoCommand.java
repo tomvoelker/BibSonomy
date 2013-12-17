@@ -7,7 +7,7 @@ import org.bibsonomy.scraper.Scraper;
 
 /**
  * @author ema
-  */
+ */
 public class ScraperInfoCommand extends ResourceViewCommand {
 	private Collection<Scraper> scraperList;
 

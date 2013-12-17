@@ -19,7 +19,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author Christian Kramer
-  */
+ */
 public class DeletePostController implements MinimalisticController<DeletePostCommand>, ErrorAware{
 	private static final Log log = LogFactory.getLog(DeletePostController.class);
 	

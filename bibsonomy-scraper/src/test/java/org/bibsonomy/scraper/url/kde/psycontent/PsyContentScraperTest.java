@@ -33,7 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #94 & #95 for PsyContentAScraper
  * @author wbi
-  */
+ */
 @Category(RemoteTest.class)
 public class PsyContentScraperTest {
 	

@@ -41,7 +41,7 @@ import org.junit.Test;
  * @author Robert Jaeschke
  * @author Anton Wilhelm (awil)
  * 
-  */
+ */
 public class TagParserTest {
 	private Set<Tag> parse(final String tagString) {
 		Set<Tag> tags = new TreeSet<Tag>();

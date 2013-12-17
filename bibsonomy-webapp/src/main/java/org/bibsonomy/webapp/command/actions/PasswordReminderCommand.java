@@ -8,7 +8,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * Command for sending password reminder emails.
  * 
  * @author daill
-  */
+ */
 public class PasswordReminderCommand extends BaseCommand implements Serializable, CaptchaCommand {
 
 	private static final long serialVersionUID = 6971611795826344738L;

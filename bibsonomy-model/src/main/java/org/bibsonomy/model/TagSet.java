@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * @author mwa
-  */
+ */
 public class TagSet {
 
 	/**

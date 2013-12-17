@@ -9,7 +9,7 @@ import org.junit.Test;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 
 	/**

@@ -17,7 +17,7 @@ import com.malethan.pingback.impl.ApachePingbackClient;
 
 /**
  * @author rja
-  */
+ */
 public class SimplePingbackTest extends AbstractClientTest {
 	
 	private SimplePingback pingback;

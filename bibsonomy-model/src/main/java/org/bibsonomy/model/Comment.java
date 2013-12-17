@@ -26,7 +26,7 @@ package org.bibsonomy.model;
 
 /**
  * @author dzo
-  */
+ */
 public class Comment extends DiscussionItem {
 	
 	/**

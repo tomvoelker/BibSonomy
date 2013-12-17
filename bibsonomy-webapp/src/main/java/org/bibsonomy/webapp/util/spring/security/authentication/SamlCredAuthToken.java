@@ -8,7 +8,7 @@ import org.springframework.security.saml.SAMLCredential;
 
 /**
  * @author jensi
-  */
+ */
 public class SamlCredAuthToken extends AbstractAuthenticationToken {
 	private static final long serialVersionUID = -6393689353234458932L;
 	

@@ -36,7 +36,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to receive an ordered list of all groups bibsonomy has.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 
 	private final int start;

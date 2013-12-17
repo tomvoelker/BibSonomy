@@ -11,7 +11,7 @@ import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
-  */
+ */
 public class PersonNameTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@SuppressWarnings("unchecked")

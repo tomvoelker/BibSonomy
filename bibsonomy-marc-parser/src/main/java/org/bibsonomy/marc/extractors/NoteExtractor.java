@@ -11,7 +11,7 @@ import org.bibsonomy.util.ValidationUtils;
  * set note of bibtex if entrytype is phdthesis
  * 
  * @author Lukas
-  */
+ */
 public class NoteExtractor implements AttributeExtractor {
 
 	@Override

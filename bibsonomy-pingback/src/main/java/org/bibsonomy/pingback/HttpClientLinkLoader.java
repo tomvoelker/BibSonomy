@@ -22,7 +22,7 @@ import com.malethan.pingback.LinkLoader;
 
 /**
  * @author rja
-  */
+ */
 public class HttpClientLinkLoader implements LinkLoader {
 
 	private static final Log log = LogFactory.getLog(HttpClientLinkLoader.class);

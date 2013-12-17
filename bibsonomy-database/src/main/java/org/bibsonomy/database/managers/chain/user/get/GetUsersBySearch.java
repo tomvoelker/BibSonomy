@@ -14,7 +14,7 @@ import org.bibsonomy.model.User;
  * Get users by Search-String
  * 
  * @author bsc
-  */
+ */
 public class GetUsersBySearch extends UserChainElement {
 
 	@Override

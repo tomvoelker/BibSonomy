@@ -29,7 +29,7 @@ import java.io.Reader;
 
 /**
  * @author jensi
-  */
+ */
 public class ClasspathResourceData implements Data {
 
 	private final String mimeType;

@@ -6,7 +6,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author dzo
-  */
+ */
 public class ValidationTestUtils {
 
 	public static Errors validate(final Validator<?> validator, final Object command) {

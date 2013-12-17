@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
-  */
+ */
 public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static GeneralDatabaseManager generalDb;

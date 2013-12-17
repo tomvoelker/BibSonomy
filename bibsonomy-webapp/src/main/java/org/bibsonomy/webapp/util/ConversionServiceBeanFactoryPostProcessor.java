@@ -16,7 +16,7 @@ import org.springframework.core.convert.ConversionService;
  * {@link BeanPostProcessor}s and {@link MessageSource}s.
  * 
  * @author dzo
-  */
+ */
 public class ConversionServiceBeanFactoryPostProcessor implements BeanFactoryPostProcessor, Ordered {
 
 	private int order = Ordered.HIGHEST_PRECEDENCE;

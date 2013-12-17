@@ -29,7 +29,7 @@ import org.bibsonomy.util.file.FileUtil;
 
 /**
  * @author Jens Illig
-  */
+ */
 public class MultiDirectoryFileFactory implements FileFactory {
 	
 	private final String fileDirectory;

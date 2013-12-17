@@ -28,7 +28,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class EnumUtils {
 
 	/**

@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  * 
  * 
  * @author Christian Kramer
-  */
+ */
 public class ConceptController extends AjaxController implements MinimalisticController<ConceptAjaxCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(ConceptController.class);
 	

@@ -11,7 +11,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author dzo
-  * @param <RR> 
+ * @param <RR> 
  * @param <R> 
  * @param <P> 
  */

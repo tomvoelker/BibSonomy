@@ -12,7 +12,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author rja
-  */
+ */
 public class UserValidatorTest {
 	private static final UserValidator VALIDATOR = new UserValidator();
 

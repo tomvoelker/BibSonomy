@@ -25,7 +25,7 @@ package org.bibsonomy.rest.exceptions;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class AuthenticationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 

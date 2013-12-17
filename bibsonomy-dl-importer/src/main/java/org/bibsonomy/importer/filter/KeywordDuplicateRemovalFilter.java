@@ -10,7 +10,7 @@ import org.bibsonomy.model.Tag;
  * Removes duplicate tags. 
  * 
  * @author rja
-  */
+ */
 public class KeywordDuplicateRemovalFilter implements PostFilterChainElement {
 
 	/** Removes duplicate tags.

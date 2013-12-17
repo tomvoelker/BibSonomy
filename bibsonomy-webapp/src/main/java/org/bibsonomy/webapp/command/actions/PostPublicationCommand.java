@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
  * The publications will be entered as a file or string containing the information.
  * 
  * @author ema
-  */
+ */
 public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand, LayoutViewCommand {
 	
 	/**

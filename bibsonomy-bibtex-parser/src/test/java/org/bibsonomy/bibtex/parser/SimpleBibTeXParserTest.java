@@ -40,7 +40,7 @@ import org.junit.Test;
 
 /**
  * @author rja
-  */
+ */
 public class SimpleBibTeXParserTest {
 
 	private static final String entry1 = "@book{behrendt2007,\n" +

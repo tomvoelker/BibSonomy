@@ -6,7 +6,7 @@ import org.bibsonomy.webapp.command.actions.RelationsEditCommand;
 
 /**
  * @author hba
-  */
+ */
 public class EditTagsPageViewCommand extends ResourceViewCommand {
 	
 	private final EditTagsCommand editTags;

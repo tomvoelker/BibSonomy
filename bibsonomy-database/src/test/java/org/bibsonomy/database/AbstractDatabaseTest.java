@@ -5,7 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author dzo
-  */
+ */
 public abstract class AbstractDatabaseTest {
 
 	public static final ApplicationContext testDatabaseContext = new ClassPathXmlApplicationContext("TestDatabaseContext.xml");

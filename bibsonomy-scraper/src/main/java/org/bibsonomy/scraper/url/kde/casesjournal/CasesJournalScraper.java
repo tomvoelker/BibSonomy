@@ -37,7 +37,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author claus
-  */
+ */
 public class CasesJournalScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME				= "Cases Journal";

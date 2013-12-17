@@ -21,7 +21,7 @@ import org.springframework.security.access.AccessDeniedException;
  * Controller for lucene admin page
  * 
  * @author Sven Stefani
-  */
+ */
 public class AdminLuceneController implements MinimalisticController<AdminLuceneViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminLuceneController.class);
 	

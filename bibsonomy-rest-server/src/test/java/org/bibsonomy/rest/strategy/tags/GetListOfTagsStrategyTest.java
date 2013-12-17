@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public class GetListOfTagsStrategyTest extends AbstractContextTest {
 
 	/**

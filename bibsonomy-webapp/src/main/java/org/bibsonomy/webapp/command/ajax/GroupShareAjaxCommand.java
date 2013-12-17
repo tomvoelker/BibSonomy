@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.command.ajax;
 
 /**
  * @author clemensbaier
-  */
+ */
 public class GroupShareAjaxCommand extends AjaxCommand {
 
 	private String requestedGroup;

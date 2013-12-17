@@ -28,7 +28,7 @@ import java.io.Reader;
 
 /**
  * @author jensi
-  */
+ */
 public class Data2Wrapper implements Data {
 
 	private final DualData dualFileData;

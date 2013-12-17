@@ -18,7 +18,7 @@ import org.bibsonomy.model.extra.ExtendedField;
 
 /** 
  * @author Christian Schenk
-  */
+ */
 public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 
 	private final static BibTexExtraDatabaseManager singleton = new BibTexExtraDatabaseManager();

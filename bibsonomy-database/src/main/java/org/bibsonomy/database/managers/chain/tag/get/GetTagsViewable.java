@@ -15,7 +15,7 @@ import org.bibsonomy.model.Tag;
 /**
  * @author Dominik Benz
  * @author Miranda Grahl
-  */
+ */
 public class GetTagsViewable extends TagChainElement {
 
 	@Override

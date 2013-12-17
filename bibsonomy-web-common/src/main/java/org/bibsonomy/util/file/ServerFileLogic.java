@@ -38,7 +38,7 @@ import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 
 /**
  * @author dzo
-  */
+ */
 public class ServerFileLogic implements FileLogic {
 	
 	private ProfilePictureLogic profileFileLogic;

@@ -57,7 +57,7 @@ import org.junit.Test;
 
 /**
  * @author Jens Illig
-  */
+ */
 public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_USER_1 = "testuser1";
 	private static final String TEST_USER_2 = "testuser2";

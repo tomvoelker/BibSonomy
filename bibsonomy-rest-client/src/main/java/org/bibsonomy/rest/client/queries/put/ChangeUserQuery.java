@@ -38,7 +38,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * Use this Class to change details of an existing user account.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class ChangeUserQuery extends AbstractQuery<String> {
 	private final User user;
 	private final String userName;

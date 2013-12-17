@@ -18,7 +18,7 @@ import com.malethan.pingback.Link;
 
 /**
  * @author rja
-  */
+ */
 public class HttpClientLinkLoaderTest extends AbstractClientTest {
 
 	private HttpClientLinkLoader linkLoader;

@@ -9,7 +9,7 @@ import net.tanesha.recaptcha.ReCaptchaImpl;
 /** Wrapper around {@link ReCaptcha}.
  * 
  * @author rja
-  */
+ */
 public class ReCaptchaWrapper implements Captcha {
 
 	private final ReCaptchaImpl reCaptcha;

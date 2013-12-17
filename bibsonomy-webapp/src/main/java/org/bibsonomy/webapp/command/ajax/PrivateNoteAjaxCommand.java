@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.command.ajax;
 
 /**
  * @author wla
-  */
+ */
 public class PrivateNoteAjaxCommand extends AjaxCommand {
 
 	private String intraHash;

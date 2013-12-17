@@ -17,7 +17,7 @@ import org.bibsonomy.util.TagStringUtils;
  * The basic skeleton to implement a tag recommender.
  * 
  * @author rja
-  */
+ */
 public abstract class AbstractTagRecommender implements TagRecommender {
 	private static final Log log = LogFactory.getLog(AbstractTagRecommender.class);
 	

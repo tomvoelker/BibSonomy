@@ -26,7 +26,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author fei
-  */
+ */
 public class BibSonomyOAuthValidator implements  Validator<OAuthAdminCommand>{
 	private static final Log log = LogFactory.getLog(BibSonomyOAuthValidator.class);
 	private final IOAuthLogic logic;

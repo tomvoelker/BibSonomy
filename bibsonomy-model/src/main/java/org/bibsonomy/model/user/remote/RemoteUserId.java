@@ -27,7 +27,7 @@ import java.io.Serializable;
 
 /**
  * @author jensi
-  */
+ */
 public interface RemoteUserId extends Serializable {
 	/**
 	 * @return short userId (without pre-/pos-fixes/namespaces etc.)

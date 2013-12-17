@@ -17,7 +17,7 @@ import org.bibsonomy.model.Tag;
  * Retrieve tags by Hash
  * 
  * @author Dominik Benz
-  */
+ */
 public class GetTagsByHash extends TagChainElement {
 
 	@Override

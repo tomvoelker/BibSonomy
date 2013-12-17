@@ -6,7 +6,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 
 /**
  * @author Jens Illig
-  */
+ */
 public class TagRelationParam extends GenericParam {
 
 	private Integer relationId;

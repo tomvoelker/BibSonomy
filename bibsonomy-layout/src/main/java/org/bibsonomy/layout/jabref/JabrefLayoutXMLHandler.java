@@ -33,7 +33,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Callback handler for the SAX parser.
  * 
  * @author:  rja
-  * 
+ * 
  */
 public class JabrefLayoutXMLHandler extends DefaultHandler {
 

@@ -6,7 +6,7 @@ import org.bibsonomy.model.Resource;
 /**
  * 
  * @author bsc
-  * @param <R> 
+ * @param <R> 
  */
 public interface GenerateIndexCallback<R extends Resource> {
 	

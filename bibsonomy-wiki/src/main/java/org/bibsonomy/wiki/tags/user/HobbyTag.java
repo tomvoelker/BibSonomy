@@ -6,7 +6,7 @@ import org.bibsonomy.wiki.tags.UserTag;
 
 /**
  * @author philipp
-  */
+ */
 public class HobbyTag extends UserTag {
 	private static final String TAG_NAME = "hobbies";
 

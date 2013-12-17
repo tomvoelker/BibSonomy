@@ -25,7 +25,7 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author Dominik Benz <benz@cs.uni-kassel.de>
-  */
+ */
 public class QueryTimeoutException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;

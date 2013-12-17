@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author jil
-  */
+ */
 public class StopWordRemover implements TermProcessor {
 	private static final Log log = LogFactory.getLog(StopWordRemover.class);
 	

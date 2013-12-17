@@ -35,7 +35,7 @@ import org.junit.Test;
 
 /**
  * @author fei
-  */
+ */
 public class MultiplexingTagRecommenderTest {
 	private static final Log log = LogFactory.getLog(MultiplexingTagRecommenderTest.class);
 

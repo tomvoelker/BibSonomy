@@ -34,7 +34,7 @@ import org.bibsonomy.model.util.TagUtils;
  * 
  * @see TagUtils for the empty tag  
  * 
-  */
+ */
 public class Tag implements Comparable<Tag>, Serializable {
 	private static final long serialVersionUID = 1634496749338156864L;
 

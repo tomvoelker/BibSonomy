@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
  * 
  * @author Jens Illig
  * @author Christian Schenk
-  */
+ */
 public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {	
 	// TODO: move to a TestUtilClass
 	protected static final int PUBLIC_GROUP_ID = GroupID.PUBLIC.getId();

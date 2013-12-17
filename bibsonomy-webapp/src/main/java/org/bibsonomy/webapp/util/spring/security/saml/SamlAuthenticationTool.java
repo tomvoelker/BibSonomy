@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * @author jensi
-  */
+ */
 public class SamlAuthenticationTool {
 	private RequestLogic requestLogic;
 	private Collection<String> allowedParams;

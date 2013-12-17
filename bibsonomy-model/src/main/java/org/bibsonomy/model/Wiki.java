@@ -28,7 +28,7 @@ import java.util.Date;
 
 /**
  * @author philipp
-  */
+ */
 public class Wiki implements Serializable {
 
 	/**

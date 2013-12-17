@@ -23,7 +23,7 @@ import org.bibsonomy.model.enums.Order;
  * friends)).
  * 
  * @author Miranda Grahl
-  * @param <R> 
+ * @param <R> 
  * @param <P> 
  */
 public class GetResourcesOfFriendsByUser<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

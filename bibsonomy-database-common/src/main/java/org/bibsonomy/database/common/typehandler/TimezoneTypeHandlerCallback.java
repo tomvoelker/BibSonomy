@@ -21,7 +21,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  *  
  * 
  * @author rja
-  */
+ */
 public class TimezoneTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override

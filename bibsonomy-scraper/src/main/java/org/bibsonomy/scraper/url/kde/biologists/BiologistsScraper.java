@@ -32,7 +32,7 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author hagen
-  */
+ */
 public class BiologistsScraper extends CitationManagerScraper {
 
 	private static final String SITE_NAME = "Development";

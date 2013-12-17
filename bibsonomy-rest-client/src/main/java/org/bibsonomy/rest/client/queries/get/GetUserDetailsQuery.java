@@ -35,7 +35,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * Use this Class to receive details about an user of bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
-  */
+ */
 public final class GetUserDetailsQuery extends AbstractQuery<User> {
 
 	private final String username;

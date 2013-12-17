@@ -30,7 +30,7 @@ import java.util.Date;
  * This Class defines a Document
  * 
  * @author Christian Kramer
-  */
+ */
 public class Document {
 	/** the filename */
 	private String fileName;

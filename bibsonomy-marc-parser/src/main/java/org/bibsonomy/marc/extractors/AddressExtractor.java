@@ -32,7 +32,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
-  */
+ */
 public class AddressExtractor implements AttributeExtractor {
 
 	@Override

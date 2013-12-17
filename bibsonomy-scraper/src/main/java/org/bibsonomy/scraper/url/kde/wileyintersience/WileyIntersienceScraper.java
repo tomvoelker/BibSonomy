@@ -44,7 +44,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for www3.interscience.wiley.com
  * @author rja
-  */
+ */
 public class WileyIntersienceScraper extends AbstractUrlScraper {
 
 	private static final String SITE_HOST = "onlinelibrary.wiley.com";

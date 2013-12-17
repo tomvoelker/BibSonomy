@@ -34,7 +34,7 @@ import org.junit.experimental.categories.Category;
  * Scraper URL tests #117, #118, #199, #120 for OpenrepositoryScraper
  * 
  * @author tst
-  */
+ */
 @Category(RemoteTest.class)
 public class OpenrepositoryScraperTest {
 	

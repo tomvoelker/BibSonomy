@@ -36,7 +36,7 @@ import org.bibsonomy.model.comparators.BookmarkPostComparator;
  * Some Bookmark utility functions
  * 
  * @author Dominik Benz
-  */
+ */
 public class BookmarkUtils {
 
 	/**

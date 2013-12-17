@@ -36,7 +36,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
  * Static methods to handle Resources.
  * 
  * @author rja
-  */
+ */
 public class ResourceUtils {
 	
 	private static final Map<String, Class<? extends Resource>> byStringMap = new HashMap<String, Class<? extends Resource>>();

@@ -14,7 +14,7 @@ import org.springframework.validation.MapBindingResult;
 
 /**
  * @author daill
-  */
+ */
 public class PasswordChangeOnRemindValidatorTest {
 	/**
 	 * Tests, if the PasswordReminderValidator supports() function works as expected.

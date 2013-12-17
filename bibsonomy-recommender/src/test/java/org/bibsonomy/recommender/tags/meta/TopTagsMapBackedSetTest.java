@@ -13,7 +13,7 @@ import org.junit.Test;
 
 /**
  * @author rja
-  */
+ */
 public class TopTagsMapBackedSetTest {
 
 

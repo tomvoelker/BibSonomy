@@ -40,7 +40,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * in it's HTML
  * 
  * @author Lukas
-  */
+ */
 public class DublinCoreScraper implements Scraper {
 	//scraper informations
 	private static final String SITE_NAME = "DublinCoreScraper";

@@ -35,7 +35,7 @@ import java.util.Map.Entry;
 
 /**
  * @author dzo
-  */
+ */
 public class UrlBuilder {
 	private final String baseUrl;
 	private Map<String, String> parameters;

@@ -19,7 +19,7 @@ import filters.ActionValidationFilter;
  * 
  * @author Jens Illig
  * @author rja
-  */
+ */
 public class NoCacheFilter implements Filter {
 	
 	@Override

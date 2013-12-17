@@ -8,7 +8,7 @@ import org.bibsonomy.wiki.tags.UserTag;
  * This is a simple homepage-tag.
  * Usage: <homepage />
  * @author janus
-  */
+ */
 public class HomepageTag extends UserTag {
 	private static final String TAG_NAME = "homepage";
 	

@@ -7,7 +7,7 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * Factory for real database sessions
  * 
  * @author dzo
-  */
+ */
 public class SqlMapClientDBSessionFactory extends AbstractDBSessionFactory {
 	private SqlMapClient client;
 	

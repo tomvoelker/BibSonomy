@@ -8,7 +8,7 @@ import org.bibsonomy.services.URLGenerator;
 
 /**
  * @author jensi
-  */
+ */
 public class VuFindURLGenerator extends URLGenerator {
 	private String pumaUrlMiscFieldName = "pumaurl";
 	private String vuFindUrlMiscFieldName;

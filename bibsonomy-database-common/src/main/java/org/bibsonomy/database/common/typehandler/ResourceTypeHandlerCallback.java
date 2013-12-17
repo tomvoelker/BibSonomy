@@ -15,7 +15,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * 
  * 
  * @author Robert Jäschke
-  */
+ */
 public class ResourceTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override

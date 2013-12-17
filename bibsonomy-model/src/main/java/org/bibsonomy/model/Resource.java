@@ -35,7 +35,7 @@ import java.util.List;
  *    (eg reflective instantiation) and most notably more precise in
  *    type-safe generic methods than an enum).
  * 
-  */
+ */
 public abstract class Resource implements Serializable, Rateable {
 	/**
 	 * For persistence (Serializable) 

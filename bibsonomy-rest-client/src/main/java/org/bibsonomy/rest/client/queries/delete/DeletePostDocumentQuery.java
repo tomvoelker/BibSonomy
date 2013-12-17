@@ -36,7 +36,7 @@ import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author MarcelM
-  */
+ */
 public class DeletePostDocumentQuery extends AbstractQuery<String>{
 	
 	private final String userName;

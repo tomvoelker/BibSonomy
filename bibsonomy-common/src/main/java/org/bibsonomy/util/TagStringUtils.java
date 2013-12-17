@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * Static methods for dealing with string representations of tags
  * 
  * @author 
-  */
+ */
 public class TagStringUtils {
 	
 	/**

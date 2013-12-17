@@ -31,7 +31,7 @@ import org.bibsonomy.model.Group;
 
 /**
  * @author Christian Schenk
-  */
+ */
 public class GroupUtils {
 	
 	/**

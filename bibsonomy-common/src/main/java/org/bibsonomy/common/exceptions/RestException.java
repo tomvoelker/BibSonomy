@@ -27,7 +27,7 @@ package org.bibsonomy.common.exceptions;
  * Exception that can be used to provide error message and response statuscode information to the frontend.
  * 
  * @author Jens Illig
-  */
+ */
 public class RestException extends RuntimeException {
 	private static final long serialVersionUID = 7907882646866488962L;
 	private final int httpCode;

@@ -7,7 +7,7 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 
 /**
  * @author dzo
-  */
+ */
 public final class DBTestUtils {
 	
 	/**

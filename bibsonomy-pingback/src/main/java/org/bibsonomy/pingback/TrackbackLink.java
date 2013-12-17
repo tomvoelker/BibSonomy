@@ -4,7 +4,7 @@ import com.malethan.pingback.Link;
 
 /**
  * @author rja
-  */
+ */
 public class TrackbackLink extends Link {
 
 	/**

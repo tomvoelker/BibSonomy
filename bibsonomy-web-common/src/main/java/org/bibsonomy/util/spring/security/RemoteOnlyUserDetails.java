@@ -33,7 +33,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * User Details for users that are only authenticated remotely but do not exist locally
  * 
  * @author jensi
-  */
+ */
 public class RemoteOnlyUserDetails implements UserDetails {
 	private static final long serialVersionUID = -7121668540134905067L;
 	

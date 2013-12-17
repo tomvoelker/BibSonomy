@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
-  */
+ */
 public class ListExtensionCheckerTest {
 	
 	private static final String EXTENSION_1 = "pdf";

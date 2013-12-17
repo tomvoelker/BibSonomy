@@ -15,7 +15,7 @@ import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Christian Kramer
-  */
+ */
 public class GetRelatedTags extends TagChainElement {
 
 	@Override

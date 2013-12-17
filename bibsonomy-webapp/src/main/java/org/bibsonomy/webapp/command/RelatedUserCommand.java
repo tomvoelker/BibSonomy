@@ -7,7 +7,7 @@ import org.bibsonomy.model.User;
 
 /**
  * @author daill
-  */
+ */
 public class RelatedUserCommand extends BaseCommand {
 	
 	/**

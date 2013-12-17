@@ -6,7 +6,7 @@ import org.bibsonomy.services.information.InformationService;
 
 /**
  * @author dzo
-  */
+ */
 public class DummyInformationService implements InformationService {
 
 	@Override

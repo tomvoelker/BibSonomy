@@ -6,7 +6,7 @@ import org.junit.Ignore;
 
 /**
  * @author dzo
-  */
+ */
 @Ignore
 public class TestDBLogicInterfaceFactory implements LogicInterfaceFactory {
 	@Override
