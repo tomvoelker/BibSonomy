@@ -238,7 +238,8 @@ CREATE TABLE `bookmark` (
   `to_bib` tinyint(3) NOT NULL default '0',
   `change_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `rating` tinyint(3) NOT NULL default '0',
-  PRIMARY KEY  (`content_id`)
+  PRIMARY KEY  (`content_id`),
+  KEY `group_date_content_id_idx` (`group`,`date`,`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
