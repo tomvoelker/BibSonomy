@@ -46,8 +46,7 @@ import org.bibsonomy.model.util.TagUtils;
  * is ignored.</p>
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class EmailParser {

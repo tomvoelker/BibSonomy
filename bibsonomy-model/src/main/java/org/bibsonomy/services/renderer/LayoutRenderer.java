@@ -36,8 +36,7 @@ import org.bibsonomy.model.Resource;
  * Interface for basic layout rendering. 
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * @param <LAYOUT> - the type of layout this renderer renders
  * 
  */

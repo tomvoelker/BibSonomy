@@ -44,8 +44,7 @@ import de.unikassel.puma.openaccess.sword.renderer.xml.StructMapType;
  * METS/MODS could possibly be generated with XSLT 
  * 
  * @author:  sven
- * @version: $Id$
- * $Author$
+  * $Author$
  */
 public class MetsBibTexMLGenerator {
 	private static final Log log = LogFactory.getLog(MetsBibTexMLGenerator.class);

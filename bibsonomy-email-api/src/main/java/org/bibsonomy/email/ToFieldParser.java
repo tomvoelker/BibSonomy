@@ -21,8 +21,7 @@ import java.util.regex.Pattern;
  * 30 * 4 Zeichen). 
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class ToFieldParser {

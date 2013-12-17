@@ -23,8 +23,7 @@ import org.bibsonomy.util.WebUtils;
  * and provides the title of web pages.
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class UrlProvider {

@@ -36,8 +36,7 @@ import org.junit.Test;
 /**
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class JSONWriterTest {

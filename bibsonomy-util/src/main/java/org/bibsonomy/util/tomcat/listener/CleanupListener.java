@@ -30,8 +30,7 @@ import com.mysql.jdbc.Connection;
  * In particular, shuts down the MySQL cancellation timers and AWT (started by JabRef).
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class CleanupListener implements LifecycleListener {

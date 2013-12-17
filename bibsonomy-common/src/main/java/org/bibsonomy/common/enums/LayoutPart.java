@@ -32,8 +32,7 @@ package org.bibsonomy.common.enums;
  * <li>item: used to format one item</li> 
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public enum LayoutPart {

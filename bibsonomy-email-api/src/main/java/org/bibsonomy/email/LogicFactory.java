@@ -28,8 +28,7 @@ import org.bibsonomy.rest.client.RestLogicFactory;
  * shown.
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class LogicFactory {

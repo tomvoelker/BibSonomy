@@ -33,8 +33,7 @@ import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
  * Creates a new instance of the {@link DeliciousImporter}.
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class DeliciousImporterFactory {

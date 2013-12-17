@@ -39,8 +39,7 @@ import org.bibsonomy.util.JSONUtils;
  * Writes given lists in JSON format.
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class JSONWriter {

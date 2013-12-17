@@ -19,8 +19,7 @@ import org.bibsonomy.model.util.GroupUtils;
 /**
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
+  * $Author$
  * 
  */
 public class EmailPostingService {
