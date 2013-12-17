@@ -49,18 +49,9 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
         if(list.size() > 3) {
         	for(int i = 0; i < list.size();) {
         		if(i==0) {
-        			ret.append(getPersonName(list.getAuthor(i)));
+        			ret.append(getPersonName(list.getAuthor(i))).append(" (Hgg.)");
+        			break;
         		}
-        		break;
-        		/*
-    			if(i < 1) {
-        			ret.append(", ");
-        		} else if(i == 1) {
-        			ret.append(" und ");
-        		} else if(i == 2) {
-        			ret.append(" (Hgg.) ");
-        		}
-        		*/
         	}
         } else {
         	ret.append(getAllPersonsString(list));
@@ -69,18 +60,33 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
         return ret.toString();
 	}
 
+	/**
+	 * 
+	 * @param list
+	 * @return
+	 */
 	protected String getAllPersonsString(final AuthorList list) {
 
 		final StringBuffer ret = new StringBuffer();
 		
 		for(int i = 0; i < list.size(); ++i) {
-			
-			ret.append(getPersonName(list.getAuthor(i))).append(" (Hg.)");
-			if(i < list.size()-2) {
-				ret.append(", ");
+			String author = getPersonName(list.getAuthor(i));
+
+			//(Über.) for translator
+			if(!author.toLowerCase().contains("(Über.)".toLowerCase())) {
+				ret.append(author).append(" (Hrsg.)");
+			} else {
+				//replace (Über.)
+				author = author.replaceFirst("\\s\\(Über\\.\\)", "");
+				
+				//append (Über.) at the end
+				ret.append(author).append(" (Über.)");
 			}
-			if(i == list.size()-1) {
+			
+			if(i == list.size()-2) {
 				ret.append(" und ");
+			} else if(i < list.size()-2) {
+				ret.append(", ");
 			}
 		}
 		return ret.toString();
