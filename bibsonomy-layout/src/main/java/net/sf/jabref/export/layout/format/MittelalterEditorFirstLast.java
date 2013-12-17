@@ -26,6 +26,9 @@ package net.sf.jabref.export.layout.format;
 import net.sf.jabref.AuthorList;
 import net.sf.jabref.AuthorList.Author;
 
+/**
+ * @author Sebastian Böttger, sbo@cs.uni-kassel.de
+ */
 public class MittelalterEditorFirstLast extends MittelalterEditorNamesFormatter {
 
 	@Override
