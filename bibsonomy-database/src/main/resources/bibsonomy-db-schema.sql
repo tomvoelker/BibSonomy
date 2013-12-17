@@ -178,7 +178,8 @@ CREATE TABLE `bibtex` (
   `change_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `rating` tinyint(3) NOT NULL default '0',
   PRIMARY KEY  (`content_id`),
-  UNIQUE KEY `unique_user_name_simhash2` (`user_name`,`simhash2`)
+  UNIQUE KEY `unique_user_name_simhash2` (`user_name`,`simhash2`),
+  KEY `group_date_content_id_idx` (`group`,`date`,`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -1501,7 +1502,8 @@ CREATE TABLE `user` (
   `show_bibtex` tinyint(1) default '1',
   `gravatarAddress` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`user_name`),
-  UNIQUE KEY `user_id` (`id`)
+  UNIQUE KEY `user_id` (`id`),
+  KEY `user_name_date_content_id_idx` (`user_name`,`date`,`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
