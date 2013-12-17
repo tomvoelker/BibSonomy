@@ -1,5 +1,10 @@
 <div style="margin-bottom:1em">
-\begin{author}\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\end{author}
+\begin{author}
+\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}
+\end{author}
+\begin{editor}
+\format[AntiScriptInjection,MittelalterEditorLastFirst]{\editor}
+\end{editor}
 \format[AntiScriptInjection]{\title}\begin{volume},
 Bd. \format[AntiScriptInjection]{\volume}\end{volume}\begin{series}:
 \format[AntiScriptInjection]{\series}\end{series}\begin{edition},
