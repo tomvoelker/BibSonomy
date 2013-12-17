@@ -15,8 +15,7 @@ import org.bibsonomy.model.util.GroupUtils;
  * Creates {@link Post}s from an {@link Email}.
  * 
  * @author:  rja
-  * $Author$
- * 
+  * 
  */
 public class PostBuilder {
 

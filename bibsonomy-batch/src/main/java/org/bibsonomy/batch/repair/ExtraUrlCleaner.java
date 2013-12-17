@@ -15,8 +15,7 @@ import org.bibsonomy.batch.MySQLHelper;
  * URLs (by calling new URL(url)). If not, cleans the broken URL.
  * 
  * @author:  rja
-  * $Author$
- * 
+  * 
  */
 public class ExtraUrlCleaner {
 

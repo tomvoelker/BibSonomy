@@ -36,8 +36,7 @@ import net.sf.jabref.export.layout.Layout;
  * JabrefLayoutDefinition.xsd.  
  * 
  * @author:  rja
-  * $Author$
- * 
+  * 
  */
 public class JabrefLayout extends org.bibsonomy.model.Layout {
 

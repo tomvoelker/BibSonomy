@@ -9,8 +9,7 @@ import org.apache.commons.codec.binary.Hex;
 /**
  * 
  * @author:  rja
-  * $Author$
- * 
+  * 
  */
 public class CodeUtils {
 

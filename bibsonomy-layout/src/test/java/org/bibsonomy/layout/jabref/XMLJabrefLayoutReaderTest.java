@@ -37,8 +37,7 @@ import org.xml.sax.SAXException;
 /**
  * 
  * @author:  rja
-  * $Author$
- * 
+  * 
  */
 public class XMLJabrefLayoutReaderTest {
 

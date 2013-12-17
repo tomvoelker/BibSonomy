@@ -50,8 +50,7 @@ import com.sun.syndication.io.SyndFeedOutput;
  * 
  * 
  * @author:  rja
-  * $Author$
- * 
+  * 
  */
 public class SyndicationFeedWriter<RESOURCE extends Resource> {
 

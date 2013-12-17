@@ -43,8 +43,7 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * 
  * @author:  rja
-  * $Author$
- */
+  */
 @RunWith(Parameterized.class)
 public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 	

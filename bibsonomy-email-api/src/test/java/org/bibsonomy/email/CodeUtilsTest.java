@@ -8,8 +8,7 @@ import org.junit.Test;
 /**
  * 
  * @author:  rja
-  * $Author$
- * 
+  * 
  */
 public class CodeUtilsTest {
 
