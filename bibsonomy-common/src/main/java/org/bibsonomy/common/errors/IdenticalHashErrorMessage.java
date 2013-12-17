@@ -28,8 +28,7 @@ package org.bibsonomy.common.errors;
  * Use this ErrorMessage when a post is updated such that it is identical to another already existing posts
  * 
  * @author sdo
- * @version $Id$
- */
+  */
 public class IdenticalHashErrorMessage extends ErrorMessage {
 
 	/**

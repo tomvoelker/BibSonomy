@@ -29,8 +29,7 @@ import org.junit.Test;
 
 /**
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class ClassifierSettingTest {
 	
 	/**

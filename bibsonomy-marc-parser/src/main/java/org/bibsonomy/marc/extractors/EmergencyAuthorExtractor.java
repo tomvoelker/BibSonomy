@@ -13,8 +13,7 @@ import org.bibsonomy.util.ValidationUtils;
  * In cases where an author is required but none has been set, this extractor treats any mentioned person or organization it can find as the author.
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public class EmergencyAuthorExtractor extends AbstractParticipantExtractor {
 
 	@Override

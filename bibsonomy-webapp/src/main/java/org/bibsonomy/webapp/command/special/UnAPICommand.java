@@ -9,8 +9,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * Represents a post (by an id) in a certain format.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class UnAPICommand extends BaseCommand {
 
 	private String id;

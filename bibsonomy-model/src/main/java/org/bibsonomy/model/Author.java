@@ -25,8 +25,7 @@ package org.bibsonomy.model;
 
 /**
  * @author Christian Claus
- * @version $Id$
- */
+  */
 public class Author {
 
 	private String authorId = null;

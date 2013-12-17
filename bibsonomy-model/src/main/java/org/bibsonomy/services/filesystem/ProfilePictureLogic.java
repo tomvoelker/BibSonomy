@@ -31,8 +31,7 @@ import org.bibsonomy.model.util.file.UploadedFile;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public interface ProfilePictureLogic {
 	
 	/** the profile picture file extension */

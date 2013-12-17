@@ -26,8 +26,7 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author cvo
- * @version $Id$
- */
+  */
 public enum GroupUpdateOperation {
 	
 	/** Update the settings of a group. */

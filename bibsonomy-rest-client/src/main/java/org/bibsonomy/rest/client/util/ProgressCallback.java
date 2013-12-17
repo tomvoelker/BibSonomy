@@ -25,8 +25,7 @@ package org.bibsonomy.rest.client.util;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public interface ProgressCallback {
 
 	/**

@@ -4,8 +4,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class AccessDeniedNoticeException extends AccessDeniedException {
 	private static final long serialVersionUID = 8538409864663313358L;
 	

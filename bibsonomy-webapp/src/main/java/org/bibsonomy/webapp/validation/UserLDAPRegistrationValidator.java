@@ -11,8 +11,7 @@ import org.springframework.validation.ValidationUtils;
  * Validator for UserLDAPRegistrationController
  * 
  * @author Sven Stefani
- * @version $Id$
- */
+  */
 public class UserLDAPRegistrationValidator implements Validator<UserIDRegistrationCommand>{
 
 	@Override

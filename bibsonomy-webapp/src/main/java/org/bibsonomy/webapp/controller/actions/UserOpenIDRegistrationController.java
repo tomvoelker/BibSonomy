@@ -15,8 +15,7 @@ import org.springframework.security.openid.OpenIDAuthenticationToken;
  * 
  * @author Stefan Stützer
  * @author rja
- * @version $Id$
- */
+  */
 public class UserOpenIDRegistrationController extends AbstractUserIDRegistrationController {
 
 	@Override

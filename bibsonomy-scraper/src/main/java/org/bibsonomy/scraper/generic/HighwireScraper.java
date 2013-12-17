@@ -39,8 +39,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * 
- * @version $Id$
- */
+  */
 public class HighwireScraper implements Scraper {
 	private static final String SITE_NAME = "Highwire Scraper Collection";
 	private static final String SITE_URL = "http://highwire.stanford.edu/lists/allsites.dtl";

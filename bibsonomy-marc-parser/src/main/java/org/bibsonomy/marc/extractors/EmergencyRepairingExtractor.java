@@ -13,8 +13,7 @@ import org.bibsonomy.util.ValidationUtils;
  * We need an author (or we will get NPEs by various exporters such as endnote), So this class generates a dummy if no author or editor is present
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public class EmergencyRepairingExtractor implements AttributeExtractor {
 
 	@Override

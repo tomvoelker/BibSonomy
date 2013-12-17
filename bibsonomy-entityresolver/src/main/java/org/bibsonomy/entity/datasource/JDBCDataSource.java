@@ -14,8 +14,7 @@ import no.priv.garshol.duke.RecordIterator;
 /**
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class JDBCDataSource extends no.priv.garshol.duke.datasources.JDBCDataSource {
 	private DataSource dataSource;
 

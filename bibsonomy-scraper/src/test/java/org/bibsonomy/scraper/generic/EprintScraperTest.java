@@ -35,8 +35,7 @@ import org.junit.Test;
  * Scraper url tests #147, #148, #149, #150 for EprintScraper
  * 
  * @author tst
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class EprintScraperTest {
 	

@@ -8,8 +8,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * FIXME: This is just a starting point.
  * 
  * @author dbenz
- * @version $Id$
- */
+  */
 public class GroupReportingCommand extends BaseCommand {
 
 	/** holds the table with the publication counts per type */ 

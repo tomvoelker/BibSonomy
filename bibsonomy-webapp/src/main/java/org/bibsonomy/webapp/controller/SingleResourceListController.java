@@ -22,8 +22,7 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
  * These are currently the bookmark and the publication list
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public abstract class SingleResourceListController extends ResourceListController {
 
 	/**

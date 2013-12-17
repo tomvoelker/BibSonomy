@@ -33,8 +33,7 @@ import bibtex.parser.ParseException;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class PublicationRenderingController implements MinimalisticController<PublicationRendererCommand>, ErrorAware {
 
 	private static final Log log = LogFactory.getLog(PublicationRenderingController.class);

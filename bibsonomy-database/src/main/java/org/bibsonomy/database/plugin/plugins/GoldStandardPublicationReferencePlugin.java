@@ -7,8 +7,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlugin {
 	
 	@Override

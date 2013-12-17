@@ -32,8 +32,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class URNRule extends Rules {
 	/*
 	 * to validate the URN

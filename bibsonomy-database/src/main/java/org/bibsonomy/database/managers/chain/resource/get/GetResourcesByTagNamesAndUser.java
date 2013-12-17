@@ -19,8 +19,7 @@ import org.bibsonomy.model.enums.Order;
  * 
  * @author Miranda Grahl
  * @author dzo
- * @version $Id$
- * @param <R> 
+  * @param <R> 
  * @param <P> 
  */
 public class GetResourcesByTagNamesAndUser<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

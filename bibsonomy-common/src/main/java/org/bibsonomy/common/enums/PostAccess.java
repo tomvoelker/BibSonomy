@@ -25,8 +25,7 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public enum PostAccess {
 	
 	/**

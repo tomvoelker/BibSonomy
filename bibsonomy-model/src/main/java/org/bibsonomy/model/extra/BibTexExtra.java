@@ -30,8 +30,7 @@ import java.util.Date;
  * Holds additional information about BibTexs.
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class BibTexExtra {
 
 	private URL url;

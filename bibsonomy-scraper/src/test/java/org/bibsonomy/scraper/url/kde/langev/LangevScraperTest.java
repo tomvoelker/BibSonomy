@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #86 & #87 for ISRLScraper
  * @author wbi
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class LangevScraperTest {
 	

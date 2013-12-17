@@ -9,8 +9,7 @@ import org.bibsonomy.model.Resource;
  * @param <T> resource (e.g. Bookmark, Publication, etc.)
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public class ResourceParam<T extends Resource> extends GenericParam {
 	
 	private RatingAverage ratingAverage = RatingAverage.ARITHMETIC_MEAN;

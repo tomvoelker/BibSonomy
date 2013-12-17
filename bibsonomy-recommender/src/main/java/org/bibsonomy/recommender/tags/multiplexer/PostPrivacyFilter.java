@@ -8,8 +8,7 @@ import org.bibsonomy.model.util.GroupUtils;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class PostPrivacyFilter {
 
 

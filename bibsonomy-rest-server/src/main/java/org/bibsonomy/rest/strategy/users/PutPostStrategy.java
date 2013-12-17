@@ -27,8 +27,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public class PutPostStrategy extends AbstractUpdateStrategy {
 	private final String userName;
 	protected final String resourceHash;

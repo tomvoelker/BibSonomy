@@ -10,8 +10,7 @@ import org.apache.log4j.spi.ThrowableInformation;
 /**
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class ExceptionFilter extends Filter {
 
 	private final Set<String> ignoredExceptions = new HashSet<String>();

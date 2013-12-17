@@ -4,8 +4,7 @@ import java.util.Locale;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public interface Captcha {
 
 	/** Creates the HTML string which displays the captcha.

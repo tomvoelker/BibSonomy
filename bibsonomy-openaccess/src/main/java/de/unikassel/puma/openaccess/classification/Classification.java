@@ -10,8 +10,7 @@ import java.util.Set;
 /**
  * 
  * @author philipp
- * @version $Id$
- */
+  */
 public class Classification {
 	
 	private final String delimiter;

@@ -14,8 +14,7 @@ import org.bibsonomy.model.comparators.RecommendedTagComparator;
  * 
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class TopTagsMapBackedSet extends MapBackedSet<String, RecommendedTag> {
 
 	private final SortedSet<RecommendedTag> sortedTags;

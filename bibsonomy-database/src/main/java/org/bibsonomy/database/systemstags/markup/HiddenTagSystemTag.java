@@ -3,8 +3,7 @@ import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 /**
  * @author sdo
- * @version $Id$
- * This SystemTag is used to create own tags that are hidden from other users
+  * This SystemTag is used to create own tags that are hidden from other users
  * The tag is of the form sys:hidden:<MyHiddenArgument> where the sys|system prefix is optional
  * The argument cannot be empty
  */

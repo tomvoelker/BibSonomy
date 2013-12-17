@@ -15,8 +15,7 @@ import com.google.inject.Inject;
  * Initial gadget container page for testing the open social interface
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class ContainerPageController extends SingleResourceListControllerWithTags implements MinimalisticController<OpenSocialCommand> {
 	
 	@Inject // FIXME: inject via spring!

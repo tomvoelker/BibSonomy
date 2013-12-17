@@ -36,8 +36,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
  * is also set.
  * 
  * @author pbu
- * @version $Id$
- */
+  */
 public class QRCodeCreator {
 	
 	/**

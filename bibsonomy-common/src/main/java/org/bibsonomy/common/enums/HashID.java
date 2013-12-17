@@ -25,8 +25,7 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public enum HashID {
 
 	/** some special hash. Try to use INTRA_HASH or INTER_HASH instead */

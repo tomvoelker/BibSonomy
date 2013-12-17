@@ -17,8 +17,7 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class OldSimHash {
 
 

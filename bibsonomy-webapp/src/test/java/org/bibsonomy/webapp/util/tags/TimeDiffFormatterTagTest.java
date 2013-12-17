@@ -18,8 +18,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * Java's mechanism of determining the default language.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class TimeDiffFormatterTagTest {
 
 	private static final String EN = "en";

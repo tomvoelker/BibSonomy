@@ -36,8 +36,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to receive an ordered list of all users bibsonomy has.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public final class GetUserListQuery extends AbstractQuery<List<User>> {
 
 	private final int start;

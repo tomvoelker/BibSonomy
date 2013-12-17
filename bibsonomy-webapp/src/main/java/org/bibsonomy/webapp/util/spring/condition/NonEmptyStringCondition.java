@@ -6,8 +6,7 @@ import org.bibsonomy.util.ValidationUtils;
  * {@link Condition} whether some String value is non-empty.
  * 
  * @author jensi
- * @version $Id$
- */
+  */
 public class NonEmptyStringCondition implements Condition {
 	private String value;
 	

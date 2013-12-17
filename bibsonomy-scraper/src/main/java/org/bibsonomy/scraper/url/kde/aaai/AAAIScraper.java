@@ -37,8 +37,7 @@ import org.bibsonomy.scraper.generic.BibtexScraper;
 
 /**
  * @author hagen
- * @version $Id$
- */
+  */
 public class AAAIScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Association for the Advancement of Artificial Intelligence";

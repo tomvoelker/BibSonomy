@@ -7,8 +7,7 @@ import org.springframework.validation.BindingResult;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public abstract class ViewUtils {
 
 	/**

@@ -18,8 +18,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 	protected final Class<? extends Resource> resourceType;
 	protected final String hash;

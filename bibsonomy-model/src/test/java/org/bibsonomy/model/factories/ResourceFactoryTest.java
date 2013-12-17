@@ -36,8 +36,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class ResourceFactoryTest {
 	
 	private static ResourceFactory factory;

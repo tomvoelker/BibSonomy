@@ -37,8 +37,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author C. Kramer
- * @version $Id$
- */
+  */
 public class OpacScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "http://opac.bibliothek.uni-kassel.de/";
 	private static final String HOST_NAME = "opac.bibliothek.uni-kassel.de";

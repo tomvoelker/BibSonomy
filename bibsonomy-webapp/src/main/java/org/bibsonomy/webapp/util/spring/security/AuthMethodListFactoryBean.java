@@ -9,8 +9,7 @@ import org.springframework.beans.factory.FactoryBean;
  * TODO: better way to get a list of {@link AuthMethod}s
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class AuthMethodListFactoryBean implements FactoryBean<List<AuthMethod>> {
 
 	private List<AuthMethod> authConfig;

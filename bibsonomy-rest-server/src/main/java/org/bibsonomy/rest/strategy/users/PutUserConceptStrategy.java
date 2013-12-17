@@ -12,8 +12,7 @@ import org.bibsonomy.rest.strategy.Context;
  * Handle a concept update request
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class PutUserConceptStrategy extends AbstractUpdateStrategy {
 
 	private final String userName; 

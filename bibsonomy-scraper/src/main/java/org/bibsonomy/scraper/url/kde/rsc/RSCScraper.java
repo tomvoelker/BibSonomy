@@ -43,8 +43,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class RSCScraper extends AbstractUrlScraper {
 
 	private final Log log = LogFactory.getLog(RSCScraper.class);

@@ -28,8 +28,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class YearRule extends Rules {
 	/**
 	 * @param pica

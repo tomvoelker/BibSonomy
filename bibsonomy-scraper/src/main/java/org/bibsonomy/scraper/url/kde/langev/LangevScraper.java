@@ -36,8 +36,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * @author wbi
- * @version $Id$
- */
+  */
 public class LangevScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "The Graduate School of Library and Information Science at the University of Illinois";

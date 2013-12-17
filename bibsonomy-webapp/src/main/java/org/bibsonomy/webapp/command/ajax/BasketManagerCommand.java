@@ -3,8 +3,7 @@ package org.bibsonomy.webapp.command.ajax;
 
 /**
  * @author Christian Kramer
- * @version $Id$
- */
+  */
 public class BasketManagerCommand extends AjaxCommand{
 	private String hash;
 	private String user;

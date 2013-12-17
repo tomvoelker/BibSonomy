@@ -41,8 +41,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for scientificcommons.org
  * @author tst
- * @version $Id$
- */
+  */
 public class ScientificcommonsScraper extends AbstractUrlScraper{
 
 	

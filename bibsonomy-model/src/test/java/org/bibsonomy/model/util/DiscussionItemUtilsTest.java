@@ -36,8 +36,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class DiscussionItemUtilsTest {
 
 	private static final String FIRST_HASH = "d38ac3127809563a311e6b3179de8ea3";

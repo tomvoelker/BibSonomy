@@ -18,8 +18,7 @@ import org.junit.Test;
  * the <code>is*</code> methods.
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class DatabasePluginMock extends AbstractDatabasePlugin {
 
 	private boolean onBibTexInsert;

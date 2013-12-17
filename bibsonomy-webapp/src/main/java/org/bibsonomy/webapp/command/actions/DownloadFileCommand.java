@@ -9,8 +9,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 /**
  * Command class for the download or deleted File operation
  * @author cvo
- * @version $Id$
- */
+  */
 public class DownloadFileCommand extends BaseCommand implements Serializable, DownloadCommand {
 	private static final long serialVersionUID = 5650155398969930691L;
 

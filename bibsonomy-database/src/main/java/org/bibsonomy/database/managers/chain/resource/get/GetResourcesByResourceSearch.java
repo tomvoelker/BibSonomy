@@ -18,8 +18,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author claus
- * @version $Id$
- * @param <R>  the resource
+  * @param <R>  the resource
  * @param <P>  the param
  */
 public abstract class GetResourcesByResourceSearch<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {

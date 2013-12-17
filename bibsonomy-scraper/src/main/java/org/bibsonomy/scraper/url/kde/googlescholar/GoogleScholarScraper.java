@@ -41,8 +41,7 @@ import org.bibsonomy.util.WebUtils;
  * This scraper supports download links from the GoogleSonomy Firefox plugin.
  * 
  * @author tst
- * @version $Id$
- */
+  */
 public class GoogleScholarScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_URL  = "http://scholar.google.com/";

@@ -34,8 +34,7 @@ import org.bibsonomy.rest.client.RestLogicFactory;
  * 
  * 
  * @author wla
- * @version $Id$
- */
+  */
 public abstract class AbstractSynchronizationClient {
 	private static final Log log = LogFactory.getLog(AbstractSynchronizationClient.class);
 	protected static final String APISTRING = "api";

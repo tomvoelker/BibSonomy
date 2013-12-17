@@ -7,8 +7,7 @@ import org.bibsonomy.model.Resource;
  * Post modifiers arbitrarily change a post's content.
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public interface PostModifier {
 
 	/**

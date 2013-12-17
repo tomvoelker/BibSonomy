@@ -44,8 +44,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
- * @version $Id$
- */
+  */
 public class APAScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "American Psychological Association";

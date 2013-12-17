@@ -12,8 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class SyncSettingsValidator implements Validator<SettingsViewCommand> {
 
 	@Override

@@ -9,8 +9,7 @@ import org.bibsonomy.util.StringUtils;
  * this MD5Passwordencoder salts the hashed password
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class Md5PasswordEncoder extends org.springframework.security.authentication.encoding.Md5PasswordEncoder {
 	
 	@Override

@@ -4,8 +4,7 @@ package org.bibsonomy.recommender.tags.database.params;
  * Bean for selection result strategy settings
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class SelectorSettingParam {
 	private Long id;
 	private String info;

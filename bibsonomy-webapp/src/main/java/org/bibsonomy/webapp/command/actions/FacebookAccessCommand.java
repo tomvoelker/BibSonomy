@@ -10,8 +10,7 @@ import org.bibsonomy.model.User;
  * command class for accessing OAuth services
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class FacebookAccessCommand extends OAuthAccessCommand {
 	/**
 	 * capturing different error states

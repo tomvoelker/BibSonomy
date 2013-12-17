@@ -51,8 +51,7 @@ import org.bibsonomy.util.WebUtils;
  * - http://scitation.aip.org/getabs/servlet/GetCitation?
  * - http://jcp.aip.orgs
  * @author tst
- * @version $Id$
- *
+  *
  */
 public class AipScitationScraper extends AbstractUrlScraper {
 

@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #236 for OpenUniversityScraper
  * @author hks
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class OpenUniversityScraperTest {
 	

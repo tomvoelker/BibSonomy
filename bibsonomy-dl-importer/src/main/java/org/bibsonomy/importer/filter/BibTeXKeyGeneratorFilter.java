@@ -15,8 +15,7 @@ import org.bibsonomy.model.Post;
  * and the first relevant word of the title.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class BibTeXKeyGeneratorFilter implements PostFilterChainElement {
 
 

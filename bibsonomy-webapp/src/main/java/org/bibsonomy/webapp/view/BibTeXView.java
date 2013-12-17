@@ -17,8 +17,7 @@ import org.bibsonomy.webapp.command.BibtexViewCommand;
  * TODO: could as well be used to return EndNote?!
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class BibTeXView extends AbstractPublicationView<BibtexViewCommand> {
 
 	/**

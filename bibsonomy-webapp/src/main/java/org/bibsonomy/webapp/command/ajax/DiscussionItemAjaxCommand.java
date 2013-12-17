@@ -7,8 +7,7 @@ import org.bibsonomy.webapp.command.GroupingCommand;
 
 /**
  * @author dzo
- * @version $Id$
- * @param <D> 
+  * @param <D> 
  */
 public class DiscussionItemAjaxCommand<D extends DiscussionItem> extends AjaxCommand implements GroupingCommand {
 	

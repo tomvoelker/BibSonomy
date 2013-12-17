@@ -38,8 +38,7 @@ import org.bibsonomy.util.ValidationUtils;
  * Renders publications in Endnote's import format
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public class EndnoteUtils {
 
 	private static final Map<String, String> RIS_ENTRY_TYPE_MAP = new HashMap<String, String>();

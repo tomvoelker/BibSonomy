@@ -11,8 +11,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * 
  * @author Sven Stefani
  * @author bsc
- * @version $Id$
- */
+  */
 public class AdminLuceneViewCommand extends BaseCommand {		
 	/** specific action for admin page */
 	private String action;

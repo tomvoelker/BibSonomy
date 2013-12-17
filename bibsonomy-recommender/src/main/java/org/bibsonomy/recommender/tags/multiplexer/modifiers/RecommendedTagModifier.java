@@ -8,8 +8,7 @@ import org.bibsonomy.model.RecommendedTag;
  * Tag modifiers arbitrarily change a recommended tag's content.
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public interface RecommendedTagModifier {
 
 	/**

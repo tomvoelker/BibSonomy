@@ -9,8 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class DualUploadedFileAccessor extends UploadedFileAccessor {
 
 	/**

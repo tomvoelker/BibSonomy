@@ -11,8 +11,7 @@ import org.bibsonomy.model.Tag;
  * Removes special characters from tags.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class KeywordSpecialCharacterRemovalFilter implements PostFilterChainElement {
 
 	private String regex;

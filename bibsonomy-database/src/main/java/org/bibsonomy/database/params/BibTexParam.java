@@ -7,8 +7,7 @@ import org.bibsonomy.model.BibTex;
  * Parameters that are specific to publication.
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class BibTexParam extends ResourceParam<BibTex> {
 
 	@Override

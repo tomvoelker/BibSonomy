@@ -13,8 +13,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class HeaderUtils {
 
 	/**

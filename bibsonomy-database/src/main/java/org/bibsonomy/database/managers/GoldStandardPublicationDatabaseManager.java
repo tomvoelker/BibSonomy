@@ -14,8 +14,7 @@ import org.bibsonomy.model.Post;
  * Used to create, read, update and delete gold standard publications from the database.
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public final class GoldStandardPublicationDatabaseManager extends GoldStandardDatabaseManager<BibTex, GoldStandardPublication, BibTexParam> {
 	private static final GoldStandardPublicationDatabaseManager INSTANCE = new GoldStandardPublicationDatabaseManager();
 	

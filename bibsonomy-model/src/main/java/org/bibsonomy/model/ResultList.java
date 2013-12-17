@@ -28,8 +28,7 @@ import java.util.LinkedList;
 /**
  * Extended List with aditional properties
  * 
- * @version $Id$
- * @param <T>
+  * @param <T>
  *            resource type
  */
 public class ResultList<T> extends LinkedList<T> {

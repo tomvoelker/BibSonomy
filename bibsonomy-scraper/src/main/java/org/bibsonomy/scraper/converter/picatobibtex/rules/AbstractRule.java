@@ -27,8 +27,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class AbstractRule extends Rules {
 	
 	/**

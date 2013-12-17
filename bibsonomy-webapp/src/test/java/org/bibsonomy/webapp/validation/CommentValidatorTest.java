@@ -13,8 +13,7 @@ import org.springframework.validation.FieldError;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class CommentValidatorTest {
 	
 	private static final CommentValidator COMMENT_VALIDATOR = new CommentValidator();

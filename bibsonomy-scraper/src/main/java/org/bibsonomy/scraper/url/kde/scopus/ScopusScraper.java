@@ -37,8 +37,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * Scraping Logger for access on http://www.scopus.com
  * @author tst
- * @version $Id$
- */
+  */
 public class ScopusScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "SCOPUS";

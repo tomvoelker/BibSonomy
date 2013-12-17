@@ -6,8 +6,7 @@ import org.bibsonomy.common.enums.AuthMethod;
 /**
  * Signals that an authentication attempt of a disabled authentication method was detected
  * @author jensi
- * @version $Id$
- */
+  */
 public class UnsupportedAuthenticationMethodException extends RuntimeException {
 	private static final long serialVersionUID = 1459344776558363035L;
 	private final AuthMethod authMethod;

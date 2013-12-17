@@ -35,8 +35,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class KDEScraperFactoryTest {
 

@@ -31,8 +31,7 @@ import java.io.IOException;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class PictureToMaxSizeScaler implements PictureScaler {
 
 	private int sizeOfLargestSide;

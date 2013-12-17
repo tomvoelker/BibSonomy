@@ -13,8 +13,7 @@ import javax.servlet.ServletResponse;
  * Filter that does nothing else than delegating to the next filter
  * 
  * @author jensi
- * @version $Id$
- */
+  */
 public class DummyFilter implements Filter {
 
 	@Override

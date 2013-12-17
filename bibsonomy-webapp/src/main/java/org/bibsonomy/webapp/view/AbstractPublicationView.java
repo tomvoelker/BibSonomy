@@ -23,8 +23,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 /**
  * @author jensi
- * @version $Id$
- * @param <CMD> Type of the Command that is required for this view
+  * @param <CMD> Type of the Command that is required for this view
  */
 public abstract class AbstractPublicationView<CMD extends PublicationViewCommand > extends AbstractView {
 

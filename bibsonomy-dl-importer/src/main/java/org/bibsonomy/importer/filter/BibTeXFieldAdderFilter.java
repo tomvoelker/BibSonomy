@@ -17,8 +17,7 @@ import org.bibsonomy.model.Post;
  * Adds BibTeX fields.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class BibTeXFieldAdderFilter implements PostFilterChainElement {
 
 	/**

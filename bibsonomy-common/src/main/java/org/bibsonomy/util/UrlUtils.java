@@ -33,8 +33,7 @@ import java.net.URLEncoder;
  * Convenience methods to work with URLs
  *
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class UrlUtils {
 
 	private static final String BIBTEX_URL_COMMAND = "\\url{";

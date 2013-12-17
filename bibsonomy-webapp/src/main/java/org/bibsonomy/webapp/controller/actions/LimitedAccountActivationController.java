@@ -20,8 +20,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author nilsraabe
- * @version $Id$
- */
+  */
 public class LimitedAccountActivationController implements ErrorAware, ValidationAwareController<LimitedAccountActivationCommand>{
 	
 	/** after successful activation, the user is redirected to this page. */

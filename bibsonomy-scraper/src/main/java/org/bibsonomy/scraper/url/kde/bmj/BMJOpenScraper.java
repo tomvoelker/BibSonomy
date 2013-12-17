@@ -41,8 +41,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
- * @version $Id$
- */
+  */
 public class BMJOpenScraper extends CitationManagerScraper {
 
 	private static final String BMJOPEN_BMJ_COM_HOST = "bmjopen.bmj.com";

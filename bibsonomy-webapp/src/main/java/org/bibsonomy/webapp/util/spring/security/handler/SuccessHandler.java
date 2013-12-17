@@ -22,8 +22,7 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
  * the user
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 	
 	private String loginFormUrl = "";

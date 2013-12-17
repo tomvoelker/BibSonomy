@@ -10,8 +10,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * type handler callback for {@link SynchronizationDirection}
  * 
  * @author wla
- * @version $Id$
- */
+  */
 public class SyncDirectionTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {

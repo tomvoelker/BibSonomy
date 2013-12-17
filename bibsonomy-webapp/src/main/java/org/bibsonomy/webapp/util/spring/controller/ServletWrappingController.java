@@ -23,8 +23,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * but allows to directly provide an instance of the servlet. 
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class ServletWrappingController extends AbstractController implements BeanNameAware, InitializingBean, DisposableBean {
 
 	private String servletName;

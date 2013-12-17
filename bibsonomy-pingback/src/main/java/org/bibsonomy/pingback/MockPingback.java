@@ -5,8 +5,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class MockPingback implements ThreadedPingBack {
 
 	@Override

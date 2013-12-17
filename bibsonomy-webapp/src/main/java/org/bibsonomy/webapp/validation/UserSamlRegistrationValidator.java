@@ -19,8 +19,7 @@ import org.springframework.validation.ValidationUtils;
  * Validator for UserSamlRegistrationController
  * 
  * @author jensi
- * @version $Id$
- */
+  */
 public class UserSamlRegistrationValidator implements Validator<UserIDRegistrationCommand>{
 
 	private static final String COMMAND_STORE_KEY = UserSamlRegistrationValidator.class.getName() + ".COMMAND_STORE";

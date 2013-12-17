@@ -33,8 +33,7 @@ import org.bibsonomy.model.User;
  * requests for flagging/unflagging of spam users
  * 
  * @author fei
- * @version $Id$
- * @param <R>
+  * @param <R>
  *            the resource to manage
  */
 public class LuceneResourceManager<R extends Resource> implements GenerateIndexCallback<R> {

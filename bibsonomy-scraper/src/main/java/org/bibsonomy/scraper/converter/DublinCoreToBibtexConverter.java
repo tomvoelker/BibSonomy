@@ -41,8 +41,7 @@ import org.bibsonomy.util.id.ISBNUtils;
  * html forrmatted string.
  * 
  * @author Lukas
- * @version $Id$
- */
+  */
 public class DublinCoreToBibtexConverter {
 
 	

@@ -8,8 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author ice
- * @version $Id$
- */
+  */
 public class PictureCommand extends BaseCommand implements Serializable, DownloadCommand {
 
 	private static final long serialVersionUID = -3444057502420374593L;

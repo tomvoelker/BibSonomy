@@ -7,8 +7,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * Command for Ajax requests
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class AjaxCommand extends BaseCommand {
 
 	/** what this command shall do */

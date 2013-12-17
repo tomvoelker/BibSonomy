@@ -14,8 +14,7 @@ import org.bibsonomy.lucene.index.LuceneFieldNames;
  *        THIS UPDATE WILL BE LOST!!!
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class DocumentCacheComparator implements Comparator<Document>, Serializable {
 	private static final long serialVersionUID = -5135628928597791434L;
 

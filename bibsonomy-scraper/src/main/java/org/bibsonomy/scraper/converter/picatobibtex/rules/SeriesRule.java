@@ -27,8 +27,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class SeriesRule extends Rules {
 	/**
 	 * @param pica

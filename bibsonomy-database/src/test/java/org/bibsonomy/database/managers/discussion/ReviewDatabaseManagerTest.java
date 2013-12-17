@@ -29,8 +29,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class ReviewDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	protected static final String USERNAME_1 = "testuser1";

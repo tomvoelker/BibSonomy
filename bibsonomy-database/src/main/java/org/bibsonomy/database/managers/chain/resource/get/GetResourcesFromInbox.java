@@ -17,8 +17,7 @@ import org.bibsonomy.model.Resource;
  * @param <P>
  * 
  * @author sdo
- * @version $Id$
- * 
+  * 
  */
 public class GetResourcesFromInbox<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 	

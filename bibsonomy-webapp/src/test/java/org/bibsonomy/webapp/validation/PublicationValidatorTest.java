@@ -25,8 +25,7 @@ import org.springframework.validation.Validator;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class PublicationValidatorTest {
 
 	private static final PostValidator<BibTex> postValidator = new PostValidator<BibTex>();

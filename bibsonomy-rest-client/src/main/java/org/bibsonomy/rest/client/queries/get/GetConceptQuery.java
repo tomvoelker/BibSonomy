@@ -46,8 +46,7 @@ import org.bibsonomy.util.UrlBuilder;
  * 3) from a specified user
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 	protected Class<? extends Resource> resourceType;
 	private String groupingName;

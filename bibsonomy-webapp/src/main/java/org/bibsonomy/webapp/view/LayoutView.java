@@ -32,8 +32,7 @@ import tags.Functions;
  * View which uses an {@link LayoutRenderer} to render the output.
  * 
  * @author rja
- * @version $Id$
- * @param <LAYOUT> 
+  * @param <LAYOUT> 
  */
 @SuppressWarnings("deprecation")
 public class LayoutView<LAYOUT extends Layout> extends AbstractView {

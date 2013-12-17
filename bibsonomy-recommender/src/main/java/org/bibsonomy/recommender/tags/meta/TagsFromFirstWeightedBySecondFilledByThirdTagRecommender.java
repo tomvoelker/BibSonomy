@@ -17,8 +17,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * up by the top tags from {@link #thirdTagRecommender}.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommender extends TagsFromFirstWeightedBySecondTagRecommender {
 	private static final Log log = LogFactory.getLog(TagsFromFirstWeightedBySecondFilledByThirdTagRecommender.class);
 

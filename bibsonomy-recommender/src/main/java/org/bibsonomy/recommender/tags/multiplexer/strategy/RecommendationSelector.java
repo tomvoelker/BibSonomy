@@ -8,8 +8,7 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 
 /**
  * @author fei
- * @version $Id$
- */
+  */
 public interface RecommendationSelector {
 	
 	/**

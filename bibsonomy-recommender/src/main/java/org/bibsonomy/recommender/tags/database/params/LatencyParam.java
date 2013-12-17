@@ -2,8 +2,7 @@ package org.bibsonomy.recommender.tags.database.params;
 
 /**
  * @author bsc
- * @version $Id$
- */
+  */
 public class LatencyParam {
     private Long sid;
     private Long numberOfQueries;

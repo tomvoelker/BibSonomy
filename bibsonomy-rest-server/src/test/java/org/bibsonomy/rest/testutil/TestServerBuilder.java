@@ -18,8 +18,7 @@ import org.mortbay.resource.Resource;
  * TODO: config of docs path, …
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 @Ignore
 public class TestServerBuilder {
 

@@ -62,8 +62,7 @@ import recommender.impl.database.RecommenderStatisticsManager;
 
 /**
  * @author fba
- * @version $Id$
- * @param <RESOURCE> 
+  * @param <RESOURCE> 
  * @param <COMMAND> 
  */
 public abstract class EditPostController<RESOURCE extends Resource,COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {

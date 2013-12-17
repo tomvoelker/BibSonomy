@@ -43,8 +43,7 @@ import org.bibsonomy.util.ValidationUtils;
  * 
  * 
  * @author Lukas
- * @version $Id$
- */
+  */
 public class JournalExtractor implements AttributeExtractor {
 	final String expr = "--.+--[:]?";
 

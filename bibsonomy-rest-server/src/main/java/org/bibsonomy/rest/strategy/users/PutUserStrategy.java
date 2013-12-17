@@ -13,8 +13,7 @@ import org.bibsonomy.rest.strategy.Context;
  * 		- users/USERNAME (HTTP-Method: PUT)
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public class PutUserStrategy extends AbstractUpdateStrategy {
 	private final String userName;
 

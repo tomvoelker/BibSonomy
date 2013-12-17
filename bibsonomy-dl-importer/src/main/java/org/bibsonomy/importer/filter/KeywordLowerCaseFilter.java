@@ -8,8 +8,7 @@ import org.bibsonomy.model.Tag;
  * Makes all tags lower case.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class KeywordLowerCaseFilter implements PostFilterChainElement {
 
 	/** Makes all tags lower case.

@@ -32,8 +32,7 @@ import org.springframework.util.ClassUtils;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class StringToClassConverter implements Converter<String, Class<?>> {
 
 	private ClassLoader loader = ClassUtils.getDefaultClassLoader();

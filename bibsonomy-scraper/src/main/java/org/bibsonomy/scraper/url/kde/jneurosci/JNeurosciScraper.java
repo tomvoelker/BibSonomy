@@ -32,8 +32,7 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author hagen
- * @version $Id$
- */
+  */
 public class JNeurosciScraper extends CitationManagerScraper {
 
 	private static final String SITE_NAME = "The Journal of Neuroscience";

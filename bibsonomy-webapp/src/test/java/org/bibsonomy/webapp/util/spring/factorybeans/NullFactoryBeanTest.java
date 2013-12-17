@@ -9,8 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class NullFactoryBeanTest {
 
 	@Test

@@ -7,8 +7,7 @@ import java.util.Date;
  * Parameter for insertion of tag recommender feedback.
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class PostRecParam {
 	private int postID;
 	private String userName;

@@ -33,8 +33,7 @@ import org.bibsonomy.common.enums.TagCloudStyle;
 /**
  * Holds settings for a user.
  * 
- * @version $Id$
- */
+  */
 public class UserSettings implements Serializable {
 	private static final long serialVersionUID = 501200873739971813L;
 

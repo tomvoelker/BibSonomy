@@ -51,8 +51,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.rules.YearRule;
  * TODO: fix special chars
  * 
  * @author C. Kramer
- * @version $Id$
- */
+  */
 public class PicaParser{
 
 	/**

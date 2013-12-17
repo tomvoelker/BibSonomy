@@ -32,8 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class PicaUtils {
 	private static final Pattern PATTERN_CLEANSING = Pattern.compile("(@|&lt;.+?&gt;|\\{|\\}|\\[|\\])");
 	

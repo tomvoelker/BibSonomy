@@ -17,8 +17,7 @@ import org.bibsonomy.util.ValidationUtils;
  * extracts a BibTex author attribute out of a MarcRecord
  * 
  * @author lha
- * @version $Id$
- */
+  */
 public class AuthorExtractor extends AbstractParticipantExtractor {
 
 	@Override

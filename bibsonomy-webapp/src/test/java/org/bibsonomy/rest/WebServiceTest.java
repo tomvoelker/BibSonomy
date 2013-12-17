@@ -16,8 +16,7 @@ import org.junit.Test;
  * TODO: remove? tests disabled for 3 years
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class WebServiceTest extends AbstractWebServiceTest {
 
 	@Test

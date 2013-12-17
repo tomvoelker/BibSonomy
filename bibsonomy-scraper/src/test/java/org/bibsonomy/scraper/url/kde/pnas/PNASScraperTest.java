@@ -34,8 +34,7 @@ import org.junit.experimental.categories.Category;
  * Scraper URL test #190 #191 for PNASScraper
  * 
  * @author clemens
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class PNASScraperTest {
 

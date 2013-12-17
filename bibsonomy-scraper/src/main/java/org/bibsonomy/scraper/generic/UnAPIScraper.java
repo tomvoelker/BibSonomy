@@ -46,8 +46,7 @@ import org.w3c.dom.NodeList;
  * Scrapes pages providing BibTeX via the <a href="http://unapi.info/">UN-API</a>.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class UnAPIScraper implements Scraper {
 
 	private static final String SITE_NAME = "UnAPIScraper";

@@ -15,8 +15,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * and returns the extracted BibTeX posts. 
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class XMLPostListReader implements PostListReader {
 
 	private Reader reader;

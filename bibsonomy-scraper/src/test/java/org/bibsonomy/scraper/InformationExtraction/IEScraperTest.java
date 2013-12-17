@@ -33,8 +33,7 @@ import org.junit.Test;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class IEScraperTest {
 
 	private static final String expectedBibtex = 

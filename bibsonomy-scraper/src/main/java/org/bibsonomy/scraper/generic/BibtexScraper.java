@@ -42,8 +42,7 @@ import bibtex.parser.BibtexParser;
  * Search in sourcecode from the given page for bibtex and scrape it.
  * 
  * @author tst
- * @version $Id$
- */
+  */
 public class BibtexScraper implements Scraper {
 
 	private static final String INFO = "Scraper for BibTeX, independent from URL.";

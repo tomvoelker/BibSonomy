@@ -7,8 +7,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author fei
- * @version $Id$
- */
+  */
 public class IdleClosingConnectionManager extends MultiThreadedHttpConnectionManager {
 	private static final Log log = LogFactory.getLog(IdleClosingConnectionManager.class);
 	

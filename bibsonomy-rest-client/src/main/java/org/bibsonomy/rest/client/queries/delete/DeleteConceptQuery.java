@@ -36,8 +36,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to delete a concept or a single relation.
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class DeleteConceptQuery extends AbstractQuery<String> {
 
 	private final String conceptName;

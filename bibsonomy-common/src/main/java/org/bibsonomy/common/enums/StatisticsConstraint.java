@@ -29,7 +29,6 @@ package org.bibsonomy.common.enums;
  * TODO: to be filled when necessary
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public enum StatisticsConstraint {
 }

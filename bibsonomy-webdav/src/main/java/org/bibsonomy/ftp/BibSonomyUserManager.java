@@ -22,8 +22,7 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class BibSonomyUserManager implements UserManager {
 
 	/* The UserManager handles the login, thus it holds the LogicInterface */

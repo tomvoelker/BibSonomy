@@ -15,8 +15,7 @@ import org.bibsonomy.model.User;
  * class for accessing the bibsonomy database 
  * 
  * @author fei
- * @version $Id$
- * @param <R> the resource the logic handles
+  * @param <R> the resource the logic handles
  */
 public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager implements LuceneDBInterface<R> {
 	private Class<R> resourceClass;

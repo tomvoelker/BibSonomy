@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #101, #102, #103 for JMLRScraper
  * @author tst
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class JMLRScraperTest {
 	

@@ -34,8 +34,7 @@ import org.junit.Test;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class SnippetScraperTest {
 
 	/** Works with 

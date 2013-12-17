@@ -32,8 +32,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class JCIScraperTest {
 

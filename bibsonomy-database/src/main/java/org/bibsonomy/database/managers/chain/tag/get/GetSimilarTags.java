@@ -13,8 +13,7 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class GetSimilarTags extends TagChainElement {
 
 	@Override

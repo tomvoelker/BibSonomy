@@ -22,8 +22,7 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	
 	@Override

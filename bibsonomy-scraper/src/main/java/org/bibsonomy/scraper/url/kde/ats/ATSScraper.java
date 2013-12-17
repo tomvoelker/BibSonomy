@@ -44,8 +44,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
- * @version $Id$
- */
+  */
 
 public class ATSScraper extends AbstractUrlScraper {
 	private final Log log = LogFactory.getLog(ATSScraper.class);

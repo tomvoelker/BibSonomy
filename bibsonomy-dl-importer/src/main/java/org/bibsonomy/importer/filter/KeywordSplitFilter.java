@@ -11,8 +11,7 @@ import org.bibsonomy.model.Tag;
  * Splits all tags at whitespace positions.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class KeywordSplitFilter implements PostFilterChainElement {
 
 	public void filterPost(final Post<BibTex> post) {

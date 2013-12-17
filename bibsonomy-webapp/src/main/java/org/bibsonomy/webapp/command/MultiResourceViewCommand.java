@@ -11,8 +11,7 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author mwa
- * @version $Id$
- * 
+  * 
  * With this command we are able to receive multiple lists of posts for a resource. 
  * 
  */

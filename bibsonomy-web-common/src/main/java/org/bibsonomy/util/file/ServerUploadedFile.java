@@ -31,8 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class ServerUploadedFile implements UploadedFile {
 	private MultipartFile file;
 	

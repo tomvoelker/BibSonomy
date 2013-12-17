@@ -9,8 +9,7 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public abstract class ConceptChainElement extends ChainElement<List<Tag>, TagRelationParam> {
 
 	protected final TagRelationDatabaseManager db;

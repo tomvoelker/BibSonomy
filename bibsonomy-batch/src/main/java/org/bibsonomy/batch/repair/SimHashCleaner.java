@@ -28,8 +28,7 @@ import org.bibsonomy.util.StringUtils;
  * name normalization ("Last, First").
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class SimHashCleaner {
 
 	private static final boolean UPDATE = false;

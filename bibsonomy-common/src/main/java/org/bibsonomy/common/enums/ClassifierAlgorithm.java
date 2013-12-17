@@ -27,8 +27,7 @@ package org.bibsonomy.common.enums;
  * Different algorithms for classification
  * 
  * @author Beate Krause
- * @version $Id$
- */
+  */
 public enum ClassifierAlgorithm {
 	
 	/** Rule learner */

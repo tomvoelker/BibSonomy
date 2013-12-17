@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * URL Tests for AGUScraper #
  * @author tst
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class AGUScraperTest {
 

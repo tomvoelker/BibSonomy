@@ -35,8 +35,7 @@ import org.bibsonomy.model.enums.ImportFormat;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class FileData implements Data {
 	private final File file;
 	private final String mimeType;

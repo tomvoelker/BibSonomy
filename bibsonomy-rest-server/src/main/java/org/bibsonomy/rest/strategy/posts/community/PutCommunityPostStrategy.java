@@ -9,8 +9,7 @@ import org.bibsonomy.rest.strategy.users.PutPostStrategy;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class PutCommunityPostStrategy extends PutPostStrategy {
 
 	/**

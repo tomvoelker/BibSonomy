@@ -44,8 +44,7 @@ import org.bibsonomy.model.statistics.Statistics;
  * functionality regarding posts.
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public interface PostLogicInterface {
 	/**  
 	 * retrieves a filterable list of posts.

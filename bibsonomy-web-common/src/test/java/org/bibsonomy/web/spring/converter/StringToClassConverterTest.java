@@ -35,8 +35,7 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class StringToClassConverterTest {
 	
 	private static final Converter<String, Class<?>> STRING_TO_CLASS_CONVERTER = new StringToClassConverter();

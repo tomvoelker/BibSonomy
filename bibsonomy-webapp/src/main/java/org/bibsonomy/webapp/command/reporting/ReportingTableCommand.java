@@ -9,8 +9,7 @@ import java.util.Map;
  * Abstract command which holds reporting information in row / column format.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
- * @param <T> - the type of the row headers
+  * @param <T> - the type of the row headers
  * @param <U> - the type of the column headers
  * @param <V> - the type of the values
  */

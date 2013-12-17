@@ -13,8 +13,7 @@ import org.bibsonomy.rest.strategy.Context;
  * shows all users bibsonomy has
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 	
 	/**

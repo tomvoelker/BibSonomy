@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #70 & #71 for EditLibScraper
  * @author wbi
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class EditLibScraperTest {
 	

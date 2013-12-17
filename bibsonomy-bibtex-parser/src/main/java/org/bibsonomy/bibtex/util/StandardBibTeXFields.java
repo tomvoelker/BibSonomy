@@ -32,8 +32,7 @@ import java.util.Set;
  * column.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class StandardBibTeXFields {
 
 	private final static Set<String> standardBibTeXFields = new HashSet<String>();

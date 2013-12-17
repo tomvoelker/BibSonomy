@@ -31,8 +31,7 @@ import org.junit.Test;
 
 /**
  * @author daill
- * @version $Id$
- * 
+  * 
  * Testcases for HashUtils
  */
 public class HashUtilsTest {

@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #100 for IWAPonlineScraper
  * @author tst
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class IWAPonlineScraperTest {
 

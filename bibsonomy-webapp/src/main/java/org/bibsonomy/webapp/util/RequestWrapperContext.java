@@ -20,8 +20,7 @@ import filters.ActionValidationFilter;
  * </p>
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class RequestWrapperContext {
 
 	private HttpServletRequest request;

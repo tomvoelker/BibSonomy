@@ -13,8 +13,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
 	protected final String userName;

@@ -14,8 +14,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
  * be fixed by configuration the registry by spring beans
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class BibTexExtraPlugin extends AbstractDatabasePlugin {
 
 	@Override

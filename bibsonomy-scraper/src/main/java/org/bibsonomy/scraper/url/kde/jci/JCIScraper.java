@@ -39,8 +39,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class JCIScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "The Journal of Clinical Investigation";

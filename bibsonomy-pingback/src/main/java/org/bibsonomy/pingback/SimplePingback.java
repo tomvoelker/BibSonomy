@@ -24,8 +24,7 @@ import com.malethan.pingback.PingbackException;
  * TODO: implement Trackback
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class SimplePingback implements Pingback {
 
 	private static final Log log = LogFactory.getLog(Pingback.class);

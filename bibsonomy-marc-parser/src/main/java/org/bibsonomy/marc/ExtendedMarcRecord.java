@@ -13,8 +13,7 @@ import org.marc4j.marc.Subfield;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class ExtendedMarcRecord {
 
 	private final Record record;

@@ -35,8 +35,7 @@ import org.bibsonomy.model.User;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class ReportingMailInformationService extends MailInformationService {
 
 	private String projectHome;

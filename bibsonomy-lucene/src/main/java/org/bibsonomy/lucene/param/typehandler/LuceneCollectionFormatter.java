@@ -8,8 +8,7 @@ import java.util.Collection;
  * convert date objects to a standardized string representation
  * 
  * @author fei
- * @version $Id$
- * @param <T> 
+  * @param <T> 
  */
 public abstract class LuceneCollectionFormatter<T> extends AbstractTypeHandler<Collection<T>> {
 	

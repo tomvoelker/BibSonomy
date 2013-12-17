@@ -14,8 +14,7 @@ import org.bibsonomy.model.enums.Order;
 /**
  * @author Dominik Benz
  * @author Miranda Grahl
- * @version $Id$
- */
+  */
 public class GetAllTags extends TagChainElement {
 
 	@Override

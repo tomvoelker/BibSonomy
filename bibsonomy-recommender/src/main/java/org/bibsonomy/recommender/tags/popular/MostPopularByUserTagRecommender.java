@@ -15,8 +15,7 @@ import org.bibsonomy.recommender.tags.database.DBLogic;
  * recommendation for the post.  
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class MostPopularByUserTagRecommender extends AbstractTagRecommender {
 	
 	private DBLogic dbLogic;

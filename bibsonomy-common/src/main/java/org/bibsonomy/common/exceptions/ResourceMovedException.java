@@ -27,8 +27,7 @@ import java.util.Date;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public class ResourceMovedException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;

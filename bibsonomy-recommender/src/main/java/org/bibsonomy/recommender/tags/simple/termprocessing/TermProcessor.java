@@ -2,8 +2,7 @@ package org.bibsonomy.recommender.tags.simple.termprocessing;
 
 /**
  * @author jil
- * @version $Id$
- */
+  */
 public interface TermProcessor {
 	
 	/**

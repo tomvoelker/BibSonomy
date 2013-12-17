@@ -9,8 +9,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class DBTestUtilsTest {
 	
 	private static final String TAG_STRING_1 = "testtag";

@@ -36,8 +36,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
  * 
- * @version $Id$
- */
+  */
 public class RestLogicFactory implements LogicInterfaceFactory {
 
 	/** the url of BibSonomy (bibsonomy.org) */

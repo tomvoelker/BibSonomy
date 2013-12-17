@@ -5,8 +5,7 @@ import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 
 /**
  * @author sdo
- * @version $Id$
- */
+  */
 public interface MarkUpSystemTag extends SystemTag {
 	/**
 	 * Creates a new instance of this kind of MarkUpSystemTag

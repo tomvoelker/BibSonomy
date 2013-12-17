@@ -13,8 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  * by spring security @see {@link SamlLoginFilter}
  * 
  * @author nilsraabe
- * @version $Id$
- */
+  */
 public class UserLoginSamlController implements MinimalisticController<BaseCommand> {
 
 	@Override

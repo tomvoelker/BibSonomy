@@ -42,8 +42,7 @@ import org.junit.Test;
  * TODO: more tests
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class ModelValidationUtilsTest {
 	
 	private static final String BOOKMARK_INVALID_URL_MESSAGE = "found a bookmark without URL assigned.";

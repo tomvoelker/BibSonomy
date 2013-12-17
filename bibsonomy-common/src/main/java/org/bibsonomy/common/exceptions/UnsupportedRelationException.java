@@ -25,8 +25,7 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author sdo
- * @version $Id$
- */
+  */
 public class UnsupportedRelationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 

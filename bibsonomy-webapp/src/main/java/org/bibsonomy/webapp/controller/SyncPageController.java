@@ -32,8 +32,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class SyncPageController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
 
 	private static final Log log = LogFactory.getLog(SyncPageController.class);

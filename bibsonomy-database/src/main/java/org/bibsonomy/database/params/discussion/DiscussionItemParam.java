@@ -7,8 +7,7 @@ import org.bibsonomy.model.DiscussionItem;
 /**
  * @param <D> 
  * @author dzo
- * @version $Id$
- */
+  */
 public class DiscussionItemParam<D extends DiscussionItem> extends GenericParam {
 	
 	private String interHash;

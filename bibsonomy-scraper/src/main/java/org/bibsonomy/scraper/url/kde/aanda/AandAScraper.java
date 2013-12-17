@@ -44,8 +44,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * @author Christian Kramer
- * @version $Id$
- */
+  */
 public class AandAScraper extends AbstractUrlScraper{
 
 	private static final String SITE_NAME = "Astronomy and Astrophysics";

@@ -7,8 +7,7 @@ import java.util.List;
  * Bean for arbitrary content in a tabbed context
  * 
  * @author Stefan Stützer
- * @version $Id$
- * @param <T>
+  * @param <T>
  *            type of the tab content
  */
 public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandInterface<T> {

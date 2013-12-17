@@ -12,8 +12,7 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class GetRelatedTagsForGroup extends TagChainElement {
 
 	@Override

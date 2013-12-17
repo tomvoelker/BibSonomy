@@ -23,8 +23,7 @@ import org.marc4j.marc.Record;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class MarcToBibTexReader implements BibTexReader {
 
 	private static AttributeExtractor ex = new CompositeAttributeExtractor();

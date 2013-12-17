@@ -20,8 +20,7 @@ import com.malethan.pingback.impl.ApachePingbackClient;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class ThreadedPingbackTest extends AbstractClientTest {
 
 	private ThreadedPingbackImpl pingback;

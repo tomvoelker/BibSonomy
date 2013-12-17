@@ -30,8 +30,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.Row;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class TagsRule extends Rules {
 
 	private static final String CAT_1 = "044K";

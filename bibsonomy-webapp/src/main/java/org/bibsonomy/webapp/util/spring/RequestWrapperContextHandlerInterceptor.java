@@ -20,8 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
  * </p>
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class RequestWrapperContextHandlerInterceptor implements HandlerInterceptor {
 
 	@Override

@@ -39,8 +39,7 @@ import org.bibsonomy.util.WebUtils;
  *  i.e., how to extract/match them?  
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class DOIUtils {
 
 	/**

@@ -14,8 +14,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- * @param <R> 
+  * @param <R> 
  */
 public abstract class PostDatabaseManagerTest<R extends Resource> extends AbstractDatabaseManagerTest {
 

@@ -4,8 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class PublicationRendererCommand extends PostPublicationCommand {
 	private MultipartFile pica;
 	private MultipartFile marc;

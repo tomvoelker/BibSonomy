@@ -38,8 +38,7 @@ import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author hagen
- * @version $Id$
- */
+  */
 public class JCBScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_NAME = "JCB";

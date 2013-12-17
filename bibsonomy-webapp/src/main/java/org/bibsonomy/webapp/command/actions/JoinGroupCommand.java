@@ -5,8 +5,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author schwass
- * @version $Id$
- */
+  */
 public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	/**
 	 * Contains the HTML-Code to view the reCaptcha. Is filled ONLY by the controller!

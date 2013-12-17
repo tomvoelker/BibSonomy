@@ -12,8 +12,7 @@ import org.bibsonomy.webapp.view.Views;
  * default view: {@link Views#ERROR}
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class StaticViewController implements MinimalisticController<BaseCommand>{
 	private static final Log log = LogFactory.getLog(StaticViewController.class);
 	

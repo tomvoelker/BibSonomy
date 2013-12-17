@@ -4,8 +4,7 @@ import org.bibsonomy.recommender.tags.database.DBLogic;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public abstract class SimpleSelector implements RecommendationSelector {
 	
 	protected DBLogic dbLogic;

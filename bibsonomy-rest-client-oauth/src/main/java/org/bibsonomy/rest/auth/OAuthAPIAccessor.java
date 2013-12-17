@@ -67,8 +67,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
  *   5) get logic interface using the accessor @see {@link RestLogicFactory}
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class OAuthAPIAccessor implements AuthenticationAccessor {
 	/** global OAuth client */
 	private static final OAuthClient OAUTH_CLIENT = new OAuthClient(new HttpClient3());

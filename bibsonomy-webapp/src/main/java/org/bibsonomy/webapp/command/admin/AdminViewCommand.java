@@ -10,8 +10,7 @@ import org.bibsonomy.webapp.command.TabsCommand;
  * Command bean for admin page 
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class AdminViewCommand extends TabsCommand<User> {
 
 	/*

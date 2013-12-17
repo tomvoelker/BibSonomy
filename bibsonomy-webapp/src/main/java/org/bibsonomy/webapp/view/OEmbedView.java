@@ -30,8 +30,7 @@ import org.springframework.web.servlet.view.JstlView;
  * http://technologicaloddity.com/2011/10/04/render-and-capture-the-output-of-a-jsp-as-a-string/
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class OEmbedView extends AbstractView implements ServletContextAware {
 
 	private ViewResolver viewResolver; // FIXME: unused

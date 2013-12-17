@@ -15,8 +15,7 @@ import org.bibsonomy.model.User;
  * Get friends of the logged-in user (i.e. all users u_f which are a friend of the logged-in user u) 
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class GetFriendsOfUser extends UserChainElement {
 
 	@Override

@@ -14,8 +14,7 @@ import org.springframework.security.core.AuthenticationException;
  * to put it into the exception.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class OpenIDAuthenticationProvider extends org.springframework.security.openid.OpenIDAuthenticationProvider {
 
 	@Override

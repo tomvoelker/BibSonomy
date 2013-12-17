@@ -36,8 +36,7 @@ import org.bibsonomy.util.WebUtils;
  * Super class to support pattern "URL in -> URL out".
  * 
  * @author hagen
- * @version $Id$
- */
+  */
 public abstract class SimpleGenericURLScraper extends AbstractUrlScraper {
 
 	/**

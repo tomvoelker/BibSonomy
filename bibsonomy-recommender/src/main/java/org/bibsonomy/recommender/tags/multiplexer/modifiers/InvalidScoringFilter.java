@@ -12,8 +12,7 @@ import org.bibsonomy.model.RecommendedTag;
  *    * -inf : Integer.MIN_VALUE
  *    * +inf : Integer.MAX_VALUE
  * @author fei
- * @version $Id$
- */
+  */
 public class InvalidScoringFilter implements RecommendedTagModifier {
 
 	@Override

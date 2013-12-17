@@ -12,8 +12,7 @@ import org.junit.Test;
 
 /**
  * @author mba
- * @version $Id$
- */
+  */
 public class LuceneResourceSearchTest {
 
 	@Test

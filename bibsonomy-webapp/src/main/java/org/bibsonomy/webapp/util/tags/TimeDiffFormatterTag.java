@@ -15,8 +15,7 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
  * A JSP tag that prints the formatted time difference between two dates.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	private static final long serialVersionUID = 8006189027834637063L;
 	

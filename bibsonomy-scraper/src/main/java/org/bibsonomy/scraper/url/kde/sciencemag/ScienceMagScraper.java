@@ -32,8 +32,7 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author clemens
- * @version $Id$
- */
+  */
 public class ScienceMagScraper extends CitationManagerScraper {
 	// <li><a href="/citmgr?gca=sci;276/5317/1425">Download Citation</a></li>
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download Citation</a>");

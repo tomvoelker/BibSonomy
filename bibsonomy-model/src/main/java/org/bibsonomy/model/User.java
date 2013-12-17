@@ -43,8 +43,7 @@ import org.bibsonomy.util.UrlUtils;
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
  * 
- * @version $Id$
- */
+  */
 public class User implements Serializable {
 	/*
 	 * XXX: When adding new fields make sure to integrate them into the updateUser method

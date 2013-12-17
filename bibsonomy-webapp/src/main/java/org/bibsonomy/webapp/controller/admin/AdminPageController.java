@@ -17,8 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
  * Controller for admin page
  * 
  * @author Beate Krause
- * @version $Id$
- */
+  */
 public class AdminPageController implements	MinimalisticController<AdminCommand> {
 	private static final Log log = LogFactory.getLog(AdminPageController.class);
 

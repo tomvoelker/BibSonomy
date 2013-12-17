@@ -47,8 +47,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * 
  * @author Christian Kramer
- * @version $Id$
- * 
+  * 
  */
 public class PubMedScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "PubMed";

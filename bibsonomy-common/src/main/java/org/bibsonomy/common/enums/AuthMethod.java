@@ -28,8 +28,7 @@ package org.bibsonomy.common.enums;
  * Identifier for all supported authentication methods.
  * 
  * @author folke
- * @version $Id$
- */
+  */
 public enum AuthMethod {
 	
 	/**

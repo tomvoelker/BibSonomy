@@ -2,8 +2,7 @@ package org.bibsonomy.database.params;
 
 /**
  * @author mwa
- * @version $Id$
- */
+  */
 public class TagSetParam {
 	private String setName;
 	private String tagName;

@@ -36,8 +36,7 @@ import org.springframework.validation.Errors;
  * 		- activate/ACTIVATIONCODE
  * 
  * @author Clemens Baier
- * @version $Id$
- */
+  */
 public class UserActivationController implements MinimalisticController<UserActivationCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(UserActivationController.class);
 

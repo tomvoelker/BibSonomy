@@ -18,8 +18,7 @@ import org.junit.Test;
  * Tests related to the post statistic chain.
  * 
  * @author Miranda Grahl
- * @version $Id$
- */
+  */
 public class PostStatisticChainTest extends AbstractDatabaseManagerTest {
 	protected static Chain<Statistics, StatisticsParam> postStatisticsChain;
 	

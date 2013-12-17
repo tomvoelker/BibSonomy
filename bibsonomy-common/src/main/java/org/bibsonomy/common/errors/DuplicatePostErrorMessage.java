@@ -26,8 +26,7 @@ package org.bibsonomy.common.errors;
 
 /**
  * @author sdo
- * @version $Id$
- */
+  */
 public class DuplicatePostErrorMessage extends ErrorMessage{
 
 	/**

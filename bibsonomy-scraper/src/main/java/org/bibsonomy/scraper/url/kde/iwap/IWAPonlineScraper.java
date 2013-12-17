@@ -37,8 +37,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * Scraper for papers from http://www.iwaponline.com
  * @author tst
- * @version $Id$
- */
+  */
 public class IWAPonlineScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "IWA Publishing";

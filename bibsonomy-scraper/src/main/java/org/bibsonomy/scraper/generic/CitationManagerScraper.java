@@ -49,8 +49,7 @@ import bibtex.parser.ParseException;
  * Superclass for scraping pages, using the same system like PNAS, RSOC or ScienceMag.
  * 
  * @author clemens
- * @version $Id$
- */
+  */
 public abstract class CitationManagerScraper extends AbstractUrlScraper {
 	private static final Log log = LogFactory.getLog(CitationManagerScraper.class);
 	

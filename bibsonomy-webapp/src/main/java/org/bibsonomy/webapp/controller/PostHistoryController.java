@@ -14,8 +14,7 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author pba
- * @version $Id$
- */
+  */
 public class PostHistoryController extends SingleResourceListControllerWithTags implements MinimalisticController<ResourcePageCommand<BibTex>> {
 
 	

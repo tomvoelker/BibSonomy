@@ -32,8 +32,7 @@ import org.bibsonomy.common.enums.HashID;
  * enum in bibsonomy.common.enums.HashID.
  * 
  * @author daill
- * @version $Id$
- */
+  */
 public class HashIDBean {
 	/**
 	 * @return intra hash

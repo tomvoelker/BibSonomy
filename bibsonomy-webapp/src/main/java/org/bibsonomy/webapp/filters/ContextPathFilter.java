@@ -25,8 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * Removes the context path from the request. 
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class ContextPathFilter implements Filter {
 	private static final Log log = LogFactory.getLog(ContextPathFilter.class);
 	

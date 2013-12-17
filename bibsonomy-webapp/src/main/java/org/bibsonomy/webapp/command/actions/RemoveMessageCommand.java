@@ -8,8 +8,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * This Commands information: which Message is to be removed from the inbox
  * 
  * @author sdo
- * @version $Id$
- */
+  */
 public class RemoveMessageCommand extends BaseCommand implements Serializable {
 	private static final long serialVersionUID = -6623936347565283765L;
 	

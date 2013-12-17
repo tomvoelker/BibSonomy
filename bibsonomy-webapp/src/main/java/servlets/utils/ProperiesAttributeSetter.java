@@ -10,8 +10,7 @@ import org.springframework.web.context.ServletContextAware;
  * TODO: remove after all sites are ported to the spring mvc
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 @Deprecated
 public class ProperiesAttributeSetter implements ServletContextAware {
 	

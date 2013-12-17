@@ -6,8 +6,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class UserLoginCommand extends BaseCommand implements Serializable {
 
 	private static final long serialVersionUID = -8690852609913391454L;

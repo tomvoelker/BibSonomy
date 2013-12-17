@@ -15,8 +15,7 @@ import org.bibsonomy.recommender.tags.database.DBLogic;
  * used in the ECMLPKDD09 discovery challenge's datasets.
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class DC09NameToIDMapping implements PostModifier {
 	private static final Log log = LogFactory.getLog(DC09NameToIDMapping.class);
 	private static final Integer UNKNOWNID = Integer.MIN_VALUE;

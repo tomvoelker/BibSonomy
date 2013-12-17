@@ -24,8 +24,7 @@ import org.w3c.dom.NodeList;
  * Tag recommender which parses html file at given url for keywords from the meta-inf section.
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class MetaInfoTagRecommender extends AbstractTagRecommender implements TagRecommenderConnector {
 	private static final Log log = LogFactory.getLog(MetaInfoTagRecommender.class);
 	

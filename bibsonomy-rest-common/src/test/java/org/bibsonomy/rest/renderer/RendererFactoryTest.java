@@ -32,8 +32,7 @@ import org.junit.Test;
 
 /**
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class RendererFactoryTest {
 
 	private final RendererFactory rendererFactory = new RendererFactory(new UrlRenderer("/"));

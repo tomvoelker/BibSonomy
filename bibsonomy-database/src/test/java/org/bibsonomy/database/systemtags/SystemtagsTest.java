@@ -55,8 +55,7 @@ import org.junit.Test;
  * @author Andreas Koch
  * @author sdo
  * 
- * @version $Id$
- */
+  */
 public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	
 	private static UserDatabaseManager userDb;

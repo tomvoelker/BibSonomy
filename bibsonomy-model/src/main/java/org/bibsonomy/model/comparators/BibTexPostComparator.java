@@ -42,8 +42,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
  * Comparator used to sort bibtex posts
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class BibTexPostComparator extends PostComparator implements Comparator<Post<BibTex>> {
 	private static final long serialVersionUID = 8550700973763853912L;
 

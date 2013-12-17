@@ -9,8 +9,7 @@ import org.bibsonomy.database.common.DBSession;
  * @param <P> Type of the param object
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public interface ChainPerform<P, L> {
 
 	/**

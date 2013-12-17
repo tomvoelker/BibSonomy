@@ -25,8 +25,7 @@ import org.bibsonomy.model.Resource;
  * All database plugins are registered here.
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class DatabasePluginRegistry implements DatabasePlugin {
 	
 	private static final List<DatabasePlugin> DEFAULT_PLUGINS;

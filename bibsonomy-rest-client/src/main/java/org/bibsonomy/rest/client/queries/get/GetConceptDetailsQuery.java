@@ -35,8 +35,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to get information about the specified concept
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class GetConceptDetailsQuery extends AbstractQuery<Tag> {
 
 	private final String conceptname;

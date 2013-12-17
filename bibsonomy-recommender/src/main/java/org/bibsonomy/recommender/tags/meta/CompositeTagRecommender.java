@@ -14,8 +14,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class CompositeTagRecommender implements TagRecommender {
 
 	private final List<TagRecommender> recommender = new LinkedList<TagRecommender>();

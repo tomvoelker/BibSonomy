@@ -28,8 +28,7 @@ package org.bibsonomy.model.util.data;
  * Abstraction for a collection of data resources with names.
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public interface DataAccessor {
 
 	/**

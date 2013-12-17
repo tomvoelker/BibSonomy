@@ -10,8 +10,7 @@ import org.junit.BeforeClass;
  * and remove this test class
  * 
  * @author jensi
- * @version $Id$
- */
+  */
 public class JsonLogicInterfaceProxyTest extends LogicInterfaceProxyTest {
 
 	/**

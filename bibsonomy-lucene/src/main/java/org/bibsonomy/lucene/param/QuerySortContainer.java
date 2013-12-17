@@ -11,8 +11,7 @@ import org.bibsonomy.model.enums.Order;
  * if we can use more than one filter, we should use an arrayList or something
  * like this for filter. with methods addFilter, setFilter, getFilter
  * 
- * @version $Id$
- *
+  *
  */
 public class QuerySortContainer {	
 	/**

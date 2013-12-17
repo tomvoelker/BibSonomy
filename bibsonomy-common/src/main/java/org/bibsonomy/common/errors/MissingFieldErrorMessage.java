@@ -28,8 +28,7 @@ package org.bibsonomy.common.errors;
  * Localized Message for Missing: Groups and Resource
  * 
  * @author sdo
- * @version $Id$
- */
+  */
 public class MissingFieldErrorMessage extends ErrorMessage{
 
 	/**

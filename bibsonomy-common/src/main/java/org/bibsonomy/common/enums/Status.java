@@ -27,8 +27,7 @@ package org.bibsonomy.common.enums;
  * Some statuses that may indicate success or failure of a certain job.
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public enum Status {
 	/** everything is ok */
 	OK("OK"),

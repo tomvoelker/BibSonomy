@@ -17,8 +17,7 @@ import org.junit.Test;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class SyncClientTestDirectionSTOCTest extends AbstractSynchronizationClientTest {
 
 	private static final String RESULT_STRING = "created on client: 1, updated on client: 1, deleted on client: 1"; 

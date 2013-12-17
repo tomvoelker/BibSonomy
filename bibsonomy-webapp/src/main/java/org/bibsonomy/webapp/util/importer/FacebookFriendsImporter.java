@@ -27,8 +27,7 @@ import com.restfb.types.User;
  * TODO: also import friend lists (https://graph.facebook.com/me/friendLists?access_token=)
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class FacebookFriendsImporter extends AbstractFriendsImporter<User> {
 	private final static Log log = LogFactory.getLog(FacebookFriendsImporter.class);
 

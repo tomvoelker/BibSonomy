@@ -28,8 +28,7 @@ import java.util.Iterator;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class UnsupportedFileTypeException extends RuntimeException {
 	private static final long serialVersionUID = 6493856479182895955L;
 	

@@ -10,8 +10,7 @@ import org.junit.Test;
  * Tests related to basket
  * 
  * @author Christian Kramer
- * @version $Id$
- */
+  */
 public class BasketDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static final String TESTUSER1_NAME = "testuser1";
 	

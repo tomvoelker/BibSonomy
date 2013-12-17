@@ -11,8 +11,7 @@ import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class DummyFileLogic implements FileLogic {
 
 	@Override

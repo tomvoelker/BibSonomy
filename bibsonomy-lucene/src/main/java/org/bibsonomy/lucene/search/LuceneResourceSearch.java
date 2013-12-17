@@ -54,8 +54,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  * lucene search for all supported resources
  * 
  * @author fei
- * @version $Id$
- * 
+  * 
  * @param <R>
  *            resource type
  */

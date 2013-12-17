@@ -8,8 +8,7 @@ import org.bibsonomy.webapp.command.ContextCommand;
  * to tell about whether validation is required or not
  * 
  * @param <T> type of the command object
- * @version $Id$
- * @author Jens Illig
+  * @author Jens Illig
  */
 public interface ValidationAwareController<T extends ContextCommand> extends MinimalisticController<T> {
 	

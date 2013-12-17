@@ -39,8 +39,7 @@ import org.bibsonomy.util.UrlBuilder;
  * use this query to create a new concept
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class CreateConceptQuery extends AbstractQuery<String> {
 	private final Tag concept;
 	private final String conceptName;

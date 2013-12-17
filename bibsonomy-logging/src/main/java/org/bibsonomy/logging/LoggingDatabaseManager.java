@@ -7,8 +7,7 @@ import org.bibsonomy.database.common.DBSessionFactory;
 /**
  * 
  * @author sst
- * @version $Id$
- */
+  */
 public class LoggingDatabaseManager extends AbstractDatabaseManager {
 	
 	private DBSessionFactory sessionFactory;

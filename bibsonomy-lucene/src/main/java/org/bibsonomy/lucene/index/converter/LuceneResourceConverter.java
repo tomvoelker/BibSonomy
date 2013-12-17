@@ -32,8 +32,7 @@ import org.bibsonomy.util.tex.TexDecode;
  * class for converting bibsonomy post model objects to lucene documents
  * 
  * @author fei
- * @version $Id$
- * 
+  * 
  * @param <R> the resource to convert
  */
 public class LuceneResourceConverter<R extends Resource> {

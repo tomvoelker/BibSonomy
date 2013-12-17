@@ -4,8 +4,7 @@ import org.bibsonomy.webapp.util.View;
 
 /**
  * @author Waldemar Biller <biller@cs.uni-kassel.de>
- * @version $Id$
- */
+  */
 public enum MobileViews implements View {
 	
 	/**

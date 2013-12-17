@@ -38,8 +38,7 @@ import org.bibsonomy.util.StringUtils;
  * Create a relationship among users.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
- */
+  */
 public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 
 	/** parameter value for friend relationship */

@@ -30,8 +30,7 @@ import java.util.List;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class ReflectionUtils {
 	private ReflectionUtils() { }
 	

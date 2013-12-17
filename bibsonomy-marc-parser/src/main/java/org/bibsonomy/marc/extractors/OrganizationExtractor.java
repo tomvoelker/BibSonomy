@@ -7,8 +7,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Lukas
- * @version $Id$
- */
+  */
 public class OrganizationExtractor extends AbstractParticipantExtractor {
 
 	@Override

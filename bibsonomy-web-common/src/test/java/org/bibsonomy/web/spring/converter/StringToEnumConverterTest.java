@@ -32,8 +32,7 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class StringToEnumConverterTest {
 	private static <E extends Enum<E>> Converter<String, E> createConverter(final Class<E> targetType) {
 		return new StringToEnumConverter<E>(targetType);

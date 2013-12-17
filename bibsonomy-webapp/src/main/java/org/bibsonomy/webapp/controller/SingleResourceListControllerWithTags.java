@@ -15,8 +15,7 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
  * to all controllers handling tags (e.g. userPageController, GroupPageController, ...)
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class SingleResourceListControllerWithTags extends SingleResourceListController {
 	
 	/**

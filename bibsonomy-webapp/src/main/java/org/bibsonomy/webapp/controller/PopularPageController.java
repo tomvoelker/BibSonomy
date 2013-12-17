@@ -17,8 +17,7 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for the popular page:
  * 
  * @author mwa
- * @version $Id$
- */
+  */
 public class PopularPageController extends MultiResourceListController implements MinimalisticController<MultiResourceViewCommand>{	
 	private static final int MAX_TAGS = 50;
 	

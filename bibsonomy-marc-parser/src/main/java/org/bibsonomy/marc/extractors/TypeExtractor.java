@@ -38,8 +38,7 @@ import org.marc4j.marc.Leader;
 
 /**
  * @author mve
- * @version $Id$
- */
+  */
 
 public class TypeExtractor implements AttributeExtractor {
 	private static final HashMap<String, String> map = getMap();

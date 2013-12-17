@@ -17,8 +17,7 @@ import org.bibsonomy.model.enums.Order;
  * Returns a list of BibTex's for a given key.
  * 
  * @author Florian Bachmann
- * @version $Id$
- */
+  */
 public class GetBibtexByKey extends ResourceChainElement<BibTex, BibTexParam> {
 
 	@Override

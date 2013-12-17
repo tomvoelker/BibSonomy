@@ -15,8 +15,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class LuceneGenerateResourceIndexTest {
     
     private static LuceneGoldStandardManager<GoldStandardPublication> manager;

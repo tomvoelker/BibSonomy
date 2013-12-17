@@ -17,8 +17,7 @@ import org.junit.Test;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class SyncClientTestDirectionBOTHTest extends AbstractSynchronizationClientTest {
 
 	protected static final String[] MODIFIED_BOOKMARK_KEYS = new String[]{

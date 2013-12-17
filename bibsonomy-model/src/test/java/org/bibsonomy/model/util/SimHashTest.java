@@ -37,8 +37,7 @@ import org.junit.Test;
  * @author Dominik Benz
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class SimHashTest {
 
 	/**

@@ -32,8 +32,7 @@ import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class PickPostQuery extends AbstractQuery<Integer> {
 
 	private String userName;

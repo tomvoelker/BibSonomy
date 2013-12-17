@@ -10,8 +10,7 @@ import org.bibsonomy.model.User;
  * 
  * @author Miranda Grahl
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class UserParam extends GenericParam {
 
 	/**

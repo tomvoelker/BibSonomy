@@ -28,8 +28,7 @@ import java.io.Reader;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public interface DualData extends Data {
 	/**
 	 * @return {@link InputStream} of the second data

@@ -24,8 +24,7 @@ import org.bibsonomy.rest.client.RestLogicFactory;
  * Imports an EasyChair XML file into BibSonomy using the API.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class Importer {
 
 	/**

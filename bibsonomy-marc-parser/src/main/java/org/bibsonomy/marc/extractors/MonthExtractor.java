@@ -10,8 +10,7 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
- * @version $Id$
- */
+  */
 public class MonthExtractor implements AttributeExtractor{
 
 	@Override

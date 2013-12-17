@@ -12,8 +12,7 @@ import org.bibsonomy.model.util.BibTexUtils;
  * Compiles the data used in the file system.
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class BibSonomyFileSystemData {
 
 	/** Handles login thus holds the LogicInterface */

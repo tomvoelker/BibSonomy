@@ -12,8 +12,7 @@ import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
  * convert a list of persons to its string representation and back
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class LucenePersonNamesFormatter extends AbstractTypeHandler<List<PersonName>> {
 
 	@Override

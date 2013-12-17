@@ -19,8 +19,7 @@ import org.bibsonomy.webapp.view.Views;
  * - /concepts
  * 
  * @author Christian Kramer
- * @version $Id$
- */
+  */
 public class RelationsController implements MinimalisticController<RelationsCommand> {
 
 	/*

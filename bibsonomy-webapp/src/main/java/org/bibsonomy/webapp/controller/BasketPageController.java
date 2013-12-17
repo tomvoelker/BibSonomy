@@ -16,8 +16,7 @@ import org.springframework.security.access.AccessDeniedException;
  * - /clipboard
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
- */
+  */
 public class BasketPageController extends SingleResourceListController implements MinimalisticController<PublicationPageCommand> {
 
 	@Override

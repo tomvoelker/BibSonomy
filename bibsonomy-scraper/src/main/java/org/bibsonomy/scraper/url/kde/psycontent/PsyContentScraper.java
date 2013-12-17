@@ -44,8 +44,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
- * @version $Id$
- */
+  */
 public class PsyContentScraper extends AbstractUrlScraper{
 
 	private static final String SITE_NAME = "Psy CONTENT";

@@ -6,8 +6,7 @@ import org.bibsonomy.webapp.command.UserInfoCommand;
  * command class for accessing OAuth services
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class OAuthAccessCommand extends UserInfoCommand {
 	/**
 	 * different states during the OAuth process

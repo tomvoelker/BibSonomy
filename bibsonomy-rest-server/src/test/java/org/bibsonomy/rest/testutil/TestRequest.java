@@ -19,8 +19,7 @@ import org.junit.Ignore;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 @Ignore
 public class TestRequest implements HttpServletRequest {
 

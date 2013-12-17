@@ -22,8 +22,7 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  * was clicked (only positive clicks like the resource link or copy to clipboard).
  * 
  * @author lukas
- * @version $Id$
- */
+  */
 public class ItemRecommenderFeedbackController extends AjaxController implements MinimalisticController<AjaxItemRecommenderFeedbackCommand>{
 
 	private static final String ACTION_BOOKMARK = "bookmark";

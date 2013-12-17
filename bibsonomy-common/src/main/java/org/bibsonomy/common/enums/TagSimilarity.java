@@ -28,8 +28,7 @@ package org.bibsonomy.common.enums;
  * 
  * @author Dominik Benz
 
- * @version $Id$
- */
+  */
 public enum TagSimilarity {
 	/** tag co-occurrence */
 	COOC,

@@ -39,8 +39,7 @@ import org.junit.Test;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class DOIUtilsTest {
 
 	private static final Random rand = new Random();

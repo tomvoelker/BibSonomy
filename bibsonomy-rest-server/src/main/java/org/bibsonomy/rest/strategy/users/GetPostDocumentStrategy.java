@@ -22,8 +22,7 @@ import org.bibsonomy.services.filesystem.FileLogic;
 /**
  * Handle a document request
  * 
- * @version $Id$
- * @author Christian Kramer
+  * @author Christian Kramer
  */
 public class GetPostDocumentStrategy extends Strategy {
 	private static final FileTypeMap MIME_TYPES_FILE_TYPE_MAP = new MimetypesFileTypeMap();

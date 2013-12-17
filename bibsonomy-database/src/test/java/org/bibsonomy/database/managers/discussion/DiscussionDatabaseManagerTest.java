@@ -17,8 +17,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class DiscussionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static DiscussionDatabaseManager discusssionDb;

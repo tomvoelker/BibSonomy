@@ -30,8 +30,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class Importer {
 
 

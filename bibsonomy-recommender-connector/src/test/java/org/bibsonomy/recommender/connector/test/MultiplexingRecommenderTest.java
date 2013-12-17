@@ -47,8 +47,7 @@ import recommender.impl.tags.simple.DummyTagRecommender;
  * @see recommender.impl.test.multiplexer.MultiplexingRecommenderTest
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class MultiplexingRecommenderTest {
 
 	private static final int NROFRECOS = 10;

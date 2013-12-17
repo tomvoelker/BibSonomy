@@ -26,8 +26,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static final List<Integer> VISIBLE_GROUPS = Arrays.asList(GroupID.PUBLIC.getId());

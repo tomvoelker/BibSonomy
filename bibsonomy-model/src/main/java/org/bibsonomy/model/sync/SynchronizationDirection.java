@@ -25,8 +25,7 @@ package org.bibsonomy.model.sync;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public enum SynchronizationDirection {
 	/*
 	 * NOTE: column is a varchar(4), so please use short names

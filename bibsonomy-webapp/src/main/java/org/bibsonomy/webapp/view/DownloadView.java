@@ -22,8 +22,7 @@ import org.springframework.web.servlet.view.AbstractView;
  * View class for the download of a document attached to a bibtex entry
  * 
  * @author cvo
- * @version $Id$
- */
+  */
 @SuppressWarnings("deprecation")
 public class DownloadView extends AbstractView {
 	private static final Log log = LogFactory.getLog(DownloadView.class);

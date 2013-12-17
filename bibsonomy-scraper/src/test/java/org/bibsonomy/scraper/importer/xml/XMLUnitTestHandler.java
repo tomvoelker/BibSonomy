@@ -41,8 +41,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * Handler for building a list with {@link URLScraperUnitTest}s. 
  * @author tst
- * @version $Id$
- */
+  */
 public class XMLUnitTestHandler extends DefaultHandler {
 	
 	private Log log = LogFactory.getLog(XMLUnitTestHandler.class);

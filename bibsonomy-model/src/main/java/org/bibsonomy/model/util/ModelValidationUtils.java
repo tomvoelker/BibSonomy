@@ -57,8 +57,7 @@ import org.bibsonomy.rest.renderer.xml.UserType;
  * 
  * @author Manuel Bork
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class ModelValidationUtils {
 
 	/**

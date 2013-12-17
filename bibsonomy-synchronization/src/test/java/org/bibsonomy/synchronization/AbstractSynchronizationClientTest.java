@@ -40,8 +40,7 @@ import org.mortbay.jetty.Server;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public abstract class AbstractSynchronizationClientTest extends AbstractDatabaseManagerTest {
 
 	private static final int PORT = 41253; // if you change the port here you must change it in the test sql script (database module) too

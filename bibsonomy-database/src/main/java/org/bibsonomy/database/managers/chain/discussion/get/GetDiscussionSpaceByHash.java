@@ -9,8 +9,7 @@ import org.bibsonomy.model.DiscussionItem;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class GetDiscussionSpaceByHash extends DiscussionChainElement {
 
 	@Override

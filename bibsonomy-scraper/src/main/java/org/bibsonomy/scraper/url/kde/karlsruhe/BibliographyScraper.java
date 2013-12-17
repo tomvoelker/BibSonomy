@@ -35,8 +35,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * Scraper for liinwww.ira.uka.de/bibliography
  * @author tst
- * @version $Id$
- */
+  */
 public class BibliographyScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "LIIN";

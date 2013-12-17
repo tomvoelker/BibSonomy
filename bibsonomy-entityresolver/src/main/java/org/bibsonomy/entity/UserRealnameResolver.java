@@ -29,8 +29,7 @@ import org.bibsonomy.model.User;
  * class for matching user objects based on their real names
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class UserRealnameResolver {
 	private final Log log = LogFactory.getLog(UserRealnameResolver.class);
 

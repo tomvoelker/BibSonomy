@@ -20,8 +20,7 @@ import org.bibsonomy.webapp.view.Views;
  * by users which have loginUser as friend. 
  * 
  * @author Steffen Kress
- * @version $Id$
- */
+  */
 public class FriendsPageController extends SingleResourceListController implements MinimalisticController<FriendsResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(FriendsPageController.class);
 

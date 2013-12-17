@@ -7,8 +7,7 @@ import java.util.Date;
  * lucene statistics like current version, number of docs
  *  
  * @author sst
- * @version $Id$
- */
+  */
 public class LuceneIndexStatistics {
 
 	private Date newestRecordDate;

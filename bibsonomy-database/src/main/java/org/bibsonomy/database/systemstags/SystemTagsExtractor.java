@@ -17,8 +17,7 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author sdo
- * @version $Id$
- */
+  */
 public class SystemTagsExtractor {
 
     /**

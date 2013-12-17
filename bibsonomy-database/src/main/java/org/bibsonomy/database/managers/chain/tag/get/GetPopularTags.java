@@ -13,8 +13,7 @@ import org.bibsonomy.model.enums.Order;
 
 /**
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class GetPopularTags extends TagChainElement {
 	
 	@Override

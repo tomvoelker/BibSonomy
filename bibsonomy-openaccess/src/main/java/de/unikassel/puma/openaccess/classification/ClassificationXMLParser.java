@@ -6,8 +6,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author philipp
- * @version $Id$
- */
+  */
 public abstract class ClassificationXMLParser extends DefaultHandler implements ClassificationParser {
 
 	protected Map<String , ClassificationObject> classifications = null;

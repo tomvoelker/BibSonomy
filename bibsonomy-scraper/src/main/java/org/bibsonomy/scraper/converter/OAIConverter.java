@@ -39,8 +39,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * Converter for OAI to BibTeX
  * @author tst
- * @version $Id$
- */
+  */
 public class OAIConverter {
 
 	private static final Pattern PATTERN_TITLE = Pattern.compile("<dc:title>([^<]*)<");

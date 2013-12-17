@@ -30,8 +30,7 @@ import org.junit.Test;
 
 /**
  * @author Haile
- * @version $Id$
- */
+  */
 public class HematologyLibraryScraperTest {
 	/**
 	 * @param args

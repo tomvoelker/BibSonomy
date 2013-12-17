@@ -40,8 +40,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
- * @version $Id$
- */
+  */
 public class StanfordInfoLabScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Stanford InfoLab Publication Server";

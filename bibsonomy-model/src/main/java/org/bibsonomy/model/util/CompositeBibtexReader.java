@@ -31,8 +31,7 @@ import org.bibsonomy.model.util.data.Data;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class CompositeBibtexReader implements BibTexReader {
 	private final Map<String, BibTexReader> bibtexReadersByMimeType;
 	

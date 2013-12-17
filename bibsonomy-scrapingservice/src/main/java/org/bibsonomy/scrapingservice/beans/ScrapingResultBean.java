@@ -31,8 +31,7 @@ import org.bibsonomy.scraper.Scraper;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class ScrapingResultBean implements Serializable {
 	
 	private static final long serialVersionUID = 8899554705056075887L;

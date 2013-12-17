@@ -7,8 +7,7 @@ import org.bibsonomy.model.Bookmark;
  * Class handling ajax requests for given post's recommendations.
  *    
  * @author fei
- * @version $Id$
- */
+  */
 public class GetBookmarkRecommendedTagsController extends RecommendationsAjaxController<Bookmark> {
 
 	@Override

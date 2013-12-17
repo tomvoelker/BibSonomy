@@ -18,8 +18,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class UnsupportedAuthenticationMethodDummyEntryPoint implements AuthenticationEntryPoint, Filter  {
 	private AuthMethod authMethod;
 	

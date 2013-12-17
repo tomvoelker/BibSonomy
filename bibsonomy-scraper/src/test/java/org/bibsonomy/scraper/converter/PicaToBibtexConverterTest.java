@@ -32,8 +32,7 @@ import org.junit.Test;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class PicaToBibtexConverterTest {
 	
 	private static final String PATH_TO_FILES = "org/bibsonomy/scraper/converter/";

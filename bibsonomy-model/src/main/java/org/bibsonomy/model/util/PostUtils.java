@@ -41,8 +41,7 @@ import org.bibsonomy.util.Sets;
  * Static methods to handle Posts.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class PostUtils {
 	
 	/**

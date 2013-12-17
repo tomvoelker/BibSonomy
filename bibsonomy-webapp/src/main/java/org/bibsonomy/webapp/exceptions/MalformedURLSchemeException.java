@@ -4,8 +4,7 @@ package org.bibsonomy.webapp.exceptions;
  * Exception to handle malformed URL schemes
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class MalformedURLSchemeException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;

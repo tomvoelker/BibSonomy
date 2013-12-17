@@ -36,8 +36,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
  * Utility class for verifying OAuth signed requests
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class OAuthRequestValidator {
 	private final static Log log = LogFactory.getLog(OAuthRequestValidator.class);
 

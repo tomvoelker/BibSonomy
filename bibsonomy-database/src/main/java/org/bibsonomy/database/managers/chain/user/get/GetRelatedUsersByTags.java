@@ -16,8 +16,7 @@ import org.bibsonomy.model.User;
  * Get related users for given tag(s)
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class GetRelatedUsersByTags extends UserChainElement {
 
 	@Override

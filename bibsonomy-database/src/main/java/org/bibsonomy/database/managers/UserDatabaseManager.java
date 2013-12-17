@@ -37,8 +37,7 @@ import org.bibsonomy.wiki.TemplateManager;
  * @author Miranda Grahl
  * @author Christian Schenk
  * @author Sven Stefani
- * @version $Id$
- */
+  */
 public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	

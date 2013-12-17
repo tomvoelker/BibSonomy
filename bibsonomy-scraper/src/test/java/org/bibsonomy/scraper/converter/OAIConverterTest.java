@@ -33,8 +33,7 @@ import org.junit.Test;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class OAIConverterTest {
 
 	private static final String PATH_TO_FILES = "org/bibsonomy/scraper/converter/";

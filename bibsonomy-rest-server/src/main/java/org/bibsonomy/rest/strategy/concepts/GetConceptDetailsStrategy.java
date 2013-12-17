@@ -14,8 +14,7 @@ import org.bibsonomy.rest.strategy.Strategy;
  * Handles a global concept details request
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class GetConceptDetailsStrategy extends Strategy {
 
 	private final String conceptName;

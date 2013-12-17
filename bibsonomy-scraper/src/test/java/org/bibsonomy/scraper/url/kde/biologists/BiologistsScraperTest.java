@@ -32,8 +32,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author hagen
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class BiologistsScraperTest {
 

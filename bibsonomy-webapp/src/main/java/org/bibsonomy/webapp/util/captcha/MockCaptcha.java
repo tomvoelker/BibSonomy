@@ -4,8 +4,7 @@ import java.util.Locale;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class MockCaptcha implements Captcha {
 
 	@Override

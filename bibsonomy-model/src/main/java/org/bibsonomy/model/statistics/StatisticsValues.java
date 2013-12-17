@@ -28,8 +28,7 @@ import java.util.List;
 
 /**
  * @author sven
- * @version $Id$
- */
+  */
 
 public class StatisticsValues extends Statistics{
 

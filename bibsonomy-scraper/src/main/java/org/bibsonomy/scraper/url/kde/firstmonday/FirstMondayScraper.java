@@ -45,8 +45,7 @@ import org.w3c.dom.Node;
 import org.w3c.tidy.Tidy;
 /**
  * @author Haile
- * @version $Id$
- */
+  */
 public class FirstMondayScraper extends AbstractUrlScraper{
 	private final Log log = LogFactory.getLog(FirstMondayScraper.class);
 	

@@ -36,8 +36,7 @@ import de.unikassel.puma.openaccess.sword.renderer.xml.PumaUserType;
 
 /**
  * @author: sven
- * @version $Id$
- */
+  */
 public class METSRenderer extends JAXBRenderer {
 
 	/**

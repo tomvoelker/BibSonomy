@@ -34,8 +34,7 @@ import org.junit.Test;
  * Tests DepthEqualityTester.
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public class DepthEqualityTesterTest {
 	private TestBean a;
 	private TestBean b;

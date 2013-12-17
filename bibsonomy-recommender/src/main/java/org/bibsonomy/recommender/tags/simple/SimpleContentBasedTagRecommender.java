@@ -17,8 +17,7 @@ import org.bibsonomy.recommender.tags.simple.termprocessing.TermProcessingIterat
  * 
  * @see TermProcessingIterator
  * @author rja
- * @version $Id$
- */
+  */
 public class SimpleContentBasedTagRecommender extends AbstractTagRecommender {
 	
 	/** Simply adds tags from the post's title to the given collection. The score of each tag

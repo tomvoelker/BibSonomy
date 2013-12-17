@@ -6,8 +6,7 @@ import org.bibsonomy.model.User;
 
 /**
  * @author Steffen Kress
- * @version $Id$
- */
+  */
 public class FriendsResourceViewCommand extends TagResourceViewCommand {
 	private List<User> userFriends;
 	private List<User> friendsOfUser;

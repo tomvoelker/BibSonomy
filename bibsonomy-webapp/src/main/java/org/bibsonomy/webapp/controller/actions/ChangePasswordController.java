@@ -28,8 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * @author cvo
- * @version $Id$
- */
+  */
 public class ChangePasswordController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand>, CookieAware {
 	private static final Log log = LogFactory.getLog(ChangePasswordController.class);
 	

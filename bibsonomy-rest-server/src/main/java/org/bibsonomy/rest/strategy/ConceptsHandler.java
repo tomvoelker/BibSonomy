@@ -11,8 +11,7 @@ import org.bibsonomy.rest.strategy.concepts.GetConceptsStrategy;
  * A Context Handler for all <em>/concept</em> urls
  * 
  * @author Stefan Stützer
- * @version $Id$
- */
+  */
 public class ConceptsHandler implements ContextHandler {
 	
 	@Override

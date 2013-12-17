@@ -30,8 +30,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class PublisherRule extends Rules {
 	
 	private static final Pattern PATTERN_UA = Pattern.compile(Pattern.quote("[u.a.]"));

@@ -9,8 +9,7 @@ import org.bibsonomy.webapp.validation.CommentValidator;
  * - ajax/comments
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class CommentAjaxController extends DiscussionItemAjaxController<Comment> {
 
 	@Override

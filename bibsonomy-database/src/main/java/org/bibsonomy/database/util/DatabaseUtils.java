@@ -18,8 +18,7 @@ import org.bibsonomy.model.Tag;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public final class DatabaseUtils {
 
 	/**

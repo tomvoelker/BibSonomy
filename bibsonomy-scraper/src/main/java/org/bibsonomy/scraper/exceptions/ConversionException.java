@@ -32,8 +32,7 @@ import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
  * 
  * 
  * @author tst
- * @version $Id$
- */
+  */
 public class ConversionException extends ScrapingException {
 
 	private static final long serialVersionUID = -5622350446172682574L;

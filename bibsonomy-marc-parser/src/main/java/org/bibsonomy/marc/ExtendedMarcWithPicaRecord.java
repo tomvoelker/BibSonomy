@@ -6,8 +6,7 @@ import org.marc4j.marc.Record;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class ExtendedMarcWithPicaRecord extends ExtendedMarcRecord {
 
 	private final PicaRecord pica;

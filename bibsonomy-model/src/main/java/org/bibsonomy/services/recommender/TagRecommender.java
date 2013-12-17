@@ -40,8 +40,7 @@ import org.bibsonomy.model.Resource;
  * @deprecated the recommender library should be used
  * 
  * @author rja
- * @version $Id$
- */
+  */
 @Deprecated
 public interface TagRecommender {
 

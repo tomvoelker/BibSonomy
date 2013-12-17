@@ -31,8 +31,7 @@ import java.util.Set;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 /**
  * @author rja
  *

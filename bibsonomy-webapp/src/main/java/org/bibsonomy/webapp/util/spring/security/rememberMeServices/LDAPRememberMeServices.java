@@ -21,8 +21,7 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class LDAPRememberMeServices extends AbstractRememberMeServices {
 	private static final Log log = LogFactory.getLog(LDAPRememberMeServices.class);
 	

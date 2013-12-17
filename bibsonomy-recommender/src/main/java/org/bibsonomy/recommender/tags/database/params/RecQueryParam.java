@@ -10,8 +10,7 @@ import org.bibsonomy.model.Resource;
 /**
  * Parameter class for recommender queries.
  * @author fei
- * @version $Id$
- */
+  */
 public class RecQueryParam {
 	private Long qid;
 	/** ID for mapping posts to recommender queries */

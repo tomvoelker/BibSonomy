@@ -21,8 +21,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author cvo
- * @version $Id$
- */
+  */
 public class UpdateUserController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand> {
 
 	@Override

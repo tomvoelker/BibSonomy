@@ -38,8 +38,7 @@ package org.bibsonomy.common.enums;
  * @author Dominik Benz
  * @see org.bibsonomy.model.enums.Order
  * @see org.bibsonomy.common.enums.SortOrder
- * @version $Id$
- */
+  */
 public enum SortKey {
 	/** no re-sorting, keep order as it comes from DB */
 	NONE,

@@ -21,8 +21,7 @@ import org.bibsonomy.model.Resource;
  * @author Christian Schenk
  * @author Stefan Stützer
  * @author Anton Wilhelm
- * @version $Id$
- */
+  */
 public interface DatabasePlugin {
 
 	/**

@@ -17,8 +17,7 @@ import java.util.Map;
  * 
  * 
  * @author rja
- * @version $Id$
- * @param <K> The type of the keys.
+  * @param <K> The type of the keys.
  * @param <V> The type of the values. 
  */
 public class MapBackedSet<K, V> extends AbstractSet<V> {
@@ -87,8 +86,7 @@ public class MapBackedSet<K, V> extends AbstractSet<V> {
 	 * Interface for {@link MapBackedSet} to generate keys for values.
 	 * 
 	 * @author rja
-	 * @version $Id$
-	 * @param <K> type of the key values should be associated with 
+	 	 * @param <K> type of the key values should be associated with 
 	 * @param <V> type of the values 
 	 */
 	interface KeyExtractor<K, V> {

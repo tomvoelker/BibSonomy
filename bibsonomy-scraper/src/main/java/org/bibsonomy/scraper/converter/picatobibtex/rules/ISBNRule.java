@@ -30,8 +30,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class ISBNRule extends Rules {
 
 	private static final String CAT_A = "004A";

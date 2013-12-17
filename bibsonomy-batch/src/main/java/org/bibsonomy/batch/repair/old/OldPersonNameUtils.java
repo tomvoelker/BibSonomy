@@ -12,7 +12,6 @@ import org.bibsonomy.util.StringUtils;
 * Nice place for static util methods regarding names of persons.
 *
 * @author  Jens Illig
-* @version $Id$
 */
 public class OldPersonNameUtils {
 

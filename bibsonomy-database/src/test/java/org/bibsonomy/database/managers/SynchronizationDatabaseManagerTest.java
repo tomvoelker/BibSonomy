@@ -28,8 +28,7 @@ import org.junit.Test;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	private static SynchronizationDatabaseManager syncDBManager;

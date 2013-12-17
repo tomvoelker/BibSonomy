@@ -14,8 +14,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * Always recommends the tags given in the constructor.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class FixedTagsTagRecommender implements TagRecommender {
 
 

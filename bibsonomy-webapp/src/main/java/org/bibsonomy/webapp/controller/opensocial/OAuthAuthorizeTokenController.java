@@ -31,8 +31,7 @@ import org.springframework.security.access.AccessDeniedException;
  * 
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class OAuthAuthorizeTokenController extends OAuthProtocolController {
 	private static final Log log = LogFactory.getLog(OAuthAuthorizeTokenController.class);
 	

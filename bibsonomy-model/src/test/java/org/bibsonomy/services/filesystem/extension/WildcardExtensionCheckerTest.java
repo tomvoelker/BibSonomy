@@ -30,8 +30,7 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class WildcardExtensionCheckerTest {
 	
 	private static final WildcardExtensionChecker EXTENSION_CHECKER = new WildcardExtensionChecker();

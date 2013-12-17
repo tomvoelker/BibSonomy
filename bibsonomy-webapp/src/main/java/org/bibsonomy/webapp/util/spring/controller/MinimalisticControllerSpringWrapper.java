@@ -45,8 +45,7 @@ import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMeth
  * @param <T> type of the command object used in the MinimalisticController
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 @SuppressWarnings("deprecation")
 public class MinimalisticControllerSpringWrapper<T extends ContextCommand> extends BaseCommandController {
 	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);

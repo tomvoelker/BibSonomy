@@ -8,8 +8,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class DeleteReferencesStrategy extends AbstractDeleteStrategy {
 	
 	private final String hash;

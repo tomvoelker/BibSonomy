@@ -36,8 +36,7 @@ import org.w3c.dom.Document;
  * Tests XMLUtils
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
- */
+  */
 public class XmlUtilsTest {
 	private static final String HTML_END = "</p></body></html>";
 	private static final String HTML_START = "<html><head><title>HALLO</title><body><p>";

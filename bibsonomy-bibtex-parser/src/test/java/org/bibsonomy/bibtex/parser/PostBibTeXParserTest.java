@@ -45,8 +45,7 @@ import org.junit.Test;
  * test from there twice. Not so nice. :-(
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class PostBibTeXParserTest {
 
 	/**

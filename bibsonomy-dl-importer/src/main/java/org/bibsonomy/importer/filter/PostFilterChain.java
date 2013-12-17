@@ -12,8 +12,7 @@ import org.bibsonomy.model.Post;
  * Loads filters specified in the configuration and calls them. 
  *  
  * @author rja
- * @version $Id$
- */
+  */
 public class PostFilterChain implements PostFilterChainElement {
 
 

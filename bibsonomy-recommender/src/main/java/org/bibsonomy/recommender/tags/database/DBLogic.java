@@ -19,8 +19,7 @@ import org.bibsonomy.recommender.tags.database.params.TasEntry;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public interface DBLogic {
 
 	//------------------------------------------------------------------------

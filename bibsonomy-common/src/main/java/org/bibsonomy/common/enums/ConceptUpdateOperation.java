@@ -25,8 +25,7 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public enum ConceptUpdateOperation {
 	
 	/**

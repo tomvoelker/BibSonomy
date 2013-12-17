@@ -14,8 +14,7 @@ import org.springframework.validation.Errors;
 /**
  * Validates fields related to admin tasks
  * @author bkr
- * @version $Id$
- */
+  */
 public class AdminActionsValidator implements Validator<AdminAjaxCommand> {
 	
 	@Override

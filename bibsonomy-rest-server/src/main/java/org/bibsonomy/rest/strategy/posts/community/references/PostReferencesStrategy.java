@@ -10,8 +10,7 @@ import org.bibsonomy.rest.strategy.Context;
  * adds references to a gold standard post
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class PostReferencesStrategy extends AbstractCreateStrategy {
 
 	private final String hash;

@@ -27,8 +27,7 @@ import java.util.List;
 
 /**
  * @author mwa
- * @version $Id$
- */
+  */
 public class TagSet {
 
 	/**

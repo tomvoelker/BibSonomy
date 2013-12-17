@@ -24,8 +24,7 @@ import org.springframework.security.access.AccessDeniedException;
  * 
  * @author Stefan Stützer
  * @author Beate Krause
- * @version $Id$
- **/
+  **/
 public class SpamPageController implements MinimalisticController<AdminViewCommand> {
 	private static final Log log = LogFactory.getLog(SpamPageController.class);
 

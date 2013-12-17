@@ -28,8 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * this controller returns handles picture upload and download
  * @author wla
- * @version $Id$
- */
+  */
 public class PictureController implements MinimalisticController<PictureCommand>, ErrorAware, RequestAware {
 
 	static {

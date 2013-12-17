@@ -10,8 +10,7 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author niebler
- * @version $Id$
- */
+  */
 public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 	
 	protected List<String> tagList;

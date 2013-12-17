@@ -28,8 +28,7 @@ import org.springframework.web.servlet.support.RequestContext;
  * to re-use or refactor existing methods!
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class RequestLogic {
 	private static final Log log = LogFactory.getLog(RequestLogic.class);
 	

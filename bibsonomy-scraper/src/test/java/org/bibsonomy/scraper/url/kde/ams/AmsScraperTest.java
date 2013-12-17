@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #121 #122 for AmsScraper
  * @author tst
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class AmsScraperTest {
 	

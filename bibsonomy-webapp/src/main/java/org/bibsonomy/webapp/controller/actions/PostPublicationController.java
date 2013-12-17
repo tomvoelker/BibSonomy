@@ -42,8 +42,7 @@ import bibtex.parser.ParseException;
 /**
  * 
  * @author ema
- * @version $Id$
- */
+  */
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
 

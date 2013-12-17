@@ -46,8 +46,7 @@ import org.bibsonomy.util.file.FileUtil;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	private final String path;
 	private String defaultFileName;

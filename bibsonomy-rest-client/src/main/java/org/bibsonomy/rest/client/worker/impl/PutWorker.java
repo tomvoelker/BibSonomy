@@ -34,8 +34,7 @@ import org.bibsonomy.rest.client.worker.HttpWorker;
  * TODO: merge duplicate code with PostWorker
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public final class PutWorker extends HttpWorker<PutMethod> {
 
 	private static final String CONTENT_TYPE = "multipart/form-data";

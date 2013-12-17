@@ -37,8 +37,7 @@ import org.springframework.validation.Errors;
 /** This controller handles the registration of users.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class UserRegistrationController implements ErrorAware, ValidationAwareController<UserRegistrationCommand>, RequestAware, CookieAware {
 	private static final Log log = LogFactory.getLog(UserRegistrationController.class);
 

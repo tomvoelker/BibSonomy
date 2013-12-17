@@ -46,8 +46,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for publications from http://www.agu.org/pubs/ using the RIS export
  * @author tst
- * @version $Id$
- */
+  */
 public class AGUScraper extends AbstractUrlScraper {
 	
 	private static final String SITE_NAME = "American Geophysical Union (AGU)";

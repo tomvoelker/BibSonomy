@@ -30,8 +30,7 @@ import java.util.Map;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class FieldLengthErrorMessage extends ErrorMessage {
 	
 	private final Map<String, Integer> fields;

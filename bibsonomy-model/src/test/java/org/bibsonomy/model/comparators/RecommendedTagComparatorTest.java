@@ -35,8 +35,7 @@ import static org.junit.Assert.*;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class RecommendedTagComparatorTest {
 
 	private final static RecommendedTag[] tags = new RecommendedTag[] {

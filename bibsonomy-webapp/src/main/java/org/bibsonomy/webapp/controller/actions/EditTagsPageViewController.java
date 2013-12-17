@@ -28,8 +28,7 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for the editTags page 
  * 
  * @author Henrik Bartholmai
- * @version $Id$
- */
+  */
 public class EditTagsPageViewController extends SingleResourceListControllerWithTags implements MinimalisticController<EditTagsPageViewCommand> {
 	
 	@Override

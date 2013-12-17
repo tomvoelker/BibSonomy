@@ -10,8 +10,7 @@ import org.apache.ftpserver.ftplet.User;
 
 /**
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class BibSonomyFileSystemFactory implements FileSystemFactory {
 
 	private static final Log log = LogFactory.getLog(BibSonomyFileSystemFactory.class);

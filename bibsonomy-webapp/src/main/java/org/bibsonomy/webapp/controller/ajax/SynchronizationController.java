@@ -37,8 +37,7 @@ import com.ibm.icu.text.DateFormat;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class SynchronizationController extends AjaxController implements MinimalisticController<AjaxSynchronizationCommand>, ErrorAware {
 	private Errors errors;
 	private TwoStepSynchronizationClient client;

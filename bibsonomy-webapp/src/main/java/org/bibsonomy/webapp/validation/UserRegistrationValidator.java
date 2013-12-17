@@ -9,8 +9,7 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class UserRegistrationValidator implements Validator<UserRegistrationCommand> {
 
 	private final String projectName;

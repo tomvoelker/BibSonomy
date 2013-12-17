@@ -39,8 +39,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.Row;
  * This is based on the PicaPlusXMLConverter from http://web10.ub.uni-rostock.de/uploads/stephan/PicaPlusXMLConverter/
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public class PicaPlusReader {
 	private static final String PPN = "PPN:";
 

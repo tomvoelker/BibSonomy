@@ -8,8 +8,7 @@ package org.bibsonomy.lucene.util;
  *  FIXME: this should be consistent with the spring configuration
  *  
  * @author fei
- * @version $Id$
- */
+  */
 public class LuceneBase {
 	/** TODO: improve documentation */
 	public static final String PARAM_RELEVANCE = "relevance";

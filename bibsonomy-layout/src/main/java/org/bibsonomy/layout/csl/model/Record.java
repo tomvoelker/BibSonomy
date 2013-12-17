@@ -32,8 +32,7 @@ import java.util.List;
  * for a list of supported variables.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
- */
+  */
 public class Record {
 
     /**

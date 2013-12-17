@@ -25,8 +25,7 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  * 	- editGoldStandardPublication
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class EditGoldStandardPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 
 	@Override

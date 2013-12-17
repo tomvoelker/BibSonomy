@@ -7,8 +7,7 @@ import org.springframework.beans.factory.FactoryBean;
  * other doesn't (e.g., BibSonomy).
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class NullFactoryBean implements FactoryBean<Void> {
 
 	@Override

@@ -13,8 +13,7 @@ import org.springframework.security.core.Authentication;
  * 
  * @author Sven Stefani
  * @author rja
- * @version $Id$
- */
+  */
 public class UserLDAPRegistrationController extends AbstractUserIDRegistrationController {
 	
 	/**

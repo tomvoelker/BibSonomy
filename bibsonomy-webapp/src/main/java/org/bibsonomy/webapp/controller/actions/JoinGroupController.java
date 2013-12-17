@@ -34,8 +34,7 @@ import org.springframework.validation.Errors;
  * TODO: should also handle accept user and probably delete user too 
  * 
  * @author schwass
- * @version $Id$
- */
+  */
 public class JoinGroupController implements ErrorAware, ValidationAwareController<JoinGroupCommand>, RequestAware, Validator<JoinGroupCommand> {
 	
 	private static final Log log = LogFactory.getLog(JoinGroupController.class);

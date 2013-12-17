@@ -34,8 +34,7 @@ import org.junit.experimental.categories.Category;
  * Scraper URL tests #130 for CoinsScraper
  * 
  * @author tst
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class CoinsScraperTest {
 	

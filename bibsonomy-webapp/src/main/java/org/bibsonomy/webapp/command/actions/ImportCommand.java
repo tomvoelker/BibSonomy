@@ -8,8 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author mwa
- * @version $Id$
- */
+  */
 public class ImportCommand extends BaseCommand {
 	
 	/** when true, duplicate entries will be overwritten **/

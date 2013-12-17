@@ -10,8 +10,7 @@ import org.bibsonomy.scraper.ScrapingContext;
  * 
  * @author rja
  * @author dzo
- * @version $Id$
- */
+  */
 public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	
 	/**

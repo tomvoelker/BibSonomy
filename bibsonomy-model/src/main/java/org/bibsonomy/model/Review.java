@@ -25,8 +25,7 @@ package org.bibsonomy.model;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class Review extends DiscussionItem {
 	
 	/**

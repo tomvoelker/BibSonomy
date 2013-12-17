@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #77 #78 #123 #135 for DBLPScraper
  * @author wbi
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class InformaWorldScraperTest {
 	

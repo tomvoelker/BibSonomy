@@ -43,8 +43,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
- * @version $Id$
- */
+  */
 public class JStorScraper extends AbstractUrlScraper {
 
 	private static final String info = "This Scraper parses a publication from " + href("http://www.jstor.org/", "JSTOR");

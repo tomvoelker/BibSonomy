@@ -12,8 +12,7 @@ import static org.bibsonomy.rest.strategy.users.GetRelatedusersForUserStrategy.c
 
 /**
  * @author dbe
- * @version $Id$
- */
+  */
 public class PostRelatedusersForUserStrategy extends AbstractCreateStrategy {
 	
 	private String userName;

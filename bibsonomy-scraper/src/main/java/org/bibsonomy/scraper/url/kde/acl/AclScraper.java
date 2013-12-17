@@ -47,8 +47,7 @@ import org.bibsonomy.util.WebUtils;
  * TODO: Problem is that bibtex is only for few papers available 
  * TODO: add
  * @author tst
- * @version $Id$
- */
+  */
 public class AclScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Association for Computational Linguistics";

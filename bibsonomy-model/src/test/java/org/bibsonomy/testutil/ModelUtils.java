@@ -53,8 +53,7 @@ import org.bibsonomy.model.User;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public final class ModelUtils {
 	private static final Log log = LogFactory.getLog(ModelUtils.class);
 	

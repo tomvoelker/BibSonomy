@@ -27,8 +27,7 @@ package org.bibsonomy.common.enums;
  * Presentation modes for tag clouds
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public enum TagCloudStyle {
 	/** cloud representation */
 	CLOUD(0),

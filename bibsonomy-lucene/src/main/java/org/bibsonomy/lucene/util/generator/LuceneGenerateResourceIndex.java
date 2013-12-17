@@ -34,8 +34,7 @@ import org.bibsonomy.model.Resource;
  * 
  * @author sst
  * @author fei
- * @version $Id$
- * 
+  * 
  * @param <R>
  *            the resource of the index to generate
  */

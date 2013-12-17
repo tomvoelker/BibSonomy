@@ -4,8 +4,7 @@ import java.sql.Timestamp;
 
 /**
  * @author fei
- * @version $Id$
- */
+  */
 public class TasEntry {
 	private Timestamp timeStamp;
 	private String userName;

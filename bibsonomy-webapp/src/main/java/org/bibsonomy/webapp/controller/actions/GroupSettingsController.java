@@ -29,8 +29,7 @@ import org.springframework.validation.Errors;
  * FIXME: refactor as subclass of {@link SettingsPageController}.
  * 
  * @author ema
- * @version $Id$
- */
+  */
 public class GroupSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 

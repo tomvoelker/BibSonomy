@@ -35,8 +35,7 @@ import org.junit.Test;
 /**
  * Tests for ISBNScraper class and #166 #167
  * @author tst
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class ISBNScraperTest {
 

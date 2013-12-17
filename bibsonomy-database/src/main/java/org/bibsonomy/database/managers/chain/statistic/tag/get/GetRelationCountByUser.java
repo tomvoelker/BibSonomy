@@ -9,8 +9,7 @@ import org.bibsonomy.model.statistics.Statistics;
  * Returns the number of relations for the current user.
  * 
  * @author Christian Voigtmann
- * @version $Id$
- */
+  */
 public class GetRelationCountByUser extends StatisticChainElement {
 
 	@Override

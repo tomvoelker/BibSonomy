@@ -32,8 +32,7 @@ import java.nio.channels.FileChannel;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class FileSystemFile implements UploadedFile {
 	
 	private final File file;

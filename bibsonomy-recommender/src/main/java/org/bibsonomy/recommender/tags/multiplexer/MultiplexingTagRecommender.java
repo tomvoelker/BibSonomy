@@ -45,8 +45,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * class DBAccess.
  *   
  * @author fei
- * @version $Id$
- */
+  */
 public class MultiplexingTagRecommender implements TagRecommender {
 	private static final Log log = LogFactory.getLog(MultiplexingTagRecommender.class);
 	

@@ -22,8 +22,7 @@ import org.springframework.validation.Errors;
  * With this Controller we delete Messages from a user's inbox
  * 
  * @author sdo
- * @version $Id$
- */
+  */
 public class RemoveMessageController implements MinimalisticController<RemoveMessageCommand>, ErrorAware {
 	private RequestLogic requestLogic;
 	private LogicInterface logic;

@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #108 for AclScraper
  * @author tst
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class AclScraperTest {
 

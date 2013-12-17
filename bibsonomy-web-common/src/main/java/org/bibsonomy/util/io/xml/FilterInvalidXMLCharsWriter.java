@@ -33,8 +33,7 @@ import org.apache.xml.serializer.utils.XMLChar;
  * was EscapingPrintWriter
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public class FilterInvalidXMLCharsWriter extends FilterWriter {
 	private static final char ILLEGAL_CHAR_SUBSTITUTE = '\uFFFD';
 	

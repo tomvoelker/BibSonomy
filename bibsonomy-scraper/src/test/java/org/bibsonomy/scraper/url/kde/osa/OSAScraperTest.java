@@ -33,8 +33,7 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #93 for OSAScraper
  * @author wbi
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class OSAScraperTest {
 	

@@ -13,8 +13,7 @@ import org.bibsonomy.model.User;
  * 
  * @author Christian Schenk
  * @author Anton Wilhelm
- * @version $Id$
- */
+  */
 public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
 	private static final GeneralDatabaseManager singleton = new GeneralDatabaseManager();

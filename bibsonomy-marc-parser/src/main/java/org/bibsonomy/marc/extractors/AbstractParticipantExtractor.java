@@ -16,8 +16,7 @@ import org.marc4j.marc.Subfield;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public abstract class AbstractParticipantExtractor implements AttributeExtractor {
 	
 	

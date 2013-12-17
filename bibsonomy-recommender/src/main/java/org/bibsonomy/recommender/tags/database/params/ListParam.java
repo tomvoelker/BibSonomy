@@ -2,8 +2,7 @@ package org.bibsonomy.recommender.tags.database.params;
 
 /**
  * @author fei
- * @version $Id$
- */
+  */
 public class ListParam {
 	private Integer offset = 0;
 	private Integer range = 0;

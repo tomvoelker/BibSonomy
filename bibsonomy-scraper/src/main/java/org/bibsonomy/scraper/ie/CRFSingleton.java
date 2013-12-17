@@ -33,8 +33,7 @@ import edu.umass.cs.mallet.base.fst.CRF4;
 
 /**
  * stores the Conditional Random Field for Information Extraction with mallet
- * @version $Id$
- */
+  */
 public class CRFSingleton {
 		
 	private static final String CRF_DAT = "crf.dat";

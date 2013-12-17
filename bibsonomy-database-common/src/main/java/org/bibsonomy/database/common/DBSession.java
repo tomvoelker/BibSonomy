@@ -12,8 +12,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public interface DBSession {
 
 	/**

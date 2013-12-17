@@ -36,8 +36,7 @@ import org.junit.Test;
 
 /**
  * @author rjanew P
- * @version $Id$
- */
+  */
 public class PersonNameUtilsTest {
 	
 	/**

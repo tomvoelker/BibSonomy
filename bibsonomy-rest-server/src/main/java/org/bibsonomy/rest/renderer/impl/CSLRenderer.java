@@ -36,8 +36,7 @@ import org.bibsonomy.rest.renderer.Renderer;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class CSLRenderer implements Renderer {
 
 	private static final Log LOGGER = LogFactory.getLog(CSLRenderer.class);

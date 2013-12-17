@@ -34,8 +34,7 @@ import org.springframework.validation.Errors;
  * 
  * @author daill
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
- */
+  */
 public class PasswordChangeOnRemindController implements ErrorAware, ValidationAwareController<PasswordChangeOnRemindCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(PasswordChangeOnRemindController.class);
 

@@ -12,8 +12,7 @@ import org.bibsonomy.model.Tag;
  * class.
  * 
  * @author Miranda Grahl
- * @version $Id$
- */
+  */
 public abstract class TagChainElement extends ChainElement<List<Tag>, TagParam> {
 
 	protected final TagDatabaseManager db;

@@ -24,8 +24,7 @@ import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
  * of the recomender's model interface.
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 
 	@Test

@@ -32,8 +32,7 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author Haile
- * @version $Id$
- */
+  */
 public class HematologyLibraryScraper extends CitationManagerScraper {
 	
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download to citation manager</a>");

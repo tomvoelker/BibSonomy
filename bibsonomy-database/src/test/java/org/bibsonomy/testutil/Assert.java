@@ -15,8 +15,7 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public final class Assert {
 	
 	/**

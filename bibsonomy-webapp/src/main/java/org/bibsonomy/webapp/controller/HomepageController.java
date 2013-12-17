@@ -16,8 +16,7 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for Homepage
  *
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
 	
 	private static final int POSTS_PER_RESOURCETYPE_LOGGED_IN = 20;

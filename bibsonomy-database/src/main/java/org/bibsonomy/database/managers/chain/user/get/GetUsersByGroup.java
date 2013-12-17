@@ -14,8 +14,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
  * Get group members
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class GetUsersByGroup extends UserChainElement {
 
 	@Override

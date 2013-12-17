@@ -28,8 +28,7 @@ import java.io.IOException;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public interface UploadedFile {
 
 	/**

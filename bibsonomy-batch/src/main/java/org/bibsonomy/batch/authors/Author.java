@@ -8,8 +8,7 @@ import org.bibsonomy.model.PersonName;
 
 /**
  * @author claus
- * @version $Id$
- */
+  */
 public class Author extends PersonName {
 	private static final long serialVersionUID = -5159236173916219000L;
 	

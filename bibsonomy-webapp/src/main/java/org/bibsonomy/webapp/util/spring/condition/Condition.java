@@ -7,8 +7,7 @@ import org.bibsonomy.webapp.util.spring.factorybeans.ConditionedPropertyCreation
  * Some kind of abstract condition. It has been created to allow arbitrary spring-defined conditions for {@link ConditionedPropertyCreationBean}
  * 
  * @author jensi
- * @version $Id$
- */
+  */
 public interface Condition {
 	/**
 	 * @return whether the condition is true or not

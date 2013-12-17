@@ -2,8 +2,7 @@ package org.bibsonomy.webapp.command.actions;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public interface CaptchaCommand {
 
 	/**

@@ -50,8 +50,7 @@ import org.bibsonomy.recommender.tags.database.params.TasParam;
  * Class for encapsulating database access of recommenders. Implements {@link DBLogic}.
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	private static final Log log = LogFactory.getLog(DBAccess.class);
 	

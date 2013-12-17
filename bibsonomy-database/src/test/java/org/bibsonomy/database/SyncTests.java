@@ -34,8 +34,7 @@ import org.junit.Test;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class SyncTests extends AbstractDatabaseManagerTest {
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 

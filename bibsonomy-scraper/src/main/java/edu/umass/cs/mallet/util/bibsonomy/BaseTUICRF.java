@@ -27,8 +27,7 @@ import edu.umass.cs.mallet.base.util.FileUtils;
  * Methods that are useful for CRF TUIs.
  *
  * @author Charles Sutton
- * @version $Id$
- */
+  */
 public class BaseTUICRF {
 
   protected static CommandOption.File outputPrefix = new CommandOption.File

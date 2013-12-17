@@ -20,8 +20,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class AdminSyncViewController implements MinimalisticController<AdminSyncCommand> {
 
 	private static final Log log = LogFactory.getLog(AdminSyncViewController.class);

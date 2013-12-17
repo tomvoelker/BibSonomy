@@ -9,8 +9,7 @@ import org.bibsonomy.model.Author;
 
 /**
  * @author Christian Claus
- * @version $Id$
- */
+  */
 public class AuthorsCommand extends BaseCommand {	
 	private static final int DEFAULT_MAX_FREQ = 100;
 	

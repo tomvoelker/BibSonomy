@@ -28,8 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class ISBNUtils {
 	/*
 	 * pattern to match ISBN 10 and 13

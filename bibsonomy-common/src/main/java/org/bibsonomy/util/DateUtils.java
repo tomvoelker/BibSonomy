@@ -29,8 +29,7 @@ import java.util.Date;
  * Helper functions for dates
  * 
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class DateUtils {
 	/** 
 	 * Compares two dates like compareTo but with additional checks, if one of the dates is NULL.

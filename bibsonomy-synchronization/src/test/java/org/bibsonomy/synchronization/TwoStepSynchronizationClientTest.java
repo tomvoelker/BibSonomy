@@ -31,8 +31,7 @@ import org.junit.Test;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class TwoStepSynchronizationClientTest extends AbstractSynchronizationClientTest {
 
 

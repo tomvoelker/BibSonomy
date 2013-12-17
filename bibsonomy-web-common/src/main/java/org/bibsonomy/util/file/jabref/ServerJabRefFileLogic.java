@@ -41,8 +41,7 @@ import org.bibsonomy.util.file.FileUtil;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class ServerJabRefFileLogic extends AbstractServerFileLogic implements JabRefFileLogic {
 
 	private final ExtensionChecker extensionChecker = new ListExtensionChecker(Sets.asSet(JabrefLayoutUtils.layoutFileExtension));

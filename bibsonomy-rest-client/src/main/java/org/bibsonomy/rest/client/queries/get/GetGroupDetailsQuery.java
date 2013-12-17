@@ -34,8 +34,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to receive details about an group of bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public final class GetGroupDetailsQuery extends AbstractQuery<Group> {
 
 	private final String groupname;

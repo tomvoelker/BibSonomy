@@ -28,8 +28,7 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public abstract class Rules {
 	
 	protected static final String DEFAULT_SUB_CATEGORY = "$a";

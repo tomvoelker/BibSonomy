@@ -6,8 +6,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class ValidationTestUtils {
 
 	public static Errors validate(final Validator<?> validator, final Object command) {

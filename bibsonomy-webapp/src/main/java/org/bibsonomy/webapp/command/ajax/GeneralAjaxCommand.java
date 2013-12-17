@@ -9,8 +9,7 @@ import org.bibsonomy.model.Post;
  * General command for ajax requests
  * 
  * @author fba
- * @version $Id$
- */
+  */
 public class GeneralAjaxCommand extends AjaxCommand {
 	/**
 	 * page title

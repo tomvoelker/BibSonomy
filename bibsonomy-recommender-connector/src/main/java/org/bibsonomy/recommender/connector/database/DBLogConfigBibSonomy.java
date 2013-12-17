@@ -35,8 +35,7 @@ import recommender.impl.model.RecommendedTag;
  * known from bibsonomy-recommender.
  * As a result the old tables can stay in use.
  * 
- * @version $Id$
- */
+  */
 public class DBLogConfigBibSonomy extends DBLogConfigTagAccess {
 	private static final Log log = LogFactory.getLog(DBLogConfigBibSonomy.class);
 	

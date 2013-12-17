@@ -39,8 +39,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class PasswordReminderController implements ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(PasswordReminderController.class);
 	

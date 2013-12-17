@@ -33,8 +33,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
  * remote authentication protocols, e.g., OAuth
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public interface AuthenticationAccessor {
 	
 	/**

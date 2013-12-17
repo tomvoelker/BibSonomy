@@ -38,8 +38,7 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to receive details about a post of an user.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Resource>> {
 
 	private final String username;

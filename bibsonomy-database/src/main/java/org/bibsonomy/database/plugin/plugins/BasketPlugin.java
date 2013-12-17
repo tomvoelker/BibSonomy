@@ -12,8 +12,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
  * could be fixed by config registry with Spring beans
  * 
  * @author daill
- * @version $Id$
- */
+  */
 public class BasketPlugin extends AbstractDatabasePlugin {
 	
 	@Override

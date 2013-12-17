@@ -6,8 +6,7 @@ import java.util.Random;
  * Implements a service for logging recommendation statistics.
  * 
  * @author fei
- * @version $Id$
- */
+  */
 public class RecommenderStatisticsManager {
 	/** indicates that post identifier was not given */
 	public static int UNKNOWN_POSTID = -1;

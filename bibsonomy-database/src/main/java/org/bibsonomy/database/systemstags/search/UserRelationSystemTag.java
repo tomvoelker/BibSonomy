@@ -9,8 +9,7 @@ import org.bibsonomy.model.Resource;
  * System tag for representing a tagged user relation, e.g., sys:relation:football
  * 
  * @author fmi
- * @version $Id$
- */
+  */
 public class UserRelationSystemTag extends AbstractSystemTagImpl implements SearchSystemTag {
 
 	public static final String NAME = "relation";

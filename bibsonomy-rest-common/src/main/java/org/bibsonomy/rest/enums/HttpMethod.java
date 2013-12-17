@@ -30,8 +30,7 @@ import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
  * The supported HTTP-Methods.
  * 
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public enum HttpMethod {
 
 	/**

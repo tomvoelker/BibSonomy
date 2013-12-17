@@ -76,8 +76,7 @@ import bibtex.parser.ParseException;
 
 /**
  * Servlet implementation class for Servlet: ScrapingServlet
- * @version $Id$
- */
+  */
 public class ScrapingServlet extends HttpServlet {
 	
 	

@@ -37,8 +37,7 @@ import org.junit.Test;
 /**
  * 
  * @author dbe
- * @version $Id$
- */
+  */
 public class ModelToJsonTest {
 
 	@Test

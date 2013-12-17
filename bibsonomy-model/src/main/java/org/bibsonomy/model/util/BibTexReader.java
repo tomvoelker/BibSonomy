@@ -32,8 +32,7 @@ import org.bibsonomy.model.ImportResource;
  * Generic class for Import formats
  * 
  * @author Jens Illig
- * @version $Id$
- * 
+  * 
  * TODO: rename BibTex to Publication
  */
 public interface BibTexReader {

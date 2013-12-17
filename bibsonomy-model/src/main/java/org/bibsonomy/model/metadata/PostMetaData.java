@@ -27,8 +27,7 @@ import java.util.Date;
 
 /**
  * @author clemensbaier
- * @version $Id$
- */
+  */
 public class PostMetaData {
 
 	private String interHash;

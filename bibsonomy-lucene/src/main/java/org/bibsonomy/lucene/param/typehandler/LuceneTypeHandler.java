@@ -5,8 +5,7 @@ package org.bibsonomy.lucene.param.typehandler;
  * for storing into the lucene index
  * 
  * @author fei
- * @version $Id$
- * @param <T> the type to handle
+  * @param <T> the type to handle
  */
 public interface LuceneTypeHandler<T> {
 	

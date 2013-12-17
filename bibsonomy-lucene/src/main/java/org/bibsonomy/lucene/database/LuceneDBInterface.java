@@ -11,8 +11,7 @@ import org.bibsonomy.model.User;
  * interface encapsulating database access for lucene
  * 
  * @author fei
- * @version $Id$
- * 
+  * 
  * @param <R> resource type
  */
 public interface LuceneDBInterface<R extends Resource> {

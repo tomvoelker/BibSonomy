@@ -12,8 +12,7 @@ import org.bibsonomy.database.common.DBSession;
  * chain implementation
  * 
  * @author dzo
- * @version $Id$
- * @param <L> 
+  * @param <L> 
  * @param <P> 
  */
 public class Chain<L, P> implements ChainPerform<P, L> {

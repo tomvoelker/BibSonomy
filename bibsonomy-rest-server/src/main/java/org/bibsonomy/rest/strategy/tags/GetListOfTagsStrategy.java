@@ -16,8 +16,7 @@ import org.bibsonomy.rest.strategy.Context;
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Christian Kramer
- * @version $Id$
- */
+  */
 public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	protected final Class<? extends Resource> resourceType;
 	protected final GroupingEntity grouping;

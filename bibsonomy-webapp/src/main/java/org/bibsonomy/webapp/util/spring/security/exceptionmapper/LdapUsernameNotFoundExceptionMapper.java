@@ -9,8 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public class LdapUsernameNotFoundExceptionMapper extends UsernameNotFoundExceptionMapper {
 
 	@Override

@@ -5,8 +5,7 @@ import org.bibsonomy.model.Post;
 
 /**
  * @author PlatinAge
- * @version $Id$
- */
+  */
 public class DiffBookmarkCommand extends EditBookmarkCommand{
 	private Post<Bookmark> postDiff;
 

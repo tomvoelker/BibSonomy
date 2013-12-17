@@ -14,8 +14,7 @@ import org.springframework.validation.MapBindingResult;
 
 /**
  * @author daill
- * @version $Id$
- */
+  */
 public class PasswordReminderValidatorTest {
 	
 	/**

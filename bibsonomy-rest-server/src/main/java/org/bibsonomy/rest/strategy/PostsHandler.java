@@ -17,8 +17,7 @@ import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
- */
+  */
 public class PostsHandler implements ContextHandler {
 
 	@Override

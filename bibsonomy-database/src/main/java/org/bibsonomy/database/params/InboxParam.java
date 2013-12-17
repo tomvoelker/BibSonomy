@@ -2,8 +2,7 @@ package org.bibsonomy.database.params;
 
 /**
  * @author Stephan Doerfel
- * @version $Id$
- */
+  */
 public class InboxParam extends GenericParam {
 	
 	private int messageId;

@@ -9,8 +9,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author rja
- * @version $Id$
- */
+  */
 public interface PostListReader {
 
 	/** Reads a list containing BibTeX posts from an EasyChair XML file.

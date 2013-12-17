@@ -32,8 +32,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author clemens
- * @version $Id$
- */
+  */
 @Category(RemoteTest.class)
 public class ATSScraperTest {
 

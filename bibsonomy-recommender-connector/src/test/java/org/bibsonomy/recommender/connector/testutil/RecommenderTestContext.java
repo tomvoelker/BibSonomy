@@ -5,8 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public final class RecommenderTestContext {
 	
 	private static final String CONFIG_LOCATION = "TestRecommenderContext.xml";

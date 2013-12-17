@@ -12,8 +12,7 @@ import de.unikassel.puma.openaccess.classification.ClassificationTextParser;
 
 /**
  * @author philipp
- * @version $Id$
- */
+  */
 public class DDCClassification extends ClassificationTextParser {
 
 	private static final String NAME = "DDC";

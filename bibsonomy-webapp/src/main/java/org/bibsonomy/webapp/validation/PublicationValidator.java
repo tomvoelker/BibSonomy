@@ -20,8 +20,7 @@ import bibtex.parser.ParseException;
 /**
  * @author fba
  * @author dzo
- * @version $Id$
- */
+  */
 public class PublicationValidator implements Validator<BibTex> {
 
 	private static final String PARSE_ERROR_MESSAGE_KEY = "error.parse.bibtex.failed";

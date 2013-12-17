@@ -33,8 +33,7 @@ import recommender.impl.model.RecommendedItem;
  * Controller for triggering a post recommendation and return the sorted list of recommended posts
  * 
  * @author Lukas
- * @version $Id$
- */
+  */
 public class RecommendedPostsPageController extends SingleResourceListController implements MinimalisticController<TagResourceViewCommand> {
 
 	private Recommender<ItemRecommendationEntity, RecommendedItem> bibtexRecommender;

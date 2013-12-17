@@ -40,8 +40,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
- * @version $Id$
- */
+  */
 public class GoogleBooksScraper extends AbstractUrlScraper {
 
 	private static final String SITE_URL  = "http://books.google.com/";

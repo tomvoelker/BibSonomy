@@ -25,8 +25,7 @@ import org.springframework.validation.Errors;
  *   - /documents/INTRAHASH/USERNAME/FILENAME
  * 
  * @author cvo
- * @version $Id$
- */
+  */
 public class DownloadFileController implements MinimalisticController<DownloadFileCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(DownloadFileController.class);
 	

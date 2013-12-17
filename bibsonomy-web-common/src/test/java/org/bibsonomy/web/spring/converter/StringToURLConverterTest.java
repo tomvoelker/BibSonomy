@@ -35,8 +35,7 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class StringToURLConverterTest {
 	private static final Converter<String, URL> STRING_URL_CONVERTER = new StringToURLConverter();
 	

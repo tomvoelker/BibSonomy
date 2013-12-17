@@ -21,8 +21,7 @@ import org.springframework.security.web.WebAttributes;
  * 
  * the login is handled by Spring Security
  * @author dzo
- * @version $Id$
- */
+  */
 public class UserLoginController implements ValidationAwareController<UserLoginCommand> {
 	private static final Log log = LogFactory.getLog(UserLoginController.class);
 	

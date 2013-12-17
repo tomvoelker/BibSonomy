@@ -8,8 +8,7 @@ import org.bibsonomy.lucene.param.LuceneIndexInfo;
 
 /**
  * @author mba
- * @version $Id$
- */
+  */
 public class LuceneResourceIndicesInfoContainer {
 	
 	private String resourceName;

@@ -33,8 +33,7 @@ import org.bibsonomy.common.enums.SortOrder;
  * Convenience methods for sorting lists
  *
  * @author Dominik Benz
- * @version $Id$
- */
+  */
 public class SortUtils {
 
 	private static final String SORT_KEY_DELIMITER       = "|";

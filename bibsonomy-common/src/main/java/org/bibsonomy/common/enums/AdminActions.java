@@ -29,8 +29,7 @@ import org.bibsonomy.util.EnumUtils;
  * Defines different possibilities of classifiers of a user
  * 
  * @author Beate Krause
- * @version $Id$
- */
+  */
 public enum AdminActions {
 	/** An automatic classifier algorithm */
 	FLAG_SPAMMER("flag_spammer"),

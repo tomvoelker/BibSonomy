@@ -10,8 +10,7 @@ import org.bibsonomy.model.PersonName;
 
 /**
  * @author jensi
- * @version $Id$
- */
+  */
 public class EditorExtractor extends AbstractParticipantExtractor {
 
 	private static final Set<String> editorRelatorCodes = new HashSet<String>();

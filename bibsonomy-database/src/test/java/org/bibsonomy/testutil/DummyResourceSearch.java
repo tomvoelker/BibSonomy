@@ -11,8 +11,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * @author dzo
- * @version $Id$
- */
+  */
 public class DummyResourceSearch implements ResourceSearch<Resource> {
 	
 	@Override

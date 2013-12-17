@@ -37,8 +37,7 @@ import org.bibsonomy.util.ReflectionUtils;
  * @param <P> 
  * 
  * @author dzo
- * @version $Id$
- */
+  */
 public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends Resource & GoldStandard<RR>, P extends ResourceParam<RR>> extends AbstractDatabaseManager implements CrudableContent<R, P> {
 	private static final Log log = LogFactory.getLog(GoldStandardDatabaseManager.class);
 	

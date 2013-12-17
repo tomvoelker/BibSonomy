@@ -27,8 +27,7 @@ import java.util.Set;
 
 /**
  * @author dzo
- * @version $Id$
- * @param <R> 
+  * @param <R> 
  */
 public interface GoldStandard<R extends Resource> {
 

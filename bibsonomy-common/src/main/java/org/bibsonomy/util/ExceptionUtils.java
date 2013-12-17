@@ -32,8 +32,7 @@ import org.bibsonomy.common.exceptions.QueryTimeoutException;
  * Convenience methods to throw exceptions.
  *
  * @author Christian Schenk
- * @version $Id$
- */
+  */
 public class ExceptionUtils {
 
 	/**

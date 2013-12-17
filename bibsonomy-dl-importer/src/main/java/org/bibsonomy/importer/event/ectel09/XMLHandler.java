@@ -16,8 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  * 
  * @author rja
- * @version $Id$
- */
+  */
 public class XMLHandler extends DefaultHandler {
 	
 	/*

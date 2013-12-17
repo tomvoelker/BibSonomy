@@ -7,8 +7,7 @@ import org.junit.Test;
 
 /**
  * @author Lukas
- * @version $Id$
- */
+  */
 public class CompositeExtractorTest extends AbstractExtractorTest {
 
 	@Test

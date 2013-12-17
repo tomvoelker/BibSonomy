@@ -11,8 +11,7 @@ import org.bibsonomy.rest.strategy.users.GetUserPostsStrategy;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class GetClipboardStrategy extends GetUserPostsStrategy {
 
 	/**

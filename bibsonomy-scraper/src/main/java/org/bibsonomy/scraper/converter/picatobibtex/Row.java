@@ -32,8 +32,7 @@ import java.util.Map.Entry;
 
 /**
  * @author C. Kramer
- * @version $Id$
- */
+  */
 public class Row {
 	private final String category;
 	private final Map<String, List<String>> subfields = new HashMap<String, List<String>>();

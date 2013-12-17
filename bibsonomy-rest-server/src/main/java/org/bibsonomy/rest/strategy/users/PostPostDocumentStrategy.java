@@ -16,8 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Handle the request to post a document
  * 
  * @author Christian Kramer
- * @version $Id$
- */
+  */
 public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	private final String userName;
 	private final String resourceHash;

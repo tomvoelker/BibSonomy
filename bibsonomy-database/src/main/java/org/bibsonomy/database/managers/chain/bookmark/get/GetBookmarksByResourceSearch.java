@@ -10,8 +10,7 @@ import org.bibsonomy.model.Bookmark;
  * Returns a list of BibTex's for a given search.
  * 
  * @author claus
- * @version $Id$
- */
+  */
 public class GetBookmarksByResourceSearch extends GetResourcesByResourceSearch<Bookmark, BookmarkParam> {
 
 	@Override

@@ -26,8 +26,7 @@ import org.bibsonomy.model.sync.util.SynchronizationUtils;
 
 /**
  * @author wla
- * @version $Id$
- */
+  */
 public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(SynchronizationDatabaseManager.class);
 

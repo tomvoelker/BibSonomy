@@ -15,8 +15,7 @@ import org.bibsonomy.model.util.UserUtils;
  * This class produces DBLogic instances with user authentication
  * 
  * @author Jens Illig
- * @version $Id$
- */
+  */
 public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
