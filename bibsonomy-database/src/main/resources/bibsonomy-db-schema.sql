@@ -1504,7 +1504,8 @@ CREATE TABLE `user` (
   `show_bibtex` tinyint(1) default '1',
   `gravatarAddress` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`user_name`),
-  UNIQUE KEY `user_id` (`id`)
+  UNIQUE KEY `user_id` (`id`),
+  KEY `spammer_to_classify_user_name_idx` (`spammer`,`to_classify`,`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
