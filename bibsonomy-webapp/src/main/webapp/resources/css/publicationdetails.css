@@ -310,6 +310,10 @@ div#ownerAvatar a img {
 	content:"+ ";
 }
 
+a.addDocumentImg.addDocument:before {
+	content:"";
+}
+
 .addDocument {
 	display: block;
 	line-height: 13px;

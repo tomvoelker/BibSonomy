@@ -238,6 +238,9 @@ function renameSelected(obj) {
 	type = type[type.length-1];
 	var renameForm = obj;
 	
+	console.log(renameForm);
+	console.log(type);
+	
 	var fileName = $.trim(obj.find('.renameDocInput').val()); //get value of the rename field
 	
 	var newFileType = fileName.split(".");
@@ -367,7 +370,7 @@ function renameRequestSuccess(data) {
 	var encodedOldName = encodeURIComponent(oldName).replace(/%20/g, '+');
 	var encodedNewName = encodeURIComponent(newName).replace(/%20/g, '+');
 	var newHref = toRename.parent().attr("action").replace(encodedOldName, encodedNewName);	
-	var newDelHref = toRename.parent().find('.removeDocLink').attr('href').replace(encodedOldName, encodedNewName);	
+	var newDelHref = toRename.parent().find('.removeDocBtn').attr('href').replace(encodedOldName, encodedNewName);	
 	
 	toRename.parent().attr("action", newHref);
 	toRename.parent().find('.removeDocLink').attr('href', newDelHref);
