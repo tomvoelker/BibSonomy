@@ -24,7 +24,7 @@
 		  		<c:when test="${empty publication.documents}">
 			  		<c:if test="${isOwnEntry}">
 			  			<div class="publication preview bibtexpreviewimage">
-							<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+							<a class="addDocument addDocumentImg" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 								<img class="pre_pic" style="width: 220px;" src="${resdir}/image/addDocument-LARGE.jpg" alt=""/>							
 							</a>
 						</div>
@@ -99,7 +99,7 @@
 						<li>
 							<div class="preview_meta">
 								<c:if test="${isOwnEntry}">
-									<a  class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+									<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 										<span><fmt:message key="bibtex.actions.additionalFiles"/></span>
 									</a>
 									<div id="inputDiv">

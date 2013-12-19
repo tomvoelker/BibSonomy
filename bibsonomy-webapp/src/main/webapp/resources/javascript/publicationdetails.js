@@ -238,9 +238,6 @@ function renameSelected(obj) {
 	type = type[type.length-1];
 	var renameForm = obj;
 	
-	console.log(renameForm);
-	console.log(type);
-	
 	var fileName = $.trim(obj.find('.renameDocInput').val()); //get value of the rename field
 	
 	var newFileType = fileName.split(".");
