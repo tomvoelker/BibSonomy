@@ -394,4 +394,10 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>boolean userIsGroup(org.bibsonomy.model.User)</function-signature>
 	</function>
+	
+	<function>
+		<name>uniqueDiscussionUsers</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.util.List uniqueDiscussionUsers(java.util.List)</function-signature>
+	</function>
 </taglib>

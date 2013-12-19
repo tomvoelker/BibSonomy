@@ -9,8 +9,10 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -24,6 +26,7 @@ import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.markup.ReportedSystemTag;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -717,7 +720,7 @@ public class Functions  {
 	 * TODO: merge with hasTagMyown!
 	 * @param tags
 	 * @param group
-	 * @return <code>true</code> iff post was already reported
+	 * @return <code>true</code> if post was already reported
 	 */
 	public static boolean hasReportedSystemTag(final Set<Tag> tags, final String group) {
 		return SystemTagsUtil.containsSystemTag(tags, ReportedSystemTag.NAME, group);
@@ -730,5 +733,22 @@ public class Functions  {
 	 */
 	public static boolean userIsGroup(final User user) {
 		return UserUtils.userIsGroup(user);
+	}
+	
+	/**
+	 * 
+	 * @param discussionItems
+	 * @return a list of unique users, discussed a publication
+	 */
+	public static List<User> uniqueDiscussionUsers(List<DiscussionItem> discussionItems) {
+		
+		List<User> users = new ArrayList<User>();
+		
+		for(DiscussionItem item: discussionItems) {
+			if(!users.contains(item.getUser())) {
+				users.add(item.getUser());
+			}
+		}
+		return users;
 	}
 }
