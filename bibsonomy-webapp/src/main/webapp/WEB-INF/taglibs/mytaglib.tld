@@ -400,4 +400,10 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.util.List uniqueDiscussionUsers(java.util.List)</function-signature>
 	</function>
+	
+	<function>
+		<name>downloadFileId</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>java.lang.String downloadFileId(java.lang.String)</function-signature>
+	</function>
 </taglib>

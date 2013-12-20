@@ -1,5 +1,8 @@
 @CHARSET "UTF-8";
 
+#fullscreen {
+	min-width:800px !important;
+}
 
 #innercontent {
 	font-size: 110%;
@@ -319,4 +322,8 @@ a.addDocumentImg.addDocument:before {
 	line-height: 13px;
 	padding: 5px 3px 3px 3px;
 	margin: 2px 0;
+}
+
+#abstract {
+	text-align:justify
 }
