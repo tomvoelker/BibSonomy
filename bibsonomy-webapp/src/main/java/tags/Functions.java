@@ -751,4 +751,13 @@ public class Functions  {
 		}
 		return users;
 	}
+	
+	/**
+	 * 
+	 * @param filename
+	 * @return all invalid characters for html attribute id replaced by '-'.
+	 */
+	public static String downloadFileId(String filename) {
+		return filename.replaceAll("[^A-Za-z0-9]", "-");
+	}
 }

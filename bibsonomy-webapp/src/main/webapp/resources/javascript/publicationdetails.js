@@ -114,6 +114,7 @@ $(function() {
 		field.select();
 		$(this).hide();
 		okBtn.show();
+		
 		return false;
 	});
 	
@@ -130,14 +131,30 @@ $(function() {
 		return false;
 	});
 	
-	
-	$(".renameDocForm").submit(function(event) {
-		
+	$(".renameDocForm .okBtn").click(function(event) {
 		event.preventDefault();
 		renameSelected($(this));
 		
 		return false;
+	});
+	
+	$(".renameDocForm").submit(function(event) {
+		event.preventDefault();
+		renameSelected($(this));
 		
+		return false;
+	});
+	
+	$(".renameDocForm").hover(function(){
+		var id = $(this).attr('rel');
+		
+		$(".bibtexpreviewimage").each(function(index) {
+			if($(this).is(":visible")) {
+				$(this).hide();
+			}
+			
+		});
+		$("#"+id).show();
 	});
 	
 	$('input[type=file]').click();
