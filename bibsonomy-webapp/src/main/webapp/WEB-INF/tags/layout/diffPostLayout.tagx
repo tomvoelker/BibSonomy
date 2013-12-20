@@ -16,7 +16,7 @@
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
 
 <!-- FIXME: some code duplicate of editGoldStandardPostLayout -->
-    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.DiffPublicationCommand" required="true"/>
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPublicationCommand" required="true"/>
     <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
     <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>

@@ -3,6 +3,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:bibgs="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
@@ -26,10 +27,16 @@
 
 	<c:choose>
 		<c:when test="${not empty listView.list}">
-
 			<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
 			<c:set var="newestPost" value="${listView.list[fieldlength]}" />
-			<rc:diff post="${newestPost}" loginUserName="${loginUserName}"
+			<resource:bibtexdetails post="${newestPost}" referer="${command.referer}"/>
+			<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
+			<!--+
+				| complete Post
+				+-->
+			<h3 style="clear:both;"><a class="foldUnfold" href="#fullPost"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.postHistory.headline"/></a></h3>
+			<div id="fullPost">
+				<rc:diff post="${newestPost}" loginUserName="${loginUserName}"
 				additionalItemClasses="${'odd'}">
 				<jsp:attribute name="title">
 							<c:choose>
@@ -44,13 +51,14 @@
 				<jsp:attribute name="desc">
 							<bib:fullDescription publication="${newestPost.resource}" />
 						</jsp:attribute>
-			</rc:diff>
+				</rc:diff>
+			</div>
+
 			<!--+
-			| history
+			| history list
 			+-->
-			<h3 class="header">
-				<fmt:message key="post.resource.history.headline" />
-			</h3>
+			<h3 style="clear:both;"><a class="foldUnfold" href="#history"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="post.resource.postHistory.list"/></a></h3>
+			<div id="historylist">
 			<!-- newest post is index 0 and do not contain to history list -->
 			<c:forEach var="index" begin="1" end="${fieldlength}"
 				varStatus="loopStatus" step="1">
@@ -61,7 +69,8 @@
 					loginUserName="${loginUserName}"
 					additionalItemClasses="${additionalItemClasses}">
 					<jsp:attribute name="title">
-									<rc:changeDate postIndex="${(fieldlength-index)}"
+					<!-- fieldlength-index+1 to start index with 1 instead of 0 in URL-->
+						<rc:changeDate postIndex="${(fieldlength-index+1)}"
 							post="${listView.list[(fieldlength-index)]}"
 							newestPub="${newestPost}" loginUserName="${loginUserName}" />
 							</jsp:attribute>
@@ -73,6 +82,8 @@
 				</rc:diff>
 
 			</c:forEach>
+			</div>
+			</div>
 		</c:when>
 		<c:otherwise>
 			<!-- only show message "no posts available" when no artificial list items (e.g. discussions) are present -->
