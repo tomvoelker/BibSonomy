@@ -76,14 +76,18 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public void onGoldStandardUpdate(final int newContentId, final int contentId, final String newInterhash, final String interhash, final DBSession session) {
 		final LoggingParam<String> logParam = new LoggingParam<String>();
 		logParam.setNewId(newInterhash);
 		logParam.setOldId(interhash);
-
 		this.insert("logGoldStandard", logParam, session);
+		
+		final BibTexParam param = new BibTexParam();
+		param.setRequestedContentId(contentId);
+		param.setNewContentId(newContentId);
+		this.insert("logGoldStandardUpdate", param, session);
 	}
-
+	
 	@Override
 	public void onGoldStandardDelete(final String interhash, final DBSession session) {
 		final LoggingParam<String> logParam = new LoggingParam<String>();

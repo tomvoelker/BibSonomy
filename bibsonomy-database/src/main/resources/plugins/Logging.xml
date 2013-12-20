@@ -38,6 +38,10 @@
 		FROM gold_standard WHERE simhash1 = #oldId#
 	</insert>
 	
+	<update id="logGoldStandardUpdate" parameterClass="bibtexParam">
+		UPDATE log_gold_standard SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
+	</update>
+	
 	<insert id="logGoldStandardPublicationReferenceDelete">
 		INSERT INTO log_gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
 	</insert>

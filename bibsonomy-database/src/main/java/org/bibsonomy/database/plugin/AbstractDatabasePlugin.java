@@ -44,7 +44,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public void onGoldStandardUpdate(final int newContentId, final int contentId, final String newInterhash, final String interhash, final DBSession session) {
 		// noop
 	}
 

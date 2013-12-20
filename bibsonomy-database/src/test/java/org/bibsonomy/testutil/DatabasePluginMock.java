@@ -107,8 +107,8 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	}
 	
 	@Override
-	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
-		this.onGoldStandardUpdate = true;
+	public void onGoldStandardUpdate(final int newContentId, final int contentId, final String newInterhash, final String interhash, final DBSession session) {
+			this.onGoldStandardUpdate = true;
 	}
 	
 	@Override
