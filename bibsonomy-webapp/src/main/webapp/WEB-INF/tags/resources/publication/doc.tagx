@@ -44,16 +44,16 @@
 								<c:choose>
 									<c:when test="${count eq 0}">
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(publication.documents[0].fileName)}?preview=LARGE"/>
+											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
+												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}?preview=LARGE"/>
 											</a>
 										</div>
 									</c:when>
 									<c:otherwise>
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
 											<!-- preview picture of first document -->
-											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(publication.documents[0].fileName)}?preview=LARGE"/>
+											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
+												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}?preview=LARGE"/>
 											</a>
 										</div>
 									</c:otherwise>
@@ -71,9 +71,26 @@
 						</c:choose>
 						<c:set var="count" value="${count + 1}" scope="page"/>
 		  			</c:forEach>
-		  			
-
-  				
+		  			<c:if test="${fn:length(publication.documents) gt 1}">
+		  				
+		  				<div id="previewSelectBullets">
+								<c:set var="count" value="0" scope="page" />
+								<c:forEach var="document" items="${publication.documents}">
+									<c:choose>
+										<c:when test="${count eq 0}">
+											<a rel="${mtl:downloadFileId(document.fileName)}" class="bullet active" href="#" title="${fn:escapeXml(document.fileName)}"><span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span></a>
+										</c:when>
+										<c:otherwise>
+											<a rel="${mtl:downloadFileId(document.fileName)}" class="bullet" href="#" title="${fn:escapeXml(document.fileName)}"><span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span></a>
+										</c:otherwise>
+									</c:choose>
+									
+									<c:set var="count" value="${count + 1}" scope="page"/>
+								</c:forEach>
+						</div>
+						
+						
+  					</c:if>
   					<ul>
   					<c:forEach var="document" items="${publication.documents}">
 						<li>
@@ -98,7 +115,7 @@
 									<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
 									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
 									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
-									<form rel="${mtl:downloadFileId(document.fileName)}" class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
+									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
 										<span class="showName" style="display:none;"><c:out value="${filename}" /></span>
 										<input class="renameDocInput" name='newFileName' type="text" value="${filename}" />
 										<a class="btn renameBtn" title="${renameDocTitle}"><span>rename</span></a>

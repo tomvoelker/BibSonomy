@@ -343,6 +343,24 @@ a.addDocumentImg.addDocument:before {
 	text-align:justify
 }
 
-.profilepic {
+#previewSelectBullets {
+	display: block;
+	text-align: center;
 	
+}
+
+#previewSelectBullets a.bullet {
+	display: inline;
+	margin: 2px;
+	text-decoration: none;
+}
+
+#previewSelectBullets a.bullet span {
+	line-height: 21px;
+	font-size: 21px;
+	background: transparent url("/resources/image/previewSelectBullets.png") -1px -1px no-repeat;
+}
+
+#previewSelectBullets a.bullet.active span {
+	background-position: 0 -30px;
 }

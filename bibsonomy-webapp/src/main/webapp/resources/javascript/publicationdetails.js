@@ -145,16 +145,23 @@ $(function() {
 		return false;
 	});
 	
-	$(".renameDocForm").hover(function(){
+	$("#previewSelectBullets a.bullet").click(function(event){
+		
+		event.preventDefault();
+		
 		var id = $(this).attr('rel');
 		
 		$(".bibtexpreviewimage").each(function(index) {
-			if($(this).is(":visible")) {
+			if($(this).is(':visible')) {
 				$(this).hide();
 			}
-			
 		});
+		
 		$("#"+id).show();
+		$("#previewSelectBullets a.bullet.active").removeClass('active');
+		$(this).addClass('active');
+		
+		return false;
 	});
 	
 	$('input[type=file]').click();
