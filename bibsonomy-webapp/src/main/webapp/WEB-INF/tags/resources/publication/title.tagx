@@ -15,8 +15,9 @@
 		
 	
 	<div id="ownerAvatar" >
-		<a class="img" href="/user/${mtl:encodeURI(post.user.name)}" title="@${mtl:encodeURI(post.user.name)}">
-			<img alt="@${mtl:encodeURI(post.user.name)}" src="http://www.biblicious.org/picture/user/${fn:escapeXml(post.user.name)}" class="commentPicture"/>
+		<span>@${fn:escapeXml(post.user.name)}</span>
+		<a class="profilepic" href="/user/${mtl:encodeURI(post.user.name)}" title="@${mtl:encodeURI(post.user.name)}">
+			<img alt="@${fn:escapeXml(post.user.name)}" src="http://www.biblicious.org/picture/user/${fn:escapeXml(post.user.name)}" class="commentPicture"/>
 		</a>
 	</div>
 	<div id="titletext" style="">
