@@ -135,7 +135,9 @@
 										<a class="btn okBtn" style="display:none;" title="OK"><span>OK</span></a>
 										<a class="btn removeDocBtn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span>delete</span></a>
 										<a class="btn downloadBtn" title="${downloadTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false"><span>download</span></a>
-										<a class="btn downloadQRBtn" title="${downloadQrTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true"><span>download QR</span></a>	
+										<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
+											<a class="btn downloadQRBtn" title="${downloadQrTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true"><span>download QR</span></a>
+										</c:if>	
 									</form>
 									<!-- delete/rename -->
 									

@@ -67,6 +67,9 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
 		</jsp:attribute>
 		
+		<!--+
+		    | sidebar
+		 	+-->
 		<jsp:attribute name="sidebar">
 			<ul>
 				<!-- display tags -->
@@ -94,6 +97,9 @@
 			</ul>
 		</jsp:attribute>
 		
+		<!--+
+		    | infobox
+		 	+-->
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">

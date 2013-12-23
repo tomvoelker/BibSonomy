@@ -185,9 +185,12 @@
 	
 						<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
 						
-						
+						<!--+
+							| tag list
+							+-->
+							
 						<h4 style="clear:both;">Tags</h4>
-						
+
 						<div class="taglist" style="clear:both; margin-top: 1em;">
 							<ul>
 							<c:forEach var="tag" items="${post.tags}" varStatus="status">

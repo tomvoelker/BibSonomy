@@ -87,9 +87,13 @@ $(function() {
         return false;
     });
     
-    $(".removeDocLink").click(function() {
+    $(".removeDocBtn").click(function(event) {
+    	
+    	event.preventDefault();
+    	
     	var button = $(this);
-		$.get($(button).attr("href"), {}, function(data) {
+		
+    	$.get($(this).attr("href"), {}, function(data) {
 			var status=$("status", data).text();
 			if(status=="error") {
 				alert($("reason", data).text());
