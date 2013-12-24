@@ -137,7 +137,7 @@ $(function() {
 	
 	$(".renameDocForm .okBtn").click(function(event) {
 		event.preventDefault();
-		renameSelected($(this));
+		renameSelected($(this).parent());
 		
 		return false;
 	});
