@@ -1,8 +1,0 @@
-bin
-work
-target
-.classpath
-.wtpmodules
-.djunitplugin
-.tomcatplugin
-jcoverage.ser
