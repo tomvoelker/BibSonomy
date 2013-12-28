@@ -31,7 +31,7 @@
 	 	+-->
 	<fieldset class="fsOuter">
 
-		<form:form name="account" method="post" action="/updateUserProfile">
+		<form:form name="account" method="post" action="/updateUserProfile?ckey=${ckey}" enctype="multipart/form-data">
 	
 		<!--+
 			| username, realname, gender, birthday, place, profile privacy level
@@ -98,16 +98,16 @@
 
 		<input type="hidden" name="action" value="update"/>
 		<input type="hidden" name="selTab" value="0"/>
-		<bform:submit messageKey="settings.saveChanges"/>
+<!-- 		<bform:submit messageKey="settings.saveChanges"/> -->
 		
-		</form:form>
+<!--	</form:form>
 	</fieldset> 
 	
-	<fieldset class="fsOuter" style="margin-top: 2em">
+	<fieldset class="fsOuter" style="margin-top: 2em">-->
 		<!--+
 			| photo 
 			+-->
-		<form:form id="settingImportForm" action="/picture/user/${mtl:encodeURI(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">
+<!-- 	<form:form id="settingImportForm" action="/picture/user/${mtl:encodeURI(user.name)}?ckey=${ckey}" method="post" enctype="multipart/form-data">-->
 		<bform:fieldset maximized="${true}" legendKey="settings.picture.header">
 			<jsp:attribute name="content">
 			
@@ -115,23 +115,26 @@
 					<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.current"/></form:label>
 					<img style="clear:both;" src="/picture/user/${mtl:encodeURI(user.name)}"/>
 				</div>
-				
+
 				<div class="fsRow">
-					<bform:input path="user.gravatarAddress"/>
+					<form:label cssClass="fsLabel" path="user.useExternalPicture"><fmt:message key="user.useExternalPicture"/></form:label>
+					<buttons:help message="user.useExternalPicture.help"/>
+					<form:checkbox path="user.useExternalPicture" />
 				</div>
 				
 				<div class="fsRow">
-					<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.picture.file"/></form:label>
+					<form:label cssClass="fsLabel" path="picturefile"><fmt:message key="settings.picture.file"/></form:label>
 					<buttons:help message="settings.picture.help"/>
-					<input type="file" name="file" class="fsInput fsSmall"/>
+					<input type="file" name="picturefile" class="fsInput fsSmall"/>
 				</div>
 			</jsp:attribute>
 		</bform:fieldset>
 
-		<div class="fsRow">
+<!-- 	<div class="fsRow">
 			<fmt:message var="upload" key = "settings.picture.upload" />
 			<input type="submit" class="fsSubmit" value="${upload}" />
-		</div>
+		</div>-->
+		<bform:submit messageKey="settings.saveChanges"/>
 		</form:form>
 	</fieldset>
 

@@ -263,7 +263,6 @@
 								<value>requestedUser</value>
 								<value>file</value>
 								<value>ckey</value>
-								<value>user.gravatarAddress</value>
 							</list>
 						</property>
 					</bean>
@@ -653,6 +652,8 @@
 								<value>user.interests</value>
 								<value>user.hobbies</value>
 								<value>user.friends</value>
+								<value>user.useExternalPicture</value>
+								<value>picturefile</value>
 								<value>wikiText</value>
 								<value>selTab</value>
 							</list>

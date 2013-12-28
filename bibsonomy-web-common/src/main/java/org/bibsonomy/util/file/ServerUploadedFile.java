@@ -26,6 +26,7 @@ package org.bibsonomy.util.file;
 import java.io.File;
 import java.io.IOException;
 
+import org.bibsonomy.model.util.file.FilePurpose;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,4 +58,16 @@ public class ServerUploadedFile implements UploadedFile {
 		this.file.transferTo(fileInFileSytem);
 	}
 
+	@Override
+	public FilePurpose getPurpose ()
+	{
+		return FilePurpose.UPLOAD;
+	}
+
+	@Override
+	public String getAbsolutePath() {
+		//nothing to do while uploading
+		return "";
+	}
+	
 }

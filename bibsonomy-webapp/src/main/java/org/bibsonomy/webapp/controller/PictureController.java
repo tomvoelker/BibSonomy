@@ -2,13 +2,16 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.services.filesystem.ProfilePictureLogic;
 import org.bibsonomy.util.file.FileUtil;
@@ -31,6 +34,92 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class PictureController implements MinimalisticController<PictureCommand>, ErrorAware, RequestAware {
 
+	protected static class GravatarHandler
+	{
+		private final URL gravURI;
+		
+		protected GravatarHandler ( String gravAddress, String fileExtension )
+		{
+			gravURI = generateGravURI( gravAddress, "404", fileExtension );
+		}
+		
+		@Deprecated
+		protected boolean hasGravatarPicture ()
+		{
+			if ( gravURI == null )
+				return false;
+			
+			//else:
+			HttpURLConnection httpconn = null;
+			try {
+				URLConnection connection = gravURI.openConnection();
+				if ( connection instanceof HttpURLConnection ) //should be the case!
+				{
+					httpconn = (HttpURLConnection) connection;
+					httpconn.connect();
+					int responsecode = httpconn.getResponseCode();
+					
+					//if response is neither 2xx nor 404, connection failed due other reasons than "no picture";
+					//act as in case of I/O exception.
+					return ( responsecode != 404 );
+				}
+			}
+			catch ( IOException ioe ) {
+				//unable to connect:
+				//nothing to do, but use Gravatar, however.
+				return true;
+			}
+			finally {
+				if ( httpconn != null )
+					httpconn.disconnect();
+			}
+			
+			//all else -- even though I'm not aware how this shall ever happen:
+			return false;
+		}
+		
+		protected String getURLString ()
+		{
+			return gravURI.toString();
+		}
+		
+		/**
+		 * Generates Gravatar URI for this request's email address.
+		 * 
+		 * @param address :	Gravatar email address as String
+		 * @param defaultBehav : specifies Gravatar behaviour if there is no picture for the address
+		 * @param fileExtension : requested file extension or empty String.
+		 * @return Gravatar URI as String
+		 */
+		protected static URL generateGravURI ( String address, String defaultBehav, String fileExtension )
+		{
+			if ( address == null || address.isEmpty() )
+				return null;
+			
+			//else:
+			//hash user's gravatar email, use default-picture "mystery-man", use resolution 128x128;
+			try {
+				return new URL( String.format("http://www.gravatar.com/avatar/%s%s?d=%s&s=128", hashGravAddress(address), fileExtension, defaultBehav) );
+			} 
+			catch (MalformedURLException ex) {
+				//shouldn't happen!
+				return null;
+			}
+		}
+		
+		protected static String hashGravAddress ( String address )
+		{
+			if ( address == null || address.isEmpty() )
+			{	
+				return "0";
+			}
+			
+			//else:
+			String result = DigestUtils.md5Hex( address.trim().toLowerCase() );
+			return result;
+		}
+	}
+	
 	static {
 		/*
 		 * set the headless mode for awt library
@@ -57,7 +146,6 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	public PictureCommand instantiateCommand() {
 		PictureCommand command = new PictureCommand();
 
-		command.setUser(new User());
 		return command;
 	}
 
@@ -92,59 +180,40 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 */
 	private View downloadPicture(final PictureCommand command) 
 	{	
-		/*
-		 * Use default whether gravatar shall be preferred.
-		 * 
-		 * One may wire this statically, or read from user settings, command or whatever.
-		 */
-		boolean preferGravatar = PREFER_GRAVATAR_DEFAULT;
 		
 		final String requestedUserName = command.getRequestedUser();
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		
 		User requestedUser = logic.getUserDetails(requestedUserName);
-		String gravAddress = requestedUser.getGravatarAddress();
+		//use user email as Gravatar address
+		String gravAddress = requestedUser.getEmail();
 		
-		//TODO: determine whether user possesses local profile picture.
+		/*
+		 * TODO: we should test if user's profile picture is visible anyway.
+		 * Otherwise Gravatar picture mustn't be shown, too.
+		 */
+		boolean useGravatar = present( requestedUser.getGravatarAddress() ); //TODO: boolean getter value
+		//boolean hasLocalPic = fileLogic.hasVisibleProfilePicture(loginUserName, requestedUserName);
+		
 			
-		if ( preferGravatar && gravAddress != null && !gravAddress.isEmpty() )
+		if ( useGravatar ) //&& !hasLocalPic )
 		{
-			ExtendedRedirectView resultV = new ExtendedRedirectView( generateGravURI(gravAddress, ".jpg") );
+			GravatarHandler gravHandler = new GravatarHandler( gravAddress, ".jpg" );
+			ExtendedRedirectView resultV = new ExtendedRedirectView( gravHandler.getURLString() );
 			resultV.setContentType( "image/jpg" );
 			return resultV;
 		}
 		
 		//else:
-		final File profilePicture = this.fileLogic.getProfilePictureForUser(loginUserName, requestedUserName);
+		UploadedFile profilePicture = requestedUser.getProfilePicture();
+		
+		//final File profilePicture = this.fileLogic.getProfilePictureForUser(loginUserName, requestedUserName);
 		command.setPathToFile(profilePicture.getAbsolutePath());
-		command.setContentType(FileUtil.getContentType(profilePicture.getName()));
+		command.setContentType(FileUtil.getContentType(profilePicture.getFileName()));
 		command.setFilename(requestedUserName + ProfilePictureLogic.FILE_EXTENSION);
 		return Views.DOWNLOAD_FILE;
 	}
 	
-	/**
-	 * Generates Gravatar URI for this request's email address.
-	 * 
-	 * @param address :	Gravatar email address as String
-	 * @return Gravatar URI as String
-	 */
-	protected String generateGravURI ( String address, String fileExtension )
-	{
-		//hash user's gravatar email, use default-picture "mystery-man", use resolution 128x128;
-		return String.format( "http://www.gravatar.com/avatar/%s%s?d=mm&s=128", hashGravAddress(address), fileExtension );
-	}
-	
-	protected String hashGravAddress ( String address )
-	{
-		if ( address.isEmpty() )
-		{	
-			return "0";
-		}
-		
-		//else:
-		String result = DigestUtils.md5Hex( address.trim().toLowerCase() );
-		return result;
-	}
 
 	/**
 	 * This method manage the picture upload
@@ -154,13 +223,6 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 */
 	private Views uploadPicture(final PictureCommand command)
 	{
-		/*
-		 * Use default whether gravatar shall be preferred.
-		 * 
-		 * One may wire this statically, or read from user settings, command or whatever.
-		 */
-		boolean preferGravatar = PREFER_GRAVATAR_DEFAULT;
-		
 		final RequestWrapperContext context = command.getContext();
 
 		// check if user is logged in, if not throw an error and go directly
@@ -181,25 +243,12 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		User loginUser = context.getLoginUser();
 		final String loginUserName = loginUser.getName();
 		
-		User commandUser = command.getUser();
-		String gravAddress = commandUser.getGravatarAddress();
-
 		final MultipartFile file = command.getFile();
-		boolean useLocalPicture = ( !preferGravatar || gravAddress == null || gravAddress.isEmpty() );
 		
-		// save Gravatar email address anyway
-		try {
-			loginUser.setGravatarAddress( gravAddress );
-			logic.updateUser(loginUser, UserUpdateOperation.UPDATE_CORE);
-		}
-		catch ( DatabaseException dbex ) {
-			//TODO
-			throw dbex;
-		}
 		
-		if ( useLocalPicture && present(file) && file.getSize() > 0) {
+		if ( present(file) && file.getSize() > 0) {
 			/*
-			 * do not prefer Gravatar or no email address given AND a file is given
+			 * a file is given
 			 *	--> save it
 			 */
 			try {
@@ -211,7 +260,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		} 
 		else { 
 			/*
-			 * prefer gravatar or no file given, but POST request --> delete picture
+			 * no file given, but POST request --> delete picture
 			 */
 			this.fileLogic.deleteProfilePictureForUser(loginUserName);
 		}

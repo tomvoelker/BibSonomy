@@ -23,41 +23,25 @@
 
 package org.bibsonomy.model.util.file;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
- * @author dzo
+ * This is to state the purpose of a handled file.
+ * 
+ * @author cunis
+ * @version $Id:$
  */
-public interface UploadedFile {
-
+public enum FilePurpose {
 	/**
-	 * @return the name of the file
+	 * File shall be uploaded.
 	 */
-	public String getFileName();
+	UPLOAD,
 	
 	/**
-	 * @return the absolute path of the file
+	 * File shall be downloaded.
 	 */
-	public String getAbsolutePath();
+	DOWNLOAD,
 	
 	/**
-	 * @return the content as byte array
-	 * @throws IOException 
+	 * Unspecified file purpose.
 	 */
-	public byte[] getBytes() throws IOException;
-	
-	/**
-	 * transfers the file (e. g. in memory to the file system)
-	 * @param fileInFileSytem
-	 * @throws Exception 
-	 */
-	public void transferTo(File fileInFileSytem) throws Exception;
-
-	/**
-	 * returns the purpose of the file.
-	 * @return FilePurpose
-	 */
-	public FilePurpose getPurpose ();
-
+	UNSPECIFIED;
 }

@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -26,8 +27,11 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.model.util.file.FilePurpose;
+import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.file.LazyUploadedFile;
 import org.bibsonomy.wiki.TemplateManager;
 
 /**
@@ -122,6 +126,18 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		user.setSettings(this.getUserSettings(lowerCaseUsername, session));
 		
 		/*
+		 * get user profile picture from fileLogic
+		 */
+		final String loggedinUser = ""; //TODO determine
+		user.setProfilePicture(new LazyUploadedFile(){
+
+			@Override
+			protected File requestFile() {
+				return fileLogic.getProfilePictureForUser( loggedinUser, user.getName() );
+			}
+		});
+		
+		/*
 		 * ToDo - Replace this with a more Generic Version
 		 * This fetches all SamlRemoteUserIds (LDAP and OpenId are already fetched through a join with the respective tables in "getUserDetails")
 		 * FIXME: Use another join in getUserDetails (or enable this query only if Saml Authentification is active) 
@@ -150,6 +166,26 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getApiKeyForUser", username, String.class, session);
 	}
 
+	protected void update( final String query, final User user, final DBSession session )
+	{
+		super.update(query, user, session);
+		
+		//TODO replace by switch
+		if ( query == "updateUser" || query == "updateUserProfile" )
+		{
+			UploadedFile profilePicture = user.getProfilePicture();
+			if ( present(profilePicture) && profilePicture.getPurpose() == FilePurpose.UPLOAD )
+			{
+				try {
+					fileLogic.saveProfilePictureForUser(user.getName(), profilePicture);
+				} catch (Exception ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Generate an API key for an existing user.
 	 * 

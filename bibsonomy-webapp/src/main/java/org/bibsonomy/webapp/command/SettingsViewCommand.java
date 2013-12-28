@@ -10,6 +10,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -159,6 +160,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private boolean isGroup = false;
 	private String wikiText;
 	private String renderedWikiText;
+	
+	/**
+	 * new profile picture file to upload
+	 */
+	private MultipartFile picturefile;
 
 	/**
 	 * Constructor.
@@ -678,6 +684,24 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setConsumerInfo(List<OAuthConsumerInfo> consumerInfo) {
 		this.consumerInfo = consumerInfo;
+	}
+	
+	/**
+	 * Sets picture file to upload
+	 * @param file : picture file as MultipartFile
+	 */
+	public void setPicturefile ( MultipartFile file )
+	{
+		picturefile = file;
+	}
+	
+	/**
+	 * Returns picture file to upload
+	 * @return picture file as MultipartFile
+	 */
+	public MultipartFile getPicturefile ()
+	{
+		return picturefile;
 	}
 
 }
