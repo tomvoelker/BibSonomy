@@ -54,7 +54,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			this.errors.reject("error.field.valid.ckey");
 		}
 
-		return super.workOn(command);
+		return workOn(command);
 	}
 
 
@@ -80,7 +80,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		
 		loginUser.setUseExternalPicture(commandUser.getUseExternalPicture());
 		
-		updateUserPicture( loginUser, command.getPicturefile() );
+		updateUserPicture( loginUser, command );
 
 		final ProfilePrivlevel profilePrivlevel = commandUser.getSettings().getProfilePrivlevel();
 		
@@ -89,15 +89,21 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		this.updateUser(loginUser, this.errors);
 	}
 	
-	private void updateUserPicture ( final User loginUser, final MultipartFile file )
+	private void updateUserPicture ( final User loginUser, SettingsViewCommand command )
 	{
+		final MultipartFile file = command.getPicturefile();
+		
+		/*
+		 * If a picture file is given -> upload
+		 * Else, if delete requested -> delete 
+		 */
 		if ( present(file) && file.getSize() > 0 )
 		{
 			loginUser.setProfilePicture( new ServerUploadedFile(file) );
 		}
-		else
+		else if ( command.getDeletePicture() )
 		{
-			//TODO: delete picture?
+			loginUser.setProfilePicture( null );
 		}
 	}
 

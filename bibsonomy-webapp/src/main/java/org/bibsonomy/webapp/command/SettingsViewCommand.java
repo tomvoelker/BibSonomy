@@ -167,6 +167,12 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private MultipartFile picturefile;
 
 	/**
+	 * flag to indicate whether a prior uploaded picture file shall be deleted
+	 */
+	private boolean deletePicture;
+	
+
+	/**
 	 * Constructor.
 	 */
 	public SettingsViewCommand() {
@@ -687,7 +693,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 	
 	/**
-	 * Sets picture file to upload
+	 * Sets picture file to upload.
 	 * @param file : picture file as MultipartFile
 	 */
 	public void setPicturefile ( MultipartFile file )
@@ -696,12 +702,30 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 	
 	/**
-	 * Returns picture file to upload
+	 * Returns picture file to upload.
 	 * @return picture file as MultipartFile
 	 */
 	public MultipartFile getPicturefile ()
 	{
 		return picturefile;
+	}
+
+	/**
+	 * Sets whether a prior uploaded picture file shall be deleted.
+	 * @param deletePicture flag as boolean
+	 */
+	public void setDeletePicture ( boolean delete )
+	{
+		deletePicture = delete;
+	}
+	
+	/**
+	 * Checks whether a prior uploaded picture file shall be deleted.
+	 * @return flag as boolean
+	 */
+	public boolean getDeletePicture ()
+	{
+		return deletePicture;
 	}
 
 }

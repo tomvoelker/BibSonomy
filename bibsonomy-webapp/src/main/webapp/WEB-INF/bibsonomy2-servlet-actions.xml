@@ -654,6 +654,7 @@
 								<value>user.friends</value>
 								<value>user.useExternalPicture</value>
 								<value>picturefile</value>
+								<value>deletePicture</value>
 								<value>wikiText</value>
 								<value>selTab</value>
 							</list>

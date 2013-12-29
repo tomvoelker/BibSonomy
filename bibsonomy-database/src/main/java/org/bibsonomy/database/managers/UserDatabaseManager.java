@@ -174,15 +174,21 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if ( query == "updateUser" || query == "updateUserProfile" )
 		{
 			UploadedFile profilePicture = user.getProfilePicture();
+			/*
+			 * If profile picture file given for upload -> upload
+			 * User has no picture file (null-pointer) -> delete
+			 */
 			if ( present(profilePicture) && profilePicture.getPurpose() == FilePurpose.UPLOAD )
 			{
 				try {
-					fileLogic.saveProfilePictureForUser(user.getName(), profilePicture);
+					fileLogic.saveProfilePictureForUser( user.getName(), profilePicture );
 				} catch (Exception ex) {
 					// TODO Auto-generated catch block
 					ex.printStackTrace();
 				}
 			}
+			else if ( profilePicture == null )
+				fileLogic.deleteProfilePictureForUser( user.getName() );
 		}
 	}
 	
