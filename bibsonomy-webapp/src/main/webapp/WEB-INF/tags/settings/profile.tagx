@@ -116,10 +116,26 @@
 					<img style="clear:both;" src="/picture/user/${mtl:encodeURI(user.name)}"/>
 				</div>
 
-				<div class="fsRow">
+				<!-- <div class="fsRow">
 					<form:label cssClass="fsLabel" path="user.useExternalPicture"><fmt:message key="user.useExternalPicture"/></form:label>
 					<buttons:help message="user.useExternalPicture.help"/>
 					<form:checkbox path="user.useExternalPicture" />
+				</div>-->
+				
+				<div class="fsRow">
+					<form:label cssClass="fsLabel" path="user.useExternalPicture"><fmt:message key="user.useExternalPicture"/></form:label>
+					<fmt:message var="useExtHelp" key="user.useExternalPicture.help">
+						<fmt:param><fmt:message key="user.useExternalPicture.service" /></fmt:param>
+					</fmt:message>
+					<buttons:help message="${useExtHelp}"/>
+					<fmt:message var="useExtTrue" key="user.useExternalPicture.true">
+						<fmt:param><fmt:message key="user.useExternalPicture.service" /></fmt:param>
+					</fmt:message>
+					<fmt:message var="useExtFalse" key="user.useExternalPicture.false" />
+					<form:select cssClass="fsInput fsSmall" path="user.useExternalPicture">
+						<form:option label="${useExtTrue}" value="${true}"/>
+						<form:option label="${useExtFalse}" value="${false}"/>
+					</form:select>
 				</div>
 				
 				<div class="fsRow">
