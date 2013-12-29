@@ -157,19 +157,10 @@ public class PictureController implements MinimalisticController<PictureCommand>
 			 * picture download
 			 */
 			return downloadPicture(command);
-		} else if ("POST".equals(method)) {
-			/*
-			 *  picture upload
-			 */
-			final Views view = uploadPicture(command);
-			if (present(view)) {
-				return view;
-			}
-			return new ExtendedRedirectView("/settings");
-		} else { 
-			return Views.ERROR;
 		}
-
+		
+		//else:
+		return Views.ERROR;
 	}
 
 	/**
@@ -182,7 +173,6 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	{	
 		
 		final String requestedUserName = command.getRequestedUser();
-		final String loginUserName = command.getContext().getLoginUser().getName();
 		
 		User requestedUser = logic.getUserDetails(requestedUserName);
 		//use user email as Gravatar address
@@ -192,8 +182,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		 * TODO: we should test if user's profile picture is visible anyway.
 		 * Otherwise Gravatar picture mustn't be shown, too.
 		 */
-		boolean useGravatar = present( requestedUser.getGravatarAddress() ); //TODO: boolean getter value
-		//boolean hasLocalPic = fileLogic.hasVisibleProfilePicture(loginUserName, requestedUserName);
+		boolean useGravatar = requestedUser.getUseExternalPicture();
 		
 			
 		if ( useGravatar ) //&& !hasLocalPic )
@@ -207,10 +196,9 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		//else:
 		UploadedFile profilePicture = requestedUser.getProfilePicture();
 		
-		//final File profilePicture = this.fileLogic.getProfilePictureForUser(loginUserName, requestedUserName);
-		command.setPathToFile(profilePicture.getAbsolutePath());
-		command.setContentType(FileUtil.getContentType(profilePicture.getFileName()));
-		command.setFilename(requestedUserName + ProfilePictureLogic.FILE_EXTENSION);
+		command.setPathToFile( profilePicture.getAbsolutePath() );
+		command.setContentType( FileUtil.getContentType(profilePicture.getFileName()) );
+		command.setFilename( requestedUserName + ProfilePictureLogic.FILE_EXTENSION );
 		return Views.DOWNLOAD_FILE;
 	}
 	
@@ -219,8 +207,10 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * This method manage the picture upload
 	 * 
 	 * @param command
-	 * @return Error view or null if upload successful 
+	 * @return Error view or null if upload successful
+	 * @deprecated now managed by UserUpdateController#workOn
 	 */
+	@Deprecated
 	private Views uploadPicture(final PictureCommand command)
 	{
 		final RequestWrapperContext context = command.getContext();
