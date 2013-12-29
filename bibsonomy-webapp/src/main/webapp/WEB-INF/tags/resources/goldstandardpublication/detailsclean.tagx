@@ -116,17 +116,50 @@
 				<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
 					<c:set var="publication" value="${command.bibtex.list[0].resource}" />
 					<h4><fmt:message key="goldstandard.resource.relatedUsers"/></h4>
-					<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
-						<div class="ownerAvatar" >
-							<span>@${fn:escapeXml(user.name)}</span>
-							<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
-								<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
-							</a>
-						</div>
-						<c:out value=" "/>
-						
-					</c:forEach>
-					<br style="clear:left" />
+					<c:choose>
+						<c:when test="${fn:length(command.relatedUserCommand.relatedUsers) lt 8}">
+							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
+								<div class="ownerAvatar" >
+									<span>@${fn:escapeXml(user.name)}</span>
+									<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
+										<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+									</a>
+								</div>
+								<c:out value=" "/>
+								
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							
+							
+								<div class="lessUser">
+									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="0" end="6" varStatus="count">
+										<div class="ownerAvatar">
+											<span>@${fn:escapeXml(user.name)}</span>
+											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
+												<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+											</a>
+										</div>
+									</c:forEach>
+									
+								</div>
+								<div class="moreUser" style="display: none;">
+								
+									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="7" varStatus="count">
+										<div class="ownerAvatar">
+											<span>@${fn:escapeXml(user.name)}</span>
+											<a class="profilepic" href="/bibtex/1${publication.interHash}/${fn:escapeXml(user.name)}" title="@${fn:escapeXml(user.name)}">
+												<img alt="@${fn:escapeXml(user.name)}" src="/picture/user/${fn:escapeXml(user.name)}" />
+											</a>
+										</div>
+									</c:forEach>
+								</div>
+								<div style="float: left; padding-top: 56px;">
+									<a href="#" id="showMoreUser"><c:out value="${fn:length(command.relatedUserCommand.relatedUsers)-7} " /> <span>more</span></a>
+								</div>
+						</c:otherwise>
+					</c:choose>
+					<br style="clear:left" /><br />
 				</c:if>
 				<!--+
 					| discussion and rating

@@ -168,6 +168,16 @@ $(function() {
 		return false;
 	});
 	
+	$('#showMoreUser').click(function(){
+		
+		if($('.moreUser').is(':visible')) {
+			$(this).find('span').text('more');
+		} else {
+			$(this).find('span').text('less');
+		}
+		$('.moreUser').toggle();
+	});
+	
 	$('input[type=file]').click();
 	
 });
