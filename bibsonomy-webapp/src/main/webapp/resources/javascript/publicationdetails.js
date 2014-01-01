@@ -87,9 +87,13 @@ $(function() {
         return false;
     });
     
-    $(".removeDocLink").click(function() {
+    $(".removeDocBtn").click(function(event) {
+    	
+    	event.preventDefault();
+    	
     	var button = $(this);
-		$.get($(button).attr("href"), {}, function(data) {
+		
+    	$.get($(this).attr("href"), {}, function(data) {
 			var status=$("status", data).text();
 			if(status=="error") {
 				alert($("reason", data).text());
@@ -133,7 +137,7 @@ $(function() {
 	
 	$(".renameDocForm .okBtn").click(function(event) {
 		event.preventDefault();
-		renameSelected($(this));
+		renameSelected($(this).parent());
 		
 		return false;
 	});
@@ -145,16 +149,33 @@ $(function() {
 		return false;
 	});
 	
-	$(".renameDocForm").hover(function(){
+	$("#previewSelectBullets a.bullet").click(function(event){
+		
+		event.preventDefault();
+		
 		var id = $(this).attr('rel');
 		
 		$(".bibtexpreviewimage").each(function(index) {
-			if($(this).is(":visible")) {
+			if($(this).is(':visible')) {
 				$(this).hide();
 			}
-			
 		});
+		
 		$("#"+id).show();
+		$("#previewSelectBullets a.bullet.active").removeClass('active');
+		$(this).addClass('active');
+		
+		return false;
+	});
+	
+	$('#showMoreUser').click(function(){
+		
+		if($('.moreUser').is(':visible')) {
+			$(this).find('span').text('more');
+		} else {
+			$(this).find('span').text('less');
+		}
+		$('.moreUser').toggle();
 	});
 	
 	$('input[type=file]').click();

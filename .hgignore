@@ -1,0 +1,29 @@
+
+syntax: regexp
+^bibsonomy-webapp/work$
+syntax: regexp
+target
+syntax: regexp
+^bibsonomy-webapp/src/main/webapp/WEB-INF/classes$
+syntax: regexp
+\.classpath$
+syntax: regexp
+\.project$
+syntax: regexp
+\.settings
+syntax: regexp
+\.tomcatplugin
+
+syntax: regexp
+\.tomcatplugin$
+
+syntax: regexp
+.settings
+syntax: regexp
+.project
+syntax: regexp
+^bibsonomy-webapp/src/main/webapp/WEB-INF/lib$
+syntax: regexp
+^bibsonomy-webapp/\.settings$
+syntax: regexp
+^\.hgignore$
