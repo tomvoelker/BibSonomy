@@ -26,8 +26,8 @@ public abstract class StandardPictureHandlerFactory implements PictureHandlerFac
 	@Override
 	public PictureHandler getPictureHandler ( User user, PictureCommand command )
 	{
-		if ( user.getUseExternalPicture() )
-			return new ServerPictureHandler();
+		if ( !user.getUseExternalPicture() )
+			return new ServerPictureHandler(user, command);
 		
 		//else:
 		return getExternalHandler( user, command );

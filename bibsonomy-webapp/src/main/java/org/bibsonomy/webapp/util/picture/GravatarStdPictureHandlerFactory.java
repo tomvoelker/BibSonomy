@@ -16,6 +16,6 @@ public class GravatarStdPictureHandlerFactory extends StandardPictureHandlerFact
 	@Override
 	public GravatarPictureHandler getExternalHandler ( User user, PictureCommand command )
 	{
-		return new GravatarPictureHandler();
+		return new GravatarPictureHandler( user, command );
 	}
 }

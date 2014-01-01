@@ -54,7 +54,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			this.errors.reject("error.field.valid.ckey");
 		}
 
-		return workOn(command);
+		return super.workOn(command);
 	}
 
 
