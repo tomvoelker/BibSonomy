@@ -22,7 +22,7 @@ public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlug
 	}
 	
 	@Override
-	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
 		// update all references of the post
 		final LoggingParam<String> param = new LoggingParam<String>();
 		param.setNewId(newInterhash);

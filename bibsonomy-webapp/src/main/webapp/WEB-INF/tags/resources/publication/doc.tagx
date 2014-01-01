@@ -24,7 +24,7 @@
 		  		<c:when test="${empty publication.documents}">
 			  		<c:if test="${isOwnEntry}">
 			  			<div class="publication preview bibtexpreviewimage">
-							<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+							<a class="addDocument addDocumentImg" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 								<img class="pre_pic" style="width: 220px;" src="${resdir}/image/addDocument-LARGE.jpg" alt=""/>							
 							</a>
 						</div>
@@ -34,26 +34,45 @@
 					</c:if>
 		  		</c:when>
 		  		<c:otherwise>
-		  			<c:set var="document" value="${publication.documents[0]}"></c:set>
-					<c:choose>
-						<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-							<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
-								<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-							<div class="bibtexpreviewimage">
-							<!-- preview picture of first document -->
-								<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
-									<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(publication.documents[0].fileName)}?preview=LARGE"/>
-								</a>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-								<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-								<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
+		  			<c:set var="count" value="0" scope="page" />
+		  			<c:forEach var="document" items="${publication.documents}">
+		  			 
+						<c:choose>
+							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
+								<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
+									<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
+								<c:choose>
+									<c:when test="${count eq 0}">
+										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
+											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
+												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(publication.documents[0].fileName)}?preview=LARGE"/>
+											</a>
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
+											<!-- preview picture of first document -->
+											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
+												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(publication.documents[0].fileName)}?preview=LARGE"/>
+											</a>
+										</div>
+									</c:otherwise>
+								</c:choose>
 									
-							</a>
-						</c:otherwise>
-					</c:choose>
+								
+							</c:when>
+							<c:otherwise>
+								<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+									<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
+									<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
+										
+								</a>
+							</c:otherwise>
+						</c:choose>
+						<c:set var="count" value="${count + 1}" scope="page"/>
+		  			</c:forEach>
+		  			
+
   				
   					<ul>
   					<c:forEach var="document" items="${publication.documents}">
@@ -73,22 +92,20 @@
 										<c:param name="temp" value="false" />
 										<c:param name="action" value="delete" />
 									</c:url>
-									<!-- 
-									<p class="publication_action_buttons">
-										<a class="renameDoc" title="renameTitle" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" data-filename="${fn:escapeXml(document.fileName)}"><span>rename</span></a>
-									</p>
-									-->
 									<c:set var="filename" value="${document.fileName}" />
-								
-									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
+									<c:set var="renameDocTitle"><fmt:message key="bibtex.actions.private_document.rename"/></c:set>
+									<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/> ${filename}</c:set>
+									<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
+									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
+									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
+									<form rel="${mtl:downloadFileId(document.fileName)}" class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
 										<span class="showName" style="display:none;"><c:out value="${filename}" /></span>
 										<input class="renameDocInput" name='newFileName' type="text" value="${filename}" />
-										<button class="btn renameBtn"><span>rename</span></button>
-										<input class="btn okBtn" style="display:none;" type="submit" value="" />
-										<a class="btn removeDocBtn" title="deleteTitle" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span>delete</span></a>
-										<a class="btn downloadBtn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}"><span>download</span></a>
-										<a class="btn downloadQRBtn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true">&amp;nbsp;<span>download QR</span></a>	
-
+										<a class="btn renameBtn" title="${renameDocTitle}"><span>rename</span></a>
+										<a class="btn okBtn" style="display:none;" title="OK"><span>OK</span></a>
+										<a class="btn removeDocBtn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}"><span>delete</span></a>
+										<a class="btn downloadBtn" title="${downloadTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false"><span>download</span></a>
+										<a class="btn downloadQRBtn" title="${downloadQrTitle}" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true"><span>download QR</span></a>	
 									</form>
 									<!-- delete/rename -->
 									
@@ -99,7 +116,7 @@
 						<li>
 							<div class="preview_meta">
 								<c:if test="${isOwnEntry}">
-									<a  class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+									<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 										<span><fmt:message key="bibtex.actions.additionalFiles"/></span>
 									</a>
 									<div id="inputDiv">

@@ -1,5 +1,8 @@
 @CHARSET "UTF-8";
 
+#fullscreen {
+	min-width:800px !important;
+}
 
 #innercontent {
 	font-size: 110%;
@@ -277,15 +280,6 @@ input.renameDocInput {
 	font-size: 80% !important;
 }
 
-div#ownerAvatar{
-	display: block;
-	float:left; 
-	width: 68px; 
-	text-align: center;
-	padding-top: 5px;
-
-}
-
 div#titletext {
 	width: auto;
 	min-width: 454px;
@@ -295,15 +289,39 @@ div#titletext {
 	position: relative;
 }
 
-div#ownerAvatar a {
+div#ownerAvatar{
+	display: block;
+	float:left; 
+	width: 66px; 
+	height: 66px;
+	border: 1px solid #a9a9a9; 
+	margin-top: 5px;
+	overflow: hidden;
+}
 
+div#ownerAvatar span {
+	display: block;
+	font-size: 11px;
+	color: #000; 
+	background-color: rgba(186, 186, 186, 0.6); 
+	margin: 0; 
+	padding: 1px; 
+	height: 11px; 
+	position:relative; 
+	line-height: 11px; 
+	top: 53px; 
+	overflow: hidden; 
+	z-index: 2;
+	min-width: 64px;
 }
 
 div#ownerAvatar a img {
 	width: 64px; 
-	height: 64px;
 	padding: 1px;
-	border: 1px solid #a9a9a9; 
+	overflow:hidden;
+	position:relative;
+	top: -13px;
+	z-index: 1;
 }
 
 .addUrl:before, .addDocument:before {
@@ -319,4 +337,12 @@ a.addDocumentImg.addDocument:before {
 	line-height: 13px;
 	padding: 5px 3px 3px 3px;
 	margin: 2px 0;
+}
+
+#abstract {
+	text-align:justify
+}
+
+.profilepic {
+	
 }
