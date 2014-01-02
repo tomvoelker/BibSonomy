@@ -1086,6 +1086,7 @@ CREATE TABLE `pendingUser` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `gravatarAddress` varchar(255) DEFAULT NULL,
+  `useExternalPicture` tinyint(1) DEFAULT '0',
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
