@@ -30,8 +30,6 @@ import org.bibsonomy.common.enums.ConceptStatus;
  * requested
  * 
  * @author Stefan Stützer
- * @version $Id: UnsupportedConceptStatusException.java,v 1.1 2008-02-14
- *          16:21:19 ss05sstuetzer Exp $
  */
 public class UnsupportedConceptStatusException extends RuntimeException {
 

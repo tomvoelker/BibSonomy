@@ -42,8 +42,6 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for arjournals.annualreviews.org
  * 
  * @author tst
- * @version $Id: AnnualreviewsScraper.java,v 1.13 2012-04-11 13:54:05 bibsonomy
- *          Exp $
  */
 public class AnnualreviewsScraper extends AbstractUrlScraper {
 

@@ -17,8 +17,6 @@ import org.springframework.security.saml.SAMLCredential;
  * Also checks if rememberMe services are requested inside the SAML relaystate
  * 
  * @author dzo
- * @version $Id: TokenBasedRememberMeServices.java,v 1.4 2012-09-17 12:51:00
- *          nosebrain Exp $
  */
 public class TokenBasedRememberMeServices extends org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices implements CookieBasedRememberMeServices {
 	private UrlParameterExtractor paramExtractor;

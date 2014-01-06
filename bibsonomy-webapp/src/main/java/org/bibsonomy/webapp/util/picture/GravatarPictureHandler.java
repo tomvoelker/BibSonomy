@@ -11,7 +11,6 @@ import org.bibsonomy.webapp.command.actions.PictureCommand;
  * A {@link PictureHandler} implementation requesting user's <a href="http://gravatar.com">Gravatar</a> profile picture.
  * 
  * @author cut
- * @version $Id:$
  * @see PictureHandler
  * @see ExternalPictureHandler
  * @see <a href="http://gravatar.com/site/implement/">http://gravatar.com/site/implement/</a>

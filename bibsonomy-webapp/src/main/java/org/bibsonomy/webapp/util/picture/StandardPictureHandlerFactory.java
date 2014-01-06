@@ -7,7 +7,6 @@ import org.bibsonomy.webapp.command.actions.PictureCommand;
  * Base class of {@link PictureHandlerFactory} implementation returning either a 
  * {@link ServerPictureHandler} or any {@link ExternalPictureHandler} implementation.
  * @author cut
- * @version $Id:$
  */
 public abstract class StandardPictureHandlerFactory implements PictureHandlerFactory
 {

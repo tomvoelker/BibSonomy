@@ -29,8 +29,6 @@ import org.bibsonomy.model.util.UserUtils;
  * Database Manager for permissions
  * 
  * @author Dominik Benz
- * @version $Id: PermissionDatabaseManager.java,v 1.51 2012-03-06 14:02:20
- *          doerfel Exp $
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(PermissionDatabaseManager.class);

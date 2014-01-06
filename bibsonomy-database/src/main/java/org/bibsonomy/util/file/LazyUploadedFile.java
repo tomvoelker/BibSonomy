@@ -35,7 +35,6 @@ import org.bibsonomy.model.util.file.UploadedFile;
  * Implementation of {@link UploadedFile} with on-demand load of file.
  * 
  * @author cunis
- * @version $Id:$
  */
 public abstract class LazyUploadedFile implements UploadedFile
 {
