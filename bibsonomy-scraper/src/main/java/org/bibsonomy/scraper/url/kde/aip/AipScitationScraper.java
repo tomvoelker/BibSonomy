@@ -56,7 +56,6 @@ public class AipScitationScraper extends SimpleGenericURLScraper {
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
 	
-	@Override
 	public String getInfo() {
 		return INFO;
 	}
@@ -66,12 +65,10 @@ public class AipScitationScraper extends SimpleGenericURLScraper {
 		return patterns;
 	}
 
-	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
