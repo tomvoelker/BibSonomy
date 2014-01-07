@@ -149,6 +149,8 @@ $(function() {
 		return false;
 	});
 	
+	$("li.document:gt(0)").removeClass('active');
+	
 	$("#previewSelectBullets a.bullet").click(function(event){
 		
 		event.preventDefault();
@@ -162,9 +164,13 @@ $(function() {
 		});
 		
 		$("#"+id).show();
-		$("#previewSelectBullets a.bullet.active").removeClass('active');
-		$(this).addClass('active');
 		
+		//remove class active 
+		$("#previewSelectBullets a.bullet.active, li.document.active").removeClass('active');
+		
+		//add class active to new active elements
+		$(this).addClass('active');
+		$("li.document."+id).addClass('active');
 		return false;
 	});
 	

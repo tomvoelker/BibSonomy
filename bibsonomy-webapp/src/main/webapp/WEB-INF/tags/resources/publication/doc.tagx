@@ -106,7 +106,7 @@
   					</c:if>
   					<ul>
   					<c:forEach var="document" items="${publication.documents}">
-						<li>
+						<li class="document  ${mtl:downloadFileId(document.fileName)} active">
 							<div class="preview_meta">
 								<!--+ 
 								 	| delete and rename options
@@ -124,7 +124,7 @@
 									</c:url>
 									<c:set var="filename" value="${document.fileName}" />
 									<c:set var="renameDocTitle"><fmt:message key="bibtex.actions.private_document.rename"/></c:set>
-									<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/> ${filename}</c:set>
+									<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;${filename}</c:set>
 									<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
 									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
 									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
