@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
   <name>bibsonomy-common</name>
-  <comment>Common things (e.g., exceptions, enums, utils, etc.). NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <comment>Common things (e.g., exceptions, enums, utils, etc.).</comment>
   <projects/>
   <buildSpec>
     <buildCommand>

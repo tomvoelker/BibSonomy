@@ -37,13 +37,12 @@ public class SearchPageController extends SingleResourceListController implement
 		final String format = command.getFormat();
 		
 		this.startTiming(format);
-		
+		String search = command.getRequestedSearch();
 		// no search given -> error 
-		if (!present(command.getRequestedSearch())){
+		if (!present(search)){
 			throw new MalformedURLSchemeException("error.search_page_without_search");
 		}
 		
-		String search = command.getRequestedSearch();
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
 		
