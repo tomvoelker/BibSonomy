@@ -100,7 +100,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public User getUserDetails(final String username, final DBSession session) {
 		if (!present(username)) {
-			return new User();
+			return createEmptyUser();
 		}
 		final String lowerCaseUsername = username.toLowerCase();
 		final User user = this.queryForObject("getUserDetails", lowerCaseUsername, User.class, session);
@@ -108,7 +108,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * user does not exist -> create an empty (=unknown) user
 			 */
-			return new User();
+			return createEmptyUser();
 		}
 		
 		/*
@@ -128,12 +128,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * get user profile picture from fileLogic
 		 */
-		final String loggedinUser = ""; //TODO determine
 		user.setProfilePicture(new LazyUploadedFile(){
 
 			@Override
 			protected File requestFile() {
-				return fileLogic.getProfilePictureForUser( loggedinUser, user.getName() );
+				return fileLogic.getProfilePictureForUser( user.getName() );
 			}
 		});
 		
@@ -146,6 +145,24 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			user.setRemoteUserId(samlRemoteUserId);
 		}
 		
+		return user;
+	}
+	
+	/**
+	 * Creates a new, empty user w/ default profile picture.
+	 * @return empty user instance
+	 */
+	private User createEmptyUser ()
+	{
+		User user = new User();
+		user.setProfilePicture(new LazyUploadedFile() {
+			
+			@Override
+			protected File requestFile() {
+				//get default profile picture
+				return fileLogic.getProfilePictureForUser("");
+			}
+		});
 		return user;
 	}
 	

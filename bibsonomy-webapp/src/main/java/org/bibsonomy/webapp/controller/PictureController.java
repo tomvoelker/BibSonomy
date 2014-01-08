@@ -1,5 +1,11 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.List;
+
+import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.filesystem.FileLogic;
@@ -55,15 +61,15 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	
 	@Override
 	public PictureCommand instantiateCommand() {
-		PictureCommand command = new PictureCommand();
-
-		return command;
+		return new PictureCommand();
 	}
 
 	@Override
 	public View workOn(PictureCommand command) {
 		final String method = requestLogic.getMethod();
-		if ("GET".equals(method)) { 
+		
+		if ( command.getRequestedUser() != null && "GET".equals(method) )
+		{ 
 			/*
 			 * picture download
 			 */
@@ -87,13 +93,64 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		
 		User requestedUser = logic.getUserDetails(requestedUserName);
 		
-		/*
-		 * TODO: we should test if user's profile picture is visible anyway.
-		 * Otherwise Gravatar picture mustn't be shown, too.
-		 */
+		PictureHandler handler;
 		
-		PictureHandler handler = pictureHandlerFactory.getPictureHandler( requestedUser, command );
+		// test if user's profile picture is visible
+		if ( isPictureVisible(requestedUser, command.getLoginUser()) )
+			handler = pictureHandlerFactory.getPictureHandler( requestedUser, command );
+		else
+		{
+			//elsewise handle request like a request for default user
+			User user = logic.getUserDetails( "" );
+			handler = pictureHandlerFactory.getPictureHandler( user, command );
+		}
 		return handler.getProfilePictureView();
+	}
+	
+	/**
+	 * Checks if the loginUser may see the profile picture of the requested user.
+	 * 
+	 * @param requestedUser
+	 * @param loginUserName
+	 * @return true if and only if the user logged in may see the picture of the user requested
+	 */
+	private boolean isPictureVisible ( final User requestedUser, final User loginUser )
+	{
+		String requestedUserName = requestedUser.getName();
+		String loginUserName = loginUser.getName();
+		
+		/*
+		 * login user may always see his/her photo
+		 */
+		if ( loginUserName.equals(requestedUserName) ) 
+			return true;
+		
+		/*
+		 * Check the visibility depending on the profile privacy level.
+		 */
+		final ProfilePrivlevel visibility = requestedUser.getSettings().getProfilePrivlevel();
+		switch(visibility) {
+		case PUBLIC:
+			return true;
+		case FRIENDS:
+			if (present(loginUserName)) //TODO: why shouldn't it?!
+			{
+				final List<User> friends = logic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND, null);
+				for ( final User friend : friends )
+				{
+					if ( loginUserName.equals(friend.getName()) )
+						return true;
+				}
+			}
+			//all else:
+			//$FALL-THROUGH$
+		case PRIVATE:
+			//only the requested user her-/hisself may see her/his profile picture;
+			//we already tested above if login equals requested user! (nothing to do)
+			//$FALL-THROUGH$
+		default:
+			return false;
+		}
 	}
 	
 

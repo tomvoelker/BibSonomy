@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.io.Serializable;
 
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -131,6 +132,15 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 	 */
 	public boolean isDelete() {
 		return delete;
+	}
+	
+	/**
+	 * Returns the user logged in.
+	 * @return an instance of the user logged in
+	 */
+	public User getLoginUser ()
+	{
+		return getContext().getLoginUser();
 	}
 	
 }
