@@ -9,7 +9,6 @@ import java.sql.Statement;
 
 /**
  * @author claus
- * @version $Id: AuthorDB.java,v 1.10 2013-08-09 11:59:03 nosebrain Exp $
  */
 public class AuthorDB {
 	

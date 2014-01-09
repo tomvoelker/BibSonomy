@@ -27,7 +27,6 @@ package org.bibsonomy.model.util.file;
  * This is to state the purpose of a handled file.
  * 
  * @author cunis
- * @version $Id:$
  */
 public enum FilePurpose {
 	/**

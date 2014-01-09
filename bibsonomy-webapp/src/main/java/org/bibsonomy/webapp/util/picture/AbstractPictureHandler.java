@@ -8,7 +8,6 @@ import org.bibsonomy.webapp.util.View;
  * Base class of {@link PictureHandler} implementations.
  * 
  * @author cut
- * @version $Id:$
  * @see PictureHandler
  */
 public abstract class AbstractPictureHandler implements PictureHandler

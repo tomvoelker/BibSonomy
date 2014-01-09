@@ -7,7 +7,6 @@ import org.bibsonomy.webapp.util.View;
  * Picture source may be either local filesystem, an external service, or whatever. 
  * 
  * @author cut
- * @version $Id:$
  */
 public interface PictureHandler {
 

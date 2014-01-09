@@ -16,7 +16,6 @@ import org.bibsonomy.webapp.view.Views;
  * uploaded profile picture. 
  * 
  * @author cut
- * @version $Id:$
  */
 public class ServerPictureHandler extends AbstractPictureHandler
 {

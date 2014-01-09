@@ -16,7 +16,6 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
  * him/her against the picture service.</p>
  * 
  * @author cut
- * @version $Id:$
  * @see PictureHandler
  */
 public abstract class ExternalPictureHandler extends AbstractPictureHandler

@@ -60,6 +60,12 @@
     display: none;
 }
 
+.td-top td {
+	min-width: 100px;
+	font-size: 95% !important;
+}
+
+
 .bibtexpreviewimage {
 
 }
@@ -94,10 +100,13 @@ a.btn {
 	margin-right: 6px;
 }
 
+.renameBtn, .okBtn {
+	margin-right: 3px;
+}
+
 .renameDocForm {
 	margin-top: 5px;
 	height: 25px;
-	border-bottom: 1px #aaa solid;
 }
 
 
@@ -112,10 +121,11 @@ input.renameDocInput {
 	border: 1px #006699 solid !important;
 }
 
+
 .renameBtn {
 	background: url("/resources/image/post_actions.png");
 	background-position: 0 -159px;
-	width: 22px;
+	width: 20px;
 	height: 18px;
 	border: none;
 	cursor: pointer;
@@ -124,7 +134,7 @@ input.renameDocInput {
 .okBtn {
 	background: url("/resources/image/post_actions.png");
 	background-position: 0 -1269px;
-	width: 22px;
+	width: 20px;
 	height: 18px;
 	border: none;
 	cursor: pointer;
@@ -180,6 +190,15 @@ input.renameDocInput {
 .renameDocForm > * {
 	float: left;
 	display: block;
+}
+
+li.document {
+	
+	border-left: 4px #fff solid;;
+}
+
+li.document.active {
+	border-left: 4px #006699 solid;
 }
 
 .preview_meta .removeDoc {
@@ -240,6 +259,11 @@ input.renameDocInput {
 	height: 30px !important;
 }
 
+.taglist .tagitem:hover,.taglist .tagitem:focus,.taglist .tagitem:active { 
+	color: #006699; 
+	text-decoration: underline; 
+}
+
 .taglist .tagitem {
 	background: transparent url("/resources/image/bg_tag_left.png") top left no-repeat;
 	height:20px;
@@ -268,7 +292,7 @@ input.renameDocInput {
 }
 
 #linkBox {
-	font-size: 80% !important;
+	font-size: 90% !important;
 }
 
 div#titletext {
@@ -291,7 +315,7 @@ div#ownerAvatar,
 	width: 66px; 
 	height: 66px;
 	border: 1px solid #a9a9a9; 
-	margin-top: 5px;
+	
 	overflow: hidden;
 }
 
@@ -303,26 +327,31 @@ div#ownerAvatar span,
 div.ownerAvatar span {
 	display: block;
 	font-size: 11px;
-	color: #000; 
-	background-color: rgba(186, 186, 186, 0.6); 
-	margin: 0; 
-	padding: 1px; 
+	color: #eee; 
+	background-color: rgba(12, 82, 135, 0.66); 
+	text-align: center;
+	padding: 1px;
+	margin: 1px; 
 	height: 11px; 
 	position:relative; 
 	line-height: 11px; 
-	top: 53px; 
+	top: 51px; 
 	overflow: hidden; 
 	z-index: 2;
-	min-width: 64px;
+	width: 62px;
 }
-
+div#ownerAvatar a:hover,
+div#ownerAvatar a:focus,
+div#ownerAvatar a:active {
+	text-decoration: none !important;
+}
 div#ownerAvatar a img,
 div.ownerAvatar a img {
 	width: 64px; 
 	padding: 1px;
 	overflow:hidden;
 	position:relative;
-	top: -13px;
+	top: -15px;
 	z-index: 1;
 }
 

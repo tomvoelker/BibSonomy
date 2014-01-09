@@ -8,7 +8,6 @@ import org.bibsonomy.webapp.command.actions.PictureCommand;
  * {@link PictureHandler} implementation.
  * 
  * @author cut
- * @version $Id:$
  */
 public interface PictureHandlerFactory
 {

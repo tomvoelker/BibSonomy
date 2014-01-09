@@ -8,7 +8,6 @@ import org.bibsonomy.webapp.command.actions.PictureCommand;
  * <a href="http://gravatar.com">Gravatar</a> profile picture service.
  * 
  * @author cunis
- * @version $Id:$
  */
 public class GravatarStdPictureHandlerFactory extends StandardPictureHandlerFactory
 {
