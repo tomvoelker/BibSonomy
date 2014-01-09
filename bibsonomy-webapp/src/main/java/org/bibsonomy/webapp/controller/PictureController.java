@@ -8,21 +8,19 @@ import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.webapp.command.actions.PictureCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.picture.GravatarStdPictureHandlerFactory;
 import org.bibsonomy.webapp.util.picture.PictureHandler;
 import org.bibsonomy.webapp.util.picture.PictureHandlerFactory;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
- * this controller returns handles picture upload and download
+ * this controller handles picture download
  * @author wla, cut
  */
 public class PictureController implements MinimalisticController<PictureCommand>, ErrorAware, RequestAware {
@@ -41,22 +39,20 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 */
 	protected static boolean PREFER_GRAVATAR_DEFAULT = true;
 	
-	private FileLogic fileLogic;
 	private RequestLogic requestLogic;
 	
 	private LogicInterface logic;
 
 	private Errors errors = null;
 	
-	private final PictureHandlerFactory pictureHandlerFactory;
+	private PictureHandlerFactory pictureHandlerFactory;
 	
 	/**
 	 * Creates a new {@code PictureController} instance.
 	 */
 	public PictureController ()
 	{
-		//TODO: use bean + getter
-		pictureHandlerFactory = new GravatarStdPictureHandlerFactory();
+		//nothing to do
 	}
 	
 	@Override
@@ -173,18 +169,20 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	}
 
 	/**
-	 * @param fileLogic the fileLogic to set
-	 */
-	public void setFileLogic(FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
-	}
-	
-	/**
 	 * Sets this controller's DBLogic.
 	 * @param dbl
 	 */
 	public void setLogic ( LogicInterface dbl )
 	{
 		logic = dbl;
+	}
+	
+	/**
+	 * Sets this controller's {@link PictureHandlerFactory} instance.
+	 * @param factory
+	 */
+	public void setPictureHandlerFactory ( PictureHandlerFactory factory )
+	{
+		pictureHandlerFactory = factory;
 	}
 }

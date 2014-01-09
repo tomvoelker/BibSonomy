@@ -1074,12 +1074,14 @@
 	<bean id="mockPingback" class="org.bibsonomy.pingback.MockPingback"/>
 	<alias name="${project.bean.pingback}" alias="pingback"/>
 	
+	<!-- Handles user's profile picture source -->
+	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.GravatarStdPictureHandlerFactory" />
 	
-	<!-- Handles the picture upload and download -->
+	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="requestLogic" ref="requestLogic" />
-		<property name="fileLogic" ref="fileLogic" />
+		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 	</bean>	
 	
 	<!-- Handles the settings update of a user -->
