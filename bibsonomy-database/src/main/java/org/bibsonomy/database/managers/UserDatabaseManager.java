@@ -27,7 +27,6 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.model.util.file.FilePurpose;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.ExceptionUtils;
@@ -191,21 +190,31 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if ( query == "updateUser" || query == "updateUserProfile" )
 		{
 			UploadedFile profilePicture = user.getProfilePicture();
+			
+			if ( !present(profilePicture) )
+				//nothing to do
+				return;
+			
 			/*
 			 * If profile picture file given for upload -> upload
-			 * User has no picture file (null-pointer) -> delete
+			 * If profile picture has been deleted -> delete
 			 */
-			if ( present(profilePicture) && profilePicture.getPurpose() == FilePurpose.UPLOAD )
+			switch( profilePicture.getPurpose() )
 			{
+			case UPLOAD:
 				try {
 					fileLogic.saveProfilePictureForUser( user.getName(), profilePicture );
 				} catch (Exception ex) {
 					// TODO Auto-generated catch block
 					ex.printStackTrace();
 				}
-			}
-			else if ( profilePicture == null )
+				break;
+			case DELETE:
 				fileLogic.deleteProfilePictureForUser( user.getName() );
+				break;
+			default:
+				//nothing to do
+			}
 		}
 	}
 	

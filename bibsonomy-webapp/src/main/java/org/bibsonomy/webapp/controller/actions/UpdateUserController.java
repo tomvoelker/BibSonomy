@@ -11,6 +11,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.file.ServerDeletedFile;
 import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
@@ -103,7 +104,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		}
 		else if ( command.getDeletePicture() )
 		{
-			loginUser.setProfilePicture( null );
+			loginUser.setProfilePicture( new ServerDeletedFile() );
 		}
 	}
 
