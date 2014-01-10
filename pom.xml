@@ -196,7 +196,6 @@
 		<module>bibsonomy-common</module>
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-database-common</module>
-		<module>bibsonomy-dl-importer</module>
 		<module>bibsonomy-importer</module>
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
@@ -640,11 +639,6 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-layout</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-dl-importer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
