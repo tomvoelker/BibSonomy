@@ -117,16 +117,33 @@
 				</div>
 				
 				<div class="fsRow">
+					<fmt:message var="useExtService" key="user.useExternalPicture.service" />
+					<fmt:message var="useExtTrue" key="user.useExternalPicture.true">
+						<fmt:param>${useExtService}</fmt:param>
+					</fmt:message>
+					<fmt:message var="useExtFalse" key="user.useExternalPicture.false" />
+				
 					<form:label cssClass="fsLabel" path="user.useExternalPicture">
 						<fmt:message key="user.useExternalPicture"/>
 					</form:label>
 					
-					<buttons:help message="user.useExternalPicture.help"/>
-
-					<fmt:message var="useExtTrue" key="user.useExternalPicture.true">
-						<fmt:param><fmt:message key="user.useExternalPicture.service" /></fmt:param>
-					</fmt:message>
-					<fmt:message var="useExtFalse" key="user.useExternalPicture.false" />
+					<buttons:help message="user.useExternalPicture.help">
+						<jsp:attribute name="helpText">
+							<ol>
+								<li>
+									<fmt:message key="user.useExternalPicture.help.true">
+										<fmt:param>${useExtTrue}</fmt:param>
+										<fmt:param>${useExtService}</fmt:param>
+									</fmt:message>
+								</li>
+								<li>
+									<fmt:message key="user.useExternalPicture.help.false">
+										<fmt:param>${useExtFalse}</fmt:param>
+									</fmt:message>
+								</li>
+							</ol>
+						</jsp:attribute>
+					</buttons:help>
 
 					<form:select cssClass="fsInput fsSmall" path="user.useExternalPicture">
 						<form:option label="${useExtTrue}" value="${true}" id="useExt" />
