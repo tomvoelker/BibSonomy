@@ -372,47 +372,6 @@
 				<entry key="/editPublication">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="editPublicationController"/>
-						<property name="allowedFields" ref="publicationRequestParameters"/>
-
-					</bean>
-				</entry> 
-				<entry key="/editGoldStandardPublication">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>
-						<property name="allowedFields" ref="publicationRequestParameters"/>
-					</bean>
-				</entry>
-				<entry key="/editGoldStandardBookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="editGoldStandardBookmarkController"/>
-						<property name="allowedFields" ref="bookmarkRequestParameters"/>
-					</bean>
-				</entry>
-				<entry key="/postBookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postBookmarkController"/>
-					</bean>
-				</entry>
-				<entry key="/postPublication">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postPublicationController"/>
-						<property name="allowedFields">
-							<list>
-								<value>selTab</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/diffBookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="diffBookmarkController"/>
-						<property name="allowedFields" ref="bookmarkRequestParameters"/>
-					</bean>
-				</entry>
-				<!-- /diffPublication =  editPublication?intraHashToUpdate=INTRAHASH&compareVersion=X-->
-				<entry key="/editPublication">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="diffPublicationController" />
 						<property name="allowedFields">
 							<list>
 								<value>postDiff.description</value>
@@ -524,6 +483,39 @@
 								<value>skipDummyValues</value>
 							</list>
 						</property>
+					</bean>
+				</entry>
+				<entry key="/editGoldStandardPublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>
+						<property name="allowedFields" ref="publicationRequestParameters"/>
+					</bean>
+				</entry>
+				<entry key="/editGoldStandardBookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editGoldStandardBookmarkController"/>
+						<property name="allowedFields" ref="bookmarkRequestParameters"/>
+					</bean>
+				</entry>
+				<entry key="/postBookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postBookmarkController"/>
+					</bean>
+				</entry>
+				<entry key="/postPublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postPublicationController"/>
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/diffBookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="diffBookmarkController"/>
+						<property name="allowedFields" ref="bookmarkRequestParameters"/>
 					</bean>
 				</entry>
 
