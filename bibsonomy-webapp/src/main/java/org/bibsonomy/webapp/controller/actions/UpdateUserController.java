@@ -21,6 +21,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.UserUpdateProfileValidator;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,7 +56,10 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			this.errors.reject("error.field.valid.ckey");
 		}
 
-		return super.workOn(command);
+		//return 
+		super.workOn(command);
+		
+		return new ExtendedRedirectView("settings");
 	}
 
 
