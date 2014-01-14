@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+body {
+	background: transparent url("/resources/bootstrap/img/bg.png");
+}
+
+/**
+ *  HEADER
+ */
+
+.slogan {
+	text-transform: uppercase;
+	color: #006699;
+}
+
+a {
+	color: #006699;
+}

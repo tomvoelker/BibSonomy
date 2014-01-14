@@ -48,9 +48,28 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />
 		<meta charset="UTF-8" />
+		
+		<!--+
+			| BOOTSTRAP SETTINGS 
+			+-->
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+		
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.min.css"  />
+		<link rel="stylesheet" href="/resources/bootstrap/css/style.css" />
+		
+		
+		<!--+
+			| END BOOTSTRAP SETTINGS 
+			+ -->
+
 		<!-- FIXME: do we really need the complete jquery-ui.css? -->
 		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
+		
+		<!-- 
 		<mtl:styleSheet path="${resdir}/css/style.css" />
+		-->
 		<c:if test="${not empty personalized and personalized == true}">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 		</c:if>
@@ -68,6 +87,12 @@
 			| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
 		 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 		 	+-->
+		 
+		 
+		<script src="http://code.jquery.com/jquery.js"><!-- keep me--></script>
+	 	<!-- Latest compiled and minified Bootstrap JavaScript -->
+		<script src="/resources/bootstrap/js/bootstrap.min.js"><!-- keep me--></script>
+		 	
 		<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
 
 		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />

@@ -164,7 +164,7 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-			<jsp:invoke fragment="discussion" />
+			<!--<jsp:invoke fragment="discussion" />-->
 			<c:if test="${not empty discussion}">
 				<parts:postHeader 
 					headerHideable="${true}"
@@ -206,39 +206,50 @@
 							<jsp:invoke fragment="contentHeading" />
 						</div>
 					</c:if>
-					
 					<!-- bibtex/bookmark lists -->
-					<resources:bookmarks listView="${command.bookmark}" 
-							loginUserName="${command.context.loginUser.name}" 
-							disableListNavigation="${disableListNavigation}" 
-							requPath="${excapedRequestPath}" 
-							widthClassName="${bookmarksWidthClass}">
-						<jsp:attribute name="addAsLastItem">
-							<c:if test="${not disableListNavigation}">
-								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
-									<div class="footer">
-										<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
+				    <div class="row">
+						<div class="col-md-6">
+					        Level 2: .col-md-6  LINKS
+					        <p>BLUBB</p>
+					        <resources:bookmarks listView="${command.bookmark}" 
+								loginUserName="${command.context.loginUser.name}" 
+								disableListNavigation="${disableListNavigation}" 
+								requPath="${excapedRequestPath}" 
+								widthClassName="${bookmarksWidthClass}">
+							<jsp:attribute name="addAsLastItem">
+								<c:if test="${not disableListNavigation}">
+									<div id="bookmarksfooter" class="${bookmarksWidthClass}">
+										<div class="footer">
+											<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
+										</div>
+										
 									</div>
-								</div>
-							</c:if>
-						</jsp:attribute>
-					</resources:bookmarks>
+								</c:if>
+							</jsp:attribute>
+						</resources:bookmarks>
+						</div>
+						<div class="col-md-6">
+					        Level 2: .col-md-6 RECHTS
+							<resources:bibtexs listView="${command.bibtex}" 
+									loginUserName="${command.context.loginUser.name}" 
+									disableListNavigation="${disableListNavigation}" 
+									requPath="${excapedRequestPath}" 
+									widthClassName="${publicationsWidthClass}">
+								<jsp:attribute name="addAsLastItem">
+									<c:if test="${not disableListNavigation}">
+										<div id="publicationsfooter" class="${publicationsWidthClass}">
+											<div class="footer">
+												<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+											</div>
+										</div>
+									</c:if>
+								</jsp:attribute>
+							</resources:bibtexs>
+						</div>
+				    </div>
 					
-					<resources:bibtexs listView="${command.bibtex}" 
-							loginUserName="${command.context.loginUser.name}" 
-							disableListNavigation="${disableListNavigation}" 
-							requPath="${excapedRequestPath}" 
-							widthClassName="${publicationsWidthClass}">
-						<jsp:attribute name="addAsLastItem">
-							<c:if test="${not disableListNavigation}">
-								<div id="publicationsfooter" class="${publicationsWidthClass}">
-									<div class="footer">
-										<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-									</div>
-								</div>
-							</c:if>
-						</jsp:attribute>
-					</resources:bibtexs>
+					
+
 				</c:otherwise>
 			</c:choose>
 			</div>
