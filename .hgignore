@@ -2,9 +2,11 @@ target
 bin
 work
 .classpath
+.project
 src/main/webapp/WEB-INF/lib
 src/main/webapp/WEB-INF/classes
 src/main/webapp/META-INF
+
 syntax: regexp
 ^bibsonomy-database/\.settings/org\.eclipse\.m2e\.core\.prefs$
 syntax: regexp
