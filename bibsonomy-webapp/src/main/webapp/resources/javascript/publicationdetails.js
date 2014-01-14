@@ -87,9 +87,13 @@ $(function() {
         return false;
     });
     
-    $(".removeDocLink").click(function() {
+    $(".removeDocBtn").click(function(event) {
+    	
+    	event.preventDefault();
+    	
     	var button = $(this);
-		$.get($(button).attr("href"), {}, function(data) {
+		
+    	$.get($(this).attr("href"), {}, function(data) {
 			var status=$("status", data).text();
 			if(status=="error") {
 				alert($("reason", data).text());
@@ -114,6 +118,7 @@ $(function() {
 		field.select();
 		$(this).hide();
 		okBtn.show();
+		
 		return false;
 	});
 	
@@ -130,14 +135,53 @@ $(function() {
 		return false;
 	});
 	
+	$(".renameDocForm .okBtn").click(function(event) {
+		event.preventDefault();
+		renameSelected($(this).parent());
+		
+		return false;
+	});
 	
 	$(".renameDocForm").submit(function(event) {
-		
 		event.preventDefault();
 		renameSelected($(this));
 		
 		return false;
+	});
+	
+	$("li.document:gt(0)").removeClass('active');
+	
+	$("#previewSelectBullets a.bullet").click(function(event){
 		
+		event.preventDefault();
+		
+		var id = $(this).attr('rel');
+		
+		$(".bibtexpreviewimage").each(function(index) {
+			if($(this).is(':visible')) {
+				$(this).hide();
+			}
+		});
+		
+		$("#"+id).show();
+		
+		//remove class active 
+		$("#previewSelectBullets a.bullet.active, li.document.active").removeClass('active');
+		
+		//add class active to new active elements
+		$(this).addClass('active');
+		$("li.document."+id).addClass('active');
+		return false;
+	});
+	
+	$('#showMoreUser').click(function(){
+		
+		if($('.moreUser').is(':visible')) {
+			$(this).find('span').text('more');
+		} else {
+			$(this).find('span').text('less');
+		}
+		$('.moreUser').toggle();
 	});
 	
 	$('input[type=file]').click();
@@ -237,9 +281,6 @@ function renameSelected(obj) {
 	var type = obj.find(".showName").text().split(".");
 	type = type[type.length-1];
 	var renameForm = obj;
-	
-	console.log(renameForm);
-	console.log(type);
 	
 	var fileName = $.trim(obj.find('.renameDocInput').val()); //get value of the rename field
 	

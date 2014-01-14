@@ -87,6 +87,19 @@
 			</c:if>
 			<!-- UnAPI service -->
 			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
+			
+			<c:if test="${not empty param.cleanlayout}">
+				<!--+
+					| add css
+					+ -->
+				<link rel="stylesheet" type="text/css" href="/resources/css/publicationdetails.css" />
+				
+				<!--+
+					| add js
+					+ -->
+				<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
+			</c:if>
+			
 			<jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 
@@ -176,7 +189,15 @@
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
 				<c:when test="${not empty command.goldStandardPublications.list}">
-					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+					<c:choose>
+						<c:when test="${not empty param.cleanlayout}">
+							<goldstandardpublication:detailsclean otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+						</c:when>
+						<c:otherwise>
+						
+							<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+						</c:otherwise>
+					</c:choose>
 				</c:when>
 				<c:otherwise>
 					<!-- additional heading for content area -->

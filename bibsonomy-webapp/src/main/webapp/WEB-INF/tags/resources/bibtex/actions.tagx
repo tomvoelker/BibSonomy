@@ -8,9 +8,8 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
-	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />
-	
-
+	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
+		
 	<!--+
 		| COPY/EDIT
 		+-->
@@ -119,6 +118,15 @@
 		</c:if>
 	</c:if>
 
+	<!--+ 
+		| COMMUNITY POST 
+		| TODO: check if community post exists
+		+-->
+	<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
+	
+	<a href="/bibtex/${post.resource.interHash}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
+		<!-- Keep Me -->
+	</a>
 	<!--+
 		| COPY/HISTORY
 		+-->

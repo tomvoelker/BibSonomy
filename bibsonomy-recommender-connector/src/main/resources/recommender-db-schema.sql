@@ -6,8 +6,7 @@ CREATE TABLE log_recommender(
 	date TIMESTAMP NOT NULL,
 	content_type TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
 	`timeout` INT(5) DEFAULT '1000',
-	PRIMARY KEY (query_id),
-	KEY `post_id_user_name_date` (`post_id`,`user_name`,`date`)
+	PRIMARY KEY (query_id)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS recommender_postmap;
@@ -113,11 +112,7 @@ CREATE TABLE `recommender_bookmark` (
   `to_bib` tinyint(3) default '0',
   `change_date` timestamp default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `rating` tinyint(3) default '0',
-  PRIMARY KEY  (`content_id`),
-  KEY `group_date_content_id_idx` (`group`,`date`,`content_id`),
-  KEY `user_name_group_date_content_id_idx` (`user_name`,`group`,`date`,`content_id`),
-  KEY `user_name_date_content_id_idx` (`user_name`,`date`,`content_id`),
-  KEY `book_url_hash_group_date_content_id_idx` (`book_url_hash`,`group`,`date`,`content_id`)
+  PRIMARY KEY  (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -168,21 +163,7 @@ CREATE TABLE `recommender_bibtex` (
   `scraperid` int(11) NOT NULL default '-1',
   `change_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `rating` tinyint(3) NOT NULL default '0',
-  PRIMARY KEY  (`content_id`),
-  KEY `unique_user_name_simhash2` (`user_name`,`simhash2`),
-  KEY `group_date_content_id_idx` (`group`,`date`,`content_id`),
-  KEY `user_name_group_date_content_id_idx` (`user_name`,`group`,`date`,`content_id`),
-  KEY `bib_hash_group_date_content_id_idx` (`simhash0`,`group`,`date`,`content_id`),
-  KEY `user_name_date_content_id_idx` (`user_name`,`date`,`content_id`),
-  KEY `simhash1_group_date_content_id_idx` (`simhash1`,`group`,`date`,`content_id`),
-  KEY `user_name_simhash1_idx` (`user_name`,`simhash1`),
-  KEY `user_name_simhash0_idx` (`user_name`,`simhash0`),
-  KEY `date_idx` (`date`),
-  KEY `user_name_simhash2_idx` (`user_name`,`simhash2`),
-  KEY `simhash0_group_date_content_id_idx` (`simhash0`,`group`,`date`,`content_id`),
-  KEY `simhash2_group_date_content_id_idx` (`simhash2`,`group`,`date`,`content_id`),
-  KEY `bibtexkey_key` (`bibtexKey`),
-  KEY `user_bibtexkey_key` (`user_name`,`bibtexKey`)
+  PRIMARY KEY  (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 

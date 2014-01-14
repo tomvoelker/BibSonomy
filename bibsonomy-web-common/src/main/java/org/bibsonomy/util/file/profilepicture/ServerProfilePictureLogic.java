@@ -84,10 +84,10 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 	}
 	
 	@Override
-	public File getProfilePictureForUser(String loggedinUser, String username) {
-		File file = getVisibleProfilePictureForUser(loggedinUser, username);
+	public File getProfilePictureForUser(String username) {
+		File file = getProfilePicture(username);
 		
-		if (file == null)
+		if ( file == null || !file.exists() )
 			return this.getDefaultFile();
 		
 		//else:
@@ -95,22 +95,6 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 		return file;
 	}
 	
-	private File getVisibleProfilePictureForUser(String loggedinUser, String username) {
-		if (!this.pictureVisible(username, loggedinUser)) {
-			return null;
-		}
-		
-		final File file = this.getProfilePicture(username);
-		if (!file.exists()) {
-			return null;
-		}
-		
-		return file;
-	}
-	
-	public boolean hasVisibleProfilePicture(String loggedinUser, String username) {
-		return getVisibleProfilePictureForUser(loggedinUser, username) != null;
-	}
 
 	@Override
 	public void saveProfilePictureForUser(String username, UploadedFile pictureFile) throws Exception {
@@ -158,47 +142,6 @@ public class ServerProfilePictureLogic implements ProfilePictureLogic {
 		return new File(this.path, this.defaultFileName);
 	}
 	
-	/**
-	 * Checks if the loginUser may see the profile picture of the requested user.
-	 * Depends on the profile privlevel of the requested user.
-	 * 
-	 * @param requestedUser
-	 * @param loginUserName
-	 * @return
-	 */
-	private boolean pictureVisible(final String requestedUserName, final String loginUserName) {
-		/*
-		 * login user may always see his/her photo
-		 */
-		if (requestedUserName.equals(loginUserName)) return true;
-		
-		final User requestedUser = this.adminLogic.getUserDetails(requestedUserName);
-		if (!present(requestedUser.getName())) {
-			throw new ObjectNotFoundException(requestedUserName);
-		}
-		/*
-		 * Check the visibility depending on the profile privacy level.
-		 */
-		final ProfilePrivlevel visibility = requestedUser.getSettings().getProfilePrivlevel();
-		switch(visibility) {
-		case PRIVATE:
-			return requestedUserName.equals(loginUserName);
-		case PUBLIC:
-			return true;
-		case FRIENDS:
-			if (present(loginUserName)) {
-				final List<User> friends = adminLogic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND, null);
-				for (final User friend : friends) {
-					if (loginUserName.equals(friend.getName())) {
-						return true;
-					}
-				}
-			}
-			//$FALL-THROUGH$
-		default:
-			return false;
-		}
-	}
 
 	/**
 	 * @param defaultFileName the defaultFileName to set

@@ -2,32 +2,26 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.File;
+import java.util.List;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.services.filesystem.FileLogic;
-import org.bibsonomy.services.filesystem.ProfilePictureLogic;
-import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.actions.PictureCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.util.picture.PictureHandler;
+import org.bibsonomy.webapp.util.picture.PictureHandlerFactory;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
- * this controller returns handles picture upload and download
- * @author wla
+ * this controller handles picture download
+ * @author wla, cut
  */
 public class PictureController implements MinimalisticController<PictureCommand>, ErrorAware, RequestAware {
 
@@ -45,43 +39,41 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 */
 	protected static boolean PREFER_GRAVATAR_DEFAULT = true;
 	
-	private FileLogic fileLogic;
 	private RequestLogic requestLogic;
 	
 	private LogicInterface logic;
 
 	private Errors errors = null;
 	
-
+	private PictureHandlerFactory pictureHandlerFactory;
+	
+	/**
+	 * Creates a new {@code PictureController} instance.
+	 */
+	public PictureController ()
+	{
+		//nothing to do
+	}
+	
 	@Override
 	public PictureCommand instantiateCommand() {
-		PictureCommand command = new PictureCommand();
-
-		command.setUser(new User());
-		return command;
+		return new PictureCommand();
 	}
 
 	@Override
 	public View workOn(PictureCommand command) {
 		final String method = requestLogic.getMethod();
-		if ("GET".equals(method)) { 
+		
+		if ( command.getRequestedUser() != null && "GET".equals(method) )
+		{ 
 			/*
 			 * picture download
 			 */
 			return downloadPicture(command);
-		} else if ("POST".equals(method)) {
-			/*
-			 *  picture upload
-			 */
-			final Views view = uploadPicture(command);
-			if (present(view)) {
-				return view;
-			}
-			return new ExtendedRedirectView("/settings");
-		} else { 
-			return Views.ERROR;
 		}
-
+		
+		//else:
+		return Views.ERROR;
 	}
 
 	/**
@@ -90,134 +82,73 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * @param command
 	 * @return
 	 */
-	private View downloadPicture(final PictureCommand command) 
+	private View downloadPicture ( final PictureCommand command ) 
 	{	
-		/*
-		 * Use default whether gravatar shall be preferred.
-		 * 
-		 * One may wire this statically, or read from user settings, command or whatever.
-		 */
-		boolean preferGravatar = PREFER_GRAVATAR_DEFAULT;
 		
 		final String requestedUserName = command.getRequestedUser();
-		final String loginUserName = command.getContext().getLoginUser().getName();
 		
 		User requestedUser = logic.getUserDetails(requestedUserName);
-		String gravAddress = requestedUser.getGravatarAddress();
 		
-		//TODO: determine whether user possesses local profile picture.
-			
-		if ( preferGravatar && gravAddress != null && !gravAddress.isEmpty() )
+		PictureHandler handler;
+		
+		// test if user's profile picture is visible
+		if ( isPictureVisible(requestedUser, command.getLoginUser()) )
+			handler = pictureHandlerFactory.getPictureHandler( requestedUser, command );
+		else
 		{
-			ExtendedRedirectView resultV = new ExtendedRedirectView( generateGravURI(gravAddress, ".jpg") );
-			resultV.setContentType( "image/jpg" );
-			return resultV;
+			//elsewise handle request like a request for default user
+			User user = logic.getUserDetails( "" );
+			handler = pictureHandlerFactory.getPictureHandler( user, command );
 		}
-		
-		//else:
-		final File profilePicture = this.fileLogic.getProfilePictureForUser(loginUserName, requestedUserName);
-		command.setPathToFile(profilePicture.getAbsolutePath());
-		command.setContentType(FileUtil.getContentType(profilePicture.getName()));
-		command.setFilename(requestedUserName + ProfilePictureLogic.FILE_EXTENSION);
-		return Views.DOWNLOAD_FILE;
+		return handler.getProfilePictureView();
 	}
 	
 	/**
-	 * Generates Gravatar URI for this request's email address.
+	 * Checks if the loginUser may see the profile picture of the requested user.
 	 * 
-	 * @param address :	Gravatar email address as String
-	 * @return Gravatar URI as String
+	 * @param requestedUser
+	 * @param loginUserName
+	 * @return true if and only if the user logged in may see the picture of the user requested
 	 */
-	protected String generateGravURI ( String address, String fileExtension )
+	private boolean isPictureVisible ( final User requestedUser, final User loginUser )
 	{
-		//hash user's gravatar email, use default-picture "mystery-man", use resolution 128x128;
-		return String.format( "http://www.gravatar.com/avatar/%s%s?d=mm&s=128", hashGravAddress(address), fileExtension );
-	}
-	
-	protected String hashGravAddress ( String address )
-	{
-		if ( address.isEmpty() )
-		{	
-			return "0";
-		}
+		String requestedUserName = requestedUser.getName();
+		String loginUserName = loginUser.getName();
 		
-		//else:
-		String result = DigestUtils.md5Hex( address.trim().toLowerCase() );
-		return result;
-	}
-
-	/**
-	 * This method manage the picture upload
-	 * 
-	 * @param command
-	 * @return Error view or null if upload successful 
-	 */
-	private Views uploadPicture(final PictureCommand command)
-	{
 		/*
-		 * Use default whether gravatar shall be preferred.
-		 * 
-		 * One may wire this statically, or read from user settings, command or whatever.
+		 * login user may always see his/her photo
 		 */
-		boolean preferGravatar = PREFER_GRAVATAR_DEFAULT;
+		if ( loginUserName.equals(requestedUserName) ) 
+			return true;
 		
-		final RequestWrapperContext context = command.getContext();
-
-		// check if user is logged in, if not throw an error and go directly
-		// back to uploadPage
-		if (!context.isUserLoggedIn()) {
-			errors.reject("error.general.login");
-			return Views.ERROR;
-		}
-
 		/*
-		 * check credentials to fight CSRF attacks 
+		 * Check the visibility depending on the profile privacy level.
 		 */
-		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
-			return Views.ERROR;
-		}
-
-		User loginUser = context.getLoginUser();
-		final String loginUserName = loginUser.getName();
-		
-		User commandUser = command.getUser();
-		String gravAddress = commandUser.getGravatarAddress();
-
-		final MultipartFile file = command.getFile();
-		boolean useLocalPicture = ( !preferGravatar || gravAddress == null || gravAddress.isEmpty() );
-		
-		// save Gravatar email address anyway
-		try {
-			loginUser.setGravatarAddress( gravAddress );
-			logic.updateUser(loginUser, UserUpdateOperation.UPDATE_CORE);
-		}
-		catch ( DatabaseException dbex ) {
-			//TODO
-			throw dbex;
-		}
-		
-		if ( useLocalPicture && present(file) && file.getSize() > 0) {
-			/*
-			 * do not prefer Gravatar or no email address given AND a file is given
-			 *	--> save it
-			 */
-			try {
-				this.fileLogic.saveProfilePictureForUser(loginUserName, new ServerUploadedFile(file));
-			} catch (Exception ex) {
-				errors.reject("error.upload.failed", new Object[] { ex.getLocalizedMessage() }, "Sorry, we could not process your upload request, an unknown error occurred.");
-				return Views.ERROR;
+		final ProfilePrivlevel visibility = requestedUser.getSettings().getProfilePrivlevel();
+		switch(visibility) {
+		case PUBLIC:
+			return true;
+		case FRIENDS:
+			if (present(loginUserName)) //TODO: why shouldn't it?!
+			{
+				final List<User> friends = logic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND, null);
+				for ( final User friend : friends )
+				{
+					if ( loginUserName.equals(friend.getName()) )
+						return true;
+				}
 			}
-		} 
-		else { 
-			/*
-			 * prefer gravatar or no file given, but POST request --> delete picture
-			 */
-			this.fileLogic.deleteProfilePictureForUser(loginUserName);
+			//all else:
+			//$FALL-THROUGH$
+		case PRIVATE:
+			//only the requested user her-/hisself may see her/his profile picture;
+			//we already tested above if login equals requested user! (nothing to do)
+			//$FALL-THROUGH$
+		default:
+			return false;
 		}
-
-		return null;
 	}
+	
 
 	@Override
 	public Errors getErrors() {
@@ -238,18 +169,20 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	}
 
 	/**
-	 * @param fileLogic the fileLogic to set
-	 */
-	public void setFileLogic(FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
-	}
-	
-	/**
 	 * Sets this controller's DBLogic.
 	 * @param dbl
 	 */
 	public void setLogic ( LogicInterface dbl )
 	{
 		logic = dbl;
+	}
+	
+	/**
+	 * Sets this controller's {@link PictureHandlerFactory} instance.
+	 * @param factory
+	 */
+	public void setPictureHandlerFactory ( PictureHandlerFactory factory )
+	{
+		pictureHandlerFactory = factory;
 	}
 }

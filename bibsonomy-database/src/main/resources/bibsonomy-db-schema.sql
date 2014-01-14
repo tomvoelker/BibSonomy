@@ -1086,6 +1086,7 @@ CREATE TABLE `pendingUser` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `gravatarAddress` varchar(255) DEFAULT NULL,
+  `useExternalPicture` tinyint(1) DEFAULT '0',
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1503,6 +1504,7 @@ CREATE TABLE `user` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `gravatarAddress` varchar(255) DEFAULT NULL,
+  `useExternalPicture` tinyint(1) DEFAULT '0',
   PRIMARY KEY  (`user_name`),
   UNIQUE KEY `user_id` (`id`),
   KEY `spammer_to_classify_user_name_idx` (`spammer`,`to_classify`,`user_name`)

@@ -15,8 +15,6 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 /**
  * @author wla
- * @version $Id: PublicationReferenceTag.java,v 1.1 2012-03-23 15:55:43 wla Exp
- *          $
  */
 public class PublicationReferenceTag extends RequestContextAwareTag {
 	private static final long serialVersionUID = 3722057578923267058L;

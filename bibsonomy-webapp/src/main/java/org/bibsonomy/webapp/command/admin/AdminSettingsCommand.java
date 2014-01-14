@@ -12,8 +12,6 @@ import org.bibsonomy.common.enums.ClassifierSettings;
  * 
  * @author Stefan Stützer
  * @author Beate Krause
- * @version $Id: AdminSettingsCommand.java,v 1.2 2008-04-07 13:25:48
- *          ss05sstuetzer Exp $
  */
 public class AdminSettingsCommand {
 

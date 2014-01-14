@@ -1,4 +1,3 @@
-
 INSERT INTO `ids` VALUES 
 	(0,0,'content_id'),
 	(1,0,'tas id'),
@@ -12,12 +11,10 @@ INSERT INTO `ids` VALUES
 	(15,0,'discussion_id'),
 	(16,0,'synchronization_id');
 
-INSERT INTO `groupids` VALUES 
+INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) VALUES
 	('public', -2147483648,1,0),
 	('private',-2147483647,1,0),
 	('friends',-2147483646,1,0),
 	('public', 0,1,0),
 	('private',1,1,0),
 	('friends',2,1,0);
-
-

@@ -72,4 +72,14 @@ public class FileSystemFile implements UploadedFile {
 		fileOutputStream.close();
 	}
 
+	@Override
+	public FilePurpose getPurpose() {
+		return FilePurpose.UNSPECIFIED;
+	}
+
+	@Override
+	public String getAbsolutePath() {
+		return file.getAbsolutePath();
+	}
+
 }

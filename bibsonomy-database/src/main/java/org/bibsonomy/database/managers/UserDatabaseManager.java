@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -26,8 +27,10 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.file.LazyUploadedFile;
 import org.bibsonomy.wiki.TemplateManager;
 
 /**
@@ -96,7 +99,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public User getUserDetails(final String username, final DBSession session) {
 		if (!present(username)) {
-			return new User();
+			return createEmptyUser();
 		}
 		final String lowerCaseUsername = username.toLowerCase();
 		final User user = this.queryForObject("getUserDetails", lowerCaseUsername, User.class, session);
@@ -104,7 +107,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * user does not exist -> create an empty (=unknown) user
 			 */
-			return new User();
+			return createEmptyUser();
 		}
 		
 		/*
@@ -122,6 +125,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		user.setSettings(this.getUserSettings(lowerCaseUsername, session));
 		
 		/*
+		 * get user profile picture from fileLogic
+		 */
+		user.setProfilePicture(new LazyUploadedFile(){
+
+			@Override
+			protected File requestFile() {
+				return fileLogic.getProfilePictureForUser( user.getName() );
+			}
+		});
+		
+		/*
 		 * ToDo - Replace this with a more Generic Version
 		 * This fetches all SamlRemoteUserIds (LDAP and OpenId are already fetched through a join with the respective tables in "getUserDetails")
 		 * FIXME: Use another join in getUserDetails (or enable this query only if Saml Authentification is active) 
@@ -130,6 +144,24 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			user.setRemoteUserId(samlRemoteUserId);
 		}
 		
+		return user;
+	}
+	
+	/**
+	 * Creates a new, empty user w/ default profile picture.
+	 * @return empty user instance
+	 */
+	private User createEmptyUser ()
+	{
+		User user = new User();
+		user.setProfilePicture(new LazyUploadedFile() {
+			
+			@Override
+			protected File requestFile() {
+				//get default profile picture
+				return fileLogic.getProfilePictureForUser("");
+			}
+		});
 		return user;
 	}
 	
@@ -150,6 +182,42 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getApiKeyForUser", username, String.class, session);
 	}
 
+	protected void update( final String query, final User user, final DBSession session )
+	{
+		super.update(query, user, session);
+		
+		//TODO replace by switch
+		if ( query == "updateUser" || query == "updateUserProfile" )
+		{
+			UploadedFile profilePicture = user.getProfilePicture();
+			
+			if ( !present(profilePicture) )
+				//nothing to do
+				return;
+			
+			/*
+			 * If profile picture file given for upload -> upload
+			 * If profile picture has been deleted -> delete
+			 */
+			switch( profilePicture.getPurpose() )
+			{
+			case UPLOAD:
+				try {
+					fileLogic.saveProfilePictureForUser( user.getName(), profilePicture );
+				} catch (Exception ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+				break;
+			case DELETE:
+				fileLogic.deleteProfilePictureForUser( user.getName() );
+				break;
+			default:
+				//nothing to do
+			}
+		}
+	}
+	
 	/**
 	 * Generate an API key for an existing user.
 	 * 

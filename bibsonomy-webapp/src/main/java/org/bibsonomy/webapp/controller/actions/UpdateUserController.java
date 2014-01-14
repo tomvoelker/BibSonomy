@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,6 +11,8 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.file.ServerDeletedFile;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -17,7 +21,9 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.UserUpdateProfileValidator;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author cvo
@@ -45,12 +51,15 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		 */
 		if (context.isValidCkey()) {
 			// update user profile 
-			this.updateUserProfile(context.getLoginUser(), command.getUser());
+			this.updateUserProfile(context.getLoginUser(), command.getUser(), command);
 		} else {
 			this.errors.reject("error.field.valid.ckey");
 		}
 
-		return super.workOn(command);
+		//return 
+		super.workOn(command);
+		
+		return new ExtendedRedirectView("settings");
 	}
 
 
@@ -60,7 +69,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 	 * @param loginUser
 	 * @param command
 	 */
-	private void updateUserProfile(final User loginUser, final User commandUser) {
+	private void updateUserProfile(final User loginUser, final User commandUser, final SettingsViewCommand command) {
 		loginUser.setRealname(commandUser.getRealname());
 		loginUser.setGender(commandUser.getGender());
 		loginUser.setBirthday(commandUser.getBirthday());
@@ -73,12 +82,34 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		loginUser.setInterests(commandUser.getInterests());
 		loginUser.setHobbies(commandUser.getHobbies());
 		loginUser.setPlace(commandUser.getPlace());
+		
+		loginUser.setUseExternalPicture(commandUser.getUseExternalPicture());
+		
+		updateUserPicture( loginUser, command );
 
 		final ProfilePrivlevel profilePrivlevel = commandUser.getSettings().getProfilePrivlevel();
 		
 		loginUser.getSettings().setProfilePrivlevel(profilePrivlevel);
 
 		this.updateUser(loginUser, this.errors);
+	}
+	
+	private void updateUserPicture ( final User loginUser, SettingsViewCommand command )
+	{
+		final MultipartFile file = command.getPicturefile();
+		
+		/*
+		 * If a picture file is given -> upload
+		 * Else, if delete requested -> delete 
+		 */
+		if ( present(file) && file.getSize() > 0 )
+		{
+			loginUser.setProfilePicture( new ServerUploadedFile(file) );
+		}
+		else if ( command.getDeletePicture() )
+		{
+			loginUser.setProfilePicture( new ServerDeletedFile() );
+		}
 	}
 
 	/**

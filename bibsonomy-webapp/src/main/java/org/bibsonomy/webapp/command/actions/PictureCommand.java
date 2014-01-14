@@ -27,8 +27,6 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 
 	private String gravatarAddress;
 	
-	// for test
-	private User user;
 
 	/**
 	 * @param RequestedUser the getRequestedUser to set
@@ -135,15 +133,14 @@ public class PictureCommand extends BaseCommand implements Serializable, Downloa
 	public boolean isDelete() {
 		return delete;
 	}
-
-	public User getUser ()
-	{
-		return user;
-	}
 	
-	public void setUser ( User u )
+	/**
+	 * Returns the user logged in.
+	 * @return an instance of the user logged in
+	 */
+	public User getLoginUser ()
 	{
-		user = u;
+		return getContext().getLoginUser();
 	}
 	
 }

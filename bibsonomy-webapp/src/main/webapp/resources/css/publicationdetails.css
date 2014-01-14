@@ -1,8 +1,13 @@
 @CHARSET "UTF-8";
 
+#fullscreen {
+	min-width:800px !important;
+}
 
 #innercontent {
 	font-size: 110%;
+	background: #fff; 
+	padding-left: 40px;
 }
 
 /*
@@ -55,17 +60,12 @@
     display: none;
 }
 
-
-/*
-.preview_meta {
-
-	margin-top: -32px;
-	padding: 3px;
-	text-align: left;
-	background: #fff;
-	width: 40px;
+.td-top td {
+	min-width: 100px;
+	font-size: 95% !important;
 }
-*/
+
+
 .bibtexpreviewimage {
 
 }
@@ -100,10 +100,13 @@ a.btn {
 	margin-right: 6px;
 }
 
+.renameBtn, .okBtn {
+	margin-right: 3px;
+}
+
 .renameDocForm {
 	margin-top: 5px;
 	height: 25px;
-	border-bottom: 1px #aaa solid;
 }
 
 
@@ -118,10 +121,11 @@ input.renameDocInput {
 	border: 1px #006699 solid !important;
 }
 
+
 .renameBtn {
 	background: url("/resources/image/post_actions.png");
 	background-position: 0 -159px;
-	width: 22px;
+	width: 20px;
 	height: 18px;
 	border: none;
 	cursor: pointer;
@@ -130,7 +134,7 @@ input.renameDocInput {
 .okBtn {
 	background: url("/resources/image/post_actions.png");
 	background-position: 0 -1269px;
-	width: 22px;
+	width: 20px;
 	height: 18px;
 	border: none;
 	cursor: pointer;
@@ -188,6 +192,15 @@ input.renameDocInput {
 	display: block;
 }
 
+li.document {
+	
+	border-left: 4px #fff solid;;
+}
+
+li.document.active {
+	border-left: 4px #006699 solid;
+}
+
 .preview_meta .removeDoc {
 	background: url("/resources/image/post_actions.png");
 	background-position: 0 -275px; width: 13px; height: 18px;
@@ -223,7 +236,7 @@ input.renameDocInput {
 }
 
 #innercontent .title h1 {
-	font-size: 150%; 
+	font-size: 150% !important; 
 	padding: 0; 
 	margin: 0;
 }
@@ -246,12 +259,17 @@ input.renameDocInput {
 	height: 30px !important;
 }
 
+.taglist .tagitem:hover,.taglist .tagitem:focus,.taglist .tagitem:active { 
+	color: #006699; 
+	text-decoration: underline; 
+}
+
 .taglist .tagitem {
 	background: transparent url("/resources/image/bg_tag_left.png") top left no-repeat;
 	height:20px;
 	font-size: 13px;
 	line-height: 20px;
-	padding: 2px 0 3px 1.5em;
+	padding: 2px 1px 3px 1.5em;
 }
 
 .taglist span.tagitem_rightborder {
@@ -260,7 +278,7 @@ input.renameDocInput {
 	line-height: 20px;
 	font-family: 'Arial', sans-serif;
 	height:20px;
-	padding: 2px 0.5em 3px 0;
+	padding: 2px 3px 3px 0;
 	margin: 0.5em 0.5em 0.5em 0;
 }
 
@@ -269,41 +287,72 @@ input.renameDocInput {
 }
 
 
-.subcolumns h4 {
+#fullscreen h4 {
 	margin-left: -0.5em !important;
 }
 
 #linkBox {
-	font-size: 80% !important;
-}
-
-div#ownerAvatar{
-	display: block;
-	float:left; 
-	width: 68px; 
-	text-align: center;
-	padding-top: 5px;
-
+	font-size: 90% !important;
 }
 
 div#titletext {
 	width: auto;
-	min-width: 454px;
-	max-width: 630px; 
 	margin-left: 78px;
 	display: block;
-	position: relative;
 }
 
-div#ownerAvatar a {
-
+.communitypost div#titletext {
+	width: auto;
+	min-width: 454px;
+	margin-left: 0;
+	display: block;
 }
 
-div#ownerAvatar a img {
-	width: 64px; 
-	height: 64px;
-	padding: 1px;
+div#ownerAvatar,
+.ownerAvatar {
+	display: block;
+	float:left; 
+	width: 66px; 
+	height: 66px;
 	border: 1px solid #a9a9a9; 
+	
+	overflow: hidden;
+}
+
+.ownerAvatar {
+	margin-right: 2em;
+}
+
+div#ownerAvatar span,
+div.ownerAvatar span {
+	display: block;
+	font-size: 11px;
+	color: #eee; 
+	background-color: rgba(12, 82, 135, 0.66); 
+	text-align: center;
+	padding: 1px;
+	margin: 1px; 
+	height: 11px; 
+	position:relative; 
+	line-height: 11px; 
+	top: 51px; 
+	overflow: hidden; 
+	z-index: 2;
+	width: 62px;
+}
+div#ownerAvatar a:hover,
+div#ownerAvatar a:focus,
+div#ownerAvatar a:active {
+	text-decoration: none !important;
+}
+div#ownerAvatar a img,
+div.ownerAvatar a img {
+	width: 64px; 
+	padding: 1px;
+	overflow:hidden;
+	position:relative;
+	top: -15px;
+	z-index: 1;
 }
 
 .addUrl:before, .addDocument:before {
@@ -319,4 +368,30 @@ a.addDocumentImg.addDocument:before {
 	line-height: 13px;
 	padding: 5px 3px 3px 3px;
 	margin: 2px 0;
+}
+
+#abstract {
+	text-align:justify
+}
+
+#previewSelectBullets {
+	display: block;
+	text-align: center;
+	
+}
+
+#previewSelectBullets a.bullet {
+	display: inline;
+	margin: 2px;
+	text-decoration: none;
+}
+
+#previewSelectBullets a.bullet span {
+	line-height: 21px;
+	font-size: 21px;
+	background: transparent url("/resources/image/previewSelectBullets.png") -1px -1px no-repeat;
+}
+
+#previewSelectBullets a.bullet.active span {
+	background-position: 0 -30px;
 }

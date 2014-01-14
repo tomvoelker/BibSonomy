@@ -48,6 +48,7 @@ public class JabrefLayoutAntiScriptInjectionTest extends AbstractJabrefLayoutTes
 	private static final Set<String> TESTEDLAYOUTS = 
 		Sets.asSet(new String[]{"apa_html", "chicago", "din1505", "din1505year", "harvardhtml", "harvardhtmlyear",
 								"harvardhtmlyear-linked", "harvardhtmlyear-linked-full",
+								"publist-de","publist-en","publist-year-de","publist-year-en","publist-type-de","publist-type-en",
 								"simplehtml", "simplehtmlyear", "tablerefs", "tablerefsabsbib", "tablerefsabsbibsort", "dblp", "html"});
 	private static final String TESTCASEFOLDERPATH = "/jabref-layout-anti-script-tests";
 	private static final String ENTRYTYPE_SPLITSUFFIX = "xmlesc#";

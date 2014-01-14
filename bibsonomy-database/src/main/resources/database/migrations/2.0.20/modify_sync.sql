@@ -1,4 +1,4 @@
-ALTER TABLE sync_services ADD COLUMN `ssl_dn` varchar(255) not null default='';
+ALTER TABLE sync_services ADD COLUMN `ssl_dn` varchar(255) not null default '';
 ALTER TABLE sync_services ADD COLUMN `secure_api` varchar(255);
 
 DROP TABLE IF EXISTS `sync_services`;

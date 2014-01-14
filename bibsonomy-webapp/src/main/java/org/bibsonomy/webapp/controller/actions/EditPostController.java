@@ -14,6 +14,7 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -195,6 +196,19 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * decide, what to do
 		 */
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
+		/*
+		 * compareVersion-1 to change index begin from 1 to 0
+		 */
+		final int compareVersion = (command.getCompareVersion()-1);
+		
+		if (present(compareVersion) && (compareVersion!=-1) && present(intraHashToUpdate)) {
+			log.debug("intra hash to diff found -> handling diff of existing post");
+			final List<?> dbPosts = logic.getPosts(post.getResource().getClass(), GroupingEntity.ALL, user, null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, compareVersion, compareVersion+1);
+			command.setPostDiff((Post<RESOURCE>) dbPosts.get(0));
+			command.setPost(getPostDetails(intraHashToUpdate, user));
+			return Views.DIFFPUBLICATIONPAGE;
+		}
+		
 		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
 			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);

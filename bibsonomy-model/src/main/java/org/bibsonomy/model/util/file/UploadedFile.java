@@ -37,6 +37,11 @@ public interface UploadedFile {
 	public String getFileName();
 	
 	/**
+	 * @return the absolute path of the file
+	 */
+	public String getAbsolutePath();
+	
+	/**
 	 * @return the content as byte array
 	 * @throws IOException 
 	 */
@@ -48,5 +53,11 @@ public interface UploadedFile {
 	 * @throws Exception 
 	 */
 	public void transferTo(File fileInFileSytem) throws Exception;
+
+	/**
+	 * returns the purpose of the file.
+	 * @return FilePurpose
+	 */
+	public FilePurpose getPurpose ();
 
 }

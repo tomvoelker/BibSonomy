@@ -13,8 +13,6 @@ import org.bibsonomy.model.Document;
 
 /**
  * @author Christian Kramer
- * @version $Id: DocumentDatabaseManager.java,v 1.10 2009-07-15 08:26:19
- *          voigtmannc Exp $
  */
 public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	/**
