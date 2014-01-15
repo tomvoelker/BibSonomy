@@ -6,6 +6,9 @@
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/antlr"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/downloaded-resources"/>
+        <dependent-module archiveName="bibsonomy-web-common-2.0.41-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bibsonomy-web-common/bibsonomy-web-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
 <property name="java-output-path" value="build/classes"/>
         <property name="context-root" value="bibsonomy-webapp"/>
         <property name="component.exclusion.patterns" value="**/*.js,**/*.css"/>

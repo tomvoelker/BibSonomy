@@ -1,0 +1,52 @@
+<html>
+<header>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Publications</title>
+  <style type="text/css">
+	  .wo-publ {
+	  margin-bottom: 1em;
+	  border: 1px solid #ddd;
+	  font-family: sans-serif;
+	  padding: 10px;
+	  }
+	  .wo-publ a.title {
+	  display: block;
+	  text-align: center;
+	  font-size: 16px;
+	  }
+	  .wo-publ a.source, .wo-publ a.pdf {
+	  font-weight: normal;
+	  }
+	  .wo-publ .author, .wo-publ .meta {
+	  color: #888;
+	  text-align: center;
+	  }
+	  .wo-publ img {
+	  float: left;
+	  margin: 0 10px 10px 0;
+	  }
+	  .wo-publ .abstract {
+	  line-height: 150%;
+	  color: #666;
+	  }
+	  ul.wo-publicationlist li {
+	  list-style-type: none;
+	  }
+	  ul.wo-publicationlist a {
+	  font-weight: normal;
+	  }
+	  ul.wo-publicationlist .year {
+	  color: #303F5A;
+	  }
+	  ul.wo-publicationlist .author {
+	  color: #666;
+	  }
+	  a {
+	  text-decoration: none;
+	  color: rgb(70, 130, 180);
+	  font-weight: bold;
+	  }
+
+	</style>
+</header>
+<body>
