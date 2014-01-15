@@ -1037,6 +1037,26 @@ CREATE TABLE `openIDUser` (
 SET character_set_client = @saved_cs_client;
 
 --
+-- Table structure for table `pendingGroupids
+--
+
+DROP TABLE IF EXISTS `pendingGroupids`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `pendingGroupids` (
+  `group_name` varchar(30) NOT NULL default '',
+  `group` int(10) NOT NULL default '0',
+  `privlevel` tinyint(3) unsigned default '1',
+  `sharedDocuments` tinyint(1) default '0',
+  `publ_reporting_mail` varchar(255) DEFAULT NULL,
+  `publ_reporting_mail_template` text,
+  `publ_reporting_external_url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY  (`group`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+
+--
 -- Table structure for table `pendingUser`
 --
 
@@ -1617,8 +1637,8 @@ DROP TABLE IF EXISTS `post_metadata`;
 SET @saved_cs_client     = @@character_set_client;
 CREATE TABLE `post_metadata` (
   `user_name` VARCHAR(30),
-  `intra_hash` CHAR(32),
-  `inter_hash` CHAR(32),
+  `content_id` int(10) unsigned NOT NULL,
+  `ref_content_id` int(10) unsigned NULL,
   `key` VARCHAR(50),
   `value` TEXT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP

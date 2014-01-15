@@ -83,8 +83,15 @@
 		AND s.set_name = #setName#
 	</select>
 	
+	<insert id="activateGroup" parameterClass="string">
+		INSERT INTO groupids (`group_name`, `group`, `privlevel`, `sharedDocuments`)
+		SELECT `group_name`, `group`, `privlevel`, `sharedDocuments`
+		FROM pendingGroupids 
+		WHERE pendingGroupids.group_name = #name#
+	</insert>
+	
 	<insert id="insertGroup" parameterClass="group">
-		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#)
+		INSERT INTO pendingGroupids (group_name, `group`, privlevel, sharedDocuments) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#)
 	</insert>
 
 	<insert id="insertTagSet" parameterClass="tagSetParam">
@@ -93,6 +100,10 @@
 
 	<delete id="deleteGroup" parameterClass="int">
 		DELETE FROM groupids WHERE `group` = #groupId#
+	</delete>
+	
+	<delete id="deletePendingGroup" parameterClass="string">
+		DELETE FROM pendingGroupids WHERE pendingGroupids.group_name = #groupname#
 	</delete>
 
 	<delete id="deleteTagSet" parameterClass="tagSetParam">

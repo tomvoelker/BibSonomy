@@ -137,6 +137,11 @@ public class Post<T extends Resource> implements Serializable {
 	private String copyFrom;
 	
 	/**
+	 * This is the intrahash of the post which should be copied.
+	 */
+	private String copyIntraHash;
+	
+	/**
 	 * @return the repositories
 	 */
 	public List<Repository> getRepositorys() {
@@ -433,5 +438,19 @@ public class Post<T extends Resource> implements Serializable {
 			this.visibleTags = new HashSet<Tag>();
 		}
 		this.visibleTags.add(tag);
+	}
+	
+	/**
+	 * @return the copy intra hash
+	 */
+	public String getCopyIntraHash() {
+		return copyIntraHash;
+	}
+
+	/**
+	 * @param copyIntraHash
+	 */
+	public void setCopyIntraHash(String copyIntraHash) {
+		this.copyIntraHash = copyIntraHash;
 	}
 }

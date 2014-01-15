@@ -522,6 +522,8 @@
 								<value>download</value>
 								<value>urlGenerator</value>
 								<value>skipDummyValues</value>
+								<!-- used for metadata plugin -->
+								<value>post.copyIntraHash</value>
 							</list>
 						</property>
 					</bean>
@@ -1074,14 +1076,12 @@
 	<bean id="mockPingback" class="org.bibsonomy.pingback.MockPingback"/>
 	<alias name="${project.bean.pingback}" alias="pingback"/>
 	
-	<!-- Handles user's profile picture source -->
-	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.GravatarStdPictureHandlerFactory" />
 	
-	<!-- Handles the picture download -->
+	<!-- Handles the picture upload and download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="requestLogic" ref="requestLogic" />
-		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
+		<property name="fileLogic" ref="fileLogic" />
 	</bean>	
 	
 	<!-- Handles the settings update of a user -->

@@ -287,8 +287,8 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final User testUser2 = this.createTestUser("forgroupuser2");
 		
 		// create groups 
-		this.createTestUser("forgroup1");
-		this.createTestUser("forgroup2");
+		//this.createTestUser("forgroup1");
+		//this.createTestUser("forgroup2");
 		final Group testGroup1 = this.createTestGroup("forgroup1");
 		final Group testGroup2 = this.createTestGroup("forgroup2");
 		
@@ -606,6 +606,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		group = new Group();
 		group.setName(name);
 		groupDb.createGroup(group, this.dbSession);
+		groupDb.activateGroup(name, this.dbSession);
 
 		return group;
 	}

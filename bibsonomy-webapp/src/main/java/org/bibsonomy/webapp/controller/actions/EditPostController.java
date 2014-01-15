@@ -178,6 +178,10 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				return getEditPostView(command, loginUser);
 			}
 			
+			// save the hash + user in the post for later use (metadata plugin).
+			post.setCopyIntraHash(hash);	
+			post.setCopyFrom(user);
+		
 			command.setPost(post);
 		}
 
@@ -654,8 +658,9 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		try {
 			// setting copyFrom if present
-			if (present(command.getUser()))
+			if (present(command.getUser())) {
 				post.setCopyFrom(command.getUser());
+			}
 			
 			log.debug("finally: creating a new post in the DB");
 			final String createdPost = logic.createPosts(Collections.<Post<?>>singletonList(post)).get(0);

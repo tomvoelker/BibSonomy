@@ -62,6 +62,7 @@ DELETE FROM `picked_concepts`;
 DELETE FROM `post_metadata`;
 DELETE FROM `popular_tags`;
 DELETE FROM `prediction`;
+DELETE FROM `pendingGroupids`;
 DELETE FROM `pendingUser`;
 DELETE FROM `ranking_queue`;
 DELETE FROM `rankings`;

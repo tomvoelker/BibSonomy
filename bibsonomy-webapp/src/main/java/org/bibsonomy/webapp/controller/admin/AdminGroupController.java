@@ -88,7 +88,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		
 		/*
 		 * check corresponding group user
-		 */
+		 *
 		final User user = logic.getUserDetails(groupName);
 
 		// Check if user exists
@@ -100,9 +100,11 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		if (user.isSpammer()) {
 			return "Group-creation failed: No groups allowed for users tagged as \"spammer\".";
 		}
-		
-		// Create the group, otherwise.
+		*/
+		// Create the group ...
 		logic.createGroup(group);
+		// ... and activate it
+		logic.updateGroup(group, GroupUpdateOperation.ACTIVATE);
 		return "Successfully created new group!";
 	}
 

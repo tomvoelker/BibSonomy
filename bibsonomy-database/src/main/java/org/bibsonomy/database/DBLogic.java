@@ -115,6 +115,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * Database Implementation of the LogicInterface
@@ -1073,8 +1074,9 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * check permissions
 		 */
-		this.permissionDBManager.ensureAdminAccess(loginUser);
-
+		if (this.loginUser.isSpammer()) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The user is flagged as spammer - cannot create a group with this name");
+		}
 		final DBSession session = this.openSession();
 		try {
 			this.groupDBManager.createGroup(group, session);
@@ -1125,6 +1127,11 @@ public class DBLogic implements LogicInterface {
 				break;
 			case UPDATE_GROUP_REPORTING_SETTINGS:
 				this.groupDBManager.updateGroupPublicationReportingSettings(group, session);
+				break;
+			case ACTIVATE:
+				if (this.permissionDBManager.isAdmin(loginUser)) {
+					this.groupDBManager.activateGroup(groupName, session);
+				}
 				break;
 			default:
 				throw new UnsupportedOperationException("The given method is not yet implemented.");
@@ -2838,10 +2845,10 @@ public class DBLogic implements LogicInterface {
 	}	
 	
 	@Override
-	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String reqUserName, final String metaDataPluginKey) {
 		final DBSession session = openSession();
 		try {
-			return this.publicationDBManager.getPostMetaData(hashType, resourceHash, userName, metaDataPluginKey, session);
+			return this.publicationDBManager.getPostMetaData(hashType, resourceHash, this.loginUser, reqUserName, metaDataPluginKey, session);
 		} finally {
 			session.close();
 		}

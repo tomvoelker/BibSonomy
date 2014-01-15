@@ -52,6 +52,7 @@ import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
@@ -1696,20 +1697,30 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * returns a list of all metadata for the given post and MetaDataPluginKey.
 	 *
+	 * TODO: friends are not supported yet.
+	 * 
 	 * @param HashID
 	 * @param resourceHash
-	 * @param userName
+	 * @param loginUserName
+	 * @param reqUserName
 	 * @param metaDataPluginKey
 	 * @param session
 	 */
-	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey, final DBSession session) {
+	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final User loginUser, final String reqUserName, final String metaDataPluginKey, final DBSession session) {
 		final PostParam param = new PostParam();
+		/*
+		 * get the groupids
+		 */
+		List<Integer> groups = UserUtils.getListOfGroupIDs(loginUser);
+		// add the public group
+		groups.add(GroupUtils.getPublicGroup().getGroupId());
+		param.setGroups(groups);
 		if(hashType.equals(HashID.INTER_HASH)) {
 			param.setInterHash(resourceHash);
 		} else {
 			param.setIntraHash(resourceHash);
 		}
-		param.setUserName(userName);
+		param.setUserName(reqUserName);
 		if(present(metaDataPluginKey)) {
 			param.setKey(MetaDataPluginKey.valueOf(metaDataPluginKey));
 		}
