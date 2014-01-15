@@ -29,7 +29,7 @@
 				(b2.`simhash2` = #intraHash# OR b1.`simhash2` = #intraHash#)
 			</isNotEmpty>
 			<isNotEmpty property="interHash" prepend="AND"> 
-				()b2.`simhash1` = #interHash# or b1.`simhash1` = #interHash#)
+				(b2.`simhash1` = #interHash# or b1.`simhash1` = #interHash#)
 			</isNotEmpty>
 			<isNotEmpty property="userName" prepend="AND"> 
 				`user_name` = #userName# 
