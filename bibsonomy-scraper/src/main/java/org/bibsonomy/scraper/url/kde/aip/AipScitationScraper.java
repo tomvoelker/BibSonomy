@@ -35,6 +35,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -47,58 +48,37 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  *
  */
-public class AipScitationScraper extends AbstractUrlScraper {
+public class AipScitationScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_NAME = "AIP Scitation";
 	private static final String SITE_URL = "http://scitation.aip.org/";
 	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + 
 			". Publications can be entered as a selected BibTeX snippet or by posting the page of the reference.";
-
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aip.org");
 	private static final Pattern pathPattern = AbstractUrlScraper.EMPTY_PATTERN;
-	private static final Pattern pattern = Pattern.compile("<a href=\"(.*)\" title=\".+\" class=\"externallink\" >BibT<sub>E</sub>X</a>");
-	//private static final String BIBTEX_PATH = "/cite/bibtex";
-
+	private static final String BIBTEX_PATH = "/cite/bibtex";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, pathPattern));
 
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
-
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		final URL citationURL = sc.getUrl();
-
-		String bibResult = null;
-
-		try {
-			Matcher match = pattern.matcher(WebUtils.getContentAsString(citationURL));
-			while(match.find()){
-				bibResult = WebUtils.getContentAsString("http://" + citationURL.getHost() + match.group(1));
-
-				if (bibResult != null) {
-					sc.setBibtexResult(bibResult);
-				}
-			}
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
-		}
-		return true;
+	public String getBibTeXURL(URL url) {
+		return "http://" + url.getHost().toString() + url.getPath().toString().replaceAll(";.*", "") + BIBTEX_PATH;
 	}
+	
+	
 }
