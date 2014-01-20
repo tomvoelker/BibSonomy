@@ -5,13 +5,7 @@
   \end{author}
   <div class="meta">
   	<a href="\url" class="source">
-		\format[HTMLChars,AntiScriptInjection]{\year}
-		\begin{school}
-		, PhD thesis, \format[HTMLChars,AntiScriptInjection]{\school}
-		\end{school}
-		\begin{type}
-		, \format[HTMLChars,AntiScriptInjection]{\type}
-		\end{type}
+		\format[HTMLChars,AntiScriptInjection]{\year}\begin{school}, PhD thesis, \format[HTMLChars,AntiScriptInjection]{\school}\end{school}\begin{type}, \format[HTMLChars,AntiScriptInjection]{\type}\end{type}
 	</a>
     [<a class="pdf" href="\url">pdf</a>]
   </div>

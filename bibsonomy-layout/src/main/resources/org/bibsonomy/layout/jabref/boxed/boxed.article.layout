@@ -5,19 +5,7 @@
   \end{author}
   <div class="meta">
 	<a href="\url" class="source">
-		\begin{journal}
-		\format[HTMLChars,AntiScriptInjection]{\journal}
-		\end{journal}
-		\begin{volume}
-		, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>
-		(\format[HTMLChars,AntiScriptInjection]{\number})
-		\end{volume}
-		\begin{pages}
-		 \format[FormatPagesForHTML,AntiScriptInjection]{\pages}
-		\end{pages}
-		\begin{year}
-		 (\format[HTMLChars,AntiScriptInjection]{\year})
-		\end{year}
+		\begin{journal}\format[HTMLChars,AntiScriptInjection]{\journal}\end{journal}\begin{volume}, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>(\format[HTMLChars,AntiScriptInjection]{\number})\end{volume}\begin{pages} \format[FormatPagesForHTML,AntiScriptInjection]{\pages}\end{pages}\begin{year} (\format[HTMLChars,AntiScriptInjection]{\year})\end{year}
 	</a>
     [<a class="pdf" href="\url">pdf</a>]
   </div>

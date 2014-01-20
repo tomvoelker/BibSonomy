@@ -5,13 +5,7 @@
   \end{author}
   <div class="meta">
 	<a href="\url" class="source">
-		\format[HTMLChars,AntiScriptInjection]{\year}
-		\begin{organization}
-		, \format[HTMLChars,AntiScriptInjection]{\organization}
-		\end{organization}
-		\begin{address}
-		, \format[HTMLChars,AntiScriptInjection]{\address}
-		\end{address}
+		\format[HTMLChars,AntiScriptInjection]{\year}\begin{organization}, \format[HTMLChars,AntiScriptInjection]{\organization}\end{organization}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}
 	</a>
     [<a class="pdf" href="\url">pdf</a>]
   </div>

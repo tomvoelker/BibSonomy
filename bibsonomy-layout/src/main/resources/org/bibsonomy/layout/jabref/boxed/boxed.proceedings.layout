@@ -5,23 +5,7 @@
   \end{author}
   <div class="meta">
   	<a href="\url" class="source">
-		\format[HTMLChars,AntiScriptInjection]{\year}
-		\begin{editor}
-		, \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}, ed.
-		\end{editor}
-		\begin{volume}
-		, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>
-		(\format[HTMLChars,AntiScriptInjection]{\number})
-		\end{volume}
-		\begin{publisher}
-		, \format[HTMLChars,AntiScriptInjection]{\publisher}
-		\end{publisher}
-		\begin{address}
-		, \format[HTMLChars,AntiScriptInjection]{\address}
-		\end{address}
-		\begin{isbn}
-		, ISBN \format[HTMLChars,AntiScriptInjection]{\isbn}
-		\end{isbn}
+		\format[HTMLChars,AntiScriptInjection]{\year}\begin{editor}, \format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}, ed.\end{editor}\begin{volume}, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>(\format[HTMLChars,AntiScriptInjection]{\number})\end{volume}\begin{publisher}, \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{isbn}, ISBN \format[HTMLChars,AntiScriptInjection]{\isbn}\end{isbn}
 	</a>
     [<a class="pdf" href="\url">pdf</a>]
   </div>

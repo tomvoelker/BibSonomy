@@ -5,17 +5,7 @@
   \end{author}
   <div class="meta">
   	<a href="\url" class="source">
-		\format[HTMLChars,AntiScriptInjection]{\year}
-		\begin{howpublished}
-		, \format[HTMLChars,AntiScriptInjection}{\howpublished}
-		\end{howpublished}
-		\end{editor}
-		\begin{address}
-		, \format[HTMLChars,AntiScriptInjection]{\address}
-		\end{address}
-		\begin{isbn}
-		, ISBN \format[HTMLChars,AntiScriptInjection]{\isbn}
-		\end{isbn}
+		\format[HTMLChars,AntiScriptInjection]{\year}\begin{howpublished}, \format[HTMLChars,AntiScriptInjection}{\howpublished}\end{howpublished}\end{editor}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{isbn}, ISBN \format[HTMLChars,AntiScriptInjection]{\isbn}\end{isbn}
 	</a>
     [<a class="pdf" href="\url">pdf</a>]
   </div>
