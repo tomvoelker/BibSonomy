@@ -4,10 +4,10 @@
     <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}</div>
   \end{author}
   <div class="meta">
-  	<a href="\url" class="source">
-		\begin{editor}\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}, ed.\end{editor}\begin{volume}, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>(\format[AntiScriptInjection]{\number})\end{volume}\begin{series}, \format[HTMLChars,AntiScriptInjection]{\series}\end{series}\begin{publisher}, \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{isbn}, ISBN \format[HTMLChars,AntiScriptInjection]{\isbn}\end{isbn}\begin{pages}, \format[FormatPagesForHTML,AntiScriptInjection]{\pages}\end{pages}\begin{year} (\format[HTMLChars,AntiScriptInjection]{\year})\end{year}
-	</a>
-    [<a class="pdf" href="\url">pdf</a>]
+	\begin{editor}\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}, ed.\end{editor}\begin{volume}, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>(\format[AntiScriptInjection]{\number})\end{volume}\begin{series}, \format[HTMLChars,AntiScriptInjection]{\series}\end{series}\begin{publisher}, \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{isbn}, ISBN \format[HTMLChars,AntiScriptInjection]{\isbn}\end{isbn}\begin{pages}, \format[FormatPagesForHTML,AntiScriptInjection]{\pages}\end{pages}\begin{year} (\format[HTMLChars,AntiScriptInjection]{\year})\end{year}
+    \begin{url}
+    <a class="pdf" href="\url">[pdf]</a>
+    \end{url}
   </div>
   <a href="\url"><img src="/documents/\intraHash/\username/?preview=SMALL" alt="" /></a>
   \begin{abstract}

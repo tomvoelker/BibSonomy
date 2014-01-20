@@ -39,7 +39,7 @@ import org.bibsonomy.services.URLGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
+
 public class JabrefBasicLayoutTestBuilder {
 	
 	private static final JabrefLayoutRenderer RENDERER = new JabrefLayoutRenderer();
@@ -51,14 +51,15 @@ public class JabrefBasicLayoutTestBuilder {
 	/*
 	 * Specify the Layout and entryType, for which you want to create a TestCase/result-File
 	 */
-	private String layoutName = "simplehtmlyear";
-	private String[] entryTypes = {""};
+	private String layoutName = "boxed";
+	private String[] entryTypes = {"book"};
 		//{"article","book","booklet","conference","electronic","inbook","incollection","inproceedings","","manual","mastersthesis","phdthesis","proceedings","techreport","unpublished"};
 	
 	private String outputFolderPath = "src/test/resources/temp/";
 	
 	private static final String LAYOUT_ENTRYTYPE_SPLIT = "#";
-	private static final String LAYOUT_ENTRYTYPE_SPLITSUFFIX = "xmlesc#";
+	private static final String LAYOUT_ENTRYTYPE_SPLITSUFFIX = ""; //"xmlesc#";
+	private static final String LAYOUT_FILEEXTENSION = ".html"; //".layoutResult";
 	
 	
 	/*
@@ -86,7 +87,7 @@ public class JabrefBasicLayoutTestBuilder {
 			
 			renderedLayout = modifyLayout(renderedLayout);
 			
-			File resultFile = new File(outputFolderPath + layoutName + LAYOUT_ENTRYTYPE_SPLIT  + LAYOUT_ENTRYTYPE_SPLITSUFFIX + entryType + ".layoutResult");
+			File resultFile = new File(outputFolderPath + layoutName + LAYOUT_ENTRYTYPE_SPLIT  + LAYOUT_ENTRYTYPE_SPLITSUFFIX + entryType + LAYOUT_FILEEXTENSION);
 			resultFile.createNewFile();
 			
 			FileWriter fw = new FileWriter(resultFile);
