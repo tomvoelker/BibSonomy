@@ -4,7 +4,7 @@
     <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}</div>
   \end{author}
   <div class="meta">
-	\format[HTMLChars,AntiScriptInjection]{\year}\begin{howpublished}, \format[HTMLChars,AntiScriptInjection}{\howpublished}\end{howpublished}\end{editor}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{isbn}, ISBN \format[HTMLChars,AntiScriptInjection]{\isbn}\end{isbn}
+	\format[HTMLChars,AntiScriptInjection]{\year}\begin{howpublished}, \format[HTMLChars,AntiScriptInjection}{\howpublished}\end{howpublished}\end{editor}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{doi}, [\format[HTMLChars,AntiScriptInjection]{\doi}]\end{doi}
     \begin{url}
     <a class="pdf" href="\url">[pdf]</a>
     \end{url}
