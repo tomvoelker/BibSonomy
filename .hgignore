@@ -27,3 +27,7 @@ syntax: regexp
 ^bibsonomy-web-common/\.settings/org\.eclipse\.core\.resources\.prefs$
 syntax: regexp
 ^bibsonomy-webapp/\.settings/org\.eclipse\.m2e\.core\.prefs$
+syntax: regexp
+^bibsonomy-.*/\.settings/org\.eclipse\.wst\.common\.component$
+syntax: regexp
+^bibsonomy-.*/\.settings/org\.eclipse\..*\.prefs$
