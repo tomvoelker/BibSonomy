@@ -4,46 +4,10 @@
     <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}</div>
   \end{author}
   <div class="meta">
-    <a href="\url" class="source">
-    	\begin{journal}
-		\format[HTMLChars,AntiScriptInjection]{\journal}
-		\end{journal}
-		\begin{volume}
-		, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>
-		(\format[AntiScriptInjection]{\number})
-		\end{volume}
-		\begin{series}
-		, \format[HTMLChars,AntiScriptInjection]{\series}
-		\end{series}
-		\begin{editor}
-   		, \format[AuthorFirstFirst,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}, ed. ,
-   		\end{editor}
-   		\begin{booktitle}
-		 '\format[HTMLChars,AntiScriptInjection]{\booktitle}'
-		\end{booktitle}
-		\begin{organization}
-		, \format[HTMLChars,AntiScriptInjection]{\organization}
-		\end{organization}
-		\begin{institution}
-		, Technical report, \format[HTMLChars,AntiScriptInjection]{\institution}
-		\end{institution}
-		\begin{publisher}
-		, \format[HTMLChars,AntiScriptInjection]{\publisher}
-		\end{publisher}
-		\begin{howpublished}
-		, \format[HTMLChars,AntiScriptInjection]{\howpublished}
-		\end{howpublished}
-		\begin{address}
-		, \format[HTMLChars,AntiScriptInjection]{\address}
-		\end{address}
-		\begin{pages}
-		, \format[FormatPagesForHTML,AntiScriptInjection]{\pages}
-		\end{pages}
-		\begin{year}
-		(\format[HTMLChars,AntiScriptInjection]{\year})
-		\end{year}
-	</a>
-    [<a class="pdf" href="\url">pdf</a>]
+	\begin{journal}\format[HTMLChars,AntiScriptInjection]{\journal}\end{journal}\begin{volume}, <strong>\format[HTMLChars,AntiScriptInjection]{\volume}</strong>(\format[AntiScriptInjection]{\number})\end{volume}\begin{series}, \format[HTMLChars,AntiScriptInjection]{\series}\end{series}\begin{editor}, \format[AuthorFirstFirst,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}, ed. ,\end{editor}\begin{booktitle} '\format[HTMLChars,AntiScriptInjection]{\booktitle}'\end{booktitle}\begin{organization}, \format[HTMLChars,AntiScriptInjection]{\organization}\end{organization}\begin{institution}, Technical report, \format[HTMLChars,AntiScriptInjection]{\institution}\end{institution}\begin{publisher}, \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}\begin{howpublished}, \format[HTMLChars,AntiScriptInjection]{\howpublished}\end{howpublished}\begin{address}, \format[HTMLChars,AntiScriptInjection]{\address}\end{address}\begin{pages}, \format[FormatPagesForHTML,AntiScriptInjection]{\pages}\end{pages}\begin{year}(\format[HTMLChars,AntiScriptInjection]{\year})\end{year}
+    \begin{url}
+    <a class="pdf" href="\url">[pdf]</a>
+    \end{url}
   </div>
   <a href="\url"><img src="/documents/\intraHash/\username/?preview=SMALL" alt="" /></a>
   \begin{abstract}

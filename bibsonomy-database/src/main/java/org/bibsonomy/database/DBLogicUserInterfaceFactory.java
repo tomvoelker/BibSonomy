@@ -20,7 +20,7 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
 	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
