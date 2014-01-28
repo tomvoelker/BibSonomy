@@ -68,6 +68,7 @@ public class Logging extends AbstractDatabasePlugin {
 
 	@Override
 	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
+		// TODO: merge the two inserts
 		final BibTexParam param = new BibTexParam();
 		param.setRequestedContentId(contentId);
 		this.insert("logBibTex", param, session);
@@ -76,14 +77,15 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardUpdate(final int newContentId, final int contentId, final String newInterhash, final String interhash, final DBSession session) {
+	public void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
+		// TODO: merge the two inserts
 		final LoggingParam<String> logParam = new LoggingParam<String>();
 		logParam.setNewId(newInterhash);
 		logParam.setOldId(interhash);
 		this.insert("logGoldStandard", logParam, session);
 		
 		final BibTexParam param = new BibTexParam();
-		param.setRequestedContentId(contentId);
+		param.setRequestedContentId(oldContentId);
 		param.setNewContentId(newContentId);
 		this.insert("logGoldStandardUpdate", param, session);
 	}
