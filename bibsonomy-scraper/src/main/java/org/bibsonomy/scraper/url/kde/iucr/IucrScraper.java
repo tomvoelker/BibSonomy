@@ -66,7 +66,6 @@ import org.bibsonomy.util.WebUtils;
  * like this -> http://scripts.iucr.org/cgi-bin/biblio?Action=download&cnor=ck5030&saveas=BIBTeX
  * 
  * @author tst
- * @version $Id$
  */
 public class IucrScraper extends AbstractUrlScraper {
 

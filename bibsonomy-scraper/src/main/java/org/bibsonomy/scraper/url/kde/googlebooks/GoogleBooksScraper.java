@@ -40,7 +40,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
- * @version $Id$
  */
 public class GoogleBooksScraper extends AbstractUrlScraper {
 

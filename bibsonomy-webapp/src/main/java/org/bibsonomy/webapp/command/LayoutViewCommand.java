@@ -9,7 +9,6 @@ import org.bibsonomy.webapp.view.LayoutView;
  * {@link PublicationRendererCommand} in {@link LayoutView}.
  * 
  * @author jensi
- * @version $Id$
  */
 public interface LayoutViewCommand extends PublicationViewCommand {
 	/**

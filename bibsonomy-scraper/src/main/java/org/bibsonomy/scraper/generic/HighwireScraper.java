@@ -39,7 +39,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * 
- * @version $Id$
  */
 public class HighwireScraper implements Scraper {
 	private static final String SITE_NAME = "Highwire Scraper Collection";

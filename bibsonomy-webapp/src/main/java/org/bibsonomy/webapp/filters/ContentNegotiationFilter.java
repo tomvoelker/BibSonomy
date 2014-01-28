@@ -45,7 +45,6 @@ import org.bibsonomy.webapp.view.Views;
  * TODO: should we add /uri/ to the excludePatterns list?
  * 
  * @author rja
- * @version $Id$
  */
 public class ContentNegotiationFilter implements Filter {
 

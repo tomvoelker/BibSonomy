@@ -35,7 +35,6 @@ import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author Haile
- * @version $Id$
  */
 public class ApsScraper extends SimpleGenericURLScraper{
 	private static final String SITE_NAME = "American Psychological Society";

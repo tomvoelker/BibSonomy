@@ -52,8 +52,6 @@ import org.springframework.beans.factory.annotation.Required;
  * This renderer handles jabref layouts. 
  *  
  * @author:  rja
- * @version: $Id$
- * $Author$
  * 
  */
 public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {

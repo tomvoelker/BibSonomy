@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * found in the database. 
  * 
  * @author rja
- * @version $Id$
  */
 public class LdapUsernameNotFoundException extends UsernameNotFoundException {
 

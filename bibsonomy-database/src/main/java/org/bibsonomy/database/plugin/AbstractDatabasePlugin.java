@@ -20,7 +20,6 @@ import org.bibsonomy.model.Resource;
  * @author Christian Schenk
  * @author Anton Wilhelm
  * @author Stefan Stützer
- * @version $Id$
  */
 public class AbstractDatabasePlugin extends AbstractDatabaseManager implements DatabasePlugin {
 
@@ -45,7 +44,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public void onGoldStandardUpdate(final int newContentId, final int contentId, final String newInterhash, final String interhash, final DBSession session) {
 		// noop
 	}
 

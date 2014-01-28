@@ -25,7 +25,6 @@ import org.springframework.web.servlet.view.AbstractView;
  * View to export data in CSL-compatible JSON-Format
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
  */
 public class CSLView extends AbstractView {
 

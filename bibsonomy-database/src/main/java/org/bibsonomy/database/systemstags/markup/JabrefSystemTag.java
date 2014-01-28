@@ -5,7 +5,6 @@ import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 /**
  * @author sdo
- * @version $Id$
  */
 public class JabrefSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag {
 

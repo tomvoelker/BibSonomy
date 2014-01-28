@@ -31,7 +31,6 @@ import org.bibsonomy.util.Sets;
  * {@link ExtensionChecker} which always returns true
  * 
  * @author dzo
- * @version $Id$
  */
 public class WildcardExtensionChecker implements ExtensionChecker {
 

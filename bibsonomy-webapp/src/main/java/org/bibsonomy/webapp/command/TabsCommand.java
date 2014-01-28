@@ -7,7 +7,6 @@ import java.util.List;
  * Bean for arbitrary content in a tabbed context
  * 
  * @author Stefan Stützer
- * @version $Id$
  * @param <T>
  *            type of the tab content
  */

@@ -11,7 +11,6 @@ import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 
 /**
  * @author Jens Illig
- * @version $Id$
  * @param <L> 
  */
 public abstract class AbstractGetListStrategy<L extends List<?>> extends Strategy {

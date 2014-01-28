@@ -30,7 +30,6 @@ import org.bibsonomy.scraper.converter.picatobibtex.Row;
 
 /**
  * @author daill
- * @version $Id$
  */
 public class TagsRule extends Rules {
 

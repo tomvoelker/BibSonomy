@@ -11,7 +11,6 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class TitleExtractor implements AttributeExtractor {
 

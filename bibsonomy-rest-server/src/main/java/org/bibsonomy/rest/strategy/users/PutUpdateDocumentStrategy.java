@@ -17,7 +17,6 @@ import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
  * strategy for renaming documents
  * 
  * @author lukas
- * @version $Id$
  */
 public class PutUpdateDocumentStrategy extends AbstractUpdateStrategy {
 	private static final String[][] consistentSuffixes = {{"jpg","jpeg","png", "tif", "tiff"}, {"djv", "djvu"}, {"txt", "tex"},

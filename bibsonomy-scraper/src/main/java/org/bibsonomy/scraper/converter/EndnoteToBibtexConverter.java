@@ -42,7 +42,6 @@ import org.bibsonomy.util.StringUtils;
 /** Converts EndNote (RIS) into BibTeX.
  * 
  * @author rja
- * @version $Id$
  */
 public class EndnoteToBibtexConverter {
 

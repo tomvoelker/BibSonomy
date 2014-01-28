@@ -12,7 +12,6 @@ import org.junit.Test;
  * Simple test for encryption library.
  * 
  * @author dbenz
- * @version $Id$
  */
 public class EncryptionTest {
 

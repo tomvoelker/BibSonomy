@@ -47,7 +47,6 @@ import org.bibsonomy.testutil.TestUtils;
  * Runner for reachability test for Scraper
  * 
  * @author tst
- * @version $Id$
  */
 public class ReachabilityTestRunner {
 	private static final Log log = LogFactory.getLog(ReachabilityTestRunner.class);

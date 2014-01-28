@@ -34,7 +34,6 @@ import org.bibsonomy.model.util.SimHash;
  * A publication with references to other publications
  * 
  * @author dzo
- * @version $Id$
  */
 public class GoldStandardPublication extends BibTex implements GoldStandard<BibTex> {
 	private static final long serialVersionUID = 128893745902925210L;

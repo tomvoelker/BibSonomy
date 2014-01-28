@@ -30,7 +30,6 @@ import java.util.Date;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class RestSyncUtils {
 

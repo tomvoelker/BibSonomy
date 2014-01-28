@@ -33,7 +33,6 @@ import org.bibsonomy.model.User;
  * requests for flagging/unflagging of spam users
  * 
  * @author fei
- * @version $Id$
  * @param <R>
  *            the resource to manage
  */

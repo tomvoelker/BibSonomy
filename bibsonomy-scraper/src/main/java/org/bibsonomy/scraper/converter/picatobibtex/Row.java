@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 
 /**
  * @author C. Kramer
- * @version $Id$
  */
 public class Row {
 	private final String category;

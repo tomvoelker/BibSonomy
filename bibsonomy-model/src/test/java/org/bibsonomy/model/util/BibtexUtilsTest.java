@@ -49,7 +49,6 @@ import org.junit.Test;
  * Testcase for the BibtexUtils class
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class BibtexUtilsTest {
 

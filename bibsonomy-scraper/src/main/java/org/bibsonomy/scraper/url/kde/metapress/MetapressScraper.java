@@ -44,7 +44,6 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for RIS citations from Metapress.com
  * @author tst
- * @version $Id$
  */
 public class MetapressScraper extends AbstractUrlScraper {
 

@@ -49,7 +49,6 @@ import org.bibsonomy.model.util.BibTexUtils;
  * which we transform to JSON later on.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
  */
 public class CslModelConverter {
 

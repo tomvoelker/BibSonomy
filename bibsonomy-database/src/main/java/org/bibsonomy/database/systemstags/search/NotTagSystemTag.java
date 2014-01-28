@@ -5,7 +5,6 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author mba
- * @version $Id$
  */
 public class NotTagSystemTag extends AbstractSearchSystemTagImpl {
 	

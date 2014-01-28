@@ -44,7 +44,6 @@ import org.w3c.dom.NodeList;
 
 /**
  * @author Christian Kramer
- * @version $Id$
  */
 public class AandAScraper extends AbstractUrlScraper{
 

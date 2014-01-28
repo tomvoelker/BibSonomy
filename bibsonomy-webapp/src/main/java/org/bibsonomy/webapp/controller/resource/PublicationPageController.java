@@ -19,7 +19,6 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class PublicationPageController extends AbstractResourcePageController<BibTex, GoldStandardPublication> {
 

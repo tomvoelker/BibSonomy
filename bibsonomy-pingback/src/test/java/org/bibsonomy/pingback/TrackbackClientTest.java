@@ -16,7 +16,6 @@ import com.malethan.pingback.PingbackException;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class TrackbackClientTest extends AbstractClientTest {
 

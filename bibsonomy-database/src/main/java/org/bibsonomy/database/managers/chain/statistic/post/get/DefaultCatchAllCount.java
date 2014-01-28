@@ -7,7 +7,6 @@ import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author DaiLL
- * @version $Id$
  * 
  * Catches all possibilities of requesting statistics in case of no match without throwing an error.
  */

@@ -15,7 +15,6 @@ import org.springframework.validation.Errors;
  * Controller for the InboxPage (shows all posts in your inbox)
  * 
  * @author sdo
- * @version $Id$
  */
 public class InboxPageController extends SingleResourceListController implements MinimalisticController<UserResourceViewCommand>, ErrorAware {
 	private Errors errors;

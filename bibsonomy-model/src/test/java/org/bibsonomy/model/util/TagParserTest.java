@@ -41,7 +41,6 @@ import org.junit.Test;
  * @author Robert Jaeschke
  * @author Anton Wilhelm (awil)
  * 
- * @version $Id$
  */
 public class TagParserTest {
 	private Set<Tag> parse(final String tagString) {

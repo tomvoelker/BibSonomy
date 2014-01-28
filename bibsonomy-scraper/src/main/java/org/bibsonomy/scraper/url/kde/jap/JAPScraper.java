@@ -33,7 +33,6 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author hagen
- * @version $Id$
  */
 public class JAPScraper extends CitationManagerScraper {
 

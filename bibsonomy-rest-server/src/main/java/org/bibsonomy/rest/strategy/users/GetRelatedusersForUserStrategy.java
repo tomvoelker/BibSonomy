@@ -15,7 +15,6 @@ import org.bibsonomy.rest.strategy.Context;
  * Gets related users for a given user (e.g. friends, followers).
  * 
  * @author ema, dbe
- * @version $Id$
  */
 public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List<User>> {
 

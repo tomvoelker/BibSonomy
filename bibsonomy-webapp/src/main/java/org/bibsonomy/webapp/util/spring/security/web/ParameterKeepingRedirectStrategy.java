@@ -13,7 +13,6 @@ import org.springframework.security.web.DefaultRedirectStrategy;
  * Adds Parameters from the previous request to the redirect url
  * 
  * @author jensi
- * @version $Id$
  */
 public class ParameterKeepingRedirectStrategy extends DefaultRedirectStrategy {
 	private Collection<String> parameterNames;

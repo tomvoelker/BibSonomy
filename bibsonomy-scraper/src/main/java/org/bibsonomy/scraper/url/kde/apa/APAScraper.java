@@ -44,7 +44,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
- * @version $Id$
  */
 public class APAScraper extends AbstractUrlScraper {
 	

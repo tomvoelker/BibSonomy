@@ -32,7 +32,6 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author claus
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class CasesJournalScraperTest {

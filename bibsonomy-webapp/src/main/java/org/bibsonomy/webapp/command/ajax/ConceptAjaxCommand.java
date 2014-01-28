@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.command.ajax;
 
 /**
  * @author Christian Kramer
- * @version $Id$
  */
 public class ConceptAjaxCommand extends AjaxCommand {
 	private String tag;

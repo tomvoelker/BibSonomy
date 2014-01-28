@@ -11,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
  * Logs a debug message.
  * 
  * @author rja
- * @version $Id$
  */
 public class Debug extends TagSupport {
 	private static final Log log = LogFactory.getLog(Debug.class);

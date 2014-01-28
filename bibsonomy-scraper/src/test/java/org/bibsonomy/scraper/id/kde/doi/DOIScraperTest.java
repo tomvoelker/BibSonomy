@@ -38,7 +38,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Test for DOIScraper class (no url test)
  * @author tst
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class DOIScraperTest {

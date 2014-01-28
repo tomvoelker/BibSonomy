@@ -13,7 +13,6 @@ import org.springframework.security.saml.context.SAMLMessageContext;
  *  It allows identification of responses to a particular authentication request.
  *  
  * @author jensi
- * @version $Id$
  */
 public class RelayStateSamlContextProviderImpl extends SAMLContextProviderImpl {
 	/**

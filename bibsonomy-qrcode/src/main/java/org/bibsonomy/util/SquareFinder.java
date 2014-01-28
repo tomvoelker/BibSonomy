@@ -30,7 +30,6 @@ import java.awt.image.BufferedImage;
  * checkcolor as color value
  * 
  * @author pbu
- * @version $Id$
  */
 public class SquareFinder {
 

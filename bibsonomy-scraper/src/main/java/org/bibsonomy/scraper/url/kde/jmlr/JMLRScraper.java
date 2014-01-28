@@ -37,7 +37,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * Scraper for papers from http://jmlr.csail.mit.edu/
  * @author tst
- * @version $Id$
  */
 public class JMLRScraper extends AbstractUrlScraper {
 

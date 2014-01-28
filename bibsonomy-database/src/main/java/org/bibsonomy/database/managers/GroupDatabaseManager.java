@@ -34,7 +34,6 @@ import org.bibsonomy.wiki.TemplateManager;
  * Used to retrieve groups from the database.
  * 
  * @author Christian Schenk
- * @version $Id$
  */
 public class GroupDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(GroupDatabaseManager.class);

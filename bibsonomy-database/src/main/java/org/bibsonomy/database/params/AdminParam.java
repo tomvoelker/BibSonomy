@@ -11,7 +11,6 @@ import org.bibsonomy.common.enums.InetAddressStatus;
  * 
  * @author Robert Jaeschke
  * @author Stefan Stützer
- * @version $Id$
  */
 public class AdminParam {
 

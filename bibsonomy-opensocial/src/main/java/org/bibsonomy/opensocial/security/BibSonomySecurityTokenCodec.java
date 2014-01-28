@@ -10,20 +10,27 @@ import org.apache.shindig.config.ContainerConfig;
 
 import com.google.inject.Inject;
 
+/**
+ * TODO: remove BibSonomy from class name
+ * @author fmi
+ *
+ */
 public class BibSonomySecurityTokenCodec implements SecurityTokenCodec {
 	private final SecurityTokenCodec codec;
 
 	@Inject
-	public BibSonomySecurityTokenCodec(ContainerConfig config) {
+	public BibSonomySecurityTokenCodec(final ContainerConfig config) {
 		this.codec = new BibSonomyBlobCrypterSecurityTokenCodec(config);
 	}
 
-	public SecurityToken createToken(Map<String, String> tokenParameters) throws SecurityTokenException {
+	@Override
+	public SecurityToken createToken(final Map<String, String> tokenParameters) throws SecurityTokenException {
 		return codec.createToken(tokenParameters);
 	}
 
 
-	public String encodeToken(SecurityToken token) throws SecurityTokenException {
+	@Override
+	public String encodeToken(final SecurityToken token) throws SecurityTokenException {
 		if (token == null) {
 			return null;
 		}

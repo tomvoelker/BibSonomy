@@ -31,7 +31,6 @@ import java.util.List;
  * See http://gsl-nagoya-u.net/http/pub/citeproc-doc.html#dates
  *
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
  */
 public class Date {
     

@@ -27,7 +27,6 @@ import org.bibsonomy.webapp.view.Views;
  *        in Section 2.3.
  * 
  * @author fei
- * @version $Id$
  */
 public class OAuthAccessTokenController extends OAuthProtocolController {
 	private static final Log log = LogFactory.getLog(OAuthAccessTokenController.class);

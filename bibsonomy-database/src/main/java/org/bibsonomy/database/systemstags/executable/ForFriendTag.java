@@ -21,7 +21,6 @@ import org.bibsonomy.model.Tag;
  * The link also receives all tags of the post including this one (deactivated and renamed to from:senderName)
  * The tag is deactivated (renamed to sent:receiverName) instead of removed
  * @author sdo
- * @version $Id$
  */
 public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 

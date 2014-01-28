@@ -35,7 +35,6 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  * BibSonomy TagRecommender tables.
  * 
  * @author fei
- * @version $Id$
  */
 public class DBTagAccessTest {
 

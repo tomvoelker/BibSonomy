@@ -21,7 +21,6 @@ import org.bibsonomy.model.Resource;
  * @author Christian Schenk
  * @author Stefan Stützer
  * @author Anton Wilhelm
- * @version $Id$
  */
 public interface DatabasePlugin {
 
@@ -61,11 +60,13 @@ public interface DatabasePlugin {
 	/**
 	 * Called when a gold standard publication will be updated.
 	 * 
+	 * @param newContentId
+	 * @param contentId
 	 * @param newInterhash
 	 * @param interhash
 	 * @param session
 	 */
-	public void onGoldStandardUpdate(String newInterhash, String interhash, DBSession session);
+	public void onGoldStandardUpdate(int newContentId, int contentId, String newInterhash, String interhash, DBSession session);
 	
 	/**
 	 * Called when a reference of a gold standard publication will be created

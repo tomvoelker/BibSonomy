@@ -32,7 +32,6 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author wbi
- * @version $Id$
  */
 public class RSOCScraper extends CitationManagerScraper {
 	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download to citation manager</a>");

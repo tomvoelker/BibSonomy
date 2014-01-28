@@ -15,7 +15,6 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  * Command bean for admin page 
  * 
  * @author bsc
- * @version $Id$
  */
 public class AdminRecommenderViewCommand extends BaseCommand {
 	private MultiplexingRecommender mp;

@@ -8,7 +8,6 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author daill
- * @version $Id$
  */
 public class DeleteUserValidator implements Validator<SettingsViewCommand>{
 

@@ -33,7 +33,6 @@ import org.junit.Test;
  * @author Christian Schenk
  * @author Clemens Baier
  * 
- * @version $Id$
  */
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 

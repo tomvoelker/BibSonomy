@@ -16,7 +16,6 @@ import org.junit.Test;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	

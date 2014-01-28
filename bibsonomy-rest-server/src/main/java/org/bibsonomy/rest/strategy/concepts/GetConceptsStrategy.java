@@ -19,7 +19,6 @@ import org.bibsonomy.rest.strategy.Strategy;
  * Handles a global concepts request
  * 
  * @author Stefan Stützer
- * @version $Id$
  */
 public class GetConceptsStrategy extends Strategy {
 	protected final Class<? extends Resource> resourceType;

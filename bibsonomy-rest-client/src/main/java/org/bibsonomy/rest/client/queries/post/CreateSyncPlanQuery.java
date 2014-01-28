@@ -42,7 +42,6 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationPost>> {
 	private static final Log log = LogFactory.getLog(CreateSyncPlanQuery.class);

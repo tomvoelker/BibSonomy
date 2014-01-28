@@ -28,7 +28,6 @@ import java.util.LinkedList;
 /**
  * Extended List with aditional properties
  * 
- * @version $Id$
  * @param <T>
  *            resource type
  */

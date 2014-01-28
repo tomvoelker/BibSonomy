@@ -2,7 +2,6 @@ package org.bibsonomy.database.params;
 
 /**
  * @author Christian Kramer
- * @version $Id$
  */
 public class BasketParam extends GenericParam{
 	private int contentId;

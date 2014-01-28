@@ -14,7 +14,6 @@ import org.bibsonomy.webapp.command.GroupingCommand;
  * utils class for grouping command
  * 
  * @author dzo
- * @version $Id$
  */
 public abstract class GroupingCommandUtils {
 	private static final Log log = LogFactory.getLog(GroupingCommandUtils.class);

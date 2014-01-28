@@ -26,7 +26,6 @@ import recommender.impl.database.RecommenderStatisticsManager;
  * TODO: make generic
  * 
  * @author pba
- * @version $Id$
  */
 public class DiffPublicationController extends ResourceListController implements MinimalisticController<DiffPublicationCommand> {
 	private static final Log LOGGER = LogFactory.getLog(PostHistoryController.class);
@@ -62,10 +61,10 @@ public class DiffPublicationController extends ResourceListController implements
 			command.setPostID(RecommenderStatisticsManager.getNewPID());
 		}
 
-		final int historyIndex = command.getHistoryIndex();
-		if (present(historyIndex) && present(intraHashToUpdate)) {
+		final int compareVersion = command.getCompareVersion();
+		if (present(compareVersion) && present(intraHashToUpdate)) {
 			LOGGER.debug("intra hash to diff found -> handling diff of existing post");
-			final List<?> dbPosts = logic.getPosts(post.getResource().getClass(), GroupingEntity.ALL, command.getUser(), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, historyIndex, historyIndex+1);
+			final List<?> dbPosts = logic.getPosts(post.getResource().getClass(), GroupingEntity.ALL, command.getUser(), null, intraHashToUpdate, null, FilterEntity.POSTS_HISTORY_BIBTEX, null, null, null, compareVersion, compareVersion+1);
 			command.setPostDiff((Post<BibTex>) dbPosts.get(0));
 		}
 		command.setPost(getPostDetails(intraHashToUpdate, requestedUser));

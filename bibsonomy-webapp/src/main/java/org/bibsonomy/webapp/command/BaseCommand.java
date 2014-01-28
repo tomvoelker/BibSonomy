@@ -13,7 +13,6 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  * which it creates. Views use the information in commands for rendering.
  * 
  * @author Jens Illig
- * @version $Id$
  */
 public class BaseCommand implements ContextCommand {
 	

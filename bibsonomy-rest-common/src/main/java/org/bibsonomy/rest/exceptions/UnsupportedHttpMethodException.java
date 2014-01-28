@@ -29,7 +29,6 @@ import org.bibsonomy.rest.enums.HttpMethod;
  * Is thrown if the HTTP-Method is not supported.
  *
  * @author Christian Schenk
- * @version $Id$
  */
 public class UnsupportedHttpMethodException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

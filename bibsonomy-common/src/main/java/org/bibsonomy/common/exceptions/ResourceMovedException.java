@@ -27,7 +27,6 @@ import java.util.Date;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public class ResourceMovedException extends RuntimeException {
 

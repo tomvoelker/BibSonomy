@@ -19,7 +19,6 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * @author Ken Weiner
  * @author Christian Schenk
  * @author Robert Jaeschke
- * @version $Id$
  */
 public class InetAddressStatusTypeHandlerCallback extends AbstractTypeHandlerCallback {
 

@@ -25,7 +25,6 @@ import org.bibsonomy.model.Resource;
 /**
  * 
  * @author sven
- * @version $Id$
  *
  * @param <T>
  */

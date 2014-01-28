@@ -37,7 +37,6 @@ import org.springframework.security.core.userdetails.UserDetails;
  * Wrapper around our user object to make it available as UserDetails.
  * 
  * @author dzo
- * @version $Id$
  */
 public class UserAdapter implements UserDetails {
 	private static final long serialVersionUID = -3926600488722547211L;

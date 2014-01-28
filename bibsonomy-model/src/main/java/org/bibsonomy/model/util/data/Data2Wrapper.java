@@ -28,7 +28,6 @@ import java.io.Reader;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class Data2Wrapper implements Data {
 

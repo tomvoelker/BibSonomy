@@ -29,7 +29,6 @@ import org.bibsonomy.webapp.view.Views;
  *
  * 
  * @author fei
- * @version $Id$
  */
 public class OAuthRequestTokenController extends OAuthProtocolController {
 	

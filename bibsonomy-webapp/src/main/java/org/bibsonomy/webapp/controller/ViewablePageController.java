@@ -17,7 +17,6 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Christian Kramer
- * @version $Id$
  */
 public class ViewablePageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand> {
 

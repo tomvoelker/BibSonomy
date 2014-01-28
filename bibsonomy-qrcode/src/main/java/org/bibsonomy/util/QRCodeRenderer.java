@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
  * singleton class to embed qr code into pdf file
  * 
  * @author pbu
- * @version $Id$
  */
 public class QRCodeRenderer {
 

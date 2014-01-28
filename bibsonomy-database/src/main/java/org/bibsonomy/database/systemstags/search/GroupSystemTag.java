@@ -6,7 +6,6 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
- * @version $Id$
  */
 public class GroupSystemTag extends AbstractSearchSystemTagImpl {
 

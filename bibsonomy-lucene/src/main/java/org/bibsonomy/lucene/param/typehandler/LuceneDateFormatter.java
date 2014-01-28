@@ -8,7 +8,6 @@ import java.util.Date;
  * convert date objects to a standardized string representation
  * 
  * @author fei
- * @version $Id$
  */
 public class LuceneDateFormatter extends AbstractTypeHandler<Date> {
 	

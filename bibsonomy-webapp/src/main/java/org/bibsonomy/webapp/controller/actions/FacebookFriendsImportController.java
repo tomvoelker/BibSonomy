@@ -45,7 +45,6 @@ import org.springframework.validation.Errors;
  * TODO: ckey?
  * 
  * @author fei
- * @version $Id$
  */
 public class FacebookFriendsImportController implements ErrorAware, MinimalisticController<FacebookAccessCommand> {
 	private final static Log log = LogFactory.getLog(FacebookFriendsImportController.class);

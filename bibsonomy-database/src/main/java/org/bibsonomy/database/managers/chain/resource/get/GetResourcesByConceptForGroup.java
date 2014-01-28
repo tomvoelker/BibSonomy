@@ -16,7 +16,6 @@ import org.bibsonomy.model.enums.Order;
 /**
  * @author Stefan Stützer
  * @author dzo
- * @version $Id$
  * @param <R> the resource
  * @param <P> 
  */

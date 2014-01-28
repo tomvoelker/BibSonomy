@@ -18,7 +18,6 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author claus
- * @version $Id$
  * @param <R>  the resource
  * @param <P>  the param
  */

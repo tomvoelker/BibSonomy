@@ -33,7 +33,6 @@ import au.com.bytecode.opencsv.CSVWriter;
  * View which uses an {@link LayoutRenderer} to render the output.
  * 
  * @author rja
- * @version $Id$
  */
 @SuppressWarnings("deprecation")
 public class CSVView extends AbstractView {

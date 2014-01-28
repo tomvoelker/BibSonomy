@@ -40,7 +40,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
- * @version $Id$
  */
 public class StanfordInfoLabScraper extends AbstractUrlScraper {
 

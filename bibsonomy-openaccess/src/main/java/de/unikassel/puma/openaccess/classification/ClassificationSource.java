@@ -5,7 +5,6 @@ import java.net.URL;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public interface ClassificationSource {
 

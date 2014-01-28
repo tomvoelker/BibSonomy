@@ -10,7 +10,6 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class UserLoginValidator implements Validator<UserLoginCommand> {
 

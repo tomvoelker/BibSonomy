@@ -33,7 +33,6 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class DiscussionItemUtils {
 	

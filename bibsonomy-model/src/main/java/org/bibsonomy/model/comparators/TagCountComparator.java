@@ -33,7 +33,6 @@ import org.bibsonomy.model.Tag;
  * sorts tags according to their global count values
  * 
  * @author fei
- * @version $Id$
  */
 public class TagCountComparator implements Comparator<Tag> {
 

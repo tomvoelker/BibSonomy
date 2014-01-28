@@ -34,7 +34,6 @@ import org.bibsonomy.common.errors.ErrorMessage;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class DatabaseException extends RuntimeException {
 	private static final long serialVersionUID = -5703687462706009432L;

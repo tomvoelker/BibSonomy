@@ -33,7 +33,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #16 for IOPScraper
  * @author tst
- * @version $Id$
  *
  */
 @Category(RemoteTest.class)

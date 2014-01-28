@@ -28,7 +28,6 @@ package org.bibsonomy.common.enums;
  * (and which can be queried)
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public enum TagsType {
 	/** the standard kind of tag */

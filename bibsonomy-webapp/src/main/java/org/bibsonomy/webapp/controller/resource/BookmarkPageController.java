@@ -7,7 +7,6 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class BookmarkPageController extends AbstractResourcePageController<Bookmark, GoldStandardBookmark> {
 	

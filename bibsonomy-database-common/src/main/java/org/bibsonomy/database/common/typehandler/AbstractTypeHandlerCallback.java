@@ -12,7 +12,6 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * method using the value provided by {@link ResultGetter#getString()}
  * 
  * @author dzo
- * @version $Id$
  */
 public abstract class AbstractTypeHandlerCallback implements TypeHandlerCallback {
 

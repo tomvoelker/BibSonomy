@@ -35,7 +35,6 @@ import org.junit.experimental.categories.Category;
  * Tests url #65
  * 
  * @author daill
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class OpacScraperTest {

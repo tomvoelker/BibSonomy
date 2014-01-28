@@ -39,7 +39,6 @@ import org.bibsonomy.util.StringUtils;
  * Use this Class to create a new user account in bibsonomy.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public final class CreateUserQuery extends AbstractQuery<String> {
 	private final User user;

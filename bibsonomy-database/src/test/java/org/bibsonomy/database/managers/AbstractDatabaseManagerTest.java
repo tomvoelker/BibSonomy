@@ -19,7 +19,6 @@ import org.junit.BeforeClass;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
  */
 public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {	
 	// TODO: move to a TestUtilClass

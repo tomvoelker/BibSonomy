@@ -15,7 +15,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
  * Get all users.
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class GetAllUsers extends UserChainElement {
 

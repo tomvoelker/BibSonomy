@@ -32,7 +32,6 @@ import org.bibsonomy.util.file.AbstractServerFileLogic;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ServerTempFileLogic extends AbstractServerFileLogic implements TempFileLogic {
 	

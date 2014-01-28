@@ -14,7 +14,6 @@ import org.bibsonomy.model.User;
  * Get users by Search-String
  * 
  * @author bsc
- * @version $Id$
  */
 public class GetUsersBySearch extends UserChainElement {
 

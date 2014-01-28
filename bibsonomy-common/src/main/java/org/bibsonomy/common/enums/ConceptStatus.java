@@ -31,7 +31,6 @@ import org.bibsonomy.util.EnumUtils;
  * 
  * @author Dominik Benz
  * @author Stefan Stützer
- * @version $Id$
  */
 public enum ConceptStatus {
 	/** Concept is picked */

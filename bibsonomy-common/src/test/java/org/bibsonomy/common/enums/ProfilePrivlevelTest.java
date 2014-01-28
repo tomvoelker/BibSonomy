@@ -32,7 +32,6 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ProfilePrivlevelTest {
 	private static final String FRIENDS_STR = "friends";

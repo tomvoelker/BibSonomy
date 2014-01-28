@@ -27,7 +27,6 @@ package org.bibsonomy.common.enums;
  * Sorting modes for tag clouds
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public enum TagCloudSort {
 	/** alphanumerical sorting */

@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Required;
  * Sword main
  * 
  * @author:  sven
- * @version $Id$
  * 
  */
 public class SwordService {

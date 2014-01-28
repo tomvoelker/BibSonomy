@@ -36,7 +36,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * @author wbi
- * @version $Id$
  */
 public class LangevScraper extends AbstractUrlScraper {
 

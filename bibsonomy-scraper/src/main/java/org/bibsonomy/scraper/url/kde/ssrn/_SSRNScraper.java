@@ -50,7 +50,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * can see with the LiveHttpHeader Addon from Firefox.
  * 
  * @author wbi
- * @version $Id$
  */
 public class _SSRNScraper implements Scraper {
 	private static final String SITE_NAME = "SSRN";

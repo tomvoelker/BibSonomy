@@ -37,7 +37,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * @author C. Kramer
- * @version $Id$
  */
 public class PicaToBibtexConverter {
 	private static final Log log = LogFactory.getLog(PicaToBibtexConverter.class);

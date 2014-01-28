@@ -36,7 +36,6 @@ import org.bibsonomy.model.Post;
  * Comparator used to sort bibtex posts
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class BookmarkPostComparator extends PostComparator implements Comparator<Post<Bookmark>> {
 	private static final long serialVersionUID = -2993829588313719046L;

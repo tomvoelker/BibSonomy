@@ -7,7 +7,6 @@ import org.springframework.validation.Errors;
 
 /**
  * @author nilsraabe
- * @version $Id$
  */
 public class LimitedAccountActivationValidation implements Validator<LimitedAccountActivationCommand>{
 

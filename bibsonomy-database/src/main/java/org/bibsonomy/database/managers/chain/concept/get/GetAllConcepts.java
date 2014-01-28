@@ -11,7 +11,6 @@ import org.bibsonomy.model.Tag;
 
 /**
  * @author Stefan Stützer
- * @version $Id$
  */
 public class GetAllConcepts extends ConceptChainElement {
 

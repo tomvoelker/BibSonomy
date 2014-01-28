@@ -4,7 +4,6 @@ import org.bibsonomy.model.extra.BibTexExtra;
 
 /**
  * @author Christian Schenk
- * @version $Id$
  */
 public class BibTexExtraParam extends BibTexParam {
 

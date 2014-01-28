@@ -9,7 +9,6 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author fei
- * @version $Id$
  */
 public class OAuthCommand extends BaseCommand {
 	public enum AuthorizeAction { Authorize, Deny };

@@ -4,7 +4,6 @@ package de.unikassel.puma.openaccess.sword;
  * bean for configuring sword
  * 
  * @author sven
- * @version $Id$
  */
 @Deprecated // TODO: move into swordSerice
 public class SwordConfig {

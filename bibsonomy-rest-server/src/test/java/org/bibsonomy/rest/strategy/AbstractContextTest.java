@@ -12,7 +12,6 @@ import org.junit.Before;
 
 /**
  * @author Christian Schenk
- * @version $Id$
  */
 public abstract class AbstractContextTest {
 

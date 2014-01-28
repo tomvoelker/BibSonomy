@@ -5,7 +5,6 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 
 /**
  * @author sdo
- * @version $Id$
  */
 public class UnfiledSystemTag  extends AbstractSystemTagImpl implements MarkUpSystemTag {
 

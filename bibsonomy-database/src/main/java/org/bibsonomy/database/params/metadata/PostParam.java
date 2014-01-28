@@ -5,7 +5,6 @@ import org.bibsonomy.database.params.GenericParam;
 
 /**
  * @author clemensbaier
- * @version $Id$
  */
 public class PostParam extends GenericParam {
 

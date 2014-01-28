@@ -14,7 +14,6 @@ import org.bibsonomy.model.Resource;
  * Threaded version of {@link SimplePingback}. 
  * 
  * @author rja
- * @version $Id$
  */
 public class ThreadedPingbackImpl extends SimplePingback implements Runnable, ThreadedPingBack {
 	private static final Log log = LogFactory.getLog(ThreadedPingbackImpl.class);

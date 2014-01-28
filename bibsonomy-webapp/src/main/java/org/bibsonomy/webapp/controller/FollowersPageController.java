@@ -24,7 +24,6 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Christian Kramer
- * @version $Id$
  */
 @Deprecated // TODO: remove followers (in favor of spheres)
 public class FollowersPageController extends SingleResourceListController implements MinimalisticController<FollowersViewCommand>{

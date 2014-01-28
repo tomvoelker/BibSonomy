@@ -22,7 +22,6 @@ import org.springframework.core.io.UrlResource;
  * write map certain properties to the system.properties
  * 
  * @author fmi
- * @version $Id$
  */
 public class SystemPropertiesContextListener implements ServletContextListener {
 	private static final Log log = LogFactory.getLog(SystemPropertiesContextListener.class);

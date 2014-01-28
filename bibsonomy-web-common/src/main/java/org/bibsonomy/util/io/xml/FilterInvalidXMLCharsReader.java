@@ -31,7 +31,6 @@ import org.apache.xml.serializer.utils.XMLChar;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class FilterInvalidXMLCharsReader extends FilterReader {
 	

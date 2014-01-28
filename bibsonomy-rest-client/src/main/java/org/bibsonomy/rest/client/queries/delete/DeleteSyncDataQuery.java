@@ -38,7 +38,6 @@ import org.bibsonomy.util.UrlUtils;
 
 /**
  * @author wla
- * @version $Id$
  */
 /**
  * @author wla

@@ -33,7 +33,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #138 for GoogleSonomyScraper
  * @author tst
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class GoogleScholarScraperTest {

@@ -4,7 +4,6 @@ package org.bibsonomy.webapp.command;
  * bean for a page in a multipaged listview context
  * 
  * @author Jens Illig
- * @version $Id$
  */
 public class PageCommand {
 	private Integer number;

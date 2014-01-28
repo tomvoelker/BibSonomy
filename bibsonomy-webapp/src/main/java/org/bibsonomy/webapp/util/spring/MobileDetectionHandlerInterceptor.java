@@ -15,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Waldemar Biller <biller@cs.uni-kassel.de>
- * @version $Id$
  */
 public class MobileDetectionHandlerInterceptor implements HandlerInterceptor {
 

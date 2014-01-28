@@ -42,7 +42,6 @@ import org.bibsonomy.util.id.ISBNUtils;
  * or AmazonScraper for download.
  *  
  * @author tst
- * @version $Id$
  */
 public class ISBNScraper implements Scraper {
 	

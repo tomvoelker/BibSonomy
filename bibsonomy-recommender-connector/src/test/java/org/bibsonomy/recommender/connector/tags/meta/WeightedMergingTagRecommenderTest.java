@@ -25,7 +25,6 @@ import recommender.impl.tags.simple.FixedTagsTagRecommender;
  * of the recomender's model interface.
  * 
  * @author rja
- * @version $Id$
  */
 public class WeightedMergingTagRecommenderTest {
 

@@ -43,7 +43,6 @@ import org.bibsonomy.util.UrlUtils;
  * Scraper for Pages with a span element which matches to the COinS specification.
  *  
  * @author tst
- * @version $Id$
  */
 public class CoinsScraper implements Scraper {
 
@@ -103,22 +102,19 @@ public class CoinsScraper implements Scraper {
 			 */
 
 			// get author
-			String author = null;
+			final StringBuilder authorBuf = new StringBuilder("");
 			if (tuples.containsKey("rft.au")) {
-				author = tuples.get("rft.au");
-			} else {
-				final String aufirst = tuples.get("rft.aufirst");
-				final String aulast = tuples.get("rft.aulast");
-				if (present(aufirst)) {
-					if (present(aulast)) {
-						author = aulast + ", " + aufirst;
-					} else {
-						author = aufirst;
-					}
-				} else if (present(aulast)) {
-					author = aulast;
+				authorBuf.append(tuples.get("rft.au"));
+			}
+			if (tuples.containsKey("rft.aufirst") || tuples.containsKey("rft.aulast")) {
+				final String au = getAuthorFirstLast(tuples.get("rft.aufirst"), tuples.get("rft.aulast"));
+				if (authorBuf.length() == 0) {
+					authorBuf.append(au);
+				} else {
+					authorBuf.insert(0, " and ").insert(0, au);
 				}
 			}
+			final String author = authorBuf.toString();
 
 			// get title
 			final String atitle;
@@ -210,6 +206,19 @@ public class CoinsScraper implements Scraper {
 			}
 		}
 		return false;
+	}
+
+	private String getAuthorFirstLast(final String aufirst, final String aulast) {
+		if (present(aufirst)) {
+			if (present(aulast)) {
+				return aulast + ", " + aufirst;
+			} else {
+				return aufirst;
+			}
+		} else if (present(aulast)) {
+			return aulast;
+		}
+		return "";
 	}
 
 	private static void append(final String fieldName, final String fieldValue, final StringBuffer bibtex) {

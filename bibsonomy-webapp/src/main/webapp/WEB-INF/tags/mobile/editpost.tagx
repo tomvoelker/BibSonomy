@@ -114,7 +114,7 @@ toggleGroupBox();
 				<script type="text/javascript">
 					var userName = "${mtl:encodeURI(command.context.loginUser.name)}";
 					//<mtl:cdata>
-					< ![CDATA[
+					<![CDATA[
 							// vanishing error boxes
 							$(function() {
 								/* toggle recommendations */
@@ -139,10 +139,10 @@ toggleGroupBox();
 						}
 					});
 
-					]] >
-							//</mtl:cdata>
-					</script>
-				</div>
+					]]>
+					//</mtl:cdata>
+				</script>
+			</div>
 		</jsp:attribute>
 	</mobile:simple>
 </jsp:root>

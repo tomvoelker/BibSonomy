@@ -10,7 +10,6 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 	private final String nextLinkPrefix;

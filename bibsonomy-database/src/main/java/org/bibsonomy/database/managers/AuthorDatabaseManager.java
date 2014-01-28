@@ -8,7 +8,6 @@ import org.bibsonomy.model.Author;
 
 /**
  * @author Christian Claus
- * @version $Id$
  */
 public class AuthorDatabaseManager extends AbstractDatabaseManager {
 	private final static AuthorDatabaseManager singleton = new AuthorDatabaseManager();

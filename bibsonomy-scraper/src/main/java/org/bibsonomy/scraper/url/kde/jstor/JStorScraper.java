@@ -43,7 +43,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
- * @version $Id$
  */
 public class JStorScraper extends AbstractUrlScraper {
 

@@ -25,7 +25,6 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author Robert Jäschke
- * @version $Id$
  */
 public enum InetAddressStatus {
 	/**

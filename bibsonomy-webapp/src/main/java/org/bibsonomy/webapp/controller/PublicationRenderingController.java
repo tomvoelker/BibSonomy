@@ -33,7 +33,6 @@ import bibtex.parser.ParseException;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class PublicationRenderingController implements MinimalisticController<PublicationRendererCommand>, ErrorAware {
 

@@ -20,7 +20,6 @@ import org.springframework.security.access.AccessDeniedException;
  * Controller for group admin page
  * 
  * @author bsc
- * @version $Id$
  */
 public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);

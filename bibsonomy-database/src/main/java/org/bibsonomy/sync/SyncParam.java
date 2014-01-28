@@ -7,7 +7,6 @@ import org.bibsonomy.model.sync.SynchronizationData;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class SyncParam {
 

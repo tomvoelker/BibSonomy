@@ -47,7 +47,6 @@ import org.springframework.validation.Errors;
  * where do we want to display the errors? on the settings page?
  * 
  * @author mwa
- * @version $Id$
  */
 public class ImportBookmarksController implements ErrorAware, ValidationAwareController<ImportCommand> {
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);

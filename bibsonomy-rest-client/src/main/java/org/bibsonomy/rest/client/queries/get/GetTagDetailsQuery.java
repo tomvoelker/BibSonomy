@@ -33,7 +33,6 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * Use this Class to receive information about a specific tag
  * 
  * @author Jens Illig <illig@innofinity.de>
- * @version $Id$
  */
 public final class GetTagDetailsQuery extends AbstractQuery<Tag> {
 	private final String tagName;

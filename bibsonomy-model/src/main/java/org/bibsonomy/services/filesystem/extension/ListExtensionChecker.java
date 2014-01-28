@@ -29,7 +29,6 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ListExtensionChecker implements ExtensionChecker {
 	

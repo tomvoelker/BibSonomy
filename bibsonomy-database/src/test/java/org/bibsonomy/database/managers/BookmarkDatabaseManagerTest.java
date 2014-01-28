@@ -45,7 +45,6 @@ import org.junit.Test;
  * @author Christian Schenk
  * @author Anton Wilhelm
  * 
- * @version $Id$
  */
 public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmark> {
 	private static final String TESTUSER1_NAME = "testuser1";

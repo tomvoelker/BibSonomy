@@ -33,7 +33,6 @@ import org.bibsonomy.util.EnumUtils;
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author dbenz
- * @version $Id$
  */
 public enum GroupingEntity {
 	/**

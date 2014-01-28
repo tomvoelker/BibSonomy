@@ -19,7 +19,6 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * 
  * @author philipp
  * @author Bernd Terbrack
- * @version $Id$
  */
 public class BookmarkListTag extends SharedTag {
 	private static final String REQUESTED_TAGS = "tags";

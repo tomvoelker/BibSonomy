@@ -32,7 +32,6 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class GetLastSyncDataQuery extends AbstractSyncQuery<SynchronizationData> {
 

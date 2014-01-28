@@ -7,7 +7,6 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
- * @version $Id$
  */
 public abstract class AbstractSearchSystemTagImpl extends AbstractSystemTagImpl implements SearchSystemTag {
 

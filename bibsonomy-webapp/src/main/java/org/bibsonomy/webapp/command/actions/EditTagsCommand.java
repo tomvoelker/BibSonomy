@@ -4,7 +4,6 @@ package org.bibsonomy.webapp.command.actions;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class EditTagsCommand {
 	

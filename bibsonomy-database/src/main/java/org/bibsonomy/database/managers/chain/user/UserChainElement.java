@@ -11,7 +11,6 @@ import org.bibsonomy.model.User;
  * Chain element for user chain
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public abstract class UserChainElement extends ChainElement<List<User>, UserParam> {
 

@@ -15,7 +15,6 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
  */
 public abstract class ChainElement<L, P> {
 	protected static final Log log = LogFactory.getLog(ChainElement.class);

@@ -4,7 +4,6 @@ import org.bibsonomy.model.extra.ExtendedField;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class BibtexExtendedParam extends GenericParam {
 

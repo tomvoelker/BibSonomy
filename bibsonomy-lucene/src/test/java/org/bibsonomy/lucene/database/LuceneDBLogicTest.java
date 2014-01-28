@@ -38,7 +38,6 @@ import org.junit.Test;
 /**
  * 
  * @author fei
- * @version $Id$
  */
 public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 

@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.rememberme.InvalidCookieE
  * abstract remember me service
  * 
  * @author dzo
- * @version $Id$
  */
 public abstract class AbstractRememberMeServices extends org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices implements CookieBasedRememberMeServices {
 	private static final String TOKEN_SIGNATURE_SEPERATOR = ":";

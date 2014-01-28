@@ -8,7 +8,6 @@ import org.bibsonomy.model.BibTex;
  * get URL for bibtex resource
  * 
  * @author Lukas
- * @version $Id$
  */
 public class URLExtractor implements AttributeExtractor {
 

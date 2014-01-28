@@ -1343,7 +1343,7 @@
 	</URLTest>
 	<URLTest id="url_218">
 		<TestDescription>test for pages with coins (multiple authors)</TestDescription>
-		<URL>http://www.mendeley.com/research/sentiment-analysis-twitter-data-1/</URL>
+		<URL>http://www.mendeley.com/research/sentiment-analysis-twitter-data/</URL>
 		<BibFile>CoinsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
@@ -1622,10 +1622,10 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_264">
-		<TestDescription>BloodJournalScraper Test</TestDescription>
+		<TestDescription>HematologyLibraryScraper Test</TestDescription>
 		<URL>http://bloodjournal.hematologylibrary.org/content/113/23/5703</URL>
-		<BibFile>BloodJournalScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bloodjournal.BloodJournalScraper</Scraper>
+		<BibFile>HematologyLibraryScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_265">
 		<TestDescription>IGIGlobalScraper Test</TestDescription>
@@ -1633,4 +1633,10 @@
 		<BibFile>IGIGlobalScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.igiglobal.IGIGlobalScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_266">
+		<TestDescription>test for pages with CoinS</TestDescription>
+		<URL>http://aisel.aisnet.org/wi2013/6/</URL>
+		<BibFile>CoinsScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+	</URLTest>	
 </test:Tests>

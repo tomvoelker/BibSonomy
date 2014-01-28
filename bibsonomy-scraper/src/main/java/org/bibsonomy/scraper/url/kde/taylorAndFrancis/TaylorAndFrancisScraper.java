@@ -42,7 +42,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author schwass
- * @version $Id$
  */
 public class TaylorAndFrancisScraper extends AbstractUrlScraper {
 

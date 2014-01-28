@@ -26,7 +26,6 @@ import org.bibsonomy.util.ReflectionUtils;
  *  - insert<DISCUSSIONITEM>
  * 
  * @author dzo
- * @version $Id$
  * @param <D> 
  */
 public abstract class DiscussionItemDatabaseManager<D extends DiscussionItem> extends AbstractDatabaseManager {

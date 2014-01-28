@@ -40,7 +40,6 @@ import org.bibsonomy.util.UrlBuilder;
  * TODO: Should be replaced by a generic strategy which allows to fetch users
  *  based on the different {@link UserRelation}s.
  * 
- * @version $Id$
  */
 @Deprecated
 public final class GetFriendsQuery extends AbstractQuery<List<User>> {

@@ -26,7 +26,6 @@ import org.bibsonomy.model.Tag;
  * FIXME: springify this
  * 
  * @author fei
- * @version $Id$
  */
 public class TagCountCollector extends Collector {
 	private static final Log log = LogFactory.getLog(TagCountCollector.class);

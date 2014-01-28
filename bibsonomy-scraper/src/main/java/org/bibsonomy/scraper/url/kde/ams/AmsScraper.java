@@ -41,7 +41,6 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for ams.allenpress.com
  * @author tst
- * @version $Id$
  */
 public class AmsScraper extends AbstractUrlScraper {
 	

@@ -26,7 +26,6 @@ import de.unikassel.puma.openaccess.sword.SwordService;
  * {@link PostPublicationController}.
  * 
  * @author rja
- * @version $Id$
  */
 public class EditPublicationController extends AbstractEditPublicationController<EditPublicationCommand> {
 

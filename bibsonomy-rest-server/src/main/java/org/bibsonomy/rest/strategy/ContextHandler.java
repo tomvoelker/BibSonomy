@@ -6,7 +6,6 @@ import org.bibsonomy.rest.enums.HttpMethod;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public interface ContextHandler {
 	

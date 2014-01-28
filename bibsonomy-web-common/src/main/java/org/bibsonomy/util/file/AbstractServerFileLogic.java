@@ -38,7 +38,6 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public abstract class AbstractServerFileLogic {
 	private static final Log log = LogFactory.getLog(AbstractServerFileLogic.class);

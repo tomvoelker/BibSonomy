@@ -8,7 +8,6 @@ import org.springframework.security.saml.SAMLCredential;
  * found in the database. 
  * 
  * @author jensi
- * @version $Id$
  */
 public class SamlUsernameNotFoundException extends UsernameNotFoundException {
 	private static final long serialVersionUID = 317691533775866307L;

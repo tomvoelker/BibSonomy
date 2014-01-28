@@ -6,7 +6,6 @@ package org.bibsonomy.webapp.command.ajax;
  * FIXME: write JavaDoc! 
  * 
  * @author fei
- * @version $Id$
  */
 public interface AjaxCommandInterface {
 	

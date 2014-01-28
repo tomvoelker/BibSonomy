@@ -37,7 +37,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author claus
- * @version $Id$
  */
 public class CasesJournalScraper extends AbstractUrlScraper {
 	

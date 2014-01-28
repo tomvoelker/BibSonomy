@@ -14,7 +14,6 @@ import org.bibsonomy.model.statistics.Statistics;
 
 /**
  * @author mwa
- * @version $Id$
  */
 public class GetResourcesPopularDaysCount extends StatisticChainElement {
 

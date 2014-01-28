@@ -37,7 +37,6 @@ import org.springframework.validation.ValidationUtils;
  * 
  * @author Stefan Stützer
  * @author Beate Krause
- * @version $Id$
  */
 public class AdminAjaxController extends AjaxController implements ValidationAwareController<AdminAjaxCommand>, ErrorAware {	
 	private static final Log log = LogFactory.getLog(AdminAjaxController.class);

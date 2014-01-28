@@ -27,7 +27,6 @@ import org.bibsonomy.model.util.ResourceUtils;
  * and later executes this plan.
  * 
  * @author wla
- * @version $Id$
  */
 public class TwoStepSynchronizationClient extends AbstractSynchronizationClient {
 	private static final Log log = LogFactory.getLog(TwoStepSynchronizationClient.class);

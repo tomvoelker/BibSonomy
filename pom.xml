@@ -6,7 +6,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.40</version>
+	<version>2.0.41-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -191,12 +191,10 @@
 		<spring-security.version>3.1.3.RELEASE</spring-security.version>
 	</properties>
 	<modules>
-		<module>bibsonomy-batch</module>
 		<module>bibsonomy-bibtex-parser</module>
 		<module>bibsonomy-common</module>
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-database-common</module>
-		<module>bibsonomy-dl-importer</module>
 		<module>bibsonomy-importer</module>
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
@@ -383,57 +381,6 @@
 			<properties>
 				<maven.tomcat.server>tomcat_gromit</maven.tomcat.server>
 				<maven.tomcat.url>http://gromit.cs.uni-kassel.de:8080/manager</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
-			<id>deploy-to-puma</id>
-			<!--
-				change tomcat deploy destination when -Ddeploy-to=puma is given as
-				parameter.
-			-->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>puma</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_puma</maven.tomcat.server>
-				<maven.tomcat.url>http://dev.puma.uni-kassel.de:8080/manager</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
-			<id>deploy-to-puma-ks-puma</id>
-			<!--
-				change tomcat deploy destination when -Ddeploy-to=puma-ks-puma is given as
-				parameter.
-			-->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>puma_ks_puma</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_puma_kassel_puma</maven.tomcat.server>
-				<maven.tomcat.url>http://test1.puma.bibliothek.uni-kassel.de:8080/manager</maven.tomcat.url>
-			</properties>
-		</profile>
-		<profile>
-			<id>deploy-to-test-puma-ks</id>
-			<!--
-				change tomcat deploy destination when -Ddeploy-to=test-puma-ks is given as
-				parameter.
-			-->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>test_puma_ks</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_test_puma_kassel</maven.tomcat.server>
-				<maven.tomcat.url>http://test.kassel.puma.stefani.biz:8080/manager</maven.tomcat.url>
 			</properties>
 		</profile>
 		<profile>
@@ -691,11 +638,6 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-layout</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-dl-importer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

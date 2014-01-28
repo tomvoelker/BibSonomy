@@ -7,7 +7,6 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class AdminSyncCommand extends BaseCommand {
 	

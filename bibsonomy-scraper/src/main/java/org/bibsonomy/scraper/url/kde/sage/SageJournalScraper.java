@@ -32,7 +32,6 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class SageJournalScraper extends CitationManagerScraper {
 

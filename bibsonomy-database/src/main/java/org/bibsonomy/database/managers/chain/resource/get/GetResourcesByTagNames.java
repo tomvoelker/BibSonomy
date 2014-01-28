@@ -18,7 +18,6 @@ import org.bibsonomy.model.enums.Order;
  * Returns a list of bookmarks for given tag/tags.
  * 
  * @author Miranda Grahl
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

@@ -25,7 +25,6 @@ import org.bibsonomy.model.Resource;
  * All database plugins are registered here.
  * 
  * @author Christian Schenk
- * @version $Id$
  */
 public class DatabasePluginRegistry implements DatabasePlugin {
 	
@@ -127,9 +126,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardUpdate(final String newInterhash, final String interhash, final DBSession session) {
+	public void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onGoldStandardUpdate(newInterhash, interhash, session);
+			plugin.onGoldStandardUpdate(newContentId, oldContentId, newInterhash, interhash, session);
 		}
 	}
 	

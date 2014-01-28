@@ -23,7 +23,6 @@ import org.marc4j.marc.Record;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class MarcToBibTexReader implements BibTexReader {
 

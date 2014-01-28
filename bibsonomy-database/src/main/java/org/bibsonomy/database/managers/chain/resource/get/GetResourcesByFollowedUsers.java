@@ -15,7 +15,6 @@ import org.bibsonomy.model.Resource;
  * Returns all resources of users you are following.
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

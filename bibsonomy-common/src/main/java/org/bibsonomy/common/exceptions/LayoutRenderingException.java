@@ -25,7 +25,6 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class LayoutRenderingException extends RuntimeException {
 

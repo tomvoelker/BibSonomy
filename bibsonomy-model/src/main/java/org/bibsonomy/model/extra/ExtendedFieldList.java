@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class ExtendedFieldList {
     

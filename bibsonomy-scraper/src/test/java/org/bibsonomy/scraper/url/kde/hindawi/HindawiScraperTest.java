@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 /**
  * @author Haile
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class HindawiScraperTest {

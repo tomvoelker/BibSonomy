@@ -125,7 +125,6 @@ import org.bibsonomy.sync.SynchronizationDatabaseManager;
  * @author Dominik Benz
  * @author Robert Jäschke
  * 
- * @version $Id$
  */
 public class DBLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(DBLogic.class);
@@ -164,7 +163,6 @@ public class DBLogic implements LogicInterface {
 	private final SynchronizationDatabaseManager syncDBManager;
 	
 	private final BibTexReader bibtexReader;
-
 	private final User loginUser;
 
 	/**
@@ -1448,7 +1446,7 @@ public class DBLogic implements LogicInterface {
 			case UPDATE_SETTINGS:
 				return this.userDBManager.updateUserSettingsForUser(user, session);
 			case UPDATE_API:
-				this.userDBManager.updateApiKeyForUser(username, session);
+				this.userDBManager.updateApiKeyForUser(user, session);
 				break;
 			case UPDATE_CORE:
 				return this.userDBManager.updateUserProfile(user, session);

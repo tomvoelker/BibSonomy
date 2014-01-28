@@ -10,7 +10,6 @@ import org.bibsonomy.model.BibTex;
  * Returns a list of publications for a given search string
  * 
  * @author fei
- * @version $Id$
  */
 public class GetBibtexByResourceSearch extends GetResourcesByResourceSearch<BibTex, BibTexParam> {
 

@@ -8,7 +8,6 @@ import java.util.List;
  * 
  * @author Sven Stefani
  * @author bsc
- * @version $Id$
  */
 public class LuceneResourceIndices {
 	/**

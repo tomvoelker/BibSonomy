@@ -28,7 +28,6 @@ import org.junit.Test;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class UrlParameterExtractorTest {
 

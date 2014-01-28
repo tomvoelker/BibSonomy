@@ -8,7 +8,6 @@ import java.util.Map;
  * spammers have been flagged recently
  * @author sts
  * @author bkr
- * @version $Id$
  */
 public class AdminStatisticsCommand {
 

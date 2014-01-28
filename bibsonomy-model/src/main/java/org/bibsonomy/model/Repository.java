@@ -27,7 +27,6 @@ import java.util.Date;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class Repository {
 	

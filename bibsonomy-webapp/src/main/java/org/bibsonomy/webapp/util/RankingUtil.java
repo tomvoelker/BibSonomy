@@ -14,7 +14,6 @@ import org.bibsonomy.model.Tag;
  * Util class to compute ranking
  * 
  * @author dbenz
- * @version $Id$
  */
 public class RankingUtil {
 	private static final Log LOGGER = LogFactory.getLog(RankingUtil.class);

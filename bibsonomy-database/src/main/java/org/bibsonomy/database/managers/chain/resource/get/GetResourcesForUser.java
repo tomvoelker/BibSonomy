@@ -19,7 +19,6 @@ import org.bibsonomy.model.enums.Order;
  * Returns a list of resources for a given user.
  * 
  * @author Miranda Grahl
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

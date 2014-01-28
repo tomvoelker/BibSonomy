@@ -7,7 +7,6 @@ import org.bibsonomy.model.BibTex;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class PublicationPageCommand extends ResourcePageCommand<BibTex> {
 	/**

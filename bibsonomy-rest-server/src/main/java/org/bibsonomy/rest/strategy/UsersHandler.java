@@ -38,7 +38,6 @@ import org.bibsonomy.rest.strategy.users.PutUserStrategy;
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Christian Kramer
- * @version $Id$
  */
 public class UsersHandler implements ContextHandler {
 

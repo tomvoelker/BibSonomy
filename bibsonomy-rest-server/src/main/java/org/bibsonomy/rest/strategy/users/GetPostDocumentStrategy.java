@@ -22,7 +22,6 @@ import org.bibsonomy.services.filesystem.FileLogic;
 /**
  * Handle a document request
  * 
- * @version $Id$
  * @author Christian Kramer
  */
 public class GetPostDocumentStrategy extends Strategy {

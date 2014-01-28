@@ -34,7 +34,6 @@ import org.bibsonomy.model.sync.SynchronizationData;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public final class SynchronizationUtils {
 	private static final Log log = LogFactory.getLog(SynchronizationUtils.class);

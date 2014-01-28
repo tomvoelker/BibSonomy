@@ -19,7 +19,6 @@ import org.junit.Test;
  * tests for {@link BrowserImporter}
  * 
  * @author dzo
- * @version $Id$
  */
 public class BrowserImporterTest {
 

@@ -7,7 +7,6 @@ import org.junit.Test;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class TitleExtractorTest extends AbstractExtractorTest {
 	@Test

@@ -109,7 +109,6 @@ import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public abstract class AbstractRenderer implements Renderer {
 	private static final Log log = LogFactory.getLog(AbstractRenderer.class);

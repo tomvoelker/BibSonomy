@@ -7,7 +7,6 @@ import org.springframework.validation.Errors;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class CommentValidator extends DiscussionItemValidator<Comment> {
 

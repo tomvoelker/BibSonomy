@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
  * Static methods for dealing with string representations of tags
  * 
  * @author 
- * @version $Id$
  */
 public class TagStringUtils {
 	

@@ -7,8 +7,6 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author  Christian Kramer
- * $Author$
- * @version $Id$
  */
 public class DeleteDocumentStrategy extends AbstractDeleteStrategy {
 	

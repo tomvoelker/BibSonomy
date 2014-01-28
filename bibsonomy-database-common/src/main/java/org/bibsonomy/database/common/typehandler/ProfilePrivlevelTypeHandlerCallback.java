@@ -8,7 +8,6 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ProfilePrivlevelTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	private static final ProfilePrivlevel DEFAULT_PROFILE_PRIVLEVEL = ProfilePrivlevel.PRIVATE;

@@ -26,7 +26,6 @@ package org.bibsonomy.common;
 /**
  *  
  * @author ?
- * @version $Id$
  * 
  * @param <T>
  * @param <U>

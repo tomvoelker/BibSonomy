@@ -27,7 +27,6 @@ import java.util.Collection;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public interface ExtensionChecker {
 	

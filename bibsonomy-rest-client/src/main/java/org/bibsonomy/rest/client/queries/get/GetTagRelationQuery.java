@@ -42,7 +42,6 @@ import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author niebler
- * @version $Id$
  */
 public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	

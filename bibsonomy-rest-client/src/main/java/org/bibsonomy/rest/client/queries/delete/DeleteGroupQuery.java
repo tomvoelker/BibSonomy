@@ -36,7 +36,6 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * Use this Class to delete a specified group.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public final class DeleteGroupQuery extends AbstractQuery<String> {
 	private final String groupName;

@@ -27,7 +27,6 @@ import java.util.Date;
 
 /**
  * @author wla
- * @version $Id$
  */
 public abstract class SynchronizationResource {
 

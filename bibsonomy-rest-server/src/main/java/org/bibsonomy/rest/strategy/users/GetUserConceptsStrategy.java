@@ -19,7 +19,6 @@ import org.bibsonomy.rest.strategy.Strategy;
  * Handle a user concepts request
  * 
  * @author Stefan Stützer
- * @version $Id$
  */
 public class GetUserConceptsStrategy extends Strategy {
 	protected final Class<? extends Resource> resourceType;

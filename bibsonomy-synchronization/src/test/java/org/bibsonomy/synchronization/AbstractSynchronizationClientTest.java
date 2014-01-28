@@ -40,7 +40,6 @@ import org.mortbay.jetty.Server;
 
 /**
  * @author wla
- * @version $Id$
  */
 public abstract class AbstractSynchronizationClientTest extends AbstractDatabaseManagerTest {
 

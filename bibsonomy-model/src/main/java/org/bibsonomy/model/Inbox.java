@@ -29,7 +29,6 @@ import java.io.Serializable;
  * The Inbox, that stores posts sent by friends
  * 
  * @author sdo
- * @version $Id$
  */
 public class Inbox implements Serializable {
 	private static final long serialVersionUID = 1875652508506761506L;

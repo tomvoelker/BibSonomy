@@ -52,7 +52,6 @@ import bibtex.parser.ParseException;
  * 
  * 
  * @author rja
- * @version $Id$
  */
 public class PostBibTeXParser extends SimpleBibTeXParser {
 

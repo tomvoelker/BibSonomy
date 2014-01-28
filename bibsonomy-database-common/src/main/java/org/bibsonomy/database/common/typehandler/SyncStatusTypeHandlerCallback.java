@@ -7,7 +7,6 @@ import org.bibsonomy.model.sync.SynchronizationStatus;
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
- * @version $Id$
  */
 public class SyncStatusTypeHandlerCallback extends AbstractTypeHandlerCallback {
 

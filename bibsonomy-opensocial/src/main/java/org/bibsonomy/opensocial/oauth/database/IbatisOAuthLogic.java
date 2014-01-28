@@ -36,7 +36,6 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * TODO: use {@link AbstractDatabaseManager}
  * 
  * @author fei
- * @version $Id$
  */
 public class IbatisOAuthLogic implements IOAuthLogic {
 	private static final Log log = LogFactory.getLog(IbatisOAuthLogic.class);

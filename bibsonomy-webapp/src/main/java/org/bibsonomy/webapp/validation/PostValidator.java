@@ -19,7 +19,6 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author fba
- * @version $Id$
  * @param <RESOURCE> 
  */
 public class PostValidator<RESOURCE extends Resource> implements Validator<EditPostCommand<RESOURCE>> {

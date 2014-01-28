@@ -33,7 +33,6 @@ import org.bibsonomy.common.enums.SortOrder;
  * Convenience methods for sorting lists
  *
  * @author Dominik Benz
- * @version $Id$
  */
 public class SortUtils {
 

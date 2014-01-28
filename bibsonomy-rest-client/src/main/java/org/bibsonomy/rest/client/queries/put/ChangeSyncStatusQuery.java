@@ -35,7 +35,6 @@ import org.bibsonomy.util.UrlUtils;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class ChangeSyncStatusQuery extends AbstractSyncQuery<Boolean> {
 

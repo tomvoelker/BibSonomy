@@ -43,7 +43,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class RSCScraper extends AbstractUrlScraper {
 

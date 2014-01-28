@@ -33,7 +33,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #90 for NberScraper
  * @author wbi
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class NberScraperTest {

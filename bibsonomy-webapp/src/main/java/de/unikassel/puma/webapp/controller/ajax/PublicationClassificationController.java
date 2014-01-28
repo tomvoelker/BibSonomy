@@ -26,7 +26,6 @@ import de.unikassel.puma.webapp.command.ajax.PublicationClassificationCommand;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class PublicationClassificationController extends AjaxController implements MinimalisticController<PublicationClassificationCommand> {
 

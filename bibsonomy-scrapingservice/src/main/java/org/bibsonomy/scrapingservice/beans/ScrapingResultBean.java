@@ -31,7 +31,6 @@ import org.bibsonomy.scraper.Scraper;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class ScrapingResultBean implements Serializable {
 	

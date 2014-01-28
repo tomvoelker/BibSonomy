@@ -4,7 +4,6 @@ import java.util.Map;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public interface ClassificationParser {
 	

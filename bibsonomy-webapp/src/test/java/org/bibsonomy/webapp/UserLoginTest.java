@@ -8,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 
 /**
  * @author dzo
- * @version $Id$
  */
 @Ignore // TODO: reactivate it
 public class UserLoginTest extends WebappTest {

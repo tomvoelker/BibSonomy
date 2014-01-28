@@ -8,7 +8,6 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author daill
- * @version $Id$
  */
 public class PasswordReminderValidator implements Validator<PasswordReminderCommand>{
 

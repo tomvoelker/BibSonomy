@@ -8,7 +8,6 @@ import org.springframework.beans.factory.FactoryBean;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ConfigurationFactoryBean implements FactoryBean<Configuration> {
 	

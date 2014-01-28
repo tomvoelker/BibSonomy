@@ -22,7 +22,6 @@ import org.bibsonomy.webapp.view.Views;
  *  </ul>
  * 
  * @author Sven Stefani
- * @version $Id$
  */
 public class DiscussedPageController extends SingleResourceListControllerWithTags implements MinimalisticController<DiscussedViewCommand> {
 	private static final Log LOGGER = LogFactory.getLog(DiscussedPageController.class);

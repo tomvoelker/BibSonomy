@@ -30,7 +30,6 @@ import java.io.Serializable;
  * Wraps a {@link Post} and adds score and confidence.
  * 
  * @author lukas
- * @version $Id$
  * 
  * @param <T> the resourcetype
  */

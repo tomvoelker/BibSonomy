@@ -15,7 +15,6 @@ import org.bibsonomy.model.Tag;
  * Returns a list of tags for a given friend of a given user.
  * 
  * @author Steffen Kress
- * @version $Id$
  */
 public class GetTagsByFriendOfUser extends TagChainElement {
 	@Override

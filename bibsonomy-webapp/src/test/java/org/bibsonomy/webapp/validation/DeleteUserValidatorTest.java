@@ -10,7 +10,6 @@ import org.springframework.validation.Errors;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class DeleteUserValidatorTest {
 	private static final DeleteUserValidator validator = new DeleteUserValidator();

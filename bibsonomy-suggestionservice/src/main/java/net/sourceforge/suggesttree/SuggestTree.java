@@ -1,7 +1,6 @@
 package net.sourceforge.suggesttree;
 
 /**
- * @version $Id$
  */
 
 /*

@@ -10,7 +10,6 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class DeleteClipboardStrategy extends PostClipboardStrategy {
 

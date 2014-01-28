@@ -26,7 +26,6 @@ package org.bibsonomy.model.extra;
 import java.util.Date;
 
 /**
- * @version $Id$
  */
 public class ExtendedField {
 

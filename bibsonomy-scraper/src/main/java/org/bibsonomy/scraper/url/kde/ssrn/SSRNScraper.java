@@ -47,7 +47,6 @@ import org.w3c.dom.NodeList;
 /**
  * Scraping Logger for access on http://www.ssrn.com/
  * @author tst
- * @version $Id$
  */
 public class SSRNScraper extends AbstractUrlScraper {
 

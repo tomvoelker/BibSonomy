@@ -6,7 +6,6 @@ import java.util.Map;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public abstract class ClassificationTextParser implements ClassificationParser {
 

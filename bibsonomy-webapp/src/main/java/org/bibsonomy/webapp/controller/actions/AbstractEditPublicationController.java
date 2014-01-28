@@ -38,7 +38,6 @@ import bibtex.parser.ParseException;
  * 
  * @author rja
  * @author dzo
- * @version $Id$
  * 
  * @param <COMMAND> 
  */

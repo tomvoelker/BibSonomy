@@ -15,7 +15,6 @@ import org.bibsonomy.services.information.InformationService;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ReportTag extends ForGroupTag {
 	private static final String NAME = "report";

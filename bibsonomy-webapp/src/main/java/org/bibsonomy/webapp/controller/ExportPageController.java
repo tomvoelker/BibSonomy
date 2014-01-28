@@ -8,7 +8,6 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author Christian
- * @version $Id$
  */
 public class ExportPageController implements MinimalisticController<ExportPageCommand> {
 	

@@ -34,7 +34,6 @@ import org.junit.Test;
 
 /**
  * @author sdo
- * @version $Id$
  */
 public class EndnoteToBibtexConverterTest {
 	private static final String PATH_TO_FILES = "org/bibsonomy/scraper/converter/";

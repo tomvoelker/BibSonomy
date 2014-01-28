@@ -7,7 +7,6 @@ import org.springframework.security.core.AuthenticationException;
  * Signals that a login via a special method should be performed.  
  * 
  * @author jil
- * @version $Id$
  */
 public class SpecialAuthMethodRequiredException extends AuthenticationException {
 

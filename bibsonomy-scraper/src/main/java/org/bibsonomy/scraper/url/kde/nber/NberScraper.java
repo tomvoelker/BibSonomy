@@ -38,7 +38,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
 /**
  * @author wbi
- * @version $Id$
  */
 public class NberScraper extends AbstractUrlScraper {
 

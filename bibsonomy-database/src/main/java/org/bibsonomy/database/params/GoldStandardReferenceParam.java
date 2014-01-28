@@ -2,7 +2,6 @@ package org.bibsonomy.database.params;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class GoldStandardReferenceParam {
 	private String hash;

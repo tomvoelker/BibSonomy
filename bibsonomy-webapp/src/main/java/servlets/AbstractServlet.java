@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 
 /**
  * @author dzo
- * @version $Id$
  */
 @Deprecated
 public abstract class AbstractServlet extends HttpServlet {

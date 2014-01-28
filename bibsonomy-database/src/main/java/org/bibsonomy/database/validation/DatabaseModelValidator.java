@@ -15,7 +15,6 @@ import org.bibsonomy.services.database.DatabaseSchemaInformation;
 
 /**
  * @author dzo
- * @version $Id$
  * @param <T> the model to validate
  */
 public class DatabaseModelValidator<T> {

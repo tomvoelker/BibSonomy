@@ -24,7 +24,6 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
  */
 public class DBSessionImpl implements DBSession {
 	private static final Log log = LogFactory.getLog(DBSessionImpl.class);

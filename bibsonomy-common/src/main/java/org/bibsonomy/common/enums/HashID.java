@@ -25,7 +25,6 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author Jens Illig
- * @version $Id$
  */
 public enum HashID {
 

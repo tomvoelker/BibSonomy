@@ -29,7 +29,6 @@ import org.bibsonomy.model.PersonName;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class PersonNameComparator implements Comparator<PersonName> {
 

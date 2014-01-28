@@ -30,7 +30,6 @@ import org.bibsonomy.model.Resource;
  * 
  * 
  * @author rja
- * @version $Id$
  */
 public interface Pingback {
 

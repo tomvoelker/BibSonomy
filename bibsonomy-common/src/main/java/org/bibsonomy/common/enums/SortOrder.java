@@ -28,7 +28,6 @@ package org.bibsonomy.common.enums;
  * 
  * @author Dominik Benz
  * @see org.bibsonomy.common.enums.SortKey
- * @version $Id$
  */
 public enum SortOrder {
 	/** ascending order */

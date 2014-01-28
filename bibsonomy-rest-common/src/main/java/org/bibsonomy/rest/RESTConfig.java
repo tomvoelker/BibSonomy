@@ -29,7 +29,6 @@ package org.bibsonomy.rest;
  * DO NOT CHANGE any constant values after a release
  * 
  * @author dzo
- * @version $Id$
  */
 public final class RESTConfig {
 	private RESTConfig() {

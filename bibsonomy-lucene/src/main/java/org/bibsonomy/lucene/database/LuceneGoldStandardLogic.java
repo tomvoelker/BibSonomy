@@ -5,7 +5,6 @@ import org.bibsonomy.model.GoldStandardPublication;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class LuceneGoldStandardLogic extends LuceneDBLogic<GoldStandardPublication> {
 	

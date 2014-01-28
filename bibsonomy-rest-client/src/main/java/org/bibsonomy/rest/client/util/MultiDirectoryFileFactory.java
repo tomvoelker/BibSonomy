@@ -29,7 +29,6 @@ import org.bibsonomy.util.file.FileUtil;
 
 /**
  * @author Jens Illig
- * @version $Id$
  */
 public class MultiDirectoryFileFactory implements FileFactory {
 	

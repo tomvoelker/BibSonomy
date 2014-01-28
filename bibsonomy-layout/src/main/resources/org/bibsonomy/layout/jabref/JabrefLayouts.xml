@@ -75,6 +75,19 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="boxed">
+		<displayName>Boxed HTML</displayName>
+		<description xml:lang="en">
+			An HTML layout which includes Preview-Images
+		</description>
+		<description xml:lang="de">
+			Ein HTML Layout mit Vorschaubildern.
+		</description>
+		<directory>boxed</directory>
+		<baseFileName>boxed</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 	<layout name="plain">
 		<displayName>plain</displayName>
 		<description xml:lang="en">
@@ -357,6 +370,19 @@
 		</description>
 		<directory>din1505</directory>
 		<baseFileName>din1505</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="mittelalter">
+		<displayName>Mittelalterliche Geschichte Universität Kassel</displayName>
+		<description xml:lang="en">
+			HTML output format according to the Chair of Mittelalterliche Geschichte of Kassel University
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabeformat gemäß dem Lehrstuhl Mittelalterliche Geschichte der Universität Kassel
+		</description>
+		<directory>mittelalter</directory>
+		<baseFileName>mittelalter</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>

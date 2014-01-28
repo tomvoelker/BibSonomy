@@ -30,7 +30,6 @@ import org.bibsonomy.common.enums.GroupID;
 
 /**
  * @author Jens Illig
- * @version $Id$
  */
 public class ValidationUtils {
 

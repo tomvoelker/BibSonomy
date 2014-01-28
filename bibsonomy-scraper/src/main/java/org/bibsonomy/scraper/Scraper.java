@@ -30,7 +30,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * Interface for Screen Scrapers.
  * @author rja
- * @version $Id$
  */
 public interface Scraper {
 	

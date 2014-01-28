@@ -35,7 +35,6 @@ import java.util.Map.Entry;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class UrlBuilder {
 	private final String baseUrl;

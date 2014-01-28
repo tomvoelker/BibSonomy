@@ -6,7 +6,6 @@ import no.priv.garshol.duke.Record;
 /**
  * store a single user matching
  * @author fei
- * @version $Id$
  */
 public class UserMatch implements Comparable<UserMatch> {
 	private final String id;

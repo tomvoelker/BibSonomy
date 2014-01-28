@@ -25,8 +25,6 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id: UnsupportedGroupingException.java,v 1.3 2007-10-30 17:37:35
- *          jillig Exp $
  */
 public class UnsupportedGroupingException extends RuntimeException {
 

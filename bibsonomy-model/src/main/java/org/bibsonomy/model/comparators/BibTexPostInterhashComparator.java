@@ -34,7 +34,6 @@ import org.bibsonomy.util.StringUtils;
  * Comparator used to eliminate duplicates (when used in conjuction with a TreeSet)
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class BibTexPostInterhashComparator implements Comparator<Post<BibTex>>, Serializable {
 

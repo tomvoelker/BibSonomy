@@ -1,0 +1,15 @@
+<div style="margin-bottom:1em">
+\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}\begin{editor}
+; \format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter,DIN1505T2EditorNamesFormatter]{\editor}\end{editor}:
+\format[AntiScriptInjection]{\title}\begin{volume}.
+\format[AntiScriptInjection]{\volume}\end{volume}\begin{number}.
+\format[AntiScriptInjection]{\number}\end{number}.
+In: <i>\format[AntiScriptInjection]{\booktitle}</i>\begin{address}.
+\format[AntiScriptInjection]{\address}\end{address}\begin{publisher}
+: <span style="font-variant: small-caps">\format[AntiScriptInjection]{\publisher}</span>\end{publisher},
+\format[AntiScriptInjection]{\year}\begin{series}
+(\format[AntiScriptInjection]{\series})\end{series}\begin{note}. -
+\format[AntiScriptInjection]{\note}\end{note}\begin{isbn}. - ISBN
+\format[AntiScriptInjection]{\isbn}\end{isbn}\begin{pages},
+S. \format[AntiScriptInjection]{\pages}\end{pages}
+</div>

@@ -9,7 +9,6 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class AbstractExtractor implements AttributeExtractor {
 

@@ -4,7 +4,6 @@ import org.bibsonomy.model.Group;
 
 /**
  * @author sdo
- * @version $Id$
  */
 public class DiscussedViewCommand extends UserResourceViewCommand {
 

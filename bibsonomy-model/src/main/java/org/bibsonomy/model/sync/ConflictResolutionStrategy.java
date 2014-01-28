@@ -26,7 +26,6 @@ package org.bibsonomy.model.sync;
 
 /**
  * @author wla
- * @version $Id$
  */
 public enum ConflictResolutionStrategy {
     /**

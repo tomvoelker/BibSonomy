@@ -13,7 +13,6 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
  * 
  * @author Dominik Benz
  * @author Christian Kramer
- * @version $Id$
  */
 public class BasketDatabaseManager extends AbstractDatabaseManager {
 	private final static BasketDatabaseManager singleton = new BasketDatabaseManager();

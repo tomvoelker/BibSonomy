@@ -17,7 +17,6 @@ import org.bibsonomy.model.Post;
  * @author Jens Illig
  * @author Christian Schenk
  * @author Daniel Zoller
- * @version $Id$
  */
 public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, BookmarkParam> {
 	private static final BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();

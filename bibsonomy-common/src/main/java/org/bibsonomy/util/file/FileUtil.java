@@ -36,7 +36,6 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class FileUtil {
 	private static final Set<String> DJV_EXTENSIONS = Sets.asSet("djv", "djvu");

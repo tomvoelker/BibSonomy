@@ -18,7 +18,6 @@ import org.bibsonomy.model.Resource;
  * @see BaseCommand
  * @author Jens Illig
  * @author Dominik Benz
- * @version $Id$
  */
 public class ResourceViewCommand extends BaseCommand {	
 	/** default value for sortPage */

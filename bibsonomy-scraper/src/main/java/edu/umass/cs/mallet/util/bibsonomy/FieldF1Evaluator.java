@@ -23,7 +23,6 @@ import java.util.logging.Logger;
  * Created: May 12, 2004
  * 
  * @author <A HREF="mailto:casutton@cs.umass.edu>casutton@cs.umass.edu</A>
- * @version $Id$
  */
 public class FieldF1Evaluator extends TransducerEvaluator {
 

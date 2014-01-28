@@ -21,7 +21,6 @@ import org.junit.Test;
 /**
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
  */
 public class LogicInterfaceHelperTest extends AbstractDatabaseTest {
 

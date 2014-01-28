@@ -8,7 +8,6 @@ import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class DatabaseSchemaInformation extends AbstractDatabaseSchemaInformation {
 	

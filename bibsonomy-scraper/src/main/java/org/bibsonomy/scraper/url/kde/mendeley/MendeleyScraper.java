@@ -47,7 +47,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
- * @version $Id$
  */
 public class MendeleyScraper extends AbstractUrlScraper{
 	private final Log log = LogFactory.getLog(MendeleyScraper.class);

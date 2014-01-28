@@ -33,7 +33,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #58 & #59 for DBLPScraper
  * @author wbi
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class StanfordInfoLabScraperTest {

@@ -9,7 +9,6 @@ import org.junit.Test;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class HeaderUtilsTest {
 

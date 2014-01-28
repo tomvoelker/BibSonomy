@@ -45,7 +45,6 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public final class GetWorker extends HttpWorker<GetMethod> {
 

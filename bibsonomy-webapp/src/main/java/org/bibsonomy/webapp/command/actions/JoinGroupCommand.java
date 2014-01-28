@@ -5,7 +5,6 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author schwass
- * @version $Id$
  */
 public class JoinGroupCommand extends BaseCommand implements CaptchaCommand {
 	/**

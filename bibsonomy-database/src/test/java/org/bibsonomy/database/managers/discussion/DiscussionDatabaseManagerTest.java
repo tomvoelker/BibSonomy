@@ -17,7 +17,6 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class DiscussionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	

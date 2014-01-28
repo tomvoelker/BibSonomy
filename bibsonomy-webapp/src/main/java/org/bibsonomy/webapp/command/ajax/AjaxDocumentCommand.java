@@ -4,7 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class AjaxDocumentCommand extends AjaxCommand {
 

@@ -24,7 +24,6 @@ import org.bibsonomy.webapp.view.Views;
  * probably use an RDF writer from the Jena project.
  * 
  * @author dzo
- * @version $Id$
  */
 public class UserInfoController implements MinimalisticController<UserInfoCommand> {
 	private LogicInterface logic;

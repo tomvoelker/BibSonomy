@@ -18,7 +18,6 @@ import org.bibsonomy.model.enums.Order;
  * Return a list of popular resources.
  * 
  * @author Miranda Grahl
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

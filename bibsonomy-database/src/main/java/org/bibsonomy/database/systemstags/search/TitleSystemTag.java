@@ -9,7 +9,6 @@ import org.bibsonomy.model.util.TagUtils;
 
 /**
  * @author sdo
- * @version $Id$
  */
 public class TitleSystemTag extends AbstractSearchSystemTagImpl {
 

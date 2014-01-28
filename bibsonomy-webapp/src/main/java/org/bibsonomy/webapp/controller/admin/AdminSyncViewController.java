@@ -20,7 +20,6 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class AdminSyncViewController implements MinimalisticController<AdminSyncCommand> {
 

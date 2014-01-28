@@ -33,7 +33,6 @@ import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
  * This class creates xml documents valid to the xsd schema and vice-versa.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public class XMLRenderer extends JAXBRenderer {
 

@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  * Some methods to help handling cookies.
  * 
  * @author rja
- * @version $Id$
  */
 public class CookieLogic implements RequestAware, ResponseAware {
 	private static final Log log = LogFactory.getLog(CookieLogic.class);

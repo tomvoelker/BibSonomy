@@ -11,7 +11,6 @@ import org.springframework.validation.Errors;
 
 /**
  * @author bkr
- * @version $Id$
  */
 public class AdminActionsValidatorTest {
 

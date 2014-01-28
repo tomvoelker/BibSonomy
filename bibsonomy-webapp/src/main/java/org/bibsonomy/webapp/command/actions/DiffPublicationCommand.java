@@ -6,11 +6,9 @@ import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 
 /**
  * @author pba
- * @version $Id$
  */
 public class DiffPublicationCommand extends ResourcePageCommand<BibTex>{
 	
-	private int historyIndex;
 	private Post<BibTex> post;
 	private Post<BibTex> postDiff;
 	private String user;
@@ -20,19 +18,24 @@ public class DiffPublicationCommand extends ResourcePageCommand<BibTex>{
 	 */
 	private int postID;
 	
+	/**
+	 * stores version (index of publication in history list)
+	 */
+	private int compareVersion;
+	
 
 	/**
 	 * @return Index from postDiff in PostHistoryList
 	 */
-	public int getHistoryIndex() {
-		return historyIndex;
+	public int getCompareVersion() {
+		return compareVersion;
 	}
 
 	/**
-	 * @param historyIndex The index of the post which should be compared to current post
+	 * @param compareVersion The index of the post which should be compared to current post
 	 */
-	public void setHistoryIndex(int historyIndex) {
-		this.historyIndex = historyIndex;
+	public void setCompareVersion(int compareVersion) {
+		this.compareVersion = compareVersion;
 	}
 
 	/**

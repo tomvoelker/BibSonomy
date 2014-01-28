@@ -29,7 +29,6 @@ import org.springframework.core.convert.converter.Converter;
 
 /**
  * @author dzo
- * @version $Id$
  * @param <T> 
  */
 public class StringToEnumConverter<T extends Enum<T>> implements Converter<String, T> {

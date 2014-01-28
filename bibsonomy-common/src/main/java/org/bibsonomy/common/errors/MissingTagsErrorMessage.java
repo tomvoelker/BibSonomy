@@ -25,7 +25,6 @@ package org.bibsonomy.common.errors;
 
 /**
  * @author sdo
- * @version $Id$
  */
 public class MissingTagsErrorMessage extends ErrorMessage {
 

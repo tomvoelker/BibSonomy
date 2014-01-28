@@ -45,7 +45,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
  * {@link Renderer} rendering JSON using Jackson
  * 
  * @author dzo
- * @version $Id$
  */
 public class JSONRenderer extends AbstractRenderer {
 

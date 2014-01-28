@@ -36,6 +36,7 @@ import java.util.Map;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
+import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.util.UrlUtils;
 
 
@@ -43,7 +44,6 @@ import org.bibsonomy.util.UrlUtils;
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
  * 
- * @version $Id$
  */
 public class User implements Serializable {
 	/*
@@ -133,8 +133,20 @@ public class User implements Serializable {
 	/**
 	 * User's Gravatar email address representing his or her picture and profile.</br>
 	 * (cf. {@link "https://de.gravatar.com/site/implement/"})
+	 * @deprecated use user email instead.
 	 */
+	@Deprecated
 	private String gravatarAddress;
+	
+	/**
+	 * If an external avatar sercive â€“ e.g. Gravatar â€“ shall be used instead of an locally uploaded profile picture
+	 */
+	private boolean useExternalPicture;
+	
+	/**
+	 * User's locally uploaded profile picture file
+	 */
+	private UploadedFile profilePicture;
 
 	/* ****************************** system properties ****************************** */
 	/**
@@ -569,6 +581,7 @@ public class User implements Serializable {
 	 * 
 	 * @return Gravatar address as String
 	 */
+	@Deprecated
 	public String getGravatarAddress ()
 	{
 		return gravatarAddress;
@@ -580,9 +593,50 @@ public class User implements Serializable {
 	 * 
 	 * @param address :	Gravatar address as String
 	 */
+	@Deprecated
 	public void setGravatarAddress ( final String address )
 	{
 		gravatarAddress = address;
+	}
+	
+	/**
+	 * Checks if an external avatar sercive â€“ e.g. Gravatar â€“ shall be used instead of an locally uploaded profile picture.<br/>
+	 * 
+	 * @return true iff, false else.
+	 */
+	public boolean getUseExternalPicture ()
+	{
+		return useExternalPicture;
+	}
+	
+	/**
+	 * Sets if an external avatar sercive â€“ e.g. Gravatar â€“ shall be used instead of an locally uploaded profile picture.<br/>
+	 * 
+	 * @param useExternal : true iff, false else.
+	 */
+	public void setUseExternalPicture ( boolean useExternal )
+	{
+		useExternalPicture = useExternal;
+	}
+	
+	/**
+	 * Returns user's locally uploaded profile picture file.<br/>
+	 * 
+	 * @return picture file as UploadedFile
+	 */
+	public UploadedFile getProfilePicture ()
+	{
+		return profilePicture;
+	}
+	
+	/**
+	 * Sets user's locally uploaded profile picture file.<br/>
+	 * 
+	 * @param pictureFile : picture file as UploadedFile
+	 */
+	public void setProfilePicture ( UploadedFile pictureFile )
+	{
+		profilePicture = pictureFile;
 	}
 	
 	/**

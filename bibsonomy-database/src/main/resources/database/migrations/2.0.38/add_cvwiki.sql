@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `user_wiki`;
 CREATE TABLE `user_wiki` (
   `user_name` varchar(30) NOT NULL,
   `user_wiki` text,
@@ -46,6 +47,8 @@ UPDATE user_wiki, groupids SET user_wiki.user_wiki = "==Grouppage of the group <
 
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
+
+DROP TABLE IF EXISTS `log_wiki`;
 CREATE TABLE `log_wiki` (
   `user_name` varchar(30) NOT NULL,
   `user_wiki` text,

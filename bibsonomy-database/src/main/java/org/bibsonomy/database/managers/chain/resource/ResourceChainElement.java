@@ -14,7 +14,6 @@ import org.bibsonomy.model.Resource;
  * @param <P> the param of the chain element
  * 
  * @author dzo
- * @version $Id$
  */
 public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ChainElement<List<Post<R>>, P> {
 	

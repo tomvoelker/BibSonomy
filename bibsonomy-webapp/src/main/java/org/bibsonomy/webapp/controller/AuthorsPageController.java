@@ -12,7 +12,6 @@ import org.bibsonomy.webapp.view.Views;
  *  - /authors
  * 
  * @author Christian Claus
- * @version $Id$
  */
 public class AuthorsPageController implements MinimalisticController<AuthorsCommand> {
 

@@ -5,15 +5,16 @@ import org.bibsonomy.model.Post;
 
 /**
  * @author PlatinAge
- * @version $Id$
  */
 public class DiffBookmarkCommand extends EditBookmarkCommand{
 	private Post<Bookmark> postDiff;
 
+	@Override
 	public Post<Bookmark> getPostDiff() {
 		return postDiff;
 	}
 
+	@Override
 	public void setPostDiff(Post<Bookmark> postDiff) {
 		this.postDiff = postDiff;
 	}

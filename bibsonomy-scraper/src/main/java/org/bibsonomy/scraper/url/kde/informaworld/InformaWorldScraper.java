@@ -41,7 +41,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
- * @version $Id$
  */
 public class InformaWorldScraper extends AbstractUrlScraper {
 

@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
  * Feel free to replace this if you find something better.
  * 
  * @author jensi
- * @version $Id$
  */
 public class UrlParameterExtractor {
 	private final Pattern extractParameterValuePattern;

@@ -10,7 +10,6 @@ import org.bibsonomy.model.Resource;
  * Lucene Post class, extending the model class with index management fields.
  * 
  * @author fei
- * @version $Id$
  *
  * @param <R>
  */

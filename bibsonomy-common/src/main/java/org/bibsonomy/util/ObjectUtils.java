@@ -35,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ObjectUtils {
 	private static final Log log = LogFactory.getLog(ObjectUtils.class);

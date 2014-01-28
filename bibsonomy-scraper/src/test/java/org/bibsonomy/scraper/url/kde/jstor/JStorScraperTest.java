@@ -33,7 +33,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #97 & #98 for JStorScraper
  * @author wbi
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class JStorScraperTest {

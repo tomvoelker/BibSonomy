@@ -21,7 +21,6 @@ import recommender.impl.tags.simple.SimpleContentBasedTagRecommender;
  * BibSonomy's implementation of the recommender's model classes.
  * 
  * @author rja
- * @version $Id$
  */
 public class SimpleContentBasedTagRecommenderTest {
 

@@ -18,7 +18,6 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * 
  * @author Ken Weiner
  * @author Christian Schenk
- * @version $Id$
  */
 public class UrlTypeHandlerCallback extends AbstractTypeHandlerCallback {
 

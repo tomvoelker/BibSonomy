@@ -18,7 +18,6 @@ import org.springframework.validation.FieldError;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ReviewValidatorTest {
 	private static final ReviewValidator VALIDATOR = new ReviewValidator();

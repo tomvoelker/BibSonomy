@@ -18,7 +18,6 @@ import org.bibsonomy.model.Resource;
  * Returns a list of resources for a given group and common tags of a group.
  * 
  * @author Miranda Grahl
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

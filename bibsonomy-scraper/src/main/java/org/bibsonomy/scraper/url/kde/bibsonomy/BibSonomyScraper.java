@@ -45,7 +45,6 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for single publications from bibsonomy.org.
  * 
  * @author tst
- * @version $Id$
  */
 public class BibSonomyScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "BibSonomy";

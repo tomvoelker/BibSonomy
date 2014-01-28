@@ -40,7 +40,6 @@ import org.junit.Test;
  * Tests related to the bookmark chain.
  * 
  * @author Miranda Grahl
- * @version $Id$
  */
 public class BookmarkChainTest extends AbstractDatabaseManagerTest {
 

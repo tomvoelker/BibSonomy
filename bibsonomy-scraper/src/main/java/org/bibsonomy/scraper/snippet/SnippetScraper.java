@@ -42,7 +42,6 @@ import bibtex.parser.ParseException;
 
 /**
  * scrapes BibTex from the selected text
- * @version $Id$
  */
 public class SnippetScraper implements Scraper {
     private static final String info = "SnippetScraper: This scraper checks passed snippets for " +

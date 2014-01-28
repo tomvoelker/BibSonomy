@@ -13,7 +13,6 @@ import org.bibsonomy.webapp.command.PostCommand;
 
 /**
  * @author fba
- * @version $Id$
  * @param <RESOURCE> The type of resource this command handles.
  */
 public class EditPostCommand<RESOURCE extends Resource> extends PostCommand implements GroupingCommand, CaptchaCommand {
@@ -27,6 +26,16 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private String tags;
 	
 	private Post<RESOURCE> diffPost;
+	
+	/**
+	 * Post required for Diff Post View
+	 */
+	private Post<RESOURCE> postDiff;
+	
+	/**
+	 * stores version (index of publication in history list)
+	 */
+	private int compareVersion;
 	
 	/**
 	 * If the user edits his own post, this field is used to identify the post. 
@@ -391,5 +400,33 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	public List<String> getFileName() {
 		return fileName;
+	}
+	
+	/**
+	 * @return Index from postDiff in PostHistoryList
+	 */
+	public int getCompareVersion() {
+		return compareVersion;
+	}
+
+	/**
+	 * @param compareVersion The index of the post which should be compared to current post
+	 */
+	public void setCompareVersion(int compareVersion) {
+		this.compareVersion = compareVersion;
+	}
+
+	/**
+	 * @return post which should compared to current post
+	 */
+	public Post<RESOURCE> getPostDiff() {
+		return postDiff;
+	}
+
+	/**
+	 * @param postDiff The post which should be compared to current post
+	 */
+	public void setPostDiff(Post<RESOURCE> postDiff) {
+		this.postDiff = postDiff;
 	}
 }

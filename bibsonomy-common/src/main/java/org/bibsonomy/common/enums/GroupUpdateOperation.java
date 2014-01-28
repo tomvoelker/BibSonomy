@@ -26,7 +26,6 @@ package org.bibsonomy.common.enums;
 
 /**
  * @author cvo
- * @version $Id$
  */
 public enum GroupUpdateOperation {
 	
@@ -43,5 +42,8 @@ public enum GroupUpdateOperation {
 	UPDATE_USER_SHARED_DOCUMENTS,
 	
 	/** update the publication reporting settings for a group */
-	UPDATE_GROUP_REPORTING_SETTINGS;
+	UPDATE_GROUP_REPORTING_SETTINGS,
+	
+	/** Activate the pending group */
+	ACTIVATE;
 }

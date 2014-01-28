@@ -33,7 +33,6 @@ import org.bibsonomy.common.enums.TagCloudStyle;
 /**
  * Holds settings for a user.
  * 
- * @version $Id$
  */
 public class UserSettings implements Serializable {
 	private static final long serialVersionUID = 501200873739971813L;
@@ -111,7 +110,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * Shall the web interface ask the user before it really deletes something?
 	 */
-	private boolean confirmDelete;
+	private boolean confirmDelete = true;
 	
 	/**
 	 * User wants maxCount (true) or maxFreq (false)

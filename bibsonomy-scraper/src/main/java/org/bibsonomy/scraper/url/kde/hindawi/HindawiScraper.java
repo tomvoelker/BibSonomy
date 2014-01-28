@@ -44,7 +44,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
- * @version $Id$
  */
 public class HindawiScraper extends AbstractUrlScraper{
 	private static final Log log = LogFactory.getLog(HindawiScraper.class);

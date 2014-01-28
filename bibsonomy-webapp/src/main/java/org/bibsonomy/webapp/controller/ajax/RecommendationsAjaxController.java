@@ -45,7 +45,6 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  * @param <R>
  *  
  * @author fei
- * @version $Id$
  */
 public abstract class RecommendationsAjaxController<R extends Resource> extends AjaxController implements MinimalisticController<AjaxRecommenderCommand<R>> {
 	private static final Log log = LogFactory.getLog(RecommendationsAjaxController.class);

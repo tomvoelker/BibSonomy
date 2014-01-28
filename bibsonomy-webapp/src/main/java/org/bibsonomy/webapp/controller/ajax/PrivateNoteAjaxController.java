@@ -21,7 +21,6 @@ import org.springframework.validation.Errors;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class PrivateNoteAjaxController extends AjaxController implements MinimalisticController<PrivateNoteAjaxCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(PrivateNoteAjaxController.class);

@@ -4,7 +4,6 @@ import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 /**
  * @author sdo
- * @version $Id$
  */
 public class SentSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag{
 

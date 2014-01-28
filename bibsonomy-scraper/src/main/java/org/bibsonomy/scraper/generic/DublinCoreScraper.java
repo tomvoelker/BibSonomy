@@ -40,7 +40,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * in it's HTML
  * 
  * @author Lukas
- * @version $Id$
  */
 public class DublinCoreScraper implements Scraper {
 	//scraper informations

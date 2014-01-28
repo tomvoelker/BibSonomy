@@ -154,7 +154,7 @@ public abstract class AbstractJabrefLayoutTest {
 			sb.delete(index, index2);
 			renderedLayout = sb.toString();
 		}
-		else if (layoutName.equals("din1505year") || layoutName.equals("simplehtmlyear")) {
+		else if (layoutName.equals("din1505year") || layoutName.equals("simplehtmlyear") || layoutName.startsWith("harvardhtmlyear")) {
 			/*
 			 * Deletes randomly appearing bibsonomy quicknav_group
 			 */
@@ -167,6 +167,20 @@ public abstract class AbstractJabrefLayoutTest {
 				renderedLayout = sb.toString();
 			}
 		}
+		else if (layoutName.startsWith("publist-year")) {
+			/*
+			 * Deletes randomly appearing bibsonomy quicknav_group with id
+			 */
+			sb = new StringBuilder(renderedLayout);
+			index = sb.indexOf("<h3 id=\"");
+			if (index != -1) {
+				final String find = "</a></h3>";
+				int index2 = sb.indexOf(find, index);
+				sb.delete(index, index2 + find.length());
+				renderedLayout = sb.toString();
+			}
+		}
+		
 		
 		renderedLayout = renderedLayout.replaceAll("\\r", "").trim();
 	}

@@ -42,7 +42,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class RDFWriter {
 

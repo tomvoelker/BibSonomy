@@ -38,7 +38,6 @@ import org.bibsonomy.util.ValidationUtils;
  * Renders publications in Endnote's import format
  * 
  * @author Jens Illig
- * @version $Id$
  */
 public class EndnoteUtils {
 

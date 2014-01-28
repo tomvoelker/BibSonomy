@@ -18,7 +18,6 @@ import org.springframework.validation.MapBindingResult;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class GroupingValidatorTest {
 	private static final GroupingValidator GROUPING_VALIDATOR = new GroupingValidator();

@@ -32,7 +32,6 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author hagen
- * @version $Id$
  */
 public class JNeurosciScraper extends CitationManagerScraper {
 

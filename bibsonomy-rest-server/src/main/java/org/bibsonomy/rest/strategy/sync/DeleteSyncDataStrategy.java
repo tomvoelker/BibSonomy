@@ -15,7 +15,6 @@ import org.bibsonomy.rest.utils.RestSyncUtils;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class DeleteSyncDataStrategy extends AbstractDeleteStrategy {
 

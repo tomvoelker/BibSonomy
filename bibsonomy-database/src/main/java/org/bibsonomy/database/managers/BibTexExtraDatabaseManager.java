@@ -18,7 +18,6 @@ import org.bibsonomy.model.extra.ExtendedField;
 
 /** 
  * @author Christian Schenk
- * @version $Id$
  */
 public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 

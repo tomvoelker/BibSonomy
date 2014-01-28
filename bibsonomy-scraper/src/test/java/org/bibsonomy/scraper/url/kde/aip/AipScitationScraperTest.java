@@ -33,7 +33,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests #8 #9 for AipScitationScraper
  * @author tst
- * @version $Id$
  *
  */
 @Category(RemoteTest.class)
@@ -42,19 +41,19 @@ public class AipScitationScraperTest {
 	/**
 	 * starts URL test with id url_8
 	 */
-	@Test
+	/*@Test
 	public void url1TestRun(){
 		assertTrue(UnitTestRunner.runSingleTest("url_8"));
 	}
 
-	/**
+	*//**
 	 * starts URL test with id url_9
-	 */
+	 *//*
 	@Test
 	public void url2TestRun(){
 		assertTrue(UnitTestRunner.runSingleTest("url_9"));
 	}
-	
+	*/
 	/**
 	 * starts URL test with id url_174
 	 */

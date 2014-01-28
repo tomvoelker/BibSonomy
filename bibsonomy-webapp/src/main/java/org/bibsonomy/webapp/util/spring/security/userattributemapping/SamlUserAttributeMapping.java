@@ -23,7 +23,6 @@ import org.springframework.security.saml.SAMLCredential;
  * Sets user attributes with values from a SAML (Shibboleth) SSO response
  * 
  * @author jensi
- * @version $Id$
  */
 public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCredential, SamlRemoteUserId> {
 	private static final Logger log = Logger.getLogger(SamlUserAttributeMapping.class);

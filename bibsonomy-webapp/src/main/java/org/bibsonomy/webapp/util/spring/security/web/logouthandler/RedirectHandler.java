@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 /**
  * @author Jens Illig
- * @version $Id$
  */
 public class RedirectHandler implements LogoutHandler {
 	private static final Log log = LogFactory.getLog(RedirectHandler.class);

@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
  * Every add-call increases the penalty waiting time of that entity.
  *     
  * @author rja
- * @version $Id$
  */
 public class TeerGrube {
 	private static final Log log = LogFactory.getLog(TeerGrube.class);

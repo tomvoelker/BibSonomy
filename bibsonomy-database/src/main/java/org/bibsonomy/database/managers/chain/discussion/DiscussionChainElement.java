@@ -9,7 +9,6 @@ import org.bibsonomy.model.DiscussionItem;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public abstract class DiscussionChainElement extends ChainElement<List<DiscussionItem>, DiscussionItemParam<?>> {
 	

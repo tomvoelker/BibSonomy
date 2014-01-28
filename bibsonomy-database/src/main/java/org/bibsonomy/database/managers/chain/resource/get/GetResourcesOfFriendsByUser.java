@@ -23,7 +23,6 @@ import org.bibsonomy.model.enums.Order;
  * friends)).
  * 
  * @author Miranda Grahl
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

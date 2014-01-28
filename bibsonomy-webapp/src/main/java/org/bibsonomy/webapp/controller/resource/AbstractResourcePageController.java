@@ -27,7 +27,6 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author dzo
- * @version $Id$
  * @param <R> the resource of the controller
  * @param <G> the gold standard resource of the controller
  */

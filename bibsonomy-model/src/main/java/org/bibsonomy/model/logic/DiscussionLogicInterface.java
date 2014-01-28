@@ -29,7 +29,6 @@ import org.bibsonomy.model.DiscussionItem;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public interface DiscussionLogicInterface {
 	

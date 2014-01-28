@@ -36,7 +36,6 @@ import org.bibsonomy.rest.renderer.Renderer;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class CSLRenderer implements Renderer {
 

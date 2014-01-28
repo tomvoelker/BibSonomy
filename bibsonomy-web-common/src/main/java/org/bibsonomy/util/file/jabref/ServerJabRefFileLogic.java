@@ -41,7 +41,6 @@ import org.bibsonomy.util.file.FileUtil;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ServerJabRefFileLogic extends AbstractServerFileLogic implements JabRefFileLogic {
 

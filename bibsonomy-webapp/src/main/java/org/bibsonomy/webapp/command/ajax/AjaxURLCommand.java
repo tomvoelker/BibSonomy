@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.command.ajax;
 
 /**
  * @author bernd
- * @version $Id$
  */
 public class AjaxURLCommand extends AjaxCommand {
 	/**

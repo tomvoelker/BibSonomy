@@ -21,7 +21,6 @@ import org.bibsonomy.model.enums.Order;
  * groupmembers excluded public option regarding setting a post).
  * 
  * @author Miranda Grahl
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

@@ -24,7 +24,6 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
  * JabRefLayoutRenderer in bibsonomy2-servlet.xml
  * 
  * @author dzo
- * @version $Id$
  */
 public class JabrefLayoutRendererTag extends RequestContextAwareTag {
 	private static final long serialVersionUID = 8006189027834637063L;

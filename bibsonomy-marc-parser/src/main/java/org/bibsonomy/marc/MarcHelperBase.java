@@ -9,7 +9,6 @@ import org.marc4j.marc.Subfield;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class MarcHelperBase {
 	private static final String[] empty = new String[0];

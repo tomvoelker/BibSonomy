@@ -12,7 +12,6 @@ import net.oauth.server.OAuthServlet;
  * Logic to access the Response.
  * 
  * @author rja
- * @version $Id$
  */
 public class ResponseLogic {
 

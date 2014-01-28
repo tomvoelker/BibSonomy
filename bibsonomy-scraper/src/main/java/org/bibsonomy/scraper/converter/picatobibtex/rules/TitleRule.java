@@ -30,7 +30,6 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
- * @version $Id$
  */
 public class TitleRule extends Rules {
 	

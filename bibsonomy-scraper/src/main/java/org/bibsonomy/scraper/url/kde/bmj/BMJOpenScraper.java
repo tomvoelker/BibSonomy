@@ -41,7 +41,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author hagen
- * @version $Id$
  */
 public class BMJOpenScraper extends CitationManagerScraper {
 

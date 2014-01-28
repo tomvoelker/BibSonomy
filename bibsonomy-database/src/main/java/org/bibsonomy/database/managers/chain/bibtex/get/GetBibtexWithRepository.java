@@ -12,7 +12,6 @@ import org.bibsonomy.model.Post;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class GetBibtexWithRepository extends ResourceChainElement<BibTex, BibTexParam> {
 

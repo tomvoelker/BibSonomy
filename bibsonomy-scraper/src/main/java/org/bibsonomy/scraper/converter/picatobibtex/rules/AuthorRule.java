@@ -36,7 +36,6 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * @author daill
- * @version $Id$
  */
 public class AuthorRule extends Rules {
 	private static final String SECOND_SUB_CATEGORY = "$8";

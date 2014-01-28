@@ -28,7 +28,6 @@ package org.bibsonomy.common.enums;
  * the <code>update(...)</code> method in the LogicInterface.
  * 
  * @author rja
- * @version $Id$
  */
 public enum PostUpdateOperation {
 	/**

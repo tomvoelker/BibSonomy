@@ -7,7 +7,6 @@ import com.ibatis.sqlmap.client.SqlMapSession;
 
 /** 
  * @author dzo
- * @version $Id$
  */
 public abstract class AbstractDBSessionFactory implements DBSessionFactory {
 	

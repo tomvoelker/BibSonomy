@@ -5,7 +5,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public abstract class AbstractDatabaseTest {
 

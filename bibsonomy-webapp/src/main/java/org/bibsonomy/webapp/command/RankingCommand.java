@@ -7,7 +7,6 @@ import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
  * Command to hold information about ranking
  * 
  * @author dbenz
- * @version $Id$
  */
 public class RankingCommand {
 	

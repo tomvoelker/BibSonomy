@@ -32,7 +32,6 @@ import java.util.Set;
  * column.
  * 
  * @author rja
- * @version $Id$
  */
 public class StandardBibTeXFields {
 

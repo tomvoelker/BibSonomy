@@ -10,7 +10,6 @@ import org.springframework.security.saml.SAMLCredential;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class SamlUsernameNotFoundExceptionMapper extends UsernameNotFoundExceptionMapper {
 	

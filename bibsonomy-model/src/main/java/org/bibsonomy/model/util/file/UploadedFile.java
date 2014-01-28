@@ -28,7 +28,6 @@ import java.io.IOException;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public interface UploadedFile {
 
@@ -36,6 +35,11 @@ public interface UploadedFile {
 	 * @return the name of the file
 	 */
 	public String getFileName();
+	
+	/**
+	 * @return the absolute path of the file
+	 */
+	public String getAbsolutePath();
 	
 	/**
 	 * @return the content as byte array
@@ -49,5 +53,11 @@ public interface UploadedFile {
 	 * @throws Exception 
 	 */
 	public void transferTo(File fileInFileSytem) throws Exception;
+
+	/**
+	 * returns the purpose of the file.
+	 * @return FilePurpose
+	 */
+	public FilePurpose getPurpose ();
 
 }

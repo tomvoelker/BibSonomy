@@ -10,7 +10,6 @@ import org.bibsonomy.model.PersonName;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class EditorExtractor extends AbstractParticipantExtractor {
 

@@ -45,7 +45,6 @@ import org.bibsonomy.util.WebUtils;
 /**
  * SCraper for http://www.iop.org
  * @author tst
- * @version $Id$
  */
 public class IOPScraper extends AbstractUrlScraper {
 

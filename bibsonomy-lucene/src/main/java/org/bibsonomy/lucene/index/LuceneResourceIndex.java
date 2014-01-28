@@ -39,7 +39,6 @@ import org.bibsonomy.model.Resource;
  * abstract base class for managing lucene resource indices
  * 
  * @author fei
- * @version $Id$
  *
  * @param <R> the resource of the index
  */

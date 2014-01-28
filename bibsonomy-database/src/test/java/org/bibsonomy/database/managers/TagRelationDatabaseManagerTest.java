@@ -22,7 +22,6 @@ import org.junit.Test;
 
 /**
  * @author Jens Illig
- * @version $Id$
  */
 public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static GeneralDatabaseManager generalDb;

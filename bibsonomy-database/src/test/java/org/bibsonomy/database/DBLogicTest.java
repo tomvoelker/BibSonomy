@@ -49,6 +49,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.testutil.DummyFileLogic;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -56,7 +57,6 @@ import org.junit.Test;
 
 /**
  * @author Jens Illig
- * @version $Id$
  */
 public class DBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String TEST_USER_1 = "testuser1";

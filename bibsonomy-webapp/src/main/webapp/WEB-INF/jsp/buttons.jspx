@@ -28,7 +28,7 @@
             <script type="text/javascript">
             <![CDATA[
 		    	$(document).ready(function(){
-					var availableAddons = "{project.addons.available}".split(",");
+					var availableAddons = "${project['project.addons.available']}".split(",");
 		    		if(!availableAddons.length) return;
 		    		var index=-1;
 		    		var url = window.location.href;
@@ -63,7 +63,7 @@
 		    </script>
 			<!--+ 
                 |              Chrome / Firefox Bookmarklet Addon 
-                +-->			
+                +-->
 		    <ul>
 	           	<li>
 	           		<p><fmt:message key="buttons.page.introduction"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
@@ -74,22 +74,22 @@
 		           		<div style="margin-left:15px;display:none">
 			           		<p><img src="/resources/image/bookmarklet_screenshot_firefox_${fn:toLowerCase(exampleString)}.png"/></p>
 			           		<p><fmt:message key="bookmarklet.addon.text2"/></p>
-			           		<p><a href="${project.addons.url.firefox}" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
+			           		<p><a href="${project['project.addons.firefox.url}" class="post.resource.firefox.installButton"><fmt:message key="bookmarklet.buttonTextFirefox"/></a></p>
 		           		</div>
 		           		<h3 class="expandableSection"><img src="${resdir}/image/icon_expand.png"/>Chrome</h3>
 		           		<div style="margin-left:15px;display:none">
 			           		<p><img src="/resources/image/bookmarklet_screenshot_chrome_${fn:toLowerCase(exampleString)}.png"/></p>
 			           		<p><fmt:message key="bookmarklet.addon.text3"><fmt:param value="${properties['project.name']}"/></fmt:message></p>
 
-			           		<p><a href="${project.addons.url.chrome}" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
+			           		<p><a href="${project['project.addons.chrome.url}" class="post.resource.chrome.installButton"><fmt:message key="bookmarklet.buttonTextChrome"/></a></p>
 		           		</div>
 		           		<p><i><fmt:message key="note"/>: <fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;<fmt:message key="bookmarklet.legacyNotice.further1"/></i></p>
 	           		</div>
 					<c:set var="userName" value="${mtl:encodeURI(command.context.loginUser.name)}" />		
 	    			<h2 id="buttons.Bookmarklets" class="expandableSection" style="cursor:pointer"><img src="${resdir}/image/icon_expand.png"/><![CDATA[&nbsp;]]><fmt:message key="buttons.bookmarklet1"/></h2>
-	    			<div style="display:none;margin-left:20px;">		    		
+	    			<div style="display:none;margin-left:20px;">
 			            <!--+ 
-			                |              myBibSonomy 
+			                | myBibSonomy 
 			                +-->	
 			         	<c:if test="${command.context.userLoggedIn}">
 							<p>
@@ -135,7 +135,7 @@
 			      
 			            <!-- 
 			               |              postPublication 
-			               -->        
+			               -->
 						<c:if test="${command.context.userLoggedIn}">
 			                <h3><fmt:message key="buttons.shortcut_bibtex"/></h3>
 			           		<p>

@@ -37,7 +37,6 @@ import org.bibsonomy.model.enums.Order;
  * @author Miranda Grahl
  * @author Christian Kramer
  * @author Christian Schenk
- * @version $Id$
  */
 public abstract class GenericParam {
 	/**

@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.command;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class CvPageViewCommand extends UserResourceViewCommand {
 	private boolean isGroup = false;

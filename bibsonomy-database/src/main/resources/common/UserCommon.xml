@@ -36,7 +36,7 @@
 		<result property="reminderPasswordRequestDate" column="tmp_request_date"  javaType="date" />
 		<result property="ldapId" 			column="ldapUserId"		javaType="string" />
 		<result property="openID" 			column="openID"  		javaType="string" />
-		<result property="gravatarAddress"	column="gravatarAddress" javaType="string" />
+		<result property="useExternalPicture"	column="useExternalPicture" javaType="boolean" />
 	</resultMap>
 	
 	<resultMap id="samlRemoteUserId" class="samlRemoteUserId">
@@ -85,7 +85,7 @@
 		user_password, user_password_salt, api_key, openurl, tmp_password, tmp_request_date,
 		role, ip_address, reg_date, spammer, updated_by, updated_at, to_classify, 
 		user_email, user_homepage, birthday, gender, hobbies, interests, place, profession, institution,
-		gravatarAddress
+		useExternalPicture
 	</sql>
 	
 	<!-- IMPORTANT: changing this requires you to change "insertUserAttributes", too! -->
@@ -104,7 +104,7 @@
 		<isNotNull property="reminderPassword">#reminderPassword#,#reminderPasswordRequestDate#,</isNotNull>
 		<isNull property="reminderPassword">NULL,DEFAULT(tmp_request_date),</isNull>
 		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, 
-		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#, #gravatarAddress#,
+		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#, #useExternalPicture#,
 		#settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#, 
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
@@ -124,7 +124,7 @@
 		interests = #interests#,
 		hobbies = #hobbies#,
 		place = #place#,
-		gravatarAddress = #gravatarAddress#
+		useExternalPicture = #useExternalPicture#
 	</sql>
 	
 	<sql id="updateUserSettingsAttributes">

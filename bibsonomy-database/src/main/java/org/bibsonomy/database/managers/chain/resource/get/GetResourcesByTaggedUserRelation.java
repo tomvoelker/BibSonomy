@@ -21,7 +21,6 @@ import org.bibsonomy.model.enums.Order;
  * friendship (=trust) relation.
  * 
  * @author fmi
- * @version $Id$
  * @param <R> the resource
  * @param <P> the param
  */

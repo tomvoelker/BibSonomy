@@ -9,7 +9,6 @@ import org.bibsonomy.webapp.validation.ReviewValidator;
  * - ajax/reviews
  * 
  * @author dzo
- * @version $Id$
  */
 public class ReviewAjaxController extends DiscussionItemAjaxController<Review> {
 

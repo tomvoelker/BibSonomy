@@ -10,7 +10,6 @@ import org.bibsonomy.model.sync.SyncService;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class AjaxSynchronizationCommand extends AjaxCommand {
 

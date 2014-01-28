@@ -22,7 +22,6 @@ import org.junit.Ignore;
  * executed right before the start of all database tests.
  * 
  * @author Christian Schenk
- * @version $Id$
  */
 @Ignore
 public class TestDatabaseLoader {

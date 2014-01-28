@@ -7,7 +7,6 @@ import org.bibsonomy.services.database.DatabaseSchemaInformation;
  * returns 4 * property.length()
  * 
  * @author dzo
- * @version $Id$
  */
 public class MockDatabaseSchemaInformation implements DatabaseSchemaInformation {
 

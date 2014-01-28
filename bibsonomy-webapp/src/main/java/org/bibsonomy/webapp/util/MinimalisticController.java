@@ -12,7 +12,6 @@ import org.bibsonomy.webapp.command.ContextCommand;
  * @param <T> type of the command object
  * 
  * @author Jens Illig
- * @version $Id$
  */
 public interface MinimalisticController<T extends ContextCommand> {
 	/**

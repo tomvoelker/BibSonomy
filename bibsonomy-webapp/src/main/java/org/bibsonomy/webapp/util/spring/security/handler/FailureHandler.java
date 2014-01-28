@@ -21,7 +21,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 	

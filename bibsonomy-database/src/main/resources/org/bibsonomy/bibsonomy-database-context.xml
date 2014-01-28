@@ -187,6 +187,7 @@
 	<bean id="userDatabaseManager" class="org.bibsonomy.database.managers.UserDatabaseManager" factory-method="getInstance">
 		<property name="chain" ref="userChain" />
 		<property name="validator" ref="databaseValidator" />
+		<property name="fileLogic" ref="fileLogic" />
 	</bean>
 	
 	<bean id="groupDatabaseManager" class="org.bibsonomy.database.managers.GroupDatabaseManager" factory-method="getInstance">

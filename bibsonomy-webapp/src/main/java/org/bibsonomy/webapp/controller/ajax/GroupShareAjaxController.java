@@ -21,7 +21,6 @@ import org.springframework.validation.Errors;
  * groups.
  * 
  * @author clemensbaier
- * @version $Id$
  */
 public class GroupShareAjaxController extends AjaxController implements MinimalisticController<GroupShareAjaxCommand>, ErrorAware {
 	private static final String SHARE_DOCUMENTS = "shareDocuments";

@@ -38,7 +38,6 @@ import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author hagen
- * @version $Id$
  */
 public class JCBScraper extends SimpleGenericURLScraper {
 

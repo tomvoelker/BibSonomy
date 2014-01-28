@@ -23,7 +23,6 @@ import de.unikassel.puma.webapp.command.ajax.OpenAccessCommand;
 
 /**
  * @author clemens
- * @version $Id$
  */
 public class OpenAccessController extends AjaxController implements MinimalisticController<OpenAccessCommand> {
 

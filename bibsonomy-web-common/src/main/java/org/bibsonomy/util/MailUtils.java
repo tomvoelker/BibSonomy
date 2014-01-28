@@ -41,7 +41,6 @@ import org.springframework.context.MessageSource;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class MailUtils {
 

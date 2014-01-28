@@ -24,7 +24,6 @@ import org.springframework.context.MessageSource;
 /**
  * @author philipp
  * @author Bernd Terbrack
- * @version $Id$
  */
 public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  {
 	private static final Log log = LogFactory.getLog(AbstractTag.class);

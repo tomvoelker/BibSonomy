@@ -30,7 +30,6 @@ import org.custommonkey.xmlunit.XMLAssert;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class XMLRendererTest extends AbstractRendererTest {
 	

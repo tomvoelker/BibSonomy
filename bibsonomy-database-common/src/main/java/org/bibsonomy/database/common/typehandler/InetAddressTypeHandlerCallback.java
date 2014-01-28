@@ -22,7 +22,6 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * @author Ken Weiner
  * @author Christian Schenk
  * @author Robert Jaeschke
- * @version $Id$
  */
 public class InetAddressTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	private static final Log log = LogFactory.getLog(InetAddressTypeHandlerCallback.class);

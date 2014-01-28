@@ -35,7 +35,6 @@ import org.springframework.core.convert.converter.ConverterFactory;
  * e.g. if an enum has a field ADDED "added" and "ADDED" are converted to ADDED
  * 
  * @author dzo
- * @version $Id$
  * @param <E> 
  */
 public class StringToEnumConverterFactory<E extends Enum<E>> implements ConverterFactory<String, Enum<E>> {

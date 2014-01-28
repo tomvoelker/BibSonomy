@@ -29,7 +29,6 @@ import org.junit.Test;
 
 /**
  * @author Robert Jäschke
- * @version $Id$
  */
 public class InetAddressStatusTest {
 

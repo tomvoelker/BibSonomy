@@ -20,7 +20,6 @@ import bibtex.parser.ParseException;
 /**
  * @author fba
  * @author dzo
- * @version $Id$
  */
 public class PublicationValidator implements Validator<BibTex> {
 

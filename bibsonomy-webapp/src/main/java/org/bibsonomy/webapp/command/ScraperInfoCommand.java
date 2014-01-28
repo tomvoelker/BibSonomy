@@ -7,7 +7,6 @@ import org.bibsonomy.scraper.Scraper;
 
 /**
  * @author ema
- * @version $Id$
  */
 public class ScraperInfoCommand extends ResourceViewCommand {
 	private Collection<Scraper> scraperList;

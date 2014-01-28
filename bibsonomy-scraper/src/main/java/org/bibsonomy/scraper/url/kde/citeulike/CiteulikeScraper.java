@@ -41,7 +41,6 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for citeulike.org
  * @author tst
- * @version $Id$
  */
 public class CiteulikeScraper extends AbstractUrlScraper {
 

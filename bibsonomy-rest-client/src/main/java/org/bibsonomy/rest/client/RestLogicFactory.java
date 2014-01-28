@@ -36,7 +36,6 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
  * 
- * @version $Id$
  */
 public class RestLogicFactory implements LogicInterfaceFactory {
 

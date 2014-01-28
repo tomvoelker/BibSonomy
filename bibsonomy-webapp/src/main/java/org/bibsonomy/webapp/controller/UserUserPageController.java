@@ -24,7 +24,6 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for user pages /user/USERNAME
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class UserUserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 

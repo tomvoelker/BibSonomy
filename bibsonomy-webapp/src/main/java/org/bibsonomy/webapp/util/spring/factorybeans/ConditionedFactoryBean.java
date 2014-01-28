@@ -9,7 +9,6 @@ import org.springframework.beans.factory.FactoryBean;
  * The abstract methods are injected by spring. 
  * 
  * @author jensi
- * @version $Id$
  * @param <T>  type of the object to be instantiated
  */
 public abstract class ConditionedFactoryBean<T> extends ConditionedPropertyCreationBean<T> implements FactoryBean<T> {

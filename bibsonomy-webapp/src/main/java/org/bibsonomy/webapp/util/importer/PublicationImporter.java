@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
  * Handles publication posting/upload for other controllers, e.g., the PostPublicationController.
  * 
  * @author rja
- * @version $Id$
  */
 public class PublicationImporter {
 	private static final Log log = LogFactory.getLog(PublicationImporter.class);

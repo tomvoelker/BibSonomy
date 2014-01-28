@@ -43,18 +43,18 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
  */
 @RunWith(Parameterized.class)
 public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 	
 	//Layouts that will be tested
 	private static final Set<String> TESTEDLAYOUTS = 
-		Sets.asSet(new String[]{"apa_html", "chicago", "din1505", "din1505year", "harvardhtml", "simplehtml", "simplehtmlyear",
-								"tablerefs", "tablerefsabsbib", "tablerefsabsbibsort", "dblp", "html"});
+		Sets.asSet(new String[]{"apa_html", "chicago", "din1505", "din1505year", "harvardhtml", "harvardhtmlyear",
+								"harvardhtmlyear-linked", "harvardhtmlyear-linked-full",
+								"publist-de","publist-en","publist-year-de","publist-year-en","publist-type-de","publist-type-en",
+								"simplehtml", "simplehtmlyear", "tablerefs", "tablerefsabsbib", "tablerefsabsbibsort", "dblp", "html"});
 	private static final String TESTCASEFOLDERPATH = "/jabref-layout-tests";
-	private static final String LAYOUT_ENTRYTYPE_SPLITSUFFIX = "";
+	private static final String ENTRYTYPE_SPLITSUFFIX = "";
 	
 	public JabrefLayoutRendererTest(File layoutTest, String layoutName) {
 		super(layoutTest, layoutName);
@@ -62,7 +62,7 @@ public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 	
 	@Parameters
 	public static Collection<Object[]> data() {
-		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, LAYOUT_ENTRYTYPE_SPLITSUFFIX);
+		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, ENTRYTYPE_SPLITSUFFIX);
 	}
 	
 	@Override

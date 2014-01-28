@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.util;
 
 /**
  * @author rja
- * @version $Id$
  */
 public interface ResponseAware {
 	

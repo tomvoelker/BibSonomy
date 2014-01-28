@@ -6,7 +6,6 @@ import org.bibsonomy.wiki.tags.UserTag;
 /**
  * @author philipp
  * @author Bernd Terbrack
- * @version $Id$
  */
 public class InterestsTag extends UserTag {
 	

@@ -55,7 +55,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @author Christian Kramer
- * @version $Id$
  */
 public final class RestServlet extends HttpServlet {
 	private static final long serialVersionUID = -1737804091652029470L;

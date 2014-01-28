@@ -17,7 +17,6 @@ import org.springframework.context.MessageSource;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class SyncUtils {
 	/**

@@ -9,7 +9,6 @@ import org.springframework.validation.ValidationUtils;
  * Methods to handle captchas.
  * 
  * @author rja
- * @version $Id$
  */
 public class CaptchaUtil {
 

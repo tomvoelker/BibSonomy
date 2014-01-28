@@ -32,7 +32,6 @@ import tags.Functions;
  * View which uses an {@link LayoutRenderer} to render the output.
  * 
  * @author rja
- * @version $Id$
  * @param <LAYOUT> 
  */
 @SuppressWarnings("deprecation")

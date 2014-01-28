@@ -9,7 +9,6 @@ import org.springframework.beans.factory.FactoryBean;
  *  
  * @see FactoryBean
  * @author Dominik Benz
- * @version $Id$
  */
 public class UserFactoryBean implements FactoryBean<User> {
 	private RequestLogic requestLogic;

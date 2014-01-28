@@ -36,7 +36,6 @@ import org.bibsonomy.model.metadata.PostMetaData;
 /**
  * A post connects a given resource with a user and a certain date.
  * 
- * @version $Id$
  * @param <T>
  *            resource type
  */

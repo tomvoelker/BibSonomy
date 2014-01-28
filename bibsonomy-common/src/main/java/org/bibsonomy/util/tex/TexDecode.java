@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
  * Framework to encode TeX Macros to unicode.
  * 
  * @author Christian Claus, Dominik Benz
- * @version $Id$
  */
 public class TexDecode {
 

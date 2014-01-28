@@ -32,7 +32,6 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
 
 /**
  * @author Haile
- * @version $Id$
  */
 public class BloodJournalScraper extends CitationManagerScraper {
 	

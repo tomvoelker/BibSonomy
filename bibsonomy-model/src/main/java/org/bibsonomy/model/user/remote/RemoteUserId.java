@@ -27,7 +27,6 @@ import java.io.Serializable;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public interface RemoteUserId extends Serializable {
 	/**

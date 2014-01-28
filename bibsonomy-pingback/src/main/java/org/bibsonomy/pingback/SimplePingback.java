@@ -24,7 +24,6 @@ import com.malethan.pingback.PingbackException;
  * TODO: implement Trackback
  * 
  * @author rja
- * @version $Id$
  */
 public class SimplePingback implements Pingback {
 

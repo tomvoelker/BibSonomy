@@ -40,7 +40,6 @@ import org.junit.Ignore;
 
 /**
  * @author dzo
- * @version $Id$
  */
 @Ignore
 public final class TestUtils {

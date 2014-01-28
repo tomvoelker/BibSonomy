@@ -17,7 +17,6 @@ import org.bibsonomy.model.enums.Order;
  * Returns a list of resource entries for the homepage.
  * 
  * @author Miranda Grahl
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

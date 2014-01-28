@@ -16,7 +16,6 @@ import org.springframework.core.convert.ConversionService;
  * {@link BeanPostProcessor}s and {@link MessageSource}s.
  * 
  * @author dzo
- * @version $Id$
  */
 public class ConversionServiceBeanFactoryPostProcessor implements BeanFactoryPostProcessor, Ordered {
 

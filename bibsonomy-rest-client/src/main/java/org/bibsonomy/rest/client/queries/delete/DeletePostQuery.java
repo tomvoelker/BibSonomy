@@ -37,7 +37,6 @@ import org.bibsonomy.util.UrlBuilder;
  * Use this Class to delete a specified post.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public final class DeletePostQuery extends AbstractQuery<String> {
 	private final String userName;

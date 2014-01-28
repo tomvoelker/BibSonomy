@@ -34,7 +34,6 @@ import org.junit.Test;
  * 
  * @author Dominik Benz
  * @author Miranda Grahl
- * @version $Id$
  */
 public class TagChainTest extends AbstractDatabaseManagerTest {
 	protected static Chain<List<Tag>, TagParam> tagChain;

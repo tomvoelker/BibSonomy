@@ -44,7 +44,6 @@ import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * @author Jens Illig
- * @version $Id$
  */
 public final class DepthEqualityTester  {
 

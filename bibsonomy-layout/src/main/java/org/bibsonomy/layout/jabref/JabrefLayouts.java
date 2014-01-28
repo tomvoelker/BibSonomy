@@ -48,8 +48,6 @@ import org.springframework.beans.factory.annotation.Required;
  * Holds and manages the available jabref layouts.
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
  * 
  */
 public class JabrefLayouts {

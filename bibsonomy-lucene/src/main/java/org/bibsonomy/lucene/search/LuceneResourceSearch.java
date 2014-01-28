@@ -54,7 +54,6 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  * lucene search for all supported resources
  * 
  * @author fei
- * @version $Id$
  * 
  * @param <R>
  *            resource type
@@ -257,7 +256,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * query index for documents and create result list of post models
 	 */
 	private ResultList<Post<R>> searchLucene(final QuerySortContainer qf, final int limit, final int offset) {
-		if (!this.isEnabled()) {
+		if (!this.isEnabled() || limit == 0) {
 			return new ResultList<Post<R>>();
 		}
 

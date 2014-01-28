@@ -24,7 +24,6 @@ import com.ibatis.sqlmap.engine.mapping.result.ResultMapping;
 /**
  * 
  * @author dzo
- * @version $Id$
  */
 public class AbstractDatabaseSchemaInformation implements DatabaseSchemaInformation {
     private static final Log log = LogFactory.getLog(AbstractDatabaseSchemaInformation.class);

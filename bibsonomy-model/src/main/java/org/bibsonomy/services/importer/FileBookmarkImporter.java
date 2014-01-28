@@ -35,7 +35,6 @@ import org.bibsonomy.model.User;
  * Allows to import lists of bookmarks from a file. 
  * 
  * @author rja
- * @version $Id$
  */
 public interface FileBookmarkImporter {
 

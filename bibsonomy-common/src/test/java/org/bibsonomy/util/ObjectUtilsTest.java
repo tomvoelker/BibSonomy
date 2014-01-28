@@ -29,7 +29,6 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ObjectUtilsTest {
 	

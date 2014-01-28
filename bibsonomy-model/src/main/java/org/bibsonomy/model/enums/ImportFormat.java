@@ -25,7 +25,6 @@ package org.bibsonomy.model.enums;
 
 /**
  * @author Jens Illig
- * @version $Id$
  * 
  * TODO: merge with RenderingFormat
  */

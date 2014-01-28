@@ -41,7 +41,6 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Lukas
- * @version $Id$
  */
 public class WebOfKnowledgeScraper extends AbstractUrlScraper {
 	

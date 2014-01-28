@@ -14,7 +14,6 @@ import org.bibsonomy.rest.strategy.sync.PutSyncStatusStrategy;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class SynchronizationHandler implements ContextHandler {
 		

@@ -25,7 +25,6 @@ import org.dom4j.io.SAXReader;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public abstract class AbstractDataDownloadingTestCase {
 	

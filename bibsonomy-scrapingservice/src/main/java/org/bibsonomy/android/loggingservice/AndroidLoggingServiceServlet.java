@@ -38,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class AndroidLoggingServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 2749672697194930068L;

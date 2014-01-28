@@ -27,7 +27,6 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class SimpleRemoteUserId implements RemoteUserId {
 	private static final long serialVersionUID = -5200167887496639288L;

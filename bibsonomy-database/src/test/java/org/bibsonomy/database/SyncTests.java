@@ -27,13 +27,13 @@ import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
+import org.bibsonomy.testutil.DummyFileLogic;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class SyncTests extends AbstractDatabaseManagerTest {
 	private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

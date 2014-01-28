@@ -4,7 +4,6 @@ package org.bibsonomy.webapp.command;
  * command for providing the search string
  * 
  * @author Beate Krause
- * @version $Id$
  */
 public class SearchViewCommand extends TagResourceViewCommand {
 	

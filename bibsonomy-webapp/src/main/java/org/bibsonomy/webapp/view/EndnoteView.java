@@ -13,7 +13,6 @@ import org.bibsonomy.webapp.command.PublicationViewCommand;
  * Outputs posts in Endnote format.
  * 
  * @author rja
- * @version $Id$
  */
 public class EndnoteView extends AbstractPublicationView<PublicationViewCommand> {
 

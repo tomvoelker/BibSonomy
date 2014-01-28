@@ -34,7 +34,6 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * Similarity hashes for publications are calculated here.
- * @version $Id$
  */
 public class SimHash {
 	

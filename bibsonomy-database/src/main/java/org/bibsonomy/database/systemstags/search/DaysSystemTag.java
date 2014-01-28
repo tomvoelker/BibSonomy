@@ -5,7 +5,6 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author sdo
- * @version $Id$
  */
 public class DaysSystemTag extends AbstractSearchSystemTagImpl {
 

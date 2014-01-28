@@ -37,7 +37,6 @@ import org.bibsonomy.scraper.generic.BibtexScraper;
 
 /**
  * @author hagen
- * @version $Id$
  */
 public class AAAIScraper extends AbstractUrlScraper {
 

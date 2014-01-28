@@ -9,7 +9,6 @@ import org.bibsonomy.model.GoldStandardBookmark;
  * TODO: implement chain
  * 
  * @author dzo
- * @version $Id$
  */
 public class GoldStandardBookmarkDatabaseManager extends GoldStandardDatabaseManager<Bookmark, GoldStandardBookmark, BookmarkParam> {
 

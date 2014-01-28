@@ -12,7 +12,6 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
  * with the same name (for development usage)
  * 
  * @author dzo
- * @version $Id$
  */
 public class StyleSheetTag extends RequestContextAwareTag {
 	private static final long serialVersionUID = 3240785013748446953L;

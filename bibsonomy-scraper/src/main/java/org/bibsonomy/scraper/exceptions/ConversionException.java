@@ -32,7 +32,6 @@ import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
  * 
  * 
  * @author tst
- * @version $Id$
  */
 public class ConversionException extends ScrapingException {
 

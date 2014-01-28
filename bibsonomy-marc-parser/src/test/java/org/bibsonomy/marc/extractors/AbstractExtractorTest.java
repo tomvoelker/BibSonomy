@@ -19,7 +19,6 @@ import org.marc4j.marc.impl.SubfieldImpl;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public abstract class AbstractExtractorTest {
 	public static class ExtendedMarcWithPicaRecordMock extends ExtendedMarcWithPicaRecord {

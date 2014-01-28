@@ -8,8 +8,8 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
-
-
+	<jsp:directive.attribute name="enableHistory" type="java.lang.Boolean" required="false" />	
+		
 	<!--+
 		| COPY/EDIT
 		+-->
@@ -118,6 +118,62 @@
 		</c:if>
 	</c:if>
 
+	<!--+ 
+		| COMMUNITY POST 
+		| TODO: check if community post exists
+		+-->
+	<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
+	
+	<a href="/bibtex/${post.resource.interHash}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
+		<!-- Keep Me -->
+	</a>
+	<!--+
+		| COPY/HISTORY
+		+-->
+	<c:if test="${not empty enableHistory}">
+		<c:choose>
+			<c:when test="${command.context.userLoggedIn}">
+				<c:choose>
+					<!-- COPY -->
+					<c:when test="${loginUserName ne post.user.name}">
+						<!-- user is not post's owner -->
+						<fmt:message key="bibtex.actions.posthistory.inactive"
+							var="copyTitle" />-->
+					<!-- TODO  only post's owner has acces to post history  -->
+						<fmt:message key="bibtex.actions.posthistory.inactive"
+							var="historyTitle" />
+						<a class="item ihistory" title="${fn:escapeXml(historyTitle)}">
+							<!-- Keep Me -->
+						</a>
+					</c:when>
+
+					<!-- H -->
+					<c:otherwise>
+						<!-- user is post's owner -->
+						<fmt:message key="bibtex.actions.posthistory.title"
+							var="postHistoryTitle" />
+						<!-- 						<a class="item history"
+							href="/postHistory/${post.resource.intraHash}/${post.user.name}"
+							title="${postHistoryTitle}"> -->
+						<a class="item history"
+							href="/history/publication/${post.resource.intraHash}/${post.user.name}"
+							title="${postHistoryTitle}">
+							<!-- Keep Me-->
+						</a>
+
+					</c:otherwise>
+				</c:choose>
+			</c:when>
+			<c:otherwise>
+				<!-- For signed out users we always show the inactive copy button -->
+				<fmt:message key="bibtex.actions.posthistory.inactive"
+					var="historyTitle" />
+				<a class="item ihistory" title="${historyTitle}">
+					<!-- Keep Me -->
+				</a>
+			</c:otherwise>
+		</c:choose>
+	</c:if>
 
 	<!--+
 		| PICK / UNPICK 

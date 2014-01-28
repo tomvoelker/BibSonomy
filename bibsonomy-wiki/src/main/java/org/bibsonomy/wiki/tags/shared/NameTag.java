@@ -12,7 +12,6 @@ import org.bibsonomy.wiki.tags.SharedTag;
  * Usage: <name />
  * 
  * @author Bernd Terbrack
- * @version $Id$
  */
 public class NameTag extends SharedTag {
 	

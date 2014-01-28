@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class ISBNUtils {
 	/*

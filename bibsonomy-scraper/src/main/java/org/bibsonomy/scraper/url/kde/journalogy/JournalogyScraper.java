@@ -40,7 +40,6 @@ import org.bibsonomy.util.WebUtils;
  * http://www.journalogy.org
  * 
  * @author clemens
- * @version $Id$
  */
 public class JournalogyScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "Journalogy (Microsoft Academic Search)";

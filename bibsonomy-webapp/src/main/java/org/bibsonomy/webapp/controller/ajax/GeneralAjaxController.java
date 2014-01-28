@@ -25,7 +25,6 @@ import org.w3c.dom.NodeList;
  * Returns information about the given URL.
  * 
  * @author fba
- * @version $Id$
  */
 public class GeneralAjaxController extends AjaxController implements MinimalisticController<GeneralAjaxCommand> {
 

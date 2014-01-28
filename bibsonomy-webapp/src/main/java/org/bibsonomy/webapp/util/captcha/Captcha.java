@@ -4,7 +4,6 @@ import java.util.Locale;
 
 /**
  * @author rja
- * @version $Id$
  */
 public interface Captcha {
 

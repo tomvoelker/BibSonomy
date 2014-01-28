@@ -6,7 +6,6 @@ import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 /**
  * A {@link NameSpacedNameMapping} implementation that uses the bibsonomy {@link LogicInterface} as its backend.
  * @author jensi
- * @version $Id$
  */
 public class LogicInterfaceUserNameMapping implements NameSpacedNameMapping<SamlRemoteUserId> {
 

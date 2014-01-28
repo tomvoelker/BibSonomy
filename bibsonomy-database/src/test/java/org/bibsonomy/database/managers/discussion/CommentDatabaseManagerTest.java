@@ -21,7 +21,6 @@ import org.junit.Test;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class CommentDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	

@@ -42,7 +42,6 @@ import org.bibsonomy.util.WebUtils;
  * Scraper for repositories which use eprint
  * 
  * @author tst
- * @version $Id$
  */
 public class EprintScraper implements Scraper {
 	/** pattern identifying eprints pages */

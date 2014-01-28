@@ -15,7 +15,6 @@ import bibtex.parser.ParseException;
  * Validates the given model.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public class ServersideModelValidator implements ModelValidator {
 	private static final Log log = LogFactory.getLog(ServersideModelValidator.class);

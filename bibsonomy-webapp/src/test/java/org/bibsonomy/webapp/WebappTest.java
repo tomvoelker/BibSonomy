@@ -30,7 +30,6 @@ import com.thoughtworks.selenium.Selenium;
  * abstract webapp test (starts a tomcat server and inits 
  * 
  * @author dzo
- * @version $Id$
  */
 @RunWith(Parameterized.class)
 public abstract class WebappTest extends AbstractDatabaseManagerTest {

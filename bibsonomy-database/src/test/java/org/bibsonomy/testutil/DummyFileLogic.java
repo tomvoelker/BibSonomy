@@ -11,7 +11,6 @@ import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class DummyFileLogic implements FileLogic {
 
@@ -28,7 +27,7 @@ public class DummyFileLogic implements FileLogic {
 	}
 
 	@Override
-	public File getProfilePictureForUser(String loggedinUser, String username) {
+	public File getProfilePictureForUser(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -91,11 +90,6 @@ public class DummyFileLogic implements FileLogic {
 	public ExtensionChecker getDocumentExtensionChecker() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean hasVisibleProfilePicture(String loggedinUser, String username) {
-		return false;
 	}
 
 }

@@ -10,7 +10,6 @@ import de.unikassel.puma.openaccess.classification.ClassificationXMLParser;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class JELClassification extends ClassificationXMLParser {
 

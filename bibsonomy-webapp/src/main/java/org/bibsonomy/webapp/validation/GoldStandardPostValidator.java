@@ -9,7 +9,6 @@ import org.springframework.validation.Errors;
  * 
  * @param <R> 
  * @author dzo
- * @version $Id$
  */
 public class GoldStandardPostValidator<R extends Resource> extends PostValidator<R> {
 	

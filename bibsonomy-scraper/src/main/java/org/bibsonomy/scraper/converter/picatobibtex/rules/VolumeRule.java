@@ -28,7 +28,6 @@ import org.bibsonomy.scraper.converter.picatobibtex.PicaUtils;
 
 /**
  * @author daill
- * @version $Id$
  */
 public class VolumeRule extends Rules {
 	/**

@@ -38,7 +38,6 @@ import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ServerFileLogic implements FileLogic {
 	
@@ -78,8 +77,8 @@ public class ServerFileLogic implements FileLogic {
 	}
 
 	@Override
-	public File getProfilePictureForUser(String loggedinUser, String username) {
-		return this.profileFileLogic.getProfilePictureForUser(loggedinUser, username);
+	public File getProfilePictureForUser(String username) {
+		return this.profileFileLogic.getProfilePictureForUser(username);
 	}
 	
 	@Override
@@ -140,8 +139,5 @@ public class ServerFileLogic implements FileLogic {
 		return this.tempFileLogic.getTempFile(name);
 	}
 
-	@Override
-	public boolean hasVisibleProfilePicture(String loggedinUser, String username) {
-		return profileFileLogic.hasVisibleProfilePicture(loggedinUser, username);
-	}
+
 }

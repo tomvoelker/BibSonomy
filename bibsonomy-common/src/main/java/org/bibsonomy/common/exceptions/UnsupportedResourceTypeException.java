@@ -25,8 +25,6 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id: UnsupportedResourceTypeException.java,v 1.7 2007-10-30 17:37:35
- *          jillig Exp $
  */
 public class UnsupportedResourceTypeException extends RuntimeException {
 

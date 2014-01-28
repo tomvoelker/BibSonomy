@@ -5,7 +5,6 @@ package org.bibsonomy.webapp.command;
  * Bean for a single tab in a multiple tab context
  * 
  * @author Stefan Stützer
- * @version $Id$
  */
 public class TabCommand {
 	

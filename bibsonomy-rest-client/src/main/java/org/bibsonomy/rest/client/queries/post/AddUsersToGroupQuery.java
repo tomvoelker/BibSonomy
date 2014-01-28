@@ -40,7 +40,6 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
  * Use this Class to add an user to an already existing group.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public final class AddUsersToGroupQuery extends AbstractQuery<String> {
 	private final List<User> users;

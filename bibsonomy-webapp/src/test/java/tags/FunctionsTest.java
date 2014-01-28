@@ -18,7 +18,6 @@ import org.junit.Test;
 
 /**
  * @author dbenz
- * @version $Id$
  */
 public class FunctionsTest {
 

@@ -35,7 +35,6 @@ import org.bibsonomy.model.PersonName;
  * http://www-plan.cs.colorado.edu/henkel/stuff/javabib/
  * 
  * @author henkel
- * @version $Id$
  */
 public class PersonNameParser {
 

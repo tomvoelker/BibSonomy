@@ -9,7 +9,6 @@ import org.bibsonomy.webapp.command.actions.EditPostCommand;
  * Command for recommendation ajax requests.
  * 
  * @author fei
- * @version $Id$
  * 
  * @param <RESOURCE> the type of resource this command handles 
  */

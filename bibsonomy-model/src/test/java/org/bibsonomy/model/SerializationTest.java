@@ -37,7 +37,6 @@ import org.junit.Test;
  * TODO: more tests
  * 
  * @author dzo
- * @version $Id$
  */
 public class SerializationTest {
 	

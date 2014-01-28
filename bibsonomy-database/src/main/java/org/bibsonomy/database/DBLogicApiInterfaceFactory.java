@@ -7,7 +7,6 @@ import org.bibsonomy.model.User;
  * This class produces DBLogic instances with API authentication
  * 
  * @author Jens Illig
- * @version $Id$
  */
 public class DBLogicApiInterfaceFactory extends DBLogicUserInterfaceFactory {
 

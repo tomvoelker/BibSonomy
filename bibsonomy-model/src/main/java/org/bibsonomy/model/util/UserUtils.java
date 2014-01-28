@@ -42,7 +42,6 @@ import org.bibsonomy.util.StringUtils;
 /**
  * @author Dominik Benz
  * @author Miranda Grahl
- * @version $Id$
  */
 public class UserUtils {
 	

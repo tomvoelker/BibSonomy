@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class PingbackService {
 

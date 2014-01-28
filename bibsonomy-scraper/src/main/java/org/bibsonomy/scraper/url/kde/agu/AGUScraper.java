@@ -46,7 +46,6 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for publications from http://www.agu.org/pubs/ using the RIS export
  * @author tst
- * @version $Id$
  */
 public class AGUScraper extends AbstractUrlScraper {
 	

@@ -30,7 +30,6 @@ import org.bibsonomy.util.StringUtils;
 /**
  * This is a bookmark, which is derived from {@link Resource}.
  * 
- * @version $Id$
  */
 public class Bookmark extends Resource {
 	private static final long serialVersionUID = 8540672660698453421L;

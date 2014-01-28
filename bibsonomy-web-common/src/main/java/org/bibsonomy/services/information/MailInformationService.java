@@ -43,7 +43,6 @@ import org.springframework.context.MessageSource;
  * A generic class for mail information using antlr's StringTemplate system
  * 
  * @author dzo
- * @version $Id$
  */
 public class MailInformationService implements InformationService {
 	private static final Log log = LogFactory.getLog(MailInformationService.class);

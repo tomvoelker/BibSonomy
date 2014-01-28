@@ -13,7 +13,6 @@ import org.bibsonomy.model.Resource;
  * This plugin allows the saving of specific data.
  * 
  * @author clemensbaier
- * @version $Id$
  */
 public class MetaDataPlugin extends AbstractDatabasePlugin {
 

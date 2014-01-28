@@ -4,7 +4,6 @@ import org.springframework.security.web.authentication.RememberMeServices;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public interface CookieBasedRememberMeServices extends RememberMeServices {
 	

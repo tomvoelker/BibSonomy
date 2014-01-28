@@ -29,7 +29,6 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
  * @author Dominik Benz
  * @author bkr
  * @author dzo
- * @version $Id$
  */
 @Deprecated
 public final class JNDIBinder {

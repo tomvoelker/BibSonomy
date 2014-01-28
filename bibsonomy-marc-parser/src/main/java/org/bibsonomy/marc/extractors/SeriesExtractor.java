@@ -32,7 +32,6 @@ import org.bibsonomy.model.BibTex;
 
 /**
  * @author Lukas
- * @version $Id$
  */
 public class SeriesExtractor implements AttributeExtractor {
 

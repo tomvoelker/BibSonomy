@@ -42,7 +42,6 @@ import org.junit.Test;
  * @author Miranda Grahl
  * @author Christian Schenk
  * @author Anton Wilhelm
- * @version $Id$
  */
 public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
@@ -178,7 +177,8 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final User user = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
 		newUser.setActivationCode(null);
-		CommonModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "institution", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
+		
+		CommonModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "institution", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt", "profilePicture" });
 	}
 
 	/**
@@ -272,18 +272,19 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void updateApiKeyForUser() {
-		final String testuser = "testuser1";
+		final String testuser = "testuser3";
+		final User user = new User(testuser);
 		final String apiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(apiKey);
 		assertEquals(32, apiKey.length());
-		userDb.updateApiKeyForUser(testuser, this.dbSession);
+		userDb.updateApiKeyForUser(user, this.dbSession);
 		final String updatedApiKey = userDb.getApiKeyForUser(testuser, this.dbSession);
 		assertNotNull(updatedApiKey);
 		assertEquals(32, updatedApiKey.length());
 		assertThat(apiKey, not(equalTo(updatedApiKey)));
 
 		try {
-			userDb.updateApiKeyForUser(ParamUtils.NOUSER_NAME, this.dbSession);
+			userDb.updateApiKeyForUser(new User(ParamUtils.NOUSER_NAME), this.dbSession);
 			fail("expected exception");
 		} catch (final Exception ignore) {
 			// ok

@@ -1,0 +1,10 @@
+target
+bin
+work
+.classpath
+.project
+.settings
+src/main/webapp/WEB-INF/lib
+src/main/webapp/WEB-INF/classes
+src/main/webapp/META-INF
+bibsonomy-lucene/src/test/resources/lucene_*

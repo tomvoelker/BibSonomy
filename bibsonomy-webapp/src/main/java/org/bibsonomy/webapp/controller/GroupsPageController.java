@@ -13,7 +13,6 @@ import org.bibsonomy.webapp.view.Views;
  * - groups
  * 
  * @author Folke Eisterlehner
- * @version $Id$
  */
 public class GroupsPageController extends SingleResourceListController implements MinimalisticController<GroupsListCommand> {
 

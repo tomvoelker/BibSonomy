@@ -37,7 +37,6 @@ import org.springframework.security.web.savedrequest.RequestCache;
  * - it auto logins the user by redirecting the user to his open id provider
  * 
  * @author dzo
- * @version $Id$
  */
 public class OpenIDRememberMeServices extends AbstractRememberMeServices {
 	private static final Log log = LogFactory.getLog(OpenIDRememberMeServices.class);

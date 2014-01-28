@@ -31,7 +31,6 @@ import org.bibsonomy.model.util.UserUtils;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @version $Id$
  */
 public class LogicInterfaceHelper {	
 	private static final Log logger = LogFactory.getLog(LogicInterfaceHelper.class);

@@ -27,7 +27,6 @@ package org.bibsonomy.common.exceptions;
  * Exception thrown if an unsupported system tag is requested
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class UnsupportedSystemTagException extends RuntimeException {
 

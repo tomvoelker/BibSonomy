@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.command.actions;
 
 /**
  * @author ice
- * @version $Id$
  */
 public interface DownloadCommand {
 

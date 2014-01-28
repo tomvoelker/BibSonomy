@@ -14,7 +14,6 @@ import de.unikassel.puma.openaccess.sherparomeo.model.Romeoapi;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class SherpaRomeoImplTest {
 

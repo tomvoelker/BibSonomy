@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class ISO8601DateTimeSerializer extends StdSerializer<XMLGregorianCalendar> {
 

@@ -25,7 +25,6 @@ import org.springframework.validation.MapBindingResult;
 
 /**
  * @author jensi
- * @version $Id$
  */
 public class PublicationRenderingControllerTest {
 

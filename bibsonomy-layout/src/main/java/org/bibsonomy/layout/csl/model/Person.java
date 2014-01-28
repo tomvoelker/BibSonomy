@@ -29,7 +29,6 @@ package org.bibsonomy.layout.csl.model;
  * http://gsl-nagoya-u.net/http/pub/citeproc-doc.html#names
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
  */
 public class Person {
    

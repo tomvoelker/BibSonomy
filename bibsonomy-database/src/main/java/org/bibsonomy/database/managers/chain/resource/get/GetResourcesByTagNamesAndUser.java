@@ -19,7 +19,6 @@ import org.bibsonomy.model.enums.Order;
  * 
  * @author Miranda Grahl
  * @author dzo
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

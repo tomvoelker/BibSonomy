@@ -21,7 +21,6 @@ import org.bibsonomy.webapp.view.Views;
  * - /search/SEARCH
  * 
  * @author Beate Krause
- * @version $Id$
  */
 public class SearchPageController extends SingleResourceListController implements MinimalisticController<SearchViewCommand> {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
@@ -38,13 +37,12 @@ public class SearchPageController extends SingleResourceListController implement
 		final String format = command.getFormat();
 		
 		this.startTiming(format);
-		
+		String search = command.getRequestedSearch();
 		// no search given -> error 
-		if (!present(command.getRequestedSearch())){
+		if (!present(search)){
 			throw new MalformedURLSchemeException("error.search_page_without_search");
 		}
 		
-		String search = command.getRequestedSearch();
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
 		

@@ -38,7 +38,6 @@ import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
  * Simply add the test id to TEST_ID and run main.
  * 
  * @author tst
- * @version $Id$
  */
 public class ReplaceBibtexFile {
 	

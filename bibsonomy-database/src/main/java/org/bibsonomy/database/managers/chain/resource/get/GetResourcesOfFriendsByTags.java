@@ -23,7 +23,6 @@ import org.bibsonomy.model.enums.Order;
  * 
  * @author Miranda Grahl
  * @author Jens Illig
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

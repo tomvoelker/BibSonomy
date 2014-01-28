@@ -8,7 +8,6 @@ import org.bibsonomy.model.Tag;
  * Bean for tag relations
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class ConceptsCommand extends ListCommand<Tag> {
 

@@ -27,7 +27,6 @@ package org.bibsonomy.common.enums;
  * Privacy levels for the profile of an user
  * 
  * @author dzo
- * @version $Id$
  */
 public enum ProfilePrivlevel {
 	/**

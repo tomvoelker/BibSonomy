@@ -29,7 +29,6 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
  * Adds scores and confidence to {@link Tag}.
  * 
  * @author rja
- * @version $Id$
  */
 public class RecommendedTag extends Tag {
 	private static final long serialVersionUID = -1872430526599241544L;

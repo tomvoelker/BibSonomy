@@ -11,7 +11,6 @@ import com.ibatis.sqlmap.engine.type.TypeHandler;
  * {@link TypeHandler} for {@link ConflictResolutionStrategy}
  * 
  * @author wla
- * @version $Id$
  */
 public class ConflictResolutionStrategyTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	

@@ -56,7 +56,6 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for openrepository pages
  * @author tst
- * @version $Id$
  */
 public class OpenrepositoryScraper extends AbstractUrlScraper {
 

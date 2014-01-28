@@ -4,7 +4,6 @@ import com.malethan.pingback.Link;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class TrackbackLink extends Link {
 

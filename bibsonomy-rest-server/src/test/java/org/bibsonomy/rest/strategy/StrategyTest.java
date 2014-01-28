@@ -13,7 +13,6 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.Test;
 
 /**
- * @version $Id$
  */
 public class StrategyTest {
 

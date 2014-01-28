@@ -22,7 +22,6 @@ import com.malethan.pingback.LinkLoader;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class HttpClientLinkLoader implements LinkLoader {
 

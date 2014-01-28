@@ -7,7 +7,6 @@ import org.bibsonomy.model.DiscussionItem;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class DiscussionPlugin extends AbstractDatabasePlugin {
 	

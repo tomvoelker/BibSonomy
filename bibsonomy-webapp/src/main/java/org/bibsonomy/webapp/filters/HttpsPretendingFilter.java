@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * Wraps the request and overrides getScheme to always return https if enabled.
  * 
  * @author Jens Illig
- * @version $Id$
  */
 // TODO: still needed?
 public class HttpsPretendingFilter implements Filter {

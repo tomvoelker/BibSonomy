@@ -30,7 +30,6 @@ import org.bibsonomy.model.Resource;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class SynchronizationData {
 

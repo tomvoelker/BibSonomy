@@ -30,7 +30,6 @@ package org.bibsonomy.util;
  * @author rja
  * @author dzo
  * 
- * @version $Id$
  */
 public final class JSONUtils {
 

@@ -35,7 +35,6 @@ import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author hagen
- * @version $Id$
  */
 public class OpenUniversityScraper extends SimpleGenericURLScraper {
 

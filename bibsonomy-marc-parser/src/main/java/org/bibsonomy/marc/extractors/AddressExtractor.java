@@ -32,7 +32,6 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
- * @version $Id$
  */
 public class AddressExtractor implements AttributeExtractor {
 

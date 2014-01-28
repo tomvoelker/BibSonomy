@@ -25,7 +25,6 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author wla
- * @version $Id$
  */
 public class SynchronizationRunningException extends RuntimeException {
 	

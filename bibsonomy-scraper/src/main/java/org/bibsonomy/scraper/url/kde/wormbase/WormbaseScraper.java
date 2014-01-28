@@ -44,7 +44,6 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for http://www.wormbase.org
  * @author tst
- * @version $Id$
  */
 public class WormbaseScraper extends AbstractUrlScraper {
 

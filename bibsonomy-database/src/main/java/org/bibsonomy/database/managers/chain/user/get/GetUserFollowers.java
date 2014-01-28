@@ -15,7 +15,6 @@ import org.bibsonomy.model.User;
  * Get the list of users which follow the given user.
  * 
  * @author Christian Kramer
- * @version $Id$
  */
 @Deprecated
 public class GetUserFollowers extends UserChainElement {

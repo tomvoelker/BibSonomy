@@ -18,7 +18,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
  * @author cvo
- * @version $Id$
  */
 public class UpdateUserSettingsController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(UpdateUserSettingsController.class);
@@ -91,10 +90,6 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 	
 	private void updateApiKey(final User user) {
 		this.logic.updateUser(user, UserUpdateOperation.UPDATE_API);
-		/* 
-		 * FIXME: the api key is not updated in the user object => view shows old
-		 * api key! 
-		 */
 		log.debug("api key of " + user.getName() + " has been changed successfully");
 	}
 	

@@ -16,7 +16,6 @@ import org.junit.Ignore;
 
 /**
  * @author rja
- * @version $Id$
  */
 @Ignore
 public class TestServlet extends HttpServlet {

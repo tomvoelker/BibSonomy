@@ -33,7 +33,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL test #96 #152 for RSOCScraper
  * @author wbi
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class RSOCScraperTest {

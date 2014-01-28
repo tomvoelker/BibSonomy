@@ -10,7 +10,6 @@ import org.bibsonomy.model.Tag;
  * of tags
  * 
  * @author Stefan Stuetzer
- * @version $Id$
  */
 public class RelatedTagCommand extends BaseCommand {
 

@@ -9,25 +9,18 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.util.BibTexReader;
 import org.bibsonomy.model.util.UserUtils;
 
 /**
  * This class produces DBLogic instances with user authentication
  * 
  * @author Jens Illig
- * @version $Id$
  */
-public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
+public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
 	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 
-	protected DBSessionFactory dbSessionFactory;
-	
-	private BibTexReader bibtexReader = null;
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -39,12 +32,12 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.dbSessionFactory, this.bibtexReader);
+				return new DBLogic(loggedInUser, this.getDbSessionFactory(), this.bibtexReader);
 			}
 			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), this.dbSessionFactory, this.bibtexReader);
+		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader);
 	}
 	
 	/**
@@ -78,34 +71,5 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 */
 	protected User getLoggedInUserAccess(final String loginName, final String password, final DBSession session) {
 		return this.userDBManager.validateUserAccessByPassword(loginName, password, session);
-	}
-	
-	/**
-	 * @param dbSessionFactory
-	 *            the {@link DBSessionFactory} to use
-	 */
-	public void setDbSessionFactory(final DBSessionFactory dbSessionFactory) {
-		this.dbSessionFactory = dbSessionFactory;
-	}
-
-	/**
-	 * Returns a new database session.
-	 */
-	protected DBSession openSession() {
-		return this.dbSessionFactory.getDatabaseSession();
-	}
-	
-	/**
-	 * @return the bibtexReader
-	 */
-	public BibTexReader getBibtexReader() {
-		return this.bibtexReader;
-	}
-
-	/**
-	 * @param bibtexReader the bibtexReader to set
-	 */
-	public void setBibtexReader(BibTexReader bibtexReader) {
-		this.bibtexReader = bibtexReader;
 	}
 }

@@ -15,7 +15,6 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
  * That way we could later on implement/add caching of web pages.
  * 
  * @author rja
- * @version $Id$
  */
 public class HttpClientHolder {
 

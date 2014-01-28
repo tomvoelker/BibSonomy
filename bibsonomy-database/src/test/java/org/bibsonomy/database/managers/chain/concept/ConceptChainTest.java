@@ -20,7 +20,6 @@ import org.junit.Test;
 
 /**
  * @author Christian Schenk
- * @version $Id$
  */
 public class ConceptChainTest extends AbstractDatabaseManagerTest {
 	protected static Chain<List<Tag>, TagRelationParam> conceptChain;

@@ -29,7 +29,6 @@ import java.util.Date;
  * Helper functions for dates
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class DateUtils {
 	/** 

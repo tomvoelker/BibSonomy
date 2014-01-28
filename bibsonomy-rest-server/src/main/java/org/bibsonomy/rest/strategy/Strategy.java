@@ -19,7 +19,6 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public abstract class Strategy {
 	private final Context context;

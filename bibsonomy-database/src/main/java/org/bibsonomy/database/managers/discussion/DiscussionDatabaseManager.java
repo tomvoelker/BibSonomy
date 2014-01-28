@@ -18,7 +18,6 @@ import org.bibsonomy.model.util.UserUtils;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class DiscussionDatabaseManager extends AbstractDatabaseManager {
 	private static final DiscussionDatabaseManager INSTANCE = new DiscussionDatabaseManager();

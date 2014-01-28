@@ -18,7 +18,6 @@ import org.bibsonomy.model.User;
  * @param <P> extends GenericParam
  * 
  * @author Christian Schenk
- * @version $Id$
  */
 public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	/**

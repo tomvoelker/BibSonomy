@@ -25,7 +25,6 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
  * Only filters for the {@link AuthMethod}s specified by {@link #config} are considered (such that config can come from a installation specific properties file)
  * 
  * @author dzo
- * @version $Id$
  */
 public class FilterChainProxyFactoryBean implements FactoryBean<FilterChainProxy>, ApplicationContextAware {
 	

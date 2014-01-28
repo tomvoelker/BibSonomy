@@ -28,7 +28,6 @@ import org.bibsonomy.services.filesystem.FileLogic;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  */
 public final class Context {
 

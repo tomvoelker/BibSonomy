@@ -25,7 +25,6 @@ package org.bibsonomy.common.exceptions;
 
 /**
  * @author Dominik Benz <benz@cs.uni-kassel.de>
- * @version $Id$
  */
 public class QueryTimeoutException extends RuntimeException {
 

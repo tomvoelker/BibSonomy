@@ -23,7 +23,6 @@ import org.bibsonomy.model.statistics.StatisticsValues;
 /**
  * @author Dominik Benz
  * @author Stefan Stützer
- * @version $Id$
  */
 public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 

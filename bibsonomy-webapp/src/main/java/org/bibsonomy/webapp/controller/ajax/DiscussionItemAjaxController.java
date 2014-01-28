@@ -37,7 +37,6 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * @author dzo
- * @version $Id$
  * @param <D> 
  */
 public abstract class DiscussionItemAjaxController<D extends DiscussionItem> extends AjaxController implements ValidationAwareController<DiscussionItemAjaxCommand<D>>, ErrorAware {

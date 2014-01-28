@@ -9,7 +9,6 @@ import org.bibsonomy.model.Tag;
  * convert date objects to a standardized string representation
  * 
  * @author fei
- * @version $Id$
  */
 public class LuceneTagsFormatter extends LuceneCollectionFormatter<Tag> {
 

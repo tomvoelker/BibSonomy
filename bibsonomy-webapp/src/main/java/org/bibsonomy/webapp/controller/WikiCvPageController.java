@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Required;
  * - /cv/group/<GROUPNAME>
  * 
  * @author Bernd Terbrack
- * @version $Id$
  */
 public class WikiCvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
 	private static final Log log = LogFactory.getLog(WikiCvPageController.class);

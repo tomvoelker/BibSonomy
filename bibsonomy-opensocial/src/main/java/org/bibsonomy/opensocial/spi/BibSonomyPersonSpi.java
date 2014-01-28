@@ -42,6 +42,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 
 /**
+ * TODO: remove BibSonomy from class name
  * Mock implementation of {@link PersonService}.
  *
  */
@@ -63,9 +64,10 @@ public class BibSonomyPersonSpi implements PersonService {
 	 * @param token The gadget token
 	 * @return a list of people.
 	 */
-	public Future<Person> getPerson(UserId userId, Set<String> fields, SecurityToken token) throws ProtocolException {
-		LogicInterface dbLogic = this.dbLogicFactory.getLogicAccess(token);
-		Person person = makePerson(getBibSonomyUser(userId, dbLogic, token));
+	@Override
+	public Future<Person> getPerson(final UserId userId, final Set<String> fields, final SecurityToken token) throws ProtocolException {
+		final LogicInterface dbLogic = this.dbLogicFactory.getLogicAccess(token);
+		final Person person = makePerson(getBibSonomyUser(userId, dbLogic, token));
 		return ImmediateFuture.newInstance(person);
 	}
 
@@ -82,18 +84,19 @@ public class BibSonomyPersonSpi implements PersonService {
 	 * @param token The gadget token @return a list of people.
 	 * @return Future that returns a RestfulCollection of Person
 	 */
-	public Future<RestfulCollection<Person>> getPeople(Set<UserId> userIds, GroupId groupId, CollectionOptions collectionOptions, Set<String> fields, SecurityToken token) throws ProtocolException {
-		LogicInterface dbLogic = this.dbLogicFactory.getLogicAccess(token);
+	@Override
+	public Future<RestfulCollection<Person>> getPeople(final Set<UserId> userIds, final GroupId groupId, final CollectionOptions collectionOptions, final Set<String> fields, final SecurityToken token) throws ProtocolException {
+		final LogicInterface dbLogic = this.dbLogicFactory.getLogicAccess(token);
 		try {
-			List<Person> people = new ArrayList<Person>();
+			final List<Person> people = new ArrayList<Person>();
 			switch (groupId.getType()) {
 			case self:
 				//
 				// get user profiles for given list of users
 				//
-				for (UserId userId: userIds) {
-					User dbUser = getBibSonomyUser(userId, dbLogic, token);
-					Person person = makePerson(dbUser);
+				for (final UserId userId: userIds) {
+					final User dbUser = getBibSonomyUser(userId, dbLogic, token);
+					final Person person = makePerson(dbUser);
 					people.add(person);
 				}
 				break;
@@ -101,9 +104,9 @@ public class BibSonomyPersonSpi implements PersonService {
 				//
 				// get all friends for given list of users
 				//
-				List<User> friends = getBibSonomyFriends(userIds, groupId, dbLogic, token);
-				for (User user: friends) {
-					Person person = makePerson(user);
+				final List<User> friends = getBibSonomyFriends(userIds, groupId, dbLogic, token);
+				for (final User user: friends) {
+					final Person person = makePerson(user);
 					people.add(person);
 				}
 				break;
@@ -123,7 +126,7 @@ public class BibSonomyPersonSpi implements PersonService {
 				throw new ProtocolException(HttpServletResponse.SC_BAD_REQUEST, "Group ID not recognized");
 			}
 			return ImmediateFuture.newInstance(new RestfulCollection<Person>(people, 0, people.size()));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new ProtocolException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception occurred", e);
 		}
 	}
@@ -139,10 +142,10 @@ public class BibSonomyPersonSpi implements PersonService {
 	 * @param token
 	 * @return
 	 */
-	private User getBibSonomyUser(UserId userId, LogicInterface dbLogic, SecurityToken token) {
-		String userName = getUserName(userId, token);
+	private User getBibSonomyUser(final UserId userId, final LogicInterface dbLogic, final SecurityToken token) {
+		final String userName = getUserName(userId, token);
 		
-		User dbUser = dbLogic.getUserDetails(userName);
+		final User dbUser = dbLogic.getUserDetails(userName);
 
 		return dbUser;
 	}
@@ -158,20 +161,20 @@ public class BibSonomyPersonSpi implements PersonService {
 	 * @param token
 	 * @return
 	 */
-	private List<User> getBibSonomyFriends(Set<UserId> userIds, GroupId groupId, LogicInterface dbLogic, SecurityToken token) {
+	private List<User> getBibSonomyFriends(final Set<UserId> userIds, final GroupId groupId, final LogicInterface dbLogic, final SecurityToken token) {
 		
-		List<User> friends = new LinkedList<User>(); 
-		for( UserId user : userIds ) {
-			String userName = getUserName(user, token);
-			List<User> dbFriends = dbLogic.getUserRelationship(userName, UserRelation.OF_FRIEND, null);
+		final List<User> friends = new LinkedList<User>(); 
+		for( final UserId user : userIds ) {
+			final String userName = getUserName(user, token);
+			final List<User> dbFriends = dbLogic.getUserRelationship(userName, UserRelation.OF_FRIEND, null);
 			friends.addAll(dbFriends);
 		}
 
 		// finally get details for each friend
 		
-		List<User> retVal = new LinkedList<User>(); 
-		for( User user : friends ) {
-			User dbUser = dbLogic.getUserDetails(user.getName());
+		final List<User> retVal = new LinkedList<User>(); 
+		for( final User user : friends ) {
+			final User dbUser = dbLogic.getUserDetails(user.getName());
 			retVal.add(dbUser);
 		}
 		
@@ -184,8 +187,8 @@ public class BibSonomyPersonSpi implements PersonService {
 	 * @param dbUser
 	 * @return
 	 */
-	private Person makePerson(User dbUser) {
-		Person person = new PersonImpl();
+	private Person makePerson(final User dbUser) {
+		final Person person = new PersonImpl();
 		person.setId(dbUser.getName());
 		person.setThumbnailUrl("http://www.bibsonomy.org/picture/user/"+dbUser.getName());
 		if( dbUser.getRealname()!=null) {
@@ -203,7 +206,7 @@ public class BibSonomyPersonSpi implements PersonService {
 	 * @param token
 	 * @return
 	 */
-	private String getUserName(UserId userId, SecurityToken token) {
+	private String getUserName(final UserId userId, final SecurityToken token) {
 		String userName;
 		
 		switch (userId.getType()) {
@@ -230,7 +233,7 @@ public class BibSonomyPersonSpi implements PersonService {
 	//------------------------------------------------------------------------
 	// getter/setter
 	//------------------------------------------------------------------------
-	public void setDbLogicFactory(ShindigLogicInterfaceFactory dbLogicFactory) {
+	public void setDbLogicFactory(final ShindigLogicInterfaceFactory dbLogicFactory) {
 		this.dbLogicFactory = dbLogicFactory;
 	}
 

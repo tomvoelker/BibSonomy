@@ -8,7 +8,6 @@ import org.bibsonomy.common.exceptions.InternServerException;
 
 /**
  * @author Dominik Benz
- * @version $Id$
  */
 public abstract class AbstractUpdateStrategy extends Strategy {
 	protected final Reader doc;

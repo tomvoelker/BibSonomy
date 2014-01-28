@@ -4,7 +4,6 @@ import org.bibsonomy.model.User;
 
 /** 
  * @author dzo
- * @version $Id$
  */
 public class UserInfoCommand extends BaseCommand {
 	

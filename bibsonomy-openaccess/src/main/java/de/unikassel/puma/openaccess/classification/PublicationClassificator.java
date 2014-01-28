@@ -24,7 +24,6 @@ import de.unikassel.puma.openaccess.classification.chain.parser.JELClassificatio
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class PublicationClassificator {
 	

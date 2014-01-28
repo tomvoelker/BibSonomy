@@ -61,7 +61,6 @@ import org.bibsonomy.services.URLGenerator;
  * Converts between BibSonomy's and JabRef's BibTeX model.
  * 
  * @author Waldemar Biller <wbi@cs.uni-kassel.de>
- * @version $Id$
  *  
  */
 public class JabRefModelConverter {

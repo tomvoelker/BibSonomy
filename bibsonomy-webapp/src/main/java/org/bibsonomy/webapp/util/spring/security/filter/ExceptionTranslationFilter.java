@@ -33,7 +33,6 @@ import org.springframework.web.filter.GenericFilterBean;
  * @see LoginUrlAuthenticationEntryPoint
  * 
  * @author dzo
- * @version $Id$
  */
 @Deprecated
 public class ExceptionTranslationFilter extends GenericFilterBean {

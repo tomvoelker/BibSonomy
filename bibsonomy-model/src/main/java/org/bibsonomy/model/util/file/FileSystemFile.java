@@ -32,7 +32,6 @@ import java.nio.channels.FileChannel;
 
 /**
  * @author dzo
- * @version $Id$
  */
 public class FileSystemFile implements UploadedFile {
 	
@@ -71,6 +70,16 @@ public class FileSystemFile implements UploadedFile {
 		dest.transferFrom(src, 0, src.size());
 		fileInputStream.close();
 		fileOutputStream.close();
+	}
+
+	@Override
+	public FilePurpose getPurpose() {
+		return FilePurpose.UNSPECIFIED;
+	}
+
+	@Override
+	public String getAbsolutePath() {
+		return file.getAbsolutePath();
 	}
 
 }

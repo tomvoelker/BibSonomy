@@ -12,7 +12,6 @@ import org.bibsonomy.model.User;
  * Get group members
  * 
  * @author cbaier
- * @version $Id:
  */
 public class GetPendingUsers extends UserChainElement {
 

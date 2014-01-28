@@ -18,7 +18,6 @@ import org.bibsonomy.model.Tag;
  * Helper class to encapsulate methods to create and work with systemTags
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
  */
 public class SystemTagsUtil {
 	/**

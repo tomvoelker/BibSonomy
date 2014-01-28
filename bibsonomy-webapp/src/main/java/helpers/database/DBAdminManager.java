@@ -12,7 +12,6 @@ import beans.AdminBean;
  * Provides methods only available for admins (like handling spammers, groups, api keys).
  * 
  * @author rja
- * @version $Id$
  */
 @Deprecated
 public class DBAdminManager extends DBManager {

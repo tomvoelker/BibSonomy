@@ -59,7 +59,6 @@ import gnu.trove.TIntArrayList;
  * Created: May 22, 2004
  * 
  * @author <A HREF="mailto:casutton@cs.umass.edu>casutton@cs.umass.edu</A>
- * @version $Id$
  */
 
 

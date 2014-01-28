@@ -7,7 +7,6 @@ import java.util.Date;
  * convert date object's milliseconds to a long value (as string)
  * 
  * @author fei
- * @version $Id$
  */
 public class LuceneDateMSFormatter extends AbstractTypeHandler<Date> {
 

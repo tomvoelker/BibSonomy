@@ -36,7 +36,6 @@ import org.bibsonomy.model.factories.ResourceFactory;
  * Static methods to handle Resources.
  * 
  * @author rja
- * @version $Id$
  */
 public class ResourceUtils {
 	

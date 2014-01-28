@@ -15,7 +15,6 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for popular tags page /tags
  * 
  * @author Stefan Stützer
- * @version $Id$
  */
 public class PopularTagsPageController implements MinimalisticController<TagCloudCommand> {
 	private static final Log log = LogFactory.getLog(PopularTagsPageController.class);

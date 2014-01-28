@@ -27,7 +27,6 @@ import java.util.Date;
 
 /**
  * @author clemensbaier
- * @version $Id$
  */
 public class PostMetaData {
 

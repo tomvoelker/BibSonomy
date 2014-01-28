@@ -24,7 +24,6 @@ import org.springframework.validation.Errors;
  * This controller handles the registration of users via SAML (Shibboleth)
  * 
  * @author jensi
- * @version $Id$
  */
 public class UserSamlRegistrationController extends AbstractUserIDRegistrationController {
 	

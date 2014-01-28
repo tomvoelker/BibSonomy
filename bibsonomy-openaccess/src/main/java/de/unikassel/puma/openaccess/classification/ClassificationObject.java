@@ -5,7 +5,6 @@ import java.util.Map;
 
 /**
  * @author philipp
- * @version $Id$
  */
 public class ClassificationObject {
 

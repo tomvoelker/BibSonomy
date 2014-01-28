@@ -33,7 +33,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Scraper URL tests for BibSonomyScraper
  * @author tst
- * @version $Id$
  */
 @Category(RemoteTest.class)
 public class BibSonomyScraperTest {

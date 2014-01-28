@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.util.captcha;
 
 /**
  * @author rja
- * @version $Id$
  */
 public interface CaptchaResponse {
 

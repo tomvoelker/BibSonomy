@@ -25,7 +25,6 @@ import org.springframework.validation.Validator;
 
 /**
  * @author rja
- * @version $Id$
  */
 public class PublicationValidatorTest {
 

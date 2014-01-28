@@ -32,7 +32,6 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for user pages /user/USERNAME
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class UserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);

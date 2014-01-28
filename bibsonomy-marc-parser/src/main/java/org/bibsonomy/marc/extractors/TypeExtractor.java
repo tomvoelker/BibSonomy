@@ -38,7 +38,6 @@ import org.marc4j.marc.Leader;
 
 /**
  * @author mve
- * @version $Id$
  */
 
 public class TypeExtractor implements AttributeExtractor {

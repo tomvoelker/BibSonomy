@@ -45,7 +45,6 @@ import org.w3c.dom.NodeList;
  * Scraper for INSPIRE. The upgrade of SPIRES.
  * 
  * @author clemens
- * @version $Id$
  */
 public class InspireScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "INSPIRE";

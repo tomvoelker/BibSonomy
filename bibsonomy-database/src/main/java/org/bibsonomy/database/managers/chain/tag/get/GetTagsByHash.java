@@ -17,7 +17,6 @@ import org.bibsonomy.model.Tag;
  * Retrieve tags by Hash
  * 
  * @author Dominik Benz
- * @version $Id$
  */
 public class GetTagsByHash extends TagChainElement {
 

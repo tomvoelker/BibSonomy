@@ -19,7 +19,6 @@ import org.bibsonomy.model.Resource;
  * Returns a list of resources for a given user.
  * 
  * @author Sven Stefani
- * @version $Id$
  * @param <R> 
  * @param <P> 
  */

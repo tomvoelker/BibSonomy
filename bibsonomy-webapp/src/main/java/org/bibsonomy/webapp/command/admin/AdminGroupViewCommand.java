@@ -12,7 +12,6 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * Command bean for admin page 
  * 
  * @author bsc
- * @version $Id$
  */
 public class AdminGroupViewCommand extends BaseCommand {	
 	

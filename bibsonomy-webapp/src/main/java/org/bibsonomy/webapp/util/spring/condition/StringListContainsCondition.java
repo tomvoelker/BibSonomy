@@ -4,7 +4,6 @@ package org.bibsonomy.webapp.util.spring.condition;
  * {@link Condition} that checks whether a checkProperty String contains an expected value in a comma-separated list.
  * 
  * @author jensi
- * @version $Id$
  */
 public class StringListContainsCondition implements Condition {
 	private String stringList;

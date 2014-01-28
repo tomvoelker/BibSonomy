@@ -36,7 +36,6 @@ import org.junit.Test;
 
 /**
  * @author pbu
- * @version $Id$
  */
 public class QRCodeRendererTest {
 

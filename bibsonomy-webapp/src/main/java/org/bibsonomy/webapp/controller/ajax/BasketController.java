@@ -20,7 +20,6 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 /**
  * @author Christian Kramer
- * @version $Id$
  */
 public class BasketController extends AjaxController implements MinimalisticController<BasketManagerCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(BasketController.class);

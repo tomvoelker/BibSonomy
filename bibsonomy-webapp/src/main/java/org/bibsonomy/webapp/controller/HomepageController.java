@@ -16,7 +16,6 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for Homepage
  *
  * @author Dominik Benz
- * @version $Id$
  */
 public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
 	

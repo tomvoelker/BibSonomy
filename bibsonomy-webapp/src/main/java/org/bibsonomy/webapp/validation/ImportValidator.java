@@ -9,7 +9,6 @@ import org.springframework.validation.Errors;
 
 /**
  * @author mwa
- * @version $Id$
  */
 public class ImportValidator implements Validator<ImportCommand>{
 

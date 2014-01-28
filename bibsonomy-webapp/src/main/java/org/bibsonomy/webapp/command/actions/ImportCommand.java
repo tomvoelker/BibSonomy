@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author mwa
- * @version $Id$
  */
 public class ImportCommand extends BaseCommand {
 	

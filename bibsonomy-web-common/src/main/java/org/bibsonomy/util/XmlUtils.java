@@ -41,7 +41,6 @@ import org.w3c.tidy.Tidy;
  * Some utility functions for working with XML
  * 
  * @author Dominik Benz, benz@cs.uni-kassel.de
- * @version $Id$
  */
 public class XmlUtils {
 	/**

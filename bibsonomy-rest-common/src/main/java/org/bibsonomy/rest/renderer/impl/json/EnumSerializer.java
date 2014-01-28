@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer;
  * by Jersey JSON (the old library used to serialize JSON)
  * 
  * @author dzo
- * @version $Id$
  */
 public class EnumSerializer extends StdScalarSerializer<Enum<?>> {
 	

@@ -10,7 +10,6 @@ import org.junit.Test;
  * Tests some pageNumber and pageContext calculations
  * 
  * @author Jens Illig
- * @version $Id$
  */
 public class ListViewTest {
 
