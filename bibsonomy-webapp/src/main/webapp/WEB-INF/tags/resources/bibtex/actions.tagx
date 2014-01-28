@@ -104,6 +104,7 @@
 		| ADMIN ACTIONS (COMMUNITY POST)
 		+ -->
 	<!-- TODO: When this icon is made visible for non admins, change c:if userLoggedIn to c:choose and display inactive icon for signed out users -->
+	<!-- FIXME: The edit link should only be displayed on the page of a community post, never on regular posts. There only the "go-to-or-create-community-post" link should be displayed. -->
 	<c:if test="${command.context.userLoggedIn}">
 		<!-- COMMUNITY POST -->
 		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
@@ -138,7 +139,7 @@
 					<c:when test="${loginUserName ne post.user.name}">
 						<!-- user is not post's owner -->
 						<fmt:message key="bibtex.actions.posthistory.inactive"
-							var="copyTitle" />-->
+							var="copyTitle" />
 					<!-- TODO  only post's owner has acces to post history  -->
 						<fmt:message key="bibtex.actions.posthistory.inactive"
 							var="historyTitle" />
@@ -147,7 +148,7 @@
 						</a>
 					</c:when>
 
-					<!-- H -->
+					<!-- HISTORY -->
 					<c:otherwise>
 						<!-- user is post's owner -->
 						<fmt:message key="bibtex.actions.posthistory.title"
