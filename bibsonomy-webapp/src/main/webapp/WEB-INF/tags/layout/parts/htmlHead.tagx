@@ -93,7 +93,7 @@
 		</c:if>
 		<!-- enable logging with user permission -->
 		<c:if test="${loginUser.settings.logLevel != 1}">
-		   <script type="text/javascript" src="${resdir}/javascript/logging.js"></script> 
+		   <script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- keep me --></script> 
 		</c:if>
 		<!-- enable on-site spammer killing when user is admin -->
 		<c:if test="${loginUser.role eq 'ADMIN'}">
