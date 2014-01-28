@@ -512,12 +512,12 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/diffBookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="diffBookmarkController"/>
-						<property name="allowedFields" ref="bookmarkRequestParameters"/>
-					</bean>
-				</entry>
+<!-- 				<entry key="/diffBookmark"> -->
+<!-- 					<bean parent="controllerBase"> -->
+<!-- 						<property name="controllerBeanName" value="diffBookmarkController"/> -->
+<!-- 						<property name="allowedFields" ref="bookmarkRequestParameters"/> -->
+<!-- 					</bean> -->
+<!-- 				</entry> -->
 
 			    <!-- 
 			        | ############################### edit tags
@@ -801,9 +801,9 @@
 	<!-- Handles the edit bookmark process -->
 	<bean id="editBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditBookmarkController" scope="request" parent="editPostController" />
 	
-	<bean id="diffBookmarkController" class="org.bibsonomy.webapp.controller.actions.DiffBookmarkMockupController" scope="request" parent="editPostController" />
+<!-- 	<bean id="diffBookmarkController" class="org.bibsonomy.webapp.controller.actions.DiffBookmarkMockupController" scope="request" parent="editPostController" /> -->
 
-	<bean id="diffPublicationController" class="org.bibsonomy.webapp.controller.actions.DiffPublicationController"	scope="request" parent="resourceController" />	
+<!-- 	<bean id="diffPublicationController" class="org.bibsonomy.webapp.controller.actions.DiffPublicationController"	scope="request" parent="resourceController" />	 -->
 	
 	<!-- Handles the edit publication process -->
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">
