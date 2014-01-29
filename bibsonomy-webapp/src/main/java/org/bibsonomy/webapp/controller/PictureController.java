@@ -115,12 +115,12 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		final String requestedUserName = requestedUser.getName();
 		final String loginUserName = loginUser.getName();
 		
-		/*
-		 * login user may always see his/her photo
-		 */
 		if (!present(requestedUserName) ) {
 			return false;
 		}
+		/*
+		 * login user may always see his/her photo
+		 */
 		if (requestedUserName.equals(loginUserName) ) 
 			return true;
 		
