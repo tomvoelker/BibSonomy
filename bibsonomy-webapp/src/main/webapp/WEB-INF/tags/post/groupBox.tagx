@@ -24,17 +24,22 @@
 	
 				<div style="float: left; margin-right: 1ex;">
 	           		<!-- radio buttons for public, private, other -->
-	           		<form:radiobutton path="abstractGrouping" value="public" tabindex="2" />  <span class="expl"><fmt:message key="post.resource.public"/></span>
-	           		<form:radiobutton path="abstractGrouping" value="private" tabindex="2" /> <span class="expl"><fmt:message key="post.resource.private"/></span>
-	           		<form:radiobutton path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" />  <span class="expl"><fmt:message key="post.resource.other"/></span>
+	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="public" tabindex="2" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
+	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" tabindex="2" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
+	           		<form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" tabindex="2" id="post.groups.other" />  <span class="expl"><fmt:message key="post.resource.other"/></span>
+<!-- TODO: Discuss: Fix or remove GroupBox -->
+<!-- 	           		<form:radiobutton path="abstractGrouping" value="public" tabindex="2" />  <span class="expl"><fmt:message key="post.resource.public"/></span> -->
+<!-- 	           		<form:radiobutton path="abstractGrouping" value="private" tabindex="2" /> <span class="expl"><fmt:message key="post.resource.private"/></span> -->
+<!-- 	           		<form:radiobutton path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" />  <span class="expl"><fmt:message key="post.resource.other"/></span> -->
 				</div>	
 	            <!-- select box for "other" groups TODO: allow multiple groups-->
-	            <p>
-	            <form:select class="initiallyHidden" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
+<!-- 	            <p> -->
+<!-- 	            <form:select class="initiallyHidden" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2"> -->
+   	            <form:select multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
 	            	<form:option label="friends" value="friends"/>
 	              	<form:options items="${groups}" itemValue="name" itemLabel="name"/>
 	            </form:select>
-	            </p>
+<!-- 	            </p> -->
 	            <div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 	            
 	    	</jsp:attribute>
@@ -47,26 +52,31 @@
 		this script controls the visibility of the group select field.
 		if the 'other' radio button is checked or hovered show the select field, otherwise hide it
 	*/
-	  var selectOther = document.getElementById("post.groups.other2");
-	  var radiobuttonOther = document.getElementById("post.groups.other");
-	  var siblings = $(radiobuttonOther).siblings("input:radio");
-      
-	  var hideSelectBox = function(el) {
-		  if(el.id=="post.groups.other" && el.checked) $(selectOther).show(); 
-		  else $(selectOther).hide();
-	  };
+	function toggleGroupBox() {
+		document.getElementById("post.groups.other2").disabled = !document.getElementById("post.groups.other").checked;
+	}
+	toggleGroupBox();
 
-	  var callback = function(e) {
-		  selectOther.disabled = !radiobuttonOther.checked;
-		  hideSelectBox(e.target);
-	  };
+// 		var selectOther = document.getElementById("post.groups.other2");
+// 	  var radiobuttonOther = document.getElementById("post.groups.other");
+// 	  var siblings = $(radiobuttonOther).siblings("input:radio");
+      
+// 	  var hideSelectBox = function(el) {
+// 		  if(el.id=="post.groups.other" && el.checked) $(selectOther).show(); 
+// 		  else $(selectOther).hide();
+// 	  };
+
+// 	  var callback = function(e) {
+// 		  selectOther.disabled = !radiobuttonOther.checked;
+// 		  hideSelectBox(e.target);
+// 	  };
 	  
-	  $(document).ready(function() {
-    	  $(radiobuttonOther).click(callback);
-    	  $(siblings[0]).click(callback);
-    	  $(siblings[1]).click(callback);
-    	  hideSelectBox(radiobuttonOther);
-		});
+// 	  $(document).ready(function() {
+//     	  $(radiobuttonOther).click(callback);
+//     	  $(siblings[0]).click(callback);
+//     	  $(siblings[1]).click(callback);
+//     	  hideSelectBox(radiobuttonOther);
+// 		});
 	]]>
 	</script>
 </jsp:root>
