@@ -739,6 +739,7 @@ public class DBLogic implements LogicInterface {
 				final Resource resource = post.getResource();
 				final List<DiscussionItem> discussionSpace = this.discussionDatabaseManager.getDiscussionSpace(this.loginUser, resource.getInterHash(), session);
 				resource.setDiscussionItems(discussionSpace);
+				SystemTagsExtractor.handleHiddenSystemTags(Collections.singletonList(post), this.loginUser.getName());
 				return post;
 			}
 			/*

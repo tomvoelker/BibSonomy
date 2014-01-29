@@ -178,7 +178,7 @@
 								</tr>
 							</table>
 						</div>
-																
+						
 						<!--+
 							| discussion and rating
 							+-->
@@ -188,13 +188,17 @@
 						<!--+
 							| tag list
 							+-->
-							
+						<!-- TODO: i18n? -->
 						<h4 style="clear:both;">Tags</h4>
-
+						<c:set var="tags" value="${post.tags}"/>
+						<c:if test="${not isOwnEntry}">
+							<c:set var="tags" value="${post.visibleTags}" />
+						</c:if>
 						<div class="taglist" style="clear:both; margin-top: 1em;">
 							<ul>
-							<c:forEach var="tag" items="${post.tags}" varStatus="status">
-								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>  
+							<c:forEach var="tag" items="${tags}" varStatus="status">
+								<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
+								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 							</c:forEach>
 							</ul>
 						</div>
