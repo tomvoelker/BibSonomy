@@ -76,19 +76,17 @@
 					<c:otherwise>
 						<fmt:message key="post.resource.discussion.discussionUser.more">
 							<c:set var="count" value="0" />
-							<c:forEach var="discussionUser" items="${dicussionUsers}">
-								<c:choose> 
-									<c:when test="${count lt 3}">
-										<c:choose>
-											<c:when test="${(empty discussionUser) or ('' eq discussionUser)}">
-												<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>					
-											</c:when>
-											<c:otherwise>
-												<fmt:param><a href="/user/${mtl:encodeURI(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
-											</c:otherwise>
-										</c:choose>
-									</c:when>
-								</c:choose>
+							<c:forEach var="discussionUser" items="${discussionUsers}">
+								<c:if test="${count lt 3}">
+									<c:choose>
+										<c:when test="${(empty discussionUser) or ('' eq discussionUser)}">
+											<fmt:param><fmt:message key="post.resource.discussionItem.anonymous"/></fmt:param>					
+										</c:when>
+										<c:otherwise>
+											<fmt:param><a href="/user/${mtl:encodeURI(discussionUser)}">@${mtl:encodeURI(discussionUser)}</a></fmt:param>
+										</c:otherwise>
+									</c:choose>
+								</c:if>
 								<c:set var="count" value="${count + 1}" />
 							</c:forEach>
 							<!-- and X more -->
