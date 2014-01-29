@@ -1002,7 +1002,7 @@ CREATE TABLE `log_user` (
   `simple_interface` tinyint(1) default '0',
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
-  `gravatarAddress` varchar(255) DEFAULT NULL,
+  `useExternalPicture` TINYINT(1) NULL DEFAULT '0',
   PRIMARY KEY  (`nr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=338 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1085,7 +1085,6 @@ CREATE TABLE `pendingUser` (
   `simple_interface` tinyint(1) default '0',
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
-  `gravatarAddress` varchar(255) DEFAULT NULL,
   `useExternalPicture` tinyint(1) DEFAULT '0',
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
@@ -1503,7 +1502,6 @@ CREATE TABLE `user` (
   `simple_interface` tinyint(1) default '0',
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
-  `gravatarAddress` varchar(255) DEFAULT NULL,
   `useExternalPicture` tinyint(1) DEFAULT '0',
   PRIMARY KEY  (`user_name`),
   UNIQUE KEY `user_id` (`id`),

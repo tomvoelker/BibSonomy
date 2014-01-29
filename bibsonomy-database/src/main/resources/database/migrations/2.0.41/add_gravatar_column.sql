@@ -1,4 +1,3 @@
-ALTER TABLE `user` ADD COLUMN `gravatarAddress` VARCHAR(255) NULL DEFAULT NULL;
-ALTER TABLE `pendingUser` ADD COLUMN `gravatarAddress` VARCHAR(255) NULL DEFAULT NULL;
-ALTER TABLE `log_user` ADD COLUMN  `gravatarAddress` varchar(255) NULL DEFAULT NULL;
-
+ALTER TABLE `user` ADD COLUMN `useExternalPicture` TINYINT(1) NULL DEFAULT '0';
+ALTER TABLE `pendingUser` ADD COLUMN `useExternalPicture` TINYINT(1) NULL DEFAULT '0';
+ALTER TABLE `log_user` ADD COLUMN `useExternalPicture` TINYINT(1) NULL DEFAULT '0';

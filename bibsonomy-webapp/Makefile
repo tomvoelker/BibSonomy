@@ -94,6 +94,7 @@ gromit: mvn_deploy
 # 
 slave_kassel: document mvn_deploy mail
 slave_wuerzburg: document mvn_deploy mail
+slave_hannover: document mvn_deploy mail
 #
 # when deploying to puma, we first need to open an ssh connection 
 #
