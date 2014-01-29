@@ -118,6 +118,9 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		/*
 		 * login user may always see his/her photo
 		 */
+		if (!present(requestedUserName) ) {
+			return false;
+		}
 		if (requestedUserName.equals(loginUserName) ) 
 			return true;
 		
