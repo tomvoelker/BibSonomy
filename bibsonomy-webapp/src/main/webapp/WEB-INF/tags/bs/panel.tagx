@@ -1,0 +1,18 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.tag description="Renders a panel with heading and body for bootstrap 3."/>
+
+	<jsp:directive.attribute name="messagesPropertiesKey" type="java.lang.String" required="true" description="Key for messages.properties which is used for heading."/>
+	<jsp:directive.attribute name="panelBody" fragment="true" required="true" description="Additional items for input field"/>
+	
+	 <div class="panel panel-default">
+		<div class="panel-heading">
+			<strong><fmt:message key="${messagesPropertiesKey}" /></strong>
+		</div>	
+		<div class="panel-body">
+   			<jsp:invoke fragment="panelBody"/>
+		</div>
+	</div>
+</jsp:root>
