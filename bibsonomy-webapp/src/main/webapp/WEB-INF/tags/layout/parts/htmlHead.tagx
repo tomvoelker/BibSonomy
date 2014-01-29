@@ -130,7 +130,7 @@
 					<c:url var="statImgUrl" value="http://${statisticsUrl}">
 						<c:param name="idsite" value="${siteid}" />
 					</c:url>
-					<img src="http://stats.bibsonomy.org/piwik.php?idsite=1" style="border:0" alt="" />
+					<img src="${statImgUrl}" style="border:0" alt="" />
 				</p>
 			</noscript>
 		</c:if>
