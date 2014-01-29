@@ -28,6 +28,7 @@
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
 	
+	<!-- TODO: remove inline CSS! -->
 	<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
 	<div id="icons" style="display:none">
 		<img id="icon_expand" alt="" src="${resdir}/image/icon_expand.png"/>
