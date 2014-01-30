@@ -177,7 +177,8 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			command.getListCommand(this.getResourceClass()).setList(Collections.singletonList(post));
 		}
 		
-		final List<PostMetaData> metaData = this.logic.getPostMetaData(HashID.INTER_HASH, goldHash, null, null);
+		// TODO: fix privacy issue
+		final List<PostMetaData> metaData = null; // this.logic.getPostMetaData(HashID.INTER_HASH, goldHash, null, null);
 		if (present(metaData)) {
 			// try to create the copy users map
 			command.setCopyUsersMap(this.createCopyUserMap(metaData));
