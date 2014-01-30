@@ -19,6 +19,8 @@
 		| 
 		+-->
 	
+	<!--  TODO: remove www-tab which was only necessary when the citations box served as heading of the publication-details page  -->
+	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
 	<div id="citation" class="tabs">

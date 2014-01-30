@@ -14,11 +14,16 @@
 	  text-align: center;
 	  font-size: 16px;
 	  }
-	  .wo-publ a.source, .wo-publ a.pdf {
-	  font-weight: normal;
+	  .wo-publ a.pdf {
+	  font-weight: bold;
 	  }
-	  .wo-publ .author, .wo-publ .meta {
+	  .wo-publ .author {
 	  color: #888;
+	  text-align: center;
+	  }
+	  .wo-publ .meta {
+	  text-decoration: none;
+	  color: rgb(70, 130, 180);
 	  text-align: center;
 	  }
 	  .wo-publ img {

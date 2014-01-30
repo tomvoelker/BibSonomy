@@ -4,16 +4,10 @@
     <div class="author">\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}</div>
   \end{author}
   <div class="meta">
-  	<a href="\url" class="source">
-		\format[HTMLChars,AntiScriptInjection]{\year}
-		\begin{school}
-		, Master's thesis, \format[HTMLChars,AntiScriptInjection]{\school}
-		\end{school}
-		\begin{type}
-		, \format[HTMLChars,AntiScriptInjection]{\type}
-		\end{type}
-	</a>
-    [<a class="pdf" href="\url">pdf</a>]
+	\format[HTMLChars,AntiScriptInjection]{\year}\begin{school}, Master's thesis, \format[HTMLChars,AntiScriptInjection]{\school}\end{school}\begin{type}, \format[HTMLChars,AntiScriptInjection]{\type}\end{type}
+    \begin{url}
+    <a class="pdf" href="\url">[pdf]</a>
+    \end{url}
   </div>
   <a href="\url"><img src="/documents/\intraHash/\username/?preview=SMALL" alt="" /></a>
   \begin{abstract}

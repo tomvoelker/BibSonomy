@@ -3,27 +3,9 @@ bin
 work
 .classpath
 .project
+.settings
+.tomcatplugin
 src/main/webapp/WEB-INF/lib
 src/main/webapp/WEB-INF/classes
 src/main/webapp/META-INF
-
-syntax: regexp
-^bibsonomy-database/\.settings/org\.eclipse\.m2e\.core\.prefs$
-syntax: regexp
-^bibsonomy-database/\.settings/org\.eclipse\.wst\.common\.component$
-syntax: regexp
-^bibsonomy-database/\.settings/org\.eclipse\.wst\.common\.project\.facet\.core\.xml$
-syntax: regexp
-^bibsonomy-model/\.settings/org\.eclipse\.m2e\.core\.prefs$
-syntax: regexp
-^bibsonomy-web-common/\.settings/org\.eclipse\.m2e\.core\.prefs$
-syntax: regexp
-^bibsonomy-web-common/\.settings/org\.eclipse\.wst\.common\.component$
-syntax: regexp
-^bibsonomy-web-common/\.settings/org\.eclipse\.wst\.validation\.prefs$
-syntax: regexp
-^bibsonomy-web-common/\.settings/org\.eclipse\.wst\.common\.project\.facet\.core\.xml$
-syntax: regexp
-^bibsonomy-web-common/\.settings/org\.eclipse\.core\.resources\.prefs$
-syntax: regexp
-^bibsonomy-webapp/\.settings/org\.eclipse\.m2e\.core\.prefs$
+bibsonomy-lucene/src/test/resources/lucene_*
