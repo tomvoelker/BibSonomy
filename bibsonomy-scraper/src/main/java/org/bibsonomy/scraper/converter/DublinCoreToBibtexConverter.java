@@ -44,11 +44,11 @@ import org.bibsonomy.util.id.ISBNUtils;
  */
 public class DublinCoreToBibtexConverter {
 
-	
+
 	private static final String PREFERRED_LANGUAGE = "en";
 
 	private static final String BIBTEX_END_LINE = ",\n";
-	
+
 	private static final String TITLE_KEY = "title";
 	private static final String AUTHOR_KEY = "author";
 	private static final String ID_KEY = "id";
@@ -59,7 +59,7 @@ public class DublinCoreToBibtexConverter {
 
 	// pattern to extract a year out of a string
 	private static final Pattern EXTRACT_YEAR = Pattern.compile("\\d\\d\\d\\d");
-	
+
 	/**
 	 * Searches for HTML Dublin Core metadata in an html formatted string, extracts
 	 * the data and converts it to a BibTeX formatted string.
@@ -77,7 +77,7 @@ public class DublinCoreToBibtexConverter {
 		if (!present(data.get(TYPE_KEY)) || !present(data.get(AUTHOR_KEY)) || !present(data.get(TITLE_KEY))) {
 			return "";
 		}
-		
+
 		final String entrytype = getEntrytype(data);
 		final StringBuilder bibtex = new StringBuilder("@");
 		bibtex.append(entrytype);
@@ -100,7 +100,7 @@ public class DublinCoreToBibtexConverter {
 				bibtex.append(getBibTeXEntry("ISBN", isbn)).append(BIBTEX_END_LINE);
 			}
 		}
-		
+
 		final boolean isPHDThesis = BibTexUtils.PHD_THESIS.equals(entrytype);
 		final Iterator<Entry<String, String>> dataEntryInterator = data.entrySet().iterator();
 		while (dataEntryInterator.hasNext()) {
@@ -138,7 +138,7 @@ public class DublinCoreToBibtexConverter {
 	private static Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
 		Map<String, String> data = new HashMap<String, String>();
-	
+
 		String key = "";
 		String value = "";
 		String lang = "";
@@ -202,7 +202,11 @@ public class DublinCoreToBibtexConverter {
 		else if (present(value)) {
 			// append
 			if (data.containsKey(key)) {
-				data.put(key, data.get(key) + ", " + value);
+				if(key.equals(AUTHOR_KEY) || key.equals("editor")){
+					data.put(key, data.get(key) + " and " + value);
+				}else{
+					data.put(key, data.get(key) + ", " + value);
+				}
 			} else {
 				// insert new entry
 				data.put(key, value);
@@ -289,5 +293,5 @@ public class DublinCoreToBibtexConverter {
 		 */
 		return BibTexUtils.MISC;
 	}
-	
+
 }
