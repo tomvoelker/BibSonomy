@@ -56,7 +56,7 @@
 			| followed by output label 
 			+-->
 		<c:if test="${not empty path or not empty labelText}">
-			<label class="col-sm-${labelColSpan} control-label" for="${id}">
+			<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
 				<c:choose>
 					<c:when test="${not empty path}">
 						<fmt:message key="${path}"/>${required ? '* ' : ''}
@@ -72,7 +72,7 @@
 			| followed by input field surrounded by div column container with width inputColSpan
 			+-->
 		<div class="col-sm-${inputColSpan}">
-			<form:input cssClass="fsInput${small ? ' fsSmall' : ''}${required ? ' reqinput' : ''} ${cssClass} form-control" 
+			<form:input cssClass="fsInput${small ? ' fsSmall' : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control" 
 						path="${path}" 
 						placeholder="${placeholder}" 
 						autocomplete="${autocomplete}" 

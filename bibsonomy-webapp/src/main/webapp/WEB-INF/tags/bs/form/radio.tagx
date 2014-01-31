@@ -27,10 +27,10 @@
 		<label>
 		  	<c:choose>
 		  		<c:when test="${checked}">
-		  			<form:radiobutton title="${labelText}" path="${path}" checked="checked"/>
+		  			<form:radiobutton title="${fn:escapeXml(labelText)}" path="${path}" checked="checked"/>
 		  		</c:when>
 		  		<c:otherwise>
-		  			<form:radiobutton path="${path}" title="${labelText}"/>
+		  			<form:radiobutton path="${fn:escapeXml(path)}" title="${fn:escapeXml(labelText)}"/>
 		  		</c:otherwise>
 		  	</c:choose>
 		  	<c:out value="${labelText}" />
