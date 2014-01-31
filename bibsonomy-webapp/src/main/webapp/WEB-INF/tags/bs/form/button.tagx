@@ -7,24 +7,30 @@
 	
 	<jsp:directive.tag description="Renders a bootstrap3 button." />
 	
-	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonStyle" name="style" required="false" description="Button Style Type" />
-	
+
+	<jsp:directive.attribute type="java.lang.String" name="value" required="true" description="inscription of the button" />
+	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonStyle" name="style" required="true" description="Button Style Type" />
+	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonSize" name="size" required="true" description="Button Style Type" />
 	<jsp:directive.attribute type="java.lang.String" name="type" required="false" description="content for html attribute type" />
 	
-	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" description="" />
-	<jsp:directive.attribute name="onfocus" type="java.lang.String" required="false" description="" />
-	<jsp:directive.attribute name="onblur" type="java.lang.String" required="false" description="" />
-	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="" />
+	<jsp:directive.attribute type="java.lang.String" 	name="dataToggle" 	required="false" description="If you need to use attribute 'data-toggle'."/>
+	<jsp:directive.attribute type="java.lang.String" 	name="dataTarget" 	required="false" description="If you need to use attribute 'data-target'."/>
+	<jsp:directive.attribute type="java.lang.String" 	name="dataDismiss"	required="false" description="If you need to use attribute 'data-dismiss'." />
+	<jsp:directive.attribute type="java.lang.Boolean"	name="dropdown"		required="false" description="Add dropdown menu to the button" />
 	
-	<c:if test="${empty style}">
-		<c:set var="style" value="@org.bibsonomy.webapp.view.constants.BootstrapButtonStyle@defaultStyle" />
-	</c:if>
+	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" description="javascript code for execution" />
+	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="" />
 	
 	<c:if test="${empty type}">
 		<c:set var="type" value="button" />
 	</c:if>
 	
-	<button type="${type}" class="btn ${style.cssClassName}"><c:out value="${value}" /></button>
-	
-	
+	<button type="${fn:escapeXml(type)}" class="btn ${fn:escapeXml(style.cssClassName)} ${fn:escapeXml(size.cssClassName)} ${dropdown ? 'dropdown-toggle':''}" data-toggle="${fn:escapeXml(dataToggle)}" data-target="${fn:escapeXml(dataTarget)}" data-dismiss="${fn:escapeXml(dataDismiss)}" onclick="${fn:escapeXml(onclick)}">
+		<c:if test="${not empty value }">
+			<c:out value="${value}" />&amp;nbsp;
+		</c:if>
+		<c:if test="${dropdown}">
+			<span class="caret"><!-- KEEP ME --></span>
+		</c:if>
+	</button>
 </jsp:root>
