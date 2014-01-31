@@ -17,11 +17,11 @@
 	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="A link to a help page."/>
 	
 	<!-- HTML attributes -->
-	<jsp:directive.attribute name="id" type="java.lang.String" required="true" description="Id for input field"/>
-	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name attribute for input field"/>
-	<jsp:directive.attribute name="placeholder" required="false" description="Placeholder for input field." />
-	<jsp:directive.attribute name="autocomplete" type="java.lang.String" required="false" description="" />
-	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="" />	
+	<jsp:directive.attribute name="id" 				type="java.lang.String" 	required="true"  description="Id for input field"/>
+	<jsp:directive.attribute name="name" 			type="java.lang.String" 	required="false" description="name attribute for input field"/>
+	<jsp:directive.attribute name="placeholder" 	type="java.lang.String" 	required="false" description="Placeholder for input field." />
+	<jsp:directive.attribute name="autocomplete" 	type="java.lang.String" 	required="false" description="" />
+	<jsp:directive.attribute name="tabindex" 		type="java.lang.Integer" 	required="false" description="" />	
 	
 	<!-- JS event handler -->
 	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" description="" />

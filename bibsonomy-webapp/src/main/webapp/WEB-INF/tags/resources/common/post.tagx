@@ -25,43 +25,49 @@
        	
        
 	<li class="post ${additionalItemClasses}"><!-- additionalItemClasses to distinguish the odd numbered list elements from the even numbered ones -->
-		
-		<!-- PREVIEW PICTURE -->
-		<div class="image">
-			<jsp:invoke fragment="documents"/>
+		<div id="popover-head-${post.resource.intraHash}" class="hide"><jsp:invoke fragment="title"/></div>
+		<div id="popover-content-${post.resource.intraHash}" class="hide">
+				<jsp:invoke fragment="desc"/>
+				<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
 		</div>
-
-		<div class="metaContainer"> <!-- container class for all post information next to image  -->
-			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
-	        <c:if test="${command.context.userLoggedIn}">
-	        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
-	        	<c:if test="${not empty post.user.name}">	
-		        	<c:if test="${loginUserName eq post.user.name}">
-						<img class="overlay" src="/resources/image/inMyCollection.png" alt="inMyCollection"></img>
+		<div class="row post-row">
+		 	<!-- PREVIEW PICTURE -->
+			<div class="col-sm-2 hidden-md col-lg-3">
+				<div class="image">
+					<jsp:invoke fragment="documents"/>
+					<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
+			        <c:if test="${command.context.userLoggedIn}">
+			        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
+			        	<c:if test="${not empty post.user.name}">	
+				        	<c:if test="${loginUserName eq post.user.name}">
+								<img class="overlay" src="/resources/image/inMyCollection.png" alt="inMyCollection"></img>
+							</c:if>
+						</c:if>
 					</c:if>
-				</c:if>
-			</c:if>
-	
-	
-			<!-- TITLE AND DESCRIPTION -->
-			<div class="ptitle"><jsp:invoke fragment="title"/></div>
-			<div class="pdesc extend"><jsp:invoke fragment="desc"/><div><jsp:invoke fragment="desc"/></div></div>
-	
-		
-			<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
-			<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
-			
-		
-			<!-- RATING -->
-			<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
-	
-			<!-- ACTIONS -->
-			<div class="action">
-				<jsp:invoke fragment="actions"/>
+				</div>
+				<br class="clearfix" />
+				<!-- RATING -->
+				<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 			</div>
+			
+			<div class="col-sm-10 col-md-12 col-lg-9">
+						
+				<h4 class="ptitle post-popover" data-ident="${post.resource.intraHash}"><jsp:invoke fragment="title"/></h4>
+				
+				<div class="pdesc">
+					<jsp:invoke fragment="desc"/>
+				</div>
 
-			<!-- maybe we need this ... <div class="footer"></div>  --> 
-
+				<div class="pmeta">
+					<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
+					<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
+				</div>	
+				<!-- ACTIONS -->
+				<div class="action">
+					<jsp:invoke fragment="actions"/>
+				</div>
+				<!-- maybe we need this ... <div class="footer"></div>  --> 
+			</div>
 		</div>
 	</li>
 </jsp:root>

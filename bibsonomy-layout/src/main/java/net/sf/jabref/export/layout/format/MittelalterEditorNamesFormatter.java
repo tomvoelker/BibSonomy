@@ -47,12 +47,9 @@ public abstract class MittelalterEditorNamesFormatter implements LayoutFormatter
 		final StringBuffer ret = new StringBuffer();
         
         if(list.size() > 3) {
-        	for(int i = 0; i < list.size();) {
-        		if(i==0) {
-        			ret.append(getPersonName(list.getAuthor(i))).append(" (Hgg.)");
-        			break;
-        		}
-        	}
+        	
+        	ret.append(getPersonName(list.getAuthor(0))).append(" (Hgg.)");
+        	
         } else {
         	ret.append(getAllPersonsString(list));
         }

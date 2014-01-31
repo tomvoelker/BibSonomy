@@ -20,7 +20,7 @@
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
-
+	<c:set var="listTitle"><h2><fmt:message key="publications" /></h2></c:set>
 	<rc:list
 		titleKey="publications" 
 		loginUserName="${loginUserName}"
@@ -34,6 +34,7 @@
 		extTitle="${extTitle}"
 		addAsFirstItem="${addAsFirstItem}"
 		addAsLastItem="${addAsLastItem}"
+		listTitle="${listTitle}"
 	>
 		<jsp:attribute name="title">
 			<c:choose>
@@ -62,5 +63,4 @@
 		</jsp:attribute>
 		
 	</rc:list>
-	
 </jsp:root>

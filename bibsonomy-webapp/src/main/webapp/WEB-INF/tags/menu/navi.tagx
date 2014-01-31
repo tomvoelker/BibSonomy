@@ -12,64 +12,54 @@
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	
 	
-	<nav class="navbar navbar-inverse" role="banner">
-		<div class="container">
+	<nav class="navbar navbar-bibsonomy" role="banner">
+		<div class="container navi noborder">
 		  	<ul class="nav navbar-nav">
 		  		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="/"><fmt:message key="navi.home"/></a></li>
 				<!--+ 
 			 		| myProjectName
 			 		+-->
 				<c:if test="${not empty loginUserName}">
-				<li class="dropdown ${activeTab eq 'my' ? 'active' : ''}" data-touch="false">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.my"/>${properties['project.name']}<b class="caret">&amp;nbsp;</b></a>
-					<ul class="dropdown-menu">
-						<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
-						<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li>
-						<c:if test="${not command.context.loginUser.settings.simpleInterface}">
-							<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>
-							<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>
-							<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
-							<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
-						</c:if>					
-						<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
-						<li><a href="/basket"><fmt:message key="navi.basket"/></a></li>
-						<li><a href="/inbox"><fmt:message key="navi.inbox"/></a></li>
-						
-						<li><a href="/spheres"><fmt:message key="navi.spheres"/></a></li>
-						<c:if test="${not command.context.loginUser.settings.simpleInterface}">
-							<li><a href="/friends"><fmt:message key="navi.friends"/></a></li>
-							<li><a href="/followers"><fmt:message key="navi.followees"/></a></li>
-						</c:if>
-						
-						<li><a href="/concepts/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
-						<c:if test="${not command.context.loginUser.settings.simpleInterface}">
-							<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
-							<li><a href="/mySearch"><fmt:message key="navi.browse"/></a></li>
-							<li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
-							<li class="separator">${mtl:ch('nbsp')}</li>
-						</c:if>
-						<li><a href="/settings"><fmt:message key="navi.settings"/></a></li>
-					</ul>
-				</li>
-				<!--+
-					| post a post
-					+-->
-				<li class="dropdown ${activeTab eq 'post' ? 'active' : ''}">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.postPost"/><b class="caret">&amp;nbsp;</b></a>
-					<ul class="dropdown-menu">
-						<li><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
-						<li><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
-					</ul>
-				</li>
+					<li class="dropdown ${activeTab eq 'my' ? 'active' : ''}" data-touch="false">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.my"/>${properties['project.name']}<b class="caret">&amp;nbsp;</b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.myPosts"/></a></li>
+							<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li>
+							<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+								<li><a href="/viewable/private"><fmt:message key="navi.privatePosts"/></a></li>
+								<li><a href="/viewable/friends"><fmt:message key="navi.friendsPosts"/></a></li>
+								<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
+								<li><a href="/user/${mtl:encodeURI(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
+							</c:if>					
+							<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
+							
+							<c:if test="${not command.context.loginUser.settings.simpleInterface}">
+								<li class="divider"><!-- KEEP ME --></li>
+								<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
+								<li><a href="/mySearch"><fmt:message key="navi.browse"/></a></li>
+								<li><a href="/bib/user/${mtl:encodeURI(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
+							</c:if>
+						</ul>
+					</li>
+					<!--+
+						| post a post
+						+-->
+					<li class="dropdown ${activeTab eq 'post' ? 'active' : ''}">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.postPost"/><b class="caret">&amp;nbsp;</b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
+							<li><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
+						</ul>
+					</li>
 				</c:if>
 				<!--+
 					| groups
 					+-->
-				<!-- 
+
 				<c:choose>
 					<c:when test="${not empty loginUser.groups}">
 						<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
 							<c:forEach var="grp" items="${loginUser.groups}">
 								<li class="dropdown-submenu">
@@ -96,12 +86,12 @@
 						<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="/groups"><fmt:message key="navi.groups"/></a></li>
 					</c:otherwise>
 				</c:choose>
-				-->
+
 				<!--+
 					| popular
-				+-->
+					+-->
 				<li class="dropdown ${activeTab eq 'popular' ? 'active' : ''}">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.popular" /></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.popular" /><b class="caret">&amp;nbsp;</b></a>
 					<ul class="dropdown-menu">
 						<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
 						<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
@@ -113,7 +103,7 @@
 				
 				<c:if test="${loginUser.role eq 'ADMIN' }">
 					<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
-						<a href="/admin" class="dropdown-toggle" data-toggle="dropdown">admin</a>
+						<a href="/admin" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
 						<ul class="dropdown-menu">
 							<li><a href="/admin/spam">spam</a></li>
 							<li><a href="/admin/group">groups</a></li>
@@ -125,6 +115,122 @@
 					</li>
 				</c:if>
 		  	</ul>
+  			<ul class="nav navbar-nav pull-right">	
+				<li class="dropdown pull-right">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"><!-- KEEP ME --></span><b class="caret">&amp;nbsp;</b></a>
+					<ul class="dropdown-menu">
+
+						<!--  WHEN USER IS LOGGED IN -->
+						<c:choose>
+							<c:when test="${not empty loginUserName}">
+								
+								<li>
+									<fmt:message var="titleInbox" key="navi.inbox" />
+									<a href="/inbox" title="${titleInbox}">
+										<span class="glyphicon glyphicon-inbox"><!-- KEEP ME --></span>&amp;nbsp;
+										<c:if test="${command.context.loginUser.inbox.numPosts gt 0}">
+											<b class="navi-info">
+												<span><c:out value="${command.context.loginUser.inbox.numPosts}"/></span>
+											</b>
+										</c:if>
+										<fmt:message key="navi.inbox" />
+									</a>
+								</li>
+								<li>
+									<fmt:message var="titleBasket" key="navi.basket"/>
+									<a href="/clipboard" title="${titleBasket}"><!-- empty -->
+										<span class="glyphicon glyphicon-folder-open"><!--  --></span>&amp;nbsp;
+										<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
+											<b class="navi-info"><!-- maybe empty -->
+												<span><c:out value="${command.context.loginUser.basket.numPosts}"/></span>
+											</b>
+										</c:if>
+										<fmt:message key="navi.basket" />
+									</a>
+								</li>
+								<li>
+									<fmt:message var="friends" key="navi.friends" />
+									<a href="/friends" title="friends">
+										<span class="glyphicon glyphicon-user"><!--  --></span>&amp;nbsp;
+										<fmt:message key="navi.friends"/>
+									</a>
+								</li>
+								<li>
+									<fmt:message var="titleSperes" key="navi.spheres" />
+									<a href="/spheres" title="${titleSpheres}">
+										<span class="glyphicon glyphicon-eye-open"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.spheres" />
+									</a>
+								</li>
+								<li> 
+									<fmt:message var="editTags" key="navi.editTags" />
+									<a href="/spheres" title="${editTags}">
+										<span class="glyphicon glyphicon-tag"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.editTags" />
+									</a>
+								</li>
+								<li> 
+									<fmt:message var="concepts" key="navi.concepts" />
+									<a href="/spheres" title="${concepts}">
+										<span class="glyphicon glyphicon-tags"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.concepts" />
+									</a>
+								</li>
+								<li class="divider"><!-- KEEP ME --></li>
+
+								<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
+								<fmt:message var="titleBlog" key="navi.blog" />
+									<a href="${properties['project.blog']}" title="${titleBlog}">
+										<span class="glyphicon glyphicon glyphicon-book"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.blog" />
+									</a>
+								</li>
+								<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_07">
+									<fmt:message var="titleHelp" key="navi.help"/>
+									<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+									<a href="${helpLangUrl}" title="${titleHelp}">
+										<span class="glyphicon glyphicon glyphicon-question-sign"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.help" />
+									</a>
+								</li>
+								<li class="divider"><!--  --></li>
+								<li><a href="/settings"><span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.settings"/></a></li>
+								<li><a href="/logout"><span class="glyphicon glyphicon-off"><!-- KEEP ME --></span>&amp;nbsp;<fmt:message key="navi.logout"/></a></li>
+							</c:when>
+							<c:otherwise>
+								<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_06">
+									<a href="${properties['project.blog']}" title="${titleBlog}">
+										<span class="glyphicon glyphicon glyphicon-book"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.blog" />
+									</a>
+								</li>
+								<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_07">
+									<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+									<a href="${helpLangUrl}" title="${titleHelp}">
+										<span class="glyphicon glyphicon glyphicon-question-sign"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.help" />
+									</a>
+								</li>
+								<li class="divider"><!--  --></li>
+								<li>
+									<a href="/spheres" title="${titleSpheres}">
+										<span class="glyphicon glyphicon glyphicon-log-in"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.login" />
+									</a>
+								</li>
+								<li> 
+									<a href="/register" title="${titleSpheres}">
+										<span class="glyphicon glyphicon-edit"><!-- KEEP ME --></span>&amp;nbsp;
+										<fmt:message key="navi.register" />
+									</a>	
+								</li>
+							</c:otherwise>
+						</c:choose>
+						
+						
+					</ul>
+				</li>
+			</ul>
 	  	</div>
 	</nav>
 </jsp:root>
