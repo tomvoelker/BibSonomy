@@ -27,7 +27,6 @@ package org.bibsonomy.common.enums;
  * Defines different states of a user
  * 
  * @author Stefan Stützer
- * @version $Id$
  */
 public enum SpamStatus {
 	/** no spammer, sure, classified by admin */
