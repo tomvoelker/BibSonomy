@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -18,13 +17,11 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
- * @version $Id:$
  */
-public class JStageScraper extends AbstractUrlScraper{
+public class JStageScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "J-Stage";
-	private static final String SITE_URL = "https://jstage.jst.go.jp";
-	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + 
-			". Publications can be entered as a selected BibTeX snippet or by posting the page of the reference.";
+	private static final String SITE_URL = "https://www.jstage.jst.go.jp";
+	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + ". Publications can be entered as a selected BibTeX snippet or by posting the page of the reference.";
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jstage.jst.go.jp/"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
@@ -32,26 +29,22 @@ public class JStageScraper extends AbstractUrlScraper{
 		sc.setScraper(this);
 		URL url = sc.getUrl();
 		String[] bibPath = url.getPath().split("/");
-		try{
-			String bibtexURL = "https://" +sc.getUrl().getHost() + "/AF06S010ShoshJkuDld?sryCd=" + bibPath[2] + "&noVol=" + bibPath[3] + "&noIssue=" + bibPath[4] + "&kijiCd=" + bibPath[5] + "&kijiLangKrke=en&kijiToolIdHkwtsh=AT0073";
+		try {
+			String bibtexURL = "https://" + sc.getUrl().getHost() + "/AF06S010ShoshJkuDld?sryCd=" + bibPath[2] + "&noVol=" + bibPath[3] + "&noIssue=" + bibPath[4] + "&kijiCd=" + bibPath[5] + "&kijiLangKrke=en&kijiToolIdHkwtsh=AT0073";
 			bibtexURL = StringEscapeUtils.unescapeHtml(bibtexURL);
 			
-			//final String bibtex = WebUtils.getContentAsString(BibTexUtils.addFieldIfNotContained(bibtexURL, "url", sc.getUrl().toString()));
 			final String bibtex = WebUtils.getContentAsString(bibtexURL);
 			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex);
 				return true;
-			} else {
-				throw new ScrapingFailureException("getting bibtex failed");
 			}
-
-
-		}catch(Exception e){
-			e.printStackTrace();
+			
+			throw new ScrapingFailureException("getting bibtex failed");
+		} catch (Exception e) {
+			throw new ScrapingException(e);
 		}
-		
-		return false;
 	}
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
