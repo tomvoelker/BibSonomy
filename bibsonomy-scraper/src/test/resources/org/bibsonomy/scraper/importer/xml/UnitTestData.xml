@@ -1639,4 +1639,10 @@
 		<BibFile>DLibScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.dlib.DLibScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_267">
+		<TestDescription>JStageScraper Test</TestDescription>
+		<URL>https://www.jstage.jst.go.jp/article/dsj/9/0/9_CRIS4/_article</URL>
+		<BibFile>JStageScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstage.JStageScraper</Scraper>
+	</URLTest>
 </test:Tests>

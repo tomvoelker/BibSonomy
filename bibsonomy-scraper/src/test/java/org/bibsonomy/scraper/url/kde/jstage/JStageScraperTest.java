@@ -13,11 +13,11 @@ import org.junit.experimental.categories.Category;
 @Category(RemoteTest.class)
 public class JStageScraperTest {
 	/**
-	 * starts URL test with id url_196
+	 * starts URL test with id url_267
 	 */
 	@Test
 	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_196"));
+		assertTrue(UnitTestRunner.runSingleTest("url_267"));
 	}
 
 }
