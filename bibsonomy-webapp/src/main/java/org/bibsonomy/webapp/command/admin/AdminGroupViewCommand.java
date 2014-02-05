@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command.admin;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.enums.Privlevel;
@@ -28,6 +29,11 @@ public class AdminGroupViewCommand extends BaseCommand {
 	
 	private String adminResponse = "";
 	private Group group = new Group();
+	
+	/**
+	 * list of pending groups
+	 */
+	private List<Group> pendingGroups;
 	
 	
 	public AdminGroupViewCommand() {
@@ -84,5 +90,19 @@ public class AdminGroupViewCommand extends BaseCommand {
 	 */
 	public String getAdminResponse() {
 		return adminResponse;
+	}
+
+	/**
+	 * @return the pendingGroups
+	 */
+	public List<Group> getPendingGroups() {
+		return this.pendingGroups;
+	}
+
+	/**
+	 * @param pendingGroups the pendingGroups to set
+	 */
+	public void setPendingGroups(List<Group> pendingGroups) {
+		this.pendingGroups = pendingGroups;
 	}
 }

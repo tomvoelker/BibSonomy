@@ -46,6 +46,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		final String action = command.getAction();
 		if(!present(action)) {
 			log.debug("No action specified.");
+			
+			// load the pending groups
+			command.setPendingGroups(logic.getPendingGroups(0, Integer.MAX_VALUE));
 		} else if (FETCH_GROUP_SETTINGS.equals(action)) {
 			final String groupName = command.getGroup().getName();
 			final Group fetchedGroup = logic.getGroupDetails(groupName);
