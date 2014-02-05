@@ -22,8 +22,6 @@ import org.bibsonomy.util.spring.security.AuthenticationUtils;
 
 /**
  * This filter redirects Limited Users to the limitedAccountActivation page
- *
- * @version $Id$
  */
 public class LimitedUserFilter implements Filter {
 	private final static Log log = LogFactory.getLog(LimitedUserFilter.class);

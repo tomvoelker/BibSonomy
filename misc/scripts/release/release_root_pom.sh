@@ -8,25 +8,26 @@
 # * 2011/04/29: initial version (dbe)
 #
 
-WEB_DIR_BASE=~/www/maven2/org/bibsonomy/bibsonomy
+read -p "enter version nr.: " VERSION
+WEB_DIR_BASE="~/www/maven2/org/bibsonomy/bibsonomy"
 USER=bibsonomyupload
 HOST=bugs.cs.uni-kassel.de
 SERVER=${USER}@${HOST}
 WORKSPACE_LOC=~/workspace/bibsonomy
 
-# check command line args
-if [ $# -ne 1 ]
+# check version
+if [ -z "$VERSION" ]
 then
-	echo "USAGE: $0 <new_version_number>"
+	echo "no version number"
 	exit 1
 fi
 
 # create dir
-FOLDER=$WEB_DIR_BASE/$1
+FOLDER=$WEB_DIR_BASE/$VERSION
 ssh $SERVER "mkdir $FOLDER"
 
 # copy file
-FILE=$FOLDER/bibsonomy-$1.pom
+FILE=$FOLDER/bibsonomy-$VERSION.pom
 scp $WORKSPACE_LOC/pom.xml $SERVER:$FILE
 
 # create checksums

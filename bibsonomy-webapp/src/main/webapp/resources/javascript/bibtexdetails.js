@@ -31,9 +31,9 @@ $(function() {
 		cache: true,
 	    select: function(event, ui) {
 		 	var $panel = $(ui.panel);
-		 	if ($panel.is(":empty")) {
+//		 	if ($panel.is(":empty")) {
 		 		$panel.append(getString("bibtex.citation_format.loading"));
-		 	}
+//		 	}
 	    }
 		           }); //{event: "mouseover"} // only nice with fixed height :(
 
@@ -42,16 +42,16 @@ $(function() {
     /*
      * (un)folding of boxes
      */
-	$("a.foldUnfold").click(function(e){
-		e.preventDefault();
-		var content = $($(this).attr("href"));
-		if(content.is(":visible")){
-			$(this).find("img").replaceWith($("img#icon_expand").clone().removeAttr('id'));
-			content.hide();
-		} else {
-			$(this).find("img").replaceWith($("img#icon_collapse").clone().removeAttr('id'));
-			content.show();
-		}
-	});
+//	$("a.foldUnfold").click(function(e){
+//		e.preventDefault();
+//		var content = $($(this).attr("href"));
+//		if(content.is(":visible")){
+//			$(this).find("img").replaceWith($("img#icon_expand").clone().removeAttr('id'));
+//			content.hide();
+//		} else {
+//			$(this).find("img").replaceWith($("img#icon_collapse").clone().removeAttr('id'));
+//			content.show();
+//		}
+//	});
 });
 

@@ -1,22 +1,26 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.List;
+
+import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.webapp.command.actions.PictureCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.picture.GravatarStdPictureHandlerFactory;
 import org.bibsonomy.webapp.util.picture.PictureHandler;
 import org.bibsonomy.webapp.util.picture.PictureHandlerFactory;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
- * this controller returns handles picture upload and download
+ * this controller handles picture download
  * @author wla, cut
  */
 public class PictureController implements MinimalisticController<PictureCommand>, ErrorAware, RequestAware {
@@ -35,35 +39,33 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 */
 	protected static boolean PREFER_GRAVATAR_DEFAULT = true;
 	
-	private FileLogic fileLogic;
 	private RequestLogic requestLogic;
 	
 	private LogicInterface logic;
 
 	private Errors errors = null;
 	
-	private final PictureHandlerFactory pictureHandlerFactory;
+	private PictureHandlerFactory pictureHandlerFactory;
 	
 	/**
 	 * Creates a new {@code PictureController} instance.
 	 */
 	public PictureController ()
 	{
-		//TODO: use bean + getter
-		pictureHandlerFactory = new GravatarStdPictureHandlerFactory();
+		//nothing to do
 	}
 	
 	@Override
 	public PictureCommand instantiateCommand() {
-		PictureCommand command = new PictureCommand();
-
-		return command;
+		return new PictureCommand();
 	}
 
 	@Override
-	public View workOn(PictureCommand command) {
+	public View workOn(final PictureCommand command) {
 		final String method = requestLogic.getMethod();
-		if ("GET".equals(method)) { 
+		
+		if ( command.getRequestedUser() != null && "GET".equals(method) )
+		{ 
 			/*
 			 * picture download
 			 */
@@ -85,15 +87,69 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		
 		final String requestedUserName = command.getRequestedUser();
 		
-		User requestedUser = logic.getUserDetails(requestedUserName);
+		final User requestedUser = logic.getUserDetails(requestedUserName);
+		
+		PictureHandler handler;
+		
+		// test if user's profile picture is visible
+		if ( isPictureVisible(requestedUser, command.getLoginUser()) )
+			handler = pictureHandlerFactory.getPictureHandler( requestedUser, command );
+		else
+		{
+			//elsewise handle request like a request for default user
+			final User user = logic.getUserDetails( "" );
+			handler = pictureHandlerFactory.getPictureHandler( user, command );
+		}
+		return handler.getProfilePictureView();
+	}
+	
+	/**
+	 * Checks if the loginUser may see the profile picture of the requested user.
+	 * 
+	 * @param requestedUser
+	 * @param loginUserName
+	 * @return true if and only if the user logged in may see the picture of the user requested
+	 */
+	private boolean isPictureVisible ( final User requestedUser, final User loginUser )
+	{
+		final String requestedUserName = requestedUser.getName();
+		final String loginUserName = loginUser.getName();
+		
+		if (!present(requestedUserName) ) {
+			return false;
+		}
+		/*
+		 * login user may always see his/her photo
+		 */
+		if (requestedUserName.equals(loginUserName) ) 
+			return true;
 		
 		/*
-		 * TODO: we should test if user's profile picture is visible anyway.
-		 * Otherwise Gravatar picture mustn't be shown, too.
+		 * Check the visibility depending on the profile privacy level.
 		 */
-		
-		PictureHandler handler = pictureHandlerFactory.getPictureHandler( requestedUser, command );
-		return handler.getProfilePictureView();
+		final ProfilePrivlevel visibility = requestedUser.getSettings().getProfilePrivlevel();
+		switch(visibility) {
+		case PUBLIC:
+			return true;
+		case FRIENDS:
+			if (present(loginUserName)) //TODO: why shouldn't it?!
+			{
+				final List<User> friends = logic.getUserRelationship(requestedUserName, UserRelation.OF_FRIEND, null);
+				for ( final User friend : friends )
+				{
+					if ( loginUserName.equals(friend.getName()) )
+						return true;
+				}
+			}
+			//all else:
+			//$FALL-THROUGH$
+		case PRIVATE:
+			//only the requested user her-/hisself may see her/his profile picture;
+			//we already tested above if login equals requested user! (nothing to do)
+			//$FALL-THROUGH$
+		default:
+			return false;
+		}
 	}
 	
 
@@ -111,23 +167,25 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * @param requestLogic the requestLogic to set
 	 */
 	@Override
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
 	/**
-	 * @param fileLogic the fileLogic to set
-	 */
-	public void setFileLogic(FileLogic fileLogic) {
-		this.fileLogic = fileLogic;
-	}
-	
-	/**
 	 * Sets this controller's DBLogic.
 	 * @param dbl
 	 */
-	public void setLogic ( LogicInterface dbl )
+	public void setLogic ( final LogicInterface dbl )
 	{
 		logic = dbl;
+	}
+	
+	/**
+	 * Sets this controller's {@link PictureHandlerFactory} instance.
+	 * @param factory
+	 */
+	public void setPictureHandlerFactory ( final PictureHandlerFactory factory )
+	{
+		pictureHandlerFactory = factory;
 	}
 }

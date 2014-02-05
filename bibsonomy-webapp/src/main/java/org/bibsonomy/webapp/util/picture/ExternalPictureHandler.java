@@ -8,6 +8,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.PictureCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.springframework.http.HttpStatus;
 
 /**
  * Base class of {@link PictureHandler} implementations applying external picture services.
@@ -49,6 +50,8 @@ public abstract class ExternalPictureHandler extends AbstractPictureHandler
 		
 		ExtendedRedirectView resultV = new ExtendedRedirectView( (present(pictureURL))? pictureURL.toString() : "" );
 		resultV.setContentType( "image/jpg" );
+		resultV.setHttp10Compatible(false);
+		resultV.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
 		return resultV;
 	}
 
