@@ -31,18 +31,25 @@
        				<th>Issue Time</th>
        				<th>Expiration Time</th>
        			</tr>
-       		  	<!-- TODO: show only non expired tokens -->
-       		  	<!-- TODO: show only access tokens (type=1) (remove request tokens) -->
+       		  	<!-- done TODO: show only non expired tokens ... should work if isExpired autoupdates-->
+       		  	<!-- done TODO: show only access tokens (type=1) (remove request tokens)  should wor  SQL query implementedk-->
        		  	<c:forEach items="${command.oauthUserInfo}" var="oauthInfo">
-       		       	<tr>
-       		       		<th><img src="${oauthInfo.appIconUrl}"/></th>
-       		       		<th>${oauthInfo.appTitle}</th>
-       		       		<th>${oauthInfo.appId}</th>
-       		       		<th><fmt:formatDate value="${oauthInfo.issueTime}" pattern="yyyy-MM-dd hh:mm" /></th>
-       		       		<th><fmt:formatDate value="${oauthInfo.expirationTime}" pattern="yyyy-MM-dd hh:mm" /></th>
-       		       		<!-- TODO: delete button at present not implemented -->
-       		       		<!-- <th><input type="button" class="adminBtn" value="Delete" onclick="alert('OAuth access deleted')"/> </th> -->
-       		       	</tr> 
+	       		       	<tr>
+	       		       		<th><img src="${oauthInfo.appIconUrl}"/></th>
+	       		       		<th>${oauthInfo.appTitle}</th>
+	       		       		<th>${oauthInfo.appId}</th>
+	       		       		<th><fmt:formatDate value="${oauthInfo.issueTime}" pattern="yyyy-MM-dd hh:mm" /></th>
+	       		       		<th><fmt:formatDate value="${oauthInfo.expirationTime}" pattern="yyyy-MM-dd hh:mm" /></th>
+	       		       		<!-- done TODO: delete button at present not implemented should work (else use the one from oauth.jspx mostly because of the warning)-->
+	       		       		<th>
+	       		       			<form action="/settings"  method="post">
+	       		       				<input type="hidden" name="selTab" value="6"/>
+	       		       				<input type="hidden" name="action" value="Delete" /> <!--class="adminBtn"-->
+	       		       				<input type="hidden" name="accessTokenDelete" value="${oauthInfo.accessToken}"/>
+	       		       				<input type="submit" value="Delete"/>
+	       		       			</form>
+	       		       		</th>
+	       		       	</tr> 
 				</c:forEach>       		
        		</table>
       	</fieldset>

@@ -11,6 +11,7 @@ import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthDeleteInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 
 /**
@@ -119,6 +120,13 @@ public interface IOAuthLogic {
 	 * @param oauthToken
 	 */
 	public OAuthEntry readProviderToken(String oauthToken);
+	
+	/**
+	 *  remove an OauthAccess using the AccessToken and Username to query
+	 *  
+	 *  @param odelete
+	 */
+	public void removeSpecificAccessToken(String userName, String accessToken);
 	
 	/**
 	 * update given OAuth token entry (e.g. authorize)

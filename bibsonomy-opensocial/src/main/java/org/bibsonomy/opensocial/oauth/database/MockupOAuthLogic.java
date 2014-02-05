@@ -16,6 +16,7 @@ import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthDeleteInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 
@@ -103,6 +104,12 @@ public class MockupOAuthLogic implements IOAuthLogic {
 	public List <OAuthUserInfo> getOAuthUserApplication(String username) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
+	}
+
+	@Override
+	public void removeSpecificAccessToken(String userName, String accessToken) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

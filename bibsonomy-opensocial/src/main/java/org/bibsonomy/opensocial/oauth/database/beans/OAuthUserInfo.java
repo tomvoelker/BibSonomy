@@ -30,6 +30,7 @@ public class OAuthUserInfo {
 	private boolean isExpired;
 	private Date issueTime;
 	private Date expirationTime;
+	private String accessToken;
 	
 	/**
 	 * Calculate and set the variables expirationTime and isExpired
@@ -225,5 +226,19 @@ public class OAuthUserInfo {
 	 */
 	public void setAppIconUrl(String appIconUrl) {
 		this.appIconUrl = appIconUrl;
+	}
+	/**
+	 * 
+	 * @return the accessToken
+	 */
+	public String getAccessToken(){
+		return this.accessToken;
+	}
+	/**
+	 * 
+	 * @param accessToken The accessToken to set
+	 */
+	public void setAccessToken(String accessToken){
+		this.accessToken=accessToken;
 	}
 }

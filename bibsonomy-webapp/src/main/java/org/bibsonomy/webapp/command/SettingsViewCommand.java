@@ -41,12 +41,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private String action;
 	
 	/**
+	 * the AccessToken you want to delete
+	 */
+	
+	private String accessTokenDelete;
+	/**
 	 * The OAuth informations about the User
 	 */
-	private List <OAuthUserInfo> oauthUserInfo;
+	private List<OAuthUserInfo> oauthUserInfo;
 	
 	/**
-	 * List of all valid Bibsonomy OAuth consumers
+	 * List of all valid OAuth consumers
 	 */
 	private List<OAuthConsumerInfo> consumerInfo;
 	
@@ -726,6 +731,20 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public boolean getDeletePicture ()
 	{
 		return deletePicture;
+	}
+	
+	/**
+	 * gets the consumerKey attribute
+	 * @return consumerKey used for action
+	 */
+	public String getAccessTokenDelete()
+	{
+		return this.accessTokenDelete;
+	}
+	
+	public void setAccessTokenDelete ( String accessTokenDelete )
+	{
+		this.accessTokenDelete=accessTokenDelete;
 	}
 
 }
