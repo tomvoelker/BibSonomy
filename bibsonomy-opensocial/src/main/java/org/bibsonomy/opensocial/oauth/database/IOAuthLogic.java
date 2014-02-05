@@ -11,7 +11,6 @@ import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
-import org.bibsonomy.opensocial.oauth.database.beans.OAuthDeleteInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 
 /**
