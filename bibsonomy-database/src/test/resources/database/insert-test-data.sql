@@ -241,6 +241,13 @@ INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) V
 ('testgroup2', 4,           1, 0),
 ('testgroup3', 5,           2, 0),
 ('testgroup4', 6,           2, 1);
+
+-- 
+-- Data for table `pendingGroupids`
+-- 
+INSERT INTO `pendingGroupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) VALUES 
+('testpendinggroup1', 7,           0, 1),
+('testpendinggroup2', 8,           1, 0),
  
 -- 
 -- Data for table `groups`
@@ -371,7 +378,10 @@ INSERT INTO `log_prediction` VALUES
 INSERT INTO `pendingUser` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`,`interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`,`activation_code`) VALUES 
 -- user_name     user_email                   user_password   user_homepage                           user_realname   spammer   openurl                       reg_date               ip_address id    tmp_password tmp_request_date tagbox_style tagbox_sort tagbox_minfreq tagbox_tooltip list_itemcount  spammer_suggest birthday gender profession institution interests hobbies place                               profilegroup api_key                             updated_by updated_at             role lang to_classify log_level activation_code
 ('activationtestuser1',   'testuser1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test Activation User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, '6dfab2a50e9629f780306ff34ff3d856'),
-('activationtestuser2',   'testuser2@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser2',   'Test Activation User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-07-08 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 'ac47d3f92b90c89e46170f7049beda37');
+('activationtestuser2',   'testuser2@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser2',   'Test Activation User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-07-08 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 'ac47d3f92b90c89e46170f7049beda37'),
+('testpendinggroup1',   'testpendinggroup1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test Pending Group User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 6,  'en', 0, 1, '6d1232a50e9629f780306ff34ff3d856'),
+('testpendinggroup2',   'testpendinggroup1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test Pending Group User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 6,  'en', 0, 1, 'ac47d3f9fdljc89e46170f7049beda37');
+
 
 -- 
 -- Data for table `picked_concepts`
