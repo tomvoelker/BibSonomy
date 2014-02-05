@@ -382,9 +382,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 */
 		user.setToClassify(user.getToClassify() == null ? 1 : user.getToClassify());
 		/*
-		 * if it is not a limited user that is to be inserted, set user's default role
+		 * if it is not a limited or groupuser that is to be inserted, set user's default role
 		 */
-		if (!Role.LIMITED.equals(user.getRole())) {
+		if (!Role.LIMITED.equals(user.getRole()) || !Role.GROUPUSER.equals(user.getRole())) {
 			user.setRole(Role.DEFAULT);
 		}
 		/*
@@ -651,7 +651,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 
-    private void deletePendingUser(final String username, final DBSession session) {
+	/**
+	 * Delete a pending user.
+	 * @param username
+	 * @param session
+	 */
+    public void deletePendingUser(final String username, final DBSession session) {
         if (username == null) {
             ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "username was null");
         }

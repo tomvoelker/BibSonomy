@@ -883,6 +883,26 @@ public class DBLogic implements LogicInterface {
 		// session.close();
 		// }
 	}
+	
+	@Override
+	public void deletePendingGroup(final String groupName) {
+		final DBSession session = openSession();
+		try {
+			this.groupDBManager.deletePendingGroup(groupName, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	@Override
+	public List<Group> getPendingGroups(final int start, final int end) {
+		final DBSession session = openSession();
+		try {
+			return this.groupDBManager.getPendingGroups(start, end, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)

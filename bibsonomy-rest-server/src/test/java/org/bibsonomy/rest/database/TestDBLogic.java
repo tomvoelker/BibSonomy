@@ -1100,4 +1100,14 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public List<Group> getPendingGroups(int start, int end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deletePendingGroup(String groupName) {
+		// TODO Auto-generated method stub
+	}
 }

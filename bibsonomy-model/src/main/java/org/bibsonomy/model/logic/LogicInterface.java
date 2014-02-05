@@ -158,6 +158,16 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public List<Group> getGroups(int start, int end);
 
+
+	/**
+	 * Returns all pending groups of the system.
+	 * 
+	 * @param end
+	 * @param start
+	 * @return a set of pending groups, an empty set else
+	 */
+	public List<Group> getPendingGroups(int start, int end);
+	
 	/**
 	 * Returns details of one group.
 	 * 
@@ -276,6 +286,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param groupName the group to delete
 	 */
 	public void deleteGroup(String groupName);
+	
+	/**
+	 * Removes the given pending group and the corresponding pending user.
+	 * 
+	 * @param groupName the pending group to delete
+	 */
+	public void deletePendingGroup(String groupName);
 
 	/**
 	 * Removes an user from a group.

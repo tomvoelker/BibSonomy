@@ -72,6 +72,27 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, groupDb.getAllGroups(1, 2, this.dbSession).size());
 		assertEquals(3, groupDb.getAllGroups(0, 3, this.dbSession).size());
 	}
+	
+	/**
+	 * tests getPendingGroups
+	 */
+	@Test
+	public void getPendingGroups() {
+		final List<Group> pendingGroups = groupDb.getPendingGroups(0, 100, this.dbSession);
+		assertEquals(2, pendingGroups.size());
+
+		for (final Group group : pendingGroups) {
+			if (group.getName().startsWith("testpendinggroup")) {
+				final int groupNr = Integer.parseInt("" + group.getName().charAt(group.getName().length() - 1));
+				assertEquals(6 + groupNr, group.getGroupId());
+			}
+		}
+
+		// make sure that limit and offset work
+		assertEquals(1, groupDb.getPendingGroups(0, 1, this.dbSession).size());
+		assertEquals(1, groupDb.getPendingGroups(1, 2, this.dbSession).size());
+		assertEquals(3, groupDb.getPendingGroups(0, 3, this.dbSession).size());
+	}
 
 	/**
 	 * tests getGroupByName

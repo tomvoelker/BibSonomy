@@ -11,6 +11,14 @@
 		ORDER BY i.group_name
 		LIMIT #limit# OFFSET #offset#
 	</select>
+	
+	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
+		FROM pendingGroupids i 
+		  JOIN pendingUser u ON (i.group_name = u.user_name)
+		ORDER BY i.group_name
+		LIMIT #limit# OFFSET #offset#
+	</select>
 
 	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="string">
 		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
@@ -53,7 +61,10 @@
 	</select>	
 
 	<select id="getNewGroupId" resultClass="int">
-		SELECT MAX(`group`) + 1 AS id FROM groupids
+		SELECT MAX(g.id) + 1 AS id FROM
+    		(SELECT MAX(`group`) AS id FROM groupids 
+       		UNION 
+       		SELECT MAX(`group`) AS id FROM pendingGroupids) AS g
 	</select>
 
 	<select id="getGroupIdsForUser" resultClass="int" parameterClass="string">

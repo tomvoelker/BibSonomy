@@ -705,6 +705,16 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
-		throw new UnsupportedOperationException(); // TODO: implement me
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<Group> getPendingGroups(int start, int end) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void deletePendingGroup(String groupName) {
+		throw new UnsupportedOperationException();
 	}
 }
