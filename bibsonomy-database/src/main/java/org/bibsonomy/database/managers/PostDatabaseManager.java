@@ -922,42 +922,17 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session	a database session
 	 * @return list of  posts
 	 */		
-	/*
-	 * FIXME: This method is BibTex-specific. Please either make it generic (preferable, see examples above) or move it to the 
-	 * {@link org.bibsonomy.database.managers.BibTexDatabaseManager}
-	 */
-	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final String loginUserName, final FilterEntity filter, 
-			int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		final P param;
-		//group param
-		if (limit != 1) {
-			limit = 1000;
-		}
-		/*
-		 * FIXME: do we actually need the 
-		 * loginUserName and
-		 * systemTags
-		 * The query should be simplified: I.e. systemtags etc. can be ignored
-		 * The signature of the method can then be simplified
-		 * 
-		 */
-		param = this.createParam(limit, offset);
-		param.setUserName(loginUserName);
+	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final FilterEntity filter, 
+			int limit, final int offset, final DBSession session) {
+		final P param = this.createParam(limit, offset);
 		param.setHash(resourceHash);
 		param.setRequestedUserName(requestedUserName);
 		param.setFilter(filter);
-		param.addAllToSystemTags(systemTags);
 		
-		/*if (filter.equals(FilterEntity.POSTS_HISTORY_GOLD))
-			return this.postList("getGoldStandardHistory", param, session)
-		else */
-		/*
-		 * FIXME: Is this if really necessary? The filter is used the chain already.
-		 */
-		if (filter.equals(FilterEntity.POSTS_HISTORY_BIBTEX))
-			return this.postList("getBibTexHistory", param, session);  
+		if (present(requestedUserName))
+			return this.postList("get" + this.resourceClassName + "History", param, session);  
 		else
-			return new LinkedList<Post<R>>();
+			return this.postList("getGoldStandardHistory", param, session); 
 	}
 	
 	/**

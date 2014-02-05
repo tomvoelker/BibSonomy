@@ -19,6 +19,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -383,6 +384,15 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 
 	private void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String oldHash, final String newResourceHash, final DBSession session) {
 		this.plugins.onGoldStandardUpdate(oldContentId, newContentId, newResourceHash, oldHash, session);
+		
+		/* 
+		 * rewrites the history
+		 */
+		BibTexParam param = new BibTexParam();
+		param.setNewContentId(newContentId);
+		param.setRequestedContentId(oldContentId);
+		this.update("updateGoldStandardHistory", param, session);
+
 	}
 	
 	private void onGoldStandardDelete(final String resourceHash, final DBSession session) {

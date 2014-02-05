@@ -5,6 +5,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -71,6 +72,15 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	@Override
 	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
 		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
+		
+		/* 
+		 * rewrites the history
+		 */
+		BookmarkParam param = new BookmarkParam();
+		param.setNewContentId(newContentId);
+		param.setRequestedContentId(oldContentId);
+		this.update("updateBookmarkHistory", param, session);
+
 	}
 
 	/*

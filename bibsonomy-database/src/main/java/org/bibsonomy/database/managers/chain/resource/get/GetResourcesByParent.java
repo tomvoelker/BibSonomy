@@ -17,13 +17,12 @@ public class GetResourcesByParent<R extends Resource, P extends ResourceParam<R>
     //@Override
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsWithHistory(param.getHash(),param.getRequestedUserName(), param.getUserName(), param.getFilter(), param.getLimit(), 
-				param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsWithHistory(param.getHash(),param.getRequestedUserName(), param.getFilter(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getFilter() == FilterEntity.POSTS_HISTORY_BIBTEX) || (param.getFilter() == FilterEntity.POSTS_HISTORY_GOLD);
+		return (param.getFilter() == FilterEntity.POSTS_HISTORY);
 	}
 
 }

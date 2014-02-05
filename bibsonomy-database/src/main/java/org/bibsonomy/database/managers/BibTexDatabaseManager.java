@@ -423,10 +423,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		/* 
 		 * rewrites the history
 		 */
-//		BibTexParam param = new BibTexParam();
-//		param.setNewContentId(newContentId);
-//		param.setRequestedContentId(oldContentId);
-//		this.update("updateBibTexHistory", param, session);
+		BibTexParam param = new BibTexParam();
+		param.setNewContentId(newContentId);
+		param.setRequestedContentId(oldContentId);
+		this.update("updateBibTexHistory", param, session);
 	}
 	
 	/*

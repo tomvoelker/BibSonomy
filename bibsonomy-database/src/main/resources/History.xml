@@ -5,68 +5,95 @@
 	<update id="updateBibTexHistory" parameterClass="bibtexParam">
 		UPDATE log_bibtex
 		SET current_content_id = #newContentId#
-		WHERE current_content_id = #requestedContentId# OR
-			new_content_id = #newContentId#
+		WHERE current_content_id = #requestedContentId#
+		   OR new_content_id = #newContentId#
 	</update>
 	
-	<select id="getBibTexHistory" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPost" >
+	<update id="updateBookmarkHistory" parameterClass="bookmarkParam">
+		UPDATE log_bookmark
+		SET current_content_id = #newContentId#
+		WHERE current_content_id = #requestedContentId#
+		   OR new_content_id = #newContentId#
+	</update>
+	
+	<update id="updateGoldStandardHistory" parameterClass="bibtexParam">
+		UPDATE log_gold_standard
+		SET current_content_id = #newContentId#
+		WHERE current_content_id = #requestedContentId#
+		   OR new_content_id = #newContentId#
+	</update>
+	
+	<select id="getBibTexHistory" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM bibtex t1 FORCE INDEX(user_name_date_content_id_idx), bibhash h
 		      WHERE <include refid="bibtexSimHash3"/>
-		            AND t1.user_name = #requestedUserName#	
+		            AND t1.simhash2 = #hash# 
+					AND t1.user_name = #requestedUserName#	
 		            <include refid="restrictToGroups"/>
-			  		<include refid="sysTagsEntryType"/>
-			  		<include refid="sysTagsYear"/>
 		      ORDER BY date DESC) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
-		WHERE b2.simhash2 = #hash# 
-		  AND b2.user_name = #requestedUserName# 
-		UNION
+		WHERE b2.group = g.group
+	UNION
 		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />
 		FROM (SELECT t1.*, h.ctr AS count
-		      FROM log_bibtex t1, bibhash h
+		      FROM log_bibtex t1, bibtex b, bibhash h
 		      WHERE <include refid="bibtexSimHash3"/>
-		            AND t1.user_name = #requestedUserName#	
+		      		AND t1.current_content_id = b.content_id
+		      		AND b.simhash2 = #hash# 
+					AND t1.user_name = #requestedUserName#	
 		            <include refid="restrictToGroups"/>
-			  		<include refid="sysTagsEntryType"/>
-			  		<include refid="sysTagsYear"/>
-		      ORDER BY date DESC) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g,
-		bibtex b
-		WHERE b.content_id = b2.current_content_id
-		  AND b.simhash2 = #hash# 
-		  AND b.user_name = #requestedUserName#
-		ORDER BY content_id
-	    LIMIT #limit# OFFSET #offset#
+		      ORDER BY date DESC
+			  LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN log_tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
+		WHERE b2.group = g.group
+	ORDER BY content_id
 	</select>
 	
-	<!-- <insert id="insertGoldStandardHistory" parameterClass="bibtexParam">
-		INSERT INTO history_goldstandard (history_id, goldstandard_id) VALUES
-			(#requestedContentId#,  #requestedContentId#);
-	</insert>
-	
-	<update id="updateGoldStandardHistory" parameterClass="bibtexParam">
-		UPDATE history_goldstandard h
-		SET goldstandard_id = (SELECT g.content_id
-							  FROM gold_standard g
-							  WHERE simhash1 = #hash#
-							  LIMIT 1)
-		WHERE h.goldstandard_id =  #requestedContentId#
-	</update>
-	
-	<select id="getGoldStandardHistory" parameterClass="bibtexParam" resultMap="GoldStandardPublicationCommon.goldStandardPost" >
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings 
-		FROM (gold_standard b, gold_standard_publication_references r)
-		WHERE r.publication = #hash# 
-		  AND b.simhash1 = r.reference
-		UNION
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count, -1 AS rating, -1 AS number_of_ratings 
-		FROM (log_gold_standard b, gold_standard_publication_references r, gold_standard b2)
-		WHERE r.publication = #hash# 
-		  AND b2.simhash1 = r.reference
-		  AND h.goldstandard_id = b2.content_id
-		  AND h.history_id = b.content_id
+	<select id="getGoldStandardHistory" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
+		FROM gold_standard b
+		LEFT JOIN review_ratings_cache c ON c.interHash = b.simhash1
+		WHERE b.simhash1 = #hash# <!-- AND b.content_type = #contentType# ???-->
+		ORDER BY b.date DESC
+	UNION
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
+		FROM log_gold_standard b, gold_standard b2
+		LEFT JOIN review_ratings_cache c ON c.interHash = b.simhash1
+		WHERE b2.simhash1 = #hash# <!-- AND b.content_type = #contentType# ???-->
+		  AND b2.content_id = b.current_content_id
+		ORDER BY b.date DESC
+		LIMIT #limit# OFFSET #offset#
+	ORDER BY content_id
 	</select>
-	-->
+	
+	<select id="getBookmarkHistory" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, b.content_id, t.tag_name, title, description, b.user_name, b.date, 
+		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, t.change_date, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.user_name, t1.date, t1.content_id, t1.group, t1.change_date
+		      FROM bookmark t1
+		      WHERE t1.book_url_hash = #hash#
+		         <include refid="restrictToGroups"/>
+		         AND user_name = #requestedUserName#
+		      ORDER BY t1.date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b
+		LEFT OUTER JOIN tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, urls u, groupids g
+		WHERE b.book_url_hash = u.book_url_hash
+			AND b.group = g.group
+	UNION
+		SELECT g.*, b.content_id, t.tag_name, title, description, b.user_name, b.date, 
+		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, t.change_date, <include refid="reviewRatingsRows" />
+		FROM (SELECT t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.user_name, t1.date, t1.content_id, t1.group, t1.change_date
+		      FROM log_bookmark t1, bookmark bm
+		      WHERE bm.book_url_hash = #hash#
+		        AND bm.content_id = t1.current_content_id
+		        <include refid="restrictToGroups"/>
+		        AND user_name = #requestedUserName#
+		      ORDER BY t1.date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b
+		LEFT OUTER JOIN log_tas t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, urls u, groupids g
+		WHERE b.book_url_hash = u.book_url_hash
+			AND b.group = g.group
+	ORDER BY content_id
+	</select>
 </sqlMap>
