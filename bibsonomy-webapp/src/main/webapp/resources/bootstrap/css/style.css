@@ -460,3 +460,5 @@ div.newsbox ul.news {
 	line-height: 18px;
 	margin-right: 2px;
 }
+
+span.help-popover {cursor:help}
