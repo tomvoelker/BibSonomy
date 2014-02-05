@@ -8,6 +8,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bsbibcomp="urn:jsptagdir:/WEB-INF/tags/bs/bibcomponents"
 	xmlns:bsnav="urn:jsptagdir:/WEB-INF/tags/bs/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -25,10 +26,29 @@
 			<script type="text/javascript" src="/resources/bootstrap/js/jquery.autoellipsis-1.0.10.min.js"><!-- KEEP ME --></script>
 			<!-- We're USING collapsing panels on this page. Here we can activate it. -->
 			<script type="text/javascript" src="/resources/bootstrap/js/collapse.js"><!-- KEEP ME --></script>
+			<script type="text/javascript" src="/resources/bootstrap/js/tooltip.js"><!-- KEEP ME --></script>
+			<script type="text/javascript" src="/resources/bootstrap/js/popover.js"><!-- KEEP ME --></script>
 			<script type="text/javascript">
 				$('.collapse').collapse();
 				$(function() {
 					$('.media-body .desc').ellipsis();
+					$('.toggleAdvanced').click(function(event){
+						event.preventDefault();
+						$(this).parents('li.media').find('.advanced').toggle();
+					});
+					
+					$('.post-popover, .help-popover').popover({ 
+					    html : true,
+					    trigger: "hover",
+					    container: 'body',
+					    placement: 'auto',
+					    title: function() {
+					      	return $(this).next().html();
+					    },
+					    content: function() {
+					      	return $(this).next().next().html();
+					    }
+					});
 				});
 			</script>
 			<style type="text/css">
@@ -37,8 +57,20 @@
 				.edit-media-buttons {position: absolute; right: 15px;}
 				.media-list p {font-size: 12px; line-height: 1.4; height: 1.4em; padding: 0; margin: 0 0 0.2em 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
 				
-				ul.tags { height: 1.4em; font-size: 12px; line-height: 1.2; padding: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
-				ul.tags li {padding: 2px; background: #efefef; border-radius: 3px; }
+				ul.tags { 
+					height: 1.4em; 
+					font-size: 12px; 
+					line-height: 1.2; 
+					padding: 0; 
+					width: 100%; 
+					overflow: hidden;
+					text-overflow: ellipsis;
+					-o-text-overflow: ellipsis;
+					float: left;
+					max-width: 86%;
+				}
+				ul.tags li { overflow:hidden; white-space: nowrap; text-overflow: ellipsis; padding:0; white-space: nowrap; text-overflow: ellipsis;}
+				ul.tags li a {padding: 2px; background: #efefef; border-radius: 3px; }
 				
 				.media-list .media-body p.desc {  height: 2.8em;  overflow:hidden;  white-space: normal;}
 				.media-list .media-body p.url, .media-list .media-body p.authors { border-bottom: 1px solid #ccc; }
@@ -198,8 +230,8 @@
 											<li><a href="#">Community Page <span class="badge">34</span></a></li>
 										</ul>
 									</div>
-									<a class="pull-left thumbnail" href="http://www.tagesschau.de">
-										<img alt="bild" data-src="/resources/bootstrap/js/holder.js/64x88"  class="img-responsive" />
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.tagesschau.de">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
 									</a>
 							    	<div class="media-body">
 							    		<div class="row">
@@ -222,8 +254,8 @@
 											<li><a href="#">Community Page <span class="badge">11</span></a></li>
 										</ul>
 									</div>
-									<a class="pull-left thumbnail" href="http://www.spiegel.de">
-										<img alt="bild" data-src="/resources/bootstrap/js/holder.js/64x88"  class="img-responsive" />
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.spiegel.de">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
 									</a>
 							    	<div class="media-body">
 										<div class="row">
@@ -249,8 +281,8 @@
 											<li><a href="#">Community Page <span class="badge">28</span></a></li>
 										</ul>
 									</div>
-									<a class="pull-left thumbnail" href="http://www.faz.net">
-										<img alt="bild" data-src="/resources/bootstrap/js/holder.js/64x88"  class="img-responsive" />
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.faz.net">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
 									</a>
 							    	<div class="media-body">
 										<div class="row">
@@ -276,7 +308,7 @@
 											<li><a href="#">delete</a></li>
 										</ul>
 									</div>
-									<a class="pull-left thumbnail" href="#">
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="#">
 										<img alt="bild" data-src="/resources/bootstrap/js/holder.js/64x88"  class="img-responsive" />
 									</a>
 							    	<div class="media-body">
@@ -300,8 +332,8 @@
 											<li><a href="#">delete</a></li>
 										</ul>
 									</div>
-									<a class="pull-left thumbnail" href="http://www.spiegel.de">
-										<img alt="bild" data-src="/resources/bootstrap/js/holder.js/64x88"  class="img-responsive" />
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.spiegel.de">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
 									</a>
 							    	<div class="media-body">
 										<div class="row">
@@ -326,8 +358,8 @@
 											<li><a href="#">blubb</a></li>
 										</ul>
 									</div>
-									<a class="pull-left thumbnail" href="http://www.faz.net">
-										<img alt="bild" data-src="/resources/bootstrap/js/holder.js/64x88"  class="img-responsive" />
+									<a class="hidden-xs hidden-md pull-left thumbnail" href="http://www.faz.net">
+										<img alt="bild" src="http://placekitten.com/g/64/88"  class="img-responsive" />
 									</a>
 							    	<div class="media-body">
 										<div class="row">
@@ -459,6 +491,27 @@
 							</div>
 						</div>
 					</div>
+					
+					<br /><br />	
+					
+					<h2>Quick helps</h2>
+					<form>
+						<div class="form-group">
+							<label class="col-sm-2 control-label" for="author">Author <bsbibcomp:quickhelp messagesPropertiesKey="post.resource.author.help" /></label>
+							<div class="col-sm-10">
+								<input id="author" type="text" class="form-control" />
+							</div>
+						</div>
+						<br class="clearfix"/><br /><br />
+						<div class="form-group">
+							<label class="col-sm-2 control-label" for="editor">Editor <bsbibcomp:quickhelp messagesPropertiesKey="post.resource.editor.help" /></label>
+							<div class="col-sm-10">
+								<input id="editor" type="text" class="form-control" />
+							</div>
+						</div>
+					</form>
+					
+					<br /><br />	
 					
 					<br /><br />	
 				</div><!-- /.col-md-10 -->
