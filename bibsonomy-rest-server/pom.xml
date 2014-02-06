@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>2.0.41-SNAPSHOT</version>
+		<version>2.0.42-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -78,18 +78,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>artifactory-cs-kassel</id>
-			<url>http://artifactory.cs.uni-kassel.de/artifactory/repo</url>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>dev.bibsonomy.org</id>
-			<name>Official Source Code Releases of selected BibSonomy Modules</name>
-			<url>http://dev.bibsonomy.org/maven2/</url>
-		</repository>
-	</repositories>
 </project>

@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
@@ -98,14 +99,15 @@ public class MetsBibTexMLGenerator {
 	 * @param pumaData
 	 */
 	public void setMetadata(final PumaData<BibTex> pumaData) {
-		this.post.getPost().setDescription(pumaData.getPost().getDescription());
-		this.post.getPost().setContentId(pumaData.getPost().getContentId());
-		this.post.getPost().setDate(pumaData.getPost().getDate());
-		this.post.getPost().setGroups(pumaData.getPost().getGroups());
-		this.post.getPost().setRanking(pumaData.getPost().getRanking());
-		this.post.getPost().setResource(pumaData.getPost().getResource());
-		this.post.getPost().setTags(pumaData.getPost().getTags());
-		this.post.getPost().setUser(pumaData.getPost().getUser());
+		final Post<BibTex> pumaPost = pumaData.getPost();
+		this.post.getPost().setDescription(pumaPost.getDescription());
+		this.post.getPost().setContentId(pumaPost.getContentId());
+		this.post.getPost().setDate(pumaPost.getDate());
+		this.post.getPost().setGroups(pumaPost.getGroups());
+		this.post.getPost().setRanking(pumaPost.getRanking());
+		this.post.getPost().setResource(pumaPost.getResource());
+		this.post.getPost().setTags(pumaPost.getTags());
+		this.post.getPost().setUser(pumaPost.getUser());
 		
 		this.post.setClassification(pumaData.getClassification());
 		

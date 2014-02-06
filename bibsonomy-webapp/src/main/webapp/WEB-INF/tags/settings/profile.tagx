@@ -145,7 +145,7 @@
 						</jsp:attribute>
 					</buttons:help>
 
-					<form:select cssClass="fsInput fsSmall" path="user.useExternalPicture">
+					<form:select id="useExtPicSelect" cssClass="fsInput fsSmall" path="user.useExternalPicture">
 						<form:option label="${useExtTrue}" value="${true}" id="useExt" />
 						<form:option label="${useExtFalse}" value="${false}" id="useInt" />
 					</form:select>

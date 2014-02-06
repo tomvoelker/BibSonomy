@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -160,7 +161,8 @@ public class DLibScraper extends AbstractUrlScraper {
 					
 					if(bibtex != null){
 						// success 
-						sc.setBibtexResult(bibtex);
+						sc.setBibtexResult(StringEscapeUtils.unescapeHtml(bibtex));
+						
 						return true;
 					}else
 						throw new ScrapingFailureException("getting bibtex failed");
@@ -267,7 +269,7 @@ public class DLibScraper extends AbstractUrlScraper {
 		}
 		
 		buffer.append("\n}");
-
+		
 		return buffer.toString();
 	}
 	

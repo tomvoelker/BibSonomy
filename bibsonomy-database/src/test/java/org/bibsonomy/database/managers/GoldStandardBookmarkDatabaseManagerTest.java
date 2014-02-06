@@ -32,6 +32,7 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 		final Post<GoldStandardBookmark> post = manager.getPostDetails("", GOLD_BOOKMARK_INTERHASH, "", Collections.<Integer>emptyList(), this.dbSession);
 		final GoldStandardBookmark bookmark = post.getResource();
 		assertEquals("http://www.uni-kassel.de", bookmark.getUrl());
+		assertEquals(1025, post.getContentId().intValue());
 	}
 	
 	@Test
@@ -78,7 +79,7 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 		assertNull(manager.getPostDetails("", interhash, "", null, this.dbSession));
 		
 		assertTrue(this.pluginMock.isOnGoldStandardDelete());
-	}	
+	}
 	
 	// TODO: add a builder for posts!
 	private Post<GoldStandardBookmark> generateGoldBookmark() {
