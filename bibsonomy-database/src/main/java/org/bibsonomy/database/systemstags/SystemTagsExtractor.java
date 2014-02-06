@@ -20,41 +20,44 @@ import org.bibsonomy.model.Tag;
  */
 public class SystemTagsExtractor {
 
-    /**
-     * Removes all systemTags from a given set of tags
-     * Warning: the given Collection must support iterator.remove()
-     * @param tags = the set of tags
-     * @return number of tags, that were removed
-     */
-    public static int removeAllSystemTags(final Collection<Tag> tags) {
-	int removeCounter = 0;
-	for (final Iterator<Tag> iter= tags.iterator(); iter.hasNext();) {
-	    final Tag tag = iter.next();
-	    if (SystemTagsUtil.isSystemTag(tag.getName())) {
-		iter.remove();
-		removeCounter++;
-	    }
+	/**
+	 * Removes all systemTags from a given set of tags Warning: the given
+	 * Collection must support iterator.remove()
+	 * 
+	 * @param tags
+	 *            = the set of tags
+	 * @return number of tags, that were removed
+	 */
+	public static int removeAllSystemTags(final Collection<Tag> tags) {
+		int removeCounter = 0;
+		for (final Iterator<Tag> iter= tags.iterator(); iter.hasNext();) {
+			final Tag tag = iter.next();
+			if (SystemTagsUtil.isSystemTag(tag.getName())) {
+				iter.remove();
+				removeCounter++;
+			}
+		}
+		return removeCounter;
 	}
-	return removeCounter;
-    }
 
-    /**
-     * Removes all non-systemTags from a given set of tagNames
-     * Warning: the given Collection must support iterator.remove()
-     * @param tagNames = the set of tagNames
-     * @return number of tags, that were removed
-     */
-    public static int removeAllNonSystemTags(final Collection<String> tagNames) {
-	int removeCounter = 0;
-	for  (final Iterator<String> iter = tagNames.iterator(); iter.hasNext();) {
-	    final String tagName = iter.next();
-	    if ( !SystemTagsUtil.isSystemTag( tagName ) ) {
-		iter.remove();
-		removeCounter++;
-	    }
+	/**
+	 * Removes all non-systemTags from a given set of tagNames Warning: the
+	 * given Collection must support iterator.remove()
+	 * 
+	 * @param tagNames the set of tagNames
+	 * @return number of tags, that were removed
+	 */
+	public static int removeAllNonSystemTags(final Collection<String> tagNames) {
+		int removeCounter = 0;
+		for (final Iterator<String> iter = tagNames.iterator(); iter.hasNext();) {
+			final String tagName = iter.next();
+			if (!SystemTagsUtil.isSystemTag(tagName)) {
+				iter.remove();
+				removeCounter++;
+			}
+		}
+		return removeCounter;
 	}
-	return removeCounter;
-    }
 
     /**
      * Returns a new List containing the names of all systemTags of a given Collection of tagNames
@@ -151,14 +154,23 @@ public class SystemTagsExtractor {
      */
 	public static <T extends Resource> void handleHiddenSystemTags(Collection<Post<T>> posts, String loginUserName) {
 		for (Post<T> post: posts) {
-			if (!present(loginUserName) || !present(post.getUser()) || !loginUserName.equals(post.getUser().getName())) {
-				removeHiddenSystemTags(post.getTags());
-				post.setVisibleTags(post.getTags());
-			} else {
-				post.setHiddenSystemTags(new HashSet<Tag>());
-				post.setVisibleTags(new HashSet<Tag>());
-				separateHiddenSystemTags(post);
-			}
+			handleHiddenSystemTags(post, loginUserName);
+		}
+	}
+	
+	/**
+	 * removes all hidden System Tags if the loginUser ist not he posts owner
+	 * @param post
+	 * @param loginUserName
+	 */
+	public static <T extends Resource> void handleHiddenSystemTags(Post<T> post, String loginUserName) {
+		if (!present(loginUserName) || !present(post.getUser()) || !loginUserName.equals(post.getUser().getName())) {
+			removeHiddenSystemTags(post.getTags());
+			post.setVisibleTags(post.getTags());
+		} else {
+			post.setHiddenSystemTags(new HashSet<Tag>());
+			post.setVisibleTags(new HashSet<Tag>());
+			separateHiddenSystemTags(post);
 		}
 	}
 

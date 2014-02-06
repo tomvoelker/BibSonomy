@@ -264,7 +264,7 @@ public class UserUtils {
 		existingUser.setApiKey(!present(updatedUser.getApiKey()) ? existingUser.getApiKey()	: updatedUser.getApiKey());
 		existingUser.setBirthday(!present(updatedUser.getBirthday()) ? existingUser.getBirthday() : updatedUser.getBirthday());
 		existingUser.setGender(!present(updatedUser.getGender()) ? existingUser.getGender() : updatedUser.getGender());
-		existingUser.setGravatarAddress(!present(updatedUser.getGravatarAddress()) ? existingUser.getGravatarAddress() : updatedUser.getGravatarAddress());
+		existingUser.setUseExternalPicture(!present(updatedUser.getUseExternalPicture()) ? existingUser.getUseExternalPicture() : updatedUser.getUseExternalPicture());
 		existingUser.setHobbies(!present(updatedUser.getHobbies()) ? existingUser.getHobbies() : updatedUser.getHobbies());
 		existingUser.setInterests(!present(updatedUser.getInterests()) ? existingUser.getInterests() : updatedUser.getInterests());
 		existingUser.setIPAddress(!present(updatedUser.getIPAddress()) ? existingUser.getIPAddress() : updatedUser.getIPAddress());
@@ -275,7 +275,7 @@ public class UserUtils {
 		
 		existingUser.setOpenID(!present(updatedUser.getOpenID()) ? existingUser.getOpenID() : updatedUser.getOpenID());
 		existingUser.setLdapId(!present(updatedUser.getLdapId()) ? existingUser.getLdapId() : updatedUser.getLdapId());
-		for (RemoteUserId ruid : updatedUser.getRemoteUserIds()) {
+		for (final RemoteUserId ruid : updatedUser.getRemoteUserIds()) {
 			existingUser.setRemoteUserId(ruid);
 		}
 		

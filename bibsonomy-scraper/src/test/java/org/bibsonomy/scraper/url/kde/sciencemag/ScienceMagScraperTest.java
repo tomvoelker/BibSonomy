@@ -1,5 +1,6 @@
 /**
  *
+
  *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
  *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,

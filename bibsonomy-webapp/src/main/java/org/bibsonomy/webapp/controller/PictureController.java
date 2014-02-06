@@ -61,7 +61,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	}
 
 	@Override
-	public View workOn(PictureCommand command) {
+	public View workOn(final PictureCommand command) {
 		final String method = requestLogic.getMethod();
 		
 		if ( command.getRequestedUser() != null && "GET".equals(method) )
@@ -87,8 +87,8 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		
 		final String requestedUserName = command.getRequestedUser();
 		
-		User requestedUser = logic.getUserDetails(requestedUserName);
-		
+		final User requestedUser = logic.getUserDetails(requestedUserName);
+
 		PictureHandler handler;
 		
 		// test if user's profile picture is visible
@@ -97,7 +97,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		else
 		{
 			//elsewise handle request like a request for default user
-			User user = logic.getUserDetails( "" );
+			final User user = logic.getUserDetails( "" );
 			handler = pictureHandlerFactory.getPictureHandler( user, command );
 		}
 		return handler.getProfilePictureView();
@@ -112,8 +112,8 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 */
 	private boolean isPictureVisible ( final User requestedUser, final User loginUser )
 	{
-		String requestedUserName = requestedUser.getName();
-		String loginUserName = loginUser.getName();
+		final String requestedUserName = requestedUser.getName();
+		final String loginUserName = loginUser.getName();
 		
 		/*
 		 * login user may always see his/her photo
@@ -164,7 +164,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * @param requestLogic the requestLogic to set
 	 */
 	@Override
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
@@ -172,7 +172,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * Sets this controller's DBLogic.
 	 * @param dbl
 	 */
-	public void setLogic ( LogicInterface dbl )
+	public void setLogic ( final LogicInterface dbl )
 	{
 		logic = dbl;
 	}
@@ -181,7 +181,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * Sets this controller's {@link PictureHandlerFactory} instance.
 	 * @param factory
 	 */
-	public void setPictureHandlerFactory ( PictureHandlerFactory factory )
+	public void setPictureHandlerFactory ( final PictureHandlerFactory factory )
 	{
 		pictureHandlerFactory = factory;
 	}

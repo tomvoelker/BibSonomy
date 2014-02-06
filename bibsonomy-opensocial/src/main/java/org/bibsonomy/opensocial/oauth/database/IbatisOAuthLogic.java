@@ -25,6 +25,7 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthParam;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -253,6 +254,15 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 			this.sqlMap.delete("removeProviderToken", token);
 		} catch (SQLException e) {
 			log.error("Error removing token '"+token+"'", e);
+		}
+	}
+	
+	public void removeSpecificAccessToken(String userName, String accessToken){
+		OAuthParam param = new OAuthParam(userName, accessToken);
+		try{
+			this.sqlMap.delete("removeSpecificAccessToken", param);
+		} catch (SQLException e) {
+			log.error("Error removing token '"+param.getAccessToken()+"'", e);
 		}
 	}
 	
