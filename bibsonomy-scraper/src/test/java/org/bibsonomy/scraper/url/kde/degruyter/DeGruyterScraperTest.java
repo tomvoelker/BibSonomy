@@ -1,4 +1,4 @@
-package org.bibsonomy.scraper.url.kde.jstage;
+package org.bibsonomy.scraper.url.kde.degruyter;
 
 import static org.junit.Assert.assertTrue;
 
@@ -8,16 +8,16 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
+ * Scraper URL tests url_268
  * @author Haile
  */
 @Category(RemoteTest.class)
-public class JStageScraperTest {
+public class DeGruyterScraperTest {
 	/**
-	 * starts URL test with id url_267
+	 * starts URL test with id url_268
 	 */
 	@Test
-	public void url1TestRun(){
-		assertTrue(UnitTestRunner.runSingleTest("url_267"));
+	public void urlTest1Run(){
+		assertTrue(UnitTestRunner.runSingleTest("url_268"));
 	}
-
 }

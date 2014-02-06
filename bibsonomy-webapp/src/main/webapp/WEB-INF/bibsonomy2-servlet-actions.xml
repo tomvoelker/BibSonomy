@@ -1071,7 +1071,7 @@
 	
 	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
-		<property name="logic" ref="logic" />
+		<property name="logic" ref="adminLogic" />
 		<property name="requestLogic" ref="requestLogic" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 	</bean>	

@@ -23,8 +23,6 @@ import org.bibsonomy.util.spring.security.AuthenticationUtils;
  * attribute with the result of the check.
  * 
  * Resources in /resources are ignored.
- *
- * @version $Id$
  */
 public class ActionValidationFilter implements Filter {
 	private final static Log log = LogFactory.getLog(ActionValidationFilter.class);
