@@ -105,6 +105,9 @@ public class Group implements Serializable{
 	
 	/** stores setting regarding publication reporting */
 	private GroupPublicationReportingSettings publicationReportingSettings;
+
+	/** stores information regarding the group request */
+	private GroupRequest groupRequest;
 	
 	/**
 	 * constructor
@@ -408,5 +411,19 @@ public class Group implements Serializable{
 	public int hashCode() {
 		if (this.name != null) return this.name.toLowerCase().hashCode();
 		return groupId;
+	}
+	
+	/**
+	 * @return the groupRequest
+	 */
+	public GroupRequest getGroupRequest() {
+		return this.groupRequest;
+	}
+
+	/**
+	 * @param groupRequest the groupRequest to set
+	 */
+	public void setGroupRequest(GroupRequest groupRequest) {
+		this.groupRequest = groupRequest;
 	}
 }
