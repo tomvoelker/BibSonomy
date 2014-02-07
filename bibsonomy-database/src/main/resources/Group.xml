@@ -4,7 +4,7 @@
 <sqlMap namespace="Group">
 
 	<select id="getAllGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
 		FROM groupids i 
 		  JOIN user u ON (i.group_name = u.user_name)
 		WHERE i.group > 2
@@ -13,7 +13,7 @@
 	</select>
 	
 	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
 		FROM pendingGroupids i 
 		  JOIN pendingUser u ON (i.group_name = u.user_name)
 		ORDER BY i.group_name
@@ -21,7 +21,7 @@
 	</select>
 
 	<select id="getGroupByName" resultMap="GroupCommon.group" parameterClass="string">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
 		FROM groupids i 
 		  JOIN user u ON (i.group_name = u.user_name)
 		WHERE i.group_name = #groupname#
@@ -95,14 +95,14 @@
 	</select>
 	
 	<insert id="activateGroup" parameterClass="string">
-		INSERT INTO groupids (`group_name`, `group`, `privlevel`, `sharedDocuments`)
-		SELECT `group_name`, `group`, `privlevel`, `sharedDocuments`
+		INSERT INTO groupids (`group_name`,`request_user_name`,`request_reason`,`request_submission_date`, `group`, `privlevel`, `sharedDocuments`)
+		SELECT `group_name`,`request_user_name`,`request_reason`,`request_submission_date`, `group`, `privlevel`, `sharedDocuments`
 		FROM pendingGroupids 
 		WHERE pendingGroupids.group_name = #name#
 	</insert>
 	
 	<insert id="insertGroup" parameterClass="group">
-		INSERT INTO pendingGroupids (group_name, `group`, privlevel, sharedDocuments) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#)
+		INSERT INTO pendingGroupids (group_name, `group`, privlevel, sharedDocuments, request_user_name, request_reason) VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#, #groupRequest.userName#, #groupRequest.reason#)
 	</insert>
 
 	<insert id="insertTagSet" parameterClass="tagSetParam">

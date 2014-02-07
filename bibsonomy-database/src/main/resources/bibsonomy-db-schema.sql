@@ -525,6 +525,9 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `groupids` (
   `group_name` varchar(30) NOT NULL default '',
+  `request_user_name` varchar(30) NULL,
+  `request_reason` text NULL,
+  `request_submission_date` timestamp NULL,
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
@@ -1045,6 +1048,9 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `pendingGroupids` (
   `group_name` varchar(30) NOT NULL default '',
+  `request_user_name` varchar(30) NOT NULL,
+  `request_reason` text NOT NULL,
+  `request_submission_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',

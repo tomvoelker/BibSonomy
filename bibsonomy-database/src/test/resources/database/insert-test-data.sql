@@ -245,9 +245,9 @@ INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) V
 -- 
 -- Data for table `pendingGroupids`
 -- 
-INSERT INTO `pendingGroupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) VALUES 
-('testpendinggroup1', 7,           0, 1),
-('testpendinggroup2', 8,           1, 0),
+INSERT INTO `pendingGroupids` (`group_name`, `request_user_name`, `request_reason`, `group`, `privlevel`, `sharedDocuments`) VALUES 
+('testpendinggroup1', 'testuser1', 'my new reason1', 7,           0, 1),
+('testpendinggroup2', 'testuser1', 'my new reason2', 8,           1, 0);
  
 -- 
 -- Data for table `groups`
