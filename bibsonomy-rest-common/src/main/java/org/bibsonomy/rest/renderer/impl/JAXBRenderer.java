@@ -43,6 +43,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.AbstractRenderer;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.rest.renderer.impl.xml.NewLineEscapeHandler;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
 import org.bibsonomy.rest.renderer.xml.ObjectFactory;
 import org.xml.sax.SAXParseException;
@@ -74,7 +75,7 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 	private boolean validateXMLOutput;
 	
 	/**
-	 * defialt constructor
+	 * default constructor
 	 * @param urlRenderer
 	 */
 	protected JAXBRenderer(final UrlRenderer urlRenderer) {
@@ -164,7 +165,7 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 			// create a marshaller
 			final Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
+			marshaller.setProperty("com.sun.xml.bind.characterEscapeHandler", NewLineEscapeHandler.theInstance);
 			if (this.validateXMLOutput) {
 				// validate the XML produced by the marshaller
 				marshaller.setSchema(schema);
