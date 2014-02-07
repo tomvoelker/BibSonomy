@@ -11,6 +11,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.file.ServerDeletedFile;
 import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
@@ -20,6 +21,7 @@ import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.UserUpdateProfileValidator;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,7 +56,10 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			this.errors.reject("error.field.valid.ckey");
 		}
 
-		return super.workOn(command);
+		//return 
+		super.workOn(command);
+		
+		return new ExtendedRedirectView("settings");
 	}
 
 
@@ -103,7 +108,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		}
 		else if ( command.getDeletePicture() )
 		{
-			loginUser.setProfilePicture( null );
+			loginUser.setProfilePicture( new ServerDeletedFile() );
 		}
 	}
 

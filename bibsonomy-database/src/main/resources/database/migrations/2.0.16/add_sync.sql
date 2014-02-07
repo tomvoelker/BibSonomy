@@ -13,7 +13,7 @@ CREATE TABLE `sync_services` (
   `server` tinyint(1) NOT NULL,
   PRIMARY KEY  (`service_id`),
   UNIQUE KEY `uri` (`uri`,`server`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `sync_data`;
 CREATE TABLE `sync_data`(

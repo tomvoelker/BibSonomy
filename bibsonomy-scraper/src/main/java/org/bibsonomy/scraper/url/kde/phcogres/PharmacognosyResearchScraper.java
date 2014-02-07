@@ -48,8 +48,8 @@ public class PharmacognosyResearchScraper extends CitationManagerScraper {
 	private static final String SITE_URL = "http://www.phcogres.com/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("href=\"(citation.asp[^\"]++)\"");
-	private static final Pattern CITATION_MANAGER_PATTERN = Pattern.compile("href=\"(citeman.asp\\?(?:[^;\"]++;)++t=6)\"");
+	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(citation.asp.*)\">.*</a>");
+	private static final Pattern CITATION_MANAGER_PATTERN = Pattern.compile("<a href=\"(citeman.asp.*)\"></a>");
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new LinkedList<Pair<Pattern,Pattern>>();
 	

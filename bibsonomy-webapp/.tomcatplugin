@@ -7,5 +7,9 @@
     <updateXml>true</updateXml>
     <warLocation></warLocation>
     <extraInfo></extraInfo>
-    <webPath>/bibsonomy-webapp</webPath>
+    <webPath>/</webPath>
+    <webClassPathEntries>
+        <webClassPathEntry>/bibsonomy-opensocial/target/classes</webClassPathEntry>
+        <webClassPathEntry>/bibsonomy-webapp/target/classes</webClassPathEntry>
+    </webClassPathEntries>
 </tomcatProjectProperties>

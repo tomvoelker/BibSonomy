@@ -15,6 +15,7 @@
 	<bean id="opensocialUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
+			<!-- TODO: finish open social implementation or remove this in two years (29.01.2016)
 				<entry key="/container">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="containerPageController" />
@@ -22,9 +23,9 @@
 							<list>
 								<value>gadgetUrl</value>
 							</list>
-						</property>					
+						</property>
 					</bean> 
-				</entry>
+				</entry>  -->
 				<entry key="/oauth/requestToken">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="oAuthRequestTokenController" />

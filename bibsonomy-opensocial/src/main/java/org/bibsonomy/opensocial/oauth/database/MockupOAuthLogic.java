@@ -104,5 +104,11 @@ public class MockupOAuthLogic implements IOAuthLogic {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
 	}
+
+	@Override
+	public void removeSpecificAccessToken(String userName, String accessToken) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

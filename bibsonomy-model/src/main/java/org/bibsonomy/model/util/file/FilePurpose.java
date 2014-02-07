@@ -40,6 +40,11 @@ public enum FilePurpose {
 	DOWNLOAD,
 	
 	/**
+	 * File (uploaded prior) shall be deleted.
+	 */
+	DELETE,
+	
+	/**
 	 * Unspecified file purpose.
 	 */
 	UNSPECIFIED;

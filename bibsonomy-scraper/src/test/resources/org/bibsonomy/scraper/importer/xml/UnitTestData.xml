@@ -53,13 +53,13 @@
 	</URLTest>
 	<URLTest id="url_8">
 		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
-		<URL>http://scitation.aip.org/getabs/servlet/GetCitation?fn=view_bibtex2&amp;source=scitation&amp;PrefType=ARTICLE&amp;PrefAction=Add+Selected&amp;SelectCheck=PSISDG002221000001000006000001&amp;downloadcitation=+Go+</URL>
+		<URL>http://scitation.aip.org/content/aip/journal/jcp/136/3/10.1063/1.3680558</URL>
 		<BibFile>AipScitationScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_9">
 		<TestDescription>URL test for scraping a publication page from citation.aip.org</TestDescription>
-		<URL>http://scitation.aip.org/vsearch/servlet/VerityServlet?KEY=FREESR&amp;smode=results&amp;maxdisp=10&amp;possible1=star&amp;possible1zone=article&amp;fromyear=1893&amp;frommonth=Jan&amp;toyear=2007&amp;tomonth=Aug&amp;OUTLOG=NO&amp;viewabs=PSISDG&amp;key=DISPLAY&amp;docID=1&amp;page=0&amp;chapter=0</URL>
+		<URL>http://scitation.aip.org/content/aip/journal/jcp/139/12/10.1063/1.4820139</URL>
 		<BibFile>AipScitationScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 		<Enabled>false</Enabled>
@@ -1071,7 +1071,7 @@
 	</URLTest>
 	<URLTest id="url_174">
 		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
-		<URL>http://jcp.aip.org/jcpsa6/v125/i12/p124105_s1?isAuthorized=no</URL>
+		<URL>hhttp://scitation.aip.org/content/asa/journal/jasa/42/5/10.1121/1.2144160</URL>
 		<BibFile>AipScitationScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
@@ -1343,7 +1343,7 @@
 	</URLTest>
 	<URLTest id="url_218">
 		<TestDescription>test for pages with coins (multiple authors)</TestDescription>
-		<URL>http://www.mendeley.com/research/sentiment-analysis-twitter-data/</URL>
+		<URL>http://www.mendeley.com/research/sentiment-analysis-twitter-data-1/</URL>
 		<BibFile>CoinsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
 	</URLTest>
@@ -1634,9 +1634,21 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.igiglobal.IGIGlobalScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_266">
-		<TestDescription>test for pages with CoinS</TestDescription>
-		<URL>http://aisel.aisnet.org/wi2013/6/</URL>
-		<BibFile>CoinsScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
-	</URLTest>	
+		<TestDescription>DLibScraper Test</TestDescription>
+		<URL>http://www.dlib.org/dlib/may08/monnich/05monnich.html</URL>
+		<BibFile>DLibScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dlib.DLibScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_267">
+		<TestDescription>JStageScraper Test</TestDescription>
+		<URL>https://www.jstage.jst.go.jp/article/dsj/9/0/9_CRIS4/_article</URL>
+		<BibFile>JStageScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstage.JStageScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_268">
+		<TestDescription>DeGruyterScraper Test</TestDescription>
+		<URL>http://www.degruyter.com/view/j/cr.2013.29.issue-9/cr.2013.29.9.586/cr.2013.29.9.586.xml</URL>
+		<BibFile>DeGruyterScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper</Scraper>
+	</URLTest>
 </test:Tests>
