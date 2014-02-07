@@ -121,48 +121,33 @@
 					</fieldset>
 				</form:form>
 				<br />
-				<table id="groupsList">
+				<h2><fmt:message key="admin.group.pending"/></h2>
+	    		<table>
 		    	<c:forEach var="entry" items="${command.pendingGroups}">
-		    	<c:set var="currChar" value="${fn:toUpperCase(fn:substring(mtl:normalize(fn:substring(entry.name,0,1), 'NFKD'),0,1))}"/>
 		    	<tr>
 				    <td>
 				    </td>
 				    <!-- show group name -->
-				    <td class="groupName">
+				    <td>
 				    	<a href="/group/${mtl:encodeURI(entry.name)}">
 				    	<c:out value="${entry.name}"/>
 				    	</a>
 				    </td>
-				    <!-- show group description -->
-				    <td class="groupDescription">
-				        <!--+ we have to consider the case when a hompage is set,
-				        	| but no group description
-				         	-->
-				        <c:set var="description" value=""/>
-				        <c:choose>
-				        	<c:when test="${(empty entry.realname) and (not empty entry.homepage)}">
-				        		<c:set var="description" value="${entry.homepage}"/>
-				        	</c:when>
-				        	<c:when test="${not empty entry.realname}">
-				        		<c:set var="description" value="${entry.realname}"/>
-				        	</c:when>
-				        </c:choose>
-				    	<c:choose>
-				    		<c:when test="${not empty entry.homepage}">
-				    			<a href="${fn:escapeXml(entry.homepage)}">
-				    				<c:out value="${description}"/>
-				    			</a>
-				    		</c:when>
-				    		<c:otherwise>
-				    			<c:out value="${description}"/>
-				    		</c:otherwise>
-				    	</c:choose>
+				    <!-- show request user name -->
+				    <td>
+				        <c:out value="${entry.groupRequest.userName}"/>
 				    </td>
-			        <!-- show 'join', if user is registered  -->
+				    <!-- show request reason -->
+				    <td>
+				        <c:out value="${entry.groupRequest.reason}"/>
+				    </td>
+				    <!-- show request submission date -->
+				    <td>
+				        <c:out value="${entry.groupRequest.submissionDate}"/>
+				    </td>
 			        <td>
                     	    <span class="groupsButtons">
-				            		<!-- <a href="/join_group?group=${fn:escapeXml(entry.name)}"><fmt:message key="joinGroup.short"/></a>-->	
-				           		Accept Decline
+				            		<a href="/join_group?group=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>${mtl:ch('nbsp')}<a href="/join_group?group=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.decline"/></a>	
 				           	</span>
                     </td>
             	</tr>
