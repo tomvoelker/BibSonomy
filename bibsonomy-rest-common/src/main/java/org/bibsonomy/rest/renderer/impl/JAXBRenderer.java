@@ -54,20 +54,39 @@ import org.xml.sax.SAXParseException;
  */
 public abstract class JAXBRenderer extends AbstractRenderer {
 	private static final Log log = LogFactory.getLog(JAXBRenderer.class);
-
-	protected static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
-
-	protected static Schema schema;
-
-
-	protected boolean validateXMLInput;
-	protected boolean validateXMLOutput;
-
+	
+	private static void handleJAXBException(final JAXBException e) throws InternServerException {
+		final Throwable linkedException = e.getLinkedException();
+		if (present(linkedException) && (linkedException.getClass() == SAXParseException.class)) {
+			final SAXParseException ex = (SAXParseException) linkedException;
+			throw new BadRequestOrResponseException(
+					"Error while parsing XML (Line " 
+					+ ex.getLineNumber() + ", Column "
+					+ ex.getColumnNumber() + ": "
+					+ ex.getMessage()
+			);
+		}
+		throw new InternServerException(e.toString());
+	}
+	
+	private Schema schema;
+	private boolean validateXMLInput;
+	private boolean validateXMLOutput;
+	
+	/**
+	 * defialt constructor
+	 * @param urlRenderer
+	 */
 	protected JAXBRenderer(final UrlRenderer urlRenderer) {
 		super(urlRenderer);
-
+	}
+	
+	/**
+	 * loads the {@link #schema} iff neccessary
+	 */
+	protected void loadSchema() {
 		// we only need to load the XML schema if we validate input or output
-		if (this.validateXMLInput || this.validateXMLOutput) {
+		if ((this.validateXMLInput || this.validateXMLOutput) && this.schema == null) {
 			try {
 				schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(this.getClass().getClassLoader().getResource("xschema.xsd"));
 			} catch (final Exception e) {
@@ -100,15 +119,15 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 			//
 			// (see also http://ws.apache.org/jaxme/apidocs/javax/xml/bind/JAXBContext.html)
 			final JAXBContext jc = this.getJAXBContext();
-
+			
 			// create an Unmarshaller
 			final Unmarshaller u = jc.createUnmarshaller();
-
+			
 			// set schema to validate input documents
 			if (this.validateXMLInput) {
 				u.setSchema(schema);
 			}
-
+			
 			/*
 			 * unmarshal a xml instance document into a tree of Java content
 			 * objects composed of classes from the restapi package.
@@ -116,16 +135,8 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 			final JAXBElement<BibsonomyXML> xmlDoc = this.unmarshal(u, reader);
 			return xmlDoc.getValue();
 		} catch (final JAXBException e) {
-			if ((e.getLinkedException() != null) && (e.getLinkedException().getClass() == SAXParseException.class)) {
-				final SAXParseException ex = (SAXParseException) e.getLinkedException();
-				throw new BadRequestOrResponseException(
-						"Error while parsing XML (Line " 
-						+ ex.getLineNumber() + ", Column "
-						+ ex.getColumnNumber() + ": "
-						+ ex.getMessage()
-				);				
-			}			
-			throw new InternServerException(e.toString());
+			handleJAXBException(e);
+			return null; // never reached (handleJAXBExceptions throws an exception
 		}
 	}
 
@@ -164,17 +175,7 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 			// marshal to the writer
 			this.marshal(marshaller, webserviceElement, writer);
 		} catch (final JAXBException e) {
-			final Throwable linkedException = e.getLinkedException();
-			if (present(linkedException) && (linkedException.getClass() == SAXParseException.class)) {
-				final SAXParseException ex = (SAXParseException) linkedException;
-				throw new BadRequestOrResponseException(
-						"Error while parsing XML (Line " 
-						+ ex.getLineNumber() + ", Column "
-						+ ex.getColumnNumber() + ": "
-						+ ex.getMessage()
-				);				
-			}						
-			throw new InternServerException(e.toString());
+			handleJAXBException(e);
 		}
 	}
 
@@ -190,6 +191,7 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 	 */
 	public void setValidateXMLInput(final boolean validateXMLInput) {
 		this.validateXMLInput = validateXMLInput;
+		this.loadSchema();
 	}
 
 	/**
@@ -197,5 +199,6 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 	 */
 	public void setValidateXMLOutput(final boolean validateXMLOutput) {
 		this.validateXMLOutput = validateXMLOutput;
+		this.loadSchema();
 	}
 }
