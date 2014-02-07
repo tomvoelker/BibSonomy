@@ -37,6 +37,7 @@ import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -605,6 +606,10 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		}
 		group = new Group();
 		group.setName(name);
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName("testrequestuser1");
+		groupRequest.setReason("testrequestreason1");
+		group.setGroupRequest(groupRequest);
 		groupDb.createGroup(group, this.dbSession);
 		groupDb.activateGroup(name, this.dbSession);
 

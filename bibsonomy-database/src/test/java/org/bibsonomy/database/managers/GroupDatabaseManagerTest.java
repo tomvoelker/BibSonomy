@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
@@ -91,7 +92,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// make sure that limit and offset work
 		assertEquals(1, groupDb.getPendingGroups(0, 1, this.dbSession).size());
 		assertEquals(1, groupDb.getPendingGroups(1, 2, this.dbSession).size());
-		assertEquals(3, groupDb.getPendingGroups(0, 3, this.dbSession).size());
+		assertEquals(2, groupDb.getPendingGroups(0, 3, this.dbSession).size());
 	}
 
 	/**
@@ -194,6 +195,10 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void createGroup() {
 		final Group newGroup = new Group();
 		newGroup.setName("testgroupnew".toUpperCase());
+		final GroupRequest groupRequest = new GroupRequest();
+		groupRequest.setUserName("testrequestuser1");
+		groupRequest.setReason("testrequestreason1");
+		newGroup.setGroupRequest(groupRequest);
 		groupDb.createGroup(newGroup, this.dbSession);
 		groupDb.activateGroup(newGroup.getName(), this.dbSession);
 		final Group newGroupTest = groupDb.getGroupMembers("testgroupnew", "testgroupnew", this.dbSession);
@@ -362,6 +367,18 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertTrue(group.isUserSharedDocuments());
 	}
 
+
+	/**
+	 * tests activateGroup
+	 */
+	@Test
+	public void activateGroup() {
+		final Group group = groupDb.getPendingGroups(0, Integer.MAX_VALUE, this.dbSession).get(0);
+		groupDb.activateGroup(group.getName(), this.dbSession);
+		final Group testgroup = groupDb.getGroupByName(group.getName(), this.dbSession);
+		assertEquals("testpendinggroup1", testgroup.getName());
+	}
+	
 	/**
 	 * tests getGroupIdByGroupName and getGroupIdByGroupNameAndUserName
 	 */
