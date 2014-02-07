@@ -680,5 +680,12 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param clearInbox 
 	 * @return the new size of the inbox
 	 */
-	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
+	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
+	
+	/**
+	 * to rename the user name for a user
+	 * @param loginUser 
+	 * @param newUserName 
+	 */
+	//public void renameUser (User loginUser, String newUserName);
 }
