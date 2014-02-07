@@ -1,4 +1,4 @@
-                          BibSonomy Webapp
+                             BibSonomy Webapp
 
   What is it?
   -----------
