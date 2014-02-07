@@ -69,7 +69,7 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 		throw new InternServerException(e.toString());
 	}
 	
-	private Schema schema;
+	private Schema schema = null;
 	private boolean validateXMLInput;
 	private boolean validateXMLOutput;
 	
@@ -93,8 +93,6 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 				log.error("Failed to load XML schema", e);
 				schema = null;
 			}
-		} else {
-			schema = null;
 		}
 	}
 
