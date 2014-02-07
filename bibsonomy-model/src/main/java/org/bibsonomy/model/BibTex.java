@@ -40,9 +40,7 @@ import org.bibsonomy.model.util.SimHash;
  * @author Christian Schenk
  */
 public class BibTex extends Resource {
-	/**
-	 * For persistence (Serializable) 
-	 */
+	/** for persistence (Serializable) */
 	private static final long serialVersionUID = -8528225443908615779L;
 
 	/**
@@ -582,23 +580,30 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * @param key
+	 * FIXME: this method must be called after {@link #parseMiscField()}
+	 * check state and throw an IllegalStateException?
+	 * 
+	 * @param miscKey
 	 * @return String
 	 */
-	public String getMiscField(final String key) {
-		if (this.miscFields == null || !this.miscFields.containsKey(key)) return null;
-		return this.miscFields.get(key);
+	public String getMiscField(final String miscKey) {
+		if (this.miscFields == null || !this.miscFields.containsKey(miscKey)) return null;
+		return this.miscFields.get(miscKey);
 	}
 
 	/**
-	 * @param key
+	 * FIXME: this method deletes the old misc fields if {@link #parseMiscField()}
+	 * is not called before (e.g. call {@link #addMiscField(String, String)} and than
+	 * {@link #serializeMiscFields()})
+	 * 
+	 * @param miscKey
 	 * @param value
 	 */
-	public void addMiscField(final String key, final String value) {
+	public void addMiscField(final String miscKey, final String value) {
 		if (this.miscFields == null) {
 			this.miscFields = new HashMap<String, String>();
 		}
-		this.miscFields.put(key, value);
+		this.miscFields.put(miscKey, value);
 	}
 
 	/**
@@ -671,13 +676,11 @@ public class BibTex extends Resource {
 	public List<BibTexExtra> getExtraUrls() {
 		return extraUrls;
 	}
-	
 
 	@Override
 	public String toString() {
 		return super.toString() + " by <" + author + ">";	
 	}
-	
 	
 	/**
 	 * Setter for all misc fields.
@@ -726,7 +729,7 @@ public class BibTex extends Resource {
 	 * this is true, one can be sure that all key/value pairs present in the 
 	 * 'misc' field are also present in the internal miscFields hashmap.
 	 * 
-	 * @return true if the 'misc' field is parsed, false otherwise. 
+	 * @return <code>true</code> if the 'misc' field is parsed, false otherwise. 
 	 */
 	public boolean isMiscFieldParsed() {
 		return this.miscFieldParsed;
@@ -735,13 +738,13 @@ public class BibTex extends Resource {
 	/**
 	 * Remove a misc field from the parsed array.
 	 * 
-	 * @param key - the requested key
+	 * @param miscKey - the requested key
 	 * @return - the previous value for key
 	 */
-	public String removeMiscField(final String key) {
-		if (this.miscFields != null && this.miscFields.containsKey(key)) {
+	public String removeMiscField(final String miscKey) {
+		if (this.miscFields != null && this.miscFields.containsKey(miscKey)) {
 			this.miscFieldParsed = false;
-			return this.miscFields.remove(key);			
+			return this.miscFields.remove(miscKey);
 		}
 		return null;
 	}
@@ -753,5 +756,5 @@ public class BibTex extends Resource {
 		if (this.miscFields != null) {
 			this.miscFields.clear();
 		}
-	}	
+	}
 }
