@@ -56,7 +56,12 @@ import org.xml.sax.SAXParseException;
 public abstract class JAXBRenderer extends AbstractRenderer {
 	private static final Log log = LogFactory.getLog(JAXBRenderer.class);
 	
-	private static void handleJAXBException(final JAXBException e) throws InternServerException {
+	/**
+	 * method for handling a {@link JAXBException}
+	 * @param e
+	 * @throws InternServerException
+	 */
+	protected static void handleJAXBException(final JAXBException e) throws InternServerException {
 		final Throwable linkedException = e.getLinkedException();
 		if (present(linkedException) && (linkedException.getClass() == SAXParseException.class)) {
 			final SAXParseException ex = (SAXParseException) linkedException;
@@ -70,9 +75,12 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 		throw new InternServerException(e.toString());
 	}
 	
-	private Schema schema = null;
-	private boolean validateXMLInput;
-	private boolean validateXMLOutput;
+	/** the shema of the parsed/generated xml */
+	protected Schema schema = null;
+	/** should be the xml validated while parsing */
+	protected boolean validateXMLInput;
+	/** should be the xml validated after generation*/
+	protected boolean validateXMLOutput;
 	
 	/**
 	 * default constructor
