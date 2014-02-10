@@ -1,4 +1,4 @@
-                          BibSonomy Common
+                          BibSonomy Database Common
 
   What is it?
   -----------
