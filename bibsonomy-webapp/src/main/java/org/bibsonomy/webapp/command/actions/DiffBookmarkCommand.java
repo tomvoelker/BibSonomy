@@ -10,12 +10,12 @@ public class DiffBookmarkCommand extends EditBookmarkCommand{
 	private Post<Bookmark> postDiff;
 
 	@Override
-	public Post<Bookmark> getPostDiff() {
+	public Post<Bookmark> getComparePost() {
 		return postDiff;
 	}
 
 	@Override
-	public void setPostDiff(Post<Bookmark> postDiff) {
+	public void setComparePost(Post<Bookmark> postDiff) {
 		this.postDiff = postDiff;
 	}
 }

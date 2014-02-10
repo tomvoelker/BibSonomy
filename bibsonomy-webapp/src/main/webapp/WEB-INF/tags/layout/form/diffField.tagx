@@ -31,7 +31,7 @@
 		<!-- copy button -->
 		<fmt:message var="copyContent" key="${path}"/>
 	    <div style="cursor:pointer; float:left; margin-top: 2px; margin-bottom: 2px; margin-left: 5px; margin-right: 5px">
-	    	<img src="${resdir}/image/arrow_rating.png" alt="copy ${copyContent}" title="copy ${copyContent}" onclick="javascript:copyContent('${path}')" />
+    		<img class="copyButton" id="${path}Img" src="${resdir}/image/arrow_rating.png" alt="copy ${copyContent}" title="copy ${copyContent}" onclick="javascript:copyContent('${path}')" />
 	    </div>
 	    
 		<!-- second post -->

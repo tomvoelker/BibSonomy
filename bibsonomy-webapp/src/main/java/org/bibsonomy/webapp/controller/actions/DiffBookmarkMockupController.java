@@ -21,8 +21,8 @@ public class DiffBookmarkMockupController extends EditPostController<Bookmark, D
 	protected DiffBookmarkCommand instantiateEditPostCommand() {
 		final DiffBookmarkCommand command = new DiffBookmarkCommand();
 		Post<Bookmark> tmpTestPost = new Post<Bookmark>(); 
-		command.setPostDiff(tmpTestPost);
-		command.getPostDiff().setResource(this.instantiateTestResource());
+		command.setComparePost(tmpTestPost);
+		command.getComparePost().setResource(this.instantiateTestResource());
 		tmpTestPost.setDescription("testausgabe stelle DiffBookmarkController, initiateEditPostCommand()");
 		//command.setPostID(RecommenderStatisticsManager.getUnknownPID());
 		

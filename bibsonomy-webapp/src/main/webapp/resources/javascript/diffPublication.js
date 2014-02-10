@@ -11,16 +11,20 @@ $(document).ready(function()
 });
 
 function diff() {
+	var icon_copy = document.getElementById("icon_copy");
+	var icon_copy_greyed = document.getElementById("icon_copy_greyed");
 	for (var index=0; index<pubFields.length; index++) {
 		//text input
 		var post = $(pubFields[index] == "description"?"#post\\."+pubFields[index]:"#post\\.resource\\."+pubFields[index]).val().split(" ");
-		var postDiff =  $(pubFields[index] == "description"?"#tmppost\\."+pubFields[index]:"#tmppost\\.resource\\."+pubFields[index]).val().split(" ");
+		var comparePost =  $(pubFields[index] == "description"?"#tmppost\\."+pubFields[index]:"#tmppost\\.resource\\."+pubFields[index]).val().split(" ");
 			
+		var changed = false;
+		
 		//result
-		var postDiffValue = "";
+		var comparePostValue = "";
 		//number of words of each field
 		var m = post.length;
-		var n = postDiff.length;
+		var n = comparePost.length;
 		
 		//opt is multidimensional array (opt[m+1][n+1])
 		var opt = new Array(m+1);//(1+n);
@@ -30,7 +34,7 @@ function diff() {
 		
 		for(var i=m-1; i>=0; i--) {
 			for(var j=n-1; j>=0; j--){
-				if(post[i] == postDiff[j]){
+				if(post[i] == comparePost[j]){
 					opt[i][j] = (opt[i+1][j+1] +1);
 				} else {
 					opt[i][j] = Math.max(opt[i+1][j], opt[i][j+1]);
@@ -41,27 +45,68 @@ function diff() {
 		var i=0;
 		var j=0;
 		while(i<m && j<n){
-			if(post[i] == postDiff[j]){
-				postDiffValue+=(postDiff[j]+" ");
+			if(post[i] == comparePost[j]){
+				comparePostValue+=(comparePost[j]+" ");
 				i++;
 				j++;
 			} else if (opt[i+1][j] >= opt[i][j+1]){
-				postDiffValue+=('<span class="fsDiffMissingColor">' + post[i++] + '</span>'+ " ");
+				comparePostValue+=('<span class="fsDiffMissingColor">' + post[i++] + '</span>'+ " ");
+				changed = true;
 			} else {
-				postDiffValue+=('<span class="fsDiffAddColor">' + postDiff[j++] + '</span>'+ " ");
+				comparePostValue+=('<span class="fsDiffAddColor">' + comparePost[j++] + '</span>'+ " ");
+				changed = true;
 			}
 		}
-		while(i<m)
-			postDiffValue+=('<span class="fsDiffMissingColor">' + post[i++] + '</span>'+ " ");
-		while(j<n)
-			postDiffValue+=('<span class="fsDiffAddColor">' + postDiff[j++] + '</span>'+ " ");
-		document.getElementById(pubFields[index] == "description"?"postDiff."+pubFields[index]:"postDiff.resource."+pubFields[index]).innerHTML= postDiffValue;
+		while(i<m) {
+			comparePostValue+=('<span class="fsDiffMissingColor">' + post[i++] + '</span>'+ " ");
+			changed = true;
+		}while(j<n){
+			comparePostValue+=('<span class="fsDiffAddColor">' + comparePost[j++] + '</span>'+ " ");
+			changed = true;
+		}document.getElementById(pubFields[index] == "description"?"comparePost."+pubFields[index]:"comparePost.resource."+pubFields[index]).innerHTML= comparePostValue;
+		if(changed){
+			changeButtonImg(icon_copy, document.getElementById(pubFields[index] == "description"?"post."+pubFields[index]+"Img":"post.resource."+pubFields[index]+"Img"));
+		}else {
+			changeButtonImg(icon_copy_greyed, document.getElementById(pubFields[index] == "description"?"post."+pubFields[index]+"Img":"post.resource."+pubFields[index]+"Img"));
+		}
 	}
 
 }
 
 function copyContent(path) {
-	document.getElementById(path).value = document.getElementById("tmp"+path).innerHTML;
-	var tmppath = path.slice(4,path.length)
-	document.getElementById("postDiff"+tmppath).innerHTML= document.getElementById("tmppost"+tmppath).innerHTML;
-} 
+	var msg = document.getElementById("tmp"+path).innerHTML;
+	document.getElementById(path).value = msg;//document.getElementById("tmp"+path).innerHTML;
+	var tmppath = path.slice(4,path.length);
+	document.getElementById("comparePost"+tmppath).innerHTML= msg;//document.getElementById("tmppost"+tmppath).innerHTML;
+	//element.replaceWith($("img#icon_copy_greyed").clone().removeAttr('id'));
+	//var img = document.getElementById(path+"Img");
+	//img.replaceWith($("img#icon_copy_greyed").clone().removeAttr('id'));
+	//img.id = path+"Img";
+	//document.getElementById(path+"Img").replaceWith($("img#icon_copy_greyed").clone().removeAttr('id'));// = documentgetElementById("icon_copy_greyed").src;
+	//var img = document.getElementById(path+"Img");
+	//img.src = "/image/arrow_down.png";
+	//img.style.cursor = default;
+}
+
+function changeButtonImg(img, buttonImg){
+	//buttonImg.attr({src : img.src});//.replaceWith($(img).clone().removeAttr('id'));
+	buttonImg.src = img.src;
+}
+
+$(function(){
+  //bnd to all images with the copyButton class for click
+  $('img.copyButton').click(function(e){
+	  e.preventDefault();
+	  //grab the image just clicked as a jquery object.
+	  changeButtonImg(document.getElementById("icon_copy_greyed"), this);
+  });
+});
+
+$(function(){
+	  //bnd to images with the reloadButton class for click
+	  $('img.reloadButton').click(function(e){
+		  e.preventDefault();
+		  //grab the image just clicked as a jquery object.
+		  diff();
+	  });
+	});

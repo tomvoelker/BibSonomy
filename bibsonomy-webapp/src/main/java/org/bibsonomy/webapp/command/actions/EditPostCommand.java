@@ -26,17 +26,12 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
     private String tags;
 
-    /**
-     * FIXME: What is the difference between diffPost and postDiff?
-     * Please use intuitive names and add commentary.
-     */
-
     private Post<RESOURCE> diffPost;
 
     /**
-     * Post required for Diff Post View
+     * compare Post required for Diff Post View
      */
-    private Post<RESOURCE> postDiff;
+    private Post<RESOURCE> comparePost;
 
     /**
      * stores version (index of publication in history list)
@@ -427,7 +422,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
     }
 
     /**
-     * @return Index from postDiff in PostHistoryList
+     * @return Index from comparePost in PostHistoryList
      */
     public int getCompareVersion() {
         return this.compareVersion;
@@ -444,15 +439,15 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
     /**
      * @return post which should compared to current post
      */
-    public Post<RESOURCE> getPostDiff() {
-        return this.postDiff;
+    public Post<RESOURCE> getComparePost() {
+        return this.comparePost;
     }
 
     /**
      * @param postDiff
      *            The post which should be compared to current post
      */
-    public void setPostDiff(final Post<RESOURCE> postDiff) {
-        this.postDiff = postDiff;
+    public void setComparePost(final Post<RESOURCE> postDiff) {
+        this.comparePost = postDiff;
     }
 }

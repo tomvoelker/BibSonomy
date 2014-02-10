@@ -28,8 +28,11 @@
 	<c:choose>
 		<c:when test="${not empty listView.list}">
 			<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
-			<c:set var="newestPost" value="${listView.list[fieldlength]}" />
-			<resource:bibtexdetailsclean post="${newestPost}" referer="${command.referer}"/>
+			<c:set var="newestPost" value="${listView.list[fieldlength]}" />			
+			<!-- TODO: find issue for Error invoking function 'mtl:encodeURI' -->
+			<!-- <div id="innercontent" style="background: #fff; padding-left: 40px;">
+				<resource:bibtexdetailsclean post="${post}" referer="${command.referer}"/>
+			</div> -->
 			<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
 			<!--+
 				| complete Post

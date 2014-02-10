@@ -37,7 +37,7 @@ public class PostHistoryController extends SingleResourceListControllerWithTags 
 		final GroupingEntity groupingEntity = present(requUser) ? GroupingEntity.USER : GroupingEntity.ALL;
 		
 
-		final FilterEntity filter = FilterEntity.POSTS_HISTORY_BIBTEX;
+		final FilterEntity filter = FilterEntity.POSTS_HISTORY;
 		Class<? extends Resource> resourceType = BibTex.class;
 
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);

@@ -113,7 +113,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="customPageOptions">
-			<bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+			<bib:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" enableHistory="${true}"/>
 		</jsp:attribute>
 		
 	</layout:paneLayout>

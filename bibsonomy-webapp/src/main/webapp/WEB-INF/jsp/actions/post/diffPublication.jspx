@@ -33,11 +33,11 @@
             <script type="text/javascript" src="${resdir}/javascript/editPublication.js"><!-- keep me --></script>
 		</jsp:attribute>
 		<jsp:attribute name="generalInformation">
-			<editpub:diffPublicationRequired post="${post}" postDiff="${command.postDiff}"/>
+			<editpub:diffPublicationRequired post="${post}" comparePost="${command.comparePost}"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="detailedInformation">
-			<editpub:diffPublicationDetails post="${post}" postDiff="${command.postDiff}"/>
+			<editpub:diffPublicationDetails post="${post}" comparePost="${command.comparePost}"/>
 		</jsp:attribute>
 		
 			<c:if test="${not empty command.scrapingContext}">
