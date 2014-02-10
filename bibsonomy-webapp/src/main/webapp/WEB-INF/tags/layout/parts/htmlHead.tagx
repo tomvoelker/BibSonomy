@@ -88,13 +88,42 @@
 		 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 		 	+-->
 		 
-		 
+		
 		<script src="http://code.jquery.com/jquery.js"><!-- keep me--></script>
+	 	
+	 	<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
+	 	
 	 	<!-- Latest compiled and minified Bootstrap JavaScript -->
-		<script src="/resources/bootstrap/js/bootstrap.min.js"><!-- keep me--></script>
-		 	
-		<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
-
+		<script type="text/javascript" src="${resdir}/bootstrap/js/bootstrap.min.js"><!-- keep me--></script>
+		
+		<script type="text/javascript" src="${resdir}/bootstrap/js/holder.js"><!-- KEEP ME --></script>
+		<!-- We're USING collapsing panels on this page. Here we can activate it. -->
+		<script type="text/javascript" src="${resdir}/bootstrap/js/collapse.js"><!-- KEEP ME --></script>
+		<script type="text/javascript" src="${resdir}/bootstrap/js/tooltip.js"><!-- KEEP ME --></script>
+		<script type="text/javascript" src="${resdir}/bootstrap/js/popover.js"><!-- KEEP ME --></script>
+		
+		
+		<script type="text/javascript">
+		$(function() {
+			console.log($('.help-popover'));
+			$('.post-popover, .help-popover').popover({ 
+			    html : true,
+			    trigger: "focus",
+			    container: 'body',
+			    placement: function() {
+		    		return ($(window).width() >= 990) ? 'right' : 'auto';
+		    	},	    	
+			    title: function() {
+			      	$(this).next().html();
+			    },
+			    content: function() {
+			      	return $(this).next().next().html();
+			    }
+			});
+		});
+		
+		</script>
+		
 		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
 		<script type="text/javascript">
 				<![CDATA[
@@ -144,9 +173,9 @@
 		</c:if>
 		<!-- End Piwik Tracking Code --> 
 	
-<!--				<meta name="email" content="${properties['project.email']}"/> -->
+<!--	<meta name="email" content="${properties['project.email']}"/> -->
 		<parts:meta fieldName="author" />
-<!--				<parts:meta fieldName="copyright" /> -->
+<!--	<parts:meta fieldName="copyright" /> -->
 		<parts:meta fieldName="keywords" />
 		<parts:meta fieldName="description" />
 		<!-- TODO: use feed links for bibsonomy in puma? -->
