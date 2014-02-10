@@ -462,3 +462,19 @@ div.newsbox ul.news {
 }
 
 span.help-popover {cursor:help}
+
+.help-content {
+	font-size: 10px !important;
+}
+
+.form-group:after {
+	html: "<br />";
+}
+.form-group > div {
+	padding-bottom: 1em !important;
+	
+}
+
+.classSmallField {
+	width: 33%;
+}

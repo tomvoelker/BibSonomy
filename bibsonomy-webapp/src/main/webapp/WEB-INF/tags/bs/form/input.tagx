@@ -15,6 +15,7 @@
 	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>
 	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="A link to a help page."/>
+	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Width of 50 percent" />
 	
 	<!-- HTML attributes -->
 	<jsp:directive.attribute name="id" 				type="java.lang.String" 	required="true"  description="Id for input field"/>
@@ -46,6 +47,10 @@
 			<c:set var="inputColSpan" value="${ 12 - labelColSpan }" />
 		</c:otherwise>
 	</c:choose>
+	
+	<c:if test="${not empty path}">
+		<fmt:message var="labelText" key="${path}" />
+	</c:if>
 
 	<!--+
 		| bootstrap 3 form-group 
@@ -55,24 +60,26 @@
 		<!--+
 			| followed by output label 
 			+-->
-		<c:if test="${not empty path or not empty labelText}">
+		<c:if test="${not empty labelText}">
 			<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
-				<c:choose>
-					<c:when test="${not empty path}">
-						<fmt:message key="${path}"/>${required ? '* ' : ''}
-					</c:when>
-					<c:otherwise>
-						<c:out value="${labelText}" />
-					</c:otherwise>
-				</c:choose>
+				<c:out value="${labelText}" />
 			</label>
 		</c:if>
 		
+		<c:set var="helpPopover" value="" />
+		<c:if test="${empty noHelp or not noHelp}">
+			<c:set var="helpPopover" value="help-popover" />
+		</c:if>
+		
+		<c:set var="smallField" value="" />
+		<c:if test="${not empty small or small}">
+			<c:set var="classSmallField" value="smallField" />  
+		</c:if>
 		<!--+
 			| followed by input field surrounded by div column container with width inputColSpan
 			+-->
 		<div class="col-sm-${inputColSpan}">
-			<form:input cssClass="fsInput${small ? ' fsSmall' : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control" 
+			<form:input cssClass="fsInput${small ? ' classSmallField' : ''}${required ? ' reqinput' : ''} ${fn:escapeXml(cssClass)} form-control ${helpPopover}" 
 						path="${path}" 
 						placeholder="${placeholder}" 
 						autocomplete="${autocomplete}" 
@@ -82,13 +89,16 @@
 						tabindex="${tabindex}"
 						name="${name}"/>
 							<!-- help -->
-			<c:if test="${empty noHelp or not noHelp and not empty path}">
-				<span class="help-block"><span class="glyphicon glyphicon-question-mark"><!--  --></span><fmt:message key="${path}.help" /> ${helpPage}</span>
+			<c:if test="${empty noHelp or not noHelp}">
+				<div class="help help-header hide"><c:out value="${labelText}" /></div>
+				<div class="help help-content hide">
+					<fmt:message key="${path}.help" />
+				</div>
 			</c:if>
 			<jsp:invoke fragment="appendix" />
 			<!-- errors -->
 			<form:errors path="${path}" />
 		</div>
 	</div>
-
+	<br class="clearfix"/>
 </jsp:root>
