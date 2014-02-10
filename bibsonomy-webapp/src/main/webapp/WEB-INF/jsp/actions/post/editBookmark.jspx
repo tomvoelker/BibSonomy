@@ -43,7 +43,7 @@
 			
 			<!-- TITLE -->
 			<fmt:message key="post.resource.title" var="title"/>
-			<bsform:input id="title" labelColSpan="2" inputColSpan="10" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="${true }">
+			<bsform:input id="title" labelColSpan="2" inputColSpan="10" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="${false}">
 				<jsp:attribute name="appendix">
 					<div class="fsSuggestion" id="suggestion.resource.title"><!-- KEEP ME --></div>
 				</jsp:attribute>
