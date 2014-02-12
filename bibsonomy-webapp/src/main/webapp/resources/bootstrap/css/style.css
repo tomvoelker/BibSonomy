@@ -467,14 +467,6 @@ span.help-popover {cursor:help}
 	font-size: 10px !important;
 }
 
-.form-group:after {
-	html: "<br />";
-}
-.form-group > div {
-	padding-bottom: 1em !important;
-	
-}
-
-.classSmallField {
-	width: 33%;
+.smallField {
+	width: 33% !important;
 }
