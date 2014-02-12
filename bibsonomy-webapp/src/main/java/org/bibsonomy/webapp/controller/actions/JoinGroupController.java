@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,7 +66,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
-		
+        
 		/*
 		 * The user has three options and needs:
 		 * * see join site: loginUser, group
@@ -244,8 +245,8 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	/**
 	 * @param denieUserRedirectURI the denieUserRedirectURI to set
 	 */
-	public void setDenieUserRedirectURI(final String denieUserRedirectURI) {
-		this.denyUserRedirectURI = denieUserRedirectURI;
+	public void setDenyUserRedirectURI(final String denyUserRedirectURI) {
+		this.denyUserRedirectURI = denyUserRedirectURI;
 	}
 
 	/**
