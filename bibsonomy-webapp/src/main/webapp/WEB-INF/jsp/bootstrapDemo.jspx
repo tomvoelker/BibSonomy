@@ -28,29 +28,6 @@
 			<script type="text/javascript" src="/resources/bootstrap/js/collapse.js"><!-- KEEP ME --></script>
 			<script type="text/javascript" src="/resources/bootstrap/js/tooltip.js"><!-- KEEP ME --></script>
 			<script type="text/javascript" src="/resources/bootstrap/js/popover.js"><!-- KEEP ME --></script>
-			<script type="text/javascript">
-				$('.collapse').collapse();
-				$(function() {
-					$('.media-body .desc').ellipsis();
-					$('.toggleAdvanced').click(function(event){
-						event.preventDefault();
-						$(this).parents('li.media').find('.advanced').toggle();
-					});
-					
-					$('.post-popover, .help-popover').popover({ 
-					    html : true,
-					    trigger: "hover",
-					    container: 'body',
-					    placement: 'auto',
-					    title: function() {
-					      	return $(this).next().html();
-					    },
-					    content: function() {
-					      	return $(this).next().next().html();
-					    }
-					});
-				});
-			</script>
 			<style type="text/css">
 				/*.media-body {overflow:visible;}*/ 
 				
@@ -495,21 +472,7 @@
 					<br /><br />	
 					
 					<h2>Quick helps</h2>
-					<form>
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="author">Author <bsbibcomp:quickhelp messagesPropertiesKey="post.resource.author.help" /></label>
-							<div class="col-sm-10">
-								<input id="author" type="text" class="form-control" />
-							</div>
-						</div>
-						<br class="clearfix"/><br /><br />
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="editor">Editor <bsbibcomp:quickhelp messagesPropertiesKey="post.resource.editor.help" /></label>
-							<div class="col-sm-10">
-								<input id="editor" type="text" class="form-control" />
-							</div>
-						</div>
-					</form>
+
 					
 					<br /><br />	
 					
