@@ -9,7 +9,11 @@
 	<jsp:directive.tag description="Render a form input checkbox in bootstrap3 style." />
 
 	<jsp:directive.attribute name="path" type="java.lang.String" required="true" description="Path to property for data binding (e.g., post.resource.journal), labels, and the help message (.help is appended)"/>
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column width for this checkbox and its label." />
+	
+	
 	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
+	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help" />
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>
 	
 	<!-- HTML attributes -->
@@ -17,13 +21,22 @@
 	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="tabindex for input field"/>
 	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name attribute for input field"/>
 	<jsp:directive.attribute name="checked" type="java.lang.Boolean" required="false" description="value attribute for input field"/>
+
+	<c:if test="${empty inputColSpan or 6 lt inputColSpan}">
+		<c:set var="inputColSpan" value="10" />
+	</c:if>
 	
 	<c:if test="${empty labelText}">
 		<fmt:message var="labelText" key="${path}" /> 
 	</c:if>
+	
+	<c:if test="${empty helpText}">
+		<fmt:message var="helpText" key="${path}.help" />
+	</c:if>
+	
 	<div class="form-group">
-   		<div class="col-sm-offset-2 col-sm-10">
-			<div class="checkbox clearfix">
+   		<div class="col-sm-offset-${12-inputColSpan} col-sm-${inputColSpan}">
+   			<div class="checkbox">
 				<label>
 	          		<form:checkbox
 	          				path="${path}" 
@@ -32,10 +45,9 @@
 	          				checked="${ checked ? 'checked' : ''}" 
 	          				name="${name}" 
 	          				tabindex="${tabindex}" /> <c:out value="${labelText}"/>
-       				<c:if test="${not empty noHelp or not noHelp}">
-		          		<div class="help-header hide"><c:out value="${labelText}"/></div>
-		          		<div class="help-content hide"><fmt:message key="${path}.help"/></div>
-	          		</c:if>
+      				<c:if test="${not empty noHelp or not noHelp}">
+		          		<div class="help-content hide">${helpText}</div>
+          			</c:if>
 	        	</label>
 			</div>
 		</div>

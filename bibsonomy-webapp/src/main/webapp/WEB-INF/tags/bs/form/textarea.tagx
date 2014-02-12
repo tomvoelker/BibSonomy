@@ -9,15 +9,19 @@
 	<jsp:directive.tag description="Render a form textarea field in the way it should typically be done with bootstrap." body-content="tagdependent" />
 
 	<jsp:directive.attribute name="path" type="java.lang.String" required="true" description="Path to property for data binding (e.g., post.resource.journal), labels, and the help message (.help is appended)"/>
-	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
 	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
 	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
-	<jsp:directive.attribute name="id" type="java.lang.String" required="true" description="Id for input field"/>
-	<jsp:directive.attribute name="placeholder" required="false" description="Placeholder for input field." />
 	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
 	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the fly-by help be shown?"/>
+	
+	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
 	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="A link to a help page."/>
+	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
 
+	<!-- HTML attributes -->	
+	<jsp:directive.attribute name="id" type="java.lang.String" required="true" description="Id for input field"/>
+	<jsp:directive.attribute name="placeholder" required="false" description="Placeholder for input field." />
+	
 	<jsp:directive.attribute name="appendix" fragment="true" required="false" description="Additional items for input field"/>
 	
 	<!--+ 
@@ -36,15 +40,27 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<!-- set label text -->
-	<c:if test="${not empty path}">
-		<c:set var="labelText"><fmt:message  key="${path}" /> ${required ? '* ' : ''}</c:set>
+	<c:if test="${empty labelText}">
+		<fmt:message var="labelText" key="${path}" />
 	</c:if>
+	
+	<c:if test="${empty helpText}">
+		<fmt:message var="helpText" key="${path}.help" />
+	</c:if>
+
 			
-	<!-- set class .help-popover for popover help, if necessary -->
 	<c:set var="helpPopover" value="" />
 	<c:if test="${empty noHelp or not noHelp}">
 		<c:set var="helpPopover" value="help-popover" />
+	</c:if>
+		
+	<c:set var="smallField" value="" />
+	<c:if test="${not empty small or small}">
+		<c:set var="classSmallField" value="smallField" />  
+	</c:if>
+
+	<c:if test="${(empty id)}">
+		<c:set var="id" value="${path}" />
 	</c:if>
 	
 	<!--+
@@ -65,7 +81,7 @@
 			| followed by input field surrounded by div column container with width inputColSpan
 			+-->
 		<div class="col-sm-${inputColSpan}">
-			<textarea class="${cssClass} form-control ${helpPopover}" id="${id}" placeholder="${placeholder}"><!-- KEEP ME --></textarea>
+			<form:textarea path="${path}" cssClass="form-control ${helpPopover} ${small ? smallField : ''}" id="${id}" placeholder="${placeholder}" />
 			
 			<!-- followed by popover help -->
 			<c:if test="${empty noHelp or not noHelp}">
@@ -83,5 +99,4 @@
 			
 		</div> <!-- /.col-sm-x -->
 	</div> <!-- /.form-grpup -->
-	<br class="clearfix" />
 </jsp:root>
