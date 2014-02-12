@@ -27,21 +27,13 @@
 		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, #newContentId#
 		FROM bibtex WHERE content_id = #requestedContentId#
 	</insert>
-
-	<!-- <update id="logBibTexUpdate" parameterClass="bibtexParam">
-		UPDATE log_bibtex SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
-	</update> -->
 	
 	<insert id="logGoldStandard">
 		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, <include refid ="allGoldStandardPublicationColumns"/>)
 		SELECT #newId#, content_id, #newContentId#, <include refid ="allGoldStandardPublicationColumns"/>
 		FROM gold_standard WHERE simhash1 = #oldId#
 	</insert>
-	
-	<!-- <update id="logGoldStandardUpdate" parameterClass="bibtexParam">
-		UPDATE log_gold_standard SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
-	</update> -->
-	
+		
 	<insert id="logGoldStandardPublicationReferenceDelete">
 		INSERT INTO log_gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
 	</insert>
@@ -100,12 +92,12 @@
 								openurl, reg_date, ip_address, tmp_password, tmp_request_date, tagbox_style, 
 								tagbox_sort, tagbox_minfreq, tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, spammer_suggest,
 								birthday, gender, profession, institution, interests, hobbies, place,  profilegroup, api_key, 
-								updated_by, updated_at, lang, role, timestamp, to_classify, show_bookmark, show_bibtex, simple_interface, gravatarAddress)
+								updated_by, updated_at, lang, role, timestamp, to_classify, show_bookmark, show_bibtex, simple_interface, useExternalPicture)
 		(SELECT user_name, user_email, user_password, user_password_salt, user_homepage, user_realname, spammer,
 				openurl, reg_date, ip_address, tmp_password, tmp_request_date, tagbox_style,
 				tagbox_sort, tagbox_minfreq, tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, spammer_suggest,
 				birthday, gender, profession, institution, interests, hobbies, place, profilegroup, api_key, 
-				updated_by, updated_at, lang, role, UNIX_TIMESTAMP(NOW()), to_classify, show_bookmark, show_bibtex, simple_interface, gravatarAddress
+				updated_by, updated_at, lang, role, UNIX_TIMESTAMP(NOW()), to_classify, show_bookmark, show_bibtex, simple_interface, useExternalPicture
 		 FROM user WHERE user_name = #userName#) 
 	</insert>
 	

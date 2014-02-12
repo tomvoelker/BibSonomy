@@ -23,7 +23,7 @@ import org.bibsonomy.model.DiscussionItem;
  * 
  * @author Jens Illig
  * @author Christian Schenk
- * @author Stefan StÃ¼tzer
+ * @author Stefan Stützer
  * @author Anton Wilhelm
  * @author Daniel Zoller
  * 
