@@ -1,0 +1,33 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.tag description="Renders a media object for bootstrap 3."/>
+	
+	<jsp:directive.attribute name="media" 		 fragment="true" 			required="true" 	description="media object for this element"/>
+	<jsp:directive.attribute name="mediaBody" 	 fragment="true" 			required="true" 	description="body for this element."/>
+	<jsp:directive.attribute name="href"		 type="java.lang.String" 	required="true" 	description="url for media object and heading"/>
+	<jsp:directive.attribute name="mediaHeading" type="java.lang.String"	required="false"	description="linked headline for mediaBody"/>
+
+
+	<div class="media">
+		<div class="row">
+			<div class="hidden-xs hidden-sm col-md-3 col-lg-2">
+				<a class="thumbnail" href="${href}" >
+					<jsp:invoke fragment="media" />
+		 		</a>
+	 		</div>
+			<div class="media-body col-xs-12 col-sm-12 col-md-9 col-lg-10">
+				<c:if test="${not empty(mediaHeading)}">
+					<c:set var="mediaHeading" value="${fn:escapeXml(mediaHeading)}" />
+					<h4 class="media-heading"><a href="${href}" title="${mediaHeading}">${mediaHeading}</a></h4>
+				</c:if>
+			    <jsp:invoke fragment="mediaBody" />
+			</div>
+		</div>
+	</div>
+</jsp:root>

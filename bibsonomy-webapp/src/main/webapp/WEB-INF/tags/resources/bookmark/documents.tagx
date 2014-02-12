@@ -8,14 +8,12 @@
 	<c:choose>
 		<c:when test="${not empty properties['project.img']}">  
 			<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-			<span class="">
-					<a class="preview bookmark" href="${bookUrl}"> 
-						<img class="pre_pic" src="${properties['project.img']}preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
-					</a>
-			</span>
+			<a class="preview bookmark" href="${bookUrl}"> 
+				<img class="pre_pic img-responsive" src="${properties['project.img']}preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
+			</a>
 		</c:when> 
 		<c:otherwise>
-			<span class="entrytype web"><!-- --></span>
+			<span class="entrytype web"><!-- KEEP ME --></span>
 		</c:otherwise>
 	</c:choose>
 

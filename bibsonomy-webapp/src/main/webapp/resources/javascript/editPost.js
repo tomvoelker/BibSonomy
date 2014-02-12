@@ -224,7 +224,7 @@ function handleRecommendedTags(xml) {
 		var tagField = $("#recommendedTags");
 		
 		// clear previous recommendations
-		tagField.empty();
+		tagField.find('li').not('.keepme').remove();
 		
 		// lookup tags
 		var root = xml.getElementsByTagName('tags').item(0);
@@ -247,7 +247,7 @@ function handleRecommendedTags(xml) {
 			if ((node.nodeType == 1) && (node.tagName == 'tag')) {
 				var tagName       = node.getAttribute('name');
 				
-				var newTag = $("<li tabindex='1'>" + tagName + " </li>");
+				var newTag = $("<li tabindex='1'><span class='glyphicon glyphicon-plus'><!-- KEEP ME --></span>" + tagName + "</li>");
 				newTag.click(copytag);
 				tagField.append(newTag);
 				

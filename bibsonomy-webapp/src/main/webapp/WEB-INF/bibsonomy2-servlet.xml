@@ -591,6 +591,11 @@
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
 				</entry>
+				<entry key="/bootstrapDemo">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="bootstrapDemoController"/>
+					</bean>
+				</entry>
 				<entry key="/errors/403">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="error403PageController"/>
@@ -846,6 +851,10 @@
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request" />
 	
 	<!--  #################### static views #################### -->
+	
+	<bean id="bootstrapDemoController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="BOOTSTRAP_DEMO"/>
+	</bean>
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"/>
 	</bean>

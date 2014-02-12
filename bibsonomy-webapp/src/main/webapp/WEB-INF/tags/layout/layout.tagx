@@ -52,27 +52,65 @@
 			/>
 
 			<body>
+				
+			
+			
 				<c:if test="${not empty beforeMainContainer}">
 					<jsp:invoke fragment="beforeMainContainer"/>
 				</c:if>
 
-				<div id="container" class="${hideFooterContainer ? 'noPageNavigation ' : hideFooterContainer}${not command.context.userLoggedIn ? 'noUser ' : ''}"><!-- everything but the footer -->
-					<div id="header">
 
-						<!--+ 
-						 	|
-						 	| language
-						 	|
-						 	+-->
-						<div id="language">
-							<ul>
-								<!-- TODO: config languages? -->
-								<c:forTokens var="lang" items="en,de" delims=",">
-									<li><a class="${lang eq locale.language ? 'active' : ''}" href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', lang)}">${lang}</a></li>
-								</c:forTokens>
-							</ul>
-						</div><!-- #language -->
-
+				<div class="container header">
+				
+					<div id="page-header bib-header">
+	
+						<div class="row">
+						
+							<div class="col-md-6">
+								<!--+ 
+								 	| 
+								 	| logo and project name
+								 	|
+								 	+-->
+							 	<!-- 
+								<spring:theme code="image.head.logo" var="headerLogo" text=""/>
+								<c:if test="${not empty headerLogo}">
+									<div id="logoimage">
+										<a href="/"><img id="headerlogoimage" src="${headerLogo}"/></a>
+									</div>	
+								</c:if>
+								-->
+								<div id="logo">
+									
+										<h1><a href="/">${properties['project.name']}</a></h1>
+										<small class="slogan"><fmt:message key="system.desc"/></small>
+									
+								</div>
+								
+								
+							</div>
+							
+							<div class="col-md-6">
+								
+								<div id="lang-switcher" class="pull-right">
+									<span>(&amp;nbsp;</span>
+									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'en')}">en</a>
+									<span>&amp;nbsp;|&amp;nbsp;</span>
+									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'de')}">de</a>
+									<span>&amp;nbsp;)</span>
+								</div>
+								
+								<!--+ 
+								 	|
+								 	| search
+								 	|
+								 	+-->
+								 <br style="clear: both;" />
+								 <p style="line-height: 9px; font-size:9px; padding:0;margin:0;">&amp;nbsp;<!-- KEEP ME --></p>
+								<jsp:invoke fragment="heading"/>
+							</div>
+						</div>
+							
 
 						<!--+
 						 	|
@@ -84,107 +122,53 @@
 								<parts:login requPath="${requPath}"/>
 							</c:if>
 						</div><!-- #poststats -->
-
-
-						<!--+ 
-						 	| 
-						 	| logo and project name
-						 	|
-						 	+-->
-						<spring:theme code="image.head.logo" var="headerLogo" text=""/>
-						<c:if test="${not empty headerLogo}">
-							<div id="logoimage">
-								<a href="/"><img id="headerlogoimage" src="${headerLogo}"/></a>
-							</div>
-						</c:if>
-
-						<div id="logo">
-							<span class="text"><a href="/">${properties['project.name']}</a></span>
+	
+	
+	
+	
 							
-							<!--+ 
-							 	|
-							 	| breadcrumb / search
-							 	|
-							 	+-->
-							<jsp:invoke fragment="heading"/>
-						</div>
-					
-						<div id="logoSubtitle"><fmt:message key="system.desc"/></div><!-- FIXME: not shown by CSS -->
-						
-					</div><!-- #header -->
+					</div><!-- /#bib-header -->
+				</div>
+				<div id="navigation">
+						 <menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
+				</div> <!-- /#navigation -->
+				<div class="container main">
+					<div class="row">
+					  	<div class="col-md-9">
+							<div id="intro">
+								<jsp:invoke fragment="contentIntro"/>
+							</div>
+					    	<jsp:invoke fragment="content"/>
+					  	</div>
+					  	<div class="col-md-3">
+					  		<!-- <parts:sidebarnavi/> -->
+					  		
+				  			<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
+					  		
+					  	</div>
+					  
+					</div><!-- /.row -->
 
-
-					<!--+
-						|
-						| sign in + logout
-						|
-						+-->
-					<div id="navigation2">
-						<c:choose>
-							<c:when test="${command.context.userLoggedIn}">
-								<fmt:message key="navi.loggedInAs"/><c:out value=" "/><a class="profile" href="/user/${mtl:encodeURI(loginUser.name)}"><c:out value="${loginUser.name}" /></a>
-								<a href="/logout" class="signoff"><fmt:message key="navi.logout"/></a>
-							</c:when>
-							<c:otherwise>
-								<c:if test="${properties['project.theme'] ne 'puma'}">
-									<a href="/login"><fmt:message key="navi.login"/></a>
-								</c:if>
-							</c:otherwise>
-						</c:choose>	
-					</div>
 					
 					<!--+
 						|
 						| home, myProjectName, insert, groups, popular
 						|
 						+-->
-					<div id="navigation">
-						<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
-					</div><!-- #navigation -->
-					
+
+					<!-- 
 					<div id="sidebarheader">
 						<parts:sidebarnavi/>
 					</div>
+					 -->
+					 <!--
 					<div id="headercontainer">
 						<c:if test="${not empty headerContainer}">
 							<jsp:invoke fragment="headerContainer"/>
 						</c:if>
-					</div> <!-- #headercontainer -->
-					
-					<!--+
-						|
-						| main content box
-						|
-						+-->
-					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
-					
-					<!-- choose the layout: the minimized layout or the full screen layout -->
-					<c:choose>
-						<c:when test="${not empty minimizedContentWidth and minimizedContentWidth == true}">
-							<div id="postcontainer">
-								<div class="minimizedPostcontainer">
-									<c:if test="${not empty contentIntro}">
-										<div id="intro">
-											<jsp:invoke fragment="contentIntro"/>
-										</div>
-									</c:if>
-									<jsp:invoke fragment="content"/>
-									<div class="floatclear"></div>
-								</div>
-							</div> <!-- #postcontainer -->
-						</c:when>
-						<c:otherwise>
-							<div id="postcontainer">
-								<c:if test="${not empty contentIntro}">
-									<div id="intro">
-										<jsp:invoke fragment="contentIntro"/>
-									</div>
-								</c:if>
-								<jsp:invoke fragment="content"/>
-								<div class="floatclear"></div>
-							</div><!-- #postcontainer -->
-						</c:otherwise>
-					</c:choose>
+					</div> 
+					-->
+
 
 					<!-- TODO: remove?! -->
 <!--					<div id="footercontainer">-->
@@ -197,21 +181,23 @@
 <!--							</c:otherwise>-->
 <!--						</c:choose>-->
 <!--					</div>   #footercontainer -->
-				</div><!-- #container -->
-				<div id="legalnotices">
-					<fmt:message key="system.offeredBy">
-						<fmt:param value="${properties['project.name']}"/>
-					</fmt:message>
-					<c:out value=" "/>
-					<fmt:message key="system.termsOfUse"/>
-					<c:out value=" - "/>
-					<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-					<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
-					
-					<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
-						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
-					</c:if>
-				</div>
+					<div id="legalnotices">
+						<fmt:message key="system.offeredBy">
+							<fmt:param value="${properties['project.name']}"/>
+						</fmt:message>
+						<c:out value=" "/>
+						<fmt:message key="system.termsOfUse"/>
+						<c:out value=" - "/>
+						<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+						<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
+						
+						<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
+							<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
+						</c:if>
+					</div>
+				</div> <!--  /.container -->
+				
+
 			</body>
 		</jsp:body>
 	</jsp:element>

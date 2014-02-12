@@ -18,45 +18,11 @@
 	<fmt:message key="${legendKey}" var="legendKeyMsg"/>
 	<c:if test="${not empty legendKeyMsg}">
 
-		<!--+
-			| set variables for hiding the contents
-			+-->
-		<c:choose>
-			<c:when test="${maximized}">
-				<c:set var="fsClass" value="fsVisible"/>
-				<c:set var="fsIconUrl" value="${resdir}/image/icon_collapse.png"/>
-			</c:when>
-			<c:otherwise>
-				<c:set var="fsClass" value="fsHidden"/>
-				<c:set var="fsIconUrl" value="${resdir}/image/icon_expand.png"/>
-			</c:otherwise>
-		</c:choose>
-	
-	
-	
-		<fieldset class="${fsClass}">
-			<legend>
-				<!-- 
-				   | toggle button for maximizing/minimizing this fieldset
-				   -->
-				<img src="${fsIconUrl}" onClick="toggleFieldsetVisibility(this)" alt="toggle visibility"/>
-				<!-- 
-				   | legend text + extension
-				   -->
-				${legendKeyMsg}
-				<c:if test="${not empty legendExt}">
-					<c:out value=" "/>
-					<jsp:invoke fragment="legendExt"/>
-				</c:if>
-			</legend>
-			
-			<!-- 
-				| fieldset content
-				-->
-			<div>
-				<jsp:invoke fragment="content"/>
-			</div>
-		</fieldset>
+		<div class="postlistTitle"><h2><c:out value="${legendKeyMsg}"/></h2></div>
+		
+		<jsp:invoke fragment="content"/>
+		
+		
 	</c:if>
 
 

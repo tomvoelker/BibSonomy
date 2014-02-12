@@ -27,30 +27,28 @@
 		+-->
 	<div id="infobox">
 		<!-- header for the info box -->
-		<ul>
-			<li>
-				<span class="sidebar_h ${initialState}">
-					<c:choose>
-						<c:when test="${not empty headerKey}">
-							<fmt:message key="headerKey"/>
-						</c:when>
-						<c:otherwise>
-							<fmt:message key="navi.infobox"/>
-						</c:otherwise>
-					</c:choose>
-				</span>
-				<!-- content of the info box -->
-				<div class="content sidebar_collapse_content" style="display: ${initialDisplay}">
-					<c:choose>
-						<c:when test="${not empty infoTextKey}">
-							<fmt:message key="${infoTextKey}"/>
-						</c:when>
-						<c:when test="${not empty infoTextBody}">
-							<jsp:invoke fragment="infoTextBody"/>
-						</c:when>
-					</c:choose>
-				</div>
-			</li>
-		</ul>
+
+		<div class="postlistTitle">
+			<c:choose>
+				<c:when test="${not empty headerKey}">
+					<h2><fmt:message key="headerKey"/></h2>
+				</c:when>
+				<c:otherwise>
+					<h2><fmt:message key="navi.infobox"/></h2>
+				</c:otherwise>
+			</c:choose>
+		</div>
+		<!-- content of the info box -->
+		<div>
+			<c:choose>
+				<c:when test="${not empty infoTextKey}">
+					<fmt:message key="${infoTextKey}"/>
+				</c:when>
+				<c:when test="${not empty infoTextBody}">
+					<jsp:invoke fragment="infoTextBody"/>
+				</c:when>
+			</c:choose>
+		</div>
+
 	</div>
 </jsp:root>
