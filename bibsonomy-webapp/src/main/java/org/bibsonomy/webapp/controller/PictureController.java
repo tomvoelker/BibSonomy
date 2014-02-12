@@ -88,7 +88,7 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		final String requestedUserName = command.getRequestedUser();
 		
 		final User requestedUser = logic.getUserDetails(requestedUserName);
-		
+
 		PictureHandler handler;
 		
 		// test if user's profile picture is visible
@@ -115,13 +115,10 @@ public class PictureController implements MinimalisticController<PictureCommand>
 		final String requestedUserName = requestedUser.getName();
 		final String loginUserName = loginUser.getName();
 		
-		if (!present(requestedUserName) ) {
-			return false;
-		}
 		/*
 		 * login user may always see his/her photo
 		 */
-		if (requestedUserName.equals(loginUserName) ) 
+		if ( present(loginUserName) && loginUserName.equals(requestedUserName) ) 
 			return true;
 		
 		/*
