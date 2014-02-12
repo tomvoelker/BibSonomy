@@ -6,7 +6,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-	xmlns:form="http://www.springframework.org/tags/form">
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
 
     <!-- 
     
@@ -17,28 +18,29 @@
      -->
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
-	<div id="groupBoxleft">
-		<bform:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.viewablefor">
-		<!-- fieldset id="fsgroupBoxleft"-->
-			<jsp:attribute name="content">
 	
-				<div style="float: left; margin-right: 1ex;">
-	           		<!-- radio buttons for public, private, other -->
-	           		<form:radiobutton path="abstractGrouping" value="public" tabindex="2" />  <span class="expl"><fmt:message key="post.resource.public"/></span>
-	           		<form:radiobutton path="abstractGrouping" value="private" tabindex="2" /> <span class="expl"><fmt:message key="post.resource.private"/></span>
-	           		<form:radiobutton path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" />  <span class="expl"><fmt:message key="post.resource.other"/></span>
-				</div>	
-	            <!-- select box for "other" groups TODO: allow multiple groups-->
-	            <p>
-	            <form:select class="initiallyHidden" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
-	            	<form:option label="friends" value="friends"/>
-	              	<form:options items="${groups}" itemValue="name" itemLabel="name"/>
-	            </form:select>
-	            </p>
-	            <div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-	            
-	    	</jsp:attribute>
-		</bform:fieldset>
+	
+		
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
+			<fmt:message key="post.resource.viewablefor" />
+		</label>
+		<div class="col-sm-10">
+			<div class="row">
+				<div class="col-sm-4">
+					<form:radiobutton path="abstractGrouping" value="public" tabindex="2" />&amp;nbsp;<span class="expl"><fmt:message key="post.resource.public"/></span><br />
+       				<form:radiobutton path="abstractGrouping" value="private" tabindex="2" />&amp;nbsp;<span class="expl"><fmt:message key="post.resource.private"/></span><br />
+       				<form:radiobutton path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" />&amp;nbsp;<span class="expl"><fmt:message key="post.resource.other"/></span><br />
+       			</div>
+       			<div class="col-sm-8">
+       				<form:select class="initiallyHidden form-control" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
+            			<form:option label="friends" value="friends"/>
+              			<form:options items="${groups}" itemValue="name" itemLabel="name"/>
+            		</form:select>
+       			</div>
+   			</div>
+   			<div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+		</div>
 	</div>
 	
 	<script type="text/javascript">
