@@ -1,34 +1,5 @@
 // methods for editBookmark page
 
-$(function() {
-	scraping();
-	checkUrlForTitle();
-});
-
-function scraping(){
-	var url=$("#post\\.resource\\.url").val();
-	if (url.length > 'http://'.length) {
-		$.ajax({
-			url : '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&doIE=false&selection='+encodeURIComponent($("#post\\.description").val()),
-			success : function(data) {
-            	if (data != '') {
-    				$("#bib").val(data);
-              		showHide("scrapable");
-            	}
-			},
-			dataType : "text"
-			});
-    	}
-	}
-
-  function showHide(id){
-    var b = document.getElementById(id);
-    b.style.display = (b.value != '' ? '' : 'hidden');
-  }
-
-
-
-
 function checkUrlForTitle(  ){
 	var req = new XMLHttpRequest();
 	req.open("GET", '/generalAjax?action=getTitleForUrl&pageURL='+encodeURIComponent(document.getElementById("post.resource.url").value), true); // Request starten

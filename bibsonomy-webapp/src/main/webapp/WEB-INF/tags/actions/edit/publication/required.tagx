@@ -7,8 +7,9 @@
 	xmlns:form="http://www.springframework.org/tags/form"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
     xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-    xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
   >
+  
+
     <!-- 
     
         Shows the required form fields entrytype, bibtexkey, title, author, 
@@ -25,50 +26,36 @@
 		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
 		<script type="text/javascript" src="${resdir}/javascript/publicationRequiredFields.js"> <!--  --></script>
 		<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>
-		<script type="text/javascript">
-			$(function() {
-				//hide all entrytypes
-				$('.entrytype-help').hide();
-				//show first
-				$('#article').show();
-				$('#article').next().show();
-				//bind event handler
-				$('select').bind('change keyup keydown', function(e) {
-					var val = $(this).val();
-					$('.entrytype-help').hide();
-					$('#'+val).show();
-					$('#'+val).next().show();
-					$(this).popover('show');
-				});
-			});
-		</script>
+	  	
+		<div class="fsRow">			
+            <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help" cssClass="widehelp"/>
+            <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
+            <div class="dissError"><form:errors path="post.resource.entrytype" /></div>
 		
-			<bsform:select 
-				multiple="${false}" 
-				path="post.resource.entrytype" 
-				id="post.resource.entrytype"
-				tabindex="2" 
-				size="1" 
-				items="${mtl:getBibTeXEntryTypes()}"
-				/>
-		
-			<bsform:textarea id="post.resource.title" path="post.resource.title" required="${true}" />
-		
-			<bsform:textarea id="post.resource.author" path="post.resource.author" required="${true}" />
-			<div class="form-group">
-	    		<div class="col-sm-offset-2 col-sm-10">
-					<div class="checkbox clearfix">
-						<label>
-			          		<input type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
-			          		<div class="help-header hide"><fmt:message key="post.resource.myown"/></div>
-			          		<div class="help-content hide"><fmt:message key="post.resource.myown.help"/></div>
-			        	</label>
-					</div>
-				</div>
-			</div>
+			<c:if test="${empty hideBibTeXKey or not hideBibTeXKey}">
+			    <form:input cssClass="fsFloatInput reqinput" path="post.resource.bibtexKey" tabindex="2"/>
+	            <!-- reload button for BibTeX key -->
+	            <fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
+	            <a style="cursor:pointer">
+	              <img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
+	            </a>
+	            <buttons:help message="post.resource.bibtexKey.help" cssStyle="float:none;"/>
+	            <form:label cssClass="fsFloatLabel" cssStyle="clear: none !important;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/> </form:label>
+	            <div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
+            </c:if>
+		</div>
 
-			<bsform:textarea id="post.resource.editor" path="post.resource.editor" required="${true}"/>
-			<bsform:input id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>
+		
+		<bform:textarea path="post.resource.title" required="${true}" rows="2"/>
+		<bform:textarea path="post.resource.author" required="${true}" rows="2"/>
+
+		<div class="fsRow hiddenElement">
+			<label class="fsLabel"><fmt:message key="post.resource.myown"/></label><buttons:help message="post.resource.myown.help"/>
+			<input type="checkbox" id="myownChkBox" tabindex="2"/>
+		</div>
+
+		<bform:textarea path="post.resource.editor" required="${true}" rows="2"/>
+		<bform:input path="post.resource.year" required="${true}" small="${true}"/>
 
 		<c:if test="${autocompletion}">
 			<script type="text/javascript">

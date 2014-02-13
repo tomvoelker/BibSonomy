@@ -10,7 +10,6 @@
 
 	<div class="rating">
 		<c:if test="${not empty post.resource.rating}">
-			<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}" />)</span>
 			<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
 			<!--+
 				|TODO: Once we know for each post whether a goldstandard exists,
@@ -24,7 +23,7 @@
 			<a href="${href}" title="${title}"> 
 				<review:reviewStars rating="${post.resource.rating}" dimension="0.75" /> 
 			</a>
-			
+			<span class="reviewInfo">(<c:out value="${post.resource.numberOfRatings}" />)</span>
 		</c:if>
 	</div>
 
