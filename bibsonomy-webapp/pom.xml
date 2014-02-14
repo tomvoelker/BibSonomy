@@ -142,6 +142,7 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
 			</resource>
 			<resource>
 				<directory>${project.downloaded-resources.directory}</directory>
