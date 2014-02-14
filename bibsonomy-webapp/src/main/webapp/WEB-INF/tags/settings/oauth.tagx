@@ -18,7 +18,7 @@
 		</fmt:message>
 	</p>
 	
-	<!-- TODO: message if the user has no oauth access tokens -->"
+	<!-- TODO: message if the user has no oauth access tokens -->
 	
 	<c:set var="user" value="${command.user}" />
 	<fieldset class="fsOuter">
