@@ -28,33 +28,49 @@
 			}
 		});
 	</script>
-	
-	<p><fmt:message key="post.resource.hint"/></p>
-	<ul class="list-group">
-
-		<li class="list-group-item"><buttons:postBookmark/></li>
-		<li class="list-group-item"><buttons:postBookmarkPopUp/></li>
+	<ul id="post.resource.hint.buttons.div">
+		<li id="post.resource.hint"><fmt:message key="post.resource.hint"/></li>
+		<c:choose>
+			<c:when test="${resourceType eq 'publication'}">
+				<ul id="post.resource.hint.buttons">
+					<li><buttons:postPublication/></li>
+					<li><buttons:postPublicationPopUp/></li>
+				</ul>
+			</c:when>
+			<c:otherwise>
+				<ul id="post.resource.hint.buttons">
+					<li><buttons:postBookmark/></li>
+					<li><buttons:postBookmarkPopUp/></li>
+				</ul>
+			</c:otherwise>
+		</c:choose>
+		<li id="post.resource.hint1"><fmt:message key="post.resource.hint1"/></li>
 	</ul>
-
-	<div class="list-group">
-        <a href="${properties['project.addons.chrome.url']}" class="list-group-item">
-          	<h4 class="list-group-item-heading">
+	<ul id="post.resource.hint.addons" class="initiallyHidden">
+		<li id="post.resource.hint.addons.chrome" class="initiallyHidden">
+			<h4>
 				<fmt:message key="bookmarklet.titleChrome">
 					<fmt:param value="${properties['project.name']}" />
 				</fmt:message>
-          	</h4>
-			<p class="list-group-item-text"><fmt:message key="bookmarklet.buttonTextChrome"/></p>
-        </a>
-        <a href="${properties['project.addons.firefox.url']}" class="list-group-item">
-			<h4 class="list-group-item-heading">
+				</h4>
+				<ul> <!-- TODO: remove? -->
+					<a href="${properties['project.addons.chrome.url']}" class="post.resource.chrome.installButton">
+						<fmt:message key="bookmarklet.buttonTextChrome"/>
+					</a>
+				</ul>
+				</li>
+		<li id="post.resource.hint.addons.firefox" class="initiallyHidden">
+			<h4>
 				<fmt:message key="bookmarklet.titleFirefox">
 					<fmt:param value="${properties['project.name']}" />
 				</fmt:message>
 			</h4>
-			<p class="list-group-item-text"><fmt:message key="bookmarklet.buttonTextFirefox"/></p>
-        </a>
-
-	</div>
-	<fmt:message key="post.resource.hint1"/>
-	
+			<ul> <!-- TODO: remove? -->
+				<a href="${properties['project.addons.firefox.url']}" class="post.resource.firefox.installButton">
+					<fmt:message key="bookmarklet.buttonTextFirefox"/>
+				</a>
+			</ul>
+		</li>
+		<li><fmt:message key="bookmarklet.legacyNotice"/>&amp;nbsp;<fmt:message key="bookmarklet.legacyNotice.further2"/></li>
+	</ul>
 </jsp:root>

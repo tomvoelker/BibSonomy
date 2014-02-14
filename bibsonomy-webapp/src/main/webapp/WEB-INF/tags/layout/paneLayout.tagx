@@ -82,8 +82,11 @@
 	
 	
 		<jsp:attribute name="content">
-
-			<jsp:invoke fragment="content"/>
+			<div id="fullscreen">
+				<div id="fscontent">
+					<jsp:invoke fragment="content"/>
+				</div>
+			</div>
 		</jsp:attribute>	
 	
 	

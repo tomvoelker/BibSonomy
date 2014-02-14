@@ -19,7 +19,7 @@
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
 	</c:if>
-	<c:set var="listTitle"><h2><fmt:message key="bookmarks"/></h2></c:set>
+ 
 	<rc:list
 		titleKey="bookmarks" 
 		loginUserName="${loginUserName}"
@@ -32,8 +32,7 @@
 		extTitle="${extTitle}"
 		widthClassName="${widthClassName}"
 		addAsFirstItem="${addAsFirstItem}"
-		addAsLastItem="${addAsLastItem}"
-		listTitle="${listTitle}">
+		addAsLastItem="${addAsLastItem}">
 		
 		<jsp:attribute name="title">     <bm:title   post="${post}"/></jsp:attribute>
 		<jsp:attribute name="desc">	     <bm:desc    post="${post}"/></jsp:attribute>

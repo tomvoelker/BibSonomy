@@ -88,26 +88,19 @@
 			</c:if>
 			<!-- UnAPI service -->
 			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
-			<script type="text/javascript" src="${resdir}/bootstrap/js/tooltip.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/bootstrap/js/popover.js"><!-- keep me --></script>
-			<script type="text/javascript" >
-			$(function(){
-				$('.post-popover').popover({ 
-				    html : true,
-				    trigger: "hover",
-				    container: 'body',
-				    placement: 'top',
-				    title: function() {
-				    	console.log("#popover-head-"+$(this).attr('data-ident'));
-				      	return $("#popover-head-"+$(this).attr('data-ident')).html();
-				    },
-				    content: function() {
-				    	console.log("#popover-head-"+$(this).attr('data-ident'));
-				      	return $("#popover-content-"+$(this).attr('data-ident')).html();
-				    }
-				});
-			});
-			</script>
+			
+			<c:if test="${not empty param.cleanlayout}">
+				<!--+
+					| add css
+					+ -->
+				<link rel="stylesheet" type="text/css" href="/resources/css/publicationdetails.css" />
+				
+				<!--+
+					| add js
+					+ -->
+				<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
+			</c:if>
+			
 			<jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 
@@ -173,7 +166,7 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-			<!--<jsp:invoke fragment="discussion" />-->
+			<jsp:invoke fragment="discussion" />
 			<c:if test="${not empty discussion}">
 				<parts:postHeader 
 					headerHideable="${true}"
@@ -210,60 +203,44 @@
 				</c:when>
 				<c:otherwise>
 					<!-- additional heading for content area -->
-					 
 					<c:if  test="${not empty contentHeading}">
 						<div id="fullscreen">
 							<jsp:invoke fragment="contentHeading" />
 						</div>
 					</c:if>
 					
-					
 					<!-- bibtex/bookmark lists -->
-				    <div class="row">
-						<div class="col-md-6 bookmark-list">
-							
-					        <resources:bookmarks listView="${command.bookmark}" 
-								loginUserName="${command.context.loginUser.name}" 
-								disableListNavigation="${disableListNavigation}" 
-								requPath="${excapedRequestPath}" 
-								widthClassName="${bookmarksWidthClass}">
-							 
-								<jsp:attribute name="addAsLastItem">
-									<c:if test="${not disableListNavigation}">
-										<div id="bookmarksfooter" class="${bookmarksWidthClass}">
-											<div class="footer">
-												<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
-											</div>
-											
-										</div>
-									</c:if>
-								</jsp:attribute>
-							</resources:bookmarks>
-							
-						</div>
-						<div class="col-md-6 publication-list">
-					        
-							<resources:bibtexs listView="${command.bibtex}" 
-									loginUserName="${command.context.loginUser.name}" 
-									disableListNavigation="${disableListNavigation}" 
-									requPath="${excapedRequestPath}" 
-									widthClassName="${publicationsWidthClass}">
-								<jsp:attribute name="addAsLastItem">
-									<c:if test="${not disableListNavigation}">
-										<div id="publicationsfooter" class="${publicationsWidthClass}">
-											<div class="footer">
-												<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-											</div>
-										</div>
-									</c:if>
-								</jsp:attribute>
-							</resources:bibtexs>
-							 
-						</div>
-				    </div>
+					<resources:bookmarks listView="${command.bookmark}" 
+							loginUserName="${command.context.loginUser.name}" 
+							disableListNavigation="${disableListNavigation}" 
+							requPath="${excapedRequestPath}" 
+							widthClassName="${bookmarksWidthClass}">
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
+									<div class="footer">
+										<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
+									</div>
+								</div>
+							</c:if>
+						</jsp:attribute>
+					</resources:bookmarks>
 					
-					
-
+					<resources:bibtexs listView="${command.bibtex}" 
+							loginUserName="${command.context.loginUser.name}" 
+							disableListNavigation="${disableListNavigation}" 
+							requPath="${excapedRequestPath}" 
+							widthClassName="${publicationsWidthClass}">
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="publicationsfooter" class="${publicationsWidthClass}">
+									<div class="footer">
+										<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+									</div>
+								</div>
+							</c:if>
+						</jsp:attribute>
+					</resources:bibtexs>
 				</c:otherwise>
 			</c:choose>
 			</div>

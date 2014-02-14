@@ -75,7 +75,7 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onGoldStandardUpdate(final int newContentId, final int contentId, final String newInterhash, final String interhash, final DBSession session) {
+	public void onGoldStandardUpdate(final int contentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
 		final LoggingParam<String> logParam = new LoggingParam<String>();
 		logParam.setNewId(newInterhash);
 		logParam.setOldId(interhash);

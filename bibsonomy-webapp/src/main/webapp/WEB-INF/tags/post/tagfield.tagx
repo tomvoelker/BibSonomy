@@ -14,9 +14,9 @@
 
 	<bform:fieldset maximized="true" legendKey="post.resource.tags.describe">
 		<jsp:attribute name="content">
-			<div class="form-group">
+			<div class="fsRow">
 		        <span class="fsLabel"> (<fmt:message key="post.resource.spaceseparated"/>) *</span>
-	    	    <form:input cssClass="tagInput reqinput form-control" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
+	    	    <form:input cssClass="tagInput reqinput" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
 	        
 	        	<!-- name="tags"  -->
 				<div class="dissError"><form:errors path="tags" /></div>
@@ -36,10 +36,10 @@
 			  	<div class="fsLabel"><fmt:message key="post.resource.recommendation"/></div>
           
     	      	<!-- we assign post's id to div's class for accessing clicklog data -->
-			  	<ul id="recommendedTags" class="recommended ${command.postID} list-inline">
+			  	<div id="recommendedTags" class="recommended ${command.postID}">
 		    		<div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
 		      		<!-- This comment is needed, otherwise this will result in a self-closing element -->
-		  		</ul>
+		  		</div>
       
           		<a id="fsReloadLink" href="#">
             		<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
@@ -55,7 +55,7 @@
                		<div class="fsLabel">
          				<fmt:message key="post.resource.copytags" />
                		</div>
-         			<ul id="copiedTags" class="list-inline">
+         			<ul id="copiedTags">
           				<c:forEach var="tag" items="${command.copytags}">
           					<li><c:out value="${tag.name} "/></li>
           				</c:forEach>
