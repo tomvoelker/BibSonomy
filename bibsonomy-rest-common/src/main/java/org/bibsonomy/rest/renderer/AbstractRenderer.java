@@ -287,7 +287,7 @@ public abstract class AbstractRenderer implements Renderer {
 	
 			// if the publication has documents …
 			final List<Document> documents = publication.getDocuments();
-			if (documents != null) {
+			if (present(documents)) {
 				// … put them into the xml output
 				final DocumentsType xmlDocuments = new DocumentsType();
 				for (final Document document : documents){

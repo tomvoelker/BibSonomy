@@ -20,28 +20,20 @@
 		                        edition, month, bookTitle, howpublished, institution, organization, publisher,
 		                        address, school, series, bibtexKey, `group`, date, change_date, user_name, url, description,
 		                        annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
-		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3)
+		                        scraperid, privnote, simhash0, simhash1, simhash2, simhash3, new_content_id)
 		SELECT title, entrytype, author, editor, year, content_id, journal, volume, chapter, edition, month,
 		       bookTitle, howpublished, institution, organization, publisher, address, school, series, bibtexKey,
 		       `group`, date, change_date, user_name, url, description, annote, note, pages, bKey, number, crossref, misc,
-		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3
+		       bibtexAbstract, type, day, scraperid, privnote, simhash0, simhash1, simhash2, simhash3, #newContentId#
 		FROM bibtex WHERE content_id = #requestedContentId#
 	</insert>
-
-	<update id="logBibTexUpdate" parameterClass="bibtexParam">
-		UPDATE log_bibtex SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
-	</update>
 	
 	<insert id="logGoldStandard">
-		INSERT INTO log_gold_standard (new_simhash1, content_id, <include refid ="allGoldStandardPublicationColumns"/>)
-		SELECT #newId#, content_id, <include refid ="allGoldStandardPublicationColumns"/>
+		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, <include refid ="allGoldStandardPublicationColumns"/>)
+		SELECT #newId#, content_id, #newContentId#, <include refid ="allGoldStandardPublicationColumns"/>
 		FROM gold_standard WHERE simhash1 = #oldId#
 	</insert>
-	
-	<update id="logGoldStandardUpdate" parameterClass="bibtexParam">
-		UPDATE log_gold_standard SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
-	</update>
-	
+		
 	<insert id="logGoldStandardPublicationReferenceDelete">
 		INSERT INTO log_gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
 	</insert>
