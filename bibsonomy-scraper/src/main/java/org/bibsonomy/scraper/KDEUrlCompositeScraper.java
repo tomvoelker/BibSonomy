@@ -244,7 +244,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new FirstMondayScraper());
 		addScraper(new BloodJournalScraper());
 		addScraper(new IGIGlobalScraper());
-		addScraper(new JStageScraper());
 		addScraper(new DeGruyterScraper());
 	}
 
