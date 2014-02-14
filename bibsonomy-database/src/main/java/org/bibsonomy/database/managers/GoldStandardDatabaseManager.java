@@ -181,7 +181,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		insert.setResource((RR)post.getResource());
 		insert.setDescription(post.getDescription());
 		insert.setDate(post.getDate());
-		insert.setRequestedContentId(post.getContentId());
+		insert.setRequestedContentId(post.getContentId().intValue());
 		insert.setUserName((present(post.getUser()) ? post.getUser().getName() : ""));
 		insert.setGroupId(GroupID.PUBLIC); // gold standards are public
 		
@@ -246,10 +246,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			}
 			
 			final int newContentId = this.generalManager.getNewId(ConstantID.IDS_CONTENT_ID, session).intValue();
-			post.setContentId(newContentId);
+			post.setContentId(Integer.valueOf(newContentId));
 			
 			// first log the gold standard
-			this.onGoldStandardUpdate(oldPost.getContentId(), newContentId, oldHash, resourceHash, session); // logs old post and updates reference table
+			this.onGoldStandardUpdate(oldPost.getContentId().intValue(), newContentId, oldHash, resourceHash, session); // logs old post and updates reference table
 			// than you can delete it
 			this.deletePost(oldHash, true, session);
 			// and add a new one
