@@ -139,7 +139,7 @@
 	
 	<delete id="removeSpecificAccessToken" parameterClass="oAuthParam">
 	    DELETE FROM oauth_provider_tokens
-	    WHERE viewer = #userID# 
+	    WHERE viewer = #username# 
 	    AND access_token = #accessToken#
 	</delete>
 	
