@@ -157,7 +157,7 @@
 							href="/postHistory/${post.resource.intraHash}/${post.user.name}"
 							title="${postHistoryTitle}"> -->
 						<a class="item history"
-							href="/history/publication/${post.resource.intraHash}/${post.user.name}"
+							href="/history/publication/${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"
 							title="${postHistoryTitle}">
 							<!-- Keep Me-->
 						</a>
