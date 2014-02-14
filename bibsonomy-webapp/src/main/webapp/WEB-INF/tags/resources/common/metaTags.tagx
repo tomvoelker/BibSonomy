@@ -27,7 +27,7 @@
 					<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a><c:out value=" "/>
 				</c:forEach>
 			</div>
-		</div>	
+		</div>
 	</c:if>
 
 	<!-- ALL REGULAR TAGS -->

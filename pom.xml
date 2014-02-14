@@ -17,9 +17,7 @@
 	</organization>
 	<inceptionYear>2006</inceptionYear>
 	<scm>
-		<connection>
-			scm:hg:ssh://hg@bitbucket.org/bibsonomy/bibsonomy
-		</connection>
+		<connection>scm:hg:ssh://hg@bitbucket.org/bibsonomy/bibsonomy</connection>
 	</scm>
 	<issueManagement>
 		<system>Bitbucket</system>
@@ -163,14 +161,6 @@
 		</mailingList>
 	</mailingLists>
 	<repositories>
-		<!-- TODO: remove as soon as possible -->
-		<repository>
-			<id>artifactory-cs-kassel</id>
-			<url>http://artifactory.cs.uni-kassel.de/artifactory/repo</url>
-			<snapshots>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
 		<repository>
 			<id>dev.bibsonomy.org</id>
 			<name>Official Source Code Releases of selected BibSonomy Modules</name>
