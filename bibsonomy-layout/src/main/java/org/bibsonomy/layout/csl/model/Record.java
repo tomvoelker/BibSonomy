@@ -25,6 +25,7 @@ package org.bibsonomy.layout.csl.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bibsonomy.model.Document;
 
 /**
  * Models an entry. See the file 'csl-variables' at
@@ -109,6 +110,9 @@ public class Record {
     // journal title for articles, etc.).
     private String container_title;
 
+    /** documents of this bibsonomy post. not official part of csl */
+    private List<Document> documents = new ArrayList<org.bibsonomy.model.Document>();
+    
     // doi identifier
     private String DOI;
 
@@ -575,7 +579,15 @@ public class Record {
 	return author;
     }
 
-    public void setIssued(Date issued) {
+    public List<Document> getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
+	}
+
+	public void setIssued(Date issued) {
 	this.issued = issued;
     }
 
