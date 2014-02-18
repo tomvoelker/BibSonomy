@@ -18,7 +18,7 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
  * 
  * @author fei
  */
-public interface IOAuthLogic {
+public interface OAuthLogic {
 	//------------------------------------------------------------------------
 	// authentication information interface
 	//------------------------------------------------------------------------

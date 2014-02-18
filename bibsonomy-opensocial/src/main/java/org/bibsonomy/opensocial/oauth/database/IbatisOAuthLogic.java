@@ -38,7 +38,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * 
  * @author fei
  */
-public class IbatisOAuthLogic implements IOAuthLogic {
+public class IbatisOAuthLogic implements OAuthLogic {
 	private static final Log log = LogFactory.getLog(IbatisOAuthLogic.class);
 
 	//------------------------------------------------------------------------
@@ -51,7 +51,7 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 
 	private String defaultCallbackUrl;
 
-	private static IOAuthLogic instance = null;
+	private static OAuthLogic instance = null;
 
 	private IbatisOAuthLogic() {
 		try {
@@ -67,9 +67,9 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 	}
 
 	/**
-	 * @return An instance of this implementation of {@link IOAuthLogic}
+	 * @return An instance of this implementation of {@link OAuthLogic}
 	 */
-	public static IOAuthLogic getInstance() {
+	public static OAuthLogic getInstance() {
 		if (instance == null) instance = new IbatisOAuthLogic();
 		return instance;
 	}

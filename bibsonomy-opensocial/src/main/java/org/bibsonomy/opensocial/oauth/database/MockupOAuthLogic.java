@@ -25,7 +25,7 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
  * @author fei
  *
  */
-public class MockupOAuthLogic implements IOAuthLogic {
+public class MockupOAuthLogic implements OAuthLogic {
 	private static Log log = LogFactory.getLog(MockupOAuthLogic.class);
 	
 	TokenInfo lastToken;

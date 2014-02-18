@@ -10,7 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.LayoutPart;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
@@ -22,7 +21,7 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.opensocial.oauth.database.IOAuthLogic;
+import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -37,20 +36,16 @@ import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
-
-
 /**
  * @author Steffen
  */
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(SettingsPageController.class);
 	
-	/**
-	 * hold current errors
-	 */
+	/** hold current errors */
 	protected Errors errors = null;
 	
-	protected IOAuthLogic oauthLogic;
+	protected OAuthLogic oauthLogic;
 	protected LogicInterface logic;
 	protected RequestLogic requestLogic;
 
@@ -80,14 +75,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
-		}
-		
-		/* 
-		 * TODO: remove after testing
-		 * At current time, only admins can see the OAuth consumers
-		 */
-		if (Role.ADMIN.equals(loginUser.getRole())) {
-			command.addTab(SettingsViewCommand.OAUTH_IDX, "navi.oauth.consumers");
 		}
 		
 		/*
@@ -176,21 +163,21 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 */
 	private void workOnOAuthTab(final SettingsViewCommand command) {
-		// TODO: remove after testing
-		if (!Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
-			return;
-		}
-		// Test if user pressed the delete button. Then delete the OAuth access
+		/*
+		 * test if user pressed the delete button. Then delete the OAuth access
+		 */
 		// TODO: extract to separate Controller?
-		if (command.getAction()!= null){
-			if (command.getAction().equals("Delete")){
-				this.oauthLogic.removeSpecificAccessToken(command.getUser().getName(), command.getAccessTokenDelete());
-			}
+		if ("Delete".equals(command.getAction())) {
+			this.oauthLogic.removeSpecificAccessToken(command.getUser().getName(), command.getAccessTokenDelete());
 		}
-		/* Get the valid OAuth applications of the user */
-		final List<OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
+		/*
+		 * get the valid OAuth applications of the user
+		 */
+		final List<OAuthUserInfo> oauthUserInfo = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
 		
-		/* Calculate the expiration time and issue time */
+		/*
+		 * calculate the expiration time and issue time
+		 */
 		for (final OAuthUserInfo userInfo : oauthUserInfo) {
 			userInfo.calculateExpirationTime(); // TODO: can ibatis do that for us?
 		}
@@ -254,16 +241,16 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
 		final User user = new User();
-		command.setUser(user);
 		user.setSettings(new UserSettings());
+		command.setUser(user);
 		
 		/*
 		 * instantiate empty server user, this seems to be required since spring update
 		 */
-		Properties serverUser = new Properties();
+		final Properties serverUser = new Properties();
 		serverUser.setProperty("userName", "");
 		serverUser.setProperty("apiKey", "");
-		SyncService newSyncServer = new SyncService();
+		final SyncService newSyncServer = new SyncService();
 		newSyncServer.setServerUser(serverUser);
 		command.setNewSyncServer(newSyncServer);
 		
@@ -394,7 +381,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	/**
 	 * @param oauthLogic the oauthLogic to set
 	 */
-	public void setOauthLogic(IOAuthLogic oauthLogic) {
+	public void setOauthLogic(OAuthLogic oauthLogic) {
 		this.oauthLogic = oauthLogic;
 	}
 }
