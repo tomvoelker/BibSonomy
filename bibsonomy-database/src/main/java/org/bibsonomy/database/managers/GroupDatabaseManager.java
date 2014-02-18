@@ -417,6 +417,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 * check if a user or a pending user exists with that name
 		 * currently every group also has a corresponding user in the system
 		 */
+		final User u = new User(normedGroupName);
 		final User groupUser = this.getUserDb().getUserDetails(normedGroupName, session);
 		final List<User> pendingUserList = this.getUserDb().getPendingUserByUsername(normedGroupName, 0, Integer.MAX_VALUE, session);
 		
