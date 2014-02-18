@@ -39,14 +39,10 @@
 	</insert>
 
 	<insert id="logBookmark" parameterClass="bookmarkParam">
-		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name)
-		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name
+		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, new_content_id)
+		SELECT content_id, book_url_hash, book_description, book_extended, `group`, date, change_date, user_name, #newContentId#
 		FROM bookmark WHERE content_id = #requestedContentId#
 	</insert>
-
-	<update id="logBookmarkUpdate" parameterClass="bookmarkParam">
-		UPDATE log_bookmark SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
-	</update>
 
 	<insert id="logTagRelation" parameterClass="tagRelationParam">	
 		INSERT INTO log_tagtagrelations (relationID, lower, upper, date_of_create, user_name) 

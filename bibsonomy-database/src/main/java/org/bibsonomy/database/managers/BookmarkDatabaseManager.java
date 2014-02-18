@@ -72,15 +72,6 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	@Override
 	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
 		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
-		
-		/* 
-		 * rewrites the history
-		 */
-		BookmarkParam param = new BookmarkParam();
-		param.setNewContentId(newContentId);
-		param.setRequestedContentId(oldContentId);
-		this.update("updateBookmarkHistory", param, session);
-
 	}
 
 	/*

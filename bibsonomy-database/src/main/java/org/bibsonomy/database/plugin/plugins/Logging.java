@@ -72,6 +72,9 @@ public class Logging extends AbstractDatabasePlugin {
 		param.setRequestedContentId(contentId);
 		param.setNewContentId(newContentId);
 		this.insert("logBibTex", param, session);
+
+		// Update current_content_id for history
+		this.update("updateBibTexHistory", param, session);
 	}
 
 	@Override
@@ -80,7 +83,11 @@ public class Logging extends AbstractDatabasePlugin {
 		logParam.setNewId(newInterhash);
 		logParam.setOldId(interhash);
 		logParam.setNewContentId(newContentId);
+		logParam.setContentId(contentId);
 		this.insert("logGoldStandard", logParam, session);
+
+		// Update current_content_id for history
+		this.update("updateGoldStandardHistory", logParam, session);
 	}
 	
 	@Override
@@ -112,9 +119,11 @@ public class Logging extends AbstractDatabasePlugin {
 	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setRequestedContentId(contentId);
-		this.insert("logBookmark", param, session);
 		param.setNewContentId(newContentId);
-		this.insert("logBookmarkUpdate", param, session);
+		this.insert("logBookmark", param, session);
+		
+		// Update current_content_id for history
+		this.update("updateBookmarkHistory", param, session);
 	}
 
 	@Override

@@ -16,7 +16,7 @@
 		   OR new_content_id = #newContentId#
 	</update>
 	
-	<update id="updateGoldStandardHistory" parameterClass="bibtexParam">
+	<update id="updateGoldStandardHistory" >
 		UPDATE log_gold_standard
 		SET current_content_id = #newContentId#
 		WHERE current_content_id = #requestedContentId#
