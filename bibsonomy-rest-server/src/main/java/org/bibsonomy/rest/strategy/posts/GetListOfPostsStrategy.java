@@ -1,6 +1,6 @@
 package org.bibsonomy.rest.strategy.posts;
 
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.SortKey;
@@ -13,6 +13,7 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.SortUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -35,28 +36,22 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		List<SortKey> sortKeys = Arrays.asList(sortKey);
-		List<SortOrder> sortOrders = Arrays.asList(sortOrder);
-		
-		if ( BibTex.class == resourceType )
-		{
+		List<SortKey> sortKeyList = SortUtils.parseSortKeys(sortKeys);
+		List<SortOrder> sortOrderList = SortUtils.parseSortOrders(sortOrders);
+        
+		if (BibTex.class == resourceType) {
 			List<Post<BibTex>> bibtexList = getList( BibTex.class );
-			
-			BibTexUtils.sortBibTexList( bibtexList, sortKeys, sortOrders );
-			
+			BibTexUtils.sortBibTexList( bibtexList, sortKeyList, sortOrderList );
 			return bibtexList;
-		}
-		else if ( Bookmark.class == resourceType )
-		{
+		} else if ( Bookmark.class == resourceType ) {
 			List<Post<Bookmark>> bookmarkList = getList( Bookmark.class );
-			
-			BookmarkUtils.sortBookmarkList( bookmarkList, sortKeys, sortOrders );
-			
+			BookmarkUtils.sortBookmarkList( bookmarkList, sortKeyList, sortOrderList );
 			return bookmarkList;
 		}
 		
-		//else TODO
-		return null;
+        // Since the resourceType SHOULD only be BibTeX or Bookmark,
+        // we just return an empty list with a Resource post here.
+		return new LinkedList<Post<? extends Resource>>();
 	}
 	
 	protected <T extends Resource> List<Post<T>> getList ( Class<T> _resourceType )
