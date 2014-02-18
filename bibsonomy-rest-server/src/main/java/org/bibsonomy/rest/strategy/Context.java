@@ -25,6 +25,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.util.URLDecodingStringTokenizer;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.EnumUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -239,7 +240,7 @@ public final class Context {
 		if (valueStr == null) {
 			return defaultValue;
 		}
-		return Enum.valueOf(enumType, valueStr);
+		return Enum.valueOf(enumType, valueStr.toUpperCase());
 	}
 
 	/**
