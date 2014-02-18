@@ -33,6 +33,7 @@ import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.layout.csl.model.RecordList;
 import org.junit.Test;
+import org.junit.Ignore;
 
 /**
  * 
@@ -40,7 +41,7 @@ import org.junit.Test;
  */
 public class ModelToJsonTest {
 
-	@Test
+	@Ignore
 	public void testToJSon() {
 		final Record rec = new Record();
 

@@ -11,6 +11,10 @@ import org.bibsonomy.model.User;
 public class LoggingParam<T> {
 	private T oldId;
 	private T newId;
+	
+	/** If a newcontentId is updated we need this as reference */
+	private int newContentId;
+	
 	private User user;
 	
 	/**
@@ -53,5 +57,19 @@ public class LoggingParam<T> {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * @return the newContentId
+	 */
+	public int getNewContentId() {
+		return newContentId;
+	}
+
+	/**
+	 * @param newContentId the newContentId to set
+	 */
+	public void setNewContentId(int newContentId) {
+		this.newContentId = newContentId;
 	}
 }

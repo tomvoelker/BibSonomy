@@ -25,6 +25,7 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
+import org.bibsonomy.opensocial.oauth.database.beans.OAuthParam;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -37,7 +38,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * 
  * @author fei
  */
-public class IbatisOAuthLogic implements IOAuthLogic {
+public class IbatisOAuthLogic implements OAuthLogic {
 	private static final Log log = LogFactory.getLog(IbatisOAuthLogic.class);
 
 	//------------------------------------------------------------------------
@@ -50,7 +51,7 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 
 	private String defaultCallbackUrl;
 
-	private static IOAuthLogic instance = null;
+	private static OAuthLogic instance = null;
 
 	private IbatisOAuthLogic() {
 		try {
@@ -66,9 +67,9 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 	}
 
 	/**
-	 * @return An instance of this implementation of {@link IOAuthLogic}
+	 * @return An instance of this implementation of {@link OAuthLogic}
 	 */
-	public static IOAuthLogic getInstance() {
+	public static OAuthLogic getInstance() {
 		if (instance == null) instance = new IbatisOAuthLogic();
 		return instance;
 	}
@@ -253,6 +254,15 @@ public class IbatisOAuthLogic implements IOAuthLogic {
 			this.sqlMap.delete("removeProviderToken", token);
 		} catch (SQLException e) {
 			log.error("Error removing token '"+token+"'", e);
+		}
+	}
+	
+	public void removeSpecificAccessToken(String userName, String accessToken){
+		OAuthParam param = new OAuthParam(userName, accessToken);
+		try{
+			this.sqlMap.delete("removeSpecificAccessToken", param);
+		} catch (SQLException e) {
+			log.error("Error removing token '"+param.getAccessToken()+"'", e);
 		}
 	}
 	

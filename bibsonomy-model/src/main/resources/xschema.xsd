@@ -87,14 +87,15 @@
 	-->
 	<xsd:complexType name="UserType">
 		<xsd:sequence>
-			<xsd:element name="groups" type="GroupsType" minOccurs="1" maxOccurs="1">
+			<xsd:element name="groups" type="GroupsType" minOccurs="0" maxOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>
 						The groups, the user is a member of, excluding
 						the standard groups 'public', 'private', and
 						'friends'.
 					</xsd:documentation>
-				</xsd:annotation></xsd:element>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 		<xsd:attribute name="name" type="xsd:string" use="required" />
 		<xsd:attribute name="realname" type="xsd:string" />

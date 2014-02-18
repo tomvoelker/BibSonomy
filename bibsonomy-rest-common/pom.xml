@@ -54,6 +54,11 @@
 			<classifier>jdk15</classifier>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2.8-b01</version>
+		</dependency>
 	</dependencies>
 
 	<build>

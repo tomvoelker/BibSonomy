@@ -211,6 +211,8 @@ public class CslModelConverter {
 		rec.setDOI(cleanBibTex(bib.getMiscField("doi")));
 		rec.setISBN(cleanBibTex(bib.getMiscField("isbn")));
 
+		rec.setDocuments(bib.getDocuments());
+		
 		return rec;
 	}
 

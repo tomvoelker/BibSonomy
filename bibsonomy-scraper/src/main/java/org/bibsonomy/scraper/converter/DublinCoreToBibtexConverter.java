@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.id.ISBNUtils;
@@ -59,7 +60,7 @@ public class DublinCoreToBibtexConverter {
 
 	// pattern to extract a year out of a string
 	private static final Pattern EXTRACT_YEAR = Pattern.compile("\\d\\d\\d\\d");
-	private static final Pattern URLS = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+	
 	/**
 	 * Searches for HTML Dublin Core metadata in an html formatted string, extracts
 	 * the data and converts it to a BibTeX formatted string.
@@ -137,7 +138,7 @@ public class DublinCoreToBibtexConverter {
 	 */
 	private static Map<String, String> extractData(final String pageContent) {
 		final Matcher matcher = EXTRACTION_PATTERN.matcher(pageContent);
-		
+
 		Map<String, String> data = new HashMap<String, String>();
 
 		String key = "";
@@ -157,11 +158,7 @@ public class DublinCoreToBibtexConverter {
 			} else if (StringUtils.containsIgnoreCase(key, "creator")) {
 				addOrAppendField(AUTHOR_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "identifier")) {
-				final Matcher urlMatcher = URLS.matcher(value);
-				if(urlMatcher.matches())
-					addOrAppendField("url", value, lang, data);
-				else
-					addOrAppendField(ID_KEY, value, lang, data);
+				addOrAppendField(ID_KEY, value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "description")||StringUtils.containsIgnoreCase(key, "abstract")) {
 				addOrAppendField("abstract", value, lang, data);
 			} else if (StringUtils.containsIgnoreCase(key, "date")) {
@@ -207,7 +204,7 @@ public class DublinCoreToBibtexConverter {
 		else if (present(value)) {
 			// append
 			if (data.containsKey(key)) {
-				if(key.equals("author") || key.equals("editor")){
+				if(key.equals(AUTHOR_KEY)|| key.equals("editor")){
 					data.put(key, data.get(key) + " and " + value);
 				}else{
 					data.put(key, data.get(key) + ", " + value);
