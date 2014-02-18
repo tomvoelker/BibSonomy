@@ -111,7 +111,7 @@ public class Record {
     private String container_title;
 
     /** documents of this bibsonomy post. not official part of csl */
-    private List<Document> documents = new ArrayList<org.bibsonomy.model.Document>();
+    private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
     
     // doi identifier
     private String DOI;
@@ -579,11 +579,11 @@ public class Record {
 	return author;
     }
 
-    public List<Document> getDocuments() {
+    public List<DocumentCslWrapper> getDocuments() {
 		return documents;
 	}
 
-	public void setDocuments(List<Document> documents) {
+	public void setDocuments(List<DocumentCslWrapper> documents) {
 		this.documents = documents;
 	}
 
