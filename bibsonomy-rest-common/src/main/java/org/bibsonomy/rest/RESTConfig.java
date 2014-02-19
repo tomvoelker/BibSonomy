@@ -77,6 +77,10 @@ public final class RESTConfig {
 	public static final String FILTER_PARAM = "filter";
 
 	public static final String ORDER_PARAM = "order";
+	
+	public static final String SORTKEY_PARAM = "sortPage";
+	
+	public static final String SORTORDER_PARAM = "sortOrder";
 
 	public static final String CONCEPT_STATUS_PARAM = "status";
 

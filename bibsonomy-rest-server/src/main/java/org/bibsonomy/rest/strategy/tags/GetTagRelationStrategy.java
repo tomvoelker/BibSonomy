@@ -1,6 +1,5 @@
 package org.bibsonomy.rest.strategy.tags;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.TagRelation;
