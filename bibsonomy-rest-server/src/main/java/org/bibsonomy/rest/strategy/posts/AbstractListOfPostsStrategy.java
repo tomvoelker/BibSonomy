@@ -30,8 +30,6 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final Order order;
     protected final String sortKeys;
     protected final String sortOrders;
-//	protected final SortKey sortKey;
-//	protected final SortOrder sortOrder;
 	
 	/**
 	 * @param context
@@ -45,8 +43,6 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		this.order = context.getEnumAttribute(RESTConfig.ORDER_PARAM, Order.class, null);
         this.sortKeys = context.getStringAttribute(RESTConfig.SORTKEY_PARAM, null);
         this.sortOrders = context.getStringAttribute(RESTConfig.SORTORDER_PARAM, null);
-//		this.sortKey = context.getEnumAttribute(RESTConfig.SORTKEY_PARAM, SortKey.class, null); //TODO
-//		this.sortOrder = context.getEnumAttribute(RESTConfig.SORTORDER_PARAM, SortOrder.class, null); //TODO
 		this.grouping = this.chooseGroupingEntity();
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
 		String groupingValue;
