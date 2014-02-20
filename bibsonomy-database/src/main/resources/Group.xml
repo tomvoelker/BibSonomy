@@ -12,6 +12,13 @@
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	
+	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="String">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
+		FROM pendingGroupids i 
+		  JOIN pendingUser u ON (i.group_name = u.user_name)
+		WHERE i.group_name = #groupname#
+	</select>
+	
 	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
 		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname AS realname, u.user_homepage AS homepage
 		FROM pendingGroupids i 
@@ -34,6 +41,7 @@
 		  JOIN user u ON (u.user_name = g.user_name) 
 		WHERE group_name = #groupname#
 		  AND i.group > 2
+		  AND u.role != 6
 		  <!-- AND g.user_name != #requestedGroupName# -->
 	</select>
 
@@ -122,7 +130,7 @@
 	</delete>
 
 	<insert id="addUserToGroup" parameterClass="group">
-		INSERT INTO groups (user_name, `group`, defaultgroup) VALUES (#name#, #groupId#, #groupId#)
+		INSERT INTO groups (user_name, `group`, defaultgroup, `user_status`) VALUES (#name#, #groupId#, #groupId#, #groupRole.role#)
 	</insert>
 
 	<delete id="removeUserFromGroup" parameterClass="group">

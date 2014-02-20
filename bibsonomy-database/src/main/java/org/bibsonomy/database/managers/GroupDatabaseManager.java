@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
@@ -24,6 +25,7 @@ import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
@@ -384,23 +386,46 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Activates a group.
+	 * @param groupName 
+	 * @param session 
 	 */
-	public void activateGroup(final String group, final DBSession session) {
+	public void activateGroup(final String groupName, final DBSession session) {
 		try {
 			session.beginTransaction();
-			this.userDb.activateUser(new User(group), session);
+			// get the group 
+			Group group = this.getPendingGroup(groupName, session);
+			GroupRequest groupRequest = group.getGroupRequest();
+						
+			this.userDb.activateUser(new User(groupName), session);
 			// "move" the pending group row to the normal group table
-			this.insert("activateGroup", group, session);
+			this.insert("activateGroup", groupName, session);
 			// clear the pending group table
-			this.deletePendingGroup(group, session);
+			this.deletePendingGroup(groupName, session);
 			// add the group user to the group
-			this.addUserToGroup(group, group, session);
+			this.addUserToGroup(groupName, groupName, GroupRole.DUMMY, session);
+			// add the requesting user to the group with level ADMINISTRATOR
+			this.addUserToGroup(groupName, groupRequest.getUserName(), GroupRole.ADMINISTRATOR, session);
 	        session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 	}
 	
+	/**
+	 * Returns a specific pending group
+	 * 
+	 * @param groupname 
+	 * @param session 
+	 * @return Returns a {@link Group} object if the group exists otherwise null.
+	 */
+	public Group getPendingGroup(final String groupname, final DBSession session) {
+		if (!present(groupname)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Pending-Groupname isn't present");
+		}
+		final String normedGroupName = this.getNormedGroupName(groupname);
+		return this.queryForObject("getPendingGroup", normedGroupName, Group.class, session);
+	}
+
 	/**
 	 * Creates a group in the database.
 	 * 
@@ -591,9 +616,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param groupname 
 	 * @param username 
+	 * @param role 
 	 * @param session 
 	 */
-	public void addUserToGroup(final String groupname, final String username, final DBSession session) {
+	public void addUserToGroup(final String groupname, final String username, final GroupRole role, final DBSession session) {
 		// check if a user exists with that name
 		final User user = this.getUserDb().getUserDetails(username, session);
 		if (user.getName() == null) {
@@ -613,6 +639,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (this.isUserInGroup(username, group.getName(), session)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
 		}
+		group.setGroupRole(role);
 		// XXX: the next line is semantically incorrect
 		group.setName(username);
 		this.insert("addUserToGroup", group, session);

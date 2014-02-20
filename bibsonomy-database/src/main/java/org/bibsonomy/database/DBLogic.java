@@ -24,6 +24,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -1147,7 +1148,7 @@ public class DBLogic implements LogicInterface {
 				break;
 			case ADD_NEW_USER:
 				for (final User user: group.getUsers()) {
-					this.groupDBManager.addUserToGroup(groupName, user.getName(), session);
+					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.USER, session);
 				}
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:

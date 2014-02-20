@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -294,9 +295,9 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final Group testGroup2 = this.createTestGroup("forgroup2");
 		
 		// add users to groups
-		groupDb.addUserToGroup("forgroup1", "forgroupuser1", this.dbSession);
-		groupDb.addUserToGroup("forgroup1", "forgroupuser2", this.dbSession);
-		groupDb.addUserToGroup("forgroup2", "forgroupuser2", this.dbSession);
+		groupDb.addUserToGroup("forgroup1", "forgroupuser1", GroupRole.USER, this.dbSession);
+		groupDb.addUserToGroup("forgroup1", "forgroupuser2", GroupRole.USER, this.dbSession);
+		groupDb.addUserToGroup("forgroup2", "forgroupuser2", GroupRole.USER, this.dbSession);
 		
 		// update users
 		testUser1.setGroups(groupDb.getGroupsForUser(testUser1.getName(), this.dbSession));

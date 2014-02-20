@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
@@ -263,7 +264,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(3, group.getUsers().size());
 		// add user
 		final String userToAdd = "testuser3";
-		groupDb.addUserToGroup(testGroup, userToAdd, this.dbSession);
+		groupDb.addUserToGroup(testGroup, userToAdd, GroupRole.USER, this.dbSession);
 		group = groupDb.getGroupMembers(userToAdd, testGroup, this.dbSession);
 		assertEquals(3 + 1, group.getUsers().size());
 		
@@ -274,7 +275,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (final String groupname : new String[] { "", " ", null, ParamUtils.NOGROUP_NAME }) {
 			for (final String username : new String[] { "", " ", null, "testuser1", ParamUtils.NOUSER_NAME }) {
 				try {
-					groupDb.addUserToGroup(groupname, username, this.dbSession);
+					groupDb.addUserToGroup(groupname, username, GroupRole.USER, this.dbSession);
 					fail("Should throw an exception");
 				} catch (final RuntimeException ignored) {
 				}
@@ -284,7 +285,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// can't add user to a group he's already a member of
 		for (final String username : new String[] { "testuser1", "testuser2" }) {
 			try {
-				groupDb.addUserToGroup(testGroup.toUpperCase(), username, this.dbSession);
+				groupDb.addUserToGroup(testGroup.toUpperCase(), username, GroupRole.USER, this.dbSession);
 				fail("Should throw an exception");
 			} catch (final RuntimeException ignored) {
 			}
@@ -292,7 +293,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// spammers can't be members of groups!
 		try {
-			groupDb.addUserToGroup(testGroup, "testspammer", this.dbSession);
+			groupDb.addUserToGroup(testGroup, "testspammer", GroupRole.USER, this.dbSession);
 			fail("Should throw an exception");
 		} catch (final RuntimeException ignored) {
 		}
