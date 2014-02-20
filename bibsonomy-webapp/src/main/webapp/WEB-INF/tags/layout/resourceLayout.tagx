@@ -16,6 +16,7 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
@@ -127,6 +128,7 @@
 					isBasket="${isBasket}"
 					disableListNavigation="${disableListNavigation}"
 					disableResourcetypeSelection="${disableResourcetypeSelection}"
+					disableSort="${disableSort}"
 					showInboxActions="${showInboxActions}"
 					customBookmarksHeaderText="${customBookmarksHeaderText}"
 					customPublicationsHeaderText="${customPublicationsHeaderText}"

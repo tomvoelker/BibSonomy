@@ -25,7 +25,7 @@ import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
  * @author fei
  *
  */
-public class MockupOAuthLogic implements IOAuthLogic {
+public class MockupOAuthLogic implements OAuthLogic {
 	private static Log log = LogFactory.getLog(MockupOAuthLogic.class);
 	
 	TokenInfo lastToken;
@@ -103,6 +103,12 @@ public class MockupOAuthLogic implements IOAuthLogic {
 	public List <OAuthUserInfo> getOAuthUserApplication(String username) {
 		// TODO Auto-generated method stub
 		return Collections.emptyList();
+	}
+
+	@Override
+	public void removeSpecificAccessToken(String userName, String accessToken) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

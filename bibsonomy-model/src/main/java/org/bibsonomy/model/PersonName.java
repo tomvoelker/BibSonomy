@@ -32,7 +32,6 @@ import java.io.Serializable;
  * The name of a person.
  * 
  * @author Jens Illig
- * @version $Id$
  */
 public class PersonName implements Serializable {
 	/**

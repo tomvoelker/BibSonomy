@@ -35,7 +35,9 @@ import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class XMLRenderer extends JAXBRenderer {
-
+	
+	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
+	
 	/**
 	 * @param urlRenderer the url renderer to use
 	 */

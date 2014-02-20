@@ -200,7 +200,7 @@
 				</div><!-- #container -->
 				<div id="legalnotices">
 					<fmt:message key="system.offeredBy">
-						<fmt:param value="${properties['project.name']}"/>
+						<fmt:param>${properties['project.name']}</fmt:param>
 					</fmt:message>
 					<c:out value=" "/>
 					<fmt:message key="system.termsOfUse"/>

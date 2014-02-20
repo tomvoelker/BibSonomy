@@ -131,15 +131,8 @@ public class User implements Serializable {
 	private String openURL;
 	
 	/**
-	 * User's Gravatar email address representing his or her picture and profile.</br>
-	 * (cf. {@link "https://de.gravatar.com/site/implement/"})
-	 * @deprecated use user email instead.
-	 */
-	@Deprecated
-	private String gravatarAddress;
-	
-	/**
-	 * If an external avatar sercive â€“ e.g. Gravatar â€“ shall be used instead of an locally uploaded profile picture
+	 * If an external avatar sercive (e.g. Gravatar) shall be used instead of
+	 * an locally uploaded profile picture
 	 */
 	private boolean useExternalPicture;
 	
@@ -255,7 +248,6 @@ public class User implements Serializable {
 	 */
 	public User() {
 		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
-		gravatarAddress = ""; //TODO: for debug only. remove once load from db is implemented.
 	}
 
 	/**
@@ -576,46 +568,22 @@ public class User implements Serializable {
 	}
 	
 	/**
-	 * Returns user's Gravatar email address.<br/>
-	 * (cf. {@link "https://de.gravatar.com/site/implement/"})
+	 * Checks if an external avatar service (e.g. Gravatar) shall be used
+	 * instead of an locally uploaded profile picture.<br/>
 	 * 
-	 * @return Gravatar address as String
+	 * @return <code>true</code> iff external picture shall be used
 	 */
-	@Deprecated
-	public String getGravatarAddress ()
-	{
-		return gravatarAddress;
-	}
-	
-	/**
-	 * Sets user's Gravatar email address.<br/>
-	 * (cf. {@link "https://de.gravatar.com/site/implement/"})
-	 * 
-	 * @param address :	Gravatar address as String
-	 */
-	@Deprecated
-	public void setGravatarAddress ( final String address )
-	{
-		gravatarAddress = address;
-	}
-	
-	/**
-	 * Checks if an external avatar sercive â€“ e.g. Gravatar â€“ shall be used instead of an locally uploaded profile picture.<br/>
-	 * 
-	 * @return true iff, false else.
-	 */
-	public boolean getUseExternalPicture ()
-	{
+	public boolean getUseExternalPicture() {
 		return useExternalPicture;
 	}
 	
 	/**
-	 * Sets if an external avatar sercive â€“ e.g. Gravatar â€“ shall be used instead of an locally uploaded profile picture.<br/>
+	 * Sets if an external avatar service (e.g. Gravatar) shall be used
+	 * instead of an locally uploaded profile picture.
 	 * 
-	 * @param useExternal : true iff, false else.
+	 * @param useExternal the useExternal to set
 	 */
-	public void setUseExternalPicture ( boolean useExternal )
-	{
+	public void setUseExternalPicture(final boolean useExternal) {
 		useExternalPicture = useExternal;
 	}
 	
@@ -624,8 +592,7 @@ public class User implements Serializable {
 	 * 
 	 * @return picture file as UploadedFile
 	 */
-	public UploadedFile getProfilePicture ()
-	{
+	public UploadedFile getProfilePicture() {
 		return profilePicture;
 	}
 	
@@ -634,8 +601,7 @@ public class User implements Serializable {
 	 * 
 	 * @param pictureFile : picture file as UploadedFile
 	 */
-	public void setProfilePicture ( UploadedFile pictureFile )
-	{
+	public void setProfilePicture(final UploadedFile pictureFile) {
 		profilePicture = pictureFile;
 	}
 	
@@ -663,6 +629,7 @@ public class User implements Serializable {
 	 */
 	public void setLdapId(final String ldapId) {
 		this.ldapId = ldapId;
+		// TODO: remove?
 //		if (ldapId == null) {
 //			remoteUserIds.remove(new LdapRemoteUserId("").getNameSpace());
 //			return;

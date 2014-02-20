@@ -20,7 +20,6 @@ import org.apache.lucene.util.Version;
  * TODO: implement reusableTokenStream
  * 
  * @author fei
- * @version $Id$
  *
  */
 public final class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {

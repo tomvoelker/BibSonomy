@@ -41,12 +41,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private String action;
 	
 	/**
+	 * the AccessToken you want to delete
+	 */
+	
+	private String accessTokenDelete;
+	/**
 	 * The OAuth informations about the User
 	 */
-	private List <OAuthUserInfo> oauthUserInfo;
+	private List<OAuthUserInfo> oauthUserInfo;
 	
 	/**
-	 * List of all valid Bibsonomy OAuth consumers
+	 * List of all valid OAuth consumers
 	 */
 	private List<OAuthConsumerInfo> consumerInfo;
 	
@@ -180,6 +185,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.addTab(SETTINGS_IDX, "navi.settings");
 		this.addTab(IMPORTS_IDX, "navi.imports");	
 		this.addTab(CV_IDX, "navi.cvedit");
+		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
 		//OAuth tab added in SettingsPageController.java
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
@@ -580,7 +586,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param addUserToGroup
 	 */
-	public void setAddUserToGroup(String addUserToGroup) {
+	public void setAddUserToGroup(final String addUserToGroup) {
 		this.addUserToGroup = addUserToGroup;
 	}
 
@@ -594,34 +600,53 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param availableSyncClients
 	 */
-	public void setAvailableSyncClients(List<URI> availableSyncClients) {
+	public void setAvailableSyncClients(final List<URI> availableSyncClients) {
 		this.availableSyncClients = availableSyncClients;
 	}
-
+	
+	/**
+	 * @return the newSyncServer
+	 */
 	public SyncService getNewSyncServer() {
 		return this.newSyncServer;
 	}
 
-	public void setNewSyncServer(SyncService newSyncServer) {
+	/**
+	 * @param newSyncServer the newSyncServer to set
+	 */
+	public void setNewSyncServer(final SyncService newSyncServer) {
 		this.newSyncServer = newSyncServer;
 	}
+	
 
+	/**
+	 * @return the importUsername
+	 */
 	public String getImportUsername() {
 		return this.importUsername;
 	}
 
-	public void setImportUsername(String importUsername) {
+	/**
+	 * @param importUsername the importUsername to set
+	 */
+	public void setImportUsername(final String importUsername) {
 		this.importUsername = importUsername;
 	}
 
+	/**
+	 * @return the importPassword
+	 */
 	public String getImportPassword() {
 		return this.importPassword;
 	}
 
-	public void setImportPassword(String importPassword) {
+	/**
+	 * @param importPassword the importPassword to set
+	 */
+	public void setImportPassword(final String importPassword) {
 		this.importPassword = importPassword;
 	}
-	
+
 	/**
 	 * @return the wikiText
 	 */
@@ -646,7 +671,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param renderedWikiText the renderedWikiText to set
 	 */
-	public void setRenderedWikiText(String renderedWikiText) {
+	public void setRenderedWikiText(final String renderedWikiText) {
 		this.renderedWikiText = renderedWikiText;
 	}
 
@@ -654,13 +679,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * @return the isGroup
 	 */
 	public boolean getIsGroup() {
-		return isGroup;
+		return this.isGroup;
 	}
 
 	/**
 	 * @param isGroup the isGroup to set
 	 */
-	public void setIsGroup(boolean isGroup) {
+	public void setIsGroup(final boolean isGroup) {
 		this.isGroup = isGroup;
 	}
 
@@ -674,7 +699,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param oauthUserInfo the oauthUserInfo to set
 	 */
-	public void setOauthUserInfo(List<OAuthUserInfo> oauthUserInfo) {
+	public void setOauthUserInfo(final List<OAuthUserInfo> oauthUserInfo) {
 		this.oauthUserInfo = oauthUserInfo;
 	}
 
@@ -688,44 +713,54 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param consumerInfo the consumerInfo to set
 	 */
-	public void setConsumerInfo(List<OAuthConsumerInfo> consumerInfo) {
+	public void setConsumerInfo(final List<OAuthConsumerInfo> consumerInfo) {
 		this.consumerInfo = consumerInfo;
 	}
 	
 	/**
 	 * Sets picture file to upload.
-	 * @param file : picture file as MultipartFile
+	 * @param picturefile : picture file as MultipartFile
 	 */
-	public void setPicturefile ( MultipartFile file )
-	{
-		picturefile = file;
+	public void setPicturefile(final MultipartFile picturefile ) {
+		this.picturefile = picturefile;
 	}
 	
 	/**
 	 * Returns picture file to upload.
 	 * @return picture file as MultipartFile
 	 */
-	public MultipartFile getPicturefile ()
-	{
-		return picturefile;
+	public MultipartFile getPicturefile() {
+		return this.picturefile;
 	}
 
 	/**
 	 * Sets whether a prior uploaded picture file shall be deleted.
 	 * @param deletePicture flag as boolean
 	 */
-	public void setDeletePicture ( boolean delete )
-	{
-		deletePicture = delete;
+	public void setDeletePicture(final boolean deletePicture) {
+		this.deletePicture = deletePicture;
 	}
 	
 	/**
 	 * Checks whether a prior uploaded picture file shall be deleted.
 	 * @return flag as boolean
 	 */
-	public boolean getDeletePicture ()
-	{
-		return deletePicture;
+	public boolean getDeletePicture() {
+		return this.deletePicture;
+	}
+
+	/**
+	 * @return the accessTokenDelete
+	 */
+	public String getAccessTokenDelete() {
+		return this.accessTokenDelete;
+	}
+
+	/**
+	 * @param accessTokenDelete the accessTokenDelete to set
+	 */
+	public void setAccessTokenDelete(final String accessTokenDelete) {
+		this.accessTokenDelete = accessTokenDelete;
 	}
 
 }
