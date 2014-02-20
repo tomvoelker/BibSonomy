@@ -10,8 +10,9 @@
 		<result property="sharedDocuments"  	column="sharedDocuments"   javaType="boolean"/>
 	</resultMap>
 
-	<resultMap id="groupWithUserSharedDocuments" extends="group_basic" class="group">
+	<resultMap id="groupWithUserSharedDocumentsAndRole" extends="group_basic" class="group">
 		<result property="userSharedDocuments" 	column="userSharedDocuments" javaType="boolean" />
+		<result property="groupRole" 	column="groupRole" javaType="GroupRole" />
 		<result property="publicationReportingSettings" resultMap="GroupCommon.publReportingSettings" />
 	</resultMap>
 	

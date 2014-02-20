@@ -49,14 +49,14 @@
 		SELECT privlevel FROM groupids WHERE `group` = #groupId#
 	</select>
 
-	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithUserSharedDocuments" parameterClass="string">
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, g.userSharedDocuments
+	<select id="getGroupsForUser" resultMap="GroupCommon.groupWithUserSharedDocumentsAndRole" parameterClass="string">
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, g.userSharedDocuments, g.user_status AS groupRole
 		 FROM groups g
 		   JOIN groupids i USING (`group`)
 		 WHERE g.user_name = #username#
 		)
 		UNION
-		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, NULL AS publ_reporting_mail, NULL AS publ_reporting_mail_template, NULL AS publ_reporting_external_url, FALSE AS userSharedDocuments
+		(SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, NULL AS publ_reporting_mail, NULL AS publ_reporting_mail_template, NULL AS publ_reporting_external_url, FALSE AS userSharedDocuments, 7 AS groupRole
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2)
 		ORDER BY `group`
