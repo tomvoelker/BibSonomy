@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Privlevel;
 
 /**
@@ -95,6 +96,13 @@ public class Group implements Serializable{
 	 * it is specific to one member of the group
 	 */
 	private boolean userSharedDocuments;
+	
+	/**
+	 * stores the group role for the current user. 
+	 * TODO: this attribute has nothing to do with a group
+	 * it is specific to one member of the group
+	 */
+	private GroupRole groupRole;
 	
 	/**
 	 * If you add a tagset to a group and a user marks this group as 
@@ -425,5 +433,19 @@ public class Group implements Serializable{
 	 */
 	public void setGroupRequest(GroupRequest groupRequest) {
 		this.groupRequest = groupRequest;
+	}
+
+	/**
+	 * @return the groupRole
+	 */
+	public GroupRole getGroupRole() {
+		return this.groupRole;
+	}
+
+	/**
+	 * @param groupRole the groupRole to set
+	 */
+	public void setGroupRole(GroupRole groupRole) {
+		this.groupRole = groupRole;
 	}
 }
