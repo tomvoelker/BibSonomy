@@ -17,7 +17,8 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" 
 			command="${command}" 
 			requPath="${requPath}" 
-			disableListNavigation="${true}" 
+			disableListNavigation="${true}"
+			disableSort="${true}" 
 			activeTab="home"
 			showPageOptions="${true}"
 			hideFooterContainer="${true}">

@@ -37,7 +37,11 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * the number of tags allowed for querying the db
 	 */
 	public static final int MAX_TAG_SIZE = 10;
-	private static final int END_MAX = 1000;
+	
+	/**
+	 * the maximum number of items for querying the db
+	 */
+	public static final int END_MAX = 1000;
 
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
 
