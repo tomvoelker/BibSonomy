@@ -28,7 +28,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	/* Possible actions */
 	private static final String FETCH_GROUP_SETTINGS  = "fetchGroupSettings"; 
 	private static final String UPDATE_GROUP 		  = "updateGroup";  
-	private static final String CREATE_GROUP          = "createGroup";
+	private static final String CREATE_GROUP          = "createGroup";  
+	private static final String ACCEPT_GROUP          = "acceptGroup"; 
+	private static final String DECLINE_GROUP          = "declineGroup";
 
 
 	@Override
@@ -46,9 +48,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		final String action = command.getAction();
 		if(!present(action)) {
 			log.debug("No action specified.");
-			
-			// load the pending groups
-			command.setPendingGroups(logic.getPendingGroups(0, Integer.MAX_VALUE));
 		} else if (FETCH_GROUP_SETTINGS.equals(action)) {
 			final String groupName = command.getGroup().getName();
 			final Group fetchedGroup = logic.getGroupDetails(groupName);
@@ -62,8 +61,17 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			command.setAdminResponse(updateGroup(command.getGroup()));
 		} else if (CREATE_GROUP.equals(action)) {
 			command.setAdminResponse(createGroup(command.getGroup()));
+		} else if (ACCEPT_GROUP.equals(action)) {
+			final String groupName = command.getGroup().getName();
+			log.debug("accepting group \""+groupName+"\"");
+			this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE);
+		} else if (DECLINE_GROUP.equals(action)) {
+			log.debug("action: decline group");
 		}
-
+		
+		// load the pending groups
+		command.setPendingGroups(logic.getPendingGroups(0, Integer.MAX_VALUE));
+	
 		return Views.ADMIN_GROUP;
 	}
 

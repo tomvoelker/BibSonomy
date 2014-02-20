@@ -147,7 +147,7 @@
 				    </td>
 			        <td>
                     	    <span class="groupsButtons">
-				            		<a href="/join_group?group=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>${mtl:ch('nbsp')}<a href="/join_group?group=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.decline"/></a>	
+				            		<a href="/admin/group?action=acceptGroup&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>${mtl:ch('nbsp')}<a href="/admin/group?action=declineGroup&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.decline"/></a>	
 				           	</span>
                     </td>
             	</tr>
