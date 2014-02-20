@@ -16,7 +16,7 @@ import net.oauth.signature.pem.PEMReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
-import org.bibsonomy.opensocial.oauth.database.IOAuthLogic;
+import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand;
 import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand.AdminAction;
@@ -29,12 +29,12 @@ import org.springframework.validation.ValidationUtils;
  */
 public class BibSonomyOAuthValidator implements  Validator<OAuthAdminCommand>{
 	private static final Log log = LogFactory.getLog(BibSonomyOAuthValidator.class);
-	private final IOAuthLogic logic;
+	private final OAuthLogic logic;
 	
 	/**
 	 * @param logic
 	 */
-	public BibSonomyOAuthValidator (IOAuthLogic logic) {
+	public BibSonomyOAuthValidator (OAuthLogic logic) {
 		this.logic = logic;
 	}
 

@@ -20,7 +20,6 @@ import org.apache.lucene.util.Version;
  * TODO: implement reusableTokenStream
  * 
  * @author fei
- * @version $Id$
  */
 public final class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	/** set of stop words to filter out of queries */

@@ -65,7 +65,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new org.springframework.security.access.AccessDeniedException("please log in");
 		}
-		
+        
 		/*
 		 * The user has three options and needs:
 		 * * see join site: loginUser, group
@@ -244,8 +244,8 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 	/**
 	 * @param denieUserRedirectURI the denieUserRedirectURI to set
 	 */
-	public void setDenieUserRedirectURI(final String denieUserRedirectURI) {
-		this.denyUserRedirectURI = denieUserRedirectURI;
+	public void setDenyUserRedirectURI(final String denyUserRedirectURI) {
+		this.denyUserRedirectURI = denyUserRedirectURI;
 	}
 
 	/**

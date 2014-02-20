@@ -18,7 +18,7 @@ public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandIn
 	private String tabURL = null;
 
 	/** id of current selected tab */
-	protected Integer selTab = 1;
+	protected Integer selTab = Integer.valueOf(1);
 
 	/** list of defined tabs */
 	protected List<TabCommand> tabs = new ArrayList<TabCommand>();
@@ -95,8 +95,8 @@ public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandIn
 	 * @param id
 	 * @param title
 	 */
-	public void addTab(final Integer id, final String title) {
-		tabs.add(new TabCommand(id, title));
+	public void addTab(final int id, final String title) {
+		tabs.add(new TabCommand(Integer.valueOf(id), title));
 	}
 
 	/**

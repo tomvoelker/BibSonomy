@@ -933,7 +933,7 @@
 	<bean id="joinGroupController" class="org.bibsonomy.webapp.controller.actions.JoinGroupController" scope="request">
 		<property name="logic" ref="logic" />
 		
-		<property name="denieUserRedirectURI" value="/settings?selTab=3"/>
+		<property name="denyUserRedirectURI" value="/settings?selTab=3"/>
 		<property name="reasonMaxLen" value="200"/>
 		
 		<!-- To check registration for human beings ... -->
@@ -1071,7 +1071,7 @@
 	
 	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
-		<property name="logic" ref="logic" />
+		<property name="logic" ref="adminLogic" />
 		<property name="requestLogic" ref="requestLogic" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 	</bean>	

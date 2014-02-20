@@ -15,6 +15,7 @@
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
 	
 	<!--+
 		+ heading, variables
@@ -49,20 +50,22 @@
 	<!--+ 
 		+ sort options
 		+-->
-	<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
-	<ul>
-		<li>
-			<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/>
-		</li>
-		<li>
-			<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>	
-		</li>
-		<c:if test="${isPublication}">
+	<c:if test="${not disableSort}">
+		<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
+		<ul>
 			<li>
-				<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
+				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/>
 			</li>
-		</c:if>
-	</ul>
+			<li>
+				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>	
+			</li>
+			<c:if test="${isPublication}">
+				<li>
+					<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
+				</li>
+			</c:if>
+		</ul>
+	</c:if>
 	
 	<!--+ 
 		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users

@@ -51,7 +51,7 @@
 				<c:when test="${command.selTab == 5}">
 					<settings:cv command="${command}"/>
 				</c:when>
-				<c:when test="${command.context.loginUser.role == 'ADMIN' and command.selTab == 6}">
+				<c:when test="${command.selTab == 6}">
 					<settings:oauth command="${command}"/>
 				</c:when>	
 			</c:choose>
