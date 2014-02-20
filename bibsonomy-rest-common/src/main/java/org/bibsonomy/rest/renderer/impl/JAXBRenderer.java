@@ -175,10 +175,10 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			
 			/*
-			 * here we add a special CharacterEscapeHandler that not only encodes
-			 * ", <, > and & but also the \n character with the appropriate 
-			 * XML encoding sequence (else the \n charater gets lost when
-			 * we deserialize the server response with JAXB)
+			 * here we replace the standard CharacterEscapeHandler with one
+			 * that not only encodes ", <, > and & (standard) but also the \n
+			 * character with the appropriate XML encoding sequence (else the \n charater
+			 * gets lost when we deserialize the server response with JAXB)
 			 */
 			marshaller.setProperty("com.sun.xml.bind.characterEscapeHandler", NewLineEscapeHandler.theInstance);
 			if (this.validateXMLOutput) {
