@@ -49,9 +49,7 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 			return bookmarkList;
 		}
 		
-        // Since the resourceType SHOULD only be BibTeX or Bookmark,
-        // we just return an empty list with a Resource post here.
-		return new LinkedList<Post<? extends Resource>>();
+		return getList(resourceType);
 	}
 	
 	protected <T extends Resource> List<Post<T>> getList ( Class<T> _resourceType )
