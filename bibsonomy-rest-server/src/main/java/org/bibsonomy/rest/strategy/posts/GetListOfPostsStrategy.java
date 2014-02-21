@@ -1,6 +1,5 @@
 package org.bibsonomy.rest.strategy.posts;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.SortKey;
@@ -38,19 +37,19 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	protected List<? extends Post<? extends Resource>> getList() {
 		List<SortKey> sortKeyList = SortUtils.parseSortKeys(sortKeys);
 		List<SortOrder> sortOrderList = SortUtils.parseSortOrders(sortOrders);
-        
-		if (BibTex.class == resourceType) {
-			List<Post<BibTex>> bibtexList = getList( BibTex.class );
-			BibTexUtils.sortBibTexList( bibtexList, sortKeyList, sortOrderList );
+		
+		// TODO: why not sort in DBLogic?
+		if (BibTex.class.isAssignableFrom(resourceType)) {
+			List<Post<BibTex>> bibtexList = getList(BibTex.class);
+			BibTexUtils.sortBibTexList(bibtexList, sortKeyList, sortOrderList);
 			return bibtexList;
-		} else if ( Bookmark.class == resourceType ) {
-			List<Post<Bookmark>> bookmarkList = getList( Bookmark.class );
-			BookmarkUtils.sortBookmarkList( bookmarkList, sortKeyList, sortOrderList );
+		} else if (Bookmark.class.isAssignableFrom(resourceType)) {
+			List<Post<Bookmark>> bookmarkList = getList(Bookmark.class);
+			BookmarkUtils.sortBookmarkList(bookmarkList, sortKeyList, sortOrderList);
 			return bookmarkList;
 		}
 		
-        // Since the resourceType SHOULD only be BibTeX or Bookmark,
-        // we just return an empty list with a Resource post here.
+		// return other resource types without ordering (TODO: is this correct?)
 		return getList(resourceType);
 	}
 	
