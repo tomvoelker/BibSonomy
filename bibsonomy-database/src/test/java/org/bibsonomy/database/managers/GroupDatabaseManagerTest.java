@@ -16,6 +16,7 @@ import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -223,6 +224,17 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// should throw an exception anyway
 		// test invalid and existing group names
 		for (final String groupname : new String[] { "", " ", null, "testgroup1", }) {//ParamUtils.NOUSER_NAME, ParamUtils.NOGROUP_NAME }) {
+			try {
+				final Group groupToCreate = new Group();
+				groupToCreate.setName(groupname);
+				groupDb.createGroup(groupToCreate, this.dbSession);
+				fail("Should throw an exception: groupname '" + groupname + "'");
+			} catch (final RuntimeException ignored) {
+			}
+		}
+		
+		// check for reserved names
+		for (final String groupname : new String[] { GroupUtils.FRIENDS_GROUP_NAME, GroupUtils.PRIVATE_GROUP_NAME, GroupUtils.PUBLIC_GROUP_NAME }) {
 			try {
 				final Group groupToCreate = new Group();
 				groupToCreate.setName(groupname);

@@ -439,7 +439,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		group.setName(normedGroupName);
 		
 		// make sure the group name differs from the special groups
-		if (GroupUtils.isValidGroupName(normedGroupName)) {
+		if (!GroupUtils.isValidGroupName(normedGroupName)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The name \""+normedGroupName+"\" is reserved.");
 		}
 		/*
