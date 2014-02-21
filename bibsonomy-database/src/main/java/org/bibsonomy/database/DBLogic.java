@@ -894,16 +894,6 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public void deletePendingGroup(final String groupName) {
-		final DBSession session = openSession();
-		try {
-			this.groupDBManager.deletePendingGroup(groupName, session);
-		} finally {
-			session.close();
-		}
-	}
-	
-	@Override
 	public List<Group> getPendingGroups(final int start, final int end) {
 		final DBSession session = openSession();
 		try {
@@ -1160,6 +1150,11 @@ public class DBLogic implements LogicInterface {
 			case ACTIVATE:
 				if (this.permissionDBManager.isAdmin(loginUser)) {
 					this.groupDBManager.activateGroup(groupName, session);
+				}
+				break;
+			case DELETE:
+				if (this.permissionDBManager.isAdmin(loginUser)) {
+					this.groupDBManager.deletePendingGroup(groupName, session);
 				}
 				break;
 			default:

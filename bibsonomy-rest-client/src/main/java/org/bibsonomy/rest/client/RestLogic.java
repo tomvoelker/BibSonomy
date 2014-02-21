@@ -712,9 +712,4 @@ public class RestLogic implements LogicInterface {
 	public List<Group> getPendingGroups(int start, int end) {
 		throw new UnsupportedOperationException();
 	}
-
-	@Override
-	public void deletePendingGroup(String groupName) {
-		throw new UnsupportedOperationException();
-	}
 }

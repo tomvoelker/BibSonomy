@@ -45,5 +45,7 @@ public enum GroupUpdateOperation {
 	UPDATE_GROUP_REPORTING_SETTINGS,
 	
 	/** Activate the pending group */
-	ACTIVATE;
+	ACTIVATE,
+	/** deletes the pending group **/
+	DELETE;
 }

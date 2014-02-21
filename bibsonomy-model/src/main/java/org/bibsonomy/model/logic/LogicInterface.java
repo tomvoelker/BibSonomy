@@ -286,13 +286,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param groupName the group to delete
 	 */
 	public void deleteGroup(String groupName);
-	
-	/**
-	 * Removes the given pending group and the corresponding pending user.
-	 * 
-	 * @param groupName the pending group to delete
-	 */
-	public void deletePendingGroup(String groupName);
 
 	/**
 	 * Removes an user from a group.
@@ -336,6 +329,8 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * <dt>{@link GroupUpdateOperation#ADD_NEW_USER}</dt><dd>Adds an existing user to an existing group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_SETTINGS}</dt><dd>Updates the settings of the group.</dd>
 	 * <dt>{@link GroupUpdateOperation#UPDATE_ALL}</dt><dd>Updates the complete group.</dd>
+	 * <dt>{@link GroupUpdateOperation#ACTIVATE}</dt><dd>Activates the group.</dd>
+	 * <dt>{@link GroupUpdateOperation#DELETE}</dt><dd>Deletes the pending group.</dd>
 	 * </dl>
 	 * 
 	 * 
