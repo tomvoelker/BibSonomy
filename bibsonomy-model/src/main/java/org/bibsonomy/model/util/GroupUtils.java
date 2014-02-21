@@ -193,6 +193,21 @@ public class GroupUtils {
 	public static boolean isPrivateGroup(final Set<Group> groups) {
 		return groups.size() == 1 && groups.contains(getPrivateGroup());
 	}
+	
+	/**
+	 * Checks if the given name can be used for a new group. The reeserved names are
+	 * public, friends and private.
+	 * 
+	 * @param name
+	 * @return <code>true</code> if the name is valid.
+	 */
+	public static boolean isValidGroupName(String name) {
+		String normedName = name.toLowerCase();
+		return !GroupUtils.FRIENDS_GROUP_NAME.equals(normedName) &&
+			!GroupUtils.PUBLIC_GROUP_NAME.equals(normedName) &&
+			!GroupUtils.PRIVATE_GROUP_NAME.equals(normedName);
+		
+	}
 
 	/**
 	 * Helper method that returns a new {@link Group} object.
