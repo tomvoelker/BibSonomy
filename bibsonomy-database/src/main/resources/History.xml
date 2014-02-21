@@ -51,19 +51,18 @@
 	</select>
 	
 	<select id="getGoldStandardHistory" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
+		(SELECT b.content_id, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
 		FROM gold_standard b
-		LEFT JOIN review_ratings_cache c ON c.interHash = b.simhash1
-		WHERE b.simhash1 = #hash# <!-- AND b.content_type = #contentType# ???-->
-		ORDER BY b.date DESC
+		LEFT JOIN review_ratings_cache c ON c.interHash = #hash#
+		WHERE b.simhash1 = #hash# <!-- AND b.content_type = #contentType# ???-->)
 	UNION
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
+		(SELECT b.content_id, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, b.content_type, <include refid="reviewRatingsRows" /> 
 		FROM log_gold_standard b, gold_standard b2
-		LEFT JOIN review_ratings_cache c ON c.interHash = b.simhash1
-		WHERE b2.simhash1 = #hash# <!-- AND b.content_type = #contentType# ???-->
+		LEFT JOIN review_ratings_cache c ON c.interHash = #hash#
+		WHERE b2.simhash1 = #hash#  <!-- AND b.content_type = #contentType# -->
 		  AND b2.content_id = b.current_content_id
 		ORDER BY b.date DESC
-		LIMIT #limit# OFFSET #offset#
+		LIMIT #limit# OFFSET #offset#)
 	ORDER BY content_id
 	</select>
 	

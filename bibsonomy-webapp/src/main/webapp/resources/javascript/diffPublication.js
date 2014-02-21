@@ -74,22 +74,13 @@ function diff() {
 }
 
 function copyContent(path) {
-	var msg = document.getElementById("tmp"+path).innerHTML;
+	var msg = document.getElementById("tmp"+path).value;
 	document.getElementById(path).value = msg;//document.getElementById("tmp"+path).innerHTML;
 	var tmppath = path.slice(4,path.length);
 	document.getElementById("comparePost"+tmppath).innerHTML= msg;//document.getElementById("tmppost"+tmppath).innerHTML;
-	//element.replaceWith($("img#icon_copy_greyed").clone().removeAttr('id'));
-	//var img = document.getElementById(path+"Img");
-	//img.replaceWith($("img#icon_copy_greyed").clone().removeAttr('id'));
-	//img.id = path+"Img";
-	//document.getElementById(path+"Img").replaceWith($("img#icon_copy_greyed").clone().removeAttr('id'));// = documentgetElementById("icon_copy_greyed").src;
-	//var img = document.getElementById(path+"Img");
-	//img.src = "/image/arrow_down.png";
-	//img.style.cursor = default;
 }
 
 function changeButtonImg(img, buttonImg){
-	//buttonImg.attr({src : img.src});//.replaceWith($(img).clone().removeAttr('id'));
 	buttonImg.src = img.src;
 }
 

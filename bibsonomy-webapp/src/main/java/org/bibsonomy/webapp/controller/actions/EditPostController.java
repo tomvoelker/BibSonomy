@@ -102,6 +102,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		command.setPost(new Post<RESOURCE>());
 		command.getPost().setResource(this.instantiateResource());
 
+		// initalize comparePost & resource for diff
+		 command.setComparePost(new Post<RESOURCE>());
+		 command.getComparePost().setResource(this.instantiateResource());
 		/*
 		 * set default values.
 		 */
@@ -228,6 +231,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 final int compareVersion = (command.getCompareVersion()-1);
 			
 			 if (present(compareVersion) && (compareVersion!=-1)) {
+
 				 log.debug("intra hash to compare post found -> handling diff of existing post");
 				 final List<?> dbPosts = logic.getPosts(post.getResource().getClass(),
 						 GroupingEntity.ALL, user, null, intraHashToUpdate, null,
@@ -236,6 +240,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				 command.setComparePost((Post<RESOURCE>) dbPosts.get(0));
 				 // TODO: check dbPosts.get(1)
 				 command.setPost((Post<RESOURCE>) dbPosts.get(1)/*getPostDetails(intraHashToUpdate, user)*/);
+				 this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 				 return Views.DIFFPUBLICATIONPAGE;
 			 } else {
 			log.debug("intra hash to update found -> handling update of existing post");

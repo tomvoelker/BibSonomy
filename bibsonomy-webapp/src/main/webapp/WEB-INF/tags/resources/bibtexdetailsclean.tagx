@@ -183,8 +183,9 @@
 						<!--+
 							| discussion and rating
 							+-->
-	
-						<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
+						<c:if test="post.resource.discussionItems">
+							<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
+						</c:if>
 						
 						<!--+
 							| tag list
