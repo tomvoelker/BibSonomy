@@ -195,7 +195,7 @@ public class GroupUtils {
 	}
 	
 	/**
-	 * Checks if the given name can be used for a new group. The reeserved names are
+	 * Checks if the given name can be used for a new group. The reserved names are
 	 * public, friends and private.
 	 * 
 	 * @param name
