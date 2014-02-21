@@ -1,9 +1,10 @@
+#!/bin/bash
+
 # TODO: 
 # * switch back emailwebmaster 
 # * switch on actual maven deployment
 # * switch on actual archiving
 
-#! /bin/bash
 
 # REGISTRATION
 # * register all projects in $webapp
