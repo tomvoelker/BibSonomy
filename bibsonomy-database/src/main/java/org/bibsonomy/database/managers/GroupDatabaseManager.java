@@ -438,6 +438,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final String normedGroupName = getNormedGroupName(groupName);
 		group.setName(normedGroupName);
 		
+		// make sure the group name differs from the special groups
+		if (GroupUtils.FRIENDS_GROUP_NAME.equals(normedGroupName) ||
+			GroupUtils.PUBLIC_GROUP_NAME.equals(normedGroupName) ||
+			GroupUtils.PRIVATE_GROUP_NAME.equals(normedGroupName)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "The name \""+normedGroupName+"\" is reserved.");
+		}
 		/*
 		 * check if a user or a pending user exists with that name
 		 * currently every group also has a corresponding user in the system
