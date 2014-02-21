@@ -397,6 +397,12 @@
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup.name</value>
+								<value>requestedGroup.groupRequest.reason</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/group">
