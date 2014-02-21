@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.UserRelation;
@@ -76,6 +77,15 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 		}
+		boolean showGroupTab = false;
+		// ... or an admin of a group
+		for (Group group : loginUser.getGroups()) {
+			if (GroupRole.ADMINISTRATOR.equals(group.getGroupRole())) {
+				command.getGroups().add(group);
+				showGroupTab = true;
+			}
+		}
+		command.showGroupTab(showGroupTab);
 		
 		/*
 		 * get friends for sidebar
@@ -186,6 +196,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	}
 	
 	private void workOnGroupTab(final SettingsViewCommand command) {
+		for (Group group : command.getGroups()) {
+			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, group.getName(), null, null, null, null, null, 0, Integer.MAX_VALUE));
+		}
+		/*
 		final String groupName = command.getContext().getLoginUser().getName();
 		// the group to update
 		final Group group = logic.getGroupDetails(groupName);
@@ -193,23 +207,23 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			command.setGroup(group);
 			/*
 			 * get group users
-			 */
+			 *
 			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, Integer.MAX_VALUE));
 			/*
 			 * FIXME: use the group in the command instead of 
 			 * this hand-written conversion
-			 */
+			 *
 			command.setPrivlevel(group.getPrivlevel().ordinal());
 			
 			/* 
 			 * TODO: use share docs directly
-			 */
+			 *
 			int sharedDocsAsInt =  0;
 			if (group.isSharedDocuments()) {
 				sharedDocsAsInt = 1;
 			}
 			command.setSharedDocuments(sharedDocsAsInt);
-		}
+		}*/
 	}
 
 	/**

@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,6 +91,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	// TODO: why not boolean?
 	private int sharedDocuments;
 	private Group group;
+	
+	private List<Group> groups = new ArrayList<Group>();
 	
 	/**
 	 * current password of user
@@ -189,10 +192,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		//OAuth tab added in SettingsPageController.java
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
+		
 	}
 	
 	/**
-	 * shows the group tab on the settings.settings site if the user is a group
+	 * shows the group tab on the settings.settings site if the user is a group administrator
 	 * @param show
 	 */
 	public void showGroupTab(boolean show) {
@@ -761,6 +765,20 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setAccessTokenDelete(final String accessTokenDelete) {
 		this.accessTokenDelete = accessTokenDelete;
+	}
+
+	/**
+	 * @return the groups
+	 */
+	public List<Group> getGroups() {
+		return this.groups;
+	}
+
+	/**
+	 * @param groups the groups to set
+	 */
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
 	}
 
 }

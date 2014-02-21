@@ -12,12 +12,8 @@
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
   
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
-
-
-	<c:choose>
-		<!-- check if user is logged in with wrong account -->
-		<c:when test="${empty param.user or empty param.requGroup or param.requGroup eq user.name}">
-
+	<c:forEach items="${command.user.groups}" var="group">
+		<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
 			<!-- GRANT OR DENY JOIN REQUESTS, ADD USERS -->
 			<c:set var="showDeny" value="${not empty param.user and not empty param.requGroup and param.requGroup eq user.name}"/>
 
@@ -36,6 +32,7 @@
 							</div>
 						
 							<div class="fsRow">
+								<input type="hidden" name="groupName" value="${group.name}"/>
 								<input type="hidden" name="ckey" value="${ckey}"/>
 								<fmt:message var="adduser" key="settings.group.addUser.button"/>
 								<input type="submit" value="${adduser}" />
@@ -53,12 +50,10 @@
 						<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
 						
 						<!-- show group member list -->
-						<c:forEach items="${command.group.users}" var="member">
-							<c:if test="${member.name ne command.context.loginUser.name}">
-								<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a> 
-								<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
-								<c:out value=" "/>
-							</c:if>
+						<c:forEach items="${group.users}" var="member">
+							<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a> 
+							<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+							<c:out value=" "/>
 						</c:forEach>
 					</fieldset>
 				</div>
@@ -79,7 +74,7 @@
 								<div class="fsRow">
 									<input type="hidden" neme="ckey" value="${command.context.ckey }"/>
 									<input type="hidden" name="deniedUser" value="${fn:escapeXml(param.user)}" />
-									<input type="hidden" name="group" value="${command.context.loginUser.name}" />
+									<input type="hidden" name="group" value="${group.name}" />
 									<label for="inputreason" class="fsLabel"><fmt:message key="settings.group.denyReason"/></label>
 									<buttons:help message="settings.group.denyReason.help"/>
 									<input type="text" class="fsInput fsSmall" name="reason" id="inputreason"/>
@@ -128,6 +123,7 @@
 						<div class="fsRow">
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							<fmt:message var="updatesettings" key="settings.updatesettings"/>
+							<input type="hidden" name="groupName" value="${group.name}"/>
 							<input type="submit" value="${updatesettings}"/>
 						</div>
 					</fieldset>
@@ -151,10 +147,16 @@
 							</jsp:attribute>
 						</bform:fieldset>
 						<bform:submit messageKey="settings.group.reporting.update" />
+						<input type="hidden" name="groupName" value="${group.name}"/>
 						<input type="hidden" name="action" value="updateGroupReportingSettings" />
 					</form:form>
 				</fieldset>
 			</c:if>
+		</c:if>
+	</c:forEach>
+	<c:choose>
+		<!-- check if user is logged in with wrong account -->
+		<c:when test="${empty param.user or empty param.requGroup or param.requGroup eq user.name}">
 		</c:when>
 		<c:otherwise>
 			<!-- user is logged in with wrong account -->
