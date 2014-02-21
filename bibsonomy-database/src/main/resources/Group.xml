@@ -41,7 +41,6 @@
 		  JOIN user u ON (u.user_name = g.user_name) 
 		WHERE group_name = #groupname#
 		  AND i.group > 2
-		  AND u.role != 6
 		  <!-- AND g.user_name != #requestedGroupName# -->
 	</select>
 

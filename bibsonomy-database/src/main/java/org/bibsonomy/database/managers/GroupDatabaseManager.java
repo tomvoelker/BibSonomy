@@ -184,13 +184,17 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		group = this.queryForObject("getGroupMembers", groupname, Group.class, session);
+		// the group has no members.
 		if (group == null) {
-			log.debug("group " + groupname + " does not exist");
-			group = GroupUtils.getInvalidGroup();
-			group.setUsers(Collections.<User> emptyList());
-			return group;
+			// check if the group exists
+			if (this.getGroupByName(groupname, session) == null) {
+				log.debug("group " + groupname + " does not exist");
+				group = GroupUtils.getInvalidGroup();
+				group.setUsers(Collections.<User> emptyList());
+				return group;
+			}
 		}
-
+		
 		final int groupId = this.getGroupByName(groupname, session).getGroupId();
 		final Privlevel privlevel = this.getPrivlevelForGroup(groupId, session);
 		// remove members as necessary

@@ -384,7 +384,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * if it is not a limited or groupuser that is to be inserted, set user's default role
 		 */
-		if (!Role.LIMITED.equals(user.getRole()) || !Role.GROUPUSER.equals(user.getRole())) {
+		if (! (Role.LIMITED.equals(user.getRole()) || Role.GROUPUSER.equals(user.getRole()))) {
 			user.setRole(Role.DEFAULT);
 		}
 		/*
