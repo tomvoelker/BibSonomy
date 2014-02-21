@@ -66,7 +66,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			log.debug("accepting group \""+groupName+"\"");
 			this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.ACTIVATE);
 		} else if (DECLINE_GROUP.equals(action)) {
-			log.debug("action: decline group");
+			final String groupName = command.getGroup().getName();
+			log.debug("grouprequest for group \""+groupName+"\" declined");
+			this.logic.updateGroup(command.getGroup(), GroupUpdateOperation.DELETE);
 		}
 		
 		// load the pending groups
