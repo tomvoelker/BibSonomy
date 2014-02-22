@@ -35,6 +35,9 @@ public enum GroupUpdateOperation {
 	/** Adds new user to a group. */
 	ADD_NEW_USER,
 	
+	/** Removes a user from the group. */
+	REMOVE_USER,
+	
 	/** Update the whole group */
 	UPDATE_ALL,
 	
