@@ -1125,6 +1125,7 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupName);
 
+		// TODO: check for grouprole
 		/*
 		 * perform operations
 		 */
@@ -1139,6 +1140,11 @@ public class DBLogic implements LogicInterface {
 			case ADD_NEW_USER:
 				for (final User user: group.getUsers()) {
 					this.groupDBManager.addUserToGroup(groupName, user.getName(), GroupRole.USER, session);
+				}
+				break;
+			case REMOVE_USER:
+				for (final User user: group.getUsers()) {
+					this.groupDBManager.removeUserFromGroup(groupName, user.getName(), session);
 				}
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:

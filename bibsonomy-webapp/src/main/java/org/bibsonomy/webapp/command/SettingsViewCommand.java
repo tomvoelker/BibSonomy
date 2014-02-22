@@ -93,6 +93,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private Group group;
 	
 	private List<Group> groups = new ArrayList<Group>();
+	// the group to update
+	private String groupName;
 	
 	/**
 	 * current password of user
@@ -153,9 +155,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<URI> availableSyncServers;
 	
 	/** 
-	 * this field contains the username of the user, who should be added to the group.
+	 * this field contains the username of the user, who should be added/removed to/from the group.
 	 */
-	private String addUserToGroup;
+	private String username;
 	
 	/**
 	 * login credentials for importing bookmarks
@@ -192,17 +194,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		//OAuth tab added in SettingsPageController.java
 		this.setSelTab(MY_PROFILE_IDX);
 		this.setTabURL(TAB_URL);
-		
-	}
-	
-	/**
-	 * shows the group tab on the settings.settings site if the user is a group administrator
-	 * @param show
-	 */
-	public void showGroupTab(boolean show) {
-		if (show) {
-			this.addTab(GROUP_IDX, "navi.groups");
-		}
+		// add groups tab
+		this.addTab(GROUP_IDX, "navi.groups");		
 	}
 	
 	/**
@@ -581,17 +574,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @return the addUserToGroup
+	 * @return the username
 	 */
-	public String getAddUserToGroup() {
-		return this.addUserToGroup;
+	public String getUsername() {
+		return this.username;
 	}
 	
 	/**
-	 * @param addUserToGroup
+	 * @param username
 	 */
-	public void setAddUserToGroup(final String addUserToGroup) {
-		this.addUserToGroup = addUserToGroup;
+	public void setUsername(final String username) {
+		this.username = username;
 	}
 
 	/**
@@ -779,6 +772,20 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
+	}
+
+	/**
+	 * @return the groupName
+	 */
+	public String getGroupName() {
+		return this.groupName;
+	}
+
+	/**
+	 * @param groupName the groupName to set
+	 */
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 }

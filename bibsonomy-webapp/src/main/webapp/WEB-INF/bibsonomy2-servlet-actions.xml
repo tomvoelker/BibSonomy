@@ -80,18 +80,6 @@
 							</list>
 						</property>
 					</bean>
-				</entry>
-				<entry key="/addUserToGroup">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="updateGroupSettingsController"/>
-						<property name="allowedFields">	
-							<list>
-								<value>addUserToGroup</value>
-								<value>groupName</value>
-								<value>ckey</value>
-							</list>
-						</property>
-					</bean>
 				</entry>	
 				<entry key="/activate_success">
 					<bean parent="controllerBase">
@@ -656,16 +644,18 @@
 					</bean>
 				</entry>
 				
-				<!--  update the profile of a user  -->
-				<entry key="/updateGroupSettings">
+				<!--  update the profile of a group  -->
+				<entry key="/updateGroup">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="updateGroupSettingsController"/>
+						<property name="controllerBeanName" value="updateGroupController"/>
 						<property name="allowedFields">
 							<list>
 								<value>ckey</value>
 								<value>userGroup.*</value>
 								<value>privlevel</value>
+								<value>groupName</value>
 								<value>sharedDocuments</value>
+								<value>username</value>
 								<value>action</value>
 								<value>group.publicationReportingSettings.reportingMailAddress</value>
 								<value>group.publicationReportingSettings.reportingMailTemplate</value>
@@ -1082,9 +1072,7 @@
 	<bean id="updateUserSettingsController" class="org.bibsonomy.webapp.controller.actions.UpdateUserSettingsController" scope="request" parent="settingsPageController" />
 	
 	<!-- Handles the settings update of a group-user -->
-	<bean id="updateGroupSettingsController" class="org.bibsonomy.webapp.controller.actions.GroupSettingsController" scope="request">
-		<property name="logic" ref="logic"/>
-	</bean>
+	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request" parent="settingsPageController" />
 	
 	<!-- Handles the profile update of a user -->
 	<bean id="updateUserController" class="org.bibsonomy.webapp.controller.actions.UpdateUserController" scope="request" parent="settingsPageController" />

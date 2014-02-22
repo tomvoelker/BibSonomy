@@ -3,14 +3,17 @@ package org.bibsonomy.webapp.controller;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.LayoutPart;
+import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
@@ -30,11 +33,13 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 
 /**
@@ -73,19 +78,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 
 		// check whether the user is a group
+		// TODO: unused ?
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
-			command.showGroupTab(true);
 		}
-		boolean showGroupTab = false;
-		// ... or an admin of a group
-		for (Group group : loginUser.getGroups()) {
-			if (GroupRole.ADMINISTRATOR.equals(group.getGroupRole())) {
-				command.getGroups().add(group);
-				showGroupTab = true;
-			}
-		}
-		command.showGroupTab(showGroupTab);
 		
 		/*
 		 * get friends for sidebar
@@ -196,8 +192,18 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	}
 	
 	private void workOnGroupTab(final SettingsViewCommand command) {
-		for (Group group : command.getGroups()) {
+		// refresh the groups
+		for (Group group : command.getUser().getGroups()) {
+			// get the details and members
+			//final Group g = logic.getGroupDetails(group.getName());
 			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, group.getName(), null, null, null, null, null, 0, Integer.MAX_VALUE));
+			/*if (present(g)) {
+				g.setUsers();
+				// set the user specific settings
+				g.setUserSharedDocuments(group.isUserSharedDocuments());
+				g.setGroupRole(group.getGroupRole());
+				command.getGroups().add(g);
+			}*/
 		}
 		/*
 		final String groupName = command.getContext().getLoginUser().getName();
@@ -319,7 +325,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			throw new MalformedURLSchemeException("Something went wrong while working on your request. Please try again.");
 		}
 	}
-
 
 	/**
 	 *Handles the group cv page request

@@ -1,0 +1,129 @@
+package org.bibsonomy.webapp.controller.actions;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Collections;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
+import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
+import org.bibsonomy.webapp.controller.SettingsPageController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
+
+/**
+ * 
+ * @author ema
+ */
+public class UpdateGroupController extends SettingsPageController {
+	private static final Log log = LogFactory.getLog(UpdateGroupController.class);
+	
+	@Override
+	public SettingsViewCommand instantiateCommand() {
+		final SettingsViewCommand command = new SettingsViewCommand();
+		command.setUser(new User());
+		return command;
+	}
+
+	@Override
+	public View workOn(final SettingsViewCommand command) {		
+		final RequestWrapperContext context = command.getContext();
+
+		/*
+		 * user has to be logged in to delete himself
+		 */
+		if (!context.isUserLoggedIn()) {
+			throw new AccessDeniedNoticeException("please log in", "error.general.login");
+		}
+		
+		/*
+		 * check the ckey
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
+		
+		if (errors.hasErrors()){
+			super.workOn(command);
+		}
+		
+		final String groupName = command.getGroupName();
+		// the group to update
+		final Group groupToUpdate = this.logic.getGroupDetails(groupName);
+		
+		// do set new settings here
+		final String action = command.getAction();
+		if ("addUserToGroup".equals(action)) {
+			/*
+			 * add a new user to the group
+			 */
+			final String username = command.getUsername();
+			if (present(username)) {
+				try {
+					// since now only one user can be added to a group at once
+					groupToUpdate.setUsers(Collections.singletonList(new User(username)));
+					this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_NEW_USER);
+				} catch (final Exception ex) {
+					log.error("error while adding user '" + username + "' to group '" + groupName + "'", ex);
+					// if a user can't be added to a group, this exception is thrown
+					this.errors.reject("settings.group.error.addUserToGroupFailed", new Object[]{username, groupName},
+							"The User {0} couldn't be added to the Group {1}.");
+				}
+			}
+		} else if ("removeUserFromGroup".equals(action)) {
+			/*
+			 * remove the user from the group
+			 *
+			 * TODO: not fully migrated yet, see {@link SettingsHandler}
+			 */
+			final String username = command.getUsername();
+			if (present(username)) {
+				try {
+					// since now only one user can be added to a group at once
+					groupToUpdate.setUsers(Collections.singletonList(new User(username)));
+					this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.REMOVE_USER);
+				} catch (final Exception ex) {
+					log.error("error while removing user '" + username + "' from group '" + groupName + "'", ex);
+					// if a user can't be added to a group, this exception is thrown
+					this.errors.reject("settings.group.error.removeUserFromGroupFailed", new Object[]{username, groupName},
+							"The User {0} couldn't be removed from the Group {1}.");
+				}
+			}
+		} else if ("updateGroupReportingSettings".equals(action)) {
+			/*
+			 * update the reporting settings
+			 */
+			groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS);
+		} else if ("updateGroupSettings".equals(action)) {
+			/*
+			 *  the group properties to update
+			 */
+			final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
+			final boolean sharedDocs = command.getSharedDocuments() == 1;
+			
+			groupToUpdate.setPrivlevel(priv);
+			groupToUpdate.setSharedDocuments(sharedDocs);
+				
+			try {
+				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_SETTINGS);
+			} catch (final Exception ex) {
+				log.error("error while updating settings for group '" + groupName + "'", ex);
+				// TODO: what exceptions can be thrown?!
+			}
+		} else {
+			errors.reject("error.invalid_parameter");
+		}
+	
+		// success: go back where you've come from
+		// TODO: inform the user about the success!
+		return new ExtendedRedirectView("/settings?selTab="+SettingsViewCommand.GROUP_IDX);
+	}
+}
