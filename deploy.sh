@@ -13,10 +13,14 @@
 # * currently most projects use tomcat6 for deployment with another tomcat register the version in $tomcat
 # * if you want the system to be build upon calling the "pumas" target, register it in the array $pumas
 # * if you want the system to archive its webapp register it as archivable
+# * if you want to disable mails and security questions before deployment register it in the array $unnoticed
 
 declare -A webapp
-# BibSonomy
+# Tests
 webapp[gromit]=bibsonomy-webapp
+webapp[puma_ks_dev]=bibsonomy-webapp
+
+# BibSonomy
 webapp[gandalf]=bibsonomy-webapp
 webapp[slave_kassel]=bibsonomy-webapp
 webapp[slave_wuerzburg]=bibsonomy-webapp
@@ -36,6 +40,10 @@ tomcat[slave_hannover]=7
 
 declare -A archivable
 archivable[gandalf]=true
+
+declare -A unnoticed
+unnoticed[gromit]=true
+unnoticed[puma_ks_dev]=true
 
 pumas=(puma_ks_prod puma_ffm_prod puma_mz_prod puma_mr_prod puma_da_prod puma_gi_prod)
 
@@ -101,6 +109,7 @@ help() {
 # Create an email for documentation purposes
 #
 document() {
+    if [ ! -z ${unnoticed[$targetProject]} ] && [ ${unnoticed[$targetProject]} = true ]; then return; fi
     rm -f ${TMPLOG}
     rm -f ${BODY_MAIL}
     read -p "Who are you? " WHO
@@ -113,6 +122,7 @@ document() {
 # To be used when many systems are deployed at once
 #
 documentMany() {
+    if [ ! -z ${unnoticed[$targetProject]} ] && [ ${unnoticed[$targetProject]} = true ]; then return; fi
     document
     echo -e "Do you really want to consecutively deploy to the following systems:"    
     for i in ${pumas[*]}
@@ -146,6 +156,7 @@ deploy() {
 
 
 sendMail() {
+    if [ ! -z ${unnoticed[$targetProject]} ] && [ ${unnoticed[$targetProject]} = true ]; then return; fi
     echo -e "\nSending report mail ..."
     ${MAIL} -s "[BibSonomy-Deploy] make ${targetProject}" -a ${TMPLOG} -c ${CCRECIPIENTS} ${RECIPIENT} < ${BODY_MAIL}
     echo "Done."
