@@ -10,7 +10,7 @@
 	<fmt:message key="navi.helpUrl" var="helpLangUrl" />
 
 	<div id="legalnotices">
-		<div id="footerMore" class="row" style="display:block;">
+		<div id="footerMore" class="row clearfix">
 			<div class="col-lg-1">&amp;nbsp;</div>
 			<div class="col-lg-2">
 				<p><fmt:message key="footer.what"><fmt:param>${properties['project.name']}</fmt:param></fmt:message></p>
@@ -56,22 +56,20 @@
 			</div>
 			<div class="col-lg-1">&amp;nbsp;</div>
 		</div>
-		
 		<div class="clearfix">&amp;nbsp;</div>
 		<div id="footer" class="row">
 			<div class="col-lg-1">&amp;nbsp;</div>
 			<div class="col-lg-11">
+				<p>
 				<fmt:message key="system.offeredBy">
 					<fmt:param>${properties['project.name']}</fmt:param>
 				</fmt:message>
+				</p>
 				<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
 					<div><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a></div>
 				</c:if>
 			</div>
 		</div>
-		
-		<div class="clearfix">&amp;nbsp;</div>
-		
 			
 	</div>
 </jsp:root>
