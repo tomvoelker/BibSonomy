@@ -250,24 +250,6 @@
 								</tr>
 							</table>
 						</form>
-
-						<!--invoked by the button -->
-						<script type="text/javascript">
-							//<mtl:cdata>
-							<![CDATA[
-							function loadSelectedPage() {
-								var dropDownExternalMenu = document
-										.getElementById('dropDownExternal');
-								var index = dropDownExternalMenu.selectedIndex;
-
-								if (index != 0) {
-									window
-											.open(dropDownExternalMenu.options[index].value);
-								}
-							}
-							]]>
-							//</mtl:cdata>
-						</script>
 						
 						<!--+
 							| discussion and rating
