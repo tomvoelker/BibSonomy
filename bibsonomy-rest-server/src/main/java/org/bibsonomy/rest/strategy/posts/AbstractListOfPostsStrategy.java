@@ -6,15 +6,17 @@ import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.SortUtils;
 
 /**
  * @author Jens Illig
@@ -28,10 +30,8 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final List<String> tags;
 	protected final String search;
 	protected final Order order;
-    protected final String sortKeys;
-    protected final String sortOrders;
-//	protected final SortKey sortKey;
-//	protected final SortOrder sortOrder;
+	protected final List<SortKey> sortKeys;
+	protected final List<SortOrder> sortOrders;
 	
 	/**
 	 * @param context
@@ -43,10 +43,8 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 		this.hash = context.getStringAttribute(RESTConfig.RESOURCE_PARAM, null);
 		this.search = context.getStringAttribute(RESTConfig.SEARCH_PARAM, null);
 		this.order = context.getEnumAttribute(RESTConfig.ORDER_PARAM, Order.class, null);
-        this.sortKeys = context.getStringAttribute(RESTConfig.SORTKEY_PARAM, null);
-        this.sortOrders = context.getStringAttribute(RESTConfig.SORTORDER_PARAM, null);
-//		this.sortKey = context.getEnumAttribute(RESTConfig.SORTKEY_PARAM, SortKey.class, null); //TODO
-//		this.sortOrder = context.getEnumAttribute(RESTConfig.SORTORDER_PARAM, SortOrder.class, null); //TODO
+		this.sortKeys = SortUtils.parseSortKeys(context.getStringAttribute(RESTConfig.SORTKEY_PARAM, null));
+		this.sortOrders = SortUtils.parseSortOrders(context.getStringAttribute(RESTConfig.SORTORDER_PARAM, null));
 		this.grouping = this.chooseGroupingEntity();
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
 		String groupingValue;
@@ -79,7 +77,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected void appendLinkPostFix(final StringBuilder sb) {
 		// FIXME: urlencode
 		if (this.resourceType != Resource.class) {
-			sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceUtils.toString(this.resourceType).toLowerCase());
+			sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceFactory.getResourceName(this.resourceType).toLowerCase());
 		}
 		if (present(this.tagString)) {
 			sb.append("&").append(RESTConfig.TAGS_PARAM).append("=").append(this.tagString);
