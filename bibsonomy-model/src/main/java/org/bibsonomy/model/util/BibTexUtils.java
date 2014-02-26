@@ -844,7 +844,7 @@ public class BibTexUtils {
 	 * @param sortKeys
 	 * @param sortOrders
 	 */
-	public static void sortBibTexList(final List<Post<BibTex>> bibtexList, final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
+	public static void sortBibTexList(final List<? extends Post<? extends BibTex>> bibtexList, final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		if (present(bibtexList) && bibtexList.size() > 1) {
 			Collections.sort(bibtexList, new BibTexPostComparator(sortKeys, sortOrders));
 		}
@@ -1067,6 +1067,15 @@ public class BibTexUtils {
 		}
 	}
 
+	/**
+	 * Temporaryly modifies dummy attributes in bibtex posts (like "noauthor" or "nodate")
+	 * in a try...finally block and calls the given {@link Callable} object inside.
+	 * 
+	 * @param bibs posts to be temporarily modified
+	 * @param replace whether to replace with non-empty values
+	 * @param r callable to be run with replaced dummy values
+	 * @return the return value of the callable
+	 */
 	public static <T> T runWithRemovedOrReplacedDummyValues(Collection<Post<BibTex>> bibs, boolean replace, Callable<T> r) {
 		final List<String> years = new ArrayList<String>();
 		final List<List<PersonName>> authors = new ArrayList<List<PersonName>>();

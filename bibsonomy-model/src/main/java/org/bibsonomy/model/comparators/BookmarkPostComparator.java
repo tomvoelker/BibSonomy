@@ -37,7 +37,7 @@ import org.bibsonomy.model.Post;
  * 
  * @author Dominik Benz
  */
-public class BookmarkPostComparator extends PostComparator implements Comparator<Post<Bookmark>> {
+public class BookmarkPostComparator extends PostComparator implements Comparator<Post<? extends Bookmark>> {
 	private static final long serialVersionUID = -2993829588313719046L;
 
 	/**
@@ -58,7 +58,7 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 	 * main comparison method
 	 */
 	@Override
-	public int compare(final Post<Bookmark> post1, final Post<Bookmark> post2) {
+	public int compare(final Post<? extends Bookmark> post1, final Post<? extends Bookmark> post2) {
 		for (final SortCriterium crit : this.sortCriteria) {
 			try {				
 				// posting date

@@ -46,7 +46,7 @@ public class BookmarkUtils {
 	 * @param sortKeys
 	 * @param sortOrders
 	 */
-	public static void sortBookmarkList(final List<Post<Bookmark>> bookmarkList, final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
+	public static void sortBookmarkList(final List<? extends Post<? extends Bookmark>> bookmarkList, final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		Collections.sort(bookmarkList, new BookmarkPostComparator(sortKeys, sortOrders));
 	}
 	

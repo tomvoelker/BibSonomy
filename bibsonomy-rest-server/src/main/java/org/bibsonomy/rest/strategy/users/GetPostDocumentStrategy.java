@@ -19,6 +19,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Handle a document request
@@ -49,26 +50,33 @@ public class GetPostDocumentStrategy extends Strategy {
 			throw new NoSuchResourceException("can't find document!");
 		}
 		this.fileLogic = context.getFileLogic();
-        
-        if (context.getStringAttribute("preview", null) != null) {
-            // If parameter was given, but without a proper value, render a
-            // LARGE preview image.
-            this.preview = Enum.valueOf(PreviewSize.class, context.getStringAttribute("preview", "LARGE").toUpperCase());
-        } else {
-            this.preview = null;
-        }
+
+		final String previewValue = context.getStringAttribute("preview", null);
+		if (ValidationUtils.present(previewValue)) {
+			PreviewSize previewEnumValue;
+			try {
+				previewEnumValue = Enum.valueOf(PreviewSize.class, previewValue.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				// If parameter was given, but without a proper value, render a
+				// LARGE preview image.
+				previewEnumValue = PreviewSize.LARGE;
+			}
+			this.preview = previewEnumValue;
+		} else {
+			this.preview = null;
+		}
 	}
 	
 	@Override
 	protected RenderingFormat getRenderingFormat() {
-        final String contentType;
-        // PDF is requested
-        if (this.preview == null) {
-            contentType = MIME_TYPES_FILE_TYPE_MAP.getContentType(this.document.getFileName());
-        } else {
-            contentType = MIME_TYPES_FILE_TYPE_MAP.getContentType(this.fileLogic.getPreviewFile(document, preview));
-        }
-        return RenderingFormat.getMediaType(contentType);
+		final String contentType;
+		// PDF is requested
+		if (this.preview == null) {
+			contentType = MIME_TYPES_FILE_TYPE_MAP.getContentType(this.document.getFileName());
+		} else {
+			contentType = MIME_TYPES_FILE_TYPE_MAP.getContentType(this.fileLogic.getPreviewFile(document, preview));
+		}
+		return RenderingFormat.getMediaType(contentType);
 	}
 	
 	@Override
@@ -81,12 +89,12 @@ public class GetPostDocumentStrategy extends Strategy {
 	@Override
 	public void perform(final ByteArrayOutputStream outStream){
 		try {
-            final File file;
-            if (this.preview != null) {
-                file = this.fileLogic.getPreviewFile(document, this.preview);
-            }else {
-                file = this.fileLogic.getFileForDocument(this.document);
-            }
+			final File file;
+			if (this.preview != null) {
+				file = this.fileLogic.getPreviewFile(document, this.preview);
+			} else {
+				file = this.fileLogic.getFileForDocument(this.document);
+			}
 			// get the bufferedstream of the file
 			final BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
 			
