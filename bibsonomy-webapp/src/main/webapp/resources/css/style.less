@@ -560,7 +560,7 @@ a:hover {
 	right: 0px;
 	top: 185px;
 	z-index: 9;
-	background-color: #e4e4e4;
+	background-color: @legal-background-color;
 	bottom: 0; /* important for minheight of sidebar */
 	
 	a, a:link, a:visited {
@@ -2869,18 +2869,19 @@ a.bookmarklet2 {
 }
 
 #legalnotices {
-	padding-top: 10px;
+/*	padding-top: 10px;*/
 	background-color: @legal-background-color;
 	border-top: 2px @navigation-color solid; 
 }
 #legalnotices #footerMore {
-	padding-bottom: 1em;
+/*	padding-bottom: 1em;*/
 }
 #legalnotices #footerMore p {
 	font-weight: bold;
 	border-bottom: 1px @navigation-color solid;
 	margin: 1em 1.5em 0.5em 0;
 	line-height: 1.5em;
+	color: rgb(111, 113, 114);
 }
 
 #legalnotices #footerMore li {
@@ -2891,5 +2892,13 @@ a.bookmarklet2 {
 
 #footer {
 	background-color: @footer-background-color;
-	border-top: 2px @navigation-color solid;
+/*	border-top: 2px @navigation-color solid;*/
+}
+
+#footerMore a {
+color: #66a3c2;
+}
+
+#footerMore a:hover {
+color: #069;
 }
