@@ -734,3 +734,11 @@ input#authorcontractconfirm {
 #license_sendinfo {
 	margin-top: 3ex;
 }
+
+#footerMore a {
+	color: #b77d6b;
+}
+
+#footerMore a:hover {
+	color: #872708;
+}
