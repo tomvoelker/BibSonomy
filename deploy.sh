@@ -77,14 +77,14 @@ JAVA=${JAVA_HOME}bin/java
 # files
 TMPLOG=/tmp/deploy.log
 BODY_MAIL=/tmp/body.txt
-ARCHIVE=homes.cs.uni-kassel.de:~/archived_war_files
+ARCHIVE=homes.cs.uni-kassel.de:archived_war_files
 BIBSONOMY_PATH=`pwd`
 
 # the war files to be archived currently only for the bibsonomy-webapp
 WARPATTERN=target/bibsonomy-webapp-*.war
 
 # email addresses
-EMAILWEBMASTER=sdo@cs.uni-kassel.de
+EMAILWEBMASTER=webmaster@bibsonomy.org
 #EMAILWEBMASTER=webmaster@bibsonomy.org
 # the one which really gets the mail; pick one of the above
 RECIPIENT=${EMAILWEBMASTER}
@@ -170,10 +170,10 @@ clean() {
 }
 
 archive() {
-    for i in "${WARPATTERN}"; do
+    for i in `ls ${WARPATTERN}`; do
 	j=`echo $i | sed "s/.*\///"`; 
 	echo -e "\nArchiving $i in ${ARCHIVE}/${TODAY}_$j";
-	echo "scp $i ${ARCHIVE}/${TODAY}_$j"
+	scp $i "${ARCHIVE}/${TODAY}_$j"
     done
 }
 

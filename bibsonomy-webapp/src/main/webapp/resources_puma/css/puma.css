@@ -736,6 +736,9 @@ input#authorcontractconfirm {
 }
 
 #footerMore a {
-color: #66a3c2;
+	color: #b77d6b;
 }
 
+#footerMore a:hover {
+	color: #872708;
+}
