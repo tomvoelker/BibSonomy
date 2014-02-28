@@ -87,7 +87,7 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
     }
 
     @Test
-    public void insertExtendedField() {
+    public void insertAndDeleteExtendedFieldData() {
         Map<String, List<String>> extendedFieldList = bibTexExtraDb.getExtendedFields("testuser1", "b77ddd8087ad8856d77c740c8dc2864a", this.dbSession);
         assertEquals(1, extendedFieldList.size());
 
