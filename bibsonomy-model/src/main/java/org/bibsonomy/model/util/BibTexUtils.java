@@ -528,7 +528,7 @@ public class BibTexUtils {
 		 * remove last comma
 		 */
 		buffer.delete(buffer.lastIndexOf(KEYVALUE_SEPARATOR_STRING), buffer.length());
-		buffer.append("\n").append(DEFAULT_CLOSING_BRACKET);	
+		buffer.append("\n").append(DEFAULT_CLOSING_BRACKET);
 
 		return buffer.toString();
 	}
@@ -774,7 +774,7 @@ public class BibTexUtils {
 	 * @return the cleaned bibtex string
 	 */
 	public static String cleanBibTex(String bibtex) {
-		if (!present(bibtex)) return "";			
+		if (!present(bibtex)) return "";
 
 		// replace markup
 		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
@@ -877,12 +877,12 @@ public class BibTexUtils {
 			post.addTag(MERGED_PREFIX + post.getUser().getName());
 			final String hash = post.getResource().getInterHash();
 			// create new map entry, if not yet present
-			if (! hashToPost.containsKey(hash)) {				
+			if (! hashToPost.containsKey(hash)) {
 				hashToPost.put(hash, post);
 			}
 			else {
 				// add all tags to existing post in map
-				hashToPost.get(hash).getTags().addAll(post.getTags()); 				
+				hashToPost.get(hash).getTags().addAll(post.getTags());
 			}
 		}
 		publicationList.clear();
@@ -991,7 +991,7 @@ public class BibTexUtils {
 
 		}
 		// write serialized misc fields into misc field
-		return miscFieldsSerialized.toString();				
+		return miscFieldsSerialized.toString();
 	}
 
 
@@ -1002,7 +1002,7 @@ public class BibTexUtils {
 	 * @return a hashmap containg the parsed key/value pairs.
 	 */
 	public static Map<String,String> parseMiscFieldString(final String miscFieldString) {
-		return StringUtils.parseBracketedKeyValuePairs(miscFieldString, ASSIGNMENT_OPERATOR, KEYVALUE_SEPARATOR, DEFAULT_OPENING_BRACKET, DEFAULT_CLOSING_BRACKET);		
+		return StringUtils.parseBracketedKeyValuePairs(miscFieldString, ASSIGNMENT_OPERATOR, KEYVALUE_SEPARATOR, DEFAULT_OPENING_BRACKET, DEFAULT_CLOSING_BRACKET);
 	}
 
 
