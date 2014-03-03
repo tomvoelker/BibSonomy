@@ -6,7 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-
+	<!-- postIndex shows post version -->
 	<jsp:directive.attribute name="postIndex" type="java.lang.Integer"  required="true" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="newestPub" type="org.bibsonomy.model.Post" required="true" />

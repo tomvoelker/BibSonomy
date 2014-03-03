@@ -25,9 +25,13 @@
 		
 		<!-- input -->
 		<form:textarea cssClass="fsInput${small ? ' fsMedium' : ''}${required ? ' reqinput' : ''}" path="${path}" tabindex="2" rows="${not empty rows ? rows : 1}"/>
-		<!-- variable for second post -->
-		<form:textarea style="display:none" cssClass="fsInput fsMedium reqinput" path="${pathDiff}" id="tmp${path}" required="${true}" rows="2" />
-
+		<!-- variable container for second post -->
+		<!-- cssClass="fsInput fsMedium reqinput -->
+		<!--<form:textarea style="display:none" cssClass="fsInput${small ? ' fsMedium' : ''}${required ? ' reqinput' : ''}" path="${pathDiff}" id="tmp${path}" required="${false}" rows="2" />
+-->
+		<form:hidden style="display:none" cssClass="fsLabel" path="${pathDiff}" id="tmp${path}"/>
+		<!--<form:label style="display:none" cssClass="fsLabel" path="${pathDiff}" id="tmp${path}"><c:out value="${comparePost.resource.title}"/></form:label>
+		-->
 		<!-- copy button -->
 		<fmt:message var="copyContent" key="${path}"/>
 	    <div style="cursor:pointer; float:left; margin-top: 2px; margin-bottom: 2px; margin-left: 5px; margin-right: 5px">

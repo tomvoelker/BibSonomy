@@ -26,19 +26,27 @@
        -->
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:diffPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" minimizedContentWidth="${true}">
+	<layout:diffPostLayout 
+		command="${command}" 
+		requPath="${requPath}" 
+		resourceType="Publication" 
+		activeTab="post" 
+		minimizedContentWidth="${true}">
 	
-		<jsp:attribute name="headerExtResource">
-		    <script type="text/javascript" src="${resdir}/javascript/diffPublication.js"><!-- keep me --></script>
-            <script type="text/javascript" src="${resdir}/javascript/editPublication.js"><!-- keep me --></script>
-		</jsp:attribute>
 		<jsp:attribute name="generalInformation">
+		<c:if test="${not empty command.scrapingContext}">
+				<c:if test="${not empty command.scrapingContext.selectedText}">
+					<span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText" /></span>
+					<buttons:help message="post.resource.fields.scraper.selectedText.help" cssClass="widehelp"/>
+					<textarea class="fsInput fsScraperSelectedText" readonly="readonly"><c:out value="${command.scrapingContext.selectedText}" /></textarea>
+				</c:if>
+			</c:if>
+        	
 			<editpub:diffPublicationRequired post="${post}" comparePost="${command.comparePost}"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="detailedInformation">
 			<editpub:diffPublicationDetails post="${post}" comparePost="${command.comparePost}"/>
-		</jsp:attribute>
 		
 			<c:if test="${not empty command.scrapingContext}">
           		<bform:fieldset maximized="false" legendKey="post.resource.fields.scraper" >
@@ -73,7 +81,8 @@
                 	</jsp:attribute>
             	</bform:fieldset>
          	</c:if>
-		
-	</layout:diffPostLayout>
+		</jsp:attribute>
+
+		</layout:diffPostLayout>
 
 </jsp:root>
