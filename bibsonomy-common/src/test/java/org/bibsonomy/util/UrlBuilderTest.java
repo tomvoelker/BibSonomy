@@ -65,12 +65,12 @@ public class UrlBuilderTest {
 		if (!present(query)) {
 			return Collections.emptyMap();
 		}
-	    final String[] params = query.split("&");  
-	    final Map<String, String> map = new HashMap<String, String>();  
-	    for (String param : params) {  
-	        final String[] keyValue = param.split("=");
-	        map.put(keyValue[0], keyValue[1]);  
-	    }  
-	    return map;  
-	}  
+		final String[] params = query.split("&");
+		final Map<String, String> map = new HashMap<String, String>();
+		for (String param : params) {
+			final String[] keyValue = param.split("=");
+			map.put(keyValue[0], keyValue[1]);
+		}
+		return map;
+	}
 }

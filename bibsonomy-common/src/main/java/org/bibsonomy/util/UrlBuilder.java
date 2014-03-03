@@ -25,6 +25,8 @@ package org.bibsonomy.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -73,8 +75,8 @@ public class UrlBuilder {
 		if (allowedParams == null) {
 			return this;
 		}
-		for (Iterator<Entry<String, String>> it = parameters.entrySet().iterator(); (it.hasNext() == true); ) {
-			if (allowedParams.contains(it.next().getKey()) == false) {
+		for (Iterator<Entry<String, String>> it = parameters.entrySet().iterator(); it.hasNext(); ) {
+			if (!allowedParams.contains(it.next().getKey())) {
 				it.remove();
 			}
 		}
@@ -106,33 +108,53 @@ public class UrlBuilder {
 	 * @return the url as string
 	 */
 	public String asString() {
-		final StringBuilder url = new StringBuilder(this.baseUrl);
-
-		for (String pathElement : this.pathElements) {
-			if (url.charAt(url.length() - 1) == '/') {
-				url.setLength(url.length() - 1);
+		return this.asURI().toString();
+	}
+	
+	/**
+	 * @return the url as URI
+	 */
+	public URI asURI() {
+		final StringBuilder pathBuilder = new StringBuilder();
+		for (final String pathElement : this.pathElements) {
+			if (present(pathBuilder) && pathBuilder.charAt(pathBuilder.length() - 1) == '/') {
+				pathBuilder.setLength(pathBuilder.length() - 1);
 			}
 			if ((pathElement.length() == 0) || (pathElement.charAt(0)) != '/') {
-				url.append('/');
+				pathBuilder.append('/');
 			}
-			url.append(UrlUtils.safeURIEncode(pathElement));
+			pathBuilder.append(pathElement);
 		}
 		
+		final StringBuilder queryBuilder = new StringBuilder();
 		if (present(this.parameters)) {
-			url.append("?");
-			for (Entry<String, String> param : this.parameters.entrySet()) {
-				String key = UrlUtils.safeURIEncode(param.getKey());
-				String value = UrlUtils.safeURIEncode(param.getValue());
-				url.append(key).append("=").append(value);
-				url.append("&");
+			final Iterator<Entry<String, String>> entrySetIterator = this.parameters.entrySet().iterator();
+			while (entrySetIterator.hasNext()) {
+				final Entry<String, String> param = entrySetIterator.next();
+				final String key = UrlUtils.safeURIEncode(param.getKey());
+				final String value = UrlUtils.safeURIEncode(param.getValue());
+				queryBuilder.append(key).append("=").append(value);
+				if (entrySetIterator.hasNext()) {
+					queryBuilder.append("&");
+				}
 			}
-			/*
-			 * remove the last &
-			 */
-			return url.substring(0, url.length() - 1);
 		}
-		
-		return url.toString();
+		try {
+			final URI basePathUri = new URI(this.baseUrl);
+			/*
+			 * to avoid ? at the end of the uri, remove it by setting
+			 * the query string to null
+			 */
+			final String queryString;
+			if (present(queryBuilder)) {
+				queryString = queryBuilder.toString();
+			} else {
+				queryString = null;
+			}
+			return new URI(basePathUri.getScheme(), null, basePathUri.getHost(), -1, pathBuilder.toString(), queryString, null);
+		} catch (final URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
