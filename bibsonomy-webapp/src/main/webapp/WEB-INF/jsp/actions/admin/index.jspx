@@ -51,7 +51,6 @@
 		<jsp:attribute name="content">
 		
 	
-		
 		<!-- Admin Navigation -->	
 		<menu:adminNavi />	
 		
@@ -69,7 +68,17 @@
 				</div>
 		</c:if>
 		</div>
-	
+
+		<div>
+			<h2>
+				<fmt:message key="build.version" >
+					<fmt:param>${properties['project.name']}</fmt:param>
+				</fmt:message>
+			</h2>
+			<fmt:message key="build.time" />
+		</div>
+		<hr/>
+
 		<div>
 			<h2><fmt:message key="admin.actions.general"/></h2>
 			

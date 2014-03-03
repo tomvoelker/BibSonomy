@@ -55,10 +55,20 @@ public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	private String groupingValue;
 	private final Class<? extends Resource> resourceType = Resource.class;
 
+    /**
+     * Constructs a query for the 20 most related tags to "myown".
+     */
 	public GetTagRelationQuery() {
 		this(0, 19, TagRelation.RELATED, Arrays.asList("myown"));
 	}
 	
+    /**
+     * Constructs a query for a number of tags, according to a defined relation.
+     * @param start the start of a segment of the list of tags.
+     * @param end the end of a segment of the list of tags.
+     * @param relation A relation between tags
+     * @param tagNames a list of tags, for which the related tags are to be queried.
+     */
 	public GetTagRelationQuery(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
 		this.start = start < 0 ? 0 : start;
 		this.end = end < start ? start : end;

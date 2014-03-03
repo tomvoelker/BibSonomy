@@ -28,6 +28,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JsonConfig;
@@ -36,9 +38,11 @@ import net.sf.json.util.PropertyFilter;
 
 import org.bibsonomy.layout.csl.model.Date;
 import org.bibsonomy.layout.csl.model.DateParts;
+import org.bibsonomy.layout.csl.model.DocumentCslWrapper;
 import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -121,11 +125,11 @@ public class CslModelConverter {
 		// type
 		rec.setType(mapToCslType(bib.getType()));
 
-		// Mapping address
+		// mapping address
 		rec.setEvent_place(cleanBibTex(bib.getAddress()));
 		rec.setPublisher_place(cleanBibTex(bib.getAddress()));
 		
-		// Mapping authors, editors
+		// mapping authors, editors
 		if (present(bib.getAuthor())) {
 			for (final PersonName author : bib.getAuthor()) {
 				final Person person = convertToPerson(author);
@@ -139,67 +143,60 @@ public class CslModelConverter {
 			}
 		}
 
-		// Date mapping
+		// date mapping
 		final Date date = new Date();
 		date.setLiteral(bib.getYear());
 		date.setDate_parts(Collections.singletonList(new DateParts(bib.getYear())));
 		rec.setIssued(date);
 		
-		// Mapping abstract
+		// mapping abstract
 		rec.setAbstractt(cleanBibTex(bib.getAbstract()));
 		
-		//mapping bibtexkey
+		// mapping bibtexkey
 		rec.setCitation_label(cleanBibTex(bib.getBibtexKey()));
 		
 		
-		// Mapping series, booktitle, journal
-		if(present(bib.getSeries())) {
+		// mapping series, booktitle, journal
+		if (present(bib.getSeries())) {
 			rec.setCollection_title(cleanBibTex(bib.getSeries()));
 			rec.setContainer_title(cleanBibTex(bib.getSeries()));
-			
-		} else if(present(bib.getBooktitle())) {
+		} else if (present(bib.getBooktitle())) {
 			rec.setCollection_title(cleanBibTex(bib.getBooktitle()));
 			rec.setContainer_title(cleanBibTex(bib.getBooktitle()));
-			
 		} else /*if(present(bib.getJournal()))*/ {
 			rec.setCollection_title(cleanBibTex(bib.getJournal()));
 			rec.setContainer_title(cleanBibTex(bib.getJournal()));
 		}
 		
-		// Mapping edition
+		// mapping edition
 		rec.setEdition(cleanBibTex(bib.getEdition()));
 		
-		// Mapping publisher, techreport, thesis, organization
-		if(present(bib.getPublisher())) {
+		// mapping publisher, techreport, thesis, organization
+		if (present(bib.getPublisher())) {
 			rec.setPublisher(cleanBibTex(bib.getPublisher()));
-		
-		} else if(BibTexUtils.TECH_REPORT.equals(bib.getEntrytype())) {
+		} else if (BibTexUtils.TECH_REPORT.equals(bib.getEntrytype())) {
 			rec.setPublisher(cleanBibTex(bib.getInstitution()));
-			
-		} else if(BibTexUtils.PHD_THESIS.equals(bib.getEntrytype()) ||
-			      BibTexUtils.MASTERS_THESIS.equals(bib.getEntrytype())) {
+		} else if (BibTexUtils.PHD_THESIS.equals(bib.getEntrytype()) || BibTexUtils.MASTERS_THESIS.equals(bib.getEntrytype())) {
 			rec.setPublisher(cleanBibTex(bib.getSchool()));
-			
 		} else {
 			rec.setPublisher(cleanBibTex(bib.getOrganization()));
 		}
 		
-		//Mapping chapter, title
-		if(present(bib.getChapter())) {
+		// mapping chapter, title
+		if (present(bib.getChapter())) {
 			rec.setTitle(cleanBibTex(bib.getChapter()));
-			
 		} else {
 			rec.setTitle(cleanBibTex(bib.getTitle()));
 		}
 		
-		//Mapping note
+		// mapping note
 		rec.setNote(cleanBibTex(bib.getNote()));
 		
-		// Mapping number
+		// mapping number
 		rec.setNumber(cleanBibTex(bib.getNumber()));
 		rec.setIssue(cleanBibTex(bib.getNumber()));
 		
-		//Mapping pages
+		// mapping pages
 		rec.setPage(cleanBibTex(bib.getPages()));
 		rec.setNumber_of_pages(bib.getPages());
 		rec.setPage_first(bib.getPages());
@@ -211,9 +208,19 @@ public class CslModelConverter {
 		rec.setDOI(cleanBibTex(bib.getMiscField("doi")));
 		rec.setISBN(cleanBibTex(bib.getMiscField("isbn")));
 
-		rec.setDocuments(bib.getDocuments());
+		rec.setDocuments(convertList(bib.getDocuments()));
 		
 		return rec;
+	}
+
+	private static List<DocumentCslWrapper> convertList(final List<Document> documents) {
+		final List<DocumentCslWrapper> list = new LinkedList<DocumentCslWrapper>();
+		if (present(documents)) {
+			for (final Document d : documents) {
+				list.add(new DocumentCslWrapper(d));
+			}
+		}
+		return list;
 	}
 
 	private static Person convertToPerson(final PersonName personName) {
@@ -244,7 +251,11 @@ public class CslModelConverter {
 	private static final String mapToCslType(final String bibtexType) {
 		return typemap.get(bibtexType);
 	}
-
+	
+	/**
+	 * @return	the json configuration to use when serializing object structure
+	 * 			to JSON
+	 */
 	public static JsonConfig getJsonConfig() {
 		final JsonConfig jsonConfig = new JsonConfig();
 		// output only not-null fields

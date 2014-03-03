@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
+import org.bibsonomy.common.enums.PreviewSize;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
@@ -18,6 +19,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Handle a document request
@@ -30,6 +32,7 @@ public class GetPostDocumentStrategy extends Strategy {
 	private final String userName;
 	private final Document document;
 	private final FileLogic fileLogic;
+    private final PreviewSize preview;
 
 	/**
 	 * @param context
@@ -47,11 +50,32 @@ public class GetPostDocumentStrategy extends Strategy {
 			throw new NoSuchResourceException("can't find document!");
 		}
 		this.fileLogic = context.getFileLogic();
+
+		final String previewValue = context.getStringAttribute("preview", null);
+		if (ValidationUtils.present(previewValue)) {
+			PreviewSize previewEnumValue;
+			try {
+				previewEnumValue = Enum.valueOf(PreviewSize.class, previewValue.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				// If parameter was given, but without a proper value, render a
+				// LARGE preview image.
+				previewEnumValue = PreviewSize.LARGE;
+			}
+			this.preview = previewEnumValue;
+		} else {
+			this.preview = null;
+		}
 	}
 	
 	@Override
 	protected RenderingFormat getRenderingFormat() {
-		final String contentType = MIME_TYPES_FILE_TYPE_MAP.getContentType(this.document.getFileName());
+		final String contentType;
+		// PDF is requested
+		if (this.preview == null) {
+			contentType = MIME_TYPES_FILE_TYPE_MAP.getContentType(this.document.getFileName());
+		} else {
+			contentType = MIME_TYPES_FILE_TYPE_MAP.getContentType(this.fileLogic.getPreviewFile(document, preview));
+		}
 		return RenderingFormat.getMediaType(contentType);
 	}
 	
@@ -65,8 +89,13 @@ public class GetPostDocumentStrategy extends Strategy {
 	@Override
 	public void perform(final ByteArrayOutputStream outStream){
 		try {
+			final File file;
+			if (this.preview != null) {
+				file = this.fileLogic.getPreviewFile(document, this.preview);
+			} else {
+				file = this.fileLogic.getFileForDocument(this.document);
+			}
 			// get the bufferedstream of the file
-			final File file = this.fileLogic.getFileForDocument(this.document);
 			final BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
 			
 			// write the bytes of the file to the writer

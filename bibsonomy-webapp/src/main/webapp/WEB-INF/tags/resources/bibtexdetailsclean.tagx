@@ -180,6 +180,55 @@
 							</table>
 						</div>
 						
+						<!--+ 
+				 			|
+				 			| dropdown menu from which you can pick an external literature site and try to find the publication there
+				 			|
+				 			+-->
+						<form>
+							<table>
+								<!-- the string you would usually enter in google scholar, world cat etc. -->
+								<c:set var="externalQueryString"
+									value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
+
+							
+								<!-- build the urls -->
+								<c:url var="googleScholarPostUrl"
+									value="http://scholar.google.com/scholar">
+									<c:param name="hl" value="${locale}" />
+									<c:param name="q" value="${externalQueryString}" />
+								</c:url>
+
+								<c:url var="microsoftAcademicUrl"
+									value="http://academic.research.microsoft.com/Search">
+									<c:param name="query" value="${externalQueryString}" />
+								</c:url>
+
+								<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
+									<c:param name="qt" value="worldcat_org_all" />
+									<c:param name="q" value="${externalQueryString}" />
+								</c:url>
+
+								<!-- build the dropdown menu -->
+								<tr>
+									<td colspan="2"><select name="dropDownExternal"
+										id="dropDownExternal" style="font-size: 8pt">
+											<option value="" selected="selected">
+												<fmt:message key="resources.searchExternal.dropDownTitle" />
+											</option>
+											<option value="${googleScholarPostUrl}">Google
+												Scholar</option>
+											<option value="${microsoftAcademicUrl}">Microsoft
+												Academic Search</option>
+											<option value="${worldCatUrl}">WorldCat</option>
+									</select></td>
+									<td><fmt:message var="goMsg"
+											key="resources.searchExternal.go" /> <input type="button"
+										value="${goMsg}" onclick="javascript: return loadSelectedPage()" /></td>
+								</tr>
+							</table>
+						</form>
+						
 						<!--+
 							| discussion and rating
 							+-->

@@ -71,8 +71,8 @@ TODAY=`date +"%Y-%m-%dT%H:%M:%S"`
 # default: print help
 help:
 	@echo "use "
-	@echo "  make gandalf"
-	@echo "to deploy to gandalf"
+	@echo "  make puma_mr_prod"
+	@echo "to deploy to productive puma in Marburg"
 	@echo "for further information, read the Makefile"
 
 install:
@@ -81,27 +81,7 @@ install:
 test:
 	${MAVEN} test | ${TEE} ${TMPLOG}
 
-# 
-# the main system: document and archive
-#
-gandalf: document mvn_deploy mail archive
-#
-# test system (just deploy)
-#
-gromit: mvn_deploy
-#
-# slave systems: document, deploy, email
-# 
-slave_kassel: document mvn_deploy mail
-slave_wuerzburg: document mvn_deploy mail
-slave_hannover: document mvn_deploy_tc7 mail
-#
-# when deploying to puma, we first need to open an ssh connection 
-#
-puma_sandbox: mvn_deploy mail
-puma_ks_dev: mvn_deploy
-puma_ks_prod: document mvn_deploy mail
-
+puma_mr_prod: document mvn_deploy mail
 
 
 ################################
@@ -113,10 +93,7 @@ puma_ks_prod: document mvn_deploy mail
 #
 # (the property "tomcat-server" activates the profiles defined in ~/.m2/settings.xml
 mvn_deploy: clean
-	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip tomcat6:redeploy | ${TEE} -a ${TMPLOG}
-
-mvn_deploy_tc7: clean
-	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip tomcat7:redeploy | ${TEE} -a ${TMPLOG}
+	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip clean tomcat6:redeploy | ${TEE} -a ${TMPLOG}
 
 #
 # send notification mail
@@ -132,11 +109,6 @@ archive:
 		j=`echo $$i | sed "s/.*\///"`; \
 		scp $$i ${ARCHIVE}/${TODAY}_$$j; \
 	done
-#
-# open SSH connection with tunnel to PUMA tomcat
-#
-#ssh_puma:
-#	ssh -L 8077:bib-ws24.bibliothek.uni-kassel.de:8080 pumadeploy@puma.uni-kassel.de -p 30 -qTnN &
 
 #
 # Ask the user who he is and why he's deploying.
