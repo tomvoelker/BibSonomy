@@ -385,6 +385,13 @@ public class Functions {
 		return SpamStatus.isSpammer(status);
 	}
 	
+	/**
+	 * Return the diff as String for history page
+	 * 
+	 * @param newValue
+	 * @param oldValue
+	 * @return highlighted diff
+	 */
 	public static String compareString(final String newValue, final String oldValue) {
 		String tmpNewValue ="";
 		String tmpOldValue ="";
@@ -404,10 +411,6 @@ public class Functions {
 		int n = comparePost.length;
 
 		//opt is multidimensional array (opt[m+1][n+1])
-		//var opt = new Array(m+1);//(1+n);
-		//for(int k=0; k<m+1;k++){
-		//	opt[k] = new Array(n+1);
-		//}
 		int[][] opt= new int[m+1][n+1];
 	
 		for(int i=m-1; i>=0; i--) {
