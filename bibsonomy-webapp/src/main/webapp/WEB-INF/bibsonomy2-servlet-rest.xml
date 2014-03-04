@@ -24,6 +24,7 @@
 								<value>PUT</value>
 								<value>POST</value>
 								<value>DELETE</value>
+								<value>HEAD</value>
 							</array>
 						</property>
 					</bean>

@@ -75,6 +75,7 @@
 					<fmt:param>${properties['project.name']}</fmt:param>
 				</fmt:message>
 			</h2>
+			<fmt:message key="build.time" />
 		</div>
 		<hr/>
 

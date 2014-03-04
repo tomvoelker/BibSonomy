@@ -113,6 +113,7 @@
 				<form:label cssClass="fsLabel" path="user.settings.listItemcount"><fmt:message key="settings.tag.itemsPerPage"/></form:label>
 				<buttons:help message="settings.tag.itemsPerPage.help"/>
 				<form:input cssClass="fsInput fsSmall" path="user.settings.listItemcount"/>
+				<div class="dissError"><form:errors path="user.settings.listItemcount" /></div>
 			</div>
 			
 			<div class="fsRow">
