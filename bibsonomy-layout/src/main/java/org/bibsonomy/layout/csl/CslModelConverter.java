@@ -26,8 +26,10 @@ package org.bibsonomy.layout.csl;
 import static org.bibsonomy.model.util.BibTexUtils.cleanBibTex;
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JsonConfig;
@@ -36,9 +38,11 @@ import net.sf.json.util.PropertyFilter;
 
 import org.bibsonomy.layout.csl.model.Date;
 import org.bibsonomy.layout.csl.model.DateParts;
+import org.bibsonomy.layout.csl.model.DocumentCslWrapper;
 import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -211,9 +215,17 @@ public class CslModelConverter {
 		rec.setDOI(cleanBibTex(bib.getMiscField("doi")));
 		rec.setISBN(cleanBibTex(bib.getMiscField("isbn")));
 
-		rec.setDocuments(bib.getDocuments());
+		rec.setDocuments(convertList(bib.getDocuments()));
 		
 		return rec;
+	}
+
+	private static List<DocumentCslWrapper> convertList(List<Document> documents) {
+		List<DocumentCslWrapper> list = new ArrayList<DocumentCslWrapper>(documents.size());
+		for (Document d : documents) {
+			list.add(new DocumentCslWrapper(d));
+		}
+		return list;
 	}
 
 	private static Person convertToPerson(final PersonName personName) {
