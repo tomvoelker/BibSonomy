@@ -237,6 +237,12 @@
 	</function>
 
 	<function>
+		<name>compareString</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>String compareString(java.lang.String, java.lang.String)</function-signature>
+	</function>
+	
+	<function>
 		<name>quoteJSON</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String quoteJSON(java.lang.String)</function-signature>

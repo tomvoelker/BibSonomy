@@ -384,6 +384,62 @@ public class Functions {
 		final SpamStatus status = SpamStatus.getStatus(id);
 		return SpamStatus.isSpammer(status);
 	}
+	
+	public static String compareString(final String newValue, final String oldValue) {
+		String tmpNewValue ="";
+		String tmpOldValue ="";
+		if(newValue != null){
+			tmpNewValue =newValue;
+		}
+		if(oldValue != null){
+			tmpOldValue =oldValue;
+		}
+		String[] post = tmpNewValue.split(" ");
+		String[] comparePost = tmpOldValue.split(" ");
+
+		//result
+		String comparePostValue ="";
+		//number of words of each field
+		int m = post.length;
+		int n = comparePost.length;
+
+		//opt is multidimensional array (opt[m+1][n+1])
+		//var opt = new Array(m+1);//(1+n);
+		//for(int k=0; k<m+1;k++){
+		//	opt[k] = new Array(n+1);
+		//}
+		int[][] opt= new int[m+1][n+1];
+	
+		for(int i=m-1; i>=0; i--) {
+			for(int j=n-1; j>=0; j--){
+				if(post[i] == comparePost[j]){
+					opt[i][j] = (opt[i+1][j+1] +1);
+				} else {
+					opt[i][j] = Math.max(opt[i+1][j], opt[i][j+1]);
+				}	
+			}
+		}
+	
+		int i=0;
+		int j=0;
+		while(i<m && j<n){
+			if(post[i] == comparePost[j]){
+				comparePostValue+=(comparePost[j]+" ");
+				i++;
+				j++;
+			} else if (opt[i+1][j] >= opt[i][j+1]){
+				comparePostValue+=("<span class=\"fsDiffMissingColor\">" + post[i++] + "</span>"+ " ");
+			} else {
+				comparePostValue+=("<span class=\"fsDiffAddColor\">" + comparePost[j++] + "</span>"+ " ");
+			}
+		}
+		while(i<m) {
+			comparePostValue+=("<span class=\"fsDiffMissingColor\">" + post[i++] + "</span>"+ " ");
+		}while(j<n){
+			comparePostValue+=("<span class=\"fsDiffAddColor\">" + comparePost[j++] + "</span>"+ " ");
+		}
+		return comparePostValue;
+	}
 
 	/**
 	 * Quotes a String such that it is usable for JSON.
