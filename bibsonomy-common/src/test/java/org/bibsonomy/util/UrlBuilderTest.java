@@ -61,6 +61,24 @@ public class UrlBuilderTest {
 		assertEquals(paramValue2, UrlUtils.safeURIDecode(queryMap.get(paramKey2)));
 	}
 	
+	@Test
+	public void testPort() {
+		final String baseUrl = "http://localhost:8080/";
+		final UrlBuilder urlBuilder = new UrlBuilder(baseUrl);
+		assertEquals(baseUrl, urlBuilder.asString());
+	}
+	
+	@Test
+	public void testEncode() throws URISyntaxException {
+		final UrlBuilder spaceBuilder = new UrlBuilder("");
+		spaceBuilder.addPathElement("test test");
+		assertEquals("/test%20test", spaceBuilder.asString());
+		
+		final UrlBuilder urlBuilder = new UrlBuilder("");
+		urlBuilder.addPathElement("http://heise.de");
+		assertEquals("/http%3A%2F%2Fheise.de", urlBuilder.asString());
+	}
+	
 	private static Map<String, String> getQueryMap(String query) {
 		if (!present(query)) {
 			return Collections.emptyMap();
