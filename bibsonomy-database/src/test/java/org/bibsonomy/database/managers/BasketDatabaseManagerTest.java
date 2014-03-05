@@ -31,28 +31,28 @@ public class BasketDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		int basketSize = 0;
 		
 		// get actual basketsize
-		basketSize = basketDb.getNumBasketEntries(TESTUSER1_NAME, this.dbSession);
+		basketSize = basketDb.getNumberOfBasketEntries(TESTUSER1_NAME, this.dbSession);
 		assertEquals(2, basketSize);
 		
 		// create new basket item with content id 14
 		basketDb.createItem(TESTUSER1_NAME, 14, this.dbSession);
 		
 		// get actual basketsize
-		basketSize = basketDb.getNumBasketEntries(TESTUSER1_NAME, this.dbSession);
+		basketSize = basketDb.getNumberOfBasketEntries(TESTUSER1_NAME, this.dbSession);
 		assertEquals(3, basketSize);
 		
 		// delete basket item with content id 14
 		basketDb.deleteItem(TESTUSER1_NAME, 14, this.dbSession);
 		
 		// get actual basket size
-		basketSize = basketDb.getNumBasketEntries(TESTUSER1_NAME, this.dbSession);
+		basketSize = basketDb.getNumberOfBasketEntries(TESTUSER1_NAME, this.dbSession);
 		assertEquals(2, basketSize);
 		
 		// delete ALL items
 		basketDb.deleteAllItems(TESTUSER1_NAME, this.dbSession);
 		
 		// get actual basket size
-		basketSize = basketDb.getNumBasketEntries(TESTUSER1_NAME, this.dbSession);
+		basketSize = basketDb.getNumberOfBasketEntries(TESTUSER1_NAME, this.dbSession);
 		assertEquals(0, basketSize);
 	}
 
