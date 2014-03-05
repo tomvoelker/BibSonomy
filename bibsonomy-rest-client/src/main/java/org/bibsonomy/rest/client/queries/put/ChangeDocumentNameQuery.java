@@ -32,7 +32,6 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.rest.renderer.UrlRenderer;
 
 
 /**
@@ -63,22 +62,22 @@ public class ChangeDocumentNameQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		final Document newDocument = new Document();
 		newDocument.setFileName(this.newFileName);
 		
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeDocument(sw, newDocument);
-		// TODO: use the urlrenderer of this query!
-		final String url = new UrlRenderer("").createHrefForResourceDocument(oldDocument.getUserName(), this.resourceHash, this.oldDocument.getFileName());
-		this.performRequest(HttpMethod.PUT, url, sw.toString());
-		return null;
+		
+		final String url = this.getUrlRenderer().createHrefForResourceDocument(oldDocument.getUserName(), this.resourceHash, this.oldDocument.getFileName());
+		this.downloadedDocument = this.performRequest(HttpMethod.PUT, url, sw.toString());
 	}
 	
 	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
 			return this.getRenderer().parseResourceHash(this.downloadedDocument);
+		}
 		return this.getError();
 	}
 }

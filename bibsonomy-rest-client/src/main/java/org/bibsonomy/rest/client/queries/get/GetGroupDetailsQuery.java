@@ -23,12 +23,12 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive details about an group of bibsonomy.
@@ -48,21 +48,18 @@ public final class GetGroupDetailsQuery extends AbstractQuery<Group> {
 	 *             if groupname is null or empty
 	 */
 	public GetGroupDetailsQuery(final String groupname) throws IllegalArgumentException {
-		if (groupname == null || groupname.length() == 0) throw new IllegalArgumentException("no groupname given");
-
+		if (!present(groupname)) throw new IllegalArgumentException("no groupname given");
 		this.groupname = groupname;
 	}
 
 	@Override
-	public Group getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected Group getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parseGroup(this.downloadedDocument);
 	}
 
 	@Override
-	protected Group doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder((new UrlRenderer("")).createHrefForGroup(this.groupname));
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String groupUrl = this.getUrlRenderer().createHrefForGroup(this.groupname);
+		this.downloadedDocument = performGetRequest(groupUrl);
 	}
 }

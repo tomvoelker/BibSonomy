@@ -23,9 +23,9 @@
 
 package org.bibsonomy.rest.client.queries.delete;
 
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
@@ -38,15 +38,23 @@ public class UnpickClipboardQuery extends AbstractQuery<Integer> {
 	private String userName;
 
 	@Override
-	protected Integer doExecute() throws ErrorPerformingRequestException {
-		final StringBuilder urlBuilder = new StringBuilder(RESTConfig.USERS_URL + "/" + userName + "/" + RESTConfig.CLIPBOARD_SUBSTRING);
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String url;
 		if (clearAll) {
-			urlBuilder.append("?clear=true");
+			url = this.getUrlRenderer().createHrefForClipboard(this.userName, Boolean.valueOf(clearAll));
 		} else {
-			urlBuilder.append("/" + resourceHash);
+			url = this.getUrlRenderer().createHrefForClipboadEntry(this.userName, this.resourceHash);
 		}
-		performRequest(HttpMethod.DELETE, urlBuilder.toString(), null);
-		return 0;
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, url, null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
+	 */
+	@Override
+	protected Integer getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
