@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,16 +21,6 @@ public class BasketDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@BeforeClass
 	public static void setupManager() {
 		basketDb = BasketDatabaseManager.getInstance();
-	}
-	
-	/**
-	 * Tests the getNumBasketEntries method
-	 */
-	@Test
-	public void getBasketNumSize(){
-		int basketSize = basketDb.getNumBasketEntries(TESTUSER1_NAME, this.dbSession);
-		assertNotNull(basketSize);
-		assertEquals(2, basketSize);
 	}
 	
 	/**
@@ -65,7 +54,6 @@ public class BasketDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// get actual basket size
 		basketSize = basketDb.getNumBasketEntries(TESTUSER1_NAME, this.dbSession);
 		assertEquals(0, basketSize);
-		
 	}
 
 }
