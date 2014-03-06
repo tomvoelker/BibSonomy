@@ -810,17 +810,8 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = this.openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, null, this.loginUser);
-			param.setTagRelationType(relation);
-
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
-				// this is save because of RTTI-check of resourceType argument
-				// which is of class T
-				param.setRegex(regex);
-				// need to switch from class to string to ensure legibility of
-				// Tags.xml
-				param.setContentTypeByClass(resourceType);
-				return this.tagDBManager.getTags(param, session);
+				return this.tagDBManager.getTags(this.loginUser, resourceType, grouping, groupingName, tags, hash, search, regex, relation, order, startDate, endDate, start, end, session);
 			}
 
 			throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
@@ -843,8 +834,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, this.loginUser);
-			return this.tagDBManager.getTagDetails(param, session);
+			return this.tagDBManager.getTagDetails(tagName, this.loginUser, session);
 		} finally {
 			session.close();
 		}
@@ -2304,8 +2294,7 @@ public class DBLogic implements LogicInterface {
 	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = openSession();
 		try {
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, null, this.loginUser);
-			return this.statisticsDBManager.getTagStatistics(param, session);
+			return this.statisticsDBManager.getTagStatistics(this.loginUser, resourceType, grouping, groupingName, tags, regex, status, startDate, endDate, start, end, session);
 		} finally {
 			session.close();
 		}

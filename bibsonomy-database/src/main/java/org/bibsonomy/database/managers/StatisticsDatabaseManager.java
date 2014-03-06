@@ -1,11 +1,11 @@
 package org.bibsonomy.database.managers;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -14,11 +14,16 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.StatisticsParam;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.statistics.StatisticsValues;
+import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 
 /**
  * @author Dominik Benz
@@ -73,7 +78,8 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return The number of tags matching the given params
 	 */
-	public int getTagStatistics(final StatisticsParam param, final DBSession session) {
+	public int getTagStatistics(final User loginUser, final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end, final DBSession session) {
+        final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, null, loginUser);
 		final Integer count = tagChain.perform(param, session).getCount();
 		// to not get NPEs later
 		return count == null ? 0 : count;
