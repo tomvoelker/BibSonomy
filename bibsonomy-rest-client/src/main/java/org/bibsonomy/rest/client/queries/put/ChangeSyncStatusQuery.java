@@ -27,11 +27,10 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractSyncQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlUtils;
 
 /**
  * @author wla
@@ -41,6 +40,15 @@ public class ChangeSyncStatusQuery extends AbstractSyncQuery<Boolean> {
 	private final SynchronizationStatus status;
 	private final String info;
 	
+	/**
+	 * 
+	 * @param serviceURI
+	 * @param resourceType
+	 * @param strategy
+	 * @param direction
+	 * @param status
+	 * @param info
+	 */
 	public ChangeSyncStatusQuery(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction, final SynchronizationStatus status, final String info) {
 		super(serviceURI, resourceType, strategy, direction);
 		this.status = status;
@@ -48,9 +56,17 @@ public class ChangeSyncStatusQuery extends AbstractSyncQuery<Boolean> {
 	}
 
 	@Override
-	protected Boolean doExecute() throws ErrorPerformingRequestException {
-		final String url = UrlUtils.setParam(getSyncURL(), RESTConfig.SYNC_STATUS, status.toString());
-		performRequest(HttpMethod.PUT, url, info);
-		return true;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String url = this.getUrlRenderer().createHrefForSync(this.serviceURI, resourceType, strategy, direction, null, status);
+		this.downloadedDocument = performRequest(HttpMethod.PUT, url, info);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
+	 */
+	@Override
+	protected Boolean getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -28,20 +28,36 @@ import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.rest.client.AbstractSyncQuery;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
  * @author wla
  */
 public class GetLastSyncDataQuery extends AbstractSyncQuery<SynchronizationData> {
-
+	
+	/**
+	 * @see AbstractSyncQuery#AbstractSyncQuery(String, Class, ConflictResolutionStrategy, SynchronizationDirection)
+	 * @param serviceURI
+	 * @param resourceType
+	 * @param strategy
+	 * @param direction
+	 */
 	public GetLastSyncDataQuery(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		super(serviceURI, resourceType, strategy, direction);
 	}
 
 	@Override
-	protected SynchronizationData doExecute() throws ErrorPerformingRequestException {
-		return this.getRenderer().parseSynchronizationData(performGetRequest(getSyncURL()));
+	protected void doExecute() throws ErrorPerformingRequestException {
+		this.downloadedDocument = performGetRequest(this.getUrlRenderer().createHrefForSync(this.serviceURI, this.resourceType, this.strategy, this.direction, null, null));
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
+	 */
+	@Override
+	protected SynchronizationData getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		return this.getRenderer().parseSynchronizationData(this.downloadedDocument);
 	}
 
 }

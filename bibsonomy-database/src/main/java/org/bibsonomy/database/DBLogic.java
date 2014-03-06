@@ -2435,7 +2435,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual clipboard size
-			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
 		} catch (final Exception ex) {
 			log.error(ex);
 			throw new RuntimeException(ex);
@@ -2481,7 +2481,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual basketsize
-			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
 		} finally {
 			session.close();
 		}

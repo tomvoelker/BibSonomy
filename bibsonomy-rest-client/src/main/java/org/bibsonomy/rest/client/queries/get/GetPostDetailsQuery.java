@@ -28,11 +28,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive details about a post of an user.
@@ -63,18 +61,13 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 	}
 
 	@Override
-	public Post<? extends Resource> getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected Post<? extends Resource> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parsePost(this.downloadedDocument, NoDataAccessor.getInstance());
 	}
 
 	@Override
-	protected Post<? extends Resource> doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-		urlBuilder.addPathElement(this.username);
-		urlBuilder.addPathElement(RESTConfig.POSTS_URL);
-		urlBuilder.addPathElement(this.resourceHash);
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String url = this.getUrlRenderer().createHrefForResource(this.username, this.resourceHash);
+		this.downloadedDocument = performGetRequest(url);
 	}
 }
