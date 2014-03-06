@@ -533,10 +533,10 @@ public abstract class AbstractRenderer implements Renderer {
 		// }
 	
 		// add sub-/supertags - dbe, 20070718
-		if ((tag.getSubTags() != null) && (tag.getSubTags().size() > 0)) {
+		if (present(tag.getSubTags())) {
 			xmlTag.getSubTags().add(this.createXmlTags(tag.getSubTags()));
 		}
-		if ((tag.getSuperTags() != null) && (tag.getSuperTags().size() > 0)) {
+		if (present(tag.getSuperTags())) {
 			xmlTag.getSuperTags().add(this.createXmlTags(tag.getSuperTags()));
 		}
 		return xmlTag;
