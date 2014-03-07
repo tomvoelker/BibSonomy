@@ -23,8 +23,6 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,12 +31,8 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author niebler
@@ -55,20 +49,25 @@ public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	private String groupingValue;
 	private final Class<? extends Resource> resourceType = Resource.class;
 
-    /**
-     * Constructs a query for the 20 most related tags to "myown".
-     */
+	/**
+	 * Constructs a query for the 20 most related tags to "myown".
+	 */
 	public GetTagRelationQuery() {
 		this(0, 19, TagRelation.RELATED, Arrays.asList("myown"));
 	}
 	
-    /**
-     * Constructs a query for a number of tags, according to a defined relation.
-     * @param start the start of a segment of the list of tags.
-     * @param end the end of a segment of the list of tags.
-     * @param relation A relation between tags
-     * @param tagNames a list of tags, for which the related tags are to be queried.
-     */
+	/**
+	 * Constructs a query for a number of tags, according to a defined relation.
+	 * 
+	 * @param start
+	 *            the start of a segment of the list of tags.
+	 * @param end
+	 *            the end of a segment of the list of tags.
+	 * @param relation
+	 *            A relation between tags
+	 * @param tagNames
+	 *            a list of tags, for which the related tags are to be queried.
+	 */
 	public GetTagRelationQuery(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
 		this.start = start < 0 ? 0 : start;
 		this.end = end < start ? start : end;
@@ -77,38 +76,13 @@ public final class GetTagRelationQuery extends AbstractQuery<List<Tag>> {
 	}
 	
 	@Override
-	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
-		// /tags/[tags]?...
-		final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.TAGS_URL);
-		urlBuilder.addPathElement(StringUtils.implodeStringCollection(this.tagNames, "+"));
-		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
-		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
-		
-		if (this.order != null) {
-			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, this.order.toString());
-		}
-		AbstractQuery.addGroupingParam(this.grouping, this.groupingValue, urlBuilder);
-
-		if (present(this.filter)) {
-			urlBuilder.addParameter(RESTConfig.FILTER_PARAM, this.filter);
-		}
-		
-		if ((this.resourceType != null) && (this.resourceType != Resource.class)) {
-			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
-		}
-		
-		// add relation parameter.
-		urlBuilder.addParameter(RESTConfig.RELATION_PARAM, this.relation.toString());
-		this.downloadedDocument = this.performGetRequest(urlBuilder.asString());
-		
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String tagUrl = this.getUrlRenderer().createHrefForTags(this.resourceType, this.tagNames, this.grouping, this.groupingValue, this.filter, this.relation, this.order, this.start, this.end);
+		this.downloadedDocument = this.performGetRequest(tagUrl);
 	}
 	
 	@Override
-	public final List<Tag> getResult() {
-		if (this.downloadedDocument == null) {
-			throw new IllegalStateException("Execute the query first.");
-		}
+	protected final List<Tag> getResultInternal() {
 		return this.getRenderer().parseTagList(this.downloadedDocument);
 	}
 

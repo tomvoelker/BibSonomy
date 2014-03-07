@@ -23,12 +23,10 @@
 
 package org.bibsonomy.rest.client.queries.post;
 
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author wla
@@ -39,9 +37,18 @@ public class PickPostQuery extends AbstractQuery<Integer> {
 	private String resourceHash;
 
 	@Override
-	protected Integer doExecute() throws ErrorPerformingRequestException {
-		performRequest(HttpMethod.POST, new UrlBuilder(new UrlRenderer("").createHrefForUser(this.userName)).addPathElement(RESTConfig.CLIPBOARD_SUBSTRING).addPathElement(this.resourceHash).asString(), new String());
-		return 0;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String clipboardEntryUrl = this.getUrlRenderer().createHrefForClipboadEntry(this.userName, this.resourceHash);
+		this.downloadedDocument = performRequest(HttpMethod.POST, clipboardEntryUrl, "");
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
+	 */
+	@Override
+	protected Integer getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**

@@ -24,20 +24,16 @@
 package org.bibsonomy.rest.client.queries.delete;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Status;
-import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.client.AbstractQuery;
+import org.bibsonomy.rest.client.AbstractDeleteQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
- * Use this Class to delete a concept or a single relation.
+ * Use this query to delete a concept or a single relation.
  * 
  * @author Stefan Stützer
  */
-public class DeleteConceptQuery extends AbstractQuery<String> {
+public class DeleteConceptQuery extends AbstractDeleteQuery {
 
 	private final String conceptName;
 	private final GroupingEntity grouping;
@@ -46,45 +42,26 @@ public class DeleteConceptQuery extends AbstractQuery<String> {
 	/** if is set only the relation <em>conceptName <- subTag </em> will be deleted */
 	private String subTag;
 	
+	/**
+	 * 
+	 * @param conceptName
+	 * @param grouping
+	 * @param groupingName
+	 */
 	public DeleteConceptQuery(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		this.conceptName = conceptName;
 		this.grouping = grouping;
 		this.groupingName = groupingName;
 		this.downloadedDocument = null;
+		if (GroupingEntity.ALL.equals(this.grouping)) {
+			throw new IllegalArgumentException("you can not delete global concepts");
+		}
 	}
 	
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder;
-		
-		switch (grouping) {
-		case USER:
-			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-			break;
-		case GROUP:
-			urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
-			break;
-		default:
-			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept delete query");
-		}
-		
-		urlBuilder.addPathElement(this.groupingName);
-		urlBuilder.addPathElement(RESTConfig.CONCEPTS_URL);
-		urlBuilder.addPathElement(this.conceptName);
-		
-		if (subTag != null) {
-			urlBuilder.addParameter(RESTConfig.SUB_TAG_PARAM, this.subTag);
-		}
-		
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, urlBuilder.asString(), null);
-		return null;	
-	}
-
-	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return Status.OK.getMessage();
-		return this.getError();
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String url = this.getUrlRenderer().createHrefForConceptWithSubTag(this.grouping, this.groupingName, this.conceptName, this.subTag);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, url, null);
 	}
 
 	/**
@@ -92,5 +69,5 @@ public class DeleteConceptQuery extends AbstractQuery<String> {
 	 */
 	public void setSubTag(final String subTag) {
 		this.subTag = subTag;
-	}	
+	}
 }

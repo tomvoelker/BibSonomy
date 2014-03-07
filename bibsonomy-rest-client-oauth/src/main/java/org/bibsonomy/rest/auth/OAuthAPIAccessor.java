@@ -46,7 +46,7 @@ import net.oauth.OAuthServiceProvider;
 import net.oauth.ParameterStyle;
 import net.oauth.client.OAuthClient;
 import net.oauth.client.httpclient3.HttpClient3;
-import net.oauth.http.HttpMessage;
+import net.oauth.http.HttpMessageDecoder;
 
 import org.apache.commons.httpclient.HttpMethod;
 import org.bibsonomy.rest.client.RestLogicFactory;
@@ -109,12 +109,6 @@ public class OAuthAPIAccessor implements AuthenticationAccessor {
 	public OAuthAPIAccessor(final String projectHome, final String consumerKey, final String consumerSecret, final String callbackUrl) {
 		final OAuthServiceProvider provider = new OAuthServiceProvider(projectHome + OAUTH_REQUEST_URL, projectHome + OAUTH_AUTHORIZATION_URL, projectHome + OAUTH_ACCESS_URL);
 		final OAuthConsumer consumer = new OAuthConsumer(callbackUrl, consumerKey, consumerSecret, provider);
-
-		// TODO: remove?
-		// for implementing RSA public key authentication:
-        //
-        // consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.RSA_SHA1);
-		// consumer.setProperty(RSA_SHA1.PRIVATE_KEY, consumerSecret);
 		this.accessor = new OAuthAccessor(consumer);
 	}
 	
@@ -156,9 +150,6 @@ public class OAuthAPIAccessor implements AuthenticationAccessor {
 		this.accessor = accessor;
 	}
 	
-	//------------------------------------------------------------------------
-	// OAuth specific interface
-	//------------------------------------------------------------------------
 	/**
 	 * step one: obtain request token and return url which the user must visit for 
 	 *           authorizing the request token
@@ -195,10 +186,10 @@ public class OAuthAPIAccessor implements AuthenticationAccessor {
 		 */
 		final Properties paramProps = new Properties();
 		paramProps.setProperty("oauth_token", this.accessor.requestToken);
-		final List<Map.Entry<?,?>> params = new ArrayList<Map.Entry<?,?>>();
+		final List<Map.Entry<?, ?>> params = new ArrayList<Map.Entry<?, ?>>();
 		final Iterator<?> it = paramProps.entrySet().iterator();
 		while (it.hasNext()) {
-			final Map.Entry<?,?> p = (Map.Entry<?,?>) it.next();
+			final Map.Entry<?, ?> p = (Map.Entry<?, ?>) it.next();
 			params.add(new OAuth.Parameter((String)p.getKey(), (String) p.getValue()));
 		}
 		
@@ -209,6 +200,33 @@ public class OAuthAPIAccessor implements AuthenticationAccessor {
 		
 		// the logged in user
 		this.userId = response.getParameter("user_id");
+	}
+	
+	@Override
+	public <M extends HttpMethod> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException {
+		final List<Map.Entry<?, ?>> params = new ArrayList<Map.Entry<?, ?>>();
+		params.add(new OAuth.Parameter("oauth_token", this.accessor.accessToken));
+		try {
+			OAuthMessage request;
+			if (present(requestBody)) {
+				request = this.accessor.newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes("UTF-8")));
+			} else {
+				request = this.accessor.newRequestMessage(method.getName(), url, params);
+			}
+			final Object accepted = this.accessor.consumer.getProperty(OAuthConsumer.ACCEPT_ENCODING);
+			if (accepted != null) {
+				request.getHeaders().add(new OAuth.Parameter(HttpMessageDecoder.ACCEPT_ENCODING, accepted.toString()));
+			}
+			request.getHeaders().add(new OAuth.Parameter("Accept", renderingFormat.getMimeType()));
+			request.getHeaders().add(new OAuth.Parameter("Content-Type", renderingFormat.getMimeType()));
+			
+			final Object ps = this.accessor.consumer.getProperty("parameterStyle");
+			final ParameterStyle style = (ps == null) ? ParameterStyle.BODY : Enum.valueOf(ParameterStyle.class, ps.toString());
+			
+			return new StringReader(OAUTH_CLIENT.invoke(request, style).readBodyAsString());
+		} catch (final Exception e) {
+			throw new ErrorPerformingRequestException(e);
+		}
 	}
 	
 	/**
@@ -239,35 +257,5 @@ public class OAuthAPIAccessor implements AuthenticationAccessor {
 	 */
 	public String getRemoteUserId() {
 		return this.userId;
-	}
-		
-	//------------------------------------------------------------------------
-	// AuthenticationAccessor interface implementation
-	//------------------------------------------------------------------------
-	@Override
-	public <M extends HttpMethod> Reader perform(final String url, final String requestBody, final M method, final RenderingFormat renderingFormat) throws ErrorPerformingRequestException {
-		final List<Map.Entry<?,?>> params = new ArrayList<Map.Entry<?,?>>();
-		params.add(new OAuth.Parameter("oauth_token", this.accessor.accessToken));
-		try {
-			OAuthMessage request;
-			if (present(requestBody)) {
-				request = this.accessor.newRequestMessage(method.getName(), url, params, new ByteArrayInputStream(requestBody.getBytes("UTF-8")));
-			} else {
-				request = this.accessor.newRequestMessage(method.getName(), url, params);
-			}
-			final Object accepted = this.accessor.consumer.getProperty(OAuthConsumer.ACCEPT_ENCODING);
-		    if (accepted != null) {
-		        request.getHeaders().add(new OAuth.Parameter(HttpMessage.ACCEPT_ENCODING, accepted.toString()));
-		    }
-		    request.getHeaders().add(new OAuth.Parameter("Accept", renderingFormat.getMimeType()));
-		    request.getHeaders().add(new OAuth.Parameter("Content-Type", renderingFormat.getMimeType()));
-
-		    final Object ps = this.accessor.consumer.getProperty("parameterStyle");
-		    final ParameterStyle style = (ps == null) ? ParameterStyle.BODY : Enum.valueOf(ParameterStyle.class, ps.toString());
-		    
-		    return new StringReader(OAUTH_CLIENT.invoke(request, style).readBodyAsString());
-		} catch (final Exception e) {
-			throw new ErrorPerformingRequestException(e);
-		}
 	}
 }

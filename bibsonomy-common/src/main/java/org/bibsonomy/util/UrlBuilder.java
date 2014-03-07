@@ -107,15 +107,21 @@ public class UrlBuilder {
 	 */
 	public String asString() {
 		final StringBuilder url = new StringBuilder(this.baseUrl);
-
-		for (String pathElement : this.pathElements) {
-			if (url.charAt(url.length() - 1) == '/') {
+		
+		for (final String pathElement : this.pathElements) {
+			if (present(url) && url.charAt(url.length() - 1) == '/') {
 				url.setLength(url.length() - 1);
 			}
 			if ((pathElement.length() == 0) || (pathElement.charAt(0)) != '/') {
 				url.append('/');
 			}
-			url.append(UrlUtils.safeURIEncode(pathElement));
+			
+			/*
+			 * FIXME: replacing all + to %20; UrlUtils.safeURIEncode encodes the
+			 * content for x-www-form-urlencoded which is not what we really want
+			 */
+			final String encodedPathElement = UrlUtils.safeURIEncode(pathElement).replaceAll("\\+", "%20");
+			url.append(encodedPathElement);
 		}
 		
 		if (present(this.parameters)) {

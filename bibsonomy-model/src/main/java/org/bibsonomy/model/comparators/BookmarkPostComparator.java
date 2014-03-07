@@ -60,7 +60,7 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 	@Override
 	public int compare(final Post<? extends Bookmark> post1, final Post<? extends Bookmark> post2) {
 		for (final SortCriterium crit : this.sortCriteria) {
-			try {				
+			try {
 				// posting date
 				if (SortKey.DATE.equals(crit.sortKey)) {
 					return this.compare(post1.getDate(), post2.getDate(), crit.sortOrder);
@@ -68,16 +68,14 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 				// title 
 				else if (SortKey.TITLE.equals(crit.sortKey)) {
 					return this.normalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
-				}				
+				}
 				// ranking
 				else if (SortKey.RANKING.equals(crit.sortKey)) {
 					return this.compare(post1.getRanking(), post2.getRanking(), crit.sortOrder);
-				}
-				else {
+				} else {
 					return 0;
 				}
-			}
-			catch (final SortKeyIsEqualException ignore) {
+			} catch (final SortKeyIsEqualException ignore) {
 				// the for-loop will jump to the next sort criterium in this case
 			}
 		}

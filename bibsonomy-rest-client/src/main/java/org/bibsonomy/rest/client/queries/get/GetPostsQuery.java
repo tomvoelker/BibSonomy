@@ -34,13 +34,10 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.data.NoDataAccessor;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -160,7 +157,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	}
 
 	@Override
-	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException {
+	public List<Post<? extends Resource>> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.downloadedDocument == null) {
 			throw new IllegalStateException("Execute the query first.");
 		}
@@ -172,77 +169,18 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 	}
 
 	@Override
-	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		if (GroupingEntity.CLIPBOARD.equals(this.grouping)) {
-			this.downloadedDocument = performGetRequest(RESTConfig.USERS_URL + "/" + userName + "/" + RESTConfig.CLIPBOARD_SUBSTRING);
-			return null;
+			final String clipboardUrl = this.getUrlRenderer().createHrefForClipboard(this.userName, null);
+			this.downloadedDocument = performGetRequest(clipboardUrl);
+			return;
 		}
 		
-		final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.POSTS_URL);
-		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
-		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
-
-		if (this.resourceType != Resource.class) {
-			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
-		}
-
-		final String groupingParameterName = getGroupingParameterName();
-		if (groupingParameterName != null) {
-			urlBuilder.addParameter(groupingParameterName, this.groupingValue);
-		}
-
-		if (present(this.tags)) {
-			StringBuilder tagsStringBuilder = new StringBuilder();
-			for (final String tag : tags) {
-				tagsStringBuilder.append(tag).append(' ');
-			}
-			tagsStringBuilder.setLength(tagsStringBuilder.length() - 1);
-			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, tagsStringBuilder.toString());
-		}
-
-		if (this.resourceHash != null && this.resourceHash.length() > 0) {
-			urlBuilder.addParameter(RESTConfig.RESOURCE_PARAM, this.resourceHash);
-		}
-
-		if (this.order != null) {
-			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, this.order.toString());
-		}
-
-		if (present(this.search)) {
-			urlBuilder.addParameter(RESTConfig.SEARCH_PARAM, this.search);
-		}
-		String url = urlBuilder.toString();
+		final String url = this.getUrlRenderer().createHrefForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.resourceHash, this.search, this.order, this.start, this.end);
 		if (log.isDebugEnabled()) {
 			log.debug("GetPostsQuery doExecute() called - URL: " + url);
 		}
 		this.downloadedDocument = performGetRequest(url);
-
-		return null;
-	}
-
-	public String getGroupingParameterName() {
-		String groupingParameterName;
-		switch (this.grouping) {
-		case USER:
-			groupingParameterName = "user";
-			break;
-		case GROUP:
-			groupingParameterName = "group";
-			break;
-		case VIEWABLE:
-			groupingParameterName = "viewable";
-			break;
-		case ALL:
-			groupingParameterName = null;
-			break;
-		case FRIEND:
-			groupingParameterName = "friend";
-			break;
-		// CLIPBOARD is already handled separately and therefore not covered here
-		default:
-			throw new UnsupportedOperationException("The grouping " + this.grouping + " is currently not supported by this query.");
-		}
-		return groupingParameterName;
 	}
 
 	/**

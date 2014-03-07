@@ -23,21 +23,15 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to get concepts 
@@ -48,87 +42,67 @@ import org.bibsonomy.util.UrlBuilder;
  * @author Stefan Stützer
  */
 public class GetConceptQuery extends AbstractQuery<List<Tag>> {
-	protected Class<? extends Resource> resourceType;
+	private Class<? extends Resource> resourceType;
 	private String groupingName;
 	private ConceptStatus status = ConceptStatus.ALL;
-	private String regex;	
-	private GroupingEntity grouping = GroupingEntity.ALL;	
-	private List<String> tags;	
-	
-	public GetConceptQuery() {
-		this.downloadedDocument = null;		
-	}
+	private String regex;
+	private GroupingEntity grouping = GroupingEntity.ALL;
+	private List<String> tags;
 	
 	@Override
-	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder;
-		
-		switch (this.grouping) {
-		case USER:
-			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-			urlBuilder.addPathElement(this.groupingName);
-			urlBuilder.addPathElement(RESTConfig.CONCEPTS_URL);			
-			break;
-		case GROUP:
-			throw new UnsupportedOperationException("Grouping " + grouping + " is not implemented yet");
-			//url = URL_GROUPS + "/" + this.groupingName + "/" + URL_CONCEPTS;
-			//break;
-		case ALL:
-			urlBuilder = new UrlBuilder(RESTConfig.CONCEPTS_URL);
-			break;
-		default:
-			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept query");
-		}
-				
-		if (this.status != null) {
-			urlBuilder.addParameter(RESTConfig.CONCEPT_STATUS_PARAM, this.status.toString().toLowerCase());
-		}
-
-		if (this.resourceType != null) {
-			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
-		}
-		
-		if (this.regex != null) {
-			urlBuilder.addParameter(RESTConfig.REGEX_PARAM, this.regex);
-		}	
-		
-		if (present(this.tags)) {
-			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, StringUtils.appendDelimited(new StringBuilder(), tags, "+").toString());
-		}			
-		
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String conceptsUrl = this.getUrlRenderer().createHrefForConcepts(this.grouping, this.groupingName, this.status, this.resourceType, this.tags, this.regex);		
+		this.downloadedDocument = performGetRequest(conceptsUrl);
 	}
 
 	@Override
-	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected List<Tag> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parseTagList(this.downloadedDocument);
 	}
-
-	public void setResourceType(final Class<? extends Resource> resourceType) {
-		this.resourceType = resourceType;
-	}
-
+	
+	/**
+	 * sets the user name and the corresponding grouping
+	 * @param userName
+	 */
 	public void setUserName(final String userName) {
 		this.groupingName = userName;
 		this.grouping = GroupingEntity.USER;
 	}
-
+	
+	/**
+	 * sets the group name and the corresponding grouping
+	 * @param groupName
+	 */
 	public void setGroupName(final String groupName) {
 		this.groupingName = groupName;
 		this.grouping = GroupingEntity.GROUP;
 	}
 	
+	/**
+	 * @param resourceType the resourceType to set
+	 */
+	public void setResourceType(final Class<? extends Resource> resourceType) {
+		this.resourceType = resourceType;
+	}
+	
+	/**
+	 * @param status the status to set
+	 */
 	public void setStatus(final ConceptStatus status) {
 		this.status = status;
 	}
 
+	/**
+	 * @param regex the regex to set
+	 */
 	public void setRegex(final String regex) {
 		this.regex = regex;
-	}	
-
+	}
+	
+	/**
+	 * @param tags the tags to set
+	 */
 	public void setTags(final List<String> tags) {
 		this.tags = tags;
-	}	
+	}
 }
