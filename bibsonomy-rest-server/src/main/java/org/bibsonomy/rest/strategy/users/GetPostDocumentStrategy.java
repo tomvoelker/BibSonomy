@@ -9,9 +9,8 @@ import java.io.IOException;
 
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
-import org.bibsonomy.common.enums.PreviewSize;
 
-import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -29,10 +28,9 @@ import org.bibsonomy.util.ValidationUtils;
 public class GetPostDocumentStrategy extends Strategy {
 	private static final FileTypeMap MIME_TYPES_FILE_TYPE_MAP = new MimetypesFileTypeMap();
 	
-	private final String userName;
 	private final Document document;
 	private final FileLogic fileLogic;
-    private final PreviewSize preview;
+	private final PreviewSize preview;
 
 	/**
 	 * @param context
@@ -42,7 +40,6 @@ public class GetPostDocumentStrategy extends Strategy {
 	 */
 	public GetPostDocumentStrategy(final Context context, final String userName, final String resourceHash, final String fileName) {
 		super(context);
-		this.userName = userName;
 		// request the document from the db
 		this.document = this.getLogic().getDocument(userName, resourceHash, fileName);
 		
@@ -81,9 +78,7 @@ public class GetPostDocumentStrategy extends Strategy {
 	
 	@Override
 	public void canAccess() {
-		if (!this.userName.equalsIgnoreCase(this.getLogic().getAuthenticatedUser().getName())) {
-			throw new AccessDeniedException();
-		}
+		// empty here, because logic.getDocument in constructor already throws AcessDeniedException if not allowed
 	}
 	
 	@Override
