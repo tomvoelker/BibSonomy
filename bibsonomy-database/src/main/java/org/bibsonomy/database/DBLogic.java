@@ -843,8 +843,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, this.loginUser);
-			return this.tagDBManager.getTagDetails(param, session);
+			return this.tagDBManager.getTagDetails(this.loginUser, tagName, session);
 		} finally {
 			session.close();
 		}
