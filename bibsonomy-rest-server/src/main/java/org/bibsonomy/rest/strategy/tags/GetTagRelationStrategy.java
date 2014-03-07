@@ -36,8 +36,7 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 	
     /**
      * Returns a list of tags according to the requested relation. If <tt>relation</tt>
-     * is something else than RELATED, SIMILAR, SUBTAGS, SUPERTAGS, all tags are
-     * returned.
+     * is something else than RELATED, SIMILAR, all tags are returned.
      * @return 
      */
 	@Override
