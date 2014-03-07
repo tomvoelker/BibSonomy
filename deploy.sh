@@ -1,9 +1,10 @@
+#!/bin/bash
+
 # TODO: 
 # * switch back emailwebmaster 
 # * switch on actual maven deployment
 # * switch on actual archiving
 
-#! /bin/bash
 
 # REGISTRATION
 # * register all projects in $webapp
@@ -11,10 +12,15 @@
 # ** as webapp specify the fitting webapp overlay
 # * currently most projects use tomcat6 for deployment with another tomcat register the version in $tomcat
 # * if you want the system to be build upon calling the "pumas" target, register it in the array $pumas
+# * if you want the system to archive its webapp register it as archivable
+# * if you want to disable mails and security questions before deployment register it in the array $unnoticed
 
 declare -A webapp
-# BibSonomy
+# Tests
 webapp[gromit]=bibsonomy-webapp
+webapp[puma_ks_dev]=bibsonomy-webapp
+
+# BibSonomy
 webapp[gandalf]=bibsonomy-webapp
 webapp[slave_kassel]=bibsonomy-webapp
 webapp[slave_wuerzburg]=bibsonomy-webapp
@@ -23,7 +29,7 @@ webapp[slave_hannover]=bibsonomy-webapp
 webapp[puma_sandbox]=bibsonomy-webapp
 # PUMA productive systems
 webapp[puma_ks_prod]=bibsonomy-webapp
-webapp[puma_ffm_prod]=bibsonomy-webapp-puma-frankfurt
+webapp[puma_ffm_prod]=bibsonomy-webapp-puma-frankfurt-main
 webapp[puma_mz_prod]=bibsonomy-webapp-puma-mainz
 webapp[puma_mr_prod]=bibsonomy-webapp-puma-marburg
 webapp[puma_da_prod]=bibsonomy-webapp-puma-darmstadt
@@ -34,6 +40,10 @@ tomcat[slave_hannover]=7
 
 declare -A archivable
 archivable[gandalf]=true
+
+declare -A unnoticed
+unnoticed[gromit]=true
+unnoticed[puma_ks_dev]=true
 
 pumas=(puma_ks_prod puma_ffm_prod puma_mz_prod puma_mr_prod puma_da_prod puma_gi_prod)
 
@@ -67,13 +77,14 @@ JAVA=${JAVA_HOME}bin/java
 # files
 TMPLOG=/tmp/deploy.log
 BODY_MAIL=/tmp/body.txt
-ARCHIVE=homes.cs.uni-kassel.de:~/archived_war_files
+ARCHIVE=homes.cs.uni-kassel.de:archived_war_files
+BIBSONOMY_PATH=`pwd`
 
 # the war files to be archived currently only for the bibsonomy-webapp
 WARPATTERN=target/bibsonomy-webapp-*.war
 
 # email addresses
-EMAILWEBMASTER=sdo@cs.uni-kassel.de
+EMAILWEBMASTER=webmaster@bibsonomy.org
 #EMAILWEBMASTER=webmaster@bibsonomy.org
 # the one which really gets the mail; pick one of the above
 RECIPIENT=${EMAILWEBMASTER}
@@ -98,11 +109,12 @@ help() {
 # Create an email for documentation purposes
 #
 document() {
+    if [ ! -z ${unnoticed[$targetProject]} ] && [ ${unnoticed[$targetProject]} = true ]; then return; fi
     rm -f ${TMPLOG}
     rm -f ${BODY_MAIL}
     read -p "Who are you? " WHO
     read -p "Why are you deploying to ${targetProject}? " WHY 
-    echo "### who: $WHO\n### why: $WHY\n\n" > ${BODY_MAIL}
+    echo -e "### who: $WHO\n### why: $WHY\n\n" > ${BODY_MAIL}
 }
 
 #
@@ -110,6 +122,7 @@ document() {
 # To be used when many systems are deployed at once
 #
 documentMany() {
+    if [ ! -z ${unnoticed[$targetProject]} ] && [ ${unnoticed[$targetProject]} = true ]; then return; fi
     document
     echo -e "Do you really want to consecutively deploy to the following systems:"    
     for i in ${pumas[*]}
@@ -117,7 +130,8 @@ documentMany() {
 	echo -e "* $i"
     done
     read -p "Deploy (YES/NO)? " DEPLOY_MANY
-    if [ "$DEPLOY_MANY" != "YES" ]; then echo "Deployment aborted."; exit; fi 
+    if [ "$DEPLOY_MANY" != "YES" ]; then echo "Deployment aborted."; exit; fi
+    echo -e "### what: ${pumas[*]} ###" >> ${BODY_MAIL}
 }
 
 
@@ -131,17 +145,18 @@ deploy() {
     if [ -z "$tomcatVersion" ]; then
 	tomcatVersion=$DEFAULT_TOMCAT_VERSION
     fi    
-    cd $webapp
+    cd $BIBSONOMY_PATH/$webapp
     clean
     echo -e "\nDeploying webapp $webapp to target $target ...";
-    echo -e "${MAVEN} -Dtomcat-server=${target} -Dmaven.test.skip tomcat${tomcatVersion}:redeploy | ${TEE} -a ${TMPLOG}"
+    ${MAVEN} -Dtomcat-server=${target} -Dmaven.test.skip tomcat${tomcatVersion}:redeploy | ${TEE} -a ${TMPLOG}
     echo "Done."
     if [ ! -z ${archivable[$target]} ] && [ ${archivable[$target]} = true ]; then archive; fi
-    cd ..
+    cd $BIBSONOMY_PATH
 }
 
 
 sendMail() {
+    if [ ! -z ${unnoticed[$targetProject]} ] && [ ${unnoticed[$targetProject]} = true ]; then return; fi
     echo -e "\nSending report mail ..."
     ${MAIL} -s "[BibSonomy-Deploy] make ${targetProject}" -a ${TMPLOG} -c ${CCRECIPIENTS} ${RECIPIENT} < ${BODY_MAIL}
     echo "Done."
@@ -155,10 +170,10 @@ clean() {
 }
 
 archive() {
-    for i in "${WARPATTERN}"; do
+    for i in `ls ${WARPATTERN}`; do
 	j=`echo $i | sed "s/.*\///"`; 
 	echo -e "\nArchiving $i in ${ARCHIVE}/${TODAY}_$j";
-	echo "scp $i ${ARCHIVE}/${TODAY}_$j"
+	scp $i "${ARCHIVE}/${TODAY}_$j"
     done
 }
 

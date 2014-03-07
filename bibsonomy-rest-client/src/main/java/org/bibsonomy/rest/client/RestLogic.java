@@ -182,7 +182,6 @@ public class RestLogic implements LogicInterface {
 
 	private <T> T execute(final AbstractQuery<T> query) {
 		try {
-			query.setApiURL(this.apiURL);
 			query.setRenderingFormat(this.renderingFormat);
 			query.setRendererFactory(this.rendererFactory);
 			query.execute(this.authUser.getName(), this.authUser.getApiKey(), this.accessor);
@@ -517,9 +516,9 @@ public class RestLogic implements LogicInterface {
 	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, final String tag) {
 		switch (relation) {
 		case FRIEND_OF:
-			return execute(new GetFriendsQuery(0, 100, sourceUser, RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION));
+			return execute(new GetFriendsQuery(sourceUser, RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION, 0, 100));
 		case OF_FRIEND:
-			return execute(new GetFriendsQuery(0, 100, sourceUser, RESTConfig.INCOMING_ATTRIBUTE_VALUE_RELATION));
+			return execute(new GetFriendsQuery(sourceUser, RESTConfig.INCOMING_ATTRIBUTE_VALUE_RELATION, 0, 100));
 		default:
 			throw new UnsupportedOperationException("The user relation " + relation + " is currently not supported.");
 		}
@@ -705,11 +704,6 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<Group> getPendingGroups(int start, int end) {
 		throw new UnsupportedOperationException();
 	}
 }

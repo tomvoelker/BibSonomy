@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -47,13 +48,20 @@ import org.springframework.validation.Errors;
  */
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(SettingsPageController.class);
-	
+
 	/** hold current errors */
 	protected Errors errors = null;
-	
+
 	protected OAuthLogic oauthLogic;
 	protected LogicInterface logic;
 	protected RequestLogic requestLogic;
+	/**
+	 * The List is used in a hack to protect certain oAuth Tokens from
+	 * deletions. Particulary, the oAuth-Tokens in PUMA are created
+	 * automatically to guarantee access from VuFind. The ConsumerKey of those
+	 * properties that are protected are configured in the project.properties.
+	 */
+	protected List<String> invisibleOAuthConsumers;
 
 	private CVWikiModel wikiRenderer;
 
@@ -66,15 +74,15 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
-		
+
 		/*
-		 * the user can only change his/her own settings, thus we take the 
-		 * loginUser 
+		 * the user can only change his/her own settings, thus we take the
+		 * loginUser
 		 */
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
 
-		// used to set the user specific value of maxCount/minFreq 
+		// used to set the user specific value of maxCount/minFreq
 		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 
 		// check whether the user is a group
@@ -82,39 +90,39 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 		}
-		
+
 		/*
 		 * get friends for sidebar
 		 */
 		final String loggedInUserName = command.getUser().getName();
-		command.setUserFriends(logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
-		command.setFriendsOfUser(logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
+		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
+		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 
 		// show sync tab only for non-spammers
 		command.showSyncTab(!loginUser.isSpammer());
 
 		switch (command.getSelTab()) {
-		case 0:	// profile tab
+		case 0: // profile tab
 			break;
-		case 1:	// setting tab
+		case 1: // setting tab
 			break;
-		case 2:	// import tab
-			checkInstalledJabrefLayout(command);
+		case 2: // import tab
+			this.checkInstalledJabrefLayout(command);
 			break;
-		case 3:	// group tab
-			workOnGroupTab(command);
+		case 3: // group tab
+			this.workOnGroupTab(command);
 			break;
-		case 4:	// sync tab
-			workOnSyncSettingsTab(command);
+		case 4: // sync tab
+			this.workOnSyncSettingsTab(command);
 			break;
 		case 5: // cv tab
-			workOnCVTab(command);
+			this.workOnCVTab(command);
 			break;
 		case 6: // OAuth tab
-			workOnOAuthTab(command);
-			break;	
+			this.workOnOAuthTab(command);
+			break;
 		default:
-			errors.reject("error.settings.tab");
+			this.errors.reject("error.settings.tab");
 			break;
 		}
 
@@ -128,9 +136,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	private void checkInstalledJabrefLayout(final SettingsViewCommand command) {
 		final String loggedInUserName = command.getContext().getLoginUser().getName();
-		/* 
-		 * set jabref layouts of the users
-		 * TODO: better solution?
+		/*
+		 * set jabref layouts of the users TODO: better solution?
 		 */
 		for (final LayoutPart layoutpart : LayoutPart.values()) {
 			final String fileHash = JabrefLayoutUtils.userLayoutHash(loggedInUserName, layoutpart);
@@ -139,8 +146,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			 */
 			final Document document = this.logic.getDocument(loggedInUserName, fileHash);
 			/*
-			 * if a document was found
-			 * set the corresponding hash and name of the file
+			 * if a document was found set the corresponding hash and name of
+			 * the file
 			 */
 			if (present(document)) {
 				switch (layoutpart) {
@@ -163,9 +170,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			}
 		}
 	}
-	
+
 	/**
-	 * function to get the OAuth User Information and store it in the SettingsViewCommand object
+	 * function to get the OAuth User Information and store it in the
+	 * SettingsViewCommand object
+	 * 
 	 * @param command
 	 */
 	private void workOnOAuthTab(final SettingsViewCommand command) {
@@ -174,36 +183,46 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 */
 		// TODO: extract to separate Controller?
 		if ("Delete".equals(command.getAction())) {
-			this.oauthLogic.removeSpecificAccessToken(command.getUser().getName(), command.getAccessTokenDelete());
+			final String accessTokenDelete = command.getAccessTokenDelete();
+			if (present(this.invisibleOAuthConsumers) && present(accessTokenDelete)) {
+				final List<OAuthUserInfo> oauthUserInfos = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
+				for (final Iterator<OAuthUserInfo> iterator = oauthUserInfos.iterator(); iterator.hasNext();) {
+					final OAuthUserInfo oAuthUserInfo = iterator.next();
+					if (accessTokenDelete.equals(oAuthUserInfo.getAccessToken()) && this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey())) {
+						throw new IllegalArgumentException("The access token " + accessTokenDelete + " can not be deleted.");
+					}
+				}
+			}
+			this.oauthLogic.removeSpecificAccessToken(command.getUser().getName(), accessTokenDelete);
 		}
 		/*
 		 * get the valid OAuth applications of the user
 		 */
-		final List<OAuthUserInfo> oauthUserInfo = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
-		
+		final List<OAuthUserInfo> oauthUserInfos = this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
+		if (present(this.invisibleOAuthConsumers)) {
+			for (final Iterator<OAuthUserInfo> iterator = oauthUserInfos.iterator(); iterator.hasNext();) {
+				final OAuthUserInfo oAuthUserInfo = iterator.next();
+				if (this.invisibleOAuthConsumers.contains(oAuthUserInfo.getConsumerKey())) {
+					iterator.remove();
+				}
+			}
+		}
 		/*
 		 * calculate the expiration time and issue time
 		 */
-		for (final OAuthUserInfo userInfo : oauthUserInfo) {
-			userInfo.calculateExpirationTime(); // TODO: can ibatis do that for us?
+		for (final OAuthUserInfo userInfo : oauthUserInfos) {
+			userInfo.calculateExpirationTime(); // TODO: can ibatis do that for
+												// us?
 		}
-		
-		command.setOauthUserInfo(oauthUserInfo);
+
+		command.setOauthUserInfo(oauthUserInfos);
 	}
-	
+
 	private void workOnGroupTab(final SettingsViewCommand command) {
 		// refresh the groups
 		for (Group group : command.getUser().getGroups()) {
 			// get the details and members
-			//final Group g = logic.getGroupDetails(group.getName());
 			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, group.getName(), null, null, null, null, null, 0, Integer.MAX_VALUE));
-			/*if (present(g)) {
-				g.setUsers();
-				// set the user specific settings
-				g.setUserSharedDocuments(group.isUserSharedDocuments());
-				g.setGroupRole(group.getGroupRole());
-				command.getGroups().add(g);
-			}*/
 		}
 		/*
 		final String groupName = command.getContext().getLoginUser().getName();
@@ -216,15 +235,15 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			 *
 			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, Integer.MAX_VALUE));
 			/*
-			 * FIXME: use the group in the command instead of 
-			 * this hand-written conversion
+			 * FIXME: use the group in the command instead of this hand-written
+			 * conversion
 			 *
 			command.setPrivlevel(group.getPrivlevel().ordinal());
-			
-			/* 
+
+			/*
 			 * TODO: use share docs directly
 			 *
-			int sharedDocsAsInt =  0;
+			int sharedDocsAsInt = 0;
 			if (group.isSharedDocuments()) {
 				sharedDocsAsInt = 1;
 			}
@@ -234,11 +253,12 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	/**
 	 * handles synchronization tab
+	 * 
 	 * @param command
 	 */
 	private void workOnSyncSettingsTab(final SettingsViewCommand command) {
-		final List<SyncService> userServers = logic.getSyncService(command.getUser().getName(), null, true);
-		final List<URI> allServers = logic.getSyncServices(true);
+		final List<SyncService> userServers = this.logic.getSyncService(command.getUser().getName(), null, true);
+		final List<URI> allServers = this.logic.getSyncServices(true);
 
 		/*
 		 * Remove all servers the user already has configured.
@@ -251,7 +271,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		command.setAvailableSyncServers(allServers);
 		command.setSyncServer(userServers);
-		command.setAvailableSyncClients(logic.getSyncServices(false));
+		command.setAvailableSyncClients(this.logic.getSyncServices(false));
 	}
 
 	/**
@@ -263,9 +283,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final User user = new User();
 		user.setSettings(new UserSettings());
 		command.setUser(user);
-		
+
 		/*
-		 * instantiate empty server user, this seems to be required since spring update
+		 * instantiate empty server user, this seems to be required since spring
+		 * update
 		 */
 		final Properties serverUser = new Properties();
 		serverUser.setProperty("userName", "");
@@ -273,7 +294,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final SyncService newSyncServer = new SyncService();
 		newSyncServer.setServerUser(serverUser);
 		command.setNewSyncServer(newSyncServer);
-		
+
 		return command;
 	}
 
@@ -288,14 +309,16 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	}
 
 	/**
-	 * @param logic the logic to set
+	 * @param logic
+	 *            the logic to set
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 
 	/**
-	 * @param requestLogic the requestLogic to set
+	 * @param requestLogic
+	 *            the requestLogic to set
 	 */
 	@Override
 	public void setRequestLogic(final RequestLogic requestLogic) {
@@ -311,23 +334,24 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			/*
 			 * check if the group is present. If it should be a user. If its no
 			 * user the we will catch the exception and return an error message
-			 * to the user
-			 s*/
+			 * to the user s
+			 */
 			if (present(requestedGroup)) {
-				handleGroupCV(requestedGroup, command);
+				this.handleGroupCV(requestedGroup, command);
 			} else {
-				handleUserCV(loginUser, command);
+				this.handleUserCV(loginUser, command);
 			}
-		} catch (RuntimeException e) {
-			//If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
+		} catch (final RuntimeException e) {
+			// If the name does not fit to anything a runtime exception is
+			// thrown while attempting to get the requestedUser
 			throw new MalformedURLSchemeException("Something went wrong! You are most likely looking for a non existant user/group.");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new MalformedURLSchemeException("Something went wrong while working on your request. Please try again.");
 		}
 	}
 
 	/**
-	 *Handles the group cv page request
+	 * Handles the group cv page request
 	 * 
 	 * @param reqGroup
 	 * @param command
@@ -338,7 +362,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 		final List<User> groupUsers = this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000);
 		requestedGroup.setUsers(groupUsers);
-		
+
 		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(groupName, null);
 		final String wikiText;
@@ -366,7 +390,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	private void handleUserCV(final User requestedUser, final SettingsViewCommand command) {
 		command.setUser(requestedUser);
 		final String userName = requestedUser.getName();
-		
+
 		/*
 		 * convert the wiki syntax
 		 */
@@ -383,24 +407,41 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * set the user to render
 		 */
-		this.wikiRenderer.setRequestedUser(requestedUser); // FME: not thread-safe!
+		this.wikiRenderer.setRequestedUser(requestedUser); // FME: not
+															// thread-safe!
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 	}
-	
+
 	/**
 	 * @param wikiRenderer
 	 *            the wikiRenderer to set
 	 */
 	@Required
-	public void setWikiRenderer(CVWikiModel wikiRenderer) {
+	public void setWikiRenderer(final CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
 	}
 
 	/**
-	 * @param oauthLogic the oauthLogic to set
+	 * @param oauthLogic
+	 *            the oauthLogic to set
 	 */
-	public void setOauthLogic(OAuthLogic oauthLogic) {
+	public void setOauthLogic(final OAuthLogic oauthLogic) {
 		this.oauthLogic = oauthLogic;
 	}
+
+	/**
+	 * @return
+	 */
+	public List<String> getInvisibleOAuthConsumers() {
+		return this.invisibleOAuthConsumers;
+	}
+
+	/**
+	 * @param invisibleOAuthConsumers
+	 */
+	public void setInvisibleOAuthConsumers(final List<String> invisibleOAuthConsumers) {
+		this.invisibleOAuthConsumers = invisibleOAuthConsumers;
+	}
+
 }

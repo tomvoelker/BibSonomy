@@ -41,6 +41,7 @@ import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -367,6 +368,7 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param fileName 
 	 * 
 	 * @return document
+	 * @throws AccessDeniedException if user is not allowed to access the requested document
 	 */
 	public Document getDocument(String userName, String resourceHash, String fileName);
 

@@ -362,7 +362,6 @@ CREATE TABLE `log_gold_standard` (
   `simhash1` char(32) NOT NULL default '',
   `simhash2` char(32) NOT NULL default '',
   `simhash3` char(32) NOT NULL default '',
-  `current_content_id` int(10) unsigned NOT NULL default '0',
   `new_content_id` int(10) unsigned NOT NULL default '0',
   `scraperid` int(11) NOT NULL default '-1',
   `change_date` datetime NOT NULL default '1815-12-10 00:00:00',
@@ -370,7 +369,8 @@ CREATE TABLE `log_gold_standard` (
   `privnote` text,
   `new_simhash1` char(32) NOT NULL default '',
   `content_type` tinyint(1) unsigned default NULL,
-  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `current_content_id` int(10) unsigned NOT NULL default '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -766,13 +766,13 @@ CREATE TABLE `log_bibtex` (
   `simhash1` char(32) NOT NULL default '',
   `simhash2` char(32) NOT NULL default '',
   `simhash3` char(32) NOT NULL default '',
-  `current_content_id` int(10) unsigned NOT NULL default '0',
   `new_content_id` int(10) unsigned NOT NULL default '0',
   `scraperid` int(11) NOT NULL default '-1',
   `change_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `rating` tinyint(3) NOT NULL default '0',
   `privnote` text,
   `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `current_content_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -819,11 +819,11 @@ CREATE TABLE `log_bookmark` (
   `group` int(10) default '0',
   `date` datetime NOT NULL default '1815-12-10 00:00:00',
   `user_name` varchar(30) NOT NULL default '',
-  `current_content_id` int(10) unsigned NOT NULL default '0',
   `new_content_id` int(10) unsigned NOT NULL default '0',
   `change_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `rating` tinyint(3) NOT NULL default '0',
   `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `current_content_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;

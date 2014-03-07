@@ -23,9 +23,9 @@
 
 package org.bibsonomy.rest.client.queries;
 
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 
 /**
@@ -34,7 +34,15 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 public class CheckLoginQuery extends AbstractQuery<String> {
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		return performRequest(HttpMethod.HEAD, RESTConfig.GROUPS_URL, null).toString();
+	protected void doExecute() throws ErrorPerformingRequestException {
+		this.downloadedDocument = performRequest(HttpMethod.HEAD, this.getUrlRenderer().createHrefForGroups(), null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
+	 */
+	@Override
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		return this.downloadedDocument.toString();
 	}
 }

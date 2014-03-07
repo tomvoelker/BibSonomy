@@ -39,7 +39,7 @@ public class FileUtilTest {
 	 */
 	@Test
 	public void getFilePath() {
-		if (new File("/tmp/").exists() == false) {
+		if (new File("/tmp/").getAbsolutePath().equals("C:\\tmp")) {
 			System.err.println("test skipped");
 			return;
 		}

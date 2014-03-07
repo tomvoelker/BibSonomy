@@ -40,7 +40,7 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 	 *            the database session
 	 * @return the number of entries currently stored in the basket
 	 */
-	public int getNumBasketEntries(final String username, final DBSession session) {
+	public int getNumberOfBasketEntries(final String username, final DBSession session) {
 		return this.queryForObject("getNumBasketEntries", username, Integer.class, session);
 	}
 	

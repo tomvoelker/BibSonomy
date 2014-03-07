@@ -191,23 +191,7 @@
 								<c:set var="externalQueryString"
 									value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
 
-								<!-- persons involved in the publication -->
-								<c:choose>
-									<c:when test="${not empty publication.author}">
-										<c:set var="personList" value="${publication.author}" />
-										<c:set var="authorEditor" value="author" />
-									</c:when>
-									<c:when test="${not empty publication.editor}">
-										<c:set var="personList" value="${publication.editor}" />
-										<c:set var="authorEditor" value="editor" />
-									</c:when>
-								</c:choose>
-
-								<!-- include the last name of the first person -->
-								<c:set var="externalQueryString"
-									value="${externalQueryString}, ${fn:escapeXml(mtl:cleanBibtex(personList[0].lastName))}" />
-
-
+							
 								<!-- build the urls -->
 								<c:url var="googleScholarPostUrl"
 									value="http://scholar.google.com/scholar">
@@ -225,11 +209,6 @@
 									<c:param name="q" value="${externalQueryString}" />
 								</c:url>
 
-								<c:url var="dblpUrl"
-									value="http://dblp.kbs.uni-hannover.de/dblp/Search.action">
-									<c:param name="q" value="${externalQueryString}" />
-								</c:url>
-
 								<!-- build the dropdown menu -->
 								<tr>
 									<td colspan="2"><select name="dropDownExternal"
@@ -240,9 +219,8 @@
 											<option value="${googleScholarPostUrl}">Google
 												Scholar</option>
 											<option value="${microsoftAcademicUrl}">Microsoft
-												Academic</option>
-											<option value="${worldCatUrl}">World Cat</option>
-											<option value="${dblpUrl}">DBLP</option>
+												Academic Search</option>
+											<option value="${worldCatUrl}">WorldCat</option>
 									</select></td>
 									<td><fmt:message var="goMsg"
 											key="resources.searchExternal.go" /> <input type="button"
@@ -250,24 +228,6 @@
 								</tr>
 							</table>
 						</form>
-
-						<!--invoked by the button -->
-						<script type="text/javascript">
-							//<mtl:cdata>
-							<![CDATA[
-							function loadSelectedPage() {
-								var dropDownExternalMenu = document
-										.getElementById('dropDownExternal');
-								var index = dropDownExternalMenu.selectedIndex;
-
-								if (index != 0) {
-									window
-											.open(dropDownExternalMenu.options[index].value);
-								}
-							}
-							]]>
-							//</mtl:cdata>
-						</script>
 						
 						<!--+
 							| discussion and rating

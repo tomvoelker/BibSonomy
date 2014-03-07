@@ -6,7 +6,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.42-SNAPSHOT</version>
+	<version>2.0.43-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -370,7 +370,7 @@
 			</activation>
 			<properties>
 				<maven.tomcat.server>tomcat_gromit</maven.tomcat.server>
-				<maven.tomcat.url>http://gromit.cs.uni-kassel.de:8080/manager</maven.tomcat.url>
+				<maven.tomcat.url>http://gromit.cs.uni-kassel.de:8080/manager/text</maven.tomcat.url>
 			</properties>
 		</profile>
 		<profile>

@@ -39,18 +39,21 @@ import org.bibsonomy.rest.utils.HeaderUtils;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @param <M> the http method used by the http worker
+  * @param <M> the http method used by the http worker
  */
 public abstract class HttpWorker<M extends HttpMethod> {
-
+	/** the logger for all workers */
 	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class.getName());
 	
-	
 	private final HttpClient httpClient;
+	/** the http result code of the worker */
 	protected int httpResult;
 
+	/** the name of the user to use */
 	protected final String username;
+	/** the api key of the user */
 	protected final String apiKey;
+	/** the authenication accessor to use */
 	protected final AuthenticationAccessor accessor;
 	
 	private RenderingFormat renderingFormat;
@@ -58,6 +61,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 	/**
 	 * @param username the username
 	 * @param apiKey the apikey
+	 * @param accessor the accessor to use (e.g. OAuthAccessor)
 	 */
 	public HttpWorker(final String username, final String apiKey, final AuthenticationAccessor accessor) {
 		this.username = username;
@@ -123,7 +127,12 @@ public abstract class HttpWorker<M extends HttpMethod> {
 			method.releaseConnection();
 		}
 	}
-
+	
+	/**
+	 * @param url
+	 * @param requestBody
+	 * @return the {@link HttpMethod} the worker works on
+	 */
 	protected abstract M getMethod(final String url, final String requestBody);
 	
 	/**

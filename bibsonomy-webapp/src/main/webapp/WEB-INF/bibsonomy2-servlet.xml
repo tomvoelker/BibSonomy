@@ -673,7 +673,8 @@
 		<property name="logic" ref="logic"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="wikiRenderer" ref="wikiRenderer" />
-		<property name="oauthLogic" ref="oauthLogic"/>		
+		<property name="oauthLogic" ref="oauthLogic"/>
+		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>		
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
