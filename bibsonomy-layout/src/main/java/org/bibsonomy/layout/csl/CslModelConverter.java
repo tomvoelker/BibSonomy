@@ -101,6 +101,7 @@ public class CslModelConverter {
         typemap.put(BibTexUtils.STANDARD, "legislation");
 
         typemap.put(BibTexUtils.UNPUBLISHED, "manuscript");
+        typemap.put(BibTexUtils.PREPRINT, "manuscript");
     }
 
     /**
