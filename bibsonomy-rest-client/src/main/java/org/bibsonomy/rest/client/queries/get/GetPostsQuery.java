@@ -103,7 +103,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 			this.grouping = grouping;
 			return;
 		}
-		if (groupingValue == null || groupingValue.length() == 0) {
+		if (!present(groupingValue)) {
 			throw new IllegalArgumentException("no grouping value given");
 		}
 
