@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -15,9 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -29,7 +26,6 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -544,8 +540,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return the tag's details, null else
 	 */
-	public Tag getTagDetails(final String tagName, final User loginUser, final DBSession session) {
-        final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, loginUser);
+	public Tag getTagDetails(final TagParam param, final DBSession session) {
 		param.setCaseSensitiveTagNames(true);
 
 		final Tag tag = this.getTagByName(param, session);
@@ -556,16 +551,25 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setLimit(10000);
 		param.setOffset(0);
 
-		if (present(tag)) {
-    		// check for sub-/supertags
-            final List<Tag> subTags = this.getSubtagsOfTag(param, session);
-            tag.setSubTags(setUsercountToGlobalCount(subTags));
-            final List<Tag> superTags = this.getSupertagsOfTag(param, session);
-            tag.setSuperTags(setUsercountToGlobalCount(superTags));
+		// check for sub-/supertags
+		if (param.getNumSimpleConcepts() > 0) {
+			final List<Tag> subTags = this.getSubtagsOfTag(param, session);
+			tag.setSubTags(setUsercountToGlobalCount(subTags));
+		}
+		if (param.getNumSimpleConceptsWithParent() > 0) {
+			final List<Tag> superTags = this.getSupertagsOfTag(param, session);
+			tag.setSuperTags(setUsercountToGlobalCount(superTags));
+		}
+		if (param.getNumCorrelatedConcepts() > 0) {
+			final List<Tag> subTags = this.getSubtagsOfTag(param, session);
+			tag.setSubTags(setUsercountToGlobalCount(subTags));
+			final List<Tag> superTags = this.getSupertagsOfTag(param, session);
+			tag.setSuperTags(setUsercountToGlobalCount(superTags));
+		}
 
-            
 		// XXX: this is just a hack as long as we don't supply separate user
 		// counts for each tag, DB
+		if (present(tag)) {
 			tag.setUsercount(tag.getGlobalcount());
 		}
 
@@ -758,15 +762,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getTags(final User loginUser, final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tagList, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end, final DBSession session) {
-        final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, grouping, groupingName, tagList, hash, order, start, end, startDate, endDate, search, null, loginUser);
-        param.setTagRelationType(relation);
-        // this is save because of RTTI-check of resourceType argument
-        // which is of class T
-        param.setRegex(regex);
-        // need to switch from class to string to ensure legibility of
-        // Tags.xml
-        param.setContentTypeByClass(resourceType);
+	public List<Tag> getTags(final TagParam param, final DBSession session) {
 		final List<Tag> tags = chain.perform(param, session);
 		SystemTagsExtractor.removeHiddenSystemTags(tags);
 		return this.setUsercountToGlobalCount(tags);
