@@ -158,9 +158,6 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 
 	@Override
 	public List<Post<? extends Resource>> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) {
-			throw new IllegalStateException("Execute the query first.");
-		}
 		try {
 			return this.getRenderer().parsePostList(this.downloadedDocument, NoDataAccessor.getInstance());
 		} catch (final InternServerException ex) {
