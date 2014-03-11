@@ -22,7 +22,7 @@ public class JabrefLayoutRendererTest {
 
 	@Before
 	public void setUp() {
-		renderer = new JabrefLayoutRenderer(new URLGenerator("http://www.bibsonomy.org/"));
+		renderer = new JabrefLayoutRenderer(new URLGenerator("http://www.bibsonomy.org/"),JabrefLayoutRenderer.LAYOUT_SIMPLEHTML);
 	}
 
 	@Test

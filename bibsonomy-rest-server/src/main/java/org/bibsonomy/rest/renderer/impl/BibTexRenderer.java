@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -24,48 +22,20 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationPost;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.data.DataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.services.URLGenerator;
 
 /**
- * @author rja
+ * Simple Renderer for BibTex-Format
+ *
+ * @author MarcelM
  */
-public class JabrefLayoutRenderer implements Renderer {
+public class BibTexRenderer implements Renderer{
 	
-	public static final String LAYOUT_SIMPLEHTML = "simplehtml";
 	
-	private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
-	/*
-	 * FIXME: proper initialization!
-	 * (e.g., missing UrlGenerator)
-	 */
-	private final org.bibsonomy.layout.jabref.JabrefLayoutRenderer renderer; 
-	
-	private final JabrefLayout layout;
-	
-	/**
-	 * @param urlGenerator - the class to generate proper URLs
-	 * @param layout - the jabrefLayout used by the renderer
-	 */
-	public JabrefLayoutRenderer(final URLGenerator urlGenerator, final String layout) {
-		super();
-		this.renderer = new org.bibsonomy.layout.jabref.JabrefLayoutRenderer();
-		this.renderer.setUrlGenerator(urlGenerator);
-		
-		try {
-			this.layout = this.renderer.getLayout(layout, null);
-		} catch (LayoutRenderingException ex) {
-			log.error(ex);
-			throw new InternServerException(ex);
-		} catch (IOException ex) {
-			log.error(ex);
-			throw new InternServerException(ex);
-		}
-	}
-
 	@Override
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
@@ -191,14 +161,24 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
-		final boolean embeddedLayout = true;
-		try {
-			writer.append(renderer.renderLayout(layout, posts, embeddedLayout));
-			writer.flush();
-		} catch (final LayoutRenderingException ex) {
-			throw new InternServerException(ex);
-		} catch (final IOException ex) {
-			throw new InternServerException(ex);
+		for (Post<? extends Resource> post : posts) {
+			//Check if the resource of post is of type BibTex
+			if (post.getResource() instanceof BibTex) {
+				@SuppressWarnings("unchecked")
+				Post<BibTex> bibtex = (Post<BibTex>)post;
+				try {
+					writer.append(BibTexUtils.toBibtexString(bibtex));
+					writer.flush();
+				}  catch (final LayoutRenderingException ex) {
+					throw new InternServerException(ex);
+				} catch (final IOException ex) {
+					throw new InternServerException(ex);
+				}
+			}
+			else {
+				//FIXME : throw Proper Exception
+				throw new UnsupportedOperationException();
+			}
 		}
 	}
 	
@@ -301,7 +281,5 @@ public class JabrefLayoutRenderer implements Renderer {
 	public RecommendedPost<? extends Resource> parseRecommendedItem(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
-
-	
 
 }

@@ -68,7 +68,17 @@ public class RenderingFormat {
 	 * pdf format for documents
 	 */
 	public static final RenderingFormat PDF = new RenderingFormat("application", "pdf");
-
+	
+	/**
+	 * bibtex format
+	 */
+	public static final RenderingFormat BIBTEX = new RenderingFormat("text", "bibtex");
+	
+	/**
+	 * endnote format
+	 */
+	public static final RenderingFormat ENDNOTE = new RenderingFormat("text", "endnote");
+	
 	/**
 	 * @param string
 	 *            like <CODE>application/json</CODE> or
@@ -122,6 +132,14 @@ public class RenderingFormat {
 
 		if ("csl".equals(format)) {
 			return CSL;
+		}
+		
+		if ("bibtex".equals(format)) {
+			return BIBTEX;
+		}
+		
+		if ("endnote".equals(format)) {
+			return ENDNOTE;
 		}
 
 		return null;
