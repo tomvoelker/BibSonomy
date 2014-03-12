@@ -27,11 +27,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -90,6 +88,7 @@ public interface Renderer {
 	 *            a {@link Writer} to use.
 	 * @param posts
 	 *            a list of {@link RecommendedPost} objects.
+	 * @param viewModel 
 	 * @param model
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
@@ -102,6 +101,7 @@ public interface Renderer {
 	 *            a {@link Writer} to use.
 	 * @param post
 	 *            one {@link RecommendedPost} object.
+	 * @param viewModel 
 	 * @param model
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
@@ -303,7 +303,7 @@ public interface Renderer {
 	 * Reads list of synchronization posts
 	 * @param reader
 	 * @return
-	 * @throws BadRequestOrResponseException TODO
+	 * @throws BadRequestOrResponseException
 	 */
 	public List<SynchronizationPost> parseSynchronizationPostList(Reader reader) throws BadRequestOrResponseException;
 
@@ -389,6 +389,7 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 *            the {@link Reader} to use.
+	 * @param uploadedFileAcessor 
 	 * @return a {@link List} of {@link Post} objects.
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
@@ -400,6 +401,7 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 *            the {@link Reader} to use.
+	 * @param uploadedFileAcessor 
 	 * @return a {@link List} of {@link RecommendedPost} objects
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
@@ -423,6 +425,7 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 *            the {@link Reader} to use.
+	 * @param uploadedFileAccessor 
 	 * @return one {@link RecommendedPost} object
 	 * @throws BadRequestOrResponseException
 	 *             if the document within the reader is errorenous.
@@ -434,6 +437,7 @@ public interface Renderer {
 	 * 
 	 * @param reader
 	 * 			  the {@link Reader} to use.
+	 * @param uploadFileAccessor 
 	 * @param uploadedFileAccessor provides access to referenced attachments in the read data
 	 * @return one {@link Document} object
 	 * @throws BadRequestOrResponseException
