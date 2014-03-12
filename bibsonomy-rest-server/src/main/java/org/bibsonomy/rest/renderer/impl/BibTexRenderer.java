@@ -21,8 +21,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
  * @author MarcelM
  */
 public class BibTexRenderer extends AbstractPostExportRenderer {
-	
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.AbstractPostExportRenderer#getFormat()
 	 */
@@ -50,7 +49,7 @@ public class BibTexRenderer extends AbstractPostExportRenderer {
 				Post<BibTex> bibtex = (Post<BibTex>)post;
 				try {
 					writer.append(BibTexUtils.toBibtexString(bibtex));
-					writer.append("\n"); // add a new line between each post
+					writer.append(NEW_LINE); // add a new line between each post
 					writer.flush();
 				} catch (final LayoutRenderingException ex) {
 					throw new InternServerException(ex);

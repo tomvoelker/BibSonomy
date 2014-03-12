@@ -28,6 +28,8 @@ import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
  * @author dzo
  */
 public abstract class AbstractPostExportRenderer implements Renderer {
+	/** the new line charater */
+	protected static final char NEW_LINE = '\n';
 	
 	/**
 	 * @return the format this PostExportRenderer renders

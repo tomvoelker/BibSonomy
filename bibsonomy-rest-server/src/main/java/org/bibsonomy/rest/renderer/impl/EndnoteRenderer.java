@@ -49,6 +49,7 @@ public class EndnoteRenderer extends AbstractPostExportRenderer {
 				Post<BibTex> bibtex = (Post<BibTex>)post;
 				try {
 					writer.append(EndnoteUtils.toEndnoteString(bibtex,true));
+					writer.append(NEW_LINE);
 					writer.flush();
 				}  catch (final LayoutRenderingException ex) {
 					throw new InternServerException(ex);
