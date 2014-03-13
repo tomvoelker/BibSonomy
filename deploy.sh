@@ -21,7 +21,7 @@ webapp[gromit]=bibsonomy-webapp
 # PUMA test systems
 webapp[puma_ks_dev]=bibsonomy-webapp
 webapp[puma_ffm_rc]=bibsonomy-webapp-puma-frankfurt-main
-webapp[puma_s_dev]=bibsonomy-webapp
+webapp[puma_s_dev]=bibsonomy-webapp-puma-stuttgart
 
 # BibSonomy
 webapp[gandalf]=bibsonomy-webapp
@@ -29,7 +29,7 @@ webapp[slave_kassel]=bibsonomy-webapp
 webapp[slave_wuerzburg]=bibsonomy-webapp
 webapp[slave_hannover]=bibsonomy-webapp
 # PUMA sandbox
-webapp[puma_sandbox]=bibsonomy-webapp
+webapp[puma_sandbox]=bibsonomy-webapp-puma-sandbox
 # PUMA productive systems
 webapp[puma_ks_prod]=bibsonomy-webapp
 webapp[puma_ffm_prod]=bibsonomy-webapp-puma-frankfurt-main
