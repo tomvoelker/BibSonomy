@@ -1,11 +1,11 @@
 //methods for editPublication page
 //setup jQuery to update recommender with form data
 var tagRecoOptions = { 
-		dataType: "xml",
-		url:  '/ajax/getPublicationRecommendedTags',
+		dataType: "application/json",
+		url:  '/ajax/getPublicationRecommendedTags?',
 		success: function showResponse(responseText, statusText) { 
-	handleRecommendedTags(responseText);
-} 
+	        handleRecommendedTags(JSON.parse(responseText));
+        } 
 }; 
 
 var hide = true;
