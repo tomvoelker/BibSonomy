@@ -177,37 +177,17 @@
 								 		<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
 								 	</td>
 								</tr>
-							</table>
-						</div>
-						
+														
 						<!--+ 
 				 			|
 				 			| dropdown menu from which you can pick an external literature site and try to find the publication there
 				 			|
 				 			+-->
-						<form>
-							<table>
 								<!-- the string you would usually enter in google scholar, world cat etc. -->
 								<c:set var="externalQueryString"
 									value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
 
-								<!-- persons involved in the publication -->
-								<c:choose>
-									<c:when test="${not empty publication.author}">
-										<c:set var="personList" value="${publication.author}" />
-										<c:set var="authorEditor" value="author" />
-									</c:when>
-									<c:when test="${not empty publication.editor}">
-										<c:set var="personList" value="${publication.editor}" />
-										<c:set var="authorEditor" value="editor" />
-									</c:when>
-								</c:choose>
-
-								<!-- include the last name of the first person -->
-								<c:set var="externalQueryString"
-									value="${externalQueryString}, ${fn:escapeXml(mtl:cleanBibtex(personList[0].lastName))}" />
-
-
+							
 								<!-- build the urls -->
 								<c:url var="googleScholarPostUrl"
 									value="http://scholar.google.com/scholar">
@@ -225,31 +205,21 @@
 									<c:param name="q" value="${externalQueryString}" />
 								</c:url>
 
-								<c:url var="dblpUrl"
-									value="http://dblp.kbs.uni-hannover.de/dblp/Search.action">
-									<c:param name="q" value="${externalQueryString}" />
-								</c:url>
-
 								<!-- build the dropdown menu -->
 								<tr>
-									<td colspan="2"><select name="dropDownExternal"
-										id="dropDownExternal" style="font-size: 8pt">
-											<option value="" selected="selected">
-												<fmt:message key="resources.searchExternal.dropDownTitle" />
-											</option>
+									<td><fmt:message key="resources.searchExternal.dropDownLabel" />:</td>
+									<td><select name="dropDownExternal"
+										id="dropDownExternal" style="font-size: 8pt" onchange="javascript: return loadSelectedPage()">
+											<option selected="selected">---<fmt:message key="resources.searchExternal.dropDownTitle" />---</option>
 											<option value="${googleScholarPostUrl}">Google
 												Scholar</option>
 											<option value="${microsoftAcademicUrl}">Microsoft
-												Academic</option>
-											<option value="${worldCatUrl}">World Cat</option>
-											<option value="${dblpUrl}">DBLP</option>
+												Academic Search</option>
+											<option value="${worldCatUrl}">WorldCat</option>
 									</select></td>
-									<td><fmt:message var="goMsg"
-											key="resources.searchExternal.go" /> <input type="button"
-										value="${goMsg}" onclick="javascript: return loadSelectedPage()" /></td>
 								</tr>
 							</table>
-						</form>
+						</div>
 						
 						<!--+
 							| discussion and rating

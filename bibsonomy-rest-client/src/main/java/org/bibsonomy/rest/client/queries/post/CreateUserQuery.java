@@ -28,7 +28,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -61,17 +60,17 @@ public final class CreateUserQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeUser(sw, this.user, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, RESTConfig.USERS_URL, StringUtils.toDefaultCharset(sw.toString()));
-		return null;
+		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().createHrefForUsers(), StringUtils.toDefaultCharset(sw.toString()));
 	}
 	
 	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return this.getRenderer().parseUserId(this.downloadedDocument); 
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
+			return this.getRenderer().parseUserId(this.downloadedDocument);
+		}
 		return this.getError();
-	}	
+	}
 }

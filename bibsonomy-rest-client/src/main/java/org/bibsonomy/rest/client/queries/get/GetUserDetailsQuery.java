@@ -29,7 +29,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * Use this Class to receive details about an user of bibsonomy.
@@ -50,19 +49,16 @@ public final class GetUserDetailsQuery extends AbstractQuery<User> {
 	 */
 	public GetUserDetailsQuery(final String username) throws IllegalArgumentException {
 		if (!present(username)) throw new IllegalArgumentException("no username given");
-
 		this.username = username;
 	}
 
 	@Override
-	public User getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected User getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parseUser(this.downloadedDocument);
 	}
 
 	@Override
-	protected User doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performGetRequest((new UrlRenderer("").createHrefForUser(this.username)));
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		this.downloadedDocument = performGetRequest(this.getUrlRenderer().createHrefForUser(this.username));
 	}
 }

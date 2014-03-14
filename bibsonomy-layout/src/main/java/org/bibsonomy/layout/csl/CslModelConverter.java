@@ -123,7 +123,7 @@ public class CslModelConverter {
 		// id
 		rec.setId(createId(post));
 		// type
-		rec.setType(mapToCslType(bib.getType()));
+		rec.setType(mapToCslType(bib.getEntrytype()));
 
 		// mapping address
 		rec.setEvent_place(cleanBibTex(bib.getAddress()));

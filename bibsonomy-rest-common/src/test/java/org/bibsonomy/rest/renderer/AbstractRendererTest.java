@@ -58,8 +58,8 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
-import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.data.NoDataAccessor;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.xml.BibsonomyXML;
@@ -389,7 +389,7 @@ public abstract class AbstractRendererTest {
 			// fail("exception should have been thrown: no start-/end-values given");
 		} catch (final InternServerException e) {
 		}
-		catch (final BadRequestOrResponseException e) {			
+		catch (final BadRequestOrResponseException e) {
 		}
 
 		// empty list

@@ -23,44 +23,48 @@
 
 package org.bibsonomy.rest.client.queries.delete;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.util.Date;
 
+import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.rest.client.AbstractSyncQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.rest.utils.RestSyncUtils;
-import org.bibsonomy.util.UrlUtils;
 
 /**
  * @author wla
- */
-/**
- * @author wla
- *
  */
 public class DeleteSyncDataQuery extends AbstractSyncQuery<String> {
 
-	final Date syncDate;
+	private final Date syncDate;
 	
+	/**
+	 * @param serviceURI
+	 * @param resourceType
+	 * @param syncDate
+	 * @param strategy
+	 * @param direction
+	 */
 	public DeleteSyncDataQuery(final String serviceURI, final Class<? extends Resource> resourceType, final Date syncDate, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		super(serviceURI, resourceType, strategy, direction);
 		this.syncDate = syncDate;
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		String url = getSyncURL();
-		
-		if (present(syncDate)) {
-			url = UrlUtils.setParam(url, "date", UrlUtils.safeURIEncode(RestSyncUtils.serializeDate(syncDate)));
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String url = this.getUrlRenderer().createHrefForSync(this.serviceURI, this.resourceType, this.strategy, this.direction, this.syncDate, null);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, url, "");
+	}
+	
+	@Override
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
+			return Status.OK.getMessage();
 		}
-		performRequest(HttpMethod.DELETE, url, "");
-		return null;
+		return this.getError();
 	}
 
 }

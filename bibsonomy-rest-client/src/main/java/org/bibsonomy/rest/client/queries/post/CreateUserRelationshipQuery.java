@@ -31,6 +31,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.StringUtils;
 
@@ -86,21 +87,31 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		/*
 		 * create body of request
 		 */
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeUser(sw, new User(this.targetUserName), null);
-		/*
+		/* 
+		 * TODO: move url generation to url renderer
 		 * friend/follower, tag
 		 */
 		final String friendOrFollower = FRIEND_RELATIONSHIP.equals(relationType) ? RESTConfig.FRIENDS_SUB_PATH : RESTConfig.FOLLOWERS_SUB_PATH;
-		final String queryTag = present(this.tag) ? "/"+tag : "";
+		final String queryTag = present(this.tag) ? "/" + tag : "";
 		/*
 		 * perform request
 		 */
-		this.downloadedDocument = performRequest(HttpMethod.POST, RESTConfig.USERS_URL + "/" + this.username + "/" + friendOrFollower + queryTag, StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
+		// FIXME: document why we call StringUtils.toDefaultCharset twice
+		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().getApiUrl() + RESTConfig.USERS_URL + "/" + this.username + "/" + friendOrFollower + queryTag, StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
+	 */
+	@Override
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

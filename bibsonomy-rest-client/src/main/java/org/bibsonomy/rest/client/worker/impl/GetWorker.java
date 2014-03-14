@@ -35,8 +35,6 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -47,14 +45,14 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public final class GetWorker extends HttpWorker<GetMethod> {
-
-	protected static final Log log = LogFactory.getLog(GetWorker.class);
+	
 	private final ProgressCallback callback;
 
 	/**
 	 * 
 	 * @param username	the username
 	 * @param password	the password (apiKey)
+	 * @param accessor	the accessor
 	 * @param callback	the callback
 	 */
 	public GetWorker(final String username, final String password, final AuthenticationAccessor accessor, final ProgressCallback callback) {
@@ -119,7 +117,7 @@ public final class GetWorker extends HttpWorker<GetMethod> {
 			this.httpResult = getHttpClient().executeMethod(get);
 			LOGGER.debug("HTTP result: " + this.httpResult);
 			LOGGER.debug("Content-Type:" + get.getRequestHeaders("Content-Type"));
-			LOGGER.debug("===================================================");			
+			LOGGER.debug("===================================================");
 			final InputStream in = get.getResponseBodyAsStream();
 			
 			/*
