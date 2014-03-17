@@ -10,100 +10,100 @@
 		
 	<!-- Required -->
 	<c:if test="${mtl:cleanBibtex(publication.resource.entrytype) != mtl:cleanBibtex(newestPub.resource.entrytype)}">
-		<em><c:out value="entrytype" />,<c:out value=" "/></em>
+		<em><c:out value="entrytype: " />${mtl:compareString(publication.resource.entrytype, newestPub.resource.entrytype)},</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.title) != mtl:cleanBibtex(newestPub.resource.title)}">
-		<em><c:out value="title" />,<c:out value=" "/></em>
+		<em><c:out value="title: " />${mtl:compareString(publication.resource.title, newestPub.resource.title) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.author) != mtl:cleanBibtex(newestPub.resource.author)}">
-		<em><c:out value="author" />,<c:out value=" "/></em>
+		<em><c:out value="author: " />${mtl:compareString(publication.resource.author, newestPub.resource.author) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.editor) != mtl:cleanBibtex(newestPub.resource.editor)}">
-		<em><c:out value="editor" />,<c:out value=" "/></em>
+		<em><c:out value="editor: " />${mtl:compareString(publication.resource.editor, newestPub.resource.editor) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.year) != mtl:cleanBibtex(newestPub.resource.year)}">
-		<em><c:out value="year" />,<c:out value=" "/></em>
+		<em><c:out value="year: " />${mtl:compareString(publication.resource.year, newestPub.resource.year) },</em>
 	</c:if>
 	
 	<!-- Details -->
 	<c:if test="${mtl:cleanBibtex(publication.resource.booktitle) != mtl:cleanBibtex(newestPub.resource.booktitle)}">
-		<em><c:out value="booktitle" />,<c:out value=" "/></em>
+		<em><c:out value="booktitle: " />${mtl:compareString(publication.resource.booktitle, newestPub.resource.booktitle) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.journal) != mtl:cleanBibtex(newestPub.resource.journal)}">
-		<em><c:out value="journal" />,<c:out value=" "/></em>
+		<em><c:out value="journal: " />${mtl:compareString(publication.resource.journal, newestPub.resource.journal) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.volume) != mtl:cleanBibtex(newestPub.resource.volume)}">
-		<em><c:out value="volume" />,<c:out value=" "/></em>
+		<em><c:out value="volume:" />${mtl:compareString(publication.resource.volume, newestPub.resource.volume) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.number) != mtl:cleanBibtex(newestPub.resource.number)}">
-		<em><c:out value="number" />,<c:out value=" "/></em>
+		<em><c:out value="number: " />${mtl:compareString(publication.resource.number, newestPub.resource.number) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.pages) != mtl:cleanBibtex(newestPub.resource.pages)}">
-		<em><c:out value="pages" />,<c:out value=" "/></em>
+		<em><c:out value="pages: " />${mtl:compareString(publication.resource.pages, newestPub.resource.pages) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.month) != mtl:cleanBibtex(newestPub.resource.month)}">
-		<em><c:out value="month" />,<c:out value=" "/></em>
+		<em><c:out value="month: " />${mtl:compareString(publication.resource.month, newestPub.resource.month) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.day) != mtl:cleanBibtex(newestPub.resource.day)}">
-		<em><c:out value="day" />,<c:out value=" "/></em>
+		<em><c:out value="day:" />${mtl:compareString(publication.resource.day, newestPub.resource.day) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.publisher) != mtl:cleanBibtex(newestPub.resource.publisher)}">
-		<em><c:out value="publisher" />,<c:out value=" "/></em>
+		<em><c:out value="publisher:" />${mtl:compareString(publication.resource.publisher, newestPub.resource.publisher) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.address) != mtl:cleanBibtex(newestPub.resource.address)}">
-		<em><c:out value="address" />,<c:out value=" "/></em>
+		<em><c:out value="address: " />${mtl:compareString(publication.resource.address, newestPub.resource.address) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.edition) != mtl:cleanBibtex(newestPub.resource.edition)}">
-		<em><c:out value="edition" />,<c:out value=" "/></em>
+		<em><c:out value="edition: " />${mtl:compareString(publication.resource.edition, newestPub.resource.edition) },</em>
 	</c:if>
-	<c:if test="${mtl:cleanBibtex(publication.resource.chapter) != mtl:cleanBibtex(newestPub.resource.chapter)}">
-		<em><c:out value="chapter" />,<c:out value=" "/></em>
+	<c:if test="${mtl:cleanBibtex(publication.resource.chapter) != mtl:cleanBibtex(newestPub.resource.edition)}">
+		<em><c:out value="chapter: " />${mtl:compareString(publication.resource.edition, newestPub.resource.edition) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.url) != mtl:cleanBibtex(newestPub.resource.url)}">
-		<em><c:out value="url" />,<c:out value=" "/></em>
+		<em><c:out value="url: " />${mtl:compareString(publication.resource.url, newestPub.resource.url) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.key) != mtl:cleanBibtex(newestPub.resource.key)}">
-		<em><c:out value="key" />,<c:out value=" "/></em>
+		<em><c:out value="key: " />${mtl:compareString(publication.resource.key, newestPub.resource.key) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.type) != mtl:cleanBibtex(newestPub.resource.type)}">
-		<em><c:out value="type" />,<c:out value=" "/></em>
+		<em><c:out value="type: " />${mtl:compareString(publication.resource.type, newestPub.resource.type) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.howpublished) != mtl:cleanBibtex(newestPub.resource.howpublished)}">
-		<em><c:out value="howpublished" />,<c:out value=" "/></em>
+		<em><c:out value="howpublished: " />${mtl:compareString(publication.resource.howpublished, newestPub.resource.howpublished) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.institution) != mtl:cleanBibtex(newestPub.resource.institution)}">
-		<em><c:out value="institution" />,<c:out value=" "/></em>
+		<em><c:out value="institution: " />${mtl:compareString(publication.resource.institution, newestPub.resource.institution) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.organization) != mtl:cleanBibtex(newestPub.resource.organization)}">
-		<em><c:out value="organization" />,<c:out value=" "/></em>
+		<em><c:out value="organization: " />${mtl:compareString(publication.resource.organization, newestPub.resource.organization) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.school) != mtl:cleanBibtex(newestPub.resource.school)}">
-		<em><c:out value="school" />,<c:out value=" "/></em>
+		<em><c:out value="school: " />${mtl:compareString(publication.resource.school, newestPub.resource.school) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.series) != mtl:cleanBibtex(newestPub.resource.series)}">
-		<em><c:out value="series" />,<c:out value=" "/></em>
+		<em><c:out value="series: " />${mtl:compareString(publication.resource.series, newestPub.resource.series) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.crossref) != mtl:cleanBibtex(newestPub.resource.crossref)}">
-		<em><c:out value="crossref" />,<c:out value=" "/></em>
+		<em><c:out value="crossref: " />${mtl:compareString(publication.resource.crossref, newestPub.resource.crossref) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.misc) != mtl:cleanBibtex(newestPub.resource.misc)}">
-		<em><c:out value="misc" />,<c:out value=" "/></em>
+		<em><c:out value="misc: " />${mtl:compareString(publication.resource.misc, newestPub.resource.misc) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.abstract) != mtl:cleanBibtex(newestPub.resource.abstract)}">
-		<em><c:out value="abstract" />,<c:out value=" "/></em>
+		<em><c:out value="abstract: " />${mtl:compareString(publication.resource.abstract, newestPub.resource.abstract) },</em>
 	</c:if>
 	
 	<c:if test="${mtl:cleanBibtex(publication.description) != mtl:cleanBibtex(newestPub.description)}">
-		<em><c:out value="description" />,<c:out value=" "/></em>
+		<em><c:out value="description: " />${mtl:compareString(publication.description, newestPub.description) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.privnote) != mtl:cleanBibtex(newestPub.resource.privnote)}">
-		<em><c:out value="privnote" />,<c:out value=" "/></em>
+		<em><c:out value="privnote: " />${mtl:compareString(publication.resource.privnote, newestPub.resource.privnote) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.annote) != mtl:cleanBibtex(newestPub.resource.annote)}">
-		<em><c:out value="annote" />,<c:out value=" "/></em>
+		<em><c:out value="annote: " />${mtl:compareString(publication.resource.annote, newestPub.resource.annote) },</em>
 	</c:if>
 	<c:if test="${mtl:cleanBibtex(publication.resource.note) != mtl:cleanBibtex(newestPub.resource.note)}">
-		<em><c:out value="note" />,<c:out value=" "/></em>
+		<em><c:out value="note: " />${mtl:compareString(publication.resource.note, newestPub.resource.note) },</em>
 	</c:if>
 	
 </jsp:root>
