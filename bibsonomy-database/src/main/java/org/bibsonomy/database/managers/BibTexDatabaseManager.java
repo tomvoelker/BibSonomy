@@ -13,6 +13,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.common.DBSession;
@@ -287,6 +288,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	@Override
 	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
+		final boolean failIfDocumentsNotAccessible = false;
+		return getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, failIfDocumentsNotAccessible, session);
+	}
+	
+	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final boolean failIfDocumentsNotAccessible, final DBSession session) throws ResourceMovedException, ObjectNotFoundException {
 		// get post from database
 		final Post<BibTex> post = super.getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, session);
 		
@@ -294,6 +300,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			final BibTex publication = post.getResource();
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(authUser, post, session)) {
 				publication.setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
+			} else if (failIfDocumentsNotAccessible == true) {
+				throw new AccessDeniedException("You are not allowed to access documents of this post");
 			}
 
 			// add extra URLs
