@@ -204,6 +204,16 @@
 									<c:param name="qt" value="worldcat_org_all" />
 									<c:param name="q" value="${externalQueryString}" />
 								</c:url>
+								
+								<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
+									<c:param name="lookfor" value="${externalQueryString }" />
+									<c:param name="type" value="tit" />
+									<c:param name="ling" value="1" />
+									<c:param name="refid" value="dcbasde" />
+								</c:url>
+								
+								<!-- Go message -->
+								<fmt:message key="resources.searchExternal.go" var="goMsg" />
 
 								<!-- build the dropdown menu -->
 								<tr>
@@ -216,7 +226,9 @@
 											<option value="${microsoftAcademicUrl}">Microsoft
 												Academic Search</option>
 											<option value="${worldCatUrl}">WorldCat</option>
+											<option value="${baseSearchUrl}">BASE</option>
 									</select></td>
+									<td><input type="button" value="${goMsg}" onclick="javascript: return loadSelectedPage()" /></td>
 								</tr>
 							</table>
 						</div>
