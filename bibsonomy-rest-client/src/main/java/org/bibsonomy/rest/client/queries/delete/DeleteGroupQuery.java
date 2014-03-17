@@ -25,19 +25,16 @@ package org.bibsonomy.rest.client.queries.delete;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.Status;
-import org.bibsonomy.rest.client.AbstractQuery;
+import org.bibsonomy.rest.client.AbstractDeleteQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * Use this Class to delete a specified group.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public final class DeleteGroupQuery extends AbstractQuery<String> {
+public final class DeleteGroupQuery extends AbstractDeleteQuery {
 	private final String groupName;
 
 	/**
@@ -50,20 +47,11 @@ public final class DeleteGroupQuery extends AbstractQuery<String> {
 	 */
 	public DeleteGroupQuery(final String groupName) throws IllegalArgumentException {
 		if (!present(groupName)) throw new IllegalArgumentException("no groupname given");
-
 		this.groupName = groupName;
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, (new UrlRenderer("")).createHrefForGroup(this.groupName), null);
-		return null;
-	}
-	
-	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return Status.OK.getMessage();
-		return this.getError();
+	protected void doExecute() throws ErrorPerformingRequestException {
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, this.getUrlRenderer().createHrefForGroup(this.groupName), null);
 	}
 }

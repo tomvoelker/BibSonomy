@@ -34,11 +34,7 @@ public enum TagRelation {
 	/** Co-Occurring tags. */
 	RELATED,
 	/** Cosine-similar tags. */
-	SIMILAR,
-	/** Subtags. */
-	SUBTAGS,
-	/** Supertags. */
-	SUPERTAGS;
+	SIMILAR;
 	
 	/**
 	 * Tries to match a string onto a relation.
@@ -48,8 +44,6 @@ public enum TagRelation {
 	public static TagRelation getRelationByString(String string) {
 		if (string.equalsIgnoreCase("related")) return TagRelation.RELATED;
 		else if (string.equalsIgnoreCase("similar")) return TagRelation.SIMILAR;
-		else if (string.equalsIgnoreCase("subtags")) return TagRelation.SUBTAGS;
-		else if (string.equalsIgnoreCase("supertags")) return TagRelation.SUPERTAGS;
 		else return null;
 	}
 }

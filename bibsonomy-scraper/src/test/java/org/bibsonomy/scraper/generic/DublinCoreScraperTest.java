@@ -49,4 +49,8 @@ public class DublinCoreScraperTest {
 	public void testDCScraper3() {
 		assertTrue(UnitTestRunner.runSingleTest("url_269"));
 	}
+	@Test
+	public void testDCScraper4() {
+		assertTrue(UnitTestRunner.runSingleTest("url_270"));
+	}
 }

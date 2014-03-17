@@ -228,7 +228,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 
         final GoldStandardPublication standard = post.getResource();
         assertEquals(1, standard.getReferences().size());
-        final String oldYearString = standard.getYear();
+        final String oldYear = standard.getYear();
         standard.setYear("2010");
         standard.recalculateHashes();
         goldPubManager.updatePost(post, INTERHASH_GOLD_1, null, this.dbSession, loginUser);
@@ -238,10 +238,12 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         final String newInterHash = standard.getInterHash();
         final Post<GoldStandardPublication> afterUpdate = goldPubManager.getPostDetails("", newInterHash, "", VISIBLE_GROUPS, this.dbSession);
         assertEquals(1, afterUpdate.getResource().getReferences().size());
-        // restore post
-        standard.setYear(oldYearString);
-        standard.recalculateHashes();
-        goldPubManager.updatePost(post, newInterHash, null, this.dbSession, loginUser);
+        // Restore post to previous state to leave database untouched for the other tests
+        final GoldStandardPublication old = afterUpdate.getResource();
+        old.setYear(oldYear);
+        old.recalculateHashes();
+        goldPubManager.updatePost(afterUpdate, newInterHash, null, this.dbSession, loginUser);
+
     }
 
     private void deletePost(final String interhash) {

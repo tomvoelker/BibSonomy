@@ -10,7 +10,7 @@ import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
- * shows all users bibsonomy has
+ * shows all users of the system
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */

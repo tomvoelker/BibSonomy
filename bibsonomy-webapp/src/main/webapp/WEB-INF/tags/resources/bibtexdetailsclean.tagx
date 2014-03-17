@@ -177,16 +177,12 @@
 								 		<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
 								 	</td>
 								</tr>
-							</table>
-						</div>
-						
+														
 						<!--+ 
 				 			|
 				 			| dropdown menu from which you can pick an external literature site and try to find the publication there
 				 			|
 				 			+-->
-						<form>
-							<table>
 								<!-- the string you would usually enter in google scholar, world cat etc. -->
 								<c:set var="externalQueryString"
 									value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
@@ -211,23 +207,19 @@
 
 								<!-- build the dropdown menu -->
 								<tr>
-									<td colspan="2"><select name="dropDownExternal"
-										id="dropDownExternal" style="font-size: 8pt">
-											<option value="" selected="selected">
-												<fmt:message key="resources.searchExternal.dropDownTitle" />
-											</option>
+									<td><fmt:message key="resources.searchExternal.dropDownLabel" />:</td>
+									<td><select name="dropDownExternal"
+										id="dropDownExternal" style="font-size: 8pt" onchange="javascript: return loadSelectedPage()">
+											<option selected="selected">---<fmt:message key="resources.searchExternal.dropDownTitle" />---</option>
 											<option value="${googleScholarPostUrl}">Google
 												Scholar</option>
 											<option value="${microsoftAcademicUrl}">Microsoft
 												Academic Search</option>
 											<option value="${worldCatUrl}">WorldCat</option>
 									</select></td>
-									<td><fmt:message var="goMsg"
-											key="resources.searchExternal.go" /> <input type="button"
-										value="${goMsg}" onclick="javascript: return loadSelectedPage()" /></td>
 								</tr>
 							</table>
-						</form>
+						</div>
 						
 						<!--+
 							| discussion and rating
