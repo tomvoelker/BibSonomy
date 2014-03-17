@@ -1,5 +1,7 @@
 /**
  *
+
+
  *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
  *  Copyright (C) 2006 - 2013 Knowledge & Data Engineering Group,
@@ -51,6 +53,7 @@ public class DublinCoreScraper implements Scraper {
 	"\n Because all components of DC-Metadata are optional and their values not standardized, the scraper may not always be successful.";
 	
 	//pattern for checking support for a given site
+	
 	private static final Pattern DUBLIN_CORE_PATTERN = Pattern.compile("(?im)(?=<\\s*meta[^>]*name=\"DC.Title[^>]\"[^>]*>)(?=<\\s*meta[^>]*name=\"DC.Type[^>]\"[^>]*>)" +
 	"(?=<\\s*meta[^>]*name=\"DC.Creator[^>]\"[^>]*>)");
 	
