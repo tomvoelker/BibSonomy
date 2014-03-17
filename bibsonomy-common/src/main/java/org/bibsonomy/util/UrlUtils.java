@@ -38,7 +38,7 @@ public class UrlUtils {
 
 	private static final String BIBTEX_URL_COMMAND = "\\url{";
 
-	private static final int MAX_LEN_URL   = 6000;
+	private static final int MAX_LEN_URL = 6000;
 	
 	/**
 	 * TODO: improve documentation
@@ -209,15 +209,15 @@ public class UrlUtils {
 		try {
 			final String encodedURL = URLEncoder.encode(url, "UTF-8");
 			return encodedURL.replaceAll("\\%24", "\\$").
-			 				  replaceAll("\\%26", "\\&").
-			 				  replaceAll("\\%2B", "\\+").
-			 				  replaceAll("\\%2C", "\\,").
-			 				  replaceAll("\\%2F", "\\/").
-			 				  replaceAll("\\%3A", "\\:").
-			 				  replaceAll("\\%3B", "\\;").
-			 				  replaceAll("\\%3D", "\\=").
-			 				  replaceAll("\\%3F", "\\?").
-			 				  replaceAll("\\%40", "\\@");
+							  replaceAll("\\%26", "\\&").
+							  replaceAll("\\%2B", "\\+").
+							  replaceAll("\\%2C", "\\,").
+							  replaceAll("\\%2F", "\\/").
+							  replaceAll("\\%3A", "\\:").
+							  replaceAll("\\%3B", "\\;").
+							  replaceAll("\\%3D", "\\=").
+							  replaceAll("\\%3F", "\\?").
+							  replaceAll("\\%40", "\\@");
 		} catch (final UnsupportedEncodingException ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
@@ -266,7 +266,6 @@ public class UrlUtils {
 	 * @return normalized URL
 	 */
 	public static String normalizeURL(String url) {
-
 		/*
 		 * do nothing if url is empty
 		 */

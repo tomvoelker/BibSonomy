@@ -22,6 +22,11 @@
 	
 	<c:set var="user" value="${command.user}" />
 	<fieldset class="fsOuter">
+		<c:choose>
+			<c:when test="${empty command.oauthUserInfo}">
+				<fmt:message key="oauth.noToken"/>
+			</c:when>
+			<c:otherwise>
 		<!-- message for submit button in table -->
 		<fmt:message var="buttonMessage" key="oauth.button.delete"/> 
 		<table id="oauthTokenList">
@@ -46,5 +51,7 @@
 				</tr>
 			</c:forEach>
 		</table>
+		</c:otherwise>
+		</c:choose>
 	</fieldset>
 </jsp:root>

@@ -27,12 +27,10 @@ import java.io.StringWriter;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to update an existing concept
@@ -46,39 +44,37 @@ public class ChangeConceptQuery extends AbstractQuery<String> {
 	private final GroupingEntity grouping;
 	private final String groupingName;
 	
+	/**
+	 * 
+	 * @param concept
+	 * @param conceptName
+	 * @param grouping
+	 * @param groupingName
+	 */
 	public ChangeConceptQuery(final Tag concept, final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		this.concept = concept;
 		this.conceptName = conceptName;
 		this.grouping = grouping;
 		this.groupingName = groupingName;
+		if (GroupingEntity.ALL.equals(grouping)) {
+			throw new IllegalArgumentException("you can't change a global concept");
+		}
 	}
 	
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder;
+	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeTag(sw, concept, null);
 		
-		switch (grouping) {
-		case USER:
-			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);			
-			break;
-		case GROUP:
-			urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
-			break;
-		default:
-			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept change query");
-		}		
-		
-		urlBuilder.addPathElement(this.groupingName).addPathElement(RESTConfig.CONCEPTS_URL).addPathElement(this.conceptName);
-		this.downloadedDocument = performRequest(HttpMethod.PUT, urlBuilder.asString(), sw.toString());
-		return null;
+		final String conceptUrl = this.getUrlRenderer().createHrefForConceptWithSubTag(grouping, groupingName, conceptName, null);
+		this.downloadedDocument = performRequest(HttpMethod.PUT, conceptUrl, sw.toString());
 	}
 
 	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return this.getRenderer().parseResourceHash(this.downloadedDocument); 
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
+			return this.getRenderer().parseResourceHash(this.downloadedDocument);
+		}
 		return this.getError();
 	}
 }

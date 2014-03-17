@@ -98,7 +98,10 @@ slave_hannover: document mvn_deploy_tc7 mail
 #
 # when deploying to puma, we first need to open an ssh connection 
 #
-puma: ssh_puma document mvn_deploy mail
+puma_sandbox: mvn_deploy mail
+puma_ks_dev: mvn_deploy
+puma_ks_prod: document mvn_deploy mail
+
 
 
 ################################
@@ -132,8 +135,8 @@ archive:
 #
 # open SSH connection with tunnel to PUMA tomcat
 #
-ssh_puma:
-	ssh -L 8077:bib-ws24.bibliothek.uni-kassel.de:8080 pumadeploy@puma.uni-kassel.de -p 30 -qTnN &
+#ssh_puma:
+#	ssh -L 8077:bib-ws24.bibliothek.uni-kassel.de:8080 pumadeploy@puma.uni-kassel.de -p 30 -qTnN &
 
 #
 # Ask the user who he is and why he's deploying.

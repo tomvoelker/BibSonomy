@@ -26,11 +26,9 @@ package org.bibsonomy.rest.client.queries.get;
 import java.util.List;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all users bibsonomy has.
@@ -66,17 +64,13 @@ public final class GetUserListQuery extends AbstractQuery<List<User>> {
 	}
 
 	@Override
-	public List<User> getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected List<User> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parseUserList(this.downloadedDocument);
 	}
 
 	@Override
-	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
-		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String usersUrl = this.getUrlRenderer().createHrefForUsers(this.start, this.end);
+		this.downloadedDocument = performGetRequest(usersUrl);
 	}
 }

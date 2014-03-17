@@ -43,7 +43,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
  * 
  * @author Dominik Benz
  */
-public class BibTexPostComparator extends PostComparator implements Comparator<Post<BibTex>> {
+public class BibTexPostComparator extends PostComparator implements Comparator<Post<? extends BibTex>> {
 	private static final long serialVersionUID = 8550700973763853912L;
 
 	/**
@@ -70,7 +70,7 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 	 * main comparison method
 	 */
 	@Override
-	public int compare(final Post<BibTex> post1, final Post<BibTex> post2) {
+	public int compare(final Post<? extends BibTex> post1, final Post<? extends BibTex> post2) {
 		for (final SortCriterium crit : this.sortCriteria) {
 			try {
 				// author

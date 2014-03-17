@@ -177,7 +177,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getTagDetails() {
 		final TagParam tagParam = ParamUtils.getDefaultTagParam();
-		final Tag tag = tagDb.getTagDetails(tagParam, this.dbSession);
+		final Tag tag = tagDb.getTagDetails(new User(tagParam.getUserName()), tagParam.getTagName(), this.dbSession);
 		assertNotNull(tag);
 		assertEquals(tagParam.getTagIndex().get(0).getTagName(), tag.getName());
 		assertNotNull(tag.getGlobalcount());

@@ -31,7 +31,6 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Returns a list of users which either the requested user has in his friend list,
@@ -51,13 +50,14 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 
 	/**
 	 * Gets bibsonomy's user list.
-	 * 
+	 * @param username 
+	 * @param relation 
 	 * @param start
 	 *            start of the list
 	 * @param end
 	 *            end of the list
 	 */
-	public GetFriendsQuery(int start, int end, final String username, String relation) {
+	public GetFriendsQuery(final String username, String relation, int start, int end) {
 		if (start < 0) start = 0;
 		if (end < start) end = start;
 		
@@ -73,20 +73,13 @@ public final class GetFriendsQuery extends AbstractQuery<List<User>> {
 	}
 
 	@Override
-	public List<User> getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected List<User> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parseUserList(this.downloadedDocument);
 	}
 
 	@Override
-	protected List<User> doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-		urlBuilder.addPathElement(this.username);
-		urlBuilder.addPathElement(RESTConfig.FRIENDS_SUB_PATH);
-		urlBuilder.addParameter(RESTConfig.ATTRIBUTE_KEY_RELATION, this.relation);
-		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
-		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String friendsUrl = this.getUrlRenderer().createHrefForFriends(this.username, this.relation, this.start, this.end);
+		this.downloadedDocument = performGetRequest(friendsUrl);
 	}
 }

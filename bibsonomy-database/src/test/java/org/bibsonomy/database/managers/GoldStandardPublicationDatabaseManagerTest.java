@@ -28,243 +28,247 @@ import org.junit.Test;
  * @author dzo
  */
 public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabaseManagerTest {
-	
-	private static final List<Integer> VISIBLE_GROUPS = Arrays.asList(GroupID.PUBLIC.getId());
-	private static final String WRONG_INTERHASH = "interhashorintrahashorhashor";
-	private static final String INTERHASH_GOLD_1 = "097248439469d8f5a1e7fad6b02cbfcd";
-	private static final String INTERHASH_GOLD_2 = "ac6aa3ccb181e61801cefbc1401d409a";
-	
-	private static GoldStandardPublicationDatabaseManager goldPubManager;
-	
-	private static final User loginUser = new User("testuser1");
-	
-	/**
-	 * sets the gold standard publication database manager
-	 */
-	@BeforeClass
-	public static void setGoldStandardPublicationManager() {
-		goldPubManager = GoldStandardPublicationDatabaseManager.getInstance();
-	}
-	
-	/**
-	 * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
-	 */
-	@Test
-	public void testCreatePost() {
-		final String interhash = createGoldStandardPublication();
-		
-		// clear database
-		this.deletePost(interhash);
-	}
 
-	/**
-	 * @return
-	 */
-	private String createGoldStandardPublication() {
-		assertFalse(this.pluginMock.isOnGoldStandardCreate());
-		
-		// create post
-		final Post<GoldStandardPublication> post = this.generateGoldPublication();
-		assertTrue(goldPubManager.createPost(post, this.dbSession));
-		
-		final String interhash = post.getResource().getInterHash();
-		assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
-		
-		assertTrue(this.pluginMock.isOnGoldStandardCreate());
-		return interhash;
-	}
-	
-	/**
-	 * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
-	 */
-	@Test
-	public void updatePost() {
-		assertFalse(this.pluginMock.isOnGoldStandardUpdate());
-		assertFalse(this.pluginMock.isOnGoldStandardCreate());
-		
-		// create post
-		final Post<GoldStandardPublication> post = this.generateGoldPublication();
-		goldPubManager.createPost(post, this.dbSession);
-		
-		// test listeners
-		assertTrue(this.pluginMock.isOnGoldStandardCreate());
-		assertFalse(this.pluginMock.isOnGoldStandardUpdate());
-		this.pluginMock.reset();
-		
-		// fetch post
-		final GoldStandardPublication goldStandard = post.getResource();
-		String interhash = goldStandard.getInterHash();
-		assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
-		
-		// change a value and update the gold standard
-		final String newYear = "2010";
-		goldStandard.setYear(newYear);
-		goldStandard.recalculateHashes();
-		
-		goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
-		
-		// test listeners
-		assertFalse(this.pluginMock.isOnGoldStandardCreate());
-		assertTrue(this.pluginMock.isOnGoldStandardUpdate());
-		
-		interhash = goldStandard.getInterHash();
-		
-		// delete gold standard
-		final Post<GoldStandardPublication> postDetails = goldPubManager.getPostDetails("testuser1", interhash, "", null, this.dbSession);
-		assertEquals(newYear, postDetails.getResource().getYear());
-		
-		this.deletePost(interhash);
-	}
-	
-	/**
-	 * tests {@link GoldStandardPublicationDatabaseManager#updatePost(Post, String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.common.DBSession)}
-	 * without changing the inter-/intraHash
-	 */
-	@Test
-	public void updatePostWithoutChangingHash() {
-		assertFalse(this.pluginMock.isOnGoldStandardUpdate());
-		assertFalse(this.pluginMock.isOnGoldStandardCreate());
-		
-		// create post
-		final Post<GoldStandardPublication> post = this.generateGoldPublication();
-		goldPubManager.createPost(post, this.dbSession);
-		
-		// test listeners
-		assertTrue(this.pluginMock.isOnGoldStandardCreate());
-		assertFalse(this.pluginMock.isOnGoldStandardUpdate());
-		this.pluginMock.reset();
-		
-		// fetch post
-		final GoldStandardPublication goldStandard = post.getResource();
-		String interhash = goldStandard.getInterHash();
-		assertNotNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
-		
-		// change a value and update the gold standard
-		final String newSchool = "schooool";
-		goldStandard.setSchool(newSchool);
-		goldStandard.recalculateHashes();
-		
-		goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
-		
-		// test listeners
-		assertFalse(this.pluginMock.isOnGoldStandardCreate());
-		assertTrue(this.pluginMock.isOnGoldStandardUpdate());
-		
-		interhash = goldStandard.getInterHash();
-		
-		// delete gold standard
-		final Post<GoldStandardPublication> postDetails = goldPubManager.getPostDetails("testuser1", interhash, "", null, this.dbSession);
-		assertEquals(newSchool, postDetails.getResource().getSchool());
-		
-		this.deletePost(interhash);
-	}
-	
-	/**
-	 * tests getPostDetails including references
-	 */
-	@Test
-	public void testReferences() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
-		final Set<BibTex> references = post.getResource().getReferences();
-		assertEquals(1, references.size());
-		assertEquals(1, post.getResource().getReferencedBy().size());
-		final BibTex ref1 = references.iterator().next();
-		assertEquals(INTERHASH_GOLD_2, ref1.getInterHash());
-	}
-	
-	/**
-	 * tests if duplications can be created
-	 */
-	@Test(expected = DatabaseException.class)
-	public void testCreateDuplicate() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
-		goldPubManager.createPost(post, this.dbSession);
-	}
-	
-	/**
-	 * tests if a post can be updated that isn't stored in the db
-	 */
-	@Test(expected = DatabaseException.class)
-	public void testUpdateUnkownPost() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-		goldPubManager.updatePost(post, WRONG_INTERHASH, null, this.dbSession, loginUser);
-	}
-	
-	/**
-	 * tests if a duplicated standard post can be created
-	 */
-	@Test(expected = DatabaseException.class)
-	public void testUpdatePostToPostInDB() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
-		post.getResource().recalculateHashes();
-		System.out.println(post.getResource().getInterHash());
-		goldPubManager.updatePost(post, INTERHASH_GOLD_2, null, this.dbSession, loginUser);
-	}	
-	
-	/**
-	 * tests {@link GoldStandardDatabaseManager#addReferencesToPost(String, String, Set, org.bibsonomy.database.common.DBSession)} and
-	 * {@link GoldStandardDatabaseManager#removeReferencesFromPost(String, String, Set, org.bibsonomy.database.common.DBSession)}
-	 */
-	@Test
-	public void testAddRemoveReferences() {
-		final String interHash = this.createGoldStandardPublication();
-		goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
-		
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-		assertEquals(1 + 1, post.getResource().getReferences().size());
-		
-		goldPubManager.removeReferencesFromPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
-		
-		final Post<GoldStandardPublication> postAfterRemove = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
-		assertEquals(1, postAfterRemove.getResource().getReferences().size());
-		
-		this.deletePost(interHash);
-	}
-	
-	/**
-	 * tests if the plugin updates the hashes after updating the references and if the plugin deletes the references when post was deleted 
-	 */
-	@Test
-	public void testUpdateReferencePlugin() {
-		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
-		
-		final GoldStandardPublication standard = post.getResource();
-		assertEquals(1, standard.getReferences().size());
-		
-		standard.setYear("2010");
-		standard.recalculateHashes();
-		goldPubManager.updatePost(post, INTERHASH_GOLD_1, null, this.dbSession, loginUser);
-		
-		assertTrue(this.pluginMock.isOnGoldStandardUpdate());
-		
-		final String newInterHash = standard.getInterHash();
-		final Post<GoldStandardPublication> afterUpdate = goldPubManager.getPostDetails("", newInterHash, "", VISIBLE_GROUPS, this.dbSession);
-		assertEquals(1, afterUpdate.getResource().getReferences().size());
-	}
-	
-	private void deletePost(final String interhash) {
-		this.pluginMock.reset();
-		assertFalse(this.pluginMock.isOnGoldStandardDelete());
-		
-		// delete post
-		goldPubManager.deletePost("", interhash, this.dbSession);
-		assertNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession));
-		
-		assertTrue(this.pluginMock.isOnGoldStandardDelete());
-	}
+    private static final List<Integer> VISIBLE_GROUPS = Arrays.asList(GroupID.PUBLIC.getId());
+    private static final String WRONG_INTERHASH = "interhashorintrahashorhashor";
+    private static final String INTERHASH_GOLD_1 = "097248439469d8f5a1e7fad6b02cbfcd";
+    private static final String INTERHASH_GOLD_2 = "ac6aa3ccb181e61801cefbc1401d409a";
 
-	private Post<GoldStandardPublication> generateGoldPublication() {
-		final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
+    private static GoldStandardPublicationDatabaseManager goldPubManager;
 
-		// groups
-		final Group group = GroupUtils.getPublicGroup();
-		post.getGroups().add(group);
-		
-		post.setDescription("trallalla");
-		post.setDate(new Date());
-		post.setUser(ModelUtils.getUser());
-		post.setResource(ModelUtils.getGoldStandardPublication());
+    private static final User loginUser = new User("testuser1");
 
-		return post;
-	}
+    /**
+     * sets the gold standard publication database manager
+     */
+    @BeforeClass
+    public static void setGoldStandardPublicationManager() {
+        goldPubManager = GoldStandardPublicationDatabaseManager.getInstance();
+    }
+
+    /**
+     * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
+     */
+    @Test
+    public void testCreatePost() {
+        final String interhash = this.createGoldStandardPublication();
+
+        // clear database
+        this.deletePost(interhash);
+    }
+
+    /**
+     * @return
+     */
+    private String createGoldStandardPublication() {
+        assertFalse(this.pluginMock.isOnGoldStandardCreate());
+
+        // create post
+        final Post<GoldStandardPublication> post = this.generateGoldPublication();
+        assertTrue(goldPubManager.createPost(post, this.dbSession));
+
+        final String interhash = post.getResource().getInterHash();
+        assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
+
+        assertTrue(this.pluginMock.isOnGoldStandardCreate());
+        return interhash;
+    }
+
+    /**
+     * tests {@link GoldStandardPublicationDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
+     */
+    @Test
+    public void updatePost() {
+        assertFalse(this.pluginMock.isOnGoldStandardUpdate());
+        assertFalse(this.pluginMock.isOnGoldStandardCreate());
+
+        // create post
+        final Post<GoldStandardPublication> post = this.generateGoldPublication();
+        goldPubManager.createPost(post, this.dbSession);
+
+        // test listeners
+        assertTrue(this.pluginMock.isOnGoldStandardCreate());
+        assertFalse(this.pluginMock.isOnGoldStandardUpdate());
+        this.pluginMock.reset();
+
+        // fetch post
+        final GoldStandardPublication goldStandard = post.getResource();
+        String interhash = goldStandard.getInterHash();
+        assertNotNull(goldPubManager.getPostDetails("", interhash, "", VISIBLE_GROUPS, this.dbSession).getResource());
+
+        // change a value and update the gold standard
+        final String newYear = "2010";
+        goldStandard.setYear(newYear);
+        goldStandard.recalculateHashes();
+
+        goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
+
+        // test listeners
+        assertFalse(this.pluginMock.isOnGoldStandardCreate());
+        assertTrue(this.pluginMock.isOnGoldStandardUpdate());
+
+        interhash = goldStandard.getInterHash();
+
+        // delete gold standard
+        final Post<GoldStandardPublication> postDetails = goldPubManager.getPostDetails("testuser1", interhash, "", null, this.dbSession);
+        assertEquals(newYear, postDetails.getResource().getYear());
+
+        this.deletePost(interhash);
+    }
+
+    /**
+     * tests {@link GoldStandardPublicationDatabaseManager#updatePost(Post, String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.common.DBSession)} without changing the inter-/intraHash
+     */
+    @Test
+    public void updatePostWithoutChangingHash() {
+        assertFalse(this.pluginMock.isOnGoldStandardUpdate());
+        assertFalse(this.pluginMock.isOnGoldStandardCreate());
+
+        // create post
+        final Post<GoldStandardPublication> post = this.generateGoldPublication();
+        goldPubManager.createPost(post, this.dbSession);
+
+        // test listeners
+        assertTrue(this.pluginMock.isOnGoldStandardCreate());
+        assertFalse(this.pluginMock.isOnGoldStandardUpdate());
+        this.pluginMock.reset();
+
+        // fetch post
+        final GoldStandardPublication goldStandard = post.getResource();
+        String interhash = goldStandard.getInterHash();
+        assertNotNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
+
+        // change a value and update the gold standard
+        final String newSchool = "schooool";
+        goldStandard.setSchool(newSchool);
+        goldStandard.recalculateHashes();
+
+        goldPubManager.updatePost(post, interhash, null, this.dbSession, loginUser);
+
+        // test listeners
+        assertFalse(this.pluginMock.isOnGoldStandardCreate());
+        assertTrue(this.pluginMock.isOnGoldStandardUpdate());
+
+        interhash = goldStandard.getInterHash();
+
+        // delete gold standard
+        final Post<GoldStandardPublication> postDetails = goldPubManager.getPostDetails("testuser1", interhash, "", null, this.dbSession);
+        assertEquals(newSchool, postDetails.getResource().getSchool());
+
+        this.deletePost(interhash);
+    }
+
+    /**
+     * tests getPostDetails including references
+     */
+    @Test
+    public void testReferences() {
+        final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
+        final Set<BibTex> references = post.getResource().getReferences();
+        assertEquals(1, references.size());
+        assertEquals(1, post.getResource().getReferencedBy().size());
+        final BibTex ref1 = references.iterator().next();
+        assertEquals(INTERHASH_GOLD_2, ref1.getInterHash());
+    }
+
+    /**
+     * tests if duplications can be created
+     */
+    @Test(expected = DatabaseException.class)
+    public void testCreateDuplicate() {
+        final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
+        goldPubManager.createPost(post, this.dbSession);
+    }
+
+    /**
+     * tests if a post can be updated that isn't stored in the db
+     */
+    @Test(expected = DatabaseException.class)
+    public void testUpdateUnkownPost() {
+        final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
+        goldPubManager.updatePost(post, WRONG_INTERHASH, null, this.dbSession, loginUser);
+    }
+
+    /**
+     * tests if a duplicated standard post can be created
+     */
+    @Test(expected = DatabaseException.class)
+    public void testUpdatePostToPostInDB() {
+        final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
+        post.getResource().recalculateHashes();
+        System.out.println(post.getResource().getInterHash());
+        goldPubManager.updatePost(post, INTERHASH_GOLD_2, null, this.dbSession, loginUser);
+    }
+
+    /**
+     * tests {@link GoldStandardDatabaseManager#addReferencesToPost(String, String, Set, org.bibsonomy.database.common.DBSession)} and {@link GoldStandardDatabaseManager#removeReferencesFromPost(String, String, Set, org.bibsonomy.database.common.DBSession)}
+     */
+    @Test
+    public void testAddRemoveReferences() {
+        final String interHash = this.createGoldStandardPublication();
+        goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
+
+        final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
+        assertEquals(1 + 1, post.getResource().getReferences().size());
+
+        goldPubManager.removeReferencesFromPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
+
+        final Post<GoldStandardPublication> postAfterRemove = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
+        assertEquals(1, postAfterRemove.getResource().getReferences().size());
+
+        this.deletePost(interHash);
+    }
+
+    /**
+     * tests if the plugin updates the hashes after updating the references and if the plugin deletes the references when post was deleted
+     */
+    @Test
+    public void testUpdateReferencePlugin() {
+        final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", VISIBLE_GROUPS, this.dbSession);
+
+        final GoldStandardPublication standard = post.getResource();
+        assertEquals(1, standard.getReferences().size());
+        final String oldYear = standard.getYear();
+        standard.setYear("2010");
+        standard.recalculateHashes();
+        goldPubManager.updatePost(post, INTERHASH_GOLD_1, null, this.dbSession, loginUser);
+
+        assertTrue(this.pluginMock.isOnGoldStandardUpdate());
+
+        final String newInterHash = standard.getInterHash();
+        final Post<GoldStandardPublication> afterUpdate = goldPubManager.getPostDetails("", newInterHash, "", VISIBLE_GROUPS, this.dbSession);
+        assertEquals(1, afterUpdate.getResource().getReferences().size());
+        // Restore post to previous state to leave database untouched for the other tests
+        final GoldStandardPublication old = afterUpdate.getResource();
+        old.setYear(oldYear);
+        old.recalculateHashes();
+        goldPubManager.updatePost(afterUpdate, newInterHash, null, this.dbSession, loginUser);
+
+    }
+
+    private void deletePost(final String interhash) {
+        this.pluginMock.reset();
+        assertFalse(this.pluginMock.isOnGoldStandardDelete());
+
+        // delete post
+        goldPubManager.deletePost("", interhash, this.dbSession);
+        assertNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession));
+
+        assertTrue(this.pluginMock.isOnGoldStandardDelete());
+    }
+
+    private Post<GoldStandardPublication> generateGoldPublication() {
+        final Post<GoldStandardPublication> post = new Post<GoldStandardPublication>();
+
+        // groups
+        final Group group = GroupUtils.getPublicGroup();
+        post.getGroups().add(group);
+
+        post.setDescription("trallalla");
+        post.setDate(new Date());
+        post.setUser(ModelUtils.getUser());
+        post.setResource(ModelUtils.getGoldStandardPublication());
+
+        return post;
+    }
 }

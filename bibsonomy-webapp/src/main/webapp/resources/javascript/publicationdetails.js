@@ -1,3 +1,11 @@
+function loadSelectedPage() {
+	var dropDownExternalMenu = document.getElementById('dropDownExternal');
+	var index = dropDownExternalMenu.selectedIndex;
+	if (index != 0) {
+		window.open(dropDownExternalMenu.options[index].value);
+	}
+}
+
 function updatePrivNote(button) {
 	var textArea = button.siblings("div.resizable-textarea").find("textarea[name='privateNote']");
 	var newVal = textArea.val();

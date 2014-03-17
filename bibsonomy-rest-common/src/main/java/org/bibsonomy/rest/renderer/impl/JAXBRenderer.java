@@ -109,7 +109,7 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 	 * Unmarshalls the document from the reader to the generated java
 	 * model.
 	 * 
-	 * @return A BibsonomyXML object that contains the unmarshalled content
+	 * @return A {@link BibsonomyXML} object that contains the unmarshalled content
 	 * @throws InternServerException
 	 *             if the content can't be unmarshalled
 	 */
@@ -173,6 +173,13 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 			// create a marshaller
 			final Marshaller marshaller = jc.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			
+			/*
+			 * here we replace the standard CharacterEscapeHandler with one
+			 * that not only encodes ", <, > and & (standard) but also the \n
+			 * character with the appropriate XML encoding sequence (else the \n charater
+			 * gets lost when we deserialize the server response with JAXB)
+			 */
 			marshaller.setProperty("com.sun.xml.bind.characterEscapeHandler", NewLineEscapeHandler.theInstance);
 			if (this.validateXMLOutput) {
 				// validate the XML produced by the marshaller

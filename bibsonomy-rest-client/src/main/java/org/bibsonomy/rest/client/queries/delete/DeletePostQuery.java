@@ -25,20 +25,16 @@ package org.bibsonomy.rest.client.queries.delete;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.Status;
-import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.client.AbstractQuery;
+import org.bibsonomy.rest.client.AbstractDeleteQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to delete a specified post.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public final class DeletePostQuery extends AbstractQuery<String> {
+public final class DeletePostQuery extends AbstractDeleteQuery {
 	private final String userName;
 	private final String resourceHash;
 
@@ -61,20 +57,8 @@ public final class DeletePostQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		// TODO: use the UrlRenderer#createHrefForResource
-		final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-		urlBuilder.addPathElement(this.userName);
-		urlBuilder.addPathElement(RESTConfig.POSTS_URL);
-		urlBuilder.addPathElement(this.resourceHash);
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, urlBuilder.asString(), null);
-		return null;
-	}
-	
-	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return Status.OK.getMessage();
-		return this.getError();
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String resourceUrl = this.getUrlRenderer().createHrefForResource(this.userName, this.resourceHash);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, resourceUrl, null);
 	}
 }

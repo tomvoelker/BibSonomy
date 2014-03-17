@@ -41,6 +41,7 @@ public class HeadWorker extends HttpWorker<HeadMethod> {
 	 * 
 	 * @param username
 	 * @param apiKey
+	 * @param accessor 
 	 */
 	public HeadWorker(final String username, final String apiKey, final AuthenticationAccessor accessor) {
 		super(username, apiKey, accessor);

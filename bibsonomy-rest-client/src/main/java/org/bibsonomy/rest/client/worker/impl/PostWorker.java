@@ -59,6 +59,7 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 	/**
 	 * @param username
 	 * @param apiKey
+	 * @param accessor 
 	 */
 	public PostWorker(final String username, final String apiKey, final AuthenticationAccessor accessor) {
 		super(username, apiKey, accessor);
@@ -74,7 +75,7 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 		LOGGER.debug("POST Multipart: URL: " + url);
 		final PostMethod post = new PostMethod(url);
 
-		if (this.getRenderingFormat()  != null) {
+		if (this.getRenderingFormat() != null) {
 			post.addRequestHeader("Accept", this.getRenderingFormat().getMimeType());
 		}
 		post.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));

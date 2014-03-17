@@ -75,7 +75,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		 */
 		if (!context.isUserLoggedIn()) {
 			command.setResponseString("");
-			return Views.AJAX_XML;
+			return Views.AJAX_JSON;
 		}
 		
 		final User loginUser = context.getLoginUser();
@@ -126,7 +126,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			}
 		}
 		
-		return Views.AJAX_XML;
+		return Views.AJAX_JSON;
 	}
 	
 	@Override
@@ -159,10 +159,11 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	private void processRecommendedTags(final AjaxRecommenderCommand<R> command, final SortedSet<RecommendedTag> tags) {
 		command.setRecommendedTags(tags);
 		// TODO: renderer is thread safe? => constant
-		final Renderer renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.XML);
+		final Renderer renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.JSON);
 		final StringWriter sw = new StringWriter(100);
 		renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
+		System.out.println(sw.toString());
 	}
 
 

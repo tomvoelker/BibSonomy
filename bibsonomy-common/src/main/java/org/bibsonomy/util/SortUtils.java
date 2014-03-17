@@ -46,7 +46,6 @@ public class SortUtils {
 	 * @param sortKeys
 	 * @return a list of sort keys
 	 */
-	@Deprecated // TODO: use converters
 	public static List<SortKey> parseSortKeys(final String sortKeys) {
 		final List<SortKey> parsedSortKeys = new ArrayList<SortKey>();
 		if (sortKeys == null) {
@@ -64,7 +63,6 @@ public class SortUtils {
 	 * @param sortOrders
 	 * @return a list of sort orders
 	 */
-	@Deprecated // TODO: use converters
 	public static List<SortOrder> parseSortOrders(final String sortOrders) {
 		final List<SortOrder> parsedSortOrders = new ArrayList<SortOrder>();
 		if (sortOrders == null) {

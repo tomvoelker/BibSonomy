@@ -843,8 +843,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, this.loginUser);
-			return this.tagDBManager.getTagDetails(param, session);
+			return this.tagDBManager.getTagDetails(this.loginUser, tagName, session);
 		} finally {
 			session.close();
 		}
@@ -1695,12 +1694,13 @@ public class DBLogic implements LogicInterface {
 				 */
 				Post<BibTex> post = null;
 				try {
-					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), true, session);
 				} catch (final ResourceMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
 				}
+				
 				if (post != null && post.getResource().getDocuments() != null) {
 					/*
 					 * post found and post contains documents (bibtexdbmanager
@@ -2435,7 +2435,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual clipboard size
-			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
 		} catch (final Exception ex) {
 			log.error(ex);
 			throw new RuntimeException(ex);
@@ -2481,7 +2481,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual basketsize
-			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
 		} finally {
 			session.close();
 		}

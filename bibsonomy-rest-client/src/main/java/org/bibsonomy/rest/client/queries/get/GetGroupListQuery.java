@@ -26,11 +26,9 @@ package org.bibsonomy.rest.client.queries.get;
 import java.util.List;
 
 import org.bibsonomy.model.Group;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all groups bibsonomy has.
@@ -66,17 +64,13 @@ public final class GetGroupListQuery extends AbstractQuery<List<Group>> {
 	}
 
 	@Override
-	public List<Group> getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected List<Group> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parseGroupList(this.downloadedDocument);
 	}
 
 	@Override
-	protected List<Group> doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
-		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
-		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String groupsUrl = this.getUrlRenderer().createHrefForGroups(this.start, this.end);
+		this.downloadedDocument = performGetRequest(groupsUrl);
 	}
 }

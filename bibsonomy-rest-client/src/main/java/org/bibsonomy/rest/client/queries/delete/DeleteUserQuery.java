@@ -25,24 +25,20 @@ package org.bibsonomy.rest.client.queries.delete;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.Status;
-import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.client.AbstractQuery;
+import org.bibsonomy.rest.client.AbstractDeleteQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to delete a specified user.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public final class DeleteUserQuery extends AbstractQuery<String> {
+public final class DeleteUserQuery extends AbstractDeleteQuery {
 	private final String userName;
 
 	/**
-	 * Deletes an account of a bibsonomy user.
+	 * Deletes an account of a user.
 	 * 
 	 * @param userName
 	 *            the userName of the user to be deleted
@@ -51,22 +47,12 @@ public final class DeleteUserQuery extends AbstractQuery<String> {
 	 */
 	public DeleteUserQuery(final String userName) throws IllegalArgumentException {
 		if (!present(userName)) throw new IllegalArgumentException("no username given");
-
 		this.userName = userName;
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-		urlBuilder.addPathElement(this.userName);
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, urlBuilder.asString(), null);
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String userUrl = this.getUrlRenderer().createHrefForUser(this.userName);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, userUrl, null);
 	}
-	
-	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return Status.OK.getMessage();
-		return this.getError();
-	}		
 }

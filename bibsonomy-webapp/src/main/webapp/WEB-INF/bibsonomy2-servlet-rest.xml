@@ -24,6 +24,7 @@
 								<value>PUT</value>
 								<value>POST</value>
 								<value>DELETE</value>
+								<value>HEAD</value>
 							</array>
 						</property>
 					</bean>
@@ -78,6 +79,18 @@
 						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.CSL" />
 					</key>
 					<bean class="org.bibsonomy.rest.renderer.impl.CSLRenderer" />
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.BIBTEX" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.BibTexRenderer" />
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.ENDNOTE" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.EndnoteRenderer" />
 				</entry>
 			</map>
 		</property>
