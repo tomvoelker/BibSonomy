@@ -49,6 +49,30 @@
 		WHERE b2.group = g.group
 	ORDER BY content_id
 	</select>
+
+	<select id="getBibTexHistorySdo" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+
+		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>,t.change_date, <include refid="reviewRatingsRows" /> 
+		FROM (SELECT * FROM bibtex t1
+		      WHERE simhash2 = #hash#
+		        AND user_name = #requestedUserName#
+		      ORDER BY date DESC) AS b2
+		    LEFT OUTER JOIN tas t ON (b2.content_id = t.content_id) 
+		    <include refid="reviewRatingsJoinPublication2" />
+		    LEFT JOIN bibhash h ON (<include refid="bibtexSimHash2"/>)
+		    LEFT JOIN groupids g ON (b2.group = g.group)
+		UNION
+		SELECT g.*, t.tag_name, <include refid ="bibtexAttributes2"/>, t.change_date
+		FROM (SELECT t1.*
+		      FROM log_bibtex t1, bibtex b
+		      WHERE t1.current_content_id = b.content_id
+		      		AND b.simhash2 = #hash# 
+					AND t1.user_name = #requestedUserName#	
+		      ORDER BY date DESC, content_id DESC
+			  LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN log_tas AS t ON b2.content_id = t.content_id
+		ORDER BY content_id
+	</select>
 	
 	<select id="getGoldStandardHistory" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
 		(SELECT b.content_id, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 

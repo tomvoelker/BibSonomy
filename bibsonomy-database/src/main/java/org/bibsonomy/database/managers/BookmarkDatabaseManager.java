@@ -5,11 +5,9 @@ import java.util.List;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-
 
 /**
  * Used to CRUD bookmarks from the database.
@@ -21,9 +19,9 @@ import org.bibsonomy.model.Post;
  */
 public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, BookmarkParam> {
 	private static final BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
-	
+
 	private static final HashID[] hashRange = { HashID.SIM_HASH0 };
-	
+
 	/**
 	 * @return BookmarkDatabaseManager
 	 */
@@ -34,23 +32,22 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	private BookmarkDatabaseManager() {
 	}
 
-
 	@Override
 	protected List<Post<Bookmark>> getPostsForHomepage(final BookmarkParam param, final DBSession session) {
 		final FilterEntity filter = param.getFilter();
-		
+
 		if (FilterEntity.UNFILTERED.equals(filter)) {
 			return this.postList("getBookmarkForHomepageUnfiltered", param, session);
 		}
-		
+
 		return super.getPostsForHomepage(param, session);
 	}
-	
+
 	@Override
 	public List<Post<Bookmark>> getPostsFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
 		throw new UnsupportedOperationException("not available for bookmarks");
 	}
-	
+
 	@Override
 	protected void checkPost(final Post<Bookmark> post, final DBSession session) {
 		// nop
@@ -58,16 +55,22 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostDelete(java.lang.Integer, org.bibsonomy.database.util.DBSession)
+	 * 
+	 * @see
+	 * org.bibsonomy.database.managers.PostDatabaseManager#onPostDelete(java
+	 * .lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
 	protected void onPostDelete(final Integer contentId, final DBSession session) {
-		this.plugins.onBookmarkDelete(contentId, session);	
+		this.plugins.onBookmarkDelete(contentId, session);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostUpdate(java.lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
+	 * 
+	 * @see
+	 * org.bibsonomy.database.managers.PostDatabaseManager#onPostUpdate(java
+	 * .lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
 	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
@@ -76,6 +79,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getHashRange()
 	 */
 	@Override
@@ -85,12 +89,15 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org.bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
+	 * 
+	 * @see
+	 * org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org
+	 * .bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
 	protected BookmarkParam getInsertParam(final Post<? extends Bookmark> post, final DBSession session) {
 		final BookmarkParam insert = this.getNewParam();
-		
+
 		insert.setResource(post.getResource());
 		insert.setDate(post.getDate());
 		insert.setChangeDate(post.getChangeDate());
@@ -98,20 +105,22 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		insert.setHash(post.getResource().getIntraHash());
 		insert.setDescription(post.getDescription());
 		insert.setUserName(post.getUser().getName());
-		insert.setUrl(post.getResource().getUrl());	
+		insert.setUrl(post.getResource().getUrl());
 
-		// in field group in table bookmark, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
+		// in field group in table bookmark, insert the id for PUBLIC, PRIVATE
+		// or the id of the FIRST group in list
 		final int groupId = post.getGroups().iterator().next().getGroupId();
 		insert.setGroupId(groupId);
 
 		// inform plugins
-		this.plugins.onBookmarkInsert(post, session);		
-		
+		this.plugins.onBookmarkInsert(post, session);
+
 		return insert;
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getNewParam()
 	 */
 	@Override
