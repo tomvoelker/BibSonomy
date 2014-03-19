@@ -230,6 +230,10 @@ public class UrlUtils {
 	 * @return the encoded string (if that fails, returns the string)
 	 */
 	public static String safeURIEncode(final String s) {
+		if ( !present(s) )
+			return s;		// nothing to do, if empty string
+		
+		//else:
 		try {
 			return URLEncoder.encode(s, "UTF-8");
 		} catch (UnsupportedEncodingException ex) {
@@ -247,11 +251,15 @@ public class UrlUtils {
 	 * @return the decoded string (if that fails, returns the string)
 	 */
 	public static String safeURIDecode(final String s) {
+		if ( !present(s) )
+			return s;		// nothing to do, if empty string
+		
+		//else:
 		try {
 			return URLDecoder.decode(s, "UTF-8");
 		} catch (UnsupportedEncodingException ex) {
 			return s;
-		}
+		} 
 	}
 	
 	/**
