@@ -10,7 +10,6 @@
 	<jsp:directive.attribute name="isBasket" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
@@ -42,8 +41,7 @@
 								showInboxActions="${showInboxActions}" 
 								isBasket="${isBasket}"
 								disableListNavigation="${disableListNavigation}"
-								disableResourcetypeSelection="${disableResourcetypeSelection}"
-								disableSort="${disableSort}" />
+								disableResourcetypeSelection="${disableResourcetypeSelection}"/>
 						</c:otherwise>
 					</c:choose>
 				</div>
@@ -108,8 +106,7 @@
 								showInboxActions="${showInboxActions}" 
 								isBasket="${isBasket}"
 								disableListNavigation="${disableListNavigation}"
-								disableResourcetypeSelection="${disableResourcetypeSelection}"
-								disableSort="${disableSort}" />
+								disableResourcetypeSelection="${disableResourcetypeSelection}"/>
 						</c:otherwise>
 					</c:choose>
 				</div>

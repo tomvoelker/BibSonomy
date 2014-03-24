@@ -48,9 +48,28 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />
 		<meta charset="UTF-8" />
+		
+		<!--+
+			| BOOTSTRAP SETTINGS 
+			+-->
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+		
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.min.css"  />
+		<link rel="stylesheet" href="/resources/bootstrap/css/style.css" />
+		
+		
+		<!--+
+			| END BOOTSTRAP SETTINGS 
+			+ -->
+
 		<!-- FIXME: do we really need the complete jquery-ui.css? -->
 		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
+		
+		<!-- 
 		<mtl:styleSheet path="${resdir}/css/style.css" />
+		-->
 		<c:if test="${not empty personalized and personalized == true}">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 		</c:if>
@@ -68,8 +87,43 @@
 			| To add other files, add a line to ${resdir}/javascript/merged/global.js and 
 		 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 		 	+-->
-		<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
-
+		 
+		
+		<script src="http://code.jquery.com/jquery.js"><!-- keep me--></script>
+	 	
+	 	<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
+	 	
+	 	<!-- Latest compiled and minified Bootstrap JavaScript -->
+		<script type="text/javascript" src="${resdir}/bootstrap/js/bootstrap.min.js"><!-- keep me--></script>
+		
+		<script type="text/javascript" src="${resdir}/bootstrap/js/holder.js"><!-- KEEP ME --></script>
+		<!-- We're USING collapsing panels on this page. Here we can activate it. -->
+		<script type="text/javascript" src="${resdir}/bootstrap/js/collapse.js"><!-- KEEP ME --></script>
+		<script type="text/javascript" src="${resdir}/bootstrap/js/tooltip.js"><!-- KEEP ME --></script>
+		<script type="text/javascript" src="${resdir}/bootstrap/js/popover.js"><!-- KEEP ME --></script>
+		
+		
+		<script type="text/javascript">
+		$(function() {
+			console.log($('.help-popover'));
+			$('.post-popover, .help-popover').popover({ 
+			    html : true,
+			    trigger: "focus",
+			    container: 'body',
+			    placement: function() {
+		    		return ($(window).width() >= 990) ? 'right' : 'auto';
+		    	},	    	
+			    title: function() {
+			      	$(this).next().html();
+			    },
+			    content: function() {
+			      	return $(this).next().next().html();
+			    }
+			});
+		});
+		
+		</script>
+		
 		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
 		<script type="text/javascript">
 				<![CDATA[
@@ -93,7 +147,7 @@
 		</c:if>
 		<!-- enable logging with user permission -->
 		<c:if test="${loginUser.settings.logLevel != 1}">
-		   <script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- keep me --></script> 
+		   <script type="text/javascript" src="${resdir}/javascript/logging.js"></script> 
 		</c:if>
 		<!-- enable on-site spammer killing when user is admin -->
 		<c:if test="${loginUser.role eq 'ADMIN'}">
@@ -105,35 +159,10 @@
 		</c:if>
 		
 		<!--+
+			|
 			| Piwik
-			+-->
-		<c:set var="statisticsUrl" value="${properties['project.statistics.service.url']}" />
-		<c:if test="${not empty statisticsUrl}">
-			<c:set var="siteid" value="${properties['project.statisitics.siteid']}" />
-			<script type="text/javascript">
-				<![CDATA[
-					var pkBaseURL = (("https:" == document.location.protocol) ? "https://${statisticsUrl}" : "http://${statisticsUrl}");
-					document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-				]]>
-			</script>
-			<script type="text/javascript">
-				<![CDATA[
-					try {
-						var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", ${siteid});
-						piwikTracker.trackPageView();
-						piwikTracker.enableLinkTracking();
-					} catch( err ) {}
-				]]>
-			</script>
-			<noscript>
-				<p>
-					<c:url var="statImgUrl" value="http://${statisticsUrl}">
-						<c:param name="idsite" value="${siteid}" />
-					</c:url>
-					<img src="${statImgUrl}" style="border:0" alt="" />
-				</p>
-			</noscript>
-		</c:if>
+			|
+			+--> 
 		<!-- TODO: Discuss where to store the piwik id and adress 
 			+ current: in theme files the whole piwik code ist stored
 			+ should (probably): code here/some js + id in config file
@@ -144,9 +173,9 @@
 		</c:if>
 		<!-- End Piwik Tracking Code --> 
 	
-<!--				<meta name="email" content="${properties['project.email']}"/> -->
+<!--	<meta name="email" content="${properties['project.email']}"/> -->
 		<parts:meta fieldName="author" />
-<!--				<parts:meta fieldName="copyright" /> -->
+<!--	<parts:meta fieldName="copyright" /> -->
 		<parts:meta fieldName="keywords" />
 		<parts:meta fieldName="description" />
 		<!-- TODO: use feed links for bibsonomy in puma? -->
