@@ -5,12 +5,12 @@
 	xmlns:jspx="urn:jsptld:/WEB-INF/taglibs/jspx.tld"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
