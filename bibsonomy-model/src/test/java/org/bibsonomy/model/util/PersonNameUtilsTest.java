@@ -405,7 +405,6 @@ public class PersonNameUtilsTest {
 		
 		assertEquals("Leandro Balby Marinho and Donald E. Knuth", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), false));
 		assertEquals("Balby Marinho, Leandro and Knuth, Donald E.", PersonNameUtils.serializePersonNames(Arrays.asList(personNames), true));
-		
 	}
 	
 	/**
