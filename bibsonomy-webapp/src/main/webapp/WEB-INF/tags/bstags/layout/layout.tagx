@@ -1,0 +1,204 @@
+<jsp:root version="2.0"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/bstags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags">
+	
+	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
+
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>
+	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
+	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
+	<!-- FIXME: footerContainer not used -->
+	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	
+	
+	<!--+
+		| 
+		| document starts here
+		|
+		+-->
+	<jsp:output omit-xml-declaration="true" />
+	<jsp:output doctype-root-element="html"	doctype-system="about:legacy-compat" />
+	
+	<jsp:element name="html">
+		<jsp:body>
+			<parts:htmlHead 
+			headerExt="${headerExt}" 
+			loginUser="${loginUser}"
+			requestedUser="${requestedUser}"
+			requPath="${requPath}"
+			pageTitle="${pageTitle}"
+			personalized="${personalized}"
+			/>
+
+			<body>
+				
+			
+			
+				<c:if test="${not empty beforeMainContainer}">
+					<jsp:invoke fragment="beforeMainContainer"/>
+				</c:if>
+
+
+				<div class="container header">
+				
+					<div id="page-header bib-header">
+	
+						<div class="row">
+						
+							<div class="col-md-6">
+								<!--+ 
+								 	| 
+								 	| logo and project name
+								 	|
+								 	+-->
+							 	<!-- 
+								<spring:theme code="image.head.logo" var="headerLogo" text=""/>
+								<c:if test="${not empty headerLogo}">
+									<div id="logoimage">
+										<a href="/"><img id="headerlogoimage" src="${headerLogo}"/></a>
+									</div>	
+								</c:if>
+								-->
+								<div id="logo">
+									
+										<h1><a href="/">${properties['project.name']}</a></h1>
+										<small class="slogan"><fmt:message key="system.desc"/></small>
+									
+								</div>
+								
+								
+							</div>
+							
+							<div class="col-md-6">
+								
+								<div id="lang-switcher" class="pull-right">
+									<span>(&amp;nbsp;</span>
+									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'en')}">en</a>
+									<span>&amp;nbsp;|&amp;nbsp;</span>
+									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'de')}">de</a>
+									<span>&amp;nbsp;)</span>
+								</div>
+								
+								<!--+ 
+								 	|
+								 	| search
+								 	|
+								 	+-->
+								 <br style="clear: both;" />
+								 <p style="line-height: 9px; font-size:9px; padding:0;margin:0;">&amp;nbsp;<!-- KEEP ME --></p>
+								<jsp:invoke fragment="heading"/>
+							</div>
+						</div>
+							
+
+						<!--+
+						 	|
+					 		| inbox, basket, edit tags links
+						 	|
+						 	+-->
+						<div id="poststats">
+							<c:if test="${not command.context.userLoggedIn and empty noLoginBox}">
+								<parts:login requPath="${requPath}"/>
+							</c:if>
+						</div><!-- #poststats -->
+	
+	
+	
+	
+							
+					</div><!-- /#bib-header -->
+				</div>
+				<div id="navigation">
+						 <menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
+				</div> <!-- /#navigation -->
+				<div class="container main">
+					<div class="row">
+					  	<div class="col-md-9">
+							<div id="intro">
+								<jsp:invoke fragment="contentIntro"/>
+							</div>
+					    	<jsp:invoke fragment="content"/>
+					  	</div>
+					  	<div class="col-md-3">
+					  		<!-- <parts:sidebarnavi/> -->
+					  		
+				  			<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
+					  		
+					  	</div>
+					  
+					</div><!-- /.row -->
+
+					
+					<!--+
+						|
+						| home, myProjectName, insert, groups, popular
+						|
+						+-->
+
+					<!-- 
+					<div id="sidebarheader">
+						<parts:sidebarnavi/>
+					</div>
+					 -->
+					 <!--
+					<div id="headercontainer">
+						<c:if test="${not empty headerContainer}">
+							<jsp:invoke fragment="headerContainer"/>
+						</c:if>
+					</div> 
+					-->
+
+
+					<!-- TODO: remove?! -->
+<!--					<div id="footercontainer">-->
+<!--						<c:choose>-->
+<!--							<c:when test="${not empty footerContainer}">-->
+<!--								<jsp:invoke fragment="footerContainer"/>-->
+<!--							</c:when>-->
+<!--							<c:otherwise>-->
+<!--								<div id="fullscreenfooter"> keep me </div>-->
+<!--							</c:otherwise>-->
+<!--						</c:choose>-->
+<!--					</div>   #footercontainer -->
+					<div id="legalnotices">
+						<fmt:message key="system.offeredBy">
+							<fmt:param value="${properties['project.name']}"/>
+						</fmt:message>
+						<c:out value=" "/>
+						<fmt:message key="system.termsOfUse"/>
+						<c:out value=" - "/>
+						<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+						<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
+						
+						<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
+							<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
+						</c:if>
+					</div>
+				</div> <!--  /.container -->
+				
+
+			</body>
+		</jsp:body>
+	</jsp:element>
+</jsp:root>
