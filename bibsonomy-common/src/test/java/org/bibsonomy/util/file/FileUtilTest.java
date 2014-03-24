@@ -24,7 +24,6 @@
 package org.bibsonomy.util.file;
 
 import java.io.File;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -39,11 +38,9 @@ public class FileUtilTest {
 	 */
 	@Test
 	public void getFilePath() {
-		if (new File("/tmp/").getAbsolutePath().equals("C:\\tmp")) {
-			System.err.println("test skipped");
-			return;
-		}
-		Assert.assertEquals("/tmp/ab/abcde" , FileUtil.getFilePath("/tmp", "abcde"));
-		Assert.assertEquals("/tmp/ab/abcde" , FileUtil.getFilePath("/tmp/", "abcde"));
+        String tmpPath = System.getProperty("java.io.tmpdir");
+        String exp = tmpPath + "ab" + File.separator +  "abcde";
+        Assert.assertEquals(exp, FileUtil.getFilePath(tmpPath + File.separator, "abcde"));
+        Assert.assertEquals(exp, FileUtil.getFilePath(tmpPath, "abcde"));
 	}
 }
