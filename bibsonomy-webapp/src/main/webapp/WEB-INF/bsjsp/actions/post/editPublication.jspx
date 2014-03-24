@@ -4,16 +4,16 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
   >
   
   
