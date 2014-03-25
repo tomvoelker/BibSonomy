@@ -103,7 +103,7 @@
 		| COMMUNITY POST 
 		| 
 		+-->
-	<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
+	<fmt:message key="bibtex.actions.community_post" var="communityPost" />
 	
 	<a href="/bibtex/${post.resource.interHash}" class="item communitypost" title="${fn:escapeXml(communityPost)}">
 		<!-- Keep Me -->
