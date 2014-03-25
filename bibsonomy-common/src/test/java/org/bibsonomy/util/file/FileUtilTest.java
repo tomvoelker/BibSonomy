@@ -39,7 +39,12 @@ public class FileUtilTest {
 	@Test
 	public void getFilePath() {
         String tmpPath = System.getProperty("java.io.tmpdir");
-        String exp = tmpPath + "ab" + File.separator +  "abcde";
+        /* Windows and Linux exhibit different behaviour when it comes
+         * to java.io.tmpdir: Windows attaches a File.seperator at the end,
+         * whereas Linux plainly ignores that. We just check it manually.
+         */
+        String exp = new File(tmpPath + (tmpPath.endsWith(File.separator) ? "" : File.separator),
+                "ab" + File.separator +  "abcde").getAbsolutePath();
         Assert.assertEquals(exp, FileUtil.getFilePath(tmpPath + File.separator, "abcde"));
         Assert.assertEquals(exp, FileUtil.getFilePath(tmpPath, "abcde"));
 	}
