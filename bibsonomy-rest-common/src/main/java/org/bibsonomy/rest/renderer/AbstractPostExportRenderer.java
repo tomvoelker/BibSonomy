@@ -1,5 +1,6 @@
 package org.bibsonomy.rest.renderer;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
@@ -7,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -28,6 +32,8 @@ import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
  * @author dzo
  */
 public abstract class AbstractPostExportRenderer implements Renderer {
+	private static final Log log = LogFactory.getLog(AbstractPostExportRenderer.class);
+	
 	/** the new line charater */
 	protected static final char NEW_LINE = '\n';
 	
@@ -129,9 +135,12 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public void serializeError(Writer writer, String errorMessage) {
-		// FIXME: check if this method has to be implemented
-		// TODO: check also serializeFail
-		this.handleUnsupportedMediaType();
+		try {
+			writer.append(errorMessage);
+		} catch (IOException e) {
+			log.error("cannot serialize error message '" + errorMessage + "'");
+			throw new InternServerException(e.toString());
+		}
 	}
 
 	/* (non-Javadoc)
