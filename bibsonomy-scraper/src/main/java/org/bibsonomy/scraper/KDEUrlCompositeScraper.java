@@ -60,6 +60,7 @@ import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
+import org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper;
 import org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
@@ -154,6 +155,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new LibrarythingScraper());
 		addScraper(new NasaAdsScraper());
 		addScraper(new AipScitationScraper());
+		addScraper(new HematologyLibraryScraper());
 		addScraper(new MathSciNetScraper());
 		addScraper(new WileyIntersienceScraper());
 		addScraper(new IOPScraper());
