@@ -531,30 +531,29 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * <li>details about the tag itself, like number of occurrences etc</li>
 	 * <li>list of subtags</li>
 	 * <li>list of supertags</li>
-	 * <li>list of correlated tags</li>
 	 * </ul>
 	 * 
 	 * FIXME: is this global or for a given user/group only?
 	 * 
-	 * FIXME: I think this method needs to be cleaned up an commented ...
-	 * 
-	 * @param param
-	 * @param session
+     * @param user the requesting user
+     * @param tagName name of the tag where we need 
+	 * @param session the DBSession to be queried.
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final User user, final String tagName, final DBSession session) {
         final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
-		/*
-		 * retrieve all sub-/supertags
-		 */
-		param.setLimit(10000);
+
+        param.setLimit(10000);
 		param.setOffset(0);
 		param.setCaseSensitiveTagNames(true);
 
+        // query the database if tagName is a proper tag
 		final Tag tag = this.getTagByName(param, session);
 
 		if (present(tag)) {
-    		// check for sub-/supertags
+            /*
+             * retrieve all sub-/supertags
+             */
 			final List<Tag> subTags = this.getSubtagsOfTag(param, session);
 			tag.setSubTags(setUsercountToGlobalCount(subTags));
 			final List<Tag> superTags = this.getSupertagsOfTag(param, session);
