@@ -499,7 +499,7 @@
 				</entry>
 				<entry key="/postBookmark">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postBookmarkController"/>
+						<property name="controllerBeanName" value="editBookmarkController"/>
 					</bean>
 				</entry>
 				<entry key="/postPublication">
@@ -1189,9 +1189,12 @@
 		<property name="view" value="REGISTER_USER_SUCCESS"></property>
 	</bean>
 	
+	<!-- NOW USING EditBookmarkController -->
+	<!-- 
 	<bean id="postBookmarkController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="POST_BOOKMARK"></property>
 	</bean>
+	-->
 	
 	<!-- EDIT TAGS -->
 	<bean id="batchEditController" class="org.bibsonomy.webapp.controller.actions.BatchEditController" scope="request">
