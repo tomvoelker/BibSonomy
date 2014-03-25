@@ -209,14 +209,13 @@ function handler(event) {
 	}
 }
 
-
 /**
  * AJAX callback that shows the recommended tags. 
  * 
- * @param xml
+ * @param json
  * @return
  */
-function handleRecommendedTags(xml) {
+function handleRecommendedTags(json) {
 	
 		var tagSuggestions = [];
 	
@@ -226,39 +225,17 @@ function handleRecommendedTags(xml) {
 		// clear previous recommendations
 		tagField.empty();
 		
-		// lookup tags
-		var root = xml.getElementsByTagName('tags').item(0);
-		
-		
-		if (root == null) {
-			// Internet Explorer 9 parses xml as an HTML document with stylesheets for the actual XML
-			// TODO: remove when using json as output format!
-			var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
-			xmlDoc.async = "false";
-			xmlDoc.loadXML(xml.documentElement.innerHTML);
-			
-			root = xmlDoc;
-			
-		}
-		// append each tag to target field
-		for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
-			var node = root.childNodes.item(iNode);
-			// work around to firefox' phantom nodes
-			if ((node.nodeType == 1) && (node.tagName == 'tag')) {
-				var tagName       = node.getAttribute('name');
-				
+		jQuery.each(json.tags.tag, function(key, value) {
+			    var tagName = value.name;
 				var newTag = $("<li tabindex='1'>" + tagName + " </li>");
 				newTag.click(copytag);
 				tagField.append(newTag);
-				
-				// append tag to suggestion list
 				var suggestion = new Object;
 				suggestion.label      = tagName;
-				suggestion.score      = node.getAttribute('score');
-				suggestion.confidence = node.getAttribute('confidence');
+				suggestion.score      = value.score;
+				suggestion.confidence = value.confidence;
 				tagSuggestions.push(suggestion);
-			}
-		}
+			});
 	
 		// add recommended tags to suggestions
 		populateSuggestionsFromRecommendations(tagSuggestions);
@@ -267,6 +244,8 @@ function handleRecommendedTags(xml) {
 		$("#fsReloadButton").attr("src","/resources/image/button_reload.png");
 		reloadRecommendationsLock = true;
 }
+
+
 
 /**
  * Append recommended tags to list of potential tag suggestions.

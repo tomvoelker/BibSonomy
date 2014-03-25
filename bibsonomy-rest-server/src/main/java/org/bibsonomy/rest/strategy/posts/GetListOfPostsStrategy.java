@@ -33,22 +33,25 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		// TODO: why not sort in DBLogic? (Maybe refactoring LogicInterface with a smarter parameter object to keep parameter lists and sorting clear)
+		// TODO: why not sort in DBLogic? (Maybe refactoring LogicInterface with
+		// a smarter parameter object to keep parameter lists and sorting clear)
 		if ((resourceType != null) && BibTex.class.isAssignableFrom(resourceType)) {
-			List<? extends Post<? extends BibTex>> bibtexList = getList((Class<? extends BibTex>) resourceType);
+			final List<? extends Post<? extends BibTex>> bibtexList = getList((Class<? extends BibTex>) resourceType);
 			BibTexUtils.sortBibTexList(bibtexList, sortKeys, sortOrders);
 			return bibtexList;
 		} else if ((resourceType != null) && Bookmark.class.isAssignableFrom(resourceType)) {
-			List<? extends Post<? extends Bookmark>> bookmarkList = getList((Class<? extends Bookmark>) resourceType);
+			final List<? extends Post<? extends Bookmark>> bookmarkList = getList((Class<? extends Bookmark>) resourceType);
 			BookmarkUtils.sortBookmarkList(bookmarkList, sortKeys, sortOrders);
 			return bookmarkList;
 		}
-		
+
 		// return other resource types without ordering
 		return getList(resourceType);
 	}
-	
-	protected <T extends Resource> List<Post<T>> getList(Class<T> _resourceType) {
-		return this.getLogic().getPosts(_resourceType, grouping, groupingValue, this.tags, hash, search, null, order, null, null, getView().getStartValue(), getView().getEndValue());
+
+	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue,
+				this.tags, this.hash, search, null, order, null, null,
+				getView().getStartValue(), getView().getEndValue());
 	}
 }

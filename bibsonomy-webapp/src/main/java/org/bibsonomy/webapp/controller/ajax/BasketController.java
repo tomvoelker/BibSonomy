@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -18,6 +18,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+
 /**
  * @author Christian Kramer
  */
@@ -53,7 +54,6 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		// if clear all is set, clear all
 		if ("clearAll".equals(command.getAction())) {
 			logic.deleteBasketItems(null, true);
-		
 			return new ExtendedRedirectView(requestLogic.getReferer());
 		}
 		
@@ -86,9 +86,9 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	 * @param command
 	 * @return List<Post<BibTex>>
 	 */
-	private List<Post<? extends Resource>> createObjects(final BasketManagerCommand command){
+	private static List<Post<? extends Resource>> createObjects(final BasketManagerCommand command){
 		// create new list and necessary variables
-		final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
+		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		
 		// get the has string
 		final String hash = command.getHash();
@@ -108,7 +108,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		} else {
 			posts.add(createPost(hash, command.getUser()));
 		}
-				
+		
 		return posts;
 	}
 
@@ -119,7 +119,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	 * @param userName
 	 * @return
 	 */
-	private Post<BibTex> createPost(final String intraHash, final String userName) {
+	private static Post<BibTex> createPost(final String intraHash, final String userName) {
 		final Post<BibTex> post = new Post<BibTex>();
 		final BibTex publication = new BibTex();
 		

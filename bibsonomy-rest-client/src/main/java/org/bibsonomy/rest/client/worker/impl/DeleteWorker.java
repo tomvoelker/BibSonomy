@@ -35,6 +35,7 @@ public final class DeleteWorker extends HttpWorker<DeleteMethod> {
 	/**
 	 * @param username the user name
 	 * @param apiKey the api key of the user
+	 * @param accessor 
 	 */
 	public DeleteWorker(final String username, final String apiKey, AuthenticationAccessor accessor) {
 		super(username, apiKey, accessor);

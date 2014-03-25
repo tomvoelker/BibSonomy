@@ -99,29 +99,9 @@
 		</c:otherwise>
 	</c:choose>
 	
-		
-	<!--+
-		| ADMIN ACTIONS (COMMUNITY POST)
-		+ -->
-	<!-- TODO: When this icon is made visible for non admins, change c:if userLoggedIn to c:choose and display inactive icon for signed out users -->
-	<!-- FIXME: The edit link should only be displayed on the page of a community post, never on regular posts. There only the "go-to-or-create-community-post" link should be displayed. -->
-	<c:if test="${command.context.userLoggedIn}">
-		<!-- COMMUNITY POST -->
-		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-			<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
-				<c:param name="hash" value="${post.resource.intraHash}" />
-				<c:param name="user" value="${post.user.name}" />
-				<c:param name="editBeforeSaving" value="true" />
-			</c:url>
-			
-			<fmt:message key="bibtex.actions.gold" var="goldTitle" />
-			<a class="item community" href="${editGoldStandardLink}" title="${goldTitle}"><!-- Keep Me --></a>
-		</c:if>
-	</c:if>
-
 	<!--+ 
 		| COMMUNITY POST 
-		| TODO: check if community post exists
+		| 
 		+-->
 	<fmt:message key="bibtex.actions.communityPost" var="communityPost" />
 	
@@ -223,6 +203,7 @@
 		<c:choose>
 			<c:when test="${not empty post.resource.miscFields['doi']}">
 				<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
+
 				<a class="litem" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
 			</c:when>
 			<c:otherwise>

@@ -28,12 +28,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 
 import org.bibsonomy.model.Document;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.util.FileFactory;
 import org.bibsonomy.rest.client.util.MultiDirectoryFileFactory;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Downloads a document for a specific post.
@@ -60,9 +59,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 	 * @param username
 	 * @param resourceHash the resource hash of a specific post
 	 * @param fileName the file name of the document
-	 * @param fileDirectory 
-	 * @param pdfDirectory 
-	 * @param psDirectory 
+	 * @param fileFactory
 	 */
 	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, FileFactory fileFactory) {
 		if (!present(username)) throw new IllegalArgumentException("no username given");
@@ -84,20 +81,21 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 	}
 	
 	@Override
-	protected Document doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		if (!this.fileExists) {
-			final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-			urlBuilder.addPathElement(this.document.getUserName());
-			urlBuilder.addPathElement(RESTConfig.POSTS_URL);
-			urlBuilder.addPathElement(this.resourceHash);
-			urlBuilder.addPathElement(RESTConfig.DOCUMENTS_SUB_PATH);
-			urlBuilder.addPathElement(this.document.getFileName());
-			this.performFileDownload(urlBuilder.asString(), this.document.getFile());
+			final String docUrl = this.getUrlRenderer().createHrefForResourceDocument(this.document.getUserName(), this.resourceHash, this.document.getFileName());
+			this.performFileDownload(docUrl, this.document.getFile());
 		} else {
 			// TODO: never overwrite? what if there is a new document?
-			this.setExecuted(true);
 			this.setStatusCode(200);
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
+	 */
+	@Override
+	protected Document getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.document;
 	}
 }

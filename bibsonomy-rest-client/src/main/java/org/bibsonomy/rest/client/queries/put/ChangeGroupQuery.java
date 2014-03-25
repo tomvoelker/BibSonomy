@@ -32,7 +32,6 @@ import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * Use this Class to change details of an existing group in bibsonomy.
@@ -64,18 +63,18 @@ public final class ChangeGroupQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeGroup(sw, group, null);
-		// TODO: use the urlrenderer of this query
-		this.downloadedDocument = performRequest(HttpMethod.PUT, new UrlRenderer("").createHrefForGroup(this.groupName), sw.toString());
-		return null;
+		final String groupUrl = this.getUrlRenderer().createHrefForGroup(this.groupName);
+		this.downloadedDocument = performRequest(HttpMethod.PUT, groupUrl, sw.toString());
 	}
 	
 	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return this.getRenderer().parseGroupId(this.downloadedDocument); 
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
+			return this.getRenderer().parseGroupId(this.downloadedDocument);
+		}
 		return this.getError();
 	}
 }

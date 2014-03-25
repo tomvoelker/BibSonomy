@@ -25,20 +25,16 @@ package org.bibsonomy.rest.client.queries.delete;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.common.enums.Status;
-import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.rest.client.AbstractQuery;
+import org.bibsonomy.rest.client.AbstractDeleteQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to remove an user from a group.
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
-public final class RemoveUserFromGroupQuery extends AbstractQuery<String> {
+public final class RemoveUserFromGroupQuery extends AbstractDeleteQuery {
 	private final String userName;
 	private final String groupName;
 
@@ -61,19 +57,8 @@ public final class RemoveUserFromGroupQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.GROUPS_URL);
-		urlBuilder.addPathElement(this.groupName);
-		urlBuilder.addPathElement(RESTConfig.USERS_URL);
-		urlBuilder.addPathElement(this.userName);
-		this.downloadedDocument = performRequest(HttpMethod.DELETE, urlBuilder.asString(), null);
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String groupMemberUrl = this.getUrlRenderer().createHrefForGroupMember(this.groupName, this.userName);
+		this.downloadedDocument = performRequest(HttpMethod.DELETE, groupMemberUrl, null);
 	}
-	
-	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
-			return Status.OK.getMessage();
-		return this.getError();
-	}	
 }

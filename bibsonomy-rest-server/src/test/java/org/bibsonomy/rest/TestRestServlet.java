@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.bibsonomy.rest.database.TestDBLogic;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
@@ -15,6 +16,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.testutil.TestRequest;
 import org.bibsonomy.rest.testutil.TestResponse;
+import org.bibsonomy.rest.utils.HeaderUtils;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,7 +35,9 @@ public class TestRestServlet {
 	@Before
 	public void setUp() {
 		this.servlet = new RestServlet();
-		this.servlet.setLogicInterfaceFactory(TestDBLogic.factory);
+		final BasicAuthenticationHandler authenticationHandler = new BasicAuthenticationHandler();
+		authenticationHandler.setLogicFactory(TestDBLogic.factory);
+		this.servlet.setAuthenticationHandlers(Arrays.<AuthenticationHandler<?>>asList(authenticationHandler));
 		this.servlet.setUrlRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
 		this.servlet.setRendererFactory(new RendererFactory(new UrlRenderer("http://www.bibsonomy.org/api/")));
 
@@ -47,18 +51,21 @@ public class TestRestServlet {
 	 */
 	@Test
 	public void testValidateAuthorization() throws Exception {
+		this.request.putIntoHeaders(HeaderUtils.HEADER_AUTHORIZATION, "YXNkZjphc2Rm");
 		try {
-			this.servlet.validateHttpBasicAuthorization("YXNkZjphc2Rm");
+			this.servlet.validateAuthorization(this.request);
 			fail("exception should have been thrown");
 		} catch (final AuthenticationException e) {
 		}
-
+		this.request.putIntoHeaders(HeaderUtils.HEADER_AUTHORIZATION, "Basic ASDFASDF");
 		try {
-			this.servlet.validateHttpBasicAuthorization("Basic ASDFASDF");
+			this.servlet.validateAuthorization(this.request);
 		} catch (final BadRequestOrResponseException e) {
 		}
+		
+		this.request.putIntoHeaders(HeaderUtils.HEADER_AUTHORIZATION, "Basic YXNkZjphc2Rm");
 
-		assertEquals("error decoding string", "asdf", this.servlet.validateHttpBasicAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser().getName());
+		assertEquals("error decoding string", "asdf", this.servlet.validateAuthorization(this.request).getAuthenticatedUser().getName());
 	}
 
 	@Test

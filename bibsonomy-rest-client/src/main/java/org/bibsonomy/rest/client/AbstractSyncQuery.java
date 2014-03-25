@@ -23,15 +23,9 @@
 
 package org.bibsonomy.rest.client;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
-import org.bibsonomy.rest.RESTConfig;
-import org.bibsonomy.util.UrlBuilder;
-import org.bibsonomy.util.UrlUtils;
 
 
 /**
@@ -39,11 +33,14 @@ import org.bibsonomy.util.UrlUtils;
  * @param <T> 
  */
 public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
-
-	private final String serviceURI;
-	private final ConflictResolutionStrategy strategy;
-	private final SynchronizationDirection direction;
-	private final Class<? extends Resource> resourceType;
+	/** the service uri of the sync */
+	protected final String serviceURI;
+	/** the strategy of the sync */
+	protected final ConflictResolutionStrategy strategy;
+	/** the sync direction */
+	protected final SynchronizationDirection direction;
+	/** the resource type */
+	protected final Class<? extends Resource> resourceType;
 	
 	/**
 	 * 
@@ -53,30 +50,15 @@ public abstract class AbstractSyncQuery<T> extends AbstractQuery<T> {
 	 * @param direction
 	 */
 	public AbstractSyncQuery(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
+		/*
+		 * XXX: currently we only can sync one resource type one after another
+		 */
+		if (resourceType == Resource.class) {
+			throw new IllegalArgumentException(Resource.class + " not supported. Please use specific resource types.");
+		}
 		this.serviceURI = serviceURI;
 		this.resourceType = resourceType;
 		this.strategy = strategy;
 		this.direction = direction;
-	}
-	
-	/**
-	 * @return the sync url
-	 */
-	protected String getSyncURL() {
-		final UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.SYNC_URL + "/" + UrlUtils.safeURIEncode(serviceURI));
-		/*
-		 * FIXME: resourceType=all not supported - where to block?
-		 */
-		if (present(resourceType)) {
-			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
-		}
-		if (present(strategy)) {
-			urlBuilder.addParameter(RESTConfig.SYNC_STRATEGY_PARAM, strategy.getConflictResolutionStrategy());
-		}
-		if (present(direction)) {
-			urlBuilder.addParameter(RESTConfig.SYNC_DIRECTION_PARAM, direction.getSynchronizationDirection());
-		}
-		
-		return urlBuilder.asString();
 	}
 }
