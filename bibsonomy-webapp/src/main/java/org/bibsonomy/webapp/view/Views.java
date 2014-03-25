@@ -646,6 +646,11 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 
+	/**
+	 * 
+	 */
+	BOOTSTRAP_DEMO("bootstrapDemo"),
+	
 	/*
 	 * Error pages
 	 */
