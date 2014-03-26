@@ -72,12 +72,12 @@ public class RenderingFormat {
 	/**
 	 * bibtex format
 	 */
-	public static final RenderingFormat BIBTEX = new RenderingFormat("text", "bibtex");
+	public static final RenderingFormat BIBTEX = new RenderingFormat("text", "bibtex", "text", "plain");
 	
 	/**
 	 * endnote format
 	 */
-	public static final RenderingFormat ENDNOTE = new RenderingFormat("text", "endnote");
+	public static final RenderingFormat ENDNOTE = new RenderingFormat("text", "endnote", "text", "plain");
 	
 	/**
 	 * @param string
@@ -148,14 +148,25 @@ public class RenderingFormat {
 	private final String type;
 	private final String subtype;
 
+	private final String errorType;
+
+	private final String errorSubtype;
+
+	
+	public RenderingFormat(final String type, final String subtype) {
+		this(type, subtype, type, subtype);
+	}
+	
 	/**
 	 * 
 	 * @param type
 	 * @param subtype
 	 */
-	public RenderingFormat(final String type, final String subtype) {
+	public RenderingFormat(final String type, final String subtype, final String errorType, final String errorSubtype) {
 		this.type = type;
 		this.subtype = subtype;
+		this.errorType = errorType;
+		this.errorSubtype = errorSubtype;
 	}
 
 	/**
@@ -163,6 +174,10 @@ public class RenderingFormat {
 	 */
 	public String getMimeType() {
 		return this.type + "/" + this.subtype;
+	}
+	
+	public String getErrorMimeType() {
+		return this.errorType + "/" + this.errorSubtype;
 	}
 
 	/**

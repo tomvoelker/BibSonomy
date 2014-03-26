@@ -395,3 +395,12 @@ a.addDocumentImg.addDocument:before {
 #previewSelectBullets a.bullet.active span {
 	background-position: 0 -30px;
 }
+
+.pubmetainfo {
+	float: right;
+}
+
+.pubmetainfo li {
+	display: inline;
+	margin-left: 1em;
+}

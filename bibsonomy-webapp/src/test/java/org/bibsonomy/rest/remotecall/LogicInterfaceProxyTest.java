@@ -66,6 +66,8 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.rest.AuthenticationHandler;
+import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -177,10 +179,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			restServlet.setFileLogic(createFileLogic());
 			
 			try {
-				restServlet.setLogicInterfaceFactory(new MockLogicFactory());
+				final BasicAuthenticationHandler handler = new BasicAuthenticationHandler();
+				handler.setLogicFactory(new MockLogicFactory());
+				restServlet.setAuthenticationHandlers(Arrays.<AuthenticationHandler<?>>asList(handler));
 			} catch (final Exception e) {
 				throw new RuntimeException("problem while instantiating " + MockLogicFactory.class.getName(), e);
-			}			
+			}
 			
 			servletContext.addServlet(RestServlet.class, "/*").setServlet(restServlet);
 			

@@ -26,8 +26,6 @@
 	</repositories>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
-		<defaultGoal>install</defaultGoal>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -35,6 +33,7 @@
 			</resource>
 		</resources>
 		<plugins>
+			<!-- TODO: why do we need a war plugin it is a jar ??! -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -83,14 +82,15 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-web-common</artifactId>
 		</dependency>
-
-		<!-- shindig dependencies -->
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-server</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-common</artifactId>
 			<version>${shindig.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-social-api</artifactId>
@@ -102,7 +102,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-gadgets</artifactId>
@@ -114,7 +113,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-features</artifactId>
@@ -124,16 +122,6 @@
 			<groupId>org.apache.shindig</groupId>
 			<artifactId>shindig-extras</artifactId>
 			<version>${shindig.version}</version>
-		</dependency>
-
-
-		<!-- shindig test dependencies -->
-		<dependency>
-			<groupId>org.apache.shindig</groupId>
-			<artifactId>shindig-common</artifactId>
-			<version>${shindig.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- Spring dependencies -->
@@ -187,41 +175,18 @@
 			<artifactId>spring-security-ldap</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
-
-		<!-- Spring test dependencies -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Apache commons dependencies -->
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2</version>
-		</dependency>
-
+		
 		<!-- Servlet and JSP dependencies -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>el-api</artifactId>
-			<version>6.0.29</version>
-			<scope>test</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
+		
 		<!-- external dependencies -->
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
@@ -230,22 +195,38 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
+			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20070829</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.1.1</version>
-			<type>jar</type>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>el-api</artifactId>
+			<version>6.0.29</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shindig</groupId>
+			<artifactId>shindig-common</artifactId>
+			<version>${shindig.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

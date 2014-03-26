@@ -163,7 +163,6 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		final StringWriter sw = new StringWriter(100);
 		renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
-		System.out.println(sw.toString());
 	}
 
 
