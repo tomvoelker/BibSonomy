@@ -1,8 +1,11 @@
 package org.bibsonomy.rest.strategy;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -21,6 +24,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public abstract class Strategy {
+	private static final Log log = LogFactory.getLog(Strategy.class);
 	private final Context context;
 	
 	protected Writer writer;
@@ -44,6 +48,21 @@ public abstract class Strategy {
 	 */
 	public void initWriter(final ByteArrayOutputStream outputStream) {
 		this.writer = RESTUtils.getOutputWriterForStream(outputStream, RestServlet.RESPONSE_ENCODING);
+	}
+	
+
+	/**
+	 * flush writer or whatever needs to be done with it
+	 * @param outStream the outputstream for potential cases where it needs to be delt with
+	 */
+	public void shutdownWriter(ByteArrayOutputStream outStream) {
+		if (this.writer != null) {
+			try {
+				writer.flush();
+			} catch (IOException e) {
+				log.error("cannot flush writer");
+			}
+		}
 	}
 
 	/**
