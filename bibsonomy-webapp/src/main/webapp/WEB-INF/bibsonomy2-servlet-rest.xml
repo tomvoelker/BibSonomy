@@ -80,6 +80,18 @@
 					</key>
 					<bean class="org.bibsonomy.rest.renderer.impl.CSLRenderer" />
 				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.BIBTEX" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.BibTexRenderer" />
+				</entry>
+				<entry>
+					<key>
+						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.ENDNOTE" />
+					</key>
+					<bean class="org.bibsonomy.rest.renderer.impl.EndnoteRenderer" />
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -87,13 +99,24 @@
 	<bean id="restServletInstance" class="org.bibsonomy.rest.RestServlet">
 		<property name="projectHome" value="${project.home}" />
 		<property name="projectName" value="${project.name}" />
-		<property name="logicInterfaceFactory" ref="restLogicFactory" />
 		<property name="urlRenderer" ref="restUrlRenderer" />
 		<property name="rendererFactory" ref="rendererFactory" />
 		<property name="fileLogic" ref="fileLogic" />
-		<!-- open social stuff -->
+		<property name="authenticationHandlers">
+			<list>
+				<ref bean="basicRestAuthenticationHandler" />
+				<ref bean="oauthRestAuthenticationHandler" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="oauthRestAuthenticationHandler" class="org.bibsonomy.rest.OAuthAuthenticationHandler">
 		<property name="oauthValidator" ref="oauthRequestValidator" />
 		<property name="oauthLogicFactory" ref="oauthLogicFactory" />
+	</bean>
+	
+	<bean id="basicRestAuthenticationHandler" class="org.bibsonomy.rest.BasicAuthenticationHandler">
+		<property name="logicFactory" ref="restLogicFactory" />
 	</bean>
 
 </beans>

@@ -82,6 +82,7 @@
 					</span>
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
 				</li>
+				
 				<!--+
 					|
 					| related users

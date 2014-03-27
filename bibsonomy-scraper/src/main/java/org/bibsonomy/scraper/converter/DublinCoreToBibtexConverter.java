@@ -56,7 +56,7 @@ public class DublinCoreToBibtexConverter {
 	private static final String TYPE_KEY = "type";
 
 	// pattern to extract all DC key-value pairs, placed in the page's html
-	private static final Pattern EXTRACTION_PATTERN = Pattern.compile("(?im)<\\s*meta(?=[^>]*lang=\"([^\"]*)\")?(?=[^>]*content=\"([^\"]*)\")[^>]*name=\"(?-i)DC(?i).([^\"]*)\"[^>]*>");
+	private static final Pattern EXTRACTION_PATTERN = Pattern.compile("(?im)<\\s*meta(?=[^>]*lang=\"([^\"]*)\")?(?=[^>]*content=\"([^\"]*)\")[^>]*name=\"[d|D][c|C].([^\"]*)\"[^>]*>");
 
 	// pattern to extract a year out of a string
 	private static final Pattern EXTRACT_YEAR = Pattern.compile("\\d\\d\\d\\d");

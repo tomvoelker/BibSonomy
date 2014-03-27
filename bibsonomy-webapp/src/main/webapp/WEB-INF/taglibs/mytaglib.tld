@@ -366,12 +366,6 @@
 	</function>
 
 	<function>
-		<name>otherPeopleColor</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>int otherPeopleColor(int)</function-signature>
-	</function>
-
-	<function>
 		<name>formatDateISO8601</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>String formatDateISO8601(java.util.Date)</function-signature>
@@ -382,7 +376,13 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>String formatDateW3CDTF(java.util.Date)</function-signature>
 	</function>
-
+	
+	<function>
+		<name>otherPeopleColor</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>int otherPeopleColor(int)</function-signature>
+	</function>
+	
 	<function>
 		<name>convertToEnum</name>
 		<function-class>tags.Functions</function-class>

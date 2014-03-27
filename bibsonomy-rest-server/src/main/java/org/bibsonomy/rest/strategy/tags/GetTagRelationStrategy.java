@@ -36,8 +36,7 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 	
     /**
      * Returns a list of tags according to the requested relation. If <tt>relation</tt>
-     * is something else than RELATED, SIMILAR, SUBTAGS, SUPERTAGS, all tags are
-     * returned.
+     * is something else than RELATED, SIMILAR, all tags are returned.
      * @return 
      */
 	@Override
@@ -47,10 +46,6 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
                 return this.handleRelated();
             case SIMILAR:
                 return this.handleSimilar();
-            case SUBTAGS:
-                return this.handleSubtags();
-            case SUPERTAGS:
-                return this.handleSupertags();
             default:
                 return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
                         hash, null, regex, null, this.getView().getOrder(), null, null,
@@ -80,23 +75,5 @@ public class GetTagRelationStrategy extends GetListOfTagsStrategy {
 		return this.getLogic().getTags(resourceType, grouping, groupingValue, tags,
 				hash, null, regex, TagSimilarity.COSINE, this.getView().getOrder(),
 				null, null, this.getView().getStartValue(), this.getView().getEndValue());
-	}
-	
-	/**
-	 * Handling subtags. Only applicable for one tag yet.
-	 * TODO: Think about a way of calculating subtags for more than one tag.
-	 * @return a list of subtags for the first tag in tagList.
-	 */
-	private List<Tag> handleSubtags() {
-		return this.getLogic().getTagDetails(tags.get(0)).getSubTags();
-	}
-	
-    /**
-     * Handle supertags. Only applicable for one tag yet.
-     * TODO: Think about a way of calculating supertags for more than one tag.
-     * @return a list of supertags for the first tag in tagList.
-     */
-	private List<Tag> handleSupertags() {
-		return this.getLogic().getTagDetails(tags.get(0)).getSuperTags();
 	}
 }
