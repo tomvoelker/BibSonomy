@@ -334,7 +334,7 @@ public final class RestServlet extends HttpServlet {
 
 		// send error
 		response.setStatus(code);
-		response.setContentType(mediaType.getErrorMimeType());
+		response.setContentType(mediaType.getErrorFormat().getMimeType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName(RESPONSE_ENCODING));
 		
