@@ -14,7 +14,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" 
+	<layout:homeLayout pageTitle="${command.pageTitle}" 
 			command="${command}" 
 			requPath="${requPath}" 
 			disableListNavigation="${true}"
@@ -71,6 +71,6 @@
 			</ul>
 		</jsp:attribute>
 
-	</layout:resourceLayout>
+	</layout:homeLayout>
 
 </jsp:root>

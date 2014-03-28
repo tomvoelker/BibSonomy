@@ -4,10 +4,16 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+
+
+
+	<div class="edit-media-buttons btn-group btn-group-xs">
+
 
 	<!--+
 		| COPY/EDIT
@@ -23,20 +29,23 @@
 						<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 					</c:url>		
 					<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
-					<a class="item copy" href="${copyLink}" title="${fn:escapeXml(copyTitle)}"><!-- Keep Me --></a>
+					<a class="btn btn-xsmall btn-default item copy" href="${copyLink}" 
+						title="${fn:escapeXml(copyTitle)}"><span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span></a>
 				</c:when>
 			
 				<!-- EDIT -->
 				<c:otherwise><!-- user is post's owner -->
 					<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
-					<a class="item edit" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}"><!-- Keep Me--></a>
+					<a class="btn btn-xsmall btn-default item edit" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" 
+						title="${editTitle}"><span class="glyphicon glyphicon-edit"><!--  --></span></a>
 				</c:otherwise>
 			</c:choose>
 		</c:when>
 		<c:otherwise>
 			<!-- For signed out users we always show the inactive copy button -->
 			<fmt:message key="bookmark.actions.copy.inactive" var="copyTitle" />
- 			<span class="item icopy" title="${copyTitle}"><!-- Keep Me--></span>
+ 			<span class="btn btn-xsmall btn-default item icopy" 
+ 				title="${copyTitle}"><span class="glyphicon glyphicon-floppy-disk"><!--  --></span></span>
 		</c:otherwise>
 	</c:choose>
 
@@ -55,8 +64,8 @@
 				<c:param name="clear" value="false" />
 			</c:url>
 			<fmt:message key="bookmark.actions.removeMessage.title" var="removeTitle" />
-			<a class="item remove deleteconfirm" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-					data-type="inboxpost"><!-- Keep Me --></a>
+			<a class="btn btn-xsmall btn-default item remove deleteconfirm" href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
+					data-type="inboxpost"><span class="glyphicon glyphicon-remove"><!--  --></span></a>
 		</c:when>
 		<c:otherwise>
 			<!-- REGULAR POST DELETE -->
@@ -67,12 +76,12 @@
 						<c:param name="resourceHash" value="${post.resource.intraHash}" />
 						<c:param name="ckey" value="${ckey}" />
 					</c:url>
-					<a class="confirmdelete item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"
-							data-type="post"><!-- Keep Me --></a>
+					<a class="btn btn-xsmall btn-default confirmdelete item delete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}"
+							data-type="post"><span class="glyphicon glyphicon-remove"><!--  --></span></a>
 				</c:when>
 				<c:otherwise>
 					<fmt:message key="bookmark.actions.delete.inactive" var="deleteTitle"/>
-					<span class="item idelete" title="${deleteTitle}"><!-- Keep Me --></span>
+					<span class="btn btn-xsmall btn-default item idelete" title="${deleteTitle}"><span class="glyphicon glyphicon-remove"><!--  --></span></span>
 				</c:otherwise>
 			</c:choose>
 		</c:otherwise>
@@ -93,8 +102,9 @@
 			</c:url>
 	
 			<fmt:message key="bibtex.actions.gold" var="goldTitle" />
-			<a class="item community" href="${editGoldStandardLink}" title="${goldTitle}"><!-- Keep Me --></a>
+			<a class="btn btn-xsmall btn-default item community" href="${editGoldStandardLink}" 
+				title="${goldTitle}">cp</a>
 		</c:if>
 	</c:if>	
-
+	</div>
 </jsp:root>

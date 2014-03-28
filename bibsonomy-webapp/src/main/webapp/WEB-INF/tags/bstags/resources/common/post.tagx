@@ -5,7 +5,8 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:discussion ="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 	
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
@@ -22,22 +23,51 @@
        | They never have a userName. 
        | Since they also dont have several other properties, we dont show those.
        +-->
-       	
-       
-	<li class="post ${additionalItemClasses}"><!-- additionalItemClasses to distinguish the odd numbered list elements from the even numbered ones -->
+
+	<li class="media post ${additionalItemClasses}">
+	
+		<h4 class="ptitle media-heading" data-ident="${post.resource.intraHash}"><jsp:invoke fragment="title"/></h4>
+		
+		<div class="hidden-xs hidden-md pull-left">
+			<jsp:invoke fragment="documents"/>
+			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
+	       
+        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
+        	<c:choose>
+        		<c:when test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">	
+					<span class="in-my-collection glyphicon glyphicon-bookmark"><!--  --></span>
+				</c:when>
+				<c:otherwise>
+					<span class="in-my-collection glyphicon"><!--  --></span>
+				</c:otherwise>
+			</c:choose>
+			<br class="clearfix" />
+		</div>
+	   	<div class="media-body">
+			<div class="pdesc"><jsp:invoke fragment="desc"/></div>
+			<div class="pmeta"><rc:metaDate post="${post}"/>&amp;nbsp;<rc:metaUsername post="${post}" />&amp;nbsp;<rc:metaGroups post="${post}" /></div>
+			<div class="ptags"><rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/></div>
+			<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+			<div class="pull-right"><jsp:invoke fragment="actions"/></div>
+			<br class="clearfix" />
+
+		</div>
+	</li>
+    <!-- 
+	<li class="post ${additionalItemClasses}">
 		<div id="popover-head-${post.resource.intraHash}" class="hide"><jsp:invoke fragment="title"/></div>
 		<div id="popover-content-${post.resource.intraHash}" class="hide">
 				<jsp:invoke fragment="desc"/>
 				<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
 		</div>
 		<div class="row post-row">
-		 	<!-- PREVIEW PICTURE -->
+		 	
 			<div class="col-sm-2 hidden-md col-lg-3">
 				<div class="image">
 					<jsp:invoke fragment="documents"/>
-					<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
+					
 			        <c:if test="${command.context.userLoggedIn}">
-			        	<!-- FIXME: user name for community posts not given - copying currently not possible -->
+			        	
 			        	<c:if test="${not empty post.user.name}">	
 				        	<c:if test="${loginUserName eq post.user.name}">
 								<img class="overlay" src="/resources/image/inMyCollection.png" alt="inMyCollection"></img>
@@ -46,7 +76,7 @@
 					</c:if>
 				</div>
 				<br class="clearfix" />
-				<!-- RATING -->
+				
 				<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
 			</div>
 			
@@ -59,15 +89,15 @@
 				</div>
 
 				<div class="pmeta">
-					<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
+					
 					<rc:meta post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" showUserSaves="${true}"/>
 				</div>	
-				<!-- ACTIONS -->
+				
 				<div class="action">
 					<jsp:invoke fragment="actions"/>
 				</div>
-				<!-- maybe we need this ... <div class="footer"></div>  --> 
+				
 			</div>
 		</div>
-	</li>
+	</li> -->
 </jsp:root>

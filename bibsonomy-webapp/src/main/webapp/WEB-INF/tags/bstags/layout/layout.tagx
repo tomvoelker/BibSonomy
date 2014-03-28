@@ -134,17 +134,25 @@
 				</div> <!-- /#navigation -->
 				<div class="container main">
 					<div class="row">
-					  	<div class="col-md-9">
-							<div id="intro">
-								<jsp:invoke fragment="contentIntro"/>
-							</div>
-					    	<jsp:invoke fragment="content"/>
+					  	<div class="col-md-8">
+					  		<div class="row">
+					  			<div class="col-md-1"><!--   --></div>
+					  			<div class="col-md-11">
+									<div id="intro">
+										<jsp:invoke fragment="contentIntro"/>
+									</div>
+							    	<jsp:invoke fragment="content"/>
+						    	</div>
+					    	</div>
 					  	</div>
-					  	<div class="col-md-3">
+					  	<div class="col-md-4">
+					  	
 					  		<!-- <parts:sidebarnavi/> -->
-					  		
-				  			<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
-					  		
+					  		<div class="row">
+					  			<div class="col-md-11">
+				  					<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
+			  					</div>
+					  		</div>
 					  	</div>
 					  
 					</div><!-- /.row -->

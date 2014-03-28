@@ -4,18 +4,18 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
 	<fmt:message var="altPreview" key="preview"/>
-	
+	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
 	<c:choose>
 		<c:when test="${not empty properties['project.img']}">  
-			<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-			<span class="">
-					<a class="preview bookmark" href="${bookUrl}"> 
-						<img class="pre_pic" src="${properties['project.img']}preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
-					</a>
-			</span>
+			
+			<a class="preview bookmark thumbnail" href="${bookUrl}"> 
+				<img class="pre_pic" src="${properties['project.img']}preview/bookmark/${post.resource.interHash}?preview=SMALL" alt="${altPreview}"/>
+			</a>
 		</c:when> 
 		<c:otherwise>
-			<span class="entrytype web"><!-- --></span>
+			<a class="preview bookmark thumbnail" href="${bookUrl}"> 
+				<span class="entrytype web"><!-- --></span>
+			</a>
 		</c:otherwise>
 	</c:choose>
 

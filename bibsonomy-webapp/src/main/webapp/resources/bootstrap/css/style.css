@@ -146,18 +146,42 @@ ul.posts li {
 	list-style: none;
 }
 
-ul.posts li.post {
-	margin-left: -15px;
-	padding-left: 15px;
-	margin-right: -15px;
-	padding-right: 15px;
-	border-bottom: 1px solid #ccc;
-	
+li.post {
+	font-size: 12px;
+	line-height: 16px;
+	height: 145px;
+	border-bottom: 1px #ccc solid;
 }
 
+li.post span.in-my-collection {
+	position:relative; 
+	z-index: 10001; 
+	width: 18px; 
+	height: 18px; 
+	font-size: 18px; 
+	top: -108px; 
+	left: 5px; 
+	color: #005588;
+}
 
+.dropdown-menu {
+	z-index: 10000;
+}
 
+.dropdown-menu > li > span {
+	padding: 3px 20px;
+	font-weight:normal;
+	line-height:1.428571429;
+	color: #ccc;
+}
 
+.media, .media-body {
+	overflow:visible;
+}
+
+.media {
+	clear: left;
+}
 
 /** 
  * POSTS
@@ -213,19 +237,11 @@ ul.posts li.post {
 }
 
 .post.odd {
-	background-color: #f8f8f8;
 }
 
-.post {
-	font-size: 12px;
-	line-height: 16px;
-	height: 120px;
-	overflow: hidden;
-}
 
 .publication-list .post {	
-	border-left: 1px #ccc solid;
-	border-right: 1px #ccc solid;
+
 }
 
 .post-row {
@@ -236,9 +252,11 @@ ul.posts li.post {
 
 
 .pdesc {
-	height: 33px !important;
+	height: 16px !important;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	margin-top: 11px;
+	margin-bottom: 3px;
 }
 
 .pdesc p.description {
@@ -247,13 +265,15 @@ ul.posts li.post {
 	text-overflow: ellipsis
 }
 
-.pdesc p.url {
+p.url {
 	overflow: hidden;
-	text-overflow: ellipsis
+	text-overflow: ellipsis;
+	height: 1.5em;
 }
 
-.pdesc p.url a{
-	
+.pdesc {
+	height: 2.2em !important;
+	line-height: 1.1;
 }
 
 .pmeta {
@@ -261,7 +281,7 @@ ul.posts li.post {
 }
 
 .ptags {
-	
+	height: 14px;
 }
 
 .ptitle {
@@ -303,18 +323,17 @@ ul.posts li.post {
 	margin: 0;
 }
 
-
 .post .action,
 .post .rating {
-	display: block;
-	position: absolute;
-	top: 95px;
 	background-color: inherit;
 }
 
 .post .rating {
-	right: 5px; 
+	position: relative;
+	top: 6px;
 }
+
+
 
 .reviewInfo {
 	padding-left: 0.5ex;
@@ -368,15 +387,16 @@ ul.posts li.post {
 .stars-on-0\.75{background-position:0 -36px;position:absolute;}
 
 ul.tags {
-	width: 70%;
 	height: 14px !important;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	margin: 0;
+	padding: 0;
 }
 
 ul.tags li {
-	margin-right: 0.5em;
+	margin-right: 3px;
 }
 
 .postlistTitle h2 {
@@ -470,3 +490,49 @@ span.help-popover {cursor:help}
 .smallField {
 	width: 33% !important;
 }
+
+.post a.thumbnail span.entrytype {
+	background-image: url("http://localhost:8080/resources/image/previews.png");
+}
+
+.post a.thumbnail {
+	width: 64px;
+	height: 88px;
+	margin-top: 10px;
+}
+
+span.entrytype {
+	display: block;
+	width: 64px;
+	height: 88px;
+}
+
+
+.web {
+	background-position: -2px -1106px;
+	height: 36px;
+	margin-top: 22px;
+}
+
+span.article			{background-position:-2px 0;      height:53px;}
+span.book			{background-position:-2px -54px;  height:46px;}
+span.booklet				{background-position:-2px -101px; height:65px;			margin-top: 6px; }
+span.conference				{background-position:-2px -167px; height:44px;}
+span.electronic				{background-position:-2px -212px; height:45px;}
+span.inbook					{background-position:-2px -258px; height:60px;}
+span.incollection			{background-position:-5px -319px; height:60px; width: 56px; margin-top: 8px;}
+span.inproceedings			{background-position:-2px -380px; height:49px;}
+span.manual					{background-position:-2px -430px; height:46px;}
+span.mastersthesis			{background-position:0 -477px;    height:64px;}
+span.misc					{background-position:0 -542px;	  height:49px;}
+span.patent					{background-position:0 -592px;width:43px;height:55px; 	  margin-left: 6px; margin-top: 11px;}
+span.pdf					{background-position:0 -648px;width:59px;height:30px;}
+span.periodical				{background-position:0 -679px;width:60px;height:41px;}
+span.phdthesis				{background-position:0 -721px;width:59px;height:64px;}
+span.preamble				{background-position:0 -786px;width:50px;height:53px;}
+span.presentation			{background-position:0 -840px;width:55px;height:46px;}
+span.proceedings			{background-position:0 -887px;width:47px;height:60px;}
+span.standard				{background-position:0 -948px;width:42px;height:54px;	  margin-left: 6px; margin-top: 13px;}
+span.techreport				{background-position:0 -1003px;width:55px;height:52px; 	  margin-top: 13px; }
+span.unpublished			{background-position:0 -1056px;width:36px;height:49px; 	  margin-left: 9px; margin-top: 13px;}
+span.web					{background-position:-2px -1106px;width:61px;height:37px; margin-top: 22px;}
