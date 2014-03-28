@@ -43,6 +43,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
@@ -51,7 +52,7 @@ import org.bibsonomy.util.id.DOIUtils;
  * @author rja
  *
  */
-public class ScienceDirectScraper extends AbstractUrlScraper {
+public class ScienceDirectScraper extends SimpleGenericURLScraper {
 	private final Log log = LogFactory.getLog(ScienceDirectScraper.class);
 	private static final String SITE_NAME = "ScienceDirect";
 
@@ -63,7 +64,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final String SCIENCE_CITATION_PATH     = "/science";
 	private static final String SCIENCE_CITATION_URL     = "http://www.sciencedirect.com/science";
 
-	private static final String PATTERN_DOWNLOAD_PAGE_LINK = "<a href=\"(/science\\?_ob=DownloadURL[^\"]*)\"";
+	/*private static final String PATTERN_DOWNLOAD_PAGE_LINK = "<a href=\"(/science\\?_ob=DownloadURL[^\"]*)\"";
 
 	private static final String PATTERN_ACCT               = "<input type=hidden name=_acct value=([^>]*)>";
 	private static final String PATTERN_ARTICLE_LIST_ID    = "<input type=hidden name=_ArticleListID value=(.+?)>";
@@ -86,11 +87,12 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	
 	private static final Pattern patternBrokenPages = Pattern.compile("(.*pages = \"[0-9]+) - ([0-9]+\".*)", Pattern.DOTALL); 
 	
-	private static final String KEYWORD_DELIMITER = ", ";
-
+	private static final String KEYWORD_DELIMITER = ", ";*/
+	private static final String end = "zone=exportDropDown&citation-type=BIBTEX&export=Export";
+	private static final Pattern PATTERN_FORM = Pattern.compile("<form name=\"exportCite\" method=post action=(.*) target=\"\">");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
-
+	/*
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
@@ -164,9 +166,9 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 					}
 				}
 
-				/*
+				
 				 * remove last comma
-				 */
+				 
 				final int indexOfDelim = _keywords.lastIndexOf(KEYWORD_DELIMITER);
 				if (indexOfDelim > 0)
 					_keywords.delete(indexOfDelim, indexOfDelim + 1);
@@ -182,9 +184,9 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 				
 				final String bibtex = cleanBibTeX(_bibtex);
 
-				/*
+				
 				 * Job done
-				 */
+				 
 				if (present(bibtex)) {
 					sc.setBibtexResult(bibtex);
 					return true;
@@ -198,7 +200,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-	}
+	}*/
 
 
 	/**
@@ -209,15 +211,15 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	 * @param bibtex
 	 * @return
 	 */
-	protected String cleanBibTeX(final String bibtex) {
+	/*protected String cleanBibTeX(final String bibtex) {
 		if (bibtex != null) {
-			/*
+			
 			 * replace \r
-			 */
+			 
 			String result = bibtex.replace("\r","");
-			/*
+			
 			 * fix "pages" field
-			 */
+			 
 			final Matcher matcher = patternBrokenPages.matcher(result);
 			if (matcher.matches()) {
 				result = matcher.replaceFirst("$1--$2");
@@ -231,7 +233,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 			return result;
 		}
 		return null;
-	}
+	}*/
 
 
 	@Override
@@ -255,6 +257,21 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+
+	@Override
+	public String getBibTeXURL(URL url) {
+		String download_link = "";
+		try{
+		Matcher m = PATTERN_FORM.matcher(WebUtils.getContentAsString(url));
+		if(m.find()){
+			download_link = m.group(1);
+		}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		return "http://" + url.getHost().toString() + download_link + end;
 	}
 
 }
