@@ -1308,8 +1308,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 	
-	//@Override
-	//public void renameUser (final User loginUser,final String newUsername){
-		
-	//}
+	@Override
+	public void updateUserName(User loginUser, String oldUserName, String newUserName)
+	{
+	}
 }

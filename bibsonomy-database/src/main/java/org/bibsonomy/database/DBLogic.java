@@ -1450,13 +1450,10 @@ public class DBLogic implements LogicInterface {
 				break;
 			case UPDATE_CORE:
 				return this.userDBManager.updateUserProfile(user, session);
-				
 			case UPDATE_LIMITED_USER:
 				return this.userDBManager.updateLimitedUser(user, session);
-
 			case ACTIVATE:
 				return this.userDBManager.activateUser(user, session);
-
 			case UPDATE_SPAMMER_STATUS:
 				/*
 				 * only admins are allowed to change spammer settings
@@ -1484,6 +1481,20 @@ public class DBLogic implements LogicInterface {
 		return null;
 	}
 
+	@Override
+	public void updateUserName(final User loginUser, final String oldUserName, final String newUserName)
+	{
+		// ensure if the login user is admin
+		if (this.permissionDBManager.isAdmin(loginUser))
+		{
+			final DBSession session = openSession();		
+			try{
+				this.userDBManager.updateUserNameForUser(oldUserName, newUserName, session);
+			} finally {
+				session.close();
+			}
+		}
+	}
 	/**
 	 * TODO: extract the method to create and update user
 	 * 

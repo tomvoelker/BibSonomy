@@ -14,6 +14,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.RepositoryParam;
 import org.bibsonomy.database.params.SamlUserParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.params.WikiParam;
@@ -224,6 +225,62 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return userName;
 	}
 	
+	/**
+	 * Update only the user name of a required user
+	 * 
+	 * @param oldUserName 
+	 * @param newUserName
+	 * @param session
+	 */
+	public void updateUserNameForUser(final String oldUserName, final String newUserName, final DBSession session) {
+		
+		final RepositoryParam param = new RepositoryParam();
+		param.setUserName(oldUserName);
+		param.setRepositoryName(newUserName);
+		
+		/*
+		 * check, if user name already exists for update
+		 */
+		User oldUser = this.getUserDetails(oldUserName, session);
+		if (!present(oldUser.getName())) {
+			/*
+			 * error: user name not exists
+			 */
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user name for nonexistent user");
+		}
+		
+		final List<User> pendingUserList = this.getPendingUserByUsername(newUserName, 0, Integer.MAX_VALUE, session);
+		if (present(this.getUserDetails(newUserName, session).getName()) || present(pendingUserList) || present(this.getLogUserByUsername(newUserName, session))) {
+			/*
+			 * error:the new user name already exists
+			 */
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "user " + newUserName + " already exists");
+		}
+		// create log of user
+		oldUser.setName(newUserName);
+		
+		// log creation
+		super.insert("createUserLogForUser", oldUser, session);
+		
+		// update user name
+		super.update("updateUserNameForUser", param, session);
+		
+		// update all tables
+		super.update("updateAll", param, session);
+	}
+	
+	/**
+     * returns all log users by user name
+     * 
+     * @param username
+     * @param session
+     * @return  user if it exists
+     */
+    public String getLogUserByUsername(final String username, final DBSession session) {
+    	String lowerCaseUsername = username.toLowerCase();
+    	return this.queryForObject("getLogOfUser", lowerCaseUsername, String.class, session);
+    }
+    
 	/**
 	 * Updates the UserSettings object of a user
 	 * 
