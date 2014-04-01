@@ -52,6 +52,7 @@ import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
 import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
+import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
 import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
@@ -76,6 +77,7 @@ import org.bibsonomy.scraper.url.kde.jci.JCIScraper;
 import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
 import org.bibsonomy.scraper.url.kde.jneurosci.JNeurosciScraper;
 import org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper;
+import org.bibsonomy.scraper.url.kde.jstage.JStageScraper;
 import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
@@ -188,6 +190,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new IWAPonlineScraper());
 		addScraper(new JMLRScraper());
 		addScraper(new AclScraper());
+		addScraper(new JStageScraper());
 		addScraper(new AnnualreviewsScraper());
 		addScraper(new ProjectmuseScraper());
 		addScraper(new SSRNScraper());
@@ -241,6 +244,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new FirstMondayScraper());
 		addScraper(new BloodJournalScraper());
 		addScraper(new IGIGlobalScraper());
+		addScraper(new JStageScraper());
+		addScraper(new DeGruyterScraper());
 	}
 
 }

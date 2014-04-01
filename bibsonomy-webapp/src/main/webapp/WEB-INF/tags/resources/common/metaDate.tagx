@@ -11,12 +11,16 @@
 
 	<c:out value=" "/>
 	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
-		<!-- mouse-over: create date -->
+	
+		<!-- mouseovers removed -->
+		<!-- mouse-over: create date 
 		<fmt:formatDate type="date" dateStyle="medium" value="${post.date}" var="createDate" />
 		<fmt:formatDate type="time" timeStyle="short" value="${post.date}" var="createTime" />
-		<!-- mouse-over: change date -->
+		
+
 		<fmt:formatDate type="date" dateStyle="medium" value="${post.changeDate}" var="changeDate" />
 		<fmt:formatDate type="time" timeStyle="short" value="${post.changeDate}" var="changeTime" />
+		-->
 		<!-- content: time difference to now -->
 		<fmt:message key="post.meta.changedOn" var="changedOn"/>
 		<span itemprop="dateCreated" content="${mtl:formatDateISO8601(post.date)}" title="${createDate}, ${createTime}, ${changedOn} ${changeDate}, ${changeTime}">

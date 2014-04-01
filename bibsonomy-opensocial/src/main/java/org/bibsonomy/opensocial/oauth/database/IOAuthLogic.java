@@ -121,6 +121,13 @@ public interface IOAuthLogic {
 	public OAuthEntry readProviderToken(String oauthToken);
 	
 	/**
+	 *  remove an OauthAccess using the AccessToken and Username to query
+	 *  
+	 *  @param odelete
+	 */
+	public void removeSpecificAccessToken(String userName, String accessToken);
+	
+	/**
 	 * update given OAuth token entry (e.g. authorize)
 	 * 
 	 * @param entry

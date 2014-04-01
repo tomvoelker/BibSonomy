@@ -335,6 +335,8 @@
 								<value>importData</value>
 								<value>overwrite</value>
 								<value>userName</value>
+								<value>action</value>
+								<value>accessTokenDelete</value>
 								<value>file</value> 
 								<value>group</value>
 								<value>delete</value>

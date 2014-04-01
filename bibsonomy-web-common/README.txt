@@ -1,9 +1,9 @@
-                          BibSonomy Webapp-Common
+                          BibSonomy Web-Common
 
   What is it?
   -----------
 
-  BibSonomy Webapp-Common contains common classes needed in all web-related modules.
+  BibSonomy Web-Common contains common classes needed in all web-related modules.
 
   The module is part of the BibSonomy social bookmarking system 
   <http://www.bibsonomy.org> and is maintained by the Knowledge & 

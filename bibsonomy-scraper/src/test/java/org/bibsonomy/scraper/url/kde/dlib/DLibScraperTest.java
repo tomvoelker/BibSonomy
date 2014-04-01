@@ -53,5 +53,11 @@ public class DLibScraperTest {
 	public void urlTest2Run(){
 		assertTrue(UnitTestRunner.runSingleTest("url_55"));
 	}
-
+	/**
+	 * starts URL test with id url_266
+	 */
+	@Test
+	public void urlTest3Run(){
+		assertTrue(UnitTestRunner.runSingleTest("url_266"));
+	}
 }

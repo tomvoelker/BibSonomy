@@ -37,6 +37,8 @@ import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
+
+
 /**
  * @author Steffen
  */
@@ -178,9 +180,15 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (!Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
 			return;
 		}
-		
+		// Test if user pressed the delete button. Then delete the OAuth access
+		// TODO: extract to separate Controller?
+		if (command.getAction()!= null){
+			if (command.getAction().equals("Delete")){
+				this.oauthLogic.removeSpecificAccessToken(command.getUser().getName(), command.getAccessTokenDelete());
+			}
+		}
 		/* Get the valid OAuth applications of the user */
-		final List <OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
+		final List<OAuthUserInfo> oauthUserInfo =  this.oauthLogic.getOAuthUserApplication(command.getContext().getLoginUser().getName());
 		
 		/* Calculate the expiration time and issue time */
 		for (final OAuthUserInfo userInfo : oauthUserInfo) {

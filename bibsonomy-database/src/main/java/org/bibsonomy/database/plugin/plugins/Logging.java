@@ -70,22 +70,17 @@ public class Logging extends AbstractDatabasePlugin {
 	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setRequestedContentId(contentId);
-		this.insert("logBibTex", param, session);
 		param.setNewContentId(newContentId);
-		this.insert("logBibTexUpdate", param, session);
+		this.insert("logBibTex", param, session);
 	}
 
 	@Override
-	public void onGoldStandardUpdate(final int newContentId, final int contentId, final String newInterhash, final String interhash, final DBSession session) {
+	public void onGoldStandardUpdate(final int contentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
 		final LoggingParam<String> logParam = new LoggingParam<String>();
 		logParam.setNewId(newInterhash);
 		logParam.setOldId(interhash);
+		logParam.setNewContentId(newContentId);
 		this.insert("logGoldStandard", logParam, session);
-		
-		final BibTexParam param = new BibTexParam();
-		param.setRequestedContentId(contentId);
-		param.setNewContentId(newContentId);
-		this.insert("logGoldStandardUpdate", param, session);
 	}
 	
 	@Override

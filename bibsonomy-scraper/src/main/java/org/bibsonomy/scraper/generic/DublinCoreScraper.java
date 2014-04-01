@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -66,7 +67,7 @@ public class DublinCoreScraper implements Scraper {
 		final String page = scrapingContext.getPageContent();
 		if (present(page)) {
 			// try to extract Dublin Core metadata 
-			final String result = DublinCoreToBibtexConverter.getBibTeX(page);
+			 String result = DublinCoreToBibtexConverter.getBibTeX(page);
 			/*
 			 * We are not greedy, since many pages contain Dublin Core but often 
 			 * not enough: if we would return true for all of them, we would 
@@ -75,6 +76,9 @@ public class DublinCoreScraper implements Scraper {
 			if (present (result)) {
 				// set scraper found
 				scrapingContext.setScraper(this);
+				
+				//add url
+				result = BibTexUtils.addFieldIfNotContained(result, "url", scrapingContext.getUrl().toString());
 				// get bibtex information out of the DC metatags in the page
 				scrapingContext.setBibtexResult(result);
 				return true;

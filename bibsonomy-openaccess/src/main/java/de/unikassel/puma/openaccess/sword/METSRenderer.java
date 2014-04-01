@@ -21,12 +21,10 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.renderer.impl.JAXBRenderer;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.TagType;
-import org.xml.sax.SAXParseException;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
@@ -74,8 +72,8 @@ public class METSRenderer extends JAXBRenderer {
 		/*
 		 * add more user informations
 		 */
-		if (null != userData) {
-			if (null == myPost.getUser()) {
+		if (userData != null) {
+			if (myPost.getUser() == null) {
 				myPost.setUser(new PumaUserType());
 			}
 			myPost.getUser().setName(userData.getName());
@@ -223,8 +221,8 @@ public class METSRenderer extends JAXBRenderer {
 
 			};
 			marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", npmapper);
-
 			if (this.validateXMLOutput) {
+				// TODO: is the correct schema used?
 				// validate the XML produced by the marshaller
 				marshaller.setSchema(schema);
 			}
@@ -232,15 +230,7 @@ public class METSRenderer extends JAXBRenderer {
 			// marshal to the writer
 			marshaller.marshal(webserviceElement, writer);
 		} catch (final JAXBException e) {
-			final Throwable linkedException = e.getLinkedException();
-			if (present(linkedException) && (linkedException.getClass() == SAXParseException.class)) {
-				final SAXParseException ex = (SAXParseException) linkedException;
-				throw new BadRequestOrResponseException(
-						"Error while parsing XML (Line " + ex.getLineNumber() + ", Column "
-						+ ex.getColumnNumber() + ": " + ex.getMessage()
-				);
-			}
-			throw new InternServerException(e.toString());
+			handleJAXBException(e);
 		}
 	}
 

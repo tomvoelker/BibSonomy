@@ -8,10 +8,11 @@
 	
 	<resultMap id="goldStandardBookmark" class="goldStandardBookmark" extends="Common.resource">
 		<!-- to get a gold standard -->
-		<result property="url"      	column="url"  		javaType="string" />     
+		<result property="url"      	column="url"  		javaType="string" />
 	</resultMap> 
 	
 	<resultMap id="posts" class="post" groupBy="contentId">
+		<result property="contentId"	column="content_id"	javaType="int" />
 		<result property="date"         column="date"           javaType="date" />
 		<result property="user"         resultMap="Common.user" />
 		<result property="description"  column="description"    javaType="string" />
@@ -47,6 +48,10 @@
 		bibtexAbstract, type, day, privnote, simhash0, simhash1, simhash2, simhash3, content_type
 	</sql>
 	
+	<sql id="allGoldStandardPublicationAttributesWithSimHashesAndContentId">
+		content_id, <include refid="allGoldStandardPublicationAttributesWithSimHashes"/>
+	</sql>
+	
 	<sql id="allGoldStandardPublicationValues">
 		#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
 		#resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
@@ -75,7 +80,7 @@
 	</sql>
 
 	<sql id="allGoldStandardPublicationAttributesAnonym">
-		b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.content_id, b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
 		b.school, b.series, b.type, b.volume, b.day, null as privnote, b.url, b.description, b.bibtexKey, b.misc,
 		b.bibtexAbstract, null as user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.content_type
