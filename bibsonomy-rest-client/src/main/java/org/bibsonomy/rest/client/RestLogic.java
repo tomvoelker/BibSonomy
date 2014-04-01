@@ -353,7 +353,11 @@ public class RestLogic implements LogicInterface {
 		if (!present(doc.getUserName())) {
 			doc.setUserName(this.authUser.getName());
 		}
-		final CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc.getUserName(), resourceHash, doc.getFile());
+		
+		if (!present(doc.getFileName())) {
+			doc.setFileName(doc.getFile().getName());
+		}
+		final CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc, resourceHash);
 		return execute(createPostDocumentQuery);
 	}
 
