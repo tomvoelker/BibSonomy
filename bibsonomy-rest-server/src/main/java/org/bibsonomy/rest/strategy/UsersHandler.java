@@ -123,7 +123,7 @@ public class UsersHandler implements ContextHandler {
 				if (RESTConfig.DOCUMENTS_SUB_PATH.equalsIgnoreCase(urlTokens.nextToken())) {
 					final String filename = urlTokens.nextToken();
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash, filename);
-				}
+                }
 			}
 			break;
 		}

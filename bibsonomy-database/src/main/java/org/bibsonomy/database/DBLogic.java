@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -835,8 +834,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, this.loginUser);
-			return this.tagDBManager.getTagDetails(param, session);
+			return this.tagDBManager.getTagDetails(this.loginUser, tagName, session);
 		} finally {
 			session.close();
 		}
@@ -1427,7 +1425,7 @@ public class DBLogic implements LogicInterface {
 		 * only logged in users can update user settings.
 		 */
 		final String username = user.getName();
-		if(!UserUpdateOperation.ACTIVATE.equals(operation)) {
+		if (!UserUpdateOperation.ACTIVATE.equals(operation)) {
 			this.ensureLoggedIn();
 			/*
 			 * only admins can change settings of /other/ users
@@ -1459,25 +1457,21 @@ public class DBLogic implements LogicInterface {
 				 * only admins are allowed to change spammer settings
 				 */
 				log.debug("Start update this framework");
-
 				this.permissionDBManager.ensureAdminAccess(loginUser);
 				/*
 				 * open session and update spammer settings
 				 */
 				final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
 				log.debug("User prediction: " + user.getPrediction());
-				return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);	
+				return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
 			case UPDATE_ALL:
 				return this.storeUser(user, true);
 			default:
 				throw new UnsupportedOperationException(operation + " not supported.");
 			}
-
-
 		} finally {
 			session.close();
 		}
-
 		return null;
 	}
 
@@ -1697,12 +1691,13 @@ public class DBLogic implements LogicInterface {
 				 */
 				Post<BibTex> post = null;
 				try {
-					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), true, session);
 				} catch (final ResourceMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
 				}
+				
 				if (post != null && post.getResource().getDocuments() != null) {
 					/*
 					 * post found and post contains documents (bibtexdbmanager
@@ -2437,7 +2432,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual clipboard size
-			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
 		} catch (final Exception ex) {
 			log.error(ex);
 			throw new RuntimeException(ex);
@@ -2483,7 +2478,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual basketsize
-			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
 		} finally {
 			session.close();
 		}

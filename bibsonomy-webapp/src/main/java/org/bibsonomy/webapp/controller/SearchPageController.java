@@ -38,10 +38,6 @@ public class SearchPageController extends SingleResourceListController implement
 		
 		this.startTiming(format);
 		String search = command.getRequestedSearch();
-		// no search given -> error 
-		if (!present(search)){
-			throw new MalformedURLSchemeException("error.search_page_without_search");
-		}
 		
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
@@ -78,6 +74,11 @@ public class SearchPageController extends SingleResourceListController implement
 				// don't search for other grouping entities
 				break;
 			}
+		}
+		
+		// no search given -> error 
+		if (!present(search)){
+			throw new MalformedURLSchemeException("error.search_page_without_search");
 		}
 		
 		// if grouping entity set to GroupingEntity.ALL, database only allows 1000 tags maximum

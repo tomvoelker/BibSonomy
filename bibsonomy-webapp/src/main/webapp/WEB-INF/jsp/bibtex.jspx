@@ -26,6 +26,8 @@
 			<c:set var="public" value="${true }"/>
 		</c:when>
 		<c:otherwise>
+
+		
 			<!-- quick fix for discussion page -->
 			<c:set var="discussionBox" value="${true}"/>
 			<c:forEach var="group" items="${command.bibtex.list[0].groups}">
@@ -54,7 +56,28 @@
 			minimizedContentWidth="${true}"
 			resource="${publication}"
 			discussionBox="${discussionBox}">
-			
+		
+		<jsp:attribute name="content">
+			<!-- COMMUNITY POST -->
+			<c:if test="${empty command.goldStandardPublications.list}">
+				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+					<c:set var="post" value="${command.bibtex.list[0]}" />
+					<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
+						<c:param name="hash" value="${post.resource.intraHash}" />
+						<c:param name="user" value="${post.user.name}" />
+						<c:param name="editBeforeSaving" value="true" />
+					</c:url>
+					
+					<fmt:message key="bibtex.actions.community_post.create" var="goldTitle" />
+					<div class="info-box">
+						<p><fmt:message key="bibtex.actions.community_post.no" /></p> 
+						<p><a class="button" href="${editGoldStandardLink}">${goldTitle}</a></p>
+					</div>
+					
+				</c:if>
+			</c:if>
+		</jsp:attribute>
+		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>

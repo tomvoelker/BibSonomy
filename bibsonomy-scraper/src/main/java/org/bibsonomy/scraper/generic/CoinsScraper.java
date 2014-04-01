@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -40,12 +41,21 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.UrlUtils;
 
 /**
- * Scraper for Pages with a span element which matches to the COinS specification.
+ * Scraper for pages with a span element which matches to the COinS specification.
  *  
  * @author tst
  */
 public class CoinsScraper implements Scraper {
 
+	private static final String AUTHOR_LAST_KEY = "rft.aulast";
+	private static final String AUTHOR_FIRST_KEY = "rft.aufirst";
+	private static final String DATE_KEY = "rft.date";
+	private static final String END_PAGE_KEY = "rft.epage";
+	private static final String START_PAGE_KEY = "rft.spage";
+	private static final String PAGES_KEY = "rft.pages";
+	private static final String ENTRY_TYPE_KEY = "rft_val_fmt";
+	private static final String RFT_AU = "rft.au";
+	
 	private static final String SITE_NAME = "CoinsScraper";
 	private static final String SITE_URL = "http://ocoins.info/";
 	private static final String INFO = "<a href=\"http://ocoins.info/\">COinS</a> Scraper: Scraper for Metadata in COinS format.";
@@ -61,24 +71,22 @@ public class CoinsScraper implements Scraper {
 	}
 
 	@Override
-	public boolean scrape(final ScrapingContext sc)throws ScrapingException {
+	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
 		if ((sc == null) || (sc.getUrl() == null)) {
 			return false;
 		}
 
 		final String page = sc.getPageContent();
 		final StringBuffer bibtex = new StringBuffer();
-
 		final Matcher matcherCoins = PATTERN_COINS.matcher(page);
 
 		if (matcherCoins.find()) {
 			// span found, this scraper is responsible
 			sc.setScraper(this);
-
 			final String titleValue = matcherCoins.group(1);
 
 			// store all key/value tuples
-			final HashMap<String, String> tuples = new HashMap<String, String>();
+			final Map<String, String> tuples = new HashMap<String, String>();
 
 			final Matcher m = PATTERN_KEY_VALUE.matcher(titleValue);
 
@@ -90,8 +98,8 @@ public class CoinsScraper implements Scraper {
 				// store only values which are not null and not empty
 				if (present(key) && present(value)) {
 					// rft.au is repeatable
-					if (key.equals("rft.au") && tuples.containsKey("rft.au")) {
-						value = tuples.get("rft.au") + " and " + value;
+					if (key.equals(RFT_AU) && tuples.containsKey(RFT_AU)) {
+						value = tuples.get(RFT_AU) + PersonNameUtils.PERSON_NAME_DELIMITER + value;
 					}
 					tuples.put(key, value);
 				}
@@ -102,33 +110,33 @@ public class CoinsScraper implements Scraper {
 			 */
 
 			// get author
-			final StringBuilder authorBuf = new StringBuilder("");
-			if (tuples.containsKey("rft.au")) {
-				authorBuf.append(tuples.get("rft.au"));
+			final StringBuilder authorBuf = new StringBuilder();
+			if (tuples.containsKey(RFT_AU)) {
+				authorBuf.append(tuples.get(RFT_AU));
 			}
-			if (tuples.containsKey("rft.aufirst") || tuples.containsKey("rft.aulast")) {
-				final String au = getAuthorFirstLast(tuples.get("rft.aufirst"), tuples.get("rft.aulast"));
+			if (tuples.containsKey(AUTHOR_FIRST_KEY) || tuples.containsKey(AUTHOR_LAST_KEY)) {
+				final String au = getAuthorFirstLast(tuples.get(AUTHOR_FIRST_KEY), tuples.get(AUTHOR_LAST_KEY));
 				if (authorBuf.length() == 0) {
 					authorBuf.append(au);
 				} else {
-					authorBuf.insert(0, " and ").insert(0, au);
+					authorBuf.insert(0, PersonNameUtils.PERSON_NAME_DELIMITER).insert(0, au);
 				}
 			}
 			final String author = authorBuf.toString();
 
 			// get title
-			final String atitle;
+			final String title;
 			if (tuples.containsKey("rft.atitle")) {
-				atitle = tuples.get("rft.atitle");
+				title = tuples.get("rft.atitle");
 			} else {
-				atitle = tuples.get("rft.title");
+				title = tuples.get("rft.title");
 			}
 
 			// get year
 			String year = null;
-			if (tuples.containsKey("rft.date")){
+			if (tuples.containsKey(DATE_KEY)){
 				// get year from date
-				final Matcher dateMatcher = PATTERN_DATE.matcher(tuples.get("rft.date"));
+				final Matcher dateMatcher = PATTERN_DATE.matcher(tuples.get(DATE_KEY));
 				if (dateMatcher.find()) {
 					year = dateMatcher.group(1);
 				}
@@ -136,27 +144,26 @@ public class CoinsScraper implements Scraper {
 
 			// get pages
 			String pages = null;
-			if (tuples.containsKey("rft.pages")) {
-				pages = tuples.get("rft.pages");
-			} else if(tuples.containsKey("rft.spage") && tuples.containsKey("rft.epage")){
+			if (tuples.containsKey(PAGES_KEY)) {
+				pages = tuples.get(PAGES_KEY);
+			} else if (tuples.containsKey(START_PAGE_KEY) && tuples.containsKey(END_PAGE_KEY)){
 				// build pages with spage and epage
-				final String spage = tuples.get("rft.spage");
-				final String epage = tuples.get("rft.epage");
+				final String spage = tuples.get(START_PAGE_KEY);
+				final String epage = tuples.get(END_PAGE_KEY);
 				pages = spage + "--" + epage;
 			}
 
 			/*
 			 * check different entry types
 			 */
-			if (tuples.containsKey("rft_val_fmt")) {
-				final String entryType = tuples.get("rft_val_fmt");
+			if (tuples.containsKey(ENTRY_TYPE_KEY)) {
+				final String entryType = tuples.get(ENTRY_TYPE_KEY);
 				if (entryType.contains(":journal")) {
 					final String journal = get(tuples, "rft.title");
 					/*
 					 * build BibTeX
 					 */
-					bibtex.append("@article{").append(BibTexUtils.generateBibtexKey(author, null, year, atitle)).append(",\n");
-
+					bibtex.append("@article{").append(BibTexUtils.generateBibtexKey(author, null, year, title)).append(",\n");
 					append("journal", journal, bibtex);
 				} else if (entryType.contains(":book")) {
 					final String btitle = get(tuples, "rft.btitle");
@@ -164,13 +171,12 @@ public class CoinsScraper implements Scraper {
 					 * build BibTeX
 					 */
 					bibtex.append("@book{").append(BibTexUtils.generateBibtexKey(author, null, year, btitle)).append(",\n");
-
 					append("booktitle", btitle, bibtex);
 				} else {
-					bibtex.append("@misc{").append(BibTexUtils.generateBibtexKey(author, null, year, atitle)).append(",\n");
+					bibtex.append("@misc{").append(BibTexUtils.generateBibtexKey(author, null, year, title)).append(",\n");
 				}
 				
-				append("title", atitle, bibtex);
+				append("title", title, bibtex);
 				append("author", author, bibtex);
 				append("year", year, bibtex);
 				append("volume", get(tuples, "rft.volume"), bibtex);
@@ -196,25 +202,21 @@ public class CoinsScraper implements Scraper {
 			if (present(bibtex)) {
 				// append url
 				BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-
 				// add downloaded bibtex to result 
 				sc.setBibtexResult(bibtex.toString());
-
 				return true;
-			} else {
-				throw new ScrapingFailureException("span not contains a book or journal");
 			}
+			throw new ScrapingFailureException("span not contains a book or journal");
 		}
 		return false;
 	}
 
-	private String getAuthorFirstLast(final String aufirst, final String aulast) {
+	private static String getAuthorFirstLast(final String aufirst, final String aulast) {
 		if (present(aufirst)) {
 			if (present(aulast)) {
 				return aulast + ", " + aufirst;
-			} else {
-				return aufirst;
 			}
+			return aufirst;
 		} else if (present(aulast)) {
 			return aulast;
 		}

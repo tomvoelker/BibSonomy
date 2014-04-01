@@ -1653,8 +1653,14 @@
 	</URLTest>
 	<URLTest id="url_269">
 		<TestDescription>DublinCoreScraper Test</TestDescription>
-		<URL> http://www.tara.tcd.ie/handle/2262/13178?mode=full&amp;submit_simple=Show+full+item+record</URL>
+		<URL>http://www.tara.tcd.ie/handle/2262/13178?mode=full&amp;submit_simple=Show+full+item+record</URL>
 		<BibFile>DCScraperTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_270">
+		<TestDescription>DublinCoreScraper Test</TestDescription>
+		<URL>http://www.scirp.org/journal/PaperInformation.aspx?PaperID=37807</URL>
+		<BibFile>DCScraperTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
 </test:Tests>

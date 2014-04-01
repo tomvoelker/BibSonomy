@@ -198,20 +198,7 @@
 <!--						</c:choose>-->
 <!--					</div>   #footercontainer -->
 				</div><!-- #container -->
-				<div id="legalnotices">
-					<fmt:message key="system.offeredBy">
-						<fmt:param value="${properties['project.name']}"/>
-					</fmt:message>
-					<c:out value=" "/>
-					<fmt:message key="system.termsOfUse"/>
-					<c:out value=" - "/>
-					<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-					<a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a>
-					
-					<c:if test="${cookie.mobile.value == 'false' or param.mobile == 'false'}">
-						<c:out value=" "/><a href="?mobile=true"><fmt:message key="mobile.switchMobile" /></a>
-					</c:if>
-				</div>
+				<parts:footer/>
 			</body>
 		</jsp:body>
 	</jsp:element>

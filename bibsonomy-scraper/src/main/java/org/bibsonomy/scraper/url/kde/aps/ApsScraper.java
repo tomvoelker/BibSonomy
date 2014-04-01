@@ -23,15 +23,18 @@
 
 package org.bibsonomy.scraper.url.kde.aps;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.bcel.generic.RETURN;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author Haile
@@ -40,13 +43,14 @@ public class ApsScraper extends SimpleGenericURLScraper{
 	private static final String SITE_NAME = "American Psychological Society";
 	private static final String SITE_URL = "http://the-aps.org";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	private static final String BIBTEX_URL = "citmgr?type=bibtex&gca=";
+	//private static final String BIBTEX_URL = "citmgr?type=bibtex&gca=";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 
-	private static final Pattern URL_PATTERN = Pattern.compile("(http://[^/]++)(\\W+)");
-	private static final Pattern URL_START = Pattern.compile("/\\w+");
-	private static final Pattern ID_PATTERN = Pattern.compile("(\\d+\\W)+");
+	//private static final Pattern URL_PATTERN = Pattern.compile("(http://[^/]++)(\\W+)");
+	//private static final Pattern URL_START = Pattern.compile("/\\w+");
+	//private static final Pattern ID_PATTERN = Pattern.compile("(\\d+\\W)+");
 	
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<li class=\"bibtext first\"><a href=\"(.*)\">BibTeX</a></li>");
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
@@ -69,15 +73,16 @@ public class ApsScraper extends SimpleGenericURLScraper{
 
 	@Override
 	public String getBibTeXURL(final URL url) {
-		final String externalForm = url.toExternalForm();
-		final Matcher murl = URL_PATTERN.matcher(externalForm);
-		final Matcher idurl = ID_PATTERN.matcher(externalForm);
-		final Matcher starturl = URL_START.matcher(externalForm);
-		
-		if (!idurl.find() || !murl.find() || !starturl.find()) {
-			return null;
+		try {
+			Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
+			String download_link = "";
+			if(m.find())
+				download_link = m.group(1);
+			return "http://" + url.getHost().toString() + download_link;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		return murl.group(0) + BIBTEX_URL + starturl.group(0).replace("/", "") + ";" + idurl.group(0).replace(".","");
+		return null;
 	}
 }

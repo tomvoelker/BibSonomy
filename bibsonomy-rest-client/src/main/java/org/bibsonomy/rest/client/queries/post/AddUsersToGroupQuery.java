@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -67,17 +66,18 @@ public final class AddUsersToGroupQuery extends AbstractQuery<String> {
 	}
 	
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeUsers(sw, this.users, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, RESTConfig.GROUPS_URL + "/" + this.groupName + "/" + RESTConfig.USERS_URL, sw.toString());
-		return null;
+		final String groupUrl = this.getUrlRenderer().createHrefForGroupMembers(this.groupName);
+		this.downloadedDocument = performRequest(HttpMethod.POST, groupUrl, sw.toString());
 	}
 	
 	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {				
-		if (this.isSuccess())
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
 			return Status.OK.getMessage();
+		}
 		return this.getError();
 	}
 }

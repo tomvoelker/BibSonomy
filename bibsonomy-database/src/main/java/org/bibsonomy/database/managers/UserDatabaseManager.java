@@ -115,7 +115,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * user exists: get number of posts in his basket and inbox
 		 */
-		final int numPosts = this.basketDBManager.getNumBasketEntries(lowerCaseUsername, session);
+		final int numPosts = this.basketDBManager.getNumberOfBasketEntries(lowerCaseUsername, session);
 		user.getBasket().setNumPosts(numPosts);
 		final int inboxMessages = this.inboxDBManager.getNumInboxMessages(lowerCaseUsername, session);
 		user.getInbox().setNumPosts(inboxMessages);

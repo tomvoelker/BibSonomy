@@ -25,11 +25,9 @@ package org.bibsonomy.rest.client.queries.get;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to get information about the specified concept
@@ -38,55 +36,43 @@ import org.bibsonomy.util.UrlBuilder;
  */
 public class GetConceptDetailsQuery extends AbstractQuery<Tag> {
 
-	private final String conceptname;
+	private final String conceptName;
 	private String groupingName;
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	
+	/**
+	 * @param conceptName
+	 */
 	public GetConceptDetailsQuery(final String conceptName) {
-		this.conceptname = conceptName;
-		this.downloadedDocument = null;
+		this.conceptName = conceptName;
 	}
 	
 	@Override
-	protected Tag doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder;
-		
-		switch (this.grouping) {
-		case USER:
-			urlBuilder = new UrlBuilder(RESTConfig.USERS_URL);
-			urlBuilder.addPathElement(this.groupingName);
-			urlBuilder.addPathElement(RESTConfig.CONCEPTS_URL);
-			urlBuilder.addPathElement(this.conceptname);
-			break;
-		case GROUP:
-			throw new UnsupportedOperationException("Grouping " + grouping + " is not implemented yet");
-			//url = URL_GROUPS + "/" + this.groupingName + "/" + URL_CONCEPTS + "/" + this.conceptname;
-			//break;
-		case ALL:
-			urlBuilder = new UrlBuilder(RESTConfig.CONCEPTS_URL);
-			urlBuilder.addPathElement(this.conceptname);  
-			break;			
-		default:
-			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept details query");
-		}
-		
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String conceptUrl = this.getUrlRenderer().createHrefForConceptWithSubTag(this.grouping, this.groupingName, this.conceptName, null);
+		this.downloadedDocument = performGetRequest(conceptUrl);
 	}
 
 	@Override
-	public Tag getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected Tag getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parseTag(this.downloadedDocument);
 	}
 	
+	/**
+	 * sets the userName and the corresponding groupings
+	 * @param userName
+	 */
 	public void setUserName(final String userName) {
 		this.groupingName = userName;
 		this.grouping = GroupingEntity.USER;
 	}
 	
+	/**
+	 * sets the groupName and the corresponding grouping
+	 * @param groupName
+	 */
 	public void setGroupName(final String groupName) {
 		this.groupingName = groupName;
 		this.grouping = GroupingEntity.GROUP;
-	}	
+	}
 }

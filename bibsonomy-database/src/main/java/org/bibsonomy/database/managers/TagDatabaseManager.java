@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -26,6 +27,7 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -529,47 +531,36 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * <li>details about the tag itself, like number of occurrences etc</li>
 	 * <li>list of subtags</li>
 	 * <li>list of supertags</li>
-	 * <li>list of correlated tags</li>
 	 * </ul>
 	 * 
 	 * FIXME: is this global or for a given user/group only?
 	 * 
-	 * FIXME: I think this method needs to be cleaned up an commented ...
-	 * 
-	 * @param param
-	 * @param session
+     * @param user the requesting user
+     * @param tagName name of the tag where we need 
+	 * @param session the DBSession to be queried.
 	 * @return the tag's details, null else
 	 */
-	public Tag getTagDetails(final TagParam param, final DBSession session) {
+	public Tag getTagDetails(final User user, final String tagName, final DBSession session) {
+        final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, user.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, user);
+
+        param.setLimit(10000);
+		param.setOffset(0);
 		param.setCaseSensitiveTagNames(true);
 
+        // query the database if tagName is a proper tag
 		final Tag tag = this.getTagByName(param, session);
 
-		/*
-		 * retrieve all sub-/supertags
-		 */
-		param.setLimit(10000);
-		param.setOffset(0);
-
-		// check for sub-/supertags
-		if (param.getNumSimpleConcepts() > 0) {
-			final List<Tag> subTags = this.getSubtagsOfTag(param, session);
-			tag.setSubTags(setUsercountToGlobalCount(subTags));
-		}
-		if (param.getNumSimpleConceptsWithParent() > 0) {
-			final List<Tag> superTags = this.getSupertagsOfTag(param, session);
-			tag.setSuperTags(setUsercountToGlobalCount(superTags));
-		}
-		if (param.getNumCorrelatedConcepts() > 0) {
-			final List<Tag> subTags = this.getSubtagsOfTag(param, session);
-			tag.setSubTags(setUsercountToGlobalCount(subTags));
-			final List<Tag> superTags = this.getSupertagsOfTag(param, session);
-			tag.setSuperTags(setUsercountToGlobalCount(superTags));
-		}
-
-		// XXX: this is just a hack as long as we don't supply separate user
-		// counts for each tag, DB
 		if (present(tag)) {
+            /*
+             * retrieve all sub-/supertags
+             */
+			final List<Tag> subTags = this.getSubtagsOfTag(param, session);
+			tag.setSubTags(setUsercountToGlobalCount(subTags));
+			final List<Tag> superTags = this.getSupertagsOfTag(param, session);
+			tag.setSuperTags(setUsercountToGlobalCount(superTags));
+
+            // FIXME: this is just a hack as long as we don't supply separate user
+            // counts for each tag, DB
 			tag.setUsercount(tag.getGlobalcount());
 		}
 

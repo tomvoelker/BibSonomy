@@ -64,21 +64,18 @@ public class CreateSyncPlanQuery extends AbstractSyncQuery<List<SynchronizationP
 	}
 
 	@Override
-	protected List<SynchronizationPost> doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter();
 		final Renderer renderer = this.getRenderer();
 		renderer.serializeSynchronizationPosts(sw, posts);
 
-		final String syncURL = getSyncURL();
+		final String syncURL = this.getUrlRenderer().createHrefForSync(this.serviceURI, resourceType, strategy, direction, null, null);
 		final Reader reader = performRequest(HttpMethod.POST, syncURL, StringUtils.toDefaultCharset(sw.toString()));
 		this.downloadedDocument = reader;
-
-		return null;
-
 	}
 
 	@Override
-	public List<SynchronizationPost> getResult() throws BadRequestOrResponseException, IllegalStateException {
+	protected List<SynchronizationPost> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		if (isSuccess()) {
 			try {
 				return this.getRenderer().parseSynchronizationPostList(this.downloadedDocument);
