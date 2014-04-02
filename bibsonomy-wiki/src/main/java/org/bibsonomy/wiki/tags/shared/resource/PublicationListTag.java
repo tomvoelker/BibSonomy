@@ -41,13 +41,14 @@ public class PublicationListTag extends SharedTag {
 	private static final String KEYS = "keys";
 	private static final String ORDER = "order";
 	private static final String LIMIT = "limit";
+	private static final String YEAR = "year";
 
 	private static final Set<String> ALLOWED_SORTPAGE_JABREF_LAYOUTS = Sets.asSet("year", "author", "title");
 	private static final Set<String> ALLOWED_SORTPAGEORDER_JABREF_LAYOUTS = Sets.asSet("asc", "desc");
 
 	private static final String TAG_NAME = "publications";
 
-	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(TAGS, LAYOUT, KEYS, ORDER, LIMIT);
+	private final static Set<String> ALLOWED_ATTRIBUTES_SET = Sets.asSet(TAGS, LAYOUT, KEYS, ORDER, LIMIT, YEAR);
 
 
 	/**
@@ -87,6 +88,16 @@ public class PublicationListTag extends SharedTag {
 		}
 		return false;
 	}
+	
+	/**
+	 * Check if the attribute set contains year.
+	 * @param tagAttributes HTM: attributes given in the tag.
+	 * @return true, if there is a YEAR attribute.
+	 */
+	private boolean checkForYearAttribute(final Map<String, String> tagAttributes){
+		final Set<String> keysSet = tagAttributes.keySet();
+		return keysSet.contains(YEAR);
+	}
 
 	@Override
 	public boolean isAllowedAttribute(final String attName) {
@@ -98,7 +109,7 @@ public class PublicationListTag extends SharedTag {
 		final StringBuilder renderedHTML = new StringBuilder();
 		final Map<String, String> tagAttributes = this.getAttributes();
 		final Set<String> keysSet = tagAttributes.keySet();
-		final String tags;
+		String tags;
 		if (!keysSet.contains(TAGS)) {
 			tags = "myown"; // TODO: should be MyOwnSystemTag.NAME but adding
 							// dependency to database module only for accessing
@@ -113,6 +124,11 @@ public class PublicationListTag extends SharedTag {
 		boolean getAllPosts = false;
 		if(!checkSortByYear(tagAttributes) && !checkYearTag(Arrays.asList(tags.split(" ")))){
 			getAllPosts = true;
+		}
+		
+		if(checkForYearAttribute(tagAttributes)){
+			getAllPosts = false;
+			tags = tagAttributes.get(TAGS) + " sys:year:" + tagAttributes.get(YEAR);
 		}
 
 		final String requestedName = this.getRequestedName();
