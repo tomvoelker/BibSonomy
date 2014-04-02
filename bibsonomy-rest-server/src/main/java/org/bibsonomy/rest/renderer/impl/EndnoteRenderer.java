@@ -31,11 +31,6 @@ public class EndnoteRenderer extends AbstractPostExportRenderer {
 	}
 	
 	@Override
-	public void serializeError(final Writer writer, final String errorMessage) {
-		// TODO see super class
-	}
-	
-	@Override
 	public void serializePost(final Writer writer, final Post<? extends Resource> post, final ViewModel model) {
 		serializePosts(writer, Collections.singletonList(post), model);
 	}
@@ -56,10 +51,8 @@ public class EndnoteRenderer extends AbstractPostExportRenderer {
 				} catch (final IOException ex) {
 					throw new InternServerException(ex);
 				}
-			}
-			else {
-				// FIXME : throw Proper Exception
-				throw new UnsupportedOperationException();
+			} else {
+				handleUnsupportedMediaType();
 			}
 		}
 	}

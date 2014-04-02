@@ -96,10 +96,10 @@ public abstract class AbstractQuery<T> {
 		return downloadedDocument;
 	}
 
-	protected final Reader performMultipartPostRequest(final String absoluteUrl, final File file) throws ErrorPerformingRequestException {
+	protected final Reader performMultipartPostRequest(final String absoluteUrl, final File file, final String fileName) throws ErrorPerformingRequestException {
 		final PostWorker worker = new PostWorker(this.username, this.apiKey, this.accessor);
 		this.configHttpWorker(worker);
-		final Reader result = worker.perform(absoluteUrl, file);
+		final Reader result = worker.perform(absoluteUrl, file, fileName);
 		this.statusCode = worker.getHttpResult();
 
 		return result;

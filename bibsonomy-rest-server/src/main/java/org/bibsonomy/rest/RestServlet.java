@@ -334,10 +334,12 @@ public final class RestServlet extends HttpServlet {
 
 		// send error
 		response.setStatus(code);
-		response.setContentType(mediaType.getMimeType());
+		response.setContentType(mediaType.getErrorFormat().getMimeType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName(RESPONSE_ENCODING));
+		
 		renderer.serializeError(writer, message);
+		writer.close();
 		response.setContentLength(cachingStream.size());
 		response.getOutputStream().print(cachingStream.toString(RESPONSE_ENCODING));
 	}

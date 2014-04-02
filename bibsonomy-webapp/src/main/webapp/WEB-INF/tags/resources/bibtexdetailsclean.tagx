@@ -12,9 +12,9 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
@@ -282,6 +282,12 @@
 				</div>
 			</div>
 				
+				
+			<div class="clearfix"><!-- keep me --></div>
+			<ul class="pubmetainfo">
+				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/></li>
+				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/></li>
+			</ul>
 		</div> <!-- /.subcolumns -->
 
 		<div>
