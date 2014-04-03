@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.antlr.runtime.misc.IntArray;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
@@ -104,6 +103,7 @@ public class PublicationListTag extends SharedTag {
 		return ALLOWED_ATTRIBUTES_SET.contains(attName);
 	}
 	
+	// FIXME: a lot of code copy, please remove it
 	@Override
 	protected String renderSharedTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
@@ -126,7 +126,7 @@ public class PublicationListTag extends SharedTag {
 			getAllPosts = true;
 		}
 		
-		if(checkForYearAttribute(tagAttributes)){
+		if (checkForYearAttribute(tagAttributes)) {
 			getAllPosts = false;
 			tags = tagAttributes.get(TAGS) + " sys:year:" + tagAttributes.get(YEAR);
 		}
@@ -176,7 +176,7 @@ public class PublicationListTag extends SharedTag {
 //		final Date endYear = extractYear(tagAttributes.get(TOYEAR));
 		
 		// If getAllPosts is true, retrieve all the posts and sort them under a header for each year. Else, get the posts that matches the user tags.
-		if(getAllPosts){
+		if (getAllPosts) {
 			List<String> yearList = new ArrayList<String>();
 			List<Post<BibTex>> allPosts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, null, null, startYear, endYear, 0, Integer.MAX_VALUE);
 			BibTexUtils.removeDuplicates(allPosts);
@@ -186,25 +186,32 @@ public class PublicationListTag extends SharedTag {
 				if(!yearList.contains(aPost.getResource().getYear())){
 					yearList.add(aPost.getResource().getYear());
 				}
-			}			
+			}
+			
 			
 			// Convert years from string into integer.
 			int[] intYearArray = new int[yearList.size()];
+			
+			
 			for(int i = 0; i < yearList.size(); i++){
-				intYearArray[i] = Integer.parseInt(yearList.get(i));				
+				intYearArray[i] = Integer.parseInt(yearList.get(i));
 			}
 			
 			// Sort the years in descending order.
 			Arrays.sort(intYearArray);
 			
 			// Convert sorted array back into strings.
-			for(int j = 0, i = yearList.size() - 1; i >= 0 ; i--, j++){
-				yearList.set(j, "" + intYearArray[i]);
-			}			
+			for (int j = 0, i = yearList.size() - 1; i >= 0 ; i--, j++){
+				yearList.set(j, String.valueOf(intYearArray[i]));
+			}
 			
 			// Get the posts for each year and append it under year headings.
-			for(String yearString : yearList){
+			for (String yearString : yearList){
 				String updatedTags = tags + " sys:year:" + yearString;
+				/*
+				 * FIXME: don't query the database again you already have the posts, why do not insert allPosts into a SortedMap?
+				 * Than we can loop through the map and group then into html
+				 */
 				List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(updatedTags.split(" ")), null, null, null, null, startYear, endYear, 0, Integer.MAX_VALUE);
 				BibTexUtils.removeDuplicates(posts);
 				
@@ -232,8 +239,9 @@ public class PublicationListTag extends SharedTag {
 			}
 			
 			return renderedHTML.toString();
-		
 		}
+		
+		
 		List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, this.getGroupingEntity(), requestedName, Arrays.asList(tags.split(" ")), null, null, null, null, startYear, endYear, 0, Integer.MAX_VALUE);
 		BibTexUtils.removeDuplicates(posts);
 		
@@ -256,7 +264,7 @@ public class PublicationListTag extends SharedTag {
 				log.error(e);
 			}
 		}
-
+		
 		/*
 		 * and finally use the chosen layout (plain by def.)
 		 */
