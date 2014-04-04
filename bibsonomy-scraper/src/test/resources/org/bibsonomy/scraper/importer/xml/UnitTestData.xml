@@ -1663,10 +1663,16 @@
 		<BibFile>DCScraperTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
-		<URLTest id="url_271">
+	<URLTest id="url_271">
 		<TestDescription>ProlaScraper</TestDescription>
 		<URL>http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131</URL>
 		<BibFile>ProlaScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_272">
+		<TestDescription>AmazonScraper</TestDescription>
+		<URL>http://www.amazon.de/Computational-Intelligence-Cyber-Security-Models-ebook/dp/B00GXY5FFC/ref=sr_1_1</URL>
+		<BibFile>AmazonScraperUnitURLTest11.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
 	</URLTest>
 </test:Tests>
