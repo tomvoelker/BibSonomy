@@ -79,11 +79,12 @@ public class TrackbackClient implements PingbackClient {
 				 */
 
 				final List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-				formparams.add(new BasicNameValuePair("url", articleUrl)); // required
-				//				formparams.add(new BasicNameValuePair("title", "")); // optional
+				//formparams.add(new BasicNameValuePair("url", articleUrl)); // required
+				//formparams.add(new BasicNameValuePair("&title", "http://bibsonomy")); // optional
 				//				formparams.add(new BasicNameValuePair("excerpt", "")); // optional
 				//				formparams.add(new BasicNameValuePair("blog_name", "")); // optional
-				final UrlEncodedFormEntity entity2 = new UrlEncodedFormEntity(formparams, "UTF-8");
+
+				final UrlEncodedFormEntity entity2 = new UrlEncodedFormEntity(formparams);
 				entity2.setContentType("application/x-www-form-urlencoded; charset=utf-8");
 				httpPost.setEntity(entity2);
 

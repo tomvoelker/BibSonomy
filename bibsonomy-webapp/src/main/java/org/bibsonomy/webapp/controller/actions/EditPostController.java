@@ -728,6 +728,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(this.pingback) && !loginUser.isSpammer() && GroupUtils.isPublicGroup(post.getGroups())) {
 			this.pingback.sendPingback(post);
 		}
+		
+		System.out.println("****pingback: " + pingback.sendPingback(post) + " ****");
 	}
 
 	/**
