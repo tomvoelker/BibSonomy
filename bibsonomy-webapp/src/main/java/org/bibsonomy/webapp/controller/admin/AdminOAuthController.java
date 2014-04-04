@@ -10,7 +10,7 @@ import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyT
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
-import org.bibsonomy.opensocial.oauth.database.IOAuthLogic;
+import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.command.opensocial.OAuthAdminCommand;
@@ -32,7 +32,7 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 	private static final Log log = LogFactory.getLog(AdminOAuthController.class);
 	
 	/** database access to the OAuth consumer store */
-	private IOAuthLogic oauthLogic;
+	private OAuthLogic oauthLogic;
 	
 	/**
 	 * hold current errors
@@ -120,7 +120,7 @@ public class AdminOAuthController implements ValidationAwareController<OAuthAdmi
 	/**
 	 * @param oauthLogic the oauth logic to set
 	 */
-	public void setOauthLogic(final IOAuthLogic oauthLogic) {
+	public void setOauthLogic(final OAuthLogic oauthLogic) {
 		this.oauthLogic = oauthLogic;
 	}
 

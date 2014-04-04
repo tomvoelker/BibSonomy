@@ -167,6 +167,7 @@ public final class Context {
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ObjectNotFoundException, ResourceMovedException {
 		this.strategy.initWriter(outStream);
 		this.strategy.perform(outStream);
+		this.strategy.shutdownWriter(outStream);
 	}
 
 	/**
@@ -239,7 +240,9 @@ public final class Context {
 		if (valueStr == null) {
 			return defaultValue;
 		}
-		return Enum.valueOf(enumType, valueStr);
+
+		// Keep in mind, that every enum value MUST be written in full upper case.
+		return Enum.valueOf(enumType, valueStr.toUpperCase());
 	}
 
 	/**

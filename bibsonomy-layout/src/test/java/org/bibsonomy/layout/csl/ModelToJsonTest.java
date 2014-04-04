@@ -23,15 +23,20 @@
 
 package org.bibsonomy.layout.csl;
 
-import static org.junit.Assert.assertEquals;
+import java.io.File;
+import java.util.GregorianCalendar;
+
 import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
 
 import org.bibsonomy.layout.csl.model.Date;
 import org.bibsonomy.layout.csl.model.DateParts;
+import org.bibsonomy.layout.csl.model.DocumentCslWrapper;
 import org.bibsonomy.layout.csl.model.Person;
 import org.bibsonomy.layout.csl.model.Record;
 import org.bibsonomy.layout.csl.model.RecordList;
+import org.bibsonomy.model.Document;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -71,10 +76,30 @@ public class ModelToJsonTest {
 		rec.setCall_number("4");
 		rec.setIssued(date);
 		rec.setId("keyhere");
+		
+		Document d = new Document();
+		d.setDate(new GregorianCalendar(2014,2,18, 14, 20, 0).getTime());
+		d.setFile(new File("./pom.xml"));
+		d.setFileHash("fileHashTrallalla");
+		d.setFileName("pom.xml");
+		d.setTemp(false);
+		d.setUserName("testcase");
+		rec.getDocuments().add(new DocumentCslWrapper(d));
 
 		final RecordList list = new RecordList();
 		list.add(rec);
 		final JSON json = JSONSerializer.toJSON(list, CslModelConverter.getJsonConfig());
-		assertEquals("{\"keyhere\":{\"author\":[{\"family\":\"Benz\",\"given\":\"Dominik\"},{\"family\":\"Jackson\",\"given\":\"Peter\"}],\"call-number\":\"4\",\"edition\":\"3\",\"editor\":[],\"id\":\"keyhere\",\"issued\":{\"date-parts\":[[\"2010\",\"10\",\"14\"],[\"2011\",\"11\"]]},\"title\":\"Test title!\"}}", json.toString());
+		//Assert.assertEquals("{\"keyhere\":{\"author\":[{\"family\":\"Benz\",\"given\":\"Dominik\"},{\"family\":\"Jackson\",\"given\":\"Peter\"}],\"call-number\":\"4\",\"documents\":[],\"edition\":\"3\",\"editor\":[],\"id\":\"keyhere\",\"issued\":{\"date-parts\":[[\"2010\",\"10\",\"14\"],[\"2011\",\"11\"]]},\"title\":\"Test title!\"}}", json.toString());
+		
+		final String jsonString = json.toString();
+		Assert.assertTrue(jsonString.contains("\"family\":\"Benz\""));
+		Assert.assertTrue(jsonString.contains("\"title\":\"Test title!\""));
+		Assert.assertTrue(jsonString.contains("\"author\":[{"));
+		Assert.assertTrue(jsonString.contains("\"edition\":\"3\""));
+		Assert.assertTrue(jsonString.contains("\"documents\":[{"));
+		Assert.assertTrue(jsonString.contains("\"fileHash\":\"fileHashTrallalla\""));
+		
+		
+		
 	}
 }

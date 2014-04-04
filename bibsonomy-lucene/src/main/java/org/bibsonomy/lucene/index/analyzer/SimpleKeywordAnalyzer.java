@@ -9,7 +9,6 @@ import org.apache.lucene.util.Version;
 
 /**
  * @author fei
- * @version $Id$
  */
 public final class SimpleKeywordAnalyzer extends Analyzer {
 

@@ -29,11 +29,9 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -106,24 +104,13 @@ public final class GetAddedPostsQuery extends AbstractQuery<List<Post<? extends 
 	}
 
 	@Override
-	public List<Post<? extends Resource>> getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected List<Post<? extends Resource>> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return getRenderer().parsePostList(this.downloadedDocument, NoDataAccessor.getInstance());
 	}
 
 	@Override
-	protected List<Post<? extends Resource>> doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.POSTS_ADDED_URL);
-		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
-		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
-		
-		if (this.resourceType != Resource.class) {
-			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, this.resourceType.toString().toLowerCase());
-		}
-		
-		AbstractQuery.addGroupingParam(grouping, groupingValue, urlBuilder);
-		
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String url = this.getUrlRenderer().createHrefForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.start, this.end);
+		this.downloadedDocument = performGetRequest(url);
 	}
 }

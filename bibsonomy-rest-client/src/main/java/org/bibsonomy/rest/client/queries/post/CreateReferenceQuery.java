@@ -27,6 +27,7 @@ import java.io.StringWriter;
 
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.util.StringUtils;
 
@@ -34,25 +35,33 @@ import org.bibsonomy.util.StringUtils;
  * @author wla
  */
 public class CreateReferenceQuery extends AbstractQuery<String> {
-
-	private final static String URL_PREFIX = "/posts/community/";
-	private final static String URL_POSTFIX = "/references";
-
 	private final String hash;
 	private final String referenceHash;
-
+	
+	/**
+	 * 
+	 * @param hash the hash of the community post
+	 * @param referenceHash the reference hash of the other community post
+	 */
 	public CreateReferenceQuery(final String hash, final String referenceHash) {
 		this.hash = hash;
 		this.referenceHash = referenceHash;
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeReference(sw, this.referenceHash);
+		final String url = this.getUrlRenderer().createHrefForCommunityPostReferences(this.hash);
+		this.downloadedDocument = performRequest(HttpMethod.POST, url, StringUtils.toDefaultCharset(sw.toString()));
+	}
 
-		this.downloadedDocument = performRequest(HttpMethod.POST, URL_PREFIX + hash + URL_POSTFIX, StringUtils.toDefaultCharset(sw.toString()));
-
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
+	 */
+	@Override
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

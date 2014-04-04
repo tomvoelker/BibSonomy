@@ -32,12 +32,10 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to change details of an existing post - change tags, for
@@ -101,19 +99,18 @@ public final class ChangePostQuery extends AbstractQuery<String> {
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
+	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializePost(sw, post, null);
-		// TODO: use the UrlRenderer#createHrefForResource
-		final UrlBuilder ub = new UrlBuilder(RESTConfig.USERS_URL).addPathElement(this.username).addPathElement(RESTConfig.POSTS_URL).addPathElement(this.resourceHash);
-		this.downloadedDocument = performRequest(HttpMethod.PUT, ub.asString(), sw.toString());
-		return null;
+		final String postUrl = this.getUrlRenderer().createHrefForResource(this.username, this.resourceHash);
+		this.downloadedDocument = performRequest(HttpMethod.PUT, postUrl, sw.toString());
 	}
 	
 	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.isSuccess())
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.isSuccess()) {
 			return this.getRenderer().parseResourceHash(this.downloadedDocument);
+		}
 		return this.getError();
 	}
 }

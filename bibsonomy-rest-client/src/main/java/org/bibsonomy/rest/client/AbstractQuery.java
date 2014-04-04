@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.Reader;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.util.ProgressCallback;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -42,7 +41,7 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
-import org.bibsonomy.util.UrlBuilder;
+import org.bibsonomy.rest.renderer.UrlRenderer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -53,7 +52,6 @@ public abstract class AbstractQuery<T> {
 	private String apiKey;
 	private String username;
 	private AuthenticationAccessor accessor;
-	private String apiURL;
 	private int statusCode = -1;
 
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
@@ -62,7 +60,6 @@ public abstract class AbstractQuery<T> {
 
 	protected Reader downloadedDocument;
 
-	private T result;
 	private boolean executed = false;
 
 	/**
@@ -70,13 +67,6 @@ public abstract class AbstractQuery<T> {
 	 */
 	public boolean isExecuted() {
 		return this.executed;
-	}
-
-	/**
-	 * @param executed the executed to set
-	 */
-	public void setExecuted(final boolean executed) {
-		this.executed = executed;
 	}
 
 	/**
@@ -101,17 +91,15 @@ public abstract class AbstractQuery<T> {
 		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.accessor, this.callback);
 		this.configHttpWorker(worker);
 		
-		final Reader downloadedDocument = worker.perform(this.apiURL + url, null);
+		final Reader downloadedDocument = worker.perform(url, null);
 		this.statusCode = worker.getHttpResult();
 		return downloadedDocument;
 	}
 
-	protected final Reader performMultipartPostRequest(final String url, final File file) throws ErrorPerformingRequestException {	
-		final String absoluteUrl = this.apiURL + url;
-
+	protected final Reader performMultipartPostRequest(final String absoluteUrl, final File file, final String fileName) throws ErrorPerformingRequestException {
 		final PostWorker worker = new PostWorker(this.username, this.apiKey, this.accessor);
 		this.configHttpWorker(worker);
-		final Reader result = worker.perform(absoluteUrl, file);
+		final Reader result = worker.perform(absoluteUrl, file, fileName);
 		this.statusCode = worker.getHttpResult();
 
 		return result;
@@ -119,23 +107,21 @@ public abstract class AbstractQuery<T> {
 
 	/**
 	 * Run GET worker to download a file
-	 * @param url
+	 * @param absoluteUrl
 	 * @param file
 	 * @throws ErrorPerformingRequestException
 	 * @author Waldemar Biller
 	 */
-	protected final void performFileDownload(final String url, final File file) throws ErrorPerformingRequestException {
+	protected final void performFileDownload(final String absoluteUrl, final File file) throws ErrorPerformingRequestException {
 		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.accessor, this.callback);
 		this.configHttpWorker(worker);
 		
-		final String absoluteUrl = this.apiURL + url;
 		worker.performFileDownload(absoluteUrl, file);
 		this.statusCode = worker.getHttpResult();
 	}
 
-	protected final Reader performRequest(final HttpMethod method, final String url, final String requestBody) throws ErrorPerformingRequestException {
+	protected final Reader performRequest(final HttpMethod method, final String absoluteUrl, final String requestBody) throws ErrorPerformingRequestException {
 		final HttpWorker<?> worker;
-		final String absoluteUrl = this.apiURL + url;
 
 		switch (method) {
 		case POST:
@@ -164,30 +150,6 @@ public abstract class AbstractQuery<T> {
 	}
 	
 	/**
-	 * Helper Method that adds a grouping Parameter to the given urlBuilder
-	 * 
-	 * @param grouping
-	 * @param groupingValue
-	 * @param urlBuilder
-	 */
-	protected static void addGroupingParam(GroupingEntity grouping, String groupingValue, UrlBuilder urlBuilder) {
-		switch (grouping) {
-		case USER:
-			urlBuilder.addParameter("user", groupingValue);
-			break;
-		case GROUP:
-			urlBuilder.addParameter("group", groupingValue);
-			break;
-		case VIEWABLE:
-			urlBuilder.addParameter("viewable", groupingValue);
-			break;
-		default:
-			break;
-		}
-	}
-	
-	
-	/**
 	 * Execute this query. The query blocks until a result from the server is
 	 * received.
 	 *
@@ -205,14 +167,14 @@ public abstract class AbstractQuery<T> {
 		this.apiKey = apiKey;
 		this.accessor = accessor;
 		this.executed = true;
-		this.result = this.doExecute();
+		this.doExecute();
 	}
 
 	/**
 	 * @return result of the query
 	 * @throws ErrorPerformingRequestException if something fails, eg an ioexception occurs (see the cause).
 	 */
-	protected abstract T doExecute() throws ErrorPerformingRequestException;
+	protected abstract void doExecute() throws ErrorPerformingRequestException;
 
 	/**
 	 * @return the HTTP status code this query had (only available after
@@ -224,7 +186,9 @@ public abstract class AbstractQuery<T> {
 		if (this.statusCode == -1) throw new IllegalStateException("Execute the query first.");
 		return this.statusCode;
 	}
-
+	
+	protected abstract T getResultInternal() throws BadRequestOrResponseException, IllegalStateException;
+	
 	/**
 	 * @return the result of this query, if there is one.
 	 * @throws BadRequestOrResponseException
@@ -233,19 +197,14 @@ public abstract class AbstractQuery<T> {
 	 *             if @see #getResult() gets called before 
 	 */
 	public T getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (!this.executed) throw new IllegalStateException("Execute the query first.");
-		return this.result;
-	}
-
-	/**
-	 * @param apiURL
-	 *            The apiURL to set.
-	 */
-	void setApiURL(final String apiURL) {
-		this.apiURL = apiURL;
+		if (!this.executed) {
+			throw new IllegalStateException("Execute the query first.");
+		}
+		
+		return this.getResultInternal();
 	}
 	
-    /**
+	/**
 	 * @param renderingFormat
 	 *            the {@link RenderingFormat} to use.
 	 */
@@ -281,6 +240,13 @@ public abstract class AbstractQuery<T> {
 	 */
 	public Renderer getRenderer() {
 		return this.rendererFactory.getRenderer(this.renderingFormat);
+	}
+	
+	/**
+	 * @return the url renderer
+	 */
+	public UrlRenderer getUrlRenderer() {
+		return this.rendererFactory.getUrlRenderer();
 	}
 
 	/**

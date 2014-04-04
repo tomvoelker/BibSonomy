@@ -16,6 +16,7 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
@@ -33,6 +34,7 @@
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="discussion" fragment="true" required="false"/>
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="content" fragment="true" required="false" />
 	
 	<!-- quick fix for discussion page -->
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
@@ -127,6 +129,7 @@
 					isBasket="${isBasket}"
 					disableListNavigation="${disableListNavigation}"
 					disableResourcetypeSelection="${disableResourcetypeSelection}"
+					disableSort="${disableSort}"
 					showInboxActions="${showInboxActions}"
 					customBookmarksHeaderText="${customBookmarksHeaderText}"
 					customPublicationsHeaderText="${customPublicationsHeaderText}"
@@ -164,6 +167,14 @@
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
+		
+					<c:if test="${not empty content}">
+						<div id="innercontent" style="margin-left: 8px;">
+							<jsp:invoke fragment="content" />
+						</div>
+					</c:if>
+					
+		
 			<jsp:invoke fragment="discussion" />
 			<c:if test="${not empty discussion}">
 				<parts:postHeader 
@@ -200,13 +211,15 @@
 					</c:choose>
 				</c:when>
 				<c:otherwise>
+				<div id="fullscreen">
+
 					<!-- additional heading for content area -->
 					<c:if  test="${not empty contentHeading}">
-						<div id="fullscreen">
-							<jsp:invoke fragment="contentHeading" />
-						</div>
+						<jsp:invoke fragment="contentHeading" />
+						
 					</c:if>
-					
+
+				</div>
 					<!-- bibtex/bookmark lists -->
 					<resources:bookmarks listView="${command.bookmark}" 
 							loginUserName="${command.context.loginUser.name}" 

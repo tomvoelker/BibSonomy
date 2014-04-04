@@ -3,8 +3,11 @@ package org.bibsonomy.rest.testutil;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.rest.AuthenticationHandler;
+import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.database.TestDBLogicInterfaceFactory;
 import org.bibsonomy.rest.renderer.RendererFactory;
@@ -85,8 +88,10 @@ public class TestServerBuilder {
 		final RestServlet restServlet = new RestServlet();
 		restServlet.setUrlRenderer(new UrlRenderer(apiUrl));
 		restServlet.setRendererFactory(new RendererFactory(new UrlRenderer(apiUrl)));
-
-		restServlet.setLogicInterfaceFactory(logicInterfaceFactory);
+		
+		final BasicAuthenticationHandler basicAuthenticationHandler = new BasicAuthenticationHandler();
+		basicAuthenticationHandler.setLogicFactory(logicInterfaceFactory);
+		restServlet.setAuthenticationHandlers(Arrays.<AuthenticationHandler<?>>asList(basicAuthenticationHandler));
 
 		servletContext.addServlet(RestServlet.class, "/*").setServlet(restServlet);
 

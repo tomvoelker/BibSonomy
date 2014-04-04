@@ -287,7 +287,7 @@ public abstract class AbstractRenderer implements Renderer {
 	
 			// if the publication has documents …
 			final List<Document> documents = publication.getDocuments();
-			if (documents != null) {
+			if (present(documents)) {
 				// … put them into the xml output
 				final DocumentsType xmlDocuments = new DocumentsType();
 				for (final Document document : documents){
@@ -533,10 +533,10 @@ public abstract class AbstractRenderer implements Renderer {
 		// }
 	
 		// add sub-/supertags - dbe, 20070718
-		if ((tag.getSubTags() != null) && (tag.getSubTags().size() > 0)) {			
-			xmlTag.getSubTags().add(this.createXmlTags(tag.getSubTags()));		
+		if (present(tag.getSubTags())) {
+			xmlTag.getSubTags().add(this.createXmlTags(tag.getSubTags()));
 		}
-		if ((tag.getSuperTags() != null) && (tag.getSuperTags().size() > 0)) {
+		if (present(tag.getSuperTags())) {
 			xmlTag.getSuperTags().add(this.createXmlTags(tag.getSuperTags()));
 		}
 		return xmlTag;
@@ -545,10 +545,10 @@ public abstract class AbstractRenderer implements Renderer {
 	private TagsType createXmlTags(final List<Tag> tags) {
 		final TagsType xmlTags = new TagsType();
 		for (final Tag tag : tags) {
-			xmlTags.getTag().add(this.createXmlTag(tag));				
+			xmlTags.getTag().add(this.createXmlTag(tag));
 		}
 		xmlTags.setStart(BigInteger.valueOf(0));
-		xmlTags.setEnd(BigInteger.valueOf(tags.size()));		
+		xmlTags.setEnd(BigInteger.valueOf(tags.size()));
 		return xmlTags;
 	}
 

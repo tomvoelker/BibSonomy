@@ -10,7 +10,6 @@ import org.bibsonomy.model.util.file.UploadedFile;
  * A file deleted on server.
  * 
  * @author cunis
- * @version $Id:$
  */
 public class ServerDeletedFile implements UploadedFile {
 

@@ -34,6 +34,7 @@ import java.nio.charset.Charset;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.FilePartSource;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
@@ -59,6 +60,7 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 	/**
 	 * @param username
 	 * @param apiKey
+	 * @param accessor 
 	 */
 	public PostWorker(final String username, final String apiKey, final AuthenticationAccessor accessor) {
 		super(username, apiKey, accessor);
@@ -67,14 +69,15 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 	/**
 	 * @param url
 	 * @param file
+	 * @param fileName the file name to be used
 	 * @return the reader
 	 * @throws ErrorPerformingRequestException
 	 */
-	public Reader perform(final String url, final File file) throws ErrorPerformingRequestException {
+	public Reader perform(final String url, final File file, final String fileName) throws ErrorPerformingRequestException {
 		LOGGER.debug("POST Multipart: URL: " + url);
 		final PostMethod post = new PostMethod(url);
 
-		if (this.getRenderingFormat()  != null) {
+		if (this.getRenderingFormat() != null) {
 			post.addRequestHeader("Accept", this.getRenderingFormat().getMimeType());
 		}
 		post.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
@@ -83,7 +86,7 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 
 		try {
 			final HttpMethodParams params = new HttpMethodParams();
-			final FilePart filePart = new FilePart("file", file) {
+			final FilePart filePart = new FilePart("file", new FilePartSource(fileName, file)) {
 				/**
 				 * TODO: remove as soon as the http-client is updated to 4.0
 				 * method hacked to get this fixed:

@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -100,6 +101,12 @@ public class UpdateUserSettingsController extends SettingsPageController impleme
 			errors.rejectValue("user.settings.showBookmark", "error.field.oneResourceMin");
 			return;
 		}
+		
+		if (commandSettings.getListItemcount() > PermissionDatabaseManager.END_MAX) {		
+			errors.rejectValue("user.settings.listItemcount", "error.settings.list_item_count.size", new String[]{Integer.toString(PermissionDatabaseManager.END_MAX)}, "");
+			return;
+		}
+		
 		final UserSettings userSettings = user.getSettings();
 		
 		userSettings.setDefaultLanguage(commandSettings.getDefaultLanguage());

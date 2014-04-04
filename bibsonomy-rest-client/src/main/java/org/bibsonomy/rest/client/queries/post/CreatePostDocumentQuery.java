@@ -25,50 +25,43 @@ package org.bibsonomy.rest.client.queries.post;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.File;
-
-import org.bibsonomy.rest.RESTConfig;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author wbi
  */
 public class CreatePostDocumentQuery extends AbstractQuery<String> {
 
-	private final File file;
-	private final String username;
+	private final Document document;
 	private final String resourceHash;
 
 	/**
-	 * @param username
+	 * @param document
 	 * @param resourceHash
-	 * @param file
 	 */
-	public CreatePostDocumentQuery(final String username, final String resourceHash, final File file) {
-		if (!present(username)) throw new IllegalArgumentException("no username given");
+	public CreatePostDocumentQuery(final Document document, final String resourceHash) {
+		if (!present(document.getUserName())) throw new IllegalArgumentException("no username given");
+		if (!present(document.getFile())) throw new IllegalArgumentException("no file given");
 		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");
 
-		this.username = username;
+		this.document = document;
 		this.resourceHash = resourceHash;
-
-		this.file = file;
 	}
 
 	@Override
-	protected String doExecute() throws ErrorPerformingRequestException {
-		final String url = new UrlBuilder(RESTConfig.USERS_URL).addPathElement(this.username).addPathElement("posts").addPathElement(this.resourceHash).addPathElement("documents").asString();
-		this.downloadedDocument = this.performMultipartPostRequest(url, this.file);
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String url = this.getUrlRenderer().createHrefForResourceDocuments(document.getUserName(), this.resourceHash);
+		this.downloadedDocument = this.performMultipartPostRequest(url, document.getFile(), document.getFileName());
 	}
 
 	@Override
-	public String getResult() throws BadRequestOrResponseException, IllegalStateException {
+	protected String getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		if (this.isSuccess()) {
 			return this.getRenderer().parseResourceHash(this.downloadedDocument);
 		}
 		return this.getError();
-	}	
+	}
 }

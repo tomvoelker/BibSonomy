@@ -23,10 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.agu;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,108 +30,65 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.RISGenericURLScraper;
 
 /**
  * Scraper for publications from http://www.agu.org/pubs/ using the RIS export
  * @author tst
  */
-public class AGUScraper extends AbstractUrlScraper {
-	
+public class AGUScraper extends RISGenericURLScraper {
+
 	private static final String SITE_NAME = "American Geophysical Union (AGU)";
 	private static final String SITE_URL = "http://www.agu.org/pubs/";
 	private static final String INFO = "For Publications from the " + href(SITE_URL, SITE_NAME)+".";
-	
+
 	private static final String HOST = "agu.org";
-	
-	private Pattern RIS_DOWNLOAD_PATTERN = Pattern.compile("href=\"([^\\\"]*)\">Export RIS Citation");
-	
+
+	private final Pattern RIS_DOWNLOAD_PATTERN = Pattern.compile("href=\"([^\\\"]*)\">Export RIS Citation");
+
 	private static final List<Pair<Pattern, Pattern>> patterns = new ArrayList<Pair<Pattern,Pattern>>();
 
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), EMPTY_PATTERN));
 	}
-	
+
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
 	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext)
-			throws ScrapingException {
-		scrapingContext.setScraper(this);
-		
-		String pageContent = null;
-		pageContent = scrapingContext.getPageContent();
-		
-		if(pageContent != null){
-			// get download url
-			String downloadUrl = null;
-			Matcher matcherDownloadUrl = RIS_DOWNLOAD_PATTERN.matcher(pageContent);
-			if(matcherDownloadUrl.find())
-				downloadUrl = "http://www.agu.org" + matcherDownloadUrl.group(1);
-			else
-				throw new PageNotSupportedException("This AGU page is not supported.");
-			
-			if(present(downloadUrl)){
-				
-				// get RIS citation
-				String ris = null;
-				try {
-					/*
-					 * little bug fix:
-					 * decode &amp; to & because it seems that AGU not decodes incoming URLs by
-					 * itself (without this replacement the result is a error and not a RIS citation)
-					 */
-					ris = WebUtils.getContentAsString(new URL(downloadUrl.replace("&amp;", "&")));
-				} catch (MalformedURLException ex) {
-					throw new InternalFailureException(ex);
-				} catch (IOException ex) {
-					throw new InternalFailureException(ex);
-				}
-				
-				if(present(ris)){
-					// convert ris to bibtex
-					String bibtex = null;
-					RisToBibtexConverter converter = new RisToBibtexConverter();
-					bibtex = converter.risToBibtex(ris);
-					
-					if(present(bibtex)){
-						// finish
-						scrapingContext.setBibtexResult(bibtex);
-						return true;
-					}else
-						throw new ScrapingFailureException("Converting RIS to bibtex failed");
-					
-				}else
-					throw new ScrapingFailureException("Cannot get RIS citation.");
-				
-			}else
-				return false;
-			
-		}else
-			throw new ScrapingFailureException("Cannot download content from " + scrapingContext.getUrl().toString());
-		
-	}
-
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return "AGU";
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	@Override
+	public String getRISURL(URL url) {
+		String pageContent = null;
+		ScrapingContext sc = new ScrapingContext(url);
+		try {
+			pageContent = sc.getPageContent();
+		} catch (ScrapingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(pageContent != null){
+			Matcher matcherDownloadUrl = RIS_DOWNLOAD_PATTERN.matcher(pageContent);
+			if(matcherDownloadUrl.find()){
+				return "http://www.agu.org" + matcherDownloadUrl.group(1).replace("&amp;", "&");
+			}
+		}
+		return null;
+	}
 }

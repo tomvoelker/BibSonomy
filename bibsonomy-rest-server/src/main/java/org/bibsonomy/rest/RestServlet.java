@@ -19,21 +19,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.shindig.auth.SecurityToken;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.opensocial.oauth.OAuthRequestValidator;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -59,12 +54,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public final class RestServlet extends HttpServlet {
 	private static final long serialVersionUID = -1737804091652029470L;
 	private static final Log log = LogFactory.getLog(RestServlet.class);
-
-	private static final String NO_AUTH_ERROR = "Please authenticate yourself.";
-	/**
-	 * Used in {@link #validateAuthorization(String)} to identify HTTP basic authentication.
-	 */
-	private static final String HTTP_AUTH_BASIC_IDENTIFIER = "Basic ";
 
 	/**
 	 * the key for the documents path
@@ -103,7 +92,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
 
-	private LogicInterfaceFactory logicFactory;
+	private List<AuthenticationHandler<?>> authenticationHandlers;
 	private FileLogic fileLogic;
 	
 	private UrlRenderer urlRenderer;
@@ -111,20 +100,6 @@ public final class RestServlet extends HttpServlet {
 
 	// store some infos about the specific request or the webservice (i.e. document path)
 	private final Map<String, String> additionalInfos = new HashMap<String, String>();
-
-	/** handles OAuth requests */
-	private OAuthRequestValidator oauthValidator;
-
-	/** logic interface factory for handling oauth requests */
-	private ShindigDBLogicUserInterfaceFactory oauthLogicFactory;
-	
-
-	/**
-	 * @param oauthLogicFactory the oauthLogicFactory to set
-	 */
-	public void setOauthLogicFactory(final ShindigDBLogicUserInterfaceFactory oauthLogicFactory) {
-		this.oauthLogicFactory = oauthLogicFactory;
-	}
 
 	/**
 	 * Sets the base URL of the project. Typically "project.home" in the 
@@ -164,23 +139,6 @@ public final class RestServlet extends HttpServlet {
 	 */
 	public void setFileLogic(FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
-	}
-
-	/**
-	 * @param oauthValidator the oauthValidator to set
-	 */
-	public void setOauthValidator(final OAuthRequestValidator oauthValidator) {
-		this.oauthValidator = oauthValidator;
-	}
-
-	/**
-	 * Configure the logic interface factory to be used to aquire instances of 
-	 * the logic interface.
-	 * @param logicInterfaceFactory 
-	 */
-	@Required
-	public void setLogicInterfaceFactory(final LogicInterfaceFactory logicInterfaceFactory) {
-		this.logicFactory = logicInterfaceFactory;
 	}
 
 	/**
@@ -329,22 +287,14 @@ public final class RestServlet extends HttpServlet {
 		}
 	}
 
-	protected String getMainContentType(HttpServletRequest request) {
+	protected static String getMainContentType(HttpServletRequest request) {
 		if (request instanceof MultipartHttpServletRequest) {
-			MultipartFile main = ((MultipartHttpServletRequest) request).getFile("main");
-			if (main != null) {
-				return main.getContentType();
+			// TODO: add comment
+			final MultipartFile mainFile = ((MultipartHttpServletRequest) request).getFile("main");
+			if (mainFile != null) {
+				return mainFile.getContentType();
 			}
 			return null;
-			/*
-			Iterator<String> fileNameIt = ((MultipartHttpServletRequest) request).getFileNames();
-			while (fileNameIt.hasNext()) {
-				MultipartFile mf = ((MultipartHttpServletRequest) request).getFile(fileNameIt.next());
-				if (mf != null) {
-					return mf.getContentType();
-				}
-			}
-			*/
 		}
 		return request.getContentType();
 	}
@@ -354,7 +304,7 @@ public final class RestServlet extends HttpServlet {
 	 * @return bei einem {@link MultipartHttpServletRequest} der {@link InputStream} des "main" files - falls keines da ist oder es kein {@link MultipartHttpServletRequest} ist, dann request.getInputStream()
 	 * @throws IOException
 	 */
-	protected InputStream getMainInputStream(HttpServletRequest request) throws IOException {
+	protected static InputStream getMainInputStream(HttpServletRequest request) throws IOException {
 		if (request instanceof MultipartHttpServletRequest) {
 			MultipartFile main = ((MultipartHttpServletRequest) request).getFile("main");
 			if (main != null) {
@@ -384,31 +334,40 @@ public final class RestServlet extends HttpServlet {
 
 		// send error
 		response.setStatus(code);
-		response.setContentType(mediaType.getMimeType());
+		response.setContentType(mediaType.getErrorFormat().getMimeType());
 		final ByteArrayOutputStream cachingStream = new ByteArrayOutputStream();
 		final Writer writer = new OutputStreamWriter(cachingStream, Charset.forName(RESPONSE_ENCODING));
+		
 		renderer.serializeError(writer, message);
+		writer.close();
 		response.setContentLength(cachingStream.size());
 		response.getOutputStream().print(cachingStream.toString(RESPONSE_ENCODING));
 	}
 
 	/**
-	 * @param authentication
-	 *            Authentication-value of the header's request
+	 * @param request
+	 *            the reuqest
+	 * @return the val
+	 * @throws AuthenticationException 
 	 * @throws IOException
 	 */
 	protected LogicInterface validateAuthorization(final HttpServletRequest request) throws AuthenticationException {
-		final String authenticationHeader = request.getHeader(HeaderUtils.HEADER_AUTHORIZATION);
-		if (HeaderUtils.isHttpBasicAuthorization(authenticationHeader)) {
-			// try http basic authorization
-			final LogicInterface logic = validateHttpBasicAuthorization(authenticationHeader);
-			validateSyncAuthorization(request, logic);
-			return logic;
-		} else if (present(this.oauthValidator) && present(this.oauthLogicFactory)) {
-			// try oauth authorization
-			return validateOAuthAuthorization(request);
+		for (final AuthenticationHandler<?> authenticationHandler : this.authenticationHandlers) {
+			final LogicInterface logic = getLogic(authenticationHandler, request);
+			if (present(logic)) {
+				validateSyncAuthorization(request, logic);
+				return logic;
+			}
 		}
-		throw new AuthenticationException(NO_AUTH_ERROR);
+		throw new AuthenticationException(AuthenticationHandler.NO_AUTH_ERROR);
+	}
+	
+	private static <T> LogicInterface getLogic(final AuthenticationHandler<T> authenticationHandler, HttpServletRequest request) {
+		final T extractAuthentication = authenticationHandler.extractAuthentication(request);
+		if (authenticationHandler.canAuthenticateUser(extractAuthentication)) {
+			return authenticationHandler.authenticateUser(extractAuthentication);
+		}
+		return null;
 	}
 
 	/**
@@ -417,11 +376,9 @@ public final class RestServlet extends HttpServlet {
 	 * @param request
 	 * @param logic
 	 */
-	private void validateSyncAuthorization(final HttpServletRequest request, final LogicInterface logic) {
+	private static void validateSyncAuthorization(final HttpServletRequest request, final LogicInterface logic) {
 		log.debug("start ssl header check for synchronization");
-
 		final String verifyHeader = request.getHeader(SSL_VERIFY_HEADER);
-
 		if (!SUCCESS.equals(verifyHeader)) {
 			log.debug("ssl_verify_header not found or not '" + SUCCESS + "'");
 			return;
@@ -456,51 +413,9 @@ public final class RestServlet extends HttpServlet {
 	}
 
 	/**
-	 * Authorize OAuth requests
-	 * 
-	 * @param request
-	 * @return
+	 * @param authenticationHandlers the authenticationHandlers to set
 	 */
-	private LogicInterface validateOAuthAuthorization(final HttpServletRequest request) {
-		// try oauth authorization - if configured
-		final SecurityToken securityToken = this.oauthValidator.getSecurityTokenFromRequest(request);
-		if (!present(securityToken) || securityToken.isAnonymous()) {
-			throw new AuthenticationException(NO_AUTH_ERROR);
-		}
-		return this.oauthLogicFactory.getLogicAccess(securityToken);
-	}
-
-	/**
-	 * Authorize Http basic requests
-	 * 
-	 * @param authentication
-	 * @return logic interface for the requesting user on success
-	 */
-	protected LogicInterface validateHttpBasicAuthorization(final String authentication) {
-		if (!HeaderUtils.isHttpBasicAuthorization(authentication)) {
-			throw new AuthenticationException(NO_AUTH_ERROR);
-		}
-
-		final String basicCookie;
-		try {
-			basicCookie = new String(Base64.decodeBase64(authentication.substring(HTTP_AUTH_BASIC_IDENTIFIER.length()).getBytes()), RESPONSE_ENCODING);
-		} catch (final IOException e) {
-			throw new BadRequestOrResponseException("error decoding authorization header: " + e.toString());
-		}
-
-		final int i = basicCookie.indexOf(':');
-		if (i < 0) {
-			throw new BadRequestOrResponseException("error decoding authorization header: syntax error");
-		}
-
-		// check username and password
-		final String username = basicCookie.substring(0, i);
-		final String apiKey = basicCookie.substring(i + 1);
-		log.debug("Username/API-key: " + username + " / " + apiKey);
-		try {
-			return logicFactory.getLogicAccess(username, apiKey);
-		} catch (final AccessDeniedException e) {
-			throw new AuthenticationException("Authentication failure: " + e.getMessage());
-		}
+	public void setAuthenticationHandlers(List<AuthenticationHandler<?>> authenticationHandlers) {
+		this.authenticationHandlers = authenticationHandlers;
 	}
 }

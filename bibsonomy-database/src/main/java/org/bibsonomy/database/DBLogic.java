@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -274,7 +273,14 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * TODO: this practically clears /all/ user information
 				 */
-				return new User(user.getName());
+				/*
+				 * FIXME: This is necessary to avoid null pointer Exceptions when the user's picture is not visible.
+				 * The fileLogic should do this instead by setting the default pic in such cases.
+				 */
+				final User dummyUser = this.userDBManager.createEmptyUser();
+				dummyUser.setName(user.getName());
+
+				return dummyUser;
 			}
 
 			/*
@@ -739,6 +745,7 @@ public class DBLogic implements LogicInterface {
 				final Resource resource = post.getResource();
 				final List<DiscussionItem> discussionSpace = this.discussionDatabaseManager.getDiscussionSpace(this.loginUser, resource.getInterHash(), session);
 				resource.setDiscussionItems(discussionSpace);
+				SystemTagsExtractor.handleHiddenSystemTags(post, this.loginUser.getName());
 				return post;
 			}
 			/*
@@ -835,8 +842,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, null, null, this.loginUser);
-			return this.tagDBManager.getTagDetails(param, session);
+			return this.tagDBManager.getTagDetails(this.loginUser, tagName, session);
 		} finally {
 			session.close();
 		}
@@ -1192,23 +1198,24 @@ public class DBLogic implements LogicInterface {
 	}
 
 
-	private void replaceImportResources(List<? extends Post<? extends Resource>> posts) {
+	private void replaceImportResources(final List<? extends Post<? extends Resource>> posts) {
 		for (final Post<? extends Resource> post : posts) {
 			replaceImportResource(post);
 		}
 	}
 
-	protected <T extends Resource> void replaceImportResource(Post<T> post) {
-		T resource = post.getResource();
+	protected <T extends Resource> void replaceImportResource(final Post<T> post) {
+		final T resource = post.getResource();
 		if (resource instanceof ImportResource) {
 			@SuppressWarnings("unchecked") // this is safe because PublicationImportResource is final, and the importer creates PublicationImportResources again.
+			final
 			T parsedResource = (T) parsePublicationImportResource((ImportResource) resource);
 			post.setResource(parsedResource);
 		}
 	}
 	
-	private ImportResource parsePublicationImportResource(ImportResource resource) {
-		Collection<ImportResource> bibtexs = this.bibtexReader.read(resource);
+	private ImportResource parsePublicationImportResource(final ImportResource resource) {
+		final Collection<ImportResource> bibtexs = this.bibtexReader.read(resource);
 		if (!present(bibtexs)) {
 			throw new IllegalStateException("bibtexReader did not throw exception and returned empty result");
 		}
@@ -1427,7 +1434,7 @@ public class DBLogic implements LogicInterface {
 		 * only logged in users can update user settings.
 		 */
 		final String username = user.getName();
-		if(!UserUpdateOperation.ACTIVATE.equals(operation)) {
+		if (!UserUpdateOperation.ACTIVATE.equals(operation)) {
 			this.ensureLoggedIn();
 			/*
 			 * only admins can change settings of /other/ users
@@ -1450,37 +1457,30 @@ public class DBLogic implements LogicInterface {
 				break;
 			case UPDATE_CORE:
 				return this.userDBManager.updateUserProfile(user, session);
-				
 			case UPDATE_LIMITED_USER:
 				return this.userDBManager.updateLimitedUser(user, session);
-
 			case ACTIVATE:
 				return this.userDBManager.activateUser(user, session);
-
 			case UPDATE_SPAMMER_STATUS:
 				/*
 				 * only admins are allowed to change spammer settings
 				 */
 				log.debug("Start update this framework");
-
 				this.permissionDBManager.ensureAdminAccess(loginUser);
 				/*
 				 * open session and update spammer settings
 				 */
 				final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
 				log.debug("User prediction: " + user.getPrediction());
-				return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);	
+				return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
 			case UPDATE_ALL:
 				return this.storeUser(user, true);
 			default:
 				throw new UnsupportedOperationException(operation + " not supported.");
 			}
-
-
 		} finally {
 			session.close();
 		}
-
 		return null;
 	}
 
@@ -1686,12 +1686,13 @@ public class DBLogic implements LogicInterface {
 				 */
 				Post<BibTex> post = null;
 				try {
-					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), true, session);
 				} catch (final ResourceMovedException ex) {
 					// ignore
 				} catch (final ObjectNotFoundException ex) {
 					// ignore
 				}
+				
 				if (post != null && post.getResource().getDocuments() != null) {
 					/*
 					 * post found and post contains documents (bibtexdbmanager
@@ -1725,7 +1726,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#renameDocument(org.bibsonomy.model.Document, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void updateDocument(Document document, String resourceHash, String newName) {
+	public void updateDocument(final Document document, final String resourceHash, final String newName) {
 		this.ensureLoggedIn();
 		
 		final String userName = document.getUserName();
@@ -2426,7 +2427,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual clipboard size
-			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
 		} catch (final Exception ex) {
 			log.error(ex);
 			throw new RuntimeException(ex);
@@ -2472,7 +2473,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual basketsize
-			return this.clipboardDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
 		} finally {
 			session.close();
 		}
@@ -2848,7 +2849,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Tag> getTagRelation(int start, int end, TagRelation relation, List<String> tagNames) {
+	public List<Tag> getTagRelation(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
 		// TODO Auto-generated method stub
 		return null;
 	}

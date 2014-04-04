@@ -94,10 +94,14 @@ gromit: mvn_deploy
 # 
 slave_kassel: document mvn_deploy mail
 slave_wuerzburg: document mvn_deploy mail
+slave_hannover: document mvn_deploy_tc7 mail
 #
 # when deploying to puma, we first need to open an ssh connection 
 #
-puma: ssh_puma document mvn_deploy mail
+puma_sandbox: mvn_deploy mail
+puma_ks_dev: mvn_deploy
+puma_ks_prod: document mvn_deploy mail
+
 
 
 ################################
@@ -110,6 +114,9 @@ puma: ssh_puma document mvn_deploy mail
 # (the property "tomcat-server" activates the profiles defined in ~/.m2/settings.xml
 mvn_deploy: clean
 	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip tomcat6:redeploy | ${TEE} -a ${TMPLOG}
+
+mvn_deploy_tc7: clean
+	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip tomcat7:redeploy | ${TEE} -a ${TMPLOG}
 
 #
 # send notification mail
@@ -128,8 +135,8 @@ archive:
 #
 # open SSH connection with tunnel to PUMA tomcat
 #
-ssh_puma:
-	ssh -L 8077:bib-ws24.bibliothek.uni-kassel.de:8080 pumadeploy@puma.uni-kassel.de -p 30 -qTnN &
+#ssh_puma:
+#	ssh -L 8077:bib-ws24.bibliothek.uni-kassel.de:8080 pumadeploy@puma.uni-kassel.de -p 30 -qTnN &
 
 #
 # Ask the user who he is and why he's deploying.

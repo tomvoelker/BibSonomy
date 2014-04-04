@@ -6,6 +6,18 @@
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/antlr"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/downloaded-resources"/>
+        <dependent-module archiveName="bibsonomy-database-common-2.0.41-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bibsonomy-database-common/bibsonomy-database-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="bibsonomy-database-2.0.41-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bibsonomy-database/bibsonomy-database">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="bibsonomy-pingback-2.0.41-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bibsonomy-pingback/bibsonomy-pingback">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="bibsonomy-synchronization-2.0.41-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bibsonomy-synchronization/bibsonomy-synchronization">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
 <property name="java-output-path" value="build/classes"/>
         <property name="context-root" value="bibsonomy-webapp"/>
         <property name="component.exclusion.patterns" value="**/*.js,**/*.css"/>

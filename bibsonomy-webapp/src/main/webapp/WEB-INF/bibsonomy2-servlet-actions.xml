@@ -372,47 +372,6 @@
 				<entry key="/editPublication">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="editPublicationController"/>
-						<property name="allowedFields" ref="publicationRequestParameters"/>
-
-					</bean>
-				</entry> 
-				<entry key="/editGoldStandardPublication">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>
-						<property name="allowedFields" ref="publicationRequestParameters"/>
-					</bean>
-				</entry>
-				<entry key="/editGoldStandardBookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="editGoldStandardBookmarkController"/>
-						<property name="allowedFields" ref="bookmarkRequestParameters"/>
-					</bean>
-				</entry>
-				<entry key="/postBookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postBookmarkController"/>
-					</bean>
-				</entry>
-				<entry key="/postPublication">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postPublicationController"/>
-						<property name="allowedFields">
-							<list>
-								<value>selTab</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/diffBookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="diffBookmarkController"/>
-						<property name="allowedFields" ref="bookmarkRequestParameters"/>
-					</bean>
-				</entry>
-				<!-- /diffPublication =  editPublication?intraHashToUpdate=INTRAHASH&compareVersion=X-->
-				<entry key="/editPublication">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="diffPublicationController" />
 						<property name="allowedFields">
 							<list>
 								<value>postDiff.description</value>
@@ -526,6 +485,39 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/editGoldStandardPublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editGoldStandardPublicationController"/>
+						<property name="allowedFields" ref="publicationRequestParameters"/>
+					</bean>
+				</entry>
+				<entry key="/editGoldStandardBookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editGoldStandardBookmarkController"/>
+						<property name="allowedFields" ref="bookmarkRequestParameters"/>
+					</bean>
+				</entry>
+				<entry key="/postBookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postBookmarkController"/>
+					</bean>
+				</entry>
+				<entry key="/postPublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postPublicationController"/>
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+<!-- 				<entry key="/diffBookmark"> -->
+<!-- 					<bean parent="controllerBase"> -->
+<!-- 						<property name="controllerBeanName" value="diffBookmarkController"/> -->
+<!-- 						<property name="allowedFields" ref="bookmarkRequestParameters"/> -->
+<!-- 					</bean> -->
+<!-- 				</entry> -->
 
 			    <!-- 
 			        | ############################### edit tags
@@ -809,9 +801,9 @@
 	<!-- Handles the edit bookmark process -->
 	<bean id="editBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditBookmarkController" scope="request" parent="editPostController" />
 	
-	<bean id="diffBookmarkController" class="org.bibsonomy.webapp.controller.actions.DiffBookmarkMockupController" scope="request" parent="editPostController" />
+<!-- 	<bean id="diffBookmarkController" class="org.bibsonomy.webapp.controller.actions.DiffBookmarkMockupController" scope="request" parent="editPostController" /> -->
 
-	<bean id="diffPublicationController" class="org.bibsonomy.webapp.controller.actions.DiffPublicationController"	scope="request" parent="resourceController" />	
+<!-- 	<bean id="diffPublicationController" class="org.bibsonomy.webapp.controller.actions.DiffPublicationController"	scope="request" parent="resourceController" />	 -->
 	
 	<!-- Handles the edit publication process -->
 	<bean id="editPublicationController" class="org.bibsonomy.webapp.controller.actions.EditPublicationController" scope="request" parent="editPostController">
@@ -941,7 +933,7 @@
 	<bean id="joinGroupController" class="org.bibsonomy.webapp.controller.actions.JoinGroupController" scope="request">
 		<property name="logic" ref="logic" />
 		
-		<property name="denieUserRedirectURI" value="/settings?selTab=3"/>
+		<property name="denyUserRedirectURI" value="/settings?selTab=3"/>
 		<property name="reasonMaxLen" value="200"/>
 		
 		<!-- To check registration for human beings ... -->
@@ -1079,7 +1071,7 @@
 	
 	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">
-		<property name="logic" ref="logic" />
+		<property name="logic" ref="adminLogic" />
 		<property name="requestLogic" ref="requestLogic" />
 		<property name="pictureHandlerFactory" ref="gravatarStdPictureHandlerFactory" />
 	</bean>	

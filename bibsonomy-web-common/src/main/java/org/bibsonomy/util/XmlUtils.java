@@ -49,6 +49,10 @@ public class XmlUtils {
 	 * @return the cleaned string
 	 */
 	public static String removeInvalidXmlChars(final String s) {
+		if ( s == null )
+			return ""; //nothing to do
+
+		//else:
 		final StringWriter stringWriter = new StringWriter();
 		try {
 			final Writer writer = new FilterInvalidXMLCharsWriter(stringWriter);

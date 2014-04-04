@@ -1,7 +1,7 @@
 -- MySQL dump 10.11
 --
 -- Host: localhost    Database: bibsonomy
--- ------------------------------------------------------
+-- -----author-------------------------------------------------
 -- Server version	5.0.67-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -369,7 +369,8 @@ CREATE TABLE `log_gold_standard` (
   `privnote` text,
   `new_simhash1` char(32) NOT NULL default '',
   `content_type` tinyint(1) unsigned default NULL,
-  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `current_content_id` int(10) unsigned NOT NULL default '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -762,13 +763,13 @@ CREATE TABLE `log_bibtex` (
   `simhash1` char(32) NOT NULL default '',
   `simhash2` char(32) NOT NULL default '',
   `simhash3` char(32) NOT NULL default '',
-  `current_content_id` int(10) unsigned NOT NULL default '0',
   `new_content_id` int(10) unsigned NOT NULL default '0',
   `scraperid` int(11) NOT NULL default '-1',
   `change_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `rating` tinyint(3) NOT NULL default '0',
   `privnote` text,
   `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `current_content_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -819,6 +820,7 @@ CREATE TABLE `log_bookmark` (
   `change_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `rating` tinyint(3) NOT NULL default '0',
   `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `current_content_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1002,7 +1004,7 @@ CREATE TABLE `log_user` (
   `simple_interface` tinyint(1) default '0',
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
-  `gravatarAddress` varchar(255) DEFAULT NULL,
+  `useExternalPicture` TINYINT(1) NULL DEFAULT '0',
   PRIMARY KEY  (`nr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=338 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1085,7 +1087,6 @@ CREATE TABLE `pendingUser` (
   `simple_interface` tinyint(1) default '0',
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
-  `gravatarAddress` varchar(255) DEFAULT NULL,
   `useExternalPicture` tinyint(1) DEFAULT '0',
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
@@ -1503,7 +1504,6 @@ CREATE TABLE `user` (
   `simple_interface` tinyint(1) default '0',
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
-  `gravatarAddress` varchar(255) DEFAULT NULL,
   `useExternalPicture` tinyint(1) DEFAULT '0',
   PRIMARY KEY  (`user_name`),
   UNIQUE KEY `user_id` (`id`),

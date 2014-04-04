@@ -40,9 +40,9 @@ public final class PutWorker extends HttpWorker<PutMethod> {
 	private static final String CONTENT_TYPE = "multipart/form-data";
 	
 	/**
-	 * 
 	 * @param username
 	 * @param apiKey
+	 * @param accessor 
 	 */
 	public PutWorker(final String username, final String apiKey, final AuthenticationAccessor accessor) {
 		super(username, apiKey, accessor);

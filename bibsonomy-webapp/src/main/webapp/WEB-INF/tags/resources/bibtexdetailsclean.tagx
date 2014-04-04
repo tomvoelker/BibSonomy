@@ -12,9 +12,9 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
@@ -28,6 +28,7 @@
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
 	
+	<!-- TODO: remove inline CSS! -->
 	<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
 	<div id="icons" style="display:none">
 		<img id="icon_expand" alt="" src="${resdir}/image/icon_expand.png"/>
@@ -176,9 +177,62 @@
 								 		<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
 								 	</td>
 								</tr>
+														
+						<!--+ 
+				 			|
+				 			| dropdown menu from which you can pick an external literature site and try to find the publication there
+				 			|
+				 			+-->
+								<!-- the string you would usually enter in google scholar, world cat etc. -->
+								<c:set var="externalQueryString"
+									value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
+
+							
+								<!-- build the urls -->
+								<c:url var="googleScholarPostUrl"
+									value="http://scholar.google.com/scholar">
+									<c:param name="hl" value="${locale}" />
+									<c:param name="q" value="${externalQueryString}" />
+								</c:url>
+
+								<c:url var="microsoftAcademicUrl"
+									value="http://academic.research.microsoft.com/Search">
+									<c:param name="query" value="${externalQueryString}" />
+								</c:url>
+
+								<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
+									<c:param name="qt" value="worldcat_org_all" />
+									<c:param name="q" value="${externalQueryString}" />
+								</c:url>
+								
+								<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
+									<c:param name="lookfor" value="${externalQueryString }" />
+									<c:param name="type" value="tit" />
+									<c:param name="ling" value="1" />
+									<c:param name="refid" value="dcbasde" />
+								</c:url>
+								
+								<!-- Go message -->
+								<fmt:message key="resources.searchExternal.go" var="goMsg" />
+
+								<!-- build the dropdown menu -->
+								<tr>
+									<td><fmt:message key="resources.searchExternal.dropDownLabel" />:</td>
+									<td><select name="dropDownExternal"
+										id="dropDownExternal" style="font-size: 8pt" onchange="javascript: return loadSelectedPage()">
+											<option selected="selected">---<fmt:message key="resources.searchExternal.dropDownTitle" />---</option>
+											<option value="${googleScholarPostUrl}">Google
+												Scholar</option>
+											<option value="${microsoftAcademicUrl}">Microsoft
+												Academic Search</option>
+											<option value="${worldCatUrl}">WorldCat</option>
+											<option value="${baseSearchUrl}">BASE</option>
+									</select></td>
+									<td><input type="button" value="${goMsg}" onclick="javascript: return loadSelectedPage()" /></td>
+								</tr>
 							</table>
 						</div>
-																
+						
 						<!--+
 							| discussion and rating
 							+-->
@@ -188,13 +242,17 @@
 						<!--+
 							| tag list
 							+-->
-							
+						<!-- TODO: i18n? -->
 						<h4 style="clear:both;">Tags</h4>
-
+						<c:set var="tags" value="${post.tags}"/>
+						<c:if test="${not isOwnEntry}">
+							<c:set var="tags" value="${post.visibleTags}" />
+						</c:if>
 						<div class="taglist" style="clear:both; margin-top: 1em;">
 							<ul>
-							<c:forEach var="tag" items="${post.tags}" varStatus="status">
-								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>  
+							<c:forEach var="tag" items="${tags}" varStatus="status">
+								<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
+								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 							</c:forEach>
 							</ul>
 						</div>
@@ -224,6 +282,12 @@
 				</div>
 			</div>
 				
+				
+			<div class="clearfix"><!-- keep me --></div>
+			<ul class="pubmetainfo">
+				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/></li>
+				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/></li>
+			</ul>
 		</div> <!-- /.subcolumns -->
 
 		<div>

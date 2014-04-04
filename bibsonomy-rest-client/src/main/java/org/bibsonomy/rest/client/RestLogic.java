@@ -182,7 +182,6 @@ public class RestLogic implements LogicInterface {
 
 	private <T> T execute(final AbstractQuery<T> query) {
 		try {
-			query.setApiURL(this.apiURL);
 			query.setRenderingFormat(this.renderingFormat);
 			query.setRendererFactory(this.rendererFactory);
 			query.execute(this.authUser.getName(), this.authUser.getApiKey(), this.accessor);
@@ -354,7 +353,11 @@ public class RestLogic implements LogicInterface {
 		if (!present(doc.getUserName())) {
 			doc.setUserName(this.authUser.getName());
 		}
-		final CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc.getUserName(), resourceHash, doc.getFile());
+		
+		if (!present(doc.getFileName())) {
+			doc.setFileName(doc.getFile().getName());
+		}
+		final CreatePostDocumentQuery createPostDocumentQuery = new CreatePostDocumentQuery(doc, resourceHash);
 		return execute(createPostDocumentQuery);
 	}
 
@@ -517,9 +520,9 @@ public class RestLogic implements LogicInterface {
 	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, final String tag) {
 		switch (relation) {
 		case FRIEND_OF:
-			return execute(new GetFriendsQuery(0, 100, sourceUser, RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION));
+			return execute(new GetFriendsQuery(sourceUser, RESTConfig.OUTGOING_ATTRIBUTE_VALUE_RELATION, 0, 100));
 		case OF_FRIEND:
-			return execute(new GetFriendsQuery(0, 100, sourceUser, RESTConfig.INCOMING_ATTRIBUTE_VALUE_RELATION));
+			return execute(new GetFriendsQuery(sourceUser, RESTConfig.INCOMING_ATTRIBUTE_VALUE_RELATION, 0, 100));
 		default:
 			throw new UnsupportedOperationException("The user relation " + relation + " is currently not supported.");
 		}

@@ -370,3 +370,375 @@ h4.textPage,
 h3.textPage {
 	color: #DF430D;
 }
+
+
+
+#openAccessClassificationSelect div.help {
+	float:none;
+}
+
+
+.oa-publishers {
+}
+
+.oa-publisher {
+	font-weight: bold;
+	padding-left: 3px;	
+}
+
+.oa-conditions {
+	list-style: disc inside;
+	padding-left: 1em;
+}
+	
+.oa-green {
+	border-left: 5px solid green;	
+}
+.oa-yellow {
+	border-left: 5px solid yellow;	
+}
+.oa-red {
+	border-left: 5px solid red;	
+}
+.oa-blue {
+	border-left: 5px solid blue;	
+}
+.oa-white {
+	border-left: 5px solid white;	
+}
+
+.classificationSelect {
+	width: 20%;
+    border-right: medium none;
+    border-top: medium none;
+    margin: 0.5ex;
+ }
+
+div.classificationInput {
+	width: 2.5em;
+	font-weight: normal;
+	display: inline-block;
+}
+
+
+#swordresponse {
+	display: inline;
+	padding-left: 2em;
+	font-size: 90%;
+}
+
+.ajaxresponse0 {
+	color: red; 
+	font-weight: bold;
+}
+
+.ajaxresponse1 {
+	color: green;
+}
+
+
+#oasherparomeocontainer, openAccessClassificationContainer{
+	padding: 0.4ex 0.7em;
+	margin-top: 1ex; 
+	margin-bottom: 1ex; 
+}
+
+#oasherparomeocontainer {
+	background-color: #EFDBCE; 
+}
+
+
+#divClassificationContainerName {
+	display: none;
+	background-color: #00ffff;
+}
+
+#divClassificationListName {
+	display: none;
+	background-color: #ffff00;;
+}
+
+#divClassificationSelectName {
+	display: none;
+	background-color: #ff00ff;;
+}
+
+input[type="button"].ajaxButton {
+	color: #DF430D;
+	font-weight: normal;
+	margin: 0.2ex;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	border: none;
+	font-size: 80%;
+	cursor: pointer;
+}
+
+#pumaSword input[type="button"].ajaxButton {
+	color: #000000;
+	border: 2px solid #EFAC95;
+	margin-top: 2ex;
+	margin-bottom: 2ex;
+	font-size: 100%;
+}
+ 
+
+#pumaSword input[type="button"].ajaxButton.oadisabledsend2repositorybutton {
+	color: #ccc;
+	border: 1px dotted #ccc;
+}
+
+#openAccessClassificationSelect input[type="button"].ajaxButton:hover {
+	color: #438f38;
+}
+
+#openAccessClassificationList input[type="button"].ajaxButton:hover {
+	color: #000000;
+}
+
+#pumaSword input[type="button"].ajaxButton:hover {
+	background-color: #DCC;
+	color: black; 
+}
+
+.refererButton {
+   float: right;
+   font-size:20px;
+   width:350px;
+   height:35px;
+   background-color:#DDDDDD;
+   border-color:#EEEEDD;
+   border-style: dashed;
+   border-width:3px;
+   text-align: center;
+   padding-top: 8px;
+}
+
+#pumaSword input[type="button"].ajaxButton.oadisabledsend2repositorybutton:hover {
+	background-color: transparent;
+	color: #ccc; 
+	cursor: default;
+	
+}
+
+.classificationListItemContainer {
+	clear:left;
+}
+	
+.classificationListItem {
+	margin-top: 2px;
+	font-weight: normal;
+	display: inline;
+	float:left;
+ }
+
+.classificationListItemDescriptionContainer {
+  color: #444;
+  margin-left: 7em;
+}
+
+.classificationListItemDescription {
+  display: inline;
+}
+
+.classificationListItemRemove {
+	display: inline;
+}
+
+#openAccessClassificationList {
+	margin-bottom: 1.5ex;
+}
+#openAccessClassificationSelect {
+	margin-top: 0.5ex;
+	margin-bottom: 0.5ex;
+}
+
+#openAccessContainer h4 {
+	margin-top: 1ex;
+	margin-bottom: 1.5ex;
+}
+
+#openAccessContainer .fsLabel {
+	width: 16em;
+}
+
+.clearboth {
+	clear:both;
+}
+
+.tagnormal a, .tagnormal {
+    color: #222222 !important;
+}
+
+#saveMetadataButton {
+	color: green;
+	font-weight: bold;
+	border:1px solid #EFAC95;
+	padding: 1px 3px;
+}
+
+#saveMetadataButton.dataChanged {
+	color: red;
+}
+
+#saveMetadataButtonContainer {
+	clear: both;
+}
+
+input#authorcontractconfirm {
+	margin: 2px;
+	
+}
+
+#authorcontractconfirmcontainer {
+
+}
+
+#openAccessMetaDataContainer .fsInput {
+	width: 60%;
+}
+
+#oasherparomeopublisher {
+	font-weight: bold;
+	margin: 2ex 0;
+}
+
+
+#oasherparomeo {
+	margin: 2ex 0;
+}
+
+.oadescription {
+	font-size: 90%;
+	color: #444444;
+	margin-bottom: 1.5ex;
+}
+
+.scroller {
+	border: 1px solid #EFAC95;
+}
+
+#oaRepositorySentInfo {
+	float: right;
+	font-weight: bold;
+	font-size: 90%;
+	margin-top: 0.6ex;
+	padding: 5px;
+	
+}
+
+#oaRepositorySent {
+	margin-top: 1.5ex;
+}
+
+#oaRepositorySentHeader {
+	font-weight: bold;
+}
+
+#sendMetadataMarker {
+	padding-left:0.5em;
+	display: inline;
+	color: green;
+}
+
+#sendMetadataMarker.highlight {
+	color: red;
+}
+
+
+
+.license_headline {
+	font-weight: bold;
+    color: #DF430D;
+    font-size: 114%;
+    margin: 2ex 10px 10px 0;
+    padding: 0;
+}
+
+#license {
+	float:left;
+	width:97%; 
+	margin-left:10px; 
+	margin-top:10px; 
+	margin-bottom: 2ex; 
+	padding: 3ex;
+	padding-bottom:13px;
+	background-color: white;
+	border: 1px solid #333;
+}
+
+#license_header {
+	padding-bottom: 2ex;
+}
+
+#license_logo {
+	float: left;
+}
+
+#license_headline0 {
+	float:none; 
+	font-size: 150%; 
+	text-align: center; 
+	padding-top: 1ex;
+}
+
+#license hr {
+	clear: left; 
+	margin-bottom: 2ex;
+}
+
+#license_data {
+}
+
+#license_data .license_headline {
+	margin-bottom: 3ex;
+}
+
+#license_data input {
+	font-size: 140%;
+	width: 97%;
+}
+
+
+#license_data .lfdesc {
+	clear: left;
+    display: inline;
+    float: left;
+	vertical-align: text-bottom;
+	height: 4ex;
+	padding-left: 2ex;
+}
+
+#license_data .lfval {
+	margin-left: 16em;
+	vertical-align: text-bottom;
+	height: 4ex;
+}
+
+#license_signature {
+	width: 80%;
+	margin-left: 10%;
+	margin-top: 14ex; 
+	margin-bottom: 21ex; 
+}
+
+.signatureline {
+	float: left;
+	border-top: 1px solid black;
+	padding-top: 2px;
+	margin-left: 7%; 
+	margin-right: 7%;
+	width: 36%; 
+}
+
+#license_sendinfo {
+	margin-top: 3ex;
+}
+
+#footerMore a {
+	color: #b77d6b;
+}
+
+#footerMore a:hover {
+	color: #872708;
+}

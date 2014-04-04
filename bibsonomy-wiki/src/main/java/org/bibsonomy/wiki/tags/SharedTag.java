@@ -9,7 +9,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
  * Used for rending tags which are available for both users and groups, i.e. shared tags.
  * 
  * @author Bernd Terbrack
- * @version $Id$
  */
 public abstract class SharedTag extends AbstractTag {
 	

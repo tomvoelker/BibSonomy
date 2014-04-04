@@ -32,11 +32,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
-import org.bibsonomy.util.UrlBuilder;
 
 /**
  * Use this Class to receive an ordered list of all posts.
@@ -91,7 +89,7 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 			this.grouping = grouping;
 			return;
 		}
-		if (groupingValue == null || groupingValue.length() == 0) throw new IllegalArgumentException("no grouping value given");
+		if (!present(groupingValue)) throw new IllegalArgumentException("no grouping value given");
 
 		this.grouping = grouping;
 		this.groupingValue = groupingValue;
@@ -126,32 +124,13 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	}
 
 	@Override
-	public List<Tag> getResult() throws BadRequestOrResponseException, IllegalStateException {
-		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
+	protected List<Tag> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
 		return this.getRenderer().parseTagList(this.downloadedDocument);
 	}
 
 	@Override
-	protected List<Tag> doExecute() throws ErrorPerformingRequestException {
-		UrlBuilder urlBuilder = new UrlBuilder(RESTConfig.TAGS_URL);
-		urlBuilder.addParameter(RESTConfig.START_PARAM, Integer.toString(this.start));
-		urlBuilder.addParameter(RESTConfig.END_PARAM, Integer.toString(this.end));
-
-		if (order != null) {
-			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, this.order.toString());
-		}
-		
-		AbstractQuery.addGroupingParam(grouping, groupingValue, urlBuilder);
-
-		if (present(this.filter)) {
-			urlBuilder.addParameter(RESTConfig.FILTER_PARAM, this.filter);
-		}
-		
-		if (this.resourceType != null && this.resourceType != Resource.class) {
-			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(this.resourceType));
-		}
-		
-		this.downloadedDocument = performGetRequest(urlBuilder.asString());
-		return null;
+	protected void doExecute() throws ErrorPerformingRequestException {
+		final String url = this.getUrlRenderer().createHrefForTags(this.resourceType, null, this.grouping, this.groupingValue, this.filter, null, this.order, this.start, this.end);
+		this.downloadedDocument = performGetRequest(url);
 	}
 }

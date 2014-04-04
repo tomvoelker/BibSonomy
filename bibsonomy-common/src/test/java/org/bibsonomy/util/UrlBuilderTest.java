@@ -61,16 +61,41 @@ public class UrlBuilderTest {
 		assertEquals(paramValue2, UrlUtils.safeURIDecode(queryMap.get(paramKey2)));
 	}
 	
+	@Test
+	public void testPort() {
+		final String baseUrl = "http://localhost:8080/";
+		final UrlBuilder urlBuilder = new UrlBuilder(baseUrl);
+		assertEquals(baseUrl, urlBuilder.asString());
+	}
+	
+	@Test
+	public void testEncode() throws URISyntaxException {
+		final UrlBuilder spaceBuilder = new UrlBuilder("");
+		spaceBuilder.addPathElement("test test");
+		assertEquals("/test%20test", spaceBuilder.asString());
+		
+		final UrlBuilder urlBuilder = new UrlBuilder("");
+		urlBuilder.addPathElement("http://heise.de");
+		assertEquals("/http%3A%2F%2Fheise.de", urlBuilder.asString());
+	}
+	
+	@Test
+	public void testEncodePlus() throws URISyntaxException {
+		final UrlBuilder spaceBuilder = new UrlBuilder("");
+		spaceBuilder.addPathElement("test + test");
+		assertEquals("/test%20%2B%20test", spaceBuilder.asString());
+	}
+	
 	private static Map<String, String> getQueryMap(String query) {
 		if (!present(query)) {
 			return Collections.emptyMap();
 		}
-	    final String[] params = query.split("&");  
-	    final Map<String, String> map = new HashMap<String, String>();  
-	    for (String param : params) {  
-	        final String[] keyValue = param.split("=");
-	        map.put(keyValue[0], keyValue[1]);  
-	    }  
-	    return map;  
-	}  
+		final String[] params = query.split("&");
+		final Map<String, String> map = new HashMap<String, String>();
+		for (String param : params) {
+			final String[] keyValue = param.split("=");
+			map.put(keyValue[0], keyValue[1]);
+		}
+		return map;
+	}
 }

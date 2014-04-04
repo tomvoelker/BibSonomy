@@ -2,7 +2,6 @@ package org.bibsonomy.logging;
 
 /**
  * @author sst
- * @version $Id$
  */
 public class LogData {
 
