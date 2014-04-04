@@ -303,7 +303,15 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * why should we return it (errors are handled in antoher way)
 	 */
 	public String updateUser(User user, final UserUpdateOperation operation);
-
+	
+	/**
+	 * Updates user name for an user.
+	 * @param loginUser the user that will update the user name 
+	 * @param oldUserName the old user name
+	 * @param newUserName the new user name
+	 */
+	public void updateUserName(final User loginUser, final String oldUserName, final String newUserName);
+	
 	/**
 	 * Adds a group to the database.
 	 * 
@@ -682,5 +690,5 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param clearInbox 
 	 * @return the new size of the inbox
 	 */
-	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
+	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
 }

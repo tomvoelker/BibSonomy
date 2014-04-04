@@ -1311,4 +1311,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public void updateUserName(User loginUser, String oldUserName, String newUserName)
+	{
+	}
 }

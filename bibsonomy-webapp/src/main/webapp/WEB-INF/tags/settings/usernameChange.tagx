@@ -1,0 +1,51 @@
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  	
+	<jsp:directive.attribute name="loginUser"  type="org.bibsonomy.model.User" required="true"/>
+	
+	<!--+ 
+	 	|
+	 	| We don't show the user name change dialog for user's that are logged in
+	 	| using LDAP or OpenID.
+	 	|
+	 	+-->
+	 	
+		<c:if test="${empty loginUser.ldapId and empty loginUser.openID}">
+		
+		<!-- required messages -->		
+		<fmt:message var="changeusername" key="settings.changeusername" />
+		<fmt:message var="newusername" key="settings.newusername"/>
+		
+		<!-- username change -->		
+		<h2><c:out value="${changeusername}"/></h2>
+		
+		<form:form id="postForm1" action="/actions/changeUserName" method="post">	
+			<div id="fsform">
+				<fieldset class="fsInner">
+	                <div class="fsRow">
+	   					<label class="fsLabel" for="selection"><c:out value="${newusername}"/></label>
+	   					<input cssClass="fsInput fsSmall" type="text" name="newUserName" size="20" path="newUserName"/>
+	   					<div class="dissError"><form:errors path="newUserName" /></div>
+	                 </div>
+	                 
+	                 <div class="fsRow">
+	                 	<!-- to enable the rememberMe service if required -->
+	                 	<input type="hidden" name="rememberMe" value="1" />
+		    	  		<input type="hidden" name="ckey" value="${ckey}"/>
+		    	  		<input type="hidden" name="selTab" value="1"/>
+			 	  		<input type="submit" value="${changeusername}" />
+	                 </div>
+				</fieldset>
+			</div>
+		</form:form>	
+	</c:if>
+</jsp:root>
