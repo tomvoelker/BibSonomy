@@ -134,7 +134,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 			@Override
 			protected File requestFile() {
-				return fileLogic.getProfilePictureForUser( loggedinUser, user.getName() );
+				return fileLogic.getProfilePictureForUser( user.getName() );
 			}
 		});
 		
