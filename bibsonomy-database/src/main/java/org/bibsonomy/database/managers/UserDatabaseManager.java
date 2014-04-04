@@ -14,6 +14,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.RepositoryParam;
 import org.bibsonomy.database.params.SamlUserParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.params.WikiParam;
@@ -27,6 +28,7 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.model.util.file.FilePurpose;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.ExceptionUtils;
@@ -99,7 +101,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public User getUserDetails(final String username, final DBSession session) {
 		if (!present(username)) {
-			return createEmptyUser();
+			return new User();
 		}
 		final String lowerCaseUsername = username.toLowerCase();
 		final User user = this.queryForObject("getUserDetails", lowerCaseUsername, User.class, session);
@@ -107,7 +109,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * user does not exist -> create an empty (=unknown) user
 			 */
-			return createEmptyUser();
+			return new User();
 		}
 		
 		/*
@@ -127,11 +129,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * get user profile picture from fileLogic
 		 */
+		final String loggedinUser = ""; //TODO determine
 		user.setProfilePicture(new LazyUploadedFile(){
 
 			@Override
 			protected File requestFile() {
-				return fileLogic.getProfilePictureForUser( user.getName() );
+				return fileLogic.getProfilePictureForUser( loggedinUser, user.getName() );
 			}
 		});
 		
@@ -140,28 +143,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 * This fetches all SamlRemoteUserIds (LDAP and OpenId are already fetched through a join with the respective tables in "getUserDetails")
 		 * FIXME: Use another join in getUserDetails (or enable this query only if Saml Authentification is active) 
 		 */
-		for(final SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
+		for(SamlRemoteUserId samlRemoteUserId : this.getSamlRemoteUserIds(user.getName(), session)) {
 			user.setRemoteUserId(samlRemoteUserId);
 		}
 		
-		return user;
-	}
-	
-	/**
-	 * Creates a new, empty user w/ default profile picture.
-	 * @return empty user instance
-	 */
-	public User createEmptyUser ()
-	{
-		final User user = new User();
-		user.setProfilePicture(new LazyUploadedFile() {
-			
-			@Override
-			protected File requestFile() {
-				//get default profile picture
-				return fileLogic.getProfilePictureForUser("");
-			}
-		});
 		return user;
 	}
 	
@@ -189,32 +174,22 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		//TODO replace by switch
 		if ( query == "updateUser" || query == "updateUserProfile" )
 		{
-			final UploadedFile profilePicture = user.getProfilePicture();
-			
-			if ( !present(profilePicture) )
-				//nothing to do
-				return;
-			
+			UploadedFile profilePicture = user.getProfilePicture();
 			/*
 			 * If profile picture file given for upload -> upload
-			 * If profile picture has been deleted -> delete
+			 * User has no picture file (null-pointer) -> delete
 			 */
-			switch( profilePicture.getPurpose() )
+			if ( present(profilePicture) && profilePicture.getPurpose() == FilePurpose.UPLOAD )
 			{
-			case UPLOAD:
 				try {
 					fileLogic.saveProfilePictureForUser( user.getName(), profilePicture );
-				} catch (final Exception ex) {
+				} catch (Exception ex) {
 					// TODO Auto-generated catch block
 					ex.printStackTrace();
 				}
-				break;
-			case DELETE:
-				fileLogic.deleteProfilePictureForUser( user.getName() );
-				break;
-			default:
-				//nothing to do
 			}
+			else if ( profilePicture == null )
+				fileLogic.deleteProfilePictureForUser( user.getName() );
 		}
 	}
 	
@@ -250,6 +225,62 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return userName;
 	}
 	
+	/**
+	 * Update only the user name of a required user
+	 * 
+	 * @param oldUserName 
+	 * @param newUserName
+	 * @param session
+	 */
+	public void updateUserNameForUser(final String oldUserName, final String newUserName, final DBSession session) {
+		
+		final RepositoryParam param = new RepositoryParam();
+		param.setUserName(oldUserName);
+		param.setRepositoryName(newUserName);
+		
+		/*
+		 * check, if user name already exists for update
+		 */
+		User oldUser = this.getUserDetails(oldUserName, session);
+		if (!present(oldUser.getName())) {
+			/*
+			 * error: user name not exists
+			 */
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user name for nonexistent user");
+		}
+		
+		final List<User> pendingUserList = this.getPendingUserByUsername(newUserName, 0, Integer.MAX_VALUE, session);
+		if (present(this.getUserDetails(newUserName, session).getName()) || present(pendingUserList) || present(this.getLogUserByUsername(newUserName, session))) {
+			/*
+			 * error:the new user name already exists
+			 */
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "user " + newUserName + " already exists");
+		}
+		// create log of user
+		oldUser.setName(newUserName);
+		
+		// log creation
+		super.insert("createUserLogForUser", oldUser, session);
+		
+		// update user name
+		super.update("updateUserNameForUser", param, session);
+		
+		// update all tables
+		super.update("updateAll", param, session);
+	}
+	
+	/**
+     * returns all log users by user name
+     * 
+     * @param username
+     * @param session
+     * @return  user if it exists
+     */
+    public String getLogUserByUsername(final String username, final DBSession session) {
+    	String lowerCaseUsername = username.toLowerCase();
+    	return this.queryForObject("getLogOfUser", lowerCaseUsername, String.class, session);
+    }
+    
 	/**
 	 * Updates the UserSettings object of a user
 	 * 
@@ -419,7 +450,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * insert remote UserIds of user in separate table if present (currently only saml)
 		 */
-		for (final RemoteUserId ruid : user.getRemoteUserIds()) {
+		for (RemoteUserId ruid : user.getRemoteUserIds()) {
 			this.insertRemoteUserId(user, ruid, session);
 		}
 	}
@@ -430,7 +461,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param remoteUserId
 	 * @param session
 	 */
-	private void insertRemoteUserId(final User user, final RemoteUserId remoteUserId, final DBSession session) {
+	private void insertRemoteUserId(User user, RemoteUserId remoteUserId, final DBSession session) {
 		if (remoteUserId instanceof SamlRemoteUserId) {
 			this.insertSamlUserId(new SamlUserParam(user, (SamlRemoteUserId)remoteUserId), session);
 		} else {
@@ -446,7 +477,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		*/
 	}
 
-	private void insertSamlUserId(final SamlUserParam samlRemoteUserParam, final DBSession session) {
+	private void insertSamlUserId(SamlUserParam samlRemoteUserParam, DBSession session) {
 		this.insert("insertSamlUserId", samlRemoteUserParam, session);
 	}
 	/*
@@ -463,7 +494,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param samlRemoteUserId
 	 * @param session
 	 */
-	public void deleteRemoteUserId(final RemoteUserId samlRemoteUserId, final DBSession session) {
+	public void deleteRemoteUserId(RemoteUserId samlRemoteUserId, DBSession session) {
 		if (samlRemoteUserId instanceof SamlRemoteUserId) {
 			this.deleteSamlUserId(new SamlUserParam(null, (SamlRemoteUserId)samlRemoteUserId), session);
 		} else {
@@ -479,7 +510,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		*/
 	}
 	
-	private void deleteSamlUserId(final SamlUserParam samlUserParam, final DBSession session) {
+	private void deleteSamlUserId(SamlUserParam samlUserParam, DBSession session) {
 		this.delete("deleteSamlUserId", samlUserParam, session);
 	}
 	/*
@@ -566,7 +597,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		
 		// TODO: log remote ids?
 		this.deleteRemoteUser(user.getName(), session);
-		for (final RemoteUserId remoteUserId : user.getRemoteUserIds()) {
+		for (RemoteUserId remoteUserId : user.getRemoteUserIds()) {
 			this.insertRemoteUserId(user, remoteUserId, session);
 		}
 		
@@ -1146,7 +1177,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
      * @param session
      */
 	private void insertDefaultWiki(final User user, final DBSession session) {
-		final WikiParam param = new WikiParam();
+		WikiParam param = new WikiParam();
 		param.setUserName(user.getName());
 		param.setDate(user.getRegistrationDate());
 
@@ -1240,7 +1271,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param fileLogic the fileLogic to set
 	 */
-	public void setFileLogic(final FileLogic fileLogic) {
+	public void setFileLogic(FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
 	}
 }

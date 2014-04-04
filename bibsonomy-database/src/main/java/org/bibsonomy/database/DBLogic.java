@@ -273,14 +273,7 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * TODO: this practically clears /all/ user information
 				 */
-				/*
-				 * FIXME: This is necessary to avoid null pointer Exceptions when the user's picture is not visible.
-				 * The fileLogic should do this instead by setting the default pic in such cases.
-				 */
-				final User dummyUser = this.userDBManager.createEmptyUser();
-				dummyUser.setName(user.getName());
-
-				return dummyUser;
+				return new User(user.getName());
 			}
 
 			/*
@@ -745,7 +738,6 @@ public class DBLogic implements LogicInterface {
 				final Resource resource = post.getResource();
 				final List<DiscussionItem> discussionSpace = this.discussionDatabaseManager.getDiscussionSpace(this.loginUser, resource.getInterHash(), session);
 				resource.setDiscussionItems(discussionSpace);
-				SystemTagsExtractor.handleHiddenSystemTags(post, this.loginUser.getName());
 				return post;
 			}
 			/*
@@ -1198,24 +1190,23 @@ public class DBLogic implements LogicInterface {
 	}
 
 
-	private void replaceImportResources(final List<? extends Post<? extends Resource>> posts) {
+	private void replaceImportResources(List<? extends Post<? extends Resource>> posts) {
 		for (final Post<? extends Resource> post : posts) {
 			replaceImportResource(post);
 		}
 	}
 
-	protected <T extends Resource> void replaceImportResource(final Post<T> post) {
-		final T resource = post.getResource();
+	protected <T extends Resource> void replaceImportResource(Post<T> post) {
+		T resource = post.getResource();
 		if (resource instanceof ImportResource) {
 			@SuppressWarnings("unchecked") // this is safe because PublicationImportResource is final, and the importer creates PublicationImportResources again.
-			final
 			T parsedResource = (T) parsePublicationImportResource((ImportResource) resource);
 			post.setResource(parsedResource);
 		}
 	}
 	
-	private ImportResource parsePublicationImportResource(final ImportResource resource) {
-		final Collection<ImportResource> bibtexs = this.bibtexReader.read(resource);
+	private ImportResource parsePublicationImportResource(ImportResource resource) {
+		Collection<ImportResource> bibtexs = this.bibtexReader.read(resource);
 		if (!present(bibtexs)) {
 			throw new IllegalStateException("bibtexReader did not throw exception and returned empty result");
 		}
@@ -1484,6 +1475,20 @@ public class DBLogic implements LogicInterface {
 		return null;
 	}
 
+	@Override
+	public void updateUserName(final User loginUser, final String oldUserName, final String newUserName)
+	{
+		// ensure if the login user is admin
+		if (this.permissionDBManager.isAdmin(loginUser))
+		{
+			final DBSession session = openSession();		
+			try{
+				this.userDBManager.updateUserNameForUser(oldUserName, newUserName, session);
+			} finally {
+				session.close();
+			}
+		}
+	}
 	/**
 	 * TODO: extract the method to create and update user
 	 * 
@@ -1726,7 +1731,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#renameDocument(org.bibsonomy.model.Document, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+	public void updateDocument(Document document, String resourceHash, String newName) {
 		this.ensureLoggedIn();
 		
 		final String userName = document.getUserName();
@@ -2849,7 +2854,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Tag> getTagRelation(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
+	public List<Tag> getTagRelation(int start, int end, TagRelation relation, List<String> tagNames) {
 		// TODO Auto-generated method stub
 		return null;
 	}
