@@ -35,19 +35,14 @@ import java.util.zip.GZIPInputStream;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for publication from nature.com
  * @author tst
  */
-public class NatureScraper extends AbstractUrlScraper {
+public class NatureScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_URL = "http://www.nature.com/";
 
@@ -80,22 +75,24 @@ public class NatureScraper extends AbstractUrlScraper {
 	private static final String CITATION_DOWNLOAD_LINK_NAME2 = ">Citation<";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	
+
 	/**
 	 * get INFO
 	 */
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
-
-	/**
+/*
+	*//**
 	 * Scrapes publications from nature.com
-	 */
+	 *//*
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		try {
-			
+
 			// get publication page
 			final String publicationPage = getPageContent(sc.getUrl());
 
@@ -134,7 +131,7 @@ public class NatureScraper extends AbstractUrlScraper {
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-	}
+	}*/
 	/**
 	 * Gets the page content of a publication page. It can't be commonly applied since it violates
 	 * RFC 2616.
@@ -165,16 +162,46 @@ public class NatureScraper extends AbstractUrlScraper {
 		}
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-
+	@Override
+	public String getBibTeXURL(URL url) {
+		try {
+			// get publication page
+			final String publicationPage = getPageContent(url);
+			// extract download citation link
+			final Matcher linkMatcher = linkPattern.matcher(publicationPage);
+			while(linkMatcher.find()){
+				String link = linkMatcher.group();
+				// check if link is download link
+				if(link.contains(CITATION_DOWNLOAD_LINK_NAME) || link.contains(CITATION_DOWNLOAD_LINK_NAME2)){
+					// get href attribute
+					final Matcher hrefMatcher = hrefPattern.matcher(link);
+					if(hrefMatcher.find()){
+						String href = hrefMatcher.group();
+						href = href.substring(6, href.length()-1);
+						// download citation (as ris)
+						return "http://" + url.getHost() + "/" + href;
+					} 
+				}
+			}
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
