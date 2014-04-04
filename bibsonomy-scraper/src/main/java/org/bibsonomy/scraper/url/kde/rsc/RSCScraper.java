@@ -35,16 +35,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author wla
  */
-public class RSCScraper extends AbstractUrlScraper {
+public class RSCScraper extends SimpleGenericURLScraper {
 
 	private final Log log = LogFactory.getLog(RSCScraper.class);
 
@@ -59,34 +55,6 @@ public class RSCScraper extends AbstractUrlScraper {
 	private static final Pattern ID_PATTERN = Pattern.compile("(?:/[^/]++)*/(\\w++)");
 	private static final int ID_GROUP = 1;
 
-	@Override
-	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
-
-		final URL url = scrapingContext.getUrl();
-		final String id = extractId(url.toString());
-
-		if (!present(id)) {
-			log.error("can't parse publication id");
-			return false;
-		}
-
-		try {
-
-			final String bibTex = WebUtils.getContentAsString(BIBTEX_URL + id);
-
-			if (present(bibTex)) {
-				scrapingContext.setBibtexResult(bibTex);
-				return true;
-			} else {
-				throw new ScrapingFailureException("getting bibtex failed");
-			}
-
-		} catch (final Exception e) {
-			throw new InternalFailureException(e);
-		}
-
-	}
 
 	/**
 	 * extracts publication id from url
@@ -125,5 +93,14 @@ public class RSCScraper extends AbstractUrlScraper {
 	@Override
 	public String getInfo() {
 		return INFO;
+	}
+
+	@Override
+	public String getBibTeXURL(URL url) {
+		final String id = extractId(url.toString());
+		if (present(id)) {
+			return BIBTEX_URL + id;
+		}
+		return null;
 	}
 }
