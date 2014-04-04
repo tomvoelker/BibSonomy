@@ -1663,4 +1663,10 @@
 		<BibFile>DCScraperTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
+		<URLTest id="url_271">
+		<TestDescription>ProlaScraper</TestDescription>
+		<URL>http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131</URL>
+		<BibFile>ProlaScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
+	</URLTest>
 </test:Tests>
