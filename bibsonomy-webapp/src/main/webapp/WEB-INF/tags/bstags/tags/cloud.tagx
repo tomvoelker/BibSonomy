@@ -48,7 +48,6 @@
 		<script type="text/javascript">tagbox_minfreq_style = '${tagboxMinfreqStyle}';</script>
 	</c:if>
 	
-
 	<ul class="${style} tagbox">
 		<c:choose>
 			<c:when test="${tagSizeMode eq 'user'}">

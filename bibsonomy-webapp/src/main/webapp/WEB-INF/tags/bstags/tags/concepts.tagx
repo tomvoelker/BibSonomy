@@ -13,7 +13,7 @@
 	<div class="sidebar_collapse_content">		
 	<c:if test="${usersOwnRelations}">
 		<div>
-			<ul class="floatul">
+			<ul class="floatul list-inline">
 				<li>
 					<!-- load localized strings -->
 					<fmt:message key="tagrelations.showAll.title" var="showAllRelationsTitle" />
