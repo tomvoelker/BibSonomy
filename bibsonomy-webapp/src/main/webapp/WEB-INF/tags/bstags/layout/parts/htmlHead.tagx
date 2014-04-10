@@ -102,27 +102,7 @@
 		<script type="text/javascript" src="${resdir}/bootstrap/js/tooltip.js"><!-- KEEP ME --></script>
 		<script type="text/javascript" src="${resdir}/bootstrap/js/popover.js"><!-- KEEP ME --></script>
 		
-		
-		<script type="text/javascript">
-		$(function() {
-			console.log($('.help-popover'));
-			$('.post-popover, .help-popover').popover({ 
-			    html : true,
-			    trigger: "focus",
-			    container: 'body',
-			    placement: function() {
-		    		return ($(window).width() >= 990) ? 'right' : 'auto';
-		    	},	    	
-			    title: function() {
-			      	$(this).next().html();
-			    },
-			    content: function() {
-			      	return $(this).next().next().html();
-			    }
-			});
-		});
-		
-		</script>
+		<script type="text/javascript" src="${resdir}/javascript/bootstrap.js"><!-- KEEP ME --></script>
 		
 		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
 		<script type="text/javascript">

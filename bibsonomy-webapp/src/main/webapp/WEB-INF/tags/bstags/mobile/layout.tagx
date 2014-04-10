@@ -48,7 +48,7 @@
 				<!-- The only JavaScript framework used on the mobile site is jQuery -->
 				<script type="text/javascript" src="${resdir}/jquery/jquery.js"><!-- keep me --></script>
 				<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
-				<script type="text/javascript" src="${resdir}/javascript/functions.js"><!-- keep me --></script>
+				<!-- <script type="text/javascript" src="${resdir}/javascript/functions.js"><!-- keep me --></script> -->
 				<c:if test="${not empty additionalJS}">
 					<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 				</c:if>

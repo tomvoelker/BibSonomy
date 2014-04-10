@@ -20,13 +20,24 @@
 	<!-- HIDDEN SYSTEM TAGS -->
 	<c:if test="${not empty post.hiddenSystemTags}">
 		<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title"/>
-		<div class="extend hiddenSystemTag">
-			<img class="" alt="systemTagsTitle" src="${resdir}/image/cog_wheel.png"/>
-			<div>
-				<c:forEach var="systag" items="${post.hiddenSystemTags}">
-					<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a><c:out value=" "/>
-				</c:forEach>
+		<div class="extend hiddenSystemTag pull-left">
+			<a id="system-tags-link-${post.resource.intraHash}" href="#" class="system-tags-link"><span class="glyphicon glyphicon-asterisk"><!-- KEEP ME --></span></a>
+			<div class="popover system-tags hide" id="system-tags-${post.resource.intraHash}">
+				<div class="help popover-title">
+					System Tags
+					<a class="close popover-close" style="position: relative; top: 0; right: 6px;">&amp;times;</a>
+				</div>
+				<div class="help popover-content" href="#">
+					<div style="font-size: 80% !important;">
+						<p>
+							<c:forEach var="systag" items="${post.hiddenSystemTags}">
+								<a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(systag.name)}"><c:out value="${systag.name}"/></a><c:out value=" "/>
+							</c:forEach>
+						</p>
+					</div>
+				</div>
 			</div>
+			&amp;nbsp;	
 		</div>
 	</c:if>
 

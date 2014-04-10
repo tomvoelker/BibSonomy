@@ -14,7 +14,7 @@
 	
 		<!-- Post has Documents: Show small preview, large preview (class preview) on mouseover and download on click -->
 		<c:when test="${not empty post.resource.documents}">
-			<a class="preview publication" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(post.resource.documents[0].fileName)}" title="${fn:escapeXml(post.resource.documents[0].fileName)}"> 
+			<a class="preview publication thumbnail" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(post.resource.documents[0].fileName)}" title="${fn:escapeXml(post.resource.documents[0].fileName)}"> 
 				<img class="pre_pic img-responsive" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(post.resource.documents[0].fileName)}?preview=SMALL" alt="${altPreview}"/>
 			</a>
 		</c:when>
