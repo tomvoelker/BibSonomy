@@ -224,20 +224,6 @@
 							</list>
 						</property>
 					</bean>
-			    </entry>
-			    
-			    <!--  change username of a user  -->
-				<entry key="/actions/changeUserName">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="changeUserNameController"/>
-						<property name="allowedFields">
-							<list>
-								<value>ckey</value>
-								<value>newUserName</value>
-								<value>selTab</value>
-							</list>
-						</property>
-					</bean>
 			    </entry>			
 				
 			    <!-- 
@@ -1042,14 +1028,7 @@
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
 		<property name="authConfig" ref="authConfig"/>
 	</bean>
-	
-	<!-- Handles username change process of a user -->
-	<bean id="changeUserNameController" class="org.bibsonomy.webapp.controller.actions.ChangeUserNameController" scope="request" parent="settingsPageController">
-		<property name="cookieLogic" ref="cookieLogic" />
-		<property name="rememberMeServices" ref="internalRememberMeServices" />
-		<property name="authConfig" ref="authConfig"/>
-	</bean>
-	
+
 	<!-- Captcha bean -->
 	<bean id="reCaptcha" class="org.bibsonomy.webapp.util.captcha.ReCaptchaWrapper">
 		<property name="privateKey" value="${recaptcha.privateKey}"/>

@@ -61,55 +61,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		bibTexDb = BibTexDatabaseManager.getInstance();
 		groupDb = GroupDatabaseManager.getInstance();
 	}
-	
-	/**
-	 * tests updateUserNameForUser
-	 */
-	@Test
-	public void updateUserNameForUserTest(){
-		final String oldUserName ="testgroup1";
-		final String newUserName ="fatosh";
-		
-		// situation1 : user not exist
-		/*
-		try {
-			oldUserName ="notexist";
-			newUserName ="fatosh";
-			userDb.updateUserNameForUser(oldUserName, newUserName, this.dbSession);
-			} catch (final Exception error) {
-				System.out.println(error);
-			}
-		*/
-		// situation2: user exist, but new user name exist in user, log user or pending
-		/*
-		try {
-			oldUserName ="testgroup1";
-			newUserName ="activationtestuser1";
-			userDb.updateUserNameForUser(oldUserName, newUserName, this.dbSession);
-			} catch (final Exception error) {
-				System.out.println(error);
-			}
-		*/
-		
-		// situation2: user exist, but new user name exist in user, log user or pending
-		
-		try {
-			userDb.updateUserNameForUser(oldUserName, newUserName, this.dbSession);
-		} catch (final Exception error) {
-				System.out.println(error);
-		}
-		
-		/*
-		try{
-			testUser = userDb.getUserDetails(newUserName, this.dbSession);
-			System.out.println(testUser.getName());
-		
-		} catch (final Exception error){
-			System.out.println(error);
-		}
-		*/
-	}
-	
+
 	/**
 	 * tests getUsersBySearch
 	 */
