@@ -44,6 +44,22 @@
 		ORDER BY content_id
 	</select>
 	
+	<select id="getBibTexExtraURLHistory" resultMap="BibTexExtraCommon.bibtexExtraURL" parameterClass="bibtexExtraParam">
+		SELECT u.url, u.text, u.date
+		FROM bibtexurls u
+		     JOIN bibtex b ON u.content_id = b.content_id
+		WHERE b.simhash$simHash$ = #hash#
+		      AND b.user_name = #userName#
+		UNION
+		SELECT u.url, u.text, u.date
+		FROM log_bibtexurls u
+		     JOIN log_bibtex lb ON u.content_id = lb.content_id
+		     JOIN bibtex b ON b.content_id = lb.current_content_id
+		WHERE b.simhash$simHash$ = #hash#
+		      AND b.user_name = #userName#
+		ORDER BY u.date DESC
+	</select>
+	
 	<select id="getGoldStandardHistory" resultMap="GoldStandardPublicationCommon.goldStandardPost" parameterClass="bibtexParam">
 		(SELECT b.content_id, <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count, content_type, <include refid="reviewRatingsRows" /> 
 		FROM gold_standard b
