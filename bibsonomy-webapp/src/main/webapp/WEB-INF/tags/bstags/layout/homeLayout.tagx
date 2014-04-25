@@ -8,7 +8,8 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:home="urn:jsptagdir:/WEB-INF/tags/bstags/home">
 
 	<jsp:directive.attribute name="command"
 		type="org.bibsonomy.webapp.command.SimpleResourceViewCommand"
@@ -229,16 +230,16 @@
 			
 			<div id="hideableContent">
 				
-				<div class="row">
-					<div class="col-md-12">
-						<div class="jumbotron">
-						  <h2>The easy way to manage scientific publications and bookmarks</h2>
-						  <p>BibSonomy helps you to manage your publications and bookmarks, to collaborate with your colleagues and to find new interesting stuff for your research.<br/>
-						  </p>
-						  <p><a class="btn btn-primary btn-md" role="button">Learn more</a>&amp;nbsp;&amp;nbsp;&amp;nbsp;<a class="btn btn-success btn-md" role="button">Register for free</a></p>
-						</div>
-					</div>
-				</div>
+				<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
+					<c:choose>
+						<c:when test="${properties['project.theme'] eq 'puma'}">
+							<home:pumahome command="${command}" />
+						</c:when>
+						<c:otherwise>
+							<home:bibhome command="${command}" />
+						</c:otherwise>
+					</c:choose>
+				</c:if>
 				
 				
 

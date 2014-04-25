@@ -75,6 +75,9 @@
 		</c:if>
 		
 		<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
+		
+		<script src="http://code.jquery.com/jquery.js"><!-- keep me--></script>
+	 	
 		<!--+
 			|
 			| JavaScript files 
@@ -88,22 +91,8 @@
 		 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 		 	+-->
 		 
-		
-		<script src="http://code.jquery.com/jquery.js"><!-- keep me--></script>
-	 	
-	 	<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
-	 	
-	 	<!-- Latest compiled and minified Bootstrap JavaScript -->
-		<script type="text/javascript" src="${resdir}/bootstrap/js/bootstrap.min.js"><!-- keep me--></script>
-		
-		<script type="text/javascript" src="${resdir}/bootstrap/js/holder.js"><!-- KEEP ME --></script>
-		<!-- We're USING collapsing panels on this page. Here we can activate it. -->
-		<script type="text/javascript" src="${resdir}/bootstrap/js/collapse.js"><!-- KEEP ME --></script>
-		<script type="text/javascript" src="${resdir}/bootstrap/js/tooltip.js"><!-- KEEP ME --></script>
-		<script type="text/javascript" src="${resdir}/bootstrap/js/popover.js"><!-- KEEP ME --></script>
-		
-		<script type="text/javascript" src="${resdir}/javascript/bootstrap.js"><!-- KEEP ME --></script>
-		
+	 	<script type="text/javascript" src="${resdir}/javascript/merged/bs/global.js"><!-- keep me --></script>
+				
 		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
 		<script type="text/javascript">
 				<![CDATA[

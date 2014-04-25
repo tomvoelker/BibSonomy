@@ -5,7 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1435,7 +1434,7 @@ public class DBLogic implements LogicInterface {
 		 * only logged in users can update user settings.
 		 */
 		final String username = user.getName();
-		if(!UserUpdateOperation.ACTIVATE.equals(operation)) {
+		if (!UserUpdateOperation.ACTIVATE.equals(operation)) {
 			this.ensureLoggedIn();
 			/*
 			 * only admins can change settings of /other/ users
@@ -1458,37 +1457,30 @@ public class DBLogic implements LogicInterface {
 				break;
 			case UPDATE_CORE:
 				return this.userDBManager.updateUserProfile(user, session);
-				
 			case UPDATE_LIMITED_USER:
 				return this.userDBManager.updateLimitedUser(user, session);
-
 			case ACTIVATE:
 				return this.userDBManager.activateUser(user, session);
-
 			case UPDATE_SPAMMER_STATUS:
 				/*
 				 * only admins are allowed to change spammer settings
 				 */
 				log.debug("Start update this framework");
-
 				this.permissionDBManager.ensureAdminAccess(loginUser);
 				/*
 				 * open session and update spammer settings
 				 */
 				final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
 				log.debug("User prediction: " + user.getPrediction());
-				return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);	
+				return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
 			case UPDATE_ALL:
 				return this.storeUser(user, true);
 			default:
 				throw new UnsupportedOperationException(operation + " not supported.");
 			}
-
-
 		} finally {
 			session.close();
 		}
-
 		return null;
 	}
 

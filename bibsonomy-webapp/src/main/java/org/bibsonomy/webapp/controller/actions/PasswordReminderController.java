@@ -207,8 +207,11 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 		
 		// send mail
-		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, UrlUtils.safeURIEncode(reminderHash));		
+		// EMAIL--> mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, UrlUtils.safeURIEncode(reminderHash));		
 
+		System.out.println("reminderDecode: " + UrlUtils.safeURIEncode(reminderHash));
+		System.out.println("reminderEncode: " + UrlUtils.safeURIEncode(reminderHash));
+		 
 		command.setSuccess(true);
 		return Views.PASSWORD_REMINDER;
 	}

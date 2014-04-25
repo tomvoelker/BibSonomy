@@ -157,17 +157,34 @@ public class CslModelConverter {
 		rec.setCitation_label(cleanBibTex(bib.getBibtexKey()));
 		
 		
-		// mapping series, booktitle, journal
-		if (present(bib.getSeries())) {
+		/***************************
+		 *** COLLECTION TITLE    ***
+		 ***************************/
+
+//		collection-title
+//		title of the collection holding the item (e.g. the series title for a book)
+		
+		if(present(bib.getSeries())) {
 			rec.setCollection_title(cleanBibTex(bib.getSeries()));
-			rec.setContainer_title(cleanBibTex(bib.getSeries()));
-		} else if (present(bib.getBooktitle())) {
-			rec.setCollection_title(cleanBibTex(bib.getBooktitle()));
-			rec.setContainer_title(cleanBibTex(bib.getBooktitle()));
-		} else /*if(present(bib.getJournal()))*/ {
-			rec.setCollection_title(cleanBibTex(bib.getJournal()));
-			rec.setContainer_title(cleanBibTex(bib.getJournal()));
 		}
+		
+		/***************************
+		 *** CONTAINER TITLE     *** 
+		 ***************************/
+		
+//		container-title
+//		title of the container holding the item (e.g. the book title for a book chapter, the journal title for a journal article)
+		
+		if (BibTexUtils.ARTICLE.equals(bib.getEntrytype()) &&
+			present(bib.getJournal())) {
+				
+				rec.setContainer_title(cleanBibTex(bib.getJournal()));
+				
+		} else {
+			
+			rec.setContainer_title(cleanBibTex(bib.getBooktitle()));
+		}
+		
 		
 		// mapping edition
 		rec.setEdition(cleanBibTex(bib.getEdition()));
@@ -177,8 +194,12 @@ public class CslModelConverter {
 			rec.setPublisher(cleanBibTex(bib.getPublisher()));
 		} else if (BibTexUtils.TECH_REPORT.equals(bib.getEntrytype())) {
 			rec.setPublisher(cleanBibTex(bib.getInstitution()));
-		} else if (BibTexUtils.PHD_THESIS.equals(bib.getEntrytype()) || BibTexUtils.MASTERS_THESIS.equals(bib.getEntrytype())) {
+		} else if (BibTexUtils.PHD_THESIS.equals(bib.getEntrytype())) {
 			rec.setPublisher(cleanBibTex(bib.getSchool()));
+			rec.setGenre("PhD dissertation");
+		} else if (BibTexUtils.MASTERS_THESIS.equals(bib.getEntrytype())) {
+			rec.setPublisher(cleanBibTex(bib.getSchool()));
+			rec.setGenre("Master thesis");
 		} else {
 			rec.setPublisher(cleanBibTex(bib.getOrganization()));
 		}

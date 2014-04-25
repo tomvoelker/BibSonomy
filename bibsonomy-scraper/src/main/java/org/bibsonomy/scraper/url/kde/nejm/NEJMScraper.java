@@ -23,7 +23,7 @@
 
 package org.bibsonomy.scraper.url.kde.nejm;
 
-import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -31,17 +31,12 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.SimpleGenericURLScraper;
 
 /**
  * @author clemens
  */
-public class NEJMScraper extends AbstractUrlScraper {
+public class NEJMScraper extends SimpleGenericURLScraper {
 
 	private static final String SITE_NAME = "The New England Journal of Medicine";
 	private static final String SITE_URL = "http://www.nejm.org";
@@ -53,32 +48,8 @@ public class NEJMScraper extends AbstractUrlScraper {
 	
 	private static final Pattern pattern = Pattern.compile("doi/[^/]*/([^/]*/[^/#\\?]*)");
 	
+
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-			sc.setScraper(this);
-			final Matcher matcher = pattern.matcher(sc.getUrl().toString());
-			if (matcher.find()) {
-				final String doi = matcher.group(1).replace("%2F", "/");
-				final String downloadUrl = SITE_URL+"/action/downloadCitation?doi=" + doi + "&include=cit";
-							
-				try {
-					final String bibtexContent = WebUtils.getContentAsString(downloadUrl + FORMAT_BIBTEX);
-					
-					if(bibtexContent != null){
-						sc.setBibtexResult(bibtexContent);
-						return true;
-					}else
-						throw new ScrapingFailureException("failure during download");
-					
-				} catch (IOException e) {
-					throw new InternalFailureException(e);
-				}
-
-				
-			}else
-				throw new PageNotSupportedException("not found DOI in URL");
-	}
-
 	public String getInfo() {
 		return INFO;
 	}
@@ -88,12 +59,25 @@ public class NEJMScraper extends AbstractUrlScraper {
 		return URL_PATTERNS;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+
+	@Override
+	public String getBibTeXURL(URL url) {
+		final Matcher matcher = pattern.matcher(url.toString());
+		if (matcher.find()) {
+			final String doi = matcher.group(1).replace("%2F", "/");
+			final String downloadUrl = SITE_URL+"/action/downloadCitation?doi=" + doi + "&include=cit";
+			return downloadUrl + FORMAT_BIBTEX;			
+		}
+		return null;
 	}
 
 

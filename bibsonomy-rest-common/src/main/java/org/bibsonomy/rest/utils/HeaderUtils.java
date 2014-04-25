@@ -92,8 +92,8 @@ public class HeaderUtils {
 					return 1;
 				else
 					return o1.hashCode() - o2.hashCode();
-			}				
-		});		
+			}
+		});
 		
 		if (!present(acceptHeader)) {
 			return preferredTypes;
@@ -130,7 +130,7 @@ public class HeaderUtils {
 			
 			
 			if (!preferredTypes.containsKey(qValue)) {
-				preferredTypes.put(qValue, new LinkedList<String>());			
+				preferredTypes.put(qValue, new LinkedList<String>());
 			}
 			preferredTypes.get(qValue).add(type);
 			

@@ -24,7 +24,8 @@ body {
 }
 
 .container.main {
-	padding-top: 20px;
+/* 	padding-top: 20px; */
+	padding: 20px 30px;
 	border-top: none;
 	margin-bottom: 30px;
 	-webkit-box-shadow: 2px 2px 30px 6px #CCCCCC;
@@ -139,6 +140,14 @@ ul.dropdown-menu li.divider {
 /**
  * POST LIST
  */
+ 
+h3.list-headline {
+	border-bottom: 1px #ccc solid;
+	padding-top: 0;
+	margin-top: 10px;
+	margin-bottom: 20px;
+} 
+ 
 ul.posts,
 ul.posts li {
 	margin: 0;
@@ -412,11 +421,107 @@ ul.tags li {
 /**
  * SIDEBAR
  */
+ 
+div.sidebar {
+	
+	background: rgb(218,223,249) url("/resources/image/bg-sidebar.png") top left repeat;
+	margin-right: -15px;
+	margin-top: -20px;
+	padding-top: 10px;
+	padding-right: 30px;
+	margin-left: 15px;
+	border-left: 1px #ccc solid;
+} 
 
+.sidebar-headline {
+	text-shadow: 1px 0px #333;
+
+	margin-left: -26px;
+	margin-right: -30px;
+	padding-left: 0;
+
+	
+	color: #fff;
+	height: 44px;
+	line-height: 35px;
+	float: left;
+}
+
+.sidebar-headline > span.left-corner {
+	display:block;
+	float: left;
+	width: 18px;
+	padding-left: 3px;
+	height: 100%;
+	background: transparent url("/resources/image/bg-sidebar-headline-left.png") top left no-repeat;
+}
+
+
+.sidebar-headline > span.right-corner {
+	display:block;
+	float: left;
+	width: 18px;
+	padding-right: 3px;
+	height: 100%;
+	background: transparent url("/resources/image/bg-sidebar-headline-right.png") top left no-repeat;
+}
+
+.sidebar-headline > span.text {
+	display: block;
+	padding: 0 0.5em;
+	float: left;
+	height: 100%;
+	background: transparent url("/resources/image/bg-sidebar-headline.png") 0 0 no-repeat;
+}
+
+.sidebar h4 {
+
+}
+ 
+#sidebar ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.tagcloud-headline,
+.similar-users-headline,
+.concepts-headline {
+/* 	float: left; */
+}
+
+.sidebar-setting-box {
+/* 	position: relative; */
+/* 	top: 20px; */
+/* 	right: 10px; */
+/* 	left: 1em; */
+	position: relative;
+	top: -5px;
+	clear: left;
+	font-size: 80%;
+	color: #333;
+}
+.sidebar-setting-box a {
+	color: #333;
+	text-decoration: underline;
+}
+
+.sidebar-setting-box a:hover,
+.sidebar-setting-box a:focus {
+	color: #203665;
+}
+
+#sidebox > ul > li {
+	margin: 20px 0;
+}
 
 /**
  * TAGCLOUD
  */
+
+.tagcloud li a{
+	line-height: 1.5em;
+}
 
 ul.news {
 	padding-left: 0 !important;
@@ -552,12 +657,10 @@ span.web					{background-position:-2px -1106px;width:61px;height:37px; margin-to
 	font-size: 10px !important;
 }
 
-#sidebar ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
 
-#sidebar .floatul {
-	font-size: 80%;
+li.post {
+	/*
+	border: 1px #ccc solid;
+	box-shadow: 2px 2px 5px 1px rgba(0,0,0, 0.3);
+	*/
 }

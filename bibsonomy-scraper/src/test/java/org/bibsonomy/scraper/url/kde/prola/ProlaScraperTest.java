@@ -68,6 +68,12 @@ public class ProlaScraperTest {
 	public void url4TestRun(){
 		assertTrue(UnitTestRunner.runSingleTest("url_177"));
 	}
-
+	/**
+	 * starts URL test with id url_271
+	 */
+	@Test
+	public void url5TestRun(){
+		assertTrue(UnitTestRunner.runSingleTest("url_271"));
+	}
 
 }

@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.ats;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -35,18 +33,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.RISGenericURLScraper;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author clemens
  */
 
-public class ATSScraper extends AbstractUrlScraper {
+public class ATSScraper extends RISGenericURLScraper {
 	private final Log log = LogFactory.getLog(ATSScraper.class);
 	
 	private static final String SITE_NAME = "American Thoracic Society Journals";
@@ -56,38 +50,7 @@ public class ATSScraper extends AbstractUrlScraper {
 	private static final String BIBTEX_URL = "http://www.atsjournals.org/action/downloadCitation?doi=";
 	private static final Pattern ID_PATTERN = Pattern.compile("\\d+.*");
 	private static final int ID_GROUP = 0;
-	
-	
-	
-	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		scrapingContext.setScraper(this);
 
-		final URL url = scrapingContext.getUrl();
-		final String id = extractId(url.toString());
-
-		if (!present(id)) {
-			log.error("can't parse publication id");
-			return false;
-		}
-
-		try {
-			final String ris = WebUtils.getContentAsString(BIBTEX_URL + id);
-			RisToBibtexConverter converter = new RisToBibtexConverter();
-			
-			final String bibTex = converter.risToBibtex(ris);
-			
-			if (present(bibTex)) {
-				scrapingContext.setBibtexResult(bibTex);
-				return true;
-			} else {
-				throw new ScrapingFailureException("getting bibtex failed");
-			}
-
-		} catch (final Exception e) {
-			throw new InternalFailureException(e);
-		}
-	}
 	
 	private String extractId(final String url) {
 		final Matcher matcher = ID_PATTERN.matcher(url);
@@ -115,6 +78,23 @@ public class ATSScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-	
+	@Override
+	public String getRISURL(URL url) {
+		
+		final String id = extractId(url.toString());
+
+		if (!ValidationUtils.present(id)) {
+			log.error("can't parse publication id");
+			return null;
+		}
+
+		try {
+			return BIBTEX_URL + id;
+
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}	
 }
 
