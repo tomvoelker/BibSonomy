@@ -703,6 +703,10 @@ public class RestLogic implements LogicInterface {
 	}
 	@Override
 	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+		if (!present(document.getUserName())) {
+			document.setUserName(this.authUser.getName());
+		}
+		
 		this.execute(new ChangeDocumentNameQuery(resourceHash, newName, document));
 	}
 
