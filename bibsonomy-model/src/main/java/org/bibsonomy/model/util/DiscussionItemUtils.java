@@ -36,7 +36,7 @@ import org.bibsonomy.util.StringUtils;
  */
 public class DiscussionItemUtils {
 	
-	private static final DateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+	private static DateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
 	/**
 	 * Calculates a hash for a discussionItem

@@ -132,7 +132,7 @@ public class BibTexUtils {
 	/**
 	 * ISO date + time for "added-at" and "timestamp" field  
 	 */
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	private static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
