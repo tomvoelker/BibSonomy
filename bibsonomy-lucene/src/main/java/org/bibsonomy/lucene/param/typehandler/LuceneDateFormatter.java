@@ -1,6 +1,5 @@
 package org.bibsonomy.lucene.param.typehandler;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import org.joda.time.DateTime;
