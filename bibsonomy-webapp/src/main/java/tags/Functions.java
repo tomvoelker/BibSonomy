@@ -47,6 +47,7 @@ import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.format.datetime.DateFormatter;
@@ -67,7 +68,7 @@ public class Functions {
 	// used to generate URLs
 	private static URLGenerator urlGenerator;
 
-	private static final SimpleDateFormat ISO8601_FORMAT_HELPER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	private static final DateTimeFormatter ISO8601_FORMAT_HELPER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
 	private static final DateFormatter myDateFormatter = new DateFormatter("MMMM yyyy");
 	private static final DateFormatter dmyDateFormatter = new DateFormatter();
@@ -603,7 +604,7 @@ public class Functions {
 	public static String formatDateISO8601(final Date date) {
 		if (present(date)) {
 			try {
-				return ISO8601_FORMAT_HELPER.format(date);
+				return ISO8601_FORMAT_HELPER.print(new DateTime(date));
 			} catch (final Exception e) {
 				log.error("error while formating date to ISO8601", e);
 				return "";
@@ -812,5 +813,10 @@ public class Functions {
 	 */
 	public static String downloadFileId(final String filename) {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
+	}
+	
+	public static void main(String[] args) {
+		DateTime d = new DateTime(new Date());
+		
 	}
 }
