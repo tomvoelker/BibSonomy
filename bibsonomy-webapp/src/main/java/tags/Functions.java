@@ -6,9 +6,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.text.DateFormat;
 import java.text.Normalizer;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -50,7 +49,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import org.springframework.format.datetime.DateFormatter;
 
 /**
  * TODO: move to org.bibsonomy.webapp.util.tags package
@@ -70,13 +68,10 @@ public class Functions {
 
 	private static final DateTimeFormatter ISO8601_FORMAT_HELPER = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
-	private static final DateFormatter myDateFormatter = new DateFormatter("MMMM yyyy");
-	private static final DateFormatter dmyDateFormatter = new DateFormatter();
-	static {
-		dmyDateFormatter.setStyle(DateFormat.MEDIUM);
-	}
-	private static final DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM");
-	private static final DateFormat dmyDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final DateTimeFormatter myDateFormatter = DateTimeFormat.forPattern("MMMM yyyy");
+
+	private static final DateTimeFormatter myDateFormat = DateTimeFormat.forPattern("yyyy-MM");
+	private static final DateTimeFormatter dmyDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
 
 	private static final DateTimeFormatter W3CDTF_FORMAT = ISODateTimeFormat.dateTimeNoMillis();
 
@@ -649,8 +644,9 @@ public class Functions {
 				final String monthAsNumber = BibTexUtils.getMonthAsNumber(cleanMonth);
 				if (present(day)) {
 					final String cleanDay = BibTexUtils.cleanBibTex(day.trim());
-					try {
-						return dmyDateFormatter.print(dmyDateFormat.parse(cleanYear + "-" + monthAsNumber + "-" + cleanDay), locale);
+					try {						
+						DateTime dt = dmyDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber + "-" + cleanDay);
+						return DateTimeFormat.mediumDate().withLocale(locale).print(dt);
 					} catch (final Exception ex) {
 						// return default date
 						return cleanDay + " " + cleanMonth + " " + cleanYear;
@@ -660,7 +656,8 @@ public class Functions {
 				 * no day given
 				 */
 				try {
-					return myDateFormatter.print(myDateFormat.parse(cleanYear + "-" + monthAsNumber), locale);
+					DateTime dt = myDateFormat.parseDateTime(cleanYear + "-" + monthAsNumber);
+					return myDateFormatter.withLocale(locale).print(dt);
 				} catch (final Exception ex) {
 					// return default date
 					return cleanMonth + " " + cleanYear;
@@ -815,4 +812,14 @@ public class Functions {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
 	
+	public static void main(String[] args) throws ParseException {
+		String cleanYear = "2011";
+		String monthAsNumber = "10";
+		String cleanDay = "13";
+		Locale locale = Locale.GERMAN;
+		
+		System.out.println(Functions.getDate(cleanDay, monthAsNumber, cleanYear, locale));
+		//System.out.println(dmyDateFormatter.print(dmyDateFormat.parse(cleanYear + "-" + monthAsNumber + "-" + cleanDay), locale));
+		
+	}
 }
