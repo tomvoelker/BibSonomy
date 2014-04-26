@@ -68,6 +68,9 @@ public class FileUtil {
 	 */
 	private static final Pattern fileExtensionPattern = Pattern.compile("(.+)\\.(.+)");
 	
+	/*
+	 * FIXME: can this be deleted? 
+	 */
 	private static final SimpleDateFormat RANDOM_FILE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
