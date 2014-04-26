@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bibsonomy.wiki.tags.UserTag;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * This is a simple birthday-tag.
@@ -20,7 +22,7 @@ public class BirthdayTag extends UserTag {
 	 * TODO: allow other formats as tag parameter (e.g. display without year or the english order mm/dd/yyyy..."
 	 * TODO: maybe think about standardizing it with the rest of BibSonomy?
 	 */
-	private static final SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+	private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
 	
 	/**
 	 * set tag name
@@ -35,9 +37,13 @@ public class BirthdayTag extends UserTag {
 		// TODO: Insert something small indicating the user's birthday
 		// if it coincides with the present day :)
 		if (present(birthday)) {
-			return "<div id='birthday'>" + this.renderString(simpleDate.format(birthday)) + "</div>";
+			return "<div id='birthday'>" + this.renderString(fmt.print(birthday.getTime())) + "</div>";
 		}
 		return "";
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 
 }
