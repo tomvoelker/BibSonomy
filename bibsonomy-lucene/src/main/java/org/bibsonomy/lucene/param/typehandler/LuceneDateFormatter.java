@@ -1,8 +1,11 @@
 package org.bibsonomy.lucene.param.typehandler;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * convert date objects to a standardized string representation
@@ -12,21 +15,19 @@ import java.util.Date;
 public class LuceneDateFormatter extends AbstractTypeHandler<Date> {
 	
 	/** the date formatter */
-	private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
+	private static final DateTimeFormatter dateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SS");
 	
 	@Override
 	public String getValue(Date obj) {
-		return dateFormatter.format(obj);
+		return dateFormatter.print(new DateTime(obj));
 	}
 
 	@Override
 	public Date setValue(String str) {
 		try {
-			return dateFormatter.parse(str);
-		} catch (ParseException e) {
-			log.error("Error parsing date " + str, e);
+			return dateFormatter.parseDateTime(str).toDate();
+		} catch (Exception e) {
+			return new Date(0);
 		}
-		
-		return new Date(0);
 	}
 }
