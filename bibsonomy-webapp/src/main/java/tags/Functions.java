@@ -815,8 +815,4 @@ public class Functions {
 		return filename.replaceAll("[^A-Za-z0-9]", "-");
 	}
 	
-	public static void main(String[] args) {
-		DateTime d = new DateTime(new Date());
-		
-	}
 }
