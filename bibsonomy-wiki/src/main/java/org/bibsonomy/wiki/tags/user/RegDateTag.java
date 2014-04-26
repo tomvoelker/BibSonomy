@@ -2,7 +2,6 @@ package org.bibsonomy.wiki.tags.user;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bibsonomy.wiki.tags.UserTag;
