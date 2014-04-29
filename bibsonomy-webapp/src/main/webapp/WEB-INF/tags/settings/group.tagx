@@ -12,6 +12,34 @@
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
   
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	
+	<h2><fmt:message key="settings.group.reqGroup"/></h2>
+	<fieldset class="fsOuter">
+		<form:form method="post" action="/updateGroup">
+			<div>
+			 	<div class="fsRow">
+			    	<label for="group.name" class="fsLabel">name</label>
+				    <input id="group.name" name="group.name" class="fsInput" type="text" />
+			   	</div>
+			  	<div class="fsRow">
+			  		<label for="group.description" class="fsLabel">description</label>
+			  		<form:textarea id="group.description" rows="3" cssClass="fsInput" path="group.description" />
+			  	</div>
+			  	<div class="fsRow">
+			  		<label for="group.reason" class="fsLabel">reason</label>
+			  		<form:textarea id="group.reason" rows="3" cssClass="fsInput" path="group.groupRequest.reason" />
+				</div>
+			  	<div class="fsRow">
+					<input type="hidden" name="ckey" value="${ckey}"/>
+					<input type="hidden" name="action" value="requestGroup" />
+					<fmt:message var="requestGroup" key="settings.group.reqGroup.button"/>
+					<input type="submit" value="${requestGroup}" />
+			  	</div>
+			</div>
+		</form:form>
+	</fieldset>
+	<br />
+	<h2><fmt:message key="settings.groups"/></h2>
 	<fieldset class="fsOuter">
 		<c:forEach items="${command.user.groups}" var="group" varStatus="status">
 			<c:if test="${group.groupRole == 'ADMINISTRATOR'}">
@@ -50,11 +78,14 @@
 					<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
 						
 					<!-- show group member list -->
-					<c:forEach items="${group.users}" var="member">
-						<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a> 
-						<span class="smalltext">(<a href="/updateGroup?action=removeUserFromGroup&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
-						<c:out value=" "/>
+					<c:forEach items="${group.users}" var="member" varStatus="status">
+						<div style="float: left; width: 130px; padding-bottom: 10px;">
+					    	<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a><br />
+							<i><c:out value="${member.groupRole}" /></i><br />
+							<span class="smalltext">(<a href="/updateGroup?action=removeUserFromGroup&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+						</div>
 					</c:forEach>
+					<div style="clear:both;"></div>
 				</div>
 				
 				<c:if test="${showDeny}">
@@ -87,7 +118,7 @@
 				</c:if>
 			</div>
 
-	
+			<br />
 			<!-- GROUP SETTINGS -->
 			<h2><fmt:message key="settings.group.settings"/></h2>
 			<form:form id="groupSettings" method="post" action="/updateGroup">
@@ -146,6 +177,7 @@
 					</div>
 				</div>
 			</form:form>
+			<br />
 			<!-- group reporting settings -->
 			<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
 				<h2><fmt:message key="settings.group.reporting"/></h2>
