@@ -36,7 +36,7 @@
 	</resultMap>
 	
 	<resultMap id="groupWithMembers" class="group" extends="group_basic" groupBy="name">
-		<result property="users"    resultMap="UserCommon.userForGroup" />
+		<result property="users"    resultMap="UserCommon.userForGroupWithRole" />
 		<result property="userSharedDocuments" 	column="userSharedDocuments" javaType="boolean"/>
 	</resultMap>
 	

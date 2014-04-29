@@ -35,7 +35,7 @@
 	</select>
 
 	<select id="getGroupMembers" resultMap="GroupCommon.groupWithMembers" parameterClass="string">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.userSharedDocuments
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, u.user_realname, u.user_homepage, u.user_name, g.user_status, g.userSharedDocuments
 		FROM groupids i 
 		  JOIN groups g USING (`group`) 
 		  JOIN user u ON (u.user_name = g.user_name) 

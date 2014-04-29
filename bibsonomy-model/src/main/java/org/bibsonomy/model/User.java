@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.RemoteUserNameSpace;
@@ -140,6 +141,11 @@ public class User implements Serializable {
 	 * User's locally uploaded profile picture file
 	 */
 	private UploadedFile profilePicture;
+	
+	/**
+	 * holds the users group role.
+	 */
+	private GroupRole groupRole;
 
 	/* ****************************** system properties ****************************** */
 	/**
@@ -968,5 +974,19 @@ public class User implements Serializable {
 	 */
 	public boolean setRemoteUserId(RemoteUserId remoteId) {
 		return (remoteUserIds.put(remoteId.getNameSpace(), remoteId) != null);
+	}
+
+	/**
+	 * @return the groupRole
+	 */
+	public GroupRole getGroupRole() {
+		return this.groupRole;
+	}
+
+	/**
+	 * @param groupRole the groupRole to set
+	 */
+	public void setGroupRole(GroupRole groupRole) {
+		this.groupRole = groupRole;
 	}
 }
