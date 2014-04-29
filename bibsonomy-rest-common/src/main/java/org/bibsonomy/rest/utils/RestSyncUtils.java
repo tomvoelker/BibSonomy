@@ -34,13 +34,15 @@ import java.util.Date;
  */
 public class RestSyncUtils {
 	
+	private static final String DATE_FORMAT_STRING = "yyyy-MM-DD HH:mm:ss";
+	
 	public static Date parseDate(final String dateString) throws ParseException {
-		DateFormat fmt = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		DateFormat fmt = new SimpleDateFormat(DATE_FORMAT_STRING);
 		return fmt.parse(dateString);
 	}
 	
 	public static String serializeDate(final Date date) {
-		DateFormat fmt = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		DateFormat fmt = new SimpleDateFormat(DATE_FORMAT_STRING);
 		return fmt.format(date);
 	}
 }

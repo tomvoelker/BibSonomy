@@ -6,9 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,6 +26,8 @@ import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.testutil.TestUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author wla
  */
 public class SyncTests extends AbstractDatabaseManagerTest {
-    private static final DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private static final DateTimeFormatter FMT = DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss");
 
     private static BibTexDatabaseManager bibTexDb;
     private static BookmarkDatabaseManager bookmarkDb;
@@ -48,8 +48,8 @@ public class SyncTests extends AbstractDatabaseManagerTest {
 
     private static final Date parse(final String source) {
         try {
-            return format.parse(source);
-        } catch (final ParseException ex) {
+            return FMT.parseDateTime(source).toDate();
+        } catch (final Exception ex) {
             throw new RuntimeException(ex);
         }
     }

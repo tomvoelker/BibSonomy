@@ -104,6 +104,10 @@ public class BibTexUtils {
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_BIBRECORD = "bibrecord";
 	
+	/**
+	 * Format string according to the ISO 8601 standard
+	 */
+	public static final String ISO_8601_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
@@ -659,7 +663,7 @@ public class BibTexUtils {
 		 */
 		
 		//ISO date + time for "added-at" and "timestamp" field  
-		DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		DateFormat fmt = new SimpleDateFormat(ISO_8601_FORMAT_STRING);
 		
 		bib.addMiscField(ADDITIONAL_MISC_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
 		if (present(post.getDescription())) {
