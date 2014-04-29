@@ -36,10 +36,8 @@ import org.bibsonomy.util.StringUtils;
  */
 public class DiscussionItemUtils {
 	
-	/**
-	 * Format string according to the ISO 8601 standard
-	 */
-	public static final String ISO_8601_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	
+	private static final String FORMAT_STRING = "yyyy.MM.dd HH:mm:ss";
 	
 	/**
 	 * Calculates a hash for a discussionItem
@@ -60,7 +58,7 @@ public class DiscussionItemUtils {
 	}
 	
 	private static String getUserAndDate(final DiscussionItem item) {
-		DateFormat fmt = new SimpleDateFormat(ISO_8601_FORMAT_STRING);
+		DateFormat fmt = new SimpleDateFormat(FORMAT_STRING);
 		return item.getUser().getName() + fmt.format(item.getDate());
 	}
 	
