@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.jabref.JabrefLayout;
@@ -32,20 +34,36 @@ import org.bibsonomy.services.URLGenerator;
  * @author rja
  */
 public class JabrefLayoutRenderer implements Renderer {
-
+	
+	public static final String LAYOUT_SIMPLEHTML = "simplehtml";
+	
+	private static final Log log = LogFactory.getLog(JabrefLayoutRenderer.class);
 	/*
 	 * FIXME: proper initialization!
 	 * (e.g., missing UrlGenerator)
 	 */
 	private final org.bibsonomy.layout.jabref.JabrefLayoutRenderer renderer; 
 	
+	private final JabrefLayout layout;
+	
 	/**
 	 * @param urlGenerator - the class to generate proper URLs
+	 * @param layout - the jabrefLayout used by the renderer
 	 */
-	public JabrefLayoutRenderer(final URLGenerator urlGenerator) {
+	public JabrefLayoutRenderer(final URLGenerator urlGenerator, final String layout) {
 		super();
 		this.renderer = new org.bibsonomy.layout.jabref.JabrefLayoutRenderer();
 		this.renderer.setUrlGenerator(urlGenerator);
+		
+		try {
+			this.layout = this.renderer.getLayout(layout, null);
+		} catch (LayoutRenderingException ex) {
+			log.error(ex);
+			throw new InternServerException(ex);
+		} catch (IOException ex) {
+			log.error(ex);
+			throw new InternServerException(ex);
+		}
 	}
 
 	@Override
@@ -173,13 +191,10 @@ public class JabrefLayoutRenderer implements Renderer {
 
 	@Override
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
-		/*
-		 * FIXME: proper layout selection
-		 */
 		final boolean embeddedLayout = true;
 		try {
-			final JabrefLayout layout = renderer.getLayout("simplehtml", null);
 			writer.append(renderer.renderLayout(layout, posts, embeddedLayout));
+			writer.flush();
 		} catch (final LayoutRenderingException ex) {
 			throw new InternServerException(ex);
 		} catch (final IOException ex) {

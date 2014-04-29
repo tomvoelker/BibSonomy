@@ -50,20 +50,19 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-/** Scraper for journals from IEEE Explore.
+/**
+ * Scraper for journals from IEEE Explore.
+ * 
  * @author rja
- *
  */
 public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
+	private static final Log log = LogFactory.getLog(IEEEXploreJournalProceedingsScraper.class);
 	private static final String SITE_NAME = "IEEEXplore Journals";
 	private static final String SITE_URL = "http://ieeexplore.ieee.org/";
-	private static final String info = "This scraper creates a BibTeX entry for the journals and proceedings at " +
-	href(SITE_URL, SITE_NAME)+".";
+	private static final String info = "This scraper creates a BibTeX entry for the journals and proceedings at " + href(SITE_URL, SITE_NAME)+".";
 	
-	private static final Log log = LogFactory.getLog(IEEEXploreJournalProceedingsScraper.class);
-	private static final String IEEE_HOST		   = "ieeexplore.ieee.org";
-	private static final String IEEE_HOST_NAME     = SITE_URL;
-	private static final String IEEE_PATH 	  	   = "xpl";
+	private static final String IEEE_HOST = "ieeexplore.ieee.org";
+	private static final String IEEE_PATH = "xpl";
 	private static final String IEEE_JOURNAL	   = "@article";
 	private static final String IEEE_PROCEEDINGS   = "@proceedings";
 	private static final String IEEE_INPROCEEDINGS = "@inproceedings";
@@ -79,22 +78,24 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_PATH + ".*")));
 	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		//FIXME: this should into the path pattern!
-		if (sc.getUrl().toString().indexOf("punumber") == -1 ) {
+		// FIXME: this should go into the path pattern!
+		if (sc.getUrl().toString().indexOf("punumber") == -1) {
 			sc.setScraper(this);
 
 			String id = null;
 			Matcher matcher = pattern.matcher(sc.getUrl().toString());
-			if(matcher.find())
+			if (matcher.find()) {
 				id = matcher.group(1);
-
+			}
 			matcher = pattern2.matcher(sc.getUrl().toString());
-			if(id == null && matcher.find())
+			if (id == null && matcher.find()) {
 				id = matcher.group(1);
-
-			if(id != null){
-				String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations";
+			}
+			
+			if (id != null) {
+				String downUrl = SITE_URL + "xpl/downloadCitations";
 				String bibtex = null;
 				
 				//using own client because I do not want to configure any client to allow circular redirects
@@ -102,10 +103,10 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 				client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
 				
 				try {
-					//better get the page first
+					// better get the page first
 					WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
 					
-					//create a post method
+					// create a post method
 					PostMethod method = new PostMethod(downUrl);
 					method.addParameter("citations-format", "citation-abstract");
 					method.addParameter("fromPage", "");
@@ -120,7 +121,7 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 					throw new InternalFailureException(ex);
 				}
 
-				if(bibtex != null){
+				if (bibtex != null) {
 					// clean up
 					bibtex = bibtex.replace("<br>", "");
 					
@@ -131,27 +132,26 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 					sc.setBibtexResult(bibtex);
 					return true;
 
-				}else{
-					log.debug("IEEEXploreJournalProceedingsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
-					sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
-					return true;
-
 				}
-			}else{
-				log.debug("IEEEXploreJournalProceedingsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
+				
+				log.debug("IEEEXploreJournalProceedingsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
 				sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
 				return true;
 			}
+			log.debug("IEEEXploreJournalProceedingsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
+			sc.setBibtexResult(ieeeJournalProceedingsScrape(sc));
+			return true;
 		}
 		return false;
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return info;
 	}
+	
 	public String ieeeJournalProceedingsScrape (ScrapingContext sc) throws ScrapingException {
-
-		try{
+		try {
 			//-- init all NodeLists and Node
 			NodeList pres 		= null; 
 			Node currNode 		= null;
@@ -334,20 +334,23 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 		return null;
 	}
 
-	private void appendBibtexField (StringBuffer b, String field, String value) {
+	private static void appendBibtexField(StringBuffer b, String field, String value) {
 		if (value != null) {
 			b.append(field + " = {" + value + "},");
 		}
 	}
-
+	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

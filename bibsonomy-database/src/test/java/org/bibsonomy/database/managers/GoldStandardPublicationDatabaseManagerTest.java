@@ -239,7 +239,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
         final Post<GoldStandardPublication> afterUpdate = goldPubManager.getPostDetails("", newInterHash, "", VISIBLE_GROUPS, this.dbSession);
         assertEquals(1, afterUpdate.getResource().getReferences().size());
         // Restore post to previous state to leave database untouched for the other tests
-        final GoldStandardPublication old = post.getResource();
+        final GoldStandardPublication old = afterUpdate.getResource();
         old.setYear(oldYear);
         old.recalculateHashes();
         goldPubManager.updatePost(afterUpdate, newInterHash, null, this.dbSession, loginUser);

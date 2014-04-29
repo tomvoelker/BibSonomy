@@ -12,9 +12,9 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
@@ -177,16 +177,12 @@
 								 		<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
 								 	</td>
 								</tr>
-							</table>
-						</div>
-						
+														
 						<!--+ 
 				 			|
 				 			| dropdown menu from which you can pick an external literature site and try to find the publication there
 				 			|
 				 			+-->
-						<form>
-							<table>
 								<!-- the string you would usually enter in google scholar, world cat etc. -->
 								<c:set var="externalQueryString"
 									value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
@@ -208,26 +204,34 @@
 									<c:param name="qt" value="worldcat_org_all" />
 									<c:param name="q" value="${externalQueryString}" />
 								</c:url>
+								
+								<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
+									<c:param name="lookfor" value="${externalQueryString }" />
+									<c:param name="type" value="tit" />
+									<c:param name="ling" value="1" />
+									<c:param name="refid" value="dcbasde" />
+								</c:url>
+								
+								<!-- Go message -->
+								<fmt:message key="resources.searchExternal.go" var="goMsg" />
 
 								<!-- build the dropdown menu -->
 								<tr>
-									<td colspan="2"><select name="dropDownExternal"
-										id="dropDownExternal" style="font-size: 8pt">
-											<option value="" selected="selected">
-												<fmt:message key="resources.searchExternal.dropDownTitle" />
-											</option>
+									<td><fmt:message key="resources.searchExternal.dropDownLabel" />:</td>
+									<td><select name="dropDownExternal"
+										id="dropDownExternal" style="font-size: 8pt" onchange="javascript: return loadSelectedPage()">
+											<option selected="selected">---<fmt:message key="resources.searchExternal.dropDownTitle" />---</option>
 											<option value="${googleScholarPostUrl}">Google
 												Scholar</option>
 											<option value="${microsoftAcademicUrl}">Microsoft
 												Academic Search</option>
 											<option value="${worldCatUrl}">WorldCat</option>
+											<option value="${baseSearchUrl}">BASE</option>
 									</select></td>
-									<td><fmt:message var="goMsg"
-											key="resources.searchExternal.go" /> <input type="button"
-										value="${goMsg}" onclick="javascript: return loadSelectedPage()" /></td>
+									<td><input type="button" value="${goMsg}" onclick="javascript: return loadSelectedPage()" /></td>
 								</tr>
 							</table>
-						</form>
+						</div>
 						
 						<!--+
 							| discussion and rating
@@ -278,6 +282,12 @@
 				</div>
 			</div>
 				
+				
+			<div class="clearfix"><!-- keep me --></div>
+			<ul class="pubmetainfo">
+				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/></li>
+				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/></li>
+			</ul>
 		</div> <!-- /.subcolumns -->
 
 		<div>
