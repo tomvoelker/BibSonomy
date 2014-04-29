@@ -69,15 +69,17 @@ public class RenderingFormat {
 	 */
 	public static final RenderingFormat PDF = new RenderingFormat("application", "pdf");
 	
+	private static final RenderingFormat PLAIN_TEXT = new RenderingFormat("text", "plain");
+	
 	/**
 	 * bibtex format
 	 */
-	public static final RenderingFormat BIBTEX = new RenderingFormat("text", "bibtex", "text", "plain");
+	public static final RenderingFormat BIBTEX = new RenderingFormat("text", "bibtex", PLAIN_TEXT);
 	
 	/**
 	 * endnote format
 	 */
-	public static final RenderingFormat ENDNOTE = new RenderingFormat("text", "endnote", "text", "plain");
+	public static final RenderingFormat ENDNOTE = new RenderingFormat("text", "endnote", PLAIN_TEXT);
 	
 	/**
 	 * @param string
@@ -147,26 +149,29 @@ public class RenderingFormat {
 
 	private final String type;
 	private final String subtype;
+	private RenderingFormat errorFormat;
 
-	private final String errorType;
-
-	private final String errorSubtype;
-
-	
+	/**
+	 * 
+	 * @param type
+	 * @param subtype
+	 */
 	public RenderingFormat(final String type, final String subtype) {
-		this(type, subtype, type, subtype);
+		this.type = type;
+		this.subtype = subtype;
+		// by default the error format matches the rendering format
+		this.errorFormat = this;
 	}
 	
 	/**
 	 * 
 	 * @param type
 	 * @param subtype
+	 * @param errorFormat 
 	 */
-	public RenderingFormat(final String type, final String subtype, final String errorType, final String errorSubtype) {
-		this.type = type;
-		this.subtype = subtype;
-		this.errorType = errorType;
-		this.errorSubtype = errorSubtype;
+	public RenderingFormat(final String type, final String subtype, final RenderingFormat errorFormat) {
+		this(type, subtype);
+		this.errorFormat = errorFormat;
 	}
 
 	/**
@@ -174,10 +179,6 @@ public class RenderingFormat {
 	 */
 	public String getMimeType() {
 		return this.type + "/" + this.subtype;
-	}
-	
-	public String getErrorMimeType() {
-		return this.errorType + "/" + this.errorSubtype;
 	}
 
 	/**
@@ -192,6 +193,13 @@ public class RenderingFormat {
 	 */
 	public String getSubtype() {
 		return this.subtype;
+	}
+
+	/**
+	 * @return the errorFormat
+	 */
+	public RenderingFormat getErrorFormat() {
+		return this.errorFormat;
 	}
 
 	/**
