@@ -70,8 +70,8 @@
 		
 					</div>
 				</form:form>
-
-				<h2><fmt:message key="settings.group.delUser"/></h2>
+				<br />
+				<h2><fmt:message key="settings.group.memberList"/></h2>
 				<div id="fsform">
 				<!-- TODO: when there are no members, show a coresponding message-->
 					<fmt:message var="deluser" key="settings.group.delUser.button"/>
