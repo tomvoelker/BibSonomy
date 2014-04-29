@@ -224,6 +224,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			// get the details and members
 			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, group.getName(), null, null, null, null, null, 0, Integer.MAX_VALUE));
 		}
+		
 		/*
 		final String groupName = command.getContext().getLoginUser().getName();
 		// the group to update

@@ -657,6 +657,9 @@
 								<value>sharedDocuments</value>
 								<value>username</value>
 								<value>action</value>
+								<value>group.name</value>
+								<value>group.description</value>
+								<value>group.groupRequest.reason</value>
 								<value>group.publicationReportingSettings.reportingMailAddress</value>
 								<value>group.publicationReportingSettings.reportingMailTemplate</value>
 								<value>group.publicationReportingSettings.externalReportingUrl</value>

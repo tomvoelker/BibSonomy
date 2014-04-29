@@ -50,22 +50,38 @@ public class UpdateGroupController extends SettingsPageController {
 			errors.reject("error.field.valid.ckey");
 		}
 		
-		if (errors.hasErrors()){
-			super.workOn(command);
-		}
-		
 		final String groupName = command.getGroupName();
-		// the group to update
-		final Group groupToUpdate = this.logic.getGroupDetails(groupName);
 		
-		// do set new settings here
 		final String action = command.getAction();
-		if ("addUserToGroup".equals(action)) {
+		// the user is requesting a new group
+		if ("requestGroup".equals(action)) {
+			// get the request
+			final Group requestedGroup = command.getGroup();
+			if (present(requestedGroup)) {
+				if (! present(requestedGroup.getName())) {
+					this.errors.reject("settings.group.error.requestGroupFailed");
+				}
+				if (! present(requestedGroup.getDescription())) {
+					this.errors.reject("settings.group.error.requestGroupFailed");					
+				}
+				if (! present(requestedGroup.getGroupRequest().getReason())) {
+					this.errors.reject("settings.group.error.requestGroupFailed");					
+				}
+				if (! this.errors.hasErrors()) {
+					// set the username and create the request
+					requestedGroup.getGroupRequest().setUserName(command.getContext().getLoginUser().getName());
+					this.logic.createGroup(requestedGroup);
+				}
+			}
+		// do set new settings here
+		} else if ("addUserToGroup".equals(action)) {
 			/*
 			 * add a new user to the group
 			 */
 			final String username = command.getUsername();
 			if (present(username)) {
+				// the group to update
+				final Group groupToUpdate = this.logic.getGroupDetails(groupName);
 				try {
 					// since now only one user can be added to a group at once
 					groupToUpdate.setUsers(Collections.singletonList(new User(username)));
@@ -85,6 +101,8 @@ public class UpdateGroupController extends SettingsPageController {
 			 */
 			final String username = command.getUsername();
 			if (present(username)) {
+				// the group to update
+				final Group groupToUpdate = this.logic.getGroupDetails(groupName);
 				try {
 					// since now only one user can be added to a group at once
 					groupToUpdate.setUsers(Collections.singletonList(new User(username)));
@@ -100,6 +118,8 @@ public class UpdateGroupController extends SettingsPageController {
 			/*
 			 * update the reporting settings
 			 */
+			// the group to update
+			final Group groupToUpdate = this.logic.getGroupDetails(groupName);
 			groupToUpdate.setPublicationReportingSettings(command.getGroup().getPublicationReportingSettings());
 				this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.UPDATE_GROUP_REPORTING_SETTINGS);
 		} else if ("updateGroupSettings".equals(action)) {
@@ -108,7 +128,9 @@ public class UpdateGroupController extends SettingsPageController {
 			 */
 			final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
 			final boolean sharedDocs = command.getSharedDocuments() == 1;
-			
+
+			// the group to update
+			final Group groupToUpdate = this.logic.getGroupDetails(groupName);
 			groupToUpdate.setPrivlevel(priv);
 			groupToUpdate.setSharedDocuments(sharedDocs);
 				
@@ -120,6 +142,10 @@ public class UpdateGroupController extends SettingsPageController {
 			}
 		} else {
 			errors.reject("error.invalid_parameter");
+		}
+		
+		if (errors.hasErrors()){
+			super.workOn(command);
 		}
 	
 		// success: go back where you've come from
