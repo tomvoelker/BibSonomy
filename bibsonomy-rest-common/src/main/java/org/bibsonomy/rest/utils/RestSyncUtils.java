@@ -23,6 +23,7 @@
 
 package org.bibsonomy.rest.utils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,14 +33,14 @@ import java.util.Date;
  * @author wla
  */
 public class RestSyncUtils {
-
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
 	
 	public static Date parseDate(final String dateString) throws ParseException {
-		return sdf.parse(dateString);
+		DateFormat fmt = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		return fmt.parse(dateString);
 	}
 	
 	public static String serializeDate(final Date date) {
-		return sdf.format(date);
+		DateFormat fmt = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+		return fmt.format(date);
 	}
 }

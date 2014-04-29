@@ -36,7 +36,6 @@ import org.bibsonomy.util.StringUtils;
  */
 public class DiscussionItemUtils {
 	
-	private static DateFormat FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
 	/**
 	 * Calculates a hash for a discussionItem
@@ -57,7 +56,8 @@ public class DiscussionItemUtils {
 	}
 	
 	private static String getUserAndDate(final DiscussionItem item) {
-		return item.getUser().getName() + FORMAT.format(item.getDate());
+		DateFormat fmt = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+		return item.getUser().getName() + fmt.format(item.getDate());
 	}
 	
 	private static String recalculateHash(final Review review) {

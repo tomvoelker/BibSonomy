@@ -130,11 +130,6 @@ public class BibTexUtils {
 	public static final String ADDITIONAL_MISC_FIELD_TIMESTAMP = "timestamp";
 
 	/**
-	 * ISO date + time for "added-at" and "timestamp" field  
-	 */
-	private static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
-	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource)
 	 */
@@ -662,15 +657,19 @@ public class BibTexUtils {
 		 * in ADDITIONAL_MISC_FIELDS. Thus when someone enters a bibtex field with the 
 		 * name of your added field, it will not be stored in the misc section.
 		 */
+		
+		//ISO date + time for "added-at" and "timestamp" field  
+		DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		
 		bib.addMiscField(ADDITIONAL_MISC_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
 		if (present(post.getDescription())) {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
 		}
 		if (present(post.getDate())) {
-			bib.addMiscField(ADDITIONAL_MISC_FIELD_ADDED_AT, DATE_FORMAT.format(post.getDate()));
+			bib.addMiscField(ADDITIONAL_MISC_FIELD_ADDED_AT, fmt.format(post.getDate()));
 		}
 		if (present(post.getChangeDate())) {
-			bib.addMiscField(ADDITIONAL_MISC_FIELD_TIMESTAMP, DATE_FORMAT.format(post.getDate()));
+			bib.addMiscField(ADDITIONAL_MISC_FIELD_TIMESTAMP, fmt.format(post.getDate()));
 		}
 		return toBibtexString(bib, flags);
 	}
