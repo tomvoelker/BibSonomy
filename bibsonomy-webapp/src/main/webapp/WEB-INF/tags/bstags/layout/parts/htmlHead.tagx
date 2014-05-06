@@ -57,8 +57,7 @@
 		
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="/resources/bootstrap/css/bootstrap.min.css"  />
-		<link rel="stylesheet" href="/resources/bootstrap/css/style.css" />
-		
+		<mtl:styleSheet path="${resdir}/css/bootstrap-style.css" />
 		
 		<!--+
 			| END BOOTSTRAP SETTINGS 
@@ -71,7 +70,7 @@
 		<mtl:styleSheet path="${resdir}/css/style.css" />
 		-->
 		<c:if test="${not empty personalized and personalized == true}">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
+			<!-- <link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" /> -->
 		</c:if>
 		
 		<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />

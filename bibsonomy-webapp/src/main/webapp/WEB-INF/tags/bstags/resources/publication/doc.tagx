@@ -25,7 +25,7 @@
 			  		<c:if test="${isOwnEntry}">
 			  			<div class="publication preview bibtexpreviewimage">
 							<a class="addDocument addDocumentImg" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
-								<img class="pre_pic" style="width: 220px;" src="${resdir}/image/addDocument-LARGE.jpg" alt=""/>							
+								<img class="img-responsive pre_pic" src="${resdir}/image/addDocument-LARGE.jpg" alt=""/>							
 							</a>
 						</div>
 						<div id="inputDiv">
@@ -45,15 +45,16 @@
 									<c:when test="${count eq 0}">
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
 											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
 									</c:when>
 									<c:otherwise>
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
 											<!-- preview picture of first document -->
-											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+											<!--  <a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}"> -->
+											<a data-toggle="lightbox" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false">
+												<img class="img-resposive" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
 									</c:otherwise>
@@ -67,7 +68,7 @@
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
 											<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
 												<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
 									</c:when>
@@ -75,7 +76,7 @@
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
 											<!-- preview picture of first document -->
 											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-												<img class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
 									</c:otherwise>

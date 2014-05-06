@@ -37,7 +37,6 @@
 			minimizedContentWidth="${true}" >
 
 		<jsp:attribute name="headerExt">
-		<link rel="stylesheet" type="text/css" href="/resources/css/publicationdetails.css" />
 		</jsp:attribute>
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
