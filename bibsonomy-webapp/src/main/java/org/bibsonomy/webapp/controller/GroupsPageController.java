@@ -28,6 +28,15 @@ public class GroupsPageController extends SingleResourceListController implement
 		// fill out title
 		command.setPageTitle("groups"); // TODO: i18n
 		
+		final Group requestedGroup = command.getRequestedGroup();
+		// check a submitted group request
+		// TODO: make sure to use a captcha for this
+		if (present(requestedGroup)) {
+			// set the request user name
+			requestedGroup.getGroupRequest().setUserName(command.getContext().getLoginUser().getName());
+			this.logic.createGroup(requestedGroup);
+		}
+		
 		/*
 		 * get all groups from db; Integer#MAX_VALUE should be enough
 		 */
