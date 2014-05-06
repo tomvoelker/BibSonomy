@@ -79,11 +79,13 @@
 						
 					<!-- show group member list -->
 					<c:forEach items="${group.users}" var="member" varStatus="status">
-						<div style="float: left; width: 130px; padding-bottom: 10px;">
-					    	<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a><br />
-							<i><c:out value="${member.groupRole}" /></i><br />
-							<span class="smalltext">(<a href="/updateGroup?action=removeUserFromGroup&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
-						</div>
+						<c:if test="${member.groupRole ne 'DUMMY'}">
+							<div style="float: left; width: 130px; padding-bottom: 10px;">
+								<a href="/user/${mtl:encodeURI(member.name)}"><img src="/picture/user/${mtl:encodeURI(user.name)}" /><c:out value="${member.name}"/></a><br />
+								<i><c:out value="${member.groupRole}" /></i><br />
+								<span class="smalltext">(<a href="/updateGroup?action=removeUserFromGroup&amp;groupName=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+							</div>
+						</c:if>
 					</c:forEach>
 					<div style="clear:both;"></div>
 				</div>
