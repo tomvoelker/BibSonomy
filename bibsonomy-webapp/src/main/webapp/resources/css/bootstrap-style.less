@@ -1,7 +1,8 @@
-@CHARSET "UTF-8";
+@import "bootstrap-color.less";
 
 body {
-	background: transparent url("/resources/bootstrap/img/bg.png");
+	background-color: @background-color; 
+    background-image: url("/resources/bootstrap/img/bg.png");
 }
 
 
@@ -10,17 +11,19 @@ body {
  */
 
 .container {
-	border: 1px #ccc solid;
-	background-color: #fff;
+	border-color: @border-color;
+    border-width: 1px;
+    border-style: solid;
+	background-color: #FFFFFF;
 }
 
 .container.header {
-	background: #fff;
+	background: #FFFFFF;
 	border-top: none;
 	border-bottom: none;
 	margin-top: 30px;
-	-webkit-box-shadow: 2px 2px 30px 6px #CCCCCC;
-	box-shadow: 2px 2px 30px 6px #CCCCCC;
+	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
+	box-shadow: 2px 2px 30px 6px @border-color;
 }
 
 .container.main {
@@ -28,8 +31,8 @@ body {
 	padding: 20px 30px;
 	border-top: none;
 	margin-bottom: 30px;
-	-webkit-box-shadow: 2px 2px 30px 6px #CCCCCC;
-	box-shadow: 2px 2px 30px 6px #CCCCCC;
+	-webkit-box-shadow: 2px 2px 30px 6px @border-color;
+	box-shadow: 2px 2px 30px 6px @border-color;
 }
 
 
@@ -53,11 +56,11 @@ body {
 
 .slogan {
 	text-transform: uppercase;
-	color: #006699;
+	color: @main-color;
 }
 
 a {
-	color: #006699;
+	color: @link-color;
 }
 
 #search {
@@ -69,7 +72,7 @@ a {
  * NAVBAR
  */
 .navbar-bibsonomy {
-	background-color: #006699;
+	background-color: @main-color;
 	border: none;
 	border-radius: 0;
 	margin-bottom: 0;
@@ -663,4 +666,36 @@ li.post {
 	border: 1px #ccc solid;
 	box-shadow: 2px 2px 5px 1px rgba(0,0,0, 0.3);
 	*/
+}
+
+h1#pubtitle {
+	font-size: 21px;
+    font-weight: 200;
+    line-height: 1.4;
+    margin: 0 0 5px;
+}
+
+img.user-avatar {
+	width: 64px;
+	height: 64px;
+}
+
+a.img-thumbnail span {
+	display: block;
+	position: relative;
+	font-size: 11px;
+	overflow: hidden;
+	color: #ffffff;
+	background-color: @link-color;
+    font-weight: 300;
+    font-stretch: extra-expanded;
+	padding: 0 1px;
+}
+
+div.title a:hover {
+	text-decoration: none;
+}
+
+#resources table td {
+	padding: 5px 5px 5px 0;
 }

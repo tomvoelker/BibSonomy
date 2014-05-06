@@ -16,7 +16,7 @@ function includeJavaScript(jsFile) {
 includeJavaScript("/resources/javascript/bs/jquery-2.1.0.min.js");
 includeJavaScript("/resources/javascript/bs/bootstrap.min.js");
 includeJavaScript("/resources/javascript/bs/holder.js");
-includeJavaScript("/resources/javascript/bs/collape.js");
+includeJavaScript("/resources/javascript/bs/collapse.js");
 includeJavaScript("/resources/javascript/bs/tooltip.js");
 includeJavaScript("/resources/javascript/bs/popover.js");
 includeJavaScript("/resources/javascript/bs/custom.js");
