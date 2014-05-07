@@ -1,4 +1,4 @@
-# BibSonomy REST-Client
+B1;2403;0c# BibSonomy REST-Client
 
 ## What is it?
 
@@ -16,8 +16,7 @@ in the form of JavaDoc annotations in the source code. Examples can
 also be found in the
 [wiki](https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/Java%20API%20Examples)
 and
-[bibsonomy-tools project](https://bitbucket.org/bibsonomy/bibsonomy-tools)
-and
+[bibsonomy-tools project](https://bitbucket.org/bibsonomy/bibsonomy-tools).
   
 ## Release Notes
 
