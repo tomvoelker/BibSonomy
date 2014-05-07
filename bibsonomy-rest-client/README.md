@@ -2,7 +2,7 @@
 
 ## What is it?
 
-The BibSonomy REST-Client allows RESTful interaction with BibSonomy.
+The BibSonomy REST client allows [RESTful interaction with BibSonomy](https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API).
 
 The module is part of the [BibSonomy](http://www.bibsonomy.org) social
 bookmarking system and is maintained by the
@@ -12,7 +12,12 @@ at the University of Kassel, Germany.
 ## Documentation
 
 The documentation available as of the date of this release is included
-in the form of JavaDoc annotations in the source code.
+in the form of JavaDoc annotations in the source code. Examples can
+also be found in the
+[wiki](https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/Java%20API%20Examples)
+and
+[bibsonomy-tools project](https://bitbucket.org/bibsonomy/bibsonomy-tools)
+and
   
 ## Release Notes
 
