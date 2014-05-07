@@ -87,26 +87,12 @@
 			</c:if>
 			<!-- UnAPI service -->
 			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
-			<script type="text/javascript" src="${resdir}/bootstrap/js/tooltip.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/bootstrap/js/popover.js"><!-- keep me --></script>
+			<!-- 
+			<script type="text/javascript" src="${resdir}/bootstrap/js/tooltip.js"></script>
+			<script type="text/javascript" src="${resdir}/bootstrap/js/popover.js"></script>
 			<script type="text/javascript" >
-			$(function(){
-				$('.post-popover').popover({ 
-				    html : true,
-				    trigger: "hover",
-				    container: 'body',
-				    placement: 'top',
-				    title: function() {
-				    	console.log("#popover-head-"+$(this).attr('data-ident'));
-				      	return $("#popover-head-"+$(this).attr('data-ident')).html();
-				    },
-				    content: function() {
-				    	console.log("#popover-head-"+$(this).attr('data-ident'));
-				      	return $("#popover-content-"+$(this).attr('data-ident')).html();
-				    }
-				});
-			});
 			</script>
+			-->
 			<jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 

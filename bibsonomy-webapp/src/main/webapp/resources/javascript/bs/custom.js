@@ -63,4 +63,35 @@ $(function() {
 		$(this).parent().parent().prev().popover('hide');
 	});
 	
+	/**
+	 * publication details abstract and description more link
+	 */
+	maxChar = 350;
+    dots = "&hellip;";
+    moretext = "";
+    lesstext = "";
+    $('.more').each(function() {
+        var content = $(this).html();
+        
+        if(content.length > maxChar) {
+ 
+            lesstext = content.substr(0, maxChar);
+            lesstext += dots + ' <a href="#" class="morelink">(more)</a>';
+            moretext = content + ' <a href="#" class="morelink less">(less)</a>';
+            $(this).html(lesstext);
+        }
+    });
+ 
+    $(".morelink").click(function(event){
+    	event.preventDefault();
+        if($(this).hasClass('less')) {
+        	$(this).removeClass('less');
+            $(this).parent().html(lesstext);
+            
+        } else {
+            $(this).addClass("less");
+            $(this).parent().html(moretext);
+        }
+        return false;
+    });
 });

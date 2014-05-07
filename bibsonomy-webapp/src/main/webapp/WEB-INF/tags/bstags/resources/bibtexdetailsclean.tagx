@@ -30,8 +30,6 @@
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
 	
-	<!-- TODO: remove inline CSS! -->
-	<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
 	<div id="icons" style="display:none">
 		<img id="icon_expand" alt="" src="${resdir}/image/icon_expand.png"/>
 		<img id="icon_collapse" alt="" src="${resdir}/image/icon_collapse.png"/>
@@ -56,7 +54,7 @@
 					+-->
 		
 				<c:if test="${not empty post.resource.abstract}"> 
-					<h4 style="clear:both;"><fmt:message key="publications.abstract.headline"/></h4>
+					<h4 class="pub-details"><fmt:message key="publications.abstract.headline"/></h4>
 					<div id="abstract" class="more">
 						<c:out value="${post.resource.abstract}" />
 					</div>
@@ -66,8 +64,10 @@
 					| description
 					+-->		
 				<c:if test="${not empty post.description}">
-					<h4 style="clear:both;"><fmt:message key="post.resource.description.cap"/></h4>
-					<div id="desc"><c:out value="${post.description}" /></div>
+					<h4 class="pub-details"><fmt:message key="post.resource.description.cap"/></h4>
+					<div id="desc" class="more">
+						<c:out value="${post.description}" />
+					</div>
 				</c:if>				
 				
 				
@@ -77,7 +77,7 @@
 					| resources (URLs/PDF/etc.)
 					|
 					+-->
-				<h4><fmt:message key="publications.resource.headline" /></h4>
+				<h4 class="pub-details"><fmt:message key="publications.resource.headline" /></h4>
 				<div id="resources" style="font-size: 90%;">
 					<table style="width: 100%;">
 						<!--+
@@ -268,7 +268,7 @@
 					| tag list
 					+-->
 				<!-- TODO: i18n? -->
-				<h4 style="clear:both;">Tags</h4>
+				<h4 class="pub-details">Tags</h4>
 				<c:set var="tags" value="${post.tags}"/>
 				<c:if test="${not isOwnEntry}">
 					<c:set var="tags" value="${post.visibleTags}" />
@@ -311,7 +311,7 @@
 					<!--+ 
 			 	| selection of citation format 
 			 	+-->
-		 	<h4 style="clear:both;"><fmt:message key="publications.citations.headline" /></h4>
+		 	<h4 class="pub-details"><fmt:message key="publications.citations.headline" /></h4>
 			<div style="/*float:left;clear:right;*/width:100%">
 				<pub:citation post="${post}"/>
 			</div>
@@ -320,7 +320,7 @@
 				| private note
 				+-->
 			<c:if test="${isOwnEntry}">
-				<h4><fmt:message key="post.resource.privnote"/></h4>
+				<h4 class="pub-details"><fmt:message key="post.resource.privnote"/></h4>
 				<div id="privnote">
 					<form method="post" id="note">
 				  		<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
