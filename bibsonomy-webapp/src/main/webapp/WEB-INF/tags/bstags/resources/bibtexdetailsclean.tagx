@@ -48,7 +48,7 @@
 		<div class="row">
 		
 			<!-- left -->
-			<div class="col-md-8">
+			<div class="col-md-7">
 				<!--+
 					| abstract 
 					+-->
@@ -123,7 +123,7 @@
 							      	</c:forEach>
 							      	<c:if test="${isOwnEntry}">
 							      		<fmt:message var="addAdditionalUrl" key="bibtex.actions.additional_url.add" />
-							      		<bsform:button size="xsmall" style="defaultStyle" value="${addAdditionalUrl}" dataToggle="modal" dataTarget="#add-url-modal" />
+							      		<button class="btn btn-sm btn-primary" dataToggle="modal" dataTarget="#add-url-modal"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></button> 
 							      	</c:if>				
 							      	</div>
 							      	<c:if test="${isOwnEntry}">
@@ -131,16 +131,23 @@
 			      						<!-- modal window -->
 										<bs:modal id="add-url-modal" modalTitle="${addAdditionalUrlTitle}">
 											<jsp:attribute name="modalBody">
-									    		<form method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
-										          	<fmt:message key="bibtex.url"/><c:out value=":"/>
-										          	<input type="text" name="url"/><br />
-												  	<fmt:message key="text"/><c:out value=":"/>						          
-										          	<input type="text" name="text"/>
-										          	<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-										          	<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
-										          	<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
-										          	<input class="postUrl" type="button" value="addURL" id="addURLButton"/>
-								        		</form>		
+									    		<form role="form" method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
+										          	<!-- input fields -->
+										          	<div class="form-group">
+										          		<label for="url"><fmt:message key="bibtex.url"/></label>
+										          		<input class="form-control" type="text" name="url" id="url"/>
+									          		</div>
+									          		<div class="form-group">
+									          			<label for="text"><fmt:message key="text"/></label>
+									          			<input class="form-control" type="text" id="text" name="text"/>
+									          		</div>
+									          		<!-- hidden fields -->
+												  	<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+											        <input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
+											        <input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
+											        <!-- submit -->
+											        <bsform:button style="defaultStyle" type="submit" size="defaultSize" value="addURL"/>
+									          	</form>	
 											</jsp:attribute>
 											<jsp:attribute name="modalFooter">
 												<bsform:button size="defaultSize" style="defaultStyle" dataDismiss="modal" value="Close" />
@@ -273,18 +280,18 @@
 				<c:if test="${not isOwnEntry}">
 					<c:set var="tags" value="${post.visibleTags}" />
 				</c:if>
-				<div class="taglist" style="clear:both; margin-top: 1em;">
-					<ul>
+				<div class="tag-list">
+					<ul class="list-inline">
 					<c:forEach var="tag" items="${tags}" varStatus="status">
 						<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-						<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+						<li><span class="tag-item-right"><a class="tag-item" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 					</c:forEach>
 					</ul>
 				</div>
 			</div>
 			
 			<!-- right -->
-			<div class="col-md-4">
+			<div class="col-md-5">
 			
 				<!--+
 					| documents

@@ -10,9 +10,8 @@
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
 	<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox"/>
 	
-	<h4 style="clear:both;">
-		<span style="display:block; float:left"><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
-		<div style="float:left;" class="rating">
+	<h4 class="pub-details"><span class="pull-left"><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
+		<div class="rating">
 			<c:if test="${not empty post.resource.rating}">
 				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource.class.simpleName)}" />
 				
@@ -32,7 +31,6 @@
 			</c:if>
 		</div>
 	</h4>
-	<br />
 	<div id="discussion" style="margin-top: 0.5em;">
 	
 		<!--  mtl:uniqueDiscussionUsers extracts the user objects of the discussion items -->
