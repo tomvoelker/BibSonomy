@@ -90,6 +90,7 @@
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer">
 		<property name="userLayoutFilePath" value="${project.document.path}"/>
 		<property name="urlGenerator" ref="urlGenerator"/>
+		<property name="properties" ref="properties"/>
 	</bean>
 
 	<!-- provides access to the request for all controllers, which need it -->
