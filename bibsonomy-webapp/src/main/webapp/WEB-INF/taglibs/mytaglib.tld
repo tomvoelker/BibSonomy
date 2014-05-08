@@ -133,7 +133,13 @@
 		</attribute>
 	</tag>
 
-
+	<function>
+		<name>renderHover</name>
+		<function-class>org.bibsonomy.webapp.util.tags.BibTexListHoverRendererTag</function-class>
+		<function-signature>String renderHover()</function-signature>
+	</function>
+	<!-- <function-signature>String renderHover(org.bibsonomy.model.Resource, java.util.Locale, java.lang.Boolean)</function-signature> -->
+	
 	<function>
 		<name>normalize</name>
 		<function-class>tags.Functions</function-class>
