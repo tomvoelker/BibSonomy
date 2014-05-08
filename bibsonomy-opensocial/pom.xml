@@ -231,7 +231,7 @@
 	</dependencies>
 
 	<properties>
-		<shindig.version>2.0.2</shindig.version>
+		<shindig.version>2.5.1</shindig.version>
 		<wtpversion>1.5</wtpversion>
 	</properties>
 
