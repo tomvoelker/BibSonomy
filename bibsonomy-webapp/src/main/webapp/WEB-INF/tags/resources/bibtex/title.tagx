@@ -11,5 +11,5 @@
 	<!--  display title -->
 	<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}</c:set>
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
-	<a href="${bibUrlTemplate}" title="${mtl:renderHover()}"><c:out value="${bibTitle}" /></a>
+	<a href="${bibUrlTemplate}" title="${mtl:renderHover(post,locale)}"><c:out value="${bibTitle}" /></a>
 </jsp:root>

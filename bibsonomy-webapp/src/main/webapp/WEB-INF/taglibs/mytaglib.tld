@@ -136,7 +136,7 @@
 	<function>
 		<name>renderHover</name>
 		<function-class>org.bibsonomy.webapp.util.tags.BibTexListHoverRendererTag</function-class>
-		<function-signature>String renderHover()</function-signature>
+		<function-signature>String renderHover(org.bibsonomy.model.Post, java.util.Locale)</function-signature>
 	</function>
 	<!-- <function-signature>String renderHover(org.bibsonomy.model.Resource, java.util.Locale, java.lang.Boolean)</function-signature> -->
 	

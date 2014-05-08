@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.util.tags;
 import java.util.Locale;
 
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Post;
 
 import tags.Functions;
 
@@ -13,7 +13,7 @@ import tags.Functions;
  */
 public class BibTexListHoverRendererTag {
 	
-	private BibTexListHoverRendererTag(final BibTex publication, final Locale locale, final boolean authors) {
+	private BibTexListHoverRendererTag(final BibTex publication, final Locale locale) {
 		this.publication = publication;
 		this.locale = locale;
 		//this.authors = authors;
@@ -33,10 +33,11 @@ public class BibTexListHoverRendererTag {
 	 * @param authors
 	 * @return String
 	 */
-	public static String renderHover() {//final Resource resource, final Locale locale, final boolean authors) {
-		return "BlaBlaBlub";
-		/*
-		BibTexListHoverRendererTag renderer = new BibTexListHoverRendererTag((BibTex) resource,locale,authors);
+	public static String renderHover(final Post post, final Locale locale) {
+		
+		final BibTex publication = (BibTex)post.getResource();
+		
+		BibTexListHoverRendererTag renderer = new BibTexListHoverRendererTag(publication,locale);
 		
 		//renderer.title().author();
 		
@@ -78,7 +79,7 @@ public class BibTexListHoverRendererTag {
 			renderer.howpublished().year(true).note();
 		}
 		return renderer.getOutput();
-		*/
+		
 	}
 	
 	private BibTexListHoverRendererTag add(String s) {
