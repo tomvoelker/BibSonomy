@@ -18,11 +18,23 @@ public class InsertPropertyFormatter implements LayoutFormatter {
 	 */
 	@Override
 	public String format(String arg0) {
+		//Property,default
+		String[] parts = arg0.split(",", 2);
+		String property = null;
+		String defValue = null;
+		
+		if (parts != null && parts.length == 2) {
+			property = parts[0];
+			defValue = parts[1];
+		} else {
+			property = arg0;
+		}
 		//Get Spring-Managed Properties
 		Properties properties = JabrefLayoutRenderer.getProperties();
-		//FIXME - Error Handling eg. PropertyNotFound?
-		String message = properties.getProperty(arg0);
-		return message;
+		if (properties != null) {
+			return properties.getProperty(property);
+		}
+		return defValue;
 	}
 
 }
