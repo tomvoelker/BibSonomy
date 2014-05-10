@@ -23,6 +23,8 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -37,6 +39,7 @@ import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -696,8 +699,19 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * do everything that must be done after a successful create or update
 		 */
-		this.createOrUpdateSuccess(command, loginUser, post);
-
+		this.createOrUpdateSuccess(command, loginUser, post);		
+		
+		String submitName = context.getSubmitValue();
+		if(submitName == null)
+			return this.finalRedirect(loginUserName, post, command.getReferer());		
+		if(post.getResource() instanceof BibTex){
+			String publicationRatingUrl = urlGenerator.getPublicationRatingUrl(post.getResource().getInterHash(),loginUserName, post.getResource().getIntraHash());		
+			return new ExtendedRedirectView(publicationRatingUrl);						
+		}
+		if(post.getResource() instanceof Bookmark){
+			String bookmarkRatingUrl = urlGenerator.getBookmarkRatingUrl(post.getResource().getInterHash(),loginUserName, post.getResource().getIntraHash());		
+			return new ExtendedRedirectView(bookmarkRatingUrl);
+		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 

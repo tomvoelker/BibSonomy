@@ -88,5 +88,9 @@ public class RequestWrapperContext {
 		return request.getQueryString();
 	}
 	
+	public String getSubmitValue(){
+		return request.getParameter("saveandrate");		
+	}
+	
 	
 }
