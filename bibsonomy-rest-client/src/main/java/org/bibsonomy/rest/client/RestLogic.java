@@ -82,6 +82,7 @@ import org.bibsonomy.rest.client.queries.delete.DeleteSyncDataQuery;
 import org.bibsonomy.rest.client.queries.delete.DeleteUserQuery;
 import org.bibsonomy.rest.client.queries.delete.RemoveUserFromGroupQuery;
 import org.bibsonomy.rest.client.queries.delete.UnpickClipboardQuery;
+import org.bibsonomy.rest.client.queries.get.GetConceptDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetFriendsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupDetailsQuery;
 import org.bibsonomy.rest.client.queries.get.GetGroupListQuery;
@@ -419,7 +420,19 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
-		throw new UnsupportedOperationException();
+		GetConceptDetailsQuery query = new GetConceptDetailsQuery(conceptName);
+		
+		if (GroupingEntity.GROUP.equals(grouping)) {
+			query.setGroupName(groupingName);
+			return execute(query);
+		} else if (GroupingEntity.FRIEND.equals(grouping)) {
+			query.setUserName(groupingName);
+			return execute(query);
+		} else {
+			log.error("grouping entity " + grouping.name() + " not yet supported in RestLogic implementation.");
+		}
+
+		return null;
 	}
 
 	@Override
@@ -703,6 +716,10 @@ public class RestLogic implements LogicInterface {
 	}
 	@Override
 	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+		if (!present(document.getUserName())) {
+			document.setUserName(this.authUser.getName());
+		}
+		
 		this.execute(new ChangeDocumentNameQuery(resourceHash, newName, document));
 	}
 
