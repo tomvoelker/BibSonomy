@@ -228,76 +228,74 @@
 				</parts:postHeader>
 			</c:if>
 			
-			<div id="hideableContent">
 				
-				<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
-					<c:choose>
-						<c:when test="${properties['project.theme'] eq 'puma'}">
-							<home:pumahome command="${command}" />
-						</c:when>
-						<c:otherwise>
-							<home:bibhome command="${command}" />
-						</c:otherwise>
-					</c:choose>
-				</c:if>
-				
-				
+			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
+				<c:choose>
+					<c:when test="${properties['project.theme'] eq 'puma'}">
+						<home:pumahome command="${command}" />
+					</c:when>
+					<c:otherwise>
+						<home:bibhome command="${command}" />
+					</c:otherwise>
+				</c:choose>
+			</c:if>
+			
+			
 
+			
+			<!-- additional heading for content area -->
+			 
+			<c:if test="${not empty contentHeading}">
 				
-				<!-- additional heading for content area -->
-				 
-				<c:if test="${not empty contentHeading}">
-					<div id="fullscreen">
-						<jsp:invoke fragment="contentHeading" />
-					</div>
-				</c:if>
+				<jsp:invoke fragment="contentHeading" />
 				
-				
-				<!-- bibtex/bookmark lists -->
-			    <div class="row">
-					<div class="col-md-6 bookmark-list">
-						
-				        <resources:bookmarks listView="${command.bookmark}"
-							loginUserName="${command.context.loginUser.name}"
-							disableListNavigation="${disableListNavigation}"
-							requPath="${excapedRequestPath}"
-							widthClassName="${bookmarksWidthClass}">
-						 
-							<jsp:attribute name="addAsLastItem">
-								<c:if test="${not disableListNavigation}">
-									<div id="bookmarksfooter" class="${bookmarksWidthClass}">
-										<div class="footer">
-											<rc:nextprev listView="${command.bookmark}"
-												listViewStartParamName="bookmark.start" />
-										</div>
-										
+			</c:if>
+			
+			
+			<!-- bibtex/bookmark lists -->
+		    <div class="row">
+				<div class="col-md-6 bookmark-list">
+					
+			        <resources:bookmarks listView="${command.bookmark}"
+						loginUserName="${command.context.loginUser.name}"
+						disableListNavigation="${disableListNavigation}"
+						requPath="${excapedRequestPath}"
+						widthClassName="${bookmarksWidthClass}">
+					 
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
+									<div class="footer">
+										<rc:nextprev listView="${command.bookmark}"
+											listViewStartParamName="bookmark.start" />
 									</div>
-								</c:if>
-							</jsp:attribute>
-						</resources:bookmarks>
-						
-					</div>
-					<div class="col-md-6 publication-list">
-				        
-						<resources:bibtexs listView="${command.bibtex}"
-							loginUserName="${command.context.loginUser.name}"
-							disableListNavigation="${disableListNavigation}"
-							requPath="${excapedRequestPath}"
-							widthClassName="${publicationsWidthClass}">
-							<jsp:attribute name="addAsLastItem">
-								<c:if test="${not disableListNavigation}">
-									<div id="publicationsfooter" class="${publicationsWidthClass}">
-										<div class="footer">
-											<rc:nextprev listView="${command.bibtex}"
-												listViewStartParamName="bibtex.start" />
-										</div>
+									
+								</div>
+							</c:if>
+						</jsp:attribute>
+					</resources:bookmarks>
+					
+				</div>
+				<div class="col-md-6 publication-list">
+			        
+					<resources:bibtexs listView="${command.bibtex}"
+						loginUserName="${command.context.loginUser.name}"
+						disableListNavigation="${disableListNavigation}"
+						requPath="${excapedRequestPath}"
+						widthClassName="${publicationsWidthClass}">
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="publicationsfooter" class="${publicationsWidthClass}">
+									<div class="footer">
+										<rc:nextprev listView="${command.bibtex}"
+											listViewStartParamName="bibtex.start" />
 									</div>
-								</c:if>
-							</jsp:attribute>
-						</resources:bibtexs>
-						 
-					</div>
-			    </div>
+								</div>
+							</c:if>
+						</jsp:attribute>
+					</resources:bibtexs>
+					 
+				</div>
 			</div>
 		</jsp:attribute>
 	</layout:layout>

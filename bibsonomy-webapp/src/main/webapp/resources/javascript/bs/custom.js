@@ -9,21 +9,11 @@ $(function() {
 	
 	/*
 	 * 
-	$('.post-popover, .help-popover').popover({ 
-	    html : true,
-	    trigger: "focus",
-	    container: 'body',
-	    placement: function() {
-			return 'right';	    	
-	    },
-	    title: function() {
-	      	return $(this).next().html();
-	    },
-	    content: function() {
-	      	return $(this).next().next().html();
-	    }
-	});
-	*/
+	 * $('.post-popover, .help-popover').popover({ html : true, trigger:
+	 * "focus", container: 'body', placement: function() { return 'right'; },
+	 * title: function() { return $(this).next().html(); }, content: function() {
+	 * return $(this).next().next().html(); } });
+	 */
 	$('.post-popover, .help-popover').popover({ 
 	    html : true,
 	    trigger: "focus",
@@ -94,4 +84,12 @@ $(function() {
         }
         return false;
     });
+    
+    $('.rename-tags-btn').click(function(){
+    	$(this).parent().prev().focus();
+    	$(this).next().show();
+    	$(this).hide();
+    });
+
+    	
 });

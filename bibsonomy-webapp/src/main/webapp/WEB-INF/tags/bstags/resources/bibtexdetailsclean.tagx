@@ -30,292 +30,63 @@
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
 	
-	<div id="icons" style="display:none">
-		<img id="icon_expand" alt="" src="${resdir}/image/icon_expand.png"/>
-		<img id="icon_collapse" alt="" src="${resdir}/image/icon_collapse.png"/>
-	</div>
 	
-	<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
-
-		<div class="title">
-			<pub:title post="${post}" />
-		</div>
-		<div style="border-top: 1px #cbcbcb solid; clear:left">
-			<span> </span>
-		</div> <!-- border -->
-		
-		
-		<div class="row">
-		
-			<!-- left -->
-			<div class="col-md-7">
-				<!--+
-					| abstract 
-					+-->
-		
-				<c:if test="${not empty post.resource.abstract}"> 
-					<h4 class="pub-details"><fmt:message key="publications.abstract.headline"/></h4>
-					<div id="abstract" class="more">
-						<c:out value="${post.resource.abstract}" />
-					</div>
-				</c:if>
-						
-				<!--+
-					| description
-					+-->		
-				<c:if test="${not empty post.description}">
-					<h4 class="pub-details"><fmt:message key="post.resource.description.cap"/></h4>
-					<div id="desc" class="more">
-						<c:out value="${post.description}" />
-					</div>
-				</c:if>				
+	<div class="title">
+		<pub:title post="${post}" />
+	</div>
+	<div style="border-top: 1px #cbcbcb solid; clear:left">
+		<span> </span>
+	</div> <!-- border -->
+	
+	
+	<c:choose>
+	
+		<!--+
+			| 
+			| if own entry, render a two column layout to display documents on the right side
+			| 
+		   	+-->	
+		<c:when test="${isOwnEntry}">
+			
+			<bs:twoColumns columnSizeLeft="8" columnSizeRight="4">
+				<jsp:attribute name="columnLeft">
 				
-				
-							
-				<!--+
-					|
-					| resources (URLs/PDF/etc.)
-					|
-					+-->
-				<h4 class="pub-details"><fmt:message key="publications.resource.headline" /></h4>
-				<div id="resources" style="font-size: 90%;">
-					<table style="width: 100%;">
-						<!--+
-							| DOI
-							+-->
-						<c:if test="${not empty publication.miscFields['doi']}">
-							<tr>
-								<td><fmt:message key="bibtex.actions.doi"/>:</td>
-								<td><a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(publication.miscFields['doi']))}"><c:out value="${mtl:extractDOI(publication.miscFields['doi'])}"/></a></td>
-							</tr>
-						</c:if>
-						<!--+
-							| URL
-							+-->
-						<c:if test="${not empty publication.url}">
-							<tr>
-								<td><fmt:message key="bibtex.url"/>:</td>
-								<td><a href="${fn:escapeXml(publication.url)}"><c:out value="${publication.url}"/></a></td>
-							</tr>
-						</c:if>
-						<!--+
-							| additional URLs
-							+-->
-						<c:if test="${not empty publication.extraUrls or isOwnEntry}">
-							<tr>							
-								<td>
-									<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!--  --></script>
-									<fmt:message key="bibtex.additional_urls"/>:
-								</td>
-								<td>
-									<!-- display extra URLs -->
-							      	<div id="urlList" class="allAddUrls">
-							      	<c:forEach items="${publication.extraUrls}" var="url">
-							      		<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
-							      		<div id="${escapedUrl}">
-							        	<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
-							        	<c:if test="${isOwnEntry}">
-							        		<c:out value=" ("/>
-							          		<a href="#" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><fmt:message key="post.bibtex.delete"/></a>
-							          		<c:out value=")"/><br/>
-							        	</c:if>
-							        	</div>
-							      	</c:forEach>
-							      	<c:if test="${isOwnEntry}">
-							      		<fmt:message var="addAdditionalUrl" key="bibtex.actions.additional_url.add" />
-							      		<button class="btn btn-sm btn-primary" dataToggle="modal" dataTarget="#add-url-modal"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></button> 
-							      	</c:if>				
-							      	</div>
-							      	<c:if test="${isOwnEntry}">
-								      	<fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
-			      						<!-- modal window -->
-										<bs:modal id="add-url-modal" modalTitle="${addAdditionalUrlTitle}">
-											<jsp:attribute name="modalBody">
-									    		<form role="form" method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
-										          	<!-- input fields -->
-										          	<div class="form-group">
-										          		<label for="url"><fmt:message key="bibtex.url"/></label>
-										          		<input class="form-control" type="text" name="url" id="url"/>
-									          		</div>
-									          		<div class="form-group">
-									          			<label for="text"><fmt:message key="text"/></label>
-									          			<input class="form-control" type="text" id="text" name="text"/>
-									          		</div>
-									          		<!-- hidden fields -->
-												  	<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-											        <input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
-											        <input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
-											        <!-- submit -->
-											        <bsform:button style="defaultStyle" type="submit" size="defaultSize" value="addURL"/>
-									          	</form>	
-											</jsp:attribute>
-											<jsp:attribute name="modalFooter">
-												<bsform:button size="defaultSize" style="defaultStyle" dataDismiss="modal" value="Close" />
-											</jsp:attribute>
-										</bs:modal>
-      						  		</c:if>
-		
-								  	<!--  add url -->						  	
-								    
-								        
-								    				
-		
-								</td>
-							</tr>
-						</c:if>
-						
-						<!--+
-							| OpenURL 
-							+-->
-						<c:if test="${not empty command.context.loginUser.openURL}">
-							<tr>							
-						    	<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
-						    	<td><fmt:message key="bibtex.actions.openurl"/>:</td>
-						    	<td>
-							    	<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(publication.openURL)}" title="${openurlTitle}">
-							    		<c:out value="${command.context.loginUser.openURL}"/>?<c:out value="${mtl:shorten(publication.openURL, 30)}"/>
-							    	</a>
-						    	</td>
-						    </tr>
-						</c:if> 
-
-						<!--+
-							| BibTeX key
-							+-->
-						<tr>
-							<td><fmt:message key="post.resource.bibtexKey"/>:</td>
-							<td><a href="/bibtexkey/${mtl:encodeURI(publication.bibtexKey)}/${mtl:encodeURI(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></td>
-						</tr>
-						
-						<!--+ 
-						 	| internal link
-						 	+-->
-						<tr>
-						 	<td>
-						 		<fmt:message key="discussion.resourceLink.title"/><c:out value=": "/>
-						 		
-						 	</td>
-						 	<td>
-						 		<fmt:message var="helpText" key="discussion.resourceLink.help"/>
-						 		<c:set var="linkText" value="[[publication/${hash.inter.id}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
-						 		<!-- <input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/> -->
-			 					<input class="input-sm form-control help-popover" style="width: 100%;" value="${linkText}"/>
-								<div class="help help-header hide"><c:out value="${labelText}" /></div>
-								<div class="help help-content hide"><c:out value="${helpText}" /></div>
-						 		
-						 		
-						 	</td>
-						</tr>
-												
-				<!--+ 
-		 			|
-		 			| dropdown menu from which you can pick an external literature site and try to find the publication there
-		 			|
-		 			+-->
-						<!-- the string you would usually enter in google scholar, world cat etc. -->
-						<c:set var="externalQueryString"
-							value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
-
+					<!-- PUBLICATION DETAILS -->
+					<pub:publicationdetailscontent post="${post}" referer="${referer}" />
+				</jsp:attribute>
+			
+				<jsp:attribute name="columnRight">
+					<div class="documents">
 					
-						<!-- build the urls -->
-						<c:url var="googleScholarPostUrl"
-							value="http://scholar.google.com/scholar">
-							<c:param name="hl" value="${locale}" />
-							<c:param name="q" value="${externalQueryString}" />
-						</c:url>
-
-						<c:url var="microsoftAcademicUrl"
-							value="http://academic.research.microsoft.com/Search">
-							<c:param name="query" value="${externalQueryString}" />
-						</c:url>
-
-						<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
-							<c:param name="qt" value="worldcat_org_all" />
-							<c:param name="q" value="${externalQueryString}" />
-						</c:url>
-						
-						<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
-							<c:param name="lookfor" value="${externalQueryString }" />
-							<c:param name="type" value="tit" />
-							<c:param name="ling" value="1" />
-							<c:param name="refid" value="dcbasde" />
-						</c:url>
-						
-						<!-- Go message -->
-						<fmt:message key="resources.searchExternal.go" var="goMsg" />
-
-						<!-- build the dropdown menu -->
-						<tr>
-							<td><fmt:message key="resources.searchExternal.dropDownLabel" />:</td>
-							<td>
-								
-										<select class="form-control input-sm" name="dropDownExternal"
-											id="dropDownExternal" style="font-size: 8pt" onchange="javascript: return loadSelectedPage()">
-											<option selected="selected">---<fmt:message key="resources.searchExternal.dropDownTitle" />---</option>
-											<option value="${googleScholarPostUrl}">Google
-												Scholar</option>
-											<option value="${microsoftAcademicUrl}">Microsoft
-												Academic Search</option>
-											<option value="${worldCatUrl}">WorldCat</option>
-											<option value="${baseSearchUrl}">BASE</option>
-										</select>
-									
-							</td>
-						</tr>
-					</table>
-				</div>
-										
-				<!--+
-					| discussion and rating
-					+-->
-
-				<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${hash.inter.id}"/>
-				
-				<!--+
-					| tag list
-					+-->
-				<!-- TODO: i18n? -->
-				<h4 class="pub-details">Tags</h4>
-				<c:set var="tags" value="${post.tags}"/>
-				<c:if test="${not isOwnEntry}">
-					<c:set var="tags" value="${post.visibleTags}" />
-				</c:if>
-				<div class="tag-list">
-					<ul class="list-inline">
-					<c:forEach var="tag" items="${tags}" varStatus="status">
-						<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-						<li><span class="tag-item-right"><a class="tag-item" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
-					</c:forEach>
-					</ul>
-				</div>
-			</div>
+						<!-- META DATA ABOUT ATTACHED DOCUMENTS  -->
+						<pub:doc post="${post}" />
+					</div>
+				</jsp:attribute>
 			
-			<!-- right -->
-			<div class="col-md-5">
+			</bs:twoColumns>
 			
-				<!--+
-					| documents
-					+-->
-				<c:choose>
-					<c:when test="${isOwnEntry}">
-						<div class="documents">
-							<pub:doc post="${post}" />
-						</div>
-					</c:when>
-					<c:otherwise>
-						<c:if test="${empty command.context.loginUser}">
-							<div class="register">
-								<fmt:message key="system.about" />
-							</div>
-						</c:if>
-
-					</c:otherwise>
-				</c:choose>
-			</div>
-		</div>
+		</c:when>
 		
-		<div class="row">
-					<!--+ 
+		<!--+
+			| 
+			| if not own entry, render a one column layout to display content details
+			| 
+		   	+-->	
+		<c:otherwise>
+			<div class="row">
+			
+				<!-- PUBLICATION DETAILS -->
+				<div class="col-md-12">
+					<pub:publicationdetailscontent post="${post}" referer="${referer}" />
+				</div>
+			</div>
+		</c:otherwise>
+	</c:choose>
+
+	<div class="row">
+	
+		<div class="col-md-12">
+			<!--+ 
 			 	| selection of citation format 
 			 	+-->
 		 	<h4 class="pub-details"><fmt:message key="publications.citations.headline" /></h4>
@@ -364,7 +135,5 @@
 				</c:if>
 			</c:if>
 		</div>
-		
 	</div>
-	<div style="clear:both">&amp;nbsp;</div>	
 </jsp:root>

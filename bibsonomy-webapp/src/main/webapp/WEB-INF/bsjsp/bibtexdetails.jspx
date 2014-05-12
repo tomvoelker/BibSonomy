@@ -46,18 +46,44 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<ul>				
+			<ul>
+				<li><h4 class="sidebar"><fmt:message key="bibtex.details.meta"/></h4>
+					<ul>
+						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
+						<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/><br /></li>
+						
+
+						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
+							<li>
+								<h5><fmt:message key="bibtex.details.related_users"/></h5>
+								<ul style="margin-left: 1em; list-style:disc;">
+									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
+										<li class="${userclass}">
+											<a href="/user/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
+											<c:out value=" "/>
+										</li>
+									</c:forEach>
+								</ul>
+							</li>
+						</c:if>
+					</ul>
+				</li>
+					
 				<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
 				<!-- edit tags -->
 				<c:if test="${isOwnPost}">
-					<li>
-						<span class="sidebar_h"><fmt:message key="navi.editTags"/></span>
+					<li><h4 class="sidebar"><fmt:message key="navi.editTags"/></h4>
 						<form action="/batchEdit?action=1" method="POST" style="padding:0.8em;" class="sidebar_collapse_content">
-							<input type="text" name="newTags['${fn:escapeXml(publication.intraHash)}']" style="width:100%" value="${fn:escapeXml(tagsString)}"/>
+							<div class="input-group">
+								<input class="form-control input-sm rename-tags" type="text" name="newTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
+								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
+								<span class="input-group-btn">
+									<button class="btn btn-sm btn-default rename-tags-btn" title="${updateTags}" type="button"><span class="glyphicon glyphicon-pencil"><!-- KEEP ME --></span><span class="sr-only"><c:out value="${updateTags}" /></span></button>
+									<button class="btn btn-sm btn-default rename-tags-submit-btn" style="display: none;" title="${updateTags}" type="button"><span class="glyphicon glyphicon-ok"><!-- KEEP ME --></span><span class="sr-only">OK</span></button>
+								</span>
+							</div>
 							<input type="hidden" name="oldTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
 							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}']" value="true" checked="checked" />
-							<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
-							<input type="submit" value="${updateTags}"/>
 							<input type="hidden" name="referer" value="/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}"/>
 							<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 							<input type="hidden" name="resourcetype" value="bibtex"/>
@@ -72,54 +98,23 @@
 					| tags
 					|
 					+-->
-				<li>
-					<span class="sidebar_h"><fmt:message key="tags"/>
+				<li><h4 class="sidebar"><fmt:message key="tags"/></h4>
 						
 						<span style="font-size:80%;font-weight:lighter;">
 							(<a href="/user/${fn:escapeXml(post.user.name)}"><c:out value="${post.user.name}" /></a>
 							<fmt:message key="tags.highlighted.by_user"/>)
 						</span>
-					</span>
+
 					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
 				</li>
 				
-				<li>
-					<span class="sidebar_h"><fmt:message key="bibtex.details.meta"/></span>
-					<div class="sidebar_collapse_content">
-						<ul>
-							<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
-							<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/><br /></li>
-							<li><!-- KEEP ME --></li>
-							<!--+
-								|
-								| related users
-								|
-								+-->
-							<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
-								<li>
-									<span><fmt:message key="users"/></span>
-									<ul class="tagcloud sidebar_collapse_content">
-										<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
-											<li class="${userclass}">
-												<a href="/user/${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
-												<c:out value=" "/>
-											</li>
-										</c:forEach>
-									</ul>
-								</li>
-								
-							</c:if>
-						</ul>
-					</div>
-				</li>
-				<common:metaData command="${command}" />
 			</ul>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
-			<div id="innercontent" style="background: #fff; padding-left: 40px;">
-				<resource:bibtexdetailsclean post="${post}" referer="${command.referer}"/>
-			</div>
+			
+			<resource:bibtexdetailsclean post="${post}" referer="${command.referer}"/>
+			
 		</jsp:attribute>
 		
 		<jsp:attribute name="customPageOptions">
