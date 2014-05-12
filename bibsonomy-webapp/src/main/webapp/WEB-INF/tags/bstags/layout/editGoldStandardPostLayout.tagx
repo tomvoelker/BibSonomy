@@ -22,6 +22,7 @@
     <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
     <jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
     <jsp:directive.attribute name="hideGroupsAndTags" type="java.lang.Boolean" required="false"/>
+    <jsp:directive.attribute name="tagsAndGroups" fragment="true" required="false" />
     
     <jsp:directive.attribute name="headerExtResource" fragment="true" required="false" />
     <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
